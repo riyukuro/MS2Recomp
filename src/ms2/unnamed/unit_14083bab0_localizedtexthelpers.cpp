@@ -18,6 +18,9 @@
 #include "ms2/commonfiles/filesystem.h"
 #include <atlcoll.h>
 
+// return types of the getters this unit calls
+class CFileSystem;
+
 int FUN_1406516a0();                                                    // client language (localepath.cpp)
 void FUN_1406514e0(int nCountry, ATL::CAtlArray<int>& rLanguages);     // fallback language list of a country
 CStringA FUN_1406522f0(int nLanguage);                                  // language code text
@@ -28,7 +31,7 @@ Unk_Be790Xml* FUN_140345b40(TiXmlDocument* pDoc);                      // first 
 Unk_Be790Xml* FUN_140345b40(Unk_Be790Xml* pNode);
 void FUN_140873420(Unk_Be790Xml* pElem, const char* pszName, CStringW& rOut);   // string attribute
 class Unk_Be790Loader : public CFileSystem { };
-Unk_Be790Loader* FUN_140166420();
+CFileSystem* GetFileSystem();
 double FUN_1407184e0(const CStringW& str);                              // text -> number
 long long FUN_140718320(const CStringW& str);
 CStringW FUN_140719a00(long long n);                                    // integer text
@@ -334,7 +337,7 @@ CStringW FUN_14083d340(CStringW str)
     if (!FUN_14083d7e0(str, L"<ms2>"))
         return str;
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, str) == 0)
+    if (reinterpret_cast<Unk_Be790Loader*>(GetFileSystem())->FUN_140397ab0(&doc, str) == 0)
         return str;
     Unk_Be790Xml* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)

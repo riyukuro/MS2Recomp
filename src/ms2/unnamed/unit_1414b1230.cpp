@@ -16,6 +16,9 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
+// return types of the getters this unit calls
+class Unk_LaunchOptions;
+
 extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const* _File, unsigned _Line);
 
 #define MS2_CMDBITS_ASSERT(line, expression)                                                                      \
@@ -64,7 +67,7 @@ void FUN_14028c3e0(const CString& str, ATL::CAtlArray<CString>& rOut, const char
 void FUN_14015f050(const CString& str, ATL::CAtlArray<CString>& rOut, const char* szSep);   // split
 void FUN_14015f0b0(const CString& str, ATL::CAtlArray<CString>& rOut, const char* szSep);   // split
 class Unk_CmdEnvSvc { public: void FUN_1406aef60(const CString& strKey, const CString& strValue); };
-Unk_CmdEnvSvc* FUN_1406aeee0();
+Unk_LaunchOptions* FUN_1406aeee0();
 int FUN_1406c34c0();                                                            // the Nexon platform is on
 void FUN_14036e640(CString strEnv);                                             // "-env" / the default "Dev"
 void FUN_140651190(CString strLocale);                                          // "-locale"
@@ -166,7 +169,7 @@ void FUN_1414b13f0(int nIndex, CString strArg)
         FUN_14028c3e0(strArg, tokens, ":", 2);
         if (FUN_1401662c0(&tokens) >= 2)
         {
-            FUN_1406aeee0()->FUN_1406aef60(*FUN_140164930(&tokens, 0), *FUN_140164930(&tokens, 1));
+            reinterpret_cast<Unk_CmdEnvSvc*>(FUN_1406aeee0())->FUN_1406aef60(*FUN_140164930(&tokens, 0), *FUN_140164930(&tokens, 1));
             g_args.FUN_14016a190((const char*)*FUN_140164930(&tokens, 0), *FUN_140164930(&tokens, 1));
         }
     }

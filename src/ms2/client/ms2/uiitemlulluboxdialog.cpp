@@ -154,7 +154,6 @@ class Unk_LulluBoxData : public CItemData
 class Unk_LulluBoxSelf : public PC { };
 class Unk_LulluBoxWorld { public: Unk_LulluBoxSelf* FUN_141bd0cc0(); };
 class Unk_LulluBoxUIMgr { public: void FUN_141adc530(int); };
-CReservedWordTable* FUN_1403b4750();
 MS2Ptr<CItemData> FUN_14053f870(int);
 extern Unk_Inventory g_143ab2a90;
 extern __int64 DAT_143ab2898;                  // the meso
@@ -173,7 +172,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 void FUN_140d73aa0(CStringW, int, int, CStringW);
 bool FUN_14025cd60(const CStringW&, const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
-void FUN_1413499b0(int);
+int FUN_1413499b0(int);   // C3: was FUN_1413499b0
 void FUN_140cff840(const Scaleform::GFx::Value&, CString, int);
 void FUN_140cfee80(const Scaleform::GFx::Value&, CString, CStringW);
 void FUN_140d00c80(const Scaleform::GFx::Value&, CString, int);
@@ -732,7 +731,7 @@ void UIItemLulluBoxDialog::FUN_140e9ece0()
                 int lack = need - have;
                 int total = price * lack;
                 CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_box"), FUN_140763e10(total), keyItem, boxItem);
-                FUN_1403b4750()->FUN_1416fb300(msg);
+                TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(msg);
                 MS2Ptr<CMsgBoxData> box = FUN_140d73f20(msg, 1);
                 if (box.get()) {
                     box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemLulluBoxDialog::FUN_140e9c2a0));
@@ -795,7 +794,7 @@ void UIItemLulluBoxDialog::FUN_140e9f870(const CStringW& kind, unsigned itemId)
     CStringW popup = LULLUBOX_ATTR(data)->FUN_14042cad0(L"meratMarketPopup", L"");
     if (FUN_14025cd60(popup, kind)) {
         CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_item_shop_link"), itemId);
-        FUN_1403b4750()->FUN_1416fb300(msg);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(msg);
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(msg, 1);
         if (box.get()) {
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemLulluBoxDialog::FUN_140e9c260));
@@ -803,7 +802,7 @@ void UIItemLulluBoxDialog::FUN_140e9f870(const CStringW& kind, unsigned itemId)
         }
     } else {
         CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_item"), itemId);
-        FUN_1403b4750()->FUN_1416fb300(msg);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(msg);
         FUN_1412751f0(msg, 1, 1);
     }
 }

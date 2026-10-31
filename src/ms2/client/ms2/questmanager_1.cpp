@@ -37,7 +37,6 @@ static CString s_progress = "quest_progress";
 static CString s_reward = "quest_reward";
 
 MS2Ptr<CQuestData> FUN_14074bc40(int);
-bool FUN_14064d4e0(const MS2Ptr<CQuestData>&);
 int FUN_14074b790(int);
 int IsConditionTypeCounted(int);
 __int64 GetServerTime();
@@ -49,16 +48,28 @@ CStringW FUN_1416e4df0(int);
 CStringW FUN_1405c2690(CStringW, const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 
-void* FUN_1403ed2d0();
+class WorldService   // C3: static member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 PCBase* FUN_141bd0cc0(void*);
-int FUN_141654700(PCBase*);
-int FUN_141658e60(PCBase*);
-int FUN_141661c50(PCBase*);
-int FUN_141676410(PCBase*);
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141654700();
+    struct Unk_PCEquipSet* FUN_1416561a0();
+    int FUN_141658e60();
+    int FUN_141658f30();
+    int FUN_141661c50();
+};
 class Unk_QuestSkill : public CPtred {};
 bool FUN_140b02900(const MS2Ptr<Unk_QuestSkill>&);
-unsigned FUN_1411dc820(Unk_QuestSkill*);
-void* FUN_1416561a0(PCBase*);
+class CEquipItem   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1411dc820();
+};
 void FUN_1411e1ce0(void*, ATL::CAtlList<MS2Ptr<Unk_QuestSkill>>&, int);
 
 // A read-only prefix of the dungeon-room row; no instance is constructed here.
@@ -70,7 +81,11 @@ MS2_CHECK_OFFSET(Unk_QuestRoom, m_maxUsers, 0xf8);
 bool FUN_140e36ca0(const MS2Ptr<Unk_QuestRoom>&);
 class Unk_QuestRoomTable { public: MS2Ptr<Unk_QuestRoom> FUN_1403206b0(int); };
 void* FUN_140166410();
-bool FUN_14036d570(void*, int);
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
 
 CStringW FUN_1416e5350(int, int);
 CStringW FUN_1416e57d0(int, int);
@@ -81,10 +96,13 @@ UIMainPlayerInfo* FUN_140931900(int);
 
 UIRewardNotify* FUN_140938cd0(int);
 void* FUN_1401c0d90();
-unsigned FUN_14047ea00(void*, int, int, int);
-int FUN_14047eb30(void*, int, int, int);
-int FUN_1404774a0(void*, int, int);
-int FUN_141658f30(PCBase*);
+class CGameRule   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1404774a0(unsigned int, int);
+    unsigned int FUN_14047ea00(unsigned int, unsigned int, int);
+    unsigned int FUN_14047eb30(unsigned int, unsigned int, unsigned int);
+};
 int FUN_14074b070(CQuestData*);
 int FUN_14074b050(CQuestData*);
 int FUN_140748050(CQuestData::QuestRewardItem*, int);
@@ -117,7 +135,7 @@ MS2Ptr<CQuestData> CQuest::GetData() { return m_data; }
 int CQuest::IsComplete() const
 {
     if (GetState() != 1) return 0;
-    for (size_t i = 0; i < m_progress.FUN_1401b8910(); ++i) {
+    for (size_t i = 0; i < ((ATL::CAtlArray<__int64, ATL::CElementTraits<__int64>>*)(Unk_QuestProgressArray*)&(m_progress))->GetCount(); ++i) {
         if (m_progress.FUN_1401b88c0(i) < m_data->m_conditions.GetAt(i)->m_nGoal) return 0;
     }
     return 1;
@@ -138,11 +156,11 @@ MS2_REPLACE_METHOD_VIA(0x1416C64B0, CQuest, CQuestCommon, IsRewarded, 58, 0x34FA
 int CQuest::Init(int id, int state)
 {
     m_data = FUN_14074bc40(id);
-    if (FUN_14064d4e0(m_data)) return 0;
+    if (((MS2Ptr<CQuestData>*)&(m_data))->IsNull()) return 0;
     m_68 = 0;
     m_completeTime = 0;
     m_state = state;
-    for (size_t i = 0; i < m_data->m_conditions.GetCount(); ++i) m_progress.FUN_140280400(0);
+    for (size_t i = 0; i < m_data->m_conditions.GetCount(); ++i) ((ATL::CAtlArray<__int64, ATL::CElementTraits<__int64>>*)(Unk_QuestProgressArray*)&(m_progress))->Add(0);
     return 1;
 }
 MS2_REPLACE_METHOD_VIA(0x1416C64F0, CQuest, CQuestCommon, GetStartTime, 15, 0x8B0075C1);
@@ -153,7 +171,7 @@ unsigned char CQuest::GetFlag() { return m_data->m_flag; }
 // @0x1416c6640
 __int64 CQuest::GetProgress(int index) const
 {
-    if (index >= (int)m_progress.FUN_1401b8910()) return 0;
+    if (index >= (int)((ATL::CAtlArray<__int64, ATL::CElementTraits<__int64>>*)(Unk_QuestProgressArray*)&(m_progress))->GetCount()) return 0;
     return m_progress.FUN_1401b88c0(index);
 }
 MS2_REPLACE_METHOD(0x1416C6610, CQuest, GetFlag, 35, 0x7487077B);
@@ -161,7 +179,7 @@ MS2_REPLACE_METHOD(0x1416C6640, CQuest, GetProgress, 70, 0xF8DB8031);
 // @0x1416c6690
 void CQuest::SetProgress(int index, __int64 count)
 {
-    if (index >= (int)m_progress.FUN_1401b8910()) return;
+    if (index >= (int)((ATL::CAtlArray<__int64, ATL::CElementTraits<__int64>>*)(Unk_QuestProgressArray*)&(m_progress))->GetCount()) return;
     m_progress.FUN_1401b7ff0(index) = count;
 }
 MS2_REPLACE_METHOD(0x1416C6690, CQuest, SetProgress, 78, 0xA488EC14);
@@ -169,7 +187,7 @@ MS2_REPLACE_METHOD(0x1416C6690, CQuest, SetProgress, 78, 0xA488EC14);
 int CQuest::IsConditionComplete(int index)
 {
     if (GetState() != 1) return 0;
-    if (index >= (int)m_progress.FUN_1401b8910()) return 0;
+    if (index >= (int)((ATL::CAtlArray<__int64, ATL::CElementTraits<__int64>>*)(Unk_QuestProgressArray*)&(m_progress))->GetCount()) return 0;
     if (index >= (int)m_data->m_conditions.GetCount()) return 0;
     return m_progress.FUN_1401b7ff0(index) >= m_data->m_conditions[index]->m_nGoal;
 }
@@ -180,23 +198,23 @@ MS2_REPLACE_METHOD(0x1416C66F0, CQuest, IsConditionComplete, 231, 0xDACD67C9);
 int CQuest::CheckUserFind(PCBase* actor)
 {
     if (!actor) return 0;
-    PCBase* mine = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* mine = FUN_141bd0cc0(((void*)WorldService::GetInstance()));
     if (!mine) return 0;
     ConditionUserFindContext context;
-    context.m_job = FUN_141654700(actor);
+    context.m_job = ((class PC*)(class PCBase*)(actor))->FUN_141654700();
     context.m_level = (unsigned short)actor->vfunc_78();
-    context.m_myKind = FUN_141658e60(mine);
-    context.m_targetKind = FUN_141658e60(actor);
-    context.m_gender = FUN_141661c50(actor);
-    context.m_24 = FUN_141676410(actor);
+    context.m_myKind = ((class PC*)(class PCBase*)(mine))->FUN_141658e60();
+    context.m_targetKind = ((class PC*)(class PCBase*)(actor))->FUN_141658e60();
+    context.m_gender = ((class PC*)(class PCBase*)(actor))->FUN_141661c50();
+    context.m_24 = ((class PCBase*)(class PCBase*)(actor))->FUN_141676410();
     ATL::CAtlList<MS2Ptr<Unk_QuestSkill>> skills(10);
-    FUN_1411e1ce0(FUN_1416561a0(actor), skills, 0);
-    FUN_1411e1ce0(FUN_1416561a0(actor), skills, 1);
-    FUN_1411e1ce0(FUN_1416561a0(actor), skills, 2);
+    FUN_1411e1ce0(((void*)((class PC*)(class PCBase*)(actor))->FUN_1416561a0()), skills, 0);
+    FUN_1411e1ce0(((void*)((class PC*)(class PCBase*)(actor))->FUN_1416561a0()), skills, 1);
+    FUN_1411e1ce0(((void*)((class PC*)(class PCBase*)(actor))->FUN_1416561a0()), skills, 2);
     for (POSITION pos = skills.GetHeadPosition(); pos; skills.GetNext(pos)) {
         MS2Ptr<Unk_QuestSkill> skill(skills.GetAt(pos));
         if (FUN_140b02900(skill)) continue;
-        context.m_skills.Add(FUN_1411dc820(skill));
+        context.m_skills.Add(((class CEquipItem*)(class Unk_QuestSkill*)(skill))->FUN_1411dc820());
     }
     CQuestConditionCheckerUserFind checker;
     MS2Ptr<CConditionCommonData> unused(0);
@@ -241,7 +259,7 @@ void CQuest::SetTrackedValue(int value) { m_trackedValue = value; }
 // @0x1416c6cc0
 int CQuest::HasMultiUserRoom(int field)
 {
-    if (!FUN_14036d570(FUN_140166410(), 0xdc)) return 0;
+    if (!((class CFeatureManager*)(void*)(FUN_140166410()))->FUN_14036d570(0xdc)) return 0;
     if (FUN_1407443e0(field) == 0) return 0;
     int roomId = m_data->m_30c.m_roomId;
     if (roomId == 0) return 0;
@@ -328,15 +346,15 @@ MS2_REPLACE_METHOD(0x1416C7270, CQuest, PlayRewardSound, 152, 0x1390298C);
 // @0x1416c7310
 void CQuest::ShowRewards(int reward)
 {
-    PCBase* mine = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* mine = FUN_141bd0cc0(((void*)WorldService::GetInstance()));
     if (!mine) return;
-    if (FUN_14064d4e0(m_data)) return;
+    if (((MS2Ptr<CQuestData>*)&(m_data))->IsNull()) return;
     int id = FUN_140bfc580();
     int type = FUN_14074b050(m_data.operator->());
     int subtype = FUN_14074b070(m_data.operator->());
     int eventBonus = 0;
     for (size_t i = 0; i < 8; ++i) {
-        if (FUN_14047ea00(FUN_1401c0d90(), type, subtype, (int)i) != 0) {
+        if (((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_14047ea00(type, subtype, (int)i) != 0) {
             eventBonus = 1;
             break;
         }
@@ -348,11 +366,11 @@ void CQuest::ShowRewards(int reward)
         __int64 experience = FUN_140761ba0(id, reward);
         if (experience != 0) {
             float multiplier = 0.0f;
-            unsigned bonus = FUN_14047ea00(FUN_1401c0d90(), type, subtype, 0);
+            unsigned bonus = ((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_14047ea00(type, subtype, 0);
             if (bonus != 0) multiplier = (float)bonus / 10000.0f;
             __int64 extra = 0;
             if (useBonus) {
-                float rate = 1.0f + (float)FUN_1404774a0(FUN_1401c0d90(), 0x31, FUN_141658f30(mine)) / 1000.0f;
+                float rate = 1.0f + (float)((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_1404774a0(0x31, ((class PC*)(class PCBase*)(mine))->FUN_141658f30()) / 1000.0f;
                 extra = (__int64)((float)experience * rate - (float)experience);
             }
             experience = (__int64)((float)experience * (1.0f + multiplier));
@@ -361,23 +379,23 @@ void CQuest::ShowRewards(int reward)
         __int64 money = FUN_140761cc0(id, reward);
         if (money != 0) {
             float multiplier = 0.0f;
-            unsigned bonus = FUN_14047ea00(FUN_1401c0d90(), type, subtype, 1);
+            unsigned bonus = ((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_14047ea00(type, subtype, 1);
             if (bonus != 0) multiplier = (float)bonus / 10000.0f;
             __int64 extra = 0;
             money = (__int64)((float)money * (1.0f + multiplier));
             dialog->FUN_141abf450(money, extra);
         }
         if (reward != 0) {
-            PCBase* actor = FUN_141bd0cc0(FUN_1403ed2d0());
+            PCBase* actor = FUN_141bd0cc0(((void*)WorldService::GetInstance()));
             if (actor) {
                 for (size_t i = 0; i < m_data->m_complete.m_choiceRewards.GetCount(); ++i) {
                     CQuestData::QuestRewardItem* item = &m_data->m_complete.m_choiceRewards[i];
                     if (item->m_itemId != 0) {
-                        if (FUN_140748050(item, FUN_141654700(actor)) != 0) {
+                        if (FUN_140748050(item, ((class PC*)(class PCBase*)(actor))->FUN_141654700()) != 0) {
                             int itemId = m_data->m_complete.m_choiceRewards[i].m_itemId;
                             int count = m_data->m_complete.m_choiceRewards[i].m_count;
                             dialog->FUN_141abf6e0(itemId, count);
-                            if (FUN_14047eb30(FUN_1401c0d90(), type, subtype, itemId) != 0) eventBonus = 1;
+                            if (((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_14047eb30(type, subtype, itemId) != 0) eventBonus = 1;
                         }
                     }
                 }
@@ -387,7 +405,7 @@ void CQuest::ShowRewards(int reward)
                 int item = m_data->m_rewards[i].m_itemId;
                 int count = m_data->m_rewards[i].m_count;
                 dialog->FUN_141abf6e0(item, count);
-                if (FUN_14047eb30(FUN_1401c0d90(), type, subtype, item) != 0) eventBonus = 1;
+                if (((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_14047eb30(type, subtype, item) != 0) eventBonus = 1;
             }
         }
     }

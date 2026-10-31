@@ -21,6 +21,9 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/cubecraft_2.h"
+#include "ms2/client/ms2/worldservice.h"
+
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -38,13 +41,11 @@ public:
 };
 
 // The world manager (FUN_1403ed2d0).
-class Unk_GcWorld
+class Unk_GcWorld : public WorldService
 {
 public:
-    void* FUN_141bd0cc0();                                  // the local player
     MS2Ptr<CInteractObject> FUN_141bc6090(Vector3 pt, int nSkipDisabled);   // the interactable object at a point
 };
-Unk_GcWorld* FUN_1403ed2d0();
 
 // The local player: only the position getter (slot 18) is used here.
 class Unk_GcPC
@@ -57,10 +58,22 @@ public:
     virtual void Unk_Slot16(); virtual void Unk_Slot17();
     virtual Vector3 vfunc_18();                     // 0x90 the position
 };
-void* FUN_1416625b0(Unk_GcPC* pPC);
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    class CConstructionGuideObject* FUN_1416625b0();
+};
 class Unk_GcCore : public Unk_PCCubeCraft { };   // the cube-craft core: its position
-Unk_GcCore* FUN_141530290(Unk_GcPC* pPC);                   // the cube-craft core of the player
-int FUN_14166c930(Unk_GcPC* pPC);                           // the action id
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_PCCubeCraft* FUN_141530290();
+};
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14166c930();
+};
 
 // The class-object factory registrar (0x140316aa0, commonfiles\dungeonmissiondata.cpp); the factories not defined here belong
 // to the other guide-condition code units.
@@ -146,7 +159,7 @@ void CGuideConditionPosition::vfunc_2(Unk_140165cf0* pElem)
     for (Unk_140165cf0* pCube = pElem->FUN_140165cf0("cube"); pCube != 0; pCube = pCube->FUN_140168650("cube"))
     {
         float fRange = 75.0f;
-        FUN_140873360(pCube, "range", fRange);
+        XmlGetAttr((class TiXmlElement*)(pCube), "range", fRange);
         CString strPos = FUN_14015f710(pCube, "pos", CString(""));
         ATL::CAtlArray<float> arrPos;
         XmlSplit(strPos, arrPos, ",");
@@ -166,12 +179,12 @@ MS2_REPLACE_METHOD(0x1413A6F30, CGuideConditionPosition, vfunc_2, 412, 0x3540621
 // @0x1413a70e0
 int CGuideConditionPosition::vfunc_3()
 {
-    Unk_GcPC* pPC = (Unk_GcPC*)FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     Vector3 pos = pPC->vfunc_18();
-    if (FUN_1416625b0(pPC) != 0 && FUN_141530290(pPC) != 0)
-        pos = FUN_141530290(pPC)->GetPtCell();
+    if (((void*)((class PC*)(class Unk_GcPC*)(pPC))->FUN_1416625b0()) != 0 && ((class Unk_GcCore*)((class MyPC*)(class Unk_GcPC*)(pPC))->FUN_141530290()) != 0)
+        pos = ((class Unk_GcCore*)((class MyPC*)(class Unk_GcPC*)(pPC))->FUN_141530290())->GetPtCell();
     for (size_t i = 0; i < m_arrCube.GetCount(); i++)
     {
         float fDist = pos.FUN_140965c40(m_arrCube.GetAt(i).vPos).FUN_140967ac0();
@@ -215,10 +228,10 @@ MS2_REPLACE_METHOD(0x1413A7400, CGuideConditionState, GetTypeName, 61, 0xCF29058
 // @0x1413a7450
 int CGuideConditionState::vfunc_3()
 {
-    Unk_GcPC* pPC = (Unk_GcPC*)FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    return FUN_1413a55a0(FUN_14166c930(pPC) == m_n20);
+    return FUN_1413a55a0(((class PCBase*)(class Unk_GcPC*)(pPC))->FUN_14166c930() == m_n20);
 }
 MS2_REPLACE_METHOD(0x1413A7450, CGuideConditionState, vfunc_3, 96, 0xB70C5F8D);
 
@@ -240,10 +253,10 @@ MS2_REPLACE_METHOD(0x1413A7520, CGuideConditionInteractable, GetTypeName, 61, 0x
 // @0x1413a7570
 int CGuideConditionInteractable::vfunc_3()
 {
-    Unk_GcPC* pPC = (Unk_GcPC*)FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    CInteractObject* pObject = FUN_1403ed2d0()->FUN_141bc6090(pPC->vfunc_18(), 1);
+    CInteractObject* pObject = ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bc6090(pPC->vfunc_18(), 1);
     if (pObject == 0)
         return 0;
     if (pObject->vfunc_7() == 0)

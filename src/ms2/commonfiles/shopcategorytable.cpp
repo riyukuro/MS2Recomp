@@ -16,6 +16,7 @@
 #include "shopcategorytable.h"
 #include <typeinfo>
 #include "ms2/placeholder/asdata.h"
+#include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/tixmldocument.h"
@@ -34,9 +35,6 @@ static CString s_sortNames7b[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh"
 
 // Out-of-unit callees.
    // the content switches
-CFeatureManager* FUN_140166410();
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 CString FUN_14016a5c0(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
 CStringTable* GetStringTable();                                           // the string table singleton
@@ -59,34 +57,34 @@ MS2_CHECK_OFFSET(Unk_AsOut, m_value, 0x20);
 
 bool CShopCategoryTable::s_bInit;
 
-// ---- AS object writers (header-inline helpers)
+// ---- AS object writers (header-inline AScript helpers; ASObj and the unit-local AS views call the same COMDATs)
 
-void FUN_1407cb9c0(Unk_AsOut* pOut, const char* pszName, int nValue)
+void AScript::FUN_1407cb9c0(const char* pszName, int nValue)
 {
     ASData data;
     data.FUN_1422b7f70(nValue);
-    pOut->m_value.SetMember(pszName, data.FUN_1422b9260());
+    m_value.SetMember(pszName, data.FUN_1422b9260());
 }
 
-void FUN_1407cba60(Unk_AsOut* pOut, const char* pszName, CString strValue)
+void AScript::FUN_1407cba60(const char* pszName, CString strValue)
 {
     ASData data;
     data.FUN_1422b82b0(strValue);
-    pOut->m_value.SetMember(pszName, data.FUN_1422b9260());
+    m_value.SetMember(pszName, data.FUN_1422b9260());
 }
 
-void FUN_1407cbb20(Unk_AsOut* pOut, const char* pszName, CStringW strValue)
+void AScript::FUN_1407cbb20(const char* pszName, CStringW strValue)
 {
     ASData data;
     data.FUN_1422b8310(strValue);
-    pOut->m_value.SetMember(pszName, data.FUN_1422b9260());
+    m_value.SetMember(pszName, data.FUN_1422b9260());
 }
 
-void FUN_1407cbbe0(Unk_AsOut* pOut, const char* pszName, bool bValue)
+void AScript::FUN_1407cbbe0(const char* pszName, bool bValue)
 {
     ASData data;
     data.FUN_1422b7fd0(bValue);
-    pOut->m_value.SetMember(pszName, data.FUN_1422b9260());
+    m_value.SetMember(pszName, data.FUN_1422b9260());
 }
 
 // ---- TabInfo
@@ -114,7 +112,7 @@ bool CShopCategoryTable::TabInfo::Load(Unk_140165cf0* pElem, MS2Ptr<TabInfo> spP
         return false;
     m_nName = nName;
     CStringW strFeature = FUN_1401bf530(pElem, "feature", CStringW(L""));
-    if (!FUN_140166410()->FUN_14036d4b0(strFeature))
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d4b0(strFeature))
         return false;
     m_strSymbol = FUN_14015f710(pElem, "symbol", CString(""));
     if (m_strSymbol.Find("/", 0) >= 0)
@@ -131,14 +129,14 @@ bool CShopCategoryTable::TabInfo::Load(Unk_140165cf0* pElem, MS2Ptr<TabInfo> spP
 void CShopCategoryTable::TabInfo::Write(Unk_AsOut* pOut)
 {
     if (m_nId != -1)
-        FUN_1407cb9c0(pOut, "id", m_nId);
-    FUN_1407cba60(pOut, "symbol", m_strSymbol);
-    FUN_1407cb9c0(pOut, "priority", m_nPriority);
-    FUN_1407cbb20(pOut, "name", GetName());
+        ((AScript*)pOut)->FUN_1407cb9c0("id", m_nId);
+    ((AScript*)pOut)->FUN_1407cba60("symbol", m_strSymbol);
+    ((AScript*)pOut)->FUN_1407cb9c0("priority", m_nPriority);
+    ((AScript*)pOut)->FUN_1407cbb20("name", GetName());
     bool bBestPage = m_nStatic == 1 && FUN_1406a5040(m_nId);
     if (bBestPage)
-        FUN_1407cbbe0(pOut, "bestPage", true);
-    FUN_1407cbbe0(pOut, "alwaysOpen", m_bAlwaysOpen);
+        ((AScript*)pOut)->FUN_1407cbbe0("bestPage", true);
+    ((AScript*)pOut)->FUN_1407cbbe0("alwaysOpen", m_bAlwaysOpen);
 }
 
 // @0x1407ca4e0
@@ -212,7 +210,7 @@ void CShopCategoryTable::Load()
         if (spCache == 0)
             continue;
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_1403974b0(&doc, *spCache->FUN_1401d1140(), 0, true, false) != 0)
+        if (GetFileSystem()->FUN_1403974b0(&doc, *spCache->FUN_1401d1140(), 0, true, false) != 0)
         {
             Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
             if (pRoot == 0)

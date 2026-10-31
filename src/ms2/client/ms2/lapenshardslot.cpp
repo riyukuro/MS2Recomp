@@ -18,6 +18,9 @@
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/client/ms2/mypc.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/uiservice.h"
 #include "hook/ms2hook.h"
 #include "ms2/ms2format.h"
 #include "ms2/commonfiles/itemlapensharddata.h"
@@ -31,31 +34,6 @@
 // ---- out-of-unit callees ----
 class Unk_ItemEquipData : public CItemData { };         // CItem::FUN_140527840's record
 class Unk_ItemOwnerRef : public CItemTransfer {};       // CItem::FUN_140527930's record
-
-// The world service singleton (FUN_1403ed2d0).
-class Unk_LsWorld
-{
-public:
-    MyPC* FUN_141bd0cc0();                              // the local player
-};
-Unk_LsWorld* FUN_1403ed2d0();
-
-// The sound service (FUN_1403ed280).
-class Unk_LsSound
-{
-public:
-    unsigned FUN_1411a5110(CString strCategory, CString strName, CString strExtra, int nKind, void* pXform, float fVolume,
-        int nOwner);                                    // play a sound event
-};
-Unk_LsSound* FUN_1403ed280();
-
-// The ui service singleton (FUN_1403ed2b0): a dialog by class id.
-class Unk_LsUiManager
-{
-public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);
-};
-Unk_LsUiManager* FUN_1403ed2b0();
 
 // The lapenshard system window (unit_140c5d230.h): only the calls the slot makes.
 class UILapenshardSystemDialog : public UIDialog
@@ -73,7 +51,7 @@ public:
     int FUN_1405b5810(int nSlot);                       // the kind of a free slot
     int FUN_1405b5890(int nItemId);                     // the kind of an item
 };
-Unk_LsItemTable* FUN_1409c4b30();
+class Unk_SlotLapenTable* FUN_1409c4b30();   // C3: was FUN_1409c4b30
 
 // The quick slot manager (FUN_1409331f0).
 class Unk_LsHud
@@ -83,7 +61,7 @@ public:
     unsigned char m_pad[0x198];
     int m_nPage;                                        // +0x198
 };
-Unk_LsHud* FUN_1409331f0();
+class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 
 // The equip request of the packet 0xad (ctor 0x140a6ffe0).
 struct Unk_LsEquipRequest
@@ -95,7 +73,7 @@ struct Unk_LsEquipRequest
 };
 void FUN_1405b5cc0(Unk_LsEquipRequest* pRequest, COutPacket& packet);   // write the request
 
-void FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nPage);   // put a skill on a quick slot
+int FUN_14092fac0(int, int, __int64, int);   // C3: was FUN_14092fac0
 void FUN_141404930(__int64 nItemUid);
 void FUN_140710590(COutPacket& packet);                 // send
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text
@@ -151,7 +129,7 @@ int LapenshardSlot::vfunc_17()
 // @0x140a6ea50
 int LapenshardSlot::vfunc_18(void* p)
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return static_cast<DragSlot*>(p)->vfunc_10();
     LapenshardSlot* pFromSlot = FUN_140a6fef0(static_cast<DragSlot*>(p));
@@ -175,8 +153,8 @@ int LapenshardSlot::vfunc_18(void* p)
     int nCurrent = pPc->FUN_14152f770((Unk_MyPCLapenSlot)GetSlot());
     if (pPc->FUN_14152f8b0(nItemId) != 0)
     {
-        int nCurrentGroup = FUN_1409c4b30()->GetGroup(nCurrent);
-        int nGroup = FUN_1409c4b30()->GetGroup(nItemId);
+        int nCurrentGroup = ((class Unk_LsItemTable*)FUN_1409c4b30())->GetGroup(nCurrent);
+        int nGroup = ((class Unk_LsItemTable*)FUN_1409c4b30())->GetGroup(nItemId);
         if (nCurrentGroup == 0 || nCurrentGroup != nGroup || nItemId == nCurrent)
         {
             FUN_1412751f0(GetStringCommonByKey(L"s_msg_shortcutkey_invalid_already_same_lapenshard"), 1, 1);
@@ -191,7 +169,7 @@ int LapenshardSlot::vfunc_18(void* p)
 // @0x140a6ee30
 int LapenshardSlot::vfunc_14()
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
@@ -207,8 +185,8 @@ int LapenshardSlot::vfunc_14()
         int nCurrent = pPc->FUN_14152f770((Unk_MyPCLapenSlot)nSlot);
         if (pPc->FUN_14152f8b0(nItemId) != 0)
         {
-            int nGroup = FUN_1409c4b30()->GetGroup(nItemId);
-            int nCurrentGroup = FUN_1409c4b30()->GetGroup(nCurrent);
+            int nGroup = ((class Unk_LsItemTable*)FUN_1409c4b30())->GetGroup(nItemId);
+            int nCurrentGroup = ((class Unk_LsItemTable*)FUN_1409c4b30())->GetGroup(nCurrent);
             if (nCurrentGroup == 0 || nCurrentGroup != nGroup || nItemId == nCurrent)
             {
                 FUN_1412751f0(GetStringCommonByKey(L"s_msg_shortcutkey_invalid_already_same_lapenshard"), 1, 1);
@@ -226,7 +204,7 @@ int LapenshardSlot::vfunc_14()
         }
         if (pPc->FUN_14152f860(spItem->FUN_1405276c0()) == 0)
             return 0;
-        int nPage = FUN_1409331f0()->GetPage();
+        int nPage = ((class Unk_LsHud*)FUN_1409331f0())->GetPage();
         FUN_14092fac0(spItem->FUN_140527840()->FUN_14053dc20(), 0, 0, nPage);
     }
     FUN_141404930(spItem->FUN_140526a50());
@@ -239,7 +217,7 @@ int LapenshardSlot::vfunc_20()
     DragSlot::vfunc_20();
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
             spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
     if (GetSlot() == 0)
     {
@@ -259,7 +237,7 @@ int LapenshardSlot::vfunc_21()
     DragSlot::vfunc_21();
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
             spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
     if (GetSlot() == 0)
     {
@@ -290,7 +268,7 @@ MS2Ptr<CItem> LapenshardSlot::vfunc_25()
 {
     if (GetSlot() != 0)
     {
-        MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPc == 0)
             return MS2Ptr<CItem>(0);
         int nItemId = pPc->FUN_14152f770((Unk_MyPCLapenSlot)GetSlot());
@@ -320,8 +298,8 @@ int LapenshardSlot::FUN_140a6f880()
 {
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        return FUN_1409c4b30()->FUN_1405b5890(spItem->FUN_1405276c0());
-    return FUN_1409c4b30()->FUN_1405b5810(GetSlot());
+        return ((class Unk_LsItemTable*)FUN_1409c4b30())->FUN_1405b5890(spItem->FUN_1405276c0());
+    return ((class Unk_LsItemTable*)FUN_1409c4b30())->FUN_1405b5810(GetSlot());
 }
 
 // @0x140a6f940
@@ -341,7 +319,7 @@ void LapenshardSlot::SendLapenshard(int nSlot, __int64 nItemUid)
 // @0x140a6f9e0 (ITooltip::vfunc_0)
 int LapenshardSlot::vfunc_0(void* p)
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
@@ -366,7 +344,7 @@ int LapenshardSlot::vfunc_0(void* p)
 // @0x140a6fc00
 int LapenshardSlot::vfunc_8(void* p)
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
@@ -432,9 +410,9 @@ LapenshardSlot* FUN_140a6fef0(DragSlot* p)
 // @0x140a6ff40
 UILapenshardSystemDialog* FUN_140a6ff40(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (CUIService::GetInstance())
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = CUIService::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UILapenshardSystemDialog*>((UIObject*)p);
     }

@@ -11,6 +11,11 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/fielddata.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
+
+// return types of the getters this unit calls
+class CItemGemPropertyTable;
 
 // ---- unit-local stand-ins and unrecovered callees (names invented from use) ----------------------------------------------
 // Gem tables (RTTI names). Only the polymorphic part is declared; the effect-name lookup is an out-of-line member.
@@ -29,7 +34,7 @@ private:
     CGemCharEffectData* m_p;
 };
 class Unk_GemDb { public: Unk_GemDbPtr FUN_1405ac160(int nGemId); };
-Unk_GemDb* FUN_1405a96f0();
+CItemGemPropertyTable* FUN_1405a96f0();
 
 // Map flags: the shared map data behind a counted pointer (the world service's copy of m_298).
 class Unk_CeMapData : public CFieldData { };
@@ -69,7 +74,6 @@ public:
     int FUN_1411a49c0(Unk_CeRequest* pRequest);         // spawn, returns the handle
     void FUN_1411a6060(int nHandle);                    // release
 };
-Unk_CeEffectMgr* FUN_1403ed280();
 void FUN_140a52ef0(Unk_CeRequest* p);                   // construct
 void FUN_1405a89e0(Unk_CeRequest* p);                   // destroy
 void* FUN_140a332d0(Unk_CoupleXform* p);                // NiTransform default ctor
@@ -101,7 +105,6 @@ public:
     PCBase* FUN_141bd1530(__int64 nId);                 // player by id
     Unk_CeMapPtr FUN_141bd30a0();                       // current map data
 };
-Unk_CeWorld* FUN_1403ed2d0();
 void* FUN_1409613d0(PCBase* p);
 __int64 FUN_141656a80(PCBase* p);
 int FUN_141658e60(PCBase* p);
@@ -141,7 +144,7 @@ void CoupleEffectSystem::FUN_140b0e7a0(float fDelta)
         return;
     if (FUN_140268870(&m_tick, 1000) != 0)
     {
-        PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(m_nPartnerId);
+        PCBase* pPartner = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPartnerId);
         if (pPartner == 0)
             return;
         if (m_nCoupleType == 0 || m_nCoupleType != FUN_141663940(pPartner))
@@ -199,7 +202,7 @@ void CoupleEffectSystem::FUN_140b0ead0(__int64 nValue)
 // @0x140b0eba0
 void CoupleEffectSystem::FUN_140b0eba0(int nObjectId)
 {
-    PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(m_nPartnerId);
+    PCBase* pPartner = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPartnerId);
     if (pPartner == 0 || FUN_14123c580(pPartner) == nObjectId)
     {
         FUN_140b0f3a0(1);
@@ -232,7 +235,7 @@ __int64 CoupleEffectSystem::FUN_140b0ec80()
 // @0x140b0ecd0
 void CoupleEffectSystem::FUN_140b0ecd0()
 {
-    PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(m_nPartnerId);
+    PCBase* pPartner = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPartnerId);
     if (pPartner != 0)
     {
         m_bInRange = 0;
@@ -261,7 +264,7 @@ void CoupleEffectSystem::FUN_140b0ed30()
     request.m_strName = FUN_140b0efb0();
     request.m_nOwnerId = 0;
     request.m_pXform = &xf;
-    m_nEffectId = FUN_1403ed280()->FUN_1411a49c0(&request);
+    m_nEffectId = reinterpret_cast<Unk_CeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&request);
     m_timer.FUN_140868750(*FUN_140b0f480(&FUN_1401d3200()->m_checkInterval));
     FUN_1405a89e0(&request);
 }
@@ -271,7 +274,7 @@ void CoupleEffectSystem::FUN_140b0eed0()
 {
     if (m_nEffectId == 0)
         return;
-    FUN_1403ed280()->FUN_1411a6060(m_nEffectId);
+    reinterpret_cast<Unk_CeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nEffectId);
     m_nEffectId = 0;
     m_bInRange = 0;
 }
@@ -279,7 +282,7 @@ void CoupleEffectSystem::FUN_140b0eed0()
 // @0x140b0ef20
 bool CoupleEffectSystem::FUN_140b0ef20()
 {
-    Unk_CeMapPtr spMap = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_CeMapPtr spMap = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spMap.FUN_1409657a0() != 0)
     {
         if (spMap.FUN_140885340()->FUN_140375660(0x400) != 0)
@@ -291,10 +294,10 @@ bool CoupleEffectSystem::FUN_140b0ef20()
 // @0x140b0efb0
 CString CoupleEffectSystem::FUN_140b0efb0()
 {
-    PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(m_nPartnerId);
+    PCBase* pPartner = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPartnerId);
     if (pPartner == 0)
         return "";
-    Unk_GemEffPtr spEffect(dynamic_cast<CGemCharEffectData*>(FUN_1405a96f0()->FUN_1405ac160(m_nGemId).FUN_1405a9970()));
+    Unk_GemEffPtr spEffect(dynamic_cast<CGemCharEffectData*>(reinterpret_cast<Unk_GemDb*>(FUN_1405a96f0())->FUN_1405ac160(m_nGemId).FUN_1405a9970()));
     if (spEffect.FUN_1405a8d70(0) != 0)
         return "";
     return spEffect.FUN_1405a8ef0()->FUN_1405acc80(FUN_141658e60(m_pOwner), FUN_141658e60(pPartner));
@@ -303,7 +306,7 @@ CString CoupleEffectSystem::FUN_140b0efb0()
 // @0x140b0f160
 Unk_CoupleVec CoupleEffectSystem::FUN_140b0f160()
 {
-    PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(m_nPartnerId);
+    PCBase* pPartner = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPartnerId);
     if (pPartner == 0)
         return Unk_CoupleVec(DAT_143b01a60);
 #ifdef __clang__
@@ -325,7 +328,7 @@ void CoupleEffectSystem::FUN_140b0f260()
     void* pObj = FUN_1409613d0(m_pOwner);
     if (pObj == 0)
         return;
-    PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(m_nPartnerId);
+    PCBase* pPartner = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPartnerId);
     if (pPartner == 0)
         return;
     bool bDiffers = m_strName != pPartner->vfunc_77();

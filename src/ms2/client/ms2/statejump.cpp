@@ -25,6 +25,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/cubecraft_2.h"
+#include "ms2/placeholder/intervaltimer.h"
+#include "ms2/client/ms2/gameobjectcontroller.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -32,19 +34,12 @@
 void FUN_1409989e0(void* pOut, const char* psz);           // 0x1409989e0 efd::utf8string(const char*)
 void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
 const char* FUN_1408ac310(const efd::utf8string& str);     // 0x1408ac310 the string's c string
-int FUN_1416595d0(PCBase* p);                              // 0x1416595d0
 class Unk_CubeSelection;
-Unk_CubeSelection* FUN_141659700(PCBase* p);               // 0x141659700 the cube selection of a player
         // the cube selection is in the craft mode
-float FUN_141240c40(bool b);                               // 0x141240c40 the move speed (xmm0)
 float FUN_14059d930(float f);                              // 0x14059d930 fabs
 int FUN_14028d260(float f);                                // 0x14028d260 round to ms
 unsigned FUN_140869420();                                  // 0x140869420 the millisecond clock
-egf::Entity* FUN_141659af0(MyPC* p, int nSide);            // 0x141659af0 the nearby object to sit / lie on
-int FUN_14165b500(MyPC* p, int n);
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);       // 0x1408a9bd0 the flat model of the entity
-void FUN_140268840(Unk_CoupleTick* p);                     // 0x140268840 restart the tick
-int FUN_1411f9230(Unk_CoupleTick* p);                      // 0x1411f9230 the start tick
 efd::Point3 FUN_140a0b080(efd::Point3 kDir, efd::Point3 kPos, const efd::Point3& kUp);   // 0x140a0b080 look-at angles
 extern efd::Point3 DAT_143a08cf8;                          // the up axis
 
@@ -158,7 +153,7 @@ void StateJump::vfunc_4(StateData* pData)
     Unk_JpBody* pBody = JpBody(m_pOwner);
     pBody->FUN_141240730();
     pBody->FUN_141240610(fA, m_vDir, fSpeed);
-    FUN_140268840(&m_tick);
+    reinterpret_cast<Unk_IntervalTimer*>(&m_tick)->Init();
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
     {
@@ -262,7 +257,7 @@ void StateJump::vfunc_8(double fTime)
     {
         if (!FUN_1417d65d0())
             return;
-        egf::Entity* pEntity = FUN_141659af0(pPC, 1);
+        egf::Entity* pEntity = reinterpret_cast<PC*>(pPC)->FUN_141659af0(1);
         if (pEntity != 0)
         {
             if (pPC->FUN_1416764a0())
@@ -282,7 +277,7 @@ void StateJump::vfunc_8(double fTime)
         }
         else
         {
-            if (pPC->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
+            if (pPC->FUN_141678820() != 0 && reinterpret_cast<PC*>(pPC)->FUN_14165b500(1) != 0)
                 pPC->FUN_1416788d0();
         }
     }
@@ -292,12 +287,12 @@ void StateJump::vfunc_8(double fTime)
         {
             if (pPC->FUN_1416764a0())
             {
-                if (m_pOwner->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
+                if (m_pOwner->FUN_141678820() != 0 && reinterpret_cast<PC*>(pPC)->FUN_14165b500(1) != 0)
                     pPC->SendRequestRideMode1(new RideOffActionAutoClimb(1));
             }
             else
             {
-                if (pPC->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
+                if (pPC->FUN_141678820() != 0 && reinterpret_cast<PC*>(pPC)->FUN_14165b500(1) != 0)
                     pPC->FUN_1416788d0();
             }
         }
@@ -308,7 +303,7 @@ void StateJump::vfunc_8(double fTime)
 // MS2-FUNCTIONAL: temporaries / frame layout differ from the exe
 void StateJump::vfunc_9(double fTime)
 {
-    static int s_nDelay = FUN_14028d260(sqrt(12.0f / FUN_14059d930(FUN_141240c40(true))));
+    static int s_nDelay = FUN_14028d260(sqrt(12.0f / FUN_14059d930(GameObjectController::FUN_141240c40(true))));
     State::vfunc_9(fTime);
     unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
     unsigned nLimit = s_nDelay;
@@ -327,7 +322,7 @@ void StateJump::vfunc_9(double fTime)
     {
         int nAnim;
         PCBase* pPC = FUN_1417b8370();
-        if (pPC != 0 && FUN_1416595d0(pPC) != 0 && ((Unk_PCCubeCraft*)FUN_141659700(pPC))->FUN_1410aa010())
+        if (pPC != 0 && reinterpret_cast<PC*>(pPC)->FUN_1416595d0() != 0 && ((Unk_PCCubeCraft*)((Unk_CubeSelection*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft())))->FUN_1410aa010())
         {
             if (JpBody(m_pOwner)->FUN_1412407a0() != 0)
                 nAnim = 0x3a;
@@ -397,7 +392,7 @@ bool StateJump::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 // @0x1417d65d0
 bool StateJump::FUN_1417d65d0()
 {
-    int nStart = FUN_1411f9230(&m_tick);
+    int nStart = reinterpret_cast<Unk_IntervalTimer*>(&m_tick)->GetLast();
     int nMin = m_n80;
     return (unsigned)(nStart + nMin) < FUN_140869420();
 }
@@ -415,7 +410,7 @@ int StateJump::FUN_1417d6620()
             if (JpBody(m_pOwner)->FUN_1412407a0() != 0)
                 return 0;
         }
-        m_pSeat = FUN_141659af0(pPC, 0);
+        m_pSeat = reinterpret_cast<PC*>(pPC)->FUN_141659af0(0);
     }
     if (m_pSeat != 0)
     {

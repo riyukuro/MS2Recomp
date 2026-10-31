@@ -112,13 +112,10 @@ IMPLEMENT_DYNAMIC(CDPSDialog, CDialog)
 
 // ---- callees outside the unit ----
 CStringTable* GetStringTable();
-unsigned FUN_140869420();                                   // the current time (ms)
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CStringA FUN_1401d4330(const wchar_t* pszWide, int nCodePage);   // wide -> multibyte
 CString FUN_140390ea0(const wchar_t* psz, int n);           // wide -> multibyte (the text files)
 CStringA FUN_14016a600(const wchar_t* psz, int n);          // wide -> multibyte (the csv file)
-int FUN_14123c580(PCBase* pPC);                             // the object id
-int FUN_141654730(PCBase* pPC);                             // the job code
-float FUN_1416628b0(PCBase* pPC, int nKind, int nId);       // a skill stat rate of the player
 
 float FUN_14028d380(float fValue);                          // percent (x100)
 bool FUN_14028d470(float a, float b);                       // nearly equal
@@ -153,7 +150,6 @@ public:
     PCBase* FUN_141bd1200(int nId);                         // an actor by object id
     Unk_DpsSummon* FUN_141bd13a0(int nId);                  // a pet / summon by object id
 };
-Unk_DpsWorld* FUN_1403ed2d0();
 
 // The skill table (FUN_1401958b0) as this unit uses it.
 class Unk_DpsSkillTable
@@ -661,10 +657,10 @@ unsigned CDPSMeterSystem::ThreadProc()
                     continue;
             }
             CStringW strName;
-            PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+            PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
             if (pMe != 0)
             {
-                strName.Format(L"_%s_%s", (const wchar_t*)pMe->vfunc_77(), (const wchar_t*)GetStringTable()->FUN_141811980(6, FUN_141654730(pMe)));
+                strName.Format(L"_%s_%s", (const wchar_t*)pMe->vfunc_77(), (const wchar_t*)GetStringTable()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->FUN_141654730()));
             }
             if (!PathIsDirectoryW(m_szDir))
                 CreateDirectoryW(m_szDir, NULL);
@@ -852,7 +848,7 @@ int CDPSMeterSystem::StartRecord(unsigned nTime)
 {
     if (IsRecording() != 0)
         return 0;
-    PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return 0;
     m_bCombat = pMe->vfunc_65();
@@ -977,14 +973,14 @@ int CDPSMeterSystem::AddDamage(int nSide, int nCasterId, int nTargetId, int nKin
     spData->m_nLevel = nLevel;
     spData->m_nCasterId = nCasterId;
     spData->m_nTargetId = nTargetId;
-    spData->m_strCaster = FUN_1403ed2d0()->FUN_141bd1830(nCasterId);
-    spData->m_strTarget = FUN_1403ed2d0()->FUN_141bd1830(nTargetId);
+    spData->m_strCaster = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd1830(nCasterId);
+    spData->m_strTarget = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd1830(nTargetId);
     spData->m_nKind = nKind;
     spData->m_nAttribute = nAttribute;
     spData->m_nGrade = nGrade;
     spData->m_nDamage = nDamage;
     spData->m_dRate = fRate;
-    PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1200(nTargetId);
+    PCBase* pTarget = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd1200(nTargetId);
     if (pTarget != 0 && pTarget->FUN_14166ce30() != 0)
         spData->m_bKilled = 1;
     if (Unk_LockGuard guard = m_lock)
@@ -1069,8 +1065,8 @@ int CDPSMeterSystem::AddEffect(CStringW strEvent, int nSide, int nCasterId, int 
     spData->m_nLevel = nLevel;
     spData->m_nCasterId = nCasterId;
     spData->m_nTargetId = nTargetId;
-    spData->m_strCaster = FUN_1403ed2d0()->FUN_141bd1830(nCasterId);
-    spData->m_strTarget = FUN_1403ed2d0()->FUN_141bd1830(nTargetId);
+    spData->m_strCaster = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd1830(nCasterId);
+    spData->m_strTarget = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd1830(nTargetId);
     if (Unk_LockGuard guard = m_lock)
     {
     }
@@ -1096,17 +1092,17 @@ void CDPSMeterSystem::OnDamage(MS2Ptr<CDamageRecord> spRecord)
         return;
     do
     {
-    PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         break;
     int nAttackerId = spRecord->m_nOwnerId;
-    Unk_DpsSummon* pSummon = FUN_1403ed2d0()->FUN_141bd13a0(nAttackerId);
+    Unk_DpsSummon* pSummon = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd13a0(nAttackerId);
     if (pSummon != 0)
         nAttackerId = pSummon->GetOwnerId();
     int bTarget = 0;
-    if (spRecord->m_nCasterId != FUN_14123c580(pMe) && nAttackerId != FUN_14123c580(pMe))
+    if (spRecord->m_nCasterId != ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580() && nAttackerId != ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580())
         break;
-    else if (spRecord->m_nCasterId == FUN_14123c580(pMe))
+    else if (spRecord->m_nCasterId == ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580())
         bTarget = 1;
     float fRate = 0.0f;
     if (!bTarget)
@@ -1115,7 +1111,7 @@ void CDPSMeterSystem::OnDamage(MS2Ptr<CDamageRecord> spRecord)
         if (spLevel.get() != 0)
         {
             fRate = spLevel->FUN_140804150(spRecord->m_nMotion, spRecord->m_nAttack);
-            fRate = fRate + fRate * FUN_1416628b0(pMe, 0x3ec, spRecord->m_nSkillId);
+            fRate = fRate + fRate * ((class PC*)(class PCBase*)(pMe))->FUN_1416628b0(0x3ec, spRecord->m_nSkillId);
             m_spRecord->m_attack.m_dRate += fRate;
         }
     }
@@ -1136,20 +1132,20 @@ void CDPSMeterSystem::OnDotDamage(MS2Ptr<CDotDamageRecord> spRecord)
         return;
     do
     {
-    PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         break;
     int nAttackerId = spRecord->m_nOwnerId;
-    Unk_DpsSummon* pSummon = FUN_1403ed2d0()->FUN_141bd13a0(nAttackerId);
+    Unk_DpsSummon* pSummon = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd13a0(nAttackerId);
     if (pSummon != 0)
         nAttackerId = pSummon->GetOwnerId();
     int bTarget = 0;
-    if (spRecord->m_nCasterId != FUN_14123c580(pMe) && nAttackerId != FUN_14123c580(pMe))
+    if (spRecord->m_nCasterId != ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580() && nAttackerId != ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580())
         break;
-    else if (spRecord->m_nCasterId == FUN_14123c580(pMe))
+    else if (spRecord->m_nCasterId == ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580())
         bTarget = 1;
     MS2Ptr<AdditionalCli> spBuff;
-    PCBase* pCaster = FUN_1403ed2d0()->FUN_141bd1200(spRecord->m_nCasterId);
+    PCBase* pCaster = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd1200(spRecord->m_nCasterId);
     if (pCaster != 0)
         spBuff = pCaster->FUN_1416749a0()->FUN_14096fc80(spRecord->m_nEffectLevel);
     if (spBuff.IsNull())
@@ -1158,7 +1154,7 @@ void CDPSMeterSystem::OnDotDamage(MS2Ptr<CDotDamageRecord> spRecord)
     if (!bTarget)
     {
         fRate = spBuff->FUN_14096d810()->m_dotDamage.m_fRate;
-        fRate = fRate + fRate * FUN_1416628b0(pMe, 5, spBuff->FUN_14096d2a0());
+        fRate = fRate + fRate * ((class PC*)(class PCBase*)(pMe))->FUN_1416628b0(5, spBuff->FUN_14096d2a0());
         m_spRecord->m_attack.m_dRate += fRate;
     }
     __int64 nDamage = abs(spRecord->FUN_14175ac30());
@@ -1178,17 +1174,17 @@ void CDPSMeterSystem::OnSplashDamage(MS2Ptr<CSplashDamageRecord> spRecord)
         return;
     do
     {
-    PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         break;
     int nAttackerId = spRecord->m_nOwnerId;
-    Unk_DpsSummon* pSummon = FUN_1403ed2d0()->FUN_141bd13a0(nAttackerId);
+    Unk_DpsSummon* pSummon = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd13a0(nAttackerId);
     if (pSummon != 0)
         nAttackerId = pSummon->GetOwnerId();
     int bTarget = 0;
-    if (spRecord->m_nCasterId != FUN_14123c580(pMe) && nAttackerId != FUN_14123c580(pMe))
+    if (spRecord->m_nCasterId != ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580() && nAttackerId != ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580())
         break;
-    else if (spRecord->m_nCasterId == FUN_14123c580(pMe))
+    else if (spRecord->m_nCasterId == ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580())
         bTarget = 1;
     float fRate = 0.0f;
     if (!bTarget)
@@ -1197,7 +1193,7 @@ void CDPSMeterSystem::OnSplashDamage(MS2Ptr<CSplashDamageRecord> spRecord)
         if (spLevel.get() != 0)
         {
             fRate = spLevel->FUN_140804150(spRecord->m_nMotion, spRecord->m_nAttack);
-            fRate = fRate + fRate * FUN_1416628b0(pMe, 0x3ec, spRecord->m_nSkillId);
+            fRate = fRate + fRate * ((class PC*)(class PCBase*)(pMe))->FUN_1416628b0(0x3ec, spRecord->m_nSkillId);
             m_spRecord->m_attack.m_dRate += fRate;
         }
     }
@@ -1315,11 +1311,11 @@ void CDPSMeterSystem::SetCombat(int bCombat)
             return;
         if (bCombat != 0)
         {
-            m_nCombatStart = FUN_140869420();
+            m_nCombatStart = GetTickCountMs2();
         }
         else
         {
-            unsigned nNow = FUN_140869420();
+            unsigned nNow = GetTickCountMs2();
             unsigned nElapsed = nNow - m_nCombatStart;
             m_spRecord->m_nCombatTime += nElapsed;
         }
@@ -1432,7 +1428,7 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
         strText.Empty();
         CStringW& strCsv = spRecord->m_strCsv;
         strCsv.Empty();
-        PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (bCsv != 0 && pMe != 0)
         {
             strCsv.Format(L"필드, 캐릭터명, 클래스, 레벨, HP, SP, EP, STR, DEX, INT, LUK, 이동속도, 물리 공격력, 마법 공격력, 무기 공격력");
@@ -1449,9 +1445,9 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
             strCsv.AppendFormat(L", 자연회복SP, 자연회복EP, 스킬로 받은 HP 회복량, 스킬로 받은 유효 HP 회복량, 스킬로 받은 오버 HP 회복량, 회복 시킨 HP 량");
             strCsv.AppendFormat(L", 회복 시킨 유효 HP 회복 량, 회복 시킨 오버 HP 량, HP 회복 시킨 개체 수, 스킬 소모 SP, 스킬 소모 EP");
             strCsv.AppendFormat(L"\n");
-            strCsv.AppendFormat(L"%s, ", (const wchar_t*)*FUN_1403ed2d0()->FUN_141bd3080());
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)*((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd3080());
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)pMe->vfunc_77());
-            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStringTable()->FUN_141811980(6, FUN_141654730(pMe)));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStringTable()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->FUN_141654730()));
             strCsv.AppendFormat(L"%d, ", (unsigned short)pMe->vfunc_78());
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(4, 0));
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(7, 0));
@@ -1621,11 +1617,11 @@ const CStringW& CDPSMeterSystem::FUN_141181540()
     s_str.Empty();
     do
     {
-        PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (pMe == 0)
             break;
         s_str.AppendFormat(L"캐릭터명 : %s\r\n", (const wchar_t*)pMe->vfunc_77());
-        s_str.AppendFormat(L"클래스 : %s\r\n", (const wchar_t*)GetStringTable()->FUN_141811980(6, FUN_141654730(pMe)));
+        s_str.AppendFormat(L"클래스 : %s\r\n", (const wchar_t*)GetStringTable()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->FUN_141654730()));
         s_str.AppendFormat(L"레벨 : %d\r\n", (unsigned short)pMe->vfunc_78());
         s_str.AppendFormat(L"\r\n");
         s_str.AppendFormat(L"--- 게임 레이어 장착 장비 목록 ---\r\n");
@@ -1666,7 +1662,7 @@ MS2_REPLACE_METHOD(0x141181540, CDPSMeterSystem, FUN_141181540, 1175, 0x80BAE760
 // @0x1411819e0
 __int64 CDPSMeterSystem::GetAverageWeaponAttack()
 {
-    PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return 0;
     __int64 nMin = 0;
@@ -1696,7 +1692,7 @@ MS2_REPLACE_METHOD(0x1411819E0, CDPSMeterSystem, GetAverageWeaponAttack, 834, 0x
 CStringW CDPSMeterSystem::GetStatText(int nStat, int bPercent)
 {
     CStringW str;
-    PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return str;
     float fBase = (float)pMe->FUN_1416709d0(nStat);
@@ -1725,7 +1721,7 @@ MS2_REPLACE_METHOD(0x141181D30, CDPSMeterSystem, GetStatText, 624, 0xCDC470FC);
 CStringW CDPSMeterSystem::GetBonusText(int nStat, int bPercent)
 {
     CStringW str;
-    PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return str;
     float fBase = 0.0f;
@@ -1774,6 +1770,6 @@ CSkillMeterData::CSkillMeterData()
 
 // @0x141185920
 CStatMeterData::CStatMeterData()
-    : m_nTime(FUN_140869420()), m_nValue(0), m_nEffective(0), m_nOver(0), m_nType(0)
+    : m_nTime(GetTickCountMs2()), m_nValue(0), m_nEffective(0), m_nOver(0), m_nType(0)
 {
 }

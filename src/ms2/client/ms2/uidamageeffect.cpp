@@ -8,26 +8,20 @@
 #include "ms2/placeholder/asgameentity.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/client/ms2/pcbase.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of exe objects ----
 
-class Unk_DmgStatusMgr
-{
-public:
-    void FUN_141b0cd00(UIStatusEventListener* pListener);           // register
-    void FUN_141b0cd90(UIStatusEventListener* pListener);           // unregister
-};
-Unk_DmgStatusMgr* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 
 // The local player's stats: slot 4 = HP.
-class Unk_DmgPlayer
+class Unk_DmgPlayer : public PCBase
 {
-public:
-    __int64 FUN_141670a00(int nStat);                               // current value
-    __int64 FUN_141670a30(int nStat);                               // maximum value
 };
 class Unk_DmgWorld { };
-Unk_DmgWorld* FUN_1403ed2d0();
 Unk_DmgPlayer* FUN_141bd0cc0(Unk_DmgWorld* pWorld);                 // the local player
 
 // The settings singleton: two float options at +0xc818 and +0xc870.
@@ -52,8 +46,6 @@ bool FUN_140a467d0(const MS2Ptr<AScript>*);                         // has the A
 // The movie's root: "init" takes (float, int).
 class Unk_DmgScript : public AScript
 {
-public:
-    Scaleform::GFx::Value FUN_1418cc380(const char* szMethod, float a1, int a2);
 };
 
 // The root as an ASGameEntity: slot 25 is "validateNow" (ASGameEntity declares only slots 0..5).
@@ -113,7 +105,7 @@ void UIDamageEffect::FUN_141910700()
     if (FUN_140a467d0(&m_30))
         return;
     FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
-    Unk_DmgPlayer* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_DmgPlayer* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance()));
     if (pPlayer != 0)
         vfunc_oa0_3(pPlayer->FUN_141670a00(4), pPlayer->FUN_141670a30(4));
 }
@@ -148,8 +140,8 @@ void UIDamageEffect::OnLoadComplete()
     FUN_141910ab0();
     FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     Unk_DmgCfgInfo* pInfo = FUN_140e09150(FUN_1409a8b10());
-    static_cast<Unk_DmgScript*>(m_30.operator->())->FUN_1418cc380("init", m_fLowHpPercent, pInfo->m_0c);
-    Unk_DmgPlayer* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    static_cast<Unk_DmgScript*>(m_30.operator->())->Invoke("init", m_fLowHpPercent, pInfo->m_0c);
+    Unk_DmgPlayer* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance()));
     if (pPlayer != 0)
         vfunc_oa0_3(pPlayer->FUN_141670a00(4), pPlayer->FUN_141670a30(4));
 }

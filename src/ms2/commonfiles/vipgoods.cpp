@@ -23,10 +23,8 @@
 #include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 void FUN_14028fd90(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr1, const char* pszAttr2,
@@ -173,12 +171,12 @@ int CVIPTable::LoadGoods()
     m_cacheGoods.AssignRaw(new CCacheData);
     m_cacheGoods.get()->FUN_1401d1160(CString(strPath));
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
@@ -219,7 +217,7 @@ int CVIPTable::LoadGoods()
         }
         if (spGoods->m_bonusItemIds.GetCount() != spGoods->m_bonusItemRanks.GetCount())
         {
-            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
             return 0;
         }
         CString strCounts;
@@ -227,7 +225,7 @@ int CVIPTable::LoadGoods()
         FUN_140177e10(strCounts, &spGoods->m_bonusItemCounts, ",");
         if (spGoods->m_bonusItemIds.GetCount() != spGoods->m_bonusItemCounts.GetCount())
         {
-            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
             return 0;
         }
         CString strPeriods;
@@ -235,7 +233,7 @@ int CVIPTable::LoadGoods()
         FUN_1402a5010(strPeriods, &spGoods->m_bonusItemPeriods, ",");
         if (spGoods->m_bonusItemIds.GetCount() != spGoods->m_bonusItemPeriods.GetCount())
         {
-            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
             return 0;
         }
         m_goods.SetAt(spGoods->m_nId, spGoods);
@@ -252,12 +250,12 @@ int CVIPTable::LoadBenefitItems()
     m_cacheBenefitItems.AssignRaw(new CCacheData);
     m_cacheBenefitItems.get()->FUN_1401d1160(CString(strPath));
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
@@ -286,12 +284,12 @@ int CVIPTable::LoadBenefitEffects()
     m_cacheBenefitEffects.AssignRaw(new CCacheData);
     m_cacheBenefitEffects.get()->FUN_1401d1160(CString(strPath));
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;

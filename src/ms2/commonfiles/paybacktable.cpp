@@ -20,14 +20,12 @@
 #include "ms2/ms2recover.h"
 #include <algorithm>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 extern "C" double (__cdecl* __imp_floor)(double);            // the exe imports floor from the UCRT
 
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
-Unk_140166420* FUN_140166420();
-class Unk_CommonLog { public: void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg); };
-Unk_CommonLog* FUN_140166440();
-CFeatureManager* FUN_140166410();                           // the game settings (feature switches)
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pNode);                   // the element is enabled for this build
 unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);
@@ -58,19 +56,19 @@ PaybackTable::PaybackTable()
 // @0x14071aff0
 bool PaybackTable::Load()
 {
-    if (!FUN_140166410()->FUN_14036d570(0x109))
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x109))
     {
         SetInit(true);
         return true;
     }
     CString strPath = FUN_14071a5b0("Table", "PaybackTable.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     m_nTotalWeight = 0;
@@ -105,9 +103,9 @@ bool PaybackTable::Load()
         int nDay = *FUN_1401d3200()->PaybackEndDate.Get() % 100;
         m_nEnd = MakeTime(nYear, nMonth, nDay, 23, 59, 59);
     }
-    if (FUN_140166410()->FUN_14036d650())
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d650())
     {
-        if (FUN_140166410()->FUN_14036e510())
+        if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036e510())
             m_bLocale = true;
     }
     SetInit(true);
@@ -129,7 +127,7 @@ float PaybackTable::GetLevelPercent(const LevelEntry* pEntry, unsigned __int64 n
 // @0x14071b540
 float PaybackTable::GetPercentUpTo(unsigned nLevel, unsigned __int64 nContext)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x109))
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x109))
         return 0.0f;
     float fPercent = 0.0f;
     const std::vector<LevelEntry>& levels = GetLevels(nContext);
@@ -145,7 +143,7 @@ float PaybackTable::GetPercentUpTo(unsigned nLevel, unsigned __int64 nContext)
 // @0x14071b630
 __int64 PaybackTable::GetMeratUpTo(unsigned nLevel, __int64 nAmount, unsigned __int64 nContext)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x109))
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x109))
         return 0;
     __int64 nMerat = 0;
     const std::vector<LevelEntry>& levels = GetLevels(nContext);
@@ -162,7 +160,7 @@ __int64 PaybackTable::GetMeratUpTo(unsigned nLevel, __int64 nAmount, unsigned __
 // @0x14071b730
 __int64 PaybackTable::GetMeratTotal(__int64 nAmount, unsigned __int64 nContext)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x109))
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x109))
         return 0;
     const std::vector<LevelEntry>& levels = GetLevels(nContext);
     if (levels.empty())
@@ -173,7 +171,7 @@ __int64 PaybackTable::GetMeratTotal(__int64 nAmount, unsigned __int64 nContext)
 // @0x14071b7c0
 bool PaybackTable::InPeriod(__int64 nTime)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x109))
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x109))
         return false;
     if (m_nStart == 0)
         return false;
@@ -197,7 +195,7 @@ bool PaybackTable::IsPaybackDay(__int64 nTime)
 // @0x14071b8d0
 bool PaybackTable::InMonthPeriod(__int64 nTime)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x109))
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x109))
         return false;
     if (m_nStart == 0)
         return false;
@@ -213,7 +211,7 @@ bool PaybackTable::InMonthPeriod(__int64 nTime)
 // @0x14071b9c0
 bool PaybackTable::IsResetWindow()
 {
-    if (!FUN_140166410()->FUN_14036d570(0x109))
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x109))
         return false;
     CMsTime now(GetServerTime());
     if (now.GetDay() != 1)

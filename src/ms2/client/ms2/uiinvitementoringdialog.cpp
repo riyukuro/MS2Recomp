@@ -25,6 +25,11 @@
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uimessenger.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/gameeventvalue.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/buddymanager.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -64,7 +69,7 @@ struct Unk_MMIdPacket7
 };
 
 // The event schedule (singleton chain 0x140302b00 -> 0x14041d160).
-class Unk_MentorSchedule { public: __int64 FUN_140424e20(); int FUN_140424de0(); };
+class Unk_MentorSchedule : public CGameEventValueMentoring { };
 class Unk_MentorScheduleHolder { public: Unk_MentorSchedule* FUN_14041d160(); };
 Unk_MentorScheduleHolder* FUN_140302b00();
 
@@ -99,7 +104,6 @@ private:
 };
 MS2_CHECK_SIZE(Unk_GuildBuddyRef, 0x10);
 class Unk_GuildBuddyMgr { public: Unk_GuildBuddyRef FUN_140ae4950(const CStringW& name); };
-Unk_GuildBuddyMgr* FUN_14097a780();
 class UICommunityQueryDialog : public UIDialog {};
 UICommunityQueryDialog* FUN_140ae5a30(int);
 
@@ -120,11 +124,8 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CString
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 unsigned __int64 FUN_140718350(const CString& str);             // string -> id
 CString FUN_140719530(unsigned __int64 n);                      // number to string
-class Unk_InvStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_InvStrings* FUN_1401a9d70();
 CStringW FUN_1409e9ed0(CStringW strKey, const CStringW& a1, const unsigned short& a2);
-class Unk_InvChat { public: unsigned char m_pad_0[0x48]; class Unk_InvChatInput* m_48; };
-class Unk_InvChatInput { public: void FUN_141a252a0(const CStringW& strName); };
+class Unk_InvChat { public: unsigned char m_pad_0[0x48]; class UIMessengerBrowser* m_48; };
 Unk_InvChat* FUN_141482e80();
 
 struct Unk_PickXY { float x, y; };                              // dialog offset
@@ -132,7 +133,6 @@ extern Unk_PickXY DAT_143b02320;                                // zero offset
 void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_PickXY offLeft, Unk_PickXY offRight);
 
 class Unk_InvUiMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-Unk_InvUiMgr* FUN_1403ed2b0();
 
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 
@@ -200,7 +200,7 @@ void UIInviteMentoringDialog::OnLoadComplete()
         }
         FUN_141925fa0(CString("m_mentorDragBar"));
         CMenteeSearchParam param;
-        param.m_nOption30 = FUN_140302b00()->FUN_14041d160()->FUN_140424de0();
+        param.m_nOption30 = FUN_140302b00()->FUN_14041d160()->GetId();
         CMenteeSearchManager::GetInstance()->RequestSearch(&param);
     }
     else
@@ -221,9 +221,9 @@ void UIInviteMentoringDialog::OnLoadComplete()
 // @0x140c30140
 Unk_PopupMenu* FUN_140c30140(int nId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_InvUiMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_InvUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (spObj.get() != 0)
             return reinterpret_cast<Unk_PopupMenu*>(dynamic_cast<UIPopUpMenu*>(spObj.operator->()));
     }
@@ -233,9 +233,9 @@ Unk_PopupMenu* FUN_140c30140(int nId)
 // @0x140c300a0
 UIDialog* FUN_140c300a0(int nId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_InvUiMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_InvUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (spObj.get() != 0)
             return dynamic_cast<UIDialog*>(spObj.operator->());
     }
@@ -299,7 +299,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         {
             unsigned __int64 nSerial = FUN_140718350(data.FUN_1422b8d30());
             CStringW strName = data.FUN_1422b8f40();
-            CMsTime tEnd(FUN_140302b00()->FUN_14041d160()->FUN_140424e20());
+            CMsTime tEnd(FUN_140302b00()->FUN_14041d160()->GetEndTime());
             int nDay = tEnd.GetDay();
             int nMonth = tEnd.GetMonth();
             int nYear = tEnd.GetYear();
@@ -342,7 +342,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         {
             CStringW strName = data.FUN_1422b8f40();
             unsigned __int64 nChar = 0;
-            Unk_GuildBuddyRef buddy = FUN_14097a780()->FUN_140ae4950(strName);
+            Unk_GuildBuddyRef buddy = reinterpret_cast<Unk_GuildBuddyMgr*>(TSingleton<CBuddyManager>::GetInstance())->FUN_140ae4950(strName);
             if (buddy.FUN_14097a170() != 0)
             {
                 nChar = buddy.FUN_14097a1e0()->FUN_1401cc2f0();
@@ -423,7 +423,7 @@ void UIInviteMentoringDialog::FUN_140c2f070(const ATL::CAtlArray<Unk_MentorPtr<C
         Unk_MentorPtr<CMentor> spMentor = arrMentors[i];
         if (spMentor == 0)
             continue;
-        CStringW strInfo = FUN_1409e9ed0(CStringW(L"s_mentoring_invite_info"), FUN_1401a9d70()->FUN_141811980(6, spMentor->y), spMentor->level);
+        CStringW strInfo = FUN_1409e9ed0(CStringW(L"s_mentoring_invite_info"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spMentor->y), spMentor->level);
         ASObj row(2);
         row.FUN_1407cbbe0("isOnline", spMentor->online);
         row.FUN_1407cbb20("charName", CStringW(spMentor->name));
@@ -456,7 +456,7 @@ void UIInviteMentoringDialog::FUN_140c2f490()
         Unk_MentorPtr<CMentor> spMentor = m_mentors[i];
         if (spMentor == 0)
             continue;
-        CStringW strInfo = FUN_1409e9ed0(CStringW(L"s_mentoring_invite_info"), FUN_1401a9d70()->FUN_141811980(6, spMentor->y), spMentor->level);
+        CStringW strInfo = FUN_1409e9ed0(CStringW(L"s_mentoring_invite_info"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spMentor->y), spMentor->level);
         ASObj row(2);
         row.FUN_1407cbbe0("isOnline", spMentor->online);
         row.FUN_1407cbb20("charName", CStringW(spMentor->name));

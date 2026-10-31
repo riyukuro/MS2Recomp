@@ -20,7 +20,10 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUILongTermAttendGiftDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140c6e220 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uilongtermattendgiftdialog.cpp"
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 #include "uilongtermattendgiftdialog.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/astooltip.h"
@@ -36,6 +39,9 @@
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/worldservice.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -110,21 +116,6 @@ Unk_LtaEventMgr* FUN_1401c0d90();
 class Unk_LtaItem : public CPtred { public: CString FUN_14053fdd0(); };
 MS2Ptr<Unk_LtaItem> FUN_14053f870(int);
 
-// The list control of the movie (the AS list with clear / append).
-class Unk_LtaList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                                           // clear
-    void FUN_1422dd230(const ASObj& row);                           // append a row
-};
-
 // The global table of strings / ints keyed by (kind, id): global at 0x143ab2fc0, map at +0x18, entry value at +0x20
 // (text), +0x28 (expiry).
 struct Unk_LtaKey
@@ -146,7 +137,7 @@ MS2_CHECK_SIZE(Unk_LtaIter, 0x18);
 class Unk_LtaMap { public: bool FUN_140420bb0(const Unk_LtaKey& key, Unk_LtaIter& it); };
 int FUN_140718200(const CStringW& str);
 CStringW FUN_140718600(const CStringW& str);
-__int64 FUN_140869440();                         // the current time source
+__int64 GetServerTime();                         // the current time source
 class Unk_LtaValue
 {
 public:
@@ -219,15 +210,12 @@ public:
 Unk_LtaWallet* FUN_140d86260();
 
 class Unk_LtaPlayer { public: bool FUN_141bcb0a0(); };
-class Unk_LtaPlayerMgr { public: void* FUN_141bd0cc0(); };
-Unk_LtaPlayerMgr* FUN_1403ed2d0();
+class Unk_LtaPlayerMgr : public WorldService { };
 bool FUN_141bcb0a0(Unk_LtaPlayerMgr*);
 
-class Unk_LtaOptions { public: bool FUN_14036d570(int nId); };
-Unk_LtaOptions* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
-class Unk_LtaNotices { public: void FUN_140da4e40(CStringW, Delegate<void(NotifyObject*)>); };
-Unk_LtaNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
@@ -267,7 +255,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, 
 // @0x140c6da60
 inline int Unk_LtaValue::FUN_140c6da60(const int& nDefault) const
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (m_28 <= now)
         return nDefault;
     return FUN_140718200(m_20);
@@ -276,7 +264,7 @@ inline int Unk_LtaValue::FUN_140c6da60(const int& nDefault) const
 // @0x140c6dac0
 inline CStringW Unk_LtaValue::FUN_140c6dac0(const CStringW& strDefault) const
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (m_28 <= now)
         return strDefault;
     return FUN_140718600(m_20);
@@ -310,7 +298,7 @@ UILongTermAttendGiftDialog::UILongTermAttendGiftDialog()
 {
     FUN_141924170(1);
     FUN_141926980(false);
-    FUN_140939a10()->FUN_140da4e40(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILongTermAttendGiftDialog::SendEventRewardMode27));
+    FUN_140939a10()->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILongTermAttendGiftDialog::SendEventRewardMode27));
 }
 
 // @0x140c6b450
@@ -362,7 +350,7 @@ void UILongTermAttendGiftDialog::vfunc_45(Scaleform::GFx::Value* result, const C
     if (FUN_140184310(method, "getTooltipItem")) {
         int id = args->FUN_1422b8b10();
         int rank = args->FUN_1422b8b10();
-        void* owner = FUN_1403ed2d0()->FUN_141bd0cc0();
+        void* owner = reinterpret_cast<Unk_LtaPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (owner) {
             MS2Ptr<CItem> item(new CItem);
             if (item == 0)
@@ -421,7 +409,7 @@ void UILongTermAttendGiftDialog::SendEventRewardMode27(NotifyObject*)
 {
     if (!FUN_140c6cbf0())
         return;
-    if (FUN_141bcb0a0(FUN_1403ed2d0()))
+    if (FUN_141bcb0a0(reinterpret_cast<Unk_LtaPlayerMgr*>(WorldService::GetInstance())))
         return;
     if (vfunc_55())
         FUN_141924680();
@@ -530,7 +518,7 @@ void UILongTermAttendGiftDialog::FUN_140c6c4a0()
 {
     if (m_30.IsNull())
         return;
-    if (MS2Ptr<Unk_LtaList> list = FUN_140c02900("m_reward")) {
+    if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_reward")) {
         list->FUN_1422dd1d0();
         CString strFrame = FUN_140c6d470();
         for (size_t i = 0; i < m_178->m_rewards.FUN_140412e80(); ++i) {
@@ -639,7 +627,7 @@ int UILongTermAttendGiftDialog::FUN_140c6d040(unsigned int nDay)
 int UILongTermAttendGiftDialog::FUN_140c6d130()
 {
     unsigned int nCur = FUN_140c6d570();
-    int nDays = FUN_14086bd40(CMsTime(m_178->m_start), CMsTime(FUN_140869440())) + 1;
+    int nDays = FUN_14086bd40(CMsTime(m_178->m_start), CMsTime(GetServerTime())) + 1;
     int nMax = 0x50;
     unsigned int nLimit = *(const unsigned int*)FUN_1402fbd20(&nMax, &nDays);
     if (nCur < nLimit)

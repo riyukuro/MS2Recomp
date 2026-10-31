@@ -20,11 +20,10 @@
 
 // Unrecovered helpers (the xml/file helpers the table units use).
 class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_14015eb90(void* log, int level, int category, const wchar_t* format, const CString& arg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // <dir>/<file> resource path
-bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>& out);
 void FUN_140874280(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, CString& strOut);  // child attribute
 void FUN_140399100(CString pattern, CString directory, ATL::CAtlArray<CString>& output, CString exclude, bool localOnly);
@@ -64,7 +63,7 @@ bool CEmotionData::Load(Unk_140165cf0* pNode)
     FUN_140874280(pNode, "idleAnim", "name", m_anims[1]);
     if (m_strName.IsEmpty())
         return false;
-    if (!FUN_14028f710(pNode))
+    if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
         return false;
     CString strBore;
     FUN_140874280(pNode, "boreAnim", "name", strBore);
@@ -121,7 +120,7 @@ void CEmotionData::CheckResources(CString strDir)
         CString& strEffect = m_effects.GetAt(i);
         CString strPath = FUN_14071a5b0("Effect", strEffect);
         if (FindFirstFileA(strPath, &fd) == INVALID_HANDLE_VALUE)
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[EmotionData - effect] [{0}]", strEffect);
+            FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[EmotionData - effect] [{0}]", strEffect);
     }
     if (m_spTextureAni)
     {
@@ -131,13 +130,13 @@ void CEmotionData::CheckResources(CString strDir)
             if (!strTexture.IsEmpty())
             {
                 if (FindFirstFileA(strTexture, &fd) == INVALID_HANDLE_VALUE)
-                    FUN_14015eb90(FUN_140166440(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[EmotionData - texture] [{0}]", strTexture);
+                    FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[EmotionData - texture] [{0}]", strTexture);
             }
             if (m_spTextureAni->m_arrFrames.GetAt(i).FUN_141847bb0())
             {
                 strTexture = m_spTextureAni->m_arrFrames.GetAt(i).FUN_141847a60(strDir);
                 if (FindFirstFileA(strTexture, &fd) == INVALID_HANDLE_VALUE)
-                    FUN_14015eb90(FUN_140166440(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[EmotionData - controlTexture] [{0}]", strTexture);
+                    FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[EmotionData - controlTexture] [{0}]", strTexture);
             }
         }
     }
@@ -285,12 +284,12 @@ void CEmotionTable::LoadCommon()
     for (unsigned int i = 0; i < files.GetCount(); i++)
     {
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_1403974b0(&doc, files[i], 0, true, false) == 0)
+        if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, files[i], 0, true, false) == 0)
             return;
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", files[i]);
+            FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", files[i]);
             return;
         }
         CString strName = PathFindFileNameA(files[i]);
@@ -345,12 +344,12 @@ MS2Ptr<CEmotionGroup> CEmotionTable::ReadEmotionGroup(unsigned int nId)
     strPath = FUN_14071a5b0("Emotion", strPath);
     AddIdCache(nId, strPath);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
         return NULL;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return NULL;
     }
     MS2Ptr<CEmotionGroup> spGroup;
@@ -364,7 +363,7 @@ MS2Ptr<CEmotionGroup> CEmotionTable::ReadEmotionGroup(unsigned int nId)
         MS2Ptr<CEmotionGroup> spCommon = GetCommonGroup(strName);
         if (spCommon == NULL)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"NotFound CEmotionTable::ReadEmotionGroup Import: {0}", strName);
+            FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"NotFound CEmotionTable::ReadEmotionGroup Import: {0}", strName);
             return NULL;
         }
         spGroup.AssignRaw(new CEmotionGroupImport(spCommon, strItemCode));

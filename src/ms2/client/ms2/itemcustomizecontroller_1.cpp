@@ -94,9 +94,13 @@ NiAVObject* FUN_141167cf0(const CString& strName);              // scene node by
 void FUN_141414180(NiPointer<CItemCustomizeController> spController);   // unregisters a closed controller (TU 2)
 
 struct Unk_ICCCursor : public CWindowService { };      // cursor position in pixels
-Unk_ICCCursor* FUN_140aadf80();
-void* FUN_1413f9a70();                                          // camera manager
-NiCamera* FUN_1409a8a60(void* pCameraManager);                  // active camera
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
+class Ni3DRenderView* FUN_1413f9a70();   // C3: was FUN_1413f9a70
+class Ni3DRenderView   // C3: member view for the former free stand-ins
+{
+public:
+    class NiCamera* GetCamera() const;
+};
 
 // Picking mesh hits of the customize UV picker (?\meshuvpicker.cpp); only the call used here.
 class CMeshUVPicker
@@ -106,7 +110,6 @@ public:
                        NiPoint2* pUV, float* pT, void* pSkins);
 };
 
-const void* FUN_1409a8b90(NiAVObject* pNode);                   // node name
 bool FUN_140998dc0(const void* pName, const char* psz);         // name == psz
 
 struct Unk_ICCConfigFloat
@@ -120,7 +123,7 @@ struct Unk_ICCConfig
     Unk_ICCConfigFloat m_2ce0;                                  // highlight scale of the hair mesh "HR1:1"
     Unk_ICCConfigFloat m_2d38;                                  // highlight scale of the other meshes
 };
-Unk_ICCConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The app framework (FUN_14086d260); its service manager handle sits at +8.
 struct Unk_ICCApp { char m_pad[8]; char m_manager[1]; };
@@ -407,9 +410,9 @@ void CItemCustomizeController::BeginDrag(const NiPoint3& kPos)
     Unk_PickTarget* pTarget = m_spPicker->GetPickedTarget();
     if (pTarget)
     {
-        if (!FUN_140aadf80()->GetCursorClientPos(&m_kCursorStart.x, &m_kCursorStart.y))
+        if (!((struct Unk_ICCCursor*)FUN_140aadf80())->GetCursorClientPos(&m_kCursorStart.x, &m_kCursorStart.y))
             return;
-        void* pCameraManager = FUN_1413f9a70();
+        void* pCameraManager = ((void*)FUN_1413f9a70());
         Unk_ICCPlayer* pPlayer = reinterpret_cast<Unk_ICCWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return;
@@ -420,7 +423,7 @@ void CItemCustomizeController::BeginDrag(const NiPoint3& kPos)
             efd::Point3 kAnchor, kP1, kP2, kP3;
             pTarget->FUN_141202480(&kAnchor, &kP1, &kP2, &kP3, 0);
             NiPoint3 kWorld(kAnchor);
-            FUN_1409a8a60(pCameraManager)->WorldPtToScreenPt(kWorld, m_kScreenStart.x, m_kScreenStart.y);
+            ((class Ni3DRenderView*)(void*)(pCameraManager))->GetCamera()->WorldPtToScreenPt(kWorld, m_kScreenStart.x, m_kScreenStart.y);
             m_kScreenStart.x *= (float)pTarget2->GetWidth(0);
             m_kScreenStart.y = (1.0f - m_kScreenStart.y) * (float)pTarget2->GetHeight(0);
         }
@@ -432,7 +435,7 @@ void CItemCustomizeController::BeginDrag(const NiPoint3& kPos)
 void CItemCustomizeController::UpdateDrag()
 {
     NiPoint2 kCursor;
-    if (!FUN_140aadf80()->GetCursorClientPos(&kCursor.x, &kCursor.y))
+    if (!((struct Unk_ICCCursor*)FUN_140aadf80())->GetCursorClientPos(&kCursor.x, &kCursor.y))
         return;
     CAtlArray<NiAVObject*> aMeshes;
     for (unsigned i = 0; i < m_aMeshNames.GetCount(); i++)
@@ -455,7 +458,7 @@ void CItemCustomizeController::UpdateDrag()
     void* pScene = pLoader->FUN_140999440(pPlayer->FUN_14123c460());
     if (pScene == 0)
         return;
-    void* pCameraManager = FUN_1413f9a70();
+    void* pCameraManager = ((void*)FUN_1413f9a70());
     if (pCameraManager == 0)
         return;
     for (unsigned j = 0; j < aMeshes.GetCount(); j++)
@@ -467,7 +470,7 @@ void CItemCustomizeController::UpdateDrag()
         float fT;
         NiPoint2 kDelta = kCursor - m_kCursorStart;
         NiPoint2 kScreen = m_kScreenStart + kDelta;
-        if (m_spPicker->GetUVPicker()->FUN_14147ea50(pMesh, FUN_1409a8a60(pCameraManager), kScreen.x, kScreen.y, &kHit,
+        if (m_spPicker->GetUVPicker()->FUN_14147ea50(pMesh, ((class Ni3DRenderView*)(void*)(pCameraManager))->GetCamera(), kScreen.x, kScreen.y, &kHit,
                                                      &kNormal, &kUV, &fT, 0))
         {
             vfunc_32(*(NiPoint3*)&kHit, *(NiPoint3*)&kNormal, kUV, fT);
@@ -612,8 +615,8 @@ void CItemCustomizeController::OnMouseButton2(int bActive, const efd::Point3& kP
 float CItemCustomizeController::GetHighlightScale(NiAVObject* pNode)
 {
     CString strUnused;
-    if (pNode && FUN_140998dc0(FUN_1409a8b90(pNode), "HR1:1"))
-        return FUN_1401d3200()->m_2ce0.FUN_1402bac70();
+    if (pNode && FUN_140998dc0(((void const*)&((class NiObjectNET*)(class NiAVObject*)(pNode))->GetName()), "HR1:1"))
+        return ((struct Unk_ICCConfig*)FUN_1401d3200())->m_2ce0.FUN_1402bac70();
     else
-        return FUN_1401d3200()->m_2d38.FUN_1402bac70();
+        return ((struct Unk_ICCConfig*)FUN_1401d3200())->m_2d38.FUN_1402bac70();
 }

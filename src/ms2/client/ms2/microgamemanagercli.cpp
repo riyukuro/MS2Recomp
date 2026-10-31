@@ -58,7 +58,7 @@ public:
     char m_pad[0x3890];
     Unk_McSlot m_boxSeconds;
 };
-Unk_McConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The couple dance event (FUN_140428700) as far as the banner handler uses it: the number of its stages.
 class Unk_McEvent : public CPtred
@@ -73,12 +73,17 @@ class Unk_McEventService { public: Unk_McEventHolder* FUN_1403ed140(); };
 
 class Unk_McUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
 
-WorldService* FUN_1403ed2d0();
-void* FUN_14097a780();
-int FUN_140ae51b0(void* pService, __int64 nActorId);                // the actor is on the block list
-int FUN_1416595d0(PCBase* pActor);
+class CBuddyManager   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned int FUN_140ae51b0(__int64);
+};
 void* FUN_1408e57f0();
-int FUN_1422b9e00(void* p);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSubSceneId();
+};
 bool FUN_140164830(const CStringW& strA, const CStringW& strB);    // the strings differ
 void FUN_14151f200();                                               // close the message box on top / show the next
 MS2Ptr<CMsgBoxData> FUN_14151f820();                                // the message box on top
@@ -145,7 +150,7 @@ bool FUN_140b73cc0(void* pThis, CInPacket& packet)
 // @0x140b73d60
 bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
 {
-    MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMyPC == 0)
     {
         MS2_ASSERT_AT(0x58, 0);
@@ -161,7 +166,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
     case 1:
         {
             __int64 nTargetId = packet.ReadInt64();
-            PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
+            PCBase* pTarget = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(nTargetId);
             if (pTarget == 0)
                 break;
             if (pMyPC->FUN_14166c930() != 0x3b)
@@ -197,7 +202,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 FUN_140710590(kPacket);
                 break;
             }
-            if (FUN_140ae51b0(FUN_14097a780(), nTargetId) != 0)
+            if (((class CBuddyManager*)(void*)(((void*)TSingleton<CBuddyManager>::GetInstance())))->FUN_140ae51b0(nTargetId) != 0)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(6);
@@ -207,7 +212,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 FUN_141275260(0xd09, 1, 1);
                 break;
             }
-            if (FUN_1416595d0(pMyPC) == 1)
+            if (((class PC*)(class PCBase*)(pMyPC))->FUN_1416595d0() == 1)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(6);
@@ -216,7 +221,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 FUN_140710590(kPacket);
                 break;
             }
-            if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001f)
+            if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001f)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(6);
@@ -237,7 +242,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 break;
             }
             spBox->FUN_140b76940(CStringW(strName));
-            spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
+            spBox->FUN_141a01ca0(((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
             spBox->FUN_141a02460(1);
             spBox->FUN_141a024a0(0);
             FUN_140d73c60(spBox);
@@ -246,7 +251,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
     case 0xc:
         {
             __int64 nTargetId = packet.ReadInt64();
-            PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
+            PCBase* pTarget = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(nTargetId);
             if (pTarget == 0)
                 break;
             pMyPC->vfunc_59(0x3c, new StateMicroGameRpsData(pTarget->FUN_14123c580()), 0x99, 0);
@@ -258,7 +263,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 break;
             }
             spBox->SetExtra(s_strRpsWaiting);
-            spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
+            spBox->FUN_141a01ca0(((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
             spBox->FUN_141a027c0(FUN_140b76b10(FUN_140bac700));
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a01700(0x476, 0, 0);
@@ -268,7 +273,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
     case 2:
         {
             __int64 nTargetId = packet.ReadInt64();
-            PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
+            PCBase* pTarget = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(nTargetId);
             if (pTarget == 0)
                 break;
             if (FUN_140b768a0(s_strRpsWaiting) == 1)
@@ -291,7 +296,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
     case 3:
         {
             __int64 nTargetId = packet.ReadInt64();
-            PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
+            PCBase* pTarget = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(nTargetId);
             if (pTarget == 0)
                 break;
             if (FUN_140b768a0(s_strRpsWaiting) == 1)
@@ -327,7 +332,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
     case 5:
         {
             __int64 nTargetId = packet.ReadInt64();
-            PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
+            PCBase* pTarget = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(nTargetId);
             if (pTarget == 0)
                 break;
             MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
@@ -408,7 +413,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
 // @0x140b751b0
 bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
 {
-    MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMyPC == 0)
     {
         MS2_ASSERT_AT(0x197, 0);
@@ -423,7 +428,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
     case 0xe:
         {
             __int64 nTargetId = packet.ReadInt64();
-            PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
+            PCBase* pTarget = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(nTargetId);
             if (pTarget == 0)
                 break;
             if (pMyPC->FUN_14166c930() != 0x3b)
@@ -462,7 +467,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 FUN_140710590(kPacket);
                 break;
             }
-            if (FUN_140ae51b0(FUN_14097a780(), nTargetId) != 0)
+            if (((class CBuddyManager*)(void*)(((void*)TSingleton<CBuddyManager>::GetInstance())))->FUN_140ae51b0(nTargetId) != 0)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(0x14);
@@ -473,7 +478,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 FUN_1412752d0(L"s_microgame_couple_dance_response_failed_blocked_user", 1);
                 break;
             }
-            if (FUN_1416595d0(pMyPC) == 1)
+            if (((class PC*)(class PCBase*)(pMyPC))->FUN_1416595d0() == 1)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(0x14);
@@ -483,7 +488,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 FUN_140710590(kPacket);
                 break;
             }
-            if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001f)
+            if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001f)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(0x14);
@@ -507,7 +512,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             }
             spBox->FUN_140534050(nValue);
             spBox->FUN_1405340b0(nTargetId);
-            spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
+            spBox->FUN_141a01ca0(((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
             spBox->FUN_141a02460(1);
             spBox->FUN_141a024a0(0);
             FUN_140d73c60(spBox);
@@ -516,7 +521,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
     case 0x10:
         {
             __int64 nTargetId = packet.ReadInt64();
-            PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
+            PCBase* pTarget = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(nTargetId);
             if (pTarget == 0)
                 break;
             pMyPC->vfunc_59(0x45, new StateMicroGameCoupleDanceData(pTarget->FUN_14123c580()), 0xa9, 0);
@@ -527,7 +532,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 break;
             }
             spBox->SetExtra(s_strCoupleDanceWaiting);
-            spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
+            spBox->FUN_141a01ca0(((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
             spBox->FUN_141a027c0(FUN_140b76b10(FUN_140bacda0));
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a01700(0x476, 0, 0);
@@ -539,7 +544,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             __int64 nTargetId = packet.ReadInt64();
             if (FUN_140b768a0(s_strRpsWaiting) == 1)
                 FUN_14151f200();
-            PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
+            PCBase* pTarget = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(nTargetId);
             if (pTarget == 0)
                 break;
             if (pMyPC->FUN_14166c930() != 0x45)
@@ -560,7 +565,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
     case 0x11:
         {
             __int64 nTargetId = packet.ReadInt64();
-            PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
+            PCBase* pTarget = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(nTargetId);
             if (pTarget == 0)
                 break;
             if (FUN_140b768a0(s_strCoupleDanceWaiting) == 1)

@@ -9,6 +9,8 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "gamesocket.h"
 #include "ms2/placeholder/exception.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/bigdatalogsystem.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #pragma comment(lib,"ws2_32.lib")
@@ -21,7 +23,7 @@ static CStringW s_gameExit=L"gameexit";
 static CString s_marketSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 class Unk_140659080 { public: void FUN_1401d42d0(); };
 extern long g_socketThreads;
-void FUN_140298fd0(long*);
+long FUN_140298fd0(long*);   // C3: was FUN_140298fd0
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x141269970
 inline long Unk_SocketDecrement(long* p) { return _InterlockedDecrement(p); }
@@ -31,24 +33,38 @@ inline void Unk_SocketThreadAddRef() { FUN_140298fd0(&g_socketThreads); }
 inline void Unk_SocketThreadRelease() { Unk_SocketDecrement(&g_socketThreads); }
 template<class T> T Unk_SocketMin(T a,T b) { return a<b?a:b; }
 void* FUN_140aadf80(); HWND FUN_14209c720(void*);
-void* FUN_140166440(); void FUN_1401859c0(void*,int,int,const wchar_t*);
+class CLogString* GetLogString(); void Unk_AdditionalLog(class CLogString*,int,int,const wchar_t*);
 CStringW FUN_14016a730(const char*,int);
 void* FUN_140aa6d30(); extern int g_socketClosing;
-void* FUN_140e800e0(); bool FUN_140aad1e0(void*); int FUN_140aad0a0(void*,int);
-void* FUN_140aad080(void*); int FUN_140aadf90(void*,int);
-void* FUN_140714f90(); int FUN_14153a230(void*);
-void FUN_14153a1d0(void*,int,int); void FUN_14153a210(void*,int);
+class CReconnectionManagerCli* FUN_140e800e0();   // C3: was FUN_140e800e0
+class CReconnectionManagerCli   // C3: member view for the former free stand-ins
+{
+public:
+    class ReconnectionOptions* FUN_140aad080();
+    int FUN_140aad0a0(int);
+    bool FUN_140aad1e0();
+};
+class ReconnectionOptions   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140aadf90(int);
+};
+class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
+class CNetworkService   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_14153a1d0(unsigned int, unsigned int);
+    void FUN_14153a210(int);
+    int GetConnectionState();
+};
 void FUN_1415396b0(void*,Unk_InPtr);
-void FUN_140768600(unsigned*);
-unsigned short FUN_14020ba20(COutPacket*);
-int FUN_14020bc40(COutPacket*);
+int Unk_RandomStep(int*);   // C3: was FUN_140768600
 void FUN_140710b90(COutPacket*,int,unsigned*);   // no return value (rax is left over)
 void FUN_140710870(COutPacket*,ATL::CAtlList<Unk_BufferPtr>*,unsigned,unsigned*,int);
 CPacketBuffer* FUN_1407138b0(unsigned,const Unk_SocketNew&);
-void* FUN_1403ed2b0(); void FUN_141adbea0(void*); int FUN_1406516b0();
+int FUN_1406516b0();
 CStringW FUN_1408116a0(int,const int&);
 void FUN_140d73aa0(CStringW,int,void*,CStringW);
-void* FUN_140d8ee90(); void FUN_140a1f970(void*,const CString&,const CString&);
 void FUN_140d73bc0(int,int,void*,CStringW);
 void FUN_1412676a0(int); void FUN_141267720(); void FUN_1412677b0();
 class Unk_140d86260 { public:
@@ -112,7 +128,7 @@ class Unk_140d86260 { public:
     virtual void vfunc_57();
     virtual void vfunc_58(int,int);
 };
-Unk_140d86260* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 struct Unk_ResponseVersion {
     Unk_ResponseVersion():zero(0),version(0),locale(0),key(0),flag(0) {}
     void FUN_1407a4420(CInputStream&);
@@ -140,13 +156,13 @@ void CGameSocket::vfunc_1(CSimpleSocket*,int error)
                 for(int i=0;i<50;++i) { Sleep(100); result=recv(m_socket,buffer,0,MSG_PEEK);  /* exe: len 0, flags 2 (peek); a consuming recv ate the server hello and stalled login */ if(result==-1 && (last=WSAGetLastError())==WSAEWOULDBLOCK) continue; break; }
                 if(result==-1) {
                     if(last==WSAECONNRESET || last==WSAECONNABORTED) { PostMessageA(FUN_14209c720(FUN_140aadf80()),0x46a,0,0); return; }
-                    else { FUN_140d86260()->vfunc_31(m_host,m_port,error); FUN_141266500(error); return; }
+                    else { ((class Unk_140d86260*)FUN_140d86260())->vfunc_31(m_host,m_port,error); FUN_141266500(error); return; }
                 }
             }
             m_state=Unk_SocketState::Connected;
             CString text=Unk_SocketFormat("Socket Connected {0} {1}",m_host,m_port);
-            FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730(text,0));
-        } else { FUN_140d86260()->vfunc_31(m_host,m_port,error); FUN_141266500(error); }
+            Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730(text,0));
+        } else { ((class Unk_140d86260*)FUN_140d86260())->vfunc_31(m_host,m_port,error); FUN_141266500(error); }
     }
 }
 MS2_REPLACE_METHOD(0x141264a70, CGameSocket, vfunc_1, 846, 0x028ED379);
@@ -194,7 +210,7 @@ MS2_REPLACE_METHOD(0x141265140, CGameSocket, vfunc_3, 84, 0x5F016FFD);
 void CGameSocket::OnClose(CSimpleSocket*,int error)
 {
     CString text=Unk_SocketFormat("[D] CGameSocket::OnClose : nError = {0}",error);
-    FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730(text,0));
+    Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730(text,0));
     Unk_LockGuard guard(m_lock);
     if(guard!=0) {} else {
         if(m_disconnect==0 && error!=0 && m_state==Unk_SocketState::Connected) {
@@ -203,7 +219,7 @@ void CGameSocket::OnClose(CSimpleSocket*,int error)
             }
         } else {
             text=Unk_SocketFormat("m_bDisconnect({0}), nError({1}), m_enState({2})",m_disconnect,error,m_state);
-            FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730(text,0));
+            Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730(text,0));
         }
         m_state=Unk_SocketState::Closed;
     }
@@ -251,12 +267,12 @@ MS2_REPLACE_METHOD(0x141265960, CGameSocket, FUN_141265960, 29, 0x706FDE9B);
 void CGameSocket::FUN_141265990(COutPacket& packet)
 {
     bool hold; bool defer=false; hold=false;
-    if(FUN_140e800e0()) { defer=FUN_140aad1e0(FUN_140e800e0()); hold=FUN_140aad0a0(FUN_140e800e0(),9)==1; }
+    if(((void*)FUN_140e800e0())) { defer=((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->FUN_140aad1e0(); hold=((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->FUN_140aad0a0(9)==1; }
     if(m_state!=Unk_SocketState::Connected) {
         if(hold) return;
         m_out->PushPendingPacket(packet);
     } else if(defer) {
-        switch(FUN_14020ba20(&packet)) {
+        switch(((class COutPacket*)(class COutPacket*)(&packet))->FUN_14020ba20()) {
         case 1: case 5: case 6: case 7: case 8: m_out->FUN_140208960(this,packet); break;
         default: m_out->PushPendingPacket(packet); break;
         }
@@ -282,14 +298,14 @@ void CGameSocket::FUN_141265ae0()
                     if(buffer.get()!=0) m_receiveQueue.SetAt(m_receiveQueue.GetHeadPosition(),buffer);
                     else m_receiveQueue.RemoveHeadNoReturn();
                     if(state==2) {
-                        m_packets.RemoveHeadNoReturn(); FUN_140768600(&m_receiveKey);
+                        m_packets.RemoveHeadNoReturn(); Unk_RandomStep((int*)(&m_receiveKey));
                         unsigned key=m_receiveKey;
-                        packet->FUN_140710280(FUN_14153a230(FUN_140714f90()),&key);
+                        packet->FUN_140710280(((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->GetConnectionState(),&key);
                         ++m_sequence; packet->FUN_14126c7b0(m_sequence);
-                        int result=FUN_140d86260()->vfunc_35(*packet);
+                        int result=((class Unk_140d86260*)FUN_140d86260())->vfunc_35(*packet);
                         if(result==3 || result==2) {
                             int op=packet->FUN_14070fe80();
-                            if(op==1) { Unk_ResponseVersion response; response.FUN_1407a4420(*packet); FUN_14153a1d0(FUN_140714f90(),response.version,response.locale); FUN_14153a210(FUN_140714f90(),response.key); }
+                            if(op==1) { Unk_ResponseVersion response; response.FUN_1407a4420(*packet); ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->FUN_14153a1d0(response.version, response.locale); ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->FUN_14153a210(response.key); }
                             else if(op==7) m_sequence=packet->ReadInt32();
                             else if(op==8) { int sequence=packet->ReadInt32(); framing.sequence=packet->ReadInt32(); m_sequence=sequence; }
                             ready.AddTail(packet);
@@ -302,12 +318,12 @@ void CGameSocket::FUN_141265ae0()
         }
     } catch(Exception& e) {
         e.GetCode();
-        if(FUN_140d8ee90()) FUN_140a1f970(FUN_140d8ee90(),CString("sock_exception"),Unk_SocketFormat("CGameSocket::ProcessPacket {0}",e.GetText()));
-        FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730(Unk_SocketFormat("CGameSocket::ProcessPacket {0}",e.GetText()),0));
+        if(TSingleton<CBigDataLogSystem>::GetInstance()) TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(CString("sock_exception"),Unk_SocketFormat("CGameSocket::ProcessPacket {0}",e.GetText()));
+        Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730(Unk_SocketFormat("CGameSocket::ProcessPacket {0}",e.GetText()),0));
     }
     if(stopped) PostMessageA(FUN_14209c720(FUN_140aadf80()),0x469,0,0);
     else for(POSITION pos=ready.GetHeadPosition();pos;ready.GetNext(pos)) {
-        Unk_InPtr packet(ready.GetAt(pos)); FUN_1415396b0(FUN_140714f90(),packet);
+        Unk_InPtr packet(ready.GetAt(pos)); FUN_1415396b0(((void*)FUN_140714f90()),packet);
         m_logger->LogReceive((unsigned short)packet->GetType(),*reinterpret_cast<Unk_LogInPacket*>(packet.get()));
     }
 }
@@ -318,27 +334,27 @@ MS2_REPLACE_METHOD(0x141266480, CGameSocket, FUN_141266480, 111, 0x563F9D04);
 void CGameSocket::FUN_141266500(int error)
 {
     switch(error) {
-    case 0x276d: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("A successful AfxSocketInit must occur before using this API",0)); break;
-    case 0x2742: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("The Windows Sockets implementation detected that the network subsystem failed",0)); break;
-    case 0x2749: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("The socket is not connected",0)); break;
-    case 0x2734: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("A blocking Windows Sockets operation is in progress",0)); break;
-    case 0x2736: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("The descriptor is not a socket",0)); break;
-    case 0x273d: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("MSG_OOB was specified, but the socket is not of type SOCK_STREAM",0)); break;
-    case 0x274a: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("The socket has been shut down; it is not possible to call Receive on a socket after ShutDown has been invoked with nHow set to 0 or 2",0)); break;
-    case 0x2733: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("The socket is marked as nonblocking and the Receive operation would block",0)); break;
-    case 0x2738: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("The datagram was too large to fit into the specified buffer and was truncated",0)); break;
-    case 0x2745: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("The virtual circuit was aborted due to timeout or other failure",0)); break;
-    case 0x2746: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("The virtual circuit was reset by the remote side",0)); break;
-    case 0x273f: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("Addresses in the specified family cannot be used with this socket",0)); break;
-    case 0x274d: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("The attempt to connect was rejected",0)); break;
-    case 0x2743: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("The network cannot be reached from this host at this time",0)); break;
-    case 0x271e: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("The namelen parameter is invalid",0)); break;
-    case 0x2726: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("The socket is already bound to an address",0)); break;
-    case 0x2748: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("The socket is already connected",0)); break;
-    case 0x2728: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("No more file descriptors are available",0)); break;
-    case 0x2747: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("No buffer space is available. The socket cannot be connected",0)); break;
-    case 0x274c: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("Attempt to connect timed out without establishing a connection",0)); break;
-    default: FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730("Unknown Error",0)); break;
+    case 0x276d: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("A successful AfxSocketInit must occur before using this API",0)); break;
+    case 0x2742: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("The Windows Sockets implementation detected that the network subsystem failed",0)); break;
+    case 0x2749: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("The socket is not connected",0)); break;
+    case 0x2734: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("A blocking Windows Sockets operation is in progress",0)); break;
+    case 0x2736: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("The descriptor is not a socket",0)); break;
+    case 0x273d: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("MSG_OOB was specified, but the socket is not of type SOCK_STREAM",0)); break;
+    case 0x274a: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("The socket has been shut down; it is not possible to call Receive on a socket after ShutDown has been invoked with nHow set to 0 or 2",0)); break;
+    case 0x2733: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("The socket is marked as nonblocking and the Receive operation would block",0)); break;
+    case 0x2738: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("The datagram was too large to fit into the specified buffer and was truncated",0)); break;
+    case 0x2745: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("The virtual circuit was aborted due to timeout or other failure",0)); break;
+    case 0x2746: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("The virtual circuit was reset by the remote side",0)); break;
+    case 0x273f: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("Addresses in the specified family cannot be used with this socket",0)); break;
+    case 0x274d: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("The attempt to connect was rejected",0)); break;
+    case 0x2743: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("The network cannot be reached from this host at this time",0)); break;
+    case 0x271e: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("The namelen parameter is invalid",0)); break;
+    case 0x2726: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("The socket is already bound to an address",0)); break;
+    case 0x2748: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("The socket is already connected",0)); break;
+    case 0x2728: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("No more file descriptors are available",0)); break;
+    case 0x2747: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("No buffer space is available. The socket cannot be connected",0)); break;
+    case 0x274c: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("Attempt to connect timed out without establishing a connection",0)); break;
+    default: Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730("Unknown Error",0)); break;
     }
 }
 MS2_REPLACE_METHOD(0x141266500, CGameSocket, FUN_141266500, 2633, 0x5E518EA6);
@@ -366,7 +382,7 @@ void CGameSocket::FUN_141267070()
     } catch(Exception& e) {
         DWORD code=e.GetCode();
         CString text=Unk_SocketFormat("Socket Send Exception : {0}({1})",e.GetText(),code);
-        FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730(text,0));
+        Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730(text,0));
     }
 }
 MS2_REPLACE_METHOD(0x141267070, CGameSocket, FUN_141267070, 545, 0xD89E6EA3);
@@ -377,9 +393,9 @@ MS2_REPLACE_METHOD(0x1412672a0, CGameSocket, FUN_1412672a0, 39, 0x0D8742A8);
 void CGameSocket::FUN_1412672d0()
 {
     m_sequence=0; m_out->FUN_140208d40();
-    if(FUN_140e800e0()) {
-        void* settings=FUN_140aad080(FUN_140e800e0()); BOOL enabled=FUN_140aadf90(settings,0)==1 ? TRUE : FALSE;
-        if(enabled) { int value=FUN_140aadf90(settings,1); m_out->FUN_140209340(value); }
+    if(((void*)FUN_140e800e0())) {
+        void* settings=((void*)((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->FUN_140aad080()); BOOL enabled=((class ReconnectionOptions*)(void*)(settings))->FUN_140aadf90(0)==1 ? TRUE : FALSE;
+        if(enabled) { int value=((class ReconnectionOptions*)(void*)(settings))->FUN_140aadf90(1); m_out->FUN_140209340(value); }
         m_out->FUN_140209450(enabled);
     }
 }
@@ -394,22 +410,22 @@ MS2_REPLACE_METHOD(0x1412673f0, CGameSocket, GetSequence, 17, 0x116875E2);
 // @0x141267410
 void CGameSocket::FUN_141267410(COutPacket& packet)
 {
-    unsigned op=FUN_14020ba20(&packet);
+    unsigned op=((class COutPacket*)(class COutPacket*)(&packet))->FUN_14020ba20();
     try {
     {
         Unk_LockGuard guard(m_lock);
         if(guard!=0) {} else {
-            (void)((!!(FUN_14020bc40(&packet)==FALSE)) || (_wassert(L"oPacket.IsLoopback() == FALSE",_CRT_WIDE(MS2_THIS_FILE),496),0));
-            FUN_140d86260()->vfunc_34(packet);
-            unsigned key=m_sendKey; FUN_140710b90(&packet,FUN_14153a230(FUN_140714f90()),&key);
-            FUN_140710870(&packet,&m_sendQueue,0x9dd,&m_sendKey,0); FUN_140768600(&m_sendKey);
+            (void)((!!(((class COutPacket*)(class COutPacket*)(&packet))->FUN_14020bc40()==FALSE)) || (_wassert(L"oPacket.IsLoopback() == FALSE",_CRT_WIDE(MS2_THIS_FILE),496),0));
+            ((class Unk_140d86260*)FUN_140d86260())->vfunc_34(packet);
+            unsigned key=m_sendKey; FUN_140710b90(&packet,((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->GetConnectionState(),&key);
+            FUN_140710870(&packet,&m_sendQueue,0x9dd,&m_sendKey,0); Unk_RandomStep((int*)(&m_sendKey));
         }
     }
     m_logger->LogSend(op,*reinterpret_cast<Unk_LogOutPacket*>(&packet)); FUN_141267070();
     } catch(Exception& e) {
         DWORD code=e.GetCode();
         CString text=Unk_SocketFormat("Socket Send Exception : {0}({1})",e.GetText(),code);
-        FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730(text,0));
+        Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730(text,0));
     }
 }
 MS2_REPLACE_METHOD(0x141267410, CGameSocket, FUN_141267410, 439, 0x2094E6E2);
@@ -426,13 +442,13 @@ MS2_REPLACE_METHOD(0x141267630, CGameSocket, GetHost, 68, 0x2A903A72);
 int CGameSocket::GetPort() { return m_port; }
 MS2_REPLACE_METHOD(0x141267680, CGameSocket, GetPort, 17, 0x04BB11AA);
 // @0x1412676a0
-void FUN_1412676a0(int error) { FUN_141adbea0(FUN_1403ed2b0()); FUN_140d73bc0(174,0,0,s_forceLogin); FUN_140d86260()->vfunc_58(174,error); }
+void FUN_1412676a0(int error) { CUIService::GetInstance()->FUN_141adbea0(); FUN_140d73bc0(174,0,0,s_forceLogin); ((class Unk_140d86260*)FUN_140d86260())->vfunc_58(174,error); }
 MS2_REPLACE(0x1412676a0, FUN_1412676a0, 118, 0x5BB614FD);
 // @0x141267720
-void FUN_141267720() { FUN_141adbea0(FUN_1403ed2b0()); FUN_140d73aa0(FUN_1408116a0(527,0),0,0,s_forceLogin); }
+void FUN_141267720() { CUIService::GetInstance()->FUN_141adbea0(); FUN_140d73aa0(FUN_1408116a0(527,0),0,0,s_forceLogin); }
 MS2_REPLACE(0x141267720, FUN_141267720, 137, 0xD9DF5AEA);
 // @0x1412677b0
-void FUN_1412677b0() { FUN_141adbea0(FUN_1403ed2b0()); int code=532; if(FUN_1406516b0()==3) code=3178; FUN_140d73aa0(FUN_1408116a0(code,0),0,0,s_gameExit); FUN_140d86260()->vfunc_58(code,0); }
+void FUN_1412677b0() { CUIService::GetInstance()->FUN_141adbea0(); int code=532; if(FUN_1406516b0()==3) code=3178; FUN_140d73aa0(FUN_1408116a0(code,0),0,0,s_gameExit); ((class Unk_140d86260*)FUN_140d86260())->vfunc_58(code,0); }
 MS2_REPLACE(0x1412677b0, FUN_1412677b0, 198, 0xF4854A56);
 // Inline socket and packet helpers instantiated by the client entry points.
 // @0x141268620

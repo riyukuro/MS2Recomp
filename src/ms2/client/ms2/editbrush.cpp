@@ -23,12 +23,10 @@
 #include "ms2/client/ms2/physxhelper.h"
 #include "ms2/client/ms2/postprocessing/outlinerenderstep.h"
 
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 CPhysXHelper* FUN_1409f7ca0();                                      // the physics helper singleton
 int FUN_14109a9e0();                                                // rand()
-const NiTransform& FUN_140a33f90(NiAVObject* pObject);              // GetLocalTransform
 void FUN_140aacb60(NiAVObject* pObject, const NiTransform& xf);     // SetLocalTransform
-NiNode* FUN_140a0b000(NiAVObject* pkObject);                        // parent of the object
 void FUN_1405a85c0(void* pHandle);                                  // release the handle returned by a detach
 void FUN_140adc7f0(NiMesh* pkMesh, int nType);                      // NiMesh::SetPrimitiveType
 void FUN_140adc720(NiMesh* pkMesh);
@@ -90,13 +88,13 @@ void EditBrush::vfunc_2()
 {
     if (m_timer.FUN_140868ba0() != 0)
         return;
-    if (FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0) && FUN_14025e7c0()->FUN_14116daa0(0, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(0, false, 0))
     {
         vfunc_4();
         m_timer.FUN_140868750(100);
         return;
     }
-    if (FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0) && FUN_14025e7c0()->FUN_14116daa0(1, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0))
     {
         vfunc_5();
         m_timer.FUN_140868750(100);
@@ -190,7 +188,7 @@ void PaintBrush::vfunc_5()
         NiMeshHWInstance* pInstance = aInstances[i];
         if (pInstance != 0)
         {
-            Unk_BrushParent* pParent = (Unk_BrushParent*)FUN_140a0b000((NiAVObject*)pInstance);
+            Unk_BrushParent* pParent = (Unk_BrushParent*)((class NiAVObject*)((NiAVObject*)pInstance))->GetParent();
             if (pParent != 0)
             {
                 Unk_BrushHandle hOut;
@@ -287,7 +285,7 @@ void NoiseBrush::vfunc_4()
         NiMeshHWInstance* pInstance = aInstances[i];
         if (pInstance != 0)
         {
-            NiTransform xf = FUN_140a33f90((NiAVObject*)pInstance);
+            NiTransform xf = ((class NiAVObject*)((NiAVObject*)pInstance))->GetLocalTransform();
             xf.m_Rotate.MakeZRotation(NoiseAngle(this));
             xf.m_fScale = NoiseScale(this);
             FUN_140aacb60((NiAVObject*)pInstance, xf);

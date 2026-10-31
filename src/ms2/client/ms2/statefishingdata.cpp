@@ -146,12 +146,10 @@ class Unk_FsEffectMgr : public CEffectService
 public:
     unsigned FUN_1411a49c0(Unk_EffectQuery* pQuery);
 };
-void FUN_1411a6060(Unk_FsEffectMgr* pMgr, int nId);
 
 // The model loader (singleton): loads a nif by path.
 CNifLoadingService* FUN_140a0afd0();
 void* FUN_1409849b0(void* pHandle);                          // handle -> node pointer
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);   // dynamic cast through an NiRTTI
 
 // The optimizer with the inline accessor of this unit.
 class Unk_FsOptimizer : public COptimizer
@@ -175,7 +173,6 @@ bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned nId);   // efd::ClassIn
 __int64 FUN_14028d0e0();                                     // the current time
 PCBase* FUN_140974230(PCBase* pPC);                          // the player of an actor
 ClonePC* FUN_1405a7e30(PCBase* pPC);                         // the mannequin of a player
-CFishingGuideObject* FUN_1416625e0(PCBase* pPC);             // the fishing guide object of a player
 class Unk_PCBaseBuffs { public: MS2Ptr<AdditionalCli> FUN_14096fd30(int nKind); };   // AdditionalCliList (FUN_1416749a0)
 efd::Point3 FUN_140a0b080(const efd::Point3& kA, const efd::Point3& kB, const efd::Point3& kC);
 void FUN_140b86230(const efd::Point3& kDir, NiMatrix3& kOut);   // rotation matrix of a direction
@@ -304,7 +301,7 @@ void StateFishing::vfunc_5(int n)
         }
     }
     if (m_nEffect != 0)
-        FUN_1411a6060(reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance()), m_nEffect);
+        reinterpret_cast<CEffectService*>(reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
     FUN_140a94350()->vfunc_8(0);
 }
 
@@ -332,7 +329,7 @@ void StateFishing::vfunc_3(double fTime)
         }
         if (m_nA8 == 0)
         {
-            CFishingGuideObject* pGuide = FUN_1416625e0(pPC);
+            CFishingGuideObject* pGuide = reinterpret_cast<PC*>(pPC)->FUN_1416625e0();
             if (pGuide != 0)
             {
                 efd::Point3 kRot = FUN_140a0b080(pGuide->vfunc_18(), pPC->vfunc_18(), reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
@@ -362,7 +359,7 @@ void StateFishing::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
             if (eSequenceID == pkManager->GetTargetAnimation())
             {
                 m_n10 = 0x76;
-                CFishingGuideObject* pGuide = FUN_1416625e0(pMy);
+                CFishingGuideObject* pGuide = reinterpret_cast<PC*>(pMy)->FUN_1416625e0();
                 if (pGuide != 0)
                     pGuide->FUN_1410a4cb0();
                 FsFishMgr()->FUN_140cdac50();
@@ -373,7 +370,7 @@ void StateFishing::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
             if (eSequenceID == pkManager->GetTargetAnimation())
             {
                 m_n10 = 0x76;
-                PCBase* pGuide = FUN_1416625e0(pMy);
+                PCBase* pGuide = reinterpret_cast<PC*>(pMy)->FUN_1416625e0();
                 if (pGuide != 0)
                     pGuide->FUN_14166cc40(0x7a);
                 bool bLeave = FsFishMgr()->FUN_140ce0cb0() || pMy->FUN_1416749a0()->FUN_14096fd30(1);
@@ -397,7 +394,7 @@ void StateFishing::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
                 if (eSequenceID == pkManager->GetTargetAnimation())
                 {
                     m_n10 = 0x76;
-                    CFishingGuideObject* pGuide = FUN_1416625e0(pClone);
+                    CFishingGuideObject* pGuide = reinterpret_cast<PC*>(pClone)->FUN_1416625e0();
                     if (pGuide != 0)
                         pGuide->FUN_1410a4cb0();
                 }
@@ -551,7 +548,7 @@ void StateFishing::FUN_140ddb740(int nRod)
     }
     if (spRod->m_strChair.GetLength() > 0)
     {
-        m_spEffect = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, FUN_140a0afd0()->Load(CString(spRod->m_strChair), false, 5, 0, 0)));
+        m_spEffect = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, FUN_140a0afd0()->Load(CString(spRod->m_strChair), false, 5, 0, 0)));
         if (m_spEffect)
         {
             NiNode* pRoot = reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10();
@@ -577,7 +574,7 @@ void StateFishing::FUN_140ddb740(int nRod)
         }
     }
     if (m_nEffect != 0)
-        FUN_1411a6060(reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance()), m_nEffect);
+        reinterpret_cast<CEffectService*>(reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
     if (spRod->m_strChairEffect.GetLength() > 0)
     {
         Unk_EffectQuery kQuery;

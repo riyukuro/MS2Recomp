@@ -120,6 +120,10 @@ template<class Constraint>unsigned short Unk_Read16(void* packet,Constraint cons
 
 
 #include <array>
+
+// return types of the getters this unit calls
+class Unk_140166410;
+class Unk_SingletonObj1;
 template<class T> struct Unk_Minimum {
     T minimum;
     explicit Unk_Minimum(T constraintMin):minimum(constraintMin) {}
@@ -151,9 +155,9 @@ template<class Constraint>float Unk_ReadFloat(void* packet,Constraint constraint
     if(!constraint.Check(value))throw Exception(13);
     return value;
 }
-void* FUN_140166410();
+Unk_140166410* FUN_140166410();
 bool FUN_14036d570(void*,int);
-void* FUN_1401d3200();
+Unk_SingletonObj1* FUN_1401d3200();
 void FUN_1402b7560(void*,const char*);
 template<class T>struct Unk_PayloadConstant {
     T& Get(){
@@ -454,7 +458,7 @@ struct Unk_MarkupValid {int valid;};
 void FUN_1401fa7a0(unsigned char* payload, void* inputPacket)
 {
     *reinterpret_cast<unsigned int*>(payload + 4)=Unk_Read32(inputPacket,Unk_140203550<unsigned int>(0,26));
-    int limit=reinterpret_cast<Unk_PayloadConstant<int>*>(static_cast<unsigned char*>(FUN_1401d3200())+0x8898)->Get();
+    int limit=reinterpret_cast<Unk_PayloadConstant<int>*>(reinterpret_cast<unsigned char*>(FUN_1401d3200())+0x8898)->Get();
     if(*reinterpret_cast<int*>(payload + 4)==7)limit=512;
     *reinterpret_cast<CStringW*>(payload + 8)=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadMarkup(Unk_WideMaximum(limit),reinterpret_cast<Unk_MarkupValid*>(payload)->valid);
     *reinterpret_cast<CStringW*>(payload + 16)=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadWide(Unk_WideMaximum(24));

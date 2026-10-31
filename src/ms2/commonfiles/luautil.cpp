@@ -26,14 +26,13 @@
 // Unrecovered helpers.
 class Unk_LuaFileSystem { public: char FUN_140398190(); int FUN_1403972f0(const char* pszPath, void** ppBuffer, int* pnSize, std::string* pstrActualPath); };
 Unk_LuaFileSystem* FUN_140166420();
-void* FUN_140166440();                                                  // the log
-void FUN_1401859c0(void* pLog, int nLevel, int nCategory, const wchar_t* pszText);
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);   // log with a path argument
+class CLogString* GetLogString();
+void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14016a5c0(const char* psz, int n);
 CString FUN_140188f50(const char* psz, int n);
 void FUN_1412751b0(const CStringW&, int);                               // chat/system message
 CLua* FUN_1401c0db0();                                                  // the CLuaClient singleton
-CFeatureManager* FUN_140166410();
 double FUN_1405e6d60(int nBase, int nExp);
 int FUN_14088da20(int nPriceType);                                      // the blueprint cost type -> the runtime enum
 unsigned FUN_140557640(Unk_IngTable*, const CString& strName);          // CItemDataTable::GetTagByName
@@ -249,7 +248,7 @@ void CLua::CLuaContext::Error()
 // @0x140673150
 void CLua::CLuaContext::SetLocale()
 {
-    CString strLocale = FUN_140166410()->FUN_14036d8e0();
+    CString strLocale = TSingleton<CFeatureManager>::GetInstance()->FUN_14036d8e0();
     Select("set_locale");
     Push((const char*)strLocale);
     bool bOk = Call();
@@ -287,7 +286,7 @@ void CLua::Update()
         if (FUN_1401d1320(m_scripts[i].operator->()))
         {
             if (!vfunc_1())
-            FUN_1401859c0(FUN_140166440(), 1, 0xd, L"BindFunctions() failed at Lua::Update");
+            Unk_AdditionalLog(GetLogString(), 1, 0xd, L"BindFunctions() failed at Lua::Update");
             return;
         }
     }
@@ -304,7 +303,7 @@ bool CLua::IsReady()
 // @0x140673450
 void CLua::Validate()
 {
-    CString strLocale = FUN_140166410()->FUN_14036d8e0();
+    CString strLocale = TSingleton<CFeatureManager>::GetInstance()->FUN_14036d8e0();
     CString strCurrent = GetLocale();
     if (strLocale.Compare(strCurrent) != 0)
     {
@@ -367,7 +366,7 @@ bool CLua::LoadScripts(lua_State* pLuaState)
             int nError = luaL_loadfile(pLuaState, strFile) == 0 && lua_pcall(pLuaState, 0, LUA_MULTRET, 0) == 0 ? 0 : 1;
             if (nError != 0)
             {
-                FUN_14015eb90(FUN_140166440(), 1, 0x12d, L"파일을 읽을 수 없습니다[{0}]", strPath);
+                Unk_AchieveLog<CString>(GetLogString(), 1, 0x12d, L"파일을 읽을 수 없습니다[{0}]", strPath);
                 return false;
             }
         }
@@ -380,7 +379,7 @@ bool CLua::LoadScripts(lua_State* pLuaState)
         int nSize[2];                                   // the callee writes a 64-bit size; only the low DWORD is read back
         if (FUN_140166420()->FUN_1403972f0(strPath, &pBuffer, nSize, 0) == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x12d, L"파일을 읽을 수 없습니다[{0}]", strPath);
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x12d, L"파일을 읽을 수 없습니다[{0}]", strPath);
             return false;
         }
         int nError = luaL_loadbuffer(pLuaState, (const char*)pBuffer, nSize[0], strName) == 0 && lua_pcall(pLuaState, 0, LUA_MULTRET, 0) == 0 ? 0 : 1;
@@ -1673,7 +1672,7 @@ void LuaPrint(lua_State* pState, int nLevel)
     }
     CStringW strText(L"Lua:");
     strText += strMessage;
-    FUN_1401859c0(FUN_140166440(), nLevel, 0xd, strText);
+    Unk_AdditionalLog(GetLogString(), nLevel, 0xd, strText);
     if (FUN_1401c0db0()->IsClient())
     {
     }

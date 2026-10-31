@@ -37,7 +37,11 @@ struct Unk_CuttingTarget
     MyPC* FUN_1411e0ee0();                                          // 0x1411e0ee0 the owning PC
     void FUN_1411e8d20(const CString& strName);                     // 0x1411e8d20 hide the model part
 };
-unsigned FUN_141658e60(MyPC* pPC);                                  // the PC's gender
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141658e60();
+};
 CItemData* FUN_1411dc7f0_1(CEquipItem* pEquip);                     // CEquipItem::FUN_1411dc7f0 seen as the item data
 
 // The cutting interface: slot 2 is pure (0x10 bytes, vftable 0x142ec0578).
@@ -79,7 +83,7 @@ void CPriortyCutting::vfunc_2()
 {
     ATL::CAtlList<MS2Ptr<CEquipItem> > equipped(10);
     m_pTarget->FUN_1411e2e40(equipped);
-    unsigned nGender = FUN_141658e60(m_pTarget->FUN_1411e0ee0());
+    unsigned nGender = ((class PC*)(class MyPC*)(m_pTarget->FUN_1411e0ee0()))->FUN_141658e60();
     POSITION pos = equipped.GetHeadPosition();
     while (pos != 0) {
         MS2Ptr<CEquipItem> equip(equipped.GetNext(pos));

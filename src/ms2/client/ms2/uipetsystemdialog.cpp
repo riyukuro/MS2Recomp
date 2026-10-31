@@ -49,7 +49,7 @@ Unk_PsConfig* FUN_14025e7b0();
 CFeatureManager* FUN_140166410();                                           // the feature switches
 
 CPetManager* FUN_140535320();
-extern Unk_Inventory DAT_143ab2a90;                                         // the player's inventory
+extern Unk_Inventory g_143ab2a90;                                           // the player's inventory
 
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
@@ -259,7 +259,7 @@ int UIPetSystemDialog::vfunc_84()
 // @0x140e74730
 MS2Ptr<CItem> UIPetSystemDialog::vfunc_85()
 {
-    return DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->GetSummonUid());
+    return g_143ab2a90.FUN_140a5d680(FUN_140535320()->GetSummonUid());
 }
 
 // @0x140e74790

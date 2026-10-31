@@ -44,6 +44,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/asbutton.h"
+#include "ms2/placeholder/cserverstring.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -55,25 +57,19 @@ static CString s_strSkill = "skill";                                        // @
 static CString s_strStun = "stun";                                          // @0x1400d82d0
 
 // ---- out-of-unit callees (names describe uses) ----
-class Unk_140acd6e0 : public ASDisplayObject { public:
-    void FUN_1422cdfb0(const CStringW&);                                    // set the label
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, void*);   // set the click handler
-};
+class Unk_140acd6e0 : public ASButton {};
 // the box item slot clip: sets a string member of its AS object
 class Unk_EobSlot : public ASUIComponent { public:
     void FUN_1407cba60(const char*, CString);
 };
 WorldService* FUN_1403ed2d0();
-CGameEventValueManager* FUN_140302b00();                                    // TSingleton<CGameEventValueManager>::GetInstance
 class Unk_AttendTable { public:                                             // the per-user event value table (global 0x143ab2fc0)
     int FUN_1409617d0(int, unsigned, const int&);
 };
 extern Unk_AttendTable g_attendTable;
-class Unk_TextFilter { public: CStringW FUN_14087ede0(const CStringW&); };   // string-table translation
+class Unk_TextFilter : public CServerStringGroup { };   // string-table translation
 class Unk_EobTextMgr { public: Unk_TextFilter* FUN_140be95b0(); };
-Unk_EobTextMgr* FUN_140a87680();
          // the name / profanity filter
-CReservedWordTable* FUN_1403b4750();
 class Unk_EobPackets { public:                                              // the packet handler table (TSingleton)
     void FUN_140da5180(int, Delegate<void(CInPacket&)>);
     void FUN_140da51e0(int, Delegate<void(CInPacket&)>);
@@ -169,7 +165,7 @@ MS2_REPLACE_METHOD(0x140E48020, UIItemEventOpenBoxDialog, FUN_140e48020, 29, 0x3
 void UIItemEventOpenBoxDialog::FUN_140e48050()
 {
     int nFieldId = FUN_1403ed2d0()->FUN_141bd3060();
-    MS2Ptr<ItemBoxEventContext> spCtx = reinterpret_cast<CGameEventValueItemBox*>(FUN_140302b00()->ItemBox())->Get((unsigned)nFieldId);
+    MS2Ptr<ItemBoxEventContext> spCtx = reinterpret_cast<CGameEventValueItemBox*>(TSingleton<CGameEventValueManager>::GetInstance()->ItemBox())->Get((unsigned)nFieldId);
     if (spCtx == 0)
         return;
     if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
@@ -186,12 +182,12 @@ void UIItemEventOpenBoxDialog::FUN_140e48050()
         return;
     if (FUN_141924630() != 0)
         vfunc_67();
-    m_180 = FUN_140a87680()->FUN_140be95b0()->FUN_14087ede0(spCtx->m_title);
-    m_188 = FUN_140a87680()->FUN_140be95b0()->FUN_14087ede0(spCtx->m_desc);
+    m_180 = reinterpret_cast<Unk_EobTextMgr*>(TSingleton<CServerString>::GetInstance())->FUN_140be95b0()->GetString(spCtx->m_title);
+    m_188 = reinterpret_cast<Unk_EobTextMgr*>(TSingleton<CServerString>::GetInstance())->FUN_140be95b0()->GetString(spCtx->m_desc);
     m_190 = (const wchar_t*)spCtx->m_bannerPath;
     m_178 = spCtx->m_boxItemID;
-    FUN_1403b4750()->FUN_1416fb300(m_180);
-    FUN_1403b4750()->FUN_1416fb300(m_188);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(m_180);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(m_188);
     CString strBound = FUN_140e48770(m_178);
     FUN_141924680();
 }
@@ -218,7 +214,7 @@ void UIItemEventOpenBoxDialog::SendEventReward(const Scaleform::GFx::FunctionHan
 {
     if (m_30 == 0)
         return;
-    MS2Ptr<ItemBoxEventContext> spCtx = reinterpret_cast<CGameEventValueItemBox*>(FUN_140302b00()->ItemBox())->Get((unsigned)FUN_1403ed2d0()->FUN_141bd3060());
+    MS2Ptr<ItemBoxEventContext> spCtx = reinterpret_cast<CGameEventValueItemBox*>(TSingleton<CGameEventValueManager>::GetInstance()->ItemBox())->Get((unsigned)FUN_1403ed2d0()->FUN_141bd3060());
     if (spCtx == 0)
     {
         {

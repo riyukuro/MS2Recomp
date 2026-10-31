@@ -25,6 +25,7 @@
 
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uihidesettingdialog_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/worldservice.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;
 
@@ -58,7 +59,6 @@ private:
 
 class Unk_HoUnused;                                                 // element of an unused local array
 class Unk_HoWorld { public: MyPC* FUN_141bd0cc0(); };               // the local player
-Unk_HoWorld* FUN_1403ed2d0();
 
 // The house open type (compared as a byte: a scoped enum over unsigned char, as MyPC's house setting).
 enum class Unk_HomeOpenType : unsigned char { Kind0 = 0, Kind1 = 1, Kind2 = 2 };
@@ -204,7 +204,7 @@ MS2_REPLACE_METHOD(0x140FA9570, UIHomeOptionDialog, OnMessage, 549, 0xC6230034);
 void UIHomeOptionDialog::FUN_140fa97a0()
 {
     ASObj obj(2);
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_HoWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC != 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(pPC->FUN_141523c50());
@@ -237,7 +237,7 @@ void UIHomeOptionDialog::FUN_140fa99b0(unsigned char nOpenType, CStringW strPass
 {
     if (static_cast<Unk_HomeOpenType>(nOpenType) != Unk_HomeOpenType::Kind1)
         strPassword = L"";
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_HoWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC != 0)
         FUN_141530720(pPC, nOpenType, CStringW(strPassword), 1);
 }

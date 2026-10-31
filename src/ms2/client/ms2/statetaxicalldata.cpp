@@ -45,8 +45,6 @@ float FUN_140768090();                                   // random 0..1
 unsigned FUN_140869420();                                // millisecond clock
 int FUN_14028d260(float f);                              // seconds -> ms
 void FUN_141276180(CString* pTarget, const CString& str);
-void* FUN_14165f100(PCBase* p);
-void FUN_14165f170(PCBase* p);
 int FUN_141b71c00(unsigned short n);
 
 // The strings and constants singletons.
@@ -83,7 +81,6 @@ CStringW GetStringCommon(int nId);                         // string table text 
 // The actor's move-key state (PCBase::FUN_14166d240).
 class Unk_TcBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_TcBuffMgr* FUN_14166d240(PCBase* p);
-bool FUN_1416749c0(PCBase* p);
 // vtable-slot view: slot 22 takes the point by value (the exe copies 12 bytes into an arg slot)
 class Unk_TcSlots
 {
@@ -193,8 +190,8 @@ void StateTaxiCall::vfunc_4(StateData* pData)
         MyPC* pMyPC = FUN_1417b84b0();
         if (pMyPC != 0)
         {
-            if (FUN_14165f100(pMyPC) != 0)
-                FUN_14165f170(pMyPC);
+            if (((void*)(reinterpret_cast<PC*>(pMyPC)->FUN_14165f100())) != 0)
+                reinterpret_cast<PC*>(pMyPC)->SendRequestCube();
         }
         unsigned nNow = FUN_140869420();
         efd::utf8string kName("Object_React_B");
@@ -324,7 +321,7 @@ void StateTaxiCall::vfunc_8(double fTime)
         return;
     Unk_TcBuffMgr* pBuff = FUN_14166d240(pRider);
     reinterpret_cast<Unk_TcSlots*>(pRider)->vfunc_22(pBuff->FUN_141683290());
-    if (FUN_1416749c0(m_pOwner))
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pRider->vfunc_59(2, 0, 0, 0);
     else
         FUN_1417b9460();

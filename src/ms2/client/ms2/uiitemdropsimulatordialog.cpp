@@ -19,6 +19,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/citemoptiontable.h"
 
 // The sort type names (the two dynamic initializers at 0x140112cb0 / 0x140112d70; header statics of two headers).
 static CString s_sortNamesA[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -26,8 +27,8 @@ static CString s_sortNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh",
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-class Unk_OptionTable { public: bool FUN_1405f4720(); };            // loads every table
-Unk_OptionTable* FUN_140166430();                                   // the option table singleton
+            // loads every table
+class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 extern CStringTable* GetStringTable();                              // FUN_1401a9d70
 
 // @0x14192a2e0
@@ -46,7 +47,7 @@ CString UIItemDropSimulatorDialog::GetTypeName()
 void UIItemDropSimulatorDialog::OnLoadInit()
 {
     UIDialog::OnLoadInit();
-    FUN_140166430()->FUN_1405f4720();
+    ((class CItemOptionTable*)FUN_140166430())->FUN_1405f4720();
 }
 
 // @0x14192a3b0

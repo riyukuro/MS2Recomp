@@ -56,7 +56,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-Unk_ClientConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
@@ -241,9 +241,9 @@ void CTarget2DCameraMode::vfunc_6(int n)
     Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
     if (pTarget)
         vfunc_24(pTarget, 1);
-    m_9c = FUN_1401d3200()->m_1a80.FUN_1402bac70();
-    m_a0 = FUN_1401d3200()->m_1ad8.FUN_1402bac70();
-    m_a4 = FUN_1401d3200()->m_1b30.FUN_1402bac70();
+    m_9c = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
+    m_a0 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
+    m_a4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
 }
 MS2_REPLACE_METHOD(0x141838980, CTarget2DCameraMode, vfunc_6, 184, 0x5FFD709D);
 

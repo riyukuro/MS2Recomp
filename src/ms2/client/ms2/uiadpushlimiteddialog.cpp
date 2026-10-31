@@ -35,6 +35,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmeratmarketman.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -113,12 +114,10 @@ public:
 };
 
 // The world singleton: the product lookup and the pending buy list.
-class Unk_LpWorld
+class Unk_LpWorld : public CMeratMarketMan
 {
 public:
     MS2Ptr<Unk_AdMarketItem> FUN_140d578d0(Unk_MeratOid oid);               // the record of a product id
-    void FUN_140d59810(MS2Ptr<CPendingBuyBase> spBuy, int b);               // queue a pending buy
-    void FUN_140d58650(int b);                                              // send the queue
 };
 
 Unk_LpWorld* FUN_140939a00();

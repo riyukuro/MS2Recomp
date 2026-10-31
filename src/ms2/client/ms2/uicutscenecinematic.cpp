@@ -41,17 +41,20 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/actionkeyobject.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/client/ms2/soundservice.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/cserverstring.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cgameoption.h"
+#include "ms2/client/ms2/soundproperty.h"
 
 // ---- unit-local views of exe objects (Unk_ names and member names are invented) ----
 
-class Unk_CscNotices
-{
-public:
-    void FUN_140da4e40(CStringW strName, Delegate<void(NotifyObject*)> cb);    // listen
-    void FUN_140da4eb0(CStringW strName, Delegate<void(NotifyObject*)> cb);    // stop listening
-    void FUN_140da4fe0(MS2Ptr<NotifyObject> spNotify);                        // post
-};
-Unk_CscNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 struct Unk_CscRemoveNotice { void* m_00; void* m_08; void* m_10; int m_nObjectId; };   // NotifyRemoveGameObject (+0x18 the id)
 
 // The balloon of an actor (PCBase slot 85: UIChatBalloon::Entity).
@@ -71,26 +74,21 @@ public:
     MyPC* FUN_141bd0cc0();                                          // the local player
     PCBase* FUN_141bd1200(int nId);                                 // actor by id
 };
-Unk_CscWorld* FUN_1403ed2d0();
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the scene root of an entity
 bool FUN_14098dad0(NiAVObject* pObject);                            // culled
-class Unk_CscActionKeys { public: void FUN_1409536d0(); };
-Unk_CscActionKeys* FUN_140a7b810(MyPC* pPC);
+Unk_ActionKeyManager* FUN_140a7b810(MyPC* pPC);
 int FUN_141654700(PCBase* pPC);                                   // job
 int FUN_141658e60(PCBase* pPC);                                   // gender
 
-class Unk_CscEffects
+class Unk_CscEffects : public CEffectService
 {
 public:
-    unsigned FUN_1411a5d80(const CString& strName);                 // play a voice
     void FUN_1411a6060(int nHandle);                                // stop it
 };
-Unk_CscEffects* FUN_1403ed280();
 class Unk_CscVoiceProp : public CPtred { public: void FUN_141791400(int nGender, int nJob, CString& strEvent); };
 class Unk_CscSoundProps { public: MS2Ptr<Unk_CscVoiceProp> FUN_141793110(const CString& strName); };
-Unk_CscSoundProps* FUN_1411b1de0();
-class Unk_CscSound { public: int FUN_1417b04d0(const CString& strName, size_t* pBank); };   // the length of a sound, -1 if absent
-Unk_CscSound* FUN_140c9cb10();
+   // the length of a sound, -1 if absent
+CSoundService* FUN_140c9cb10();
 
 class Unk_140a94350
 {
@@ -103,23 +101,19 @@ public:
 Unk_140a94350* FUN_140a94350();
 class Unk_CscKeyGroups { public: void FUN_1422b9fd0(int nGroup); int FUN_1422b9e00(); };
 Unk_CscKeyGroups* FUN_1408e57f0();
-class Unk_CscFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_CscFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 CInputKeyHandler* FUN_14025e7c0();
 UITalkManager* FUN_140967100();
 class Unk_CscOption { public: unsigned char* FUN_140a58500(); };   // the gamepad state (first byte: a pad is in use)
-Unk_CscOption* FUN_1409a8b10();
 class Unk_CscKeyTable { public: CStringW FUN_14142d760(int nKey, int nKind); };   // the key name of a binding
 Unk_CscKeyTable* FUN_1409331f0();
 class Unk_CscUiScale { public: float FUN_1422afec0(int nUiId); };
 Unk_CscUiScale* FUN_14025e7a0();
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);   // new ASGameEntity(root, nUiId)
 
-class Unk_CscTextKeys { public: CStringW FUN_14087ede0(const CStringW& str); };
+class Unk_CscTextKeys : public CServerStringGroup { };
 class Unk_CscTexts { public: Unk_CscTextKeys* FUN_140a87690(); Unk_CscTextKeys* FUN_141747b40(); };
-Unk_CscTexts* FUN_140a87680();
-class Unk_CscReserved { public: void FUN_1416fb300(CStringW& str); };
-Unk_CscReserved* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 class CMsgBoxData : public CPtred {};                             // the message box (unit_1406125d0.h; only released here)
 MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW text);
 
@@ -142,15 +136,15 @@ UICutSceneCinematic::UICutSceneCinematic()
       m_groups(17, 0.75f, 0.25f, 2.25f, 10), m_nSkipState(0), m_bSkipped(false)
 {
     m_2c = 0x1c;
-    FUN_140939a10()->FUN_140da4e40(L"NotifyRemoveGameObject", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::FUN_1419085e0));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::FUN_141908620));
+    FUN_140939a10()->RegisterNotify(L"NotifyRemoveGameObject", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::FUN_1419085e0));
+    FUN_140939a10()->RegisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::FUN_141908620));
 }
 
 // @0x1419072a0
 UICutSceneCinematic::~UICutSceneCinematic()
 {
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyRemoveGameObject", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::FUN_1419085e0));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::FUN_141908620));
+    FUN_140939a10()->UnregisterNotify(L"NotifyRemoveGameObject", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::FUN_1419085e0));
+    FUN_140939a10()->UnregisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::FUN_141908620));
 }
 
 // @0x141907520
@@ -214,7 +208,7 @@ void UICutSceneCinematic::OnLoadComplete()
         break;
     }
     CStringW strKey(L"$s_cutscene_skip_key");
-    if (*FUN_1409a8b10()->FUN_140a58500())
+    if (*reinterpret_cast<Unk_CscOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500())
         strKey = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
     FUN_141907d60(m_nSkipState, CStringW(strKey), CStringW(m_strSkipLabel));
 }
@@ -388,7 +382,7 @@ void UICutSceneCinematic::FUN_141908690()
     m_nTalkEnd = 0;
     if (m_nVoice != 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_nVoice);
+        reinterpret_cast<Unk_CscEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nVoice);
         m_nVoice = 0;
     }
 }
@@ -416,7 +410,7 @@ void UICutSceneCinematic::FUN_141908750()
         m_spTalk = 0;
         if (m_nVoice != 0)
         {
-            FUN_1403ed280()->FUN_1411a6060(m_nVoice);
+            reinterpret_cast<Unk_CscEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nVoice);
             m_nVoice = 0;
         }
     }
@@ -428,7 +422,7 @@ void UICutSceneCinematic::FUN_141908750()
     m_nTalkEnd = nTick + m_spTalk->m_nDuration;
     if (m_spTalk->m_nNpcId == 0)
     {
-        MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pPC = reinterpret_cast<Unk_CscWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPC)
             FUN_141908470(pPC->vfunc_77(), CStringW(m_spTalk->m_strText), CStringW(), 0);
     }
@@ -437,7 +431,7 @@ void UICutSceneCinematic::FUN_141908750()
         FUN_141908470(FUN_1401aa6a0(m_spTalk->m_nNpcId), CStringW(m_spTalk->m_strText), FUN_14016a730(FUN_140cc2c70(m_spTalk->m_strIllust), 0), m_spTalk->m_nFlag);
     }
     if (!m_spTalk->m_strSound.IsEmpty())
-        m_nVoice = FUN_1403ed280()->FUN_1411a5d80(m_spTalk->m_strSound);
+        m_nVoice = reinterpret_cast<Unk_CscEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5d80(m_spTalk->m_strSound);
 }
 MS2_REPLACE_METHOD(0x141908750, UICutSceneCinematic, FUN_141908750, 1186, 0xFFB16FB9);
 
@@ -448,7 +442,7 @@ void UICutSceneCinematic::FUN_141908c00()
     for (POSITION pos = m_groups.GetStartPosition(); pos != 0; m_groups.GetNext(pos))
     {
         int nId = m_groups.GetKeyAt(pos);
-        PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nId);
+        PCBase* pActor = reinterpret_cast<Unk_CscWorld*>(WorldService::GetInstance())->FUN_141bd1200(nId);
         if (pActor == 0)
             continue;
         NiAVObject* pRoot = FUN_141b6efc0(pActor->FUN_14123c410());
@@ -481,7 +475,7 @@ void UICutSceneCinematic::FUN_141908c00()
                 spGroup->m_nHide = spTalk->m_nEnd;
                 spGroup->m_talks.RemoveAt(i, 1);
                 if (!spTalk->m_strSound.IsEmpty())
-                    FUN_1403ed280()->FUN_1411a5d80(spTalk->m_strSound);
+                    reinterpret_cast<Unk_CscEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5d80(spTalk->m_strSound);
                 break;
             }
         }
@@ -506,10 +500,10 @@ void UICutSceneCinematic::FUN_141908fc0()
 void UICutSceneCinematic::FUN_141909100()
 {
     SendTrigger();
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_CscWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC)
         FUN_140a7b810(pPC)->FUN_1409536d0();
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyCutSceneCinematicSkip));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyCutSceneCinematicSkip));
     m_bSkipped = true;
     if (m_spSkip)
         m_spSkip->vfunc_4(false);
@@ -530,7 +524,7 @@ MS2_REPLACE_METHOD(0x141909230, UICutSceneCinematic, SendTrigger, 103, 0x1F36D64
 // @0x1419092a0
 void UICutSceneCinematic::FUN_1419092a0(CStringW& strText)
 {
-    strText = FUN_140a87680()->FUN_140a87690()->FUN_14087ede0(strText);
+    strText = reinterpret_cast<Unk_CscTexts*>(TSingleton<CServerString>::GetInstance())->FUN_140a87690()->GetString(strText);
     strText.Replace(L"\\n", L"\n");
     FUN_1403b4750()->FUN_1416fb300(strText);
 }
@@ -539,7 +533,7 @@ MS2_REPLACE_METHOD(0x1419092A0, UICutSceneCinematic, FUN_1419092a0, 145, 0x2D9D3
 // @0x141909340
 void UICutSceneCinematic::FUN_141909340(int nActorId)
 {
-    PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nActorId);
+    PCBase* pActor = reinterpret_cast<Unk_CscWorld*>(WorldService::GetInstance())->FUN_141bd1200(nActorId);
     if (pActor == 0)
         return;
     NiAVObject* pRoot = FUN_141b6efc0(pActor->FUN_14123c410());
@@ -643,10 +637,10 @@ void UICutSceneCinematic::FUN_141909880(CInPacket& packet)
     if (strText.IsEmpty())
         return;
     unsigned nSound = 0;
-    MS2Ptr<Unk_CscVoiceProp> spVoice = FUN_1411b1de0()->FUN_141793110(strSound);
+    MS2Ptr<Unk_CscVoiceProp> spVoice = reinterpret_cast<Unk_CscSoundProps*>(TSingleton<SoundPropertyMgr>::GetInstance())->FUN_141793110(strSound);
     if (spVoice.get())
     {
-        MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pPC = reinterpret_cast<Unk_CscWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPC)
         {
             CString strEvent;
@@ -695,7 +689,7 @@ void UICutSceneCinematic::FUN_141909eb0(CInPacket& packet)
     }
     else
     {
-        strText = FUN_140a87680()->FUN_141747b40()->FUN_14087ede0(strText);
+        strText = reinterpret_cast<Unk_CscTexts*>(TSingleton<CServerString>::GetInstance())->FUN_141747b40()->GetString(strText);
     }
     if (strText.IsEmpty())
         return;
@@ -741,7 +735,7 @@ void UICutSceneCinematic::FUN_14190a4c0(CInPacket& packet)
     }
     m_strSkipMsg = packet.ReadString();
     CStringW strKey(L"$s_cutscene_skip_key");
-    if (*FUN_1409a8b10()->FUN_140a58500())
+    if (*reinterpret_cast<Unk_CscOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500())
         strKey = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
     FUN_141907d60(nType, CStringW(strKey), CStringW(strLabel));
 }
@@ -777,7 +771,7 @@ void UICutSceneCinematic::FUN_14190a6e0(CInPacket& packet)
     obj.FUN_1409c4a30("captionScale", fScale);
     m_30->Invoke("setCaption", obj);
     if (!strSound.IsEmpty())
-        FUN_1403ed280()->FUN_1411a5d80(strSound);
+        reinterpret_cast<Unk_CscEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5d80(strSound);
 }
 MS2_REPLACE_METHOD(0x14190A6E0, UICutSceneCinematic, FUN_14190a6e0, 1408, 0x2065A4F5);
 
@@ -795,7 +789,7 @@ void UICutSceneCinematic::FUN_14190ac70(CInPacket& packet)
     if (!FUN_1419096c0())
         FUN_141908040(true);
     if (!strSound.IsEmpty())
-        FUN_1403ed280()->FUN_1411a5d80(strSound);
+        reinterpret_cast<Unk_CscEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5d80(strSound);
 }
 MS2_REPLACE_METHOD(0x14190AC70, UICutSceneCinematic, FUN_14190ac70, 617, 0xE5FDE549);
 

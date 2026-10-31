@@ -79,10 +79,8 @@ public:
     Unk_140165cf0* FUN_140165cf0(const char*);              // first child element (also takes a document)
     Unk_140165cf0* FUN_140168650(const char*);              // next sibling element
 };
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
 int FUN_140873220(Unk_140165cf0*, const char*, unsigned&);
@@ -99,7 +97,6 @@ class Unk_NpcRecord : public CPtred {};
 MS2Ptr<Unk_NpcRecord> FUN_1406cd330(int nNpcId);
 
 // The locale / feature gate: is the feature named by the field's <feature> enabled.
-CFeatureManager* FUN_140166410();
 
 // field id -> <feature> name of every <fieldData> (filled once by BuildNameTable).
 static ATL::CAtlMap<int, CStringW> s_names;
@@ -141,7 +138,7 @@ int CFieldFeatureChecker::IsEnabled(int nFieldId)
     CheckInit();
     CStringW strFeature;
     s_names.Lookup(nFieldId, strFeature);
-    return FUN_140166410()->FUN_14036d4b0(strFeature);
+    return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d4b0(strFeature);
 }
 #endif
 
@@ -172,12 +169,12 @@ void CFieldMetaTable::LoadFieldMetaData()
     CString strPath = FUN_14071a5b0(CString("Table"), CString("FieldMetaData.xml"));
     TiXmlDocument doc;
     const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
 

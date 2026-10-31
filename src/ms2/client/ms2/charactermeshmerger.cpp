@@ -665,16 +665,16 @@ private:
 };
 MS2_CHECK_SIZE(Unk_CubeSceneIterator, 0x30);
 
-bool FUN_14098dad0(NiAVObject* pObject);                // object is hidden/culled
-NiNode* FUN_140a0b000(NiAVObject* pObject);             // parent node
 bool FUN_141052aa0(const NiPropertyState* pA, const NiPropertyState* pB);   // property states are equal
 
 struct Unk_MaterialTable;                               // DAT_143d69198 (MS2StandardMaterial RTTI)
 struct Unk_MaterialEntry;
 extern Unk_MaterialTable DAT_143d69198;
-Unk_MaterialEntry* FUN_140a17af0(Unk_MaterialTable* pTable, const NiMaterial* pMaterial);
-int FUN_140ef4dd0(Unk_MaterialEntry* pEntry);
-NiMaterial* FUN_140a17cd0(NiMesh* pMesh);         // active material
+class Unk_CubeKind   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140ef4dd0();
+};
 int FUN_141049fa0(NiMesh* pMesh, const MeshGroups& kGroups);
 
 CLogString* GetLogString();
@@ -728,7 +728,7 @@ MS2_CHECK_SIZE(Unk_AtlasResult, 0x18);
 typedef efd::vector<MeshList> MeshGroupVector;
 
 bool FUN_14098dfc0(NiAVObject* pObject);                    // object is an attachment/helper that is not merged
-bool FUN_140a56f50(const NiColor* pA, const NiColor* pB);   // colours differ
+bool FUN_140a56f50(struct Unk_Vec3Cli const*, struct Unk_Vec3Cli const*);   // C3: was FUN_140a56f50
 extern const NiPixelFormat DAT_1439fb040;                   // atlas pixel format
 extern NiTexture::FormatPrefs DAT_1439fc800;          // atlas texture format preferences
 extern const NiFixedString DAT_143ae50c8;                   // customised texture extra data keys (0x143ae50c8-0x143ae5200)
@@ -788,7 +788,7 @@ public:
     static CCustomizedTextureManager* CreateInstance() { return s_instance != 0 ? GetInstance() : new CCustomizedTextureManager; }
 };
 MS2_CHECK_SIZE(CCustomizedTextureManager, 0x8);
-CCustomizedTexInfo* FUN_1411660b0(CCustomizedTextureManager* pManager, CCustomizedTexInfo* pInfoA, CCustomizedTexInfo* pInfoB);
+void* FUN_1411660b0(class CCustomizedTextureManager*, class CCustomizedTexInfo*, class CCustomizedTexInfo*);   // C3: was FUN_1411660b0
 
 // Orders world transforms lexicographically for the per-transform grouping map.
 struct Unk_TransformLess
@@ -933,8 +933,8 @@ void FUN_141049b10(NiAVObject* pRoot, CAtlArray<CString>& kNames, MeshArray& kMe
         }
         if (i == 0)
         {
-            if (FUN_140a0b000(spMesh) != 0)
-                strFirstParent = (const char*)FUN_140a0b000(spMesh)->GetName();
+            if (((class NiAVObject*)(spMesh))->GetParent() != 0)
+                strFirstParent = (const char*)((class NiAVObject*)(spMesh))->GetParent()->GetName();
         }
     }
 }
@@ -953,10 +953,10 @@ bool FUN_141049c60(NiMesh* pMesh)
     NiSkinningMeshModifier* pSkin = NiDynamicCast(NiSkinningMeshModifier, pMesh->GetModifierByType(&NiSkinningMeshModifier::ms_RTTI));
     if (pSkin == 0)
         return false;
-    Unk_MaterialEntry* pEntry = FUN_140a17af0(&DAT_143d69198, FUN_140a17cd0(pMesh));
+    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), ((class NiMaterial*)((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial())));
     if (pEntry == 0)
         return false;
-    if (FUN_140ef4dd0(pEntry) != 2)
+    if (((class Unk_CubeKind*)(struct Unk_MaterialEntry*)(pEntry))->FUN_140ef4dd0() != 2)
         return false;
     return true;
 }
@@ -976,7 +976,7 @@ void FUN_141049d50(NiAVObject* pRoot, MeshGroups& kGroups)
     Unk_CubeSceneIterator kIter(pRoot);
     while (NiAVObject* pObject = kIter.FUN_14098e0d0(false))
     {
-        if (FUN_14098dad0(pObject))
+        if (((class NiAVObject*)(pObject))->GetAppCulled())
             continue;
         if (pObject->GetName() == "Bip01")
             continue;
@@ -1012,7 +1012,7 @@ int FUN_141049fa0(NiMesh* pMesh, const MeshGroups& kGroups)
     for (size_t i = 0; i < kGroups.size(); i++)
     {
         NiMesh* pFirst = kGroups[i][0];
-        if (FUN_140a0b000(pFirst) != FUN_140a0b000(pMesh))
+        if (((class NiAVObject*)(pFirst))->GetParent() != ((class NiAVObject*)(pMesh))->GetParent())
             continue;
         if (!FUN_141052aa0(pFirst->GetPropertyState(), pMesh->GetPropertyState()))
             continue;
@@ -1340,7 +1340,7 @@ NiMesh* FUN_14104ae20(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* 
                 pMerged->AttachProperty(pProperty);
         }
     }
-    pMerged->ApplyAndSetActiveMaterial(FUN_140a17cd0(pFirst), 0xffffffff);
+    pMerged->ApplyAndSetActiveMaterial(((class NiMaterial*)((class NiRenderObject*)(class NiMesh*)(pFirst))->GetActiveMaterial()), 0xffffffff);
     unsigned short usExtra = pFirst->GetExtraDataSize();
     for (unsigned short us = 0; us < usExtra; us++)
         pMerged->AddExtraData(pFirst->GetExtraDataAt(us));
@@ -1840,7 +1840,7 @@ void FUN_14104d450(NiAVObject* pRoot, MeshGroups& kGroups)
     Unk_CubeSceneIterator kIter(pRoot);
     while (NiAVObject* pObject = kIter.FUN_14098e0d0(false))
     {
-        if (FUN_14098dad0(pObject))
+        if (((class NiAVObject*)(pObject))->GetAppCulled())
             continue;
         if (pObject->GetName() == "Bip01")
             continue;
@@ -1885,13 +1885,13 @@ void FUN_14104d450(NiAVObject* pRoot, MeshGroups& kGroups)
         if (kName.Contains("FA") && kName != "FA_EA")
             continue;
 
-        Unk_MaterialEntry* pEntry = FUN_140a17af0(&DAT_143d69198, FUN_140a17cd0(pMesh));
-        if (pEntry != 0 && FUN_140ef4dd0(pEntry) == 2)
+        Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), ((class NiMaterial*)((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial())));
+        if (pEntry != 0 && ((class Unk_CubeKind*)(struct Unk_MaterialEntry*)(pEntry))->FUN_140ef4dd0() == 2)
         {
             NiMaterialProperty* pMaterial = NiDynamicCast(NiMaterialProperty, pMesh->GetProperty(3));
             const NiColor& kAmbient = pMaterial->GetAmbientColor();
             const NiColor& kDiffuse = pMaterial->GetDiffuseColor();
-            if (FUN_140a56f50(&kAmbient, &kDiffuse))
+            if (FUN_140a56f50((struct Unk_Vec3Cli const*)(&kAmbient), (struct Unk_Vec3Cli const*)(&kDiffuse)))
                 EE_LOG_AT(1, 1, ("Mesh %s's material ambient and diffuse are not equal!", (const char*)pMesh->GetName()), MS2_THIS_FILE, 0x155);
             if (kAmbient.g != kAmbient.r || kAmbient.b != kAmbient.r || kDiffuse.g != kDiffuse.r || kDiffuse.b != kDiffuse.r)
                 EE_LOG_AT(1, 1, ("Mesh %s's material color is not grayscale color!", (const char*)pMesh->GetName()), MS2_THIS_FILE, 0x159);
@@ -2180,7 +2180,7 @@ efd::SmartPointer<NiTexture> FUN_141051560(NiAVObject* pMesh)
 
     if (CCustomizedTextureManager::GetInstance() == 0)
         CCustomizedTextureManager::CreateInstance();
-    efd::SmartPointer<CCustomizedTexInfo> spComposed = FUN_1411660b0(CCustomizedTextureManager::GetInstance(), spInfoA, spInfoB);
+    efd::SmartPointer<CCustomizedTexInfo> spComposed = ((class CCustomizedTexInfo*)FUN_1411660b0(CCustomizedTextureManager::GetInstance(), spInfoA, spInfoB));
     return NiDynamicCast(NiSourceTexture, (NiTexture*)spComposed->m_spBase);
 }
 
@@ -2198,7 +2198,7 @@ void FUN_141051f90(NiAVObject* pMesh, NiPixelData* pShaderMap, const NiRect<unsi
     pData = NiDynamicCast(NiFloatExtraData, pMesh->GetExtraData(DAT_143ae5150));
     if (pData != 0)
         fParam1 = pData->GetValue();
-    if (FUN_140a17cd0((NiMesh*)pMesh)->GetName() == DAT_143ae5200)
+    if (((class NiMaterial*)((class NiRenderObject*)(class NiMesh*)((NiMesh*)pMesh))->GetActiveMaterial())->GetName() == DAT_143ae5200)
         bMaterial = true;
     NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, pMesh->GetProperty(8));
     if (pTexturing != 0)
@@ -2485,7 +2485,7 @@ NiMesh* FUN_14104f460(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* 
                 pMerged->AttachProperty(pProperty);
         }
     }
-    pMerged->ApplyAndSetActiveMaterial(FUN_140a17cd0(pFirst), 0xffffffff);
+    pMerged->ApplyAndSetActiveMaterial(((class NiMaterial*)((class NiRenderObject*)(class NiMesh*)(pFirst))->GetActiveMaterial()), 0xffffffff);
     unsigned short usExtra = pFirst->GetExtraDataSize();
     for (unsigned short us = 0; us < usExtra; us++)
         pMerged->AddExtraData(pFirst->GetExtraDataAt(us));

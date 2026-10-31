@@ -12,6 +12,10 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cpet.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_HpMovie : public ASMovieClip
@@ -69,7 +73,7 @@ class Unk_HpNpc : public PCBase
 public:
     MS2Ptr<Unk_NpcData> FUN_141093270();
 };
-class Unk_HpPet { public: int FUN_140b109f0(); };
+class Unk_HpPet : public CPet { };
 struct Unk_HpSeatPos : Unk_GVec3 {};                                    // the returned seat position (copied out through Unk_GVec3)
 class Unk_HpSeat { public: Unk_HpSeatPos FUN_140adf8e0(); };
 struct Unk_HpMountInfo3 { char m_pad[0x68]; int m_68; };
@@ -95,32 +99,21 @@ public:
 };
 class Unk_HpMountHolder { public: Unk_HpMountPtr FUN_141707750(); };
 // An actor (pc, npc, pet) with the non-virtual accessors this unit calls.
-class Unk_HpActor : public PCBase
+class Unk_HpActor : public PC
 {
 public:
-    int FUN_14166ce30();                                // dead
-    float FUN_141670390();                              // height above the ground
-    int FUN_14165ef30();
-    int FUN_141674bc0();
-    int FUN_141661970();
-    __int64 FUN_141656a80();
-    __int64 FUN_141670a00(int nStat);                   // stat 4 = current hp
-    __int64 FUN_141670a30(int nStat);                   // stat 4 = max hp
     class Unk_HpSeat* FUN_14165ca20();
     Unk_HpMountHolder* FUN_1416764a0();
     int FUN_1415278d0(__int64 nId);
 };
 struct Unk_HpCfgData { char m_pad[0xa]; bool m_a; char m_b; bool m_c; char m_d; bool m_e; };
 class Unk_HpCfgHolder { public: Unk_HpCfgData* FUN_140b123b0(); };
-Unk_HpCfgHolder* FUN_1409a8b10();
 class Unk_HpWorld;
-Unk_HpWorld* FUN_1403ed2d0();
 Unk_HpActor* FUN_141bd0cc0(Unk_HpWorld*);               // the local player's actor
 Unk_HpActor* FUN_140974230(PCBase* pActor);             // the actor as a player
 Unk_HpNpc* FUN_14096e110(PCBase* pActor);               // the actor as an npc
 Unk_HpPet* FUN_1409ffc60(PCBase* pActor);               // the actor as a pet
 class Unk_HpUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
-Unk_HpUIMgr* FUN_1403ed2b0();
 UIHpBar* FUN_141742c80(int nUiId);
 template <> bool MS2Ptr<ASGameEntity>::operator!() const;                   // 0x140ede6c0
 UITombStoneBar* FUN_141994a90(int nUiId);
@@ -236,12 +229,12 @@ int UIHpBar::Entity::vfunc_8(int n)
     if (nDead != 0)
         return 1;
     Unk_HpPet* pPet = FUN_1409ffc60(pActor);
-    if (pPet != 0 && pPet->FUN_140b109f0() != 0)
+    if (pPet != 0 && pPet->GetKind() != 0)
         return 1;
     Unk_HpActor* pPc = FUN_140974230(pActor);
     if (pPc != 0)
     {
-        Unk_HpActor* pLocal = FUN_141bd0cc0(FUN_1403ed2d0());
+        Unk_HpActor* pLocal = FUN_141bd0cc0(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance()));
         if (pLocal != 0 && pLocal->vfunc_122(pPc) == 1 && pPc->FUN_141674bc0() != 0)
             return 1;
         Unk_HpMountHolder* pHolder = pActor->FUN_1416764a0();
@@ -354,7 +347,7 @@ void UIHpBar::Entity::FUN_1419923b0()
 // @0x1419923f0
 int UIHpBar::Entity::FUN_1419923f0()
 {
-    Unk_HpActor* pLocal = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HpActor* pLocal = FUN_141bd0cc0(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance()));
     if (pLocal == 0)
         return 0;
     Unk_HpActor* pActor = (Unk_HpActor*)FUN_140f49330();
@@ -367,7 +360,7 @@ int UIHpBar::Entity::FUN_1419923f0()
         pInfo = 0;
     if (FUN_14087ddc0(pInfo, 0x6200004))
     {
-        return FUN_1409a8b10()->FUN_140b123b0()->m_a;
+        return reinterpret_cast<Unk_HpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_a;
     }
     else
     {
@@ -375,10 +368,10 @@ int UIHpBar::Entity::FUN_1419923f0()
         if (pPc != 0)
         {
             if (pLocal->vfunc_122(pPc) != 0)
-                return FUN_1409a8b10()->FUN_140b123b0()->m_e;
+                return reinterpret_cast<Unk_HpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_e;
             if (pLocal->FUN_1415278d0(pPc->FUN_141656a80()) == 0)
                 return 0;
-            return FUN_1409a8b10()->FUN_140b123b0()->m_c;
+            return reinterpret_cast<Unk_HpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_c;
         }
         else
         {
@@ -386,8 +379,8 @@ int UIHpBar::Entity::FUN_1419923f0()
             if (pNpc != 0)
             {
                 if (pNpc->vfunc_116() == 2)
-                    return FUN_1409a8b10()->FUN_140b123b0()->m_c;
-                return FUN_1409a8b10()->FUN_140b123b0()->m_e;
+                    return reinterpret_cast<Unk_HpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_c;
+                return reinterpret_cast<Unk_HpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_e;
             }
         }
     }
@@ -403,7 +396,7 @@ int UIHpBar::Entity::FUN_141992580()
     int nOld = m_b4;
     if (pActor != 0)
     {
-        Unk_HpActor* pLocal = FUN_141bd0cc0(FUN_1403ed2d0());
+        Unk_HpActor* pLocal = FUN_141bd0cc0(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance()));
         if (pLocal != 0)
         {
             if (pLocal->FUN_14123c580() == pActor->FUN_14123c580())
@@ -532,7 +525,7 @@ int UITombStoneBar::Entity::vfunc_8(int n)
         return 0;
     if (pPc->FUN_14166ce30() == 0)
         return 1;
-    Unk_HpActor* pLocal = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HpActor* pLocal = FUN_141bd0cc0(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance()));
     if (pLocal != 0 && pLocal->vfunc_122(pPc) != 0)
         return 1;
     if (pPc->FUN_141661970() != 0 || pPc->FUN_14165ca20() == 0)
@@ -969,9 +962,9 @@ UITombStoneBar::Entity* UITombStoneBar::FUN_1419945b0(int nActorId)
 // @0x1419949f0
 UISlimeEventBar* FUN_1419949f0(int nUiId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_HpUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_HpUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (p.get())
             return dynamic_cast<UISlimeEventBar*>((UIObject*)p);
     }
@@ -981,9 +974,9 @@ UISlimeEventBar* FUN_1419949f0(int nUiId)
 // @0x141994a90
 UITombStoneBar* FUN_141994a90(int nUiId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_HpUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_HpUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (p.get())
             return dynamic_cast<UITombStoneBar*>((UIObject*)p);
     }

@@ -76,9 +76,12 @@ int FUN_14074b050(CQuestData* pData);
 int FUN_14074b070(CQuestData* pData);                                   // the repeat kind (1 daily, 2 weekly, 3 week repeat)
 CQuestManager* FUN_140764020();
                   // the local player (NULL outside the field)
-WorldService* FUN_1403ed2d0();
                   // the npc id of the open talk
-UITalkManager* FUN_140967100();
+class Unk_AkoCutscene   // C3: static member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoCutscene* GetInstance();
+};
 extern int DAT_143ae0fc0;                                               // debug switch: show ids
 
 // ---- the unit's statics ---------------------------------------------------------------------------------------------
@@ -418,13 +421,13 @@ MS2Ptr<CQuestUIData> FUN_1416e5f60(int nQuestId)
 // @0x1416e6100
 int FUN_1416e6100(int nQuestId, int bIgnoreNpc)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
         MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
         if (!spData)
             return 0;
-        int nNpcId = FUN_140967100()->FUN_141b212f0();
+        int nNpcId = ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212f0();
         if (FUN_140764020()->FUN_140745590(nQuestId))
         {
             return 0x5dc;
@@ -541,7 +544,7 @@ CStringW CQuestUIData::FUN_1416e6900(int nIndex, const CStringW& strText)
     MS2Ptr<CConditionCommonData> spCond = spData->m_conditions[nIndex];
     if (spCond->m_nType == 37 && strManual.GetLength() == 0)
         return str;
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
         Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(m_nQuestId);

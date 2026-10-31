@@ -17,6 +17,16 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/asmousecursor.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "reconnectionmanagercli.h"
+#include "networkservice.h"
+#include "statemanager.h"
+#include "scenestatemulti.h"
+#include "uiservice.h"
+#include "soundservice.h"
+#include "ms2/placeholder/iclientplatform.h"
+#include "ms2/placeholder/crashmanagercli.h"
+#include "bigdatalogsystem.h"
+#include "ms2/placeholder/cgameoption.h"
 #pragma comment(lib, "user32.lib")
 
 // Statics of the unit's header (initialized in this order in .text$di).
@@ -43,81 +53,6 @@ extern unsigned g_uTimerInterval;       // 0x1439fab0c: SetTimer(1000) period
 extern const NiRTTI* const g_pRendererRTTI;     // placeholder, see FUN_14098d8d0 uses (NiDX9Renderer::ms_RTTI)
 
 // Unit-local stand-ins and unrecovered callees (names invented from their use).
-class Unk_AppPlatform {                 // app/platform object behind 0x140d86260 (59+ slots; vfunc_58 posts a UI message)
-public:
-    virtual void vfunc_0();
-    virtual void vfunc_1();
-    virtual void vfunc_2();
-    virtual void vfunc_3();
-    virtual void vfunc_4();
-    virtual void vfunc_5();
-    virtual void vfunc_6();
-    virtual void vfunc_7();
-    virtual void vfunc_8();
-    virtual void vfunc_9();
-    virtual void vfunc_10();
-    virtual void vfunc_11();
-    virtual int vfunc_12();
-    virtual void vfunc_13();
-    virtual void vfunc_14();
-    virtual void vfunc_15();
-    virtual void vfunc_16();
-    virtual void vfunc_17();
-    virtual void vfunc_18(HWND);
-    virtual void vfunc_19(UINT, WPARAM, LPARAM);
-    virtual void vfunc_20();
-    virtual void vfunc_21();
-    virtual void vfunc_22();
-    virtual void vfunc_23();
-    virtual void vfunc_24();
-    virtual void vfunc_25();
-    virtual void vfunc_26();
-    virtual void vfunc_27();
-    virtual void vfunc_28();
-    virtual void vfunc_29();
-    virtual void vfunc_30();
-    virtual void vfunc_31();
-    virtual void vfunc_32();
-    virtual void vfunc_33();
-    virtual void vfunc_34();
-    virtual void vfunc_35();
-    virtual void vfunc_36();
-    virtual void vfunc_37();
-    virtual void vfunc_38();
-    virtual void vfunc_39();
-    virtual void vfunc_40();
-    virtual void vfunc_41();
-    virtual void vfunc_42();
-    virtual void vfunc_43();
-    virtual void vfunc_44();
-    virtual void vfunc_45();
-    virtual void vfunc_46();
-    virtual void vfunc_47();
-    virtual void vfunc_48();
-    virtual void vfunc_49();
-    virtual void vfunc_50();
-    virtual void vfunc_51();
-    virtual void vfunc_52();
-    virtual void vfunc_53();
-    virtual void vfunc_54();
-    virtual void vfunc_55();
-    virtual void vfunc_56();
-    virtual void vfunc_57();
-    virtual void vfunc_58(int, int);
-    virtual void vfunc_59();
-    virtual void vfunc_60();
-    virtual void vfunc_61();
-    virtual void vfunc_62();
-    virtual void vfunc_63();
-    virtual void vfunc_64();
-    virtual void vfunc_65();
-    virtual void vfunc_66();
-    virtual void vfunc_67();
-    virtual void vfunc_68();
-    virtual void vfunc_69();
-    virtual void vfunc_70();
-    virtual void vfunc_71(unsigned __int64);
-};
 class Unk_MouseTarget {                 // UI object receiving the translated mouse messages (slot 13)
 public:
     virtual void vfunc_0();
@@ -156,13 +91,6 @@ public:
     virtual void vfunc_16();
     virtual void vfunc_17();
     virtual int vfunc_18(HWND, UINT, WPARAM, LPARAM);
-};
-class Unk_StateRef {                    // counted reference to the current game state (8 bytes)
-public:
-    ~Unk_StateRef();                    // 0x140f30880
-    void* FUN_140f30a30();              // get()
-private:
-    void* m_p;
 };
 class Unk_ComObj : public IUnknown {    // COM-style object queried from the game core (slot 16 is invoked on G)
 public:
@@ -225,32 +153,18 @@ private:
     void* m_pad_08;
 };
 class Unk_LoginDialog;
-void FUN_1417e25a0(void*, int);
 int FUN_141b938f0(int);
 void FUN_141b93a20(unsigned);
 void FUN_141b93aa0();
 Unk_MessageHook* FUN_1414a56c0();
 
 extern Unk_WorkerPtr g_workerPtr;       // 0x143ac2bd0
-Unk_AppPlatform* FUN_140d86260();
-void* FUN_140a44830();
-void FUN_1401ce2f0(void*, const char*, unsigned, unsigned);
-void* FUN_140d89bc0();
-void* FUN_140994450();
-NiDX9Renderer* FUN_14098d8d0(const NiRTTI*, void*);
-void* FUN_1409a8d60(NiDX9Renderer*);
-void FUN_1427d5390(NiDX9Renderer*);
-void FUN_1427cb2a0(NiDX9Renderer*, unsigned, unsigned);                  // NiDX9Renderer::SetDisplayMode(width, height)
 void FUN_140d4a600(Unk_Worker*);
 void* FUN_14025e7a0();
 float FUN_14028aed0(float f);                                       // floor(float)
 struct Unk_WinMovieMgrView { Unk_HudPtr FUN_1422b0370(int nLayer); };   // member (this=rcx, hidden return=rdx)
 struct Unk_HudCursor : public ASMouseCursor { };   // ASMouseCursor (0x1422cec40)
 void FUN_14209cc20(void*, void*);
-void* FUN_140d8ee90();
-void FUN_140a1f970(void*, const CString&, const CString&);
-void* FUN_1403ed2b0();
-void FUN_141adbea0(void*);
 CStringW FUN_1408116a0(int, const int&);
 CStringW GetStringCommon(unsigned);
 CStringW FUN_1401d0080(const CStringW&, const CStringW&);
@@ -262,31 +176,10 @@ void FUN_1419e21e0(Unk_LoginDialog*, CStringW);
 Unk_MsgBoxPtr FUN_140d74390(CStringW, int, Unk_MsgCallback);
 Unk_MsgCallback FUN_140b76b10(bool (*)(int));
 bool FUN_141902530(int);
-void* FUN_140aa6d30();
-int FUN_1417e2610(void*);
-struct Unk_WinSceneView { Unk_StateRef FUN_1417e26d0(); };   // current state (member: this=rcx, hidden return=rdx)
-void FUN_14174ebc0(void*);
-void* FUN_140714f90();
-void FUN_141538f80(void*);
-void FUN_1415382c0(void*);
-void FUN_141538540(void*);
-void FUN_141538480(void*, int);
-void* FUN_140e800e0();
+CNetworkService* FUN_140714f90();
+CReconnectionManagerCli* FUN_140e800e0();
 void* FUN_140aadf80();
-bool FUN_140aacf50(void*, unsigned);
-bool FUN_140aad1e0(void*);
-void FUN_140aad340(void*, unsigned);
-int FUN_140aad2b0(void*);
-bool FUN_140aad2d0(void*, int);
-bool FUN_140aad220(void*);
-void FUN_140aad5c0(void*, int);
-bool FUN_140aad450(void*);
-void FUN_140aad6e0(void*, int);
-void* FUN_1409a8b10();
-void* FUN_140c9cb10();
-struct Unk_D13c70 { char m_0; bool m_1; };
-Unk_D13c70* FUN_140d13c70(void*);
-void FUN_1417ae840(void*, int);
+CSoundService* FUN_140c9cb10();
 void* FUN_140c8dac0();
 void FUN_140d0a510(void*);
 void FUN_140d0a560(void*);
@@ -299,7 +192,6 @@ int FUN_141489fb0(void*);
 void FUN_141489f40(void*);
 unsigned FUN_140869420();
 __int64 FUN_141ade340(HWND, UINT, WPARAM, LPARAM);
-HWND FUN_14209c720(const void*);
 
 LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -334,7 +226,7 @@ int CWindowService::GetCursorClientPos(float* pfX, float* pfY)
     POINT pt;
     if (!GetCursorPos(&pt))
         return 0;
-    if (!ScreenToClient(FUN_14209c720(this), &pt))
+    if (!ScreenToClient(GetWindowRef(), &pt))
         return 0;
     *pfX = (float)pt.x;
     *pfY = (float)pt.y;
@@ -362,20 +254,20 @@ void CWindowService::PostMouseMove(UINT nMessage)
         return;
     if (!GetCursorPos(&pt))
         return;
-    if (!ScreenToClient(FUN_14209c720(this), &pt))
+    if (!ScreenToClient(GetWindowRef(), &pt))
         return;
-    if (!GetClientRect(FUN_14209c720(this), &rc))
+    if (!GetClientRect(GetWindowRef(), &rc))
         return;
     int x = pt.x - rc.left;
     int y = pt.y - rc.top;
-    PostMessageA(FUN_14209c720(this), nMessage, 0, (LPARAM)(x | (y << 16)));
+    PostMessageA(GetWindowRef(), nMessage, 0, (LPARAM)(x | (y << 16)));
 }
 
 // @0x141b91010
 bool CWindowService::RecreateRenderer(bool bFullscreen, unsigned nWidth, unsigned nHeight)
 {
-    FUN_1401ce2f0(FUN_140a44830(), "\n *RecreateRenderer %d %d", nWidth, nHeight);
-    NiDX9Renderer* pRenderer = FUN_14098d8d0(&NiDX9Renderer::ms_RTTI, FUN_140d89bc0());
+    TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("\n *RecreateRenderer %d %d", nWidth, nHeight);
+    NiDX9Renderer* pRenderer = (NiDX9Renderer*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, NiDX9Renderer::GetRenderer());
     unsigned nUseFlags, nCurWidth, nCurHeight;
     NiWindowRef hWndDevice, hWndFocus;
     unsigned nAdapter;
@@ -393,11 +285,11 @@ bool CWindowService::RecreateRenderer(bool bFullscreen, unsigned nWidth, unsigne
         nUseFlags |= 4;
     else
         nUseFlags &= ~4u;
-    NiDX9Renderer::RecreateStatus eStatus = pRenderer->Recreate(nCurWidth, nCurHeight, nUseFlags, FUN_14209c720(this),
+    NiDX9Renderer::RecreateStatus eStatus = pRenderer->Recreate(nCurWidth, nCurHeight, nUseFlags, GetWindowRef(),
         eFBFormat, eDSFormat, ePresentInterval, eSwapEffect, nFBMode, nBackBufferCount, nRefreshRate);
     if (eStatus == NiDX9Renderer::RECREATESTATUS_FAILED)
         return false;
-    OnRendererChanged(FUN_1409a8d60(pRenderer));
+    OnRendererChanged(pRenderer->GetRenderState());
     if (m_bMaximize)
         bFullscreen = true;
     ApplyWindowMode(bFullscreen, nCurWidth, nCurHeight);
@@ -413,12 +305,12 @@ void CWindowService::ApplyWindowMode(bool bFullscreen, unsigned nWidth, unsigned
         nShowCmd = 0;
     if (bFullscreen)
     {
-        void* pRenderMgr = FUN_140994450();
+        NiRenderer* pRenderMgr = NiRenderer::GetRenderer();
         if (pRenderMgr != 0)
         {
-            NiDX9Renderer* pRenderer = FUN_14098d8d0(&NiDX9Renderer::ms_RTTI, pRenderMgr);
+            NiDX9Renderer* pRenderer = (NiDX9Renderer*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, pRenderMgr);
             if (pRenderer != 0)
-                FUN_1427cb2a0(pRenderer, nWidth, nHeight);
+                pRenderer->SetDisplayMode(nWidth, nHeight);
         }
         CWnd::FromHandle(m_hWnd)->SetMenu(0);
         CRect rcWindow(0, 0, nWidth, nHeight);
@@ -428,11 +320,11 @@ void CWindowService::ApplyWindowMode(bool bFullscreen, unsigned nWidth, unsigned
             CString strError;
             strError.Format("!AdjustWindowRect() result [%d] %d %d - %d %d", nError, rcWindow.Width(), rcWindow.Height(),
                 nWidth, nHeight);
-            if (FUN_140d8ee90() != 0)
-                FUN_140a1f970(FUN_140d8ee90(), "Error AdjustWindowRect", strError);
+            if (TSingleton<CBigDataLogSystem>::GetInstance() != 0)
+                TSingleton<CBigDataLogSystem>::GetInstance()->SendLog("Error AdjustWindowRect", strError);
             rcWindow.SetRect(0, 0, nWidth, nHeight);
         }
-        SetWindowLongA(FUN_14209c720(this), -16, 0x80000000);
+        SetWindowLongA(GetWindowRef(), -16, 0x80000000);
         UINT nFlags = 2;
         HWND hWndInsertAfter = HWND_TOPMOST;
         if (m_bMaximize)
@@ -440,25 +332,25 @@ void CWindowService::ApplyWindowMode(bool bFullscreen, unsigned nWidth, unsigned
             nFlags &= ~2;
             hWndInsertAfter = HWND_NOTOPMOST;
         }
-        if (!SetWindowPos(FUN_14209c720(this), hWndInsertAfter, 0, 0, rcWindow.Width(), rcWindow.Height(), nFlags))
+        if (!SetWindowPos(GetWindowRef(), hWndInsertAfter, 0, 0, rcWindow.Width(), rcWindow.Height(), nFlags))
         {
             DWORD nError = GetLastError();
             CString strError;
             strError.Format("!SetWindowPos() result [%d] %d %d - %d %d topMost %d flag %d", nError, rcWindow.Width(),
                 rcWindow.Height(), nWidth, nHeight, hWndInsertAfter, nFlags);
-            if (FUN_140d8ee90() != 0)
-                FUN_140a1f970(FUN_140d8ee90(), "Error SetWindowPos", strError);
+            if (TSingleton<CBigDataLogSystem>::GetInstance() != 0)
+                TSingleton<CBigDataLogSystem>::GetInstance()->SendLog("Error SetWindowPos", strError);
         }
-        ShowWindow(FUN_14209c720(this), nShowCmd);
+        ShowWindow(GetWindowRef(), nShowCmd);
     }
     else
     {
-        void* pRenderMgr = FUN_140994450();
+        NiRenderer* pRenderMgr = NiRenderer::GetRenderer();
         if (pRenderMgr != 0)
         {
-            NiDX9Renderer* pRenderer = FUN_14098d8d0(&NiDX9Renderer::ms_RTTI, pRenderMgr);
+            NiDX9Renderer* pRenderer = (NiDX9Renderer*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, pRenderMgr);
             if (pRenderer != 0)
-                FUN_1427d5390(pRenderer);
+                pRenderer->RestoreDisplayMode();
         }
         BOOL bHasMenu = m_menu.GetSafeHmenu() != 0;
         if (bHasMenu)
@@ -479,20 +371,20 @@ void CWindowService::ApplyWindowMode(bool bFullscreen, unsigned nWidth, unsigned
         int nOuterH = rc.bottom - rc.top;
         if (pRenderMgr != 0)
         {
-            NiDX9Renderer* pRenderer = FUN_14098d8d0(&NiDX9Renderer::ms_RTTI, pRenderMgr);
+            NiDX9Renderer* pRenderer = (NiDX9Renderer*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, pRenderMgr);
             if (pRenderer != 0)
                 pRenderer->Recreate(nWidth, nHeight);
         }
         DWORD dwStyle = 0xca0000;
-        ShowWindow(FUN_14209c720(this), 0);
-        SetWindowLongA(FUN_14209c720(this), -16, dwStyle);
-        SetWindowPos(FUN_14209c720(this), 0, 0, 0, nOuterW, nOuterH, 0x23);
+        ShowWindow(GetWindowRef(), 0);
+        SetWindowLongA(GetWindowRef(), -16, dwStyle);
+        SetWindowPos(GetWindowRef(), 0, 0, 0, nOuterW, nOuterH, 0x23);
         int nPosX = (int)(FUN_14028aed0((float)(nScreenW - nOuterW) * 0.5f) < 0.0f
                               ? 0.0f : FUN_14028aed0((float)(nScreenW - nOuterW) * 0.5f));
         int nPosY = (int)(FUN_14028aed0((float)(nScreenH - nOuterH) * 0.5f) < 0.0f
                               ? 0.0f : FUN_14028aed0((float)(nScreenH - nOuterH) * 0.5f));
-        SetWindowPos(FUN_14209c720(this), HWND_NOTOPMOST, nPosX, nPosY, nOuterW, nOuterH, 0);
-        ShowWindow(FUN_14209c720(this), nShowCmd);
+        SetWindowPos(GetWindowRef(), HWND_NOTOPMOST, nPosX, nPosY, nOuterW, nOuterH, 0);
+        ShowWindow(GetWindowRef(), nShowCmd);
     }
     GetWindowRect(m_hWnd, &g_rcWindow);
 }
@@ -544,11 +436,11 @@ void CWindowService::ShowGameWindow()
 {
     FUN_141b91a60();
     if (m_bMaximize)
-        ShowWindow(FUN_14209c720(this), 3);
+        ShowWindow(GetWindowRef(), 3);
     else
-        ShowWindow(FUN_14209c720(this), 5);
-    SetForegroundWindow(FUN_14209c720(this));
-    SetFocus(FUN_14209c720(this));
+        ShowWindow(GetWindowRef(), 5);
+    SetForegroundWindow(GetWindowRef());
+    SetFocus(GetWindowRef());
 }
 
 // Window procedure of the game window.
@@ -559,47 +451,47 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         return DefWindowProcA(hWnd, uMsg, wParam, lParam);
     if (uMsg == 0x4c8)
     {
-        if (FUN_140aa6d30() != 0)
+        if (TSingleton<CStateService>::GetInstance() != 0)
         {
-            if (FUN_1417e2610(FUN_140aa6d30()) == 0x620000d)
+            if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000d)
             {
-                void* pState = static_cast<Unk_WinSceneView*>(FUN_140aa6d30())->FUN_1417e26d0().FUN_140f30a30();
+                CSceneStateBase* pState = TSingleton<CStateService>::GetInstance()->GetCurrent();
                 if (pState != 0)
-                    FUN_14174ebc0(pState);
+                    static_cast<CSceneStateMulti*>(pState)->FUN_14174ebc0();
             }
         }
     }
     else if (uMsg == 0x465)
     {
         if (FUN_140714f90() != 0)
-            FUN_141538f80(FUN_140714f90());
-        if (FUN_140aa6d30() != 0)
+            FUN_140714f90()->FUN_141538f80();
+        if (TSingleton<CStateService>::GetInstance() != 0)
         {
             int nCode = (int)wParam;
             bool bHandled = false;
             if (FUN_140e800e0() != 0 && FUN_140aadf80() != 0)
             {
-                if (FUN_140aacf50(FUN_140e800e0(), nCode))
+                if (FUN_140e800e0()->FUN_140aacf50(nCode))
                 {
-                    if (!FUN_140aad1e0(FUN_140e800e0()))
-                        FUN_140aad340(FUN_140e800e0(), nCode);
+                    if (!FUN_140e800e0()->FUN_140aad1e0())
+                        FUN_140e800e0()->FUN_140aad340(nCode);
                     bHandled = true;
                 }
-                if (FUN_140aad1e0(FUN_140e800e0()) == 1)
+                if (FUN_140e800e0()->FUN_140aad1e0() == 1)
                 {
-                    int nKey = FUN_140aad2b0(FUN_140e800e0());
-                    if (FUN_140aad2d0(FUN_140e800e0(), nKey))
+                    int nKey = FUN_140e800e0()->FUN_140aad2b0();
+                    if (FUN_140e800e0()->FUN_140aad2d0(nKey))
                         bHandled = false;
-                    if (FUN_140aad220(FUN_140e800e0()))
+                    if (FUN_140e800e0()->FUN_140aad220())
                     {
-                        FUN_140aad5c0(FUN_140e800e0(), 0xc9);
+                        FUN_140e800e0()->FUN_140aad5c0(0xc9);
                         bHandled = false;
                     }
                 }
             }
             if (!bHandled)
             {
-                FUN_1417e25a0(FUN_140aa6d30(), 0x6200009);
+                TSingleton<CStateService>::GetInstance()->FUN_1417e25a0(0x6200009);
                 unsigned nMsgId = 0;
                 switch (nCode)
                 {
@@ -667,8 +559,8 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                 else
                 {
                     FUN_140d73aa0(strMessage, 0, 0, CStringW(L""));
-                    if (FUN_140d86260() != 0)
-                        FUN_140d86260()->vfunc_58(0x20f, nCode);
+                    if (GetClientPlatform() != 0)
+                        GetClientPlatform()->vfunc_58(0x20f, nCode);
                 }
             }
         }
@@ -678,19 +570,19 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         if (FUN_140e800e0() != 0 && FUN_140aadf80() != 0)
         {
             bool bFlag = true;
-            if (FUN_140aa6d30() != 0)
+            if (TSingleton<CStateService>::GetInstance() != 0)
             {
-                if (FUN_1417e2610(FUN_140aa6d30()) != 0x620000c)
+                if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000c)
                 {
                     bFlag = false;
-                    FUN_140aad6e0(FUN_140e800e0(), 0xcc);
+                    FUN_140e800e0()->FUN_140aad6e0(0xcc);
                 }
             }
             if (bFlag)
             {
-                bool bBusy = FUN_140aad450(FUN_140e800e0());
+                bool bBusy = FUN_140e800e0()->FUN_140aad450();
                 if (!bBusy)
-                    FUN_140aad6e0(FUN_140e800e0(), 200);
+                    FUN_140e800e0()->FUN_140aad6e0(200);
             }
         }
     }
@@ -698,22 +590,22 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
         int nCode = (int)wParam;
         bool bHandled = false;
-        if (FUN_140aa6d30() != 0 && FUN_140e800e0() != 0 && FUN_140aadf80() != 0)
+        if (TSingleton<CStateService>::GetInstance() != 0 && FUN_140e800e0() != 0 && FUN_140aadf80() != 0)
         {
-            if (FUN_140aacf50(FUN_140e800e0(), nCode))
+            if (FUN_140e800e0()->FUN_140aacf50(nCode))
             {
-                if (!FUN_140aad1e0(FUN_140e800e0()))
-                    FUN_140aad340(FUN_140e800e0(), nCode);
+                if (!FUN_140e800e0()->FUN_140aad1e0())
+                    FUN_140e800e0()->FUN_140aad340(nCode);
                 bHandled = true;
             }
-            if (FUN_140aad1e0(FUN_140e800e0()) == 1)
+            if (FUN_140e800e0()->FUN_140aad1e0() == 1)
             {
-                int nKey = FUN_140aad2b0(FUN_140e800e0());
-                if (FUN_140aad2d0(FUN_140e800e0(), nKey))
+                int nKey = FUN_140e800e0()->FUN_140aad2b0();
+                if (FUN_140e800e0()->FUN_140aad2d0(nKey))
                     bHandled = false;
-                if (FUN_140aad220(FUN_140e800e0()))
+                if (FUN_140e800e0()->FUN_140aad220())
                 {
-                    FUN_140aad5c0(FUN_140e800e0(), 0xc9);
+                    FUN_140e800e0()->FUN_140aad5c0(0xc9);
                     bHandled = false;
                 }
             }
@@ -725,47 +617,47 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
         bool bFlag = false;
         if (FUN_140e800e0() != 0)
-            bFlag = FUN_140aad1e0(FUN_140e800e0());
+            bFlag = FUN_140e800e0()->FUN_140aad1e0();
         if (bFlag)
         {
-            FUN_140aad6e0(FUN_140e800e0(), 200);
+            FUN_140e800e0()->FUN_140aad6e0(200);
         }
         else
         {
             int nCode = (int)wParam;
             FUN_140d74390(FUN_1408116a0(0x20e, nCode), 0, FUN_140b76b10(FUN_141902530));
-            if (FUN_140d86260() != 0)
-                FUN_140d86260()->vfunc_58(0x20e, nCode);
+            if (GetClientPlatform() != 0)
+                GetClientPlatform()->vfunc_58(0x20e, nCode);
         }
     }
     else if (uMsg == 0x468)
     {
         if (FUN_140714f90() != 0)
-            FUN_1415382c0(FUN_140714f90());
+            FUN_140714f90()->FUN_1415382c0();
     }
     else if (uMsg == 0x469)
     {
         if (FUN_140714f90() != 0)
-            FUN_141538540(FUN_140714f90());
+            FUN_140714f90()->FUN_141538540();
     }
     else if (uMsg == 0x46a)
     {
         int bFlag = 0;
         if (FUN_140e800e0() != 0)
-            bFlag = FUN_140aad1e0(FUN_140e800e0());
+            bFlag = FUN_140e800e0()->FUN_140aad1e0();
         if (FUN_140714f90() != 0)
-            FUN_141538480(FUN_140714f90(), bFlag);
+            FUN_140714f90()->FUN_141538480(bFlag);
     }
-    if (FUN_140d86260() != 0)
-        FUN_140d86260()->vfunc_19(uMsg, wParam, lParam);
+    if (GetClientPlatform() != 0)
+        GetClientPlatform()->vfunc_19(uMsg, (void*)wParam, (void*)lParam);
     switch (uMsg)
     {
     case 0xa1:
         if (wParam == 0x14)
         {
-            if (FUN_140aa6d30() != 0)
+            if (TSingleton<CStateService>::GetInstance() != 0)
             {
-                if (FUN_1417e2610(FUN_140aa6d30()) != 0x6200009 && FUN_1417e2610(FUN_140aa6d30()) != 0x620000b)
+                if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x6200009 && TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000b)
                 {
                     FUN_140d73bc0(0x288, 0x17, 0, s_gameExit);
                     return 0;
@@ -780,7 +672,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         else if (wParam == 8)
         {
             if (FUN_140aadf80() != 0)
-                PostMessageA(FUN_14209c720(FUN_140aadf80()), 0x112, 0xf020, 0);
+                PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), 0x112, 0xf020, 0);
             return 0;
         }
         else if (wParam == 9)
@@ -817,9 +709,9 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         int nKeys = LOWORD(wParam);
         BOOL bLeft = (nKeys & 1) ? TRUE : FALSE;
         BOOL bRight = (nKeys & 2) ? TRUE : FALSE;
-        if (FUN_140aa6d30() != 0)
+        if (TSingleton<CStateService>::GetInstance() != 0)
         {
-            Unk_MouseTarget* pTarget = (Unk_MouseTarget*)static_cast<Unk_WinSceneView*>(FUN_140aa6d30())->FUN_1417e26d0().FUN_140f30a30();
+            Unk_MouseTarget* pTarget = (Unk_MouseTarget*)(CSceneStateBase*)TSingleton<CStateService>::GetInstance()->GetCurrent();
             if (pTarget != 0)
                 pTarget->vfunc_13(uMsg, nPosX, nPosY, bLeft, bRight, nWheel);
         }
@@ -889,11 +781,11 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         break;
     case 0x10:
     {
-        NiDX9Renderer* pRenderer = FUN_14098d8d0(&NiDX9Renderer::ms_RTTI, FUN_140d89bc0());
+        NiDX9Renderer* pRenderer = (NiDX9Renderer*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, NiDX9Renderer::GetRenderer());
         if (pRenderer != 0)
-            FUN_1427d5390(pRenderer);
-        if (FUN_140aa6d30() != 0 && FUN_1417e2610(FUN_140aa6d30()) != 0x6200009 &&
-            FUN_1417e2610(FUN_140aa6d30()) != 0x620000b)
+            pRenderer->RestoreDisplayMode();
+        if (TSingleton<CStateService>::GetInstance() != 0 && TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x6200009 &&
+            TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000b)
         {
             FUN_140d73bc0(0x288, 0x17, 0, s_gameExit);
             return 0;
@@ -902,17 +794,17 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     }
     case 2:
     {
-        NiDX9Renderer* pRenderer = FUN_14098d8d0(&NiDX9Renderer::ms_RTTI, FUN_140d89bc0());
+        NiDX9Renderer* pRenderer = (NiDX9Renderer*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, NiDX9Renderer::GetRenderer());
         if (pRenderer != 0)
-            FUN_1427d5390(pRenderer);
+            pRenderer->RestoreDisplayMode();
         PostQuitMessage(0);
         break;
     }
     case 6:
         if (DAT_143af7d44 != 0)
             return 0;
-        else if (FUN_140d86260() != 0)
-            FUN_140d86260()->vfunc_71(wParam);
+        else if (GetClientPlatform() != 0)
+            GetClientPlatform()->vfunc_71((void*)wParam);
         switch (wParam)
         {
         case 1:
@@ -920,9 +812,9 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
             if (g_bAppActive == 0)
             {
                 g_bAppActive = 1;
-                if (FUN_1409a8b10() != 0 && FUN_140c9cb10() != 0 && FUN_140d13c70(FUN_1409a8b10())->m_1 == 0)
+                if (TSingleton<CGameOption>::GetInstance() != 0 && FUN_140c9cb10() != 0 && TSingleton<CGameOption>::GetInstance()->FUN_140d13c70()->m_b01 == 0)
                 {
-                    FUN_1417ae840(FUN_140c9cb10(), 0);
+                    FUN_140c9cb10()->FUN_1417ae840(0);
                     if (FUN_140c8dac0() != 0)
                         FUN_140d0a560(FUN_140c8dac0());
                 }
@@ -936,17 +828,17 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         default:
             if (g_bAppActive != 0)
             {
-                NiDX9Renderer* pRenderer = FUN_14098d8d0(&NiDX9Renderer::ms_RTTI, FUN_140d89bc0());
+                NiDX9Renderer* pRenderer = (NiDX9Renderer*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, NiDX9Renderer::GetRenderer());
                 if (pRenderer != 0)
                 {
                     unsigned int nFlags = pRenderer->GetCreationFlags();
                     if ((nFlags & 4) != 0)
-                        FUN_1427d5390(pRenderer);
+                        pRenderer->RestoreDisplayMode();
                 }
                 g_bAppActive = 0;
-                if (FUN_1409a8b10() != 0 && FUN_140c9cb10() != 0 && FUN_140d13c70(FUN_1409a8b10())->m_1 == 0)
+                if (TSingleton<CGameOption>::GetInstance() != 0 && FUN_140c9cb10() != 0 && TSingleton<CGameOption>::GetInstance()->FUN_140d13c70()->m_b01 == 0)
                 {
-                    FUN_1417ae840(FUN_140c9cb10(), 1);
+                    FUN_140c9cb10()->FUN_1417ae840(1);
                     if (FUN_140c8dac0() != 0)
                         FUN_140d0a510(FUN_140c8dac0());
                 }
@@ -991,10 +883,10 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 // @0x141b93470
 efd::AsyncResult CWindowService::OnTick()
 {
-    if (FUN_140d86260()->vfunc_12() == 0)
+    if (GetClientPlatform()->vfunc_12() == 0)
     {
         if (GetWindowRef() != 0)
-            FUN_140d86260()->vfunc_18(GetWindowRef());
+            GetClientPlatform()->vfunc_18(GetWindowRef());
     }
     return efd::AsyncResult_Complete;
 }
@@ -1091,17 +983,17 @@ int FUN_141b938f0(int nMode)
 // @0x141b93a20
 void FUN_141b93a20(unsigned nArg)
 {
-    FUN_141adbea0(FUN_1403ed2b0());
+    TSingleton<CUIService>::GetInstance()->FUN_141adbea0();
     FUN_140d73bc0(0xae, 0, 0, s_forceLogin);
-    FUN_140d86260()->vfunc_58(0xae, nArg);
+    GetClientPlatform()->vfunc_58(0xae, nArg);
 }
 
 // @0x141b93aa0
 void FUN_141b93aa0()
 {
-    FUN_141adbea0(FUN_1403ed2b0());
+    TSingleton<CUIService>::GetInstance()->FUN_141adbea0();
     FUN_140d73aa0(FUN_1408116a0(0x20f, 0), 0, 0, s_forceLogin);
-    FUN_140d86260()->vfunc_58(0x20f, 0);
+    GetClientPlatform()->vfunc_58(0x20f, 0);
 }
 
 TSingleton<CWindowService>::TSingleton() { s_instance = static_cast<CWindowService*>(this); }

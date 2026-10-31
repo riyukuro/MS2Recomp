@@ -60,7 +60,7 @@ public:
     void* m_pad[0xd8 / 8];
     CString m_strCaptureFile;                               // +0xd8
 };
-Unk_UgcClientPaths* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 LPDIRECT3DDEVICE9 FUN_1422cf0d0();                          // the renderer's D3D device
 
 // Upload/convert paths (all under ".\Custom\Convert").
@@ -959,7 +959,7 @@ Unk_UgcFileResult SaveRenderTargetImage(NiRect<unsigned int> kRect, NiRenderTarg
             throw Exception("mypc", 0xc);
         __time64_t tNow;
         time(&tNow);
-        strPath = FUN_1401d31f0()->m_strCaptureFile;
+        strPath = ((class Unk_UgcClientPaths*)FUN_1401d31f0())->m_strCaptureFile;
         if (_access(strPath, 0) == 0)
             FUN_14028e900(strPath);
         if (SaveRenderTargetToFileA(&strPath, D3DXIFF_PNG, pkGroup, kRect) == 0)
@@ -991,7 +991,7 @@ Unk_UgcFileResult SaveTextureImage(NiTexture* pkTexture)
             throw Exception("mypc", 0xc);
         __time64_t tNow;
         time(&tNow);
-        strPath = FUN_1401d31f0()->m_strCaptureFile;
+        strPath = ((class Unk_UgcClientPaths*)FUN_1401d31f0())->m_strCaptureFile;
         if (_access(strPath, 0) == 0)
             FUN_14028e900(strPath);
         if (SaveTextureToFileA(&strPath, D3DXIFF_PNG, pkTexture) == 0)
@@ -1023,7 +1023,7 @@ Unk_UgcFileResult SaveIconImage(CStringW strFile)
             throw Exception("mypc", 0xc);
         __time64_t tNow;
         time(&tNow);
-        strPath = FUN_1401d31f0()->m_strCaptureFile;
+        strPath = ((class Unk_UgcClientPaths*)FUN_1401d31f0())->m_strCaptureFile;
         if (_access(strPath, 0) == 0)
             FUN_14028e900(strPath);
         NiTexturePtr spTexture = LoadUgcTexture(strFile, 0x30, true);

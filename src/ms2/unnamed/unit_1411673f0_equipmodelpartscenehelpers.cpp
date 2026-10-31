@@ -24,6 +24,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local placeholders (names invented) --------------------------------------------------------------------------
 // The local player (a world actor) and the world that owns it.
@@ -31,14 +32,13 @@ struct Unk_EmPlayer : public PC
 {
 };
 struct Unk_EmWorld { Unk_EmPlayer* FUN_141bd0cc0(); };          // the local player
-Unk_EmWorld* FUN_1403ed2d0();
 
 // The app framework: +8 holds the service manager and the frame clock.
 struct Unk_EmApp
 {
     void* m_pad_00;
     efd::SmartPointer<Unk_ServiceManager> m_spServiceManager;   // +0x08
-    double FUN_141473280();                                     // the application time
+    // C3: the application time is CMainSystem::FUN_141473280
 };
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class). Next(bDescend) yields the next NiAVObject.
@@ -58,8 +58,8 @@ extern NiFixedString DAT_143ae50e8;     // substring of that tag that excludes t
 
 void FUN_1411dcc80(CEquipItem* pItem, CAtlArray<MS2Ptr<Unk_PickTarget> >& aParts);   // the item's model parts
 int FUN_1405451c0(const CString* pName);                        // equip slot of a part name
-void FUN_1414d37a0(NiRenderObject* pObject, int n);             // highlight on
-void FUN_1414d3930(NiRenderObject* pObject);                    // highlight off
+void FUN_1414d37a0(void*, int);   // C3: was FUN_1414d37a0
+void FUN_1414d3930(void*);   // C3: was FUN_1414d3930
 
 // @0x1411673f0
 // The scene node of the part named pName: from the model root first, then from each loaded mesh of the part.
@@ -141,7 +141,7 @@ void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue)
         if (pInterp != 0) {
             int nCount = pInterp->GetInterpolatorCount();
             for (unsigned short us = 0; us < nCount; us++) {
-                float fTime = (float)reinterpret_cast<Unk_EmApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280();
+                float fTime = (float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
                 pInterp->UpdateValue(fTime, fValue, us);
                 pInterp->Update(fTime);
             }
@@ -158,7 +158,7 @@ void Unk_PickTarget::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
 {
     if (this == 0)
         return;
-    Unk_EmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_EmPlayer* pPlayer = reinterpret_cast<Unk_EmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     CAtlArray<NiAVObject*> aRoots;
@@ -189,9 +189,9 @@ void Unk_PickTarget::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
             NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pCur);
             if (pRender != 0) {
                 if ((pNode != 0 && pNode != pRender) || fMode == 0.0f)
-                    FUN_1414d3930(pRender);
+                    FUN_1414d3930((void*)(pRender));
                 else
-                    FUN_1414d37a0(pRender, 0);
+                    FUN_1414d37a0((void*)(pRender), 0);
             }
         }
         pRoot->UpdateProperties();
@@ -202,7 +202,7 @@ void Unk_PickTarget::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
 // The mesh named strName of the local player's equipment slot of that name (from the equip item's parts, else the actor's model).
 NiAVObject* FUN_141167cf0(const CString& strName)
 {
-    Unk_EmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_EmPlayer* pPlayer = reinterpret_cast<Unk_EmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     {

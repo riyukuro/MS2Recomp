@@ -14,6 +14,11 @@ static CString s_sortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/astooltip.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uiquesteventlistener.h"
+#include "ms2/client/ms2/uirewardnotify.h"
+#include "ms2/client/ms2/itempreview.h"
 static CString s_jobCode = "jobCode";
 static CString s_sortValue = "sortValue";
 static CString s_tabIndex = "tabIndex";
@@ -107,13 +112,7 @@ MS2_CHECK_OFFSET(Unk_GalleryContext, maxOpen, 0x60);
 MS2_CHECK_OFFSET(Unk_GalleryContext, illust, 0x70);
 class Unk_GalleryManager { public: Unk_GalleryPtr<Unk_GalleryContext> FUN_14047cf60(); };
 Unk_GalleryManager* FUN_1401c0d90();
-class Unk_GalleryQuestManager
-{
-public:
-    void FUN_141aa87c0(UIQuestEventListener*);
-    void FUN_141aa8850(UIQuestEventListener*);
-};
-Unk_GalleryQuestManager* FUN_140bfc4b0();
+UIQuestEventDispatcher* FUN_140bfc4b0();
 class Unk_GalleryQuestState
 {
 public:
@@ -128,14 +127,13 @@ class Unk_GalleryCounters { public: int FUN_1409617d0(int, int, int*); };
 extern Unk_GalleryCounters g_galleryCounters;
 class Unk_GalleryItem { public: CString FUN_14053fdd0(); };
 Unk_GalleryPtr<Unk_GalleryItem> FUN_14053f870(int);
-class Unk_GalleryPlayer { public: void* FUN_141bd0cc0(); };
-Unk_GalleryPlayer* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 bool FUN_140184310(const CString&, const char*);
 CStringW FUN_1416e5660(int);
 CStringW FUN_1416e4df0(int);
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
-CStringW FUN_1409eec40(int);
+CStringW BlockFormat(int);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_140d432d0(ItemSlotBinder*, int);
 class Unk_GalleryQuestReward
@@ -283,16 +281,12 @@ public:
     virtual int vfunc_3();
 };
 class Unk_GalleryPacket { public: void* m_0; void* stream; };
-class Unk_GalleryRewardDialog { public: void FUN_141abf6e0(int, int); };
-Unk_GalleryRewardDialog* FUN_140938cd0(int);
-class Unk_GalleryItemNames { public: CStringW FUN_141811980(int, int); };
-Unk_GalleryItemNames* FUN_1401a9d70();
+UIRewardNotify* FUN_140938cd0(int);
 class Unk_GalleryItemInstance {};
 Unk_GalleryPtr<Unk_GalleryItemInstance> FUN_140ebc360(int, int);
-class Unk_GalleryPreview
+class Unk_GalleryPreview : public ItemPreviewMgr
 {
 public:
-    int FUN_140d40670();
     void FUN_140d40120(Unk_GalleryPtr<Unk_GalleryItemInstance>, int);
 };
 Unk_GalleryPreview* FUN_1409bb9e0();
@@ -385,7 +379,7 @@ int UIGalleryEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Val
             int dummy = 0;
             int opened = g_galleryCounters.FUN_1409617d0(1600, context->id, &dummy);
             if (opened >= context->maxOpen) {
-                FUN_140d73aa0(FUN_1409eec40(3323), 0, 0, CStringW(L""));
+                FUN_140d73aa0(BlockFormat(3323), 0, 0, CStringW(L""));
                 return 1;
             }
             ASData data;
@@ -454,7 +448,7 @@ void UIGalleryEventDialog::FUN_140c17200(unsigned int type, Unk_GalleryPacket* p
     case 9: {
         auto context = FUN_1401c0d90()->FUN_14047cf60();
         if (context == 0) return;
-        Unk_GalleryRewardDialog* dialog = FUN_140938cd0(20061);
+        UIRewardNotify* dialog = FUN_140938cd0(20061);
         if (!dialog) return;
         int count = reinterpret_cast<Unk_GalleryInput*>(&packet->stream)->vfunc_3();
         for (int i = 0; i < count; ++i) {
@@ -533,14 +527,14 @@ void UIGalleryEventDialog::FUN_140c17d20(Unk_GalleryPtr<Unk_GalleryContext> cont
     firstInfo.FUN_1409c0d20("id", first.id);
     firstInfo.FUN_1409adc90("rank", reinterpret_cast<Unk_GalleryRewardRank*>(&first.rank)->vfunc_1());
     firstInfo.FUN_1407cb9c0("active", active);
-    firstInfo.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, first.id));
+    firstInfo.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, first.id));
     firstInfo.FUN_1407cba60("icon", FUN_140c189d0(first.id));
     firstInfo.FUN_1409c0d20("itemCount", first.count);
     Unk_GalleryAS secondInfo(2);
     secondInfo.FUN_1409c0d20("id", second.id);
     secondInfo.FUN_1409adc90("rank", reinterpret_cast<Unk_GalleryRewardRank*>(&second.rank)->vfunc_1());
     secondInfo.FUN_1407cb9c0("active", active);
-    secondInfo.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, second.id));
+    secondInfo.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, second.id));
     secondInfo.FUN_1407cba60("icon", FUN_140c189d0(second.id));
     secondInfo.FUN_1409c0d20("itemCount", second.count);
     reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->Invoke2<const Unk_GalleryAS&, const Unk_GalleryAS&>("setRewardItem", firstInfo, secondInfo);
@@ -681,7 +675,7 @@ void UIGalleryEventDialog::FUN_140c18e10(int id, int rank)
     if (!FUN_14025e7c0()->FUN_14116dcb0(300038, 0, 0)) return;
     auto item = FUN_140ebc360(id, rank);
     if (!item) return;
-    if (FUN_1409bb9e0()->FUN_140d40670()) FUN_1409bb9e0()->FUN_140d40120(item, 0);
+    if (FUN_1409bb9e0()->IsHudOn()) FUN_1409bb9e0()->FUN_140d40120(item, 0);
 }
 MS2_REPLACE_METHOD(0x140C18E10, UIGalleryEventDialog, FUN_140c18e10, 239, 0x33B18A12);
 

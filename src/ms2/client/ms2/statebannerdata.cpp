@@ -41,7 +41,6 @@ CString FUN_1405a7e80(int nBanner);                     // 0x1405a7e80: banner i
 int FUN_140718170(const CString& strId);                // 0x140718170: text -> id
 void* FUN_141b6f910();                                  // 0x141b6f910: the animation service singleton
 NiActorManager* FUN_140999440(void* pSvc, const egf::EntityID& kId);   // 0x140999440 (ICF: AnimationService)
-unsigned int FUN_1409a1a00(NiActorManager* pActor);     // 0x1409a1a00: the actor's playing sequence id
 bool FUN_140b73bc0(MyPC* pPlayer);                      // 0x140b73bc0: the player can join the banner micro game
 extern Vector3 DAT_143b01a60;                   // 0x143b01a60: the zero point
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // 0x140b7f6a0 (defined below)
@@ -209,7 +208,7 @@ int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId)
     NiActorManager* pActor = FUN_140999440(pSvc, kId);
     if (pActor == 0)
         return (int)NiActorManager::INVALID_SEQUENCE_ID;
-    return (int)FUN_1409a1a00(pActor);
+    return (int)static_cast<NiActorManager*>(pActor)->GetTargetAnimation();
 }
 
 // MS2-FUNCTIONAL: the UCRT's static __inline body differs in size (317 vs 319) and unwind codes; trailing unreferenced copy

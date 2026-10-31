@@ -30,10 +30,8 @@
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char* pszName); };   // FirstChildElement
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 void Unk_AdditionalLog(CLogString* log, int level, int category, const wchar_t* format);
 void FUN_14054c030(CLogString* log, int level, int category, const wchar_t* format, const CString& first,
                    const CString& second);
@@ -43,7 +41,7 @@ CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefa
 unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
 void FUN_1401782a0(const CString& str, std::vector<unsigned int>& rOut, const char* pszSep);   // split into numbers
 __int64 GetServerTime();                                                  // server time
-unsigned FUN_140768010(unsigned nRange, unsigned nBase);                  // random number in base..base+range-1
+int FUN_140768010(int, int);  // C3: the definition's signature
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's singleton and init flag (symbols-manual.tsv)
 LoginBgBgmTable* TSingleton<LoginBgBgmTable>::s_instance;
@@ -89,15 +87,15 @@ bool LoginBgBgmTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "loginBgBgm.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return true;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return true;
     }
     std::vector<Unk_140165cf0*> nodes;
@@ -192,7 +190,7 @@ void LoginBgBgmTable::SelectCurrent()
         Unk_AdditionalLog(GetLogString(), 2, 0x13, L"[<ms2> LoginBgBgmTable::Get candidateVector size 0 error");
         return;
     }
-    m_spCurrent = candidates[FUN_140768010(nCandidates, 0)];
+    m_spCurrent = candidates[(unsigned)FUN_140768010(nCandidates, 0)];
 }
 MS2_REPLACE_METHOD(0x140A729E0, LoginBgBgmTable, SelectCurrent, 718, 0xFB4A22D4);
 
@@ -215,7 +213,7 @@ std::pair<unsigned, unsigned> LoginBgBgmTable::GetBgm()
         std::vector<std::pair<unsigned, unsigned> >* pBgm = &m_spCurrent->m_bgm;
         int nCount = pBgm->size();
         if (nCount != 0)
-            result = (*pBgm)[FUN_140768010(nCount, 0)];
+            result = (*pBgm)[(unsigned)FUN_140768010(nCount, 0)];
     }
     return result;
 }

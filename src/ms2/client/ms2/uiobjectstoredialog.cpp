@@ -21,6 +21,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
@@ -42,13 +43,6 @@ public:
 };
 
 // The status-listener registry (singleton 0x140aa6d40).
-class Unk_OsStatusMgr
-{
-public:
-    void FUN_141b0cd00(UIStatusEventListener* pListener);   // register
-    void FUN_141b0cd90(UIStatusEventListener* pListener);   // unregister
-};
-Unk_OsStatusMgr* FUN_140aa6d40();
 
 // The item bag control (RTTI name unknown) of the movie: "bagId" names the bag shown.
 class Unk_OsItemBag : public ASMovieClip
@@ -70,7 +64,11 @@ class Unk_OsBind;
 class Unk_OsSlotBag;
 Unk_OsBind* FUN_1422c8e90(const CString& strBagId);                     // the bound object of the id
 Unk_OsSlotBag* FUN_14180b940(Unk_OsBind* pBind);                        // the slot bag of it (NULL when unbound)
-void FUN_1422cca90(Unk_OsSlotBag* pBag);                                // refresh the slots
+class DragSlotBag   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1422cca90();
+};
 void FUN_14180b230(CString* pBagId);                                    // drop the bag bound to the id
 void FUN_14180b170(CString* pBagId, int nSlot, int nSize);              // create the bag (StoreSlotBag)
 int FUN_1408b6200(int nItemType);                                       // the slot count of an item type's bank
@@ -178,7 +176,7 @@ void UIObjectStoreDialog::vfunc_67()
     packet.WriteUInt8(7);
     packet.WriteUnicodeStringA(m_190);
     FUN_140710590(packet);
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    ((class UIStatusEventDispatcher*)TSingleton<UIStatusEventDispatcher>::GetInstance())->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     FUN_14180b230(&m_180);
     UIDialog::vfunc_67();
     m_80 = 1;
@@ -197,7 +195,7 @@ int UIObjectStoreDialog::vfunc_54(void* pCfg)
 void UIObjectStoreDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    ((class UIStatusEventDispatcher*)TSingleton<UIStatusEventDispatcher>::GetInstance())->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     if (DAT_143ab2d80.Ready() == 0)
         DAT_143ab2d80.RequestLoad();
     FUN_141901390(0, vfunc_48());
@@ -260,7 +258,7 @@ void UIObjectStoreDialog::vfunc_oa0_9(unsigned short a1)
     if (FUN_1422dc390() != 0) {
         Unk_OsSlotBag* pBag = FUN_14180b940(FUN_1422c8e90(m_180));
         if (pBag != 0)
-            FUN_1422cca90(pBag);
+            ((class DragSlotBag*)(class Unk_OsSlotBag*)(pBag))->FUN_1422cca90();
     }
 }
 
@@ -270,7 +268,7 @@ void UIObjectStoreDialog::vfunc_oa0_7(int a1, CStringW s)
     if (FUN_1422dc390() != 0) {
         Unk_OsSlotBag* pBag = FUN_14180b940(FUN_1422c8e90(m_180));
         if (pBag != 0)
-            FUN_1422cca90(pBag);
+            ((class DragSlotBag*)(class Unk_OsSlotBag*)(pBag))->FUN_1422cca90();
     }
 }
 

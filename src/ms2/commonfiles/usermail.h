@@ -7,7 +7,6 @@
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/cmailtypes.h"
 
-void FUN_14015b020(CPtred*);
 int FUN_140159bc0(CPtred*);
 void FUN_140159ba0(CPtred*);
 
@@ -33,10 +32,10 @@ public:
     T* operator->() const { return p; }
 private:
     void AddRef() const { if (p) AddRefImpl(0); }
-    static void Reference(T* value) { FUN_14015b020(value); }
+    static void Reference(T* value) { CPtred::AddRefPtred(value); }
     void AddRefImpl(void*) const { Reference(p); }
     void Release() { if (p) { ReleaseImpl(0); p = 0; } }
-    void ReleaseImpl(void*) { if (FUN_140159bc0(p) == 0) { Reference(p); FUN_140159ba0(p); } }
+    void ReleaseImpl(void*) { if (CPtred::ReleasePtred(p) == 0) { Reference(p); CPtred::DeletePtred(p); } }
     void* pad_00; T* p;
 };
 

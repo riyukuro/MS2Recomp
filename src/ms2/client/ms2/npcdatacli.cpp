@@ -45,11 +45,10 @@ class Unk_NpcLog
 public:
     void FUN_14015eb90(int level, int flags, const wchar_t* format, const CStringA& arg);
 };
-Unk_NpcLog* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 class Unk_NpcFileSystem : public CFileSystem
 {
 };
-Unk_NpcFileSystem* FUN_140166420();
 CStringA FUN_14071a5b0(const CStringA& strDir, const CStringA& strFile);
 CStringA FUN_140513200(const char* szFormat, const int& n);       // StringFormat<int>: the identical-code copy Load calls
 
@@ -87,12 +86,12 @@ struct Unk_NpcConstants
     Unk_NpcConstant<unsigned> m_class4or6;                  // +0xafd0
 };
 Unk_NpcConstants* FUN_1401d3200_1();
-unsigned FUN_14056d500(unsigned* p);
+unsigned int Unk_ColorValue(struct Unk_ConstColor const&);   // C3: was FUN_14056d500
 
 // @0x140a7d630
 unsigned NpcConstantValue(Unk_NpcConstant<unsigned>* p)
 {
-    return FUN_14056d500(p->Get());
+    return Unk_ColorValue(*(struct Unk_ConstColor const*)(p->Get()));
 }
 
 // ---- NpcDataCli ---------------------------------------------------------------------------------------------------
@@ -298,15 +297,15 @@ void NpcDataTableCli::Load(int nFile)
 {
     CStringA strPath = FUN_14071a5b0("NpcData", FUN_140513200("{0:03d}.xml", nFile));
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_NpcFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"NpcDataTable ::ReadFromFile: File not found {0}", strPath);
+        ((class Unk_NpcLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"NpcDataTable ::ReadFromFile: File not found {0}", strPath);
         return;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        ((class Unk_NpcLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     std::vector<MS2Ptr<NpcDataCli> > list;

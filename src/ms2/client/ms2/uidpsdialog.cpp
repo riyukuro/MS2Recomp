@@ -16,6 +16,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/dpsmetersystem.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <stdlib.h>
 
 // ---- unit-local views of exe objects ----
@@ -33,15 +36,13 @@ class Unk_DpsKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); bool FUN
 Unk_DpsKeys* FUN_14025e7c0();
 
 // The DPS meter system (dpsmetersystem.cpp): records the measurement window.
-class Unk_DpsMeter
+class Unk_DpsMeter : public CDPSMeterSystem
 {
 public:
     void FUN_14117c650(unsigned nStart);                                // measurement started
     void FUN_14117c7c0(unsigned nTime);                                 // measurement ended
     void FUN_14117c920();                                               // reset the history
-    void FUN_14117ea90(unsigned nTime, int a);                          // sample
 };
-Unk_DpsMeter* FUN_14109a6f0();
 
 // The tool dialog CDPSDialog (TSingleton<CDPSDialog>, a CToolBaseDialog; 0x350 bytes).
 extern CToolBaseDialog* DAT_143ad0d98;                                  // TSingleton<CDPSDialog>::s_instance
@@ -49,7 +50,6 @@ void FUN_141178870(CToolBaseDialog* pDialog);                           // refre
 void FUN_1411789e0(CToolBaseDialog* pDialog, unsigned nTime);           // end time
 
 class Unk_DpsWorld;
-Unk_DpsWorld* FUN_1403ed2d0();
 PCBase* FUN_141bd0cc0(Unk_DpsWorld* pWorld);                            // the local player
 // An MS2Ptr (16 bytes, m_p at +8): FUN_140639bb0 returns it through a hidden pointer, the dtor 0x14063e530 writes 16.
 // The same type as uimainplayerinfo.cpp's Unk_MpState (its dtor has a symbols-manual row).
@@ -57,8 +57,6 @@ class Unk_MpState { public: ~Unk_MpState(); bool FUN_14063e9f0(int n); void* m_0
 class Unk_DpsActorStateHolder { public: Unk_MpState FUN_140639bb0(); };
 Unk_DpsActorStateHolder* FUN_1416546d0(PCBase* pPC);
 int FUN_141654730(PCBase* pPC);                                         // job code
-class Unk_DpsStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_DpsStrings* FUN_1401a9d70();
 
 unsigned FUN_140869420();                                               // tick
 void FUN_141b70720(unsigned nMs, CString& strOut);                      // "mm:ss" text
@@ -108,7 +106,7 @@ int UIDPSDialog::vfunc_65()
 // @0x141928e80
 void UIDPSDialog::vfunc_67()
 {
-    FUN_14109a6f0()->FUN_14117c7c0(FUN_140869420());
+    reinterpret_cast<Unk_DpsMeter*>(TSingleton<CDPSMeterSystem>::GetInstance())->FUN_14117c7c0(FUN_140869420());
     if (GetToolBaseDialog() != 0)
         FUN_14192a260();
     COutPacket packet(static_cast<int>(SendOp::DpsMode), 0);
@@ -152,14 +150,14 @@ void UIDPSDialog::vfunc_72()
                     pDialog->FUN_14192a060("setAttr", CString(strTime), m_188, CString(strDps));
                     if (GetToolBaseDialog() != 0)
                         FUN_1411789e0(GetToolBaseDialog(), m_184);
-                    FUN_14109a6f0()->FUN_14117c7c0(m_184);
+                    reinterpret_cast<Unk_DpsMeter*>(TSingleton<CDPSMeterSystem>::GetInstance())->FUN_14117c7c0(m_184);
                     pDialog->Invoke("onStop");
                     return;
                 }
                 if (m_178 == 0)
                 {
                     m_178 = 1;
-                    FUN_14109a6f0()->FUN_14117c650(m_180);
+                    reinterpret_cast<Unk_DpsMeter*>(TSingleton<CDPSMeterSystem>::GetInstance())->FUN_14117c650(m_180);
                 }
                 if (dSeconds > 0.0)
                 {
@@ -167,7 +165,7 @@ void UIDPSDialog::vfunc_72()
                     CString strDps;
                     strDps.Format("%.2f", dDps);
                     pDialog->FUN_14192a060("setAttr", CString(strTime), m_188, CString(strDps));
-                    FUN_14109a6f0()->FUN_14117ea90(nNow, 0);
+                    reinterpret_cast<Unk_DpsMeter*>(TSingleton<CDPSMeterSystem>::GetInstance())->FUN_14117ea90(nNow, 0);
                 }
                 else
                 {
@@ -201,7 +199,7 @@ int UIDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     }
     else if (_stricmp("OnResetHistory", szMethod) == 0)
     {
-        FUN_14109a6f0()->FUN_14117c920();
+        reinterpret_cast<Unk_DpsMeter*>(TSingleton<CDPSMeterSystem>::GetInstance())->FUN_14117c920();
         return 1;
     }
     return 0;
@@ -241,7 +239,7 @@ void UIDPSDialog::FUN_141929760()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+        PCBase* pPC = FUN_141bd0cc0(reinterpret_cast<Unk_DpsWorld*>(WorldService::GetInstance()));
         if (pPC == 0)
             return;
         if (FUN_1416546d0(pPC)->FUN_140639bb0().FUN_14063e9f0(0))
@@ -251,7 +249,7 @@ void UIDPSDialog::FUN_141929760()
         double dDps = (double)m_188 / dSeconds;
         CStringW strLine = StringFormat(L"Lv.{0} {1}, {2:.2f}Second, total: {3}, {4:.2f} damage/sec\n",
                                         (unsigned short)pPC->vfunc_78(),
-                                        (const wchar_t*)FUN_1401a9d70()->FUN_141811980(6, FUN_141654730(pPC)),
+                                        (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, FUN_141654730(pPC)),
                                         dSeconds, m_188, dDps);
         pDialog->Invoke("history", strLine);
     }
@@ -291,7 +289,7 @@ void UIDPSDialog::OnStop()
 {
     if (GetToolBaseDialog() != 0)
         FUN_1411789e0(GetToolBaseDialog(), FUN_140869420());
-    FUN_14109a6f0()->FUN_14117c7c0(FUN_140869420());
+    reinterpret_cast<Unk_DpsMeter*>(TSingleton<CDPSMeterSystem>::GetInstance())->FUN_14117c7c0(FUN_140869420());
     FUN_141929760();
     FUN_141929700();
 }

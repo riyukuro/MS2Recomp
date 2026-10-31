@@ -27,7 +27,6 @@
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-WorldService* FUN_1403ed2d0();
 
 extern Unk_Inventory g_143ab2a90;                       // the player's inventory
 
@@ -42,7 +41,11 @@ public:
 class Unk_EnchantUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
 
 void* FUN_140a50b50(DragSlot* pSlot);                   // the item slot behind a drag source
-__int64 FUN_141405a10(void* pItemSlot);                 // its item uid
+class InvenSlot   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 GetItemUid();
+};
 int FUN_141902660(MS2Ptr<CItem> spItem);                // asks whether to refund the enchant experience (nonzero: handled)
 void FUN_140710590(COutPacket& packet);                 // send the packet
 
@@ -94,7 +97,7 @@ int EnchantScrollSlot::vfunc_18(void* p)
     void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
         {
             if (FUN_141902660(spItem) != 0)
@@ -131,7 +134,7 @@ void EnchantScrollSlot::SetItem(MS2Ptr<CItem> spItem)
 // @0x140cd7830 (ITooltip::vfunc_0)
 int EnchantScrollSlot::vfunc_0(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ASTooltip tip(pPlayer, 0x20, 2);
@@ -147,7 +150,7 @@ int EnchantScrollSlot::vfunc_0(void* p)
 // @0x140cd7950
 int EnchantScrollSlot::vfunc_8(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ASSlot slot(2);

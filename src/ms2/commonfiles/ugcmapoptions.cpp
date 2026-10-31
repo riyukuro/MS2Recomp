@@ -28,7 +28,6 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
 
-CFeatureManager* FUN_140166410();                           // TSingleton<CFeatureManager>::GetInstance
 CPriceTable* FUN_140552df0();                               // TSingleton<CPriceTable>::GetInstance
 CUgcManager* FUN_14052d220();                               // TSingleton<CUgcManager>::GetInstance
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item table record
@@ -240,7 +239,7 @@ UGCMapBlock::UGCMapBlock() : m_n18(0), m_n20(0), m_n24(0), m_n28(0), m_n2c(0), m
 // @0x1408b3f10
 UserUGCMapInfo::UserUGCMapInfo() : m_n18(0), m_n1c(0), m_n20(0), m_n24(0), m_str28(""), m_n30(0), m_n38(0), m_n40(0)
 {
-    if (FUN_140166410()->FUN_14036e510())
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036e510())
         m_n40 = 2;
 }
 

@@ -16,6 +16,7 @@
 #endif
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "unit_140ad1860.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/cameramode.h"
@@ -33,9 +34,12 @@
 #include "ms2/placeholder/asmousecursor.h"
 #include "ms2/client/ms2/triggerservice.h"
 #include "ms2/placeholder/gfxmanager.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/entityworldmanager.h"
 
 // ---- unit-local stand-ins and unrecovered callees (names invented from use) ----------------------------------------------
-extern Vector3 DAT_143b01a60;                           // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern unsigned DAT_143af62d4;                                  // client area width
 extern unsigned DAT_143af62d8;                                  // client area height
 extern RECT g_rcWindow;                                         // 0x143af7d48: last GetWindowRect of the game window
@@ -54,7 +58,7 @@ public:
 };
 
 // Settings (feature flags) and input.
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 class Unk_McCursor : public ASMouseCursor
 {
@@ -83,7 +87,7 @@ class Unk_McApp : public CWindowService
 public:
     RECT FUN_140ad4c30();                                       // client rectangle (inline getter)
 };
-Unk_McApp* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
 // The map data kept behind the world service's counted pointer.
 struct Unk_McMapData
@@ -162,16 +166,12 @@ public:
     Vector3 FUN_14123cc20();                            // facing vector
 };
 
-class Unk_McWorld
+class Unk_McWorld : public WorldService
 {
 public:
     Unk_McPc* FUN_141bd0cc0();                                  // the local player
-    float FUN_141bcfc50();                                      // camera scale of the local player
-    int FUN_141bd3060();                                        // current map id
     Unk_McMapPtr FUN_141bd30a0();                               // current map data
-    int FUN_141bdb5e0();                                        // local player locked
 };
-Unk_McWorld* FUN_1403ed2d0();
 
 // Counted pointer to the attachment: AddRef in the ctor, Release in the dtor.
 class Unk_McAttachPtr
@@ -215,7 +215,7 @@ public:
 private:
     Unk_McPhysSvc* m_p;
 };
-Unk_McPhysSvc* FUN_1401cd040(char* pCell);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
 // Entity instancing service: the object that knows which entities are hidden.
 class Unk_McInstancing
@@ -243,7 +243,7 @@ public:
 private:
     Unk_McInstSvc* m_p;
 };
-Unk_McInstSvc* FUN_14098c5b0(char* pCell);
+class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 
 class Unk_McEntityRules : public CTriggerService { };
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
@@ -251,8 +251,6 @@ void FUN_1408a20a0(egf::Entity* pEntity, unsigned nHash, bool* pbOut);
 const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
 egf::EntityID* FUN_1408b6b20(egf::EntityID* pDst, const egf::EntityID* pSrc);
 class Unk_McEntityMgr;
-Unk_McEntityMgr* FUN_1409670f0();
-egf::Entity* FUN_1411cf440(Unk_McEntityMgr* pMgr, const egf::EntityID& id);
 
 // The picked-object list returned by the scene pick.
 struct Unk_McPickHit
@@ -283,7 +281,11 @@ private:
 };
 
 // Camera: the ray under the cursor.
-bool FUN_140af0520(Unk_CameraManager* pCam, const Unk_Point2& pt, Vector3* pOrigin, Vector3* pDir);
+class CameraMgr   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_140af0520(class NiPoint2 const&, class NiPoint3&, class NiPoint3&);
+};
 void FUN_140194470(Unk_Vec3* pDst, const Unk_Vec3* pSrc);       // NiPoint3 assignment
 
 // An efd::Point3 local (its default ctor 0x1402bd040 is not Vector3's 0x1405522f0).
@@ -326,9 +328,7 @@ struct Unk_McRequest
 };
 MS2_CHECK_SIZE(Unk_McRequest, 0x70);
 class Unk_McEffectMgr { public: void FUN_1411a4a00(Unk_McRequest* pRequest); };
-Unk_McEffectMgr* FUN_1403ed280();
 void* FUN_140a332d0(Unk_McXform* p);                            // NiTransform default ctor
-void FUN_1420849a0(Unk_McRot* p);                               // efd::Matrix3::MakeIdentity
 void FUN_14097fad0(float* pDst, const Unk_NiPoint3* pSrc);      // NiPoint3 assignment
 
 // Game-wide constants table (the pick range of the cursor).
@@ -339,11 +339,11 @@ struct Unk_McConstTable
     Unk_McConstUInt m_pickRange;                                // +0xe668
 };
 MS2_CHECK_OFFSET(Unk_McConstTable, m_pickRange, 0xe668);
-Unk_McConstTable* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 unsigned* FUN_1401d7c10(Unk_McConstUInt* pSlot);
 
 // The physics helper (singleton) and the camera manager's mode holder.
-CPhysXHelper* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 struct Unk_McModeRef
 {
     long long FUN_1409f2180() const;                            // non-null test
@@ -491,10 +491,10 @@ MS2_REPLACE_METHOD(0x140AD2070, CMouseController, FUN_140ad2070, 112, 0x653E3984
 // @0x140ad20f0
 int CMouseController::FUN_140ad20f0(int bEnable)
 {
-    if (!FUN_140166410()->FUN_14036d570(0xaf))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xaf))
         return 0;
     m_nMode = bEnable ? 1 : 0;
-    float fScale = FUN_1403ed2d0()->FUN_141bcfc50();
+    float fScale = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bcfc50();
     if (Unk_CameraManager::FUN_1409478c0()->FUN_140ad4b40() != fScale)
         FUN_140ad4ff0(Unk_CameraManager::FUN_1409478c0(), fScale);
     if (bEnable == 0)
@@ -555,14 +555,14 @@ void CMouseController::FUN_140ad2300(const Vector3& pt)
     Unk_McXform xf;
     FUN_140a332d0(&xf);
     xf.m_fScale = 1.0f;
-    FUN_1420849a0(&xf.m_rotate);
+    ((efd::Matrix3*)(struct Unk_McRot*)(&xf.m_rotate))->MakeIdentity();
     Unk_NiPoint3 niPt(pt);
     FUN_14097fad0(xf.m_afTranslate, &niPt);
     Unk_McRequest request;
     request.m_strName = "CH/Common/Eff_mouse_click.xml";
     request.m_pXform = &xf;
     request.m_nOwnerId = 0;
-    FUN_1403ed280()->FUN_1411a4a00(&request);
+    reinterpret_cast<Unk_McEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&request);
 }
 MS2_REPLACE_METHOD(0x140AD2300, CMouseController, FUN_140ad2300, 226, 0x8DCAE37A);
 
@@ -570,7 +570,7 @@ MS2_REPLACE_METHOD(0x140AD2300, CMouseController, FUN_140ad2300, 226, 0x8DCAE37A
 void CMouseController::FUN_140ad23f0(int nX, int nY)
 {
     m_nMode = 2;
-    Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (pPc->FUN_1416595b0() == 1)
@@ -623,7 +623,7 @@ MS2_REPLACE_METHOD(0x140AD23F0, CMouseController, FUN_140ad23f0, 609, 0x030EFF74
 // @0x140ad2660
 void CMouseController::FUN_140ad2660(int nX, int nY)
 {
-    Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (pPc->FUN_1416595b0() == 1)
@@ -664,10 +664,10 @@ MS2_REPLACE_METHOD(0x140AD26D0, CMouseController, FUN_140ad26d0, 346, 0x463D5B7F
 // @0x140ad2830
 void CMouseController::FUN_140ad2830()
 {
-    Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
-    if (FUN_1403ed2d0()->FUN_141bdb5e0() != 0)
+    if (reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bdb5e0() != 0)
         return;
     if (FUN_140ad3d60() != 0)
         return;
@@ -688,9 +688,9 @@ void CMouseController::FUN_140ad2830()
     info.m_dir = pPc->FUN_14123cc20();
     info.m_maxDist = 50.0f;
     info.m_groups = 0x201;
-    if (FUN_1409f7ca0()->CastRay(&info, 0))
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&info, 0))
     {
-        Unk_McPhysSvcPtr spPhys(FUN_1401cd040(&DAT_143b059e8));
+        Unk_McPhysSvcPtr spPhys(((class Unk_McPhysSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
         void* pHit = spPhys.FUN_1401cd1a0()->FUN_1410b8e60(info.m_hitEntity);
         if (pHit != 0)
         {
@@ -723,9 +723,9 @@ int CMouseController::FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint)
         return 0;
     Vector3 vOrigin;
     Vector3 vDir;
-    if (!FUN_140af0520(Unk_CameraManager::FUN_1409478c0(), Unk_Point2((float)nX, (float)nY), &vOrigin, &vDir))
+    if (!((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af0520((class NiPoint2 const&)(const Unk_Point2&)Unk_Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
         return 0;
-    Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     Vector3 vPos = pPc->vfunc_18();
@@ -738,7 +738,7 @@ int CMouseController::FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint)
         if (sp->vfunc_1(&ray) != 0)
         {
             float fDist = FUN_140966f00(vPos, reinterpret_cast<const Vector3&>(ray.vPick));
-            if (fDist > (float)*FUN_1401d7c10(&FUN_1401d3200()->m_pickRange))
+            if (fDist > (float)*FUN_1401d7c10(&((struct Unk_McConstTable*)FUN_1401d3200())->m_pickRange))
                 continue;
             *pStrHint = ray.strCursor;
             return sp->vfunc_6();
@@ -751,18 +751,18 @@ MS2_REPLACE_METHOD(0x140AD2AC0, CMouseController, FUN_140ad2ac0, 690, 0x84CA9624
 // @0x140ad2d80
 void CMouseController::FUN_140ad2d80()
 {
-    if (!FUN_140166410()->FUN_14036d570(0xe2))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe2))
         return;
     if (m_tmPick.FUN_140268870(100) != 0)
     {
         float fX, fY;
-        if (FUN_140aadf80()->GetCursorClientPos(&fX, &fY) != 0 && FUN_140ad3dd0((int)fX, (int)fY) != 0)
+        if (reinterpret_cast<Unk_McApp*>(((class Unk_McApp*)FUN_140aadf80()))->GetCursorClientPos(&fX, &fY) != 0 && FUN_140ad3dd0((int)fX, (int)fY) != 0)
         {
             CStringW strHint;
             int nKind = 0;
             if (reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422aeed0(2) == 0)
             {
-                if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
+                if (reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0() != 0)
                     nKind = FUN_140ad2ac0((int)fX, (int)fY, &strHint);
             }
             Unk_McCursorPtr spCursor = reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422b0370(6);
@@ -782,7 +782,7 @@ void CMouseController::FUN_140ad2d80()
             }
         }
     }
-    Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc != 0)
     {
         if (m_spCurrent.get() != 0 ? true : false)
@@ -802,7 +802,7 @@ MS2_REPLACE_METHOD(0x140AD2D80, CMouseController, FUN_140ad2d80, 686, 0xB16D7996
 // @0x140ad3040
 void CMouseController::FUN_140ad3040()
 {
-    Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (m_nMode != 1)
@@ -846,10 +846,10 @@ MS2_REPLACE_METHOD(0x140AD3040, CMouseController, FUN_140ad3040, 524, 0xF761C44F
 // @0x140ad3260
 Vector3 CMouseController::FUN_140ad3260(Vector3 pt)
 {
-    Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return DAT_143b01a60;
-    Unk_McMapPtr spMap = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_McMapPtr spMap = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spMap.FUN_1408851f0())
         return DAT_143b01a60;
     Vector3 v = pt.FUN_140965c40(FUN_140ad3c70());
@@ -864,7 +864,7 @@ MS2_REPLACE_METHOD(0x140AD3260, CMouseController, FUN_140ad3260, 401, 0x0F977D87
 // @0x140ad3400
 Vector3 CMouseController::FUN_140ad3400(Vector3 pt)
 {
-    Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     Vector3 vFacing = pPc->FUN_14123cc20();
     Vector3 vPos = FUN_140ad3c70();
     Vector3 v = DAT_143b01a60;
@@ -889,12 +889,12 @@ MS2_REPLACE_METHOD(0x140AD3400, CMouseController, FUN_140ad3400, 319, 0xC44D571F
 // @0x140ad3550
 int CMouseController::FUN_140ad3550(int nX, int nY, Vector3* pOut)
 {
-    if (!FUN_140166410()->FUN_14036d570(0xe2))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe2))
         return 0;
     FUN_140ad40b0();
     Vector3 vOrigin;
     Vector3 vDir;
-    if (!FUN_140af0520(Unk_CameraManager::FUN_1409478c0(), Unk_Point2((float)nX, (float)nY), &vOrigin, &vDir))
+    if (!((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af0520((class NiPoint2 const&)(const Unk_Point2&)Unk_Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
         return 0;
     Unk_MouseRay ray;
     FUN_140194470(&ray.vOrigin, reinterpret_cast<const Unk_Vec3*>(&vOrigin));
@@ -921,7 +921,7 @@ Vector3 CMouseController::FUN_140ad3740(int nX, int nY)
         return DAT_143b01a60;
     if (spPick.FUN_140a16c30()->FUN_140a17e00() == 0)
         return DAT_143b01a60;
-    int bSpecialMap = FUN_140ad4140(FUN_1403ed2d0()->FUN_141bd3060());
+    int bSpecialMap = FUN_140ad4140(reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd3060());
     Unk_McNiPt3 vUnused(DAT_143b01a60);                 // built and never read in the exe
     for (unsigned i = 0; i < spPick.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17ea0(); i++)
     {
@@ -957,12 +957,12 @@ MS2_REPLACE_METHOD(0x140AD3740, CMouseController, FUN_140ad3740, 794, 0xD0619D77
 // @0x140ad3a60
 Vector3 CMouseController::FUN_140ad3a60(int nX, int nY)
 {
-    Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return DAT_143b01a60;
     Vector3 vOrigin;
     Vector3 vDir;
-    if (FUN_140af0520(Unk_CameraManager::FUN_1409478c0(), Unk_Point2((float)nX, (float)nY), &vOrigin, &vDir))
+    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af0520((class NiPoint2 const&)(const Unk_Point2&)Unk_Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
     {
         Unk_McPoint3 vA;
         Unk_McPoint3 vB;
@@ -984,7 +984,7 @@ MS2_REPLACE_METHOD(0x140AD3A60, CMouseController, FUN_140ad3a60, 514, 0x7514812C
 // @0x140ad3c70
 Vector3 CMouseController::FUN_140ad3c70()
 {
-    Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return DAT_143b01a60;
     Unk_McAttachPtr spAttach(pPc->FUN_141662440(1));
@@ -997,7 +997,7 @@ MS2_REPLACE_METHOD(0x140AD3C70, CMouseController, FUN_140ad3c70, 231, 0x6697DFE8
 // @0x140ad3d60
 int CMouseController::FUN_140ad3d60()
 {
-    Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     for (unsigned long long i = 0; i < 3; i++)
@@ -1016,7 +1016,7 @@ int CMouseController::FUN_140ad3dd0(int nX, int nY)
         return 0;
     if (nY < 0)
         return 0;
-    RECT rc = FUN_140aadf80()->FUN_140ad4c30();
+    RECT rc = reinterpret_cast<Unk_McApp*>(((class Unk_McApp*)FUN_140aadf80()))->FUN_140ad4c30();
     int nWidth = rc.right - rc.left;
     if (nX > nWidth)
         return 0;
@@ -1035,7 +1035,7 @@ bool CMouseController::FUN_140ad3e80(egf::Entity* pEntity)
     FUN_1408a20a0(pEntity, 0x23f9860e, &bFlagA);
     if (bFlagA)
     {
-        Unk_McInstSvcPtr spSvc(FUN_14098c5b0(&DAT_143b059e8));
+        Unk_McInstSvcPtr spSvc(((class Unk_McInstSvc*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
         Unk_McInstancing* pInst = spSvc.FUN_14098d0e0()->FUN_1413d66b0(pEntity);
         if (pInst != 0 && pInst->FUN_140ad4bb0() == 0)
         {
@@ -1057,7 +1057,7 @@ MS2_REPLACE_METHOD(0x140AD3E80, CMouseController, FUN_140ad3e80, 288, 0x978EA17D
 // @0x140ad3fb0
 bool CMouseController::FUN_140ad3fb0(const egf::EntityID& id)
 {
-    egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), id);
+    egf::Entity* pEntity = ((class EntityWorldManager*)(class Unk_McEntityMgr*)(reinterpret_cast<Unk_McEntityMgr*>(TSingleton<EntityWorldManager>::GetInstance())))->FUN_1411cf440(id);
     if (pEntity == 0)
         return false;
     return FUN_140ad3e80(pEntity);

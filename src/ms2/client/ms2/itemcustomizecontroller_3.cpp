@@ -51,20 +51,17 @@ public:
 };
 
                // the local player
-WorldService* FUN_1403ed2d0();
 
 struct Unk_MorphConfigFloat { float FUN_1402bac70(); char m_pad[0x58]; };
 struct Unk_ClientConfig { char m_pad[0x2d90]; Unk_MorphConfigFloat m_2d90; };
-Unk_ClientConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 struct Unk_MorphApp { char m_pad[8]; char m_manager[1]; float FUN_141473230(); };   // the app framework
 efd::ServiceManager* FUN_140af8310(char* pManager);
 
 float FUN_140a17940(float fValue, float fMin, float fMax);      // clamp
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);   // dynamic cast (NULL-safe)
 extern const NiRTTI Unk_RenderObjectRTTI;                       // 0x143afa7d0
 void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue);   // stores value nIndex
-void FUN_140980460(void* p);                                    // NiRefObject::IncRefCount
 
 // The loaded meshes of a part model: std::set<NiAVObjectPtr> at +0xf8 (equipmodel.h).
 std::set<NiAVObjectPtr>* FUN_141201c90(Unk_PickTarget* pPart);
@@ -109,7 +106,7 @@ int CItemMorphController::vfunc_3()
     ReadValues();
     ApplyMorph();
     ResetMeshHighlight();
-    m_fWheelStep = FUN_1401d3200()->m_2d90.FUN_1402bac70();
+    m_fWheelStep = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_2d90.FUN_1402bac70();
     return 1;
 }
 
@@ -182,7 +179,7 @@ void CItemMorphController::vfunc_15(int nIndex, float fValue)
 {
     if (m_spEquipItem == (CEquipItem*)0)
         return;
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
         NiInterpController* pCtrl = SelectMorphController(nIndex);
@@ -202,7 +199,7 @@ void CItemMorphController::vfunc_11()
 {
     if (m_spEquipItem == (CEquipItem*)0)
         return;
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
         NiInterpController* pCtrl = FindMorphController(1);
@@ -222,7 +219,7 @@ void CItemMorphController::vfunc_11()
 // @0x141417310
 int CItemMorphController::vfunc_29()
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     if (m_spEquipItem.IsNull())
@@ -302,7 +299,7 @@ int CItemMorphController::vfunc_38(int bActive, const efd::Point3& kPos)
 {
     if (m_n98 != 0)
     {
-        m_spPicker->m_spMesh.FUN_141418a00((NiAVObject*)FUN_14098d8d0(&Unk_RenderObjectRTTI, (NiAVObject*)FindMorphNode(m_nCurIndex)));
+        m_spPicker->m_spMesh.FUN_141418a00((NiAVObject*)NiObject::DynamicCast(&Unk_RenderObjectRTTI, (class NiObject const*)((NiAVObject*)FindMorphNode(m_nCurIndex))));
     }
     return CItemCustomizeController::vfunc_38(bActive, kPos);
 }
@@ -333,10 +330,10 @@ void CItemMorphController::ResetMeshHighlight()
                 NiTimeController* pTime = pFound->GetControllers();
                 while (pTime != 0)
                 {
-                    NiObject* pCtrl = FUN_14098d8d0(&NiMorphWeightsController::ms_RTTI, pTime);
+                    NiObject* pCtrl = NiObject::DynamicCast(&NiMorphWeightsController::ms_RTTI, (class NiObject const*)(pTime));
                     if (pCtrl != 0)
                     {
-                        NiObject* pRender = FUN_14098d8d0(&Unk_RenderObjectRTTI, pFound);
+                        NiObject* pRender = NiObject::DynamicCast(&Unk_RenderObjectRTTI, (class NiObject const*)(pFound));
                         if (pRender != 0)
                             spPart.get()->FUN_1411679d0(0, 0, 0);
                         return;
@@ -380,7 +377,7 @@ void CItemMorphController::ApplyMorph()
 // @0x141417ea0
 NiInterpController* CItemMorphController::FindMorphController(int bTrack)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     if (bTrack != 0)
@@ -426,7 +423,7 @@ NiInterpController* CItemMorphController::FindMorphController(int bTrack)
                     NiTimeController* pTime = pFound->GetControllers();
                     while (pTime != 0)
                     {
-                        NiObject* pCtrl = FUN_14098d8d0(&NiMorphWeightsController::ms_RTTI, pTime);
+                        NiObject* pCtrl = NiObject::DynamicCast(&NiMorphWeightsController::ms_RTTI, (class NiObject const*)(pTime));
                         if (pCtrl != 0)
                             return (NiInterpController*)pCtrl;
                         pTime = pTime->GetNext();
@@ -454,7 +451,7 @@ NiInterpController* CItemMorphController::FindMorphController(int bTrack)
                     NiTimeController* pTime = pFound->GetControllers();
                     while (pTime != 0)
                     {
-                        NiObject* pCtrl = FUN_14098d8d0(&NiMorphWeightsController::ms_RTTI, pTime);
+                        NiObject* pCtrl = NiObject::DynamicCast(&NiMorphWeightsController::ms_RTTI, (class NiObject const*)(pTime));
                         if (pCtrl != 0)
                             return (NiInterpController*)pCtrl;
                         pTime = pTime->GetNext();
@@ -477,7 +474,7 @@ NiInterpController* CItemMorphController::SelectMorphController(int nIndex)
             NiTimeController* pTime = spNode->GetControllers();
             while (pTime != 0)
             {
-                NiInterpController* pCtrl = (NiInterpController*)FUN_14098d8d0(&NiMorphWeightsController::ms_RTTI, pTime);
+                NiInterpController* pCtrl = (NiInterpController*)NiObject::DynamicCast(&NiMorphWeightsController::ms_RTTI, (class NiObject const*)(pTime));
                 if (pCtrl != 0)
                     return pCtrl;
                 pTime = pTime->GetNext();
@@ -490,7 +487,7 @@ NiInterpController* CItemMorphController::SelectMorphController(int nIndex)
 // @0x141418620
 efd::SmartPointer<NiAVObject> CItemMorphController::FindMorphNode(int nIndex)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
         CAtlArray<CString> aParts;
@@ -539,7 +536,7 @@ Unk_PickMeshPtr& Unk_PickMeshPtr::FUN_141418a00(NiAVObject* p)
             m_p->DecRefCount();
         m_p = p;
         if (m_p != 0)
-            FUN_140980460(m_p);
+            ((class NiRefObject*)(void*)(m_p))->IncRefCount();
     }
     return *this;
 }

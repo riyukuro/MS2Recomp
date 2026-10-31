@@ -108,20 +108,36 @@ extern int DAT_143ab2870;                               // taxi station id (reso
 extern Unk_TaxiResTable* DAT_143ab1f30;
 extern Unk_TaxiTimer* DAT_143ab47a0;
 
-Unk_TaxiCtx* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 void FUN_14166cce0(Unk_TaxiPlayer* p, int flag);
 void FUN_14166cd70(Unk_TaxiPlayer* p, int flag);
 int FUN_140408410(Unk_TaxiIdArray* arr, int* id);       // CAtlArray<int>::Find
 unsigned __int64 FUN_1401855a0(Unk_TaxiIdArray* arr, int id);   // CAtlArray<int>::Add
-bool FUN_14085f730(Unk_TaxiResTable* t, int id);
-bool FUN_14116d840(void* p);
+class CTaxiManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14085f730(unsigned int);
+};
+class CInputKeyHandler   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14116d840();
+};
 void* FUN_14025e7c0();
 void FUN_140710590(COutPacket* p);                      // send
 void FUN_140ca7230(Unk_TaxiTimer* t, unsigned delayMs, TFunctor<void, EmptyParam> f);
 
-int FUN_140aed440(Unk_CameraManager* cam, Unk_CameraSetting* out);
-float FUN_140af0c70(Unk_CameraManager* cam);
-float FUN_140af0d30(Unk_CameraManager* cam);
+class CameraMgr   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140aed440(struct Unk_CameraSetting&);
+    float FUN_140af0c70();
+    float FUN_140af0d30();
+};
 struct Unk_TaxiCamMove { int m_nKind; int m_04; void* m_pad[15]; };
 void FUN_140aeffd0(Unk_CameraManager* cam, Unk_TaxiCamMove* out, float t, Unk_CameraSetting* setting);
 void FUN_140aed580(Unk_CameraManager* cam, Unk_TaxiCamMove* mv, int n, float fDuration);
@@ -172,10 +188,10 @@ CAutoFindTaxiStation::~CAutoFindTaxiStation()
 // @0x1409f1240
 void CAutoFindTaxiStation::FUN_1409f1240()
 {
-    bool bNone = FUN_1403ed2d0()->FUN_141bd30a0().FUN_140885340()->m_nValue == 0;
+    bool bNone = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->m_nValue == 0;
     if (bNone)
         return;
-    Unk_TaxiListPtr list = FUN_1403ed2d0()->FUN_141bd0420(0x85359406);
+    Unk_TaxiListPtr list = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
     if (list == 0)
         return;
     if (list->IsEmpty())
@@ -191,7 +207,7 @@ void CAutoFindTaxiStation::FUN_1409f1240()
     {
         m_nActive = 1;
         FUN_140ca7230(FUN_1409f24b0(), 1000, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1450));
-        Unk_TaxiPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_TaxiPlayer* player = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (player != 0)
             FUN_14166cce0(player, 0x100);
     }
@@ -204,27 +220,27 @@ void CAutoFindTaxiStation::FUN_1409f1450()
         return;
     {
         Unk_TaxiEntRef ent;
-        Unk_TaxiPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_TaxiPlayer* player = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (FUN_140408410(&DAT_143ab3078, &DAT_143ab2870) < 0)
         {
             if (FUN_140408410(&DAT_143ab3098, &DAT_143ab2870) < 0)
             {
-                if (!FUN_14085f730(FUN_1409f24a0(), DAT_143ab2870))
+                if (!((class CTaxiManager*)(class Unk_TaxiResTable*)(FUN_1409f24a0()))->FUN_14085f730(DAT_143ab2870))
                 {
-                    Unk_TaxiListPtr list = FUN_1403ed2d0()->FUN_141bd0420(0x85359406);
+                    Unk_TaxiListPtr list = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
                     if (list.get() != 0)
                     {
                         for (POSITION pos = list->GetHeadPosition(); pos != 0; list->GetNext(pos))
                         {
                             ent.FUN_1408a7ed0(list->GetAt(pos));
                             Unk_CameraSetting setting;
-                            if (FUN_140aed440(Unk_CameraManager::FUN_1409478c0(), &setting) != 0)
+                            if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed440(*(struct Unk_CameraSetting*)(&setting)) != 0)
                             {
                                 Vector3 base;
                                 ent.FUN_1408a9280()->FUN_1409618c0(0xfd95ca52, &base);
                                 float fDist = FUN_1409f2430(Unk_CameraManager::FUN_1409478c0());
-                                float fYaw = FUN_140af0c70(Unk_CameraManager::FUN_1409478c0());
-                                float fPitch = FUN_140af0d30(Unk_CameraManager::FUN_1409478c0());
+                                float fYaw = ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af0c70();
+                                float fPitch = ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af0d30();
                                 float x = fDist * FUN_1409f25a0(fYaw) + base.x;
                                 float y = fDist * FUN_1409f2310(fYaw) + base.y;
                                 float z = fDist * FUN_1409f2310(fPitch) + base.z;
@@ -301,7 +317,7 @@ void CAutoFindTaxiStation::FUN_1409f1a70()
 {
     if (m_nActive == 0)
         return;
-    Unk_TaxiPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_TaxiPlayer* player = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (player != 0)
         FUN_14166cd70(player, 0x100);
     m_nActive = 0;
@@ -314,7 +330,7 @@ void CAutoFindTaxiStation::FUN_1409f1a70()
 void CAutoFindTaxiStation::FUN_1409f1af0()
 {
     Unk_CameraSetting setting;
-    if (FUN_140aed440(Unk_CameraManager::FUN_1409478c0(), &setting) != 0)
+    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed440(*(struct Unk_CameraSetting*)(&setting)) != 0)
     {
         Vector3 delta = setting.m_c.FUN_140965c40(Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()->FUN_1409f2540());
         float fLen = delta.FUN_140967ac0() * 0.5f;
@@ -341,11 +357,11 @@ int CAutoFindTaxiStation::FUN_1409f1cb0()
     {
         if (m_nActive != 0)
         {
-            if (FUN_14116d840(FUN_14025e7c0()))
+            if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d840())
             {
                 if (FUN_140408410(&DAT_143ab3078, &DAT_143ab2870) < 0 && FUN_140408410(&DAT_143ab3098, &DAT_143ab2870) < 0)
                 {
-                    if (!FUN_14085f730(FUN_1409f24a0(), DAT_143ab2870))
+                    if (!((class CTaxiManager*)(class Unk_TaxiResTable*)(FUN_1409f24a0()))->FUN_14085f730(DAT_143ab2870))
                     {
                         FUN_1401855a0(&DAT_143ab3098, DAT_143ab2870);
                         COutPacket packet(static_cast<int>(SendOp::RequestTaxi), 0);

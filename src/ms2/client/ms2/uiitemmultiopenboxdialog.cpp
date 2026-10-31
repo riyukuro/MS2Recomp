@@ -19,7 +19,7 @@ public:
 extern Unk_McAttendTable g_attendItems;
 void FUN_141415600(const CString& strName);                      // drop the item shown under a dialog name
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
-unsigned FUN_140869420();                                        // the client millisecond clock
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommonByKey(const CStringW& strKey);                  // string table text
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
@@ -33,7 +33,7 @@ struct Unk_McConfig
     char m_pad_00[0xa2e8];
     Unk_McConstVal m_multiOpenMax;                               // +0xa2e8
 };
-Unk_McConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The inventory dialog (ui id 0x4e2d): only the flag word this dialog sets on it.
 class Unk_McInventoryDialog : public UIDialog
@@ -109,7 +109,7 @@ void UIItemMultiOpenBoxDialog::OnLoadComplete()
         FUN_141415450(GetTypeName(), item, 0, 1, 0);
         if (m_30.get() != 0)
             m_30->Invoke("setItem", GetTypeName());
-        m_198 = FUN_140869420() + 500;
+        m_198 = GetTickCountMs2() + 500;
     }
 }
 MS2_REPLACE_METHOD(0x140C3F600, UIItemMultiOpenBoxDialog, OnLoadComplete, 507, 0x1D0B5491);
@@ -133,11 +133,11 @@ MS2_REPLACE_METHOD(0x140C3F810, UIItemMultiOpenBoxDialog, vfunc_28, 129, 0x87EE8
 void UIItemMultiOpenBoxDialog::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = GetTickCountMs2();
     if (m_198 != 0 && nNow > (unsigned)m_198)
     {
         m_198 = 0;
-        int nCount = *FUN_1402fbd20(&m_194, FUN_1402056b0(&FUN_1401d3200()->m_multiOpenMax));
+        int nCount = *FUN_1402fbd20(&m_194, FUN_1402056b0(&((struct Unk_McConfig*)FUN_1401d3200())->m_multiOpenMax));
         COutPacket packet(static_cast<int>(SendOp::RequestItemBox), 0);
         packet.WriteInt32(m_180);
         packet.WriteInt16(m_184);
@@ -170,7 +170,7 @@ void UIItemMultiOpenBoxDialog::FUN_140c3fa80(int nOpened, int nResult)
     {
         FUN_140c3fca0();
         if (m_194 > 0)
-            m_198 = FUN_140869420() + 100;
+            m_198 = GetTickCountMs2() + 100;
         else
             vfunc_67();
     }

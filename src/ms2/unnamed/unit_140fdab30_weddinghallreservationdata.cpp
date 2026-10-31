@@ -28,9 +28,8 @@ struct Unk_WdUgcPaths
     unsigned char m_pad_00[0x90];
     CString m_strDefaultProfile;                            // +0x90
 };
-Unk_WdUgcPaths* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
-PC* FUN_141bd1530(WorldService* pWorld, __int64 nCharacterId);              // the field player of a character id
 CString FUN_141028be0(__int64 nCharacterId, const CString& strKey, int nKind, CString strExt);   // a UGC profile path
 CStringTable* GetStringTable();                                              // the string table singleton
 bool FUN_140900f30(__int64 nTime);                                          // the time is at night (before 6 / after 17)
@@ -44,9 +43,9 @@ FMT_VARIADIC_W(CStringW, FormatStringId, int)
 // The portrait icon of a partner: its UGC profile image when it is in the field, else the default portrait.
 CString FUN_140fdab30(const Unk_WeddingPartner* pPartner)
 {
-    PC* pPC = FUN_141bd1530(WorldService::GetInstance(), pPartner->m_nCharacterId);
+    PC* pPC = ((class PC*)((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FUN_141bd1530(pPartner->m_nCharacterId));
     if (pPC == 0)
-        return FUN_1401d31f0()->m_strDefaultProfile;
+        return ((struct Unk_WdUgcPaths*)FUN_1401d31f0())->m_strDefaultProfile;
     return FUN_141028be0(pPartner->m_nCharacterId, pPC->FUN_1416612e0(), 1, CString(""));
 }
 MS2_REPLACE(0x140FDAB30, FUN_140fdab30, 281, 0xC1D9E733);

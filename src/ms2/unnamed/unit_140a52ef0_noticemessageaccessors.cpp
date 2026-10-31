@@ -15,11 +15,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-int FUN_141658e60(PC* pPC);                                 // 0x141658e60 (also read by itemgem / scenestategame)
-int FUN_140976780(GameObject* pObject);                     // 0x140976780 the object's code (+0x118)
-GameObject* FUN_141bd1180(WorldService* pWorld, int nId);   // 0x141bd1180 the game object of an actor id
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                // 0x141b6ef70 the scene node of an entity
-double FUN_141473280(CMainSystem* pSystem);                 // 0x141473280 the current time
 
 // @0x140a52ef0
 NoticeMessage::NoticeMessage()
@@ -34,7 +30,7 @@ int NoticeMessage::FUN_140a53010()
 {
     PC* pPC = efd::DynamicCast<PC>(m_pOwner);
     if (pPC)
-        return FUN_141658e60(pPC);
+        return ((class PC*)(class PC*)(pPC))->FUN_141658e60();
     return 2;
 }
 MS2_REPLACE_METHOD(0x140A53010, NoticeMessage, FUN_140a53010, 58, 0xA2303F78);
@@ -53,7 +49,7 @@ MS2_REPLACE_METHOD(0x140A53050, NoticeMessage, FUN_140a53050, 58, 0xA668C7D0);
 int NoticeMessage::GetObjectCode()
 {
     if (m_pOwner)
-        return FUN_140976780(m_pOwner);
+        return ((class PCBase*)(class GameObject*)(m_pOwner))->FUN_140976780();
     return m_nObjectCode;
 }
 MS2_REPLACE_METHOD(0x140A53090, NoticeMessage, GetObjectCode, 50, 0x7ED2125A);
@@ -195,7 +191,7 @@ MS2_REPLACE_METHOD(0x140A53480, NoticeMessage, GetMode48, 14, 0x921EE467);
 void NoticeMessage::Bind()
 {
     if (m_pOwner == 0 && m_nActor != 0)
-        m_pOwner = FUN_141bd1180(WorldService::GetInstance(), m_nActor);
+        m_pOwner = ((class GameObject*)((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FUN_141bd1180(m_nActor));
     if (m_spNode == 0 && m_pOwner != 0)
         m_spNode = FUN_141b6ef70(m_pOwner->FUN_14123c460());
 }
@@ -204,7 +200,7 @@ MS2_REPLACE_METHOD(0x140A534A0, NoticeMessage, Bind, 159, 0x9C92423F);
 // @0x140a53550
 void NoticeMessage::Stamp()
 {
-    m_dTimestamp = FUN_141473280(CMainSystem::GetInstance());
+    m_dTimestamp = ((class CMainSystem*)(class CMainSystem*)(CMainSystem::GetInstance()))->FUN_141473280();
 }
 MS2_REPLACE_METHOD(0x140A53550, NoticeMessage, Stamp, 37, 0x77A3EC3C);
 
@@ -212,7 +208,7 @@ MS2_REPLACE_METHOD(0x140A53550, NoticeMessage, Stamp, 37, 0x77A3EC3C);
 GameObject* NoticeMessage::ResolveOwner()
 {
     if (m_nLookupId)
-        return FUN_141bd1180(WorldService::GetInstance(), m_nLookupId);
+        return ((class GameObject*)((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FUN_141bd1180(m_nLookupId));
     return m_pOwner;
 }
 MS2_REPLACE_METHOD(0x140A53580, NoticeMessage, ResolveOwner, 57, 0x380DA0FA);

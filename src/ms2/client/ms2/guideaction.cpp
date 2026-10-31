@@ -87,8 +87,14 @@ MS2_CHECK_OFFSET(Unk_GaSidePopupView, m_strSound, 0x60);
 // NiPoint3's assignment (0x14097faa0) of a point built by Unk_NiPoint3 (nipoint3.h), as the effect spawns use them.
 void FUN_14097faa0(NiPoint3* pDst, const Unk_NiPoint3& kSrc);
 
-class Unk_GaCamera { public: int FUN_140af7e30(); };       // CameraMgr: the kind of the active camera mode (2: trigger)
-Unk_GaCamera* FUN_1409478c0();
+// C3: local CameraMgr view (camera.h turns the kENTITY_INVALID initializer 0x1400f2790 into a stub).
+class CameraMgr;
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };     // 0x1409478c0
+class CameraMgr : public TSingleton<CameraMgr>
+{
+public:
+    int FUN_140af7e30();                                    // the kind of the active camera mode (2: trigger)
+};
 class Unk_GaOption { public: const unsigned char* FUN_140a58500(); };   // CGameOption: the gamepad block (+0 the gamepad mode)
 class Unk_GaSound { public: void FUN_1422b9fd0(int nScene); };  // the sound scene manager
 Unk_GaSound* FUN_1408e57f0();
@@ -96,8 +102,6 @@ class Unk_GaKeyTable { public: CStringW FUN_14142d760(int nBind, int n); };   //
 Unk_GaKeyTable* FUN_1409331f0();
 
 CTriggerService* FUN_140ad4b90();
-CEffectService* FUN_1403ed280();
-NotifySystem* FUN_140939a10();
 UIGuideEvent* FUN_14136f3e0(int nId);                       // the guide event window
 UICutSceneCinematic* FUN_14136f290(int nId);
 UISmartRecommendNotifyDialog* FUN_14136f5c0(int nId);
@@ -410,7 +414,7 @@ void CGuideActionEffect::vfunc_3()
         kTarget.m_strName = m_path;
         kTarget.m_nKind = 0;
         kTarget.m_pXform = &xf;
-        cube.m_handle = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+        cube.m_handle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
     }
 }
 MS2_REPLACE_METHOD(0x1413832D0, CGuideActionEffect, vfunc_3, 427, 0x74750A6C);
@@ -422,7 +426,7 @@ void CGuideActionEffect::vfunc_4()
     {
         if (m_cubes[i].m_handle != 0)
         {
-            FUN_1403ed280()->FUN_1411a6060(m_cubes[i].m_handle);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_cubes[i].m_handle);
             m_cubes[i].m_handle = 0;
         }
     }
@@ -1120,7 +1124,7 @@ MS2_REPLACE_METHOD(0x1413856D0, CGuideActionSequenceCamera, vfunc_2, 146, 0xFDC7
 void CGuideActionSequenceCamera::vfunc_3()
 {
     m_skipped = 0;
-    if (FUN_1409478c0()->FUN_140af7e30() != 2)
+    if (CameraMgr::GetInstance()->FUN_140af7e30() != 2)
         FUN_140ad4b90()->FUN_141863460(0);
     FUN_140ad4b90()->FUN_141863340(m_triggerCameraId, 1);
     if (m_isUseCinematicCutScene != 0)
@@ -1134,7 +1138,7 @@ void CGuideActionSequenceCamera::vfunc_3()
                 strKey = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
             pCinematic->FUN_141907f80(3, strEmpty);
             pCinematic->FUN_141907d60(3, strKey, GetStringCommon(0x667));
-            FUN_140939a10()->RegisterNotify(L"NotifyCutSceneCinematicSkip",
+            NotifySystem::GetInstance()->RegisterNotify(L"NotifyCutSceneCinematicSkip",
                 Delegate<void(NotifyObject*)>(this, &CGuideActionSequenceCamera::FUN_141385ba0));
         }
     }
@@ -1145,12 +1149,12 @@ void CGuideActionSequenceCamera::vfunc_3()
 // @0x141385a40
 void CGuideActionSequenceCamera::vfunc_4()
 {
-    if (FUN_1409478c0()->FUN_140af7e30() != 2)
+    if (CameraMgr::GetInstance()->FUN_140af7e30() != 2)
         FUN_140ad4b90()->FUN_141863460(m_endInterpolationTime);
     if (m_isUseCinematicCutScene != 0)
     {
         FUN_1408e57f0()->FUN_1422b9fd0(0x620001d);
-        FUN_140939a10()->UnregisterNotify(L"NotifyCutSceneCinematicSkip",
+        NotifySystem::GetInstance()->UnregisterNotify(L"NotifyCutSceneCinematicSkip",
             Delegate<void(NotifyObject*)>(this, &CGuideActionSequenceCamera::FUN_141385ba0));
     }
     FUN_1413837e0(0x15);
@@ -1162,7 +1166,7 @@ int CGuideActionSequenceCamera::vfunc_5()
 {
     if (m_skipped != 0)
         return 1;
-    if (FUN_1409478c0()->FUN_140af7e30() != 2)
+    if (CameraMgr::GetInstance()->FUN_140af7e30() != 2)
         return 0;
     return 1;
 }

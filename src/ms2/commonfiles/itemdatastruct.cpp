@@ -55,7 +55,7 @@ void FUN_1402c8940(const CString& str, std::vector<CString>& vec, const char* ps
 int FUN_14021bdc0(CString& strName);    // slot name -> slot type
 CString Name_14021c050(int nType);      // slot type -> slot name
 CString FUN_14016a5c0(const char* psz, int n);
-unsigned FUN_1402227e0(int nJob, int n);    // job -> job flag
+int FUN_1402227e0(int, int);  // C3: the definition's signature
 void* FUN_14086e000(void* pParent, const void* pChild);                     // InsertEndChild
 void FUN_140873bc0(void* pElem, const char* pszName, bool bValue);          // SetAttribute(name, bool)
 void FUN_140873ca0(void* pElem, const char* pszName, int nValue);           // SetAttribute(name, int)
@@ -74,7 +74,7 @@ efd::Point3 FUN_14028f060(CString str);                                    // "x
 int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);  // bool attribute (TinyXML query)
 void FUN_140873c60(void* pElem, const char* pszName, unsigned short nValue);   // SetAttribute(name, unsigned short)
 int FUN_14053fa40(int nItemId);            // itemdata.cpp (written there as bool; the callers test eax)
-unsigned FUN_141901d20(int nItemId, __int64 nUid, __int64 nUgc);           // uicommon.cpp
+int FUN_141901d20(int, __int64, __int64);  // C3: the definition's signature
 int FUN_140873710(Unk_140165cf0* pElem, const char* pszName, int* pnOut);  // int attribute (TinyXML query)
 
 // The item price table (commonfiles\pricetable.cpp).
@@ -129,7 +129,6 @@ template <> void XmlSplitImpl(const CString& str, std::vector<__int64>& vec, con
 }
 
 // The game settings: feature switches by number.
-CFeatureManager* FUN_140166410();
 
 // Unit-local view of the game's TiXmlElement (0x90 bytes).
 // TinyXML attribute (only the sentinel of an element's attribute set is touched here).
@@ -558,7 +557,7 @@ int ItemLimit::Load(Unk_140165cf0* pElem)
         FUN_140873220(pLimit, "levelLimit", levelLimit);
         XmlValue(pLimit, "transferType", transferType);
         FUN_1408731e0(pLimit, "transferTypeVersion", transferTypeVersion);
-        if (FUN_140166410()->FUN_14036d570(0x84) && FUN_14086f4b0(pLimit, "globalTransferType") != 0)
+        if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && FUN_14086f4b0(pLimit, "globalTransferType") != 0)
             XmlValue(pLimit, "globalTransferType", transferType);
         FUN_1408730a0(pLimit, "shopSell", shopSell);
         XmlValue(pLimit, "enableBreak", enableBreak);
@@ -1124,15 +1123,15 @@ void ItemProperty::Load(Unk_140165cf0* pElem)
     FUN_1408731e0(pElem, "unlimitedEnchantMaxGrade", unlimitedEnchantMaxGrade);
     FUN_1408731e0(pElem, "rePackingLimitCount", rePackingLimitCount);
     FUN_1408731e0(pElem, "rePackingItemConsumeCount", rePackingItemConsumeCount);
-    if (FUN_140166410()->FUN_14036d570(0x84) && FUN_14086f4b0(pElem, "globalRePackingLimitCount") != 0)
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && FUN_14086f4b0(pElem, "globalRePackingLimitCount") != 0)
         FUN_1408731e0(pElem, "globalRePackingLimitCount", rePackingLimitCount);
-    if (FUN_140166410()->FUN_14036d570(0x84) && FUN_14086f4b0(pElem, "globalRePackingItemConsumeCount") != 0)
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && FUN_14086f4b0(pElem, "globalRePackingItemConsumeCount") != 0)
         FUN_1408731e0(pElem, "globalRePackingItemConsumeCount", rePackingItemConsumeCount);
     CString strScrollIds;
     FUN_1408733e0(pElem, "rePackingScrollID", strScrollIds);
     if (!strScrollIds.IsEmpty())
         XmlSplit(strScrollIds, rePackingScrollID, ",");
-    if (FUN_140166410()->FUN_14036d570(0x84) && FUN_14086f4b0(pElem, "globalRePackingScrollID") != 0)
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && FUN_14086f4b0(pElem, "globalRePackingScrollID") != 0)
     {
         CString strGlobalScrollIds;
         FUN_1408733e0(pElem, "globalRePackingScrollID", strGlobalScrollIds);

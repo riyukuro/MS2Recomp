@@ -24,6 +24,8 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -64,19 +66,23 @@ void* FUN_1408704d0(void* pDecl, const char* pszVersion, const char* pszEncoding
 void FUN_14081ad20(void* pDecl);                                    // TiXmlDeclaration::~TiXmlDeclaration
 void* FUN_140a27ec0(void* pComment, const char* pszText);           // TiXmlComment::TiXmlComment(const char*)
 void FUN_1408724d0(void* pComment);                                 // TiXmlComment::~TiXmlComment
-void* FUN_14086e000(void* pParent, void* pChild);                   // InsertEndChild
-void* FUN_14086e090(void* pParent, void* pChild);                   // LinkEndChild
+class TiXmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class TiXmlNode* InsertEndChild(class TiXmlNode const&);
+    class TiXmlNode* LinkEndChild(class TiXmlNode*);
+};
 bool FUN_140870f90(TiXmlDocument* pDoc);                            // SaveFile
-void FUN_140874e00(Unk_140165cf0* pElem, const char* pszName, Unk_Frustum* pOut);                          // read a frustum node
+int XmlGetChild(class TiXmlElement*, char const*, class NiFrustum&);   // C3: was FUN_140874e00
 void FUN_140874f20(Unk_140165cf0* pElem, const char* pszName, Unk_Rect4* pOut);                            // read a rectangle node
 void FUN_140874280(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, CString* pOut);         // read a string attribute
-void FUN_140874d90(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, Unk_GVec3* pOut);       // read a vector attribute
-void FUN_140874210(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, float* pOut);           // read a float attribute
-void FUN_140875180(Unk_140165cf0* pElem, const char* pszName, const Unk_Frustum* pIn, bool bCreate);        // write a frustum node
+int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, class NiPoint3&);   // C3: was FUN_140874d90
+int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, float&);   // C3: was FUN_140874210
+void XmlSetChild(class TiXmlElement*, char const*, class NiFrustum const&, bool);   // C3: was FUN_140875180
 void FUN_1408752d0(Unk_140165cf0* pElem, const char* pszName, const Unk_Rect4* pIn, bool bCreate);          // write a rectangle node
 void FUN_140874520(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, const CString* pIn, bool bCreate);   // write a string attribute
 void FUN_140875110(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, const Unk_GVec3* pIn, bool bCreate);   // write a vector attribute
-void FUN_1408744b0(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, float fValue, bool bCreate);   // write a float attribute
+void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, float, bool);   // C3: was FUN_1408744b0
 CString FUN_14016a5c0(const char* pszPath, int nFlags);             // path conversion
 CString FUN_1409a2360(const char* psz, int n);                      // text conversion
 CString FUN_140536a50(const char* pszFormat, const CString& strArg);   // StringFormat with one text argument
@@ -94,37 +100,25 @@ public:
 };
 
 // the world manager singleton
-class Unk_MeWorld
+class Unk_MeWorld : public WorldService
 {
 public:
     MS2Ptr<Unk_MeMapInfo> FUN_141bd30a0();                          // the current map info
-    int FUN_141bd3060();                                            // current map id
     GameObject* FUN_141bd0fa0(egf::EntityID id);                    // the game object of an entity
     void FUN_141bd2db0(ATL::CAtlList<efd::SmartPointer<GameObject> >* pOut, int (*pfnFilter)(GameObject*));   // collect the game objects
-    void FUN_141bd3cb0(bool b);                                     // m_914 = b
-    void FUN_141bd3cf0(bool b);                                     // m_915 = b
 };
-Unk_MeWorld* FUN_1403ed2d0();
-class Unk_MeUIMgr
-{
-public:
-    void FUN_141ad9650();                                           // dialogs on
-    void FUN_141ad9b30();                                           // dialogs off
-};
-Unk_MeUIMgr* FUN_1403ed2b0();
+CUIService* FUN_1403ed2b0();
 
 class Unk_MeApp { public: void FUN_141489ff0(NiColorA kColor); };   // the app's clear colour
-Unk_MeApp* FUN_140aae430();
-
-ApplyEffect* FUN_1409a8b00();                                       // the ApplyEffect singleton
+void* FUN_140aae430();   // C3: was FUN_140aae430
 
 // camera manager members (exe functions of other objs)
-float FUN_1409f2430(CameraMgr* pCamera);                            // the distance of the current mode
-float FUN_141032e60(CameraMgr* pCamera);                            // the vertical angle of the current mode
-void FUN_141032ed0(CameraMgr* pCamera, float f);
-void FUN_141032f30(CameraMgr* pCamera, float f);
-void FUN_140b6bd30(CameraMgr* pCamera);                             // apply the current mode setting
-void FUN_1418df360(CameraMgr* pCamera, Vector3 ptPos);      // set the camera position
+float FUN_1409f2430(class Unk_CameraManager*);   // C3: was FUN_1409f2430
+float FUN_141032e60(void*);   // C3: was FUN_141032e60
+void FUN_141032ed0(void*, float);   // C3: was FUN_141032ed0
+void FUN_141032f30(void*, float);   // C3: was FUN_141032f30
+void FUN_140b6bd30(void*);   // C3: was FUN_140b6bd30
+void CameraMgrMoveTo(CameraMgr* pCamera, Vector3 ptPos);    // set the camera position
 
 // entity iteration, properties and the instancing service
 struct Unk_MeEntIter { void* m_a; };                                // the iteration position (8 bytes in the exe frame)
@@ -137,7 +131,7 @@ int FUN_1408a20a0(egf::Entity* pEntity, unsigned int nHash, bool* pbOut);   // r
 void FUN_14098c6e0(egf::Entity* pEntity, unsigned int nHash, bool* pbValue);   // write a bool property
 const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
 extern char DAT_143b059e8;                                          // the application framework
-HardwareInstancingService* FUN_14098c5b0(char* pFramework);
+class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 
 // the render surface -> camera -> frustum
 class Unk_MeFrustumCamera { public: Unk_Frustum* FUN_1409a8de0(); };
@@ -163,8 +157,6 @@ int SaveDefaultTargetToFileA(ATL::CSimpleStringT<char, 1>* pkPath, D3DXIMAGE_FIL
     NiRect<unsigned int> kRect, float fScale);
 
 float FUN_14028aed0(float f);                                        // round
-void FUN_1422c0e80(ASMovieClip* pClip, float fWidth);               // set the width
-void FUN_1422c0f20(ASMovieClip* pClip, float fHeight);              // set the height
 
 // the CRT time wrappers
 // @0x141a51ec0
@@ -217,13 +209,13 @@ int UIMinimapEditDialog::vfunc_65()
         return 0;
     if (CameraMgr::GetInstance()->FUN_140a18070() == 0)
         return 0;
-    FUN_140aae430()->FUN_141489ff0(NiColorA(0, 0, 0, 0));
+    ((class Unk_MeApp*)FUN_140aae430())->FUN_141489ff0(NiColorA(0, 0, 0, 0));
     FUN_141a540f0(1);
-    FUN_1409a8b00()->SetSoftParticlesOption(true, 0);
-    FUN_1409a8b00()->ApplyFieldFogRange(false);
+    TSingleton<ApplyEffect>::GetInstance()->SetSoftParticlesOption(true, 0);
+    TSingleton<ApplyEffect>::GetInstance()->ApplyFieldFogRange(false);
     CameraMgr::GetInstance()->FUN_140aed750(6, 1);
     FUN_141a551a0(CameraMgr::GetInstance(), true);
-    FUN_1403ed2d0()->FUN_141bd3cb0(true);
+    reinterpret_cast<Unk_MeWorld*>(WorldService::GetInstance())->FUN_141bd3cb0(true);
     m_strImageName.Empty();
     m_strImageIcon.Empty();
     return 1;
@@ -233,15 +225,15 @@ int UIMinimapEditDialog::vfunc_65()
 void UIMinimapEditDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140aae430()->FUN_141489ff0(efd::ColorA::BLACK);
+    ((class Unk_MeApp*)FUN_140aae430())->FUN_141489ff0(efd::ColorA::BLACK);
     FUN_141a540f0(0);
-    FUN_1409a8b00()->ApplySoftParticleOption();
-    FUN_1409a8b00()->ApplyFieldFog();
+    TSingleton<ApplyEffect>::GetInstance()->ApplySoftParticleOption();
+    TSingleton<ApplyEffect>::GetInstance()->ApplyFieldFog();
     CameraMgr::GetInstance()->FUN_140aec8a0(false);
     FUN_141a551a0(CameraMgr::GetInstance(), false);
     CameraMgr::GetInstance()->FUN_140aed750(2, 1);
-    FUN_140b6bd30(CameraMgr::GetInstance());
-    FUN_1403ed2d0()->FUN_141bd3cb0(false);
+    FUN_140b6bd30((void*)(CameraMgr::GetInstance()));
+    reinterpret_cast<Unk_MeWorld*>(WorldService::GetInstance())->FUN_141bd3cb0(false);
     m_strImageName.Empty();
     m_strImageIcon.Empty();
 }
@@ -269,7 +261,7 @@ void UIMinimapEditDialog::OnLoadComplete()
     {
         spDistance->FUN_1422ce750(10.0f);
         spDistance->FUN_1422ce6a0(20000.0f);
-        spDistance->FUN_1422ce5f0(FUN_1409f2430(CameraMgr::GetInstance()));
+        spDistance->FUN_1422ce5f0(FUN_1409f2430((class Unk_CameraManager*)(CameraMgr::GetInstance())));
         spDistance->FUN_1422c1fe0(0);
     }
     MS2Ptr<Unk_MeSlider> spVAngle = FUN_140faff90("m_sliderVAngle");
@@ -277,7 +269,7 @@ void UIMinimapEditDialog::OnLoadComplete()
     {
         spVAngle->FUN_1422ce750(0);
         spVAngle->FUN_1422ce6a0(90.0f);
-        spVAngle->FUN_1422ce5f0(FUN_141032e60(CameraMgr::GetInstance()));
+        spVAngle->FUN_1422ce5f0(FUN_141032e60((void*)(CameraMgr::GetInstance())));
         spVAngle->FUN_1422c1fe0(0);
     }
 
@@ -292,14 +284,14 @@ void UIMinimapEditDialog::OnLoadComplete()
     if (spLabelDistance.get())
     {
         CString strText;
-        strText.Format("Camera Distance [%f]", (double)FUN_1409f2430(CameraMgr::GetInstance()));
+        strText.Format("Camera Distance [%f]", (double)FUN_1409f2430((class Unk_CameraManager*)(CameraMgr::GetInstance())));
         spLabelDistance->FUN_140c461f0()->FUN_1422e4a00(strText);
     }
     MS2Ptr<Unk_MeLabel> spLabelVAngle = FUN_140e6d820("m_labelVAngle");
     if (spLabelVAngle.get())
     {
         CString strText;
-        strText.Format("Camera VAngle [%f]", (double)FUN_141032e60(CameraMgr::GetInstance()));
+        strText.Format("Camera VAngle [%f]", (double)FUN_141032e60((void*)(CameraMgr::GetInstance())));
         spLabelVAngle->FUN_140c461f0()->FUN_1422e4a00(strText);
     }
 
@@ -322,8 +314,8 @@ void UIMinimapEditDialog::OnLoadComplete()
         float fWidth = m_spMinimap->m_rcImage.r - m_spMinimap->m_rcImage.l;
         float fHeight = m_spMinimap->m_rcImage.b - m_spMinimap->m_rcImage.t;
         spArea->FUN_1422c00f0(fLeft, fTop);
-        FUN_1422c0e80(spArea.get(), fWidth);
-        FUN_1422c0f20(spArea.get(), fHeight);
+        ((ASDisplayObject*)(spArea.get()))->FUN_1422c0e80(fWidth);
+        ((ASDisplayObject*)(spArea.get()))->FUN_1422c0f20(fHeight);
     }
     if (m_30.get())
         m_30->Invoke("OnSetting");
@@ -350,7 +342,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         {
             float fFov = data.FUN_1422b8c10();
             CameraMgr::GetInstance()->FUN_140ad4ff0(fFov);
-            FUN_140b6bd30(CameraMgr::GetInstance());
+            FUN_140b6bd30((void*)(CameraMgr::GetInstance()));
         }
     }
     else if (_stricmp("OnDistance", szMethod) == 0)
@@ -358,10 +350,10 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         if (data.FUN_1422b9620(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
         {
             float fDistance = data.FUN_1422b8c10();
-            FUN_141032ed0(CameraMgr::GetInstance(), fDistance);
-            FUN_141032f30(CameraMgr::GetInstance(), fDistance);
+            FUN_141032ed0((void*)(CameraMgr::GetInstance()), fDistance);
+            FUN_141032f30((void*)(CameraMgr::GetInstance()), fDistance);
             CameraMgr::GetInstance()->FUN_140af9b40(fDistance);
-            FUN_140b6bd30(CameraMgr::GetInstance());
+            FUN_140b6bd30((void*)(CameraMgr::GetInstance()));
         }
     }
     else if (_stricmp("OnVAngle", szMethod) == 0)
@@ -370,7 +362,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         {
             float fAngle = data.FUN_1422b8c10();
             CameraMgr::GetInstance()->FUN_140af98d0(fAngle);
-            FUN_140b6bd30(CameraMgr::GetInstance());
+            FUN_140b6bd30((void*)(CameraMgr::GetInstance()));
         }
     }
     else if (_stricmp("OnRotation", szMethod) == 0)
@@ -378,7 +370,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         if (data.FUN_1422b9620(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
         {
             bool bRotation = data.FUN_1422b8a90();
-            FUN_1403ed2d0()->FUN_141bd3cf0(bRotation);
+            reinterpret_cast<Unk_MeWorld*>(WorldService::GetInstance())->FUN_141bd3cf0(bRotation);
         }
     }
     else if (_stricmp("OnScreenShot", szMethod) == 0)
@@ -391,7 +383,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 // @0x141a53100
 void UIMinimapEditDialog::FUN_141a53100()
 {
-    MS2Ptr<Unk_MeMapInfo> spMap = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<Unk_MeMapInfo> spMap = reinterpret_cast<Unk_MeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spMap == 0)
         return;
     TiXmlDocument doc;
@@ -402,21 +394,21 @@ void UIMinimapEditDialog::FUN_141a53100()
             return;
         if (pRoot->FUN_140165cf0("minimap"))
         {
-            FUN_140874e00(pRoot->FUN_140165cf0("minimap"), "frustum", &m_spMinimap->m_frustum);
+            XmlGetChild((class TiXmlElement*)(pRoot->FUN_140165cf0("minimap")), "frustum", *(class NiFrustum*)(&m_spMinimap->m_frustum));
             FUN_140874f20(pRoot->FUN_140165cf0("minimap"), "screen", &m_spMinimap->m_rcScreen);
             FUN_140874f20(pRoot->FUN_140165cf0("minimap"), "image", &m_spMinimap->m_rcImage);
             FUN_140874280(pRoot->FUN_140165cf0("minimap"), "image", "name", &m_spMinimap->m_strImageName);
             m_strImageName = m_spMinimap->m_strImageName;
             FUN_140874280(pRoot->FUN_140165cf0("minimap"), "image", "icon", &m_strImageIcon);
-            FUN_140874d90(pRoot->FUN_140165cf0("minimap"), "camera", "position", &m_spMinimap->m_vecCamPos);
-            FUN_140874d90(pRoot->FUN_140165cf0("minimap"), "camera", "rotation", &m_spMinimap->m_vecCamRot);
-            FUN_140874210(pRoot->FUN_140165cf0("minimap"), "edit", "zoomfactor", &m_spMinimap->m_fZoomFactor);
+            XmlGetChildAttr((class TiXmlElement*)(pRoot->FUN_140165cf0("minimap")), "camera", "position", *(class NiPoint3*)(&m_spMinimap->m_vecCamPos));
+            XmlGetChildAttr((class TiXmlElement*)(pRoot->FUN_140165cf0("minimap")), "camera", "rotation", *(class NiPoint3*)(&m_spMinimap->m_vecCamRot));
+            XmlGetChildAttr((class TiXmlElement*)(pRoot->FUN_140165cf0("minimap")), "edit", "zoomfactor", *(float*)(&m_spMinimap->m_fZoomFactor));
             m_spMinimap->m_rcImage.r = m_spMinimap->m_rcImage.l + 1024.0f;
             m_spMinimap->m_rcImage.b = m_spMinimap->m_rcImage.t + 1024.0f;
-            FUN_1418df360(CameraMgr::GetInstance(), Vector3(reinterpret_cast<const Vector3&>(m_spMinimap->m_vecCamPos)));
+            CameraMgrMoveTo(CameraMgr::GetInstance(), Vector3(reinterpret_cast<const Vector3&>(m_spMinimap->m_vecCamPos)));
             FUN_141a55200(CameraMgr::GetInstance(), Vector3(reinterpret_cast<const Vector3&>(m_spMinimap->m_vecCamRot)));
             CameraMgr::GetInstance()->FUN_140af0170(m_spMinimap->m_fZoomFactor < 1.0f ? 1.0f : m_spMinimap->m_fZoomFactor, false);
-            FUN_140b6bd30(CameraMgr::GetInstance());
+            FUN_140b6bd30((void*)(CameraMgr::GetInstance()));
         }
         else
         {
@@ -429,7 +421,7 @@ void UIMinimapEditDialog::FUN_141a53100()
 // MS2-FUNCTIONAL: TiXml decl/comment/element are built with manual ctor calls, so the EH states and the new-expression differ from the exe
 void UIMinimapEditDialog::FUN_141a53750()
 {
-    MS2Ptr<Unk_MeMapInfo> spMap = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<Unk_MeMapInfo> spMap = reinterpret_cast<Unk_MeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spMap == 0)
         return;
     if (MS2Ptr<ASMovieClip> spArea = FUN_140ba7930("m_rectarea"))
@@ -460,16 +452,16 @@ void UIMinimapEditDialog::FUN_141a53750()
     {
         Unk_MeXmlDecl decl;
         FUN_1408704d0(&decl, "1.0", "utf-8", "");
-        FUN_14086e000(&doc, &decl);
+        ((void*)((class TiXmlNode*)(void*)(&doc))->InsertEndChild(*(class TiXmlNode const*)(&decl)));
         {
             Unk_MeXmlComment comment;
             FUN_140a27ec0(&comment, FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 \xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0));
-            FUN_14086e000(&doc, &comment);
+            ((void*)((class TiXmlNode*)(void*)(&doc))->InsertEndChild(*(class TiXmlNode const*)(&comment)));
             FUN_1408724d0(&comment);
         }
         Unk_MeXmlElement root;
         FUN_14086f2f0(&root, "ms2");
-        FUN_14086e000(&doc, &root);
+        ((void*)((class TiXmlNode*)(void*)(&doc))->InsertEndChild(*(class TiXmlNode const*)(&root)));
         FUN_14086f450(&root);
         FUN_14081ad20(&decl);
     }
@@ -481,17 +473,17 @@ void UIMinimapEditDialog::FUN_141a53750()
             void* pNew = ::operator new(0x90);
             if (pNew != NULL)
                 FUN_14086f2f0(pNew, "minimap");
-            FUN_14086e090(pRoot, pNew);
+            ((void*)((class TiXmlNode*)(void*)(pRoot))->LinkEndChild((class TiXmlNode*)(pNew)));
         }
         Unk_140165cf0* pMinimap = pRoot->FUN_140165cf0("minimap");
-        FUN_140875180(pMinimap, "frustum", &m_spMinimap->m_frustum, 1);
+        XmlSetChild((class TiXmlElement*)(pMinimap), "frustum", *(class NiFrustum const*)(&m_spMinimap->m_frustum), 1);
         FUN_1408752d0(pMinimap, "screen", &m_spMinimap->m_rcScreen, 1);
         FUN_1408752d0(pMinimap, "image", &m_spMinimap->m_rcImage, 1);
         FUN_140874520(pMinimap, "image", "name", &m_strImageName, 1);
         FUN_140874520(pMinimap, "image", "icon", &m_strImageIcon, 1);
         FUN_140875110(pMinimap, "camera", "position", &m_spMinimap->m_vecCamPos, 1);
         FUN_140875110(pMinimap, "camera", "rotation", &m_spMinimap->m_vecCamRot, 1);
-        FUN_1408744b0(pMinimap, "edit", "zoomfactor", m_spMinimap->m_fZoomFactor, 1);
+        XmlSetChildAttr((class TiXmlElement*)(pMinimap), "edit", "zoomfactor", m_spMinimap->m_fZoomFactor, 1);
         FUN_140870f90(&doc);
     }
     SaveDefaultTargetToFileA(&m_strImageName, D3DXIFF_DDS, 1, FUN_141a54a50(), 0.5f);
@@ -500,13 +492,13 @@ void UIMinimapEditDialog::FUN_141a53750()
 // @0x141a540f0
 void UIMinimapEditDialog::FUN_141a540f0(int bShow)
 {
-    efd::SmartPointer<HardwareInstancingService> spInstancing(FUN_14098c5b0(&DAT_143b059e8));
+    efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     if (bShow != 0)
     {
         m_hidden.RemoveAll();
         m_instanced.RemoveAll();
         ATL::CAtlList<efd::SmartPointer<GameObject> > objects(10);
-        FUN_1403ed2d0()->FUN_141bd2db0(&objects, 0);
+        reinterpret_cast<Unk_MeWorld*>(WorldService::GetInstance())->FUN_141bd2db0(&objects, 0);
         for (POSITION pos = objects.GetHeadPosition(); pos != NULL; objects.GetNext(pos))
         {
             efd::SmartPointer<GameObject> spObject = objects.GetAt(pos);
@@ -555,7 +547,7 @@ void UIMinimapEditDialog::FUN_141a540f0(int bShow)
     }
     for (POSITION pos = m_hidden.GetHeadPosition(); pos != NULL; m_hidden.GetNext(pos))
     {
-        GameObject* pObject = FUN_1403ed2d0()->FUN_141bd0fa0(m_hidden.GetAt(pos));
+        GameObject* pObject = reinterpret_cast<Unk_MeWorld*>(WorldService::GetInstance())->FUN_141bd0fa0(m_hidden.GetAt(pos));
         if (pObject != NULL)
             pObject->vfunc_23(bShow);
         egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_hidden.GetAt(pos));
@@ -617,7 +609,7 @@ CString UIMinimapEditDialog::GetXBlockPath(CString strXBlock)
 CString UIMinimapEditDialog::FUN_141a549c0()
 {
     CString strPath;
-    strPath.Format("./Data/Resource/Image/Map/Minimap/%08d.dds", FUN_1403ed2d0()->FUN_141bd3060());
+    strPath.Format("./Data/Resource/Image/Map/Minimap/%08d.dds", reinterpret_cast<Unk_MeWorld*>(WorldService::GetInstance())->FUN_141bd3060());
     return strPath;
 }
 

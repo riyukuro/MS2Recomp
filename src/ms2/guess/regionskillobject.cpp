@@ -11,6 +11,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/guess/regionskillobject.h"
 #include "ms2/placeholder/cbasecollision.h"
@@ -19,23 +20,23 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/effectskipmgr.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- unit-local views of exe objects and unrecovered callees --------------------------------------------------------------
 class Unk_RsSkillTable { public: MS2Ptr<Unk_SkillRow> FUN_1407ee1d0(int nSkillId); };
 
 // The world service (0x1403ed2d0): the entity kind of an id, the actor of an id.
 class Unk_RsActor;
-class Unk_RsWorld
+class Unk_RsWorld : public WorldService
 {
 public:
-    int FUN_141bd19d0(int nId);
     Unk_RsActor* FUN_141bd1200(int nId);
 };
-Unk_RsWorld* FUN_1403ed2d0();
 // The local session (0x1409f7c90): zero when the id is a local player.
 class Unk_RsSession { public: int FUN_14161ce60(int nId); };
-Unk_RsSession* FUN_1409f7c90();
-unsigned FUN_141472bc0();                                       // the tick counter
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+int FUN_141472bc0();   // C3: was FUN_141472bc0
 
 // The game settings (0x1401d3200); the fade time of a region effect.
 class Unk_RsFloatVar { public: float FUN_1402bac70(); };
@@ -45,10 +46,7 @@ public:
     char m_pad_00[0x1ce8];
     Unk_RsFloatVar m_fFade;                                     // +0x1ce8
 };
-Unk_RsConfig* FUN_1401d3200();
-
-CEffectService* FUN_1403ed280();                                // the effect service
-EffectDataManager* FUN_1411b1dd0();                             // the effect file cache
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The effect culler (0x14119f490): is this effect visible at a transform? (the data pointer is passed by value)
 class Unk_RsCuller { public: int FUN_1411b8870(CEffectDataPtr spData, int nOwnerType, NiTransform* pXform); };
@@ -57,7 +55,7 @@ class Unk_RsCuller { public: int FUN_1411b8870(CEffectDataPtr spData, int nOwner
 CSkillCollisionManager* FUN_141469a90();
 extern bool DAT_143ae95e0;
 extern bool DAT_143ae95e1;
-extern Vector3 DAT_143b01a60;                           // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // efd::Point3 / NiPoint3 helpers called out of line.
 struct Unk_RsNiPoint3 : public Vector3
@@ -106,11 +104,11 @@ int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArra
 
     int nEffect2;
     int nEffect;
-    m_nOwnerType = FUN_1403ed2d0()->FUN_141bd19d0(m_nOwnerId);
-    m_bLocal = (FUN_1409f7c90()->FUN_14161ce60(m_nOwnerId) == 0);
+    m_nOwnerType = reinterpret_cast<Unk_RsWorld*>(WorldService::GetInstance())->FUN_141bd19d0(m_nOwnerId);
+    m_bLocal = (((class Unk_RsSession*)FUN_1409f7c90())->FUN_14161ce60(m_nOwnerId) == 0);
     if (!m_pAttr->m_strEffect.IsEmpty())
     {
-        m_spEffect = FUN_1411b1dd0()->FUN_14119f870(m_pAttr->m_strEffect);
+        m_spEffect = TSingleton<EffectDataManager>::GetInstance()->FUN_14119f870(m_pAttr->m_strEffect);
         if (m_spEffect.get() != 0)
         {
             for (unsigned i = 0; i < m_points.GetCount(); i++)
@@ -128,7 +126,7 @@ int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArra
                 kTarget.m_nRandomIndex = m_nId;
                 nEffect = 0;
                 if ((m_bLocal != 0 || kTarget.m_b31) && !m_pAttr->m_bNoSpawn)
-                    nEffect = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+                    nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
                 if (nEffect != 0)
                 {
                     m_effects.Add(nEffect);
@@ -145,7 +143,7 @@ int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArra
     }
     if (!m_pAttr->m_strEndEffect.IsEmpty())
     {
-        m_spEffect2 = FUN_1411b1dd0()->FUN_14119f870(m_pAttr->m_strEndEffect);
+        m_spEffect2 = TSingleton<EffectDataManager>::GetInstance()->FUN_14119f870(m_pAttr->m_strEndEffect);
         if (m_spEffect2.get() != 0)
         {
             for (unsigned i = 0; i < m_points.GetCount(); i++)
@@ -162,12 +160,12 @@ int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArra
                 kTarget.m_nRandomIndex = m_nId;
                 nEffect2 = 0;
                 if (m_bLocal != 0)
-                    nEffect2 = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+                    nEffect2 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
                 if (nEffect2 != 0)
                 {
                     m_effects.Add(nEffect2);
                     m_loopEffects.Add(nEffect2);
-                    FUN_1403ed280()->FUN_1411a68f0(nEffect2, false);
+                    TSingleton<CEffectService>::GetInstance()->FUN_1411a68f0(nEffect2, false);
                 }
                 else
                 {
@@ -180,7 +178,7 @@ int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArra
     FUN_1416f7790();
     if (DAT_143ae95e1 || DAT_143ae95e0)
     {
-        Unk_RsActor* pActor = FUN_1403ed2d0()->FUN_141bd1200(m_nOwnerId);
+        Unk_RsActor* pActor = reinterpret_cast<Unk_RsWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nOwnerId);
         if (pActor != 0)
         {
             CSkillCollisionManager::CollisionPtr spShape;
@@ -216,14 +214,14 @@ int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArra
 void CRegionSkillObject::FUN_1416f67e0()
 {
     for (unsigned i = 0; i < m_effects.GetCount(); i++)
-        FUN_1403ed280()->FUN_1411a6060(m_effects[i]);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_effects[i]);
 }
 
 // @0x1416f6860
 void CRegionSkillObject::FUN_1416f6860()
 {
     for (unsigned i = 0; i < m_effects.GetCount(); i++)
-        FUN_1403ed280()->FUN_1411a67f0(m_effects[i], FUN_1401d3200()->m_fFade.FUN_1402bac70());
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a67f0(m_effects[i], ((class Unk_RsConfig*)FUN_1401d3200())->m_fFade.FUN_1402bac70());
 }
 
 // @0x1416f6900
@@ -233,7 +231,7 @@ void CRegionSkillObject::FUN_1416f6900()
     if (pAttr == 0)
         return;
     for (unsigned i = 0; i < m_loopEffects.GetCount(); i++)
-        FUN_1403ed280()->FUN_1411a68f0(m_loopEffects[i], false);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a68f0(m_loopEffects[i], false);
     if (pAttr->m_strHitEffect.IsEmpty())
         return;
     bool bAlways = pAttr->m_bAlways;
@@ -252,7 +250,7 @@ void CRegionSkillObject::FUN_1416f6900()
             FUN_14097faa0(&xf.m_Translate, &niPt);
             xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
             kTarget.m_pXform = &xf;
-            FUN_1403ed280()->FUN_1411a4a00(kTarget);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(kTarget);
         }
     }
 }
@@ -285,7 +283,7 @@ void CRegionSkillObject::FUN_1416f6b90()
             FUN_14097faa0(&xf.m_Translate, &niPt);
             xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
             kTarget.m_pXform = &xf;
-            FUN_1403ed280()->FUN_1411a4a00(kTarget);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(kTarget);
         }
     }
 }
@@ -300,7 +298,7 @@ int CRegionSkillObject::FUN_1416f6e20()
 void CRegionSkillObject::FUN_1416f6e40()
 {
     for (unsigned i = 0; i < m_loopEffects.GetCount(); i++)
-        FUN_1403ed280()->FUN_1411a68f0(m_loopEffects[i], true);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a68f0(m_loopEffects[i], true);
 }
 
 // @0x1416f6ed0
@@ -339,7 +337,7 @@ void CRegionSkillObject::FUN_1416f6f50()
                     kTarget.m_pXform = &xf;
                     kTarget.m_b31 = bAlways;
                     kTarget.m_nRandomIndex = m_nId;
-                    int nEffect = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+                    int nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
                     if (nEffect != 0)
                     {
                         m_effects.Add(nEffect);
@@ -380,12 +378,12 @@ void CRegionSkillObject::FUN_1416f6f50()
                 kTarget.m_nKind = m_nOwnerType;
                 kTarget.m_pXform = &xf;
                 kTarget.m_nRandomIndex = m_nId;
-                int nEffect = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+                int nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
                 if (nEffect != 0)
                 {
                     m_effects.Add(nEffect);
                     m_loopEffects.Add(nEffect);
-                    FUN_1403ed280()->FUN_1411a68f0(nEffect, true);
+                    TSingleton<CEffectService>::GetInstance()->FUN_1411a68f0(nEffect, true);
                     kSpawned.Add(pt);
                 }
             }
@@ -434,7 +432,7 @@ void CRegionSkillObject::FUN_1416f7790()
                 FUN_14097faa0(&xf.m_Translate, &niPt);
                 xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
                 kTarget.m_pXform = &xf;
-                FUN_1403ed280()->FUN_1411a4a00(kTarget);
+                TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(kTarget);
             }
         }
         m_bLateDone = 1;

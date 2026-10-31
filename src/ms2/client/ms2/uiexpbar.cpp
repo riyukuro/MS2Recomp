@@ -19,6 +19,9 @@
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/placeholder/gfxmanager.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cgameoption.h"
 #include <string.h>
 #include <algorithm>
 
@@ -37,15 +40,11 @@ public:
 };
 Unk_ExpGlobals* FUN_1401d3200();
 
-UIStatusEventDispatcher* FUN_140aa6d40();
 class Unk_ExpUIMgr { public: void FUN_141adc750(int nUiId); };      // opens a ui
-Unk_ExpUIMgr* FUN_1403ed2b0();
 struct Unk_ExpCfgData { char m_pad_00[8]; unsigned char m_bShowPoint; };
 class Unk_ExpCfgHolder { public: Unk_ExpCfgData* FUN_140b123b0(); };
-Unk_ExpCfgHolder* FUN_1409a8b10();
 GFxManager* FUN_14025e7a0();
 CInputKeyHandler* FUN_14025e7c0();
-CReservedWordTable* FUN_1403b4750();
 CExpTable* FUN_1404a1bb0();
 int FUN_1412755a0();
 bool FUN_140184310(const CString& str, const char* psz);            // str == psz
@@ -82,7 +81,6 @@ public:
 };
 class Unk_ExpActor : public PC { public: Unk_ExpHolder* FUN_1416764a0(); };
 class Unk_ExpWorld { };
-Unk_ExpWorld* FUN_1403ed2d0();
 Unk_ExpActor* FUN_141bd0cc0(Unk_ExpWorld* pWorld);                  // the local player
 
 // The bar clip: ASGameEntity declares only slots 0..5; slot 25 is "validateNow".
@@ -133,7 +131,7 @@ void UIExpBar::vfunc_3()
     if (FUN_1412755a0())
         return;
     FUN_1422dc080();
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
 }
 
 // @0x141932080
@@ -157,7 +155,7 @@ void UIExpBar::FUN_141932080(const unsigned int& nFlags)
 // @0x1419322a0
 __int64 UIExpBar::FUN_1419322a0()
 {
-    Unk_ExpActor* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_ExpActor* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance()));
     if (pPlayer == 0)
         return 0;
     return DAT_143ab28a0;
@@ -167,7 +165,7 @@ __int64 UIExpBar::FUN_1419322a0()
 // @0x1419322e0
 __int64 UIExpBar::FUN_1419322e0()
 {
-    Unk_ExpActor* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_ExpActor* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance()));
     if (pPlayer == 0)
         return 0;
     unsigned short nLevel = pPlayer->vfunc_78();
@@ -177,7 +175,7 @@ __int64 UIExpBar::FUN_1419322e0()
 // @0x141932340
 __int64 UIExpBar::FUN_141932340()
 {
-    Unk_ExpActor* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_ExpActor* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance()));
     if (pPlayer == 0)
         return 0;
     return DAT_143ab28a8;
@@ -194,7 +192,7 @@ void UIExpBar::FUN_141932380(int nVisible)
 void UIExpBar::FUN_141932430()
 {
     int nVisible = 1;
-    Unk_ExpActor* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_ExpActor* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance()));
     if (pPlayer == 0)
         return;
     Unk_ExpHolderRef spHolder(pPlayer->FUN_1416764a0());
@@ -226,8 +224,8 @@ void UIExpBar::OnLoadComplete()
     UIObject::OnLoadComplete();
     unsigned int nFlags = 3;
     FUN_141932080(nFlags);
-    FUN_141932380(FUN_1409a8b10()->FUN_140b123b0()->m_bShowPoint);
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    FUN_141932380(reinterpret_cast<Unk_ExpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bShowPoint);
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     FUN_141932430();
 }
 
@@ -240,7 +238,7 @@ void UIExpBar::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         strText = FUN_140632a60(0x769, FUN_1409404f0(FUN_1419322a0()), FUN_1409404f0(FUN_1419322e0()));
         if (0 < DAT_143ab28a8)
         {
-            Unk_ExpActor* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+            Unk_ExpActor* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance()));
             if (pPlayer == 0)
                 return;
             unsigned short nLevel = (unsigned short)pPlayer->vfunc_78();
@@ -254,7 +252,7 @@ void UIExpBar::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
             if (FUN_14025e7c0()->IsDebugMode())
                 strText += StringFormat(L"[{0}]", DAT_143ab28a8);
         }
-        FUN_1403b4750()->FUN_1416fb340(strText);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
         ASObj obj(2);
         obj.FUN_1407cbb20("text", CStringW(strText));
         *pRetVal = obj.FUN_1422bb870();
@@ -268,7 +266,7 @@ int UIExpBar::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs,
         return 1;
     if (_stricmp("OnClickBar", szMethod) == 0)
     {
-        FUN_1403ed2b0()->FUN_141adc750(0x4efa);
+        reinterpret_cast<Unk_ExpUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4efa);
         return 1;
     }
     return 0;

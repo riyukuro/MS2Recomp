@@ -10,7 +10,10 @@
 // Status: see progress/status.tsv. Callees that are not recovered yet are declared below ("unit-local
 // placeholders") or in src/ms2/placeholder/; their names are Ghidra's (FUN_<va>) unless evident.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiclubdialog.cpp"
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uiclubdialog.h"
 
@@ -30,6 +33,10 @@ template<> void MS2Ptr<CClubCli>::Release();
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/clubcli.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -63,16 +70,11 @@ public:
 // The map is boxed behind its CPtred (clubcli.h's Unk_SocketPtr<Unk_ClubCliMap>, the value at +0x18), so the plain
 // MS2Ptr release would DecRef the map itself. Call clubcli's boxed release (0x140b19b20) instead.
 template<> MS2Ptr<Unk_ClubMap>::~MS2Ptr();
-class Unk_ClubManager
+class Unk_ClubManager : public CClubClientManager
 {
 public:
-    MS2Ptr<CClubCli> FUN_140b14d80(__int64 nClubId);
     MS2Ptr<Unk_ClubMap> FUN_140b14e40();
-    int FUN_140b15310();                                                // 1 when a club is joined
     void FUN_140b160c0(__int64 nClubId, CStringW strName);              // add member request
-    void FUN_140b16270(__int64 nClubId);                                // withdrawal request
-    void FUN_140b163c0(__int64 nClubId, int nBuffId, int nLevel);       // buff setting request
-    void FUN_140b16450(__int64 nClubId, CStringW strName);              // rename request
 };
 extern Unk_ClubManager* DAT_143abad48;
 inline Unk_ClubManager* FUN_140e0d900() { return DAT_143abad48; }
@@ -93,16 +95,8 @@ public:
 };
 Unk_ClubBuffTable* FUN_140b1a4e0();
 
-class Unk_ClubStrings
-{
-public:
-    CStringW FUN_141811980(int nTable, int nId);
-    CStringW FUN_141812290(int nBuffId, unsigned short nLevel, CString strKey);
-};
-Unk_ClubStrings* FUN_1401a9d70();
-
-class Unk_ClubSession { public: CStringW FUN_141bd0d30(); };            // my character name
-Unk_ClubSession* FUN_1403ed2d0();
+            // my character name
+WorldService* FUN_1403ed2d0();
 
 class Unk_ClubFlag { public: int FUN_1402c4c90(int nFlag); };
 class Unk_ClubState { public: void* m_pad_00; Unk_ClubFlag m_flags; };
@@ -114,26 +108,11 @@ class Unk_ClubConsts { public: char m_pad[0x9e68]; Unk_ClubConstInt m_nameChange
 Unk_ClubConsts* FUN_1401d3200();
 int* FUN_1402056b0(Unk_ClubConstInt* p);
 
-// The list control of the swf (a CPtred-derived AS wrapper with a slot table).
-class Unk_ClubList : public CPtred
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
-    virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8();
-    virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12();
-    virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16();
-    virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
-    virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    virtual void vfunc_25(const Scaleform::GFx::Value& data);           // set the data provider
-    void FUN_1422dd1d0();                                               // clear
-    void FUN_1422dcca0(int nIndex);                                     // select
-};
 // The movie clip holding the lists.
 class Unk_ClubClip : public CPtred
 {
 public:
-    MS2Ptr<Unk_ClubList> FUN_140bc7280(const CString& strName);
+    MS2Ptr<ASScrollingList> FUN_140bc7280(const CString& strName);
 };
 
 // The AS array (ctor 0x1422deec0, dtor 0x1422df070) of the row objects.
@@ -163,7 +142,6 @@ class Unk_ClubSkillTable
 public:
     MS2Ptr<Unk_ClubSkillAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel);
 };
-Unk_ClubSkillTable* FUN_1401958b0();
 
 // ---- string helpers (instances living in other units; declared with their real argument lists) ----
 CString FUN_140719530(__int64 n);                                       // number to text
@@ -177,7 +155,7 @@ CStringW FUN_14086cfc0(int nId, const int& n);
 CStringW FUN_14086d060(int nId, const __int64& n);
 CStringW FUN_140a228f0(int nId, const int& n, const CStringW& str);
 CString FUN_141028be0(__int64 nId, const CString& strPicture, int n, CString strKey);   // profile image path
-__time64_t FUN_140869440();                                             // current time
+__time64_t GetServerTime();                                             // current time
 
 // ---- statics ----
 // @0x1400d7230
@@ -297,9 +275,9 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0be00));
             if (club->FUN_14020f640() != 0) {
                 box->FUN_141a02880(club->FUN_14020f640(), club->FUN_14020f6b0(),
-                                   FUN_1401a9d70()->FUN_141812290(club->FUN_14020f640(), club->FUN_14020f6b0(), CString("name")));
+                                   TSingleton<CStringTable>::GetInstance()->FUN_141812290(club->FUN_14020f640(), club->FUN_14020f6b0(), CString("name")));
             } else {
-                box->FUN_141a02880(nBuffId, nLevel, FUN_1401a9d70()->FUN_141812290(nBuffId, nLevel, CString("name")));
+                box->FUN_141a02880(nBuffId, nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141812290(nBuffId, nLevel, CString("name")));
             }
             FUN_140d73c60(box);
         }
@@ -409,7 +387,7 @@ void UIClubDialog::FUN_140e0bfd0()
     MS2Ptr<Unk_ClubMap> spMap = FUN_140e0d900()->FUN_140b14e40();
     if (spMap != 0) {
         {
-            if (MS2Ptr<Unk_ClubList> spList = FUN_140c02900("m_category")) {
+            if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_category")) {
                 spList->FUN_1422dcca0(-1);
                 spList->FUN_1422dd1d0();
                 Unk_ClubArray rows(2);
@@ -448,7 +426,7 @@ void UIClubDialog::FUN_140e0c570(__int64 nClubId)
         MS2Ptr<Unk_ClubClip> spClip = FUN_140ba7930("m_clubData");
         if (spClip == 0)
             return;
-        if (MS2Ptr<Unk_ClubList> spList = spClip->FUN_140bc7280("m_items")) {
+        if (MS2Ptr<ASScrollingList> spList = spClip->FUN_140bc7280("m_items")) {
             spList->FUN_1422dd1d0();
             Unk_ClubArray rows(2);
             MS2Ptr<CClubMember> spLeader = spClub->FUN_140210f70();
@@ -480,12 +458,12 @@ void UIClubDialog::FUN_140e0ca20(ASObj& row, MS2Ptr<CClubMember> spMember)
     row.FUN_1407cbb20("name", spMember->m_info.FUN_14020e5d0());
     CStringW strInfo = StringFormat(GetStringCommon(0x360),
                                     reinterpret_cast<const unsigned short&>(spMember->m_info.m_level),
-                                    FUN_1401a9d70()->FUN_141811980(6, spMember->m_info.m_job));
+                                    TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spMember->m_info.m_job));
     row.FUN_1407cbb20("info", strInfo);
     CStringW strLocation;
     CStringW strTime;
     if (spMember->m_f0 != 0) {
-        __time64_t nElapsed = FUN_140869440() - spMember->m_d8;
+        __time64_t nElapsed = GetServerTime() - spMember->m_d8;
         ATL::CTimeSpan span(nElapsed);
         if (span.GetDays() > 0)
             strTime = FUN_14086d060(0x359, span.GetDays());
@@ -498,10 +476,10 @@ void UIClubDialog::FUN_140e0ca20(ASObj& row, MS2Ptr<CClubMember> spMember)
         strLocation = FUN_1401e8510(GetStringCommon(0x35e), strTime);
     } else {
         if (spMember->m_info.m_channel == 0) {
-            strLocation = FUN_1401a9d70()->FUN_141811980(3, spMember->m_info.m_mapId);
+            strLocation = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, spMember->m_info.m_mapId);
         } else {
             strLocation = FUN_140a228f0(0x3d8, spMember->m_info.m_channel,
-                                        FUN_1401a9d70()->FUN_141811980(3, spMember->m_info.m_mapId));
+                                        TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, spMember->m_info.m_mapId));
         }
     }
     row.FUN_1407cbb20("location", strLocation);
@@ -513,7 +491,7 @@ void UIClubDialog::FUN_140e0ca20(ASObj& row, MS2Ptr<CClubMember> spMember)
 // @0x140e0d180
 void UIClubDialog::FUN_140e0d180(ASObj& row, int nBuffId, unsigned short nLevel)
 {
-    MS2Ptr<Unk_ClubSkillAttr> spAttr = FUN_1401958b0()->FUN_140aafef0(nBuffId, nLevel);
+    MS2Ptr<Unk_ClubSkillAttr> spAttr = reinterpret_cast<Unk_ClubSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(nBuffId, nLevel);
     if (spAttr.get() != 0)
         row.FUN_1407cba60("buffIcon", spAttr->FUN_1401756c0());
 }
@@ -522,7 +500,7 @@ MS2_REPLACE_METHOD(0x140E0D180, UIClubDialog, FUN_140e0d180, 155, 0x66BCF20D);
 // @0x140e0d230
 void UIClubDialog::FUN_140e0d230(ASObj& row, __int64 nNameChangeTime)
 {
-    __int64 nNow = FUN_140869440();
+    __int64 nNow = GetServerTime();
     if (nNow > nNameChangeTime)
         row.FUN_1407cb9c0("nameChange", 1);
     else

@@ -10340,10 +10340,10 @@ DAT_143a2fce8	143a2fce8	data
 DAT_143a2fcf8	143a2fcf8	data
 DAT_143a2fd08	143a2fd08	data
 DAT_143a2fd18	143a2fd18	data
-?Instance@SKI_MaskStart@Render@Scaleform@@2V123@A	143a2fd28	data
-?InstanceClipped@SKI_MaskStart@Render@Scaleform@@2V123@A	143a2fd38	data
+DAT_143a2fd28	143a2fd28	data
+DAT_143a2fd38	143a2fd38	data
 DAT_143a2fd48	143a2fd48	data
-?Instance@SKI_MaskEnd@Render@Scaleform@@2V123@A	143a2fd50	data
+DAT_143a2fd50	143a2fd50	data
 DAT_143a2fd80	143a2fd80	data
 DAT_143a2fd88	143a2fd88	data
 DAT_143a2fd98	143a2fd98	data
@@ -17304,3 +17304,6 @@ FUN_142747b30	142747b30	func
 ?setPaused@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@_N@Z	1428d8ed8	func
 ?setPosition@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@II@Z	1428d8ef6	func
 ?unlock@Sound@FMOD@@QEAA?AW4FMOD_RESULT@@PEAX0II@Z	1428d8eae	func
+?SetDisplayMode@NiDX9Renderer@@QEAA_NII@Z	1427cb2a0	func
+?RestoreDisplayMode@NiDX9Renderer@@QEAAXXZ	1427d5390	func
+?Reset@?$AutoPtr@VVTable@AS3@GFx@Scaleform@@@Scaleform@@QEAAXPEAVVTable@AS3@GFx@2@_N@Z	142524290	func

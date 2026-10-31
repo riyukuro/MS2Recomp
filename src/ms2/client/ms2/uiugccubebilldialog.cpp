@@ -26,6 +26,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
 #include <vector>
 
 // ---- unit-local views of unrecovered callees -----------------------------------------------------------------------
@@ -37,9 +38,8 @@ public:
     void FUN_1422cdfb0(const CStringW& strLabel);       // set the label
 };
 
-CUIService* FUN_1403ed2b0();
 CFeatureManager* FUN_140166410();
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 void FUN_140710590(COutPacket& packet);                 // send
 CStringW FUN_140938ae0(CStringW strFormat, const int& nArg);    // string table text with one argument
 CStringW FUN_1418fe5d0(int nPayType);                   // pay type name
@@ -184,10 +184,10 @@ void FUN_140ee8610(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return;
-    int nResult = DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
+    int nResult = g_143ab2a90.FUN_140a63880(spItem.get(), L"");
     if (nResult != 0)
     {
-        FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4f29);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4f29);
         UIUGCCubeBillDialog::s_pending.PendingCost::Reset();
         UIUGCCubeBillDialog::s_pending.m_nBlueprintUid = spItem->FUN_140526a50();
         UIUGCCubeBillDialog::s_pending.m_nKind = 3;
@@ -200,7 +200,7 @@ bool FUN_140ee8000(void* pUnused, int nAnswer, const CMsgBoxData& data)
     if (nAnswer == 0)
     {
         __int64 nItemUid = data.FUN_141a02c20();
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
         if (spItem.get() != 0)
             FUN_140ee8610(spItem);
     }
@@ -227,14 +227,14 @@ void UIUGCCubeBillDialog::SendRequestCube()
             FUN_140710590(packet);
         }
     }
-    FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4f29);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f29);
 }
 
 // The server's bill for a cube.
 // @0x140ee8190
 void FUN_140ee8190(CInPacket& packet)
 {
-    FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4f29);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4f29);
     UIUGCCubeBillDialog::s_cost.Cost::Reset();
     UIUGCCubeBillDialog::s_cost.PendingCost::Assign(UIUGCCubeBillDialog::s_pending);
     UIUGCCubeBillDialog::s_cost.m_nKind = 1;
@@ -247,10 +247,10 @@ void FUN_140ee8190(CInPacket& packet)
         __int64 nAmount = packet.ReadInt64();
         UIUGCCubeBillDialog::s_cost.m_map.SetAt(eType, nAmount);
     }
-    FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4f27);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f27);
     if (nCount > 0)
     {
-        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f29);
+        TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4f29);
     }
     else
     {
@@ -265,7 +265,7 @@ void FUN_140ee8190(CInPacket& packet)
 // @0x140ee8360
 void SendRequestCubeMode35(int nCubeId)
 {
-    FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4f29);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4f29);
     UIUGCCubeBillDialog::s_pending.PendingCost::Reset();
     UIUGCCubeBillDialog::s_pending.m_nKind = 1;
     UIUGCCubeBillDialog::s_pending.m_nCubeId = nCubeId;
@@ -279,7 +279,7 @@ void SendRequestCubeMode35(int nCubeId)
 // @0x140ee83f0
 void FUN_140ee83f0(CInPacket& packet)
 {
-    FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4f29);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4f29);
     UIUGCCubeBillDialog::s_cost.Cost::Reset();
     UIUGCCubeBillDialog::s_cost.PendingCost::Assign(UIUGCCubeBillDialog::s_pending);
     UIUGCCubeBillDialog::s_cost.m_nKind = 3;
@@ -294,10 +294,10 @@ void FUN_140ee83f0(CInPacket& packet)
     }
     bool bPreview = packet.ReadBool();
     UIUGCCubeBillDialog::s_cost.m_bPreview = bPreview;
-    FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4f27);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f27);
     if (nCount > 0 || bPreview == 1)
     {
-        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f29);
+        TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4f29);
     }
     else if (bPreview == 0)
     {
@@ -312,7 +312,7 @@ void FUN_140ee83f0(CInPacket& packet)
 // @0x140ee86f0
 void SendRequestCubeMode66(void* pBlueprintUid)
 {
-    FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4f29);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4f29);
     UIUGCCubeBillDialog::s_pending.PendingCost::Reset();
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.WriteUInt8(0x42);

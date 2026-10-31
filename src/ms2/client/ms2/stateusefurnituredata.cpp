@@ -81,7 +81,6 @@ public:
     unsigned FUN_1411a49c0(Unk_EffectQuery* pQuery);
     void FUN_1411a4a00(Unk_EffectQuery* pQuery);
 };
-void FUN_1411a6060(Unk_UfEffectMgr* pMgr, int nId);
 
 // The animation service: the name of the sequence of an actor, the cached actor manager.
 class Unk_UfAnimSvc
@@ -91,7 +90,6 @@ public:
 };
 Unk_UfAnimSvc* FUN_141b6f910();
 NiActorManager* FUN_140999440(Unk_UfAnimSvc* pSvc, const egf::EntityID& kId);   // cached actor manager
-int FUN_1409a1890(NiActorManager* pMgr);                     // the sequence id of the cube's sit animation
 float FUN_140a53fa0(NiControllerSequence* pSeq);             // NiControllerSequence::m_fOffset
 
 // The data row of a furniture cube (an inline copy of the exe at 0x140ca6580 in the homemade unit).
@@ -114,10 +112,6 @@ void FUN_1401fc610(Unk_UfUseInfo* pInfo, COutPacket* pPacket);
 
 // The scene graph of an entity and the NiNode helpers the exe calls out of line.
 NiAVObject* FUN_141b6efc0(void* pEntity);                    // the scene root of an entity
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);   // dynamic cast through an NiRTTI
-const NiTransform& FUN_140a33f90(NiAVObject* pObject);       // GetLocalTransform
-const NiTransform& FUN_1409478e0(NiAVObject* pObject);       // GetWorldTransform
-NiNode* FUN_140a0b000(NiAVObject* pObject);                  // GetParent
 NiTransform* FUN_140a35c30(NiTransform* pDst, const NiTransform& kSrc);   // NiTransform::operator=
 void FUN_140a35bd0(NiTransform* pDst, const NiTransform* pSrc);           // NiTransform assignment
 // NiTransform::operator* (a view of the transform; the result is returned by value).
@@ -250,7 +244,7 @@ void StateUseFurniture::vfunc_3(double fTime)
             NiActorManager* pMgr = FUN_140999440(FUN_141b6f910(), m_spCube->FUN_141226eb0());
             if (pMgr != 0)
             {
-                NiControllerSequence* pSeq = pMgr->GetActiveSequence(FUN_1409a1890(pMgr), true, true);
+                NiControllerSequence* pSeq = pMgr->GetActiveSequence(static_cast<NiActorManager*>(pMgr)->GetCurAnimation(), true, true);
                 if (pSeq != 0)
                 {
                     float fLen = FUN_140a53fa0(pSeq);
@@ -264,18 +258,17 @@ void StateUseFurniture::vfunc_3(double fTime)
     if (nType != 0)
     {
         Unk_EntRef kEnt = m_spCube->GetEnt();
-        NiNode* pNode = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(kEnt.FUN_1408a9090())));
+        NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, FUN_141b6efc0(kEnt.FUN_1408a9090())));
         if (pNode)
         {
-            NiNode* pChild = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8,
-                pNode->GetObjectByName((const char*)static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strStr98)));
+            NiNode* pChild = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, pNode->GetObjectByName((const char*)static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strStr98)));
             if (pChild)
             {
-                NiTransform kXf = FUN_140a33f90(pChild);
+                NiTransform kXf = static_cast<NiAVObject*>(pChild)->GetLocalTransform();
                 NiTransform kParent;
                 kParent.MakeIdentity();
-                if (FUN_140a0b000(pChild) != 0)
-                    FUN_140a35c30(&kParent, FUN_1409478e0(FUN_140a0b000(pChild)));
+                if (static_cast<NiAVObject*>(pChild)->GetParent() != 0)
+                    FUN_140a35c30(&kParent, static_cast<NiAVObject*>(static_cast<NiAVObject*>(pChild)->GetParent())->GetWorldTransform());
                 FUN_140a35bd0(&kXf, &reinterpret_cast<const Unk_UfXform*>(&kParent)->FUN_140a33de0(kXf));
                 Vector3 kPos = *reinterpret_cast<const Vector3*>(&kXf.m_Translate);
                 Unk_NiMatrix3 kRot = *reinterpret_cast<const Unk_NiMatrix3*>(&kXf.m_Rotate);
@@ -354,7 +347,7 @@ void StateUseFurniture::vfunc_5(int n)
 {
     State::vfunc_5(n);
     if (m_nEffect != 0)
-        FUN_1411a6060(reinterpret_cast<Unk_UfEffectMgr*>(TSingleton<CEffectService>::GetInstance()), m_nEffect);
+        reinterpret_cast<CEffectService*>(reinterpret_cast<Unk_UfEffectMgr*>(TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
     bool bEffect = (m_spCube.get() != 0 ? true : false) &&
         FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8, "");
     if (bEffect)

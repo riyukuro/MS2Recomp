@@ -66,15 +66,11 @@ extern int DAT_1439f4840;                       // default code page (localepath
 void FUN_140996bc0(Unk_AnimTable* pTable, void* p);
 void FUN_1409975a0(Unk_AnimTable* pTable, void* p);
 void FUN_140997070(Unk_AnimTable* pTable, GameObject* pOwner, CString str);
-float FUN_140997650(Unk_AnimTable* pTable, CString str);
 class Unk_GameClock;
-double FUN_141473280(Unk_GameClock* pClock);                            // seconds
 void FUN_14028b2d0(void* pList, const CString& str);                    // list.push_back
-bool FUN_14096ad40(const efd::utf8string& str);
 Unk_AnimSvc* FUN_141b6f910();
-Unk_AnimSvc* FUN_1413f9b10();
+void* FUN_1413f9b10();   // C3: was FUN_1413f9b10
 NiActorManager* FUN_1413f9b70(const egf::EntityID& id);                 // actor manager of an entity (via the service)
-egf::Entity* FUN_14123c410(GameObject* pObj);
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 CStringW FUN_14016a730(const char* psz, int nCodePage);                 // multibyte -> wide
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);               // wide -> multibyte
@@ -229,7 +225,7 @@ CString CAnimationManager::FUN_14099ddb0(const efd::utf8string& kName)
     if (pActor != 0)
     {
         efd::utf8string kPrefix((const char*)FUN_1409a2360((const char*)pActor->vfunc_60(), 0));
-        if (!FUN_14096ad40(kPrefix))
+        if (!((efd::utf8string*)&(kPrefix))->empty())
         {
             kResolved = kPrefix + kName;
             efd::UInt64 qwId2;
@@ -262,7 +258,7 @@ bool CAnimationManager::FUN_14099e050(Unk_AnimRef& kName, float fScale, bool bFo
     if (pActor != 0)
     {
         efd::utf8string kPrefix((const char*)FUN_1409a2360((const char*)pActor->vfunc_60(), 0));
-        if (!FUN_14096ad40(kPrefix))
+        if (!((efd::utf8string*)&(kPrefix))->empty())
         {
             kResolved = kPrefix + kName;
             efd::UInt64 qwId2;
@@ -279,7 +275,7 @@ bool CAnimationManager::FUN_14099e050(Unk_AnimRef& kName, float fScale, bool bFo
     }
     CString strAnim = FUN_1409a2470(kResolved.c_str(), 0);
     FUN_140997070(&m_table, m_pOwner, strAnim);
-    float fHeight = FUN_140997650(&m_table, strAnim);
+    float fHeight = ((struct Unk_AnimTable*)(struct Unk_AnimTable*)(&m_table))->FUN_140997650(strAnim);
     m_pOwner->vfunc_43(fHeight);
     efd::UInt64 qwId3;
     NiActorManager::SequenceID nSeq = m_pModelCache->GetAnimationIdFromName(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwId3)), kResolved);
@@ -296,10 +292,10 @@ bool CAnimationManager::FUN_14099e050(Unk_AnimRef& kName, float fScale, bool bFo
         efd::UInt64 qwId6;
         NiActorManager* pForced = m_pModelCache->GetActorManager(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwId6)));
         if (pForced != 0)
-            pForced->Update((float)FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())));
-        NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410(m_pOwner));
+            pForced->Update((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280());
+        NiAVObject* pRoot = FUN_141b6efc0(((class GameObject*)(m_pOwner))->FUN_14123c410());
         if (pRoot != 0)
-            pRoot->Update((float)FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())), true);
+            pRoot->Update((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     }
     if (pActor != 0)
     {
@@ -374,7 +370,7 @@ void CAnimationManager::FUN_14099e800(void* pList)
 
 int FUN_14099e9c0(const egf::EntityID& kId, CString strName)
 {
-    Unk_AnimSvc* pSvc = FUN_1413f9b10();
+    Unk_AnimSvc* pSvc = ((class Unk_AnimSvc*)FUN_1413f9b10());
     NiActorManager* pMgr = FUN_1413f9b70(kId);
     if (pMgr == 0)
         return 0;
@@ -389,7 +385,7 @@ int FUN_14099e9c0(const egf::EntityID& kId, CString strName)
 
 float FUN_14099eb30(const egf::EntityID& kId, CString strName)
 {
-    Unk_AnimSvc* pSvc = FUN_1413f9b10();
+    Unk_AnimSvc* pSvc = ((class Unk_AnimSvc*)FUN_1413f9b10());
     NiActorManager::SequenceID nSeq = pSvc->GetAnimationIdFromName(kId, (const char*)strName);
     if (nSeq == NiActorManager::INVALID_SEQUENCE_ID)
         return 0.0f;

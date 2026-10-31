@@ -16,11 +16,10 @@
 typedef unsigned char Unk_Bytes;                 // opaque
 void* FUN_1402bcfa0(void* out, unsigned long v);        // Unk_Hex32::Unk_Hex32(ulong)
 void* FUN_1402bd000(void* out, int v);                  // Unk_Fixed32::Unk_Fixed32(int)
-int FUN_14028d260(float v);                             // float -> fixed
+__int64 FUN_14028d260(float v);                             // float -> fixed
 void FUN_14015f050(const CString* s, void* out, const char* sep);   // split into CAtlArray<CString>
 void* FUN_140163230(void* arr);                         // CAtlArray<CString>::CAtlArray
 void FUN_1401641d0(void* arr);                          // CAtlArray<CString>::~CAtlArray
-unsigned __int64 FUN_1401662c0(void* arr);              // GetCount
 const int* FUN_1402fbd20(const int* a, const int* b);   // std::min<int>
 CString* FUN_140164930(void* arr, __int64 i);           // operator[]
 void* FUN_1406c4730(void* out);                         // Unk_DateTime default
@@ -31,10 +30,7 @@ void FUN_1402929a0(const CStringW* in, void* tmp, const wchar_t* sep);   // wide
 CStringA FUN_14016a600(const wchar_t* s, int nCodePage);
 CStringW FUN_14016a730(const char* s, int nCodePage);
 void* FUN_14050dba0(void* dst, void* alloc);
-void* FUN_14018c480(void* str);
-void* FUN_14018cff0(void* v); void* FUN_14018d190(void* v); void* FUN_14018ce70(void* v);
 void FUN_1403b9f30(void* dst, void* src);
-void* FUN_14018bdd0(void* v);
 char FUN_1402c12b0(void* arr, unsigned __int64 n);
 void FUN_140159b70(long hr);
 void* FUN_140159860(unsigned __int64 n, void* p);
@@ -101,7 +97,7 @@ CMsTime FUN_140718950(const CString& s) {
     FUN_14015f050(&s, &parts, "-");
     int six = 6;
     int vals[6] = {0};
-    int cnt = (int)FUN_1401662c0(&parts);
+    int cnt = (int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&parts))->GetCount();
     int n = *FUN_1402fbd20(&six, &cnt);
     for (int i = 0; i < n; ++i)
         vals[i] = atoi(*FUN_140164930(&parts, i));
@@ -129,7 +125,7 @@ ATL::CTimeSpan FUN_140718d00(const CString& s) {
     FUN_14015f050(&s, &parts, "-");
     int six = 6;
     int vals[6] = {};
-    int cnt = (int)FUN_1401662c0(&parts);
+    int cnt = (int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&parts))->GetCount();
     int n = *FUN_1402fbd20(&six, &cnt);
     for (int i = 0; i < n; ++i)
         vals[i] = atoi(*FUN_140164930(&parts, i));
@@ -251,7 +247,7 @@ void* FUN_14071a210(void* p) { return p; }
 // vector(vector&&): allocator copy, then steal the three pointers
 // @0x14071a240
 void* FUN_14071a240(void* dst, void* src) {
-    void* al = FUN_14071a200(FUN_14018c480(src));
+    void* al = FUN_14071a200(((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Getal()));
     FUN_14050dba0(dst, al);
     char tag = 0;
     FUN_14071a3f0(dst, FUN_14071a210(src), tag);
@@ -270,9 +266,9 @@ unsigned __int64 FUN_14071a340(void* arr, int v) {
     if (idx >= ((Unk_IntAtlArray*)arr)->m_nMaxSize) {
         unsigned char bSuccess = FUN_1402c12b0(arr, idx + 1);
         if (!bSuccess)
-            FUN_140159b70(0x8007000e);
+            ATL::AtlThrowImpl(0x8007000e);
     }
-    int* slot = (int*)FUN_140159860(4, ((Unk_IntAtlArray*)arr)->m_pData + idx);
+    int* slot = (int*)::operator new(4, ((Unk_IntAtlArray*)arr)->m_pData + idx);
     *slot = v;
     ((Unk_IntAtlArray*)arr)->m_nSize++;
     return idx;
@@ -281,16 +277,16 @@ unsigned __int64 FUN_14071a340(void* arr, int v) {
 // @0x14071a3f0
 void FUN_14071a3f0(void* dst, void* src, char tag) {
     FUN_14071a4d0(dst, src);
-    *(void**)FUN_14018cff0(dst) = *(void**)FUN_14018cff0(src);
-    *(void**)FUN_14018d190(dst) = *(void**)FUN_14018d190(src);
-    *(void**)FUN_14018ce70(dst) = *(void**)FUN_14018ce70(src);
-    *(void**)FUN_14018cff0(src) = 0;
-    *(void**)FUN_14018d190(src) = 0;
-    *(void**)FUN_14018ce70(src) = 0;
+    *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(dst))->_Myfirst()) = *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Myfirst());
+    *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(dst))->_Mylast()) = *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Mylast());
+    *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(dst))->_Myend()) = *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Myend());
+    *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Myfirst()) = 0;
+    *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Mylast()) = 0;
+    *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Myend()) = 0;
 }
 // @0x14071a4d0
 void FUN_14071a4d0(void* dst, void* src) {
-    FUN_1403b9f30(FUN_14018bdd0(dst), FUN_14018bdd0(src));
+    FUN_1403b9f30(((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(dst))->_Get_data()), ((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Get_data()));
 }
 // @0x14071a520
 CString FUN_14071a520(const CStringA& name) {

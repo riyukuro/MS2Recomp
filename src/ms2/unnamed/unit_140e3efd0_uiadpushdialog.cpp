@@ -64,6 +64,12 @@
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/gfxui/uialignwidget.h"
 #include "ms2/placeholder/cmeratmarketman.h"
+#include "ms2/client/ms2/worldservice.h"
+
+// return types of the getters this unit calls
+class CUserEventManager;
+class Unk_AltStringMgr;
+class Unk_SingletonObj;
 
 // ---- statics of the unit's header (init order: a path key, sort names, skill, stun, a condition object, the key
 // controller, then three more attribute names) ----
@@ -101,16 +107,14 @@ public:
 };
 UIAdPushDialog* FUN_140d61c00(eUIClassID nClass);
 void FUN_1409e3190(ASTooltip* p, Unk_AdItemInfo* pInfo, bool b);
-Unk_AdWorld* FUN_140939a00();
+Unk_SingletonObj* FUN_140939a00();
 NotifySystem* FUN_140939a10();
 class Unk_McInput { public: void FUN_1422b06e0(int nMovie, unsigned* pWidth, unsigned* pHeight); };
-Unk_McInput* FUN_14025e7a0();
+Unk_AltStringMgr* FUN_14025e7a0();
 int FUN_1422db730();
 class Unk_AdPlayerMgr;
 class Unk_AdActor : public PCBase { };
-Unk_AdPlayerMgr* FUN_1403ed2d0();
 Unk_AdActor* FUN_141bd0cc0(Unk_AdPlayerMgr* pMgr);
-void* FUN_14041beb0();
 int FUN_1408d7e60(void* p, unsigned short n);
 struct Unk_AdLevelView { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };   // the local player: the level (slot 78, +0x270) returns a word
 class Unk_140e45740 : public UIAlignWidgetManager { public: int FUN_1422e6bf0(UIDialog* p, int n);};
@@ -234,7 +238,7 @@ int UIAdPushDialog::vfunc_65()
     if (!UIDialog::vfunc_65())
         return 0;
     FUN_140939a10()->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyCompleteMyPC));
-    FUN_140939a00()->SendMeretMarketMode103(1);
+    reinterpret_cast<Unk_AdWorld*>(FUN_140939a00())->SendMeretMarketMode103(1);
     return 1;
 }
 
@@ -272,7 +276,7 @@ int UIAdPushDialog::vfunc_4()
         if (dlg.get())
         {
             unsigned nWidth = 0, nHeight = 0;
-            FUN_14025e7a0()->FUN_1422b06e0(FUN_1422db730(), &nWidth, &nHeight);
+            reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422b06e0(FUN_1422db730(), &nWidth, &nHeight);
             float x = 0.0f, y = 0.0f;
             dlg->FUN_1422c0f60(&x, &y);
             CStringA strKey("limitedbundle");
@@ -332,7 +336,7 @@ int UIAdPushDialog::vfunc_5()
             FUN_140874210(pNode, rKey, "rateX", &rateX);
             FUN_140874210(pNode, rKey, "rateY", &rateY);
             unsigned nWidth = 0, nHeight = 0;
-            FUN_14025e7a0()->FUN_1422b06e0(FUN_1422db730(), &nWidth, &nHeight);
+            reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422b06e0(FUN_1422db730(), &nWidth, &nHeight);
             float fX = (float)nWidth * rateX;
             float fY = (float)nHeight * rateY;
             dlg->FUN_1422c00f0(fX, fY);
@@ -443,7 +447,7 @@ bool UIAdPushDialog::AddBundle(MS2Ptr<Unk_AdMarketItem> item, int n4c, int n50, 
         return false;
     if (m_sns.find(item->m_nSn) != m_sns.end())
         return false;
-    if (!FUN_140939a00()->FUN_140d5b370(item))
+    if (!reinterpret_cast<Unk_AdWorld*>(FUN_140939a00())->FUN_140d5b370(item))
         return false;
     int nId = CPtred::InterlockedInc(&DAT_1439f60ac);
     MS2Ptr<AdPushEntityLimitedBundle> bundle(new AdPushEntityLimitedBundle(nId));
@@ -489,7 +493,7 @@ bool UIAdPushDialog::Refresh(unsigned nFlags)
     m_nFlags |= nFlags;
     if ((m_nFlags & 2) == 0)
     {
-        Unk_AdActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+        Unk_AdActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_AdPlayerMgr*>(WorldService::GetInstance()));
         if (pActor && pActor->FUN_14123bea0() == 1)
             m_nFlags |= 2;
     }
@@ -551,8 +555,8 @@ void UIAdPushDialog::OnNotifyGameEventChanged(NotifyObject* pNotify)
         int type = pEvent->m_type;
         if (type == 0)
         {
-            Unk_AdActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
-            if (pActor && FUN_1408d7e60(FUN_14041beb0(), reinterpret_cast<Unk_AdLevelView*>(pActor)->vfunc_78()))
+            Unk_AdActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_AdPlayerMgr*>(WorldService::GetInstance()));
+            if (pActor && FUN_1408d7e60(TSingleton<CUserEventManager>::GetInstance(), reinterpret_cast<Unk_AdLevelView*>(pActor)->vfunc_78()))
                 ShowOrRetry();
         }
         else if (type == 1)
@@ -787,8 +791,8 @@ bool UIAdPushDialog::FindMinimizePos(float* pX, float* pY)
         }
         else
         {
-            Unk_AdActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
-            if (pActor && FUN_1408d7e60(FUN_14041beb0(), reinterpret_cast<Unk_AdLevelView*>(pActor)->vfunc_78()))
+            Unk_AdActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_AdPlayerMgr*>(WorldService::GetInstance()));
+            if (pActor && FUN_1408d7e60(TSingleton<CUserEventManager>::GetInstance(), reinterpret_cast<Unk_AdLevelView*>(pActor)->vfunc_78()))
                 ShowOrRetry();
         }
     }
@@ -986,7 +990,7 @@ bool AdPushEntityLimitedBundle::vfunc_1()
         {
             if (m_item.get())
             {
-                MS2Ptr<Unk_AdMarketItem> fresh = FUN_140939a00()->FUN_140d578d0(m_item->m_id);
+                MS2Ptr<Unk_AdMarketItem> fresh = reinterpret_cast<Unk_AdWorld*>(FUN_140939a00())->FUN_140d578d0(m_item->m_id);
                 if (fresh.get())
                     SetMarketItem(fresh);
             }
@@ -1054,7 +1058,7 @@ void AdPushEntityLimitedBundle::vfunc_4(Unk_AdXmlNode* pRoot, Unk_AdXmlNode* pNo
     __int64 nSaleEnd = FUN_140282020(m_item->m_info.FUN_1406a1a70(0));
     FUN_140873eb0(pNode, "saleEndTime", nSaleEnd);
     unsigned nWidth = 0, nHeight = 0;
-    FUN_14025e7a0()->FUN_1422b06e0(2, &nWidth, &nHeight);
+    reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422b06e0(2, &nWidth, &nHeight);
     FUN_1408744b0(pNode, "transform", "rateX_maximize", m_max.x / (float)nWidth, true);
     FUN_1408744b0(pNode, "transform", "rateY_maximize", m_max.y / (float)nHeight, true);
 }
@@ -1068,7 +1072,7 @@ void AdPushEntityLimitedBundle::vfunc_5(Unk_AdXmlNode* pNode)
     FUN_1408732e0(pNode, "endTime", m_endTime);
     FUN_1408732e0(pNode, "saleEndTime", m_saleEndTime);
     unsigned nWidth = 0, nHeight = 0;
-    FUN_14025e7a0()->FUN_1422b06e0(2, &nWidth, &nHeight);
+    reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422b06e0(2, &nWidth, &nHeight);
     efd::Point2 rate = efd::Point2::ZERO;
     FUN_140874210(pNode, "transform", "rateX_maximize", &rate.x);
     FUN_140874210(pNode, "transform", "rateY_maximize", &rate.y);

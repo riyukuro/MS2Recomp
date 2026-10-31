@@ -46,22 +46,22 @@
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
 int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 int FUN_140197350(Unk_140165cf0*, const char*, int nDefault);           // int attribute with default
-int FUN_140197390(Unk_140165cf0*, const char*, int nDefault);
+unsigned int FUN_140197390(Unk_140165cf0 *, char const *, unsigned int);  // C3: the definition's signature
 float FUN_1401973d0(Unk_140165cf0*, const char*, float fDefault);
 CString FUN_14015f710(Unk_140165cf0*, const char*, CString strDefault);   // string attribute with default
 CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW strDefault);
 int FUN_1401788f0(Unk_140165cf0*, const char*, ATL::CAtlArray<CStringA>& rOut);   // list attribute
 void FUN_140178270(const CStringA& str, std::vector<int>& rOut, const char* pszSep);   // split into ints
 bool FUN_14028f710(Unk_140165cf0*);                                       // the element is usable
-Unk_140165cf0* FUN_140345b40(void* pDoc);                                 // first child of the document
+Unk_140165cf0 * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
 int FUN_140768010(int, int);                                              // random index in [0, count)
 unsigned char FUN_1401d1320(CCacheData*);
 void FUN_14034f0c0(ATL::CAtlArray<ItemEntity>&, const ItemEntity&);      // CAtlArray<ItemEntity>::Add
@@ -259,7 +259,7 @@ bool CReactorDataTable::LoadReactors()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("reactor"); pNode != 0; pNode = pNode->FUN_140168650("reactor"))
@@ -288,7 +288,7 @@ bool CReactorDataTable::LoadStates()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("reactorState"); pNode != 0; pNode = pNode->FUN_140168650("reactorState"))

@@ -24,6 +24,8 @@
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/cnpc.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 
 // MS2Ptr members instantiated by other objs.
 template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0
@@ -60,7 +62,6 @@ public:
     GameObjectControllerHitReport* FUN_141240f20();
     void FUN_141241070();                                                // start falling
 };
-Unk_HoldBody* FUN_14166d220(PCBase* pOwner);
 class Unk_HoldWorld                                                      // the field's actors by id
 {
 public:
@@ -73,7 +74,6 @@ public:
     NiPoint3 FUN_141683290();                                            // knock-back velocity
     bool FUN_141683100(int nBuff);
 };
-Unk_HoldBuffs* FUN_14166d240(PCBase* pOwner);
 CFeatureManager* FUN_140166410();
 class Unk_HoldConsts                                                     // the game's constants table
 {
@@ -83,19 +83,12 @@ public:
 };
 Unk_HoldConsts* FUN_1401d3200();
 class Unk_HoldCamera { public: char m_pad[8]; };                         // the camera manager
-void* FUN_140a38d60(Unk_HoldCamera* pCamera);                            // 0x140a38d60 the camera target
-void FUN_140aeaf40(Unk_HoldCamera* pCamera, Ridee* pTarget, int n);      // 0x140aeaf40 set the camera target
 class Unk_HoldSkillTable { public: MS2Ptr<SkillData> FUN_1407ee1d0(int nSkillId); };
-int FUN_141654700(MyPC* pPc);                                            // 0x141654700 the job
-void* FUN_14165f100(MyPC* pPC);                                          // 0x14165f100 the playing emotion
-void FUN_14165f170(MyPC* pPC);                                           // 0x14165f170 stop it
 void FUN_140ad0c10(efd::Point3* pAngles, float fScale);                    // 0x140ad0c10 scale the angles (radians -> degrees)
 PCBase* FUN_140974230(GameObject* pObject);                              // 0x140974230 the actor as a player
 void FUN_1409989e0(void* pOut, const char* psz);                         // 0x1409989e0 efd::utf8string(const char*)
 void FUN_1408a8900(void* pStr);                                          // 0x1408a8900 ~efd::utf8string
 void* FUN_14096e110(GameObject* pObject);                                // 0x14096e110 the actor as an npc
-unsigned FUN_141092fa0(void* pNpc);                                      // 0x141092fa0 the npc's id
-bool FUN_14116dcb0(void* pTable, int nKey, int a, int b);                // 0x14116dcb0 key-binding table query
 void* FUN_14025e7c0();                                                   // 0x14025e7c0 the key-binding table
 
 // The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
@@ -199,7 +192,7 @@ StateHold::~StateHold()
 void StateHold::vfunc_4(StateData* pData)
 {
     StateMoveSkill::vfunc_4(pData);
-    FUN_14166d220(m_pOwner)->FUN_141240730();
+    ((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
     m_spHold.AssignRaw(dynamic_cast<StateHoldData*>(pData));
     if (m_spHold == 0)
     {
@@ -212,13 +205,13 @@ void StateHold::vfunc_4(StateData* pData)
         MyPC* pPC = FUN_1417b84b0();
         if (pPC != 0)
         {
-            if (FUN_14165f100(pPC) != 0)
-                FUN_14165f170(pPC);
+            if (((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())) != 0)
+                reinterpret_cast<PC*>(pPC)->SendRequestCube();
         }
         m_kPos = m_pOwner->vfunc_18();
         m_kDir = m_pOwner->vfunc_20();
-        FUN_14166d220(m_pOwner)->FUN_141240f20()->FUN_140cfaf30();
-        FUN_14166d220(m_pOwner)->FUN_141241070();
+        ((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240f20()->FUN_140cfaf30();
+        ((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141241070();
     }
 }
 
@@ -226,14 +219,14 @@ void StateHold::vfunc_4(StateData* pData)
 void StateHold::vfunc_5(int n)
 {
     StateMoveSkill::vfunc_5(n);
-    FUN_14166d220(m_pOwner)->FUN_141240730();
+    ((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
     m_pOwner->vfunc_31(true);
     m_pOwner->vfunc_21(m_kDir);
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
     {
         pPC->FUN_141676060(pPC->vfunc_18());
-        if (FUN_140a38d60(reinterpret_cast<Unk_HoldCamera*>(TSingleton<CameraMgr>::GetInstance())) != pPC)
+        if (((void*)(reinterpret_cast<Unk_CameraManager*>(reinterpret_cast<Unk_HoldCamera*>(TSingleton<CameraMgr>::GetInstance()))->FUN_140a38d60())) != pPC)
             pPC->SendRequestRideMode4();
     }
 }
@@ -289,7 +282,7 @@ void StateHold::vfunc_3(double fTime)
 void StateHold::vfunc_8(double fTime)
 {
     StateMoveSkill::vfunc_8(fTime);
-    Unk_HoldBuffs* pBuff = FUN_14166d240(m_pOwner);
+    Unk_HoldBuffs* pBuff = ((Unk_HoldBuffs*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     efd::Point3 kZero = efd::Point3::ZERO;
     m_pOwner->vfunc_22(efd::Point3(kZero));
     if (pBuff->FUN_141683100(0x493e1))
@@ -325,7 +318,7 @@ void StateHold::vfunc_9(double fTime)
         void* pNpc = FUN_14096e110(pTarget);
         if (pNpc != 0)
         {
-            const int& nNpcId = FUN_141092fa0(pNpc);
+            const int& nNpcId = reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0();
             if (nNpcId == 0xa7e02a)
             {
                 Unk_HoldString kAnim("Ride_Idle_U");
@@ -447,7 +440,7 @@ void StateHold::FUN_1417ccd50()
             m_bRiding = true;
             MyPC* pPC = FUN_1417b84b0();
             if (pPC != 0)
-                FUN_140aeaf40(reinterpret_cast<Unk_HoldCamera*>(TSingleton<CameraMgr>::GetInstance()), pTarget->FUN_1416764a0(), 1);
+                reinterpret_cast<CameraMgr*>(reinterpret_cast<Unk_HoldCamera*>(TSingleton<CameraMgr>::GetInstance()))->FUN_140aeaf40(reinterpret_cast<Unk_CameraTargetEntity*>(static_cast<Ridee*>(pTarget->FUN_1416764a0())), 1);
         }
     }
 }
@@ -457,13 +450,13 @@ void StateHold::FUN_1417cce10()
 {
     if (!FUN_140166410()->FUN_14036d570(0xae))
         return;
-    Unk_HoldBuffs* pBuff = FUN_14166d240(m_pOwner);
+    Unk_HoldBuffs* pBuff = ((Unk_HoldBuffs*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     if (!pBuff->FUN_141683100(0x49401))
         return;
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
         return;
-    if (FUN_141654700(pPC) != 0x46)
+    if (reinterpret_cast<PC*>(pPC)->FUN_141654700() != 0x46)
         return;
     StateHoldData* pData = m_spHold.get();
     PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1200(pData->m_nTargetId);
@@ -506,7 +499,7 @@ int StateHold::vfunc_36()
 {
     PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_spHold.get()->m_nTargetId);
     if (pTarget != 0 && pTarget->GetClassID() != 0x6200045)
-        return FUN_14116dcb0(FUN_14025e7c0(), 0x493e2, 0, 0);
+        return reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116dcb0(0x493e2, 0, 0);
     else
         return 1;
 }

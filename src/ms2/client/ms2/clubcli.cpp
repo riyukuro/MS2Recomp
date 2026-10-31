@@ -91,7 +91,6 @@ struct Unk_MsgParamArray
     size_t m_nMaxSize;
     int m_nGrowBy;
 };
-size_t FUN_14015a000(const Unk_MsgParamArray& arr);                   // count
 Unk_MsgParam& FUN_140164970(Unk_MsgParamArray& arr, size_t nIndex);   // element (throws E_INVALIDARG past the end)
 __int64 FUN_140718370(Unk_MsgParam& param);                           // value
 
@@ -133,7 +132,11 @@ public:
     PCBase* FUN_141bd0cc0();
     Unk_ClubWorldObj* FUN_141bd1420(CStringW strName);
 };
-Unk_ClubWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // Club buff table (global accessor 0x140b1a4e0): the buff record for a buff id and level.
 class Unk_ClubBuffData : public CPtred
@@ -161,11 +164,11 @@ public:
     char m_pad_9e18[0x9e68 - 0x9e18];
     Unk_ClubLimit m_nameMax;                                       // +0x9e68
 };
-Unk_ClubConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int* FUN_1402056b0(Unk_ClubLimit* pLimit);
 
 // Feature flags (FUN_140166410 / FUN_14036d570) and the party manager (TSingleton<CPartyManager>::GetInstance).
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 // String helpers (string table lookups with arguments) and the chat/notice output.
 CStringW GetStringCommon(int nId);
@@ -836,7 +839,7 @@ int CClubClientManager::FUN_140b15830(__int64 nClubId)
 // @0x140b158c0
 void CClubClientManager::OnClub(CInPacket& packet)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x56))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x56))
         return;
     int nSubOpcode = packet.ReadUInt8();
     switch (nSubOpcode)
@@ -939,8 +942,8 @@ bool CClubClientManager::FUN_140b15c10(CStringW strName)
         FUN_1412751f0(FUN_1408116a0(0x381, 3), 1, 1);
         return false;
     }
-    int nMinLength = *FUN_1402056b0(&FUN_1401d3200()->m_nameMin);
-    int nMaxLength = *FUN_1402056b0(&FUN_1401d3200()->m_nameMax);
+    int nMinLength = *FUN_1402056b0(&((class Unk_ClubConsts*)FUN_1401d3200())->m_nameMin);
+    int nMaxLength = *FUN_1402056b0(&((class Unk_ClubConsts*)FUN_1401d3200())->m_nameMax);
     if (strName.GetLength() < nMinLength || strName.GetLength() > nMaxLength)
         return false;
     if (strName.Find(L" ", 0) != -1)
@@ -1407,7 +1410,7 @@ void CClubClientManager::FUN_140b18260(CInPacket& packet)
     __int64 nClubId = packet.ReadInt64();
     CStringW strFirst = packet.ReadUnicodeString();
     CStringW strSecond = packet.ReadUnicodeString();
-    Unk_ClubWorldObj* pObj = FUN_1403ed2d0()->FUN_141bd1420(strFirst);
+    Unk_ClubWorldObj* pObj = ((class Unk_ClubWorld*)WorldService::GetInstance())->FUN_141bd1420(strFirst);
     if (pObj == 0)
         return;
 }
@@ -1550,7 +1553,7 @@ void FUN_140b18700(int nKind, int nCode)
 // @0x140b18ef0
 CStringW FUN_140b18ef0()
 {
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = ((class Unk_ClubWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return CStringW(L"");
     return pPlayer->vfunc_77();
@@ -1577,7 +1580,7 @@ UIClubDialog* FUN_140b19090(int nUiId)
 // @0x140b19130
 bool CMsgBoxData::FUN_140b19130(unsigned nIndex, __int64& nValue) const
 {
-    if (!(nIndex < FUN_14015a000(m_values)))
+    if (!(nIndex < ((ATL::CAtlArray<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraits<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)&(m_values))->GetCount()))
         return false;
     nValue = FUN_140718370(FUN_140164970(const_cast<Unk_MsgParamArray&>(m_values), nIndex));
     return true;

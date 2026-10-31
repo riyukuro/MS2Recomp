@@ -94,10 +94,7 @@ public:
     void FUN_1418e1390();                                                        // cancel
 };
 UICastingBar* FUN_140ac2270(int nId);
-void* FUN_14165f100(PCBase* p);
-void FUN_14165f170(PCBase* p);
 class Unk_ReactBuffMgr { public: Vector3 FUN_141683290(); };
-Unk_ReactBuffMgr* FUN_14166d240(PCBase* p);
 // PCBase vtable view: slots 22 and 68 take the point by value (the exe copies it to a 16-aligned temp)
 class Unk_ReactSlots
 {
@@ -115,7 +112,6 @@ public:
     virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67();
     virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
 };
-bool FUN_1416749c0(PCBase* p);
 CString FUN_1409a2360(const char* psz, int nCodePage);          // 0x1409a2360
 void FUN_140b78d90(PCBase* pActor, Unk_CastInfo* pInfo);           // fill the casting request from the actor
 void FUN_140b799a0(PCBase* pActor);                                // the actor reacts
@@ -188,8 +184,8 @@ void StateReact::vfunc_4(StateData* pData)
                 MyPC* pRider = FUN_1417b84b0();
                 if (pRider == 0)
                     return;
-                if (FUN_14165f100(pRider) != 0)
-                    FUN_14165f170(pRider);
+                if (((void*)(reinterpret_cast<PC*>(pRider)->FUN_14165f100())) != 0)
+                    reinterpret_cast<PC*>(pRider)->SendRequestCube();
                 Unk_CastInfo kInfo;
                 Unk_ReactRef kRef = reinterpret_cast<Unk_ReactWorld*>(WorldService::GetInstance())->FUN_141bc6eb0(m_spData->m_strTarget);
                 if (kRef == 0)
@@ -280,9 +276,9 @@ void StateReact::vfunc_8(double fTime)
             return;
         }
     }
-    Unk_ReactBuffMgr* pMgr = FUN_14166d240(pRider);
+    Unk_ReactBuffMgr* pMgr = ((Unk_ReactBuffMgr*)(reinterpret_cast<PCBase*>(pRider)->FUN_14166d240()));
     reinterpret_cast<Unk_ReactSlots*>(pRider)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pMgr->FUN_141683290())));
-    if (FUN_1416749c0(m_pOwner) != 0)
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0() != 0)
         pRider->vfunc_59(2, 0, 0, 0);
     else
         FUN_1417b9460();

@@ -13,6 +13,9 @@
 #include "pcbase.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/bigdatalogsystem.h"
+#include "ms2/placeholder/uitalkmanager.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -30,12 +33,9 @@ public:
 struct Unk_EsParams { char m_pad[0x30]; void* m_pButton; };
 int FUN_140bd09c0(void* pButton);                                       // which button (1 = lottery, 2 = exp mode)
 
-// The sound event sink (FUN_140d8ee90).
-class Unk_EsSound { public: void FUN_140a1f970(const CString& strEvent, const CString& strArg); };
-Unk_EsSound* FUN_140d8ee90();
+// The sound event sink (TSingleton<CBigDataLogSystem>::GetInstance).
 // The feature flag table (FUN_140166410).
-class Unk_EsFeature { public: bool FUN_14036d570(int id); };
-Unk_EsFeature* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 // The npc talk machinery, as in mypc.cpp.
 class Unk_MyPCTalkScript;
@@ -49,11 +49,10 @@ struct Unk_MyPCTalkScriptPtr
     Unk_MyPCTalkScript* m_p;
 };
 Unk_MyPCTalkScriptPtr FUN_140856820(int nNpcId, int nKind);
-class Unk_MyPCSurvival
+class Unk_MyPCSurvival : public UITalkManager
 {
 public:
     int FUN_141b213f0(Unk_MyPCTalkScriptPtr spScript, int nNpcId, int nMode, int n);
-    void FUN_141b1eb90(CStringA strDialog, CStringA strArg);
 };
 Unk_MyPCSurvival* FUN_140967100();
 
@@ -93,7 +92,7 @@ void UIEnchantSelectDialog::vfunc_67()
     {
         CString strArg("enchant");
         CString strEvent("dialog_close");
-        FUN_140d8ee90()->FUN_140a1f970(strEvent, strArg);
+        TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(strEvent, strArg);
     }
     m_type1Button = 0;
     m_type2Button = 0;
@@ -116,7 +115,7 @@ void UIEnchantSelectDialog::OnLoadComplete()
     {
         CString strArg("enchant");
         CString strEvent("dialog_open");
-        FUN_140d8ee90()->FUN_140a1f970(strEvent, strArg);
+        TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(strEvent, strArg);
     }
 }
 

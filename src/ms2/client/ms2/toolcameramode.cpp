@@ -20,7 +20,7 @@
 // ---- unit-local placeholders ----
 
 // The input state (FUN_14025e7c0).
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The camera option row held by the game context (+0x154 rotation).
 struct Unk_CameraOption
@@ -49,16 +49,12 @@ class Unk_GameContext : public WorldService
 public:
     Unk_CameraOptionPtr FUN_141bd30a0();            // copy of +0x298
 };
-Unk_GameContext* FUN_1403ed2d0();
 
 // The game clock (TSingleton<CMainSystem>::GetInstance).
 
 namespace egf { class Entity; }
 egf::Entity* FUN_14123c410(Unk_CameraTargetEntity* p);      // m_80 of the game object
 NiAVObject* FUN_141b6efc0(egf::Entity* p);
-const NiBound& FUN_140994490(NiAVObject* p);                // GetWorldBound
-float FUN_1409803f0(const NiBound& kBound);                 // GetRadius
-const NiPoint3& FUN_140980350(const NiBound& kBound);       // GetCenter
 void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Vector3* pOut);  // GetCol
 bool FUN_14028d470(float a, float b);                       // nearly equal
 
@@ -88,13 +84,13 @@ void CToolCameraMode::vfunc_6(int n)
         if (pTarget)
         {
             m_84 = 1;
-            float fRotation = FUN_1403ed2d0()->FUN_141bd30a0().FUN_140885340()->m_154;
+            float fRotation = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->m_154;
             Vector3 ptRot(90.0f, fRotation, -60.0f);
             vfunc_4(ptRot);
             vfunc_24(pTarget, 1);
         }
     }
-    m_90 = FUN_1403ed2d0()->FUN_141bcab60(0xb) != 0;
+    m_90 = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bcab60(0xb) != 0;
 }
 MS2_REPLACE_METHOD(0x141852d20, CToolCameraMode, vfunc_6, 370, 0x51A5235E);
 
@@ -106,7 +102,7 @@ void CToolCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         return;
     m_88 = 1;
     Vector3 ptRot = FUN_140af8260();
-    if (FUN_1403ed2d0()->FUN_141bd3cd0() && FUN_1403ed2d0()->FUN_141bd3d10())
+    if (((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd3cd0() && ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd3d10())
         ptRot.z = 0.0f;
     else
         ptRot.z = -45.0f;
@@ -130,9 +126,9 @@ void CToolCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         return;
     pNode->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
     pNode->UpdateWorldBound();
-    const NiBound& kBound = FUN_140994490(pNode);
-    fDist = FUN_1409803f0(kBound);
-    fHeight = (FUN_140980350(kBound).z - ptPos.z < 0.0f) ? 0.0f : FUN_140980350(kBound).z - ptPos.z;
+    const NiBound& kBound = ((class NiAVObject*)(class NiAVObject*)(pNode))->GetWorldBound();
+    fDist = ((class NiBound*)&(kBound))->GetRadius();
+    fHeight = (((class NiBound*)&(kBound))->GetCenter().z - ptPos.z < 0.0f) ? 0.0f : ((class NiBound*)&(kBound))->GetCenter().z - ptPos.z;
     if (n != 0)
     {
         ptPos = ptPos.FUN_14097fd50(ptAxis.FUN_14097fc90(-fDist)).FUN_14097fd50(Vector3(0.0f, 0.0f, fHeight));
@@ -150,9 +146,9 @@ void CToolCameraMode::vfunc_8(double fTime)
         vfunc_24(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60(), m_8c);
     }
     Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
-    unsigned int bShift = FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0);
-    unsigned int bLeft = FUN_14025e7c0()->FUN_14116daa0(0, false, 0);
-    unsigned int bRight = FUN_14025e7c0()->FUN_14116daa0(1, false, 0);
+    unsigned int bShift = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0);
+    unsigned int bLeft = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(0, false, 0);
+    unsigned int bRight = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0);
     if (bLeft != 0 && bRight != 0)
     {
         Vector3 ptPos = FUN_1409f2540();
@@ -161,7 +157,7 @@ void CToolCameraMode::vfunc_8(double fTime)
     }
     else if (bShift == 0 && bRight != 0)
     {
-        if (!FUN_1403ed2d0()->FUN_141bd3cd0() || FUN_1403ed2d0()->FUN_141bd3d10() == 1)
+        if (!((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd3cd0() || ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd3d10() == 1)
         {
             if (ptMove.FUN_140552700(g_143b01a60))
             {
@@ -196,7 +192,7 @@ void CToolCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
     m_78 = g_143b01a60;
-    if (FUN_14025e7c0()->FUN_14116d950(0x11, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x11, false, 0))
     {
         if (FUN_140af8140())
         {
@@ -210,21 +206,21 @@ void CToolCameraMode::vfunc_9()
             m_78.x = 1.0f;
         }
     }
-    else if (FUN_14025e7c0()->FUN_14116d950(0x1f, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1f, false, 0))
     {
         if (FUN_140af8140())
             m_70 = m_70 + 0.01f;
         else
             m_78.x = -1.0f;
     }
-    if (FUN_14025e7c0()->FUN_14116d950(0x1e, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1e, false, 0))
         m_78.y = 1.0f;
-    else if (FUN_14025e7c0()->FUN_14116d950(0x20, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x20, false, 0))
         m_78.y = -1.0f;
     int nX;
     int nY;
     int nWheel;
-    if (FUN_14025e7c0()->FUN_14116dbf0(&nX, &nY, &nWheel, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dbf0(&nX, &nY, &nWheel, false, 0))
     {
         ptMove.y = (float)nX;
         ptMove.z = (float)nY;
@@ -249,7 +245,7 @@ void CToolCameraMode::vfunc_3(Vector3 pt)
     {
         Vector3 ptCur = FUN_1409f2540();
         Vector3 ptOut;
-        if (!FUN_1403ed2d0()->FUN_141bd36f0(pt, &ptOut))
+        if (!((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd36f0(pt, &ptOut))
         {
             if (!FUN_14028d470(ptOut.x, 0.0f))
                 pt.x = ptCur.x;

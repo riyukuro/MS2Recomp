@@ -22,9 +22,8 @@
 // ---- unrecovered helpers (the same ones the other table units use) ----
 
 class Unk_DiLoader : public CFileSystem { };
-Unk_DiLoader* FUN_140166420();
 class Unk_DiLog { public: void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg); };
-Unk_DiLog* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);       // FirstChildElement of the document
 extern int DAT_1439ed00c;                                                     // the table cache is enabled
@@ -56,12 +55,12 @@ MS2Ptr<CDropItemData> CDropItemData::Get(int nId)
     }
     CString strPath = FUN_14071a5b0("Table", "DropIcon.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_DiLoader*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return MS2Ptr<CDropItemData>(0);
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        ((class Unk_DiLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return MS2Ptr<CDropItemData>(0);
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("dropitem"); pNode != 0; pNode = pNode->FUN_140168650("dropitem"))

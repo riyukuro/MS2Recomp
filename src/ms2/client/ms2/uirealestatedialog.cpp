@@ -33,6 +33,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/placeholder/uiugceventdispatcher.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -43,10 +45,6 @@ static CString s_strStun = "stun";
 
 // ---- unit-local views of exe types ----
 
-CUIService* FUN_1403ed2b0();
-class Unk_RdStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_RdStrings* FUN_1401a9d70();
-CReservedWordTable* FUN_1403b4750();
 class Unk_TextFilter { public: };
 int FUN_1402252f0(Unk_TextFilter*, const CStringW& str, CStringW& strOut);
 class Unk_TextFilterPtr {
@@ -59,7 +57,6 @@ class Unk_TextFilterMgr { public: Unk_TextFilterPtr FUN_140229a50(); };
 Unk_TextFilterMgr* FUN_14025e7d0();
 class Unk_RdPC : public MyPC { public: CStringW FUN_141528330(); int FUN_141527ed0(); };
 class Unk_ReWorld { public: MyPC* FUN_141bd0cc0(); };                // the local player
-Unk_ReWorld* FUN_1403ed2d0();
 
 // The user report record (ctor 0x140c74fc0, 0x118 bytes; the same view as uicommon.cpp).
 class CUserReportData : public CPtred
@@ -127,7 +124,6 @@ private:
 
 class Unk_ReTrophy { public: int FUN_1409365a0(int nId); };         // the trophy was earned
 Unk_ReTrophy* FUN_1406c7600();
-UIUGCEventDispatcher* FUN_140bc09f0();
 class Unk_ReInv { public: int FUN_140a5f180(unsigned nItem, int n); };   // the count of an item
 extern Unk_ReInv DAT_143ab2a90;
 extern __int64 DAT_143ab2898;                                       // the money
@@ -220,7 +216,7 @@ void UIRealEstateDialog::vfunc_67()
 {
     vfunc_47(1);
     UIDialog::vfunc_67();
-    FUN_140bc09f0()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
 }
 
 // @0x141ab2310
@@ -228,7 +224,7 @@ void UIRealEstateDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_141ab42a0();
-    FUN_140bc09f0()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
 }
 
 // @0x141ab2370
@@ -252,7 +248,7 @@ void UIRealEstateDialog::OnLoadInit()
 // @0x141ab2410
 int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 1;
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -337,12 +333,12 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             else if (FUN_14053f940(nItem))
                 FUN_140d73aa0(FUN_140a228f0(2000, nDays, FUN_1409404f0(nPrice)), 1, static_cast<IMessageListener*>(this), CStringW(L"onExtension"));
             else
-                FUN_140d73aa0(FUN_14028dee0(0x7d2, nDays, FUN_1401a9d70()->FUN_141811980(1, nItem), nPrice), 1, static_cast<IMessageListener*>(this), CStringW(L"onExtension"));
+                FUN_140d73aa0(FUN_14028dee0(0x7d2, nDays, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItem), nPrice), 1, static_cast<IMessageListener*>(this), CStringW(L"onExtension"));
             return 1;
         }
     }
     else if (_stricmp("onSell", szMethod) == 0)
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4e82);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4e82);
     return 0;
 }
 
@@ -357,7 +353,7 @@ void UIRealEstateDialog::vfunc_ugc_5()
 // @0x141ab3250
 int UIRealEstateDialog::FUN_141ab3250(const CStringW& strName)
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 1;
     if (Unk_TextFilter* pFilter = FUN_14025e7d0()->FUN_140229a50().FUN_14025cea0())
@@ -390,7 +386,7 @@ void UIRealEstateDialog::vfunc_ugc_7(int bRefresh)
         return;
     if (FUN_140a467d0(&m_30))
         return;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC != 0 && pPC->FUN_141527e00() == 0)
     {
         FUN_141ab3760(static_cast<Unk_RdPC*>(pPC)->FUN_141528330());
@@ -432,7 +428,7 @@ void UIRealEstateDialog::FUN_141ab3820()
 {
     if (FUN_140a467d0(&m_30) != 0)
         return;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC != 0 && pPC->FUN_141527e00() == 0)
         FUN_141ab4040(&pPC->FUN_141523c50()->m_n30);
     if (m_30.get() != 0)
@@ -442,7 +438,7 @@ void UIRealEstateDialog::FUN_141ab3820()
 // @0x141ab38e0
 void UIRealEstateDialog::SendRequestCubeMode2()
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (pPC->FUN_141527e00() != 0)
@@ -450,8 +446,8 @@ void UIRealEstateDialog::SendRequestCubeMode2()
         UIUGCModelHouseDialog* pDlg = FUN_141ab59f0(0x4f3f);
         if (pDlg != 0)
             FUN_140faf6b0(pDlg, m_nGroup);
-        if (FUN_1403ed2b0()->FUN_141adc940((eUIClassID)0x4f3f) != 0)
-            FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f3f);
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4f3f) != 0)
+            TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4f3f);
     }
     else
     {
@@ -504,7 +500,7 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     {
                         if (!FUN_140d86260()->vfunc_40(nPrice))
                         {
-                            FUN_1403ed2b0()->FUN_141add1f0();
+                            TSingleton<CUIService>::GetInstance()->FUN_141add1f0();
                             return 1;
                         }
                     }
@@ -574,7 +570,7 @@ void UIRealEstateDialog::FUN_141ab4040(const __int64* pnTime)
 // @0x141ab42a0
 void UIRealEstateDialog::FUN_141ab42a0()
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (FUN_140a467d0(&m_30) != 0)
@@ -584,7 +580,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
         return;
     ASObj obj(2);
     Unk_HoServicePtr spSvc(FUN_1401cd040(&DAT_143b059e8));
-    CStringW strMapName = FUN_1401a9d70()->FUN_141811980(3, m_nMapId);
+    CStringW strMapName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_nMapId);
     Unk_UGCGroup group;
     if (FUN_1408a0d30(m_nGroup, group, m_nMapId) == 0)
         return;
@@ -675,7 +671,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
         if (spData.get() != 0)
         {
             obj.FUN_1407cba60("icon", spData->FUN_14053fdd0());
-            obj.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, nItem));
+            obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItem));
         }
     }
     obj.FUN_1407cbb20("price", FUN_140719a00(nShown));
@@ -686,7 +682,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
         strDesc = FUN_1412e7c20(0x7df, FUN_1409404f0(nExtPrice), reinterpret_cast<const int&>(nExtItem));
     else
         strDesc = FUN_1412e7c20(0x7e0, FUN_1409404f0(nExtPrice), reinterpret_cast<const int&>(nExtItem));
-    FUN_1403b4750()->FUN_1416fb300(strDesc);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strDesc);
     obj.FUN_1407cbb20("description", FUN_140a228f0(0x7e1, group.contractDate, strDesc));
     static_cast<Unk_ReObj&>(obj).FUN_141ab5b30("buildingIcon", group.buildingType);
     obj.FUN_1407cbb20("buildingType", GetStringCommon(group.buildingType + 0x7d3));
@@ -739,9 +735,9 @@ CStringW UIRealEstateDialog::FUN_141ab5520(const __int64& nTime)
 // @0x141ab59f0
 UIUGCModelHouseDialog* FUN_141ab59f0(int nClass)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spObject = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nClass);
+        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
         if (spObject.get() != 0)
             return dynamic_cast<UIUGCModelHouseDialog*>(spObject.operator->());
     }

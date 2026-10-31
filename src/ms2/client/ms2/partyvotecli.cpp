@@ -58,6 +58,14 @@ public:
     const Unk_PartyMsgResult& FUN_141a04a80() const;               // the pressed-button record (+0xa0)
 
     char m_pad_18[0x2a0 - 0x18];
+public:
+    void FUN_141a01ca0(int, int, CStringW const&);   // C3: was free FUN_141a01ca0
+public:
+    void FUN_141a02460(int);   // C3: was free FUN_141a02460
+public:
+    void FUN_141a02480(int);   // C3: was free FUN_141a02480
+public:
+    void FUN_141a024a0(int);   // C3: was free FUN_141a024a0
 };
 MS2_CHECK_SIZE(CMsgBoxData, 0x2a0);
 extern template class MS2Ptr<CMsgBoxData>;
@@ -65,10 +73,6 @@ typedef MS2Ptr<CMsgBoxData> Unk_MsgBoxPtr;
 typedef Delegate<bool(int, const CMsgBoxData&)> Unk_MsgBoxCallback;
 extern template class MS2Ptr<UIObject>;
 
-void FUN_141a01ca0(CMsgBoxData* pBox, int a, int b, const CStringW& str);
-void FUN_141a02460(CMsgBoxData* pBox, int n);
-void FUN_141a02480(CMsgBoxData* pBox, int n);
-void FUN_141a024a0(CMsgBoxData* pBox, int n);
 void FUN_140d73c60(Unk_MsgBoxPtr box);
 Unk_MsgBoxPtr FUN_140d74500(CStringW strText, int nType, Unk_MsgBoxCallback cb);
 
@@ -321,10 +325,10 @@ void PartyVoteReadyCli::vfunc_2()
     {
         Unk_MsgBoxPtr box = FUN_140d74500(FUN_140298ea0(CStringW(L"s_party_vote_ready_message")), 1,
                                           Unk_MsgBoxCallback(this, &PartyVoteReadyCli::FUN_140a8a0b0));
-        FUN_141a01ca0(box.operator->(), 0x14, 1, GetStringCommon(0x2b8));
-        FUN_141a02460(box.operator->(), 1);
-        FUN_141a02480(box.operator->(), 1);
-        FUN_141a024a0(box.operator->(), 0);
+        ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
+        ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a02460(1);
+        ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a02480(1);
+        ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a024a0(0);
         FUN_140d73c60(box);
     }
 }

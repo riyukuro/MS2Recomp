@@ -78,10 +78,10 @@ __int64 GetServerTime();                        // the server time
 CStringW FUN_1408116a0(int nStringId, const int& n);                       // FormatStringId<int>
 CStringW GetStringCommon(int nStringId);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);                   // a system notice
-void FUN_141b6fcf0(const CStringW& text, const CStringW& caption, UINT nType);   // MessageBox over the game window
+int FUN_141b6fcf0(const CStringW& text, const CStringW& caption, UINT nType);   // MessageBox over the game window (C3: returns int)
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 unsigned FUN_14028ba90();
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 // StringFormat<CString> (the fmt "{0}" wrapper, itemdata.cpp's COMDAT). Called by address name: progress/symbols.tsv binds
 // the StringFormat<CString> name to the look-alike 0x140536a50 (Unk_SocketFormat<CString>, which calls 0x1402bf9a0).
 CString FUN_140540050(const char* pszFormat, const CString& strArg);
@@ -90,7 +90,6 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                 // 
 // CNXMan::FUN_14160dac0 / FUN_14160e5f0 as this TU's callers see them: int results (nxman.h declares bool), and dac0
 // gets the argument the slot passes on (the callee ignores it).
 int FUN_14160dac0(CNXMan* pNx, void* pParam);
-int FUN_14160e5f0(CNXMan* pNx);
 
 // The 16-byte machine id (zero-initialised by 0x14067c020, copied by 0x14067c080; unit_14067c020). Invented name.
 struct Unk_NxMachineId
@@ -378,7 +377,7 @@ void CClientPlatformNexonKorea::vfunc_32(void* a1)
 // @0x140c78cb0
 int CClientPlatformNexonKorea::vfunc_1()
 {
-    if (FUN_140166410() != 0 && FUN_140166410()->FUN_14036e6b0() == 4)
+    if (((class CFeatureManager*)FUN_140166410()) != 0 && ((class CFeatureManager*)FUN_140166410())->FUN_14036e6b0() == 4)
         return 1;
     return 0;
 }
@@ -390,7 +389,7 @@ MS2_REPLACE_METHOD(0x140C78CB0, CClientPlatformNexonKorea, vfunc_1, 48, 0x205960
 int CClientPlatformNexonKorea::vfunc_74()
 {
     CNXMan* pNx = CNXMan::GetInstance();
-    if (pNx != 0 && FUN_14160e5f0(pNx) != 0)
+    if (pNx != 0 && ((class CNXMan*)(class CNXMan*)(pNx))->FUN_14160e5f0() != 0)
         return 5;
     return 4;
 }

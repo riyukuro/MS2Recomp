@@ -166,7 +166,7 @@ CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_14016a730(const char* psz, int n);                 // narrow -> wide
 CString FUN_14016a600(const wchar_t* pwsz, int n);              // wide -> narrow
-Unk_StringMgr* FUN_14025e7d0();
+CommonString * FUN_14025e7d0(void);  // C3: the definition's signature
 int FUN_14029dd60(const char* pszText, const char* pszFormat, ...);                // sscanf
 void FUN_1401d3700(CString& strPath);
 bool FUN_140184310(const CString& strText, const char* pszPrefix);

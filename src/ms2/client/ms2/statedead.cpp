@@ -26,6 +26,8 @@
 #include "ms2/commonfiles/fielddata.h"
 #include "ms2/placeholder/cnpc.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/gameobjectcontroller.h"
+#include "ms2/placeholder/cguidemanager.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -121,14 +123,8 @@ public:
 };
 Unk_DeadNpc* FUN_14096e110(PCBase* pActor);              // as an npc (0 for a player)
 
-int FUN_14165ef30(PCBase* pPC);                          // the player is revived through the team-info path
-void FUN_14165cac0(PCBase* pPC);
-void FUN_14165f170(MyPC* pPC);
 void FUN_140ef4330();
 void* FUN_1409331e0();
-void FUN_14138bf00(void* p, int a, int b, int c);
-int FUN_141661970(MyPC* p);
-void FUN_14123fbf0(Unk_PCBaseBody* pBody, unsigned short n);
 void FUN_1410943b0(PCBase* pActor, int n);
 bool FUN_140184310(const CString& str, const char* psz);   // str == psz
 CString FUN_1409a2360(const char* psz, int n);             // text conversion
@@ -159,7 +155,7 @@ void StateDead::vfunc_4(StateData* pData)
         Unk_DeadFieldRef kField = reinterpret_cast<Unk_DeadWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
         if (kField.FUN_140965240(0))
             return;
-        if (FUN_14165ef30(pPC) != 0)
+        if (reinterpret_cast<PC*>(pPC)->FUN_14165ef30() != 0)
         {
             bRevive = true;
             nAnimId = ((Unk_DeadPC*)pPC)->FUN_140967420().FUN_140965970()->m_nValue;
@@ -189,14 +185,14 @@ void StateDead::vfunc_4(StateData* pData)
         m_pOwner->vfunc_31(false);
         PCBase* pPCAgain = FUN_1417b8370();
         if (pPCAgain != 0)
-            FUN_14165cac0(pPCAgain);
+            reinterpret_cast<PC*>(pPCAgain)->FUN_14165cac0();
     }
     if (FUN_1417b84b0() != 0)
     {
         MyPC* pMyPC = FUN_1417b84b0();
         if (pMyPC != 0)
         {
-            FUN_14165f170(pMyPC);
+            reinterpret_cast<PC*>(pMyPC)->SendRequestCube();
             ((CPushControl*)pMyPC->FUN_141675eb0())->FUN_1413fcf90();
         }
         if (bRevive == true)
@@ -215,8 +211,8 @@ void StateDead::vfunc_4(StateData* pData)
             kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(kTarget);
         }
-        if (FUN_141661970(FUN_1417b84b0()) != 0)
-            FUN_14138bf00(FUN_1409331e0(), 8, 0, 0);
+        if (reinterpret_cast<PC*>(FUN_1417b84b0())->FUN_141661970() != 0)
+            reinterpret_cast<CGuideManager*>(FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)(8), 0, 0);
     }
 }
 
@@ -292,7 +288,7 @@ void StateDeadNPC::vfunc_4(StateData* pData)
         kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
         m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
     }
-    FUN_14123fbf0(m_pOwner->FUN_14166d220(), 5);
+    reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->FUN_14123fbf0(5);
     m_pOwner->FUN_14166dd20(efd::utf8string((const char*)FUN_1409a2360(m_strAnim, 0)), 1.0f, false, false);
 }
 

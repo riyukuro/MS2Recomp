@@ -41,6 +41,8 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/guildmanager.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- header statics (dynamic initializers 0x1400ef900..) ----
 #ifndef MS2_HOOK_DLL
@@ -70,7 +72,6 @@ public:
     PCBase* FUN_141bd1530(__int64 nCharId);                         // a player by character id
     MS2Ptr<Unk_PgtActorRef> FUN_141bc9d60(const CStringW& strName);
 };
-Unk_PgtWorld* FUN_1403ed2d0();
 
 class Unk_PgtGuildSvc                                               // the guild service: the own guild at +8
 {
@@ -78,7 +79,6 @@ public:
     void* m_pad_00;
     CGuildInfo m_info;
 };
-Unk_PgtGuildSvc* FUN_1403ed290();
 
 struct Unk_PgtConfig
 {
@@ -178,7 +178,7 @@ MS2_REPLACE_METHOD(0x1413398D0, UIPvPGuildTeamDialog, vfunc_65, 37, 0x4ECE15AC);
 void UIPvPGuildTeamDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     pPC->FUN_14152a960();
@@ -262,7 +262,7 @@ void UIPvPGuildTeamDialog::vfunc_79(void* pData)
             if (pDlg != 0)
                 pDlg->FUN_1419f6a70(4, GetStringCommon(0x3fc), 4000);
         }
-        else if (nWinner == FUN_1403ed290()->m_info.FUN_1404ccbd0()) {
+        else if (nWinner == reinterpret_cast<Unk_PgtGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccbd0()) {
             Unk_RewardOtherDialog* pDlg = FUN_140e01890(0x4e4c);
             if (pDlg != 0) {
                 pDlg->FUN_1419f6a70(2, GetStringCommon(0x3fd), 4000);
@@ -335,7 +335,7 @@ void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
         int nLeft = 0;
         int nRight = 0;
         __int64 nMyCharId = 0;
-        efd::SmartPointer<MyPC> spPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+        efd::SmartPointer<MyPC> spPC = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (spPC.data() != 0)
             nMyCharId = FUN_141656a80(spPC.operator->());
         bool bPlaying = false;
@@ -345,7 +345,7 @@ void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
         }
         for (size_t i = 0; i < info.m_characters.size(); i++) {
             const __int64& nCharId = info.m_characters[i];
-            PCBase* pPC = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
+            PCBase* pPC = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bd1530(nCharId);
             if (pPC == 0)
                 continue;
             if (FUN_14133b830(*FUN_141656be0(pPC))) {
@@ -439,7 +439,7 @@ int UIPvPGuildTeamDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             CStringW strName = data.FUN_1422b8f40();
             Unk_PopupMenu* pMenu = FUN_140c30140(0x4e39);
             if (pMenu != 0) {
-                MS2Ptr<Unk_PgtActorRef> spTarget = FUN_1403ed2d0()->FUN_141bc9d60(strName);
+                MS2Ptr<Unk_PgtActorRef> spTarget = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bc9d60(strName);
                 if (spTarget.get() != 0) {
                     Unk_PopupMenuInfo info(x, y, 3, 0x3f3fe, 1, "", NULL);
                     pMenu->FUN_141a7eb60(info, spTarget, 0xb);
@@ -464,7 +464,7 @@ void UIPvPGuildTeamDialog::vfunc_43()
 // @0x14133b830
 bool UIPvPGuildTeamDialog::FUN_14133b830(CStringW strGuildName)
 {
-    if (strGuildName == FUN_1403ed290()->m_info.FUN_1404cccb0())
+    if (strGuildName == reinterpret_cast<Unk_PgtGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404cccb0())
         return true;
     return false;
 }
@@ -473,7 +473,7 @@ MS2_REPLACE_METHOD(0x14133B830, UIPvPGuildTeamDialog, FUN_14133b830, 138, 0x70BF
 // @0x14133b8c0
 bool UIPvPGuildTeamDialog::FUN_14133b8c0(__int64 nGuildId)
 {
-    if (nGuildId == FUN_1403ed290()->m_info.FUN_1404ccbd0())
+    if (nGuildId == reinterpret_cast<Unk_PgtGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccbd0())
         return true;
     return false;
 }
@@ -526,11 +526,11 @@ MS2_REPLACE_METHOD(0x14133BAB0, UIPvPGuildTeamDialog, FUN_14133bab0, 710, 0x4FB6
 // @0x14133bd80
 void UIPvPGuildTeamDialog::FUN_14133bd80(CStringW strName)
 {
-    efd::SmartPointer<MyPC> spPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    efd::SmartPointer<MyPC> spPC = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (spPC == 0)
         return;
     m_strObserved = strName;
-    PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1420(m_strObserved);
+    PCBase* pTarget = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bd1420(m_strObserved);
     if (pTarget == 0) {
         FUN_14133bec0();
         return;
@@ -543,7 +543,7 @@ MS2_REPLACE_METHOD(0x14133BD80, UIPvPGuildTeamDialog, FUN_14133bd80, 304, 0x8BA0
 // @0x14133bec0
 void UIPvPGuildTeamDialog::FUN_14133bec0()
 {
-    efd::SmartPointer<MyPC> spPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    efd::SmartPointer<MyPC> spPC = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (spPC == 0)
         return;
     m_strObserved = "";

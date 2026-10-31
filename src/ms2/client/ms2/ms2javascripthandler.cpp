@@ -36,16 +36,28 @@ extern __int64 DAT_143ab2828;                           // the own account id
 extern int DAT_143ab2830;                               // the own world id
 extern ATL::CAtlArray<int> DAT_143ab3078;               // the visited field ids
 
-void* FUN_1403ed2d0();                                  // the world singleton
-PCBase* FUN_141bd0cc0(void* pWorld);                    // its own player
-unsigned FUN_141bd3060(void* pWorld);                   // its map id
-void* FUN_1403ed290();                                  // the guild manager
-int FUN_1413b6160(void* pGuildManager);                 // is in a guild
-__int64 FUN_1404ccbd0(void* pGuildInfo);                // the guild serial number
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    int FUN_141bd3060();
+    static class WorldService* GetInstance();
+};
+class CGuildManager   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1413b6160();
+};
+class CGuildInfo   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_1404ccbd0();
+};
 int FUN_141654700(PCBase* pPC);                         // PC member: the job
 CStringW& FUN_141656be0(PCBase* pPC);                   // PC member: the guild name
 int FUN_140408410(const ATL::CAtlArray<int>& array, const int& nValue);     // index of nValue, -1 if absent
-void* FUN_140d8ee90();                                  // the analytics service
+class CBigDataLogSystem;
+template<> CBigDataLogSystem* TSingleton<CBigDataLogSystem>::GetInstance();
 void FUN_140a1f970(void* pService, const CStringA& strKey, const CStringA& strValue);   // logs an event
 
 // ---- dynamic initializers (.text$di) ----
@@ -136,7 +148,7 @@ bool CMS2JavascriptHandler::GetLoginUser(CefRefPtr<CefV8Value> object, const Cef
     CefRefPtr<CefV8Value>& retval, CefString& exception)
 {
     retval = CefV8Value::CreateObject(NULL, NULL);
-    PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == NULL)
         return false;
 
@@ -149,9 +161,9 @@ bool CMS2JavascriptHandler::GetLoginUser(CefRefPtr<CefV8Value> object, const Cef
     retval->SetValue("level", CefV8Value::CreateInt((unsigned short)pPC->vfunc_78()), V8_PROPERTY_ATTRIBUTE_READONLY);
     retval->SetValue("job", CefV8Value::CreateInt(FUN_141654700(pPC)), V8_PROPERTY_ATTRIBUTE_READONLY);
     retval->SetValue("world", CefV8Value::CreateInt(DAT_143ab2830), V8_PROPERTY_ATTRIBUTE_READONLY);
-    if (FUN_1413b6160(FUN_1403ed290()) != 0) {
+    if (((class CGuildManager*)(void*)(((void*)TSingleton<CGuildManager>::GetInstance())))->FUN_1413b6160() != 0) {
         CStringA strGuild;
-        strGuild.Format("%lld", FUN_1404ccbd0((char*)FUN_1403ed290() + 8));
+        strGuild.Format("%lld", ((class CGuildInfo*)(void*)((char*)((void*)TSingleton<CGuildManager>::GetInstance()) + 8))->FUN_1404ccbd0());
         CefString csGuild((const char*)strGuild);
         CefString csGuildName((const wchar_t*)FUN_141656be0(pPC));
         retval->SetValue("guild_sn", CefV8Value::CreateString(csGuild), V8_PROPERTY_ATTRIBUTE_READONLY);
@@ -172,11 +184,11 @@ bool CMS2JavascriptHandler::RequestToken(CefRefPtr<CefV8Value> object, const Cef
 bool CMS2JavascriptHandler::GetCurrentMap(CefRefPtr<CefV8Value> object, const CefV8ValueList& arguments,
     CefRefPtr<CefV8Value>& retval, CefString& exception)
 {
-    if (FUN_1403ed2d0() == NULL)
+    if (((void*)WorldService::GetInstance()) == NULL)
         return true;
 
     CStringA strMap;
-    strMap.Format("%08d", FUN_141bd3060(FUN_1403ed2d0()));
+    strMap.Format("%08d", ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd3060());
     {
         CefString csMap((const char*)strMap);
         retval = CefV8Value::CreateString(csMap);
@@ -209,7 +221,7 @@ bool CMS2JavascriptHandler::HaveHome(CefRefPtr<CefV8Value> object, const CefV8Va
     CefRefPtr<CefV8Value>& retval, CefString& exception)
 {
     bool bHome = false;
-    MyPC* pPC = static_cast<MyPC*>(FUN_141bd0cc0(FUN_1403ed2d0()));
+    MyPC* pPC = static_cast<MyPC*>(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()));
     if (pPC != NULL)
         bHome = pPC->FUN_141527e00() == 0;
     retval = CefV8Value::CreateBool(bHome);
@@ -299,10 +311,10 @@ bool CMS2JavascriptHandler::MoveToHouse(CefRefPtr<CefV8Value> object, const CefV
 bool CMS2JavascriptHandler::LogGuestbookWrite(CefRefPtr<CefV8Value> object, const CefV8ValueList& arguments,
     CefRefPtr<CefV8Value>& retval, CefString& exception)
 {
-    if (FUN_140d8ee90() != NULL) {
+    if (TSingleton<CBigDataLogSystem>::GetInstance() != NULL) {
         CStringA strValue("");
         CStringA strKey("guestbook_write");
-        FUN_140a1f970(FUN_140d8ee90(), strKey, strValue);
+        FUN_140a1f970(TSingleton<CBigDataLogSystem>::GetInstance(), strKey, strValue);
     }
     return true;
 }

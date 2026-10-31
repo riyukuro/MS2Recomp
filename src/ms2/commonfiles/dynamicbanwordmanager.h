@@ -7,7 +7,6 @@
 #include "commonstringtable.h"   // TextFilterUnit
 class Unk_BanReader { public: virtual void vfunc_0(); virtual unsigned char vfunc_1(); virtual unsigned short vfunc_2(); virtual unsigned vfunc_3(); virtual __int64 vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual CStringW vfunc_8(); };
 class Unk_BanWriter { public: virtual void vfunc_0(); virtual void vfunc_1(unsigned char); virtual void vfunc_2(unsigned short); virtual void vfunc_3(unsigned); virtual void vfunc_4(__int64); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(const CStringW&); };
-class Unk_BanRef { public: void FUN_14015b020(); int FUN_140159bc0(); void FUN_140159ba0(); };
 class BannedWordData : public CPtred {
 public:
     BannedWordData(); BannedWordData(int,int,const CStringW&,const CStringW&); BannedWordData(Unk_BanReader&);
@@ -36,13 +35,13 @@ public:
     T* get() const { return p; } T* operator->() const { return p; } T& operator*() const { return *p; }
 private:
     void AddRef() const { if(p) AddRefImpl(0); }
-    static void Reference(T* v) { reinterpret_cast<Unk_BanRef*>(v)->FUN_14015b020(); }
+    static void Reference(T* v) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(v)); }
     void AddRefImpl(void*) const { Reference(p); }
     void Release() { if(p) { ReleaseImpl(0); p=0; } }
-    void ReleaseImpl(void*) { if(reinterpret_cast<Unk_BanRef*>(p)->FUN_140159bc0()==0) { Reference(p); reinterpret_cast<Unk_BanRef*>(p)->FUN_140159ba0(); } }
+    void ReleaseImpl(void*) { if(CPtred::ReleasePtred(reinterpret_cast<CPtred*>(p))==0) { Reference(p); CPtred::DeletePtred(reinterpret_cast<CPtred*>(p)); } }
     void* pad; T* p;
 };
-template<> inline void Unk_BanPtr<BannedWordData>::ReleaseImpl(void*) { BannedWordData* value=p; if(reinterpret_cast<Unk_BanRef*>(value)->FUN_140159bc0()==0) { Reference(value); reinterpret_cast<Unk_BanRef*>(value)->FUN_140159ba0(); } }
+template<> inline void Unk_BanPtr<BannedWordData>::ReleaseImpl(void*) { BannedWordData* value=p; if(CPtred::ReleasePtred(reinterpret_cast<CPtred*>(value))==0) { Reference(value); CPtred::DeletePtred(reinterpret_cast<CPtred*>(value)); } }
 class CBannedWordFilter : public CPtred {
 public:
     typedef Unk_BanPtr<BannedWordData> WordPtr;

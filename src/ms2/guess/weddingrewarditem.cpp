@@ -89,13 +89,18 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
-bool FUN_14028f710(Unk_140165cf0* pNode);                                // the element is a real row (not commented out)
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& arr, const wchar_t* pszDelim);   // split
 int Parse_14021baf0(const CStringA& value);                             // the wedding reward type by name (commonenum.cpp)
 int Parse_14021bbd0(const CStringA& value);                             // the reward limit by name (commonenum.cpp)
@@ -119,7 +124,7 @@ public:
         FUN_1406535b0(a, b, category, format, fmt::ArgList(fmt::internal::make_type(first, second), args));
     }
 };
-Unk_WeddingLog* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 
 // @0x140909aa0
 int ParseWeddingSkillType(const CStringA& value)
@@ -171,7 +176,7 @@ WeddingCompleteRewardItem::~WeddingCompleteRewardItem()
 bool WeddingCompleteRewardItem::Read(Unk_140165cf0* pNode)
 {
     (&m_item)->vfunc_2(pNode);
-    FUN_1408730a0(pNode, "nightReward", m_bNightReward);
+    XmlGetAttr((class TiXmlElement*)(pNode), "nightReward", m_bNightReward);
     return true;
 }
 MS2_REPLACE_METHOD(0x140906580, WeddingCompleteRewardItem, Read, 89, 0xE65EBF1C);
@@ -190,13 +195,13 @@ WeddingHallData::~WeddingHallData()
 // @0x140906740
 bool WeddingHallData::Read(Unk_140165cf0* pNode)
 {
-    FUN_1408731e0(pNode, "id", m_nId);
-    FUN_140873220(pNode, "fieldID", m_nFieldId);
-    FUN_140873220(pNode, "nightFieldID", m_nNightFieldId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "fieldID", m_nFieldId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "nightFieldID", m_nNightFieldId);
     FUN_1408733e0(pNode, "videoPath", m_strVideoPath);
     FUN_140873420(pNode, "desc", m_strDesc);
-    FUN_1408731e0(pNode, "grade", m_nGrade);
-    FUN_1408732e0(pNode, "merat", m_nMerat);
+    XmlGetAttr((class TiXmlElement*)(pNode), "grade", m_nGrade);
+    XmlGetAttr((class TiXmlElement*)(pNode), "merat", m_nMerat);
     FUN_140873420(pNode, "mcillust", m_strIllust);
     for (Unk_140165cf0* pItem = pNode->FUN_140165cf0("weddingItem"); pItem != 0;
          pItem = pItem->FUN_140168650("weddingItem"))
@@ -286,8 +291,8 @@ WeddingPackage::~WeddingPackage()
 // @0x140906f80
 bool WeddingPackage::Read(Unk_140165cf0* pNode)
 {
-    FUN_1408731e0(pNode, "id", m_nId);
-    FUN_140873220(pNode, "planner", m_nPlanner);
+    XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "planner", m_nPlanner);
     for (Unk_140165cf0* pHall = pNode->FUN_140165cf0("weddingHall"); pHall != 0;
          pHall = pHall->FUN_140168650("weddingHall"))
     {
@@ -324,7 +329,7 @@ WeddingRewardData::~WeddingRewardData()
 bool WeddingRewardData::Read(Unk_140165cf0* pNode)
 {
     XmlEnumName<int, Parse_14021baf0>(pNode, "type", m_nType);
-    FUN_1408732e0(pNode, "rewardExp", m_nRewardExp);
+    XmlGetAttr((class TiXmlElement*)(pNode), "rewardExp", m_nRewardExp);
     XmlEnumName<int, Parse_14021bbd0>(pNode, "rewardLimit", m_nRewardLimit);
     return m_nType != 0;
 }
@@ -344,8 +349,8 @@ WeddingExpData::~WeddingExpData()
 // @0x140907390
 bool WeddingExpData::Read(Unk_140165cf0* pNode)
 {
-    FUN_1408731e0(pNode, "grade", m_nGrade);
-    FUN_1408732e0(pNode, "value", m_nValue);
+    XmlGetAttr((class TiXmlElement*)(pNode), "grade", m_nGrade);
+    XmlGetAttr((class TiXmlElement*)(pNode), "value", m_nValue);
     return true;
 }
 MS2_REPLACE_METHOD(0x140907390, WeddingExpData, Read, 79, 0x3943B3D3);
@@ -366,15 +371,15 @@ bool WeddingMaintenanceData::Read(Unk_140165cf0* pNode)
 {
     int nDayOfWeek = 0;
     CStringW strTimeRange;
-    FUN_1408731e0(pNode, "world", m_nWorld);
-    if (FUN_1408731e0(pNode, "dayOfWeek", nDayOfWeek) != 0)
+    XmlGetAttr((class TiXmlElement*)(pNode), "world", m_nWorld);
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "dayOfWeek", nDayOfWeek) != 0)
     {
-        FUN_140166440()->Log(0, 0, 0x13, L"{0}. Attribute not found - dayOfWeek.", L"WeddingMaintenanceData::Read");
+        ((class Unk_WeddingLog*)GetLogString())->Log(0, 0, 0x13, L"{0}. Attribute not found - dayOfWeek.", L"WeddingMaintenanceData::Read");
         return false;
     }
     if (FUN_140873420(pNode, "time_range", strTimeRange) != 0)
     {
-        FUN_140166440()->Log(0, 0, 0x13, L"{0}. Attribute not found - time_range.", L"WeddingMaintenanceData::Read");
+        ((class Unk_WeddingLog*)GetLogString())->Log(0, 0, 0x13, L"{0}. Attribute not found - time_range.", L"WeddingMaintenanceData::Read");
         return false;
     }
     m_nDayOfWeek = nDayOfWeek;
@@ -382,19 +387,19 @@ bool WeddingMaintenanceData::Read(Unk_140165cf0* pNode)
     FUN_14025a680(strTimeRange, parts, L"-");
     if (parts.GetCount() != 2)
     {
-        FUN_140166440()->Log(0, 0, 0x13, L"{0}. Invalid time_range={1}", L"WeddingMaintenanceData::Read",
+        ((class Unk_WeddingLog*)GetLogString())->Log(0, 0, 0x13, L"{0}. Invalid time_range={1}", L"WeddingMaintenanceData::Read",
                              strTimeRange);
         return false;
     }
     if (!m_startTime.Parse(parts[0]))
     {
-        FUN_140166440()->Log(0, 0, 0x13, L"{0}. Invalid m_startDayTime={1}", L"WeddingMaintenanceData::Read",
+        ((class Unk_WeddingLog*)GetLogString())->Log(0, 0, 0x13, L"{0}. Invalid m_startDayTime={1}", L"WeddingMaintenanceData::Read",
                              strTimeRange);
         return false;
     }
     if (!m_endTime.Parse(parts[1]))
     {
-        FUN_140166440()->Log(0, 0, 0x13, L"{0}. Invalid m_endDayTime={1}", L"WeddingMaintenanceData::Read",
+        ((class Unk_WeddingLog*)GetLogString())->Log(0, 0, 0x13, L"{0}. Invalid m_endDayTime={1}", L"WeddingMaintenanceData::Read",
                              strTimeRange);
         return false;
     }
@@ -442,13 +447,13 @@ WeddingSkillData::~WeddingSkillData()
 // @0x1409079c0
 bool WeddingSkillData::Read(Unk_140165cf0* pNode)
 {
-    FUN_1408731e0(pNode, "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
     XmlEnumName<int, ParseWeddingSkillType>(pNode, "type", m_nType);
-    FUN_1408731e0(pNode, "requireGrade", m_nRequireGrade);
-    FUN_140873220(pNode, "additionalEffectID", m_nAdditionalEffectId);
-    FUN_140873360(pNode, "startValue", m_fStartValue);
-    FUN_140873360(pNode, "addValue", m_fAddValue);
-    FUN_1408731e0(pNode, "maxCount", m_nMaxCount);
+    XmlGetAttr((class TiXmlElement*)(pNode), "requireGrade", m_nRequireGrade);
+    XmlGetAttr((class TiXmlElement*)(pNode), "additionalEffectID", m_nAdditionalEffectId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "startValue", m_fStartValue);
+    XmlGetAttr((class TiXmlElement*)(pNode), "addValue", m_fAddValue);
+    XmlGetAttr((class TiXmlElement*)(pNode), "maxCount", m_nMaxCount);
     (&m_item)->vfunc_2(pNode);
     return true;
 }
@@ -510,12 +515,12 @@ bool WeddingTable::LoadPackage()
 {
     CString strPath = FUN_14071a5b0("Table", "weddingPackage.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(((class Unk_WeddingLog*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     std::vector<Unk_140165cf0*> nodes;
@@ -539,12 +544,12 @@ bool WeddingTable::LoadReward()
 {
     CString strPath = FUN_14071a5b0("Table", "weddingReward.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(((class Unk_WeddingLog*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     std::vector<Unk_140165cf0*> nodes;
@@ -568,12 +573,12 @@ bool WeddingTable::LoadExp()
 {
     CString strPath = FUN_14071a5b0("Table", "weddingExp.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(((class Unk_WeddingLog*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     std::vector<Unk_140165cf0*> nodes;
@@ -597,18 +602,18 @@ bool WeddingTable::LoadMaintenance()
 {
     CString strPath = FUN_14071a5b0("Table", "weddingMaintenance.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(((class Unk_WeddingLog*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("mainternance"); pNode != 0;
          pNode = pNode->FUN_140168650("mainternance"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         MS2Ptr<WeddingMaintenanceData> spData(new WeddingMaintenanceData);
         if (!spData->Read(pNode))
@@ -624,17 +629,17 @@ bool WeddingTable::LoadSkill()
 {
     CString strPath = FUN_14071a5b0("Table", "weddingSkill.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(((class Unk_WeddingLog*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("v"); pNode != 0; pNode = pNode->FUN_140168650("v"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         MS2Ptr<WeddingSkillData> spSkill(new WeddingSkillData);
         if (!spSkill->Read(pNode))

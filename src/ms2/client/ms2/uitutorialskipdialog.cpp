@@ -9,14 +9,15 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
 class Unk_TsWorld;
 class Unk_TsActor;                                              // the local player
-class Unk_TsAS { public: Scaleform::GFx::Value FUN_1422bb330(const char* szMethod); };   // Invoke(name)
+   // Invoke(name)
 
-Unk_TsWorld* FUN_1403ed2d0();
 Unk_TsActor* FUN_141bd0cc0(Unk_TsWorld* pWorld);
 int FUN_141654700(Unk_TsActor* pActor);                         // job
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& nArg);
@@ -49,11 +50,11 @@ CString UITutorialSkipDialog::GetTypeName()
 void UITutorialSkipDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_TsActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_TsActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_TsWorld*>(WorldService::GetInstance()));
     if (pActor == 0)
         return;
     FUN_141923680(1);
-    reinterpret_cast<Unk_TsAS*>(m_30.operator->())->FUN_1422bb330("showOnDelay");
+    reinterpret_cast<AScript*>(m_30.operator->())->Invoke("showOnDelay");
     int nJob = FUN_141654700(pActor);
     FUN_140cfefe0(FUN_1422dbb40(), "m_contents", "textField", GetStringCommonByKey(FUN_1401ceea0(L"s_tutorial_skip_message_job{0}", nJob)));
     FUN_140cff4e0(FUN_1422dbb40(), "m_tutorialSkipButton", GetStringCommonByKey(FUN_1401ceea0(L"s_tutorial_skip_button_job{0}", nJob)));
@@ -64,7 +65,7 @@ int UITutorialSkipDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    Unk_TsActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_TsActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_TsWorld*>(WorldService::GetInstance()));
     if (pActor == 0)
         return 1;
     if (_stricmp("onTutorialSkipButton", szMethod) == 0)

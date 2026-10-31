@@ -35,7 +35,7 @@ class Unk_AsManager
 public:
     Unk_AsMovie* FUN_1422b01a0(int nMovieId);
 };
-Unk_AsManager* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 void* FUN_1422bb8b0(int nMovieId);
 void FUN_14256e8e0(void* pMovie, Scaleform::GFx::Value* pValue, const char* szClass, int a, int b);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
@@ -59,7 +59,7 @@ ASCommonDepth::ASCommonDepth(Scaleform::GFx::Value v, int nMovieId)
 // @0x1409b1090
 MS2Ptr<ASCommonDepth> ASCommonDepth::Create(int nMovieId)
 {
-    Unk_AsMovie* pMovie = FUN_14025e7a0()->FUN_1422b01a0(nMovieId);
+    Unk_AsMovie* pMovie = ((class Unk_AsManager*)FUN_14025e7a0())->FUN_1422b01a0(nMovieId);
     if (pMovie != 0)
         return MS2Ptr<ASCommonDepth>(new ASCommonDepth(pMovie->FUN_1422bd120(CString("scaleform.ms2.common.CommonDepth")), nMovieId));
     return MS2Ptr<ASCommonDepth>(0);

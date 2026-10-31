@@ -30,11 +30,11 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/skilloverlapcompare.h"
+#include "ms2/client/ms2/gameobjectcontroller.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 // The physics body of the actor: sets the velocity.
-void FUN_141240700(Unk_PCBaseBody* pBody, efd::Point3 kVel);               // 0x141240700
 
 // The config constants singleton: the air control scale at +0x48e8.
 class Unk_FallScale { public: float* FUN_140298f40(); };
@@ -72,8 +72,6 @@ public:
 class CSkillRecord : public Unk_PCBaseComp_b18 {};
 
 bool FUN_14028d470(float a, float b);                                      // approx equal
-int FUN_14165b500(MyPC* p, int n);
-egf::Entity* FUN_141659af0(MyPC* p, int nSide);                            // the nearby object to sit / lie on
 
 // @0x1417c6e40
 StateFall::StateFall(PCBase* pOwner) : State(pOwner)
@@ -150,7 +148,7 @@ void StateFall::vfunc_3(double fTime)
     {
         float fSpeed = m_pOwner->vfunc_95();
         efd::Point3 kVel = kDir * (fSpeed * *FUN_1401d3200()->m_scale.FUN_140298f40());
-        FUN_141240700(m_pOwner->FUN_14166d220(), kVel);
+        reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->SetKVelocity(kVel);
     }
     efd::Point3 kMove = efd::Point3::ZERO;
     m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
@@ -176,12 +174,12 @@ void StateFall::vfunc_8(double fTime)
     }
     else if (pPC->FUN_1416764a0() != 0)
     {
-        if (m_pOwner->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
+        if (m_pOwner->FUN_141678820() != 0 && reinterpret_cast<PC*>(pPC)->FUN_14165b500(1) != 0)
             pPC->SendRequestRideMode1(new RideOffActionAutoClimb(1));
     }
     else
     {
-        if (pPC->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
+        if (pPC->FUN_141678820() != 0 && reinterpret_cast<PC*>(pPC)->FUN_14165b500(1) != 0)
             pPC->FUN_1416788d0();
     }
 }
@@ -198,7 +196,7 @@ void StateFall::vfunc_9(double fTime)
             int nSide = 3;
             if (FUN_14028d470(m_pOwner->FUN_14123c360().y, -1.0f))
                 nSide = 2;
-            egf::Entity* pEntity = FUN_141659af0(pPC, nSide);
+            egf::Entity* pEntity = reinterpret_cast<PC*>(pPC)->FUN_141659af0(nSide);
             if (pEntity != 0)
             {
                 if (pPC->FUN_1416764a0() != 0)

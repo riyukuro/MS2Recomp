@@ -162,8 +162,10 @@ int FUN_142054a70(lua_State* L, int index, void** ptr, swig_type_info* type, int
     swig_cast_info* cast = SWIG_TypeCheckStruct(usr->type, type);
     if (!cast)
         return -1;
+    void* obj = usr->ptr;
+    swig_converter_func converter = cast->converter;
     int newmem = 0;
-    *ptr = cast->converter ? cast->converter(usr->ptr, &newmem) : usr->ptr;
+    *ptr = converter ? converter(obj, &newmem) : obj;
     return 0;
 }
 #define SWIG_ConvertPtr(L, idx, ptr, type, flags) FUN_142054a70(L, idx, ptr, type, flags)

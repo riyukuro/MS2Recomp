@@ -65,7 +65,6 @@ public:
 };
 Unk_SsDialog* FUN_1405344f0(int nId);
 Unk_SsDialog* FUN_140de48d0(int nId);
-void FUN_141b10eb0(Unk_SsDialog* pDlg);                   // refresh the store dialog (icon search)
 
 // The quest event dispatcher (FUN_140bfc4b0) the slot registers with.
 UIQuestEventDispatcher* FUN_140bfc4b0();
@@ -109,7 +108,6 @@ bool FUN_140334210(const Unk_SsCharIter&, const Unk_SsCharIter&);
 bool FUN_1406344b0(MS2Ptr<CItem> spItem, const __int64* pCharacter, ItemUtilTransfer::TOutBindingParam* pOut);
 
 void* FUN_1409331e0();                                    // the game state manager
-int FUN_14138c900(void* pMgr, int n);
 CStringW GetStringCommon(int nStringId);                    // a string table text
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
@@ -122,7 +120,6 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spData);
 void FUN_141276180(const CString& strA, const CString& strB);
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                 // item link / popup for the item
 void* FUN_140a50b50(DragSlot* pSlot);                     // the item slot behind a drag source
-__int64 FUN_141405a10(void* pItemSlot);                   // its item uid
 void FUN_140710590(COutPacket& packet);                   // send the packet
 CString FUN_140719530(unsigned __int64 v);                // "%I64u"
 CString FUN_140719210(long v);                            // "%ld"
@@ -140,10 +137,6 @@ StoreSlot* FUN_14140e6d0(DragSlot* p);                    // the store slot behi
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
-void FUN_1422cc9e0(DragSlotBag* pBag);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(StoreSlot);
 
@@ -152,6 +145,9 @@ static CStringW s_strDestroyStoreItem = L"destroy_store_item";
 
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/cguidemanager.h"
+#include "ms2/client/ms2/invenslot.h"
+#include "ms2/gfxui/notifyhandler.h"
 
 static CString s_strSystemNoticeErrorWarningBag = "system_notice_error_warningBag";
 
@@ -330,7 +326,7 @@ int StoreSlot::vfunc_18(void* p)
     if (pItemSlot != 0)
     {
         MS2Ptr<CItem> spStoreItem = MS2_STORE_TABLE.Slot(m_nIndex);
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(reinterpret_cast<InvenSlot*>(pItemSlot)->GetItemUid());
         if (spItem == NULL)
             return static_cast<DragSlot*>(p)->vfunc_10();
         int nSlot = m_nIndex;
@@ -428,7 +424,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
 {
     if (spItem.IsNull())
         return 0;
-    if (FUN_14138c900(FUN_1409331e0(), 6) != 0)
+    if (reinterpret_cast<CGuideManager*>(FUN_1409331e0())->IsRestricted(6) != 0)
     {
         FUN_141275260(0x88a, 1, 1);
         return 0;
@@ -626,18 +622,18 @@ void FUN_14180b170(const CString& strName, int nStoreId, int nCount)
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x14180b230
 void FUN_14180b230(const CString& strName)
 {
-    StoreSlotBag* pBag = FUN_14180b940(FUN_1422c8e90(strName));
+    StoreSlotBag* pBag = FUN_14180b940(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
-        FUN_1422c8f70(strName);
+        reinterpret_cast<DragSlotBag*>(pBag)->FUN_1422cc9e0();
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 
@@ -715,7 +711,7 @@ void StoreSlotBag::vfunc_12()
     if (pDlg != 0)
     {
         if (pDlg->vfunc_55() == 0)
-            FUN_141b10eb0(pDlg);
+            reinterpret_cast<UIStoreDialog*>(pDlg)->FUN_141b10eb0();
     }
 }
 

@@ -25,7 +25,6 @@
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-WorldService* FUN_1403ed2d0();
 
 // The item lock manager (CItemLockManager, unit_1406125d0.h; not included: its ATL trace statics would join this unit's
 // .text$di).
@@ -38,16 +37,19 @@ public:
 };
 extern Unk_Inventory DAT_143ab2a90;
 
-CItemLockManager* FUN_140535310();                      // the item lock manager singleton
+class Unk_BreakRules* FUN_140535310();   // C3: was FUN_140535310
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for the item
 void* FUN_140a50b50(DragSlot* pSlot);                   // the item slot behind a drag source
-__int64 FUN_141405a10(void* pItemSlot);                 // its item uid
+class InvenSlot   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 GetItemUid();
+};
 
 // Registry of named bags/slots (GFx bind data).
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
-void FUN_1422cc9e0(DragSlotBag* pBag);
 
 ItemLockSlotBag* FUN_140d42380(NotifyContext::BindData* p);
 
@@ -77,9 +79,9 @@ int ItemLockSlot::vfunc_18(void* p)
     void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
-            FUN_140535310()->FUN_140612e90(spItem);
+            ((class CItemLockManager*)FUN_140535310())->FUN_140612e90(spItem);
     }
     return static_cast<DragSlot*>(p)->vfunc_10();
 }
@@ -89,7 +91,7 @@ int ItemLockSlot::vfunc_14()
 {
     if (m_spItem.IsNull())
         return 0;
-    FUN_140535310()->FUN_1406130e0(((CItem*)m_spItem)->FUN_140526a50());
+    ((class CItemLockManager*)FUN_140535310())->FUN_1406130e0(((CItem*)m_spItem)->FUN_140526a50());
     return 1;
 }
 
@@ -111,7 +113,7 @@ MS2Ptr<CItem> ItemLockSlot::vfunc_25()
 // @0x140d41b90 (ITooltip::vfunc_0)
 int ItemLockSlot::vfunc_0(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ASTooltip tip(pPlayer, 0x20, 2);
@@ -129,7 +131,7 @@ int ItemLockSlot::vfunc_0(void* p)
 // @0x140d41cf0
 int ItemLockSlot::vfunc_8(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ASSlot slot(2);
@@ -170,7 +172,7 @@ void FUN_140d42100(const CString& strName)
     ItemLockSlotBag* pBag = FUN_140d42380(FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         FUN_1422c8f70(strName);
     }
 }
@@ -195,7 +197,7 @@ CString ItemLockSlotBag::vfunc_15(int nIndex)
 // @0x140d42220
 DragSlot* ItemLockSlotBag::vfunc_16(int nIndex)
 {
-    MS2Ptr<CItem> spItem = FUN_140535310()->FUN_1406127a0(nIndex);
+    MS2Ptr<CItem> spItem = ((class CItemLockManager*)FUN_140535310())->FUN_1406127a0(nIndex);
     return new (efd::MemHint(efd::MemHint::NONE)) ItemLockSlot(vfunc_15(nIndex), nIndex, spItem);
 }
 

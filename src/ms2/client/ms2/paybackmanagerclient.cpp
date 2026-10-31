@@ -56,7 +56,6 @@ class Unk_PbUIRef
 {
 public:
     ~Unk_PbUIRef();                                                 // 0x1403e5630
-    UIObject* FUN_1403e8a70() const;
 private:
     void* unknown;
     UIObject* object;
@@ -103,7 +102,6 @@ __int64 GetNextMonthStart(__int64 nTime);                               // midni
 int GetDaysInMonth(int year, int month);                             // days of the month
  // child member by name
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);         // value is undefined
-int FUN_1409c17e0(const Scaleform::GFx::Value& v);
 
 bool FUN_140a8c0c0(const MS2Ptr<CMeratMarketProduct>& lhs, const MS2Ptr<CMeratMarketProduct>& rhs);
 UIPaybackDialog* FUN_140a8c5f0(int nId);
@@ -223,7 +221,7 @@ void PaybackManagerClient::FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam)
         Scaleform::GFx::Value serial = reinterpret_cast<AScript*>(spBill.operator->())->FUN_1422baa20("serialID");
         if (FUN_1409b0390(&serial) == 0)
         {
-            int nSerial = FUN_1409c17e0(serial);
+            int nSerial = ((Scaleform::GFx::Value*)&(serial))->GetUInt();
             if (nSerial == spFirst->m_premium.m_nId)
             {
                 if (spBuy->vfunc_4() == 3)
@@ -348,7 +346,7 @@ UIPaybackDialog* FUN_140a8c5f0(int nId)
     if (reinterpret_cast<Unk_PbUiMgr*>(TSingleton<CUIService>::GetInstance()))
     {
         Unk_PbUIRef ref = reinterpret_cast<Unk_PbUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
-        if (ref.FUN_1403e8a70())
+        if (((MS2Ptr<UIObject>*)(Unk_PbUIRef*)&(ref))->get())
             return dynamic_cast<UIPaybackDialog*>(FUN_1403ed9e0(ref));
     }
     return 0;

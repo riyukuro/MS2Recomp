@@ -18,6 +18,8 @@
 
 #include "hook/ms2hook.h"
 #include "ms2/gfxui/uialignwidget.h"
+#include "ms2/placeholder/uniqueswfidcreator.h"
+#include "ms2/ms2format.h"
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -25,14 +27,6 @@ class Unk_140e45740 : public UIAlignWidgetManager     // UI focus/modal manager?
 {
 };
 Unk_140e45740* FUN_140e45740();
-class Unk_1422d6240     // GFx file system / loader (0x1422f6d50 resolves a swf key to a path)
-{
-public:
-    int FUN_1422f6d50(CString& strOut, CString strKey, void* p);
-};
-Unk_1422d6240* FUN_1422d6240();
-// "{0}"-style formatter (probably a variadic template; 0x140540050 is the (const char*, CString) instance).
-CString FUN_140540050(const char* szFormat, const CString& a1);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -111,8 +105,8 @@ CString UISwfEntity::FUN_1422db790()
     if (strName.IsEmpty())
         return "";
     if (m_40)
-        return FUN_140540050("Debug_UI{0}.swf", strName);
-    return FUN_140540050("UI{0}.swf", strName);
+        return StringFormat("Debug_UI{0}.swf", strName);
+    return StringFormat("UI{0}.swf", strName);
 }
 // Not hooked: reads s_swfNameDelegate, which the exe sets at startup (0x1416275e0 -> 0x141629ed0). The DLL's copy of
 // the static is never set, so a replacement would ignore the installed delegate (see docs/RECOVERY.md section 9).
@@ -121,7 +115,7 @@ CString UISwfEntity::FUN_1422db790()
 CString UISwfEntity::FUN_1422db910(void* p)
 {
     CString strPath;
-    if (FUN_1422d6240()->FUN_1422f6d50(strPath, FUN_1422db6e0(), p))
+    if (SingletonClass<UniqueSwfIDCreator>::GetInstance()->FUN_1422f6d50(strPath, FUN_1422db6e0(), *static_cast<const CString*>(p)))
         return strPath;
     return s_strNoPath;
 }

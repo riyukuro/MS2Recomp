@@ -15,6 +15,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cwebbrowserservice.h"
 
 // ---- exe callees ----
 class Unk_AasImage : public AScript                                         // the image holder the page is drawn into (0x90 bytes)
@@ -49,30 +50,20 @@ public:
     Unk_CashConstInt m_nWidth;                                              // +0xdbc0
     Unk_CashConstInt m_nHeight;                                             // +0xdc18
 };
-Unk_CashConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int* FUN_1402056b0(Unk_CashConstInt* p);
 
-class Unk_CashBrowserMgr
-{
-public:
-    void FUN_141b781e0(int nId, const char* pszFrom, const char* pszTo, int n);
-    void FUN_141b788b0(int nId, int nWidth, int nHeight);
-};
-Unk_CashBrowserMgr* FUN_140cc18a0();
+CWebBrowserService* FUN_140cc18a0();
 
 class ASDialog : public ASDisplayObject
 {
 public:
-    float FUN_1422c10a0();                                                  // x
-    float FUN_1422c1110();                                                  // y
     void FUN_1407cbbe0(const char* szName, bool b);                         // set a bool member
 };
 
 void FUN_141901470(int n, int nTypeId);
-bool FUN_141900a90(UIObject* pObject);
+bool FUN_141900a90(class UIDialog*);   // C3: was FUN_141900a90
 void* FUN_140e999d0(Unk_CashImagePtr* p, int nNull);                        // p = NULL
-void* FUN_140e99a00(Unk_CashImagePtr* p, Unk_CashImage* pImage);            // p = pImage
-Unk_CashImage* FUN_140e99a70(Unk_CashImagePtr* p);                          // get
 Unk_CashImage* FUN_140e99a80(Unk_CashImagePtr* p);                          // operator->
 Unk_CashImage* FUN_140d03240(Unk_CashImagePtr* p);                          // operator->
 void FUN_1422e5530(Unk_CashImage* pImage, Unk_AasSourcePtr spSource);
@@ -171,14 +162,14 @@ void UITencentCashChargeDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (m_30.get() != 0)
     {
-        m_nDialogWidth = *FUN_1402056b0(&FUN_1401d3200()->m_nWidth) + 0x1c;
-        m_nDialogHeight = *FUN_1402056b0(&FUN_1401d3200()->m_nHeight) + 0x44;
+        m_nDialogWidth = *FUN_1402056b0(&((class Unk_CashConsts*)FUN_1401d3200())->m_nWidth) + 0x1c;
+        m_nDialogHeight = *FUN_1402056b0(&((class Unk_CashConsts*)FUN_1401d3200())->m_nHeight) + 0x44;
         m_30->Invoke("setDialogSize", m_nDialogWidth, m_nDialogHeight);
     }
     vfunc_43();
     FUN_140e48e10("m_renderTarget", &m_spTarget);
     int nId = vfunc_88();
-    FUN_140cc18a0()->FUN_141b781e0(m_nBrowserId, FUN_1401d3200()->m_strUrl.FUN_140298f80(), "", nId);
+    FUN_140cc18a0()->FUN_141b781e0(m_nBrowserId, ((class Unk_CashConsts*)FUN_1401d3200())->m_strUrl.FUN_140298f80(), "", nId);
     vfunc_87(&m_size);
     FUN_140cc18a0()->FUN_141b788b0(m_nBrowserId, m_size.cx, m_size.cy);
     vfunc_85();
@@ -195,8 +186,8 @@ void UITencentCashChargeDialog::vfunc_26()
 // @0x140e9a160
 void UITencentCashChargeDialog::vfunc_85()
 {
-    FUN_140e99a00(&m_spImage, new Unk_CashImage(2));
-    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(FUN_140e99600(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), *FUN_1402056b0(&FUN_1401d3200()->m_nWidth), *FUN_1402056b0(&FUN_1401d3200()->m_nHeight)), 2)));
+    ((void*)&((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->AssignRaw((class ASLoader*)(new Unk_CashImage(2))));
+    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(FUN_140e99600(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), *FUN_1402056b0(&((class Unk_CashConsts*)FUN_1401d3200())->m_nWidth), *FUN_1402056b0(&((class Unk_CashConsts*)FUN_1401d3200())->m_nHeight)), 2)));
     if (m_spTarget.get() != 0)
     {
         static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6900(FUN_140e99a80(&m_spImage)->FUN_1422bb890());
@@ -206,7 +197,7 @@ void UITencentCashChargeDialog::vfunc_85()
 // @0x140e9a410
 void UITencentCashChargeDialog::vfunc_86()
 {
-    if ((m_spTarget.get() ? true : false) && (FUN_140e99a70(&m_spImage) ? true : false))
+    if ((m_spTarget.get() ? true : false) && (((class Unk_AasImage*)((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->get()) ? true : false))
     {
         static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6b70(FUN_140e99a80(&m_spImage)->FUN_1422bb890());
     }
@@ -231,7 +222,7 @@ bool UITencentCashChargeDialog::vfunc_90(POINT* pPos)
         return false;
     pPos->x -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->FUN_1422c10a0();
     pPos->y -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->FUN_1422c1110();
-    if (!(pPos->x >= 0 && pPos->y >= 0 && !(pPos->x > *FUN_1402056b0(&FUN_1401d3200()->m_nWidth)) && pPos->y <= *FUN_1402056b0(&FUN_1401d3200()->m_nHeight)))
+    if (!(pPos->x >= 0 && pPos->y >= 0 && !(pPos->x > *FUN_1402056b0(&((class Unk_CashConsts*)FUN_1401d3200())->m_nWidth)) && pPos->y <= *FUN_1402056b0(&((class Unk_CashConsts*)FUN_1401d3200())->m_nHeight)))
     {
         return false;
     }
@@ -249,7 +240,7 @@ void UITencentCashChargeDialog::vfunc_43()
 // @0x140e9a760
 int UITencentCashChargeDialog::vfunc_65()
 {
-    if (!FUN_141900a90(this))
+    if (!FUN_141900a90((class UIDialog*)(this)))
         return 0;
     return UIDialog::vfunc_65();
 }
@@ -257,8 +248,8 @@ int UITencentCashChargeDialog::vfunc_65()
 // @0x140e9a7a0
 void UITencentCashChargeDialog::vfunc_87(SIZE* pSize)
 {
-    pSize->cx = *FUN_1402056b0(&FUN_1401d3200()->m_nWidth);
-    pSize->cy = *FUN_1402056b0(&FUN_1401d3200()->m_nHeight);
+    pSize->cx = *FUN_1402056b0(&((class Unk_CashConsts*)FUN_1401d3200())->m_nWidth);
+    pSize->cy = *FUN_1402056b0(&((class Unk_CashConsts*)FUN_1401d3200())->m_nHeight);
 }
 
 // @0x140e9a840

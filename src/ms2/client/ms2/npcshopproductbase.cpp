@@ -37,8 +37,8 @@ __int64 GetServerTime();                                        // the server ti
 bool FUN_1406a5930();                                           // the star point event runs
 int FUN_14053feb0(int nItemId);                                 // the fixed rank of an item (0: none)
 __int64 FUN_141349ef0(int nKind, int nA, unsigned nB);          // the amount of a currency
-bool FUN_14134a030(int nKind, int nA, int nAmount);             // the currency can pay nAmount
-void FUN_14134a120(int nKind, int nA, int nAmount);             // tell the player the currency is missing
+bool FUN_14134a030(int, int, unsigned int);   // C3: was FUN_14134a030
+void FUN_14134a120(int, int, unsigned int);   // C3: was FUN_14134a120
 extern Unk_Inventory g_143ab2a90;                               // the player inventory
 
 // The merat product record: two ints written by CNpcShopMeratItemCli::vfunc_2.

@@ -53,6 +53,9 @@ static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
 static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/uiservice.h"
 static UICommon::CMyPCKeyInputController s_keyInputController;
 
 // ---- unit-local views of exe types ----
@@ -93,17 +96,15 @@ public:
     virtual unsigned short vfunc_78();                                  // the level
 };
 #define Unk_EwActorLevel(pActor) reinterpret_cast<Unk_EwActorSlots*>(pActor)->vfunc_78()
-class Unk_EwSelf { public: int FUN_141654700(); __int64 FUN_141656a80(); };      // the job; the burning key of the player
+class Unk_EwSelf : public PC { };      // the job; the burning key of the player
 #define Unk_EwBurningKey(pSelf) ((__int64)static_cast<Unk_EwSelf*>(pSelf)->FUN_141656a80())
 
 // listener registries
 UIQuestEventDispatcher* FUN_140bfc4b0();
-class Unk_LgStatusMgr { public: void FUN_141b0cd00(UIStatusEventListener*); void FUN_141b0cd90(UIStatusEventListener*); };
-Unk_LgStatusMgr* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 
 // quests
 CQuestManager* FUN_140764020();
-QuestDataTable* FUN_1407476c0();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pData);                                   // the quest id
 int FUN_140748050(void* pItem, int nJob);                               // the reward item suits the job
@@ -113,7 +114,6 @@ int FUN_140748050(void* pItem, int nJob);                               // the r
 CStringW GetStringCommonByKey(const CStringW& strKey);
 void FUN_140710590(COutPacket& packet);
 class Unk_LgUIMgr { public: void FUN_141adc530(int nUiId); };
-Unk_LgUIMgr* FUN_1403ed2b0();
 
 // the burning level-up event values
 void* FUN_140302b00();                                                  // CGameEventValueManager
@@ -141,7 +141,7 @@ private:
 };
 MS2_CHECK_SIZE(Unk_AttendIter, 0x18);
 class Unk_AttendMap { public: bool FUN_140420bb0(const Unk_AttendKey& key, Unk_AttendIter& it); };
-__int64 FUN_140869440();                                    // the server time
+__int64 GetServerTime();                                    // the server time
 unsigned __int64 FUN_140718370(const CStringW& strValue);   // _wtoi64
 class Unk_AttendValue
 {
@@ -411,7 +411,7 @@ MS2_REPLACE_METHOD(0x140C59B30, UILevelUpPackageWidgetDialog, vfunc_86, 96, 0xC9
 // @0x140c59ba0
 void UILevelUpPackageWidgetDialog::vfunc_87()
 {
-    FUN_1403ed2b0()->FUN_141adc530(0x4efa);
+    reinterpret_cast<Unk_LgUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4efa);
 }
 MS2_REPLACE_METHOD(0x140C59BA0, UILevelUpPackageWidgetDialog, vfunc_87, 32, 0x2A2706CB);
 
@@ -423,7 +423,7 @@ int UILevelUpPackageWidgetDialog::FUN_140c59bd0(Unk_DcLevelRange& rRange)
         return 0;
     unsigned short nLevel = Unk_EwActorLevel(pSelf);
     ATL::CAtlArray<MS2Ptr<CQuestData> > quests;
-    FUN_1407476c0()->FUN_14074cca0(quests, 1);
+    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cca0(quests, 1);
     ATL::CRBMap<unsigned short, MS2Ptr<CQuestData> > byLevel(10);
     for (size_t i = 0; i < quests.GetCount(); i++) {
         MS2Ptr<CQuestData> spData = quests[i];
@@ -631,7 +631,7 @@ __int64 Unk_AttendTable::FUN_140c5af20(int nRow, unsigned nEventId, const __int6
 // @0x140c5afd0
 __int64 Unk_AttendValue::FUN_140c5afd0(const __int64& nDefault) const
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (m_expire <= now)
         return nDefault;
     return FUN_140718370(m_strValue);

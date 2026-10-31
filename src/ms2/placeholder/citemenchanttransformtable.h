@@ -14,6 +14,7 @@ class CItemEnchantTransformTable : public TSingleton<CItemEnchantTransformTable>
 public:
     CItemEnchantTransformTable();                           // 0x140591410
     virtual ~CItemEnchantTransformTable();
+    int FUN_1405915b0();                                    // 0x1405915b0
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_10[0xe0 - 0x10];

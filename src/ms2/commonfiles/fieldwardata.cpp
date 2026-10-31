@@ -22,8 +22,6 @@
 #include "ms2/commonfiles/filesystem.h"
 
 // The table file loader helpers.
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 
@@ -133,7 +131,7 @@ bool FieldWarDataTable::Load()
     Clear();
     CString strPath = FUN_14071a5b0("Table", "FieldWarData.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

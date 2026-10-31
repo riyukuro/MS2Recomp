@@ -26,7 +26,7 @@ public:
         Write(a,b,flags,format,fmt::ArgList(fmt::internal::make_type(value),values));
     }
 };
-Unk_BanLogger* FUN_140166440();
+class CLogString* GetLogString();
 // @0x140348ce0
 BannedWordData::BannedWordData() : id(0),type(0),word(L""),replacement(L"") {}
 // @0x140348d70
@@ -73,7 +73,7 @@ __int64 CBannedWordFilter::FUN_140349400() const { return version; }
 MS2_REPLACE_METHOD(0x140349400, CBannedWordFilter, FUN_140349400, 15, 0xBBB219C9);
 // @0x140349420
 void CBannedWordFilter::DiffFilter(const Unk_BanPtr<CBannedWordFilter>& previous,const Unk_BanPtr<CBannedWordFilter>& next,Changes& output) {
-    if(next==0) { FUN_140166440()->Write(0,0,0x84,L"{0} failed. pNextFilter is null",L"CBannedWordFilter::DiffFilter"); MS2_ASSERT_AT(142,FALSE); return; }
+    if(next==0) { reinterpret_cast<Unk_BanLogger*>(GetLogString())->Write(0,0,0x84,L"{0} failed. pNextFilter is null",L"CBannedWordFilter::DiffFilter"); MS2_ASSERT_AT(142,FALSE); return; }
     if(previous==0) {
         const Map& map=next->FUN_1403493e0();
         for(POSITION pos=map.GetHeadPosition();pos;map.GetNext(pos)) { const WordPtr& word=map.GetValueAt(pos); output.Add(Unk_BanChange(*word,1)); }

@@ -17,18 +17,13 @@
 #pragma function(memset, memcpy)
 
 // Unrecovered callees (real types unknown).
-void* FUN_14098dc80(void* o);
-void* FUN_14098de40(void* o);
 void FUN_14098e870(void* o, int v);
-bool FUN_14098df90(const void* rtti, void* o);
-void* FUN_14127cc40(void* o);
-void* FUN_14098ddb0(void* o);
 void* FUN_14098de00(void* o, void** it);
 void* FUN_140993f00(void* o);
 unsigned int FUN_14098daf0(void* o);
-void* FUN_14098db40(void* o, unsigned int i);
 void* FUN_1413f98b0();
-void* FUN_1409670f0();
+class EntityWorldManager;
+template<> EntityWorldManager* TSingleton<EntityWorldManager>::GetInstance();
 void* FUN_1411cf440(void* a, void* id);
 void* FUN_141fff400(void* svc, void* ent);   // ecr::SceneGraphService::GetSceneGraphFromEntity
 void FUN_141d24a50(void* o);
@@ -144,21 +139,21 @@ efd::Point3 CNifAnimationController::FUN_141545050() { return m_44; }
 // @0x141545080
 void FUN_141545080(int value, void* node)
 {
-    for (void* c = FUN_14098dc80(node); c != 0; c = FUN_14098de40(c))
+    for (void* c = ((void*)((class NiObjectNET*)(void*)(node))->GetControllers()); c != 0; c = ((void*)((class NiTimeController*)(void*)(c))->GetNext()))
         FUN_14098e870(c, value);
-    if (FUN_14098df90(&DAT_143afa458, node)) {
+    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa458), (class NiObject const*)(node))) {
         void* pSwitch = node;   // the exe's static cast to the switch-node type
-        void* it = FUN_14098ddb0(FUN_14127cc40(pSwitch));
+        void* it = ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiProperty>>*)(void*)(((void*)&((class NiAVObject*)(void*)(pSwitch))->GetPropertyList())))->GetHeadPos();
         while (it != 0) {
-            void* ch = FUN_140993f00(FUN_14098de00(FUN_14127cc40(pSwitch), &it));
-            if (ch != 0 && FUN_14098dc80(ch) != 0)
+            void* ch = FUN_140993f00(FUN_14098de00(((void*)&((class NiAVObject*)(void*)(pSwitch))->GetPropertyList()), &it));
+            if (ch != 0 && ((void*)((class NiObjectNET*)(void*)(ch))->GetControllers()) != 0)
                 FUN_141545080(value, ch);
         }
     }
-    if (FUN_14098df90(&NiNode::ms_RTTI, node)) {
+    if (NiObject::IsKindOf((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(node))) {
         void* pNode = node;     // static cast to NiNode
         for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i) {
-            void* ch = FUN_14098db40(pNode, i);
+            void* ch = ((void*)((class NiNode*)(void*)(pNode))->GetAt(i));
             if (ch != 0)
                 FUN_141545080(value, ch);
         }
@@ -171,7 +166,7 @@ void FUN_1415451d0(int value, void* entityId)
     void* sg = FUN_1413f98b0();
     if (sg == 0)
         return;
-    void* ent = FUN_1411cf440(FUN_1409670f0(), entityId);
+    void* ent = FUN_1411cf440(TSingleton<EntityWorldManager>::GetInstance(), entityId);
     if (ent == 0)
         return;
     void* n = FUN_141fff400(sg, ent);
@@ -186,7 +181,7 @@ void FUN_141545250(void* entityId, int mode)
     void* sg = FUN_1413f98b0();
     if (sg == 0)
         return;
-    void* ent = FUN_1411cf440(FUN_1409670f0(), entityId);
+    void* ent = FUN_1411cf440(TSingleton<EntityWorldManager>::GetInstance(), entityId);
     if (ent == 0)
         return;
     void* n = FUN_141fff400(sg, ent);

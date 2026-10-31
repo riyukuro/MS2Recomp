@@ -69,16 +69,15 @@
 #include "ms2/client/ms2/effectservice.h"
 
 // ---- services reached through globals ----
-void* FUN_140166440();                                              // the log
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_140353fc0(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const int& rArg);
-WorldService* FUN_1403ed2d0();
 void* FUN_1403ed2b0();                                              // the UI manager
 void FUN_141adc530(void* pUi, int nId);                             // show
 void FUN_141adc5d0(void* pUi, int nId);                             // hide
 void FUN_141add040(void* pUi, int nId);
 void FUN_141add0b0(void* pUi, int nId);
 class Unk_TrigCmdMgr { public: void FUN_14138bf00(int nKind, int nId, int nArg); };
-Unk_TrigCmdMgr* FUN_1409331e0();
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
 // The effect manager (effect handles) and its request block.
 struct Unk_TrigFxXform;
@@ -105,30 +104,26 @@ public:
 // ---- entities ----
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
 void FUN_1408a2020(egf::Entity* pEntity, unsigned uPropId, int* pOut);
-const egf::EntityID& FUN_1408b76f0(const egf::Entity* pEntity);       // the entity id
 bool FUN_140de6d70(TriggerObject* pObject, egf::EntityID kEntityId);
 bool FUN_140de6db0(TriggerObject* pObject);
 
 // ---- camera ----
 class Unk_Entity;
-int FUN_140af7e30(Unk_CameraManager* p);                            // id of the current camera mode
-CCameraMode* FUN_140af2520(Unk_CameraManager* p);
+class CameraMgr   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140aed1c0();
+    void FUN_140aed580(struct Unk_CameraFlyBy const*, int, float);
+    void FUN_140aed720(struct Unk_CameraSetting const&);
+    void FUN_140aed750(int, int);
+    class CCameraMode* FUN_140af2520();
+    int FUN_140af7e30();
+};
 Unk_CameraSetting* FUN_140947880(CCameraMode* p);
-void FUN_140aed720(Unk_CameraManager* p, Unk_CameraSetting* pSetting);
-void FUN_140aed750(void* p, int nMode, int nFlag);
-void FUN_140aed580(Unk_CameraManager* p, Unk_FlyByCameraData* pData, int n, float f);
-void FUN_140aed1c0(Unk_CameraManager* p);
-float FUN_140ad4b30(CCameraMode* p);
-float FUN_140af7ef0(CCameraMode* p);
-float FUN_140af7e90(CCameraMode* p);
 
 // ---- world service objects ----
 class Unk_TrigNpc;
-void FUN_14166f8f0(Unk_TrigNpc* p, int n, int b);
 void FUN_14166ed50(Unk_TrigNpc* p, int n);
-void FUN_14166ef10(Unk_TrigNpc* p, const CString& str, int n1, int n2, bool b);
-void FUN_14166d8b0(PCBase* p, float fYaw);
-void FUN_14166d2d0(PCBase* p, efd::Point3 pt, int b);
 
 // ---- UI ----
 class Unk_CommandUIRef {
@@ -145,7 +140,6 @@ struct Unk_TsUiMgrView                                              // UI manage
     Unk_CommandUIRef FUN_141adcf50(const CString& strName);
 };
 UIObject* FUN_1403ed9e0(Unk_CommandUIRef& rRef);
-bool FUN_140534e80(Unk_CommandUIRef& rRef);                         // is the reference empty
 
 class UITypingGameDialog : public UIDialog
 {
@@ -156,12 +150,12 @@ public:
 class Unk_TrigTextUI { public: void FUN_141b2b7e0(MS2Ptr<CFileBuffer> spText); };
 Unk_TrigTextUI* FUN_14122d570(int nId);
 class Unk_TrigHintUI : public UITriggerTimerDialog { };
-Unk_TrigHintUI* FUN_140ee6300(int nId);
+class UITriggerTimerDialog* FindTimerDialog(int);   // C3: was FUN_140ee6300
 class Unk_TrigTalkUI : public UISidePopupTalk { };
 Unk_TrigTalkUI* FUN_1413868b0(int nId);
 UINpcDuelHPBarDialog* FUN_14096e200(int nId);
-UICutSceneMovie* FUN_14138fd50(int nId);
-UIGuideEvent* FUN_14136f3e0(int nId);
+class Unk_GmMovie* FUN_14138fd50(unsigned int);   // C3: was FUN_14138fd50
+void* FUN_14136f3e0(int);   // C3: was FUN_14136f3e0
 
 // The pvp observer popup (id 0x4e96) takes one of two record blocks read from the packet.
 struct Unk_TrigPvpA
@@ -193,7 +187,11 @@ void FUN_140743ca0(Unk_TrigPvpA* pOut, CInPacket* pPacket);
 void FUN_140743f50(Unk_TrigPvpB* pOut, CInPacket* pPacket);
 
 class Unk_TextFilter : public CServerStringGroup { };
-Unk_TextFilter* FUN_140a87690(Unk_TextFilter* p);
+class Unk_PatchTextOwner   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_PatchTextFilter* FUN_140a87690();
+};
 bool FUN_140841300(const CStringW& rText, const char* szCompare);
 CStringW XmlWide(const char* pszUtf8);                              // utf8 -> wide
 void FUN_14015f050(CString& rText, ATL::CAtlArray<CString>& rOut, const char* szDelimiter);
@@ -296,7 +294,7 @@ efd::AsyncResult CTriggerService::OnInit()
     pMessages->Subscribe(this, s_catAnimationChannel, 0, false);
 
     pMessages->Subscribe(this, FUN_141b6f910()->FUN_141235eb0(), 0, false);
-    FUN_1403ed2d0()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
+    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
     return efd::AsyncResult_Complete;
 }
 MS2_REPLACE_METHOD(0x141861110, CTriggerService, OnInit, 725, 0xB3706D6C);
@@ -399,13 +397,13 @@ void CTriggerService::FUN_141861840(CInPacket* pEvent)
         FUN_141862930(pEvent);
         break;
     case 0x10:
-        FUN_1403ed2d0()->FUN_141bd42f0(pEvent);
+        WorldService::GetInstance()->FUN_141bd42f0(pEvent);
         break;
     case 0x11:
-        FUN_1403ed2d0()->FUN_141bd4490(pEvent);
+        WorldService::GetInstance()->FUN_141bd4490(pEvent);
         break;
     case 0x12:
-        FUN_1403ed2d0()->FUN_141bd4670(pEvent);
+        WorldService::GetInstance()->FUN_141bd4670(pEvent);
         break;
     case 0x13:
         FUN_1418629b0(pEvent);
@@ -461,14 +459,14 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
         Vector3 ptCenter = pEvent->FUN_1407140d0();
         float fOuter = (float)(unsigned)pEvent->ReadInt32();
         float fInner = (float)(unsigned)pEvent->ReadInt32();
-        if (FUN_140af7e30(Unk_CameraManager::FUN_1409478c0()) != 0x13)
+        if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af7e30() != 0x13)
         {
-            Unk_CameraSetting* pSetting = FUN_140947880(FUN_140af2520(Unk_CameraManager::FUN_1409478c0()));
-            FUN_140aed720(Unk_CameraManager::FUN_1409478c0(), pSetting);
-            FUN_140aed750(Unk_CameraManager::FUN_1409478c0(), 0x13, true);
+            Unk_CameraSetting* pSetting = FUN_140947880(((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af2520());
+            ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(pSetting));
+            ((class CameraMgr*)(void*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed750(0x13, true);
         }
         CTargetLookCenterCameraMode* pMode =
-            dynamic_cast<CTargetLookCenterCameraMode*>(FUN_140af2520(Unk_CameraManager::FUN_1409478c0()));
+            dynamic_cast<CTargetLookCenterCameraMode*>(((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af2520());
         if (pMode == 0)
             break;
         pMode->FUN_140a4e0d0(ptCenter);
@@ -480,7 +478,7 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
     {
         bool bCheck = pEvent->ReadBool();
         CTargetLookCenterCameraMode* pMode =
-            dynamic_cast<CTargetLookCenterCameraMode*>(FUN_140af2520(Unk_CameraManager::FUN_1409478c0()));
+            dynamic_cast<CTargetLookCenterCameraMode*>(((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af2520());
         if (pMode == 0)
             break;
         pMode->FUN_140a4e180(bCheck);
@@ -491,7 +489,7 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
         bool bFixed = pEvent->ReadBool();
         float fAngle = pEvent->ReadFloat();
         CTargetLookCenterCameraMode* pMode =
-            dynamic_cast<CTargetLookCenterCameraMode*>(FUN_140af2520(Unk_CameraManager::FUN_1409478c0()));
+            dynamic_cast<CTargetLookCenterCameraMode*>(((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af2520());
         if (pMode == 0)
             break;
         pMode->FUN_140a4e110(fAngle);
@@ -537,11 +535,11 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         int nC = pEvent->ReadUInt8();
         int nD = pEvent->ReadInt32();
         CStringW strCompare = pEvent->ReadUnicodeString();
-        FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
+        WorldService::GetInstance()->FUN_141bc6f60(nA, nB, nC);
         if (nB > 0)
         {
             FUN_141adc530(FUN_1403ed2b0(), 0x4e95);
-            Unk_TrigHintUI* pUi = FUN_140ee6300(0x4e95);
+            Unk_TrigHintUI* pUi = ((class Unk_TrigHintUI*)FindTimerDialog(0x4e95));
             if (pUi != 0)
             {
                 pUi->FUN_141b334d0(nD);
@@ -561,7 +559,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         int nA = pEvent->ReadInt32();
         int nB = pEvent->ReadInt32();
         int nC = pEvent->ReadUInt8();
-        FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
+        WorldService::GetInstance()->FUN_141bc6f60(nA, nB, nC);
         Unk_TrigPvpA kBlock;
         FUN_140743ca0(&kBlock, pEvent);
         Unk_TrigPvpDlg* pUi = FUN_141531c80(0x4e96);
@@ -583,7 +581,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         int nA = pEvent->ReadInt32();
         int nB = pEvent->ReadInt32();
         int nC = pEvent->ReadUInt8();
-        FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
+        WorldService::GetInstance()->FUN_141bc6f60(nA, nB, nC);
         Unk_TrigPvpB kBlock;
         FUN_140743f50(&kBlock, pEvent);
         Unk_TrigPvpDlg* pUi = FUN_141531c80(0x4e96);
@@ -605,7 +603,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         int nA = pEvent->ReadInt32();
         unsigned nB = pEvent->ReadInt32();
         int nC = pEvent->ReadUInt8();
-        FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
+        WorldService::GetInstance()->FUN_141bc6f60(nA, nB, nC);
         if (nB > 0)
         {
             FUN_141adc530(FUN_1403ed2b0(), 0x4e99);
@@ -622,7 +620,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         int nA = pEvent->ReadInt32();
         unsigned nB = pEvent->ReadInt32();
         int nC = pEvent->ReadUInt8();
-        FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
+        WorldService::GetInstance()->FUN_141bc6f60(nA, nB, nC);
         if (nB > 0)
         {
             FUN_141adc530(FUN_1403ed2b0(), 0x4e95);
@@ -700,7 +698,7 @@ void CTriggerService::FUN_1418629b0(CInPacket* pEvent)
         spParam->m_strName = strName;
         spParam->m_strIcon = strIcon;
         spParam->m_nNpcId = nNpc;
-        spParam->m_strText = FUN_140a87690(reinterpret_cast<Unk_TextFilter*>(TSingleton<CServerString>::GetInstance()))->GetString(strText);
+        spParam->m_strText = ((class Unk_TextFilter*)((class Unk_PatchTextOwner*)(class Unk_TextFilter*)(reinterpret_cast<Unk_TextFilter*>(TSingleton<CServerString>::GetInstance())))->FUN_140a87690())->GetString(strText);
         spParam->m_strSound = strSound;
         spParam->m_strScript = strScript;
         pUi->FUN_140e879a0(spParam);
@@ -718,7 +716,7 @@ void CTriggerService::FUN_141862d30(CInPacket* pEvent)
     for (size_t i = 0; i < aNames.GetCount(); i++)
     {
         Unk_CommandUIRef kRef = static_cast<Unk_TsUiMgrView*>(FUN_1403ed2b0())->FUN_141adcf50(aNames[i]);
-        if (FUN_140534e80(kRef))
+        if (((MS2Ptr<UIObject>*)&static_cast<class Unk_CommandUIRef&>(kRef))->IsNull())
             continue;
         if (kRef.FUN_141371280()->vfunc_9() != nState)
             kRef.FUN_141371280()->vfunc_8(nState);
@@ -752,7 +750,7 @@ void CTriggerService::FUN_141862ec0(CInPacket* pEvent)
 // @0x141862ff0
 void CTriggerService::FUN_141862ff0(int nType, CInPacket* pEvent)
 {
-    FUN_1403ed2d0()->FUN_141bdad00(nType, reinterpret_cast<Unk_WsD_Msg*>(pEvent));
+    WorldService::GetInstance()->FUN_141bdad00(nType, reinterpret_cast<Unk_WsD_Msg*>(pEvent));
 }
 
 // The typing game dialog (UI 0x4f89); the exe's cast helper is FUN_1418644d0.
@@ -812,7 +810,7 @@ void CTriggerService::FUN_1418631f0(int nObject, int bStart)
     kStep.m_nObject = nObject;
     kStep.m_bStart = bStart;
     m_listCamera.AddTail(kStep);
-    if (FUN_140af7e30(Unk_CameraManager::FUN_1409478c0()) != 3)
+    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af7e30() != 3)
         FUN_141863260();
 }
 
@@ -840,7 +838,7 @@ void CTriggerService::FUN_141863340(const ATL::CAtlArray<int>& aObjects, int bEn
         return;
     if (aObjects.GetCount() == 1 && aObjects[0] == 0)
     {
-        FUN_140aed750(Unk_CameraManager::FUN_1409478c0(), 2, false);
+        ((class CameraMgr*)(void*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed750(2, false);
     }
     else
     {
@@ -872,15 +870,15 @@ void CTriggerService::FUN_141863460(float fFade)
         kData.m_from.m_c = Unk_CameraManager::FUN_1409478c0()->FUN_140a17e10();
         kData.m_from.m_18 = Unk_CameraManager::FUN_1409478c0()->FUN_140af8290();
         kData.m_to = kData.m_from;
-        kData.m_to.m_0 = FUN_140ad4b30(Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0());
-        kData.m_to.m_4 = FUN_140af7ef0(Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0());
-        kData.m_to.m_8 = FUN_140af7e90(Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0());
+        kData.m_to.m_0 = ((class CCameraMode*)(class CCameraMode*)(Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()))->FUN_140ad4b30();
+        kData.m_to.m_4 = ((class CCameraMode*)(class CCameraMode*)(Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()))->FUN_140af7ef0();
+        kData.m_to.m_8 = ((class CCameraMode*)(class CCameraMode*)(Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()))->FUN_140af7e90();
         kData.m_to.m_18 = Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()->FUN_140af8260();
-        FUN_140aed580(Unk_CameraManager::FUN_1409478c0(), &kData, 1, 1.0f);
+        ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed580((struct Unk_CameraFlyBy const*)(&kData), 1, 1.0f);
         bFade = 1;
     }
-    FUN_140aed1c0(Unk_CameraManager::FUN_1409478c0());
-    FUN_140aed750(Unk_CameraManager::FUN_1409478c0(), 2, bFade);
+    ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed1c0();
+    ((class CameraMgr*)(void*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed750(2, bFade);
 }
 
 // Create or release the effect shown for a trigger object.
@@ -942,7 +940,7 @@ bool CTriggerService::FUN_1418638d0(egf::Entity* pEntity)
             MS2Ptr<TriggerObjectMesh> spMesh(dynamic_cast<TriggerObjectMesh*>((TriggerObject*)spObject));
             if (spMesh == 0)
                 continue;
-            if (FUN_140de6d70(spMesh.get(), FUN_1408b76f0(pEntity)) && FUN_140de6db0(spMesh.get()))
+            if (FUN_140de6d70(spMesh.get(), ((egf::Entity*)(void*)(pEntity))->GetEntityID()) && FUN_140de6db0(spMesh.get()))
                 return true;
         }
     }
@@ -958,7 +956,7 @@ void CTriggerService::FUN_141863a90(CInPacket* pEvent, bool bSkipFx)
     if (m_mapObjects.Lookup(nId, spObject))
         spObject->vfunc_2(TrigEvent(pEvent), bSkipFx);
     else
-        FUN_140353fc0(FUN_140166440(), 0xc, 0x13, L"Trigger Object Sync Error. ObjectID:{0}", nId);
+        FUN_140353fc0(((void*)GetLogString()), 0xc, 0x13, L"Trigger Object Sync Error. ObjectID:{0}", nId);
 }
 
 // Play a cut scene movie (UI 0x4e7e).
@@ -967,7 +965,7 @@ void CTriggerService::FUN_141863b70(CInPacket* pEvent)
 {
     CStringA strPath = pEvent->ReadString();
     int nCutScene = pEvent->ReadInt32();
-    UICutSceneMovie* pMovie = FUN_14138fd50(0x4e7e);
+    UICutSceneMovie* pMovie = ((class UICutSceneMovie*)FUN_14138fd50(0x4e7e));
     if (pMovie != 0)
     {
         if (pMovie->FUN_1419102c0() != 0)
@@ -981,7 +979,7 @@ void CTriggerService::FUN_141863b70(CInPacket* pEvent)
 void CTriggerService::FUN_141863c50(CInPacket* pEvent)
 {
     int nCutScene = pEvent->ReadInt32();
-    UICutSceneMovie* pMovie = FUN_14138fd50(0x4e7e);
+    UICutSceneMovie* pMovie = ((class UICutSceneMovie*)FUN_14138fd50(0x4e7e));
     if (pMovie != 0)
         pMovie->StopIfCutScene(nCutScene);
 }
@@ -992,7 +990,7 @@ void CTriggerService::FUN_141863cc0(CInPacket* pEvent)
     unsigned nA = pEvent->ReadInt32();
     unsigned nB = pEvent->ReadInt32();
     int nC = pEvent->ReadInt32();
-    UIGuideEvent* pGuide = FUN_14136f3e0(0x4e53);
+    UIGuideEvent* pGuide = ((class UIGuideEvent*)FUN_14136f3e0(0x4e53));
     if (pGuide != 0)
         pGuide->FUN_14195ab40(nA, nB, nC);
 }
@@ -1001,7 +999,7 @@ void CTriggerService::FUN_141863cc0(CInPacket* pEvent)
 void CTriggerService::FUN_141863d80(CInPacket* pEvent)
 {
     int nA = pEvent->ReadInt32();
-    UIGuideEvent* pGuide = FUN_14136f3e0(0x4e53);
+    UIGuideEvent* pGuide = ((class UIGuideEvent*)FUN_14136f3e0(0x4e53));
     if (pGuide != 0)
         pGuide->FUN_14195b540(nA);
 }
@@ -1010,14 +1008,14 @@ void CTriggerService::FUN_141863d80(CInPacket* pEvent)
 void CTriggerService::FUN_141863df0(CInPacket* pEvent)
 {
     int nId = pEvent->ReadInt32();
-    FUN_1409331e0()->FUN_14138bf00(0x15, nId, 0);
+    ((class Unk_TrigCmdMgr*)FUN_1409331e0())->FUN_14138bf00(0x15, nId, 0);
 }
 
 // Play an emotion list on the local player.
 // @0x141863e50
 void CTriggerService::FUN_141863e50(CInPacket* pEvent)
 {
-    PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     int nCount = pEvent->ReadInt32();
@@ -1037,7 +1035,7 @@ void CTriggerService::FUN_141863e50(CInPacket* pEvent)
 // @0x141864010
 void CTriggerService::FUN_141864010(CInPacket* pEvent)
 {
-    PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     int nFlag = pEvent->ReadUInt8();
@@ -1057,17 +1055,17 @@ void CTriggerService::FUN_1418641e0(CInPacket* pEvent)
 {
     int nNpc = pEvent->ReadInt32();
     CStringA strText = pEvent->ReadString();
-    Unk_TrigNpc* pNpc = reinterpret_cast<Unk_TrigNpc*>(FUN_1403ed2d0()->FUN_141bd1200(nNpc));
+    Unk_TrigNpc* pNpc = reinterpret_cast<Unk_TrigNpc*>(WorldService::GetInstance()->FUN_141bd1200(nNpc));
     if (pNpc == 0)
         return;
     if (!strText.IsEmpty())
     {
         FUN_14166ed50(pNpc, 0);
-        FUN_14166ef10(pNpc, strText, 1, 0, true);
+        ((class PCBase*)(class Unk_TrigNpc*)(pNpc))->FUN_14166ef10(strText, 1, 0, true);
     }
     else
     {
-        FUN_14166f8f0(pNpc, 0, 1);
+        ((class PCBase*)(class Unk_TrigNpc*)(pNpc))->FUN_14166f8f0(0, 1);
     }
 }
 
@@ -1075,12 +1073,12 @@ void CTriggerService::FUN_1418641e0(CInPacket* pEvent)
 // @0x1418642e0
 void CTriggerService::FUN_1418642e0(CInPacket* pEvent)
 {
-    PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     Vector3 pt = pEvent->ReadVector3Short();
     bool bMove = pEvent->ReadBool();
-    FUN_14166d8b0(pPlayer, pt.z);
+    ((class PCBase*)(class PCBase*)(pPlayer))->FUN_14166d8b0(pt.z);
     if (bMove)
         pPlayer->vfunc_21(reinterpret_cast<const efd::Point3&>(pt));
 }
@@ -1088,12 +1086,12 @@ void CTriggerService::FUN_1418642e0(CInPacket* pEvent)
 // @0x1418643c0
 void CTriggerService::FUN_1418643c0(CInPacket* pEvent)
 {
-    PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     Vector3 pt = pEvent->ReadVector3Short();
     bool bFlag = pEvent->ReadBool();
-    FUN_14166d2d0(pPlayer, reinterpret_cast<const efd::Point3&>(pt), bFlag);
+    ((class PCBase*)(class PCBase*)(pPlayer))->FUN_14166d2d0(reinterpret_cast<const efd::Point3&>(pt), bFlag);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbc120-0x142cbc260 .text$yd

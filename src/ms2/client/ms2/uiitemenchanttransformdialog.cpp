@@ -28,6 +28,9 @@ static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "Pric
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uitalkcinematic.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/commonfiles/itemenchanttransformtable.h"
 
 // ---- unit-local placeholders (unrecovered helpers) ----
 
@@ -101,25 +104,17 @@ class Unk_TransformTable
 public:
     MS2Ptr<Unk_TransformRow> FUN_1405924d0(MS2Ptr<CItem> item);     // the row of an item (NULL: not transformable)
 };
-Unk_TransformTable* FUN_1405934c0();
 int FUN_140592110(MS2Ptr<CItem> item);                              // the item can be transformed
 
 // The player's item inventory (global object).
-class Unk_TfInventory
+class Unk_TfInventory : public Unk_Inventory
 {
 public:
-    void FUN_140a609a0(int nTab, ATL::CAtlArray<unsigned __int64>& uids);
     MS2Ptr<CItem> FUN_140a5d680(unsigned __int64 uid);
 };
 extern int DAT_143ab2a90;
 
-class Unk_EnInvDialog
-{
-public:
-    int FUN_141b1d3d0();
-    int FUN_141b1d460();
-};
-Unk_EnInvDialog* FUN_140a7b2b0(int id);
+class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 
 // The ASDialog the movie root is cast to.
 class ASDialog : public AScript
@@ -132,7 +127,7 @@ public:
 
 class Unk_14025e7b0 { public: int FUN_1402c4c90(int nFlag); };
 class Unk_TfBanConfig { public: char m_pad_00[8]; Unk_14025e7b0 m_8; };
-Unk_TfBanConfig* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 void FUN_141275260(int nId, int a, int b);                          // pop the system message nId
 void FUN_140710590(COutPacket& pkt);                                // send
 extern __int64 DAT_143ab2898;                                       // the player's mesos
@@ -147,7 +142,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                     // lo
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1409404f0(__int64 n);                                  // number text
 CString FUN_140540050(const char* szFormat, const CString& strArg);
-void FUN_140c16160(ASObj& obj, const char* szName, ASArray arr);
 void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& strOption, bool* pHighSa);   // the item's option text
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,7 +181,7 @@ void UIItemEnchantTransformDialog::vfunc_43()
 {
     ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (dialog != 0) {
-        Unk_EnInvDialog* inv = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* inv = ((class UITalkCinematic*)FUN_140a7b2b0(0x4e40));
         if (inv != 0) {
             int x = inv->FUN_141b1d3d0();
             int y = inv->FUN_141b1d460() - 0x50;
@@ -348,7 +342,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
     MS2Ptr<CItem> item = m_targets[nIndex];
     if (FUN_140592110(item) == 0)
         return;
-    MS2Ptr<Unk_TransformRow> row = FUN_1405934c0()->FUN_1405924d0(item);
+    MS2Ptr<Unk_TransformRow> row = reinterpret_cast<Unk_TransformTable*>(TSingleton<CItemEnchantTransformTable>::GetInstance())->FUN_1405924d0(item);
     if (row == 0)
         return;
     MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");
@@ -386,7 +380,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
         entry.FUN_1407cbb20(s_strItemName, out->FUN_140528160());
         outputs.FUN_1422bbf00(entry);
     }
-    FUN_140c16160(obj, "outputItems", ASArray(outputs));
+    ((class ASObj*)&(obj))->FUN_140c16160("outputItems", ASArray(outputs));
     if (MS2Ptr<Unk_TfButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit"))
         submit->FUN_1422c1fe0(true);
     ((Unk_TfBoard*)board)->Invoke("selectItem", obj.FUN_1422bb870());
@@ -395,13 +389,13 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
 // @0x140c3e820
 void UIItemEnchantTransformDialog::OnSubmitTransform()
 {
-    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x54) != 0)
+    if (((class Unk_TfBanConfig*)FUN_14025e7b0())->m_8.FUN_1402c4c90(0x54) != 0)
         FUN_141275260(0x2f7, 1, 1);
     if (m_state != 1)
         return;
     if (m_selected == 0)
         return;
-    MS2Ptr<Unk_TransformRow> row = FUN_1405934c0()->FUN_1405924d0(m_selected);
+    MS2Ptr<Unk_TransformRow> row = reinterpret_cast<Unk_TransformTable*>(TSingleton<CItemEnchantTransformTable>::GetInstance())->FUN_1405924d0(m_selected);
     if (row == 0)
         return;
     if (DAT_143ab2898 < row->m_nFee) {

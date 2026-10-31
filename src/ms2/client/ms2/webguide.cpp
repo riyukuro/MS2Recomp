@@ -15,7 +15,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
+int XmlGetAttr(class TiXmlElement* pElem, const char* pszName, CString& out);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's singleton (symbols-manual.tsv)
 WebGuideTable* TSingleton<WebGuideTable>::s_instance;
@@ -35,8 +35,8 @@ CString WebGuide::GetKey() const
 // @0x141b81b70
 void WebGuide::LoadXml(Unk_140165cf0* pNode)
 {
-    FUN_1408733e0(pNode, "dialogName", m_strDialogName);
-    FUN_1408733e0(pNode, "webUrl", m_strWebUrl);
+    XmlGetAttr((TiXmlElement*)pNode, "dialogName", m_strDialogName);
+    XmlGetAttr((TiXmlElement*)pNode, "webUrl", m_strWebUrl);
 }
 
 // @0x141b81bd0

@@ -15,7 +15,10 @@
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiweddingpage.cpp"    // assumed
 
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uiweddingpage.h"
 #include "uiweddingdialog.h"
@@ -41,6 +44,10 @@
 #include "ms2/client/ms2/uiquesteventlistener.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/weddingtable.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -49,7 +56,6 @@ class Unk_WpRoot : public AScript
 {
 public:
     template <class T> MS2Ptr<T> FUN_140bbe880(const CString& strName);
-    template <class T> MS2Ptr<T> FUN_140bc7280(const CString& strName);
 };
 
 // A text input child of the page.
@@ -57,23 +63,6 @@ class Unk_WpInput : public ASDisplayObject
 {
 public:
     void FUN_1422e0ab0(const CStringW& str);                    // set the text
-};
-
-// The skill / quest list of the movie.
-class Unk_WpList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                                       // clear
-    void FUN_1422dd230(const ASObj& row);                       // append a row
-private:
-    void* m_unrecovered_40[9];
 };
 
 // The embedded item (+0x50) of an item grant row: its virtual slots give the item id / its count.
@@ -127,29 +116,20 @@ class Unk_WpItemData : public CPtred
 public:
     CString FUN_14053fdd0();                                    // the icon path
 };
-class Unk_WpNames
+class Unk_WpNames : public CStringTable
 {
 public:
     CStringW FUN_141812290(int nSkillId, short nLevel, CString strKey);
-    CStringW FUN_141811980(int nKind, int nId);
-};
-class Unk_WpBag
-{
-public:
-    MS2Ptr<CItem> FUN_140a5e2e0(int nItemId);             // the item in the bag
 };
 
-Unk_WpPerkTable* FUN_1409023c0();
 Unk_WpSkillMgr* FUN_1401958b0();
-Unk_WpNames* FUN_1401a9d70();
 MS2Ptr<Unk_WpItemData> FUN_14053f870(int nItemId);
-extern Unk_WpBag DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 extern __int64 DAT_143ab2828;                                   // the own character id
 
 bool FUN_140a467d0(const MS2Ptr<AScript>& kScript);             // has the AS object been released
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);     // Value::IsNull
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
-WeddingManager* FUN_1409eed90();
 int FUN_141b89950(WeddingManager* pManager);                    // the wedding grade
 CStringW FUN_140298ea0(CStringW strKey);                        // string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
@@ -167,8 +147,7 @@ void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);  
 CQuestManager* FUN_140764020();
 UIQuestEventDispatcher* FUN_140bfc4b0();
 
-class Unk_WpWorld { public: void* FUN_141bd0cc0(); };
-Unk_WpWorld* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 // ---- statics of the unit's header (the quest sort name list, skill, stun, a condition object) ----
 
@@ -330,11 +309,11 @@ bool UIWeddingPageSkill::vfunc_1()
 {
     if (!UIWeddingPage::vfunc_1())
         return false;
-    int nGrade = FUN_141b89950(FUN_1409eed90());
-    if (MS2Ptr<Unk_WpList> spList = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bc7280<Unk_WpList>("m_list"))
+    int nGrade = FUN_141b89950(TSingleton<WeddingManager>::GetInstance());
+    if (MS2Ptr<ASScrollingList> spList = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bc7280<ASScrollingList>("m_list"))
     {
         spList->FUN_1422dd1d0();
-        std::map<int, MS2Ptr<Unk_WpPerk> >& perks = FUN_1409023c0()->FUN_140909a80();
+        std::map<int, MS2Ptr<Unk_WpPerk> >& perks = reinterpret_cast<Unk_WpPerkTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909a80();
         std::map<int, MS2Ptr<Unk_WpPerk> >::iterator it = perks.begin();
         std::map<int, MS2Ptr<Unk_WpPerk> >::iterator itEnd = perks.end();
         for (; it != itEnd; ++it)
@@ -351,14 +330,14 @@ bool UIWeddingPageSkill::vfunc_1()
                 MS2Ptr<Unk_WpSkill> spSkill = FUN_1401958b0()->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
                 if (spSkill == 0)
                     continue;
-                obj.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141812290(spPerk->m_nSkillId, nSkillLevel, CString("name")));
+                obj.FUN_1407cbb20("name", reinterpret_cast<Unk_WpNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141812290(spPerk->m_nSkillId, nSkillLevel, CString("name")));
                 obj.FUN_1409c4a30("status", spPerk->FUN_140907b50(nGrade));
                 obj.FUN_1407cba60("imgPath", spSkill->FUN_1401756c0());
             }
             else if (spPerk->m_nType == 1)
             {
                 MS2Ptr<Unk_WpItemData> spItem = FUN_14053f870((&spPerk->m_grant)->vfunc_0());
-                obj.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(1, (&spPerk->m_grant)->vfunc_0()));
+                obj.FUN_1407cbb20("name", reinterpret_cast<Unk_WpNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, (&spPerk->m_grant)->vfunc_0()));
                 obj.FUN_1407cb9c0("status", 0);
                 obj.FUN_1407cba60("imgPath", spItem->FUN_14053fdd0());
             }
@@ -390,7 +369,7 @@ bool UIWeddingPageSkill::vfunc_3(const char* szMethod, const Scaleform::GFx::Val
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             int nId = data.FUN_1422b8a10();
-            MS2Ptr<Unk_WpPerk> spPerk = FUN_1409023c0()->FUN_140909910(nId);
+            MS2Ptr<Unk_WpPerk> spPerk = reinterpret_cast<Unk_WpPerkTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909910(nId);
             if (spPerk == 0)
                 return true;
             if (spPerk->m_nType != 1)
@@ -417,10 +396,10 @@ bool UIWeddingPageSkill::vfunc_3(const char* szMethod, const Scaleform::GFx::Val
 void UIWeddingPageSkill::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     int nId = pArgs->FUN_1422b8a10();
-    MS2Ptr<Unk_WpPerk> spPerk = FUN_1409023c0()->FUN_140909910(nId);
+    MS2Ptr<Unk_WpPerk> spPerk = reinterpret_cast<Unk_WpPerkTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909910(nId);
     if (spPerk == 0)
         return;
-    int nGrade = FUN_141b89950(FUN_1409eed90());
+    int nGrade = FUN_141b89950(TSingleton<WeddingManager>::GetInstance());
     if (spPerk->m_nType == 0)
     {
         unsigned short nSkillLevel = std::max<unsigned short>(spPerk->FUN_140907ad0(nGrade), 1);
@@ -543,7 +522,7 @@ void UIWeddingPageMission::SendQuest(int nQuestId)
 // @0x140fe8fb0
 void UIWeddingPageMission::FUN_140fe8fb0()
 {
-    if (MS2Ptr<Unk_WpList> spList = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bc7280<Unk_WpList>("m_list"))
+    if (MS2Ptr<ASScrollingList> spList = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bc7280<ASScrollingList>("m_list"))
     {
         spList->FUN_1422dd1d0();
         m_binder.FUN_140d43990();

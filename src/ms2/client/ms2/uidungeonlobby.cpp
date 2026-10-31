@@ -14,6 +14,8 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/dungeonroom.h"
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -42,9 +44,7 @@ public:
 };
 MS2_CHECK_SIZE(Unk_DungeonRoomData, 0x20);
 class Unk_14031c2a0 { public: MS2Ptr<Unk_DungeonRoomData> FUN_1403206b0(int nRoomId); };
-Unk_14031c2a0* FUN_14031c2a0();
-class Unk_1401a9d70 { public: CStringW FUN_141811980(int nCategory, int nId); };    // string table lookup
-Unk_1401a9d70* FUN_1401a9d70();
+    // string table lookup
 CStringW FUN_140e14b70(MS2Ptr<Unk_DungeonRoomData> pRoom);                          // dungeon name of a room
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);      // localized, formatted
 CStringW FUN_140938ae0(CStringW strKey, const int& n);                              // localized, formatted
@@ -105,12 +105,12 @@ void UIDungeonLobby::OnLoadComplete()
                 throw new GfxExceptionSwfLoad(FUN_140be2000("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
                                                             MS2_THIS_FILE, MS2_LINE(46), __FUNCTION__));
         } while (0);
-        MS2Ptr<Unk_DungeonRoomData> pRoom = FUN_14031c2a0()->FUN_1403206b0(m_nRoomId);
+        MS2Ptr<Unk_DungeonRoomData> pRoom = reinterpret_cast<Unk_14031c2a0*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(m_nRoomId);
         if (pRoom == NULL)
             return;
         {
             CStringW strTitle = FUN_1408f71a0(L"s_dungeonLobby_title", FUN_140e14b70(pRoom),
-                                              FUN_1401a9d70()->FUN_141811980(0x14, pRoom->FUN_14031ddd0()));
+                                              TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->FUN_14031ddd0()));
             m_pTitle->FUN_1422c4cd0(strTitle);
             FUN_140cfee80(FUN_1422dbb40(), "m_subTitle", FUN_140938ae0(L"s_dungeonLobby_subTitle", m_n17c));
             if (pRoom->m_nKind == 2 || pRoom->m_nKind == 3) {

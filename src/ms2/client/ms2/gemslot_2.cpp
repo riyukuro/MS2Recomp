@@ -38,13 +38,11 @@ public:
 class Unk_GmWorld
 {
 public:
-    Unk_GmActor* FUN_141bd0cc0();                       // the local player's actor
     void FUN_1411a5110(CString strCategory, CString strName, CString strExtra, int nKind, void* pXform, float fVolume,
         int nOwner);                                    // play a sound event
     int FUN_1411a49c0(NoticeMessage& kQuery);           // spawn an effect, returns the handle
     void FUN_1411a6060(int nHandle);                    // stop it
 };
-Unk_GmWorld* FUN_1403ed2d0();
 
 class Unk_GemBinding
 {
@@ -60,7 +58,13 @@ public:
     char m_pad[0x152 - 0x18];
     bool m_bFlag152;
 };
-struct Unk_GsWorld { MS2Ptr<Unk_WsPtred298> FUN_141bd30a0(); }; // the world's field record
+class WorldService   // C3: local view (worldservice.h redefines Unk_WsPtred298)
+{
+public:
+    static WorldService* GetInstance();             // 0x1403ed2d0
+    void* FUN_141bd0cc0();                          // the local player's actor
+    MS2Ptr<Unk_WsPtred298> FUN_141bd30a0();         // the world's field record
+};
 bool FUN_140222e10(int nGemType);                       // the gem type is valid
 unsigned __int64 FUN_140222f50();                            // the count of the gem types
 void FUN_140d73bc0(int, int, void*, CStringW);
@@ -380,7 +384,7 @@ MS2Ptr<CItem> PCGemEquip::FUN_1412712e0(int nIndex)
         return MS2Ptr<CItem>(0);
     if (m_pOwner->FUN_141662eb0(spItem) == 0)
         return MS2Ptr<CItem>(0);
-    bool bOff = reinterpret_cast<Unk_GsWorld*>(FUN_1403ed2d0())->FUN_141bd30a0()->m_bFlag152 == false;
+    bool bOff = WorldService::GetInstance()->FUN_141bd30a0()->m_bFlag152 == false;
     if (bOff)
         return MS2Ptr<CItem>(0);
     spItem->FUN_140527900()->vfunc_6(m_pOwner, spItem);
@@ -448,7 +452,7 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
 {
     if (spItem == 0)
         return false;
-    Unk_GmActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_GmActor* pActor = static_cast<Unk_GmActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pActor == 0)
         return false;
     if (pActor->FUN_14166ce30() != 0)
@@ -492,7 +496,7 @@ bool FUN_141271f90(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return false;
-    Unk_GmActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_GmActor* pActor = static_cast<Unk_GmActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pActor == 0)
         return false;
     if (pActor->FUN_14166ce30() != 0)

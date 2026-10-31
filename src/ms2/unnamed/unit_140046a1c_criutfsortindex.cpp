@@ -65,10 +65,10 @@ extern unsigned DAT_143ba9d48;
 
 int FUN_140038ddc(int level, const char* msg);
 int FUN_140038e24(int level, const char* code, int err);
-void FUN_14003af50(Unk_CriUtfSortTable* table, unsigned row, unsigned column, Unk_CriUtfValue* out);
-const char* FUN_14003a7f4(Unk_CriUtfSortTable* table, unsigned row, unsigned column);
-unsigned FUN_14003a45c(const void* table);
-void* FUN_14003a0d0(void* heap, unsigned size, const char* tag, int align, int flags);
+long criUtfRtv_GetCellVal(struct CriUtfRtvView const*, unsigned long, unsigned long, struct CriUtfRtvCell*);   // C3: was FUN_14003af50
+char const* criUtfRtv_GetDataStr(struct CriUtfRtvView const*, unsigned long, unsigned long);   // C3: was FUN_14003a7f4
+unsigned long FUN_14003a45c(struct CriUtfRtvView const*);   // C3: was FUN_14003a45c
+void* criUtfHeap_Alloc(void*, unsigned long, char const*, long, long);   // C3: was FUN_14003a0d0
 void FUN_14003a0ec(void* heap, void* p);
 unsigned FUN_140047158(unsigned type);
 
@@ -80,8 +80,8 @@ int FUN_140046a1c(const unsigned* pA, const unsigned* pB)
     unsigned rowA = *pA;
     unsigned rowB = *pB;
     Unk_CriUtfValue a, b;
-    FUN_14003af50(DAT_143ba9d40, rowA, DAT_143ba9d48, &a);
-    FUN_14003af50(DAT_143ba9d40, rowB, DAT_143ba9d48, &b);
+    criUtfRtv_GetCellVal((struct CriUtfRtvView const*)(DAT_143ba9d40), rowA, DAT_143ba9d48, (struct CriUtfRtvCell*)(&a));
+    criUtfRtv_GetCellVal((struct CriUtfRtvView const*)(DAT_143ba9d40), rowB, DAT_143ba9d48, (struct CriUtfRtvCell*)(&b));
     switch (a.type)
     {
     case 0:
@@ -109,8 +109,8 @@ int FUN_140046a1c(const unsigned* pA, const unsigned* pB)
         return a.v.f64 > b.v.f64 ? -1 : 0;                         // unordered (NaN) compares equal
     case 10:
     {
-        const char* strA = FUN_14003a7f4(DAT_143ba9d40, rowA, DAT_143ba9d48);
-        const char* strB = FUN_14003a7f4(DAT_143ba9d40, rowB, DAT_143ba9d48);
+        const char* strA = criUtfRtv_GetDataStr((struct CriUtfRtvView const*)(DAT_143ba9d40), rowA, DAT_143ba9d48);
+        const char* strB = criUtfRtv_GetDataStr((struct CriUtfRtvView const*)(DAT_143ba9d40), rowB, DAT_143ba9d48);
         return strcmp(strA, strB);
     }
     default:
@@ -142,8 +142,8 @@ unsigned long long FUN_140046c0c(Unk_CriUtfSortTable* table, unsigned slot, unsi
         FUN_140038ddc(0, "E08012803:Internal Error");
         return 0;
     }
-    unsigned n = FUN_14003a45c(table);
-    table->m_slots[slot].value = (unsigned*)FUN_14003a0d0(table->m_heap, n << 2, "UtfRtvIdxTbl", 4, table->m_nRows);
+    unsigned n = FUN_14003a45c((struct CriUtfRtvView const*)(table));
+    table->m_slots[slot].value = (unsigned*)criUtfHeap_Alloc(table->m_heap, n << 2, "UtfRtvIdxTbl", 4, table->m_nRows);
     if (table->m_slots[slot].value == 0)
     {
         FUN_140038e24(0, "E06100300", -3);

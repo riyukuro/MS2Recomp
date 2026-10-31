@@ -197,6 +197,10 @@
 #include "ms2/ms2format.h"
 #include "ms2/commonfiles/filesystem.h"
 
+// return types of the getters this unit calls
+class CFileSystem;
+class CLogString;
+
 // Registry of every Object (filled by Value<T>::Value through Constants::Register).
 static ATL::CAtlArray<Common::Constants::Object*> s_objects;                             // @0x1400b59f0 (DAT_143aad0f0)
 
@@ -691,7 +695,6 @@ MS2Colors& MS2Colors::operator=(const MS2Colors& o)
 
 // ---- Common::Constants / Client::Constants -----------------------------------------------------------------------
 // @0x1402b26d0
-// MS2-FUNCTIONAL: 4 bytes longer: member Value<T> ctors are laid out in declaration order but the exe elides one register move
 Common::Constants::Constants() : m_unk8(0), values(10) {}
 // @0x1402b4c80
 Common::Constants::~Constants() {}
@@ -1139,15 +1142,13 @@ void Common::Constants::vfunc_0()
     GamePadRumbleMultiple.Define("GamePadRumbleMultiple", 3.0f);
     GetOr("MesoRevivalFeeReduceLimit", &MesoRevivalFeeReduceLimit, 0.5f);
     GetOr("IngredientFeeReduceLimit", &IngredientFeeReduceLimit, 0.5f);
-    unsigned char* statBytes = (unsigned char*)&StatPointLimit_str;
-    for (int i = 0; i < 0x8c; i++)
-        *statBytes++ = 0;
-    GetOr("StatPointLimit_str", &StatPointLimit_str, 100);
-    GetOr("StatPointLimit_dex", &StatPointLimit_dex, 100);
-    GetOr("StatPointLimit_int", &StatPointLimit_int, 100);
-    GetOr("StatPointLimit_luk", &StatPointLimit_luk, 100);
-    GetOr("StatPointLimit_hp", &StatPointLimit_hp, 50);
-    GetOr("StatPointLimit_cap", &StatPointLimit_cap, 50);
+    memset(StatPointLimit, 0, sizeof(StatPointLimit));
+    GetOr("StatPointLimit_str", &StatPointLimit[0], 100);
+    GetOr("StatPointLimit_dex", &StatPointLimit[1], 100);
+    GetOr("StatPointLimit_int", &StatPointLimit[2], 100);
+    GetOr("StatPointLimit_luk", &StatPointLimit[3], 100);
+    GetOr("StatPointLimit_hp", &StatPointLimit[4], 50);
+    GetOr("StatPointLimit_cap", &StatPointLimit[0x11], 50);
     AdventureLevelLvUpRewardItem.Define("AdventureLevelLvUpRewardItem", 0u);
     AdventureLevelLvUpExp.Define("AdventureLevelLvUpExp", 15000u);
     AdventureLevelMaxExp.Define("AdventureLevelMaxExp", 10000u);
@@ -1300,9 +1301,9 @@ public:
 class Unk_ConstFileSystem : public CFileSystem
 {
 };
-Unk_ConstFileSystem* FUN_140166420();
+CFileSystem* GetFileSystem();
 unsigned char FUN_1401d1320(CCacheData* cacheData);
-void* FUN_140166440();
+CLogString* GetLogString();
 void FUN_14015eb90(void* log, int level, int category, const wchar_t* fmt, const CString& arg);
 CString FUN_14071a5b0(const CString& dir, const CString& file);
 CString FUN_14071a6f0(const CString& file);
@@ -1338,7 +1339,7 @@ bool Common::Constants::LoadFiles()
         CString path = FUN_14071a5b0(dir, file);
         files.Add(Unk_ConstFile(path, required));
     }
-    if (!FUN_140166420()->FUN_140398190())
+    if (!reinterpret_cast<Unk_ConstFileSystem*>(GetFileSystem())->FUN_140398190())
     {
         bool required = false;
         CString file("testConstants.xml");
@@ -1352,11 +1353,11 @@ bool Common::Constants::LoadFiles()
         bool required = entry.required;
         TiXmlDocument doc;
         const char* path = entry.path;
-        if (FUN_140166420()->FUN_1403974b0(&doc, path, 0, true, false) == 0)
+        if (reinterpret_cast<Unk_ConstFileSystem*>(GetFileSystem())->FUN_1403974b0(&doc, path, 0, true, false) == 0)
         {
             if (required)
             {
-                FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", entry.path);
+                FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", entry.path);
                 return false;
             }
             continue;
@@ -1373,7 +1374,7 @@ bool Common::Constants::LoadFiles()
         Unk_ConstXmlNode* root = reinterpret_cast<Unk_ConstXmlNode*>(&doc)->FUN_140165cf0("ms2");
         if (root == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", entry.path);
+            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", entry.path);
             return false;
         }
         Unk_ConstXmlList list;

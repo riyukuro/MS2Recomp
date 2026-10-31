@@ -28,7 +28,7 @@ public:
     MS2_CRS_LOG_WRAP(4, Log, FUN_140653550)
     MS2_CRS_LOG_WRAP(4, LogB, FUN_140653690)
 };
-Unk_CrsLog* FUN_140166440();
+class CLogString* GetLogString();
 
 // @0x140208340
 SocketReconnectionInfo::SocketReconnectionInfo() { m_18 = 0; m_1c = 0; m_20 = 0; m_24 = 0; }
@@ -92,7 +92,7 @@ void COutPacketBuffer::RetransmitClientPackets(CGameSocket* pSocket, unsigned la
             COutPacketPtr& captured = m_captured.GetAt(pos);
             if (captured->FUN_14020ba00() <= lastSequence) continue;
             ++newSequence;
-            FUN_140166440()->Log(0, 0, 0x85, L"{0}. type={1} seqOld={2}, seqNew={3}", L"COutPacketBuffer::RetransmitClientPackets",
+            static_cast<Unk_CrsLog*>(GetLogString())->Log(0, 0, 0x85, L"{0}. type={1} seqOld={2}, seqNew={3}", L"COutPacketBuffer::RetransmitClientPackets",
                                  captured->FUN_14020ba20(), captured->FUN_14020ba00(), newSequence);
             captured->FUN_14020c070(newSequence);
             FUN_141267410(pSocket, *captured);
@@ -126,7 +126,7 @@ void COutPacketBuffer::ShrinkCapturedPackets()
         unsigned shrink = limit / 2;
         if (m_capturedSize < limit) return;
         if (Unk_LockGuard guard = m_lock) { __assume(0); } else {
-            FUN_140166440()->LogB(0, 0, 0x85, L"{0}. currSize={1} limit={2} shrink={3}", L"COutPacketBuffer::ShrinkCapturedPackets",
+            static_cast<Unk_CrsLog*>(GetLogString())->LogB(0, 0, 0x85, L"{0}. currSize={1} limit={2} shrink={3}", L"COutPacketBuffer::ShrinkCapturedPackets",
                                   m_capturedSize, limit, shrink);
             while (m_capturedSize > shrink && !m_captured.IsEmpty()) {
                 COutPacketPtr packet = m_captured.RemoveHead();
@@ -162,7 +162,7 @@ void COutPacketBuffer::PushPendingPacket(COutPacket& packet)
         if (packet.FUN_14020bc40() != 0) {
             m_loopbackSize += copy->FUN_14020b9f0();
             m_loopback.AddTail(copy);
-            FUN_140166440()->Log(0, 0, 0x85, L"{0}[line={1}] m_pendingLoopbackPackets(type={2})", L"COutPacketBuffer::PushPendingPacket",
+            static_cast<Unk_CrsLog*>(GetLogString())->Log(0, 0, 0x85, L"{0}[line={1}] m_pendingLoopbackPackets(type={2})", L"COutPacketBuffer::PushPendingPacket",
                                  MS2_LINE(0x219), packet.FUN_14020ba20());
         } else {
             m_pendingSize += copy->FUN_14020b9f0();

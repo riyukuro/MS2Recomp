@@ -14,10 +14,10 @@
 
 // ---- out-of-unit callees (bound to the exe by name) ----
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
-int FUN_140873220(Unk_140165cf0* pNode, const char* pszName, unsigned& nOut);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
-int FUN_1408730a0(Unk_140165cf0* pNode, const char* pszName, bool& bOut);
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 // Stream primitives (packet.cpp).
 CInputStream& FUN_14070f480(CInputStream& in, unsigned& n);
 CInputStream& FUN_14070f580(CInputStream& in, CString& str);
@@ -45,11 +45,11 @@ unsigned GameObjectEffectNifCtx::GetGameOID() const
 // @0x140474740
 void GameObjectEffectNifCtx::LoadXml(Unk_140165cf0* pNode)
 {
-    FUN_140873220(pNode, "gameOID", m_nGameOID);
+    XmlGetAttr((class TiXmlElement*)(pNode), "gameOID", m_nGameOID);
     FUN_1408733e0(pNode, "nifPath", m_strNifPath);
-    FUN_1408730a0(pNode, "isOutline", m_bOutline);
-    FUN_140873360(pNode, "scale", m_fScale);
-    FUN_140873360(pNode, "rotateZ", m_fRotateZ);
+    XmlGetAttr((class TiXmlElement*)(pNode), "isOutline", m_bOutline);
+    XmlGetAttr((class TiXmlElement*)(pNode), "scale", m_fScale);
+    XmlGetAttr((class TiXmlElement*)(pNode), "rotateZ", m_fRotateZ);
 }
 MS2_REPLACE_METHOD(0x140474740, GameObjectEffectNifCtx, LoadXml, 164, 0x6F31E288);
 

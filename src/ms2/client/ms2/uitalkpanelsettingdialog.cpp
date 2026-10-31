@@ -18,6 +18,8 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/uimessenger.h"
 
 // ---- statics (init order: the shared header's sort type names, then the file's key input controller) ----
 
@@ -97,13 +99,11 @@ public:
     void FUN_141a0e9f0(const CStringW& strOldName, const CStringW& strNewName);           // rename a tab
     void FUN_141a0e990();                                                   // save the tabs
 };
-class Unk_TpsChat
+class Unk_TpsChat : public UIMessengerBrowser
 {
 public:
     void FUN_141a25130(int nFontSize);
     void FUN_141a25160(int nAlpha);
-    void FUN_141a25210(int bEnabled);
-    int FUN_141a25410(MessengerData::TalkTab* pTab, const CStringW& strName);
 };
 struct Unk_TpsState
 {
@@ -143,12 +143,11 @@ struct Unk_TpsReqValue
 };
 MS2_CHECK_SIZE(Unk_TpsReqValue, 0x20);
 
-class Unk_TpsFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_TpsFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 class Unk_TpsKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
 Unk_TpsKeys* FUN_14025e7c0();
 CommonString* FUN_14025e7d0();
-CStringW FUN_1409eec40(int nStringId);
+CStringW BlockFormat(int nStringId);
 void FUN_140d73aa0(CStringW strText, int nA, int nB, CStringW strTag);
 void FUN_140d73bc0(int nStringId, int nA, void* p, CStringW strTag);
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);
@@ -157,7 +156,7 @@ void FUN_140d00860(const Scaleform::GFx::Value& root, CString strName, int n);
 void FUN_140d00960(const Scaleform::GFx::Value& root, CString strName, int* pOut);
 
 // The "global" switch (all tabs share one screen look) and the shared look (messengerdata.cpp's statics).
-extern int DAT_1439f7cbc;
+extern int s_nGlobal;
 extern MessengerData::ScreenSetting DAT_143adda48;
 
 // ---- UITalkPanelSettingDialog ----
@@ -346,7 +345,7 @@ void UITalkPanelSettingDialog::vfunc_80(void* pRequest)
     }
     if (MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab"))
         spTab->FUN_1422e0a60("");
-    FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, CStringW(L""));
+    FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
 }
 
 // @0x141b23550
@@ -361,7 +360,7 @@ CStringW UITalkPanelSettingDialog::FUN_141b23550()
 int UITalkPanelSettingDialog::EventInitialize()
 {
     MessengerData::PanelSetting panel;
-    DAT_1439f7cbc = 1;
+    s_nGlobal = 1;
     DAT_143adda48 = panel.m_screen;
     FUN_141b24ee0(&panel);
     return 1;
@@ -427,7 +426,7 @@ int UITalkPanelSettingDialog::FUN_141b23a40(const CStringW& strName)
 void UITalkPanelSettingDialog::FUN_141b23ab0(MessengerData::PanelSetting* pSetting)
 {
     if (MS2Ptr<Unk_TpsCheck> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140c11f50<Unk_TpsCheck>("m_entire"))
-        DAT_1439f7cbc = sp->FUN_1422ce0e0();
+        s_nGlobal = sp->FUN_1422ce0e0();
     if (MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderTransparent"))
     {
         pSetting->m_screen.m_nBackgroundAlpha = (int)(__int64)sp->FUN_1422ce630();
@@ -481,7 +480,7 @@ void UITalkPanelSettingDialog::FUN_141b23ab0(MessengerData::PanelSetting* pSetti
 // @0x141b24ee0
 void UITalkPanelSettingDialog::FUN_141b24ee0(MessengerData::PanelSetting* pSetting)
 {
-    FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_entire", DAT_1439f7cbc);
+    FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_entire", s_nGlobal);
     if (MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderTransparent"))
         sp->FUN_1422ce5f0((float)(unsigned int)pSetting->FUN_1414821b0()->m_nBackgroundAlpha);
     if (MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderFontsize"))

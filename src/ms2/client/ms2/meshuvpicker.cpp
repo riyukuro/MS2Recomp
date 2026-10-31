@@ -41,14 +41,11 @@
 // ---- out-of-unit callees and globals (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 
 NiRenderer* GetNiRenderer();                                    // NiRenderer::GetRenderer
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* p);      // NiObject::DynamicCast
-IDirect3DDevice9* FUN_140d89690(NiDX9Renderer* p);              // NiDX9Renderer::GetD3DDevice
 unsigned FUN_1411d7c70(NiDX9Renderer* p, bool (*pfnNotify)(bool, void*), void* pvData);   // AddResetNotificationFunc
 void* FUN_141d61a80(unsigned uiWidth, unsigned uiHeight, NiRenderer* pRenderer, NiTexture::FormatPrefs* pPrefs,
                     unsigned short usFlags);                    // NiRenderedTexture::Create
 NiRenderedTexture* FUN_14127c9b0(Unk_PPSmartA* pSmart);         // the pointer held by the smart pointer
 void* FUN_140c8f680(Unk_PPSmartA* pSmart);                      // the same pointer as a truth value
-NiMaterial* FUN_141d284a0(const NiFixedString* pName);          // NiMaterialLibrary::CreateMaterial
 
 extern unsigned DAT_1439f7cb4;                                  // picker width (pixels)
 extern unsigned DAT_1439f7cb8;                                  // picker height (pixels)
@@ -156,7 +153,7 @@ void CMeshUVPicker::FUN_14147ec90(NiRenderObject* pMesh, CAtlArray<NiRenderObjec
 
     NiSPWorkflowManagerPtr spWorkflow = new (efd::MemHint(efd::MemHint::NONE))
         NiSPWorkflowManager(0x40, NiStreamProcessor::MEDIUM, 3);
-    NiMesh* pAsMesh = (NiMesh*)FUN_14098d8d0(&NiMesh::ms_RTTI, pMesh);
+    NiMesh* pAsMesh = (NiMesh*)NiObject::DynamicCast(&NiMesh::ms_RTTI, (class NiObject const*)(pMesh));
     if (pAsMesh)
     {
         NiSyncArgs kComplete;
@@ -216,7 +213,7 @@ void CMeshUVPicker::FUN_14147ec90(NiRenderObject* pMesh, CAtlArray<NiRenderObjec
             const NiMaterial* pExtraMaterial = pExtra->GetActiveMaterial();
             NiColorA kColor = efd::ColorA::BLACK;
             FUN_141480710(pExtra, DAT_143ae50f0, kColor);
-            NiMaterial* pExtraUV = FUN_141d284a0(&DAT_143ae5210);
+            NiMaterial* pExtraUV = NiMaterialLibrary::CreateMaterial(*(class NiFixedString const*)(&DAT_143ae5210));
             pExtra->ApplyAndSetActiveMaterial(pExtraUV, 0xffffffff);
             for (unsigned j = 0; j < pExtra->GetMaterialCount(); j++)
                 pExtra->ClearCachedShaderAndSetNeedsUpdate(j);
@@ -252,11 +249,11 @@ MS2_REPLACE_METHOD(0x14147EC90, CMeshUVPicker, FUN_14147ec90, 2260, 0x30E905BA);
 bool CMeshUVPicker::FUN_14147f570()
 {
     NiRenderer* pRenderer = GetNiRenderer();
-    NiDX9Renderer* pDX9 = (NiDX9Renderer*)FUN_14098d8d0(&NiDX9Renderer::ms_RTTI, pRenderer);
+    NiDX9Renderer* pDX9 = (NiDX9Renderer*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(pRenderer));
     if (pDX9 == NULL)
         return false;
 
-    m_48 = FUN_140d89690(pDX9);
+    m_48 = ((class NiDX9Renderer*)(class NiDX9Renderer*)(pDX9))->GetD3DDevice();
     m_48->AddRef();
     m_18 = FUN_1411d7c70(pDX9, FUN_14147fd10, this);
 
@@ -331,7 +328,7 @@ MS2_REPLACE_METHOD(0x14147FA80, CMeshUVPicker, FUN_14147fa80, 287, 0x53A05DBE);
 // @0x14147fbb0
 void CMeshUVPicker::FUN_14147fbb0()
 {
-    NiDX9Renderer* pDX9 = (NiDX9Renderer*)FUN_14098d8d0(&NiDX9Renderer::ms_RTTI, GetNiRenderer());
+    NiDX9Renderer* pDX9 = (NiDX9Renderer*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(GetNiRenderer()));
     if (m_18 != -1)
     {
         pDX9->RemoveResetNotificationFunc((unsigned)m_18);
@@ -423,13 +420,13 @@ NiMaterial* CMeshUVPicker::FUN_1414800a0(bool bSecond)
     if (bSecond)
     {
         if ((NiMaterial*)m_28 == NULL)
-            m_28 = FUN_141d284a0(&DAT_143ae5280);
+            m_28 = NiMaterialLibrary::CreateMaterial(*(class NiFixedString const*)(&DAT_143ae5280));
         return (NiMaterial*)m_28;
     }
     else
     {
         if ((NiMaterial*)m_30 == NULL)
-            m_30 = FUN_141d284a0(&DAT_143ae5288);
+            m_30 = NiMaterialLibrary::CreateMaterial(*(class NiFixedString const*)(&DAT_143ae5288));
         return (NiMaterial*)m_30;
     }
 }
@@ -438,7 +435,7 @@ MS2_REPLACE_METHOD(0x1414800A0, CMeshUVPicker, FUN_1414800a0, 165, 0x7E9A09C7);
 // @0x141480710
 void CMeshUVPicker::FUN_141480710(NiObjectNET* pObject, const NiFixedString& kKey, const NiColorA& kColor)
 {
-    NiColorExtraData* pExtra = (NiColorExtraData*)FUN_14098d8d0(&NiColorExtraData::ms_RTTI, pObject->GetExtraData(kKey));
+    NiColorExtraData* pExtra = (NiColorExtraData*)NiObject::DynamicCast(&NiColorExtraData::ms_RTTI, (class NiObject const*)(pObject->GetExtraData(kKey)));
     if (pExtra == NULL)
     {
         pExtra = NiNew NiColorExtraData(kColor);

@@ -27,6 +27,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
 
 #ifndef MS2_HOOK_DLL   // s_pendingId: the exe's object at 0x143af37a0, which other units reach as DAT_143af37a0 (the hook DLL binds it)
 CString DAT_143af37a0;
@@ -98,19 +99,19 @@ struct Unk_LoginRequest
     CString m_strRegion;                                        // +0x38
 };
 MS2_CHECK_SIZE(Unk_LoginRequest, 0x40);
-void FUN_1401f9020(Unk_LoginRequest* pRequest, COutPacket* pOut);
+void FUN_1401f9020(struct Unk_LoginA*, class COutputStream*);   // C3: was FUN_1401f9020
 class Unk_LoginMachine
 {
 public:
     const Unk_LoginMachineId& FUN_140d4fdf0();
     int FUN_140d4fe10();
 };
-Unk_LoginMachine* FUN_140aadf70();
+void* FUN_140aadf70();   // C3: was FUN_140aadf70
 void FUN_14067c080(Unk_LoginMachineId* pDst, const Unk_LoginMachineId& src);
 
 // The packet handler table and the message boxes.
 class Unk_LoginPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
-Unk_LoginPackets* FUN_140bccd50();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_LoginMsgBox : public CPtred
 {
 public:
@@ -125,23 +126,31 @@ void FUN_140d73aa0(CStringW strText, int a, void* b, CStringW strTag);
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
 class Unk_LoginKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
-Unk_LoginKeys* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The scene manager and the web page opener.
 void* FUN_1408e57f0();
-__int64 FUN_140869440();                                        // the server time
+__int64 GetServerTime();                                        // the server time
 int FUN_1418fc810();
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
-int FUN_1422b9dc0(void* pMgr);                                  // the current scene id
-UISceneEntity* FUN_1422b9e80(void* pMgr);                       // the current scene
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    class UISceneEntity* GetScene();
+    int GetSceneId();
+};
 void* FUN_140aa6d30();
-int FUN_1417e2610(void* pObj);
+class CStateService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1417e2610();
+};
 void FUN_141acfad0(UISceneLogin* pScene, const int& nUiId);     // UISceneLogin: hide the title and the dialogs
 class Unk_LoginBrowser { public: void FUN_1415383a0(CString strUrl, int n, int a, int b, int c); };
-Unk_LoginBrowser* FUN_140714f90();
+class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
 int FUN_1406c34c0();                                            // the platform kind
-IClientPlatform* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 int FUN_1406516a0();
 int FUN_1406516b0();                                            // the language / region id
 CString FUN_1406521f0(int nRegion);
@@ -149,7 +158,6 @@ CString FUN_1401d2b10(const CString& a, const CString& b);              // a + b
 CString FUN_140652030(int n);
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
 class Unk_LoginUiMgr { public: int FUN_141adc890(int nUiId); };
-Unk_LoginUiMgr* FUN_1403ed2b0();
 class Unk_LoginMovie : public AScript
 {
 public:
@@ -157,8 +165,8 @@ public:
 };
 void FUN_140ba7c60();
 
-extern CString DAT_143ae0928;                                   // the web page address
-extern int DAT_143ae08f4;
+extern CString g_strServerAddr;                                 // the web page address
+extern int g_nPort;
 extern CString DAT_143ab29d8;                                   // the last typed account id
 extern CString DAT_143ab2a28;                                   // the last typed password
 extern unsigned char DAT_143ab284b;
@@ -174,15 +182,15 @@ UILoginDialog::UILoginDialog()
     m_80 = 0;
     FUN_1422dc3b0(1);
     FUN_141925e70(0, 1);
-    FUN_140bccd50()->FUN_140da5180(9, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1160));
-    FUN_140bccd50()->FUN_140da5180(0x134, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1570));
+    ((class Unk_LoginPackets*)FUN_140bccd50())->FUN_140da5180(9, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1160));
+    ((class Unk_LoginPackets*)FUN_140bccd50())->FUN_140da5180(0x134, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1570));
 }
 
 // @0x1419e0e80
 UILoginDialog::~UILoginDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(9, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1160));
-    FUN_140bccd50()->FUN_140da51e0(0x134, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1570));
+    ((class Unk_LoginPackets*)FUN_140bccd50())->FUN_140da51e0(9, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1160));
+    ((class Unk_LoginPackets*)FUN_140bccd50())->FUN_140da51e0(0x134, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1570));
 }
 
 // @0x1419e0ff0
@@ -194,21 +202,21 @@ CString UILoginDialog::GetTypeName()
 // @0x1419e1040
 void UILoginDialog::OnEndPopdown(bool bFromPopdown)
 {
-    if (FUN_1422b9dc0(FUN_1408e57f0()) == 0x6200009)
+    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId() == 0x6200009)
     {
-        UISceneLogin* pScene = dynamic_cast<UISceneLogin*>(FUN_1422b9e80(FUN_1408e57f0()));
+        UISceneLogin* pScene = dynamic_cast<UISceneLogin*>(((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetScene());
         if (pScene != 0 && pScene->FUN_141acfb40() && bFromPopdown)
             return;
     }
-    CString strUrl = DAT_143ae0928;
-    int nFlag = DAT_143ae08f4;
-    FUN_140714f90()->FUN_1415383a0(strUrl, nFlag, 1, 1, 0);
+    CString strUrl = g_strServerAddr;
+    int nFlag = g_nPort;
+    ((class Unk_LoginBrowser*)FUN_140714f90())->FUN_1415383a0(strUrl, nFlag, 1, 1, 0);
 }
 
 // @0x1419e1160
 void UILoginDialog::FUN_1419e1160(CInPacket&)
 {
-    int nState = FUN_1417e2610(FUN_140aa6d30());
+    int nState = ((class CStateService*)(void*)(FUN_140aa6d30()))->FUN_1417e2610();
     if (nState != 0x6200009)
         return;
     if (m_30.get() != 0)
@@ -222,7 +230,7 @@ void UILoginDialog::FUN_1419e1160(CInPacket&)
     int nLoginType = 0;
     if (FUN_1406c34c0() != 0)
     {
-        FUN_140d86260()->vfunc_20(nLoginType, 1);
+        ((class IClientPlatform*)FUN_140d86260())->vfunc_20(nLoginType, 1);
     }
     else
     {
@@ -236,17 +244,17 @@ void UILoginDialog::FUN_1419e1160(CInPacket&)
         request.m_strId = DAT_143ab29d8;
         request.m_strPassword = DAT_143ab2a28;
         request.m_nLoginType = nLoginType;
-        FUN_14067c080(&request.m_machineId, FUN_140aadf70()->FUN_140d4fdf0());
-        request.m_n2c = FUN_140aadf70()->FUN_140d4fe10();
+        FUN_14067c080(&request.m_machineId, ((class Unk_LoginMachine*)FUN_140aadf70())->FUN_140d4fdf0());
+        request.m_n2c = ((class Unk_LoginMachine*)FUN_140aadf70())->FUN_140d4fe10();
         request.m_n30 = DAT_143ab2858;
         request.m_strRegion = FUN_140652030(FUN_1406516a0());
         if (FUN_1409a8b10()->FUN_140cfd260()->m_bLocaledName == 1)
             request.m_strId = FUN_1401d2b10(DAT_143ab29d8, FUN_1406521f0(FUN_1406516b0()));
         COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
-        FUN_1401f9020(&request, &packet);
+        FUN_1401f9020((struct Unk_LoginA*)(&request), (class COutputStream*)(&packet));
         FUN_140710590(packet);
     }
-    FUN_140d86260()->vfunc_33(DAT_143ab2820);
+    ((class IClientPlatform*)FUN_140d86260())->vfunc_33(DAT_143ab2820);
 }
 
 // @0x1419e1570
@@ -297,7 +305,7 @@ int UILoginDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             {
                 if (FUN_1406c34c0() == 1)
                 {
-                    FUN_140d86260()->vfunc_72();
+                    ((class IClientPlatform*)FUN_140d86260())->vfunc_72();
                 }
                 else
                 {
@@ -318,12 +326,12 @@ int UILoginDialog::vfunc_13()
         return 1;
     if (FUN_1419e2900() == 0)
         return 0;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+    if (((class Unk_LoginKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
     {
         static_cast<Unk_LoginRoot*>(m_30.operator->())->Invoke("onEnterKey");
         return 1;
     }
-    else if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0))
+    else if (((class Unk_LoginKeys*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0))
     {
         static_cast<Unk_LoginRoot*>(m_30.operator->())->Invoke("onTabKey");
         return 1;
@@ -368,7 +376,7 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 if (bChecked == 0)
                 {
                     CMsTime deadline(2019, 2, 6, 15, 0, 0);
-                    CMsTime now(FUN_140869440());
+                    CMsTime now(GetServerTime());
                     if (now < deadline)
                     {
                         CStringW strText(L"로케일 계정을 사용하지 않겠습니까? \n\n 2019년 2월7일부터는 로케일 계정만 사용 가능합니다.");
@@ -401,7 +409,7 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
 void UILoginDialog::vfunc_43()
 {
     UIDialog::vfunc_43();
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4eef) != 0 || FUN_1406516b0() == 1)
+    if (reinterpret_cast<Unk_LoginUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4eef) != 0 || FUN_1406516b0() == 1)
     {
         MS2Ptr<ASDisplayObject> spObj(dynamic_cast<ASDisplayObject*>((AScript*)m_30));
         if (spObj.get() != 0)
@@ -527,9 +535,9 @@ int UILoginDialog::FUN_1419e2900()
 // @0x1419e2920
 void UILoginDialog::OnConnect()
 {
-    if (FUN_1422b9dc0(FUN_1408e57f0()) == 0x6200009)
+    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId() == 0x6200009)
     {
-        UISceneLogin* pScene = dynamic_cast<UISceneLogin*>(FUN_1422b9e80(FUN_1408e57f0()));
+        UISceneLogin* pScene = dynamic_cast<UISceneLogin*>(((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetScene());
         if (pScene != 0)
         {
             int nUiId = vfunc_48();

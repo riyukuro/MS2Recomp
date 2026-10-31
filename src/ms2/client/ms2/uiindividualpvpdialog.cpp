@@ -49,6 +49,9 @@
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/pvpmanager.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/client/ms2/individualarenadata.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -84,17 +87,14 @@ public:
     unsigned int m_nReward2;                                    // +0x44
 };
 class Unk_ArenaTable { public: MS2Ptr<Unk_ArenaData> FUN_14051a980(int nArena); };
-Unk_ArenaTable* FUN_1412818c0();
 
 // The PvP manager.
-class Unk_PvpMgr
+class Unk_PvpMgr : public CPVPManager
 {
 public:
     int FUN_1412818a0();                                        // the state: 0 idle, 1 registered, 2 ready
     int FUN_1412818d0();                                        // the registered arena
-    void FUN_141280d40();                                       // join
 };
-Unk_PvpMgr* FUN_140f97ef0();
 
 class Unk_PCBaseBuffs { public: int FUN_140970020(int nBuffId, unsigned short nLevel, int nOwner, int nStacks); };
 
@@ -105,7 +105,7 @@ CString FUN_1402bb1c0(const char* szFormat, const int* pn);     // format one in
 CStringW GetStringCommon(int nStringId);                          // string table text
 CStringW FUN_1408116a0(int nStringId, const int& nArg);         // the same, one int argument
 void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW tag);   // notice
-unsigned int FUN_14086bdb0(unsigned int nMilliSeconds);         // to minutes
+unsigned int MsToMinutes(unsigned int nMilliSeconds);           // to minutes
 void FUN_1408741a0(void* pCfg, const char* szSection, const char* szKey, int* pnValue);
 void FUN_140874440(void* pCfg, const char* szSection, const char* szKey, int nValue, bool b);
 void* FUN_1403ed2d0();                                          // the world
@@ -120,7 +120,7 @@ StringManager* GetStringManager();
 // the string table loader of the arena strings
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
-class Unk_XmlFiles { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_XmlFiles : public CFileSystem { };
 Unk_XmlFiles* FUN_140166420();
 CString FUN_14071ae20(const CString& strFile);
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszAttr, CStringW strDefault);
@@ -176,7 +176,7 @@ void UIIndividualPvPDialog::OnLoadComplete()
     std::map<int, MS2Ptr<Unk_140acd6e0> >::iterator itEnd = m_arenas.end();
     for (; it != itEnd; ++it)
     {
-        MS2Ptr<Unk_ArenaData> spData = FUN_1412818c0()->FUN_14051a980(it->first);
+        MS2Ptr<Unk_ArenaData> spData = reinterpret_cast<Unk_ArenaTable*>(TSingleton<CIndividualArenaDataTable>::GetInstance())->FUN_14051a980(it->first);
         if (spData == 0)
             return;
         it->second->FUN_1422cdfb0(GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nNameId)));
@@ -238,8 +238,8 @@ void UIIndividualPvPDialog::FUN_1412cacc0()
 {
     if (FUN_140a467d0(&m_30))
         return;
-    int nState = FUN_140f97ef0()->FUN_1412818a0();
-    int nArena = FUN_140f97ef0()->FUN_1412818d0();
+    int nState = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818a0();
+    int nArena = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818d0();
     FUN_1412cbf20();
     if (nArena != m_nSelected)
     {
@@ -264,7 +264,7 @@ void UIIndividualPvPDialog::FUN_1412cae10(int nArena)
         return;
     if (nArena == 2)
         return;
-    MS2Ptr<Unk_ArenaData> spData = FUN_1412818c0()->FUN_14051a980(nArena);
+    MS2Ptr<Unk_ArenaData> spData = reinterpret_cast<Unk_ArenaTable*>(TSingleton<CIndividualArenaDataTable>::GetInstance())->FUN_14051a980(nArena);
     if (spData == 0)
         return;
     m_nSelected = nArena;
@@ -302,7 +302,7 @@ void UIIndividualPvPDialog::FUN_1412cb240()
             continue;
         if (count.first == 2)
             continue;
-        int nMinutes = FUN_14086bdb0(count.second);
+        int nMinutes = MsToMinutes(count.second);
         int nMax = 10;
         CStringW strText = FUN_1408116a0(0x426, nMinutes);
         if (count.second == 0)
@@ -316,13 +316,13 @@ void UIIndividualPvPDialog::FUN_1412cb240()
 // @0x1412cb4b0
 void UIIndividualPvPDialog::FUN_1412cb4b0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_140f97ef0()->FUN_141280d40();
+    reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->SendCancelRequest();
 }
 
 // @0x1412cb4e0
 void UIIndividualPvPDialog::FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    int nState = FUN_140f97ef0()->FUN_1412818a0();
+    int nState = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818a0();
     if (nState != 0)
     {
         FUN_140d73aa0(GetStringCommon(0x428), 0, 0, L"");
@@ -354,7 +354,7 @@ void UIIndividualPvPDialog::FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler:
 // @0x1412cb770
 void UIIndividualPvPDialog::SendPVPMode10(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    int nState = FUN_140f97ef0()->FUN_1412818a0();
+    int nState = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818a0();
     if (nState != 1)
         return;
     COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
@@ -383,8 +383,8 @@ void UIIndividualPvPDialog::FUN_1412cb8d0(bool bPlay)
 {
     if (FUN_140a467d0(&m_30))
         return;
-    int nState = FUN_140f97ef0()->FUN_1412818a0();
-    int nArena = FUN_140f97ef0()->FUN_1412818d0();
+    int nState = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818a0();
+    int nArena = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818d0();
     if (nArena >= 4)
         return;
     std::map<int, MS2Ptr<Unk_140acd6e0> >::iterator it = m_arenas.begin();

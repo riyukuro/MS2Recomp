@@ -36,7 +36,6 @@ class Unk_DtNpc : public CNpc { };
 Unk_DtNpc* FUN_14096e110(GameObject* p);                                    // as an npc (0 for a player)
 PC* FUN_140974230(GameObject* p);                                           // as a player character (0 otherwise)
           // CPartyManager: a party member (int return)
-CPartyManager* FUN_1409670d0();                                             // the party manager
 // The "RemoveAni" event dispatched by a dying number (an AS event object; 0x40 bytes, no array: the exe has no GS cookie).
 class Unk_DtAniEvent
 {
@@ -659,7 +658,7 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
     {
         PC* pPC = FUN_140974230(pTarget);
         if (pPC != 0)
-            nTargetMask = FUN_1409670d0()->FUN_14162ae20(pPC->FUN_141656a80()) ? 2 : 4;
+            nTargetMask = TSingleton<CPartyManager>::GetInstance()->FUN_14162ae20(pPC->FUN_141656a80()) ? 2 : 4;
     }
     if ((unsigned int)nCasterId > 0)
     {
@@ -672,7 +671,7 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
             PCBase* pCaster = WorldService::GetInstance()->FUN_141bd1200(nCasterId);
             PC* pPC = FUN_140974230(pCaster);
             if (pPC != 0)
-                nCasterMask = FUN_1409670d0()->FUN_14162ae20(pPC->FUN_141656a80()) ? 2 : 4;
+                nCasterMask = TSingleton<CPartyManager>::GetInstance()->FUN_14162ae20(pPC->FUN_141656a80()) ? 2 : 4;
             else
             {
                 Unk_DtNpc* pNpc = FUN_14096e110(pCaster);

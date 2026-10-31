@@ -95,7 +95,7 @@ struct Unk_EventVoice
     // implicit ctor 0x1411af960 and dtor 0x1411b01c0 (instantiated in effectservice.cpp's range)
     Unk_EventVoice& operator=(const Unk_EventVoice& o);         // 0x1417a0900
 
-    unsigned m_bOnlyCasterMyPC;                                 // +0x00 "onlyCasterMyPC"
+    int m_bOnlyCasterMyPC;                                      // +0x00 "onlyCasterMyPC"
     CString m_strGroup;                                         // +0x08 "group" (lower-cased)
     CString m_strSoundId;                                       // +0x10 "soundID"
     CString m_strRestoreSoundId;                                // +0x18 "restoreSoundID"

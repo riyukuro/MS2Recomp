@@ -50,7 +50,6 @@ CStringW GetStringCommon(int id);                         // string table lookup
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
-void FUN_1422cc9e0(DragSlotBag* pBag);                  // clear the bag's slots
 class TradeSlotBag;
 TradeSlotBag* FUN_14185edc0(NotifyContext::BindData* p);
 
@@ -250,7 +249,7 @@ void FUN_14185e920(const CString& strName)
     TradeSlotBag* pBag = FUN_14185edc0(FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         FUN_1422c8f70(strName);
     }
 }

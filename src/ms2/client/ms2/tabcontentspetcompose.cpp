@@ -56,6 +56,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/luautil.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/exptable.h"
 
 // MS2Ptr<ASUIComponent>: the exe shares every member except these four, which are COMDATs of the evolution unit.
 template <> MS2Ptr<ASUIComponent>::MS2Ptr(MS2Ptr<ASUIComponent>&& o);                 // 0x140acd480
@@ -164,8 +165,7 @@ public:
 class Unk_PetPlayerMgr { public: Unk_PetPlayer* FUN_141bd0cc0(); };
 
 // Exp table of the pets (the exp a class needs for the next one).
-class Unk_PetTable { public: __int64 FUN_140353930(unsigned short nPetClass, int nRank, unsigned short nItemClass); };
-Unk_PetTable* FUN_1404a1bb0();
+CExpTable* FUN_1404a1bb0();
 
 // Recipe table (the compose exp and cost of an ingredient).
 class Unk_PetRecipe : public CLua
@@ -447,7 +447,7 @@ void PetComposePetEnchant::vfunc_3()
         m_pOwner->FUN_140cb5300(&nPetClass, &nExp);
         if (nPetClass < *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
         {
-            __int64 nNeed = FUN_1404a1bb0()->FUN_140353930(nPetClass, pet->FUN_140526bd0(), FUN_1405282d0(pet));
+            __int64 nNeed = FUN_1404a1bb0()->GetPetExp(nPetClass, pet->FUN_140526bd0(), FUN_1405282d0(pet));
             CStringW strLevel;
             strLevel.Format(L"%s", (LPCWSTR)FUN_1409e8820(CStringW(L"s_word_petlevel"), nPetClass));
             CStringW strCount;
@@ -910,13 +910,13 @@ void TabContentsPetCompose::FUN_140cb5300(unsigned short* pClass, __int64* pExp)
         nExp = 0;
     else
         nExp = nExp + nGain;
-    __int64 nNeed = FUN_1404a1bb0()->FUN_140353930(nClass, nRank, FUN_1405282d0(pet));
+    __int64 nNeed = FUN_1404a1bb0()->GetPetExp(nClass, nRank, FUN_1405282d0(pet));
     unsigned short nUp = 0;
     while (nNeed <= nExp)
     {
         nExp = nExp - nNeed;
         nUp++;
-        nNeed = FUN_1404a1bb0()->FUN_140353930(nClass + nUp, nRank, FUN_1405282d0(pet));
+        nNeed = FUN_1404a1bb0()->GetPetExp(nClass + nUp, nRank, FUN_1405282d0(pet));
     }
     bLevelUp = nUp > 0;
     if (bLevelUp)

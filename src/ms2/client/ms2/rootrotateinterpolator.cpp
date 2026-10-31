@@ -17,21 +17,13 @@ struct Unk_RrQuat { float v[4]; };
 struct Unk_RrTransform { unsigned char m_rotate[0x24]; Unk_RrPoint3 m_translate; float m_fScale; };     // the NiTransform the target hands out
 Unk_RrPoint3* FUN_14027dda0(Unk_RrPoint3* p, float x, float y, float z);
 Unk_RrMatrix3* FUN_1409f7320(Unk_RrMatrix3* p);            // identity
-void FUN_1420849a0(Unk_RrMatrix3* p);
-void* FUN_14098d8d0(const void* pRtti, void* pObj);        // dynamic cast through an NiRTTI
 extern const unsigned char DAT_143afa458[];                // NiRTTI of the target class
-Unk_RrTransform* FUN_140a33f90(void* pTarget);
-void FUN_140a343c0(NiQuatTransform* pDst, Unk_RrPoint3* pOut);
-void FUN_140a342a0(NiQuatTransform* pDst, Unk_RrMatrix3* pM);
-void FUN_140a34360(NiQuatTransform* pDst, float fScale);
 Unk_RrQuat* FUN_14209b8e0(Unk_RrQuat* p, float fAngle, Unk_RrPoint3* pAxis);   // efd::Quaternion(float, const Point3&) (was mislabelled 0x14098d000, an iterator ==)
 Unk_RrMatrix3* FUN_140a34450(Unk_RrQuat* pQ, Unk_RrMatrix3* pOut);
 Unk_RrMatrix3& FUN_140a33480(Unk_RrMatrix3& a, Unk_RrMatrix3* pOut, const Unk_RrMatrix3* b);   // a * b
 void FUN_140a33240(Unk_RrMatrix3* pOut, const Unk_RrMatrix3& pSrc);
 Unk_RrQuat* FUN_140a33310(Unk_RrQuat* p);
-void FUN_14209bd10(Unk_RrQuat* p, const Unk_RrMatrix3* pM);   // efd::Quaternion::FromRotation
 void FUN_140a33280(void* pOut, const Unk_RrQuat* pQ);
-void FUN_140a342e0(NiQuatTransform* pDst, const void* pRot);
 void FUN_140a333e0(NiQuatTransform* pDst, const NiQuatTransform* pSrc);
 bool FUN_140552700(Unk_RrPoint3* a, Unk_RrPoint3* b);
 void FUN_140194470(Unk_RrPoint3* pDst, const Unk_RrPoint3* pSrc);
@@ -48,7 +40,7 @@ RootRotateInterpolator::RootRotateInterpolator()
     FUN_14027dda0(&m_rotation, 0, 0, 0);
     FUN_1409f7320(&m_matrix);
     m_bAlwaysUpdate = false;
-    FUN_1420849a0(&m_matrix);
+    ((efd::Matrix3*)(struct Unk_RrMatrix3*)(&m_matrix))->MakeIdentity();
 }
 
 // @0x140dc9bd0
@@ -59,19 +51,19 @@ RootRotateInterpolator::RootRotateInterpolator(const void* pUnused)
     FUN_14027dda0(&m_rotation, 0, 0, 0);
     FUN_1409f7320(&m_matrix);
     m_bAlwaysUpdate = true;
-    FUN_1420849a0(&m_matrix);
+    ((efd::Matrix3*)(struct Unk_RrMatrix3*)(&m_matrix))->MakeIdentity();
 }
 
 // @0x140dc9c80
 bool RootRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatTransform& kValue)
 {
-    void* pTarget = FUN_14098d8d0(DAT_143afa458, pkInterpTarget);
+    void* pTarget = ((void*)NiObject::DynamicCast((class NiRTTI const*)(DAT_143afa458), (class NiObject const*)(pkInterpTarget)));
     if (pTarget != 0)
     {
-        Unk_RrTransform kLocal = *FUN_140a33f90(pTarget);
-        FUN_140a343c0(&m_kTransformValue, &kLocal.m_translate);
-        FUN_140a342a0(&m_kTransformValue, &m_matrix);
-        FUN_140a34360(&m_kTransformValue, kLocal.m_fScale);
+        Unk_RrTransform kLocal = *((struct Unk_RrTransform*)&((class NiAVObject*)(void*)(pTarget))->GetLocalTransform());
+        ((class NiQuatTransform*)(class NiQuatTransform*)(&m_kTransformValue))->SetTranslate(*(class NiPoint3 const*)(&kLocal.m_translate));
+        ((class NiQuatTransform*)(class NiQuatTransform*)(&m_kTransformValue))->SetRotate(*(class NiMatrix3 const*)(&m_matrix));
+        ((class NiQuatTransform*)(class NiQuatTransform*)(&m_kTransformValue))->SetScale(kLocal.m_fScale);
         Unk_RrQuat kAxisRot;
         FUN_14209b8e0(&kAxisRot, 1.0471976f, &m_axis);
         Unk_RrMatrix3 kRot;
@@ -81,10 +73,10 @@ bool RootRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
         FUN_140a33240(&kMul, FUN_140a33480(kRot, &kTemp, &m_matrix));
         Unk_RrQuat kQuat;
         FUN_140a33310(&kQuat);
-        FUN_14209bd10(&kQuat, &kMul);
+        ((efd::Quaternion*)(struct Unk_RrQuat*)(&kQuat))->FromRotation(*(class efd::Matrix3 const*)(&kMul));
         Unk_RrQuat kOut;      // NiQuaternion
         FUN_140a33280(&kOut, &kQuat);
-        FUN_140a342e0(&m_kTransformValue, &kOut);
+        ((class NiQuatTransform*)(class NiQuatTransform*)(&m_kTransformValue))->SetRotate(*(class NiQuaternion const*)(&kOut));
         FUN_140a333e0(&kValue, &m_kTransformValue);
         return true;
     }

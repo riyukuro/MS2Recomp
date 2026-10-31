@@ -42,9 +42,13 @@ public:
     Unk_140165cf0* FUN_140165cf0(const char* pszName);              // FirstChildElement(name)
     Unk_140165cf0* FUN_140168650(const char* pszName);              // NextSiblingElement(name)
 };
-const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
-int FUN_1408730a0(Unk_140165cf0* pNode, const char* pszName, bool& bOut);
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
 int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 CString FUN_140188f50(const char* psz, int n);                      // null-safe CString
@@ -52,15 +56,20 @@ void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>& arr, const 
 void FUN_14185f0b0(TransitionData* pData, Unk_140165cf0* pNode, float* pfTime);    // type / duration / start time
 
 Unk_LightUpdateBits* FUN_140314670(Unk_LightUpdateBits* pBits, unsigned nPos, bool bValue);    // set one bit
-bool FUN_1411fe0e0(const Unk_LightUpdateBits* pBits);               // any bit set
-bool FUN_140afc5a0(const Unk_LightUpdateBits* pBits);               // all bits set
+class Unk_SetEffectBits   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_1411fe0e0() const;
+};
+class Unk_CamMoveBits   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_140afc5a0() const;
+};
 bool FUN_14028d470(float a, float b);                               // nearly equal
-CMainSystem* FUN_14086d260();
 
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
-void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
-void FUN_140a0b2a0(void* pNode);                                    // detach the node from its parent
-void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
+void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
 const Vector3& FUN_140947900(void* pNode);                  // world translate
 void FUN_1414737d0(Unk_Entity* pEntity);                            // remove the entity from the world
 extern char DAT_143b059e8;                                          // service lookup cell
@@ -155,7 +164,7 @@ Unk_BitRef Unk_LightUpdateBits::operator[](unsigned nPos)
 // @0x14144b630
 static bool FUN_14144b630(const Unk_LightUpdateBits* pBits)
 {
-    return !FUN_1411fe0e0(pBits);
+    return !((class Unk_SetEffectBits*)(struct Unk_LightUpdateBits const*)(pBits))->FUN_1411fe0e0();
 }
 
 // @0x14144b3f0
@@ -189,7 +198,7 @@ CLightEffectParam::CLightEffectParam()
 // "r,g,b" (0..255) attribute -> colour, white when it does not have three components
 // (written out at each use in the exe).
 #define LIGHT_PARSE_COLOR(dst, pNode, pszName, str, arr)                                        \
-    CString str = FUN_140188f50(FUN_14086f4b0(pNode, pszName), 0);                              \
+    CString str = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute(pszName), 0);                              \
     FUN_140177e10(str, arr, ",");                                                               \
     dst = arr.GetCount() < 3 ? Unk_LightColor(1.0f, 1.0f, 1.0f)                                 \
         : Unk_LightColor((float)arr[0] / 255.0f, (float)arr[1] / 255.0f, (float)arr[2] / 255.0f)
@@ -209,9 +218,9 @@ void CLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
     Unk_140165cf0* pUpdate = pNode->FUN_140165cf0("update");
     if (pUpdate != 0)
     {
-        FUN_1408730a0(pUpdate, "translate", bTranslate);
-        FUN_1408730a0(pUpdate, "rotation", bRotation);
-        FUN_1408730a0(pUpdate, "scale", bScale);
+        XmlGetAttr((class TiXmlElement*)(pUpdate), "translate", bTranslate);
+        XmlGetAttr((class TiXmlElement*)(pUpdate), "rotation", bRotation);
+        XmlGetAttr((class TiXmlElement*)(pUpdate), "scale", bScale);
     }
     if (bTranslate)
         m_update[0] = true;
@@ -227,16 +236,16 @@ void CLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
         ATL::CAtlArray<unsigned int> arrSpecular;
         LIGHT_PARSE_COLOR(m_clrDiffuse, pLight, "diffuse", strDiffuse, arrDiffuse);
         LIGHT_PARSE_COLOR(m_clrSpecular, pLight, "specular", strSpecular, arrSpecular);
-        FUN_140873360(pLight, "dimmer", m_fDimmer);
-        FUN_140873360(pLight, "range", m_fRange);
-        FUN_1408730a0(pLight, "usePreDataTransform", m_bUsePreDataTransform);
+        XmlGetAttr((class TiXmlElement*)(pLight), "dimmer", m_fDimmer);
+        XmlGetAttr((class TiXmlElement*)(pLight), "range", m_fRange);
+        XmlGetAttr((class TiXmlElement*)(pLight), "usePreDataTransform", m_bUsePreDataTransform);
     }
     Unk_140165cf0* pAtt = pNode->FUN_140165cf0("attenuation");
     if (pAtt != 0)
     {
-        FUN_140873360(pAtt, "constant", m_fAttConstant);
-        FUN_140873360(pAtt, "linear", m_fAttLinear);
-        FUN_140873360(pAtt, "quadratic", m_fAttQuadratic);
+        XmlGetAttr((class TiXmlElement*)(pAtt), "constant", m_fAttConstant);
+        XmlGetAttr((class TiXmlElement*)(pAtt), "linear", m_fAttLinear);
+        XmlGetAttr((class TiXmlElement*)(pAtt), "quadratic", m_fAttQuadratic);
     }
 
     float fTime = m_fStartDelay;
@@ -248,9 +257,9 @@ void CLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
         ATL::CAtlArray<unsigned int> arrSpecular;
         LIGHT_PARSE_COLOR(spData->m_clrDiffuse, pKey, "diffuse", strDiffuse, arrDiffuse);
         LIGHT_PARSE_COLOR(spData->m_clrSpecular, pKey, "specular", strSpecular, arrSpecular);
-        FUN_140873360(pKey, "dimmer", spData->m_fDimmer);
-        FUN_140873360(pKey, "range", spData->m_fRange);
-        CString strLoop = FUN_140188f50(FUN_14086f4b0(pKey, "loop"), 0);
+        XmlGetAttr((class TiXmlElement*)(pKey), "dimmer", spData->m_fDimmer);
+        XmlGetAttr((class TiXmlElement*)(pKey), "range", spData->m_fRange);
+        CString strLoop = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pKey))->Attribute("loop"), 0);
         if (strLoop.CompareNoCase("true") == 0 && m_nLoopIndex == -1)
             m_nLoopIndex = (int)m_arrData.GetCount();
         m_arrData.Add(NiPointer<TransitionData>(spData));
@@ -286,7 +295,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
     const CLightEffectParam* pLightParam = static_cast<const CLightEffectParam*>(pParam);
     const Unk_LightTarget* pTgt = reinterpret_cast<const Unk_LightTarget*>(pTarget);
 
-    NiAVObject* pShadow = static_cast<NiAVObject*>(FUN_14098d8d0(&NiNode::ms_RTTI, FUN_1409849b0(const_cast<void**>(&pTgt->m_hNode))));
+    NiAVObject* pShadow = static_cast<NiAVObject*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(FUN_1409849b0(const_cast<void**>(&pTgt->m_hNode))))));
     if (!(m_unk_18 >= 0 && (m_unk_18 < 2 || m_unk_18 == 6)))
         return false;
 
@@ -331,10 +340,10 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
     else
     {
         NiAVObject* pFound = pShadow->GetObjectByName(NiFixedString(pLightParam->m_strParentNode));
-        FUN_1409f76f0(&m_spParent, FUN_14098d8d0(&NiNode::ms_RTTI, pFound));
+        FUN_1409f76f0(&m_spParent, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(pFound))));
         if (m_spParent.FUN_1409f77a0(0))
             FUN_1409f76f0(&m_spParent, pShadow);
-        if (!FUN_140afc5a0(&pLightParam->m_update) && !FUN_14144b630(&pLightParam->m_update))
+        if (!((class Unk_CamMoveBits*)(struct Unk_LightUpdateBits const*)(&pLightParam->m_update))->FUN_140afc5a0() && !FUN_14144b630(&pLightParam->m_update))
         {
             Unk_SeparateNode* spSep = new (efd::MemHint(efd::MemHint::NONE)) Unk_SeparateNode(pLightParam->m_update.m_bits);
             Unk_NodePtr kSepRef(spSep);
@@ -395,7 +404,7 @@ void CLightEffect::vfunc_4()
     {
         NiNode* pParent = static_cast<NiNode*>(FUN_1409475f0(&m_spParent));
         pParent->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spOuter)), true);
-        FUN_141d16040(FUN_1409475f0(&m_spOuter), (float)FUN_14086d260()->FUN_141473280(), true);
+        ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spOuter)))->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
     }
     m_b2e = true;
 }
@@ -404,7 +413,7 @@ MS2_REPLACE_METHOD(0x14144AD00, CLightEffect, vfunc_4, 221, 0xFE4D83F7);
 // @0x14144adf0
 void CLightEffect::vfunc_7()
 {
-    FUN_140a0b2a0(FUN_1409475d0(&m_spOuter));
+    FUN_140a0b2a0((class NiAVObject*)(FUN_1409475d0(&m_spOuter)));
     if (m_entity.FUN_1408a9090() != 0)
     {
         FUN_1414737d0(m_entity.FUN_1408a9090());

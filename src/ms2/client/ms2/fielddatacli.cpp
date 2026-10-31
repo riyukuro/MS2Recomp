@@ -29,7 +29,7 @@ int FUN_140873260(Unk_140165cf0*, const char*, int&);
 int FUN_140873360(Unk_140165cf0*, const char*, float&);
 int FUN_1408730a0(Unk_140165cf0*, const char*, bool&);
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
-int FUN_140873890(Unk_140165cf0*, const char*, int&);
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 CString FUN_140188f50(Unk_140165cf0*, int);                              // node text
 void FUN_141b6ed40(const CString&, Unk_GVec3*);                          // parse "x,y,z"
 void FUN_14028d1a0(const CString&, int*);                                // parse int
@@ -43,7 +43,6 @@ bool FUN_1401932b0(const std::vector<unsigned>&, const std::vector<unsigned>&);
 bool FUN_1406cf9e0(const std::vector<short>&, const std::vector<short>&);
 bool FUN_140552700(const Unk_GVec3&, const Unk_GVec3&);
 class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 bool FUN_140a56ee0(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
 bool FUN_140a56f50(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
 int FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli> sp);
@@ -385,7 +384,7 @@ bool CFieldDataCli::LoadXBlock()
     CString strPath;
     strPath.Format("./Data/Xml/MapXblock/%s.xml", (const char*)m_strXBlock);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* root = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (root == 0)
@@ -435,7 +434,7 @@ int FUN_140a56ad0(Unk_140165cf0* node, const char* name, int& out)
         return 2;
     }
     int v = 0;
-    int r = FUN_140873890(node, name, v);
+    int r = XmlQuery((class TiXmlElement*)(node), name, v);
     if (r != 0)
         return r;
     out = v;

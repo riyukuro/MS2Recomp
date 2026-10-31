@@ -58,21 +58,33 @@ struct Unk_EntityAccess : egf::Entity {
     egf::PropertyResult Set(unsigned id, const void* p, unsigned t) { return SetPropertyValueUnsafe(id, p, t); }
 };
 
-void* FUN_1403ed2d0();                                       // game singleton getters
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141bca3c0(float);
+    void FUN_141bcabf0();
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 void* FUN_1403ed280();
 void* FUN_1403ed2b0();
 void* FUN_1409478c0();
-void FUN_141bca3c0(void* o, float fGravity);
 void FUN_141bcad60(void* o, __int64 a, int b);
-void* FUN_141bd0cc0(void* o);
 void FUN_14166ca20(void* p, int n);
 void FUN_14166ca80(void* p, int n);
 void FUN_14166cce0(void* p, int n);
 void FUN_14166cd70(void* p, int n);
-void* FUN_1416764a0(void* p);
-void* FUN_141676a10(void* p);
-void FUN_141bcabf0(void* o);
-void FUN_1411a7e80(void* o, int n);
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    class Ridee* FUN_1416764a0();
+    void* FUN_141676a10();
+};
+class CEffectService   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1411a7e80(int);
+};
 void FUN_140aeb900(void* o, unsigned char b);
 void FUN_141adc530(void* o, int n);
 void FUN_141adc5d0(void* o, int n);
@@ -120,38 +132,38 @@ MS2Ptr<FieldProperty> FUN_140b26ff0(int nType)
 
 // ---- Apply / Unapply ----
 // @0x140b27660
-void FieldPropertyGravityCli::vfunc_4() { FUN_141bca3c0(FUN_1403ed2d0(), m_fGravity); }
+void FieldPropertyGravityCli::vfunc_4() { ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bca3c0(m_fGravity); }
 
 // @0x140b27690
-void FieldPropertyMusicConcertCli::vfunc_4() { FUN_141bcad60(FUN_1403ed2d0(), m_i64, m_n); }
+void FieldPropertyMusicConcertCli::vfunc_4() { FUN_141bcad60(((void*)WorldService::GetInstance()), m_i64, m_n); }
 // @0x140b276d0
-void FieldPropertyMusicConcertCli::vfunc_5() { FUN_141bcad60(FUN_1403ed2d0(), 0, 0); }
+void FieldPropertyMusicConcertCli::vfunc_5() { FUN_141bcad60(((void*)WorldService::GetInstance()), 0, 0); }
 
 // @0x140b27700
 void FieldPropertyHideMyPCCli::vfunc_4()
 {
-    void* p = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!p)
         return;
     FUN_14166ca20(p, 1);
-    void* q = FUN_1416764a0(p);
+    void* q = ((void*)((class PCBase*)(void*)(p))->FUN_1416764a0());
     if (q)
         FUN_14166ca20(q, 1);
-    void* r = FUN_141676a10(p);
+    void* r = ((class PCBase*)(void*)(p))->FUN_141676a10();
     if (r)
         FUN_14166ca20(p, 1);            // sic: the exe passes p again
 }
 // @0x140b27790
 void FieldPropertyHideMyPCCli::vfunc_5()
 {
-    void* p = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!p)
         return;
     FUN_14166ca80(p, 1);
-    void* q = FUN_1416764a0(p);
+    void* q = ((void*)((class PCBase*)(void*)(p))->FUN_1416764a0());
     if (q)
         FUN_14166ca80(q, 1);
-    void* r = FUN_141676a10(p);
+    void* r = ((class PCBase*)(void*)(p))->FUN_141676a10();
     if (r)
         FUN_14166ca80(p, 1);            // sic: the exe passes p again
 }
@@ -159,7 +171,7 @@ void FieldPropertyHideMyPCCli::vfunc_5()
 // @0x140b27820
 void FieldPropertyLockMyPCCli::vfunc_4()
 {
-    void* p = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!p)
         return;
     FUN_14166cce0(p, 0x400);
@@ -167,24 +179,24 @@ void FieldPropertyLockMyPCCli::vfunc_4()
 // @0x140b27860
 void FieldPropertyLockMyPCCli::vfunc_5()
 {
-    void* p = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!p)
         return;
     FUN_14166cd70(p, 0x400);
 }
 
 // @0x140b278a0
-void FieldPropertyUserTagSymbolCli::vfunc_4() { FUN_141bcabf0(FUN_1403ed2d0()); }
+void FieldPropertyUserTagSymbolCli::vfunc_4() { ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bcabf0(); }
 
 // @0x140b278d0
-void FieldPropertyWeatherCli::vfunc_4() { FUN_1411a7e80(FUN_1403ed280(), m_nWeather); }
+void FieldPropertyWeatherCli::vfunc_4() { ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a7e80(m_nWeather); }
 // @0x140b27900
-void FieldPropertyWeatherCli::vfunc_5() { FUN_1411a7e80(FUN_1403ed280(), 0); }
+void FieldPropertyWeatherCli::vfunc_5() { ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a7e80(0); }
 
 // @0x140b27930
 void FieldPropertyAmbientLightCli::vfunc_4()
 {
-    Unk_Handle h = static_cast<Unk_FpWorld*>(FUN_1403ed2d0())->FUN_141bd0420(0x169ea355);
+    Unk_Handle h = static_cast<Unk_FpWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd0420(0x169ea355);
     if (FUN_1409f2130(&h, 0) || !FUN_140b285a0(FUN_1409f2190(&h)))
         return;
     Unk_EntRef ent(FUN_140b285b0(FUN_1409f2190(&h)));
@@ -204,7 +216,7 @@ Unk_Vec3f* FUN_140b27a80(FieldPropertyAmbientLightCli* p, Unk_Vec3f* out) { FUN_
 // @0x140b27ac0
 void FieldPropertyDirectionalLightCli::vfunc_4()
 {
-    Unk_Handle h = static_cast<Unk_FpWorld*>(FUN_1403ed2d0())->FUN_141bd0420(0x628f2cf9);
+    Unk_Handle h = static_cast<Unk_FpWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd0420(0x628f2cf9);
     if (FUN_1409f2130(&h, 0) || !FUN_140b285a0(FUN_1409f2190(&h)))
         return;
     Unk_EntRef ent(FUN_140b285b0(FUN_1409f2190(&h)));

@@ -22,6 +22,12 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/astooltip.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/uiupperhuddialog.h"
+#include "ms2/client/ms2/uidialog.h"
+#include "ms2/client/ms2/uiworldmapdialog.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uiservice.h"
 
 static UICommon::CMyPCKeyInputController s_keyInputController;     // header static (origin unknown), 0x143ad7930
 
@@ -50,13 +56,12 @@ int FUN_1407181d0(const CString& str);
 int FUN_140718170(const CString& str);
 void FUN_1418fe1c0(const CString& strUrl);
 
-class Unk_140c43790 { public: void FUN_14135ec00(const CString& strUrl, bool b); };
-Unk_140c43790* FUN_140c43790(int nUIType);
-class Unk_140961730 : public UIDialog { public: void FUN_141b5bc70(int nMapId); };
+UIWebBrowserBase* FUN_140c43790(int nUIType);
+class Unk_140961730 : public UIWorldMapDialog { };
 Unk_140961730* FUN_140961730(int nUIType);
 class Unk_140b99ba0 { public: void FUN_140e74550(int nId); };
 Unk_140b99ba0* FUN_140b99ba0(int nUIType);
-class Unk_140961550 : public UIDialog { public: int FUN_141924630(); void FUN_1412b8ff0(int nDungeonId); };
+class Unk_140961550 : public UIDialog { public: void FUN_1412b8ff0(int nDungeonId); };
 Unk_140961550* FUN_140961550(int nUIType);
 
 class Unk_1401aa6a0                     // 8-byte dictionary key (ctor 0x1401aa6a0)
@@ -71,7 +76,6 @@ private:
     int m_04;
 };
 class Unk_1401a9d70 { public: Unk_1401aa6a0 FUN_141811980(int a1, int nId); };
-Unk_1401a9d70* FUN_1401a9d70();
 
 class UIGameDictionaryDialog : public UIDialog
 {
@@ -81,18 +85,16 @@ public:
 class UIQuestDialog : public UIDialog
 {
 public:
-    int FUN_141a9c290(int nQuestId);
-    void FUN_141a9bff0(int nQuestId);
+    int HasAvailable(int nQuestId);
+    void FocusQuest(int nQuestId);
 };
 
 class Unk_1406cd330 { public: int FUN_1406ccfc0(); };       // NPC data
 MS2Ptr<Unk_1406cd330> FUN_1406cd330(int nNpcId);
 
 class Unk_1403ed2b0 { public: MS2Ptr<UIObject> FUN_141adcea0(int nUIType); };
-Unk_1403ed2b0* FUN_1403ed2b0();
 
-class Unk_140166410 { public: bool FUN_14036d750(const CStringW& strLocale); };
-Unk_140166410* FUN_140166410();
+CFeatureManager* FUN_140166410();
 int FUN_140651920(CString str);
 int FUN_1406516a0();
 
@@ -100,8 +102,8 @@ int FUN_1406516a0();
 template <class T>
 T* GetDialog(int nUIType)
 {
-    if (FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nUIType);
+    if (reinterpret_cast<Unk_1403ed2b0*>(TSingleton<CUIService>::GetInstance())) {
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_1403ed2b0*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUIType);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -137,7 +139,7 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
 
     if (strMethod == "webPage") {
         CString strUrl = pArgs->FUN_1422b8d30();
-        Unk_140c43790* p = FUN_140c43790(0x4e6a);
+        UIWebBrowserBase* p = FUN_140c43790(0x4e6a);
         if (p == NULL)
             return;
         p->FUN_14135ec00(strUrl, true);
@@ -156,18 +158,18 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         UIQuestDialog* p = GetDialog<UIQuestDialog>(0x4e3e);
         if (p == NULL)
             return;
-        if (p->FUN_141a9c290(nQuestId) == 0) {
+        if (p->HasAvailable(nQuestId) == 0) {
             FUN_1412751f0(GetStringCommonByKey(L"s_quest_dialog_unknown_quest"), 1, 1);
             return;
         }
-        p->FUN_141a9bff0(nQuestId);
+        p->FocusQuest(nQuestId);
         p->FUN_141924680();
     } else if (strMethod == "itemdictionary") {
         int nItemId = FUN_1407181d0(pArgs->FUN_1422b8d30());
         UIGameDictionaryDialog* p = GetDialog<UIGameDictionaryDialog>(0x4f0b);
         if (p == NULL)
             return;
-        p->FUN_140f46ea0(3, FUN_1401a9d70()->FUN_141811980(1, nItemId), 1);
+        p->FUN_140f46ea0(3, reinterpret_cast<Unk_1401a9d70*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nItemId), 1);
         p->FUN_141924680();
     } else if (strMethod == "npcdictionary") {
         int nNpcId = FUN_1407181d0(pArgs->FUN_1422b8d30());

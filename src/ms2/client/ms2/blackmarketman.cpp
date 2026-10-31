@@ -47,7 +47,7 @@ public:
     char m_pad[0x6aa8];
     Unk_BmConstInt m_nRegisterFee;                      // +0x6aa8
 };
-Unk_BmConstants* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // Black market dialog entry points taking a product (the dialog header types them with the page's own entry class).
 void FUN_1418d0e40(UIBlackMarketDialog* pDlg, MS2Ptr<CBlackMarketProduct> spProduct);
@@ -489,7 +489,7 @@ void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
         FUN_140d73bc0(0x8b7, 0, 0, CStringW(L""));
         break;
     case 37:
-        FUN_140d73aa0(FUN_14028dee0(0x688, FUN_1401d3200()->m_nRegisterFee.FUN_1402056b0(), BlockFormat(0x5a5)), 0, 0,
+        FUN_140d73aa0(FUN_14028dee0(0x688, ((class Unk_BmConstants*)FUN_1401d3200())->m_nRegisterFee.FUN_1402056b0(), BlockFormat(0x5a5)), 0, 0,
                       CStringW(L""));
         break;
     case 38:

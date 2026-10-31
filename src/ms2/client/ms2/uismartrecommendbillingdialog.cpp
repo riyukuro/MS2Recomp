@@ -27,6 +27,9 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/bigdatalogsystem.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // The header statics of the including TU: the sort type names, then the open sound name.
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -75,12 +78,10 @@ public:
     void FUN_141adc5d0(int nUiId);                              // hide
     void FUN_141adc530(int nUiId);                              // close
 };
-Unk_SrUIMgr* FUN_1403ed2b0();
 
 
 
 class Unk_SrClock;
-Unk_SrClock* FUN_14086d260();
 unsigned FUN_141473390(Unk_SrClock* p);                         // the service tick
 
 struct Unk_SrConstUInt { char m_pad_00[0x58]; };
@@ -105,8 +106,8 @@ void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int a1, int a2, 
 void FUN_141415600(const CString& strKey);                      // drop the preview
 void FUN_140710590(COutPacket& packet);                         // send the packet
 void FUN_141275260(int nId, int a, int b);                      // system message
-class Unk_SrInventory { public: int FUN_140a5ed40(int nItemId, int nRarity, int nCount); };   // has this many of the item
-extern Unk_SrInventory DAT_143ab2a90;
+   // has this many of the item
+extern Unk_Inventory DAT_143ab2a90;
 extern __int64 DAT_143ab2898;
 
 // @0x14134e430
@@ -171,8 +172,8 @@ void UISmartRecommendBillingDialog::vfunc_79(void* p)
             UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
             if (pNotify != 0)
                 pNotify->FUN_141abf6e0(m_item->m_nItemId, m_item->m_nRarity);
-            if (FUN_1403ed2b0()->FUN_141adc940(0x4e9e) == 0)
-                FUN_1403ed2b0()->FUN_141adc5d0(0x4e9e);
+            if (reinterpret_cast<Unk_SrUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e9e) == 0)
+                reinterpret_cast<Unk_SrUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e9e);
             UIDialog::vfunc_67();
         }
     }
@@ -337,9 +338,9 @@ int UISmartRecommendNotifyDialog::vfunc_13()
 // @0x14134e160
 static UISmartRecommendBillingDialog* FUN_14134e160(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_SrUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        Unk_SrUIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        Unk_SrUIRef ref = reinterpret_cast<Unk_SrUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (ref.FUN_1403e8a70() != 0)
             return dynamic_cast<UISmartRecommendBillingDialog*>(ref.FUN_1403ed9e0());
     }
@@ -356,9 +357,9 @@ int UISmartRecommendNotifyDialog::vfunc_28(const char* szMethod, const Scaleform
         UISmartRecommendBillingDialog* pBilling = FUN_14134e160(0x4e9f);
         if (pBilling != 0)
             pBilling->SetItem(m_item);
-        if (FUN_1403ed2b0()->FUN_141adc940(0x4e9f) == 0)
-            FUN_1403ed2b0()->FUN_141adc5d0(0x4e9f);
-        FUN_1403ed2b0()->FUN_141adc530(0x4e9f);
+        if (reinterpret_cast<Unk_SrUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e9f) == 0)
+            reinterpret_cast<Unk_SrUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e9f);
+        reinterpret_cast<Unk_SrUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e9f);
         if (m_item.get() != 0)
         {
             CString strValue = FUN_140513200("{0}", m_item->m_nId);
@@ -380,7 +381,7 @@ void UISmartRecommendNotifyDialog::vfunc_72()
     UIDialog::vfunc_72();
     if (m_nCloseTick != 0)
     {
-        if (FUN_141473390(FUN_14086d260()) > m_nCloseTick)
+        if (FUN_141473390(reinterpret_cast<Unk_SrClock*>(TSingleton<CMainSystem>::GetInstance())) > m_nCloseTick)
         {
             ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
             if (pDialog != 0)
@@ -413,7 +414,7 @@ void UISmartRecommendNotifyDialog::FUN_14134dcc0()
                 FUN_141415450(m_strBagKey, spItem, 0, 0x415, 0);
                 pDialog->FUN_14134e200("Open", m_strBagKey, m_item->m_strDesc, m_item->m_strTitle, m_item->m_nTime);
                 FUN_141276180(s_strOpenSound, "");
-                m_nCloseTick = FUN_141473390(FUN_14086d260()) + *FUN_1401d7c10(&FUN_1401d3200()->m_closeDelay);
+                m_nCloseTick = FUN_141473390(reinterpret_cast<Unk_SrClock*>(TSingleton<CMainSystem>::GetInstance())) + *FUN_1401d7c10(&FUN_1401d3200()->m_closeDelay);
                 if (m_item.get() != 0)
                 {
                     CString strValue = FUN_140513200("{0}", m_item->m_nId);

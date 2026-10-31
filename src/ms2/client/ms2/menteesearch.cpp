@@ -51,7 +51,7 @@ extern __int64 DAT_143ab2828;                       // the own character id
 CFeatureManager* FUN_140166410();
 class Unk_MenteeBanFlags { public: int FUN_1402c4c90(int nFlag); };         // blocked-action flag set
 struct Unk_MenteeConfig { char m_pad[8]; Unk_MenteeBanFlags m_8; };
-Unk_MenteeConfig* FUN_14025e7b0();                                          // global client config
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 void FUN_1412751b0(const CStringW& strText, int nKind);                     // shows the text as a notice
 void FUN_141b6de20();                                                       // thread start-up
@@ -211,7 +211,7 @@ void CMenteeSearchManager::ClearParam()
 // @0x140b6e730
 void CMenteeSearchManager::RequestSearch(const CMenteeSearchParam* pParam)
 {
-    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x41) == 1)
+    if (((struct Unk_MenteeConfig*)FUN_14025e7b0())->m_8.FUN_1402c4c90(0x41) == 1)
         return;
     if (!FUN_140166410()->FUN_14036d570(0x3f))
         return;

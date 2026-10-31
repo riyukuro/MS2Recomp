@@ -22,7 +22,6 @@
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-WorldService* FUN_1403ed2d0();
 
 // The inventory slot (invenslot.cpp) a slot can be dropped on: id 0x6200023.
 class Unk_InvenSlot : public InvenSlot
@@ -138,7 +137,7 @@ void ItemExchangeSlot::SetItem(MS2Ptr<CItem> spItem)
 // @0x140b6cbc0 (ITooltip::vfunc_0)
 int ItemExchangeSlot::vfunc_0(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ASTooltip tip(pPlayer, 0x20, 2);
@@ -154,7 +153,7 @@ int ItemExchangeSlot::vfunc_0(void* p)
 // @0x140b6cce0
 int ItemExchangeSlot::vfunc_8(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ASSlot slot(2);

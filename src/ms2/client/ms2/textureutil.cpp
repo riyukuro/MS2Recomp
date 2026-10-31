@@ -37,13 +37,16 @@ extern char DAT_143d6eb58;
 void* FUN_140aadf80();                                      // the application window object
 HWND FUN_14209c720(void* pkWindow);                         // its HWND
 class Unk_14025e7a0;
-Unk_14025e7a0* FUN_14025e7a0();                             // UI service singleton
-Ni2DBuffer* FUN_1422afcf0(Unk_14025e7a0* pkService);        // its scene capture buffer
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    class Ni2DBuffer* FUN_1422afcf0();
+};
 // The exe's RGBA32 (symbols.tsv maps ?RGBA32@NiPixelFormat to a different static).
 extern const NiPixelFormat DAT_1439fb040;                                  // MS2Renderer::ms_RTTI
 void FUN_140a34190(void* pDst, const void* pSrc, size_t n);   // bounded memcpy helper
 int FUN_1416b0b80(unsigned int uiFBMode);                   // frame-buffer mode -> D3DMULTISAMPLE_TYPE
-unsigned int FUN_1416b0b60(unsigned int uiFBMode);          // frame-buffer mode -> multisample quality
 
 // screenshot plumbing from other units
 extern char DAT_143b059e8;                                  // render-target registry singleton holder
@@ -68,7 +71,6 @@ int FUN_1414a5a40(CStringW kPath);                          // create a director
 std::string FUN_14083fa60(const char* pcData, unsigned int uiLength);   // encode a byte string
 void* FUN_1403ed2b0();                                      // display settings
 float FUN_141adbe70(void* pkSettings);                      // UI scale
-void FUN_141d38fa0();
 
 // A thread-local storage slot (the TLS index lives in the object).
 class Unk_TlsSlot
@@ -151,7 +153,7 @@ IDirect3DSurface9* CreateRenderTargetSurface(unsigned int uiWidth, unsigned int 
         pkRenderer->GetCreationParameters(uiCreateWidth, uiCreateHeight, uiUseFlags, kWndDevice, kWndFocus, uiAdapter, eDesc,
             eFBFormat, eDSFormat, ePresentationInterval, eSwapEffect, uiFBMode, uiBackBufferCount, uiRefreshRate);
         D3DMULTISAMPLE_TYPE eMultiSample = (D3DMULTISAMPLE_TYPE)FUN_1416b0b80(uiFBMode);
-        DWORD uiQuality = FUN_1416b0b60(uiFBMode);
+        DWORD uiQuality = NiDX9Renderer::GetMultiSampleQuality(uiFBMode);
         LPDIRECT3DDEVICE9 pkDevice = pkRenderer->GetD3DDevice();
         if (pkDevice != NULL)
         {
@@ -549,7 +551,7 @@ Ni2DBuffer* GetScreenshotBuffer(int nTarget)
 {
     if (nTarget != 0)
     {
-        return FUN_1422afcf0(FUN_14025e7a0());
+        return ((class GFxManager*)(class Unk_14025e7a0*)(((class Unk_14025e7a0*)FUN_14025e7a0())))->FUN_1422afcf0();
     }
     else
     {
@@ -1287,7 +1289,7 @@ NiImageConverter* FUN_141851720()
 {
     if (s_kConverterSlot.Get() == NULL)
     {
-        FUN_141d38fa0();
+        NiDevImageConverter::MS2DisableNIFImageReader();
         NiDevImageConverter* pkConverter = reinterpret_cast<NiDevImageConverter*>(new (Unk_TuMemHint(0)) Unk_TuConverterNew);
         pkConverter->AddReader(reinterpret_cast<NiImageReader*>(new (Unk_TuMemHint(0)) Unk_TuReaderNew));
         FUN_141851840(pkConverter);

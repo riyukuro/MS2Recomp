@@ -30,10 +30,8 @@
 #include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
 int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);
@@ -80,11 +78,11 @@ void CItemDefaultData::Load()
     CString strPath;
     strPath = FUN_14071a5b0("Table", "defaultItems.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0) {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
     MS2Ptr<TDefaultItems> spCommon(new TDefaultItems(0));

@@ -32,8 +32,13 @@ public:
     Unk_PvpActor* operator->() const { return p; }
     Unk_PvpActor* p;
 };
-Unk_PvpActor* FUN_141bd0cc0(void* pWorld);                          // the local player
-void* FUN_1403ed2d0();                                              // the world
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+public:
+    static class WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
+};
 int FUN_141bd3060(void* pWorld);                                    // the current map id
 CStringW GetStringCommon(int nId);
 void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW tag);
@@ -101,7 +106,7 @@ void CPVPManager::SendCancelRequest()
     {
     case 2:
     {
-        Unk_PvpActorPtr spActor(FUN_141bd0cc0(FUN_1403ed2d0()));
+        Unk_PvpActorPtr spActor(((class Unk_PvpActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()));
         if (spActor == 0)
             return;
         if (spActor->FUN_14166ce30() != 0)
@@ -112,7 +117,7 @@ void CPVPManager::SendCancelRequest()
         Unk_PvpRecordPtr spRecord = FUN_1412818c0()->FUN_14051a980(Selection());
         if (spRecord == 0)
             return;
-        if (spRecord->m_nMapId == FUN_141bd3060(FUN_1403ed2d0()))
+        if (spRecord->m_nMapId == FUN_141bd3060(((void*)WorldService::GetInstance())))
         {
             FUN_140d73aa0(GetStringCommon(0x42f), 0, 0, CStringW(L""));
             return;

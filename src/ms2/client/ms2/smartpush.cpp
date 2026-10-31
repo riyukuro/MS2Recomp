@@ -124,7 +124,6 @@ template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::operator->() const;           
 
 // ---- Callees of other units --------------------------------------------------------------------------------------------
 
-WorldService* FUN_1403ed2d0();                                          // the world service singleton
 void FUN_140710590(COutPacket& packet);                                 // send a packet
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text
 CStringW GetStringCommon(int nId);                                        // string table text by id
@@ -152,8 +151,6 @@ void FUN_1412751f0(const CStringW& str, int nType, int nFlag);          // chat 
 // The local player's buffs (PCBase +0x748).
 class Unk_PCBaseBuffs { public: int FUN_1409701d0(int nKind); MS2Ptr<AdditionalCli> FUN_14096fd30(int nKind); };   // AdditionalCliList
 class AdditionalCli : public CPtred {};
-__int64 FUN_141656ad0(PCBase* pPc);                                     // the character id
-int FUN_1416595b0(PCBase* pPc);                                         // a home edit state flag
 
 // The safe riding map table (FUN_140ba4fa0).
 class Unk_SpRideMaps { public: bool FUN_1401955f0(int nMapId); };
@@ -215,7 +212,6 @@ public:
 };
 extern Unk_SpInventory DAT_143ab2a90;
 extern __int64 DAT_143ab2898;                                           // the money
-CItemData* FUN_140527840(CItem* pItem);                                 // the item's data record
 
 // The additional effect (buff) table seen through an item's skill.
 class Unk_SpBuffLevel { public: char m_pad_00[0x30]; int m_nType; unsigned m_nValue; bool FUN_140175790(int nAbility); };
@@ -268,7 +264,7 @@ void Unk_SetBoxBool(CMsgBoxData* pBox, const char* szName, bool b)
 
 static MyPC* Unk_SpGetMyPC()
 {
-    return static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    return static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
 }
 
 // ---- Registration (.text$di 0x1400d5a30..) ------------------------------------------------------------------------------
@@ -438,7 +434,7 @@ CSmartPushAutoFishing::~CSmartPushAutoFishing()
 // @0x140dcf960
 void CSmartPushAutoFishing::vfunc_2()
 {
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return;
     if (CFishingManager::GetInstance()->FUN_140954150() == 0)
@@ -527,7 +523,7 @@ void CSmartPushAutoFishing::vfunc_4(int nValue)
 // @0x140dd0470
 int CSmartPushAutoFishing::vfunc_6()
 {
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     if (CFishingManager::GetInstance()->FUN_140954150() == 0)
@@ -672,7 +668,7 @@ CSmartPushAutoPlayInstrument::~CSmartPushAutoPlayInstrument()
 // @0x140dd0d50
 void CSmartPushAutoPlayInstrument::vfunc_2()
 {
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return;
     if (pMy->FUN_14166c930() != 0x2f)
@@ -776,7 +772,7 @@ void CSmartPushAutoPlayInstrument::vfunc_4(int nValue)
 // @0x140dd1830
 int CSmartPushAutoPlayInstrument::vfunc_6()
 {
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     if (pMy->FUN_14166c930() != 0x2f)
@@ -924,7 +920,7 @@ CSmartPushSafeRiding::~CSmartPushSafeRiding()
 // @0x140dd2140
 int CSmartPushSafeRiding::vfunc_6()
 {
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     if (pMy->FUN_1416764d0() == 0)
@@ -961,7 +957,7 @@ CStringW CSmartPushSafeRiding::vfunc_9()
 // @0x140dd2470
 bool CSmartPushSafeRiding::vfunc_12()
 {
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return false;
     if (FUN_140ba4fa0()->FUN_1401955f0(pMy->vfunc_141()))
@@ -996,7 +992,7 @@ CSmartPushSafeWaterRiding::~CSmartPushSafeWaterRiding()
 // @0x140dd2600
 int CSmartPushSafeWaterRiding::vfunc_6()
 {
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     if (pMy->FUN_1416764d0() == 0)
@@ -1077,7 +1073,7 @@ void CSmartPushSafeWaterRidingToggle::vfunc_13()
 // @0x140dd2b30
 int CSmartPushSafeWaterRidingToggle::vfunc_6()
 {
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     if (pMy->FUN_1416764d0() == 0)
@@ -1203,7 +1199,7 @@ bool CSmartPushAutoInteraction::FUN_140dd3a70(int nResult, const CMsgBoxData& da
 {
     if (nResult != 0)
         return true;
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return true;
     CStringW strCount = data.FUN_141a02d50();
@@ -1231,7 +1227,7 @@ bool CSmartPushAutoInteraction::FUN_140dd3a70(int nResult, const CMsgBoxData& da
 // @0x140dd3cb0
 int CSmartPushAutoInteractObject::vfunc_6()
 {
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     CInteractGatheringObject* pObj = FUN_140dd3dd0();
@@ -1243,7 +1239,7 @@ int CSmartPushAutoInteractObject::vfunc_6()
 // @0x140dd3d10
 int CSmartPushAutoInteractObject::vfunc_13()
 {
-    return FUN_1403ed2d0()->FUN_141bd99d0(vfunc_14());
+    return WorldService::GetInstance()->FUN_141bd99d0(vfunc_14());
 }
 
 // @0x140dd3d50
@@ -1258,12 +1254,12 @@ int CSmartPushAutoInteractObject::vfunc_14()
 // @0x140dd3dd0
 CInteractGatheringObject* CSmartPushAutoInteractObject::FUN_140dd3dd0()
 {
-    Unk_SpGameObj* pMy = static_cast<Unk_SpGameObj*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    Unk_SpGameObj* pMy = static_cast<Unk_SpGameObj*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     int nKind = m_data->m_nActionValue;
     ATL::CAtlArray<MS2Ptr<CInteractObject> > objects;
-    FUN_1403ed2d0()->FUN_141bc5fb0(&objects, 6);
+    WorldService::GetInstance()->FUN_141bc5fb0(&objects, 6);
     for (size_t i = 0; i < objects.GetCount(); i++)
     {
         CInteractObject* pObj = objects[i];
@@ -1286,10 +1282,10 @@ CInteractGatheringObject* CSmartPushAutoInteractObject::FUN_140dd3dd0()
 // @0x140dd40a0
 int CSmartPushAutoFunctionCubeObject::vfunc_6()
 {
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
-    if (FUN_1416595b0(pMy) != 0)
+    if (reinterpret_cast<PC*>(pMy)->FUN_1416595b0() != 0)
         return 0;
     if (!FUN_1409670e0()->FUN_1410d5640())
         return 0;
@@ -1302,10 +1298,10 @@ int CSmartPushAutoFunctionCubeObject::vfunc_6()
 // @0x140dd4130
 int CSmartPushAutoFunctionCubeObject::vfunc_13()
 {
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
-    return FUN_1409670b0()->FUN_141232430(vfunc_14(), FUN_141656ad0(pMy));
+    return FUN_1409670b0()->FUN_141232430(vfunc_14(), reinterpret_cast<PC*>(pMy)->FUN_141656ad0());
 }
 
 // The homemade cube seen through the data copy (statehomemade.cpp owns the COMDAT at 0x140ca6580).
@@ -1328,7 +1324,7 @@ int CSmartPushAutoFunctionCubeObject::vfunc_14()
 // @0x140dd4230
 CHomemadeCubeObject* CSmartPushAutoFunctionCubeObject::FUN_140dd4230()
 {
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     int nKind = m_data->m_nActionValue;
@@ -1338,13 +1334,13 @@ CHomemadeCubeObject* CSmartPushAutoFunctionCubeObject::FUN_140dd4230()
     case 6:
     {
         spCube = FUN_1409670b0()->FUN_141231200(reinterpret_cast<Unk_SpGameObj*>(pMy)->vfunc_18(),
-            Client::Constants::GetInstance()->FunctionCubeDistance.Read(), FUN_141656ad0(pMy), 8);
+            Client::Constants::GetInstance()->FunctionCubeDistance.Read(), reinterpret_cast<PC*>(pMy)->FUN_141656ad0(), 8);
         break;
     }
     case 5:
     {
         spCube = FUN_1409670b0()->FUN_141231200(reinterpret_cast<Unk_SpGameObj*>(pMy)->vfunc_18(),
-            Client::Constants::GetInstance()->FunctionCubeDistance.Read(), FUN_141656ad0(pMy), 7);
+            Client::Constants::GetInstance()->FunctionCubeDistance.Read(), reinterpret_cast<PC*>(pMy)->FUN_141656ad0(), 7);
         break;
     }
     }
@@ -1547,11 +1543,11 @@ int FUN_140dd5340(int nAbility)
     for (size_t i = 0; i < items.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem = items[i];
-        if (spItem == 0 || FUN_140527840(spItem) == 0)
+        if (spItem == 0 || ((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840())) == 0)
             continue;
-        if (FUN_140527840(spItem)->FUN_14053dc20() == 0)
+        if (((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->FUN_14053dc20() == 0)
             continue;
-        Unk_SpSkillLevelPtr spSkill = reinterpret_cast<Unk_SpSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(FUN_140527840(spItem)->FUN_14053dc20(), FUN_140527840(spItem)->FUN_14053dc40());
+        Unk_SpSkillLevelPtr spSkill = reinterpret_cast<Unk_SpSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->FUN_14053dc20(), ((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->FUN_14053dc40());
         if (spSkill.FUN_140932d90())
         {
             Unk_SpSkillEffects& effects = spSkill.FUN_1407ebbf0()->m_effects;

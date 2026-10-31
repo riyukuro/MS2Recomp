@@ -19,7 +19,11 @@ class Unk_PostProcessSvc
 public:
     void FUN_1416a3920(int nId, bool bOn);
 };
-Unk_PostProcessSvc* FUN_1409a8b20();
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 
 // Render target size: renderer wrapper (singleton 0x1409a8b10) -> back buffer (0x1409a8ac0) -> width / height.
 class Unk_RenderTarget
@@ -34,8 +38,8 @@ public:
     Unk_RenderTarget* FUN_1409a8ac0();
 };
 
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);     // TinyXML float attribute
-void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);         // validated global shader constant
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 extern NiFixedString DAT_143ae5460;                                             // blur offset x constant name
 extern NiFixedString DAT_143ae5468;                                             // blur offset y constant name
 
@@ -49,8 +53,8 @@ GaussianBlurEffectParam::GaussianBlurEffectParam()
 void GaussianBlurEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CPostEffectParam::vfunc_1(pNode);
-    FUN_140873360(pNode, "offsetMin", m_fOffsetMin);
-    FUN_140873360(pNode, "offsetMax", m_fOffsetMax);
+    XmlGetAttr((class TiXmlElement*)(pNode), "offsetMin", m_fOffsetMin);
+    XmlGetAttr((class TiXmlElement*)(pNode), "offsetMax", m_fOffsetMax);
 }
 MS2_REPLACE_METHOD(0x140cfd300, GaussianBlurEffectParam, vfunc_1, 92, 0x37F14C03);
 
@@ -69,7 +73,7 @@ GaussianBlurEffect::GaussianBlurEffect(int nId, const CPostEffectParam* pParam)
 void GaussianBlurEffect::vfunc_1()
 {
     CScreenEffectBase::vfunc_1();
-    FUN_1409a8b20()->FUN_1416a3920(0xb, true);
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(0xb, true);
 }
 MS2_REPLACE_METHOD(0x140cfd410, GaussianBlurEffect, vfunc_1, 45, 0x6DD405AA);
 
@@ -77,7 +81,7 @@ MS2_REPLACE_METHOD(0x140cfd410, GaussianBlurEffect, vfunc_1, 45, 0x6DD405AA);
 void GaussianBlurEffect::vfunc_4()
 {
     CScreenEffectBase::vfunc_4();
-    FUN_1409a8b20()->FUN_1416a3920(0xb, false);
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(0xb, false);
 }
 MS2_REPLACE_METHOD(0x140cfd450, GaussianBlurEffect, vfunc_4, 45, 0xF44CA84E);
 
@@ -101,15 +105,15 @@ void GaussianBlurEffect::vfunc_7(int nState, float fAlpha)
     {
         float fX = fOffset * ((float)nHeight / (float)nWidth);
         float fY = fOffset;
-        FUN_1409a5770(DAT_143ae5460, &fX, 1);
-        FUN_1409a5770(DAT_143ae5468, &fY, 1);
+        FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5460), &fX, 1);
+        FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5468), &fY, 1);
     }
     else
     {
         float fX = fOffset;
         float fY = fOffset * ((float)nWidth / (float)nHeight);
-        FUN_1409a5770(DAT_143ae5460, &fX, 1);
-        FUN_1409a5770(DAT_143ae5468, &fY, 1);
+        FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5460), &fX, 1);
+        FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5468), &fY, 1);
     }
 }
 MS2_REPLACE_METHOD(0x140cfd490, GaussianBlurEffect, vfunc_7, 394, 0xDB8F90F3);

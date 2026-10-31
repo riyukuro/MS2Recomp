@@ -86,7 +86,6 @@ Unk_Cursor* FUN_140aadf80();
 namespace egf { class Entity; }
 egf::Entity* FUN_14123c410(Unk_RpgActor* p);                // m_80 of the game object
 NiAVObject* FUN_141b6efc0(egf::Entity* p);
-const Vector3* FUN_140947900(NiAVObject* p);        // &world translate
 
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_140a17940(float f, float fMin, float fMax);   // clamp
@@ -141,7 +140,7 @@ void CTPSCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         if (!m_138)
             m_138 = pRoot;
         if (m_138)
-            m_78 = *FUN_140947900(m_138);
+            m_78 = *((struct Vector3 const*)&((class NiAVObject*)(class NiAVObject*)(m_138))->GetWorldTranslate());
         m_78.z += vfunc_27();
         m_6c = 1.5707964f;
         if (m_140)

@@ -23,11 +23,15 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/equipment.h"
+#include "ms2/client/ms2/cubemapinformationservice_3.h"
+
+// return types of the getters this unit calls
+class Unk_SoundSink;
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 // The world manager (FUN_1403ed2d0): only the local player.
-WorldService* FUN_1403ed2d0();
 
 // The player inventory (global 0x143ab2a90).
 extern Unk_Inventory DAT_143ab2a90;
@@ -36,15 +40,15 @@ extern Unk_Inventory DAT_143ab2a90;
 class Unk_ItemEquipData : public CItemData { };
 
 // The equip holder of the player (PC::FUN_1416561a0).
-class Unk_GcEquipSet { public: MS2Ptr<CEquipItem> FUN_1411e1780(int nSlot, int nKind); };
+class Unk_GcEquipSet : public CEquipment { };
 Unk_GcEquipSet* FUN_1416561a0(void* pPC);
 int FUN_1405451c0(const CStringA& strSlotName);             // the equip slot of a slot name
 
 class Unk_GcKeyBinds { };                                   // the key / skill-slot binding table
-Unk_GcKeyBinds* FUN_1409331f0();
+Unk_SoundSink* FUN_1409331f0();
 int FUN_14142e090(Unk_GcKeyBinds* pBinds, int nSkill, int nFlag);   // the skill's slot, -1 = none
 
-class Unk_GcHome { public: bool FUN_1410d5640(); };         // the home state
+class Unk_GcHome : public CubeMapInformationService { };         // the home state
 Unk_GcHome* FUN_1409670e0();
 int FUN_141527f60(void* pPC);                               // the cube-construct permission
 
@@ -104,7 +108,7 @@ MS2_REPLACE_METHOD(0x1413A8460, CGuideConditionEquipSkill, vfunc_2, 63, 0x7F9BBE
 // @0x1413a84b0
 int CGuideConditionEquipSkill::vfunc_3()
 {
-    unsigned nEquipped = (FUN_14142e090(FUN_1409331f0(), m_n20, 0) != -1);
+    unsigned nEquipped = (FUN_14142e090(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()), m_n20, 0) != -1);
     return FUN_1413a5600(nEquipped == (unsigned)m_nIsEquip);
 }
 MS2_REPLACE_METHOD(0x1413A84B0, CGuideConditionEquipSkill, vfunc_3, 110, 0x37B43B46);
@@ -136,7 +140,7 @@ MS2_REPLACE_METHOD(0x1413A8650, CGuideConditionConstructable, GetTypeName, 61, 0
 // @0x1413a86a0
 int CGuideConditionConstructable::vfunc_3()
 {
-    void* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPC = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     return FUN_1413a55a0(FUN_141527f60(pPC));
@@ -224,7 +228,7 @@ MS2_REPLACE_METHOD(0x1413A89B0, CGuideConditionEquipItem, vfunc_2, 227, 0xCCAFD1
 // @0x1413a8aa0
 int CGuideConditionEquipItem::vfunc_3()
 {
-    void* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPC = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     MS2Ptr<CEquipItem> spEquip = FUN_1416561a0(pPC)->FUN_1411e1780(FUN_1405451c0(m_strSlotName), m_nSlotType);
@@ -425,7 +429,7 @@ MS2_REPLACE_METHOD(0x1413A96C0, CGuideConditionCountItem, vfunc_2, 169, 0x72FECE
 // @0x1413a9770
 int CGuideConditionCountItem::vfunc_3()
 {
-    void* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPC = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     int nCount = DAT_143ab2a90.FUN_140a60c20(m_nItemType);
@@ -471,7 +475,7 @@ MS2_REPLACE_METHOD(0x1413A9960, CGuideConditionCountInDoorInstallItem, GetTypeNa
 // @0x1413a99b0
 int CGuideConditionCountInDoorInstallItem::vfunc_3()
 {
-    void* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPC = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     int nCount = FUN_1413a9ac0();

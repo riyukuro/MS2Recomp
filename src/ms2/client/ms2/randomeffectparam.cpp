@@ -16,15 +16,23 @@
 #include "hook/ms2hook.h"
 
 // Game TinyXML element: FirstChildElement / NextSiblingElement by name.
+class Unk_XmlNode   // C3: member view (real class not in this TU)
+{
+public:
+    Unk_XmlNode* FirstChild(char const*);
+    Unk_XmlNode* NextSibling(char const*);
+};
 class Unk_140165cf0
 {
 public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);
-    Unk_140165cf0* FUN_140168650(const char* pszName);
 };
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp) and string helpers (commonfiles).
-const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 CString FUN_140188f50(const char* psz, int n);                                          // null-safe CString
 void FUN_140177e10(const CString& str, ATL::CAtlArray<DWORD>& arr, const char* pszDelim);  // split to uints
 
@@ -85,9 +93,9 @@ CRandomEffectParam::CRandomEffectParam()
 void CRandomEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    CString strProb = FUN_140188f50(FUN_14086f4b0(pNode, "prob"), 0);
+    CString strProb = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("prob"), 0);
     FUN_140177e10(strProb, m_arrWeights, ", ");
-    for (Unk_140165cf0* pChild = pNode->FUN_140165cf0("effect"); pChild; pChild = pChild->FUN_140168650("effect"))
+    for (Unk_140165cf0* pChild = ((Unk_140165cf0*)((Unk_XmlNode*)(Unk_140165cf0*)(pNode))->FirstChild("effect")); pChild; pChild = ((Unk_140165cf0*)((Unk_XmlNode*)(Unk_140165cf0*)(pChild))->NextSibling("effect")))
     {
         CEffectParamPtr spParam = FUN_1411a04e0(m_str20, pChild);
         if (spParam.get())

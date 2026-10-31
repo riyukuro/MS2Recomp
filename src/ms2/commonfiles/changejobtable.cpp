@@ -16,9 +16,6 @@
 #include "ms2/commonfiles/filesystem.h"
 
 // Out-of-unit callees.
-CFeatureManager* FUN_140166410();
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 CStringTable* GetStringTable();                          // the string table singleton
 int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& rOut);
@@ -59,11 +56,11 @@ ChangeJobData::~ChangeJobData()
 // @0x1401d6550
 void CChangeJobTable::Load()
 {
-    if (!FUN_140166410()->FUN_14036d570(0xca))
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xca))
         return;
     CString strPath = FUN_14071a5b0("Table", "changeJob.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -72,7 +69,7 @@ void CChangeJobTable::Load()
     {
         CStringW strFeature;
         FUN_140873420(pNode, "feature", strFeature);
-        if (!FUN_140166410()->FUN_14036d4b0(strFeature))
+        if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d4b0(strFeature))
             continue;
         DataPtr spData(Unk_SocketNew(0));
         int nValue = 0;

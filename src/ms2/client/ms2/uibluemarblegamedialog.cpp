@@ -33,6 +33,9 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/client/ms2/uiservice.h"
 
 static UICommon::CMyPCKeyInputController s_keyInput;
 
@@ -45,13 +48,11 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
 // The debug key state (singleton).
-class Unk_14025e7c0 { public: bool FUN_14116d720(); };
-Unk_14025e7c0* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 
 // The UI service / scene manager singletons (the scene calls of the dialog's open and close).
 class Unk_BmSceneCtl;
 class Unk_BmSceneMgr;
-Unk_BmSceneCtl* FUN_1403ed2b0();
 Unk_BmSceneMgr* FUN_1408e57f0();
 void FUN_141ad9e50(Unk_BmSceneCtl* pCtl, int nScene);
 void FUN_141ada610(Unk_BmSceneCtl* pCtl, int nScene);
@@ -62,12 +63,11 @@ void FUN_141901470(int n, int nType);                               // UIObject:
 
 // The chat output.
 class Unk_BmChat { public: void FUN_1416fb300(const CStringW& strText); };
-Unk_BmChat* FUN_1403b4750();
 
 CGameRule* FUN_1401c0d90();                                         // TSingleton<CGameRule>::GetInstance
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringTable* GetStringTable();
-extern Unk_Inventory DAT_143ab2a90;                                 // the player inventory
+extern Unk_Inventory g_143ab2a90;                                   // the player inventory
 
 #include "ms2/commonfiles/commonutil.h"
 CStringW FUN_14028e060(const CString& strKey, const fmt::ArgList& args);
@@ -75,7 +75,7 @@ CStringW FUN_140938ae0(CStringW strKey, const int& n);              // localized
 CStringW FUN_14062b4f0(CStringW strKey, const int* pn);             // localized text with one number (pointer form)
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);    // localized text with one text
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // StringFormat with one text argument
-CStringW FUN_140218290(int n);                                      // number text
+CStringW Name_140218290(int n);                                     // number text
 CStringW FUN_140298ea0(CStringW strKey);                            // localized text, tooltip form
 CStringW FUN_14016a730(const char* sz, int nCodePage);              // multibyte to wide
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
@@ -172,8 +172,8 @@ void UIBlueMarbleGameDialog::vfunc_26()
 void UIBlueMarbleGameDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_141ada610(FUN_1403ed2b0(), 0x6200022);
-    FUN_141adad20(FUN_1403ed2b0(), 0x6200022);
+    FUN_141ada610(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance()), 0x6200022);
+    FUN_141adad20(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance()), 0x6200022);
     FUN_1422b9fd0(FUN_1408e57f0(), 0x620001d);
 }
 
@@ -195,8 +195,8 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
         int nKind = BM_PKT->ReadUInt8();
         if (nKind == 0) {
             FUN_1422b9fd0(FUN_1408e57f0(), 0x6200022);
-            FUN_141ad9e50(FUN_1403ed2b0(), 0x6200022);
-            FUN_141ada6f0(FUN_1403ed2b0(), 0x6200022);
+            FUN_141ad9e50(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance()), 0x6200022);
+            FUN_141ada6f0(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance()), 0x6200022);
             FUN_141901470(0, 0x4f15);
             m_nPosition = BM_PKT->ReadInt32();
             m_nFreeDice = BM_PKT->ReadInt32();
@@ -211,7 +211,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             FUN_140f23ca0();
             FUN_140f23940();
             m_30->Invoke("moveImmediately", m_nPosition);
-            m_30->Invoke("enableDebugDice", FUN_14025e7c0()->FUN_14116d720());
+            m_30->Invoke("enableDebugDice", FUN_14025e7c0()->IsDebugMode());
             vfunc_8(1);
             m_bIdle = 1;
         } else if (nKind == 2) {
@@ -257,7 +257,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             int nResult = BM_PKT->ReadUInt8();
             if (nResult == 1) {
                 CStringW strText = FUN_140938ae0(CStringW(L"s_bluemarble_result_consume_fail"), m_nConsumeItemId);
-                FUN_1403b4750()->FUN_1416fb300(strText);
+                reinterpret_cast<Unk_BmChat*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb300(strText);
                 FUN_1412751f0(strText, 1, 1);
             } else if (nResult == 4) {
                 FUN_1412751f0(GetStringCommonByKey(L"s_bluemarble_result_dice_complete"), 1, 1);
@@ -344,7 +344,7 @@ void UIBlueMarbleGameDialog::FUN_140f227a0(CInPacket& packet)
                 row.FUN_1407cba60("binding", FUN_140f23f10(spData->FUN_14053c510(), spData->FUN_14053c5a0(), nCount));
             }
         } else if (nKind != 0) {
-            CStringW strKind = FUN_140218290(nKind);
+            CStringW strKind = Name_140218290(nKind);
             CStringW strAction = FUN_14062b4f0(FUN_1401e8510(L"s_bluemarble_action_{0}", strKind), &nArg);
             CStringW strTooltip = FUN_140298ea0(FUN_1401e8510(L"s_bluemarble_action_tooltip_{0}", strKind));
             row.FUN_1407cbb20("action", strKind);
@@ -422,7 +422,7 @@ void UIBlueMarbleGameDialog::FUN_140f23200(int nAction, int nArg, int nPrevPosit
         m_30->Invoke("onActionNotifyParadise", nArg);
         break;
     default:
-        strMessage = FUN_14062b4f0(FUN_1401e8510(L"s_bluemarble_action_{0}", FUN_140218290(nAction)), &nArg);
+        strMessage = FUN_14062b4f0(FUN_1401e8510(L"s_bluemarble_action_{0}", Name_140218290(nAction)), &nArg);
         if (strMessage.GetLength() > 0)
             m_30->Invoke("onActionNotify", CStringW(strMessage));
         break;
@@ -483,7 +483,7 @@ void UIBlueMarbleGameDialog::FUN_140f23940()
 void UIBlueMarbleGameDialog::FUN_140f23b90()
 {
     if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_coinCount")) {
-        int nCoins = DAT_143ab2a90.FUN_140a5f180(m_nConsumeItemId, 0);
+        int nCoins = g_143ab2a90.FUN_140a5f180(m_nConsumeItemId, 0);
         CStringW strText = FUN_14062b4f0(CStringW(L"s_bluemarble_coin_count"), &nCoins);
         spText->FUN_1422c4cd0(strText);
     }

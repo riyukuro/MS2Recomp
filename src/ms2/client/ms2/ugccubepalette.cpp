@@ -152,14 +152,14 @@ public:
 };
 class Unk_NpcSvc { public: Unk_NpcRefPtr FUN_14067f180(int nKey); };
 
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 class Unk_GEMgr { public: __int64 FUN_14047bc50(int nA, int nB, __int64 nC); };
-Unk_GEMgr* FUN_1401c0d90();
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 CStringW FUN_1402918a0(int nType, int nId);
-unsigned FUN_141901d20(int nItemId, __int64 nInstance, __int64 nUgc);
-unsigned FUN_141901f70(int nItemId, __int64 nInstance, __int64 nUgc);
+int FUN_141901d20(int, __int64, __int64);   // C3: was FUN_141901d20
+int FUN_141901f70(int, __int64, __int64);   // C3: was FUN_141901f70
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 
 // The stock of the plot: the cubes the player has stored.
@@ -192,14 +192,22 @@ public:
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();
 };
 int FUN_141663080(PCBase* pPC);
-bool FUN_1415302e0(PCBase* pPC, int nItemId);
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_1415302e0(int);
+};
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 // The home / mastery service: the state of a box.
 class Unk_BoxSvc { public: int FUN_140936640(int nBoxId, int nArg); MS2Ptr<class Unk_BoxData> FUN_140935e60(int nBoxId); };
 class Unk_BoxData : public CPtred { public: void* m_pad; };
-Unk_BoxSvc* FUN_1406c7600();
-int FUN_140158870(void* p);
+class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
+class CAchieve   // C3: member view for the former free stand-ins
+{
+public:
+    int GetData68();
+};
 
 // ---- the cubes already taken (the usage of the bag, the stock and the table while a list is built) ----
 
@@ -260,7 +268,7 @@ bool UGCCube::FUN_140def420()                                                   
         if (FUN_141663080(pPC) < itemData->FUN_14053fdb0())
             return true;
     }
-    return FUN_1415302e0(pPC, itemData->FUN_14053c510());
+    return ((class MyPC*)(class PCBase*)(pPC))->FUN_1415302e0(itemData->FUN_14053c510());
 }
 
 bool UGCCube::FUN_140def4f0()                                                                  // @0x140def4f0
@@ -289,7 +297,7 @@ __int64 UGCCube::FUN_140def5f0()                                                
 __int64 UGCCube::FUN_140def620()                                                               // @0x140def620
 {
     if (ingredient.get() != 0)
-        return FUN_1401c0d90()->FUN_14047bc50(ingredient->m_nCategory, ingredient->m_nTier, ingredient->m_nValue);
+        return ((class Unk_GEMgr*)FUN_1401c0d90())->FUN_14047bc50(ingredient->m_nCategory, ingredient->m_nTier, ingredient->m_nValue);
     return 0;
 }
 
@@ -370,7 +378,7 @@ int UGCCube::FUN_140defcd0()                                                    
 CStringW UGCCube::FUN_140defd20()                                                              // @0x140defd20
 {
     int nTier = FUN_140defcd0();
-    if (FUN_140166410()->FUN_14036d710(0x61) && nTier == 3)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d710(0x61) && nTier == 3)
         return FUN_1402918a0(10, FUN_140def5a0());
     return FUN_1402918a0(nTier, FUN_140def5a0());
 }
@@ -986,10 +994,10 @@ bool UGCCubePalette::FUN_140df3100(const MS2Ptr<CFieldDataCli>& spField, const M
     }
     int nBoxId = spIng->m_nBoxId;
     int nBoxArg = spIng->m_nBoxArg;
-    if (FUN_1406c7600()->FUN_140936640(nBoxId, nBoxArg) == 0)
+    if (((class Unk_BoxSvc*)FUN_1406c7600())->FUN_140936640(nBoxId, nBoxArg) == 0)
     {
-        MS2Ptr<Unk_BoxData> spBox = FUN_1406c7600()->FUN_140935e60(nBoxId);
-        if (spBox && FUN_140158870(spBox.get()) != 0)
+        MS2Ptr<Unk_BoxData> spBox = ((class Unk_BoxSvc*)FUN_1406c7600())->FUN_140935e60(nBoxId);
+        if (spBox && ((class CAchieve*)(void*)(spBox.get()))->GetData68() != 0)
             return true;
     }
     return false;

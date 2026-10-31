@@ -64,10 +64,8 @@
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
 bool FUN_14028f650(Unk_140165cf0* pElem);                   // the node is a usable element
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-class Unk_CommonLog { public: void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg); };
-Unk_CommonLog* FUN_140166440();
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index or -1
@@ -77,7 +75,6 @@ class Unk_ItemEquipData : public CItemData {};
 class Unk_ItemEnchantData : public CItemStatus {};
 
 CItemOptionTable* FUN_140166430();                          // TSingleton<CItemOptionTable>::GetInstance
-CFeatureManager* FUN_140166410();                           // TSingleton<CFeatureManager>::GetInstance
 CGameRule* FUN_1401c0d90();                                 // TSingleton<CGameRule>::GetInstance
 CStringTable* GetStringTable();                              // TSingleton<CStringTable>::GetInstance
 unsigned FUN_1405575b0(Unk_IngTable*, int);                 // the lock item of an item
@@ -152,12 +149,12 @@ int CItemRemakeScrollTable::Load()
     CString strPath = FUN_14071a5b0("Table", "itemRemakeScroll.xml");
     FUN_1401d1160(strPath);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 1;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("remakeScroll"); pNode != 0;
@@ -427,7 +424,7 @@ int FUN_140616dd0(MS2Ptr<CItem> item)
 // @0x140616f10
 unsigned FUN_140616f10(MS2Ptr<CItem> item)
 {
-    if (item == 0 || !FUN_140166410()->FUN_14036d570(0xa5))
+    if (item == 0 || !TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xa5))
         return 0;
     if (item->FUN_140525640() != 0)
         return 0;
@@ -442,13 +439,13 @@ bool FUN_140616fd0(MS2Ptr<CItem> item)
         return false;
     MS2Ptr<CItemData> spData(item->FUN_140527840());
     if (spData->FUN_14053d600())
-        return FUN_140166410()->FUN_14036d570(0x8a);
+        return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x8a);
     else if (spData->FUN_14053d2f0())
-        return FUN_140166410()->FUN_14036d570(0x89);
+        return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x89);
     else if (spData->FUN_14053d5c0())
-        return FUN_140166410()->FUN_14036d570(0x8b);
+        return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x8b);
     else if (spData->FUN_14053cc40())
-        return FUN_140166410()->FUN_14036d570(0x9b);
+        return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x9b);
     return false;
 }
 
@@ -928,7 +925,7 @@ CStringW FUN_140619760(int nItemId, unsigned nLevel)
         return CStringW(L"");
     unsigned nLockId = FUN_1405575b0(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), nItemId);
     nRank = nLevel;
-    if (FUN_140166410()->FUN_14036d570(0xa5))
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xa5))
         nRank = nLevel;
     if (nRank == 0)
         nRank = FUN_14053feb0(nLockId);

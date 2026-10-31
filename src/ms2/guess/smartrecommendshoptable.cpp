@@ -27,14 +27,18 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 
+// return types of the getters this unit calls
+class CFileSystem;
+class Unk_140166430;
+
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 class Unk_RsLoader : public CFileSystem { };
-Unk_RsLoader* FUN_140166420();
+CFileSystem* GetFileSystem();
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
 class Unk_RsItemTable { public: void FUN_1405f5e90(int nCode, int nRank, CString strTag, CString strInfo); };
-Unk_RsItemTable* FUN_140166430();
+Unk_140166430* FUN_140166430();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
 unsigned char FUN_1401d1320(CCacheData* p);                             // file changed since load
@@ -132,7 +136,7 @@ int CSmartRecommendShopTable::FUN_140815ac0(CString strPath)
     {
         m_spData->m_items.RemoveAll();
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        if (reinterpret_cast<Unk_RsLoader*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             return 0;
         m_spData->FUN_1401d1160(CString(strPath));
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
@@ -159,8 +163,8 @@ int CSmartRecommendShopTable::FUN_140815ac0(CString strPath)
             m_spData->m_items.SetAt(spItem->m_nCode, spItem);
             CString strCode;
             strCode.Format("code=%u", spItem->m_nCode);
-            FUN_140166430()->FUN_1405f5e90(spItem->m_nItemId, spItem->m_nItemRank, CString("recommendItem smartRecommendShop.xml"), CString(strCode));
-            FUN_140166430()->FUN_1405f5e90(spItem->m_nRequireItemId, spItem->m_nRequireItemRank, CString("requireItem smartRecommendShop.xml"), CString(strCode));
+            reinterpret_cast<Unk_RsItemTable*>(FUN_140166430())->FUN_1405f5e90(spItem->m_nItemId, spItem->m_nItemRank, CString("recommendItem smartRecommendShop.xml"), CString(strCode));
+            reinterpret_cast<Unk_RsItemTable*>(FUN_140166430())->FUN_1405f5e90(spItem->m_nRequireItemId, spItem->m_nRequireItemRank, CString("requireItem smartRecommendShop.xml"), CString(strCode));
         }
         return 1;
     }

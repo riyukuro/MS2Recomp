@@ -104,7 +104,7 @@ public:
     void* m_pad_08;
     Unk_LtQuestMgrIf m_if;                                          // +0x10
 };
-Unk_LtQuestMgr* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 void FUN_1416cb260(Unk_LtQuestMgr* pMgr, ATL::CAtlArray<int>* pOut, int a1, int a2, int a3);   // the open quest ids
 
 // The string table global (+0x348: the box marker effect name).
@@ -114,7 +114,7 @@ public:
     void* m_pad[0x69];
     CString m_strBox;                                               // +0x348
 };
-Unk_LtStrTable* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The local player and its actor.
 class Unk_LtActorB
@@ -128,7 +128,6 @@ public:
     Unk_LtActorB* FUN_141530290();
 };
 class Unk_LtPlayer;
-Unk_LtActor* FUN_141bd0cc0(Unk_LtPlayer* pPlayer);
 
 // @0x141448190
 CLiftableTarget::CLiftableTarget() : m_ent(0)
@@ -161,7 +160,7 @@ int CLiftableTarget::vfunc_1(Unk_EntRef ent)
 // @0x1414483e0
 void CLiftableTarget::FUN_1414483e0()
 {
-    Unk_LtActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_LtPlayer*>(WorldService::GetInstance()));
+    Unk_LtActor* pActor = ((class Unk_LtActor*)((class WorldService*)(class Unk_LtPlayer*)(reinterpret_cast<Unk_LtPlayer*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor == 0)
         return;
     if (pActor->FUN_1416595d0() == 0)
@@ -170,10 +169,10 @@ void CLiftableTarget::FUN_1414483e0()
         return;
     }
     ATL::CAtlArray<int> ids;
-    FUN_1416cb260(FUN_140764020(), &ids, 1, 0xb, 0xffffffff);
+    FUN_1416cb260(((class Unk_LtQuestMgr*)FUN_140764020()), &ids, 1, 0xb, 0xffffffff);
     for (unsigned __int64 i = 0; i < ids.GetCount(); i++)
     {
-        MS2Ptr<Unk_LtQuest> spQuest = (&FUN_140764020()->m_if)->vfunc_3(ids[i]);
+        MS2Ptr<Unk_LtQuest> spQuest = (&((class Unk_LtQuestMgr*)FUN_140764020())->m_if)->vfunc_3(ids[i]);
         if (spQuest.IsNull())
             continue;
         if ((&spQuest->m_if)->vfunc_1() != 0)
@@ -227,7 +226,7 @@ void CLiftableTarget::FUN_141448920()
 // @0x141448970
 CString CLiftableTargetBox::vfunc_2()
 {
-    return FUN_1401d31f0()->m_strBox;
+    return ((class Unk_LtStrTable*)FUN_1401d31f0())->m_strBox;
 }
 
 // @0x1414489c0

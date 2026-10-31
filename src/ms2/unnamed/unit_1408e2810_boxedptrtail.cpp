@@ -17,8 +17,12 @@ struct Unk_BoxedPointer {
     void* m_pValue;             // +0x08 the boxed pointer
 };
 
-int FUN_140159bc0(void* p);     // outside this unit: release the reference, 0 = last one
-void FUN_140159ba0(void* p);    // outside this unit: free the pointee after its destroy
+class CPtred   // C3: member view for the former free stand-ins
+{
+public:
+    static void DeletePtred(class CPtred*);
+    static int ReleasePtred(class CPtred*);
+};
 
 void FUN_1408e2a90(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e2ae0(Unk_BoxedPointer* p, void* pUnused);
@@ -135,9 +139,9 @@ void FUN_1408e2a50(Unk_BoxedPointer* p)
 void FUN_1408e2a90(Unk_BoxedPointer* p, void* pUnused)
 {
     void* pValue = p->m_pValue;
-    if (FUN_140159bc0(pValue) == 0) {
+    if (CPtred::ReleasePtred((class CPtred*)(pValue)) == 0) {
         FUN_1408e2510(pValue);
-        FUN_140159ba0(pValue);
+        CPtred::DeletePtred((class CPtred*)(pValue));
     }
 }
 
@@ -145,9 +149,9 @@ void FUN_1408e2a90(Unk_BoxedPointer* p, void* pUnused)
 void FUN_1408e2ae0(Unk_BoxedPointer* p, void* pUnused)
 {
     void* pValue = p->m_pValue;
-    if (FUN_140159bc0(pValue) == 0) {
+    if (CPtred::ReleasePtred((class CPtred*)(pValue)) == 0) {
         FUN_1408e2530(pValue);
-        FUN_140159ba0(pValue);
+        CPtred::DeletePtred((class CPtred*)(pValue));
     }
 }
 
@@ -155,9 +159,9 @@ void FUN_1408e2ae0(Unk_BoxedPointer* p, void* pUnused)
 void FUN_1408e2b30(Unk_BoxedPointer* p, void* pUnused)
 {
     void* pValue = p->m_pValue;
-    if (FUN_140159bc0(pValue) == 0) {
+    if (CPtred::ReleasePtred((class CPtred*)(pValue)) == 0) {
         FUN_1408e2550(pValue);
-        FUN_140159ba0(pValue);
+        CPtred::DeletePtred((class CPtred*)(pValue));
     }
 }
 
@@ -165,9 +169,9 @@ void FUN_1408e2b30(Unk_BoxedPointer* p, void* pUnused)
 void FUN_1408e2b80(Unk_BoxedPointer* p, void* pUnused)
 {
     void* pValue = p->m_pValue;
-    if (FUN_140159bc0(pValue) == 0) {
+    if (CPtred::ReleasePtred((class CPtred*)(pValue)) == 0) {
         FUN_1408e2570(pValue);
-        FUN_140159ba0(pValue);
+        CPtred::DeletePtred((class CPtred*)(pValue));
     }
 }
 
@@ -175,9 +179,9 @@ void FUN_1408e2b80(Unk_BoxedPointer* p, void* pUnused)
 void FUN_1408e2bd0(Unk_BoxedPointer* p, void* pUnused)
 {
     void* pValue = p->m_pValue;
-    if (FUN_140159bc0(pValue) == 0) {
+    if (CPtred::ReleasePtred((class CPtred*)(pValue)) == 0) {
         FUN_1408e2590(pValue);
-        FUN_140159ba0(pValue);
+        CPtred::DeletePtred((class CPtred*)(pValue));
     }
 }
 
@@ -185,9 +189,9 @@ void FUN_1408e2bd0(Unk_BoxedPointer* p, void* pUnused)
 void FUN_1408e2c20(Unk_BoxedPointer* p, void* pUnused)
 {
     void* pValue = p->m_pValue;
-    if (FUN_140159bc0(pValue) == 0) {
+    if (CPtred::ReleasePtred((class CPtred*)(pValue)) == 0) {
         FUN_14041d1b0(pValue);
-        FUN_140159ba0(pValue);
+        CPtred::DeletePtred((class CPtred*)(pValue));
     }
 }
 
@@ -195,9 +199,9 @@ void FUN_1408e2c20(Unk_BoxedPointer* p, void* pUnused)
 void FUN_1408e2c70(Unk_BoxedPointer* p, void* pUnused)
 {
     void* pValue = p->m_pValue;
-    if (FUN_140159bc0(pValue) == 0) {
+    if (CPtred::ReleasePtred((class CPtred*)(pValue)) == 0) {
         FUN_1408e25b0(pValue);
-        FUN_140159ba0(pValue);
+        CPtred::DeletePtred((class CPtred*)(pValue));
     }
 }
 
@@ -205,9 +209,9 @@ void FUN_1408e2c70(Unk_BoxedPointer* p, void* pUnused)
 void FUN_1408e2cc0(Unk_BoxedPointer* p, void* pUnused)
 {
     void* pValue = p->m_pValue;
-    if (FUN_140159bc0(pValue) == 0) {
+    if (CPtred::ReleasePtred((class CPtred*)(pValue)) == 0) {
         FUN_1408e25d0(pValue);
-        FUN_140159ba0(pValue);
+        CPtred::DeletePtred((class CPtred*)(pValue));
     }
 }
 
@@ -215,9 +219,9 @@ void FUN_1408e2cc0(Unk_BoxedPointer* p, void* pUnused)
 void FUN_1408e2d10(Unk_BoxedPointer* p, void* pUnused)
 {
     void* pValue = p->m_pValue;
-    if (FUN_140159bc0(pValue) == 0) {
+    if (CPtred::ReleasePtred((class CPtred*)(pValue)) == 0) {
         FUN_1408e25f0(pValue);
-        FUN_140159ba0(pValue);
+        CPtred::DeletePtred((class CPtred*)(pValue));
     }
 }
 
@@ -225,9 +229,9 @@ void FUN_1408e2d10(Unk_BoxedPointer* p, void* pUnused)
 void FUN_1408e2d60(Unk_BoxedPointer* p, void* pUnused)
 {
     void* pValue = p->m_pValue;
-    if (FUN_140159bc0(pValue) == 0) {
+    if (CPtred::ReleasePtred((class CPtred*)(pValue)) == 0) {
         FUN_1408e2610(pValue);
-        FUN_140159ba0(pValue);
+        CPtred::DeletePtred((class CPtred*)(pValue));
     }
 }
 

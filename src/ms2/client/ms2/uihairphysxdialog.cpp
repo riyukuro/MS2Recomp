@@ -40,6 +40,10 @@
 #include "ms2/commonfiles/item.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/asdropdownmenu.h"
+#include "ms2/client/ms2/equipment.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
 
@@ -59,25 +63,7 @@ class Unk_HpxInput : public ASUIComponent
 public:
     void FUN_1422e0a60(const CString& strText);                 // set the text
 };
-class Unk_HpxCombo : public ASUIComponent
-{
-public:
-    virtual void vfunc_16();                                    // 16..23 (ASUIComponent slots)
-    virtual void vfunc_17();
-    virtual void vfunc_18();
-    virtual void vfunc_19();
-    virtual void vfunc_20();
-    virtual void vfunc_21();
-    virtual void vfunc_22();
-    virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);                       // 24 validateNow
-    unsigned int FUN_1422df5f0(unsigned int nRows);             // visible rows
-    void FUN_1422df690(int nRow);                               // select a row
-    unsigned int FUN_1422dfb90();                               // row count
-    void FUN_1422dfc10();                                       // remove all rows
-    void FUN_1422dfce0(const CStringW& strLabel);               // add a row
-    CStringW FUN_1422dfe00();                                   // the selected label
-};
+class Unk_HpxCombo : public ASDropdownMenu {};                    // "m_joints"
 
 // The exe's NiPhysXPropDesc keeps its joint array at +0x30 (the engine header has another layout); the same view as
 // equipmodelforceapplier.cpp's, whose accessors were first emitted there.
@@ -102,15 +88,13 @@ MS2_CHECK_OFFSET(Unk_HpxHairData, m_akPos, 0x60);
 MS2_CHECK_OFFSET(Unk_HpxHairData, m_akRot, 0x78);
 
 class Unk_HpxWorld { public: PCBase* FUN_141bd0cc0(); };       // the player (NULL outside the game)
-Unk_HpxWorld* FUN_1403ed2d0();
 class Unk_HpxUIMgr
 {
 public:
     void FUN_141adc530(int nId);                                // open
     void FUN_141adc5d0(int nId);                                // close
 };
-Unk_HpxUIMgr* FUN_1403ed2b0();
-class Unk_HpxEquipSet { public: void FUN_1411e9190(int bOnlyPonytail); };
+class Unk_HpxEquipSet : public CEquipment { };
 Unk_HpxEquipSet* FUN_1416561a0(PCBase* pPc);
 int FUN_14123c580(PCBase* pPc);                                 // object id
 void FUN_141901390(int bRelease, int nLayer);                   // the player key input layer
@@ -212,7 +196,7 @@ void UIHairPhysxDialog::OnLoadComplete()
     FUN_1419264e0("m_reset", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHairPhysxDialog::FUN_141982880));
     FUN_1419264e0("m_mirror", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHairPhysxDialog::FUN_141982940));
     FUN_1419264e0("m_save", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHairPhysxDialog::FUN_141982860));
-    PCBase* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPc = reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pPc)
         return;
     pPc->FUN_14166d8e0(efd::Point3(0.0f, -1.0f, 0.0f));
@@ -221,7 +205,7 @@ void UIHairPhysxDialog::OnLoadComplete()
     m_2c0.AssignRaw(new Customize(FUN_14123c580(pPc), static_cast<IItemCustomizeEventListener*>(this), 0));
     m_2c0->FUN_140cd2530(6);
     m_2c0->FUN_140cd25c0(1);
-    FUN_1403ed2b0()->FUN_141adc530(0x4ef2);
+    reinterpret_cast<Unk_HpxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ef2);
     m_2d0 = FUN_140cd47b0(0x4ef2);
     m_190.MakeIdentity();
     m_1c4.MakeIdentity();
@@ -245,7 +229,7 @@ MS2_REPLACE_METHOD(0x141981450, UIHairPhysxDialog, OnLoadComplete, 1441, 0xDB01E
 void UIHairPhysxDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    PCBase* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPc = reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc)
     {
         pPc->FUN_14166d8e0(efd::Point3(0.0f, -1.0f, 0.0f));
@@ -265,7 +249,7 @@ void UIHairPhysxDialog::vfunc_26()
         m_2c0 = 0;
     }
     m_2d0 = 0;
-    FUN_1403ed2b0()->FUN_141adc5d0(0x4ef2);
+    reinterpret_cast<Unk_HpxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4ef2);
 }
 MS2_REPLACE_METHOD(0x141981A00, UIHairPhysxDialog, vfunc_26, 473, 0x9AD1B8E0);
 
@@ -396,7 +380,7 @@ MS2_REPLACE_METHOD(0x1419821D0, UIHairPhysxDialog, FUN_1419821d0, 377, 0x16028B6
 // @0x141982350
 void UIHairPhysxDialog::FUN_141982350(int nOnly)
 {
-    PCBase* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPc = reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pPc)
         return;
     if (nOnly)
@@ -601,7 +585,7 @@ void UIHairPhysxDialog::FUN_141983010()
     if ((pService = pServices->GetSystemServiceAs<ecrPhysX::PropService>()) == 0)
         return;
     Unk_PickTarget* pPart = 0;
-    FUN_141695f10(FUN_1403ed2d0()->FUN_141bd0cc0(), &pPart, 0);
+    FUN_141695f10(reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0(), &pPart, 0);
     CKfmModel* pKfm = FUN_1411de170(pPart);
     if (pKfm == 0)
         return;
@@ -688,7 +672,7 @@ void UIHairPhysxDialog::FUN_141983730()
     if ((pService = pServices->GetSystemServiceAs<ecrPhysX::PropService>()) == 0)
         return;
     Unk_PickTarget* pPart = 0;
-    FUN_141695f10(FUN_1403ed2d0()->FUN_141bd0cc0(), &pPart, 0);
+    FUN_141695f10(reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0(), &pPart, 0);
     CKfmModel* pKfm = FUN_1411de170(pPart);
     if (pKfm == 0)
         return;
@@ -766,7 +750,7 @@ MS2_REPLACE_METHOD(0x141983C60, UIHairPhysxDialog, FUN_141983c60, 746, 0x967CAED
 // @0x141983f50
 void UIHairPhysxDialog::FUN_141983f50()
 {
-    PCBase* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPc = reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     int nSide;
     int nMode;
     if (pPc == 0)
@@ -874,7 +858,7 @@ MS2_REPLACE_METHOD(0x141984360, UIHairPhysxDialog, FUN_141984360, 1698, 0x448B5B
 // @0x141984a10
 int UIHairPhysxDialog::FUN_141984a10(int nSide, Unk_HpxModel** ppModel)
 {
-    PCBase* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPc = reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     Unk_PickTarget* pFirst = 0;
@@ -903,7 +887,7 @@ MS2_REPLACE_METHOD(0x141984A10, UIHairPhysxDialog, FUN_141984a10, 217, 0xD88E4BE
 // @0x141984af0
 int UIHairPhysxDialog::FUN_141984af0(int nSide, Unk_HpxModel** ppLeft, Unk_HpxModel** ppRight)
 {
-    PCBase* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPc = reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     Unk_PickTarget* pFirst = 0;

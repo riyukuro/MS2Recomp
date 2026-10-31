@@ -22,7 +22,7 @@ IDistanceCalculator* FUN_14028e960(int nType);                      // commonuti
 bool FUN_14028d470(float a, float b);                               // approx equal
 PCBase* FUN_14096e110(PCBase* pObject);                         // cast to the mount/npc-side class (null if none)
 PCBase* FUN_140974230(PCBase* pObject);                         // cast to the player class
-CPhysXHelper* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 
 // @0x1413fc9d0
 CHitControl::CHitControl()
@@ -79,7 +79,7 @@ bool CPushControl::vfunc_1(GameObject* pActor, double dTime)
         NiPoint3 kPos = pActor->vfunc_18();
         efd::Point3 kHit = efd::Point3::ZERO;
         // CPhysXHelper takes the same 12-byte point as its placeholder Vector3
-        if (FUN_1409f7ca0()->FUN_14168a310(reinterpret_cast<const Vector3&>(kPos),
+        if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310(reinterpret_cast<const Vector3&>(kPos),
                                            reinterpret_cast<Vector3&>(kHit), 0, 0, 0, 0) != 0) {
             kHit.z = kHit.z + 1.0f;
             if (kPos.z > kHit.z)

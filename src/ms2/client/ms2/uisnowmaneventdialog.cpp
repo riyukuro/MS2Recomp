@@ -15,6 +15,8 @@
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uirewardnotify.h"
+#include "ms2/client/ms2/worldservice.h"
 
 namespace UICommon {
 class CAlignmentInfo : public CPtred {
@@ -53,8 +55,7 @@ public:
     int FUN_1422e6310();
 };
 
-class Unk_SnowmanUIManager { public: void* FUN_141bd0cc0(); };
-Unk_SnowmanUIManager* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 bool FUN_140184310(const CString&, const char*);
 
 // Time value (ctor 0x1406c47a0); the declared copy ctor forces by-pointer passing.
@@ -67,7 +68,7 @@ private:
     __int64 m_0; __int64 m_8;
 };
 bool FUN_14086ab70(Unk_Time a, Unk_Time b, int nBaseHour);
-__int64 FUN_140869440();
+__int64 GetServerTime();
 
 // The item lists inside a snowman record: +8 is the first element.
 class Unk_SnowmanItems {
@@ -132,8 +133,7 @@ class Unk_SnowmanItem : public CPtred { public: CString FUN_14053fdd0(); };
 MS2Ptr<Unk_SnowmanItem> FUN_14053f870(int);
 void FUN_140710590(COutPacket&);
 
-class Unk_SnowmanPopup { public: void FUN_141abf6e0(int, int); };
-Unk_SnowmanPopup* FUN_140938cd0(int);
+UIRewardNotify* FUN_140938cd0(int);
 
 // ASObj members used here only (the shared header lacks them).
 class Unk_SnowmanDisplay { public: virtual void vfunc_0(); virtual void vfunc_1(int, int, int, int, int); };
@@ -262,7 +262,7 @@ void UISnowmanEventDialog::vfunc_72()
         return;
     if (m_timer.FUN_140268870(1000) == 0)
         return;
-    __int64 now = FUN_140869440();
+    __int64 now = GetServerTime();
     if (FUN_14086ab70(Unk_Time(m_lastUpdate), Unk_Time(now), 0))
         FUN_140e965e0();
 }
@@ -386,7 +386,7 @@ void UISnowmanEventDialog::FUN_140e954b0(MS2Ptr<Unk_SnowmanContext> context)
     info.FUN_1409adbe0("snowmans", snowmans.FUN_1422bb870());
     info.FUN_1407cbb20("thema", context->m_thema);
     m_30->Invoke("init", info.FUN_1422bb870());
-    m_lastUpdate = FUN_140869440();
+    m_lastUpdate = GetServerTime();
 }
 MS2_REPLACE_METHOD(0x140E954B0, UISnowmanEventDialog, FUN_140e954b0, 1819, 0x9131C474);
 
@@ -542,7 +542,7 @@ void UISnowmanEventDialog::FUN_140e965e0()
     }
     info.FUN_1409adbe0("snowmans", snowmans.FUN_1422bb870());
     m_30->Invoke("updateInfo", info.FUN_1422bb870());
-    m_lastUpdate = FUN_140869440();
+    m_lastUpdate = GetServerTime();
 }
 MS2_REPLACE_METHOD(0x140E965E0, UISnowmanEventDialog, FUN_140e965e0, 784, 0xAF323AEA);
 
@@ -611,7 +611,7 @@ int UISnowmanEventDialog::FUN_140e96c50(int type, CInPacket& packet)
     } else {
         switch (type) {
         case 0xc: {
-            Unk_SnowmanPopup* popup = FUN_140938cd0(20061);
+            UIRewardNotify* popup = FUN_140938cd0(20061);
             if (popup == 0)
                 break;
             int count = packet.ReadInt32();
@@ -623,7 +623,7 @@ int UISnowmanEventDialog::FUN_140e96c50(int type, CInPacket& packet)
             break;
         }
         case 0xd: {
-            Unk_SnowmanPopup* popup = FUN_140938cd0(20061);
+            UIRewardNotify* popup = FUN_140938cd0(20061);
             if (popup == 0)
                 break;
             int count = packet.ReadInt32();

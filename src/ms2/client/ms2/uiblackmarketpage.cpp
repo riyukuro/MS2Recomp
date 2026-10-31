@@ -95,7 +95,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;                // 0x143ac95
 
 extern __int64 DAT_143ab2820;                                       // the own account id
 extern __int64 DAT_143ab2898;                                       // the own mesos
-extern Unk_Inventory DAT_143ab2a90;                                 // the player's inventory
+extern Unk_Inventory g_143ab2a90;                                   // the player's inventory
 
 void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 MS2Ptr<AScript> FUN_1409e7dc0(int nMovieId, const Scaleform::GFx::Value& v);   // wrap an AS value
@@ -1284,7 +1284,7 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
             efd::SmartPointer<InvenSlot> spSlot = FUN_140f15b80(FUN_1422c8e90(strSlot));
             if (spSlot)
             {
-                MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(spSlot->GetItemUid());
+                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(spSlot->GetItemUid());
                 if (spItem.get())
                 {
                     if (spSlot->FUN_141409150(*spItem))
@@ -1559,7 +1559,7 @@ void BlackMarketPageItemRegister::FUN_140f13e70(unsigned __int64 nUid, __int64 n
 {
     if (nUid == 0)
         return;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
     if (!spItem)
     {
         FUN_140d73bc0(0x935, 0, 0, L"");

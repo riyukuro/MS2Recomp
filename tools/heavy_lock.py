@@ -10,6 +10,10 @@ dies. The fds are close-on-exec, so no child (wineserver!) can keep a slot after
                                                           run never sits on a slot; MS2_CLIENT_HELD=1 is exported to children
     from heavy_lock import heavy                          `with heavy(): ...` (no-op if MS2_HEAVY_HELD is set; the holder
                                                           exports MS2_HEAVY_HELD=1 to its children so they never re-acquire)
+    drain: while work/locks/heavy.drain exists and is younger than DRAIN_MAX_AGE (15 min, so a forgotten file expires),
+    new acquirers wait before taking a slot; holders finish normally. tools/fullexe/link.py keeps it fresh while it waits
+    for the held count to drop to --max-held (2026-10-31: 15+ gating workers kept all 5 slots held and the latest link
+    starved for over an hour); MS2_HEAVY_IGNORE_DRAIN=1 exempts the drainer's own acquire.
 
 Measured (2026-10-19, tools/rss_peak.py): one progress.py gate ~0.5 GB, one unit-check DLL phase ~0.5 GB python/clang-cl plus
 ~1 GB of wine link.exe/wineserver outside the process tree; merge -j8 ~10+ GB. 5 slots (2026-10-22: 31 GB box, ~1.5 GB per gate, CPU is the real limit) keep gates under ~8 GB; a merge takes all but one (merge.sh, MS2_MERGE_LEAVE).
@@ -106,6 +110,31 @@ def _no_multi_waiter():
         os.close(fd)
 
 
+DRAIN_MAX_AGE = 15 * 60
+
+
+def draining():
+    """work/locks/heavy.drain exists and is fresh (mtime within DRAIN_MAX_AGE), and this process is not exempt"""
+    if os.environ.get("MS2_HEAVY_IGNORE_DRAIN"):
+        return False
+    try:
+        return time.time() - os.stat(os.path.join(DIR, "heavy.drain")).st_mtime < DRAIN_MAX_AGE
+    except OSError:
+        return False
+
+
+def _wait_drain(quiet):
+    """block while a drain is on; True if it waited"""
+    if not draining():
+        return False
+    if not quiet:
+        print("waiting for heavy drain (%s): %s ..." % (os.environ.get("MS2_AGENT", "?"), os.path.join(DIR, "heavy.drain")),
+              flush=True)
+    while draining():
+        time.sleep(2)
+    return True
+
+
 def _notice(quiet):
     if not quiet:
         print("waiting for heavy slot (%s) ..." % os.environ.get("MS2_AGENT", "?"), flush=True)
@@ -115,6 +144,7 @@ def acquire_one(quiet=False):
     os.makedirs(DIR, exist_ok=True)
     n, said = nslots(), False
     while True:
+        said = _wait_drain(quiet or said) or said
         for i in (range(1, n + 1) if _no_multi_waiter() else ()):
             fd = _open(i)
             try:
@@ -134,6 +164,7 @@ def acquire_all(quiet=False, leave=0):
     While waiting it holds heavy.pending exclusively, so new single-slot takers wait instead of refilling freed slots
     (multi-slot waiters queue on heavy.pending among themselves)"""
     os.makedirs(DIR, exist_ok=True)
+    quiet = _wait_drain(quiet) or quiet
     pend = _pending_fd()
     try:
         fcntl.flock(pend, fcntl.LOCK_EX | fcntl.LOCK_NB)

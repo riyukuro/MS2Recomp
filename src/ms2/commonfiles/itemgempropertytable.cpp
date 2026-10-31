@@ -31,10 +31,8 @@
 #include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
 int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
@@ -305,12 +303,12 @@ bool CItemGemPropertyTable::LoadGems(const CString& strFile, const CString& strT
     spCache->FUN_1401d1160(CString(strFile));
     m_caches.Add(spCache);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strFile, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strFile, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strFile);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strFile);
         return false;
     }
     const CString& strId = "id";

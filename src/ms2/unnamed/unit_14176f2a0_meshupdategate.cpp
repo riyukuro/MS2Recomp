@@ -14,11 +14,10 @@
 #include <ecr/SceneGraphService.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 class Unk_Clock;
-Unk_Clock* FUN_14086d260();                                     // the game clock
-double FUN_141473280(Unk_Clock* pClock);                        // seconds
 void FUN_1414f1240(ecr::SceneGraphService* pService, egf::Entity* pEntity);   // show the entity's scene graph
 void FUN_1414f11d0(ecr::SceneGraphService* pService, egf::Entity* pEntity);   // hide the entity's scene graph
 ecr::SceneGraphService* FUN_1410a68f0(char* pCell);             // scene graph service lookup
@@ -27,7 +26,7 @@ extern char DAT_143b059e8;                                      // service looku
 // @0x14176f2a0
 CMeshUpdateGate::CMeshUpdateGate()
 {
-    m_fLast = (float)FUN_141473280(FUN_14086d260());
+    m_fLast = (float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     m_fInterval = 0.0f;
     m_fDuration = 0.0f;
     m_bActive = false;
@@ -120,7 +119,7 @@ MS2_REPLACE_METHOD(0x14176f680, CMeshUpdateGate, FUN_14176f680, 130, 0x22CFBCFD)
 // @0x14176f710
 void CMeshUpdateGate::FUN_14176f710()
 {
-    m_fLast = (float)FUN_141473280(FUN_14086d260());
+    m_fLast = (float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
 }
 MS2_REPLACE_METHOD(0x14176f710, CMeshUpdateGate, FUN_14176f710, 40, 0x42587A2C);
 
@@ -128,11 +127,11 @@ MS2_REPLACE_METHOD(0x14176f710, CMeshUpdateGate, FUN_14176f710, 40, 0x42587A2C);
 bool CMeshUpdateGate::FUN_14176f740(float)
 {
     float fInterval = m_fInterval;
-    float fElapsed = (float)(FUN_141473280(FUN_14086d260()) - m_fLast);
+    float fElapsed = (float)(((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280() - m_fLast);
     bool bDue = !(fInterval > fElapsed);
     if (bDue)
     {
-        m_fLast = (float)FUN_141473280(FUN_14086d260());
+        m_fLast = (float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
         m_bPending = true;
         m_bActive = false;
         return true;

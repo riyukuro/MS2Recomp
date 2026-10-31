@@ -49,7 +49,9 @@ class HoldAction : public ActionKeyObject { public: char m_pad[0x18]; int m_nNpc
 struct PortalAction : public ActionKeyObject { char m_pad[0x10]; int FUN_140956110(); };   // a struct (.?AUPortalAction@@): as a class the cast never matched
 class InteractAction : public ActionKeyObject { public: char m_pad[0x10]; CStringA m_strObjectId; };    // +0x18
 class PullObjectWeaponAction : public ActionKeyObject { public: char m_pad[0x10]; char m_hit[16]; };    // +0x18
-class UITalkCinematic : public UIObject {};
+class UITalkCinematic : public UIObject {public:
+    int GetLoaded();   // C3: was free FUN_141b1bfc0
+};
 
 // ---- exe callees ----
 struct Unk_MiPlayer;
@@ -59,12 +61,10 @@ CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_1405c2690(CStringW fmt, const CStringW& arg);
 CStringW FUN_1408f71a0(CStringW fmt, const CStringW& a, const CStringW& b);
        // npc name (member: this=rcx, hidden return=rdx)
-unsigned FUN_141092fa0(PCBase* pNpc);                    // npc id
-int FUN_141093c60(PCBase* pNpc);
 void FUN_140194470(Unk_Vec3* pDst, const Unk_Vec3* pSrc);
 // the exe's vector type has a copy ctor (0x14027dcf0); a ctor-less float struct local would get a /GS cookie
 struct Unk_MiVec3 { float x, y, z; Unk_MiVec3(const Unk_Vec3& v); Unk_MiVec3(const NiPoint3& v); };
-bool FUN_14147ad10(const struct Unk_MiVec3& vOrigin, const struct Unk_MiVec3& vEnd, const struct Unk_MiVec3& vCenter, float fRadius);
+bool FUN_14147ad10(struct Vector3 const&, struct Vector3 const&, struct Vector3 const&, float);   // C3: was FUN_14147ad10
 bool FUN_14028d470(float a, float b);
 extern char DAT_143b01a60;
 
@@ -80,18 +80,33 @@ public:
     struct Unk_DmIter FUN_141bd0420(unsigned nKey);
 };
 Unk_MiActionState* Unk_PlayerActionState(Unk_MiPlayer* pPlayer);
-int FUN_140953530(Unk_MiActionState* p);                    // current action type
-ActionKeyObject* FUN_140953550(Unk_MiActionState* p);       // current action
-void FUN_140953310(Unk_MiActionState* p);                   // cancel
-int FUN_141527160(Unk_MiPlayer* pPlayer, int nFlag);
-int FUN_14166c930(Unk_MiPlayer* pPlayer);
+class Unk_ActionKeyManager   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140953310();
+    class ActionKeyObject* FUN_140953550();
+    int GetCur();
+};
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141527160(int);
+};
 bool FUN_1401c0090(const CStringA* a, const CStringA* b);
-void* FUN_1409331e0();
-int FUN_14138c900(void* p, int n);
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
+class CGuideManager   // C3: member view for the former free stand-ins
+{
+public:
+    int IsRestricted(int);
+};
 void* FUN_140967100();
-int FUN_141b211d0(void* p);
-int FUN_14123c660(PCBase* p);
-int FUN_140855d10(unsigned nId);
+class UITalkManager   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141b211d0();
+    void SendNpcTalkMode0();
+};
+int FUN_140855d10(int);   // C3: was FUN_140855d10
 
 // smart pointer to the data record of an npc (16 bytes)
 struct Unk_DataRef                                          // object component data smart pointer
@@ -282,7 +297,8 @@ struct Unk_MiDmRef                                          // model entity smar
     void* FUN_1408a9280();                                  // operator->
 };
 struct Unk_DmNodeRef { void* m_p; };
-void* FUN_1409670f0();
+class EntityWorldManager;
+template<> EntityWorldManager* TSingleton<EntityWorldManager>::GetInstance();
 void* FUN_1411cf440(void* pSvc, void* pKey);                    // EntityWorldManager: entity by id (rax)
 struct Unk_MiCompRef                                        // entity component smart pointer (8 bytes)
 {
@@ -314,7 +330,7 @@ Unk_WeaponEnt* FUN_140885350(void* p);
 void FUN_1408a20a0(void* pDst, unsigned nHash, bool* pOut);
 void FUN_1408a2020(void* pDst, unsigned nHash, int* pOut);
 struct Unk_WeaponMgr { void FUN_1410d59c0(struct Unk_WeaponArray& out); };
-Unk_WeaponMgr* FUN_1401cd040(void* p);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 extern char DAT_143b059e8;
 
 // ---- CAtlArray<Unk_WeaponHit>-like array: data, size, max, grow ----
@@ -456,7 +472,7 @@ int CMouseInteract::vfunc_4()
     Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    FUN_140953310(Unk_PlayerActionState(pPlayer));
+    ((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->FUN_140953310();
     return 1;
 }
 // @0x140a79080
@@ -479,7 +495,7 @@ int CMouseInteractNpc::vfunc_1(Unk_MouseRay* pRay)
         if (pNpc->vfunc_117() != 0) {
             pRay->strCursor = FUN_1405c2690(CStringW(L"s_mouse_interact_hold"), reinterpret_cast<CNpc*>(pNpc)->FUN_141093310());
         } else {
-            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xe, FUN_141092fa0(pNpc));
+            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xe, ((class CNpc*)(class PCBase*)(pNpc))->FUN_141092fa0());
             if (strName.GetLength() == 0)
                 strName = GetStringCommon(0x62d);
             pRay->strCursor = FUN_1408f71a0(CStringW(L"s_mouse_interact_talk"), strName, reinterpret_cast<CNpc*>(pNpc)->FUN_141093310());
@@ -498,7 +514,7 @@ int CMouseInteractNpc::vfunc_2(Unk_MouseRay* pRay)
             m_nAction = 6;
         else
             m_nAction = 0x14;
-        m_nNpcId = FUN_141092fa0(pNpc);
+        m_nNpcId = ((class CNpc*)(class PCBase*)(pNpc))->FUN_141092fa0();
         return true;
     }
     return false;
@@ -509,15 +525,15 @@ int CMouseInteractNpc::vfunc_3()
     Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
-    if (FUN_140953530(Unk_PlayerActionState(pPlayer)) != m_nAction)
+    if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != m_nAction)
         return false;
     if (m_nAction == 0x14) {
-        TalkAction* pAct = dynamic_cast<TalkAction*>(FUN_140953550(Unk_PlayerActionState(pPlayer)));
+        TalkAction* pAct = dynamic_cast<TalkAction*>(((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->FUN_140953550());
         if (pAct == 0)
             return false;
         return pAct->m_nNpcId == m_nNpcId;
     } else if (m_nAction == 6) {
-        HoldAction* pAct = dynamic_cast<HoldAction*>(FUN_140953550(Unk_PlayerActionState(pPlayer)));
+        HoldAction* pAct = dynamic_cast<HoldAction*>(((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->FUN_140953550());
         if (pAct == 0)
             return false;
         return pAct->m_nNpcId == m_nNpcId;
@@ -538,16 +554,16 @@ PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* p
         return 0;
     int bTalk = 1;
     int bHold = 1;
-    if (FUN_14138c900(FUN_1409331e0(), 2) != 0)
+    if (((class CGuideManager*)(void*)(((void*)FUN_1409331e0())))->IsRestricted(2) != 0)
         bTalk = 0;
-    if (FUN_141b211d0(FUN_140967100()) == 0)
+    if (((class UITalkManager*)(void*)(FUN_140967100()))->FUN_141b211d0() == 0)
         bTalk = 0;
-    if (FUN_14166c930(pPlayer) == 0x20)
+    if (((class PCBase*)(struct Unk_MiPlayer*)(pPlayer))->FUN_14166c930() == 0x20)
         bHold = 0;
     Unk_NpcTree* pTree = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd36d0();
     for (Unk_NpcNode* pos = pTree->Begin(); pos != 0; pTree->GetNext(pos)) {
         PCBaseRef ref(*pTree->GetAt(pos));
-        if (FUN_14123c660(ref.operator->()) != 0)
+        if (((class GameObject*)(class PCBase*)(ref.operator->()))->FUN_14123c660() != 0)
             continue;
         if (ref->vfunc_116() == 0)
             continue;
@@ -557,9 +573,9 @@ PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* p
         int bPick = 0;
         if (reinterpret_cast<Unk_MiNpcRef*>(ref.operator->())->FUN_141093270().FUN_140965990()->FUN_1406cd020() != 0 && bTalk != 0)
             bPick = 1;
-        if (FUN_140855d10(FUN_141092fa0(ref.operator->())) != 0 && bTalk != 0)
+        if (FUN_140855d10(((class CNpc*)(class PCBase*)(ref.operator->()))->FUN_141092fa0()) != 0 && bTalk != 0)
             bPick = 1;
-        if (FUN_141093c60(ref.operator->()) != 4 && bTalk != 0)
+        if (((class CNpc*)(class PCBase*)(ref.operator->()))->FUN_141093c60() != 4 && bTalk != 0)
             bPick = 1;
         if (ref->vfunc_117() != 0 && bHold != 0)
             bPick = 1;
@@ -568,7 +584,7 @@ PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* p
         float fSize = *(float*)(spRec.FUN_14035eb90() + 0x2dc);
         Unk_MiVec3 vCenter(ref->vfunc_18());
         vCenter.z += fSize * 0.5;
-        if (FUN_14147ad10(*pOrigin, *pEnd, vCenter, (float)(fSize * 0.5)))
+        if (FUN_14147ad10(*(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(*pOrigin), *(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(*pEnd), *(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(vCenter), (float)(fSize * 0.5)))
             return ref;
     }
     return 0;
@@ -604,9 +620,9 @@ int CMouseInteractPortal::vfunc_3()
     Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
-    if (FUN_140953530(Unk_PlayerActionState(pPlayer)) != 0x13)
+    if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != 0x13)
         return false;
-    PortalAction* pAct = dynamic_cast<PortalAction*>(FUN_140953550(Unk_PlayerActionState(pPlayer)));
+    PortalAction* pAct = dynamic_cast<PortalAction*>(((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->FUN_140953550());
     if (pAct == 0)
         return false;
     return pAct->FUN_140956110() == m_nPortalId;
@@ -626,7 +642,7 @@ Unk_PortalHit CMouseInteractPortal::FindTarget(const Unk_Vec3* pOrigin, const Un
         Unk_PortalHit hit = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bc2800(nId);
         if (hit.FUN_1409652c0(0))
             continue;
-        Unk_MiCompRef comp(FUN_1411cf440(FUN_1409670f0(), reinterpret_cast<char*>(hit.operator->()) + 0x18));
+        Unk_MiCompRef comp(FUN_1411cf440(TSingleton<EntityWorldManager>::GetInstance(), reinterpret_cast<char*>(hit.operator->()) + 0x18));
         if (comp.FUN_1408a9090() == 0)
             continue;
         bool bFlag = false;
@@ -640,7 +656,7 @@ Unk_PortalHit CMouseInteractPortal::FindTarget(const Unk_Vec3* pOrigin, const Un
         Unk_MiVec3 vCenter(hit->FUN_14169d2f0());
         vCenter.z += hit->m_fRadius * 0.5;
         float fRadius = hit->m_fRadius * 0.5;
-        if (FUN_14147ad10(*pOrigin, *pEnd, vCenter, fRadius))
+        if (FUN_14147ad10(*(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(*pOrigin), *(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(*pEnd), *(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(vCenter), fRadius))
             return hit;
     }
     return 0;
@@ -684,11 +700,11 @@ int CMouseInteractObject::vfunc_3()
     Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
-    if (FUN_140953530(Unk_PlayerActionState(pPlayer)) != m_nAction)
+    if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != m_nAction)
         return false;
-    if (FUN_141527160(pPlayer, 0x19) == 0)
+    if (((class MyPC*)(struct Unk_MiPlayer*)(pPlayer))->FUN_141527160(0x19) == 0)
         return false;
-    InteractAction* pAct = dynamic_cast<InteractAction*>(FUN_140953550(Unk_PlayerActionState(pPlayer)));
+    InteractAction* pAct = dynamic_cast<InteractAction*>(((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->FUN_140953550());
     if (pAct == 0)
         return false;
     return FUN_1401c0090(&pAct->m_strObjectId, &m_strObjectId);
@@ -717,7 +733,7 @@ Unk_ObjectHit CMouseInteractObject::FindTarget(const Unk_Vec3* pOrigin, const Un
         Unk_MiVec3 vCenter(hit->FUN_1409673c0());
         vCenter.z += fSize * 0.5;
         float fRadius = fSize * 0.5;
-        if (FUN_14147ad10(*pOrigin, *pEnd, vCenter, fRadius))
+        if (FUN_14147ad10(*(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(*pOrigin), *(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(*pEnd), *(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(vCenter), fRadius))
             return hit;
     }
     return 0;
@@ -747,7 +763,7 @@ int CMouseInteractDynamicModel::vfunc_3()
     Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
-    if (FUN_140953530(Unk_PlayerActionState(pPlayer)) != m_nAction)
+    if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != m_nAction)
         return false;
     return true;
 }
@@ -763,7 +779,7 @@ void* CMouseInteractDynamicModel::FindTarget(const Unk_Vec3* pOrigin, const Unk_
         Unk_MiVec3 vCenter(vPos);
         vCenter.z += fSize * 0.5;
         float fRadius = fSize * 0.5;
-        if (FUN_14147ad10(*pOrigin, *pEnd, vCenter, fRadius))
+        if (FUN_14147ad10(*(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(*pOrigin), *(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(*pEnd), *(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(vCenter), fRadius))
             return ref.FUN_1408a9090();
     }
     return 0;
@@ -818,9 +834,11 @@ UITalkCinematic* FUN_140a7b2b0(int nId)
 }
 struct Unk_TalkUi { char m_pad[8]; };
 Unk_TalkUi* FUN_1408e57f0();
-int FUN_1422b9e00(Unk_TalkUi* p);
-int FUN_141b1bfc0(UITalkCinematic* p);
-void FUN_141b1feb0(void* p);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSubSceneId();
+};
 // @0x140a7abd0
 int CMouseInteractTalkCancel::vfunc_1(Unk_MouseRay* pRay)
 {
@@ -832,12 +850,12 @@ int CMouseInteractTalkCancel::vfunc_1(Unk_MouseRay* pRay)
 // @0x140a7ac80
 int CMouseInteractTalkCancel::vfunc_2(Unk_MouseRay* pRay)
 {
-    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x6200031)
+    if (((class GFxSceneService*)(struct Unk_TalkUi*)(FUN_1408e57f0()))->GetSubSceneId() != 0x6200031)
         return false;
     UITalkCinematic* pUi = FUN_140a7b2b0(0x4e40);
     if (pUi == 0)
         return false;
-    if (FUN_141b1bfc0(pUi) == 0)
+    if (((class UITalkCinematic*)(class UITalkCinematic*)(pUi))->GetLoaded() == 0)
         return false;
     PCBase* pPlayer = reinterpret_cast<PCBase*>(reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -853,7 +871,7 @@ int CMouseInteractTalkCancel::vfunc_3()
 // @0x140a7ad50
 int CMouseInteractTalkCancel::vfunc_4()
 {
-    FUN_141b1feb0(FUN_140967100());
+    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
     return true;
 }
 
@@ -886,9 +904,9 @@ int CMouseInteractWeaponObject::vfunc_3()
     Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
-    if (FUN_140953530(Unk_PlayerActionState(pPlayer)) != 0xd)
+    if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != 0xd)
         return false;
-    PullObjectWeaponAction* pAct = dynamic_cast<PullObjectWeaponAction*>(FUN_140953550(Unk_PlayerActionState(pPlayer)));
+    PullObjectWeaponAction* pAct = dynamic_cast<PullObjectWeaponAction*>(((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->FUN_140953550());
     if (pAct == 0)
         return false;
     if (FUN_140885220(pAct->m_hit) != 0)
@@ -899,7 +917,7 @@ int CMouseInteractWeaponObject::vfunc_3()
 Unk_WeaponHit CMouseInteractWeaponObject::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
     Unk_WeaponArray aWeapons;
-    Unk_WeaponMgr* pMgr = FUN_1401cd040(&DAT_143b059e8);
+    Unk_WeaponMgr* pMgr = ((struct Unk_WeaponMgr*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
     pMgr->FUN_1410d59c0(aWeapons);
     for (size_t i = 0; i < aWeapons.GetCount(); i++) {
         Unk_WeaponHit hit = *aWeapons.GetAt(i);
@@ -916,7 +934,7 @@ Unk_WeaponHit CMouseInteractWeaponObject::FindTarget(const Unk_Vec3* pOrigin, co
         Unk_MiVec3 vCenter(vPos);
         vCenter.z += fSize * 0.5;
         float fRadius = fSize * 0.5;
-        if (FUN_14147ad10(*pOrigin, *pEnd, vCenter, fRadius))
+        if (FUN_14147ad10(*(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(*pOrigin), *(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(*pEnd), *(struct Vector3 const*)&static_cast<struct Unk_MiVec3 const&>(vCenter), fRadius))
             return hit;
     }
     return 0;

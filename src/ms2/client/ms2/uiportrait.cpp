@@ -9,6 +9,7 @@
 #include "gameobject.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
 #include <NiActorManager.h>
 #include <NiColor.h>
 #include <NiAmbientLight.h>
@@ -26,7 +27,6 @@ public:
 Unk_PortraitWorld* FUN_1403ed2d0();
 
 class Unk_PortraitClock;
-Unk_PortraitClock* FUN_14086d260();                             // the game clock
 double FUN_141473280(Unk_PortraitClock* pClock);                // the current time
 void FUN_14107b010();                                           // refreshes the sun direction constants
 void FUN_14107b050(const NiPoint3& kDirection);                 // sets the sun direction constants
@@ -150,7 +150,7 @@ MS2_REPLACE_METHOD(0x141A90ED0, UIPortrait, vfunc_15, 261, 0xDD71E32D);
 // @0x141a90fe0
 static float GetCurrentTime()
 {
-    return (float)FUN_141473280(FUN_14086d260());
+    return (float)FUN_141473280(reinterpret_cast<Unk_PortraitClock*>(TSingleton<CMainSystem>::GetInstance()));
 }
 
 // @0x141a91000

@@ -17,7 +17,7 @@ class Unk_CadCheck;
 class ASItemSlot;
 class ASGaugeControl;
 class Unk_CadGiftClip;
-class Unk_CadGiftList;
+class ASScrollingList;
 class UICashAttendDialog;
 
 // One day row of the gift list ("m_giftList1".."m_giftList5"); 0x90 bytes.
@@ -78,7 +78,7 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     MS2Ptr<Unk_140acd6e0> m_usePointButton;                         // +0x178
-    MS2Ptr<Unk_CadGiftList> m_giftList;                             // +0x188
+    MS2Ptr<ASScrollingList> m_giftList;                             // +0x188
     MS2Ptr<ASGaugeControl> m_progressGauge;                         // +0x198
     std::vector<MS2Ptr<UICashAttendGifList> > m_rows;               // +0x1a8
     std::map<unsigned long, MS2Ptr<GameEventCashAttendCli> > m_events;      // +0x1c0

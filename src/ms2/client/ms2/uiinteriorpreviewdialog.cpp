@@ -20,13 +20,16 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <stdlib.h>
+#include "ms2/client/ms2/uiservice.h"   // C3: TSingleton<> needs the class
+#include "ms2/client/ms2/usercommandcli.h"
+#include "ms2/client/ms2/worldservice.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
-class ASDialog : public ASDisplayObject { public: void FUN_1422c00f0(float fX, float fY); };   // set the position
-struct Unk_IpArgs { CStringW FUN_1408d21c0(int nIndex, CStringW strDefault); };   // ItemFunctionArgs::GetString
+class ASDialog : public ASDisplayObject { };   // set the position
+   // ItemFunctionArgs::GetString
 // efd::ClassInfo (ctor 0x1409f2d20): the setup callback fills a count + 32 parent entries of 0x20, so the object
 // needs the real 0x408 bytes or it overwrites the statics after it (s_strStun -> AV in its atexit dtor at Quit).
 class Unk_IpReg { public: Unk_IpReg(void (*pfnCallback)(void*, void*)); private: char m_storage[0x408]; };
@@ -39,9 +42,7 @@ CString FUN_14016a600(const wchar_t* psz, int nCodePage);          // narrow cop
 CStringW GetStringCommon(int nStringId);
 void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int nIndex, int nFlags, int nMask);   // bind the item to a name
 void FUN_141415600(const CString& strBindID);                       // release the item bound to the name
-Unk_IpWorld* FUN_1403ed2d0();
 Unk_IpActor* FUN_141bd0cc0(Unk_IpWorld* pWorld);                    // the local player
-Unk_IpUIMgr* FUN_1403ed2b0();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringTable* GetStringTable();
 
@@ -83,7 +84,7 @@ void UIInteriorPreviewDialog::FUN_140f4cd90(int nItemId)
         if (m_178 != nItemId)
         {
             m_178 = nItemId;
-            FUN_1403ed2b0()->FUN_141adc530(0x4ee3);
+            reinterpret_cast<Unk_IpUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ee3);
         }
     }
     else
@@ -137,7 +138,7 @@ void UIInteriorPreviewDialog::OnLoadComplete()
 // @0x140f4d010
 void UIInteriorPreviewDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
-    Unk_IpActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_IpActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_IpWorld*>(WorldService::GetInstance()));
     if (pActor == 0)
         return;
     if (_stricmp("getTooltipFromItemID", (const char*)strMethod) == 0)
@@ -160,7 +161,7 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        CString strPackage = FUN_14016a600(reinterpret_cast<Unk_IpArgs*>(&spData->function.parameter)->FUN_1408d21c0(0, L""), 0);
+        CString strPackage = FUN_14016a600(reinterpret_cast<Unk_CommandArgs*>(&spData->function.parameter)->FUN_1408d21c0(0, L""), 0);
         UGCMapPackageDataPtr spPackage = FUN_1408b9b90(strPackage);
         if (spPackage == (CUGCMapPackageData*)0)
             return;

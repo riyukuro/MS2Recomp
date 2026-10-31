@@ -111,11 +111,12 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/filesystem.h"
 #include <algorithm>
 #include <iterator>
 #include <stdlib.h>
 
-// The common log (FUN_140166440()).
+// The common log (GetLogString()).
 class Unk_CommonLog : public CLogString
 {
 public:
@@ -126,7 +127,7 @@ public:
     }
     void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
 };
-Unk_CommonLog* FUN_140166440();
+class CLogString* GetLogString();
 
 
 // Common::Constants::Value<T>::Get, header-inline in the original (the Value<bool> instance 0x140336990 is in this
@@ -137,7 +138,6 @@ template<class T> T* Common::Constants::Value<T>::Get()
         Error("constants is not set");
     return &m_value;
 }
-CFeatureManager* FUN_140166410();
 
 int FUN_140768010(int nRange, int nBase);              // random number in [nBase, nBase + nRange)
 int Unk_ClubBuffTypeOf(int nValue);
@@ -147,8 +147,6 @@ int Parse_14021ab60(const CString& str);               // timer type name -> val
 void FUN_140274fc0(CStringW& str, void* pOut, const wchar_t* pszDelim);   // split into a CAtlArray<unsigned>
 
 // The table file loader helpers.
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
@@ -280,7 +278,7 @@ bool DungeonRankRewardBase::Load(Unk_140165cf0* pElem)
         FUN_1408731e0(pChild, "rank", nRank);
         if (nRank <= 0 || nRank > 5)
         {
-            FUN_140166440()->Log(0, 0, 0x13, StringFormat(L"DungeonRankReward::FromXel Invalid Rank", m_rewardID, nRank));
+            static_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x13, StringFormat(L"DungeonRankReward::FromXel Invalid Rank", m_rewardID, nRank));
             return false;
         }
         if (m_maxRank < nRank)
@@ -422,7 +420,7 @@ void DungeonRoom::Load(Unk_140165cf0* pElem)
     ApplyConstants();
     if (m_bossRankingType == 0 && m_bossRanking != 0)
     {
-        FUN_140166440()->Log(0, 0, 0x13, L"DungeonRoom::FromXel : m_bossRanking is exists but bossRankingType is none or empty. use kill type as default. ID=[{0}]", m_dungeonRoomID);
+        static_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x13, L"DungeonRoom::FromXel : m_bossRanking is exists but bossRankingType is none or empty. use kill type as default. ID=[{0}]", m_dungeonRoomID);
         m_bossRankingType = (DungeonBossRankingType)1;
     }
 }
@@ -657,7 +655,7 @@ MS2_REPLACE_METHOD(0x14031E480, DungeonRoom, IsSeasonRankRoom, 68, 0xCDEF7F9A);
 // @0x14031e4d0
 bool DungeonRoom::IsRandomMatchable()
 {
-    if (!FUN_140166410()->FUN_14036d570(0xb8))
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xb8))
         return false;
     switch (m_groupType)
     {
@@ -823,7 +821,7 @@ void DungeonRankRequire::Load(Unk_140165cf0* pElem)
         FUN_1408731e0(pChild, "score", nScore);
         if (nPrev >= nScore)
         {
-            FUN_140166440()->Log(0, 0, 0x13, L"DungeonRankRequire Error Score");
+            static_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x13, L"DungeonRankRequire Error Score");
             return;
         }
         nPrev = nScore;
@@ -831,7 +829,7 @@ void DungeonRankRequire::Load(Unk_140165cf0* pElem)
         m_scores.push_back(sScore);
     }
     if (m_scores.empty() || *m_scores.rbegin() > m_maxScore)
-        FUN_140166440()->Log(0, 0, 0x13, L"DungeonRankRequire Error Score");
+        static_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x13, L"DungeonRankRequire Error Score");
 }
 MS2_REPLACE_METHOD(0x14031EA30, DungeonRankRequire, Load, 337, 0xF8BFEB06);
 
@@ -902,7 +900,7 @@ bool DungeonSeason::Load(Unk_140165cf0* pElem)
         {
             if (m_rewards[i]->m_requireScore <= m_rewards[i + 1]->m_requireScore)
             {
-                FUN_140166440()->Log(0, 0, 0x13, L"DungeonSeason Reward Item RequireScore");
+                static_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x13, L"DungeonSeason Reward Item RequireScore");
                 return false;
             }
         }
@@ -1037,7 +1035,7 @@ void DungeonRoomTable::LoadRooms()
     Clear();
     CString strPath = FUN_14071a5b0("Table", "DungeonRoom.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -1061,7 +1059,7 @@ void DungeonRoomTable::LoadSeasons()
     m_seasons.clear();
     CString strPath = FUN_14071a5b0("Table", "DungeonSeason.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -1086,7 +1084,7 @@ void DungeonRoomTable::LoadConfig()
 {
     CString strPath = FUN_14071a5b0("Table", "DungeonConfig.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -1109,7 +1107,7 @@ void DungeonRoomTable::LoadRankRewards()
     m_rankRewards.clear();
     CString strPath = FUN_14071a5b0("Table", "DungeonRankReward.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -1135,7 +1133,7 @@ void DungeonRoomTable::LoadRoundGroups()
     m_roundGroups.clear();
     CString strPath = FUN_14071a5b0("Table", "DungeonRoundData.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -1535,7 +1533,7 @@ void DungeonRoomTable::LoadCoupons()
     m_coupons.clear();
     CString strPath = FUN_14071a5b0("Table", "DungeonRewardCoupon.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

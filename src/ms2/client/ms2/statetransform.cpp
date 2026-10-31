@@ -18,6 +18,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -26,8 +27,6 @@ void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::
 void* FUN_1403ed280();                                     // effect manager
 void* FUN_1403ed2d0();                                     // player manager
 int FUN_141bd1a10(void* pPlayer, GameObject* pObject);
-int FUN_1411a49c0(void* pEffectMgr, Unk_EffectQuery* pQuery);
-void FUN_1411a6060(void* pEffectMgr, int nId);
 unsigned FUN_140869420();                                  // millisecond clock
 int FUN_14028d260(float fSeconds);                         // seconds -> milliseconds
 
@@ -53,7 +52,7 @@ StateTransform::~StateTransform()
 {
     if (m_nEffect != 0)
     {
-        FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+        reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
 }
@@ -67,7 +66,7 @@ void StateTransform::vfunc_4(StateData* pData)
     query.m_strName = pszEffect;
     query.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), m_pOwner);
     query.SetActor(m_pOwner->FUN_14123c580());
-    m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
+    m_nEffect = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     m_pOwner->FUN_14166dd20("Equip_Change_Mantle_A", 1.0f, false, false);
 }
 
@@ -88,7 +87,7 @@ void StateTransform::EndOfSequence(NiActorManager* pkManager, unsigned int eSequ
     NiControllerSequence* pkSeq, float fEventTime)
 {
     State::EndOfSequence(pkManager, eSequenceID, pkSeq, fEventTime);
-    FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+    reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
     m_nEffect = 0;
     m_pOwner->vfunc_59(1, 0, 0, 0);
 }
@@ -113,7 +112,7 @@ StateTransformDoll::~StateTransformDoll()
 {
     if (m_nEffect != 0)
     {
-        FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+        reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
 }
@@ -128,14 +127,14 @@ void StateTransformDoll::vfunc_4(StateData* pData)
     query.m_strName = pszEffect;
     query.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), m_pOwner);
     query.SetActor(m_pOwner->FUN_14123c580());
-    m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
+    m_nEffect = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     m_pOwner->FUN_14166dd20("Equip_Change_Mantle_A", 1.0f, false, false);
 }
 
 // @0x1417fe930
 void StateTransformDoll::vfunc_5(int n)
 {
-    FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+    reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
     m_nEffect = 0;
 }
 

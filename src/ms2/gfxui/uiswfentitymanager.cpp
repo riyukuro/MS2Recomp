@@ -20,8 +20,9 @@
 
 #include "hook/ms2hook.h"
 
-void* FUN_140166440();                                                      // the log
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);        // log line ("{0}" = the argument)
+class CLogString;
+CLogString* GetLogString();
+template<class T> void Unk_FileLog(CLogString* log, int level, int category, const wchar_t* format, const T& value);   // filesystem.cpp
 
 static CString s_strNoSwfKey = "";      // 0x143b0d2d0 the key of a failed load / an unloaded movie
 
@@ -184,17 +185,17 @@ CString UISwfEntityManager::FUN_1422d1320(int nGroup, CString& strKey, const CSt
                 }
             }
             if (nGroup == 0)
-                FUN_14015eb90(FUN_140166440(), 0xc, 0x13, L"LoadSwf[GFX_HUD][{0}]", strPath);
+                Unk_FileLog(GetLogString(), 0xc, 0x13, L"LoadSwf[GFX_HUD][{0}]", strPath);
             else if (nGroup == 2)
-                FUN_14015eb90(FUN_140166440(), 0xc, 0x13, L"LoadSwf[GFX_Main][{0}]", strPath);
+                Unk_FileLog(GetLogString(), 0xc, 0x13, L"LoadSwf[GFX_Main][{0}]", strPath);
             else if (nGroup == 3)
-                FUN_14015eb90(FUN_140166440(), 0xc, 0x13, L"LoadSwf[GFX_PostDisplay][{0}]", strPath);
+                Unk_FileLog(GetLogString(), 0xc, 0x13, L"LoadSwf[GFX_PostDisplay][{0}]", strPath);
             else if (nGroup == 4)
-                FUN_14015eb90(FUN_140166440(), 0xc, 0x13, L"LoadSwf[GFX_Background][{0}]", strPath);
+                Unk_FileLog(GetLogString(), 0xc, 0x13, L"LoadSwf[GFX_Background][{0}]", strPath);
             else if (nGroup == 5)
-                FUN_14015eb90(FUN_140166440(), 0xc, 0x13, L"LoadSwf[GFX_Tooltip][{0}]", strPath);
+                Unk_FileLog(GetLogString(), 0xc, 0x13, L"LoadSwf[GFX_Tooltip][{0}]", strPath);
             else if (nGroup == 6)
-                FUN_14015eb90(FUN_140166440(), 0xc, 0x13, L"LoadSwf[GFX_MouseCursor][{0}]", strPath);
+                Unk_FileLog(GetLogString(), 0xc, 0x13, L"LoadSwf[GFX_MouseCursor][{0}]", strPath);
         }
         return strKey;
     }
@@ -700,7 +701,7 @@ MS2Ptr<UISwfEntity> UISwfEntityManager::GetUISwfEntity(const CString& strName)
     sp = FUN_1422d4580(strName);
     if (!sp)
     {
-        FUN_14015eb90(FUN_140166440(), 2, 0x1a, L"UISwfEntityManager::GetUISwfEntity Warning invalid swfID:{0}",
+        Unk_FileLog(GetLogString(), 2, 0x1a, L"UISwfEntityManager::GetUISwfEntity Warning invalid swfID:{0}",
                       strName);
         sp.AssignRaw(FUN_1422d4380(strName));
     }

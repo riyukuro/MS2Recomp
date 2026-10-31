@@ -16,6 +16,8 @@
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- header statics (.text$di): the market sort names, the key controller and the dialog's keys ----
 // @0x1400cb830
@@ -50,13 +52,11 @@ UIMeratMarketDialog* FUN_140bfed50(int nId);                        // find the 
 
 // The UI manager: the lookup of a dialog by its ui id.
 class Unk_RcUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };
-Unk_RcUIManager* FUN_1403ed2b0();
 
 // The input keys.
-class Unk_RcKeys
+class Unk_RcKeys : public CInputKeyHandler
 {
 public:
-    bool FUN_14116d840();
     bool FUN_14116d9c0(int nKey, int a, int b);
 };
 Unk_RcKeys* FUN_14025e7c0();
@@ -240,9 +240,9 @@ void UIRandomCoupon::FUN_140bfec40()
 // @0x140bfed50
 UIMeratMarketDialog* FUN_140bfed50(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_RcUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> ref = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> ref = reinterpret_cast<Unk_RcUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (ref.get())
             return dynamic_cast<UIMeratMarketDialog*>((UIObject*)ref);
     }

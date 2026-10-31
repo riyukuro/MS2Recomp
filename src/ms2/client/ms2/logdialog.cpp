@@ -212,11 +212,10 @@
 CStringA FUN_140540050(const char* pszFormat, const CStringA& arg0);    // StringFormat<CStringA>
 CStringW FUN_14016a730(const char* psz, int nCodePage);                 // narrow -> wide
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);              // wide -> narrow
-void FUN_141361e60(CStringW strCommand);                                // send a chat line
 void FUN_14083d990(CStringA strText);                                   // copy to the clipboard
 void FUN_1412751b0(const CStringW& strText, int nType);                 // HUD system message
 struct Unk_DcApp;
-Unk_DcApp* FUN_140aadf80();                                             // the app
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 HWND FUN_14209c720(Unk_DcApp* pApp);                                    // its main window
 
 // MS2Ptr<CLogDialog>: CLogDialog's CPtred base is at +0x138, so the exe's pointer converts through CPtred* (the
@@ -460,7 +459,7 @@ void CLogDialog::ExecuteCommand()
         CStringW strCommand = FUN_14016a730(strText, 0);
         if (CUserCommandCli::GetInstance()->Execute(strCommand))
             return;
-        FUN_141361e60(strCommand);
+        CUserCommandCli::SendCommand(strCommand);
     }
 }
 
@@ -581,7 +580,7 @@ void ClientLogManager::ToggleDialog()
     {
         m_spDialog.AssignRaw(new CLogDialog);
         m_spDialog->SetLogContexts(m_logs);
-        m_spDialog->Create(0x8c, CWnd::FromHandle(FUN_14209c720(FUN_140aadf80())));
+        m_spDialog->Create(0x8c, CWnd::FromHandle(FUN_14209c720(((struct Unk_DcApp*)FUN_140aadf80()))));
         m_itPending = m_logs.end();
     }
 }

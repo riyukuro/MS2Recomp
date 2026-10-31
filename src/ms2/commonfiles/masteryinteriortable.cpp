@@ -31,10 +31,8 @@
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
 void FUN_140873220(Unk_140165cf0*, const char*, unsigned&);
@@ -111,12 +109,12 @@ bool CMasteryInteriorTable::LoadMastery()
 {
     CString strPath = FUN_14071a5b0("Table", "masteryUGCHousing.xml");
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return false;
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
     Unk_140165cf0* pMastery = pRoot->FUN_140165cf0("masteryUGCHousing");
@@ -157,12 +155,12 @@ bool CMasteryInteriorTable::LoadHeight()
 {
     CString strPath = FUN_14071a5b0("Table", "ugcHousingExtendHeight.xml");
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return false;
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pRow = pRoot->FUN_140165cf0("v"); pRow != 0; pRow = pRow->FUN_140168650("v"))
@@ -182,12 +180,12 @@ bool CMasteryInteriorTable::LoadArea()
 {
     CString strPath = FUN_14071a5b0("Table", "ugcHousingExtendArea.xml");
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return false;
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pRow = pRoot->FUN_140165cf0("v"); pRow != 0; pRow = pRow->FUN_140168650("v"))
@@ -220,12 +218,12 @@ bool CMasteryInteriorTable::LoadRewards()
 {
     CString strPath = FUN_14071a5b0("Table", "ugcHousingPointReward.xml");
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return false;
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pRow = pRoot->FUN_140165cf0("v"); pRow != 0; pRow = pRow->FUN_140168650("v"))

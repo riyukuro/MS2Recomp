@@ -22,6 +22,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2sceneservice.h"
 #include "entityworldmanager.h"
+#include "worldservice.h"
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
@@ -30,10 +31,7 @@
 #include <efd/ILogger.h>
 #include <efd/MessageService.h>
 
-class WorldService;
-WorldService* FUN_1403ed2d0();
-void FUN_141bbae40(WorldService*, IWorldServiceCallback*);
-EntityWorldManager* FUN_1409670f0();
+class EntityWorldManager;
 efd::utf8string FUN_1414d7990(const efd::utf8string& kName);
 // The scene-name decorator cell set by MS2PropService::OnPreInit.
 extern efd::utf8string (*DAT_143b05980)(const efd::utf8string&);
@@ -66,7 +64,7 @@ MS2SceneService::~MS2SceneService()
 efd::AsyncResult MS2SceneService::OnInit()
 {
     (&m_clock)->Update(0);
-    FUN_141bbae40(FUN_1403ed2d0(), this);
+    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
     return egfPhysX::SceneService::OnInit();
 }
 MS2_REPLACE_METHOD(0x1415034C0, MS2SceneService, OnInit, 112, 0xBCB98835);

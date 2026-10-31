@@ -316,10 +316,15 @@ static CString s_chartNames[]={"None","Buy","PriceLow","PriceHigh","Create","Cha
 #include "ms2/commonfiles/reactordata.h"
 #include "ms2/commonfiles/learningquesttable.h"
 #include "ms2/commonfiles/questdatatable.h"
+#include "ms2/commonfiles/meratmarketbasketinfo.h"
 extern bool DAT_1439f7068;
-COptimizer* FUN_1409f7c90();
-void* FUN_1403ed2d0();
-int FUN_141bca2e0(void*);
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141bca2e0();
+    static class WorldService* GetInstance();
+};
 void FUN_141b6de20();
 void FUN_141b6db40(int);
 // @0x14120f7c0
@@ -409,7 +414,7 @@ MS2_REPLACE_METHOD(0x1412104c0, CFilePreload, FUN_1412104c0, 108, 0x3223B7B3);
 // @0x141210540
 void CFilePreload::FUN_141210540(unsigned id,unsigned short level,int priority) {
     if(id!=0) {
-        if(priority==3 && FUN_1409f7c90()->FUN_141215630()==1 && FUN_1403ed2d0()!=0 && FUN_141bca2e0(FUN_1403ed2d0())!=0) return;
+        if(priority==3 && ((class COptimizer*)FUN_1409f7c90())->FUN_141215630()==1 && ((void*)WorldService::GetInstance())!=0 && ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bca2e0()!=0) return;
         Unk_PreloadId request(id,level,priority);
         if(Unk_LockGuard guard=itemLock) { __assume(0); } else {
             auto found=itemRequests.find(request);
@@ -422,7 +427,7 @@ MS2_REPLACE_METHOD(0x141210540, CFilePreload, FUN_141210540, 341, 0xB396B8B5);
 // @0x1412106a0
 void CFilePreload::FUN_1412106a0(Unk_PreloadKey key,int priority) {
     if(key.first!=0) {
-        if(priority==3 && FUN_1409f7c90()->FUN_141215630()==1 && FUN_1403ed2d0()!=0 && FUN_141bca2e0(FUN_1403ed2d0())!=0) return;
+        if(priority==3 && ((class COptimizer*)FUN_1409f7c90())->FUN_141215630()==1 && ((void*)WorldService::GetInstance())!=0 && ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bca2e0()!=0) return;
         Unk_PreloadId request(key,priority);
         if(Unk_LockGuard guard=itemLock) { __assume(0); } else { itemRequests.insert(request); }
     }
@@ -502,45 +507,66 @@ MS2_REPLACE_METHOD(0x141210da0, CFilePreload, FUN_141210da0, 91, 0x9EA0C72E);
 class CReactorDataTable; class CNifLoadingService; class SkillDataTableCli; class SkillData;
 class Unk_PreloadServiceA; class Unk_PreloadServiceB; class Unk_PreloadServiceC; class Unk_PreloadServiceD;
 void FUN_14051f2b0();
-void FUN_14076b7d0(CReactorDataTable*);
 extern CLearningQuestTable* DAT_143ab0200;
 extern CMeratMarketPremium* DAT_143ab0540;
-CMeratMarketPremium* FUN_1406f2370();
 CLearningQuestTable* FUN_141215480();
 CMeratMarketPremium* FUN_141215500();
-void FUN_1406a27b0(CMeratMarketPremium*);
-void* FUN_1406aeee0();
-bool FUN_1406af0a0(void*);
-void* FUN_1406d6e90();
-void FUN_140a7cbf0(void*);
+class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_1406af0a0();
+};
+class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
+class NpcDataTableCli   // C3: member view for the former free stand-ins
+{
+public:
+    void LoadAll();
+};
 void FUN_1411a49a0(CString);
-CNifLoadingService* FUN_140a0afd0();
-void FUN_141551c10(CNifLoadingService*);
-void FUN_14074c320(Unk_PreloadServiceA*);
-Unk_PreloadServiceB* FUN_140c9b8e0();
-void FUN_140c91690(Unk_PreloadServiceB*);
-Unk_PreloadServiceC* FUN_14034f780();
-void FUN_14034dde0(Unk_PreloadServiceC*);
-void LoadQuestDescription(); void LoadTalkScripts(); void FUN_14093af30(); void FUN_14015c050();
-void FUN_14064cc80(CLearningQuestTable*);
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class CQuestNavigationMap* FUN_140c9b8e0();   // C3: was FUN_140c9b8e0
+class CQuestNavigationMap   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140c909a0();
+    int InitTraceTable();
+};
+class CEnchantScrollTable   // C3: member view for the former free stand-ins
+{
+public:
+    int Load();
+};
+void LoadQuestDescription(); void LoadTalkScripts();class CAchieveUIData   // C3: member view for the former free stand-ins
+{
+public:
+    static void LoadAll();
+};
+class CAchieveData   // C3: member view for the former free stand-ins
+{
+public:
+    static void LoadAll();
+};
 void FUN_1410917a0(unsigned);
-void FUN_140aae720(SkillDataTableCli*,unsigned,unsigned short,int);
 void FUN_1411a4800(const CString&,int);
 // Explicit result-storage forms preserve the member hidden-result ABI.
 // The NIF service's texture load and the skill table lookup return by value (views over the exe types).
 void FUN_1415525d0(CNifLoadingService*,CString,int,int);
 struct Unk_PreloadSkillTable { Unk_PayloadPtr<SkillData> FUN_140aafd60(unsigned); };
-Unk_PreloadServiceD* FUN_1411b1dd0(); void FUN_14119fa60(Unk_PreloadServiceD*);
-void* FUN_140281980(); void FUN_140556f50(void*); void FUN_140c909a0(Unk_PreloadServiceB*);
-// @0x141210e10
+class EffectDataManager   // C3: member view for the former free stand-ins
+{
+public:
+    void LoadEffectFiles();
+};
+void* FUN_140281980(); void FUN_140556f50(void*);// @0x141210e10
 void CFilePreload::FUN_141210e10(bool notify) {
     CStopWatch watch("PreloadDataStep1");
     if(stopped==0) FUN_14051f2b0();
     watch.vfunc_1("CInteractObjectData::ReadAll");
-    if(stopped==0) FUN_14076b7d0(TSingleton<CReactorDataTable>::GetInstance());
+    if(stopped==0) ((class CReactorDataTable*)(TSingleton<CReactorDataTable>::GetInstance()))->Reload();
     watch.vfunc_1("CReactorDataTable::GetInstance()->Init");
     if(notify) FUN_141211b30(0x40);
-    if(stopped==0) FUN_1406a27b0(FUN_141215500());
+    if(stopped==0) ((class CMeratMarketPremium*)(FUN_141215500()))->Init();
     watch.vfunc_1("CMeratMarketPremium::CreateInstance()->Init");
     if(notify) FUN_141211b30(0x80);
     phase=1;
@@ -548,9 +574,9 @@ void CFilePreload::FUN_141210e10(bool notify) {
 MS2_REPLACE_METHOD(0x141210e10, CFilePreload, FUN_141210e10, 230, 0x9568662A);
 // @0x141210f00
 void CFilePreload::FUN_141210f00(bool notify) {
-    if(FUN_1406af0a0(FUN_1406aeee0())) {
+    if(((class Unk_LaunchOptions*)(void*)(((void*)FUN_1406aeee0())))->FUN_1406af0a0()) {
         CStopWatch watch("PreloadDataStep2");
-        if(stopped==0 && DAT_1439f7068) FUN_140a7cbf0(FUN_1406d6e90());
+        if(stopped==0 && DAT_1439f7068) ((class NpcDataTableCli*)(void*)(((void*)FUN_1406d6e90())))->LoadAll();
         watch.vfunc_1("CNpcData::ReadAll");
         if(notify) FUN_141211b30(0x100);
         if(stopped==0 && DAT_1439f7068) FUN_1411a49a0(CString("./Data/Xml/Effect/CH/Common"));
@@ -566,7 +592,7 @@ void CFilePreload::FUN_141210f00(bool notify) {
         if(stopped==0 && DAT_1439f7068) FUN_1411a49a0(CString("./Data/Xml/Effect/Item/enchant"));
         watch.vfunc_1("PreLoadCommonEffect Item/enchant");
         if(notify) FUN_141211b30(0x800);
-        if(stopped==0 && DAT_1439f7068 && FUN_140a0afd0()!=0) FUN_141551c10(FUN_140a0afd0());
+        if(stopped==0 && DAT_1439f7068 && ((class CNifLoadingService*)FUN_140a0afd0())!=0) ((class CNifLoadingService*)(((class CNifLoadingService*)FUN_140a0afd0())))->PreloadEffectNifs();
         watch.vfunc_1("CNifLoadingService::GetInstance()->PreLoad");
         if(notify) FUN_141211b30(0x1000);
     }
@@ -576,17 +602,17 @@ MS2_REPLACE_METHOD(0x141210f00, CFilePreload, FUN_141210f00, 826, 0xAF9D15C6);
 // @0x141211240
 void CFilePreload::FUN_141211240(void*) {
     dataReady=0;
-    if(stopped==0) FUN_14074c320(reinterpret_cast<Unk_PreloadServiceA*>(TSingleton<QuestDataTable>::GetInstance()));
-    if(stopped==0) FUN_140c91690(FUN_140c9b8e0());
+    if(stopped==0) ((class QuestDataTable*)(class Unk_PreloadServiceA*)(reinterpret_cast<Unk_PreloadServiceA*>(TSingleton<QuestDataTable>::GetInstance())))->LoadQuestData();
+    if(stopped==0) ((class CQuestNavigationMap*)(class Unk_PreloadServiceB*)(((class Unk_PreloadServiceB*)FUN_140c9b8e0())))->InitTraceTable();
     FUN_141211b30(2);
-    if(stopped==0) FUN_14034dde0(FUN_14034f780());
+    if(stopped==0) ((class CEnchantScrollTable*)(class Unk_PreloadServiceC*)(((class Unk_PreloadServiceC*)TSingleton<CEnchantScrollTable>::GetInstance())))->Load();
     if(stopped==0) LoadQuestDescription();
     FUN_141211b30(4);
     if(stopped==0) LoadTalkScripts();
-    if(stopped==0) FUN_14093af30();
-    if(stopped==0) FUN_14015c050();
+    if(stopped==0) CAchieveUIData::LoadAll();
+    if(stopped==0) CAchieveData::LoadAll();
     FUN_141211b30(8);
-    if(stopped==0) FUN_14064cc80(FUN_141215480());
+    if(stopped==0) ((class CLearningQuestTable*)(FUN_141215480()))->Load();
     FUN_141211b30(0x10);
     dataReady=1;
     initialized=1;
@@ -609,7 +635,7 @@ void CFilePreload::FUN_141211480(void*) {
     std::set<Unk_PreloadId> pending;
     { if(Unk_LockGuard guard=itemLock) { __assume(0); } else { pending=itemRequests; itemRequests.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
-        if(stopped==0) { FUN_140aae720(TSingleton<SkillDataTableCli>::GetInstance(),it->key.first,it->key.second,it->priority); }
+        if(stopped==0) { ((class SkillDataTableCli*)(TSingleton<SkillDataTableCli>::GetInstance()))->PreloadSkill(it->key.first, it->key.second, it->priority); }
         else return;
     }
 }
@@ -630,8 +656,8 @@ void CFilePreload::FUN_141211700(void*) {
     std::set<Unk_PreloadPath> pending;
     { if(Unk_LockGuard guard=nifLock) { __assume(0); } else { pending=nifRequests; nifRequests.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
-        if(stopped==0 && FUN_140a0afd0()!=0) {
-            ((CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString(it->path),it->priority);
+        if(stopped==0 && ((class CNifLoadingService*)FUN_140a0afd0())!=0) {
+            ((CNifLoadingService*)((class CNifLoadingService*)FUN_140a0afd0()))->GetTexture(CString(it->path),it->priority);
         }
         else return;
     }
@@ -643,7 +669,7 @@ void CFilePreload::FUN_141211880(void*) {
     std::set<CString> pending;
     { if(Unk_LockGuard guard=pathLock) { __assume(0); } else { pending=paths; paths.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
-        if(stopped==0 && FUN_140a0afd0()!=0) FUN_1415525d0(FUN_140a0afd0(),CString(*it),0,5);
+        if(stopped==0 && ((class CNifLoadingService*)FUN_140a0afd0())!=0) FUN_1415525d0(((class CNifLoadingService*)FUN_140a0afd0()),CString(*it),0,5);
         else return;
     }
 }
@@ -654,7 +680,7 @@ void CFilePreload::FUN_1412119e0(void*) {
     std::set<unsigned> pending;
     { if(Unk_LockGuard guard=itemIdsLock) { __assume(0); } else { pending=itemIds; itemIds.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
-        if(stopped==0 && FUN_140a0afd0()!=0) {
+        if(stopped==0 && ((class CNifLoadingService*)FUN_140a0afd0())!=0) {
             if(TSingleton<SkillDataTableCli>::GetInstance()!=0) {
                 ((Unk_PreloadSkillTable*)TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafd60(*it);
             }
@@ -673,11 +699,11 @@ UINT CFilePreload::FUN_141211b80(void* context) {
     CFilePreload* self=static_cast<CFilePreload*>(context);
     if(self==0) return 0;
     {
-        if(self->stopped==0) FUN_14119fa60(FUN_1411b1dd0());
+        if(self->stopped==0) ((class EffectDataManager*)(class Unk_PreloadServiceD*)(((class Unk_PreloadServiceD*)TSingleton<EffectDataManager>::GetInstance())))->LoadEffectFiles();
         if(self->stopped==0) {
             self->FUN_141210e10(false);
             FUN_140556f50(FUN_140281980());
-            if(self->stopped==0) FUN_140c909a0(FUN_140c9b8e0());
+            if(self->stopped==0) ((class CQuestNavigationMap*)(class Unk_PreloadServiceB*)(((class Unk_PreloadServiceB*)FUN_140c9b8e0())))->FUN_140c909a0();
             self->FUN_141210f00(false);
         }
         self->FUN_141211c20();
@@ -741,7 +767,7 @@ CLearningQuestTable* FUN_141215480() {
 }
 // @0x141215500
 CMeratMarketPremium* FUN_141215500() {
-    return DAT_143ab0540!=0 ? FUN_1406f2370() : new CMeratMarketPremium;
+    return DAT_143ab0540!=0 ? TSingleton<CMeratMarketPremium>::GetInstance() : new CMeratMarketPremium;
 }
 // @0x141215630
 int COptimizer::FUN_141215630() const { return preloadMode; }

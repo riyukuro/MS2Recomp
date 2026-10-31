@@ -38,6 +38,9 @@
 #include "ms2/placeholder/ckeytable.h"
 #include "ms2/client/ms2/uiservice.h"
 
+// return types of the getters this unit calls
+class CReservedWordTable;
+
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
 // The OX quiz dialog itself (UI type 0x4f7d) lives in another unit; only the cast target and its button lookup are needed.
@@ -83,7 +86,6 @@ class Unk_OxArgs : public Unk_CommandArgs
 
 WorldService* FUN_1403ed2d0();
 CTriggerService* FUN_140ad4b90();
-void* FUN_1403b4750();
 void FUN_1416fb300(void* p, const CStringW& str);                // remember the host's notice
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);     // str equals psz
 CStringW FUN_140298ea0(CStringW strKey);                         // localized string
@@ -352,7 +354,7 @@ void FUN_140dffb50(void* pListener)
     if (s_bHost)
     {
         strMsg = FUN_140298ea0(L"s_ugcox_leave_warning_host");
-        FUN_1416fb300(FUN_1403b4750(), strMsg);
+        FUN_1416fb300(TSingleton<CReservedWordTable>::GetInstance(), strMsg);
     }
     else
     {

@@ -21,32 +21,35 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/classobject.h"
 #include "ms2/ms2format.h"
+#include "ms2/commonfiles/timeutil.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int& nOut);
-int FUN_1408730a0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);
-const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);   // attribute text (null = absent)
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut);
 int FUN_1413b1fc0(Unk_140165cf0* pElem, const char* pszName, int& nOut);
 void FUN_1412751b0(const CStringW& text, int a);                        // the debug log
-unsigned FUN_140869420();                                               // millisecond clock
-CStringW FUN_14083dc40(const wchar_t* szFormat, const int& a1, const int& a2);   // StringFormat<int, int>
 
 char FUN_1405c7ba0(const Unk_GeRange* pRange);                          // is set
-int FUN_1413b1d60(Unk_140165cf0* pElem, const char* pszName, Unk_GeRange* pOut);
-bool FUN_140d1a9d0(const Unk_GcOptInt* pOpt);                           // Nullable<int>::HasValue
+int FUN_1413b1d60(class Unk_140165cf0*, char const*, void*);   // C3: was FUN_1413b1d60
+class Unk_ImNullableInt   // C3: member view for the former free stand-ins
+{
+public:
+    bool HasValue() const;
+};
 const int* FUN_1413989f0(const Unk_GcOptInt* pOpt);                     // Nullable<int>::GetValue
 Unk_GcOptInt* FUN_140d11940(Unk_GcOptInt* pOpt);                        // Nullable<int>()
 
-Unk_140165cf0* FUN_140345b40(Unk_140165cf0* pElem);                     // the first child node
-bool FUN_140184310(const CStringA& str, const char* psz);               // equal (case-sensitive)
+class Unk_140165cf0* FUN_140345b40(class TiXmlDocument*);   // C3: was FUN_140345b40
 Unk_GcCondRef FUN_1413a5420(CStringA strTag);                           // the condition class of a tag
-CStringW FUN_1402a5170(const wchar_t* szFormat, const CStringA& strArg);   // StringFormat with one string
-CStringA FUN_140540050(const char* szFormat, const CStringA& strArg);
-void* FUN_1413a4f30(void* pMap);                                        // the node allocator of a map
 void* FUN_141395500(void* pNode);
 Unk_GeActRef FUN_141382b90(Unk_140165cf0* pElem);                       // builds the action of an <action> element
 // The condition / action lists hold 16-byte handles (the shared placeholder declares them as pointer arrays).
@@ -60,7 +63,7 @@ public:
     char FUN_14138c0d0(int nTrigger, Unk_GcOptInt oValue, Unk_GcOptInt oSubValue);
     char FUN_14138c210(int nTrigger, const Unk_GeRange& range);
 };
-Unk_GeMgr* FUN_1409331e0();
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
 // ---- the std::map<int, int> and 16-byte handle array glue (0x1413a3c60..0x1413a5130) ----------------------------------------
 
@@ -74,7 +77,6 @@ struct Unk_GeIter { Unk_GeNode* m_pNode; };
 
 void* FUN_141395550(Unk_GeTreeHead* pHead);                             // the container proxy
 Unk_GeIter* FUN_141397130(Unk_GeIter* pOut, Unk_GeNode* pNode, void* pProxy);
-Unk_GeTreeHead* FUN_14139e490(void* pMap);
 void* FUN_14139e9f0(void* pMap);                                        // the node allocator
 Unk_GeNode** FUN_14139f960(Unk_GeTreeHead* pHead);                      // the root
 Unk_GeNode** FUN_14139eee0(Unk_GeTreeHead* pHead);                      // the leftmost
@@ -111,7 +113,7 @@ const int& FUN_1413a46e0(const int& rKey)                                 // std
 // @0x1413a3e00
 Unk_GeIter* FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, bool bLeft, Unk_GeNode* pWhere, const int& rKey, Unk_GeNode* pNode)
 {
-    Unk_GeTreeHead* pHead = FUN_14139e490(pMap);
+    Unk_GeTreeHead* pHead = ((struct Unk_GeTreeHead*)&((std::_Tree_comp_alloc<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<int const, int>>, 0>>*)(void*)(pMap))->_Get_data());
     if (FUN_1413a5140(pMap) - 1 <= pHead->m_nSize)
     {
         FUN_1413a4e30(pMap, pNode);
@@ -253,7 +255,7 @@ unsigned __int64 FUN_1413a5130(void* pAlloc)
 // @0x1413a5140
 unsigned __int64 FUN_1413a5140(void* pMap)
 {
-    return FUN_1413a5130(FUN_1413a4f30(pMap));
+    return FUN_1413a5130(((void*)&((std::_Tree_comp_alloc<std::_Tmap_traits<std::pair<unsigned int, int>, int, std::less<std::pair<unsigned int, int>>, std::allocator<std::pair<std::pair<unsigned int, int> const, int>>, 0>>*)(void*)(pMap))->_Get_data()));
 }
 
 // @0x1413a5160
@@ -277,19 +279,19 @@ tm* FUN_1413a52a0(const __time64_t* pTime)
 // @0x1413a52c0
 Unk_GcCondRef FUN_1413a52c0(Unk_140165cf0* pElem)
 {
-    CStringA strTag(FUN_14086f4b0(pElem, "type"));
+    CStringA strTag(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("type"));
     Unk_GcCondRef ref = FUN_1413a5420(strTag);
     if (ref.FUN_141387b90())
         ref.FUN_141387bb0()->vfunc_2(pElem);
     else
-        throw std::exception(FUN_140540050("Unknown Guide Condition Tag({0})", strTag));
+        throw std::exception(StringFormat<CStringA>("Unknown Guide Condition Tag({0})", strTag));
     return ref;
 }
 
 // @0x1413a5420
 Unk_GcCondRef FUN_1413a5420(CStringA strTag)
 {
-    CStringW strClass = FUN_1402a5170(L"CGuideCondition{0}", strTag);
+    CStringW strClass = StringFormat<CStringA>(L"CGuideCondition{0}", strTag);
     Unk_GcCondRef ref(static_cast<CGuideCondition*>(FUN_1401f7f50(strClass)));
     return ref;
 }
@@ -337,8 +339,8 @@ int CGuideCondition::FUN_1413a5600(bool bResult)
 // @0x1413a5670
 void CGuideCondition::vfunc_2(Unk_140165cf0* pElem)
 {
-    FUN_1408731e0(pElem, "value", m_n20);
-    FUN_1408730a0(pElem, "not", m_b1c);
+    XmlGetAttr((class TiXmlElement*)(pElem), "value", m_n20);
+    XmlGetAttr((class TiXmlElement*)(pElem), "not", m_b1c);
 }
 
 // @0x1413a56d0
@@ -435,8 +437,8 @@ void CGuideConditionTrigger::vfunc_2(Unk_140165cf0* pElem)
     FUN_1413b1fc0(pElem, "trigger", m_n28);
     FUN_1413b1d00(pElem, "value", m_a);
     FUN_1413b1d00(pElem, "subValue", m_b);
-    if (FUN_14086f4b0(pElem, "range") != 0)
-        FUN_1413b1d60(pElem, "range", &m_range);
+    if (((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("range") != 0)
+        FUN_1413b1d60(pElem, "range", (void*)(&m_range));
     if (m_n28 == 0)
         throw std::exception("Unknown Guide Trigger Tag");
 }
@@ -445,8 +447,8 @@ void CGuideConditionTrigger::vfunc_2(Unk_140165cf0* pElem)
 int CGuideConditionTrigger::vfunc_3()
 {
     if (FUN_1405c7ba0(&m_range) == 0)
-        return FUN_1413a55a0(FUN_1409331e0()->FUN_14138c0d0(m_n28, m_a, m_b) != 0);
-    return FUN_1413a55a0(FUN_1409331e0()->FUN_14138c210(m_n28, m_range) != 0);
+        return FUN_1413a55a0(((class Unk_GeMgr*)FUN_1409331e0())->FUN_14138c0d0(m_n28, m_a, m_b) != 0);
+    return FUN_1413a55a0(((class Unk_GeMgr*)FUN_1409331e0())->FUN_14138c210(m_n28, m_range) != 0);
 }
 
 // @0x1413a5c80
@@ -454,11 +456,11 @@ CStringW CGuideConditionTrigger::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
     str.Append(StringFormat(L"type({0})", reinterpret_cast<const Unk_GcEnum1&>(m_n28)));
-    if (FUN_140d1a9d0(&m_a))
+    if (((class Unk_ImNullableInt*)(struct Unk_GcOptInt const*)(&m_a))->HasValue())
         str.Append(StringFormat(L" ,value({0})", *FUN_1413989f0(&m_a)));
-    if (FUN_140d1a9d0(&m_b))
+    if (((class Unk_ImNullableInt*)(struct Unk_GcOptInt const*)(&m_b))->HasValue())
         str.Append(StringFormat(L" ,subValue({0})", *FUN_1413989f0(&m_b)));
-    str.Append(FUN_14083dc40(L" ,range({0}-{1})", m_range.m_nMin, m_range.m_nMax));
+    str.Append(StringFormat<int, int>(L" ,range({0}-{1})", m_range.m_nMin, m_range.m_nMax));
     return str;
 }
 
@@ -486,8 +488,8 @@ CGuideConditionTimeout::CGuideConditionTimeout()
 int CGuideConditionTimeout::vfunc_3()
 {
     if (m_n28 == 0)
-        m_n28 = FUN_140869420() + m_n20;
-    return FUN_1413a5600(FUN_140869420() >= (unsigned)m_n28);
+        m_n28 = GetTickCountMs2() + m_n20;
+    return FUN_1413a5600(GetTickCountMs2() >= (unsigned)m_n28);
 }
 
 // @0x1413a5fe0
@@ -643,20 +645,20 @@ bool CGuideEntity::Load(Unk_140165cf0* pElem)
     FUN_140873220(pElem, "id", m_nId);
     FUN_140873220(pElem, "saveId", m_nSaveId);
     FUN_140873220(pElem, "saveStep", m_nSaveStep);
-    FUN_1408731e0(pElem, "isForce", m_nForce);
-    FUN_1408731e0(pElem, "isNoSave", m_nNoSave);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isForce", m_nForce);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isNoSave", m_nNoSave);
     if (!FUN_1413a4b50())
         FUN_140873420(pElem, "desc", m_strDesc);
-    for (Unk_140165cf0* pChild = FUN_140345b40(pElem); pChild != 0; pChild = pChild->NextSiblingElement())
+    for (Unk_140165cf0* pChild = FUN_140345b40((class TiXmlDocument*)(pElem)); pChild != 0; pChild = pChild->NextSiblingElement())
     {
         CStringA strName(pChild->Value());
-        if (FUN_140184310(strName, "open"))
+        if (strName == "open")
             LoadConditions(pChild, m_condOpen);
-        else if (FUN_140184310(strName, "close"))
+        else if (strName == "close")
             LoadConditions(pChild, m_condClose);
-        else if (FUN_140184310(strName, "cancel"))
+        else if (strName == "cancel")
             LoadConditions(pChild, m_condCancel);
-        else if (FUN_140184310(strName, "openAction"))
+        else if (strName == "openAction")
             LoadActions(pChild, m_actions);
     }
     return true;
@@ -680,7 +682,7 @@ void CGuideEntity::Clear(bool bNotify)
 void CGuideEntity::SetState(int nState)
 {
     m_nState = nState;
-    FUN_1409331e0()->FUN_14138d7e0(13, 0);
+    ((class Unk_GeMgr*)FUN_1409331e0())->FUN_14138d7e0(13, 0);
 }
 
 // @0x1413a36b0

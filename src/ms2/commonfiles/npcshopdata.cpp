@@ -132,7 +132,6 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 
 // ---- callees of other units -----------------------------------------------------------------------------------------
 
-CFeatureManager* FUN_140166410();
 MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);                       // the item table row (null: unknown id)
 bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszKey,
@@ -155,7 +154,7 @@ int FUN_1407181a0(const CStringW& str);
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
 void FUN_1401d9a30(const CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDelim);
 void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszText);
-void FUN_1402804e0(CLogString* pLog, unsigned __int64 a, unsigned __int64 b, int nCategory, const wchar_t* pszText);
+class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
 #ifdef __clang__
 // clang emits an unavailable MFC CopyChars import for operator+ (hook DLL); use the exe's copy of
 // operator+(const wchar_t*, const CStringW&).
@@ -366,7 +365,7 @@ ePaymentType TShopPaymentAttr::FUN_1406dc510() const
 {
     if (m_nFeature == 1)
         return m_eType;
-    if (!FUN_140166410()->FUN_14036d570(m_nFeature) && (m_eType == 9 || m_eType == 10))
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(m_nFeature) && (m_eType == 9 || m_eType == 10))
         return (ePaymentType)4;
     return m_eType;
 }
@@ -1144,7 +1143,7 @@ int FUN_1406e0390(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
     if (bFailed == 1)
     {
         CStringW strMessage = StringFormat(L"error File: {0}\r\n[{1}]\r\n", strPath, strErrors);
-        FUN_1402804e0(CLogString::GetInstance(), 0, 0, 0x2d, strMessage);
+        reinterpret_cast<Unk_CommonLog*>(CLogString::GetInstance())->Log(0, 0, 0x2d, strMessage);
         return 0;
     }
     return 1;
@@ -1293,7 +1292,7 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
     if (bFailed == 1)
     {
         CStringW strMessage = StringFormat(L"error File: {0}\r\n[{1}]\r\n", strPath, strErrors);
-        FUN_1402804e0(CLogString::GetInstance(), 0, 0, 0x2d, strMessage);
+        reinterpret_cast<Unk_CommonLog*>(CLogString::GetInstance())->Log(0, 0, 0x2d, strMessage);
         return 0;
     }
     return 1;
@@ -1366,7 +1365,7 @@ int FUN_1406e1a50(const CString& strPath, Unk_NpcShopMap& shops)
     if (bFailed == 1)
     {
         CStringW strMessage = StringFormat(L"error File: {0}\r\n[{1}]\r\n", strPath, strErrors);
-        FUN_1402804e0(CLogString::GetInstance(), 0, 0, 0x2d, strMessage);
+        reinterpret_cast<Unk_CommonLog*>(CLogString::GetInstance())->Log(0, 0, 0x2d, strMessage);
         return 0;
     }
     return 1;
@@ -2045,7 +2044,7 @@ Unk_BeautyGroupRef CBeautyShopData::GetShopItemGroup()
 }
 
 // @0x1406e4ce0
-std::vector<MS2Ptr<CBeautyShopItemGroup> >* CBeautyShopData::GetShopItemGroupList(
+void CBeautyShopData::GetShopItemGroupList(
     std::vector<MS2Ptr<CBeautyShopItemGroup> >& out)
 {
     m_spGroups->FUN_1406e4260(out);
@@ -2054,9 +2053,7 @@ std::vector<MS2Ptr<CBeautyShopItemGroup> >* CBeautyShopData::GetShopItemGroupLis
         static_cast<Unk_NpcShopLog*>(CLogString::GetInstance())->Log(0, 0, 0x2d, L"{0} failed. pShopItemGroup is null. There are no products on sale. shopid={1}",
                           L"CBeautyShopData::GetShopItemGroupList", m_nShopId);
         MS2_ASSERT_AT(0x9a6, FALSE);
-        return 0;
     }
-    return &out;
 }
 
 // The beauty shop table reload of the server build (a constant TRUE in the client).

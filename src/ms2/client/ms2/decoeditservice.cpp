@@ -68,9 +68,12 @@ public:
     virtual void vfunc_19(Unk_NodePtr spNode, egf::EntityID kId);
 };
 Unk_DecoSceneSvc* FUN_1413f9870();
-unsigned FUN_141bd3060(WorldService* pWorld);                       // the id of the current map
 void* FUN_14086d260();                                              // the clock
-double FUN_141473280(void* pClock);                                 // seconds
+class CMainSystem   // C3: member view for the former free stand-ins
+{
+public:
+    double FUN_141473280();
+};
 class Unk_DecoAnimObj { public: bool FUN_1409a20a0(int nSeq, float fSpeed, bool bLoop); };
 struct Unk_DecoAnimHandle { Unk_DecoAnimObj* FUN_140998e90(); char m_pad[0x40]; };
 struct Unk_DecoAnimRec { char m_pad0[8]; Unk_DecoAnimHandle m_hnd; int m_nSeq; };   // m_nSeq +0x48 (FUN_1411766b0)
@@ -81,7 +84,7 @@ public:
     bool FUN_1411766b0(const egf::EntityID& kId, int nSeq, float fSpeed, bool bLoop);      // 0x1411766b0
     bool FUN_1409991a0(const egf::EntityID& kId, Unk_DecoAnimRec** ppRec);
 };
-Unk_DecoAnimSvc* FUN_1410a68d0();
+class Unk_AnimSvc* FUN_1410a68d0();   // C3: was FUN_1410a68d0
 class Unk_DecoAnimFx { public: void FUN_1409a1fc0(egf::EntityID& kId, void* pName, float fSpeed, bool bLoop); };
 struct Unk_DecoModelCache { char m_pad[0x10]; };
 
@@ -105,18 +108,17 @@ private:
     ATL::CAtlList<NiAVObject*> m_list;
 };
 MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
-const NiTransform& FUN_140a33f90(NiAVObject* pObject);              // GetLocalTransform
-const NiTransform& FUN_1409478e0(NiAVObject* pObject);              // GetWorldTransform
-const NiPoint3& FUN_140e69200(NiAVObject* pObject);                 // GetTranslate
 void FUN_140aacb60(NiAVObject* pObject, const NiTransform& xf);     // SetLocalTransform
 void FUN_140a0b300(NiAVObject* pObject, bool bCulled);              // SetAppCulled
 void FUN_141d591d0(NiAVObject* pObject);                            // refresh the dynamic effects of an object
-bool FUN_14106bee0(NiMeshModifier* pModifier);
-NiMaterial* FUN_141d284a0(void* pTable);                            // material from a library table
+class NiSkinningMeshModifier   // C3: member view for the former free stand-ins
+{
+public:
+    bool GetSoftwareSkinned() const;
+};
 extern char DAT_143ae51e8;                                          // material tables
 extern char DAT_143ae5278;
 extern NiRTTI DAT_143afbef0;                                        // the modifier type the overdraw material needs
-const NiFixedString& FUN_140a0b280();                               // the POSITION semantic
 
 // ---- xml (game TinyXML) ----
 class Unk_TiXmlElement;
@@ -130,8 +132,12 @@ private:
     char m_pad[0x90];
 };
 MS2_CHECK_SIZE(Unk_TiXmlElement, 0x90);
-void* FUN_140165cf0(void* pParent, const char* pszName);            // FirstChildElement
-void* FUN_140168650(void* pElement, const char* pszName);           // NextSiblingElement
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 int FUN_1408733e0(void* pElement, const char* pszName, CString& rValue);
 void FUN_140874050(void* pElement, const char* pszName, const CString& strValue);
 void FUN_140874730(void* pElement, NiTransform* pXf);               // read the transform attributes
@@ -143,7 +149,7 @@ bool FUN_1408710c0(void* pDocument, const char* pszFile);           // SaveFile
 struct Unk_PickXY { float x, y; };                                  // cursor position
 extern Unk_PickXY DAT_143b02320;                                    // initial value of the cursor position
 struct Unk_DecoCursor : public CWindowService { };
-Unk_DecoCursor* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 struct Unk_DecoCamera : public CameraMgr
 {
     bool FUN_140af0520(const Unk_PickXY& kCursor, Unk_DecoPoint3* pOrigin, Unk_DecoPoint3* pDir);    // cursor ray
@@ -152,13 +158,11 @@ struct Unk_DecoCollision
 {
     int FUN_14168a230(Unk_DecoPoint3 ptFrom, Vector3& ptHit, Unk_DecoPoint3 ptDir, float fLen, int nMask);
 };
-Unk_DecoCollision* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 
 // ---- the lights (NiShadowGenerator, see lightunaffectednode.h) ----
 class Unk_LUNLight : public NiShadowGenerator {};
 struct Unk_LUNList;
-Unk_LUNList* FUN_140afe770();
-void* FUN_140afe720(Unk_LUNList* list);                             // head position
 Unk_LUNLight** FUN_140afe730(Unk_LUNList* list, void** pos);        // advance, returns entry
 Unk_LUNLight* FUN_140afe6c0(Unk_LUNLight** entry);                  // entry -> light
 
@@ -234,7 +238,7 @@ MS2_REPLACE_METHOD(0x14116F900, DecoEditService, SetBrush, 127, 0xD9372A8C);
 CString DecoEditService::GetXmlPath()
 {
     CString strFile;
-    strFile.Format("%08d_deco.xml", FUN_141bd3060(FUN_1403ed2d0()));
+    strFile.Format("%08d_deco.xml", ((class WorldService*)(FUN_1403ed2d0()))->FUN_141bd3060());
     CString strPath;
     strPath.Format("./Data/Xml/Map/%s", (const char*)strFile);
     return strPath;
@@ -289,7 +293,7 @@ void DecoEditService::SaveXml()
 {
     TiXmlDocument doc;
     FUN_14086e090(&doc, new Unk_TiXmlElement("ms2"));
-    void* pElement = FUN_140165cf0(&doc, "ms2");
+    void* pElement = ((void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
     if (pElement != 0)
     {
         for (POSITION pos = m_mapLayers.GetHeadPosition(); pos; m_mapLayers.GetNext(pos))
@@ -310,10 +314,10 @@ void DecoEditService::LoadXml()
     bool bLoaded = doc.FUN_140870fc0(GetXmlPath(), 0);
     if (bLoaded)
     {
-        void* pRoot = FUN_140165cf0(&doc, "ms2");
+        void* pRoot = ((void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
         if (pRoot == 0)
             return;
-        for (void* pLayerXml = FUN_140165cf0(pRoot, "layer"); pLayerXml != 0; pLayerXml = FUN_140168650(pLayerXml, "layer"))
+        for (void* pLayerXml = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("layer")); pLayerXml != 0; pLayerXml = ((void*)((class Unk_XmlNode*)(void*)(pLayerXml))->NextSibling("layer")))
         {
             CString strName;
             CString strAsset;
@@ -324,12 +328,12 @@ void DecoEditService::LoadXml()
             DecoLayer* pLayer = GetLayer();
             if (pLayer != 0)
             {
-                for (void* pItemXml = FUN_140165cf0(pLayerXml, "layer"); pItemXml != 0; pItemXml = FUN_140168650(pItemXml, "layer"))
+                for (void* pItemXml = ((void*)((class Unk_XmlNode*)(void*)(pLayerXml))->FirstChild("layer")); pItemXml != 0; pItemXml = ((void*)((class Unk_XmlNode*)(void*)(pItemXml))->NextSibling("layer")))
                 {
                     DecoItem* pItem = pLayer->AddItem();
                     if (pItem != 0)
                     {
-                        for (void* pGrass = FUN_140165cf0(pItemXml, "grass"); pGrass != 0; pGrass = FUN_140168650(pGrass, "grass"))
+                        for (void* pGrass = ((void*)((class Unk_XmlNode*)(void*)(pItemXml))->FirstChild("grass")); pGrass != 0; pGrass = ((void*)((class Unk_XmlNode*)(void*)(pGrass))->NextSibling("grass")))
                         {
                             NiTransform xf;
                             FUN_140874730(pGrass, &xf);
@@ -426,7 +430,7 @@ efd::AsyncResult DecoEditService::OnTick()
     if (m_mapBrushes.Lookup(m_nBrush, spBrush))
     {
         Unk_PickXY kCursor = DAT_143b02320;
-        if (FUN_140aadf80()->GetCursorClientPos(&kCursor.x, &kCursor.y) != 0)
+        if (((struct Unk_DecoCursor*)FUN_140aadf80())->GetCursorClientPos(&kCursor.x, &kCursor.y) != 0)
         {
             if (reinterpret_cast<Unk_DecoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
             {
@@ -435,7 +439,7 @@ efd::AsyncResult DecoEditService::OnTick()
                 if (reinterpret_cast<Unk_DecoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
                 {
                     Vector3 kHit;
-                    if (FUN_1409f7ca0()->FUN_14168a230(Unk_DecoPoint3(kOrigin), kHit, Unk_DecoPoint3(kDir), 10000.0f, 0x201) != 0)
+                    if (((struct Unk_DecoCollision*)FUN_1409f7ca0())->FUN_14168a230(Unk_DecoPoint3(kOrigin), kHit, Unk_DecoPoint3(kDir), 10000.0f, 0x201) != 0)
                     {
                         spBrush->SetPtPos(kHit);
                         spBrush->vfunc_2();
@@ -514,8 +518,8 @@ bool DecoItem::SaveXml(Unk_TiXmlElement* pParent)
             NiMeshHWInstance* pInstance = NiDynamicCast(NiMeshHWInstance, pObject);
             if (pInstance != 0)
             {
-                if (!ContainsTransform(FUN_140a33f90(pInstance), aXf))
-                    aXf.Add(FUN_140a33f90(pInstance));
+                if (!ContainsTransform(((class NiAVObject*)(pInstance))->GetLocalTransform(), aXf))
+                    aXf.Add(((class NiAVObject*)(pInstance))->GetLocalTransform());
             }
         }
         for (unsigned i = 0; i < aXf.GetCount(); i++)
@@ -535,7 +539,7 @@ void DecoItem::Refresh()
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
     if (pRoot != 0)
     {
-        pRoot->Update((float)FUN_141473280(FUN_14086d260()), true);
+        pRoot->Update((float)((class CMainSystem*)(void*)(FUN_14086d260()))->FUN_141473280(), true);
         pRoot->UpdateNodeBound();
         pRoot->UpdateProperties();
         pRoot->UpdateEffects();
@@ -680,7 +684,7 @@ void DecoItem::CollectNear(Unk_DecoPoint3 pt, float fRadius, ATL::CAtlArray<NiMe
             NiMeshHWInstance* pInstance = NiDynamicCast(NiMeshHWInstance, pObject);
             if (pInstance != 0)
             {
-                if (((const Vector3&)FUN_140e69200(pInstance)).FUN_140965c40((const Vector3&)pt).FUN_140967ac0() < fRadius)
+                if (((const Vector3&)((class NiAVObject*)(pInstance))->GetTranslate()).FUN_140965c40((const Vector3&)pt).FUN_140967ac0() < fRadius)
                     aOut.Add(pInstance);
             }
         }
@@ -699,7 +703,7 @@ void DecoItem::CollectTransforms(ATL::CAtlArray<NiTransform>& aOut)
         {
             NiMeshHWInstance* pInstance = NiDynamicCast(NiMeshHWInstance, pObject);
             if (pInstance != 0)
-                aOut.Add(FUN_1409478e0(pInstance));
+                aOut.Add(((class NiAVObject*)(pInstance))->GetWorldTransform());
         }
     }
 }
@@ -708,7 +712,7 @@ MS2_REPLACE_METHOD(0x141174BB0, DecoItem, CollectTransforms, 186, 0xECD1BF5B);
 // @0x141174c70
 void DecoItem::PlayAnim(const efd::utf8string& strName, float fSpeed, bool bLoop)
 {
-    Unk_DecoAnimSvc* pAnim = FUN_1410a68d0();
+    Unk_DecoAnimSvc* pAnim = ((class Unk_DecoAnimSvc*)FUN_1410a68d0());
     if (pAnim != 0)
         pAnim->FUN_1409a1fc0(FUN_14123c460(), strName, fSpeed, bLoop);
 }
@@ -716,7 +720,7 @@ void DecoItem::PlayAnim(const efd::utf8string& strName, float fSpeed, bool bLoop
 // @0x141174ce0
 void DecoItem::PlayAnim(int nSeq, float fSpeed, bool bLoop)
 {
-    Unk_DecoAnimSvc* pAnim = FUN_1410a68d0();
+    Unk_DecoAnimSvc* pAnim = ((class Unk_DecoAnimSvc*)FUN_1410a68d0());
     if (pAnim != 0)
         pAnim->FUN_1411766b0(FUN_14123c460(), nSeq, fSpeed, bLoop);
 }
@@ -737,8 +741,8 @@ int DecoItem::vfunc_10()
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
     if (pRoot != 0)
     {
-        Unk_LUNList* pList = FUN_140afe770();
-        void* pos = FUN_140afe720(pList);
+        Unk_LUNList* pList = ((struct Unk_LUNList*)&NiShadowManager::GetShadowGenerators());
+        void* pos = ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiShadowGenerator>>*)(struct Unk_LUNList*)(pList))->GetHeadPos();
         while (pos != 0)
         {
             Unk_LUNLight* pLight = FUN_140afe6c0(FUN_140afe730(pList, &pos));
@@ -779,8 +783,8 @@ void DecoItem::vfunc_14()
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
     if (pRoot != 0)
     {
-        Unk_LUNList* pList = FUN_140afe770();
-        void* pos = FUN_140afe720(pList);
+        Unk_LUNList* pList = ((struct Unk_LUNList*)&NiShadowManager::GetShadowGenerators());
+        void* pos = ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiShadowGenerator>>*)(struct Unk_LUNList*)(pList))->GetHeadPos();
         while (pos != 0)
         {
             Unk_LUNLight* pLight = FUN_140afe6c0(FUN_140afe730(pList, &pos));
@@ -809,17 +813,17 @@ bool DecoItem::PrepareMesh(NiMesh* pMesh, bool bOverdraw)
 {
     if (pMesh == 0)
         return false;
-    if (pMesh->FindStreamRef(FUN_140a0b280(), 0, NiDataStreamElement::F_UNKNOWN) != 0)
+    if (pMesh->FindStreamRef(NiCommonSemantics::POSITION(), 0, NiDataStreamElement::F_UNKNOWN) != 0)
     {
-        pMesh->ApplyAndSetActiveMaterial(FUN_141d284a0(&DAT_143ae51e8), 0xffffffff);
+        pMesh->ApplyAndSetActiveMaterial(NiMaterialLibrary::CreateMaterial(*(class NiFixedString const*)(&DAT_143ae51e8)), 0xffffffff);
     }
     else
     {
         NiMeshModifier* pModifier = pMesh->GetModifierByType(&DAT_143afbef0);
         if (pModifier != 0)
         {
-            if (!FUN_14106bee0(pModifier) && bOverdraw)
-                pMesh->ApplyAndSetActiveMaterial(FUN_141d284a0(&DAT_143ae5278), 0xffffffff);
+            if (!((class NiSkinningMeshModifier*)(class NiMeshModifier*)(pModifier))->GetSoftwareSkinned() && bOverdraw)
+                pMesh->ApplyAndSetActiveMaterial(NiMaterialLibrary::CreateMaterial(*(class NiFixedString const*)(&DAT_143ae5278)), 0xffffffff);
         }
     }
     return true;

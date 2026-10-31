@@ -14,6 +14,7 @@ class CIndividualArenaDataTable : public TSingleton<CIndividualArenaDataTable>,
 public:
     CIndividualArenaDataTable();                            // 0x14051a260
     virtual ~CIndividualArenaDataTable();
+    bool Load();                                            // 0x14051a360
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_10[0x58 - 0x10];

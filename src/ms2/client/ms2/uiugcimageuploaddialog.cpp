@@ -25,6 +25,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/uiugceventdispatcher.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/placeholder/ascript.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -35,10 +36,8 @@ static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "
 class ASDialog : public ASDisplayObject {};
 
 // The status-listener registry (singleton 0x140aa6d40).
-UIStatusEventDispatcher* FUN_140aa6d40();
 
 // The UGC listener registry (singleton 0x140bc09f0).
-UIUGCEventDispatcher* FUN_140bc09f0();
 
 // The movie root of the dialog: Invoke of a method with an int and an AS array (inline COMDAT 0x141b36aa0).
 class Unk_UgcScript : public AScript
@@ -50,8 +49,6 @@ public:
 // A row of the file list: its members as text.
 class Unk_UgcImageData : public AScript
 {
-public:
-    CStringW FUN_1422bb2b0(const char* szName);                 // a member as text
 };
 
 CUgcManager* FUN_14052d220();
@@ -105,16 +102,16 @@ int UIUGCImageUploadDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
-    FUN_140bc09f0()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
     return 1;
 }
 
 // @0x141b39b40
 void UIUGCImageUploadDialog::vfunc_67()
 {
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
-    FUN_140bc09f0()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
     UIDialog::vfunc_67();
     FUN_14052d220()->FUN_141880ec0(vfunc_48());
     m_188 = Unk_UgcOpenType_None;
@@ -146,21 +143,22 @@ void UIUGCImageUploadDialog::OnLoadComplete()
         vfunc_67();
         return;
     }
-    if (spUpload->GetDialog() == vfunc_48())
+    if (spUpload->GetDialog() != vfunc_48())
     {
-        Unk_UgcOpenType nKind = (Unk_UgcOpenType)spUpload->m_nKind;
-        if (FUN_141b3a780((const int*)&nKind) == 0)
-        {
-            vfunc_67();
-            return;
-        }
-        m_188 = nKind;
-        m_30->Invoke("changeOpenType", m_188);
-        FUN_141b3ab90();
-        FUN_141b3b2c0();
-    }
-    else
         vfunc_67();
+        return;
+    }
+    Unk_UgcOpenType nKind = (Unk_UgcOpenType)spUpload->m_nKind;
+    bool bOk = FUN_141b3a780((const int*)&nKind);
+    if (!bOk)
+    {
+        vfunc_67();
+        return;
+    }
+    m_188 = nKind;
+    m_30->Invoke("changeOpenType", m_188);
+    FUN_141b3ab90();
+    FUN_141b3b2c0();
 }
 
 // @0x141b39e30
@@ -526,10 +524,12 @@ __int64 UIUGCImageUploadDialog::FUN_141b3b390()
     IUgcViewer* pViewer = spUpload->m_spViewer.get();
     if (pViewer == 0)
         return 0;
-    Unk_BannerPtr banner = CFieldBannerData::GetBanner(static_cast<CUgcViewerBanner*>(pViewer)->m_post.m_nBannerId);
+    int nBannerId = static_cast<CUgcViewerBanner*>(pViewer)->m_post.m_nBannerId;
+    Unk_BannerPtr banner = CFieldBannerData::GetBanner(nBannerId);
     if (banner == 0)
         return 0;
-    return banner->GetCurrentHourly();
+    __int64 nHourly = banner->GetCurrentHourly();
+    return nHourly;
 }
 
 // @0x141b3b4e0
@@ -538,7 +538,7 @@ void UIUGCImageUploadDialog::FUN_141b3b4e0(int nIndex)
     if (nIndex == -1)
     {
         if (m_30.get() != 0)
-            m_30->Invoke("selectThumbnail", -1);
+            m_30->Invoke("selectThumbnail", nIndex);
     }
     else
     {

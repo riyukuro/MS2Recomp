@@ -293,8 +293,6 @@ public:
     Unk_140165cf0* FUN_140165cf0(const char*);
     Unk_140165cf0* FUN_140168650(const char*);
 };
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 Unk_140165cf0* FUN_14028f8d0(Unk_140165cf0*);
 void FUN_14028fd90(Unk_140165cf0*,const char*,const char*,const char*,std::vector<Unk_140165cf0*>&);
 CString FUN_14015f710(Unk_140165cf0*,const char*,CString);
@@ -315,11 +313,11 @@ int FUN_140178670(Unk_140165cf0*,const char*,ATL::CAtlArray<int>&);
 int FUN_140178770(Unk_140165cf0*,const char*,std::vector<unsigned>&);
 bool FUN_14028d470(float,float);
 short FUN_140177cf0(const CString&);
-void* FUN_140166440();
-void FUN_1401859c0(void*,int,int,const wchar_t*);
-void FUN_1402804e0(void*,unsigned __int64,unsigned __int64,int,const wchar_t*);
-void FUN_14015eb90(void*,int,int,const wchar_t*,const CString&);
-void FUN_140177a80(void*,int,int,const wchar_t*,const int&);
+class CLogString* GetLogString();
+void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*);
+class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
+template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 void FUN_1406530d0(void*,int,int,const wchar_t*,const fmt::ArgList&);
 template<class T> void Unk_FieldLog(void* log,int level,int category,const wchar_t* format,const T& arg) {
     fmt::internal::Value values[] = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(arg)};
@@ -484,7 +482,7 @@ void LoadMapSpawnTag()
             CString path;
             path.Format("./data/xml/table/mapSpawnTag.xml");
             TiXmlDocument doc;
-            if (FUN_140166420()->FUN_1403974b0(&doc,path,0,true,false)) {
+            if (GetFileSystem()->FUN_1403974b0(&doc,path,0,true,false)) {
                 s_spawnCache.FUN_1401d1160(path);
                 Unk_140165cf0* root=reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
                 if (root) {
@@ -563,10 +561,10 @@ void CFieldData::LoadFieldData()
 {
     if (Unk_LockGuard guard=s_fieldLock) {} else { s_fields.RemoveAll(); }
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc,"./Data/Xml/Table/fieldData.xml",0,true,false)) return;
+    if (!GetFileSystem()->FUN_1403974b0(&doc,"./Data/Xml/Table/fieldData.xml",0,true,false)) return;
     Unk_140165cf0* root=reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (!root) {
-        Unk_FieldLog(FUN_140166440(),1,0x13,L"xml 형식이 잘못 되었습니다[<ms2> {0}]","fieldData.xml");
+        Unk_FieldLog(GetLogString(),1,0x13,L"xml 형식이 잘못 되었습니다[<ms2> {0}]","fieldData.xml");
         return;
     }
     for (Unk_140165cf0* node=root->FUN_140165cf0("fieldData");node;node=node->FUN_140168650("fieldData")) {
@@ -577,7 +575,7 @@ void CFieldData::LoadFieldData()
         MS2Ptr<CFieldData> field(new CFieldDataCli);
         field->m_nFieldID=id;
         if (!field->vfunc_1(selected)) {
-            FUN_14015eb90(FUN_140166440(),1,0x13,L"xml 형식이 잘못 되었습니다Ele [{0}]",FUN_14071a5b0("Table","fieldData.xml"));
+            Unk_AchieveLog<CString>(GetLogString(),1,0x13,L"xml 형식이 잘못 되었습니다Ele [{0}]",FUN_14071a5b0("Table","fieldData.xml"));
             continue;
         }
         if (Unk_LockGuard guard=s_fieldLock) {} else { s_fields.SetAt(id,field); }
@@ -605,7 +603,7 @@ MS2Ptr<CFieldData> CFieldData::FUN_140374140(int id)
         if (s_fields.Lookup(id,field))
             return field;
         else
-            FUN_140177a80(FUN_140166440(),1,0x13,L"FieldID : {0}",id);
+            Unk_AdditionalLog<unsigned>(GetLogString(),1,0x13,L"FieldID : {0}", reinterpret_cast<const unsigned&>(id));
     }
     return nullptr;
 }
@@ -648,7 +646,7 @@ bool CFieldData::vfunc_1(Unk_140165cf0* node)
     Unk_140165cf0* xblock=node->FUN_140165cf0("xblock");
     if (xblock) FUN_1408733e0(xblock,"name",m_strXBlock);
     if (m_strXBlock.IsEmpty()) {
-        FUN_1401859c0(FUN_140166440(),1,0x13,L"xml 형식이 잘못 되었습니다[<xblock> FieldData]");
+        Unk_AdditionalLog(GetLogString(),1,0x13,L"xml 형식이 잘못 되었습니다[<xblock> FieldData]");
         return false;
     }
     Unk_140165cf0* property=node->FUN_140165cf0("property");
@@ -660,7 +658,7 @@ bool CFieldData::vfunc_1(Unk_140165cf0* node)
         FUN_1408731e0(property,"channelGroupID",m_nChannelGroupId);
         FUN_1408731e0(property,"enterAdminLevel",m_nEnterAdminLevel);
         if (m_nChannelGroupId<0 || m_nChannelGroupId>=8) {
-            FUN_1402804e0(FUN_140166440(),0,0,14,L"Field Load - invalid channelGroupID");
+            reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0,0,14,L"Field Load - invalid channelGroupID");
             return false;
         }
         FUN_1408731a0(property,"enterMinLevel",m_nEnterMinLevel);
@@ -704,7 +702,7 @@ bool CFieldData::vfunc_1(Unk_140165cf0* node)
         FUN_140178770(property,"enteranceBuffIDs",m_enteranceBuffIds);
         FUN_1403759c0(property,"enteranceBuffLevels",m_enteranceBuffLevels);
         if (m_enteranceBuffIds.size()!=m_enteranceBuffLevels.size()) {
-            FUN_1402804e0(FUN_140166440(),0,0,14,L"Field Load - invalid enterance buff count");
+            reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0,0,14,L"Field Load - invalid enterance buff count");
             return false;
         }
         FUN_140873220(property,"setItemRestrainID",m_nSetItemRestrainId);

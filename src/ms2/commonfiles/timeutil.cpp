@@ -26,7 +26,7 @@ public:
     MS2_LOG_WRAP(2)
     MS2_LOG_WRAP(3)
 };
-Unk_TimeLogger* FUN_140166440();
+class CLogString* GetLogString();
 
 // Unrecovered helpers.
 // CAtlArray<CString> stand-in: the exe instantiates its own copies of this array's ctor/dtor/GetCount/operator[]
@@ -126,7 +126,7 @@ CStopWatch::~CStopWatch() {
     if(m_logOnExit != 0) {
         const char* name = m_name;
         DWORD elapsed = GetTickCountMs2() - m_start;
-        FUN_140166440()->Log(12, 19, L"{0} {1}", elapsed, name);
+        reinterpret_cast<Unk_TimeLogger*>(GetLogString())->Log(12, 19, L"{0} {1}", elapsed, name);
     }
 }
 // @0x1408696a0
@@ -139,7 +139,7 @@ void CStopWatch::vfunc_1(const char* format, ...) {
     const char* text = message;
     const char* name = m_name;
     DWORD elapsed = GetTickCountMs2() - m_start;
-    FUN_140166440()->Log(12, 19, L"{0} {1} {2}", elapsed, name, text);
+    reinterpret_cast<Unk_TimeLogger*>(GetLogString())->Log(12, 19, L"{0} {1} {2}", elapsed, name, text);
 }
 // @0x140869790
 unsigned CStopWatch::GetElapsedSeconds() { return (unsigned)(GetTickCountMs2() - m_start) / 1000; }
@@ -159,7 +159,7 @@ void CStopWatchEx::vfunc_1(const char* format, ...) {
         va_end(args);
     }
     DWORD elapsed = GetTickCountMs2() - m_start;
-    FUN_140166440()->Log(12, 19, L"{0} {1} {2}", elapsed, m_name, m_message);
+    reinterpret_cast<Unk_TimeLogger*>(GetLogString())->Log(12, 19, L"{0} {1} {2}", elapsed, m_name, m_message);
     if(m_callback != 0) m_callback->Invoke();
 }
 // @0x140869a00

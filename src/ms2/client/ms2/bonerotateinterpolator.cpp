@@ -80,7 +80,7 @@ class Unk_BrAnimSvc { public: NiActorManager* FUN_140999440(const egf::EntityID&
 Unk_BrAnimSvc* FUN_141b6f910();
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);           // the scene node of an entity
 GameObject* FUN_141bd0fa0(WorldService* p, egf::EntityID kId);
-int FUN_1409a8f90(float* pValue);                       // the float is a finite number
+int FUN_1409a8f90(float const*);   // C3: was FUN_1409a8f90
 void FUN_140a01250(efd::Point3 kEuler, efd::Point3* pForward, efd::Point3* pRight);   // the axes of the euler rotation
 
 // ---- header statics of neighbouring TUs (.text$di) ----
@@ -232,7 +232,7 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
             if (Unk_IsFiniteQuat(m_kTransformValue.GetRotate()) == 0)
                 nBadValue = 1;
             float fScale = m_kTransformValue.GetScale();
-            if (FUN_1409a8f90(&fScale) == 0)
+            if (FUN_1409a8f90((float const*)(&fScale)) == 0)
                 nBadValue = 1;
             if (nBadValue != 0)
             {
@@ -325,7 +325,7 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
                 if (Unk_IsFiniteQuat(m_kTransformValue.GetRotate()) == 0)
                     nBadValue = 1;
                 float fScale = m_kTransformValue.GetScale();
-                if (FUN_1409a8f90(&fScale) == 0)
+                if (FUN_1409a8f90((float const*)(&fScale)) == 0)
                     nBadValue = 1;
                 if (nBadValue != 0)
                 {

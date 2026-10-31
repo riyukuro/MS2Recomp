@@ -60,6 +60,8 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #include "hook/ms2hook.h"
 #include "ms2/ms2format.h"
 #include <sstream>
+#include "ms2/client/ms2/uiservice.h"   // C3: TSingleton<> needs the class
+#include "ms2/placeholder/creservedwordtable.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -69,7 +71,7 @@ void FUN_140d428a0(ItemScrollSlot* pSlot, MS2Ptr<CItem> spItem);   // ItemScroll
 void FUN_140d42bc0(ItemScrollSlot* pSlot, RpRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
 void FUN_140d42b70(ItemScrollSlot* pSlot, RpDropFn fn);        // ItemScrollSlot::SetDropFn
 
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 class Unk_RpPackets
 {
@@ -147,10 +149,8 @@ __int64 FUN_141405a10(MS2DragSlot* pSlot);
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
 void FUN_14151f200();
 class Unk_RpWorld { public: void FUN_1416fb300(const CStringW& text); };
-Unk_RpWorld* FUN_1403b4750();
 void FUN_1412751b0(const CStringW& text, int nA);
 class Unk_RpIconTable { public: void FUN_141adc530(int nId); };
-Unk_RpIconTable* FUN_1403ed2b0();
 
 // ---- fmt call glue: the string-key formatters with an int and a custom (enum) argument, and the string-id formatter
 // with an unsigned and an int (fmt's variadic wrappers, as in cashinventorybag.cpp) ----
@@ -238,7 +238,7 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
     }
     CStringW strUnused1;
     CStringW strUnused2;
-    MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nOwner);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nOwner);
     if (spScroll == 0)
         return;
     if (static_cast<CItem*>(spScroll)->FUN_140527840() == 0)
@@ -294,19 +294,19 @@ int UIItemRePackingScrollDialog::vfunc_28(const char* szMethod, const Scaleform:
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             __int64 nTarget = FUN_140718370(data.FUN_1422b8f40());
-            MS2Ptr<CItem> spTarget = DAT_143ab2a90.FUN_140a5d680(nTarget);
+            MS2Ptr<CItem> spTarget = g_143ab2a90.FUN_140a5d680(nTarget);
             if (spTarget == 0)
             {
                 FUN_140f62710(1);
                 return 1;
             }
-            MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nOwner);
+            MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nOwner);
             if (spScroll == 0 || static_cast<CItem*>(spScroll)->FUN_140527840() == 0)
             {
                 FUN_140f62710(7);
                 return 1;
             }
-            int nHave = DAT_143ab2a90.FUN_140a5f180(static_cast<CItem*>(spScroll)->FUN_1405276c0(), 0);
+            int nHave = g_143ab2a90.FUN_140a5f180(static_cast<CItem*>(spScroll)->FUN_1405276c0(), 0);
             int nNeed = static_cast<CItem*>(spTarget)->FUN_140527530();
             if (nHave < nNeed)
             {
@@ -372,10 +372,10 @@ void UIItemRePackingScrollDialog::FUN_140f62020(CInPacket& packet)
         if (FUN_141924630() != 0)
             return;
         __int64 nUid = packet.ReadInt64();
-        if (DAT_143ab2a90.FUN_140a5d680(nUid) == 0)
+        if (g_143ab2a90.FUN_140a5d680(nUid) == 0)
             return;
         m_nOwner = nUid;
-        FUN_1403ed2b0()->FUN_141adc530(vfunc_48());
+        reinterpret_cast<Unk_RpIconTable*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(vfunc_48());
         return;
     }
     if (m_30 == 0)
@@ -399,7 +399,7 @@ void UIItemRePackingScrollDialog::FUN_140f62200(CInPacket& packet)
     if (nResult != 0)
         return;
     __int64 nUid = packet.ReadInt64();
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
     if (!spItem)
         return;
     static_cast<CItem*>(spItem)->FUN_140524eb0(static_cast<CInputStream&>(packet));
@@ -469,7 +469,7 @@ void UIItemRePackingScrollDialog::FUN_140f62710(int nError)
 void UIItemRePackingScrollDialog::FUN_140f628d0(MS2Ptr<CItem> spItem)
 {
     if (spItem.get() != 0)
-        DAT_143ab2a90.FUN_140a5d530(spItem.get());
+        g_143ab2a90.FUN_140a5d530(spItem.get());
 }
 
 // @0x140f62930
@@ -521,10 +521,10 @@ void UIItemRePackingScrollDialog::FUN_140f62be0(ItemScrollSlot& slot, DragSlot* 
         return;
     if (MS2DragSlot* pSrc = FUN_140a50b50(pDrag))
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pSrc));
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(FUN_141405a10(pSrc));
         if (spItem == 0)
             return;
-        MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nOwner);
+        MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nOwner);
         if (spScroll == 0 || static_cast<CItem*>(spScroll)->FUN_140527840() == 0)
             return;
         MS2Ptr<Unk_RpRow> spRow = FUN_140f62a90(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->FUN_140527840())));
@@ -540,7 +540,7 @@ void UIItemRePackingScrollDialog::FUN_140f62be0(ItemScrollSlot& slot, DragSlot* 
         int nNeed = static_cast<CItem*>(spItem)->FUN_140527530();
         unsigned nScrollId = static_cast<CItem*>(spScroll)->FUN_1405276c0();
         CStringW strDesc = FUN_140f63810(0x966, nScrollId, nNeed);
-        FUN_1403b4750()->FUN_1416fb300(strDesc);
+        reinterpret_cast<Unk_RpWorld*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb300(strDesc);
         ASObj obj(2);
         obj.FUN_1407cbb20("itemName", CStringW(strName));
         obj.FUN_1407cbb20("itemGUID", FUN_141b71910(static_cast<CItem*>(spItem)->FUN_140526a50()));

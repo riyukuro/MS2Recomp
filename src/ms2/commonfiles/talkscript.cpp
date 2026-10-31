@@ -106,8 +106,8 @@ void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep)
 bool FUN_14028f710(Unk_ScriptXmlNode* pNode);                                       // element is enabled
 unsigned FUN_140767ff0();                                                           // random
 CFileSystem* GetFileSystem();
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 void FUN_140399100(CString strMask, CString strDir, ATL::CAtlArray<CString>& rOut, CString strExtra, bool bRecursive);
 CString FUN_14028d3c0(CString strPath);                                             // file name of a path
@@ -628,7 +628,7 @@ void FUN_140857f20(CStringA path)
     Unk_ScriptXmlNode* root = FUN_140165cf0(&doc, "ms2");
     if (!root)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", path);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", path);
         return;
     }
     for (Unk_ScriptXmlNode* quest = FUN_140165cf0(root, "quest"); quest != 0; quest = FUN_140168650(quest, "quest"))
@@ -637,7 +637,7 @@ void FUN_140857f20(CStringA path)
         FUN_140873220(quest, "id", questId);
         if (questId == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"\uAC12\uC774 0 \uC785\uB2C8\uB2E4.[<ms2> {0}]", path);
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"\uAC12\uC774 0 \uC785\uB2C8\uB2E4.[<ms2> {0}]", path);
             continue;
         }
         TalkIdMapPtr talks(0);
@@ -679,7 +679,7 @@ void FUN_140858440(CStringA path)
     Unk_ScriptXmlNode* root = FUN_140165cf0(&doc, "ms2");
     if (!root)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", path);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", path);
         return;
     }
     CachePtr cache(new CCacheData());

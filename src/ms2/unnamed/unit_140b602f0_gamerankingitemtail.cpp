@@ -53,9 +53,9 @@ int FUN_1408a2060(egf::Entity* pEntity, unsigned nProperty, efd::utf8string* pOu
 void FUN_1408a20a0(egf::Entity* pEntity, unsigned nProperty, bool* pOut);
 void FUN_140961880(egf::Entity* pEntity, unsigned nProperty, float* pOut);
 void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, efd::Point3* pOut);
-void FUN_14098c6e0(egf::Entity* pEntity, unsigned nProperty, bool* pValue);
+void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 void FUN_140ae1160(egf::Entity* pEntity, unsigned nProperty, unsigned short* pOut);
-CPhysXHelper* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 
 // @0x140b60bf0
 CString FUN_140b60bf0(egf::Entity* pEntity)
@@ -108,13 +108,13 @@ bool FUN_140b60dd0(egf::Entity* pEntity)
 // @0x140b60e10
 void FUN_140b60e10(egf::Entity* pEntity, bool bValue)
 {
-    FUN_14098c6e0(pEntity, 0xa0b6b179, &bValue);
+    FUN_14098c6e0((class Unk_CachedEntity*)(pEntity), 0xa0b6b179, *(bool const*)(&bValue));
 }
 
 // @0x140b60e40
 void FUN_140b60e40(egf::Entity* pEntity, bool bDefault)
 {
-    if (FUN_1409f7ca0()->FUN_141689a10(pEntity) == 0)
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689a10(pEntity) == 0)
         return;
     unsigned short usKind = 0;
     FUN_140ae1160(pEntity, 0xada5c5d2, &usKind);
@@ -123,7 +123,7 @@ void FUN_140b60e40(egf::Entity* pEntity, bool bDefault)
         usGroup = usKind;
     else
         usGroup = 5;
-    FUN_1409f7ca0()->FUN_141689ec0(pEntity, usGroup, 0, 1);
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(pEntity, usGroup, 0, 1);
 }
 
 // @0x140b60ed0

@@ -46,17 +46,20 @@
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 // Game TinyXML element and attribute helpers (commonfiles\tinyxmlhelper.cpp).
 class Unk_140165cf0;
-const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
-int FUN_1408732a0(Unk_140165cf0* pNode, const char* pszName, unsigned int& nOut);
-int FUN_1408730a0(Unk_140165cf0* pNode, const char* pszName, bool& bOut);
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned long&);   // C3: was FUN_1408732a0
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 CString FUN_140188f50(const char* psz, int n);                      // null-safe CString
 int FUN_1401788f0(Unk_140165cf0* pNode, const char* pszName, ATL::CAtlArray<CString>& arr);   // split to list
 
 bool FUN_14028d470(float a, float b);                               // nearly equal
 CMainSystem* FUN_14086d260();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
-void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
 const Vector3& FUN_140947900(void* pNode);                  // world translate
 // The camera direction 0x140af0250 returns NiPoint3; BuildPath keeps only its efd::Point3 part (a slicing copy).
 struct Unk_LightningNiPoint3 : public Vector3 {};
@@ -68,14 +71,12 @@ void FUN_14027dcf0(Unk_LightningPt3* p, const Vector3* pPoint);
 void FUN_14097faa0(NiPoint3* p, Unk_LightningPt3* pSrc);
 class Unk_LightningCamera { public: Unk_LightningNiPoint3 FUN_140af0250(); };
 void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
-void FUN_140a0b2a0(void* pNode);                                    // detach the node from its parent
-void FUN_140a0b300(void* pNode, bool bCulled);                      // NiAVObject::SetAppCulled
-bool FUN_14098dad0(void* pNode);                                    // node is app-culled
+void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
 class Unk_1403ed280 { public: void* FUN_1411a6b10(); };             // the effect manager: scene root
 
 // Random float (about -1..1), tick counter, camera direction.
 float FUN_14109ace0();
-unsigned int FUN_140869420();
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 // Resource manager (singleton 0x140a0afd0): texture load by path. 0x140cc2ba0 joins directory + file name.
 class Unk_ResourceMgr
@@ -91,12 +92,9 @@ Vector3* FUN_140a0af70(ATL::CAtlArray<Vector3>* pArr, __int64 nIndex);
 int FUN_140a0afb0(ATL::CAtlArray<Vector3>* pArr);
 
 // NiProperty setters (NiMain inline members the exe instantiated in other objs).
-void FUN_140980200(NiAVObject* pObj, NiProperty* pProp);            // NiAVObject::AttachProperty
-void FUN_140980880(NiTexturingProperty* pProp, void* pTexture);     // SetBaseTexture
 void FUN_1409807b0(NiTexturingProperty* pProp, int n);
 void FUN_1409805c0(NiTexturingProperty* pProp, int n);
 void FUN_1409806e0(NiTexturingProperty* pProp, int n);
-void FUN_140980560(NiAlphaProperty* pProp, bool b);                 // SetAlphaBlending
 void FUN_140980f60(NiAlphaProperty* pProp, int nMode);              // source blend mode
 void FUN_140980af0(NiAlphaProperty* pProp, int nMode);              // destination blend mode
 void FUN_140a0b6c0(NiWireframeProperty* pProp, int n);
@@ -148,12 +146,12 @@ void LightningEffectParam::vfunc_1(Unk_140165cf0* pNode)
     FUN_1401788f0(pNode, "texturePathA", m_arrTexture[0]);
     FUN_1401788f0(pNode, "texturePathB", m_arrTexture[1]);
     FUN_1401788f0(pNode, "texturePathC", m_arrTexture[2]);
-    FUN_140873360(pNode, "spread", m_fSpread);
-    FUN_140873360(pNode, "jointLen", m_fJointLen);
-    FUN_140873360(pNode, "width", m_fWidth);
-    FUN_1408732a0(pNode, "textureChangeTick", m_nTextureChangeTick);
-    FUN_1408730a0(pNode, "textureSequence", m_bTextureSequence);
-    CString strAlpha = FUN_140188f50(FUN_14086f4b0(pNode, "alphaMode"), 0);
+    XmlGetAttr((class TiXmlElement*)(pNode), "spread", m_fSpread);
+    XmlGetAttr((class TiXmlElement*)(pNode), "jointLen", m_fJointLen);
+    XmlGetAttr((class TiXmlElement*)(pNode), "width", m_fWidth);
+    XmlGetAttr((class TiXmlElement*)(pNode), "textureChangeTick", *(unsigned long*)&(m_nTextureChangeTick));
+    XmlGetAttr((class TiXmlElement*)(pNode), "textureSequence", m_bTextureSequence);
+    CString strAlpha = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("alphaMode"), 0);
     if (strAlpha.GetLength() > 0)
     {
         if (strAlpha.CompareNoCase("SWOOSH") == 0)
@@ -163,7 +161,7 @@ void LightningEffectParam::vfunc_1(Unk_140165cf0* pNode)
         if (strAlpha.CompareNoCase("ADD") == 0)
             m_nAlphaMode = 2;
     }
-    CString strSorting = FUN_140188f50(FUN_14086f4b0(pNode, "sortingMode"), 0);
+    CString strSorting = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("sortingMode"), 0);
     if (strSorting.GetLength() > 0)
     {
         if (strSorting.CompareNoCase("INHERIT") == 0)
@@ -204,7 +202,7 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
     const LightningEffectParam* pLightning = static_cast<const LightningEffectParam*>(pParam);
-    FUN_1409f76f0(&m_spTarget, FUN_14098d8d0(&NiNode::ms_RTTI, FUN_1409849b0(const_cast<void**>(&reinterpret_cast<const Unk_LightningTarget*>(pTarget)->m_hNode))));
+    FUN_1409f76f0(&m_spTarget, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(FUN_1409849b0(const_cast<void**>(&reinterpret_cast<const Unk_LightningTarget*>(pTarget)->m_hNode))))));
     m_pPoints = reinterpret_cast<const Unk_LightningTarget*>(pTarget)->m_pPoints;
     m_fSpread = pLightning->m_fSpread;
     m_fJointLen = pLightning->m_fJointLen;
@@ -227,15 +225,15 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
     FUN_1409807b0(m_spTexProp.operator->(), 0);
     FUN_1409805c0(m_spTexProp.operator->(), 1);
     FUN_1409806e0(m_spTexProp.operator->(), 0);
-    FUN_140980200(m_spMesh->GetMesh(), m_spTexProp);
+    m_spMesh->GetMesh()->AttachProperty(m_spTexProp);
 
     NiVertexColorProperty* pVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
     pVertexColor->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
     pVertexColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
-    FUN_140980200(m_spMesh->GetMesh(), pVertexColor);
+    m_spMesh->GetMesh()->AttachProperty(pVertexColor);
 
     NiAlphaProperty* pAlpha = new (efd::MemHint(efd::MemHint::NONE)) NiAlphaProperty;
-    FUN_140980560(pAlpha, true);
+    ((class NiAlphaProperty*)(class NiAlphaProperty*)(pAlpha))->SetAlphaBlending(true);
     switch (pLightning->m_nAlphaMode)
     {
     case 0:
@@ -251,23 +249,23 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
         FUN_140980af0(pAlpha, 0);
         break;
     }
-    FUN_140980200(m_spMesh->GetMesh(), pAlpha);
+    m_spMesh->GetMesh()->AttachProperty(pAlpha);
 
     NiFogProperty* pFog = new (efd::MemHint(efd::MemHint::NONE)) NiFogProperty;
     pFog->SetFog(false);
-    FUN_140980200(m_spMesh->GetMesh(), pFog);
+    m_spMesh->GetMesh()->AttachProperty(pFog);
 
     NiWireframeProperty* pWireframe = new (efd::MemHint(efd::MemHint::NONE)) NiWireframeProperty;
     FUN_140a0b6c0(pWireframe, 0);
-    FUN_140980200(m_spMesh->GetMesh(), pWireframe);
+    m_spMesh->GetMesh()->AttachProperty(pWireframe);
 
     NiStencilProperty* pStencil = new (efd::MemHint(efd::MemHint::NONE)) NiStencilProperty;
     FUN_140a0b450(pStencil, 3);
-    FUN_140980200(m_spMesh->GetMesh(), pStencil);
+    m_spMesh->GetMesh()->AttachProperty(pStencil);
 
     NiZBufferProperty* pZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
     pZBuffer->SetZBufferWrite(false);
-    FUN_140980200(m_spMesh->GetMesh(), pZBuffer);
+    m_spMesh->GetMesh()->AttachProperty(pZBuffer);
 
     m_spMesh->UpdateBound();
     FUN_1415672e0(m_spMesh->GetMesh(), 0);
@@ -293,7 +291,7 @@ bool LightningEffect::vfunc_9()
     {
         if (FUN_1409475d0(&m_spRoot) ? true : false)
         {
-            if (FUN_14098dad0(FUN_1409475f0(&m_spRoot)))
+            if (((class NiAVObject*)(void*)(FUN_1409475f0(&m_spRoot)))->GetAppCulled())
                 return true;
         }
         Rebuild();
@@ -315,13 +313,13 @@ void LightningEffect::vfunc_4()
 // @0x14144cb50
 void LightningEffect::vfunc_7()
 {
-    FUN_140a0b2a0(FUN_1409475d0(&m_spRoot));
+    FUN_140a0b2a0((class NiAVObject*)(FUN_1409475d0(&m_spRoot)));
 }
 
 // @0x14144cb80
 void LightningEffect::vfunc_10(bool bVisible)
 {
-    FUN_140a0b300(FUN_1409475f0(&m_spRoot), !bVisible);
+    ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spRoot)))->SetAppCulled(!bVisible);
 }
 
 // @0x14144cbd0
@@ -354,7 +352,7 @@ void LightningEffect::Rebuild()
     bool bUpdate = true;
     if (m_nTick != 0)
     {
-        unsigned int nNow = FUN_140869420();
+        unsigned int nNow = GetTickCountMs2();
         if (nNow < m_nLastTick + m_nTick)
             bUpdate = false;
         else
@@ -377,7 +375,7 @@ void LightningEffect::Rebuild()
         }
     }
     CString strName = m_spParam->m_arrTexture[nClass][(size_t)nIndex];
-    FUN_140980880(m_spTexProp, FUN_140a0afd0()->FUN_141552f90(FUN_140cc2ba0("Effect/Textures", strName), 5).Get());
+    ((class NiTexturingProperty*)(class NiTexturingProperty*)(m_spTexProp))->SetBaseTexture((class NiTexture*)(FUN_140a0afd0()->FUN_141552f90(FUN_140cc2ba0("Effect/Textures", strName), 5).Get()));
     m_spMesh->GetMesh()->UpdateProperties();
     BuildPath(kFirst, kLast);
 

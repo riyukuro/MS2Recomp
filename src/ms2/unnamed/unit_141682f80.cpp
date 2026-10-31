@@ -5,9 +5,21 @@
 // MS2-RANGE: 0x141682f80-0x1416841a0 .text$mn
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "ms2/ms2layout.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/os.h"
+
+// return types of the getters this unit calls
+class CGameOption;
+class CMouseController;
+class CameraMgr;
+class MS2InputService;
+class Unk_140166410;
+class Unk_Restrictions;
+class Unk_SoundSink;
+struct Unk_PmFixedItem;
 
 // NiPoint3-shaped: the declared (never called) default constructor keeps /GS from treating the locals as buffers, and the
 // by-value FUN_140d8c2f0 result is built in place.
@@ -97,6 +109,9 @@ public:
 };
 struct Unk_PCBuffKey { int m_nId; int m_nExtra; };
 class Unk_PCServices;
+// the class's own unit defines s_instance / GetInstance out of line (explicit specializations): only declared here, so
+// this obj does not instantiate a second copy (LNK2005 in the full-exe link)
+template<> class TSingleton<CameraMgr> { public: static CameraMgr* s_instance; static CameraMgr* GetInstance(); };
 
 // The movement controller (0x58).
 class Unk_PCMove
@@ -130,50 +145,80 @@ MS2_CHECK_OFFSET(Unk_PCMove, m_moving, 0x4c);
 MS2_CHECK_OFFSET(Unk_PCMove, m_ready, 0x50);
 
 extern int DAT_143af7d40;                   // input enabled
-extern Vector3 DAT_143b01a60;       // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // Out-of-unit callees.
-Unk_PCServices* FUN_14025e7c0();
-bool FUN_14116dbf0(Unk_PCServices* p, int* pnX, int* pnY, int* pnZ, bool bDebugOnly, int nLevel);   // CInputKeyHandler
+void* FUN_14025e7c0();
+class CInputKeyHandler   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14116dbf0(int*, int*, int*, bool, int);
+};
 bool FUN_14116d7a0(Unk_PCServices* p, int n);
-Unk_PCBuffTable* FUN_1409331e0();
-Unk_PCBuffTable* FUN_1409331f0();
-int FUN_14138c900(Unk_PCBuffTable* p, int n);
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
+class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
+class CGuideManager   // C3: member view for the former free stand-ins
+{
+public:
+    int IsRestricted(int);
+};
 int FUN_14138c930(Unk_PCBuffTable* p, int n);
-int FUN_14142c270(Unk_PCBuffTable* p, int n);
-int FUN_14142c4b0(Unk_PCBuffTable* p, int n);
-int FUN_14142c540(Unk_PCBuffTable* p, int n);
+class CKeyTable   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14142c270(int);
+    int FUN_14142c4b0(int);
+    int FUN_14142c540(int);
+};
 int FUN_14142c940(Unk_PCBuffTable* p, int n, int m);
 Unk_PCBuffKey FUN_14142d190(Unk_PCBuffTable* p, int n);
-void* FUN_1403ed2d0();
-void FUN_141bca010(void* p);
-int FUN_141bdb5e0(void* p);
-Unk_PCActor* FUN_141bd0cc0(void* p);
-void* FUN_140a58540();
-bool FUN_140d8ac50(void* p, int n, int m);
-bool FUN_140d8ad60(void* p, int n);
-bool FUN_140d8af70(void* p, int n);
-bool FUN_140d8c550(void* p);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141bca010();
+    void* FUN_141bd0cc0();
+    int FUN_141bdb5e0();
+    static class WorldService* GetInstance();
+};
+class MS2InputService* FUN_140a58540();   // C3: was FUN_140a58540
+class MS2InputService   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_140d8ac50(int, int);
+    bool FUN_140d8ad60(int);
+    bool FUN_140d8af70(int);
+    bool FUN_140d8c550();
+};
 // the input controller FUN_140a58540 returns
 struct Unk_PcmInput { Vector3 FUN_140d8c2f0(); };
-void* FUN_140a58500(void* p);
+struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
 int FUN_140a58520(void* p);
-Unk_PCActor* FUN_141468360(Unk_PCActor* p);
-Unk_PCActor* FUN_141706540(Unk_PCActor* p);
+struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
+class Ridee   // C3: member view for the former free stand-ins
+{
+public:
+    class PCBase* GetRider();
+};
 void* FUN_1416749a0(Unk_PCActor* p);
 int FUN_140970a40(void* p);
-Unk_PCClimb* FUN_140953f30();
 int FUN_140ad21f0(Unk_PCClimb* p);
 void FUN_140ad2070(Unk_PCClimb* p);
 void FUN_140194470(Vector3* pDst, const Vector3& kSrc);
 bool FUN_140552690(Vector3* a, Vector3* b);
 bool FUN_140552700(Vector3* a, Vector3* b);
 void FUN_140ad0c10(Vector3* p, float f);
-void* FUN_140166410();
-bool FUN_14036d570(void* p, int n);
-void* FUN_1409a8b10();
-void* FUN_140c8dac0();
-bool FUN_140d07330(void* p);
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
+struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
+class CInstrumentManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool IsEnsemble();
+};
 void FUN_140868750(char* pTimer, int n);
 int FUN_140868ba0(char* pTimer);
 void FUN_1408687f0(char* pTimer);
@@ -181,8 +226,11 @@ int FUN_141671b20(Unk_PCActor* p);
 int FUN_14166ce30(Unk_PCActor* p);
 int FUN_1416596d0(Unk_PCActor* p);
 int FUN_1409709b0(void* p);
-void* FUN_1409478c0();
-bool FUN_140aed3e0(void* p);
+class CameraMgr   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_140aed3e0();
+};
 
 // @0x141682f80
 bool Unk_PCMove::FUN_141682f80(int nKey)
@@ -191,7 +239,7 @@ bool Unk_PCMove::FUN_141682f80(int nKey)
         return false;
     if (!FUN_141684170(nKey))
         return false;
-    return FUN_140d8ac50(FUN_140a58540(), nKey, 0);
+    return ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8ac50(nKey, 0);
 }
 
 // @0x141682fe0
@@ -202,7 +250,7 @@ bool Unk_PCMove::FUN_141682fe0(int nKey)
     int nX;
     int nY;
     int nZ;
-    if (FUN_14116dbf0(FUN_14025e7c0(), &nX, &nY, &nZ, false, 0)) {
+    if (((class CInputKeyHandler*)(class Unk_PCServices*)(reinterpret_cast<Unk_PCServices*>(FUN_14025e7c0())))->FUN_14116dbf0(&nX, &nY, &nZ, false, 0)) {
         if (nKey == 0x493e8 && 0 < nZ)
             return true;
         else if (nKey == 0x493e9 && nZ < 0)
@@ -210,9 +258,9 @@ bool Unk_PCMove::FUN_141682fe0(int nKey)
     }
     if (!FUN_1416840c0(nKey))
         return false;
-    if (FUN_14142c270(FUN_1409331f0(), nKey) != 0) {
-        if (FUN_1403ed2d0() != 0)
-            FUN_141bca010(FUN_1403ed2d0());
+    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0()))))->FUN_14142c270(nKey) != 0) {
+        if (((void*)WorldService::GetInstance()) != 0)
+            ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bca010();
         return true;
     }
     return false;
@@ -225,7 +273,7 @@ bool Unk_PCMove::FUN_1416830b0(int nKey)
         return false;
     if (!FUN_141684170(nKey))
         return false;
-    return FUN_140d8ad60(FUN_140a58540(), nKey);
+    return ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8ad60(nKey);
 }
 
 // @0x141683100
@@ -233,7 +281,7 @@ bool Unk_PCMove::FUN_141683100(int nKey)
 {
     if (!FUN_1416840c0(nKey))
         return false;
-    if (FUN_14142c4b0(FUN_1409331f0(), nKey) != 0)
+    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0()))))->FUN_14142c4b0(nKey) != 0)
         return true;
     return false;
 }
@@ -246,13 +294,13 @@ bool Unk_PCMove::FUN_141683150(int nKey)
         return false;
     if (!FUN_141683ef0())
         return true;
-    if (FUN_14138c930(FUN_1409331e0(), FUN_141684060(nKey)) != 0)
+    if (FUN_14138c930(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331e0())), FUN_141684060(nKey)) != 0)
         return false;
     if (FUN_141684060(nKey) == 0x493e1) {
-        if (FUN_141bdb5e0(FUN_1403ed2d0()) != 0)
+        if (((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bdb5e0() != 0)
             return false;
     }
-    return FUN_140d8af70(FUN_140a58540(), nKey);
+    return ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8af70(nKey);
 }
 
 // @0x141683200
@@ -262,13 +310,13 @@ bool Unk_PCMove::FUN_141683200(int nKey)
         return false;
     if (!FUN_141683ef0())
         return true;
-    if (FUN_14138c930(FUN_1409331e0(), nKey) != 0)
+    if (FUN_14138c930(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331e0())), nKey) != 0)
         return false;
     if (nKey == 0x493e1) {
-        if (FUN_141bdb5e0(FUN_1403ed2d0()) != 0)
+        if (((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bdb5e0() != 0)
             return false;
     }
-    if (FUN_14142c540(FUN_1409331f0(), nKey) != 0)
+    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0()))))->FUN_14142c540(nKey) != 0)
         return true;
     return false;
 }
@@ -277,7 +325,7 @@ bool Unk_PCMove::FUN_141683200(int nKey)
 Vector3* Unk_PCMove::FUN_141683290(Vector3* pOut)
 {
     Vector3 kDir = DAT_143b01a60;
-    if (FUN_14138c900(FUN_1409331e0(), 0x15) != 0 || FUN_14138c900(FUN_1409331e0(), 0x14) != 0) {
+    if (((class CGuideManager*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331e0()))))->IsRestricted(0x15) != 0 || ((class CGuideManager*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331e0()))))->IsRestricted(0x14) != 0) {
         *pOut = kDir;
         return pOut;
     }
@@ -307,39 +355,39 @@ Vector3* Unk_PCMove::FUN_141683290(Vector3* pOut)
     int bFlipped = 0;
     if (m_pOwner != 0) {
         Unk_PCActor* pActor = m_pOwner;
-        Unk_PCActor* pBase = FUN_141468360(m_pOwner);
+        Unk_PCActor* pBase = ((class Unk_PCActor*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner)));
         if (pBase != 0)
-            pActor = FUN_141706540(pBase);
+            pActor = ((class Unk_PCActor*)((class Ridee*)(class Unk_PCActor*)(pBase))->GetRider());
         if (pActor != 0) {
             if (FUN_140970a40(FUN_1416749a0(pActor)) != 0)
                 bFlipped = 1;
         }
     }
-    if (FUN_140953f30() != 0) {
-        if (FUN_140ad21f0(FUN_140953f30()) != 0) {
+    if (reinterpret_cast<Unk_PCClimb*>(TSingleton<CMouseController>::GetInstance()) != 0) {
+        if (FUN_140ad21f0(reinterpret_cast<Unk_PCClimb*>(TSingleton<CMouseController>::GetInstance())) != 0) {
             if (FUN_140552690(&kDir, &DAT_143b01a60))
-                FUN_140194470(&kDir, FUN_140953f30()->FUN_140ad22a0());
+                FUN_140194470(&kDir, reinterpret_cast<Unk_PCClimb*>(TSingleton<CMouseController>::GetInstance())->FUN_140ad22a0());
         } else {
-            FUN_140ad2070(FUN_140953f30());
+            FUN_140ad2070(reinterpret_cast<Unk_PCClimb*>(TSingleton<CMouseController>::GetInstance()));
         }
     }
-    if (FUN_14036d570(FUN_140166410(), 0xb5)) {
-        if (*static_cast<bool*>(FUN_140a58500(FUN_1409a8b10())) != 0) {
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xb5)) {
+        if (*static_cast<bool*>(((void*)FUN_140a58500((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance())))) != 0) {
             if (!FUN_141683ef0()) {
                 *pOut = DAT_143b01a60;
                 return pOut;
             }
-            if (!FUN_140d8c550(FUN_140a58540())) {
+            if (!((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8c550()) {
                 *pOut = DAT_143b01a60;
                 return pOut;
             }
-            if (FUN_140a58520(FUN_140a58540()) != 0) {
+            if (FUN_140a58520(((void*)FUN_140a58540())) != 0) {
                 if (FUN_1416839b0()) {
                     *pOut = DAT_143b01a60;
                     return pOut;
                 }
             } else {
-                Vector3 kCur = static_cast<Unk_PcmInput*>(FUN_140a58540())->FUN_140d8c2f0();
+                Vector3 kCur = reinterpret_cast<Unk_PcmInput*>(((void*)FUN_140a58540()))->FUN_140d8c2f0();
                 if (FUN_140552700(&kCur, &DAT_143b01a60))
                     FUN_140194470(&kDir, kCur);
             }
@@ -380,9 +428,9 @@ Vector3* Unk_PCMove::FUN_1416836d0(Vector3* pOut)
     }
     if (m_pOwner != 0) {
         Unk_PCActor* pActor = m_pOwner;
-        Unk_PCActor* pBase = FUN_141468360(m_pOwner);
+        Unk_PCActor* pBase = ((class Unk_PCActor*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner)));
         if (pBase != 0)
-            pActor = FUN_141706540(pBase);
+            pActor = ((class Unk_PCActor*)((class Ridee*)(class Unk_PCActor*)(pBase))->GetRider());
         if (pActor != 0) {
             if (FUN_140970a40(FUN_1416749a0(pActor)) != 0)
                 FUN_140ad0c10(&kDir, -1.0f);
@@ -411,13 +459,13 @@ Vector3* Unk_PCMove::FUN_141683900(Vector3* pOut)
 // @0x1416839b0
 bool Unk_PCMove::FUN_1416839b0()
 {
-    if (FUN_141682f80(FUN_14142c940(FUN_1409331f0(), 0x30d41, 2)))
+    if (FUN_141682f80(FUN_14142c940(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0())), 0x30d41, 2)))
         return true;
-    if (FUN_141682f80(FUN_14142c940(FUN_1409331f0(), 0x30d42, 2)))
+    if (FUN_141682f80(FUN_14142c940(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0())), 0x30d42, 2)))
         return true;
-    if (FUN_141682f80(FUN_14142c940(FUN_1409331f0(), 0x30d43, 2)))
+    if (FUN_141682f80(FUN_14142c940(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0())), 0x30d43, 2)))
         return true;
-    if (FUN_141682f80(FUN_14142c940(FUN_1409331f0(), 0x30d44, 2)))
+    if (FUN_141682f80(FUN_14142c940(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0())), 0x30d44, 2)))
         return true;
     return false;
 }
@@ -454,9 +502,9 @@ void Unk_PCMove::FUN_141683a90()
     }
     if (m_pOwner != 0) {
         Unk_PCActor* pActor = m_pOwner;
-        Unk_PCActor* pBase = FUN_141468360(m_pOwner);
+        Unk_PCActor* pBase = ((class Unk_PCActor*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner)));
         if (pBase != 0)
-            pActor = FUN_141706540(pBase);
+            pActor = ((class Unk_PCActor*)((class Ridee*)(class Unk_PCActor*)(pBase))->GetRider());
         if (pActor != 0) {
             if (FUN_140970a40(FUN_1416749a0(pActor)) != 0)
                 FUN_140ad0c10(&m_dir, -1.0f);
@@ -469,13 +517,13 @@ bool Unk_PCMove::FUN_141683ef0()
 {
     if (m_pOwner == 0)
         return false;
-    Unk_PCActor* pSelf = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_PCActor* pSelf = ((class Unk_PCActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (m_pOwner->GetKind() != 0x6200045 && pSelf != m_pOwner && FUN_141671b20(m_pOwner) == 0
         && m_pOwner->GetKind() != 0x6200064 && m_pOwner->GetKind() != 0x6200081)
         return false;
     if (FUN_14166ce30(pSelf) != 0)
         return false;
-    if (FUN_14116d7a0(FUN_14025e7c0(), 0xf))
+    if (FUN_14116d7a0(reinterpret_cast<Unk_PCServices*>(FUN_14025e7c0()), 0xf))
         return false;
     if (m_pOwner->FUN_slot_1f8() == 0)
         return false;
@@ -485,7 +533,7 @@ bool Unk_PCMove::FUN_141683ef0()
     }
     if (pSelf == m_pOwner && FUN_1416596d0(pSelf) != 0)
         return false;
-    if (!FUN_140aed3e0(FUN_1409478c0()))
+    if (!((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed3e0())
         return false;
     return true;
 }
@@ -494,7 +542,7 @@ MS2_REPLACE_METHOD(0x141683EF0, Unk_PCMove, FUN_141683ef0, 361, 0xC6E837A1);
 // @0x141684060
 int Unk_PCMove::FUN_141684060(int nKey)
 {
-    return FUN_14142d190(FUN_1409331f0(), nKey).m_nId;
+    return FUN_14142d190(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0())), nKey).m_nId;
 }
 MS2_REPLACE_METHOD(0x141684060, Unk_PCMove, FUN_141684060, 44, 0x77C6DB8A);
 
@@ -503,14 +551,14 @@ bool Unk_PCMove::FUN_1416840c0(int nKey)
 {
     if (!FUN_141683ef0() && nKey != 0x493e8 && nKey != 0x493e9)
         return false;
-    if (FUN_14138c930(FUN_1409331e0(), nKey) != 0)
+    if (FUN_14138c930(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331e0())), nKey) != 0)
         return false;
     if (nKey == 0x493e8 || nKey == 0x493e9) {
-        if (FUN_140d07330(FUN_140c8dac0()))
+        if (((class CInstrumentManager*)(void*)(((void*)FUN_140c8dac0())))->IsEnsemble())
             return false;
     }
     if (nKey == 0x493e1) {
-        if (FUN_141bdb5e0(FUN_1403ed2d0()) != 0)
+        if (((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bdb5e0() != 0)
             return false;
     }
     return true;

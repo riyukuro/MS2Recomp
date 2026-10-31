@@ -78,10 +78,18 @@ public:
     virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
     virtual Vector3 GetPosition();                  // slot 18 (+0x90)
 };
-float FUN_14123c260(Unk_ExpActor* p);                               // radius scale
-int FUN_14123c580(Unk_ExpActor* p);                                 // object id
+class GameObject   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_14123c260();
+    int FUN_14123c580();
+};
 int FUN_14123cec0(Unk_ExpActor* p);                                 // player seed
-void FUN_141673f70(Unk_ExpActor* p, float fR, float fG, float fB);  // flash the object
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141673f70(float, float, float);
+};
 NiAVObject* FUN_141675150(Unk_ExpActor* p, const CString& strName); // find a named dummy node
 const Vector3& FUN_140947900(NiAVObject* pNode);            // node translate
 int FUN_14028d0e0();                                                // seed counter
@@ -145,9 +153,9 @@ public:
     Vector3 m_value;                                        // +0x50
 };
 class Unk_ConfigString { public: CString* FUN_140298f80(); };      // Value<CString>::get
-Unk_ClientConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 struct Unk_NameHolder { };
-Unk_NameHolder* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 void FUN_1402b7560(void* pObj, const char* pszMessage);
 
 // Unit helpers declared elsewhere.
@@ -156,11 +164,8 @@ const float* FUN_140805fc0(const float* pA, const float* pB);                   
 Vector3 FUN_141b71390(Vector3 a, Vector3 b, Vector3 c, float t);   // curve point
 bool FUN_14147aa60(const Unk_NiPoint3& kOrigin, const Unk_NiPoint3& kDir, const Unk_NiPoint3& kCenter,
                    float fRadius, Unk_GVec3* pHit);                                  // ray / sphere hit
-void FUN_140981070(void* pNode, const Unk_NiPoint3& kPoint);                                 // SetTranslate
-void FUN_140ddcca0(void* pNode, const void* pMatrix);                                // SetRotate
 void FUN_140a0b2a0(NiAVObject* pNode);                                               // detach from the parent
 class Unk_Clock;
-double FUN_141473280(Unk_Clock* pClock);
 
 // ---- CExpEffectInfo ----
 
@@ -229,8 +234,8 @@ void CExpEffectInfo::UpdateOrientation()
     kMat.FUN_14109aa30(1, vNeg);
     kMat.FUN_14109aa30(2, vSide);
     m_rot = kMat;
-    FUN_140ddcca0(FUN_1409475f0(&m_spNode), &kMat);
-    ((NiAVObject*)FUN_1409475f0(&m_spNode))->Update((float)FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())), false);
+    ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spNode)))->SetRotate(*(class NiMatrix3 const*)(&kMat));
+    ((NiAVObject*)FUN_1409475f0(&m_spNode))->Update((float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), false);
 }
 
 static int s_nConstInit = 0;                                        // @0x143ad6000
@@ -241,15 +246,15 @@ void CExpEffectInfo::InitConstants()
 {
     if (s_nConstInit != 0)
         return;
-    DAT_1439f733c = reinterpret_cast<Unk_ConfigFloat*>((char*)FUN_1401d3200() + 0x21b8)->FUN_1402bac70();
-    DAT_1439f7340 = reinterpret_cast<Unk_ConfigFloat*>((char*)FUN_1401d3200() + 0x2210)->FUN_1402bac70();
-    DAT_1439f7348 = reinterpret_cast<Unk_ConfigFloat*>((char*)FUN_1401d3200() + 0x2268)->FUN_1402bac70();
-    DAT_1439f7344 = reinterpret_cast<Unk_ConfigFloat*>((char*)FUN_1401d3200() + 0x22c0)->FUN_1402bac70();
-    Vector3 kMin = reinterpret_cast<Unk_ConfigPoint*>((char*)FUN_1401d3200() + 0x2318)->FUN_141273d00();
+    DAT_1439f733c = reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x21b8)->FUN_1402bac70();
+    DAT_1439f7340 = reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2210)->FUN_1402bac70();
+    DAT_1439f7348 = reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2268)->FUN_1402bac70();
+    DAT_1439f7344 = reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x22c0)->FUN_1402bac70();
+    Vector3 kMin = reinterpret_cast<Unk_ConfigPoint*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2318)->FUN_141273d00();
     s_ptSpreadMin = kMin;
-    Vector3 kMax = reinterpret_cast<Unk_ConfigPoint*>((char*)FUN_1401d3200() + 0x2380)->FUN_141273d00();
+    Vector3 kMax = reinterpret_cast<Unk_ConfigPoint*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2380)->FUN_141273d00();
     s_ptSpreadMax = kMax;
-    s_strEffDummy = *reinterpret_cast<Unk_ConfigString*>((char*)FUN_1401d3200() + 0x23e8)->FUN_140298f80();
+    s_strEffDummy = *reinterpret_cast<Unk_ConfigString*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x23e8)->FUN_140298f80();
     s_nConstInit = 1;
 }
 #endif
@@ -347,9 +352,9 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
     pRoot->AttachChild((NiAVObject*)FUN_1409475d0(&m_spNode), true);
     Unk_ExpTarget kRequest;
     kRequest.m_spNode = (NiAVObject*)FUN_1409475d0(&m_spNode);
-    kRequest.m_strName = *reinterpret_cast<CString*>((char*)FUN_1401d31f0() + 0x338);
+    kRequest.m_strName = *reinterpret_cast<CString*>((char*)((struct Unk_NameHolder*)FUN_1401d31f0()) + 0x338);
     kRequest.m_nOwnerId = reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd1a10(pObj);
-    kRequest.FUN_140a53190(FUN_14123c580(pObj));
+    kRequest.FUN_140a53190(((class GameObject*)(class Unk_ExpActor*)(pObj))->FUN_14123c580());
     m_hEffect = reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kRequest);
     return 1;
 }
@@ -365,8 +370,8 @@ void CExpEffectInfo::SetPosition(const Vector3& pt)
 {
     if (FUN_1409475d0(&m_spNode) != 0)
     {
-        FUN_140981070(FUN_1409475f0(&m_spNode), pt);
-        ((NiAVObject*)FUN_1409475f0(&m_spNode))->Update((float)FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())), false);
+        ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spNode)))->SetTranslate(*(class NiPoint3 const*)&static_cast<struct Unk_NiPoint3 const&>(pt));
+        ((NiAVObject*)FUN_1409475f0(&m_spNode))->Update((float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), false);
     }
 }
 
@@ -382,18 +387,18 @@ void CExpEffectInfo::Finish()
     Unk_ExpActor* pPlayer = (Unk_ExpActor*)reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    float fRadius = DAT_1439f7344 * FUN_14123c260(pPlayer);
+    float fRadius = DAT_1439f7344 * ((class GameObject*)(class Unk_ExpActor*)(pPlayer))->FUN_14123c260();
     Vector3 ptCur = *(const Vector3*)&((NiAVObject*)FUN_1409475f0(&m_spNode))->GetTranslate();
     Unk_GVec3 ptHit;
     if (!FUN_14147aa60(ptCur, ptCur.FUN_140965c40(m_ptTarget), m_ptTarget, fRadius, &ptHit))
         ptHit = ptCur;
-    FUN_141673f70(pPlayer, DAT_1439f734c, DAT_1439f7350, DAT_1439f7354);
+    ((class PCBase*)(class Unk_ExpActor*)(pPlayer))->FUN_141673f70(DAT_1439f734c, DAT_1439f7350, DAT_1439f7354);
     SetPosition(ptHit);
     StopEffect();
     Unk_ExpTarget kRequest;
-    kRequest.m_strName = *reinterpret_cast<CString*>((char*)FUN_1401d31f0() + 0x340);
+    kRequest.m_strName = *reinterpret_cast<CString*>((char*)((struct Unk_NameHolder*)FUN_1401d31f0()) + 0x340);
     kRequest.m_nOwnerId = 1;
-    kRequest.FUN_140a53190(FUN_14123c580(pPlayer));
+    kRequest.FUN_140a53190(((class GameObject*)(class Unk_ExpActor*)(pPlayer))->FUN_14123c580());
     reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kRequest);
     m_nState = 1;
 }

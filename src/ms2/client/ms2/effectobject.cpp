@@ -23,12 +23,15 @@
 // ---- out-of-unit callees (names of the Unk_ types are invented) ----
 
 class WorldService;
-WorldService* FUN_1403ed2d0();                                      // TSingleton<WorldService>::GetInstance
-GameObject* FUN_141bd1180(WorldService* pWorld, int nId);           // game object by id
-PCBase* FUN_141bd1290(WorldService* pWorld, int nId);               // actor by id
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_WsC_GameObj* FUN_141bd1180(int);
+    class Unk_WsC_GameObj* FUN_141bd1290(int);
+    static class WorldService* GetInstance();
+};
 void FUN_141663b70(PCBase* pActor, int nEffectId);                  // PCBase: add to its effect list (+0x1210)
 void FUN_141663bb0(PCBase* pActor, int nEffectId);                  // PCBase: remove from its effect list
-int FUN_14166c930(PCBase* pActor);                                  // actor kind (0x10 = player character)
 
 // Target of a state (MS2Ptr, the pointer is a CPtred); its +0x30 member holds a descriptor with a kind at +0x88.
 struct Unk_EffDesc
@@ -53,7 +56,11 @@ class Unk_EffState : public StateSkill
 public:
     MS2Ptr<Unk_EffTarget> FUN_1417ed6f0();                          // the state's target
 };
-Unk_EffState* FUN_1417db1c0(CStateManager* pMgr);                   // current state
+class CStateManager   // C3: member view for the former free stand-ins
+{
+public:
+    class State* GetState();
+};
 Unk_EffDesc* FUN_14063ed50(Unk_EffDescHolder* pHolder);                          // descriptor of a holder
 // MS2Ptr<Unk_EffTarget> members instantiated by earlier objs.
 template <> Unk_EffTarget* MS2Ptr<Unk_EffTarget>::get() const;       // 0x140975ba0
@@ -114,7 +121,7 @@ CEffectObject::CEffectObject()
 // @0x140a537a0
 CEffectObject::~CEffectObject()
 {
-    PCBase* pOwner = FUN_141bd1290(FUN_1403ed2d0(), m_nOwnerId);
+    PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
     if (pOwner)
         FUN_141663bb0(pOwner, FUN_14123c580());
 }
@@ -124,7 +131,7 @@ static unsigned int FUN_140a53830()
 {
     for (unsigned int nId = 0x4bf; nId < 0x8a7; nId++)
     {
-        if (FUN_141bd1180(FUN_1403ed2d0(), nId) == 0)
+        if (((class GameObject*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1180(nId)) == 0)
             return nId;
     }
     return 0x4bf;
@@ -138,7 +145,7 @@ int CEffectObject::FUN_140a53880(int nOwnerId, CString strModel, float fScale)
     SetScaleAC(fScale);
     FUN_14123bb80(FUN_140298360("urn:gamebryo-animation:", FUN_141b6ed00(strModel)));
     FUN_14123c5a0(FUN_140a53830());
-    PCBase* pOwner = FUN_141bd1290(FUN_1403ed2d0(), m_nOwnerId);
+    PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
     if (pOwner)
         FUN_141663b70(pOwner, FUN_14123c580());
     return 1;
@@ -184,10 +191,10 @@ void CEffectObject::vfunc_21(efd::Point3 kDir)
 {
     if (vfunc_20() != kDir)
     {
-        PCBase* pOwner = FUN_141bd1290(FUN_1403ed2d0(), m_nOwnerId);
-        if (pOwner && FUN_14166c930(pOwner) == 0x10)
+        PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
+        if (pOwner && ((class PCBase*)(pOwner))->FUN_14166c930() == 0x10)
         {
-            Unk_EffState* pState = FUN_1417db1c0(pOwner->GetStateMgr());
+            Unk_EffState* pState = ((class Unk_EffState*)((class CStateManager*)(pOwner->GetStateMgr()))->GetState());
             if (pState)
             {
                 Unk_EffTarget* pTarget = pState->FUN_1417ed6f0().get();
@@ -214,13 +221,13 @@ void CEffectObject::vfunc_53(float f)
     GameObject::vfunc_53(f);
     if (m_nOwnerId != 0)
     {
-        PCBase* pOwner = FUN_141bd1290(FUN_1403ed2d0(), m_nOwnerId);
+        PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
         if (pOwner)
         {
             float fScale = 1.0f;
-            if (FUN_14166c930(pOwner) == 0x10)
+            if (((class PCBase*)(pOwner))->FUN_14166c930() == 0x10)
             {
-                Unk_EffState* pState = FUN_1417db1c0(pOwner->GetStateMgr());
+                Unk_EffState* pState = ((class Unk_EffState*)((class CStateManager*)(pOwner->GetStateMgr()))->GetState());
                 if (pState)
                     fScale = pState->GetSpeed();
             }

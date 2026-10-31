@@ -66,9 +66,8 @@ public:
 Unk_LaunchOptions* FUN_1406aeee0();
 float FUN_14028d3a0(float fValue);
 const float& FUN_140805fc0(const float&, const float&);                    // std::max
-class Unk_ActionLog;
-Unk_ActionLog* FUN_140166440();
-void FUN_140177a80(Unk_ActionLog* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned* pArg);
+class CLogString* GetLogString();
+template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 // A running hash key: Combine is the boost-style hash_combine.
 struct Unk_HashKey
 {
@@ -923,7 +922,7 @@ int SkillLevelData::Load(Unk_140165cf0* pElem)
     if (m_nLevel < 1)
     {
         unsigned nSkillId = FUN_140803dc0();
-        FUN_140177a80(FUN_140166440(), 1, 0x13, L"스킬 레벨이 잘못되었습니다.[Skill Level Data - [{0}]]", &nSkillId);
+        Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"스킬 레벨이 잘못되었습니다.[Skill Level Data - [{0}]]", nSkillId);
         return 0;
     }
     Unk_140165cf0* pDetect = pElem->FUN_140165cf0("detectProperty");

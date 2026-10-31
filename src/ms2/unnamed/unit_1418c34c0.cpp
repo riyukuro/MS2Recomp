@@ -18,7 +18,11 @@ MS2_CHECK_SIZE(Unk_ItemProxySummary, 0x18);
 extern int FUN_1405276c0(void*);
 extern void* FUN_140526a50(void*);
 extern void* FUN_140527870(void*);
-extern int FUN_140599fd0(void*, int);
+class CItemExtraData   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140599fd0(unsigned int);
+};
 void FUN_1418c35d0(Unk_ItemProxySummary*);
 
 // @0x1418c34c0
@@ -30,7 +34,7 @@ void FUN_1418c34c0(Unk_ItemProxySummary* result, MS2Ptr<class CItem> node)
         void* proxy = FUN_140527870(node.operator->());
         if (proxy) {
             for (int i = 0; i < 3; ++i)
-                result->m_values[i] = FUN_140599fd0(proxy, i);
+                result->m_values[i] = ((class CItemExtraData*)(void*)(proxy))->FUN_140599fd0(i);
         } else {
             for (int i = 0; i < 3; ++i)
                 result->m_values[i] = 0;

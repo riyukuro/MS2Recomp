@@ -21,14 +21,17 @@ public:
     char m_pad_0000[0xc1e0];
     Unk_KcInt m_c1e0;
 };
-Unk_KcGlobals* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 int FUN_141277f40();                                                // next UI layer (unused here)
-bool FUN_140a467d0(const MS2Ptr<AScript>*);                         // has the AS object been released
-unsigned int FUN_140869420();                                       // the tick
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class Unk_KcWorld { };
-Unk_KcWorld* FUN_1403ed2d0();
-PCBase* FUN_141bd0cc0(Unk_KcWorld* pWorld);                         // the local player
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 PCBase* FUN_14096e110(void* pObject);                               // the actor behind an object (NULL if none)
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);
@@ -59,7 +62,7 @@ UIKillCount::UIKillCount()
     m_nShown = 0;
     m_nMinShow = 0;
     m_58 = 0;
-    m_nMinShow = FUN_1401d3200()->m_c1e0.FUN_14025a620();
+    m_nMinShow = ((class Unk_KcGlobals*)FUN_1401d3200())->m_c1e0.FUN_14025a620();
     m_2c = 0x14;
 }
 
@@ -109,7 +112,7 @@ void UIKillCount::FUN_1419df2a0(void* pKilled)
         {
             if (pMob->FUN_14166ce30() == 0)
             {
-                PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+                PCBase* pPlayer = ((class PCBase*)((class WorldService*)(class Unk_KcWorld*)(((class Unk_KcWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
                 if (pPlayer != 0)
                 {
                     if (m_kill.FUN_14064c5f0(pPlayer->vfunc_78(), pMob->vfunc_78()) != 0)
@@ -141,7 +144,7 @@ void UIKillCount::vfunc_15()
 {
     if (static_cast<bool>(m_30.get()) && 0 < m_nShown)
     {
-        if (m_kill.FUN_14064c840(FUN_140869420()) == 0)
+        if (m_kill.FUN_14064c840(GetTickCountMs2()) == 0)
             FUN_1419df220();
     }
     UISwfEntity::vfunc_15();
@@ -156,7 +159,7 @@ void UIKillCount::vfunc_41(const Scaleform::GFx::Value& root)
 // @0x1419df580
 void UIKillCount::FUN_1419df580()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     int nCount = m_kill.FUN_14064c800();
     if (0 < m_nShown && m_nShown > nCount)
@@ -177,7 +180,7 @@ void UIKillCount::FUN_1419df6a0()
     CStringW strKey = m_kill.FUN_14064c740();
     if (!strKey.IsEmpty())
     {
-        PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+        PCBase* pPlayer = ((class PCBase*)((class WorldService*)(class Unk_KcWorld*)(((class Unk_KcWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPlayer != 0)
             pPlayer->FUN_14166fff0(GetStringCommonByKey(strKey));
     }

@@ -31,7 +31,7 @@
 unsigned FUN_140869420();                                       // millisecond clock
 CString FUN_14016a600(const wchar_t*, int);                     // wide -> CString
 int FUN_1401cde60(CBufferCryptManager*, unsigned char* data, int length, int connectionState, unsigned* key);   // decrypt
-int FUN_1401cddd0(CBufferCryptManager*, unsigned char* data, int length, int connectionState, unsigned* key);   // encrypt
+void FUN_1401cddd0(CBufferCryptManager *, unsigned char *, int, int, unsigned int *);  // C3: the definition's signature
 unsigned __int64 FUN_140282020(const Unk_OSNumber&);
 // The byte vectors streamed by the operators below are CAtlArray<char> (a distinct instantiation from CInPacket::m_data's
 // CAtlArray<unsigned char>: operator[] 0x1406c35b0 vs 0x140203bf0, both byte-identical).

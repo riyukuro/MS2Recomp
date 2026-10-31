@@ -142,7 +142,11 @@ void FUN_14098c6e0(void* pObj, unsigned int nKey, char* pVal);
 void* FUN_141659220(PC* pPC, int n);
 void FUN_1416591e0(PC* pPC, int n, void* pData);
 Unk_ActorRegistry* FUN_141b6f910();
-Unk_EntityMgr* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 Unk_PCCliList* FUN_1416749a0(PC* pPC);
 Unk_PCEquipSet* FUN_1416561a0(PC* pPC);
 void FUN_1408f3a80(void* pList);
@@ -157,8 +161,16 @@ void FUN_141270610(void* pObj);
 void FUN_140a35900(Unk_PCD88* pObj);
 void FUN_140526b30(CItem* pItem, int nOwner);
 void FUN_141ab6e80(NiAVObject* pObj);
-NiActorManager* FUN_1414400d0(Unk_ClonePart* pPart);
-int FUN_140970020(Unk_PCCliList* pList, unsigned int nId, unsigned short nSub, int a, int b);
+class CKfmModel   // C3: member view for the former free stand-ins
+{
+public:
+    class NiActorManager* FUN_1414400d0();
+};
+class AdditionalCliList   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140970020(unsigned int, unsigned short, unsigned int, int);
+};
 bool FUN_140b02900(const MS2Ptr<CEquipItem>& sp);
 bool FUN_1409edd90(const MS2Ptr<CEquipItem>& sp, int n);
 
@@ -455,7 +467,7 @@ ClonePC::ClonePC(PC* pSource)
 void ClonePC::vfunc_12()
 {
     PC::vfunc_12();
-    m_pSourcePC = FUN_1403ed2d0()->FUN_141bd1290(m_nSourceId);
+    m_pSourcePC = ((class Unk_EntityMgr*)WorldService::GetInstance())->FUN_141bd1290(m_nSourceId);
     if (m_pSourcePC)
         m_pSourcePC->FUN_1416630e0(FUN_14123c580());
     if (m_spD88.get() != 0)
@@ -470,7 +482,7 @@ MS2_REPLACE_METHOD(0x1410875f0, ClonePC, vfunc_12, 176, 0xB0E12472);
 void ClonePC::vfunc_14()
 {
     PC::vfunc_14();
-    m_pSourcePC = FUN_1403ed2d0()->FUN_141bd1290(m_nSourceId);
+    m_pSourcePC = ((class Unk_EntityMgr*)WorldService::GetInstance())->FUN_141bd1290(m_nSourceId);
     if (m_pSourcePC)
         m_pSourcePC->FUN_141663120(FUN_14123c580());
     m_pSourcePC = 0;
@@ -546,7 +558,7 @@ void ClonePC::FUN_1410879c0(ATL::CAtlArray<efd::SmartPointer<NiActorManager> >& 
                 continue;
             if (spPart.get()->vfunc_20() == 0)
                 continue;
-            efd::SmartPointer<NiActorManager> spPartActor(FUN_1414400d0(spPart.get()));
+            efd::SmartPointer<NiActorManager> spPartActor(((class CKfmModel*)(class Unk_ClonePart*)(spPart.get()))->FUN_1414400d0());
             if (spPartActor.operator NiActorManager*() != 0)
                 kOut.Add(spPartActor);
         }
@@ -590,7 +602,7 @@ void ClonePC::vfunc_151()
     }
     if (m_nSourceId == 0)
         return;
-    PC* pSource = FUN_1403ed2d0()->FUN_141bd1200(m_nSourceId);
+    PC* pSource = ((class Unk_EntityMgr*)WorldService::GetInstance())->FUN_141bd1200(m_nSourceId);
     if (pSource == 0)
         return;
     ATL::CAtlList<MS2Ptr<CEquipItem> > kEquips(10);
@@ -616,7 +628,7 @@ void ClonePC::vfunc_151()
             {
                 unsigned int nId = rSet.m_kIds[i];
                 unsigned short nSub = rSet.m_kSubIds[i];
-                if (FUN_140970020(::FUN_1416749a0(this), nId, nSub, 0, 1) != 0)
+                if (((class AdditionalCliList*)(class Unk_PCCliList*)(::FUN_1416749a0(this)))->FUN_140970020(nId, nSub, 0, 1) != 0)
                     continue;
                 kHave[std::pair<unsigned int, unsigned short>(nId, nSub)] = pRec;
             }
@@ -704,7 +716,7 @@ unsigned int FUN_141088660()
 {
     for (unsigned int nId = 0x43c; nId < 0x45a; nId++)
     {
-        if (FUN_1403ed2d0()->FUN_141bd1180(nId) == 0)
+        if (((class Unk_EntityMgr*)WorldService::GetInstance())->FUN_141bd1180(nId) == 0)
             return nId;
     }
     return 0;

@@ -80,14 +80,11 @@ MS2_CHECK_SIZE(Unk_RxFxRequest, 0x70);
 class Unk_RxFxMgr
 {
 public:
-    int FUN_1411a49c0(Unk_RxFxRequest* pRequest);               // plays the effect, returns its handle
-    void FUN_1411a6060(int nHandle);                            // stops it
 };
 #ifdef __clang__
 CString FUN_140298360(const char* psz, const CString& str);             // psz + str (ATL operator+)
 #endif
 
-WorldService* FUN_1403ed2d0();
 class Unk_WsB_Spawn { public: virtual void DeleteThis(); virtual void IncRefCount(); virtual void DecRefCount(); };   // spawn point (worldservice_1.cpp)
 
 // Entity / animation service.
@@ -98,7 +95,6 @@ public:
     efd::utf8string FUN_140b7cc50(const egf::EntityID& id);     // current animation name (in this unit's range)
 };
 Unk_RxAnimSvc* FUN_141b6f910();
-const egf::EntityID* FUN_1408b76f0(const void* pEntity);
 void FUN_141b71e70(egf::EntityID id, bool bFlag, int b, int c);
 void FUN_14098c6e0(egf::Entity* pEntity, unsigned nHash, const bool& bValue);
 const char* FUN_1408ac310(efd::utf8string* p);
@@ -114,12 +110,20 @@ CString FUN_1402bb1c0(const char* szFormat, const int& n);      // StringFormat<
 void FUN_140710590(COutPacket& pkt);                            // sends the packet
 
 // The local player and the creation checks.
-__int64 FUN_141656a80(PCBase* pPc);                             // character id
-int FUN_14166c930(PCBase* pPc);                                 // action id
-int FUN_141675ed0(PCBase* pPc);
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_141656a80();
+    int FUN_14166c930();
+    int FUN_141675ed0();
+    int FUN_1416769d0();
+};
 void* FUN_1408e57f0();
-int FUN_1422b9e00(void* p);
-int FUN_1416769d0(PCBase* pPc);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSubSceneId();
+};
 bool FUN_140930b10();
 bool FUN_140930b70();
 
@@ -189,8 +193,18 @@ Unk_Int3 FUN_1408a14c0(Vector3 pt);                     // cell of a point
 int FUN_1408a03c0(Unk_Int3 cell);                               // cell id
 Unk_Int3 FUN_1408a0400(int nCellId);
 Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
-struct Unk_RxActorView { Vector3 FUN_1409673c0(); };     // actor position copy (member: this=rcx, hidden return=rdx)
-class Unk_RxNpcData : public CPtred { public: int FUN_1406ccfc0(); };
+class CInteractObject   // C3: member view (real class not in this TU)
+{
+public:
+    Vector3 GetPos();
+};
+struct Unk_RxActorView {  };     // actor position copy (member: this=rcx, hidden return=rdx)
+class CNpcData   // C3: member view (real class not in this TU)
+{
+public:
+    int GetFriendly() const;
+};
+class Unk_RxNpcData : public CPtred { public:  };
 class Unk_RxNpc : public CPtred { public: MS2Ptr<Unk_RxNpcData> FUN_141093270(); };
 static const int DAT_142de2684 = -2060086266;   // rdata constant copied from 0x142de2684
 static const int DAT_142de2698 = -939926171;   // rdata constant copied from 0x142de2698
@@ -220,7 +234,7 @@ CReactor::~CReactor()
     for (POSITION pos = m_mapEffects.GetHeadPosition(); pos != 0; m_mapEffects.GetNext(pos))
     {
         int nHandle = m_mapEffects.GetValueAt(pos);
-        reinterpret_cast<Unk_RxFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(nHandle);
+        ((CEffectService*)(Unk_RxFxMgr*)(reinterpret_cast<Unk_RxFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a6060(nHandle);
     }
     m_mapEffects.RemoveAll();
 }
@@ -236,7 +250,7 @@ void CReactor::FUN_140b78b40(bool bFlag)
 {
     if (m_unk_80 == 0)
         return;
-    FUN_141b71e70(egf::EntityID(*FUN_1408b76f0(m_unk_80)), bFlag, 1, 0);
+    FUN_141b71e70(egf::EntityID(*((class egf::EntityID const*)&((egf::Entity*)(void const*)(m_unk_80))->GetEntityID())), bFlag, 1, 0);
 }
 
 // @0x140b78bb0
@@ -298,14 +312,13 @@ bool CReactor::FUN_140b78ef0(const CString& strEffect)
     Unk_RxXform xf;
     Unk_NiPoint3 niTop = FUN_14027dcf0(reinterpret_cast<const Vector3&>(pos).FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)));
     FUN_14097faa0(xf.m_afTranslate, &niTop);
-    xf.m_rotate.FUN_142083d40((rot.x * 3.1415927f) / 180.0f, (rot.y * 3.1415927f) / 180.0f,
-                              (rot.z * 3.1415927f) / 180.0f);
+    ((efd::Matrix3*)(Unk_EfdMatrix3*)&(xf.m_rotate))->FromEulerAnglesXYZ((rot.x * 3.1415927f) / 180.0f, (rot.y * 3.1415927f) / 180.0f, (rot.z * 3.1415927f) / 180.0f);
     xf.m_fScale = 1.0f;
     Unk_RxFxRequest request;
     request.m_strName = strEffect;
     request.m_nOwnerId = 0;
     request.m_pXform = &xf;
-    int nHandle = reinterpret_cast<Unk_RxFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&request);
+    int nHandle = ((CEffectService*)(Unk_RxFxMgr*)(reinterpret_cast<Unk_RxFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a49c0(*(Unk_EffectTarget*)(Unk_RxFxRequest*)(&request));
     m_mapEffects.SetAt(strEffect, nHandle);
     return true;
 }
@@ -316,7 +329,7 @@ bool CReactor::FUN_140b79120(const CString& strEffect)
     int nHandle = 0;
     if (!m_mapEffects.Lookup(strEffect, nHandle))
         return true;
-    reinterpret_cast<Unk_RxFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(nHandle);
+    ((CEffectService*)(Unk_RxFxMgr*)(reinterpret_cast<Unk_RxFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a6060(nHandle);
     m_mapEffects.RemoveKey(strEffect);
     return true;
 }
@@ -345,13 +358,13 @@ void CReactor::FUN_140b791a0()
 // @0x140b79330
 void CReactor::FUN_140b79330()
 {
-    WorldService* pWorld = FUN_1403ed2d0();
+    WorldService* pWorld = WorldService::GetInstance();
     if (pWorld == 0)
         return;
     PCBase* pPc = (PCBase*)pWorld->FUN_141bd0cc0();
     if (pPc == 0)
         return;
-    unsigned __int64 nId = FUN_141656a80(pPc);
+    unsigned __int64 nId = ((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80();
     bool bFound = m_setPlayers.find(nId) != m_setPlayers.end();
     MS2Ptr<ReactorData> spData = GetData();
     if (spData.IsNull())
@@ -439,7 +452,7 @@ void CReactor::FUN_140b79a10(CInPacket* pPacket)
 // @0x140b79c30
 bool CReactor::FUN_140b79c30()
 {
-    WorldService* pWorld = FUN_1403ed2d0();
+    WorldService* pWorld = WorldService::GetInstance();
     if (pWorld == 0)
         return false;
     PCBase* pPc = (PCBase*)pWorld->FUN_141bd0cc0();
@@ -468,11 +481,11 @@ int CReactor::FUN_140b79cc0(PCBase* pPc)
     switch (spState->m_nType)
     {
     case 1:
-        if (m_setPlayers.find(FUN_141656a80(pPc)) != m_setPlayers.end())
+        if (m_setPlayers.find(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80()) != m_setPlayers.end())
             return 1;
         break;
     case 3:
-        if (m_setPlayers.find(FUN_141656a80(pPc)) == m_setPlayers.end())
+        if (m_setPlayers.find(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80()) == m_setPlayers.end())
             return 1;
         break;
     case 2:
@@ -550,7 +563,7 @@ void CReactor::EndOfSequence(NiActorManager* pkManager, NiActorManager::Sequence
     if (!m_listAnims.IsEmpty() && FUN_141b6f910() != 0)
     {
         const CString& strHead = m_listAnims.GetHead();
-        const egf::EntityID& id = *FUN_1408b76f0(m_unk_80);
+        const egf::EntityID& id = *((class egf::EntityID const*)&((egf::Entity*)(void const*)(m_unk_80))->GetEntityID());
         if (strHead == FUN_141b6f910()->FUN_140b7cc50(id).c_str())
             m_listAnims.RemoveHead();
     }
@@ -599,7 +612,7 @@ int FUN_140b7a3d0(PCBase* pPc, int nReactorId)
         return 4;
     if (spRec->m_nEvtId != nEvent)
         return 4;
-    int nField = FUN_1403ed2d0()->FUN_141bd3060();
+    int nField = WorldService::GetInstance()->FUN_141bd3060();
     if (!spRec->m_cond.FUN_1402a9ca0(nField))
         return 5;
     int nDummy = 0;
@@ -614,11 +627,11 @@ int FUN_140b7a5e0(PCBase* pPc)
 {
     if (pPc == 0)
         return 1;
-    if (FUN_14166c930(pPc) != 1)
+    if (((class PCBase*)(class PCBase*)(pPc))->FUN_14166c930() != 1)
         return 1;
-    if (FUN_141675ed0(pPc) != 0)
+    if (((class PCBase*)(class PCBase*)(pPc))->FUN_141675ed0() != 0)
         return 1;
-    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
+    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
         return 1;
     return 0;
 }
@@ -629,7 +642,7 @@ int FUN_140b7a650(PCBase* pPc)
 {
     if (pPc == 0)
         return 1;
-    WorldService* pWorld = FUN_1403ed2d0();
+    WorldService* pWorld = WorldService::GetInstance();
     if (pWorld == 0)
         return 1;
     if (pWorld->FUN_141bd30a0() == (Unk_WsPtred298*)0)
@@ -665,7 +678,7 @@ int FUN_140b7a650(PCBase* pPc)
         MS2Ptr<Unk_WsPtred298> spObj = arrNear[i];
         if (!spObj.IsNull())
         {
-            Vector3 pt = reinterpret_cast<Unk_RxActorView*>(spObj.get())->FUN_1409673c0();
+            Vector3 pt = ((CInteractObject*)(Unk_RxActorView*)(reinterpret_cast<Unk_RxActorView*>(spObj.get())))->GetPos();
             if (pt.FUN_140965c40(ptCenter).FUN_140967ac0() < 230.0f)
                 return 1;
         }
@@ -685,12 +698,12 @@ int FUN_140b7a650(PCBase* pPc)
         MS2Ptr<Unk_RxNpc> spActor(*reinterpret_cast<MS2Ptr<Unk_RxNpc>*>(&pActors->GetValueAt(pos)));
         if (!spActor.IsNull())
         {
-            if (FUN_14166c930((PCBase*)spActor.get()) == 2)
+            if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->FUN_14166c930() == 2)
                 continue;
-            bool bNotNpcKind = spActor->FUN_141093270()->FUN_1406ccfc0() != 2;
+            bool bNotNpcKind = ((CNpcData*)(spActor->FUN_141093270()).operator->())->GetFriendly() != 2;
             if (!bNotNpcKind)
             {
-                if (FUN_1416769d0((PCBase*)spActor.get()) == 0)
+                if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->FUN_1416769d0() == 0)
                 {
                     Vector3 pt;
                     NiPoint3 posActor = ((GameObject*)spActor.get())->vfunc_18();
@@ -830,11 +843,6 @@ static bool Rx_IsNil(void* pTree, Unk_GlueNode* pNode) { return pNode == *reinte
 Unk_GlueNode* FUN_140b7d300(void* pTree, Unk_GlueNode* pNode);
 Unk_GlueNode* FUN_140b7e2a0(void* pTree, Unk_GlueNode* pNode);
 void FUN_140b7bb00(void* a, void* b, void* c);
-void* FUN_140b7e7d0(void* p);
-void* FUN_140b7e770(void* p);
-void* FUN_140b7e750(void* p);
-void FUN_14016c7c0(void* p);
-void FUN_14016c7c0(void* p);
 void FUN_14015fc80(void* p, __int64 nBytes);   // std::_Deallocate<16,0>
 
 // @0x140b7c2a0
@@ -866,9 +874,7 @@ struct Unk_RxAnimRec
 bool FUN_1409991a0(Unk_RxAnimSvc* pSvc, const egf::EntityID* pId, Unk_RxAnimRec** ppRec);
 void* FUN_140998e80(void* pSp);              // SmartPointer<AssetData>::operator AssetData*
 void* FUN_140998e90(void* pSp);              // SmartPointer<NiActorManager>::operator NiActorManager*
-const efd::utf8string& FUN_1409a1a90();      // the empty name
 void* FUN_1409f7900(void* pSp);              // SmartPointer<NiActorManager>::operator->
-unsigned int FUN_1409a1890(void* p);        // NiActorManager::GetCurAnimation
 class Unk_EmAssetData { public: efd::utf8string FUN_1409a1940(unsigned int nIdx) const; };
 // @0x140b7cc50
 // MS2-FUNCTIONAL: animation-service current-name lookup (AnimationService::GetCurrentAnimation: the getters take the ActorEntry smart-pointer members, not the entry)
@@ -876,15 +882,15 @@ efd::utf8string Unk_RxAnimSvc::FUN_140b7cc50(const egf::EntityID& id)
 {
     Unk_RxAnimRec* pRec;
     if (!FUN_1409991a0(this, &id, &pRec))
-        return FUN_1409a1a90();
+        return efd::utf8string::NullString();
     Unk_EmAssetData* pName = static_cast<Unk_EmAssetData*>(FUN_140998e80(&pRec->m_spAssetData));
     if (!pName)
-        return FUN_1409a1a90();
+        return efd::utf8string::NullString();
     if (!FUN_140998e90(&pRec->m_spActorManager))
-        return FUN_1409a1a90();
-    unsigned int nIdx = FUN_1409a1890(FUN_1409f7900(&pRec->m_spActorManager));
+        return efd::utf8string::NullString();
+    unsigned int nIdx = ((class NiActorManager*)(void*)(FUN_1409f7900(&pRec->m_spActorManager)))->GetCurAnimation();
     if (nIdx == NiActorManager::INVALID_SEQUENCE_ID)
-        return FUN_1409a1a90();
+        return efd::utf8string::NullString();
     else
         return pName->FUN_1409a1940(nIdx);
 }
@@ -919,16 +925,16 @@ Unk_GlueNode* FUN_140b7d300(void* pTree, Unk_GlueNode* pNode)
 }
 
 // @0x140b7e710
-void FUN_140b7e710(void* pVec, void* pFirst, void* pLast) { FUN_140b7bb00(pFirst, pLast, FUN_140b7e7d0(pVec)); }
+void FUN_140b7e710(void* pVec, void* pFirst, void* pLast) { FUN_140b7bb00(pFirst, pLast, ((void*)&((std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(pVec))->_Getal())); }
 
 // @0x140b7e8c0
-void FUN_140b7e8c0(void* p) { FUN_140b7e770(p); }
+void FUN_140b7e8c0(void* p) { ((void*)&((const std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(p))->_Get_data()); }
 
 // @0x140b7e900
-void* FUN_140b7e900(void* p) { return static_cast<char*>(FUN_140b7e770(p)) + 8; }
+void* FUN_140b7e900(void* p) { return static_cast<char*>(((void*)&((const std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(p))->_Get_data())) + 8; }
 
 // @0x140b7e920
-void FUN_140b7e920(void* p) { FUN_14016c7c0(FUN_140b7e750(p)); }
+void FUN_140b7e920(void* p) { ((std::_Container_base0*)(void*)(((void*)&((std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(p))->_Get_data())))->_Orphan_all(); }
 
 void FUN_140b7ec60(void* pAlloc, void* pMem, __int64 nCount);
 
@@ -940,7 +946,7 @@ void FUN_140b7ea10(void* pVec)
     if (static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst() != 0)
     {
         FUN_140b7e710(pVec, static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst(), static_cast<std::vector<Unk_Int3>*>(pVec)->_Mylast());
-        FUN_140b7ec60(FUN_140b7e7d0(pVec), static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst(), static_cast<std::vector<Unk_Int3>*>(pVec)->capacity());
+        FUN_140b7ec60(((void*)&((std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(pVec))->_Getal()), static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst(), static_cast<std::vector<Unk_Int3>*>(pVec)->capacity());
         static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst() = 0;
         static_cast<std::vector<Unk_Int3>*>(pVec)->_Mylast() = 0;
         static_cast<std::vector<Unk_Int3>*>(pVec)->_Myend() = 0;
@@ -948,7 +954,7 @@ void FUN_140b7ea10(void* pVec)
 }
 
 // @0x140b7eb20
-void FUN_140b7eb20(void* pVec, Unk_Int3* pFirst, Unk_Int3* pLast, Unk_Int3* pDest) { FUN_140b7c2a0(pFirst, pLast, pDest, FUN_140b7e7d0(pVec)); }
+void FUN_140b7eb20(void* pVec, Unk_Int3* pFirst, Unk_Int3* pLast, Unk_Int3* pDest) { FUN_140b7c2a0(pFirst, pLast, pDest, ((void*)&((std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(pVec))->_Getal())); }
 
 // @0x140b7ec60
 void FUN_140b7ec60(void* pAlloc, void* pMem, __int64 nCount) { FUN_14015fc80(pMem, nCount * 0xc); }

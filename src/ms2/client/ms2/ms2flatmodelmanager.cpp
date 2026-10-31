@@ -17,9 +17,7 @@ typedef unsigned long long u64;
 // ---- out-of-unit callees ----
 void* FUN_14214a770(void* sched, int behaviorType);
 efd::AssetLocatorService* FUN_140998330(void* sm);   // GetSystemServiceAs<AssetLocatorService>
-void FUN_14016ad80(void* dst, void* src);
 void* FUN_1401cd130(void* a, void* b);
-void FUN_140d852c0(void* lock);   void FUN_140d86210(void* lock);
 void FUN_140159b70(long hr);
 void FUN_14015b310(void* p, u64 sz);
 
@@ -94,9 +92,9 @@ efd::AsyncResult MS2FlatModelManager::OnInit()
 unsigned FUN_140d868f0(char* p)
 {
     unsigned r = 0;
-    FUN_140d852c0(p + 0x108);
+    reinterpret_cast<efd::CriticalSection*>(p + 0x108)->Lock();
     r = (unsigned)(u64)FUN_140d87890(p + 0x48);
-    FUN_140d86210(p + 0x108);
+    reinterpret_cast<efd::CriticalSection*>(p + 0x108)->Unlock();
     return r;
 }
 
@@ -105,7 +103,7 @@ unsigned FUN_140d868f0(char* p)
 void FUN_140d86950(egf::FlatModelManager* mgr)
 {
     FlatModelList list(10);
-    FUN_140d852c0((char*)mgr + 0x108);
+    ((efd::CriticalSection*)(void*)((char*)mgr + 0x108))->Lock();
     void* it;
     void* endIt;
     for (FUN_140d877a0((char*)mgr + 0x48, &it); FUN_140d86e40(&it, FUN_140d87810((char*)mgr + 0x48, &endIt)); FUN_140d86f20(&it)) {
@@ -119,7 +117,7 @@ void FUN_140d86950(egf::FlatModelManager* mgr)
             mgr->RemoveModel((egf::FlatModel*)m);
         }
     }
-    FUN_140d86210((char*)mgr + 0x108);
+    ((efd::CriticalSection*)(void*)((char*)mgr + 0x108))->Unlock();
 }
 
 // ---- GetSystemServiceAs<T> style lookups: service = sm->vfunc14(classId), then TypeCast(classId) ----
@@ -189,7 +187,7 @@ void* FUN_140d86cb0(void* a, void* b, void* c) { FUN_140d86d30(a, b, c); return 
 // @0x140d86cf0
 void* FUN_140d86cf0(void* a, void* b, void* c) { FUN_140d86cb0(a, b, c); return a; }
 // @0x140d86d30
-void* FUN_140d86d30(void* a, void* b, void* c) { *(void**)a = b; FUN_14016ad80(a, c); return a; }
+void* FUN_140d86d30(void* a, void* b, void* c) { *(void**)a = b; ((std::_Iterator_base0*)(void*)(a))->_Adopt((void const*)(c)); return a; }
 
 // @0x140d86e00
 bool FUN_140d86e00(long long* a, long long* b) { return *a == *b; }

@@ -60,7 +60,6 @@ void FUN_141416650(ItemInfoSlot* pSlot, FusionSlotFn fn);
 void FUN_1414166f0(ItemInfoSlot* pSlot, FusionCanFn fn);
 
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid);      // find an item by uid
-float FUN_140bf4fd0(float f);
 
 void FUN_14123a190(const CString& strName);
 FusionSlotBag* FUN_14123a960(NotifyContext::BindData* p);
@@ -83,7 +82,7 @@ void FUN_14123a080(const CString& strName, const ATL::CAtlArray<unsigned __int64
     FusionSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) FusionSlotBag(strName, 0, items);
     if (pBag)
     {
-        int nCount = (int)(FUN_140bf4fd0((float)items.GetCount() / 4.0f) * 4.0f);
+        int nCount = (int)(ceil((float)items.GetCount() / 4.0f) * 4.0f);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount > 12 ? nCount : 12);
         FUN_1422c8f10(strName, pBag);
     }

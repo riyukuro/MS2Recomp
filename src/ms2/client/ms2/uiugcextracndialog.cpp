@@ -14,6 +14,10 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/client/ms2/ugchomebgdata.h"
+#include "ms2/client/ms2/cubemapinformationservice_3.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // @0x140fad9e0
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -87,28 +91,26 @@ public:
     virtual void vfunc_53();
     virtual int vfunc_54(CStringW strA, CStringW strB, int nMode, CStringW strPath);   // MS2: slot 54 (+0x1b0)
 };
-Unk_UgcShot* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 struct Unk_UgcMode { unsigned char m_0; unsigned char m_1; unsigned char m_2; };   // 3 bytes, so returned in memory
-class Unk_UgcPlace
+class Unk_UgcPlace : public CubeMapInformationService
 {
 public:
-    CStringW FUN_1410c31d0();                                   // copy of the string at +0x1c8
-    CStringW FUN_1410c3260();                                   // copy of the string at +0x1d0
     Unk_UgcMode FUN_1410c34f0();
 };
-Unk_UgcPlace* FUN_1409670e0();
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoHouseSvc* GetInstance();
+};
 class Unk_UgcUiMgr { public: void FUN_141adc5d0(int nId); void FUN_141adc530(int nId); };
-Unk_UgcUiMgr* FUN_1403ed2b0();
-class Unk_UgcCam { public: void FUN_140947980(int n); };
-Unk_UgcCam* FUN_1409478c0();
-class Unk_UgcLook { public: void FUN_140b683f0(unsigned char n); };
-Unk_UgcLook* FUN_140b6a040();
+CameraMgr* FUN_1409478c0();
 // The update list of the entity app (its count and item i; slot 1 of an item is its per-frame update).
 class Unk_UgcUpdatable { public: virtual void vfunc_0(); virtual void vfunc_1(float fTime); };
 class Unk_UgcUpdateList { public: unsigned FUN_140c2b8c0(); Unk_UgcUpdatable* FUN_140c2b890(unsigned n); };
 efd::ServiceManager* FUN_1413f9850();                           // the game's service manager
 Unk_UgcUpdateList* FUN_1413f9890();
-CStringW FUN_141850100(int a, int b);                           // the screenshot path
+CStringW TakeScreenshotJpg(int a, int b);                       // the screenshot path
 void FUN_141275260(int nId, int a, int b);                      // show a notice by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
@@ -165,7 +167,7 @@ int UIUGCExtraCNDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     }
     else if (_stricmp("onScreenShot", szMethod) == 0)
     {
-        Unk_UgcShot* pShot = FUN_140d86260();
+        Unk_UgcShot* pShot = ((class Unk_UgcShot*)FUN_140d86260());
         if (pShot->vfunc_2() == 1)
         {
             if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_ugc_home_upload_screenshot"), 0, L""))
@@ -177,7 +179,7 @@ int UIUGCExtraCNDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         }
         else
         {
-            FUN_141850100(0, 1);
+            TakeScreenshotJpg(0, 1);
         }
         return 1;
     }
@@ -216,10 +218,10 @@ bool UIUGCExtraCNDialog::FUN_140fad0a0(int nResult, const CMsgBoxData& box)
             continue;
         pItem->vfunc_1(fTime);
     }
-    CStringW strPath = FUN_141850100(0, 1);
+    CStringW strPath = TakeScreenshotJpg(0, 1);
     if (nResult == 0 && !strPath.IsEmpty())
     {
-        if (FUN_140d86260()->vfunc_54(FUN_1409670e0()->FUN_1410c31d0(), FUN_1409670e0()->FUN_1410c3260(), 0xd0, strPath) == 1)
+        if (((class Unk_UgcShot*)FUN_140d86260())->vfunc_54(((class Unk_UgcPlace*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0(), ((class Unk_UgcPlace*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3260(), 0xd0, strPath) == 1)
             FUN_141275260(0x466, 1, 1);
     }
     return true;
@@ -251,13 +253,13 @@ void UIUGCExtraCNDialog::FUN_140fad4f0(bool bCameraMode)
     if (m_bCameraMode)
     {
         FUN_1409478c0()->FUN_140947980(6);
-        FUN_1403ed2b0()->FUN_141adc530(0x4f3e);
+        reinterpret_cast<Unk_UgcUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f3e);
     }
     else
     {
-        const Unk_UgcMode& mode = FUN_1409670e0()->FUN_1410c34f0();
-        FUN_140b6a040()->FUN_140b683f0(mode.m_2);
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4f3e);
+        const Unk_UgcMode& mode = ((class Unk_UgcPlace*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34f0();
+        TSingleton<UgcHomeOptionData>::GetInstance()->ApplyCamera(mode.m_2);
+        reinterpret_cast<Unk_UgcUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f3e);
     }
     FUN_140fad2b0();
 }

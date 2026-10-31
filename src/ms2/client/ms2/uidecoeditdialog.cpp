@@ -7,7 +7,10 @@
 // MS2-PIN: ??_GUIDecoEditDialog@@UEAAPEAXI@Z 0x14191c5f0
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uidecoeditdialog.cpp"    // assumed
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 #include "uidecoeditdialog.h"
 #include <atlcoll.h>
 #include <stdlib.h>
@@ -23,20 +26,6 @@
 
 
 // ---- unit-local views of exe objects ----
-
-// "m_layers" / "m_brushes": a list of rows or names.
-class Unk_DeList : public ASDisplayObject
-{
-public:
-    virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
-    virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
-    virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bVisible);
-    void FUN_1422dd230(const ASObj& row);                       // append a row
-    void FUN_1422dcca0(int nIndex);                             // select a row
-    void FUN_1422dd2a0(const CString& strName);                 // append a name
-};
 
 class ASDialog : public ASDisplayObject
 {
@@ -68,7 +57,7 @@ public:
     virtual void vfunc_9(Unk_DeVec2 vRotation);
 };
 
-DecoEditService* FUN_1411987a0();                                       // the deco edit service
+DecoEditService* BrushService();                                        // the deco edit service
 AScript* FUN_140ba7c60(void* pRef);                                     // the movie root
 CString FUN_140188f50(const char* psz, int nCodePage);                  // narrow string from a char*
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);               // narrow string from a wide one
@@ -95,7 +84,7 @@ int UIDecoEditDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_1411987a0()->SetBrush(0);
+    BrushService()->SetBrush(0);
     return 1;
 }
 
@@ -103,7 +92,7 @@ int UIDecoEditDialog::vfunc_65()
 void UIDecoEditDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_1411987a0()->SetBrush(2);
+    BrushService()->SetBrush(2);
 }
 
 // @0x14191b490
@@ -113,10 +102,10 @@ void UIDecoEditDialog::OnLoadInit()
     ASDialog* pDialog = dynamic_cast<ASDialog*>(FUN_140ba7c60(&m_30));
     if (pDialog)
     {
-        if (MS2Ptr<Unk_DeList> spLayers = FUN_140c02900("m_layers"))
+        if (MS2Ptr<ASScrollingList> spLayers = FUN_140c02900("m_layers"))
         {
             ATL::CAtlArray<MS2Ptr<DecoLayer> > aLayers;
-            FUN_1411987a0()->CollectLayers(aLayers);
+            BrushService()->CollectLayers(aLayers);
             for (unsigned int i = 0; i < aLayers.GetCount(); i++)
             {
                 DecoLayer* pLayer = aLayers[i].get();
@@ -131,7 +120,7 @@ void UIDecoEditDialog::OnLoadInit()
             spLayers->vfunc_24(true);
             spLayers->FUN_1422dcca0(0);
         }
-        if (MS2Ptr<Unk_DeList> spBrushes = FUN_140c02900("m_brushes"))
+        if (MS2Ptr<ASScrollingList> spBrushes = FUN_140c02900("m_brushes"))
         {
             spBrushes->FUN_1422dd2a0("PaintBrush");
             spBrushes->FUN_1422dd2a0("NoiseBrush");
@@ -149,11 +138,11 @@ int UIDecoEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     ASData data;
     if (_stricmp("OnSave", szMethod) == 0)
     {
-        FUN_1411987a0()->SaveXml();
+        BrushService()->SaveXml();
     }
     else if (_stricmp("OnCancel", szMethod) == 0)
     {
-        FUN_1411987a0()->LoadXml();
+        BrushService()->LoadXml();
     }
     else if (_stricmp("OnAssetChange", szMethod) == 0)
     {
@@ -230,7 +219,7 @@ void UIDecoEditDialog::FUN_14191bd30(CString strFile)
             ASDialog* pDialog = dynamic_cast<ASDialog*>(FUN_140ba7c60(&m_30));
             if (pDialog)
             {
-                DecoLayer* pLayer = FUN_1411987a0()->GetLayer();
+                DecoLayer* pLayer = BrushService()->GetLayer();
                 if (pLayer)
                 {
                     if (FUN_14191c510(strName, szFile))
@@ -246,31 +235,31 @@ void UIDecoEditDialog::FUN_14191bd30(CString strFile)
 // @0x14191c060
 void UIDecoEditDialog::FUN_14191c060(CString strName)
 {
-    FUN_1411987a0()->AddLayer(strName);
+    BrushService()->AddLayer(strName);
 }
 
 // @0x14191c0d0
 void UIDecoEditDialog::FUN_14191c0d0(CString strName)
 {
-    FUN_1411987a0()->RemoveLayer(strName);
+    BrushService()->RemoveLayer(strName);
 }
 
 // @0x14191c140
 void UIDecoEditDialog::FUN_14191c140(CString strName)
 {
-    FUN_1411987a0()->SelectLayer(strName);
+    BrushService()->SelectLayer(strName);
 }
 
 // @0x14191c1b0
 void UIDecoEditDialog::FUN_14191c1b0(int nBrush)
 {
-    FUN_1411987a0()->SetBrush(nBrush);
+    BrushService()->SetBrush(nBrush);
 }
 
 // @0x14191c1e0
 void UIDecoEditDialog::FUN_14191c1e0(float fRadius)
 {
-    Unk_DeBrush* pBrush = reinterpret_cast<Unk_DeBrush*>(FUN_1411987a0()->GetBrush());
+    Unk_DeBrush* pBrush = reinterpret_cast<Unk_DeBrush*>(BrushService()->GetBrush());
     if (pBrush)
         pBrush->vfunc_6(fRadius);
 }
@@ -278,7 +267,7 @@ void UIDecoEditDialog::FUN_14191c1e0(float fRadius)
 // @0x14191c230
 void UIDecoEditDialog::FUN_14191c230(float fDensity)
 {
-    Unk_DeBrush* pBrush = reinterpret_cast<Unk_DeBrush*>(FUN_1411987a0()->GetBrush());
+    Unk_DeBrush* pBrush = reinterpret_cast<Unk_DeBrush*>(BrushService()->GetBrush());
     if (pBrush)
         pBrush->vfunc_7(fDensity);
 }
@@ -286,7 +275,7 @@ void UIDecoEditDialog::FUN_14191c230(float fDensity)
 // @0x14191c280
 void UIDecoEditDialog::FUN_14191c280(Unk_DeVec2 vScale)
 {
-    Unk_DeBrush* pBrush = reinterpret_cast<Unk_DeBrush*>(FUN_1411987a0()->GetBrush());
+    Unk_DeBrush* pBrush = reinterpret_cast<Unk_DeBrush*>(BrushService()->GetBrush());
     if (pBrush)
         pBrush->vfunc_8(vScale);
 }
@@ -294,7 +283,7 @@ void UIDecoEditDialog::FUN_14191c280(Unk_DeVec2 vScale)
 // @0x14191c2d0
 void UIDecoEditDialog::FUN_14191c2d0(Unk_DeVec2 vRotation)
 {
-    Unk_DeBrush* pBrush = reinterpret_cast<Unk_DeBrush*>(FUN_1411987a0()->GetBrush());
+    Unk_DeBrush* pBrush = reinterpret_cast<Unk_DeBrush*>(BrushService()->GetBrush());
     if (pBrush)
         pBrush->vfunc_9(vRotation);
 }

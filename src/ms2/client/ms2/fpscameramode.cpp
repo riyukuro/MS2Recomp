@@ -18,7 +18,7 @@
 // ---- unit-local placeholders ----
 
 // The input state (FUN_14025e7c0).
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // A field actor (FUN_1409ffd30 casts an object to it).
 class Unk_RpgActor : public Unk_CameraTargetEntity
@@ -43,7 +43,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-Unk_ClientConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The cursor / window (FUN_140aadf80): its screen rectangle.
 class Unk_Cursor
@@ -51,12 +51,11 @@ class Unk_Cursor
 public:
     RECT FUN_140ad4c30();
 };
-Unk_Cursor* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
 namespace egf { class Entity; }
 egf::Entity* FUN_14123c410(Unk_RpgActor* p);                // m_80 of the game object
 NiAVObject* FUN_141b6efc0(egf::Entity* p);
-const Vector3* FUN_140947900(NiAVObject* p);        // &world translate
 
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_140a17940(float f, float fMin, float fMax);   // clamp
@@ -89,9 +88,9 @@ void CFPSCameraMode::vfunc_6(int n)
     CCameraMode::vfunc_6(n);
     vfunc_31();
     m_50 = 1.0f;
-    m_9c = FUN_1401d3200()->m_1a80.FUN_1402bac70();
-    m_a0 = FUN_1401d3200()->m_1ad8.FUN_1402bac70();
-    m_a4 = FUN_1401d3200()->m_1b30.FUN_1402bac70();
+    m_9c = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
+    m_a0 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
+    m_a4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
     ShowCursor(FALSE);
     Unk_CameraTargetEntity* pTarget = vfunc_25();
     m_130 = FUN_1409ffd30(pTarget);
@@ -112,17 +111,17 @@ MS2_REPLACE_METHOD(0x141221480, CFPSCameraMode, vfunc_7, 75, 0xC5DEA605);
 void CFPSCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
-    unsigned int nButton = FUN_14025e7c0()->FUN_14116daa0(1, true, 0);
+    unsigned int nButton = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, true, 0);
     if (m_144 != 0 && nButton == 0)
         return;
     int nX;
     int nY;
     int nZ;
-    if (FUN_14025e7c0()->FUN_14116dbf0(&nX, &nY, &nZ, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dbf0(&nX, &nY, &nZ, false, 0))
     {
         ptMove.x = (float)nY * 0.05f;
         ptMove.y = (float)nX * 0.05f;
-        RECT rc = FUN_140aadf80()->FUN_140ad4c30();
+        RECT rc = ((class Unk_Cursor*)FUN_140aadf80())->FUN_140ad4c30();
         int nCenterX = ((rc.right - rc.left) >> 1) + rc.left;
         int nCenterY = ((rc.bottom - rc.top) >> 1) + rc.top;
         SetCursorPos(nCenterX, nCenterY);
@@ -136,7 +135,7 @@ void CFPSCameraMode::vfunc_8(double fTime)
 {
     if (m_138)
     {
-        m_78 = *FUN_140947900(m_138);
+        m_78 = *((struct Vector3 const*)&((class NiAVObject*)(m_138))->GetWorldTranslate());
         m_78.z += vfunc_27();
     }
     Vector3 ptEye = m_78.FUN_14097fd50(FUN_14183c370());
@@ -212,7 +211,7 @@ void CFPSCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         if (!m_138)
             m_138 = pRoot;
         if (m_138)
-            m_78 = *FUN_140947900(m_138);
+            m_78 = *((struct Vector3 const*)&((class NiAVObject*)(m_138))->GetWorldTranslate());
         m_78.z += vfunc_27();
         m_6c = 1.5707964f;
         if (m_140)

@@ -21,7 +21,7 @@
 
 // ---- unit-local views of exe types ----
 
-class Unk_JscSkillRow : public CPtred { public: bool FUN_1407e9f30(); };
+class Unk_JscSkillRow : public CPtred { public:  };
 
 class Unk_JscSkillTable
 {
@@ -30,13 +30,22 @@ public:
     MS2Ptr<SkillLevelData> FUN_1407ee2f0(int nSkillId, short nLevel);
 };
 
+class CSkillSet   // C3: member view (real class not in this TU)
+{
+public:
+    unsigned short GetSkillLevel(int);
+};
 class Unk_JscSkillSet : public CPtred
 {
 public:
-    unsigned short FUN_140809560(int nSkillId);                 // the level of the skill in the set
     int FUN_140809410(int nSkillId, int a1);                    // the set contains the skill
 };
-class Unk_JscTree : public CPtred { public: unsigned short FUN_14080baf0(int nSkillId); };   // the tier option level
+class CSkillTierOptionManager   // C3: member view (real class not in this TU)
+{
+public:
+    unsigned short GetSkillLevel(unsigned int);
+};
+class Unk_JscTree : public CPtred { public:  };   // the tier option level
 class Unk_JscSkillSys { public: MS2Ptr<Unk_JscSkillSet> FUN_141768380(); };
 class Unk_JscPlayer
 {
@@ -47,14 +56,11 @@ public:
 };
 Unk_JscPlayer* FUN_1409613d0(PCBase* pPC);                      // the MyPC of a PC, or 0
 
-CFeatureManager* FUN_140166410();
 
 int FUN_14165c570(PCBase* pPC);                                 // the active stance skill
 void FUN_14165c720(PCBase* pPC, int nSkillId, unsigned short nLevel);
 void FUN_1401fdb50(unsigned char* payload, COutputStream& stream);
 void FUN_140710590(COutPacket& packet);
-JobSkillPtr* FUN_1406420e0(std::vector<JobSkillPtr>* pVec);       // begin
-JobSkillPtr* FUN_1406421b0(std::vector<JobSkillPtr>* pVec);       // end
 
 // @0x140a6d890
 JobSystemCli::JobSystemCli()
@@ -77,11 +83,11 @@ MS2Ptr<SkillLevelData> JobSystemCli::vfunc_1(unsigned nSkillId)
         MS2Ptr<Unk_JscSkillSet> spSet = pPlayer->FUN_141523bc0()->FUN_141768380();
         if (spSet.get() != 0)
         {
-            unsigned short nLevel = spSet->FUN_140809560(nSkillId);
+            unsigned short nLevel = ((CSkillSet*)(spSet).operator->())->GetSkillLevel(nSkillId);
             if (nLevel != 0)
                 return reinterpret_cast<Unk_JscSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(nSkillId, nLevel);
         }
-        if (FUN_140166410()->FUN_14036d570(0xd3))
+        if (CFeatureManager::GetInstance()->FUN_14036d570(0xd3))
         {
             unsigned short nLevel = pPlayer->FUN_14152fce0(nSkillId);
             if (nLevel != 0)
@@ -97,7 +103,7 @@ bool JobSystemCli::vfunc_2(unsigned nSkillId)
     MS2Ptr<Unk_JscSkillRow> spRow = reinterpret_cast<Unk_JscSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
     if (spRow.IsNull())
         return false;
-    if (!spRow->FUN_1407e9f30())
+    if (!((SkillData*)(spRow).operator->())->FUN_1407e9f30())
         return true;
     Unk_JscPlayer* pPlayer = FUN_1409613d0(m_pOwner);
     if (pPlayer != 0)
@@ -108,9 +114,9 @@ bool JobSystemCli::vfunc_2(unsigned nSkillId)
             if (spSet->FUN_140809410(nSkillId, 0) != 0)
                 return true;
         }
-        if (pPlayer->FUN_1409eee00()->FUN_14080baf0(nSkillId) > 0)
+        if (((CSkillTierOptionManager*)(Unk_JscTree*)(pPlayer->FUN_1409eee00()))->GetSkillLevel(nSkillId) > 0)
             return true;
-        if (FUN_140166410()->FUN_14036d570(0xd3) && pPlayer->FUN_14152fce0(nSkillId) > 0)
+        if (CFeatureManager::GetInstance()->FUN_14036d570(0xd3) && pPlayer->FUN_14152fce0(nSkillId) > 0)
             return true;
         JobData* pJobData = GetJobData().get();
         if (pJobData != 0)
@@ -118,7 +124,7 @@ bool JobSystemCli::vfunc_2(unsigned nSkillId)
             int nMain = GetJobData()->GetSubSkillParent(nSkillId);
             if (nMain != 0)
             {
-                if (pPlayer->FUN_1409eee00()->FUN_14080baf0(nMain) > 0)
+                if (((CSkillTierOptionManager*)(Unk_JscTree*)(pPlayer->FUN_1409eee00()))->GetSkillLevel(nMain) > 0)
                     return true;
             }
         }
@@ -147,7 +153,7 @@ unsigned short JobSystemCli::vfunc_5(unsigned nSkillId)
     Unk_JscPlayer* pPlayer = FUN_1409613d0(m_pOwner);
     if (pPlayer == 0)
         return 0;
-    unsigned short nLevel = pPlayer->FUN_1409eee00()->FUN_14080baf0(nSkillId);
+    unsigned short nLevel = ((CSkillTierOptionManager*)(Unk_JscTree*)(pPlayer->FUN_1409eee00()))->GetSkillLevel(nSkillId);
     if (nLevel != 0)
         return nLevel;
     if (GetJobData().IsNull())
@@ -155,7 +161,7 @@ unsigned short JobSystemCli::vfunc_5(unsigned nSkillId)
     int nMain = GetJobData()->GetSubSkillParent(nSkillId);
     if (nMain == 0)
         return 0;
-    return pPlayer->FUN_1409eee00()->FUN_14080baf0(nMain);
+    return ((CSkillTierOptionManager*)(Unk_JscTree*)(pPlayer->FUN_1409eee00()))->GetSkillLevel(nMain);
 }
 
 // @0x140a6e0a0
@@ -200,8 +206,8 @@ void JobSystemCli::Refresh()
     std::vector<JobSkillPtr> skills;
     GetSkills(skills, 1, false);
     std::vector<JobSkillPtr>& range = skills;
-    JobSkillPtr* it = FUN_1406420e0(&range);
-    JobSkillPtr* itEnd = FUN_1406421b0(&range);
+    JobSkillPtr* it = ((std::vector<MS2Ptr<JobSkill>, std::allocator<MS2Ptr<JobSkill>>>*)(void*)(&range))->_Unchecked_begin();
+    JobSkillPtr* itEnd = ((std::vector<MS2Ptr<JobSkill>, std::allocator<MS2Ptr<JobSkill>>>*)(void*)(&range))->_Unchecked_end();
     for (; it != itEnd; ++it)
     {
         JobSkillPtr& spSkill = *it;

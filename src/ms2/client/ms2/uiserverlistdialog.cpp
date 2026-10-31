@@ -35,6 +35,10 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/scenestatemulti.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/blindmanager.h"
+#include "ms2/client/ms2/gamerankingcli.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/client/ms2/serverlisttable.h"
 
 // ---- statics (the exe runs them in this order: "gameexit", the sort-name table, "skill", "stun", the key input) ----
 // The shared header_statics_a.h would also construct the condition after "stun"; this unit's .text$di has none.
@@ -125,7 +129,6 @@ void* FUN_1403ed2b0();
 void FUN_141adc5d0(void* pObj, int nId);
 void* FUN_140939a10();
 void FUN_140da4fe0(void* pObj, MS2Ptr<NotifyObject> spNotify);
-CServerListTable* FUN_1414a5790();
 int FUN_1406c34c0();                                            // the Nexon platform is active
 int FUN_14092f640();
 CStringW GetStringCommon(int nStringId);                          // string table text by id
@@ -145,8 +148,6 @@ class Unk_SlKeys { public: bool FUN_14116d890(int nKey); };
 Unk_SlKeys* FUN_14025e7c0();
 
 UIBannerAdvertisingDialog* FUN_141876420(int nId);
-class Unk_SlRanking { public: void FUN_140b2c7d0(); };
-Unk_SlRanking* FUN_140b2e980();
 CSceneStateMulti* FUN_140f30370();
 const int* FUN_1404eb7e0(const int* a, const int* b);           // std::max<int>
 const int* FUN_1402fbd20(const int* a, const int* b);           // std::min<int>
@@ -197,10 +198,8 @@ struct Unk_NetworkLoginResult {
     int result,error;__int64 id;CStringW message;__int64 a18;int zone,zoneFlag;bool flag;__int64 a30,start,end;int value,a4c;__int64 a50;
 };
 MS2_CHECK_SIZE(Unk_NetworkLoginResult,0x58);
-CMainSystem* FUN_14086d260();
 void FUN_141b70390();
-class Unk_SlBlind { public: void FUN_140a250a0(); };
-Unk_SlBlind* FUN_1409c1730();
+BlindManager* FUN_1409c1730();
 extern __int64 DAT_143ab2820;
 extern int DAT_143ab2834;
 extern __int64 DAT_143ab2838;
@@ -241,7 +240,6 @@ class Unk_SlScript : public AScript
 public:
     // @0x141ad3800
     Scaleform::GFx::Value FUN_141ad3800(const char* szMethod, const ASArray& arr, int a, int b, int c, int d);
-    Scaleform::GFx::Value FUN_140e813f0(const char* szMethod, const ASArray& arr, int n);   // regionlist's copy of the same shape
 };
 
 // @0x141ad3800
@@ -383,8 +381,8 @@ void UIServerListDialog::OnLoadComplete()
         }
         vfunc_8(0);
     }
-    if (FUN_140b2e980() != 0)
-        FUN_140b2e980()->FUN_140b2c7d0();
+    if (TSingleton<CGameRankingCli>::GetInstance() != 0)
+        TSingleton<CGameRankingCli>::GetInstance()->Clear();
     FUN_140d86260()->vfunc_22(0x2bd, "LoginStep1");
 }
 
@@ -490,9 +488,9 @@ void UIServerListDialog::FUN_141ad1d20()
                         int nOne = 1;
                         m_nChannel = *FUN_1404eb7e0(&nOne, FUN_1402fbd20(&m_nChannel, &nChannels));
                     }
-                    CServerListTable::InfoPtr info = FUN_1414a5790()->GetServer(server->m_nId);
+                    CServerListTable::InfoPtr info = TSingleton<CServerListTable>::GetInstance()->GetServer(server->m_nId);
                     if (info == 0)
-                        info = FUN_1414a5790()->GetFirstServer();
+                        info = TSingleton<CServerListTable>::GetInstance()->GetFirstServer();
                     if (info.get() != 0) {
                         ASObj row(2);
                         row.FUN_1407cbb20("label", info->m_strName);
@@ -559,7 +557,7 @@ void UIServerListDialog::FUN_141ad25a0(CStringW strServer)
             int nSelectedIndex = -1;
             ASArray array(2);
             FUN_141ad3370(array, &nSelectedIndex, m_nChannel, MS2Ptr<CMultiServer>(pServer));
-            static_cast<Unk_SlScript*>(m_30.operator->())->FUN_140e813f0("buildChannelList", array, nSelectedIndex);
+            static_cast<Unk_SlScript*>(m_30.operator->())->Invoke("buildChannelList", array, nSelectedIndex);
             if (bSelected != 0) {
                 float fLimit = 1.0f;
                 int bFound = 0;
@@ -630,7 +628,7 @@ void UIServerListDialog::FUN_141ad2b50(CInPacket* pPacket)
         return;
     }
     {
-        FUN_14086d260()->FUN_141473690(reply.a18);
+        TSingleton<CMainSystem>::GetInstance()->FUN_141473690(reply.a18);
         CMsTime::SetTimeZone(reply.zone, reply.zoneFlag);
         DAT_143ab2820 = reply.id;
         DAT_1439f4a7c = m_nChannel;
@@ -638,7 +636,7 @@ void UIServerListDialog::FUN_141ad2b50(CInPacket* pPacket)
         DAT_143ab2838 = reply.a50;
         FUN_141b70390();
         FUN_1409a8b10()->FUN_141242570();
-        FUN_1409c1730()->FUN_140a250a0();
+        FUN_1409c1730()->Load();
     }
 }
 

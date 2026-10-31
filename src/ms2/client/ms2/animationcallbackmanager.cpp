@@ -82,7 +82,6 @@
 extern int DAT_143ae2b30;                   // 1: actor-manager callbacks are routed through the callback manager
 
 // ---- exe functions outside this unit ----
-egf::Entity* FUN_14123c410(GameObject* pObj);                                       // the owner's entity (0 if none)
 NiActorManager* FUN_1413f9b70(const egf::EntityID& kId);                            // AnimationService::GetActorManager
 bool FUN_14028d470(float fValue, float fCompare);                                   // float equality
 CLogString* GetLogString();
@@ -121,7 +120,7 @@ Unk_AnimTable::~Unk_AnimTable()
 // @0x140996bc0
 bool Unk_AnimTable::FUN_140996bc0(GameObject* pObj)
 {
-    if (FUN_14123c410(pObj) == 0)
+    if (((class GameObject*)(pObj))->FUN_14123c410() == 0)
         return false;
     egmAnimation::AnimationService* pService = g_143b059e8.GetSystemServiceAs<egmAnimation::AnimationService>();
     if (pService == 0)
@@ -180,7 +179,7 @@ bool Unk_AnimTable::FUN_140997070(GameObject* pObj, CString strName)
 {
     if (m_items.Lookup((const char*)strName) != 0)
         return true;
-    if (FUN_14123c410(pObj) == 0)
+    if (((class GameObject*)(pObj))->FUN_14123c410() == 0)
         return false;
     egmAnimation::AnimationService* pService = g_143b059e8.GetSystemServiceAs<egmAnimation::AnimationService>();
     if (pService == 0)

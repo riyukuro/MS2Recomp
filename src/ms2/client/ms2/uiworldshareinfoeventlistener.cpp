@@ -23,6 +23,8 @@
 #include "ms2/placeholder/uiworldshareinfoeventdispatcher.h"
 #include "ms2/client/ms2/uirewardnotify.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/worldservice.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -36,13 +38,10 @@ struct Unk_WsConstants
     unsigned char m_unrecovered[0x5910];
     Unk_WsConstUInt* m_unused;                       // placeholder, the two fields below are at +0x5910 / +0x5968
 };
-class Unk_WsStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
 
-Unk_WsWorld* FUN_1403ed2d0();
 unsigned FUN_141bd3060(Unk_WsWorld* pWorld);                                // the local player's level
 PCBase* FUN_141bd0cc0(Unk_WsWorld* pWorld);                                 // the local player
 unsigned char FUN_141658fa0(PCBase* pPC);
-Unk_WsStrings* FUN_1401a9d70();
 void* FUN_1401c0d90();
 int FUN_140475e80(int nType);
 unsigned int FUN_140476ad0(void* pRule);
@@ -54,7 +53,7 @@ CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 CStringW FUN_140632a60(int nId, const CStringW& strArg1, const CStringW& strArg2);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW GetStringCommon(int nId);
-CStringW FUN_1409eec40(int nId);
+CStringW BlockFormat(int nId);
 CStringW FUN_140c160b0(CStringW strKey, const __int64& n);
 CStringW FUN_14086d060(int nId, const __int64& n);
 void FUN_1412751b0(const CStringW& strText, int nColor);                    // add a chat message
@@ -133,7 +132,7 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
     CStringW strB;
     CStringW strA;
     CStringW strNum = FUN_1409404f0(nAmount);
-    unsigned nLevel = FUN_141bd3060(FUN_1403ed2d0());
+    unsigned nLevel = FUN_141bd3060(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance()));
     switch (nType)
     {
     case 0xea62:
@@ -142,15 +141,15 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
         break;
     case 3001:
     case 3002:
-        strA = FUN_140632a60(0x2c0, FUN_1401a9d70()->FUN_141811980(3, nLevel), strNum);
+        strA = FUN_140632a60(0x2c0, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nLevel), strNum);
         bNotify = 1;
         break;
     case 3000:
-        strA = FUN_140632a60(0x2c1, FUN_1401a9d70()->FUN_141811980(3, nLevel), strNum);
+        strA = FUN_140632a60(0x2c1, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nLevel), strNum);
         bNotify = 1;
         break;
     case 3003:
-        strA = FUN_140632a60(0x2c2, FUN_1401a9d70()->FUN_141811980(3, nLevel), strNum);
+        strA = FUN_140632a60(0x2c2, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nLevel), strNum);
         break;
     case 0x427:
         strA = FUN_1405c2690(L"s_msg_take_play_instrument_exp", strNum);
@@ -184,7 +183,7 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
     FUN_1401c0d90();
     if (FUN_140475e80(nType) != 0)
     {
-        PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+        PCBase* pPC = FUN_141bd0cc0(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance()));
         if (pPC != 0)
         {
             if ((FUN_141658fa0(pPC) & *FUN_1401d7c10(FUN_1401d3200() + 0x5910)) != 0 && (nType == 0x15 || nType == 0xea61))
@@ -227,7 +226,7 @@ void FUN_1413612c0(__int64 nAmount, int nType)
     {
         CStringW strNum = FUN_1409404f0(nAmount);
         CStringW strText = FUN_14052bd00(0x2c3, strNum);
-        PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+        PCBase* pPC = FUN_141bd0cc0(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance()));
         if (pPC != 0)
         {
             if ((FUN_141658fa0(pPC) & *FUN_1401d7c10(FUN_1401d3200() + 0x5968)) != 0 && (nType == 0x15 || nType == 0xea61))
@@ -300,7 +299,7 @@ void FUN_141361990(__int64 nAmount, int nUnused)
         CStringW strNum = FUN_1409404f0(-nAmount);
         strText = FUN_14052bd00(0x2da, strNum);
         if (FUN_14036d570(FUN_140166410(), 0xba) != 0)
-            FUN_1412751b0(FUN_1409eec40(0x2db), 6);
+            FUN_1412751b0(BlockFormat(0x2db), 6);
     }
     FUN_1412751b0(strText, 6);
 }

@@ -36,6 +36,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uitalkcinematic.h"
+#include "ms2/commonfiles/itemenchantlimittable.h"
 
 // ---- the unit's header statics: header_statics_a.h above, a key controller, then a second copy of the four ---------------
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -75,19 +76,26 @@ bool FUN_140534e50(const MS2Ptr<CItem>& sp);                           // IsNull
 void FUN_1411e1ce0(Unk_PCItems* items, ATL::CAtlList<MS2Ptr<Unk_BackUpItem> >* out, int a);
 
 class Unk_UeWorld { public: MyPC* FUN_141bd0cc0(); };
-Unk_UeWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // The enchant limit table (one of the CItem checks of the itemenchantlimittable unit).
 class Unk_UeLimitTable { public: int FUN_14058e3a0(CItem* pItem); };
-Unk_UeLimitTable* FUN_1409eece0();
 
 class UIInventoryDialog;
 UIInventoryDialog* FUN_1405344f0(int nId);
-void FUN_140c3fe30(UIInventoryDialog* pDialog, int n);
+class Unk_McInventoryDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140c3fe30(unsigned int);
+};
 
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 nUid);              // the inventory item with this uid
 int FUN_140a5f780_1(Unk_Inventory* pInv, int nTag, int nRarity); // how many of the ingredient the player has
-int FUN_14053feb0(unsigned nItemId);                             // default rank of an item
+int FUN_14053feb0(int);   // C3: was FUN_14053feb0
 MS2Ptr<CItem> FUN_141420330(const ATL::CAtlArray<MS2Ptr<CItem> >& items, int nIndex);
 void FUN_14141f970(const CString& strBag);                       // drop an item bag
 void FUN_14141f770(const CString& strBag, unsigned int nCount, const ATL::CAtlArray<MS2Ptr<CItem> >& items,
@@ -102,7 +110,11 @@ CStringW FUN_1419021b0(int nHave, int nNeed);                    // "have/need"
 CStringW FUN_1409404f0(__int64 nValue);                          // money text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 void* FUN_140967100();
-void FUN_141b1feb0(void* pService);
+class UITalkManager   // C3: member view for the former free stand-ins
+{
+public:
+    void SendNpcTalkMode0();
+};
 
 extern Unk_Inventory g_143ab2a90;
 
@@ -149,7 +161,7 @@ void UIUnlimitedEnchantDialog::vfunc_67()
 {
     FUN_14141f970(GetTypeName());
     UIDialog::vfunc_67();
-    FUN_141b1feb0(FUN_140967100());
+    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
 }
 
 // @0x140fb5ec0
@@ -289,7 +301,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6b00(CInPacket* pPacket)
     m_30->Invoke("onEnchant");
     UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
     if (pInventory != 0)
-        FUN_140c3fe30(pInventory, 7);
+        ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pInventory))->FUN_140c3fe30(7);
     FUN_140fb7690(nUid);
 }
 MS2_REPLACE_METHOD(0x140FB6B00, UIUnlimitedEnchantDialog, FUN_140fb6b00, 289, 0xA0816445);
@@ -321,7 +333,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6c30(Unk_UnlimitedEnchantError nError)
 // @0x140fb6ed0
 void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_UeWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     {
@@ -439,7 +451,7 @@ Unk_UnlimitedEnchantError UIUnlimitedEnchantDialog::FUN_140fb7870(MS2Ptr<CItem> 
     int nLevel = spItem->FUN_140527270();
     if (nLevel == 0)
     {
-        if (FUN_1409eece0()->FUN_14058e3a0(spItem.get()) == 0)
+        if (reinterpret_cast<Unk_UeLimitTable*>(TSingleton<CItemEnchantLimitTable>::GetInstance())->FUN_14058e3a0(spItem.get()) == 0)
             return UNLIMITED_ENCHANT_INVALID_ITEM;
     }
     if (nLevel == spData->FUN_14053e9e0())

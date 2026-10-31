@@ -20,10 +20,8 @@
 
 // ---- unrecovered helpers ----
 
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-class Unk_CommonLog { public: void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg); };
-Unk_CommonLog* FUN_140166440();
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_140188f50(const char* psz, int n);
 const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);          // attribute text
@@ -96,12 +94,12 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
     CString strPath = FUN_14071a5b0("Object", strFile);
     TiXmlDocument doc;
     spData->FUN_1401d1160(strPath);
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return CObjectDataPtr(0);
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return CObjectDataPtr(0);
     }
     Unk_140165cf0* pFunc = pRoot->FUN_140165cf0("FunctionCube");

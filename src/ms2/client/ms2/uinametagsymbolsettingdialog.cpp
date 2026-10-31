@@ -8,7 +8,10 @@
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uinametagsymbolsettingdialog.cpp"    // assumed
 
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uinametagsymbolsettingdialog.h"
 
@@ -21,6 +24,7 @@
 #include "hook/ms2hook.h"
 
 #include "ms2/placeholder/unk_1402a9d70.h"
+#include "ms2/placeholder/cstringtable.h"
 
 static CString s_sortNames[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
 static CString s_skill("skill");
@@ -28,21 +32,6 @@ static CString s_stun("stun");
 static Unk_1402a9d70 s_conditionTable(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
-
-// The "m_list" control of the movie (the AS list with clear / append / select).
-class Unk_NtList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dcca0(int n);                                      // select a row
-    void FUN_1422dd230(const ASObj& row);                           // append a row
-};
 
 // The record of one symbol (the tooltip fields).
 class Unk_NtInfo
@@ -65,7 +54,11 @@ struct Unk_NtInfoRef
 };
 
 struct Unk_NtPlayer;
-unsigned short FUN_141661e00(Unk_NtPlayer* pPlayer);                // the symbol the player wears
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned short FUN_141661e00();
+};
 
 // The name tag symbol manager (global at 0x143ab05b8): its list of symbol ids is at +0x40.
 class Unk_NtMgr
@@ -86,17 +79,19 @@ char* FUN_14131e130(Unk_NtMgr* p);                                  // 0x14131e1
 size_t FUN_140186250(char* pIds);                                   // count
 unsigned short* FUN_140184490(char* pIds, size_t nIndex);           // element
 
-void* FUN_1403ed2d0();
-Unk_NtPlayer* FUN_141bd0cc0(void* p);                               // the local player
-void FUN_1422ba6e0();
-
-class Unk_NtStrings
+class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    CStringW FUN_141811980(int nId, int nArg);                      // string of (id, symbol)
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
+void FUN_1422ba6e0();
+
+class Unk_NtStrings : public CStringTable
+{
+public:
     CStringW FUN_141812290(int nId, short nArg, CString strKey);    // tooltip string
 };
-Unk_NtStrings* FUN_1401a9d70();
 void FUN_140710590(COutPacket& packet);
 
 // @0x14131e0b0
@@ -135,9 +130,9 @@ MS2_REPLACE_METHOD(0x14131DA10, UINameTagSymbolSettingDialog, vfunc_67, 24, 0x6C
 void UINameTagSymbolSettingDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_NtPlayer* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_NtPlayer* pPlayer = ((struct Unk_NtPlayer*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     size_t nSelected = 0;
-    if (MS2Ptr<Unk_NtList> spList = FUN_140c02900("m_list"))
+    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_list"))
     {
         char* pIds = FUN_14131e130(FUN_14131e120());
         int nRow = 0;
@@ -153,16 +148,16 @@ void UINameTagSymbolSettingDialog::OnLoadComplete()
             row.FUN_1409c48f0("id", nId);
             row.FUN_1407cbb20("icon", FUN_14131e120()->FUN_1406c61a0(nId, pPlayer));
             row.FUN_1407cbbe0("disabled", FUN_14131e120()->FUN_1406c5d60(nId) == 0);
-            row.FUN_1407cbb20("title", FUN_1401a9d70()->FUN_141811980(0x27, nId));
-            row.FUN_1407cbb20("desc", FUN_1401a9d70()->FUN_141811980(0x28, nId));
+            row.FUN_1407cbb20("title", reinterpret_cast<Unk_NtStrings*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(0x27, nId));
+            row.FUN_1407cbb20("desc", reinterpret_cast<Unk_NtStrings*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(0x28, nId));
             if (info.operator->()->m_34 != 0)
             {
-                row.FUN_1407cbb20("info", FUN_1401a9d70()->FUN_141812290(info.operator->()->m_34,
+                row.FUN_1407cbb20("info", reinterpret_cast<Unk_NtStrings*>(TSingleton<CStringTable>::GetInstance())->FUN_141812290(info.operator->()->m_34,
                                                                        info.operator->()->m_38,
                                                                        CString("tooltipDescription")));
             }
             spList.operator->()->FUN_1422dd230(row);
-            if (nId == FUN_141661e00(pPlayer))
+            if (nId == ((class PCBase*)(struct Unk_NtPlayer*)(pPlayer))->FUN_141661e00())
                 nSelected = nRow;
             ++nRow;
         }

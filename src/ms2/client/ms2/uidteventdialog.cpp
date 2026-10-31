@@ -23,6 +23,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/gfxui/uialignwidget.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cusereventmanager.h"
 
 // ---- the unit's header statics (this unit includes them in a different order than header_statics_a.h) ----
 class Unk_1402a9d70
@@ -99,17 +102,9 @@ extern Unk_DTTable g_unkTableB;     // 0x143ab3010
 // The root AS object of the dialog movie and the clip kinds used here.
 class ASDialog : public ASDisplayObject
 {
-public:
-    int FUN_1422c1500();
-    int FUN_1422c1530();
-    float FUN_1422c10a0();
-    float FUN_1422c1110();
-    void FUN_1422bffe0(int x, int y);
 };
 class Unk_DTMovie : public ASMovieClip
 {
-public:
-    int FUN_1422c2510(double* pValue, double* pExtra);
 };
 
 class ASData : public CPtred
@@ -188,14 +183,12 @@ public:
     virtual unsigned short vfunc_78();                              // level
 };
 class Unk_1403ed2d0 { public: Unk_DTPlayer* FUN_141bd0cc0(); };
-Unk_1403ed2d0* FUN_1403ed2d0();
 
 // The event data manager (singleton 0x14041beb0): fills an array with all event contexts.
 class Unk_DTCtxMgr { public: void FUN_1408d7db0(ATL::CAtlArray<Unk_DTPtr<Unk_DTCtx> >& ctxs); };
-Unk_DTCtxMgr* FUN_14041beb0();
 
 // A sound / effect player (singleton 0x140e45740).
-class Unk_DTSound { public: void FUN_1422e6d00(int n); };
+class Unk_DTSound : public UIAlignWidgetManager { };
 Unk_DTSound* FUN_140e45740();
 
 UISwfEntity* FUN_140c9b540(int nUIType);                        // a UI object by type id
@@ -346,7 +339,7 @@ void UIDTEventDialog::OnLoadComplete()
     m_pending.RemoveAll();
     m_ctx.RemoveAll();
     ATL::CAtlArray<Unk_DTPtr<Unk_DTCtx> > ctxs;
-    FUN_14041beb0()->FUN_1408d7db0(ctxs);
+    reinterpret_cast<Unk_DTCtxMgr*>(TSingleton<CUserEventManager>::GetInstance())->FUN_1408d7db0(ctxs);
     for (unsigned int i = 0; i < ctxs.GetCount(); i++)
         FUN_140f38430(ctxs[i]);
 }
@@ -619,7 +612,7 @@ MS2_REPLACE_METHOD(0x140F37870, UIDTEventDialog, vfunc_87, 2268, 0x641A42AF);
 void UIDTEventDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    Unk_DTPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == NULL)
         return;
     unsigned int nID = pArgs->FUN_1422b8b10();
@@ -647,7 +640,7 @@ void UIDTEventDialog::FUN_140f38430(Unk_DTPtr<Unk_DTCtx> pCtx)
     Unk_DTPtr<Unk_DTReward> pReward(new RewardItem);
     if (pReward == NULL)
         return;
-    Unk_DTPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == NULL)
         return;
     if (pPlayer->vfunc_78() < pCtx->m_30) {
@@ -678,7 +671,7 @@ MS2_REPLACE_METHOD(0x140F38630, UIDTEventDialog, FUN_140f38630, 272, 0x3FB9C696)
 // @0x140f38750
 void UIDTEventDialog::FUN_140f38750()
 {
-    Unk_DTPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == NULL)
         return;
     POSITION pos = m_ctx.GetStartPosition();

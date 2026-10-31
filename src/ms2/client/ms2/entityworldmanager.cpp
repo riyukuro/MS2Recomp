@@ -141,7 +141,6 @@
 #include "ms2/placeholder/crashmanagercli.h"
 
 class Unk_GameClock;
-double FUN_141473280(Unk_GameClock*);
 class Unk_EntityDebugLog;
 void FUN_1401ce2b0(Unk_EntityDebugLog*, const char*);
 void FUN_1401ce2f0(Unk_EntityDebugLog*, const char*, int);
@@ -151,11 +150,10 @@ bool FUN_1414b3f50(MS2EntityLoaderService*, const egf::BlockIdentification&, uns
 struct Unk_EntityAppFramework;
 extern Unk_EntityAppFramework DAT_143b059e8;
 efd::ServiceManager* FUN_1401cd040(Unk_EntityAppFramework*);
-HardwareInstancingService* FUN_14098c5b0(Unk_EntityAppFramework*);
+class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 int FUN_1413d6890(HardwareInstancingService*, egf::Entity*);
 void FUN_1413d73a0(HardwareInstancingService*, int);
 void FUN_141473870(const egf::EntityID&);
-void FUN_1414737d0(egf::Entity*);
 CLogString* GetLogString();
 bool FUN_140a33ff0(const efd::Point3*);
 void FUN_140a38a50(egf::Entity*, egf::PropertyID, const efd::Point3&);
@@ -164,7 +162,11 @@ void FUN_14098c6e0(egf::Entity*, egf::PropertyID, const bool&);
 void FUN_140de8bd0(egf::Entity*, egf::PropertyID, const efd::AssetID&);
 void FUN_140998250(egf::Entity*, egf::PropertyID, efd::AssetID&);
 class WorldService;
-WorldService* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 void FUN_141bbae40(WorldService*, IWorldServiceCallback*);
 void FUN_1401ce3d0(Unk_EntityDebugLog*, TFunctor<void, EmptyParam>);
 egmAnimation::AnimationService* FUN_141b6f910();
@@ -352,7 +354,7 @@ void EntityWorldManager::FUN_1411cf2d0(egf::Entity* entity, efd::ParameterList* 
 // @0x1411cf540
 void EntityWorldManager::FUN_1411cf540(egf::EntityID id) { FUN_141473870(id); }
 // @0x1411cf570
-void EntityWorldManager::FUN_1411cf570(egf::Entity* entity) { FUN_1414737d0(entity); }
+void EntityWorldManager::FUN_1411cf570(egf::Entity* entity) { CMainSystem::FUN_1414737d0(entity); }
 // @0x1411cf5a0
 void EntityWorldManager::FUN_1411cf5a0(const egf::EntityID& id, egf::Entity* entity) {
     worlds[currentMap].loadedEntities[id] = entity;
@@ -368,7 +370,7 @@ bool EntityWorldManager::FUN_1411cf630(int map, const egf::BlockIdentification& 
     worlds[currentMap].createdEntities.clear();
     currentMap = map;
     currentBlock = worlds[reinterpret_cast<const unsigned&>(map)].block = block;
-    worlds[reinterpret_cast<const unsigned&>(map)].time = FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()));
+    worlds[reinterpret_cast<const unsigned&>(map)].time = ((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     worlds[reinterpret_cast<const unsigned&>(map)].unloaded = false;
     worlds[reinterpret_cast<const unsigned&>(map)].loadedEntities.clear();
     worlds[reinterpret_cast<const unsigned&>(map)].allEntities.clear();
@@ -385,9 +387,9 @@ bool EntityWorldManager::FUN_1411cf630(int map, const egf::BlockIdentification& 
 // Not hooked: creates world records and an engine message with DLL-local RTTI.
 // @0x1411cf980
 void EntityWorldManager::FUN_1411cf980(int map, const egf::BlockIdentification& block) {
-    worlds[reinterpret_cast<const unsigned&>(map)].time = FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()));
+    worlds[reinterpret_cast<const unsigned&>(map)].time = ((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     worlds[reinterpret_cast<const unsigned&>(map)].unloaded = true;
-    efd::SmartPointer<HardwareInstancingService> instancing(FUN_14098c5b0(&DAT_143b059e8));
+    efd::SmartPointer<HardwareInstancingService> instancing(((class HardwareInstancingService*)FUN_14098c5b0(&DAT_143b059e8)));
     if ((HardwareInstancingService*)instancing != nullptr) FUN_1413d73a0(instancing.operator->(), map);
     loader->FUN_1411d8980(false);
     efd::SmartPointer<egf::EntityLoadRequest> request(EE_NEW egf::EntityLoadRequest(
@@ -425,7 +427,7 @@ void EntityWorldManager::FUN_1411cfce0() {
 void EntityWorldManager::FUN_1411cfd40(const egf::EntityChangeMessage* message, efd::Category) {
     egf::EntityPtr entity(message->GetEntity());
     egf::EntityID id(entity->GetEntityID());
-    efd::SmartPointer<HardwareInstancingService> instancing(FUN_14098c5b0(&DAT_143b059e8));
+    efd::SmartPointer<HardwareInstancingService> instancing(((class HardwareInstancingService*)FUN_14098c5b0(&DAT_143b059e8)));
     if (((HardwareInstancingService*)instancing != nullptr ? true : false) && FUN_1413d6890(instancing.operator->(), entity) != 0) return;
     if (worlds[currentMap].createdEntities.find(id) == worlds[currentMap].createdEntities.end()) {
         worlds[currentMap].loadedEntities[id] = entity.data();
@@ -453,7 +455,7 @@ void EntityWorldManager::FUN_1411cffa0(const egf::EntityChangeMessage* message, 
 }
 // @0x1411d02c0
 void EntityWorldManager::vfunc_1(int) {
-    lastLoadTime = FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()));
+    lastLoadTime = ((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     loaded = true;
 }
 // @0x1411d0300
@@ -495,7 +497,7 @@ efd::AsyncResult EntityWorldManager::OnInit() {
     messages->Subscribe(this, entities->GetEntityLoadCategory(), 0, false);
     loader->SetMaxEntityLoadThrottle(0xffff);
     loader->SetMaxEntityUnloadThrottle(0xffff);
-    FUN_141bbae40(FUN_1403ed2d0(), this);
+    FUN_141bbae40(WorldService::GetInstance(), this);
     if (NiDX9Renderer* device = NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer())) {
         device->AddResetNotificationFunc(FUN_1411cfc90, this);
         device->AddLostDeviceNotificationFunc(FUN_1411cfcc0, this);
@@ -536,7 +538,7 @@ void FUN_1411d0b60(void* /*pUnused*/) {
 }
 // @0x1411d6230
 Unk_EntityWorldRecord::Unk_EntityWorldRecord() {
-    time = FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()));
+    time = ((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     unloaded = true;
 }
 

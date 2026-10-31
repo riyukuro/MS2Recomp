@@ -57,8 +57,6 @@ public:
     Unk_140165cf0* FUN_140165cf0(const char* pszName);              // FirstChildElement
     Unk_140165cf0* FUN_140168650(const char* pszName);              // NextSiblingElement
 };
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
 void FUN_140873220(Unk_140165cf0*, const char*, int&);
@@ -220,7 +218,7 @@ bool UGCCubeCategoryTable::HasAnyField(const std::vector<unsigned int>& fields)
 void UGCCubeCategoryTable::LoadMenus()
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, *FUN_1401d1140(), 0, true, false) != 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, *FUN_1401d1140(), 0, true, false) != 0)
     {
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot != 0)
@@ -282,7 +280,7 @@ void UGCCubeCategoryTable::LoadInteriors()
 {
     CString strPath = FUN_14071a5b0("Table", "ugcCubeDefaultCategory.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) != 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) != 0)
     {
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot != 0)

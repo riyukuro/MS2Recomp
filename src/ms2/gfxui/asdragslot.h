@@ -15,6 +15,7 @@ public:
     virtual ~ASDragSlot();                                      // 0x1422f71e0 (scalar deleting 0x1422f7210)
     // Slots 3 and 16-24 are ASUIComponent's (opt-in in asuicomponent.h; same convention as asgameentity.h): redeclared
     // here so the vftable is complete. symbols-manual binds the names to the base VAs.
+#ifndef MS2_ASUICOMPONENT_SLOTS
     virtual void vfunc_3(int nVisible);                         // 3 0x1422c7260
     virtual void vfunc_16();                                    // 16 0x1422c7ec0
     virtual void vfunc_17();                                    // 17 0x1422c7f00
@@ -25,5 +26,6 @@ public:
     virtual void vfunc_22();                                    // 22 0x1422c8040
     virtual void vfunc_23();                                    // 23 0x1422c8080
     virtual void vfunc_24(bool bInvalidate);                    // 24 0x1422c80c0
+#endif
 };
 MS2_CHECK_SIZE(ASDragSlot, 0x88);

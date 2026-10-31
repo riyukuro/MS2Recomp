@@ -23,7 +23,7 @@ class CMsgBoxData;
 class CMailInfo;
 class Unk_MlButton;
 class Unk_MlCheckBox;
-class Unk_MlList;
+class ASScrollingList;
 class Unk_MlTab;
 class Unk_MsInput;
 class Unk_MsCombo;
@@ -103,7 +103,7 @@ public:
     // child lookups (UIDialog COMDATs shared by many dialogs)
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);      // 0x140bb4cf0 text field
     MS2Ptr<Unk_MlButton> FUN_140bb4b10(const CString& strName);     // 0x140bb4b10 button
-    MS2Ptr<Unk_MlList> FUN_140c02900(const CString& strName);       // 0x140c02900 list
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);       // 0x140c02900 list
     MS2Ptr<Unk_MlTab> FUN_140c02870(const CString& strName);        // 0x140c02870 tab strip
     MS2Ptr<Unk_MlCheckBox> FUN_140e52670(const CString& strName);   // 0x140e52670 check box
 

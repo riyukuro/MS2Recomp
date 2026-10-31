@@ -98,11 +98,18 @@ private:
 // Unrecovered helpers.
 class Unk_140d86260 { public: virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
                       virtual void vfunc_4(); virtual void vfunc_5(); };
-Unk_140d86260* FUN_140d86260();
-void* FUN_1404f4540();
-void FUN_140791ac0(void* p);
+void* FUN_140d86260();   // C3: was FUN_140d86260
+class CSeasonDataTable   // C3: member view for the former free stand-ins
+{
+public:
+    void Tick();
+};
 class Unk_1409a8b10;
-void* FUN_1409a8ac0(void* p);
+class Unk_AeGameOption   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_AeGraphicOption* FUN_1409a8ac0();
+};
 class Unk_GraphicsOptions                               // FUN_1409a8ac0's result
 {
 public:
@@ -563,10 +570,10 @@ efd::AsyncResult CMainSystem::OnTick()
         m_uiFrames = 0;
     }
     m_dLastTime = dNow;
-    if (FUN_140d86260())
-        FUN_140d86260()->vfunc_5();
-    if (FUN_1404f4540())
-        FUN_140791ac0(FUN_1404f4540());
+    if (((class Unk_140d86260*)FUN_140d86260()))
+        ((class Unk_140d86260*)FUN_140d86260())->vfunc_5();
+    if (((void*)TSingleton<CSeasonDataTable>::GetInstance()))
+        ((class CSeasonDataTable*)(void*)(((void*)TSingleton<CSeasonDataTable>::GetInstance())))->Tick();
     return efd::AsyncResult_Pending;
 }
 
@@ -590,7 +597,7 @@ efd::AsyncResult CMainSystem::OnShutdown()
 // @0x141474450
 void CMainSystem::FUN_141474450()
 {
-    int nLimit = static_cast<Unk_GraphicsOptions*>(FUN_1409a8ac0(reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())))->GetFrameLimit();
+    int nLimit = static_cast<Unk_GraphicsOptions*>(((void*)((class Unk_AeGameOption*)(void*)(reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())))->FUN_1409a8ac0()))->GetFrameLimit();
     FUN_141610410(nLimit);
 }
 

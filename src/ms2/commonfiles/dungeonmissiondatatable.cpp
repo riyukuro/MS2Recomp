@@ -14,17 +14,15 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 
-// The common log (FUN_140166440()).
+// The common log (GetLogString()).
 class Unk_CommonLog
 {
 public:
     void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
     void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg);
 };
-Unk_CommonLog* FUN_140166440();
+class CLogString* GetLogString();
 
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
 
@@ -55,12 +53,12 @@ BOOL DungeonMissionDataTable::ReadFromXml()
 {
     CString strPath = FUN_14071a5b0("Table", "DungeonMission.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return FALSE;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        reinterpret_cast<Unk_CommonLog*>(GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return FALSE;
     }
     for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("DungeonMission"); pElem; pElem = pElem->FUN_140168650("DungeonMission"))
@@ -70,7 +68,7 @@ BOOL DungeonMissionDataTable::ReadFromXml()
         MS2Ptr<DungeonMissionData> pData = DungeonMissionData::Create(pElem);
         if (pData == 0 || pData->GetId() == 0)
         {
-            FUN_140166440()->Log(0, 0, 0x13, L"Create Error DungeonMissionData On DungeonMissionDataTable::ReadFromXml");
+            reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x13, L"Create Error DungeonMissionData On DungeonMissionDataTable::ReadFromXml");
             continue;
         }
         m_missions.insert(std::make_pair(pData->GetId(), pData));

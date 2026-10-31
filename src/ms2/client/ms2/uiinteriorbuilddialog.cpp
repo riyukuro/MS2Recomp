@@ -27,6 +27,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/usercommandcli.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include <map>
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -46,23 +49,21 @@ class ASDialog : public ASDisplayObject
 };
 
 class Unk_ItemEquipData : public CItemData { };                         // CItem::FUN_140527840's record
-struct Unk_IbArgs { CStringW FUN_1408d21c0(int nIndex, CStringW strDefault); };   // the nIndex-th function argument
+   // the nIndex-th function argument
 
-extern Unk_Inventory DAT_143ab2a90;                                     // the own inventory
+extern Unk_Inventory g_143ab2a90;                                       // the own inventory
 extern __int64 DAT_143ab2820;                                           // the own home owner id
-class Unk_IbWorld { public: int FUN_141bd3060(); };                     // the current map id
-Unk_IbWorld* FUN_1403ed2d0();
+                     // the current map id
+WorldService* FUN_1403ed2d0();
 void* FUN_1403ed2b0();                                                  // the ui manager
 void FUN_141adc530(void* pManager, int nUiId);                          // open a dialog
 
 // The own home record (the cube map information service's accessors).
-class Unk_IbHome
+class Unk_IbHome : public CubeMapInformationService
 {
 public:
-    __int64 FUN_1410c3180();                                            // owner id
     unsigned char FUN_1410c3470();                                      // width of the own indoor
     unsigned char FUN_1410c34b0();                                      // length of the own indoor
-    int FUN_1410d2ee0();                                                // the indoor is empty
 };
 Unk_IbHome* FUN_1409670e0();
 
@@ -70,7 +71,7 @@ void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW tag);    // 
 void FUN_14151f200();                                                   // close the current message box
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);             // string equals
 CString FUN_14016a600(const wchar_t* sz, int n);                        // wide to narrow
-CStringW FUN_1409eec40(int nId);                                        // string table text
+CStringW BlockFormat(int nId);                                          // string table text
 CStringW FUN_14052bd00(int nStringId, const CStringW& arg);             // string table text with one argument
 void FUN_140177de0(const CString& str, ATL::CAtlArray<int>* pOut, const char* pszSep);   // split into numbers
 size_t FUN_140186260(ATL::CAtlArray<int>& arr);                         // GetCount
@@ -146,10 +147,10 @@ int UIInteriorBuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             CStringW strTag = pMsg->FUN_1422b8f40();
             if (FUN_1403b3c40(strTag, L"indoorSizeDifferent") || FUN_1403b3c40(strTag, L"indoorEmpty"))
             {
-                MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_178);
+                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_178);
                 if (spItem == 0)
                     return 0;
-                DAT_143ab2a90.FUN_140a63880(spItem.get(), L"true");
+                g_143ab2a90.FUN_140a63880(spItem.get(), L"true");
             }
         }
         FUN_14151f200();
@@ -161,13 +162,13 @@ int UIInteriorBuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 // @0x140f4b7d0
 void UIInteriorBuildDialog::FUN_140f4b7d0()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_178);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_178);
     if (spItem == 0)
         return;
     MS2SvrPtr<CItemData> spData(spItem->FUN_140527840());
     if (spData == 0)
         return;
-    CString strPackage = FUN_14016a600(reinterpret_cast<Unk_IbArgs&>(spData->function.parameter).FUN_1408d21c0(0, L""), 0);
+    CString strPackage = FUN_14016a600(reinterpret_cast<Unk_CommandArgs&>(spData->function.parameter).FUN_1408d21c0(0, L""), 0);
     UGCMapPackageDataPtr spPackage = FUN_1408b9b90(strPackage);
     if (spPackage == 0)
         return;
@@ -177,8 +178,8 @@ void UIInteriorBuildDialog::FUN_140f4b7d0()
         ASObj obj(m_28);
         obj.FUN_1407cba60(s_itemMovie, spData->property.movie);
         obj.FUN_1407cbb20("packageName", FUN_14052bd00(0x6ed, spItem->FUN_140527b10()));
-        obj.FUN_1407cbb20("packageDesc", FUN_1409eec40(0x6ee));
-        obj.FUN_1407cbb20("installName", FUN_1409eec40(0x6ef));
+        obj.FUN_1407cbb20("packageDesc", BlockFormat(0x6ee));
+        obj.FUN_1407cbb20("installName", BlockFormat(0x6ef));
         obj.FUN_1407cbb20("installDesc", FUN_14028dee0(0x6f0, spPackage->m_strIndoorSizeType));
         pDialog->FUN_140acd1f0("setData", AScript(obj));
     }
@@ -187,7 +188,7 @@ void UIInteriorBuildDialog::FUN_140f4b7d0()
 // @0x140f4bc40
 void UIInteriorBuildDialog::OnUseItem()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_178);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_178);
     if (spItem == 0)
         return;
     if (!CFieldData::FUN_140374410(FUN_1403ed2d0()->FUN_141bd3060()))
@@ -200,7 +201,7 @@ void UIInteriorBuildDialog::OnUseItem()
         FUN_140d73bc0(0xb8f, 0, 0, CStringW(L""));
         return;
     }
-    CString strPackage = FUN_14016a600(reinterpret_cast<Unk_IbArgs&>(spItem->FUN_140527840()->function.parameter).FUN_1408d21c0(0, L""), 0);
+    CString strPackage = FUN_14016a600(reinterpret_cast<Unk_CommandArgs&>(spItem->FUN_140527840()->function.parameter).FUN_1408d21c0(0, L""), 0);
     if (strPackage.IsEmpty())
     {
         FUN_140d73bc0(0xb8f, 0, 0, CStringW(L""));
@@ -253,7 +254,7 @@ void UIInteriorBuildDialog::OnUseItem()
         FUN_140d73bc0(0xb9e, 1, static_cast<IMessageListener*>(this), CStringW(L"indoorEmpty"));
         return;
     }
-    DAT_143ab2a90.FUN_140a63880(spItem.get(), L"false");
+    g_143ab2a90.FUN_140a63880(spItem.get(), L"false");
     vfunc_67();
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

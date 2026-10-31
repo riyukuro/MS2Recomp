@@ -48,7 +48,7 @@ class Unk_SumKeys : public CInputKeyHandler
 public:
     bool FUN_14116d9c0(int nKey, int a, int b);                 // key pressed this frame
 };
-Unk_SumKeys* FUN_14025e7c0();
+void* FUN_14025e7c0();
 
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 CStringW FUN_14016a730(const char* psz, int n);                 // narrow -> wide
@@ -114,12 +114,12 @@ MS2_REPLACE_METHOD(0x141299AB0, UIHomeSummonDialog, vfunc_26, 55, 0xB78B1840);
 // MS2-FUNCTIONAL: one byte (jmp distance) differs; else-branch jump layout
 int UIHomeSummonDialog::vfunc_13()
 {
-    if (FUN_14025e7c0()->FUN_14116d840() != 0)
+    if (reinterpret_cast<Unk_SumKeys*>(FUN_14025e7c0())->FUN_14116d840() != 0)
     {
         vfunc_67();
         return 1;
     }
-    else if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0) != 0)
+    else if (reinterpret_cast<Unk_SumKeys*>(FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) != 0)
     {
         CStringW strText = m_190->FUN_1422e0b00();
         if (!strText.IsEmpty())

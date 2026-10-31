@@ -33,10 +33,9 @@ extern NiFixedString DAT_143ae51b0;                                         // e
 extern bool DAT_143ae0ac0;
 bool FUN_14098dfc0(NiAVObject* pObj);
 bool FUN_141568c90(NiRenderObject* pObj);
-int FUN_141568d50(NiAVObject* pObj);
+unsigned int FUN_141568d50(class NiAVObject*);   // C3: was FUN_141568d50
 bool FUN_141567260(NiAVObject* pObj);
 void* FUN_141044450(NiProperty* pProp);
-Unk_MaterialEntry* FUN_140a17af0(Unk_MaterialTable* pTable, const NiMaterial* pMaterial);   // table lookup, NULL-safe
 
 // @0x1414cf9b0
 MaterialSwapper::MaterialSwapper(MaterialSwapPredicate pfnPredicate, NiMaterial* pMaterial)
@@ -150,7 +149,7 @@ int FUN_1414cfef0(NiRenderObject* pObj)
             return 0;
     }
     const NiMaterial* pMaterial = pObj->GetActiveMaterial();
-    Unk_MaterialEntry* pEntry = FUN_140a17af0(&DAT_143d69198, pMaterial);
+    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), pMaterial));
     if (pEntry != 0 && pEntry->IsActive())
         return 0;
     return 1;
@@ -176,7 +175,7 @@ int FUN_1414d0040(NiRenderObject* pObj)
 {
     if (FUN_14098dfc0(pObj))
         return 0;
-    Unk_MaterialEntry* pEntry = FUN_140a17af0(&DAT_143d69198, pObj->GetActiveMaterial());
+    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), pObj->GetActiveMaterial()));
     if (pEntry != 0 && pEntry->IsActive())
         return 0;
     return 1;
@@ -187,7 +186,7 @@ int FUN_1414d00b0(NiRenderObject* pObj)
 {
     if (FUN_14098dfc0(pObj))
         return 0;
-    Unk_MaterialEntry* pEntry = FUN_140a17af0(&DAT_143d69198, pObj->GetActiveMaterial());
+    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), pObj->GetActiveMaterial()));
     if (pEntry != 0 && pEntry->IsActive())
         return 1;
     return 0;

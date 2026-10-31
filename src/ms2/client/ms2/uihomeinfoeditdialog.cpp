@@ -17,6 +17,7 @@
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/cubemapinformationservice_3.h"
 
 // ---- unit-local declarations (names describe uses, not original class names) ----
 
@@ -55,8 +56,11 @@ struct Unk_HmNameRef
 // ---- out-of-unit callees ----
 UIHomeInfoDialog* FUN_140bbea00(int nId);                           // dialog by its ui id
 CStringW GetStringCommon(int nStringId);
-class Unk_HmHome { public: CStringW FUN_1410c31d0(); };             // the owner name
-Unk_HmHome* FUN_1409670e0();
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-in
+{
+public:
+    static Unk_AkoHouseSvc* GetInstance();                              // the cube service singleton
+};
 int FUN_1406516a0();                                                // the locale index
 class CMsgBoxData : public CPtred
 {
@@ -112,7 +116,7 @@ MS2_REPLACE_METHOD(0x140C26850, UIHomeInfoEditDialog, FUN_140c26850, 114, 0x4162
 // @0x140c268d0
 CStringW UIHomeInfoEditDialog::FUN_140c268d0()
 {
-    return FUN_1409670e0()->FUN_1410c31d0();
+    return ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0();
 }
 MS2_REPLACE_METHOD(0x140C268D0, UIHomeInfoEditDialog, FUN_140c268d0, 61, 0xA1A1AAFA);
 

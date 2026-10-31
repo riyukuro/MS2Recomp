@@ -43,10 +43,10 @@ public:
     void FUN_1422c3180(CString strName, const Callback& cb);            // 0x1422c3180 (strName by value)
     void FUN_1422c33c0(CString strName);                                // 0x1422c33c0 undo FUN_1422c3180 (member := undefined)
     void FUN_1422c34f0();                                               // 0x1422c34f0 undo every FUN_1422c3180
-    // addEventListener (0x1422c3600; ASDisplayObject redeclares it): pUser is the AS function object's user data
+    // addEventListener (0x1422c3600): pUser is the AS function object's user data
     // (asbuttongroup.cpp). Once per delegate.
     void FUN_1422c3600(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, int nPriority, int a5, void* pUser);
-    // removeEventListener (0x1422c3820; ASDisplayObject redeclares it; asloader.cpp "complete")
+    // removeEventListener (0x1422c3820; asloader.cpp "complete")
     void FUN_1422c3820(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
     void FUN_1422c3940();                                               // 0x1422c3940 remove every listener
     // The flash.events.IEventDispatcher methods on an AS function value.
@@ -142,15 +142,9 @@ public:
     int FUN_1422c1810(Scaleform::GFx::Value::DisplayInfo& info);         // GetDisplayInfo (false if not a display object)
 
     // ---- defined in other units of the GFx UI library ----
-    // Registers an AS -> C++ callback under a name (the list lives at +0x60; aseffect.cpp "GetTooltipCallback").
-    void FUN_1422c3180(CString strName, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
+    // FUN_1422c3180 (AS -> C++ callback), FUN_1422c3600 (addEventListener) and FUN_1422c3820 (removeEventListener) are
+    // ASEventDispatcher's, inherited.
     int FUN_1422c2510(double* pX, double* pY);                  // get the position (double; uiminimapentity.cpp; ASMovieClip's, asmovieclip.cpp)
-    // addEventListener: an AS event of the object calls the delegate (uiblackmarketpage.cpp "changeTotalPrice").
-    // The last parameter is the pointer-sized user data of the AS function object (asbutton.cpp); there is no int
-    // overload, so a literal 0 goes out as a 64-bit null.
-    void FUN_1422c3600(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, int nPriority, int a5, void* pUser);
-    // removeEventListener: drops the delegate registered for the event (asbutton.cpp)
-    void FUN_1422c3820(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
 };
 MS2_CHECK_SIZE(ASDisplayObject, 0x80);
 

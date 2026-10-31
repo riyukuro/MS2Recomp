@@ -37,6 +37,11 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/commonfiles/gamerule.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/ascript.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -120,8 +125,6 @@ public:
 // The AS root of the dialog: the hit test of the event clip.
 class Unk_SmScript : public AScript
 {
-public:
-    Scaleform::GFx::Value FUN_1422bb330(const char* szMethod);
 };
 
 // The container lookup (asdisplayobjectcontainer.h): getChildByName, else a depth-first search of the children.
@@ -137,8 +140,6 @@ public:
 // The event clip: the child lookups used on it (the AS clip is an Unk_SmNode in the exe).
 class Unk_SmClip : public ASMovieClip
 {
-public:
-    CString FUN_1422c2420() noexcept;                                    // the current frame label
 };
 
 MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
@@ -150,21 +151,20 @@ template <> MS2Ptr<Unk_140acd6e0> Unk_SmNode::FUN_deep<Unk_140acd6e0>(const Scal
     (void)((expression) || (_wassert(L"outControl", L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\asdisplayobjectcontainer.h", (unsigned)(line)), 0))
 
 // ---- out-of-unit callees (names describe uses) ----
-class Unk_SmNotices { public:                                               // the notify table (TSingleton)
-    void FUN_140da4e40(CStringW, Delegate<void(NotifyObject*)>);
-    void FUN_140da4eb0(CStringW, Delegate<void(NotifyObject*)>);
-};
-Unk_SmNotices* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_SmChat { public: void FUN_141a25770(CStringW strCmd, int n); };   // the chat window: run a command
-Unk_SmChat* FUN_140a3ab70(int nUiType);
-class Unk_SmPlayer { public: int FUN_141654700(); };                        // the job of the player
+class UIMessengerBrowser* FUN_140a3ab70(int);   // C3: was FUN_140a3ab70
+class Unk_SmPlayer : public PC { };                        // the job of the player
 ASMovieClip* FUN_140bcc460(const MS2Ptr<ASMovieClip>& p);                   // folded MS2Ptr<ASMovieClip>::operator-> copy
 class Unk_SmPlayers { public: Unk_SmPlayer* FUN_141bd0cc0(); };
-Unk_SmPlayers* FUN_1403ed2d0();
-class Unk_SmTexts { public: CStringW FUN_140478020(int nTextId); };      // text of a string id
-Unk_SmTexts* FUN_1401c0d90();
-class Unk_SmItemNames { public: CStringW FUN_141811980(int n, int nItemId); };   // the item name text
-Unk_SmItemNames* FUN_1401a9d70();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
+      // text of a string id
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+   // the item name text
 void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strProp, CString strChild, CStringW strText);   // set a child's text
 CStringW FUN_14016a730(const char* psz, int n);                             // narrow -> wide
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
@@ -175,11 +175,15 @@ void FUN_1418fe1c0(const CString& strUrl);                                  // o
 void FUN_141276180(const CString& strEvent, const CString& strArg);         // play a sound event
 void FUN_141415600(const CString& strName);                                 // drop the item shown under a dialog name
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
-unsigned FUN_140869420();                                                   // the server time in seconds
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                      // has the AS object been released
 class Unk_SmEvent { public: };
 Unk_SmEvent* FUN_1408e57f0();
-int FUN_1422b9e00(Unk_SmEvent* p);                                          // the notify type
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSubSceneId();
+};
 
 template <class T> MS2Ptr<T> Unk_SmNode::GetChild(const CString& strName, MS2Ptr<T>& outControl)
 {
@@ -220,13 +224,13 @@ UISystemMailNotifyDialog::UISystemMailNotifyDialog()
     m_178 = 0;
     m_180 = 0;
     m_184 = 1;
-    FUN_140939a10()->FUN_140da4e40(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UISystemMailNotifyDialog::FUN_1412a5e60));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UISystemMailNotifyDialog::FUN_1412a5e60));
 }
 
 // @0x1412a47f0
 UISystemMailNotifyDialog::~UISystemMailNotifyDialog()
 {
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UISystemMailNotifyDialog::FUN_1412a5e60));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UISystemMailNotifyDialog::FUN_1412a5e60));
 }
 
 // @0x1412a49b0
@@ -301,7 +305,7 @@ void UISystemMailNotifyDialog::vfunc_72()
         return;
     if (m_tick.FUN_140268870(500) != 0)
     {
-        unsigned nNow = FUN_140869420();
+        unsigned nNow = GetTickCountMs2();
         if (nNow >= m_nHideAt)
             FUN_1412a62a0();
         else
@@ -351,10 +355,10 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
         return;
     if (m_event == 0)
         return;
-    Unk_SmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_SmPlayer* pPlayer = ((class Unk_SmPlayers*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    m_strUrl = FUN_1401c0d90()->FUN_140478020(rec->m_nUrlTextId);
+    m_strUrl = ((class CGameRule*)FUN_1401c0d90())->FUN_140478020(rec->m_nUrlTextId);
     ATL::CAtlArray<Unk_SmReward> rewards;
     rec->m_body.FUN_1412a7050(pPlayer->FUN_141654700(), rewards);
     if (rewards.GetCount() > 0)
@@ -364,10 +368,10 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
         Unk_SmSlot* pSlotClip = static_cast<Unk_SmNode*>(static_cast<ASDisplayObjectContainer*>(m_event.operator->()))->GetChild<Unk_SmSlot>("m_slot", spSlot).get();
         if (pSlotClip != 0)
             spSlot->FUN_1422e4840(m_strSlot);
-        FUN_140cfefe0(FUN_140bcc460(m_event)->FUN_1422bb890(), "content", "m_title", FUN_1401a9d70()->FUN_141811980(1, rewards[0].m_nItemId));
+        FUN_140cfefe0(FUN_140bcc460(m_event)->FUN_1422bb890(), "content", "m_title", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, rewards[0].m_nItemId));
         CStringW strAttach;
         if (FUN_140184310(rec->m_body.m_strAttach, "attachment"))
-            strAttach = FUN_1401a9d70()->FUN_141811980(1, rewards[0].m_nItemId);
+            strAttach = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, rewards[0].m_nItemId);
         else
             strAttach = (const char*)rec->m_body.m_strAttach;
         CStringW strDesc = FUN_1401e8510(GetStringCommonByKey(FUN_14016a730(rec->m_body.m_strKey, 0)), strAttach);
@@ -386,7 +390,7 @@ void UISystemMailNotifyDialog::SetOnTime(bool bOnTime)
 // @0x1412a5c70
 void UISystemMailNotifyDialog::FUN_1412a5c70(int nMs)
 {
-    m_nHideAt = FUN_140869420() + nMs;
+    m_nHideAt = GetTickCountMs2() + nMs;
 }
 
 // @0x1412a5ca0
@@ -422,7 +426,7 @@ void UISystemMailNotifyDialog::FUN_1412a5db0(const Scaleform::GFx::FunctionHandl
 // @0x1412a5de0
 void UISystemMailNotifyDialog::FUN_1412a5de0(const Scaleform::GFx::FunctionHandler::Params&)
 {
-    Unk_SmChat* pChat = FUN_140a3ab70(0x4e61);
+    Unk_SmChat* pChat = ((class Unk_SmChat*)FUN_140a3ab70(0x4e61));
     if (pChat != 0)
         pChat->FUN_141a25770(L"/AddOntimeEvent", 0);
     vfunc_67();
@@ -431,7 +435,7 @@ void UISystemMailNotifyDialog::FUN_1412a5de0(const Scaleform::GFx::FunctionHandl
 // @0x1412a5e60
 void UISystemMailNotifyDialog::FUN_1412a5e60(NotifyObject*)
 {
-    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
+    if (((class GFxSceneService*)(class Unk_SmEvent*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
         return;
     if (FUN_1412a5ca0() != 0)
         FUN_141924680();
@@ -485,7 +489,7 @@ void UISystemMailNotifyDialog::FUN_1412a62a0()
     m_nHideAt = 0;
     if (m_event.get() != 0)
     {
-        if (static_cast<Unk_SmScript*>(m_30.operator->())->FUN_1422bb330("hitTestEvent").GetBool())
+        if (static_cast<Unk_SmScript*>(m_30.operator->())->Invoke("hitTestEvent").GetBool())
         {
             FUN_1412a5c70(3000);
             return;
@@ -507,7 +511,7 @@ void UISystemMailNotifyDialog::FUN_1412a6390()
 {
     if (m_onTimeEvent.get() != 0)
     {
-        unsigned nRemain = (unsigned)(m_nHideAt - FUN_140869420()) / 1000;
+        unsigned nRemain = (unsigned)(m_nHideAt - GetTickCountMs2()) / 1000;
         CStringW strText = FUN_14062b4f0(L"s_systemmail_notify_remain_text", nRemain);
         FUN_140cfefe0(m_onTimeEvent->FUN_1422bb890(), "content", "m_remainTime", strText);
     }

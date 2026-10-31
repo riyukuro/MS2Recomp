@@ -37,13 +37,20 @@
 #include "hook/ms2hook.h"
 
 class CubeMapInformationService;
-const void* FUN_1413f9850();
+class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
 CubeMapInformationService* FUN_1401cd070(const void*);
-Cube* FUN_1410b8a60(CubeMapInformationService*,Unk_Int3);
+class CubeMapInformationService   // C3: member view for the former free stand-ins
+{
+public:
+    class Cube* FUN_1410b8a60(struct Unk_Int3);
+};
 void* FUN_1403ed280();
 void FUN_1411a7db0(void*);
-WorldService* FUN_1403ed2d0();
-int FUN_1411cd550(Unk_WsB_Vibrator*);
+class CEntityVibrator   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1411cd550();
+};
 Unk_Int3* FUN_1408a85a0(Unk_Int3*,int,int,int);
 
 // The shared WorldService declaration uses this handle spelling. Its per-type
@@ -67,7 +74,7 @@ template<> inline void MS2Ptr<Unk_WsB_Vibrator>::ReleaseImpl(void*) {
     }
 }
 // @0x1410b27c0
-inline CubeMapInformationService* GetCubeMapService() { return FUN_1401cd070(FUN_1413f9850()); }
+inline CubeMapInformationService* GetCubeMapService() { return FUN_1401cd070(((void const*)FUN_1413f9850())); }
 
 // @0x1410b2510
 void Unk_CubeHeightIndex::FUN_1410b2510(int x,int y,int z) {
@@ -89,12 +96,12 @@ void Unk_CubeHeightIndex::FUN_1410b25a0(int x,int y,int z) {
     int height=z;
     while(--height>0) {
         Unk_Int3 position; FUN_1408a85a0(&position,x,y,height);
-        Cube* cube=FUN_1410b8a60(service,position);
+        Cube* cube=((class CubeMapInformationService*)(service))->FUN_1410b8a60(position);
         if(cube!=0) {
             if((egf::Entity*)cube->entity!=0) {
-                MS2Ptr<Unk_WsB_Vibrator> vibrator=FUN_1403ed2d0()->FUN_141bc8f60(cube->entity->GetEntityIDValue());
+                MS2Ptr<Unk_WsB_Vibrator> vibrator=WorldService::GetInstance()->FUN_141bc8f60(cube->entity->GetEntityIDValue());
                 if(vibrator.get()!=0) {
-                    if(FUN_1411cd550(vibrator.operator->())!=0) continue;
+                    if(((class CEntityVibrator*)(class Unk_WsB_Vibrator*)(vibrator.operator->()))->FUN_1411cd550()!=0) continue;
                 }
             }
             break;

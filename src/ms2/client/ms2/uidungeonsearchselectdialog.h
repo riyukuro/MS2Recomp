@@ -16,7 +16,7 @@
 
 class Unk_SdRadio;
 class Unk_SdButton;
-class Unk_SdList;
+class ASScrollingList;
 class Unk_SdRow;
 class Unk_SdCheck;
 
@@ -46,7 +46,7 @@ private:
     MS2Ptr<Unk_SdRadio> m_radio;                                // +0x180 "m_radioRecommend"
     MS2Ptr<ASMovieClip> m_page;                                 // +0x190 "m_customPage"
     MS2Ptr<Unk_SdButton> m_okButton;                            // +0x1a0 "m_okButton"
-    MS2Ptr<Unk_SdList> m_list;                                  // +0x1b0 "m_customList"
+    MS2Ptr<ASScrollingList> m_list;                                  // +0x1b0 "m_customList"
     std::vector<MS2Ptr<Unk_SdRow> > m_rows;                     // +0x1c0 "m_listItem1".."m_listItem11"
     std::vector<MS2Ptr<Unk_SdCheck> > m_checks;                 // +0x1d8 the rows' "m_checkBox"
     std::vector<unsigned> m_roomOfRow;                          // +0x1f0 row -> index into m_rooms

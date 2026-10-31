@@ -50,7 +50,11 @@ class Unk_BossGameContext
 public:
     Unk_BossObject* FUN_141bd1180(int nObjectId);
 };
-Unk_BossGameContext* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // The view of the camera manager (0x143ab3700) that the inline accessors use.
 struct Unk_CameraManagerView
@@ -121,7 +125,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-Unk_ClientConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 unsigned FUN_1409614a0();                                           // property type id of NiPoint3 (0xf000000f)
 
@@ -161,9 +165,9 @@ void CBossTargetCamera::vfunc_6(int n)
     m_setting.m_18 = m_c0.m_rot;
     m_pOwner->FUN_140a38dc0(m_c0.m_pos);
     m_pOwner->FUN_140a38e00(m_c0.m_rot);
-    m_9c = FUN_1401d3200()->m_1a80.FUN_1402bac70();
-    m_a0 = FUN_1401d3200()->m_1ad8.FUN_1402bac70();
-    m_a4 = FUN_1401d3200()->m_1b30.FUN_1402bac70();
+    m_9c = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
+    m_a0 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
+    m_a4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
 }
 MS2_REPLACE_METHOD(0x140a377e0, CBossTargetCamera, vfunc_6, 726, 0xE9751F50);
 
@@ -354,7 +358,7 @@ Vector3 CBossTargetCamera::FUN_140a38570()
         ptOther = ptRet = pTarget->vfunc_18().FUN_14097fd50(Vector3(0.0f, 0.0f, m_data.m_viewOffsetZ));
         m_50 = m_data.m_zoomOut;
     }
-    Unk_BossObject* pObject = FUN_1403ed2d0()->FUN_141bd1180(m_108);
+    Unk_BossObject* pObject = ((class Unk_BossGameContext*)WorldService::GetInstance())->FUN_141bd1180(m_108);
     if (pObject != NULL)
     {
         Unk_CameraTargetEntity* pBoss = FUN_140a38a00(pObject);

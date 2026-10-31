@@ -44,7 +44,7 @@
 extern const NiPixelFormat DAT_1439fb040;                         // RGBA32
 extern NiTexture::FormatPrefs DAT_1439fc800;                // the format preferences of the placeholder image
 int FUN_140659080(Unk_140659080* pStart, int hr);           // report the failed start to the creator of the thread
-unsigned int FUN_140869420();                               // a random seed
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 NiImageConverter* FUN_141851720();                          // the calling thread's NiImageConverter
 CString FUN_14016a5c0(const char* sz, int n);               // the normalized asset path
 CString FUN_1409a2360(const char* sz, int n);               // a copy of the string
@@ -57,7 +57,7 @@ public:
     efd::SmartPointer<NiTexture> FUN_141553eb0(CString strPath, int nFlags);                       // find a loaded texture
     efd::SmartPointer<NiTexture> FUN_1415534d0(CString strPath, NiPointer<NiPixelData> spPixels, int nClass);   // register one from pixels
 };
-Unk_TexCache* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
 void* FUN_1422cf0f0();                                      // the UI renderer context
 void* FUN_14257a340(int n3, int n1, Unk_ImgSize* pSize, int nFormat, void* pHeap, void* pTexMan, void* pSync);   // Image::Create(format, mips, size, use, heap, texman, sync)
@@ -202,7 +202,7 @@ unsigned int CAsyncImageLoader::vfunc_1(void*, Unk_140659080& start)
         return -1;
     }
     start.FUN_1401d42d0();
-    srand(FUN_140869420());
+    srand(GetTickCountMs2());
     while (0 != 1)
     {
         WaitForSingleObject(m_30, INFINITE);
@@ -248,7 +248,7 @@ bool CAsyncImageLoader::FUN_140a59090(ParamPtr spParam)
         return false;
     }
     CString strFile = FUN_14016a5c0(spParam->m_18, 0);
-    efd::SmartPointer<NiTexture> spTexture = FUN_140a0afd0()->FUN_141553eb0(CString(strFile), 0);
+    efd::SmartPointer<NiTexture> spTexture = ((class Unk_TexCache*)FUN_140a0afd0())->FUN_141553eb0(CString(strFile), 0);
     if (spTexture.operator NiTexture*() != 0)
     {
         spParam->m_20 = spTexture;
@@ -267,7 +267,7 @@ bool CAsyncImageLoader::FUN_140a59090(ParamPtr spParam)
         MS2_ASSERT_AT(0xd3, 0);
         return false;
     }
-    efd::SmartPointer<NiTexture> spCreated = FUN_140a0afd0()->FUN_1415534d0(CString(strFile), spPixels, 5);
+    efd::SmartPointer<NiTexture> spCreated = ((class Unk_TexCache*)FUN_140a0afd0())->FUN_1415534d0(CString(strFile), spPixels, 5);
     if (spCreated.operator NiTexture*() == 0)
     {
         MS2_ASSERT_AT(0xda, 0);
@@ -397,7 +397,7 @@ Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
         return pImage;
     do
     {
-        efd::SmartPointer<NiTexture> spTexture = FUN_140a0afd0()->FUN_141553eb0(CString(strFile), 0);
+        efd::SmartPointer<NiTexture> spTexture = ((class Unk_TexCache*)FUN_140a0afd0())->FUN_141553eb0(CString(strFile), 0);
         if (spTexture.operator NiTexture*() == 0)
             break;
         NiTexture::RendererData* pRendererData = spTexture->GetRendererData();

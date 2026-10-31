@@ -4,7 +4,10 @@
 // MS2-RANGE: 0x140bff060-0x140c032b0 .text$mn
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uidailymissiondialog.cpp"    // assumed
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 #include "uidailymissiondialog.h"
 #include "ms2/client/ms2/questmanager_2.h"
 #include "ms2/client/ms2/uiquesteventlistener.h"
@@ -36,29 +39,13 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local views of exe types ----
 
 // The group tab bar of the movie is an ASButtonBar (ctor 0x1422e2cd0, 0x88 bytes; asbuttonbar.h).
 
-// The recommended list of the movie (clear / append). ctor 0x1422e1720.
-class Unk_DmList : public AScript
-{
-public:
-    Unk_DmList(const Scaleform::GFx::Value& v, int nMovieId);
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                                       // clear
-    void FUN_1422dd230(const ASObj& row);                       // append a row
-private:
-    void* m_unrecovered_40[9];
-};
-MS2_CHECK_SIZE(Unk_DmList, 0x88);
+MS2_CHECK_SIZE(ASScrollingList, 0x88);
 
 // The level guide bar of the movie (an ASUIComponent in the exe). ctor 0x1422c7100.
 class Unk_DmGuideBar : public AScript
@@ -102,10 +89,8 @@ class Unk_DmSceneMgr;
 Unk_DmSceneMgr* FUN_1408e57f0();
 int FUN_1422b9e00(Unk_DmSceneMgr* pMgr);                                    // the current scene id
 class Unk_DmUIMgr { public: void FUN_141adc530(int nUiId); };
-Unk_DmUIMgr* FUN_1403ed2b0();
 WorldService* FUN_1403ed2d0();
 bool FUN_140930b40();
-UIStatusEventDispatcher* FUN_140aa6d40();
 NotifySystem* FUN_140939a10();
 PacketHandlerManager* FUN_140bccd50();
 UIQuestEventDispatcher* FUN_140bfc4b0();
@@ -161,7 +146,7 @@ int UIDailyMissionDialog::vfunc_65()
     if (UIDialog::vfunc_65() == 0)
         return 0;
     FUN_140bfc4b0()->FUN_141aa87c0(this);
-    FUN_140aa6d40()->FUN_141b0cd00(this);
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(this);
     m_1b0 = 0;
     return 1;
 }
@@ -170,7 +155,7 @@ int UIDailyMissionDialog::vfunc_65()
 void UIDailyMissionDialog::vfunc_67()
 {
     FUN_140bfc4b0()->FUN_141aa8850(this);
-    FUN_140aa6d40()->FUN_141b0cd90(this);
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(this);
     for (size_t i = 0; i < m_188.GetCount(); i++)
         FUN_141415600(m_188[i]);
     m_188.RemoveAll();
@@ -305,7 +290,7 @@ void UIDailyMissionDialog::FUN_140bffee0(NotifyObject* pNotify)
         return;
     if (m_1a8 != 0)
         return;
-    FUN_1403ed2b0()->FUN_141adc530(0x4f53);
+    reinterpret_cast<Unk_DmUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f53);
     m_1a8 = 1;
 }
 
@@ -361,7 +346,7 @@ void UIDailyMissionDialog::SendQuest(int nQuestId)
 // @0x140c001d0
 void UIDailyMissionDialog::FUN_140c001d0()
 {
-    if (MS2Ptr<Unk_DmList> spList = FUN_140c02900("m_recommendList"))
+    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_recommendList"))
     {
         spList->FUN_1422dd1d0();
         ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
@@ -713,11 +698,11 @@ MS2Ptr<ASButtonBar> UIDailyMissionDialog::FUN_140c02870(const CString& strName)
 }
 
 // @0x140c02900
-MS2Ptr<Unk_DmList> UIDailyMissionDialog::FUN_140c02900(const CString& strName)
+MS2Ptr<ASScrollingList> UIDailyMissionDialog::FUN_140c02900(const CString& strName)
 {
     if (FUN_140ba28d0(&m_30, 0))
-        return MS2Ptr<Unk_DmList>(0);
-    return FUN_1409ee290(&m_30)->FUN_140bc7280<Unk_DmList>(strName);
+        return MS2Ptr<ASScrollingList>(0);
+    return FUN_1409ee290(&m_30)->FUN_140bc7280<ASScrollingList>(strName);
 }
 
 // @0x140c02990

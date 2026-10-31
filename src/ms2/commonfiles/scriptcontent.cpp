@@ -22,7 +22,7 @@ const char* FUN_14086f4b0(Unk_ScriptXmlNode* pNode, const char* pszName);       
 Unk_ScriptXmlNode* FUN_140165cf0(Unk_ScriptXmlNode* pNode, const char* pszName);    // first child
 Unk_ScriptXmlNode* FUN_140168650(Unk_ScriptXmlNode* pNode, const char* pszName);    // next sibling
 CReservedWordTable* FUN_1403b4750();
-int FUN_140768010(unsigned nRange, unsigned nBase);                                 // random in base..base+range-1
+int FUN_140768010(int, int);  // C3: the definition's signature
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
 size_t FUN_140186260(ATL::CAtlArray<int>& arr);                                     // GetCount
 int* FUN_1401844d0(ATL::CAtlArray<int>& arr, size_t i);                             // GetAt

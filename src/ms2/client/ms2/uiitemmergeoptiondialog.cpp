@@ -154,6 +154,10 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/uitalkmanager.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 #include <algorithm>
 #include <vector>
 
@@ -168,24 +172,18 @@ class Unk_MergeDialogAS : public AScript
 public:
     Scaleform::GFx::Value FUN_140fdd6b0(const char* szMethod, __int64 n, bool b);   // Invoke(method, uid, flag)
 };
-class ASDialog : public ASDisplayObject
+class ASDialog : public ASMovieClip
 {
-public:
-    int FUN_1422c2510(double* pX, double* pY);              // the position
-    float FUN_1422c11f0();                                  // the y scale
-    void FUN_1422c0290(float fX, float fY);                 // set the scale
 };
 class Unk_MergeBag : public ASObj { };
 
 // The game feature switches (FUN_14025e7c0): GM keys and the debug flag.
-class Unk_MergeFeature
+class Unk_MergeFeature : public CInputKeyHandler
 {
 public:
     bool FUN_14116dd30(int nKey, int a, int b);
-    bool FUN_14116d840();
-    bool FUN_14116d720();
 };
-Unk_MergeFeature* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The item event listener registry (FUN_140a6a840) and the UI manager (FUN_1403ed2b0).
 class Unk_MergeItemEvents
@@ -194,32 +192,34 @@ public:
     void FUN_1419cae20(UIItemEventListener* pListener);     // register
     void FUN_1419caeb0(UIItemEventListener* pListener);     // unregister
 };
-Unk_MergeItemEvents* FUN_140a6a840();
-class Unk_MergeUIMgr { public: void FUN_141adc190(); };
-Unk_MergeUIMgr* FUN_1403ed2b0();
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+CUIService* FUN_1403ed2b0();
 class Unk_MergeNpcDialog : public UIDialog
 {
 public:
     int FUN_141b1d3d0();                                    // top
     int FUN_141b1d460();                                    // left
 };
-Unk_MergeNpcDialog* FUN_140a7b2b0(int nId);                 // the open dialog of a UI id, or 0
+class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 bool FUN_14028d470(float f, float fEps);                    // nearly zero
 
 // The world (FUN_1403ed2d0) and its local player; the dialog tooltips are built against it.
 class Unk_MergeSelf { public: int FUN_141654700(); };
 class Unk_MergeWorld { public: Unk_MergeSelf* FUN_141bd0cc0(); };
-Unk_MergeWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // The npc talk state (FUN_140967100) and the local player's record (FUN_1401d3200).
-class Unk_MergeNpcTalk { public: int FUN_141b213c0(); int FUN_141b212f0(); };
-Unk_MergeNpcTalk* FUN_140967100();
+UITalkManager* FUN_140967100();
 class Unk_MergeTalkId { public: const int& FUN_1402056b0(); };
 class Unk_MergePlayerCfg { public: char m_pad_00[0x69f8]; Unk_MergeTalkId m_talk; };
-Unk_MergePlayerCfg* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-// The inventory (DAT_143ab2a90) with the variant return type of the tag count.
-extern Unk_Inventory DAT_143ab2a90;
+// The inventory (g_143ab2a90) with the variant return type of the tag count.
+extern Unk_Inventory g_143ab2a90;
 unsigned FUN_140a5f780_1(Unk_Inventory* pInv, int nTag, int nRarity);   // the count of the items with a tag
 extern __int64 DAT_143ab2898;                               // the player's meso
 extern int DAT_143ab2914;                                   // the player's level
@@ -243,7 +243,11 @@ private:
     void* m_pad[6];                                         // CAtlList: 0x30
 };
 class Unk_MergeEquipment { public: void FUN_1411e1ce0(Unk_MergeEquipList& list, int n); };
-Unk_MergeEquipment* FUN_1416561a0(Unk_MergeSelf* pSelf);
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_PCEquipSet* FUN_1416561a0();
+};
 
 // The bag registry of the item slot bags (FUN_14123a080 / FUN_14123a190).
 void FUN_14123a080(const CString& strName, const ATL::CAtlArray<void*>& items);
@@ -258,8 +262,6 @@ CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1409e9890(CStringW strKey, const unsigned& nHave, const int& nNeed);
 CStringW FUN_1409404f0(__int64 nMeso);                      // a meso amount as text
 CStringW FUN_141811980(int nTable, int nId);
-class Unk_MergeStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_MergeStrings* FUN_1401a9d70();
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_1412751b0(const CStringW& text, int n);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
@@ -272,9 +274,9 @@ CString FUN_140719530(__int64 nUid);                        // the uid as narrow
 int _stricmp(const char*, const char*);
 
 // The option text builders and the stat tables (stat id -> name / value text).
-bool FUN_14082f1d0(int nStat);                              // the stat is an integer
+bool IsStatKindOne(int nStat);                              // the stat is an integer
 bool FUN_14081dc50(int nSpecial);                           // the special ability is an integer
-bool FUN_14082f250(int nStat);                              // the stat value is a rate
+bool IsStatKindTwo(int nStat);                              // the stat value is a rate
 bool FUN_14081dcd0(int nSpecial);                           // the special ability value is a rate
 int FUN_14081d9e0(int nSpecial);                            // the special ability is a skill level up tier
 CStringW FUN_14082f000(int nStat);                          // the stat name
@@ -308,7 +310,6 @@ static CItemMergeOptionProxy* FUN_1419d7750(void* pUnused);
 static MS2Ptr<CItemMergeOptionProxy>& FUN_1419d7530(MS2Ptr<CItemMergeOptionProxy>& sp, const MS2SvrNewTag& tag);
 void* FUN_1405c5c30(Unk_MergeSpecialMap* pMap, const int& key, unsigned& nHash, unsigned& nBin, void*& pPrev);
 void* FUN_1405c5d20(Unk_MergeNormalMap* pMap, const int& key, unsigned& nHash, unsigned& nBin, void*& pPrev);
-bool FUN_1409c1720(const Scaleform::GFx::Value& value);           // the value as a bool
 void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);   // *pOut = v
 
 // @0x1419d2890
@@ -422,12 +423,12 @@ void UIItemMergeOptionDialog::vfunc_4(void* pSlot, int n)
 void UIItemMergeOptionDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140a6a840()->FUN_1419cae20(this);
+    ((class Unk_MergeItemEvents*)FUN_140a6a840())->FUN_1419cae20(this);
     SetPhase(0);
     ResetMergeItems();
     ShowMergePrice(MS2Ptr<CItem>(0));
     if (m_30.get() != 0)
-        static_cast<ASObj*>(m_30.operator->())->FUN_1407cbbe0("m_useDebug", FUN_14025e7c0()->FUN_14116d720());
+        static_cast<ASObj*>(m_30.operator->())->FUN_1407cbbe0("m_useDebug", ((class Unk_MergeFeature*)FUN_14025e7c0())->IsDebugMode());
     FUN_1403ed2b0()->FUN_141adc190();
     RequestInfo();
 }
@@ -442,7 +443,7 @@ void UIItemMergeOptionDialog::vfunc_67()
     m_nMaterialUid = 0;
     m_bSpecial = false;
     SetPhase(0);
-    FUN_140a6a840()->FUN_1419caeb0(this);
+    ((class Unk_MergeItemEvents*)FUN_140a6a840())->FUN_1419caeb0(this);
 }
 
 // @0x1419ce8f0
@@ -450,7 +451,7 @@ int UIItemMergeOptionDialog::vfunc_13()
 {
     if (m_30 == 0)
         return 0;
-    if (FUN_14025e7c0()->FUN_14116dd30(0x493e2, 0, 0) || FUN_14025e7c0()->FUN_14116d840())
+    if (((class Unk_MergeFeature*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0) || ((class Unk_MergeFeature*)FUN_14025e7c0())->FUN_14116d840())
     {
         if (GetPhase() == 4 || GetPhase() == 5)
             return 1;
@@ -475,7 +476,7 @@ void UIItemMergeOptionDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CSt
     else if (_stricmp("getTooltipByGUID", strMethod) == 0)
     {
         unsigned __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
-        ASTooltip tooltip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x20, 2);
+        ASTooltip tooltip(((class Unk_MergeWorld*)WorldService::GetInstance())->FUN_141bd0cc0(), 0x20, 2);
         if (tooltip.FUN_1409e0d40(FindMergeItem(nUid).get()))
             FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
     }
@@ -483,7 +484,7 @@ void UIItemMergeOptionDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CSt
     {
         int nId = pArgs->FUN_1422b8b10();
         int nRank = pArgs->FUN_1422b8b10();
-        ASTooltip tooltip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x20, 2);
+        ASTooltip tooltip(((class Unk_MergeWorld*)WorldService::GetInstance())->FUN_141bd0cc0(), 0x20, 2);
         if (tooltip.FUN_1409e1770(nId, nRank))
             FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
     }
@@ -494,7 +495,7 @@ void UIItemMergeOptionDialog::vfunc_43()
 {
     if (ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30))
     {
-        if (Unk_MergeNpcDialog* pNpc = FUN_140a7b2b0(0x4e40))
+        if (Unk_MergeNpcDialog* pNpc = ((class Unk_MergeNpcDialog*)FUN_140a7b2b0(0x4e40)))
         {
             int nY = pNpc->FUN_141b1d3d0() + 12;
             int nX = pNpc->FUN_141b1d460() - 80;
@@ -617,18 +618,18 @@ void UIItemMergeOptionDialog::ResetMergeItems()
 {
     ATL::CAtlArray<void*> guids;
     ATL::CAtlArray<MS2Ptr<CItem> > items;
-    DAT_143ab2a90.FUN_140a60880(0, items);
+    g_143ab2a90.FUN_140a60880(0, items);
     for (size_t i = 0; i < items.GetCount(); ++i)
     {
         MS2Ptr<CItem> spItem(items[i]);
         if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->fusion.fusionable != 0)
             guids.Add(reinterpret_cast<void*>(spItem->FUN_140526a50()));
     }
-    Unk_MergeSelf* pSelf = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MergeSelf* pSelf = ((class Unk_MergeWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pSelf != 0)
     {
         Unk_MergeEquipList equipment(10);
-        FUN_1416561a0(pSelf)->FUN_1411e1ce0(equipment, 0);
+        ((class Unk_MergeEquipment*)((class PC*)(class Unk_MergeSelf*)(pSelf))->FUN_1416561a0())->FUN_1411e1ce0(equipment, 0);
         for (POSITION pos = equipment.FUN_140885670(); pos != 0; equipment.FUN_140885680(pos))
         {
             MS2Ptr<Unk_MergeEquipItem> spEquip(equipment.FUN_140885600(pos));
@@ -654,14 +655,13 @@ void UIItemMergeOptionDialog::ResetMergeItems()
     }
 }
 
-CItem* FUN_14052cd70(MS2Ptr<CItem>* pItem);                 // 0x14052cd70 the item of a handle
 
 // @0x1419cfa10
 void UIItemMergeOptionDialog::RefreshSelectedIngredient()
 {
-    MS2Ptr<CItem> spMaterial = DAT_143ab2a90.FUN_140a5d680(m_nMaterialUid);
+    MS2Ptr<CItem> spMaterial = g_143ab2a90.FUN_140a5d680(m_nMaterialUid);
     MS2Ptr<CItem> spItem = FindMergeItem(m_nItemUid);
-    if ((FUN_14052cd70(&spMaterial) ? true : false) && (FUN_14052cd70(&spItem) ? true : false))
+    if ((((MS2Ptr<CItem>*)(void*)(&spMaterial))->get() ? true : false) && (((MS2Ptr<CItem>*)(void*)(&spItem))->get() ? true : false))
     {
         MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(((CItem*)spItem)->FUN_140527840()));
         if (!spData)
@@ -691,9 +691,9 @@ void UIItemMergeOptionDialog::ApplyMergeItem(MS2Ptr<CItem> spItem)
             continue;
         unsigned nHave = 0;
         if (ref->m_b != 0)
-            nHave = FUN_140a5f780_1(&DAT_143ab2a90, ref->m_b, 0);
+            nHave = FUN_140a5f780_1(&g_143ab2a90, ref->m_b, 0);
         else
-            nHave = DAT_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
+            nHave = g_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
         CStringW strKey(L"s_item_merge_option_material_count_enable");
         if (nHave < (unsigned)ref->m_c)
         {
@@ -739,7 +739,7 @@ void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
             {
                 CItemMergeOptionVariation* pRange = reinterpret_cast<CItemMergeOptionVariation*>(reinterpret_cast<char*>(pNode) + 8);
                 CStringW strText;
-                if (FUN_14082f1d0(nNormal))
+                if (IsStatKindOne(nNormal))
                 {
                     CStringW strMin = FUN_1409e0900(pRange->FUN_1405beac0());
                     CStringW strMax = FUN_1409e0900(pRange->FUN_1405beae0());
@@ -890,7 +890,7 @@ void UIItemMergeOptionDialog::FUN_1419d1490(int nNormal, int nSpecial, int nValu
     CStringW strNew(L"");
     if (nNormal != -1)
     {
-        if (FUN_14082f250(nNormal))
+        if (IsStatKindTwo(nNormal))
             strNew = FUN_1409e0bf0(nNormal, nValue);
         else
             strNew = FUN_1409e0970(nNormal, nValue);
@@ -1053,7 +1053,7 @@ void UIItemMergeOptionDialog::RequestResultTalk()
         int nTalkId = FUN_140967100()->FUN_141b212f0();
         packet.WriteUInt8(6);
         packet.WriteInt32(nTalkId);
-        packet.WriteInt32(FUN_1401d3200()->m_talk.FUN_1402056b0());
+        packet.WriteInt32(((class Unk_MergePlayerCfg*)FUN_1401d3200())->m_talk.FUN_1402056b0());
         packet.WriteInt16(0xca);
         packet.WriteInt16((short)m_nTalkId);
     }
@@ -1070,7 +1070,7 @@ void UIItemMergeOptionDialog::RequestResultTalk()
 int UIItemMergeOptionDialog::CheckMerge()
 {
     MS2Ptr<CItem> spItem = FindMergeItem(m_nItemUid);
-    MS2Ptr<CItem> spMaterial = DAT_143ab2a90.FUN_140a5d680(m_nMaterialUid);
+    MS2Ptr<CItem> spMaterial = g_143ab2a90.FUN_140a5d680(m_nMaterialUid);
     if (!spItem)
         return 3;
     if (!spMaterial)
@@ -1082,12 +1082,12 @@ int UIItemMergeOptionDialog::CheckMerge()
         Unk_IngRef ref = m_spProxy->m_ingredients.FUN_14026bdc0(i);
         if (ref->m_b != 0)
         {
-            if ((int)FUN_140a5f780_1(&DAT_143ab2a90, ref->m_b, 0) < ref->m_c)
+            if ((int)FUN_140a5f780_1(&g_143ab2a90, ref->m_b, 0) < ref->m_c)
                 return 1;
         }
         else
         {
-            if (DAT_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0) < ref->m_c)
+            if (g_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0) < ref->m_c)
                 return 1;
         }
     }
@@ -1098,7 +1098,7 @@ int UIItemMergeOptionDialog::CheckMerge()
 int UIItemMergeOptionDialog::FUN_1419d27e0(ItemInfoSlot& slot)
 {
     if (m_30.get() != 0)
-        return FUN_1409c1720(m_30->FUN_1422baa20("m_merging")) ? 0 : 1;
+        return ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(m_30->FUN_1422baa20("m_merging")))->GetBool() ? 0 : 1;
     return 0;
 }
 
@@ -1145,7 +1145,7 @@ CStringW UIItemMergeOptionDialog::GetCurrentOption(MS2Ptr<CItem> spItem)
 // @0x1419d2ca0
 void UIItemMergeOptionDialog::ShowMissingItem(int nItemId)
 {
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nItemId);
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
     CStringW strText = FUN_1405c2690(CStringW(L"s_item_merge_option_error_prev_option_item_not_exist"), strName);
     FUN_140d73aa0(CStringW(strText), 0, 0, CStringW(L""));
     FUN_1412751b0(strText, 0x14);
@@ -1157,7 +1157,7 @@ static int FUN_1419d2df0(MS2Ptr<CItem> spItem)
 {
     if (!spItem)
         return 0;
-    return DAT_143ab2a90.FUN_140a5d680(spItem->FUN_140526a50()).get() != 0;
+    return g_143ab2a90.FUN_140a5d680(spItem->FUN_140526a50()).get() != 0;
 }
 
 // The sort rank: equipped items (bit 4), merged items (bit 3), then the item rank.

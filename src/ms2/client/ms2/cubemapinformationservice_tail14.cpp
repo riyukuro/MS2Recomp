@@ -835,7 +835,6 @@ extern void* DAT_143b023e0;
 int FUN_1409f2d80(void* pCount);
 void FUN_1409f2d50(void* pCount);
 void FUN_1409f2d60(void* pCount);
-void* FUN_1409f31d0(void* pDesc, unsigned nId, void* pThis);
 void FUN_1409f2e10(void* pInfo, const char* pszName, unsigned nId, void* pCtx, void* pDesc);
 void FUN_1409f30f0(void* pInfo, void* pCtx);
 void FUN_1408a9090(void* p);
@@ -1031,7 +1030,7 @@ u64 Unk_CMISGlue::Zero1(void*) { return 0; }
 #define CMIS_TYPECAST(va, desc) \
     bool FUN_##va(void* pThis, unsigned nId, void** ppOut) \
     { \
-        *ppOut = FUN_1409f31d0(&desc, nId, pThis); \
+        *ppOut = ((efd::ClassInfo*)(void*)(&desc))->TypeCast(nId, (void const*)(pThis)); \
         if (*ppOut != 0) \
             return true; \
         return false; \
@@ -1082,7 +1081,6 @@ void* FUN_14112e1b0()
 // @0x14112df30 MessageWrapper<EntityChangeMessage, 8253>::FactoryMsg
 template efd::IMessagePtr efd::MessageWrapper<egf::EntityChangeMessage, 8253>::FactoryMsg();
 
-u64 FUN_140affe60(const void* pCategory);
 // efd::Category::ToString (symbols.tsv 0x14112f780): the formatted string is a named local, so the /Od build copies it into
 // the return slot and marks it constructed before destroying the local.
 struct Unk_T14Category
@@ -1092,7 +1090,7 @@ struct Unk_T14Category
 // @0x14112f780 formats a message category for the delivery log
 efd::utf8string Unk_T14Category::FUN_14112f780() const
 {
-    efd::utf8string s(efd::Formatted, "Category(0x%016llX)", FUN_140affe60(this));
+    efd::utf8string s(efd::Formatted, "Category(0x%016llX)", ((efd::UniversalID*)(void const*)(this))->GetValue());
     return s;
 }
 

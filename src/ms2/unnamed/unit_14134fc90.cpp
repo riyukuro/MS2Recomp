@@ -19,6 +19,9 @@
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/placeholder/fittingdollpc.h"
 
+// return types of the getters this unit calls
+class Unk_SoundSink;
+
 // ---- unit-local views of exe types ----
 
 // The ASGameEntity of the movie (the exe's dynamic_cast target; slot 2 positions it).
@@ -63,7 +66,7 @@ class Unk_DemolishTable
 public:
     CStringW FUN_14142d760(int nId, int n);
 };
-Unk_DemolishTable* FUN_1409331f0();
+Unk_SoundSink* FUN_1409331f0();
 
 CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);   // formatted system text
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
@@ -242,7 +245,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
         MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_textKey");
         if (spText.get() != 0)
         {
-            CStringW strText = FUN_1409331f0()->FUN_14142d760(0x493ed, 0);
+            CStringW strText = reinterpret_cast<Unk_DemolishTable*>(FUN_1409331f0())->FUN_14142d760(0x493ed, 0);
             spText->FUN_1422c4f00(strText);
         }
     }

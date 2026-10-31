@@ -21,6 +21,11 @@
 #include "ms2/client/ms2/ms2inputservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/fishingmanager.h"
+#include "ms2/commonfiles/fishsimultedata.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -44,7 +49,6 @@ bool FUN_140a467d0(const MS2Ptr<AScript>*);                     // has the AS ob
 class Unk_StringTable { public: CStringW FUN_14142d760(int nId, int n); };
 Unk_StringTable* FUN_1409331f0();
 struct Unk_GpSettings;
-Unk_GpSettings* FUN_1409a8b10();
 Unk_GpState* FUN_140a58500(Unk_GpSettings* p);
 class CFeatureManager { public: bool FUN_14036d570(int n); };
 CFeatureManager* FUN_140166410();
@@ -71,8 +75,6 @@ public:
 };
 void FUN_141276180(const CString&, const CString&);
 MS2InputService* FUN_140a58540();
-Unk_SoundMgr* FUN_1403ed280();
-Unk_SoundOwner* FUN_1403ed2d0();
 Unk_SoundMgr* FUN_141bd0cc0(Unk_SoundOwner*);
 int FUN_14123c580(Unk_SoundMgr*);
 
@@ -96,9 +98,7 @@ public:
     Unk_FishRankTable* FUN_1403b3c80();                             // 0x1403b3c80 its rank table
 };
 class Unk_FishTable { public: Unk_FishRef FUN_1403b2d30(int nId); };
-Unk_FishTable* FUN_1403b4740();
-class Unk_Misc { public: void FUN_140cdaaa0(); };
-Unk_Misc* FUN_140953f20();
+CFishingManager* FUN_140953f20();
 
 // @0x1400df560, @0x1400df590 (the two static CStrings above)
 
@@ -136,7 +136,7 @@ void UIFishingFloatDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (m_30.get())
     {
-        int nKeyType = FUN_140a58500(FUN_1409a8b10())->m_bUse ? 2 : 0;
+        int nKeyType = FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))->m_bUse ? 2 : 0;
         m_30.operator->()->Invoke("setKeyText", FUN_1409331f0()->FUN_14142d760(0x493e2, nKeyType));
         reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_140f446c0("setFishSize", m_178);
         reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_140caf230("setFishRank", m_17c);
@@ -145,7 +145,7 @@ void UIFishingFloatDialog::OnLoadComplete()
     FUN_141276180(s_143aca6e8, "");
     if (FUN_140166410()->FUN_14036d570(0xc3))
     {
-        if (FUN_140a58500(FUN_1409a8b10())->m_bVibration)
+        if (FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))->m_bVibration)
             FUN_140a58540()->FUN_140d8b3e0(1.7976931348623157e+308);
     }
 }
@@ -187,7 +187,7 @@ int UIFishingFloatDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     if (_stricmp(szMethod, "onFloatTouchDown") == 0)
     {
-        FUN_140953f20()->FUN_140cdaaa0();
+        FUN_140953f20()->SendFishingMode10();
         vfunc_67();
         FUN_141276180(s_143aca738, "");
         return 1;
@@ -215,7 +215,7 @@ int UIFishingFloatDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 void UIFishingFloatDialog::FUN_140f443d0(MS2Ptr<Unk_FishPacket> spInfo)
 {
     Unk_FishPacket* pInfo = spInfo.operator->();
-    Unk_FishRef ref = FUN_1403b4740()->FUN_1403b2d30(pInfo->m_1c);
+    Unk_FishRef ref = reinterpret_cast<Unk_FishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b2d30(pInfo->m_1c);
     if (ref.FUN_140cdf9b0())
     {
         m_17c = spInfo.operator->()->m_28;
@@ -237,7 +237,7 @@ void UIFishingFloatDialog::FUN_140f44520(int nSound)
 {
     if (m_180[nSound])
         FUN_140f44650(nSound);
-    Unk_SoundMgr* pOwner = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_SoundMgr* pOwner = FUN_141bd0cc0(reinterpret_cast<Unk_SoundOwner*>(WorldService::GetInstance()));
     if (pOwner == 0)
         return;
     Unk_SoundParam param;
@@ -249,7 +249,7 @@ void UIFishingFloatDialog::FUN_140f44520(int nSound)
         param.m_name = "ETC/Fishing/Sound_Fish_Action_Blue.xml";
     param.m_08 = 1;
     param.FUN_140a53190(FUN_14123c580(pOwner));
-    m_180[nSound] = FUN_1403ed280()->FUN_1411a49c0(param);
+    m_180[nSound] = reinterpret_cast<Unk_SoundMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(param);
 }
 
 // @0x140f44650
@@ -257,7 +257,7 @@ void UIFishingFloatDialog::FUN_140f44650(int nSound)
 {
     if (m_180[nSound])
     {
-        FUN_1403ed280()->FUN_1411a6060(m_180[nSound]);
+        reinterpret_cast<Unk_SoundMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_180[nSound]);
         m_180[nSound] = 0;
     }
 }

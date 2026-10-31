@@ -40,7 +40,10 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\tabcontentspetinfo.cpp"    // assumed
 
 #define MS2_PTR_MOVE_CONVERT
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 #include <afxdialogex.h>
 #include "tabcontentspetinfo.h"
 #include "uimessageboxdata.h"
@@ -80,6 +83,10 @@ static CString s_itemPetRank("itemPetRank");
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/exptable.h"
+#include "ms2/client/ms2/mypc.h"
+#include "ms2/placeholder/cpetmanager.h"
+#include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 static CString s_cap("Cap");
 
 // MS2Ptr<ASUIComponent>: the exe shares every member of it (see tabcontentspetevolution.cpp).
@@ -121,27 +128,13 @@ private:
 };
 MS2_CHECK_SIZE(Unk_PetItemBag, 0x88);
 
-// A scrolling list of the section clip (rows are AS objects).
-class Unk_StatList : public ASMovieClip
-{
-public:
-#define SL_V(n) virtual void vfunc_##n();
-    SL_V(16) SL_V(17) SL_V(18) SL_V(19) SL_V(20) SL_V(21) SL_V(22) SL_V(23)
-#undef SL_V
-    virtual void vfunc_24(bool bShow);                                  // 24 (+0xc0) refresh
-    void FUN_1422dd1d0();                                               // clear the rows
-    void FUN_1422dd230(ASObj& row);                                     // add a row
-private:
-    unsigned char m_pad_80[8];
-};
-
 // A component of the page with the helpers of this unit and the exe.
 class Unk_PiComp : public ASUIComponent
 {
 public:
     void FUN_1422bb7e0(ASObj& obj);                                     // set the data
     void FUN_1407cba60(const char* szName, CString str);                // set a string member
-    MS2Ptr<Unk_StatList> FUN_140bc7280(const CString& strName);         // child list by name
+    MS2Ptr<ASScrollingList> FUN_140bc7280(const CString& strName);         // child list by name
     Scaleform::GFx::Value FUN_140caf230(const char* szMethod, int a1);  // Invoke(int) (a copy outside the unit)
     Scaleform::GFx::Value FUN_140cbe3a0(const char* szMethod, const wchar_t* a1);   // Invoke(wchar_t*), the unit's COMDAT
 };
@@ -187,12 +180,9 @@ public:
 MS2_CHECK_OFFSET(Unk_PiSkillRec, m_strIcon, 0xc0);
 class Unk_PiSkillTable { public: MS2Ptr<Unk_PiSkillRec> FUN_140aafef0(unsigned nSkillId, unsigned short nLevel); };
 
-// The local player: FUN_14152b800 requests the pet inventory, FUN_14152b2d0 summons the pet of an item.
-class Unk_PetPlayer
+// The local player: SendRequestPet requests the pet inventory, FUN_14152b2d0 summons the pet of an item.
+class Unk_PetPlayer : public MyPC
 {
-public:
-    void FUN_14152b800(__int64 nItemUid);
-    void FUN_14152b2d0(__int64 nItemUid);
 };
 class Unk_PetPlayerMgr { public: Unk_PetPlayer* FUN_141bd0cc0(); };
 
@@ -237,8 +227,7 @@ unsigned* FUN_1401d7c10(Unk_PetUIntSlot* pSlot);
 int* FUN_1402056b0(Unk_PetIntSlot* pSlot);
 
 // The exp table: points an (pet class, rank, item class) needs for the next level.
-class Unk_PetTable { public: __int64 FUN_140353930(unsigned short nPetClass, int nRank, unsigned short nItemClass); };
-Unk_PetTable* FUN_1404a1bb0();
+CExpTable* FUN_1404a1bb0();
 
 // The pet inventory dialog's selection: the other pet's record and the bag counters.
 struct Unk_PiPetData
@@ -249,7 +238,7 @@ struct Unk_PiPetData
     unsigned int m_nState;                                              // +0x34 0 = the pet is out
 };
 MS2_CHECK_OFFSET(Unk_PiPetData, m_nState, 0x34);
-class Unk_PiBag { public: __int64 FUN_140c874f0(); int FUN_140c875e0(); };
+class Unk_PiBag : public CPetInventory { public: __int64 FUN_140c874f0();};
 class Unk_PetSelected
 {
 public:
@@ -577,7 +566,7 @@ void PetInfoBasic::vfunc_3()
         if (nPetClass < *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
         {
             __int64 nExp = pet->FUN_140528b90();
-            __int64 nMax = FUN_1404a1bb0()->FUN_140353930(nPetClass, nRank, pet->FUN_1405282d0());
+            __int64 nMax = FUN_1404a1bb0()->GetPetExp(nPetClass, nRank, pet->FUN_1405282d0());
             if (row->m_nFlag == 1)
             {
                 CStringW strExp;
@@ -912,7 +901,7 @@ void PetInfoSkill::vfunc_3()
     if (skill == 0)
         return;
     skill->vfunc_3(FUN_140cbd9d0(m_nPet));
-    if (MS2Ptr<Unk_StatList> list = PI(skill)->FUN_140bc7280("m_scrollingList"))
+    if (MS2Ptr<ASScrollingList> list = PI(skill)->FUN_140bc7280("m_scrollingList"))
     {
         list->FUN_1422dd1d0();
         FUN_140cbb060(list);
@@ -953,7 +942,7 @@ int PetInfoSkill::vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArg
 MS2_REPLACE_METHOD(0x140cbafe0, PetInfoSkill, vfunc_6, 107, 0x987A440E);
 
 // @0x140cbb060
-void PetInfoSkill::FUN_140cbb060(MS2Ptr<Unk_StatList> list)
+void PetInfoSkill::FUN_140cbb060(MS2Ptr<ASScrollingList> list)
 {
     MS2Ptr<Unk_PetRow> row = FUN_140cbda70(m_nPet);
     if (row == 0)
@@ -1234,7 +1223,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_13()
     MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
     if (pet == 0)
         return 0;
-    pPlayer->FUN_14152b800(pet->FUN_140526a50());
+    pPlayer->SendRequestPet(pet->FUN_140526a50());
     return 1;
 }
 
@@ -1249,7 +1238,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_14()
     MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
     if (pet == 0)
         return 0;
-    pPlayer->FUN_14152b800(pet->FUN_140526a50());
+    pPlayer->SendRequestPet(pet->FUN_140526a50());
     return 1;
 }
 

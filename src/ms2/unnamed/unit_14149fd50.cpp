@@ -10,8 +10,170 @@
 #include <efd/MemObject.h>
 #include <efd/RefCount.h>
 #include "ms2/ms2layout.h"
+#include "ms2/commonfiles/os.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+
+// return types of the getters the shutdown thunks call
+class AnimationCallbackManager;
+class ApplyEffect;
+class CAdBannerManagerCli;
+class CAdventureLevelTable;
+class CAsyncImageLoader;
+class CAutoFindTaxiStation;
+class CBankTable;
+class CBattleRecordManager;
+class CBigDataLogSystem;
+class CBlackMarketMan;
+class CBlackMarketTable;
+class CBuddyManager;
+class CCashCallManager;
+class CCashMarketMan;
+class CChapterBookTable;
+class CCharacterAbilityManager;
+class CCharacterAbilityTable;
+class CChatEmoticonTable;
+class CContinentRegionTable;
+class CCoupleEmotionTable;
+class CDPSMeterSystem;
+class CDirWatcher;
+class CDynamicBanWordManager;
+class CEnchantScrollTable;
+class CFieldMaidManager;
+class CFieldMetaTable;
+class CFilePreload;
+class CFileSystem;
+class CFishingManager;
+class CFishingTable;
+class CGameEventValueManager;
+class CGameOption;
+class CGameRankingCli;
+class CGloabalFactor;
+class CGraphicOptionTable;
+class CGroupChatManager;
+class CGuildManager;
+class CGuildXmlData;
+class CIgnoreFile;
+class CIndividualArenaDataTable;
+class CItemDataTable;
+class CItemEnchantLimitTable;
+class CItemEnchantTransformTable;
+class CItemExchangeScrollTable;
+class CItemGemPropertyTable;
+class CItemGemStoneUpgradeTable;
+class CItemLoader;
+class CItemMergeOptionTable;
+class CItemRemakeScrollTable;
+class CItemSocketScrollTable;
+class Unk_140166410;
+class Unk_140166430;
+class Unk_ALCurrent;
+class Unk_AttendGiftDataGroup;
+class Unk_BreakRecipes;
+class Unk_BreakRules;
+class Unk_ClubBuffTable;
+class Unk_ClubManager;
+class Unk_EmoNpcTable;
+class Unk_EnchantRates;
+class Unk_InventoryStateManager;
+class Unk_MeratBlindManager;
+class Unk_MusicBookTable;
+class Unk_NametagTrophy;
+class Unk_QmGroupTable;
+class Unk_RankArcadeTable;
+class Unk_Restrictions;
+class Unk_RpTable;
+class Unk_SlotBreakManager;
+class Unk_SlotLapenTable;
+struct Unk_BanConfig;
+struct Unk_PmFixedItem;
+
+// the singleton classes the shutdown thunks clear (TSingleton<T>::s_instance; only the pointer is used)
+class AnimationCallbackManager;
+class ApplyEffect;
+class AttendGiftDataTable;
+class BGTransparencyMgr;
+class BlindManager;
+class CAchieveManager;
+class CAdBannerManagerCli;
+class CAdventureLevelTable;
+class CAdventureLevelTableHelper;
+class CArcadeDataTable;
+class CAsyncImageLoader;
+class CAutoFindTaxiStation;
+class CBankTable;
+class CBattleRecordManager;
+class CBigDataLogSystem;
+class CBlackMarketMan;
+class CBlackMarketTable;
+class CBlockManager;
+class CBuddyManager;
+class CCashCallManager;
+class CCashMarketMan;
+class CChapterBookTable;
+class CCharacterAbilityManager;
+class CCharacterAbilityTable;
+class CChatEmoticonTable;
+class CClubClientManager;
+class CClubDataTable;
+class CContentShutdownManager;
+class CContinentRegionTable;
+class CCoupleEmotionTable;
+class CDPSMeterSystem;
+class CDirWatcher;
+class CDynamicBanWordManager;
+class CEnchantScrollTable;
+class CExpTable;
+class CFameTable;
+class CFeatureManager;
+class CFieldMaidManager;
+class CFieldMetaTable;
+class CFieldMissionTable;
+class CFilePreload;
+class CFileSystem;
+class CFishingManager;
+class CFishingTable;
+class CGFxLanguage;
+class CGameEventValueManager;
+class CGameOption;
+class CGameRankingCli;
+class CGameRule;
+class CGloabalFactor;
+class CGraphicOptionTable;
+class CGroupChatManager;
+class CGuideManager;
+class CGuildManager;
+class CGuildXmlData;
+class CIgnoreFile;
+class CIndividualArenaDataTable;
+class CInstrumentDataTable;
+class CInstrumentManager;
+class CItemBreakIngredientTable;
+class CItemBreakManager;
+class CItemDataTable;
+class CItemEnchantLimitTable;
+class CItemEnchantTransformTable;
+class CItemEnchantUtil;
+class CItemExchangeScrollTable;
+class CItemExtractionTable;
+class CItemGemPropertyTable;
+class CItemGemStoneUpgradeTable;
+class CItemLapenshardTable;
+class CItemLoader;
+class CItemLockManager;
+class CItemMergeOptionTable;
+class CItemOptionTable;
+class CItemRePackingScrollTable;
+class CItemRemakeScrollTable;
+class CItemSocketScrollTable;
+class CItemSocketTable;
+// the class's own unit defines s_instance / GetInstance out of line (explicit specializations): only declared here, so
+// this obj does not instantiate a second copy (LNK2005 in the full-exe link)
+template<> class TSingleton<AnimationCallbackManager> { public: static AnimationCallbackManager* s_instance; static AnimationCallbackManager* GetInstance(); };
+template<> class TSingleton<BGTransparencyMgr> { public: static BGTransparencyMgr* s_instance; static BGTransparencyMgr* GetInstance(); };
+template<> class TSingleton<CChatEmoticonTable> { public: static CChatEmoticonTable* s_instance; static CChatEmoticonTable* GetInstance(); };
+template<> class TSingleton<CDirWatcher> { public: static CDirWatcher* s_instance; static CDirWatcher* GetInstance(); };
+template<> class TSingleton<CFilePreload> { public: static CFilePreload* s_instance; static CFilePreload* GetInstance(); };
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 // Release target of the scene graph cache smart pointer (ecr::SceneGraphCache::SceneGraphCacheData in the exe: the reference
@@ -63,162 +225,43 @@ struct Unk_MagicTable
 extern Unk_MagicTable DAT_143adca50;
 
 // Singleton instance pointers and instance getters (exe data/functions; bound through progress/symbols).
-extern void* DAT_143aab388;
-extern void* DAT_143aab398;
-extern void* DAT_143aab4f8;
-extern void* DAT_143aac278;
-extern void* DAT_143aac280;
-extern void* DAT_143aac2a8;
-extern void* DAT_143aac2b0;
-extern void* DAT_143aac3c8;
-extern void* DAT_143aac4d0;
-extern void* DAT_143aac5b8;
-extern void* DAT_143aac640;
-extern void* DAT_143aac648;
-extern void* DAT_143aac658;
-extern void* DAT_143aac6f8;
-extern void* DAT_143aacd08;
-extern void* DAT_143aacd90;
-extern void* DAT_143aad148;
-extern void* DAT_143aad158;
-extern void* DAT_143aad180;
-extern void* DAT_143aad188;
-extern void* DAT_143aad288;
-extern void* DAT_143aad290;
-extern void* DAT_143aaeb00;
-extern void* DAT_143aaeb10;
-extern void* DAT_143aaec48;
-extern void* DAT_143aaecb0;
-extern void* DAT_143aaece0;
-extern void* DAT_143aaee00;
-extern void* DAT_143aaef58;
-extern void* DAT_143aaf098;
-extern void* DAT_143aaf1a8;
-extern void* DAT_143aaf1b0;
-extern void* DAT_143aaf1b8;
-extern void* DAT_143aaf1c0;
-extern void* DAT_143aaf1e0;
-extern void* DAT_143aaf300;
-extern void* DAT_143aaf308;
-extern void* DAT_143aafb40;
-extern void* DAT_143aafb50;
-extern void* DAT_143aafb98;
-extern void* DAT_143aafd08;
-extern void* DAT_143aafd18;
-extern void* DAT_143aafd98;
-extern void* DAT_143aafde0;
-extern void* DAT_143aaff10;
-extern void* DAT_143aaff58;
-extern void* DAT_143aaffd8;
-extern void* DAT_143ab0668;
-extern void* DAT_143ab0a08;
-extern void* DAT_143ab3330;
-extern void* DAT_143ab3848;
-extern void* DAT_143ab3920;
-extern void* DAT_143ab3aa0;
-extern void* DAT_143ab3be0;
-extern void* DAT_143ab3d88;
-extern void* DAT_143ab3da8;
-extern void* DAT_143ab4148;
-extern void* DAT_143ab4798;
-extern void* DAT_143ab5b98;
-extern void* DAT_143ab5c68;
-extern void* DAT_143ab5c70;
-extern void* DAT_143ab5cb8;
-extern void* DAT_143ab5cc8;
-extern void* DAT_143ab7808;
-extern void* DAT_143ab8f50;
-extern void* DAT_143ab9658;
-extern void* DAT_143ab9d18;
-extern void* DAT_143aba268;
-extern void* DAT_143abad48;
-extern void* DAT_143abafd8;
-extern void* DAT_143abf720;
-extern void* DAT_143ac1b80;
-extern void* DAT_143ac5c38;
-extern void* DAT_143aca188;
-extern void* DAT_143ace478;
-extern void* DAT_143ace480;
-extern void* DAT_143ad8960;
-extern void* DAT_143ad8ba8;
-void* FUN_140166410();
-void* FUN_140166420();
-void* FUN_140166430();
-void* FUN_1401958a0();
-void* FUN_1401b59c0();
-void* FUN_1401c0d80();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+CFileSystem* GetFileSystem();
+class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
+class CBlackMarketTable* FUN_1401c0d80();   // C3: was FUN_1401c0d80
 void* FUN_1401c0d90();
-void* FUN_1401d31e0();
-void* FUN_14025e7b0();
-void* FUN_140281980();
-void* FUN_140302b00();
-void* FUN_140302b10();
-void* FUN_14034f780();
-void* FUN_1403782c0();
-void* FUN_1403a9410();
-void* FUN_1403b4740();
-void* FUN_1403ed290();
-void* FUN_1403fc330();
+class CDirWatcher* FUN_1401d31e0();   // C3: was FUN_1401d31e0
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
+class Unk_AttendGiftDataGroup* FUN_1403fc330();   // C3: was FUN_1403fc330
 void* FUN_1404a1bb0();
-void* FUN_1404f4530();
-void* FUN_14052d1d0();
-void* FUN_14052d1e0();
+class Unk_MusicBookTable* FUN_14052d1d0();   // C3: was FUN_14052d1d0
+class Unk_EnchantRates* FUN_14052d1e0();   // C3: was FUN_14052d1e0
 void* FUN_14052d1f0();
 void* FUN_14052d200();
-void* FUN_140535300();
-void* FUN_140535310();
-void* FUN_1405934c0();
-void* FUN_1405a96f0();
-void* FUN_14062c280();
-void* FUN_1406c7600();
-void* FUN_140700390();
-void* FUN_140764010();
-void* FUN_1409331e0();
-void* FUN_140953f20();
-void* FUN_14097a780();
-void* FUN_1409995c0();
-void* FUN_1409a8b00();
-void* FUN_1409a8b10();
-void* FUN_1409c1730();
-void* FUN_1409c4b20();
-void* FUN_1409c4b30();
-void* FUN_1409eecd0();
-void* FUN_1409eece0();
-void* FUN_1409eecf0();
-void* FUN_1409eed00();
-void* FUN_1409fb930();
-void* FUN_140a5af70();
-void* FUN_140a6a830();
-void* FUN_140ab7a10();
-void* FUN_140ae1c00();
-void* FUN_140b05bf0();
-void* FUN_140b1a4e0();
-void* FUN_140b2e980();
-void* FUN_140b86180();
-void* FUN_140ba4fa0();
-void* FUN_140c8dac0();
-void* FUN_140d294c0();
-void* FUN_140d738f0();
-void* FUN_140d8ee90();
-void* FUN_140e09140();
-void* FUN_140e0a9f0();
-void* FUN_140e0d900();
-void* FUN_140e37aa0();
-void* FUN_140f17d40();
-void* FUN_140f2d240();
-void* FUN_140f2d250();
-void* FUN_140f56960();
-void* FUN_140f64150();
-void* FUN_140f688a0();
-void* FUN_14109a6f0();
-void* FUN_14109a700();
-void* FUN_1411f91b0();
-void* FUN_14123ee80();
-void* FUN_1412787a0();
-void* FUN_1412818c0();
+class Unk_BreakRecipes* FUN_140535300();   // C3: was FUN_140535300
+class Unk_BreakRules* FUN_140535310();   // C3: was FUN_140535310
+class CItemGemPropertyTable* FUN_1405a96f0();   // C3: was FUN_1405a96f0
+class CItemGemStoneUpgradeTable* FUN_14062c280();   // C3: was FUN_14062c280
+class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
+class Unk_EmoNpcTable* FUN_140764010();   // C3: was FUN_140764010
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
+class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
+class Unk_SlotBreakManager* FUN_1409c4b20();   // C3: was FUN_1409c4b20
+class Unk_SlotLapenTable* FUN_1409c4b30();   // C3: was FUN_1409c4b30
+class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
+class Unk_ClubBuffTable* FUN_140b1a4e0();   // C3: was FUN_140b1a4e0
+class Unk_ALCurrent* FUN_140ba4fa0();   // C3: was FUN_140ba4fa0
+struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
+class Unk_QmGroupTable* FUN_140d738f0();   // C3: was FUN_140d738f0
+class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
+class Unk_RankArcadeTable* FUN_140e37aa0();   // C3: was FUN_140e37aa0
+class Unk_RpTable* FUN_140f64150();   // C3: was FUN_140f64150
+class Unk_GoUpdateList   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_GoUpdateList* FUN_14123ee80();
+};
 void* FUN_141371b20();
-void* FUN_141484720();
-void* FUN_1414a56d0();
 
 void FUN_14149fe70(Unk_SceneCacheData* p);
 
@@ -268,10 +311,10 @@ MS2_REPLACE(0x14149FEC0, FUN_14149fec0, 21, 0xC697E12D);
 // @0x14149fee0
 void FUN_14149fee0()
 {
-    if (DAT_143ab3be0 != 0)
+    if (TSingleton<AnimationCallbackManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1409995c0();
-        DAT_143ab3be0 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<AnimationCallbackManager>::GetInstance();
+        TSingleton<AnimationCallbackManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x14149FEE0, FUN_14149fee0, 94, 0x7F62458B);
@@ -279,10 +322,10 @@ MS2_REPLACE(0x14149FEE0, FUN_14149fee0, 94, 0x7F62458B);
 // @0x14149ff40
 void FUN_14149ff40()
 {
-    if (DAT_143ab3d88 != 0)
+    if (TSingleton<ApplyEffect>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1409a8b00();
-        DAT_143ab3d88 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<ApplyEffect>::GetInstance();
+        TSingleton<ApplyEffect>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x14149FF40, FUN_14149ff40, 94, 0x92787D34);
@@ -290,10 +333,10 @@ MS2_REPLACE(0x14149FF40, FUN_14149ff40, 94, 0x92787D34);
 // @0x14149ffa0
 void FUN_14149ffa0()
 {
-    if (DAT_143aac2a8 != 0)
+    if (TSingleton<AttendGiftDataTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1403fc330();
-        DAT_143aac2a8 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_1403fc330());
+        TSingleton<AttendGiftDataTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x14149FFA0, FUN_14149ffa0, 94, 0x5475E1A5);
@@ -301,10 +344,10 @@ MS2_REPLACE(0x14149FFA0, FUN_14149ffa0, 94, 0x5475E1A5);
 // @0x1414a0000
 void FUN_1414a0000()
 {
-    if (DAT_143ab5c68 != 0)
+    if (TSingleton<BGTransparencyMgr>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_14123ee80();
-        DAT_143ab5c68 = 0;
+        delete (Unk_VirtualDtor*)((void*)Unk_GoUpdateList::FUN_14123ee80());
+        TSingleton<BGTransparencyMgr>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0000, FUN_1414a0000, 94, 0x3E19299D);
@@ -312,10 +355,10 @@ MS2_REPLACE(0x1414A0000, FUN_1414a0000, 94, 0x3E19299D);
 // @0x1414a0060
 void FUN_1414a0060()
 {
-    if (DAT_143ab4148 != 0)
+    if (TSingleton<BlindManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1409c1730();
-        DAT_143ab4148 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_1409c1730());
+        TSingleton<BlindManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0060, FUN_1414a0060, 94, 0x6273A9F4);
@@ -323,10 +366,10 @@ MS2_REPLACE(0x1414A0060, FUN_1414a0060, 94, 0x6273A9F4);
 // @0x1414a00c0
 void FUN_1414a00c0()
 {
-    if (DAT_143ab0668 != 0)
+    if (TSingleton<CAchieveManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1406c7600();
-        DAT_143ab0668 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_1406c7600());
+        TSingleton<CAchieveManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A00C0, FUN_1414a00c0, 94, 0x4A6BE7CF);
@@ -334,10 +377,10 @@ MS2_REPLACE(0x1414A00C0, FUN_1414a00c0, 94, 0x4A6BE7CF);
 // @0x1414a0120
 void FUN_1414a0120()
 {
-    if (DAT_143ab3920 != 0)
+    if (TSingleton<CAdBannerManagerCli>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1409fb930();
-        DAT_143ab3920 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CAdBannerManagerCli>::GetInstance();
+        TSingleton<CAdBannerManagerCli>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0120, FUN_1414a0120, 94, 0xB97A7C60);
@@ -345,10 +388,10 @@ MS2_REPLACE(0x1414A0120, FUN_1414a0120, 94, 0xB97A7C60);
 // @0x1414a0180
 void FUN_1414a0180()
 {
-    if (DAT_143aac278 != 0)
+    if (TSingleton<CAdventureLevelTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1401958a0();
-        DAT_143aac278 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CAdventureLevelTable>::GetInstance();
+        TSingleton<CAdventureLevelTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0180, FUN_1414a0180, 94, 0x24B54FB7);
@@ -356,10 +399,10 @@ MS2_REPLACE(0x1414A0180, FUN_1414a0180, 94, 0x24B54FB7);
 // @0x1414a01e0
 void FUN_1414a01e0()
 {
-    if (DAT_143aac280 != 0)
+    if (TSingleton<CAdventureLevelTableHelper>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140ba4fa0();
-        DAT_143aac280 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_140ba4fa0());
+        TSingleton<CAdventureLevelTableHelper>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A01E0, FUN_1414a01e0, 94, 0x434DD445);
@@ -367,10 +410,10 @@ MS2_REPLACE(0x1414A01E0, FUN_1414a01e0, 94, 0x434DD445);
 // @0x1414a0240
 void FUN_1414a0240()
 {
-    if (DAT_143ac5c38 != 0)
+    if (TSingleton<CArcadeDataTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140e37aa0();
-        DAT_143ac5c38 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_140e37aa0());
+        TSingleton<CArcadeDataTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0240, FUN_1414a0240, 94, 0xB9BB425B);
@@ -378,10 +421,10 @@ MS2_REPLACE(0x1414A0240, FUN_1414a0240, 94, 0xB9BB425B);
 // @0x1414a02a0
 void FUN_1414a02a0()
 {
-    if (DAT_143ab7808 != 0)
+    if (TSingleton<CAsyncImageLoader>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140a5af70();
-        DAT_143ab7808 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CAsyncImageLoader>::GetInstance();
+        TSingleton<CAsyncImageLoader>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A02A0, FUN_1414a02a0, 94, 0x8D2FCE7D);
@@ -389,10 +432,10 @@ MS2_REPLACE(0x1414A02A0, FUN_1414a02a0, 94, 0x8D2FCE7D);
 // @0x1414a0300
 void FUN_1414a0300()
 {
-    if (DAT_143ab4798 != 0)
+    if (TSingleton<CAutoFindTaxiStation>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1412787a0();
-        DAT_143ab4798 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CAutoFindTaxiStation>::GetInstance();
+        TSingleton<CAutoFindTaxiStation>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0300, FUN_1414a0300, 94, 0x23417763);
@@ -400,10 +443,10 @@ MS2_REPLACE(0x1414A0300, FUN_1414a0300, 94, 0x23417763);
 // @0x1414a0360
 void FUN_1414a0360()
 {
-    if (DAT_143aac2b0 != 0)
+    if (TSingleton<CBankTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1401b59c0();
-        DAT_143aac2b0 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CBankTable>::GetInstance();
+        TSingleton<CBankTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0360, FUN_1414a0360, 94, 0x1909B041);
@@ -411,10 +454,10 @@ MS2_REPLACE(0x1414A0360, FUN_1414a0360, 94, 0x1909B041);
 // @0x1414a03c0
 void FUN_1414a03c0()
 {
-    if (DAT_143ab5b98 != 0)
+    if (TSingleton<CBattleRecordManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140e09140();
-        DAT_143ab5b98 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CBattleRecordManager>::GetInstance();
+        TSingleton<CBattleRecordManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A03C0, FUN_1414a03c0, 94, 0xC1E87E13);
@@ -422,10 +465,10 @@ MS2_REPLACE(0x1414A03C0, FUN_1414a03c0, 94, 0xC1E87E13);
 // @0x1414a0420
 void FUN_1414a0420()
 {
-    if (DAT_143ab5c70 != 0)
+    if (TSingleton<CBigDataLogSystem>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140d8ee90();
-        DAT_143ab5c70 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CBigDataLogSystem>::GetInstance();
+        TSingleton<CBigDataLogSystem>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0420, FUN_1414a0420, 94, 0x739F711F);
@@ -433,10 +476,10 @@ MS2_REPLACE(0x1414A0420, FUN_1414a0420, 94, 0x739F711F);
 // @0x1414a0480
 void FUN_1414a0480()
 {
-    if (DAT_143ab5cb8 != 0)
+    if (TSingleton<CBlackMarketMan>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140f17d40();
-        DAT_143ab5cb8 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CBlackMarketMan>::GetInstance();
+        TSingleton<CBlackMarketMan>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0480, FUN_1414a0480, 94, 0x8D0D1F3E);
@@ -444,10 +487,10 @@ MS2_REPLACE(0x1414A0480, FUN_1414a0480, 94, 0x8D0D1F3E);
 // @0x1414a04e0
 void FUN_1414a04e0()
 {
-    if (DAT_143aac3c8 != 0)
+    if (TSingleton<CBlackMarketTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1401c0d80();
-        DAT_143aac3c8 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_1401c0d80());
+        TSingleton<CBlackMarketTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A04E0, FUN_1414a04e0, 94, 0x6D588353);
@@ -455,10 +498,10 @@ MS2_REPLACE(0x1414A04E0, FUN_1414a04e0, 94, 0x6D588353);
 // @0x1414a0540
 void FUN_1414a0540()
 {
-    if (DAT_143ab5cc8 != 0)
+    if (TSingleton<CBlockManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140a6a830();
-        DAT_143ab5cc8 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_140a6a830());
+        TSingleton<CBlockManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0540, FUN_1414a0540, 94, 0xA92456EA);
@@ -466,10 +509,10 @@ MS2_REPLACE(0x1414A0540, FUN_1414a0540, 94, 0xA92456EA);
 // @0x1414a05a0
 void FUN_1414a05a0()
 {
-    if (DAT_143ab3aa0 != 0)
+    if (TSingleton<CBuddyManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_14097a780();
-        DAT_143ab3aa0 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CBuddyManager>::GetInstance();
+        TSingleton<CBuddyManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A05A0, FUN_1414a05a0, 94, 0x9630DAEE);
@@ -477,10 +520,10 @@ MS2_REPLACE(0x1414A05A0, FUN_1414a05a0, 94, 0x9630DAEE);
 // @0x1414a0600
 void FUN_1414a0600()
 {
-    if (DAT_143ab9d18 != 0)
+    if (TSingleton<CCashCallManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140d294c0();
-        DAT_143ab9d18 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CCashCallManager>::GetInstance();
+        TSingleton<CCashCallManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0600, FUN_1414a0600, 94, 0xA03ED1FF);
@@ -488,10 +531,10 @@ MS2_REPLACE(0x1414A0600, FUN_1414a0600, 94, 0xA03ED1FF);
 // @0x1414a0660
 void FUN_1414a0660()
 {
-    if (DAT_143aba268 != 0)
+    if (TSingleton<CCashMarketMan>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140b05bf0();
-        DAT_143aba268 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CCashMarketMan>::GetInstance();
+        TSingleton<CCashMarketMan>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0660, FUN_1414a0660, 94, 0xD1BE3873);
@@ -499,10 +542,10 @@ MS2_REPLACE(0x1414A0660, FUN_1414a0660, 94, 0xD1BE3873);
 // @0x1414a06c0
 void FUN_1414a06c0()
 {
-    if (DAT_143aac640 != 0)
+    if (TSingleton<CChapterBookTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140e0a9f0();
-        DAT_143aac640 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CChapterBookTable>::GetInstance();
+        TSingleton<CChapterBookTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A06C0, FUN_1414a06c0, 94, 0x1EB76F19);
@@ -510,10 +553,10 @@ MS2_REPLACE(0x1414A06C0, FUN_1414a06c0, 94, 0x1EB76F19);
 // @0x1414a0720
 void FUN_1414a0720()
 {
-    if (DAT_143aca188 != 0)
+    if (TSingleton<CCharacterAbilityManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140f2d240();
-        DAT_143aca188 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CCharacterAbilityManager>::GetInstance();
+        TSingleton<CCharacterAbilityManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0720, FUN_1414a0720, 94, 0xA84F0957);
@@ -521,10 +564,10 @@ MS2_REPLACE(0x1414A0720, FUN_1414a0720, 94, 0xA84F0957);
 // @0x1414a0780
 void FUN_1414a0780()
 {
-    if (DAT_143aac648 != 0)
+    if (TSingleton<CCharacterAbilityTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140f2d250();
-        DAT_143aac648 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CCharacterAbilityTable>::GetInstance();
+        TSingleton<CCharacterAbilityTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0780, FUN_1414a0780, 94, 0x609BF47E);
@@ -532,10 +575,10 @@ MS2_REPLACE(0x1414A0780, FUN_1414a0780, 94, 0x609BF47E);
 // @0x1414a07e0
 void FUN_1414a07e0()
 {
-    if (DAT_143aac658 != 0)
+    if (TSingleton<CChatEmoticonTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1409eecd0();
-        DAT_143aac658 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CChatEmoticonTable>::GetInstance();
+        TSingleton<CChatEmoticonTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A07E0, FUN_1414a07e0, 94, 0xE9648A44);
@@ -543,10 +586,10 @@ MS2_REPLACE(0x1414A07E0, FUN_1414a07e0, 94, 0xE9648A44);
 // @0x1414a0840
 void FUN_1414a0840()
 {
-    if (DAT_143abad48 != 0)
+    if (TSingleton<CClubClientManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140e0d900();
-        DAT_143abad48 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_140e0d900());
+        TSingleton<CClubClientManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0840, FUN_1414a0840, 94, 0x2EF1C062);
@@ -554,10 +597,10 @@ MS2_REPLACE(0x1414A0840, FUN_1414a0840, 94, 0x2EF1C062);
 // @0x1414a08a0
 void FUN_1414a08a0()
 {
-    if (DAT_143aac6f8 != 0)
+    if (TSingleton<CClubDataTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140b1a4e0();
-        DAT_143aac6f8 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_140b1a4e0());
+        TSingleton<CClubDataTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A08A0, FUN_1414a08a0, 94, 0x1C5A456E);
@@ -565,10 +608,10 @@ MS2_REPLACE(0x1414A08A0, FUN_1414a08a0, 94, 0x1C5A456E);
 // @0x1414a0900
 void FUN_1414a0900()
 {
-    if (DAT_143aacd08 != 0)
+    if (TSingleton<CContentShutdownManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_14025e7b0();
-        DAT_143aacd08 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_14025e7b0());
+        TSingleton<CContentShutdownManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0900, FUN_1414a0900, 94, 0x710BAE1E);
@@ -576,10 +619,10 @@ MS2_REPLACE(0x1414A0900, FUN_1414a0900, 94, 0x710BAE1E);
 // @0x1414a0960
 void FUN_1414a0960()
 {
-    if (DAT_143aad148 != 0)
+    if (TSingleton<CContinentRegionTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1403782c0();
-        DAT_143aad148 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CContinentRegionTable>::GetInstance();
+        TSingleton<CContinentRegionTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0960, FUN_1414a0960, 94, 0x6CD131BB);
@@ -587,10 +630,10 @@ MS2_REPLACE(0x1414A0960, FUN_1414a0960, 94, 0x6CD131BB);
 // @0x1414a09c0
 void FUN_1414a09c0()
 {
-    if (DAT_143aad158 != 0)
+    if (TSingleton<CCoupleEmotionTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140b86180();
-        DAT_143aad158 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CCoupleEmotionTable>::GetInstance();
+        TSingleton<CCoupleEmotionTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A09C0, FUN_1414a09c0, 94, 0x0C860B3D);
@@ -598,10 +641,10 @@ MS2_REPLACE(0x1414A09C0, FUN_1414a09c0, 94, 0x0C860B3D);
 // @0x1414a0a20
 void FUN_1414a0a20()
 {
-    if (DAT_143ace480 != 0)
+    if (TSingleton<CDPSMeterSystem>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_14109a6f0();
-        DAT_143ace480 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CDPSMeterSystem>::GetInstance();
+        TSingleton<CDPSMeterSystem>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0A20, FUN_1414a0a20, 94, 0xE0AFA01D);
@@ -609,10 +652,10 @@ MS2_REPLACE(0x1414A0A20, FUN_1414a0a20, 94, 0xE0AFA01D);
 // @0x1414a0a80
 void FUN_1414a0a80()
 {
-    if (DAT_143aac5b8 != 0)
+    if (TSingleton<CDirWatcher>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1401d31e0();
-        DAT_143aac5b8 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_1401d31e0());
+        TSingleton<CDirWatcher>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0A80, FUN_1414a0a80, 94, 0x1B9DDC8E);
@@ -620,10 +663,10 @@ MS2_REPLACE(0x1414A0A80, FUN_1414a0a80, 94, 0x1B9DDC8E);
 // @0x1414a0ae0
 void FUN_1414a0ae0()
 {
-    if (DAT_143aad288 != 0)
+    if (TSingleton<CDynamicBanWordManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1414a56d0();
-        DAT_143aad288 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CDynamicBanWordManager>::GetInstance();
+        TSingleton<CDynamicBanWordManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0AE0, FUN_1414a0ae0, 94, 0x68B35DB4);
@@ -631,10 +674,10 @@ MS2_REPLACE(0x1414A0AE0, FUN_1414a0ae0, 94, 0x68B35DB4);
 // @0x1414a0b40
 void FUN_1414a0b40()
 {
-    if (DAT_143aad290 != 0)
+    if (TSingleton<CEnchantScrollTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_14034f780();
-        DAT_143aad290 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CEnchantScrollTable>::GetInstance();
+        TSingleton<CEnchantScrollTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0B40, FUN_1414a0b40, 94, 0x7F79D7DE);
@@ -642,10 +685,10 @@ MS2_REPLACE(0x1414A0B40, FUN_1414a0b40, 94, 0x7F79D7DE);
 // @0x1414a0ba0
 void FUN_1414a0ba0()
 {
-    if (DAT_143aaeb00 != 0)
+    if (TSingleton<CExpTable>::s_instance != 0)
     {
         delete (Unk_VirtualDtor*)FUN_1404a1bb0();
-        DAT_143aaeb00 = 0;
+        TSingleton<CExpTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0BA0, FUN_1414a0ba0, 94, 0x79D06837);
@@ -653,10 +696,10 @@ MS2_REPLACE(0x1414A0BA0, FUN_1414a0ba0, 94, 0x79D06837);
 // @0x1414a0c00
 void FUN_1414a0c00()
 {
-    if (DAT_143aaeb10 != 0)
+    if (TSingleton<CFameTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140764010();
-        DAT_143aaeb10 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_140764010());
+        TSingleton<CFameTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0C00, FUN_1414a0c00, 94, 0x6985980E);
@@ -664,10 +707,10 @@ MS2_REPLACE(0x1414A0C00, FUN_1414a0c00, 94, 0x6985980E);
 // @0x1414a0c60
 void FUN_1414a0c60()
 {
-    if (DAT_143aab388 != 0)
+    if (TSingleton<CFeatureManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140166410();
-        DAT_143aab388 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_140166410());
+        TSingleton<CFeatureManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0C60, FUN_1414a0c60, 94, 0x39C29BB3);
@@ -675,10 +718,10 @@ MS2_REPLACE(0x1414A0C60, FUN_1414a0c60, 94, 0x39C29BB3);
 // @0x1414a0cc0
 void FUN_1414a0cc0()
 {
-    if (DAT_143ace478 != 0)
+    if (TSingleton<CFieldMaidManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_14109a700();
-        DAT_143ace478 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CFieldMaidManager>::GetInstance();
+        TSingleton<CFieldMaidManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0CC0, FUN_1414a0cc0, 94, 0xBD69728F);
@@ -686,10 +729,10 @@ MS2_REPLACE(0x1414A0CC0, FUN_1414a0cc0, 94, 0xBD69728F);
 // @0x1414a0d20
 void FUN_1414a0d20()
 {
-    if (DAT_143ab0a08 != 0)
+    if (TSingleton<CFieldMetaTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140700390();
-        DAT_143ab0a08 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CFieldMetaTable>::GetInstance();
+        TSingleton<CFieldMetaTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0D20, FUN_1414a0d20, 94, 0x1CA2C135);
@@ -697,10 +740,10 @@ MS2_REPLACE(0x1414A0D20, FUN_1414a0d20, 94, 0x1CA2C135);
 // @0x1414a0d80
 void FUN_1414a0d80()
 {
-    if (DAT_143aaec48 != 0)
+    if (TSingleton<CFieldMissionTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140d738f0();
-        DAT_143aaec48 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_140d738f0());
+        TSingleton<CFieldMissionTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0D80, FUN_1414a0d80, 94, 0xA8361B64);
@@ -708,10 +751,10 @@ MS2_REPLACE(0x1414A0D80, FUN_1414a0d80, 94, 0xA8361B64);
 // @0x1414a0de0
 void FUN_1414a0de0()
 {
-    if (DAT_143ab8f50 != 0)
+    if (TSingleton<CFilePreload>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140ab7a10();
-        DAT_143ab8f50 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CFilePreload>::GetInstance();
+        TSingleton<CFilePreload>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0DE0, FUN_1414a0de0, 94, 0xE4E04C53);
@@ -719,10 +762,10 @@ MS2_REPLACE(0x1414A0DE0, FUN_1414a0de0, 94, 0xE4E04C53);
 // @0x1414a0e40
 void FUN_1414a0e40()
 {
-    if (DAT_143aab398 != 0)
+    if (TSingleton<CFileSystem>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140166420();
-        DAT_143aab398 = 0;
+        delete (Unk_VirtualDtor*)GetFileSystem();
+        TSingleton<CFileSystem>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0E40, FUN_1414a0e40, 94, 0x202E0165);
@@ -730,10 +773,10 @@ MS2_REPLACE(0x1414A0E40, FUN_1414a0e40, 94, 0x202E0165);
 // @0x1414a0ea0
 void FUN_1414a0ea0()
 {
-    if (DAT_143ab3848 != 0)
+    if (TSingleton<CFishingManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140953f20();
-        DAT_143ab3848 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CFishingManager>::GetInstance();
+        TSingleton<CFishingManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0EA0, FUN_1414a0ea0, 94, 0xB7401BE9);
@@ -741,10 +784,10 @@ MS2_REPLACE(0x1414A0EA0, FUN_1414a0ea0, 94, 0xB7401BE9);
 // @0x1414a0f00
 void FUN_1414a0f00()
 {
-    if (DAT_143aaece0 != 0)
+    if (TSingleton<CFishingTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1403b4740();
-        DAT_143aaece0 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CFishingTable>::GetInstance();
+        TSingleton<CFishingTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0F00, FUN_1414a0f00, 94, 0xBDEB2E52);
@@ -752,10 +795,10 @@ MS2_REPLACE(0x1414A0F00, FUN_1414a0f00, 94, 0xBDEB2E52);
 // @0x1414a0f60
 void FUN_1414a0f60()
 {
-    if (DAT_143ad8960 != 0)
+    if (TSingleton<CGFxLanguage>::s_instance != 0)
     {
         delete (Unk_VirtualDtor*)FUN_141371b20();
-        DAT_143ad8960 = 0;
+        TSingleton<CGFxLanguage>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0F60, FUN_1414a0f60, 94, 0x48576B5C);
@@ -763,10 +806,10 @@ MS2_REPLACE(0x1414A0F60, FUN_1414a0f60, 94, 0x48576B5C);
 // @0x1414a0fc0
 void FUN_1414a0fc0()
 {
-    if (DAT_143aad188 != 0)
+    if (TSingleton<CGameEventValueManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140302b00();
-        DAT_143aad188 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CGameEventValueManager>::GetInstance();
+        TSingleton<CGameEventValueManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A0FC0, FUN_1414a0fc0, 94, 0xE6F93524);
@@ -774,10 +817,10 @@ MS2_REPLACE(0x1414A0FC0, FUN_1414a0fc0, 94, 0xE6F93524);
 // @0x1414a1020
 void FUN_1414a1020()
 {
-    if (DAT_143ab3da8 != 0)
+    if (TSingleton<CGameOption>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1409a8b10();
-        DAT_143ab3da8 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CGameOption>::GetInstance();
+        TSingleton<CGameOption>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1020, FUN_1414a1020, 94, 0x9550C27E);
@@ -785,10 +828,10 @@ MS2_REPLACE(0x1414A1020, FUN_1414a1020, 94, 0x9550C27E);
 // @0x1414a1080
 void FUN_1414a1080()
 {
-    if (DAT_143abafd8 != 0)
+    if (TSingleton<CGameRankingCli>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140b2e980();
-        DAT_143abafd8 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CGameRankingCli>::GetInstance();
+        TSingleton<CGameRankingCli>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1080, FUN_1414a1080, 94, 0x3ED50C0D);
@@ -796,10 +839,10 @@ MS2_REPLACE(0x1414A1080, FUN_1414a1080, 94, 0x3ED50C0D);
 // @0x1414a10e0
 void FUN_1414a10e0()
 {
-    if (DAT_143aac4d0 != 0)
+    if (TSingleton<CGameRule>::s_instance != 0)
     {
         delete (Unk_VirtualDtor*)FUN_1401c0d90();
-        DAT_143aac4d0 = 0;
+        TSingleton<CGameRule>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A10E0, FUN_1414a10e0, 94, 0x369666FE);
@@ -807,10 +850,10 @@ MS2_REPLACE(0x1414A10E0, FUN_1414a10e0, 94, 0x369666FE);
 // @0x1414a1140
 void FUN_1414a1140()
 {
-    if (DAT_143aad180 != 0)
+    if (TSingleton<CGloabalFactor>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140302b10();
-        DAT_143aad180 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CGloabalFactor>::GetInstance();
+        TSingleton<CGloabalFactor>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1140, FUN_1414a1140, 94, 0x5ABEE7B5);
@@ -818,10 +861,10 @@ MS2_REPLACE(0x1414A1140, FUN_1414a1140, 94, 0x5ABEE7B5);
 // @0x1414a11a0
 void FUN_1414a11a0()
 {
-    if (DAT_143ab9658 != 0)
+    if (TSingleton<CGraphicOptionTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140ae1c00();
-        DAT_143ab9658 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CGraphicOptionTable>::GetInstance();
+        TSingleton<CGraphicOptionTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A11A0, FUN_1414a11a0, 94, 0xCE57F242);
@@ -829,10 +872,10 @@ MS2_REPLACE(0x1414A11A0, FUN_1414a11a0, 94, 0xCE57F242);
 // @0x1414a1200
 void FUN_1414a1200()
 {
-    if (DAT_143ad8ba8 != 0)
+    if (TSingleton<CGroupChatManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_141484720();
-        DAT_143ad8ba8 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CGroupChatManager>::GetInstance();
+        TSingleton<CGroupChatManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1200, FUN_1414a1200, 94, 0xC35E3377);
@@ -840,10 +883,10 @@ MS2_REPLACE(0x1414A1200, FUN_1414a1200, 94, 0xC35E3377);
 // @0x1414a1260
 void FUN_1414a1260()
 {
-    if (DAT_143ab3330 != 0)
+    if (TSingleton<CGuideManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1409331e0();
-        DAT_143ab3330 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_1409331e0());
+        TSingleton<CGuideManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1260, FUN_1414a1260, 94, 0x9D746BE4);
@@ -851,10 +894,10 @@ MS2_REPLACE(0x1414A1260, FUN_1414a1260, 94, 0x9D746BE4);
 // @0x1414a12c0
 void FUN_1414a12c0()
 {
-    if (DAT_143aaee00 != 0)
+    if (TSingleton<CGuildManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1403ed290();
-        DAT_143aaee00 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CGuildManager>::GetInstance();
+        TSingleton<CGuildManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A12C0, FUN_1414a12c0, 94, 0x02A9F0AB);
@@ -862,10 +905,10 @@ MS2_REPLACE(0x1414A12C0, FUN_1414a12c0, 94, 0x02A9F0AB);
 // @0x1414a1320
 void FUN_1414a1320()
 {
-    if (DAT_143aaef58 != 0)
+    if (TSingleton<CGuildXmlData>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1404f4530();
-        DAT_143aaef58 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CGuildXmlData>::GetInstance();
+        TSingleton<CGuildXmlData>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1320, FUN_1414a1320, 94, 0x70F05971);
@@ -873,10 +916,10 @@ MS2_REPLACE(0x1414A1320, FUN_1414a1320, 94, 0x70F05971);
 // @0x1414a1380
 void FUN_1414a1380()
 {
-    if (DAT_143aaecb0 != 0)
+    if (TSingleton<CIgnoreFile>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1403a9410();
-        DAT_143aaecb0 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CIgnoreFile>::GetInstance();
+        TSingleton<CIgnoreFile>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1380, FUN_1414a1380, 94, 0xFA35C5CC);
@@ -884,10 +927,10 @@ MS2_REPLACE(0x1414A1380, FUN_1414a1380, 94, 0xFA35C5CC);
 // @0x1414a13e0
 void FUN_1414a13e0()
 {
-    if (DAT_143aaf098 != 0)
+    if (TSingleton<CIndividualArenaDataTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1412818c0();
-        DAT_143aaf098 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CIndividualArenaDataTable>::GetInstance();
+        TSingleton<CIndividualArenaDataTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A13E0, FUN_1414a13e0, 94, 0x8254972E);
@@ -895,10 +938,10 @@ MS2_REPLACE(0x1414A13E0, FUN_1414a13e0, 94, 0x8254972E);
 // @0x1414a1440
 void FUN_1414a1440()
 {
-    if (DAT_143aaf1a8 != 0)
+    if (TSingleton<CInstrumentDataTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_14052d1d0();
-        DAT_143aaf1a8 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_14052d1d0());
+        TSingleton<CInstrumentDataTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1440, FUN_1414a1440, 94, 0x76043011);
@@ -906,10 +949,10 @@ MS2_REPLACE(0x1414A1440, FUN_1414a1440, 94, 0x76043011);
 // @0x1414a14a0
 void FUN_1414a14a0()
 {
-    if (DAT_143abf720 != 0)
+    if (TSingleton<CInstrumentManager>::s_instance != 0)
     {
-        delete (Unk_SecondaryDtorSingleton*)FUN_140c8dac0();
-        DAT_143abf720 = 0;
+        delete (Unk_SecondaryDtorSingleton*)((void*)FUN_140c8dac0());
+        TSingleton<CInstrumentManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A14A0, FUN_1414a14a0, 112, 0xD1224E15);
@@ -917,10 +960,10 @@ MS2_REPLACE(0x1414A14A0, FUN_1414a14a0, 112, 0xD1224E15);
 // @0x1414a1510
 void FUN_1414a1510()
 {
-    if (DAT_143aaf1e0 != 0)
+    if (TSingleton<CItemBreakIngredientTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140535300();
-        DAT_143aaf1e0 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_140535300());
+        TSingleton<CItemBreakIngredientTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1510, FUN_1414a1510, 94, 0x2E8D4F9A);
@@ -928,10 +971,10 @@ MS2_REPLACE(0x1414A1510, FUN_1414a1510, 94, 0x2E8D4F9A);
 // @0x1414a1570
 void FUN_1414a1570()
 {
-    if (DAT_143aaf300 != 0)
+    if (TSingleton<CItemBreakManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1409c4b20();
-        DAT_143aaf300 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_1409c4b20());
+        TSingleton<CItemBreakManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1570, FUN_1414a1570, 94, 0xAD79A55F);
@@ -939,10 +982,10 @@ MS2_REPLACE(0x1414A1570, FUN_1414a1570, 94, 0xAD79A55F);
 // @0x1414a15d0
 void FUN_1414a15d0()
 {
-    if (DAT_143aacd90 != 0)
+    if (TSingleton<CItemDataTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140281980();
-        DAT_143aacd90 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CItemDataTable>::GetInstance();
+        TSingleton<CItemDataTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A15D0, FUN_1414a15d0, 94, 0xFA6A5F70);
@@ -950,10 +993,10 @@ MS2_REPLACE(0x1414A15D0, FUN_1414a15d0, 94, 0xFA6A5F70);
 // @0x1414a1630
 void FUN_1414a1630()
 {
-    if (DAT_143aafb40 != 0)
+    if (TSingleton<CItemEnchantLimitTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1409eece0();
-        DAT_143aafb40 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CItemEnchantLimitTable>::GetInstance();
+        TSingleton<CItemEnchantLimitTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1630, FUN_1414a1630, 94, 0xF129029F);
@@ -961,10 +1004,10 @@ MS2_REPLACE(0x1414A1630, FUN_1414a1630, 94, 0xF129029F);
 // @0x1414a1690
 void FUN_1414a1690()
 {
-    if (DAT_143aafb50 != 0)
+    if (TSingleton<CItemEnchantTransformTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1405934c0();
-        DAT_143aafb50 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CItemEnchantTransformTable>::GetInstance();
+        TSingleton<CItemEnchantTransformTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1690, FUN_1414a1690, 94, 0xE0C48CD7);
@@ -972,10 +1015,10 @@ MS2_REPLACE(0x1414A1690, FUN_1414a1690, 94, 0xE0C48CD7);
 // @0x1414a16f0
 void FUN_1414a16f0()
 {
-    if (DAT_143aaf1b0 != 0)
+    if (TSingleton<CItemEnchantUtil>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_14052d1e0();
-        DAT_143aaf1b0 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_14052d1e0());
+        TSingleton<CItemEnchantUtil>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A16F0, FUN_1414a16f0, 94, 0x32423A9E);
@@ -983,10 +1026,10 @@ MS2_REPLACE(0x1414A16F0, FUN_1414a16f0, 94, 0x32423A9E);
 // @0x1414a1750
 void FUN_1414a1750()
 {
-    if (DAT_143aafb98 != 0)
+    if (TSingleton<CItemExchangeScrollTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140f56960();
-        DAT_143aafb98 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CItemExchangeScrollTable>::GetInstance();
+        TSingleton<CItemExchangeScrollTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1750, FUN_1414a1750, 94, 0xC3EC3C3B);
@@ -994,10 +1037,10 @@ MS2_REPLACE(0x1414A1750, FUN_1414a1750, 94, 0xC3EC3C3B);
 // @0x1414a17b0
 void FUN_1414a17b0()
 {
-    if (DAT_143aaf1b8 != 0)
+    if (TSingleton<CItemExtractionTable>::s_instance != 0)
     {
         delete (Unk_VirtualDtor*)FUN_14052d1f0();
-        DAT_143aaf1b8 = 0;
+        TSingleton<CItemExtractionTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A17B0, FUN_1414a17b0, 94, 0x5E92DE06);
@@ -1005,10 +1048,10 @@ MS2_REPLACE(0x1414A17B0, FUN_1414a17b0, 94, 0x5E92DE06);
 // @0x1414a1810
 void FUN_1414a1810()
 {
-    if (DAT_143aafd08 != 0)
+    if (TSingleton<CItemGemPropertyTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1405a96f0();
-        DAT_143aafd08 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_1405a96f0());
+        TSingleton<CItemGemPropertyTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1810, FUN_1414a1810, 94, 0x9763F4D6);
@@ -1016,10 +1059,10 @@ MS2_REPLACE(0x1414A1810, FUN_1414a1810, 94, 0x9763F4D6);
 // @0x1414a1870
 void FUN_1414a1870()
 {
-    if (DAT_143aafd18 != 0)
+    if (TSingleton<CItemGemStoneUpgradeTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_14062c280();
-        DAT_143aafd18 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_14062c280());
+        TSingleton<CItemGemStoneUpgradeTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1870, FUN_1414a1870, 94, 0xFCC9E551);
@@ -1027,10 +1070,10 @@ MS2_REPLACE(0x1414A1870, FUN_1414a1870, 94, 0xFCC9E551);
 // @0x1414a18d0
 void FUN_1414a18d0()
 {
-    if (DAT_143aafd98 != 0)
+    if (TSingleton<CItemLapenshardTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1409c4b30();
-        DAT_143aafd98 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_1409c4b30());
+        TSingleton<CItemLapenshardTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A18D0, FUN_1414a18d0, 94, 0x28B27944);
@@ -1038,10 +1081,10 @@ MS2_REPLACE(0x1414A18D0, FUN_1414a18d0, 94, 0x28B27944);
 // @0x1414a1930
 void FUN_1414a1930()
 {
-    if (DAT_143ac1b80 != 0)
+    if (TSingleton<CItemLoader>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1411f91b0();
-        DAT_143ac1b80 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CItemLoader>::GetInstance();
+        TSingleton<CItemLoader>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1930, FUN_1414a1930, 94, 0x643605B0);
@@ -1049,10 +1092,10 @@ MS2_REPLACE(0x1414A1930, FUN_1414a1930, 94, 0x643605B0);
 // @0x1414a1990
 void FUN_1414a1990()
 {
-    if (DAT_143aaf308 != 0)
+    if (TSingleton<CItemLockManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140535310();
-        DAT_143aaf308 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_140535310());
+        TSingleton<CItemLockManager>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1990, FUN_1414a1990, 94, 0x29EECA1E);
@@ -1060,10 +1103,10 @@ MS2_REPLACE(0x1414A1990, FUN_1414a1990, 94, 0x29EECA1E);
 // @0x1414a19f0
 void FUN_1414a19f0()
 {
-    if (DAT_143aafde0 != 0)
+    if (TSingleton<CItemMergeOptionTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1409eecf0();
-        DAT_143aafde0 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CItemMergeOptionTable>::GetInstance();
+        TSingleton<CItemMergeOptionTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A19F0, FUN_1414a19f0, 94, 0x0A71209E);
@@ -1071,10 +1114,10 @@ MS2_REPLACE(0x1414A19F0, FUN_1414a19f0, 94, 0x0A71209E);
 // @0x1414a1a50
 void FUN_1414a1a50()
 {
-    if (DAT_143aab4f8 != 0)
+    if (TSingleton<CItemOptionTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140166430();
-        DAT_143aab4f8 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_140166430());
+        TSingleton<CItemOptionTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1A50, FUN_1414a1a50, 94, 0x3B2AB468);
@@ -1082,10 +1125,10 @@ MS2_REPLACE(0x1414A1A50, FUN_1414a1a50, 94, 0x3B2AB468);
 // @0x1414a1ab0
 void FUN_1414a1ab0()
 {
-    if (DAT_143aaff58 != 0)
+    if (TSingleton<CItemRePackingScrollTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140f64150();
-        DAT_143aaff58 = 0;
+        delete (Unk_VirtualDtor*)((void*)FUN_140f64150());
+        TSingleton<CItemRePackingScrollTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1AB0, FUN_1414a1ab0, 94, 0x37F4881A);
@@ -1093,10 +1136,10 @@ MS2_REPLACE(0x1414A1AB0, FUN_1414a1ab0, 94, 0x37F4881A);
 // @0x1414a1b10
 void FUN_1414a1b10()
 {
-    if (DAT_143aaff10 != 0)
+    if (TSingleton<CItemRemakeScrollTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1409eed00();
-        DAT_143aaff10 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CItemRemakeScrollTable>::GetInstance();
+        TSingleton<CItemRemakeScrollTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1B10, FUN_1414a1b10, 94, 0x164B42F5);
@@ -1104,10 +1147,10 @@ MS2_REPLACE(0x1414A1B10, FUN_1414a1b10, 94, 0x164B42F5);
 // @0x1414a1b70
 void FUN_1414a1b70()
 {
-    if (DAT_143aaffd8 != 0)
+    if (TSingleton<CItemSocketScrollTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_140f688a0();
-        DAT_143aaffd8 = 0;
+        delete (Unk_VirtualDtor*)TSingleton<CItemSocketScrollTable>::GetInstance();
+        TSingleton<CItemSocketScrollTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1B70, FUN_1414a1b70, 94, 0xE10587C9);
@@ -1115,10 +1158,10 @@ MS2_REPLACE(0x1414A1B70, FUN_1414a1b70, 94, 0xE10587C9);
 // @0x1414a1bd0
 void FUN_1414a1bd0()
 {
-    if (DAT_143aaf1c0 != 0)
+    if (TSingleton<CItemSocketTable>::s_instance != 0)
     {
         delete (Unk_VirtualDtor*)FUN_14052d200();
-        DAT_143aaf1c0 = 0;
+        TSingleton<CItemSocketTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A1BD0, FUN_1414a1bd0, 94, 0x927F4412);

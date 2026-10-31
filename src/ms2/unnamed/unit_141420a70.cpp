@@ -59,7 +59,6 @@ struct Unk_CzAvatarView
 // The equipped item returns a copy of its item pointer by value.
 struct Unk_CzEquipView { Unk_CustomizeCopy FUN_1411dc7a0(); };
 bool FUN_1409edd90(void* pHandle, int n);                         // 0x1409edd90
-void* FUN_1411dc7f0(void* pEquip);                                // 0x1411dc7f0
 CFeatureManager* FUN_140166410();
 
 int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar);
@@ -122,7 +121,7 @@ int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar)
             Unk_CustomizeHandle h5 = reinterpret_cast<Unk_CzAvatarView*>(pAvatar)->FUN_141655e10(5);
             if (h5.FUN_1405a8e70())
             {
-                if (reinterpret_cast<CItemData*>(FUN_1411dc7f0(h5.FUN_1405a8ed0()))->FUN_14053d460())
+                if (reinterpret_cast<CItemData*>(((void*)((class CEquipItem*)(void*)(h5.FUN_1405a8ed0()))->FUN_1411dc7f0()))->FUN_14053d460())
                 {
                     nResult = 5;
                 }

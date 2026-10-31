@@ -67,7 +67,7 @@ CMsTime& CMsTime::operator=(const CMsTime& other) throw()
 }
 
 // @0x1406c4970
-CMsTime& CMsTime::operator=(__time64_t t)
+CMsTime& CMsTime::operator=(__time64_t t) throw()
 {
     Init(t, false);
     return *this;

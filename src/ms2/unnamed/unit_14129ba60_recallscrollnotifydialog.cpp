@@ -24,6 +24,7 @@
 static CStringW s_strRecallConfirm(L"recallscrollconfirm");
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -42,13 +43,12 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* szText);
 
 class Unk_RsWorld { public: MS2Ptr<CFieldDataCli> FUN_141bd30a0(); };
-Unk_RsWorld* FUN_1403ed2d0();
 CStringTable* GetStringTable();
 CStringW FUN_140632a60(int nId, const CStringW& strA, const CStringW& strB);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW FUN_14183e930(const CStringW& str, int nColor);
-UIBottomCenterAlignManager* FUN_140c24ef0();
+void* FUN_140c24ef0();   // C3: was FUN_140c24ef0
 int FUN_1418dd0d0();
 __int64 GetServerTime();                                // the server time
 
@@ -148,7 +148,7 @@ int UIRecallScrollNotifyDialog::vfunc_13()
 int UIRecallScrollNotifyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs)) return 1;
-    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_RsWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spField == 0) return 0;
     if (!_stricmp(szMethod, "OnNotify")) {
         ASData data;
@@ -258,8 +258,8 @@ CStringW UIRecallScrollNotifyDialog::FUN_14129cb50(ATL::CTimeSpan span)
 void UIRecallScrollNotifyDialog::FUN_14129cc60(bool bActive)
 {
     m_bActive = bActive;
-    if (FUN_140c24ef0() != 0)
-        FUN_140c24ef0()->FUN_140bc1730();
+    if (((class UIBottomCenterAlignManager*)FUN_140c24ef0()) != 0)
+        ((class UIBottomCenterAlignManager*)FUN_140c24ef0())->FUN_140bc1730();
 }
 
 // @0x14129cce0

@@ -27,12 +27,7 @@
 
 // ---- out-of-unit callees ----
 extern NiFixedString DAT_143ae5218;                                         // density material name
-unsigned FUN_140d89680(const NiVisibleArray* arr);                          // NiVisibleArray count
-NiRenderObject* FUN_1414d1830(const NiVisibleArray* arr, unsigned i);       // NiVisibleArray::GetAt
-NiTexturingProperty::Map* FUN_14121cde0(NiTexturingProperty* pProp);        // parallax map accessor
 class NiPropertyState;
-NiPropertyState* FUN_140994420(NiRenderObject* pObj);                       // obj->GetPropertyState()
-NiTexturingProperty* FUN_140d8a020(NiPropertyState* pState);                // state's texturing property
 
 // @0x1415116d0
 Unk_TexSlot::Unk_TexSlot() : m_spTexture(0)
@@ -66,12 +61,12 @@ void MS2TextureDensityProcessor::PreRenderProcessList(const NiVisibleArray* pkIn
     if (pkInput == NULL)
         return;
 
-    unsigned count = FUN_140d89680(pkInput);
+    unsigned count = ((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetCount();
     std::set<NiTexturingProperty*> props;
     std::vector<const NiMaterial*> savedMaterials;
     for (unsigned i = 0; i < count; ++i) {
-        NiRenderObject* obj = FUN_1414d1830(pkInput, i);
-        NiTexturingProperty* tp = FUN_140d8a020(FUN_140994420(obj));
+        NiRenderObject* obj = ((class NiRenderObject*)&((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetAt(i));
+        NiTexturingProperty* tp = ((class NiPropertyState*)(class NiPropertyState*)(((class NiRenderObject*)(class NiRenderObject*)(obj))->GetPropertyState()))->GetTexturing();
         if (tp) {
             if (props.find(tp) == props.end())
                 props.insert(tp);
@@ -100,7 +95,7 @@ void MS2TextureDensityProcessor::PreRenderProcessList(const NiVisibleArray* pkIn
         else if (m_nMode == 1)
             pMap = (*it)->GetNormalMap();
         else if (m_nMode == 2)
-            pMap = FUN_14121cde0(*it);
+            pMap = ((class NiTexturingProperty*)(class NiTexturingProperty*)(*it))->GetGlossMap();
         if (pMap && pMap->GetTexture()) {
             (*it)->SetBaseTexture(FUN_14150d3a0(pMap->GetTexture()->GetWidth(), pMap->GetTexture()->GetHeight()));
             (*it)->SetBaseFilterMode(NiTexturingProperty::FILTER_NEAREST_MIPNEAREST);
@@ -108,7 +103,7 @@ void MS2TextureDensityProcessor::PreRenderProcessList(const NiVisibleArray* pkIn
     }
 
     for (unsigned i = 0; i < count; ++i) {
-        NiRenderObject* obj = FUN_1414d1830(pkInput, i);
+        NiRenderObject* obj = ((class NiRenderObject*)&((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetAt(i));
         obj->UpdateProperties();
     }
 
@@ -124,7 +119,7 @@ void MS2TextureDensityProcessor::PreRenderProcessList(const NiVisibleArray* pkIn
     }
 
     for (unsigned i = 0; i < count; ++i) {
-        NiRenderObject* obj = FUN_1414d1830(pkInput, i);
+        NiRenderObject* obj = ((class NiRenderObject*)&((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetAt(i));
         obj->SetActiveMaterial(savedMaterials[i]);
         obj->UpdateProperties();
     }

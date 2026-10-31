@@ -15,7 +15,7 @@
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/placeholder/ascript.h"
 
-class Unk_AcList;
+class ASScrollingList;
 
 class UIAdditionalControlDialog : public UIDialog
 {
@@ -30,12 +30,12 @@ public:
                                                                         // 28 0x1418b2860
     virtual int vfunc_48() { return 0x4e8f; }                           // 48 0x1418b5400 UI type id
 
-    MS2Ptr<Unk_AcList> FUN_140c02900(const CString& strName);           // bind a list child of the movie
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);           // bind a list child of the movie
     void FUN_1418b2c20(const Scaleform::GFx::FunctionHandler::Params& params);   // context menu click
     void FUN_1418b2e80(const CString& strGroup, const CStringW& strSearch);      // refill "m_effects"
     void FUN_1418b3620();                                               // fill "m_contextMenu"
     unsigned FUN_1418b3ac0();                                           // the effect id of the selected row
 
-    MS2Ptr<Unk_AcList> m_pList;                                         // +0x178 the context menu list
+    MS2Ptr<ASScrollingList> m_pList;                                         // +0x178 the context menu list
 };
 MS2_CHECK_SIZE(UIAdditionalControlDialog, 0x188);

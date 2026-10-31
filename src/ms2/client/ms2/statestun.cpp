@@ -30,7 +30,6 @@ static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
-void FUN_14123d7a0(PCBase* pOwner, CString strName, int bOn);   // 0x14123d7a0 switches a named input mode
 
 // The actor's buffs (PCBase::FUN_1416749a0).
 class Unk_PCBaseBuffs : public AdditionalCliList
@@ -102,7 +101,7 @@ void StateStun::vfunc_4(StateData* pData)
     }
     if (m_n10 == 0x41)
     {
-        FUN_14123d7a0(m_pOwner, s_strStun, 1);
+        reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123d7a0(s_strStun, 1);
     }
     else if (m_n10 == 0x46)
     {
@@ -121,7 +120,7 @@ void StateStun::vfunc_4(StateData* pData)
 // @0x1417f6b70
 void StateStun::vfunc_5(int n)
 {
-    FUN_14123d7a0(m_pOwner, s_strStun, 0);
+    reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123d7a0(s_strStun, 0);
     State::vfunc_5(n);
 }
 
@@ -143,7 +142,7 @@ void StateStun::vfunc_3(double fTime)
         m_pOwner->vfunc_59(1, 0, 0, 0);
         break;
     case 0x41:
-        FUN_14123d7a0(m_pOwner, s_strStun, 0);
+        reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123d7a0(s_strStun, 0);
         m_pOwner->vfunc_59(1, 0, 0, 0);
         break;
     default:
@@ -213,7 +212,7 @@ void StateStun::vfunc_2(int n)
     if (m_n10 == n)
         return;
     if (m_n10 == 0x41)
-        FUN_14123d7a0(m_pOwner, s_strStun, 0);
+        reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123d7a0(s_strStun, 0);
     State::vfunc_2(n);
 }
 

@@ -22,6 +22,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
@@ -39,12 +40,7 @@ public:
 };
 
 // The game context (FUN_1403ed2d0): its FUN_141bd0cc0 returns the local player.
-class Unk_BrmGameCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_BrmGameCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 // A reward entry: an id holder (a vftable object, slot 1 = the item id) and the count.
 class Unk_BrmIdHolder

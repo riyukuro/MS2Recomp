@@ -19,7 +19,7 @@
 
 class ASTextField;
 class CNpc;
-class Unk_NpList;
+class ASScrollingList;
 class Unk_NpTab;
 
 // One row of the script list (0x20): what the row is (m_kind), the shown text and the ids it needs.
@@ -63,7 +63,7 @@ public:
     void FUN_141a717c0();                               // remove the preview npc
     int FUN_141a708e0(int nQuestId, int nTalkId, ATL::CAtlArray<int>& rOut);   // collect a quest talk and the talks it jumps to
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // text field child lookup (a UIDialog member)
-    MS2Ptr<Unk_NpList> FUN_140c02900(const CString& strName);   // bind a list child of the movie
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);   // bind a list child of the movie
     MS2Ptr<Unk_NpTab> FUN_140c02870(const CString& strName);    // bind a tab strip child of the movie
 
 private:

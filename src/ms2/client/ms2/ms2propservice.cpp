@@ -110,21 +110,28 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/entityworldmanager.h"
 
-void FUN_1413eb6d0(egf::IPropertyCallback*);
 // @0x1414d9cb0
 inline unsigned FUN_1414d9cb0(EntityWorldManager* world) { return world->currentMap; }
 void FUN_1409618c0(egf::Entity*, unsigned, efd::Point3*);
 void FUN_1408a20a0(egf::Entity*, unsigned, bool*);
 extern char DAT_143b059e8;
 efd::ISystemService* FUN_1401cd040(char*);
-HardwareInstancingService* FUN_14098c5b0(char*);
+class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 NxActor* FUN_1410c5420(efd::ISystemService*, egf::EntityID);
 int FUN_1413d7d90(HardwareInstancingService*, const egf::EntityID&);
-void* FUN_1409f7ca0();
-void FUN_14168a540(void*, int);
-void FUN_14168a570(void*);
-void* FUN_1403ed2d0();
-void FUN_141bc8e00(void*);
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class CPhysXHelper   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_14168a540(int);
+    void FUN_14168a570();
+};
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141bc8e00();
+    static class WorldService* GetInstance();
+};
 efd::utf8string FUN_1414d7990(const efd::utf8string&);
 // This callback cell belongs to the exe; setting it is part of OnPreInit, not a file-scope registration.
 extern efd::utf8string (*DAT_143b05980)(const efd::utf8string&);
@@ -141,7 +148,7 @@ MS2PropService::~MS2PropService() {}
 // @0x1414d7060
 efd::SyncResult MS2PropService::OnPreInit(efd::IDependencyRegistrar* registrar) {
     efd::SyncResult result = ecrPhysX::PropService::OnPreInit(registrar);
-    if (result == efd::SyncResult_Success) FUN_1413eb6d0(this);
+    if (result == efd::SyncResult_Success) egf::PlaceableModel::AddCallback(this);
     FUN_1414da060(FUN_1414d7990);
     return result;
 }
@@ -188,7 +195,7 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                         efd::SmartPointer<efd::ISystemService> service(FUN_1401cd040(&DAT_143b059e8));
                         NxActor* actor = FUN_1410c5420(service, entity->GetEntityID());
                         if (actor != NULL) {
-                            FUN_14168a540(FUN_1409f7ca0(), 0);
+                            ((class CPhysXHelper*)(void*)(((void*)FUN_1409f7ca0())))->FUN_14168a540(0);
                             unsigned shapeCount = actor->getNbShapes();
                             NxShape* const* shapes = actor->getShapes();
                             int skip = 0;
@@ -197,7 +204,7 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                                 if (shape->getGroup() == 5) { skip = 1; break; }
                             }
                             if (skip == 0) actor->setGlobalPose(pose);
-                            FUN_14168a570(FUN_1409f7ca0());
+                            ((class CPhysXHelper*)(void*)(((void*)FUN_1409f7ca0())))->FUN_14168a570();
                         }
                     } else {
                         unsigned propCount = GetNumProps(entity->GetEntityID());
@@ -211,7 +218,7 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                             unsigned actorCount = snapshot->GetActorCount();
                             if (actorCount == 0)
                                 continue;
-                            FUN_14168a540(FUN_1409f7ca0(), 0);
+                            ((class CPhysXHelper*)(void*)(((void*)FUN_1409f7ca0())))->FUN_14168a540(0);
                             for (unsigned a = 0; a < actorCount; ++a) {
                                 NiPhysXActorDesc* desc = snapshot->GetActorAt(a);
                                 if (desc == NULL)
@@ -235,7 +242,7 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                                     if (skip == 0) actor->setGlobalPose(pose);
                                 }
                             }
-                            FUN_14168a570(FUN_1409f7ca0());
+                            ((class CPhysXHelper*)(void*)(((void*)FUN_1409f7ca0())))->FUN_14168a570();
                         }
                     }
                 }
@@ -253,7 +260,7 @@ efd::utf8string FUN_1414d7990(const efd::utf8string& name) {
 MS2_REPLACE(0x1414d7990, FUN_1414d7990, 156, 0x82895CAC);
 // @0x1414d7a40
 bool MS2PropService::AddPhysXPropToPropData(egf::Entity* entity, PropData* data) {
-    efd::SmartPointer<HardwareInstancingService> service(FUN_14098c5b0(&DAT_143b059e8));
+    efd::SmartPointer<HardwareInstancingService> service(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     if ((HardwareInstancingService*)service != NULL) {
         if (FUN_1413d7d90(service.operator->(), entity->GetEntityID())) return false;
     }
@@ -263,7 +270,7 @@ MS2_REPLACE_METHOD(0x1414d7a40, MS2PropService, AddPhysXPropToPropData, 180, 0x6
 // @0x1414d7b00
 bool MS2PropService::RemovePropFromScene(PropData* data) {
     bool result = ecrPhysX::PropService::RemovePropFromScene(data);
-    FUN_141bc8e00(FUN_1403ed2d0());
+    ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bc8e00();
     return result;
 }
 MS2_REPLACE_METHOD(0x1414d7b00, MS2PropService, RemovePropFromScene, 56, 0x11BD0BB5);

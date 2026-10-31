@@ -16,6 +16,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/citemdata.h"
 
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);          // Value = n (UInt)
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // Value = v (callee destroys)
@@ -23,10 +24,8 @@ void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);           // 
 CString FUN_140719210(long n);
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
-class Unk_ItemEquipData
+class Unk_ItemEquipData : public CItemData
 {
-public:
-    bool FUN_14053d510();                                                   // the item may be worn in a hand slot
 };
 class Unk_EquipOutfit : public CPtred
 {

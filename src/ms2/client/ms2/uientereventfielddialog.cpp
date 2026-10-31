@@ -31,15 +31,14 @@
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/cstringtable.h"
 
 // ---- unit-local views of exe types ----
 
 // The movie root of the dialog (the exe's dynamic_cast target).
 class ASDialog : public ASGameEntity
 {
-public:
-    float FUN_1422c10a0();                                      // x
-    float FUN_1422c1110();                                      // y
 };
 
 // WorldService singleton (FUN_1403ed2d0).
@@ -50,21 +49,10 @@ public:
 };
 Unk_EnterWorld* FUN_1403ed2d0();
 
-// The string table (FUN_1401a9d70).
-class Unk_EnterStrings
-{
-public:
-    CStringW FUN_141811980(int nTable, int nIndex);
-};
-Unk_EnterStrings* FUN_1401a9d70();
+// The string table (TSingleton<CStringTable>::GetInstance).
 
 // The notice dispatcher (FUN_140939a10).
-class Unk_EnterNotices
-{
-public:
-    void FUN_140da4e40(CStringW strName, Delegate<void(NotifyObject*)> cb);    // subscribe
-};
-Unk_EnterNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 CStringW FUN_14052bd00(int id, const CStringW& arg);            // formatted system text
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);    // create a message box
@@ -114,7 +102,7 @@ MS2_REPLACE_METHOD(0x140F3FC50, UIEnterEventFieldDialog, vfunc_65, 37, 0xAB784FE
 void UIEnterEventFieldDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140939a10()->FUN_140da4e40(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIEnterEventFieldDialog::OnNotifyGameStart));
+    FUN_140939a10()->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIEnterEventFieldDialog::OnNotifyGameStart));
     m_tick.FUN_140268840();
     UpdateVisible();
 }
@@ -128,7 +116,7 @@ int UIEnterEventFieldDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         return 1;
     if (_stricmp("onEnterEventField", szMethod) == 0)
     {
-        CStringW strText = FUN_14052bd00(0xc3e, FUN_1401a9d70()->FUN_141811980(3, m_nFieldId));
+        CStringW strText = FUN_14052bd00(0xc3e, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_nFieldId));
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strText, 1);
             if (spBox.get() != 0)

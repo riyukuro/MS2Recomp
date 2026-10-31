@@ -32,7 +32,11 @@
 // TiXmlElement / TiXmlDeclaration (the class names reuse the existing symbol rows of these tinyxml ctors and dtors).
 struct Unk_MdXmlElement { Unk_MdXmlElement(const char* szName); ~Unk_MdXmlElement(); void* m_pad[0x90 / 8]; };   // 0x14086f2f0 / 0x14086f450
 struct Unk_MdXmlDeclaration { Unk_MdXmlDeclaration(const char* szVersion, const char* szEncoding, const char* szStandalone); ~Unk_MdXmlDeclaration(); void* m_pad[0x70 / 8]; };   // 0x1408704d0 / 0x14081ad20
-void* FUN_14086e000(void*, void*);                          // InsertEndChild
+class TiXmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class TiXmlNode* InsertEndChild(class TiXmlNode const&);
+};
 bool FUN_1408710c0(void*, const char*);                     // SaveFile
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);   // FirstChildElement of the document
 int FUN_140873420(Unk_140165cf0* pNode, const char* pszName, CStringW& rOut);   // string attribute, 0 = found
@@ -45,7 +49,7 @@ class Unk_TrgLog
 public:
     void FUN_14015eb90(int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
 };
-Unk_TrgLog* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 
 // String table and fmt helpers.
 CStringW GetStringCommon(int nId);                            // string table entry
@@ -68,7 +72,7 @@ public:
 };
 struct Unk_TrgFramework { efd::ServiceManagerPtr manager; };
 extern Unk_TrgFramework DAT_143b059e8;
-Unk_TrgService* FUN_1401cd040(Unk_TrgFramework*);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 int FUN_1407071e0(int nItemId);
 int FUN_140707710(int nItemId);
 int FUN_140707660(int nItemId);
@@ -150,7 +154,7 @@ int TriggerCli::LoadFile(const CString& strPath)
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        ((class Unk_TrgLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pState = pRoot->FUN_140165cf0("state"); pState != 0; pState = pState->FUN_140168650("state"))
@@ -185,7 +189,7 @@ int TriggerCli::LoadEditorTable()
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        ((class Unk_TrgLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
@@ -288,15 +292,15 @@ void TriggerCli::SaveFile(const CString& strPath)
 void TriggerCli::SaveDocument(TiXmlDocument* pDoc)
 {
     Unk_MdXmlDeclaration decl("1.0", "utf-8", "");
-    FUN_14086e000(pDoc, &decl);
+    ((void*)((class TiXmlNode*)(void*)(pDoc))->InsertEndChild(*(class TiXmlNode const*)(&decl)));
     Unk_MdXmlElement elRoot("ms2");
     for (size_t i = 0; i < m_states.GetCount(); ++i)
     {
         Unk_MdXmlElement elState("state");
         m_states[i]->Save(&elState);
-        FUN_14086e000(&elRoot, &elState);
+        ((void*)((class TiXmlNode*)(void*)(&elRoot))->InsertEndChild(*(class TiXmlNode const*)(&elState)));
     }
-    FUN_14086e000(pDoc, &elRoot);
+    ((void*)((class TiXmlNode*)(void*)(pDoc))->InsertEndChild(*(class TiXmlNode const*)(&elRoot)));
 }
 
 // @0x14119aa10
@@ -323,7 +327,7 @@ int TriggerCli::GetFirstError(CStringW& rText)
 // @0x14119ab70
 int TriggerCli::CheckObjects(std::vector<CStringW>& rErrors)
 {
-    efd::SmartPointer<Unk_TrgService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<Unk_TrgService> spService(((class Unk_TrgService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     std::vector<std::pair<CStringW, int> > ids;
     CollectIds(ids);
     CStringW strMsg;

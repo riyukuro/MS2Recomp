@@ -17,8 +17,6 @@
 #include <NiPoint2.h>
 
 // ---- out-of-unit callees ----
-void FUN_140980460(void* p);            // NiRefObject::IncRefCount
-void FUN_1405a93d0(void* p);            // NiRefObject::DecRefCount
 void FUN_140159b70(long hr);            // AtlThrow
 
 class NiCamera;
@@ -39,20 +37,26 @@ public:
 MS2_CHECK_SIZE(CMeshUVPicker, 0x98);
 
 struct Unk_PickApp : public CWindowService { };        // cursor position
-Unk_PickApp* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 struct Unk_PickRenderer
 {
     bool IsFlag() const;
     char m_pad[0x850];
     bool m_bFlag;                                                       // +0x850
 };
-void* FUN_140994450();                                                  // NiRenderer::GetRenderer()
-void* FUN_1413f9a70();                                                  // camera manager
-NiCamera* FUN_1409a8a60(void* pMgr);                                    // active camera
-const NiPoint3* FUN_1411b1f60(NiCamera* pCam);                          // camera world position
+class NiRenderer   // C3: member view for the former free stand-ins
+{
+public:
+    static class NiRenderer* GetRenderer();
+};
+class Ni3DRenderView* FUN_1413f9a70();   // C3: was FUN_1413f9a70
+class Ni3DRenderView   // C3: member view for the former free stand-ins
+{
+public:
+    class NiCamera* GetCamera() const;
+};
 Unk_PickRenderer* FUN_14098d8d0(char* pRtti, void* pObj);               // checked cast
 NiRenderObject* FUN_14098d8d0(char* pRtti, NiAVObject* pObj);
-WorldService* FUN_1403ed2d0();
 struct Unk_PickItemData { bool FUN_14053cfd0() const; };
 class CItem : public CPtred { public: Unk_PickItemData* FUN_140527840(); };                         // item -> item data
 void* FUN_14123c410(void* pObj);                                        // the game object's entity
@@ -65,7 +69,6 @@ struct Unk_PickSceneIter
     NiAVObject* FUN_14098e0d0(bool bDescend);
     void* m_a[7];
 };
-const void* FUN_1409a8b90(NiAVObject* pObj);                            // node name
 bool FUN_140998dc0(const void* pName, const char* psz);                 // name == psz
 
 void FUN_141419670(void* pObject, CAtlArray<NiRenderObject*>* pOut);
@@ -129,8 +132,8 @@ int CItemPickingHelper::GetPickedIndex() const
 int CItemPickingHelper::Pick(efd::Point3* pHit, CAtlArray<CString>& parts)
 {
     // the exe calls its own CAtlArray<CString>::operator[] copy here (0x14134b380), not the 0x1401c0cc0 one
-    void* pCamMgr = FUN_1413f9a70();
-    NiPoint3 camPos = *FUN_1411b1f60(FUN_1409a8a60(pCamMgr));
+    void* pCamMgr = ((void*)FUN_1413f9a70());
+    NiPoint3 camPos = *((class NiPoint3 const*)&((class NiCamera*)(class NiCamera*)(((class Ni3DRenderView*)(void*)(pCamMgr))->GetCamera()))->GetWorldLocation());
     float fBest = FLT_MAX;
     m_nPicked = -1;
     for (unsigned i = 0; i < m_targets.GetCount(); i++)
@@ -185,7 +188,7 @@ int CItemPickingHelper::PickTarget(Unk_PickTarget* pTarget, const CString* pPart
     bool bBad = pTarget->FUN_141200940() == 0 || pTarget->FUN_141200940()->FUN_140527840() == 0;
     if (bBad)
         return 0;
-    void* pGame = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pGame = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pGame == 0)
         return 0;
     NiAVObject* pMesh = pTarget->FUN_1411676d0(pPart);
@@ -210,18 +213,18 @@ int CItemPickingHelper::PickMesh(NiAVObject* pMesh, CAtlArray<NiRenderObject*>& 
     if (pMesh == 0)
         return 0;
     Unk_PickXY xy = DAT_143b02320;
-    if (FUN_140aadf80()->GetCursorClientPos(&xy.x, &xy.y) == 0)
+    if (((struct Unk_PickApp*)FUN_140aadf80())->GetCursorClientPos(&xy.x, &xy.y) == 0)
         return 0;
-    Unk_PickRenderer* pRenderer = FUN_14098d8d0(&DAT_143d6eb58, FUN_140994450());
+    Unk_PickRenderer* pRenderer = FUN_14098d8d0(&DAT_143d6eb58, ((void*)NiRenderer::GetRenderer()));
     if (pRenderer == 0)
         return 0;
     if (pRenderer->IsFlag())
         return 0;
-    void* pCamMgr = FUN_1413f9a70();
+    void* pCamMgr = ((void*)FUN_1413f9a70());
     efd::Point3 hit;
     efd::Point3 normal;
     NiPoint2 uv;
-    if (m_spPicker.FUN_141286290()->FUN_14147ea50(pMesh, FUN_1409a8a60(pCamMgr), xy.x, xy.y, &hit, &normal, &uv, &tri, &skins))
+    if (m_spPicker.FUN_141286290()->FUN_14147ea50(pMesh, ((class Ni3DRenderView*)(void*)(pCamMgr))->GetCamera(), xy.x, xy.y, &hit, &normal, &uv, &tri, &skins))
     {
         if (pHit != 0)
             *pHit = *(NiPoint3*)&hit;
@@ -241,7 +244,7 @@ void FUN_141419670(void* pObject, CAtlArray<NiRenderObject*>* pOut)
     NiAVObject* pNode;
     while ((pNode = it.FUN_14098e0d0(true)) != 0)
     {
-        const void* pName = FUN_1409a8b90(pNode);
+        const void* pName = ((void const*)&((class NiObjectNET*)(class NiAVObject*)(pNode))->GetName());
         if (FUN_140998dc0(pName, "FA_Skin") || FUN_140998dc0(pName, "FA_EA"))
         {
             NiRenderObject* pPart = FUN_14098d8d0(&DAT_143afa7d0, pNode);
@@ -255,7 +258,7 @@ void FUN_141419670(void* pObject, CAtlArray<NiRenderObject*>* pOut)
 Unk_PickMeshPtr::~Unk_PickMeshPtr()
 {
     if (m_p != 0)
-        FUN_1405a93d0(m_p);
+        ((class NiRefObject*)(void*)(m_p))->DecRefCount();
 }
 
 // @0x1414197a0
@@ -263,7 +266,7 @@ Unk_PickMeshPtr::Unk_PickMeshPtr(NiAVObject* p)
 {
     m_p = p;
     if (m_p != 0)
-        FUN_140980460(m_p);
+        ((class NiRefObject*)(void*)(m_p))->IncRefCount();
 }
 
 // @0x141419be0

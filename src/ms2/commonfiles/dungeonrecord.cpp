@@ -28,7 +28,7 @@ COutputStream& FUN_14070f860(COutputStream& out, unsigned char value);
 COutputStream& FUN_14070f8e0(COutputStream& out, unsigned short value);
 COutputStream& FUN_14070f960(COutputStream& out, long value);
 COutputStream& FUN_14070f9a0(COutputStream& out, unsigned value);
-COutputStream& FUN_14070fa20(COutputStream& out, __int64 value);
+COutputStream & FUN_14070fa20(COutputStream &, unsigned __int64);  // C3: the definition's signature
 
 // The bitset stream helpers (bitset.inl: one byte per 8 bits).
 // @0x14031c1f0

@@ -86,28 +86,30 @@ struct Unk_MakeupProxyData
     float m_fScale;                                             // +0x60
     float m_fAngle;                                             // +0x64
 };
-Unk_MakeupProxyData* FUN_140527870(CItem* pItem);
-int FUN_140527a20(CItem* pItem);                                // item model kind (3 = face makeup)
-void FUN_14059a1f0(Unk_MakeupProxyData* pData, int nValue);     // stores the preset index
-int FUN_14059a210(Unk_MakeupProxyData* pData);                  // reads it
+class CItemExtraData   // C3: member view for the former free stand-ins
+{
+public:
+    int GetPick();
+    void SetPick(int);
+};
 
 // The local player.
 namespace egf { class Entity; }
 struct Unk_MakeupPlayer : public GameObject { };
 struct Unk_MakeupWorld { Unk_MakeupPlayer* FUN_141bd0cc0(); };
 void* FUN_1416561a0(Unk_MakeupPlayer* pPlayer);                 // the player's customize state
-void FUN_1411ea2e0(void* pState, bool bOn);                     // enables / disables the customize preview
+class CEquipment   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1411ea2e0(bool);
+};
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                // the entity's scene root
 
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);   // dynamic cast (NULL-safe)
-NiExtraData* FUN_141d17b40(NiAVObject* pNode, const void* pName);  // extra data by name
-float FUN_141d57ca0(NiFloatsExtraData* pExtra, int nIndex);     // NiFloatsExtraData value
-void FUN_141d580c0(NiFloatsExtraData* pExtra, int nIndex, float fValue);   // sets it
 float FUN_140768090();                                          // random float in [0, 1]
 float FUN_140a17940(float fValue, float fMin, float fMax);      // clamp
 
 struct Unk_MakeupCursor : public CWindowService { };   // cursor position in pixels
-Unk_MakeupCursor* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
 struct Unk_MakeupConfigFloat { float FUN_1402bac70(); char m_pad[0x58]; };
 struct Unk_MakeupConfig
@@ -116,7 +118,7 @@ struct Unk_MakeupConfig
     Unk_MakeupConfigFloat m_2de8;                               // wheel step
     Unk_MakeupConfigFloat m_2e40;                               // drag scale
 };
-Unk_MakeupConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // Listener at +0xa0: slots 1 to 4 are called by this controller (the base class only knows slot 0).
 class Unk_MakeupListener
@@ -136,7 +138,7 @@ int FUN_141477dd0(MS2Ptr<CEquipItem> spItem);                                   
 
 // The NiFloatsExtraData of the face mesh. Written out in every use in the exe.
 #define MAKEUP_FACE_EXTRA() \
-    ((NiFloatsExtraData*)FUN_14098d8d0((const NiRTTI*)&DAT_143afafe0, FUN_141d17b40(m_spFaceMesh.operator->(), &DAT_143ae50f8)))
+    ((NiFloatsExtraData*)NiObject::DynamicCast((const NiRTTI*)&DAT_143afafe0, (class NiObject const*)(((class NiObjectNET*)(class NiAVObject*)(m_spFaceMesh.operator->()))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae50f8)))))
 
 // NiImplementRTTI(CMakeupController, CItemCustomizeController). The hook DLL binds the exe's copy (symbols.tsv row),
 // so only the byte-match build defines it.
@@ -181,8 +183,8 @@ int CMakeupController::vfunc_3()
     m_bUseButton2 = m_spEquipItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547150();
     m_bEnabled = m_spEquipItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547130();
     m_spScale = new (efd::MemHint(efd::MemHint::NONE)) CScaleModifier;
-    m_fWheelStep = FUN_1401d3200()->m_2de8.FUN_1402bac70();
-    m_fDragScale = FUN_1401d3200()->m_2e40.FUN_1402bac70();
+    m_fWheelStep = ((struct Unk_MakeupConfig*)FUN_1401d3200())->m_2de8.FUN_1402bac70();
+    m_fDragScale = ((struct Unk_MakeupConfig*)FUN_1401d3200())->m_2e40.FUN_1402bac70();
     FindFaceMesh();
     LoadFromProxy();
     m_spPicker->SetPrevMesh(m_spFaceMesh.FUN_141412c90());
@@ -217,7 +219,7 @@ float CMakeupController::vfunc_18()
     NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
     if (pExtra != 0)
     {
-        float f = FUN_141d57ca0(pExtra, 2);
+        float f = ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->GetValue(2);
         return f * 180.0f / 3.1415927f;
     }
     return 0.0f;
@@ -389,7 +391,7 @@ void CMakeupController::vfunc_33()
         }
         else
         {
-            float fScale = FUN_141d57ca0(pExtra, 3);
+            float fScale = ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->GetValue(3);
             m_spScale->Start(fScale);
         }
     }
@@ -406,9 +408,9 @@ void CMakeupController::vfunc_42(float fValue, NiFloatsExtraData* pExtra)
         m_afValue[m_nCurIndex] = FUN_140a17940(fValue, pRange->m_fMin, pRange->m_fMax);
         float fNow;
         float fScale = fNow = vfunc_21();
-        FUN_141d580c0(pExtra, 3, fScale);
+        ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->SetValue(3, fScale);
         Unk_MakeupProxyData* pData;
-        Unk_MakeupProxyData* pCopy = pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());   // pCopy unused (the exe keeps it)
+        Unk_MakeupProxyData* pCopy = pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->FUN_140527870());   // pCopy unused (the exe keeps it)
         if (pData != 0)
             pData->m_fScale = fScale;
         if (m_pListener != 0)
@@ -423,11 +425,11 @@ void CMakeupController::vfunc_43(float fRadians, NiFloatsExtraData* pExtra)
         pExtra = MAKEUP_FACE_EXTRA();
     if (pExtra != 0)
     {
-        if (FUN_141d57ca0(pExtra, 2) != fRadians)
+        if (((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->GetValue(2) != fRadians)
         {
-            FUN_141d580c0(pExtra, 2, fRadians);
+            ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->SetValue(2, fRadians);
             Unk_MakeupProxyData* pData;
-            Unk_MakeupProxyData* pCopy = pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());   // pCopy unused (the exe keeps it)
+            Unk_MakeupProxyData* pCopy = pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->FUN_140527870());   // pCopy unused (the exe keeps it)
             if (pData != 0)
                 pData->m_fAngle = fRadians;
             if (m_pListener != 0)
@@ -443,10 +445,10 @@ void CMakeupController::vfunc_44(float fX, float fY, NiFloatsExtraData* pExtra)
         pExtra = MAKEUP_FACE_EXTRA();
     if (pExtra != 0)
     {
-        FUN_141d580c0(pExtra, 0, fX);
-        FUN_141d580c0(pExtra, 1, fY);
+        ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->SetValue(0, fX);
+        ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->SetValue(1, fY);
         Unk_MakeupProxyData* pData;
-        Unk_MakeupProxyData* pCopy = pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());   // pCopy unused (the exe keeps it)
+        Unk_MakeupProxyData* pCopy = pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->FUN_140527870());   // pCopy unused (the exe keeps it)
         if (pData != 0)
         {
             pData->m_fX = fX;
@@ -461,11 +463,11 @@ void CMakeupController::vfunc_44(float fX, float fY, NiFloatsExtraData* pExtra)
 void CMakeupController::vfunc_34(const NiPoint3& kPos)
 {
     float fY;
-    FUN_140aadf80()->GetCursorClientPos(&m_fDragStartX, &fY);
+    ((struct Unk_MakeupCursor*)FUN_140aadf80())->GetCursorClientPos(&m_fDragStartX, &fY);
     NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
     if (pExtra != 0)
     {
-        m_fDragStartAngle = FUN_141d57ca0(pExtra, 2) * 180.0f / 3.1415927f;
+        m_fDragStartAngle = ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->GetValue(2) * 180.0f / 3.1415927f;
     }
 }
 
@@ -477,7 +479,7 @@ void CMakeupController::vfunc_35()
     float fScaled;
     float fAngle;
     float fY;
-    FUN_140aadf80()->GetCursorClientPos(&fX, &fY);
+    ((struct Unk_MakeupCursor*)FUN_140aadf80())->GetCursorClientPos(&fX, &fY);
     fDelta = fX - m_fDragStartX;
     fScaled = fDelta * m_fDragScale;
     NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
@@ -495,7 +497,7 @@ void CMakeupController::SetPreviewApply(bool bOn)
 {
     Unk_MakeupPlayer* pPlayer = reinterpret_cast<Unk_MakeupWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
-        FUN_1411ea2e0(FUN_1416561a0(pPlayer), bOn);
+        ((class CEquipment*)(void*)(FUN_1416561a0(pPlayer)))->FUN_1411ea2e0(bOn);
 }
 
 // @0x141477780
@@ -504,13 +506,13 @@ void CMakeupController::SaveToProxy()
 {
     if (m_spEquipItem.get() != 0)
     {
-        bool bFace = (m_spEquipItem.get() ? true : false) && FUN_140527a20((CItem*)m_spEquipItem->GetItem()) == 3;
+        bool bFace = (m_spEquipItem.get() ? true : false) && ((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->FUN_140527a20() == 3;
         if (bFace && m_spFaceMesh.FUN_141412c90() != 0)
         {
             NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
-            Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());
+            Unk_MakeupProxyData* pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->FUN_140527870());
             FUN_141477d40(pData, pExtra);
-            FUN_14059a1f0(pData, m_nPresetIndex);
+            ((class CItemExtraData*)(struct Unk_MakeupProxyData*)(pData))->SetPick(m_nPresetIndex);
         }
     }
 }
@@ -521,15 +523,15 @@ void CMakeupController::LoadFromProxy()
 {
     if (m_spEquipItem.get() != 0)
     {
-        bool bFace = FUN_140527a20((CItem*)m_spEquipItem->GetItem()) == 3;
+        bool bFace = ((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->FUN_140527a20() == 3;
         if (bFace && m_spFaceMesh.FUN_141412c90() != 0)
         {
-            Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());
+            Unk_MakeupProxyData* pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->FUN_140527870());
             NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
             FUN_141477cb0(pExtra, pData);
             if (pData != 0)
             {
-                m_nPresetIndex = FUN_14059a210(pData);
+                m_nPresetIndex = ((class CItemExtraData*)(struct Unk_MakeupProxyData*)(pData))->GetPick();
                 m_afValue[m_nCurIndex] = pData->m_fScale;
             }
         }
@@ -544,7 +546,7 @@ void CMakeupController::UpdateScaleAnimation()
         float fScale = m_spScale->GetCurrentScale();
         NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
         if (pExtra != 0)
-            FUN_141d580c0(pExtra, 3, fScale);
+            ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->SetValue(3, fScale);
     }
 }
 
@@ -560,7 +562,7 @@ void CMakeupController::FindFaceMesh()
         if (pRoot != 0)
         {
             NiFixedString kName("FA_Skin");
-            m_spFaceMesh.FUN_141418a00((NiAVObject*)FUN_14098d8d0((const NiRTTI*)&DAT_143afa7d0, pRoot->GetObjectByName(kName)));
+            m_spFaceMesh.FUN_141418a00((NiAVObject*)NiObject::DynamicCast((const NiRTTI*)&DAT_143afa7d0, (class NiObject const*)(pRoot->GetObjectByName(kName))));
         }
     }
 }
@@ -570,10 +572,10 @@ void FUN_141477cb0(NiFloatsExtraData* pExtra, Unk_MakeupProxyData* pData)
 {
     if (pData != 0 && pExtra != 0)
     {
-        FUN_141d580c0(pExtra, 0, pData->m_fX);
-        FUN_141d580c0(pExtra, 1, pData->m_fY);
-        FUN_141d580c0(pExtra, 2, pData->m_fAngle);
-        FUN_141d580c0(pExtra, 3, pData->m_fScale);
+        ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->SetValue(0, pData->m_fX);
+        ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->SetValue(1, pData->m_fY);
+        ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->SetValue(2, pData->m_fAngle);
+        ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->SetValue(3, pData->m_fScale);
     }
 }
 
@@ -582,10 +584,10 @@ void FUN_141477d40(Unk_MakeupProxyData* pData, NiFloatsExtraData* pExtra)
 {
     if (pData != 0 && pExtra != 0)
     {
-        pData->m_fX = FUN_141d57ca0(pExtra, 0);
-        pData->m_fY = FUN_141d57ca0(pExtra, 1);
-        pData->m_fAngle = FUN_141d57ca0(pExtra, 2);
-        pData->m_fScale = FUN_141d57ca0(pExtra, 3);
+        pData->m_fX = ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->GetValue(0);
+        pData->m_fY = ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->GetValue(1);
+        pData->m_fAngle = ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->GetValue(2);
+        pData->m_fScale = ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->GetValue(3);
     }
 }
 

@@ -2,9 +2,6 @@
 #pragma once
 #include <atlcoll.h>
 #include "ms2/placeholder/cptred.h"
-void FUN_14015b020(CPtred*);
-int FUN_140159bc0(CPtred*);
-void FUN_140159ba0(CPtred*);
 struct Unk_BlockRecord : CPtred {
     void* m_18;
     __int64 id;
@@ -33,10 +30,10 @@ public:
     T* operator->() const { return m_p; }
 private:
     void AddRef() const { if(m_p) AddRefImpl(0); }
-    static void Ref(CPtred* p) { FUN_14015b020(p); }
+    static void Ref(CPtred* p) { CPtred::AddRefPtred(p); }
     void AddRefImpl(void*) const { Ref(m_p); }
     void Release() { if(m_p) { ReleaseImpl(0);m_p=0; } }
-    void ReleaseImpl(void*) { if(FUN_140159bc0(m_p)==0) { Ref(m_p);FUN_140159ba0(m_p); } }
+    void ReleaseImpl(void*) { if(CPtred::ReleasePtred(m_p)==0) { Ref(m_p);CPtred::DeletePtred(m_p); } }
     void* m_00;
     T* m_p;
 };

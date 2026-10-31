@@ -20,6 +20,9 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/client/ms2/guildmanager.h"
 
 // ---- header statics (dynamic initializers 0x1400efc20..) ----
 static CString s_strMassiveFail = "massive_fail";
@@ -37,7 +40,6 @@ public:
     void* m_pad_00;
     CGuildInfo m_info;
 };
-Unk_PgtrGuildSvc* FUN_1403ed290();
 
 struct Unk_PgtrConfig
 {
@@ -45,9 +47,6 @@ struct Unk_PgtrConfig
     CString m_strMarkServer;                                        // +0xa0 passed to the guild mark URL builder
 };
 Unk_PgtrConfig* FUN_1401d31f0();
-
-class Unk_PgtrStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_PgtrStrings* FUN_1401a9d70();
 
 class Unk_PgtrSound                                                 // the sound / cursor service
 {
@@ -60,7 +59,7 @@ public:
 Unk_PgtrSound* FUN_140a94350();
 
 // The reward item: pointer 0x14053f870, get 0x140203c60, operator-> 0x1401b52a0, release 0x1401b50d0.
-class Unk_PgtrItemData { public: CString FUN_14053fdd0(); };       // the icon name
+class Unk_PgtrItemData : public CItemData { };       // the icon name
 class Unk_PgtrItemPtr
 {
 public:
@@ -196,7 +195,7 @@ void UIPvPGuildTeamResultDialog::FUN_141340d70(CInPacket* pIn)
     int nCount = pIn->ReadInt32();
     m_nMode = 0;
     m_strTitle = FUN_140298ea0(L"s_PvpGuildResult_title_pvp");
-    __int64 nOwnGuild = FUN_1403ed290()->m_info.FUN_1404ccbd0();
+    __int64 nOwnGuild = reinterpret_cast<Unk_PgtrGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccbd0();
     m_guildA.m_strResult = L"win";
     m_guildB.m_strResult = L"lose";
     m_bOwnA = m_guildA.m_nGuildId == nOwnGuild;
@@ -215,7 +214,7 @@ void UIPvPGuildTeamResultDialog::FUN_141340d70(CInPacket* pIn)
     }
     m_strReward.Empty();
     if (nCount != 0)
-        m_strReward = FUN_14093fa20(0x401, FUN_1401a9d70()->FUN_141811980(1, 0x55d4a86), nCount);
+        m_strReward = FUN_14093fa20(0x401, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, 0x55d4a86), nCount);
     m_nRewardItem = 0x55d4a86;
     if (FUN_141924630())
         FUN_1413418a0();
@@ -234,7 +233,7 @@ void UIPvPGuildTeamResultDialog::FUN_141341220(CInPacket* pIn)
     m_nRewardItem = 0;
     m_bSound = false;
     FUN_141342190();
-    __int64 nOwnGuild = FUN_1403ed290()->m_info.FUN_1404ccbd0();
+    __int64 nOwnGuild = reinterpret_cast<Unk_PgtrGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccbd0();
     Unk_PgtrGuild* pOwn = FUN_1413420e0(nOwnGuild, true);
     if (FUN_1403b3c40(pOwn->m_strResult, L"win"))
         m_strReward = FUN_1405c2690(L"s_PvpGuildResult_vsGame_result_lose", pOwn->m_strName);

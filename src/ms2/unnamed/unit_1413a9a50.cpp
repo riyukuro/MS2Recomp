@@ -17,6 +17,9 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/worldservice.h"
+
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -24,11 +27,10 @@
 class Unk_ItemEquipData : public CItemData { };
 
 // The player inventory (global 0x143ab2a90): the items of one inventory tab.
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 // The world manager: the id of the map the player is in.
 class Unk_GuideWorld { public: unsigned FUN_141bd3060(); };
-Unk_GuideWorld* FUN_1403ed2d0();
 extern int DAT_143ab2890;                                   // set while the client is in a test / free-roam field
 
 void FUN_1412751b0(const CStringW& strText, int nColor);    // 0x1412751b0 chat-log line
@@ -44,7 +46,7 @@ MS2_REPLACE_METHOD(0x1413A9A50, CGuideConditionCountInDoorInstallItem, vfunc_5, 
 int CGuideConditionCountInDoorInstallItem::FUN_1413a9ac0()
 {
     ATL::CAtlArray<MS2Ptr<CItem> > items;
-    DAT_143ab2a90.FUN_140a60880(4, items);
+    g_143ab2a90.FUN_140a60880(4, items);
     int nCount = 0;
     int nInstallMask = 6;
     for (unsigned i = 0; i < items.GetCount(); i++)
@@ -78,8 +80,8 @@ void CGuideConditionFieldId::vfunc_2(Unk_140165cf0* pElem)
     m_n18 = 1;
     m_nRangeBeg = 0;
     m_nRangeEnd = 0;
-    FUN_1408731e0(pElem, "rangeBeg", m_nRangeBeg);
-    FUN_1408731e0(pElem, "rangeEnd", m_nRangeEnd);
+    XmlGetAttr((class TiXmlElement*)(pElem), "rangeBeg", m_nRangeBeg);
+    XmlGetAttr((class TiXmlElement*)(pElem), "rangeEnd", m_nRangeEnd);
     if (m_n20 == 0 && m_nRangeBeg == 0 && m_nRangeEnd == 0)
         throw std::exception("Invalid FieldId Data");
 }
@@ -88,7 +90,7 @@ MS2_REPLACE_METHOD(0x1413A9C70, CGuideConditionFieldId, vfunc_2, 195, 0x89E750BE
 // @0x1413a9d40
 int CGuideConditionFieldId::vfunc_3()
 {
-    unsigned nFieldId = FUN_1403ed2d0()->FUN_141bd3060();
+    unsigned nFieldId = reinterpret_cast<Unk_GuideWorld*>(WorldService::GetInstance())->FUN_141bd3060();
     if (DAT_143ab2890 != 0)
         nFieldId = 0;
     if (m_nRangeBeg != 0 || m_nRangeEnd != 0)

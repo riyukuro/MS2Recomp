@@ -82,12 +82,12 @@ int Unk_1414a6be0_WStrMapAnchor(std::unordered_map<std::wstring, int>& m)
 }
 
 // utf8string::operator+=(const char*) as compiled in another TU: a forwarder to that TU's string append (FUN_14112cd60).
-void FUN_14112cd60(efd::utf8string* s, const char* p);
+void FUN_14112cd60(struct Unk_CMISStr*, char const*);   // C3: was FUN_14112cd60
 
 // @0x1414a7d40
 struct Unk_Str1414a7d40 { char m_first; };
 efd::utf8string& Unk_1414a7d40(efd::utf8string* s, const char* p)
 {
-    FUN_14112cd60(reinterpret_cast<efd::utf8string*>(&reinterpret_cast<Unk_Str1414a7d40*>(s)->m_first), p);
+    FUN_14112cd60((struct Unk_CMISStr*)(reinterpret_cast<efd::utf8string*>(&reinterpret_cast<Unk_Str1414a7d40*>(s)->m_first)), p);
     return *s;
 }

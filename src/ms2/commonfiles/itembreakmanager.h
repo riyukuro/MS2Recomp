@@ -9,7 +9,6 @@
 class Unk_BreakInput { public: virtual void vfunc_0(); virtual unsigned char vfunc_1(); virtual unsigned short vfunc_2(); virtual unsigned vfunc_3(); virtual __int64 vfunc_4(); };
 class Unk_BreakPacket { public: void* p0; Unk_BreakInput input; };
 class Unk_BreakOutput { public: virtual void vfunc_0(); virtual void vfunc_1(unsigned char); virtual void vfunc_2(unsigned short); virtual void vfunc_3(unsigned); };
-class Unk_BreakRef { public: void FUN_14015b020(); int FUN_140159bc0(); void FUN_140159ba0(); };
 template<class T> class Unk_BreakPtr {
 public:
     Unk_BreakPtr() : p(0) {} Unk_BreakPtr(T* value) : p(value) { AddRef(); }
@@ -20,10 +19,10 @@ public:
     operator T*() const { return p; } T* get() const { return p; } T* operator->() const { return p; }
 private:
     void AddRef() const { if(p) AddRefImpl(0); }
-    static void Reference(T* v) { reinterpret_cast<Unk_BreakRef*>(v)->FUN_14015b020(); }
+    static void Reference(T* v) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(v)); }
     void AddRefImpl(void*) const { Reference(p); }
     void Release() { if(p) { ReleaseImpl(0); p=0; } }
-    void ReleaseImpl(void*) { if(reinterpret_cast<Unk_BreakRef*>(p)->FUN_140159bc0()==0) { Reference(p); reinterpret_cast<Unk_BreakRef*>(p)->FUN_140159ba0(); } }
+    void ReleaseImpl(void*) { if(CPtred::ReleasePtred(reinterpret_cast<CPtred*>(p))==0) { Reference(p); CPtred::DeletePtred(reinterpret_cast<CPtred*>(p)); } }
     void* pad; T* p;
 };
 namespace ItemBreakCommon {

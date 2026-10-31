@@ -14,14 +14,13 @@
 #include <NiVertexColorProperty.h>
 #include <NiZBufferProperty.h>
 
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/commonfiles/timeutil.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-NiNode* FUN_1411a6b10(void* pScene);
-void* FUN_1403ed280();
 void* FUN_1409f7ca0();                                                  // the physics scene
 bool FUN_1416892f0(void* pScene, Unk_WarFogRay* pRay, int n);           // cast the ray; fills m_hit
-unsigned FUN_140869420();                                               // tick count
 float FUN_14029dba0(float f);                                           // sinf
 float FUN_14029cc60(float f);                                           // cosf
 float FUN_14029d220(float f);                                           // fabsf
@@ -88,7 +87,7 @@ void CWarFogEffect::FUN_141b73530(const Unk_WarFogParam* pParam, const efd::Poin
     center.z += 75.0f;
     center.z = (center.z + m_fZ) * 0.5f;
     m_fZ = center.z;
-    if (FUN_140869420() > m_nTick + 10U && m_bFlag2c) {
+    if (GetTickCountMs2() > m_nTick + 10U && m_bFlag2c) {
         float angle = 0.0f;
         for (int i = 0; i < 0x40; ++i) {
             angle = ((float)i / 63.0f) * 3.1415927f * 2.0f;
@@ -111,7 +110,7 @@ void CWarFogEffect::FUN_141b73530(const Unk_WarFogParam* pParam, const efd::Poin
             }
         }
         ((CMesh*)m_spMesh)->UpdateBound();
-        m_nTick = FUN_140869420();
+        m_nTick = GetTickCountMs2();
     }
     ((CMesh*)m_spMesh)->GetMesh()->SetTranslate(center);
 }
@@ -141,7 +140,7 @@ void CWarFogEffect::FUN_141b73ab0(const Unk_WarFogParam* pParam)
     m_fAlpha = pParam->FUN_140381340();
     m_bFlag24 = pParam->FUN_140381320();
     m_spMesh = NiNew CMesh(false, true, 0, 0xc3, 0x100, 0x15);
-    NiNode* pScene = FUN_1411a6b10(FUN_1403ed280());
+    NiNode* pScene = TSingleton<CEffectService>::GetInstance()->FUN_1411a6b10();
     pScene->AttachChild(((CMesh*)m_spMesh)->GetMesh(), false);
     float angle = 0.0f;
     for (int i = 0; i < 0x40; ++i) {
@@ -189,7 +188,7 @@ void CWarFogEffect::FUN_141b73ab0(const Unk_WarFogParam* pParam)
     pScene->UpdateEffects();
     pScene->UpdateNodeBound();
     pScene->Update(0.0f, true);
-    m_nTick = FUN_140869420();
+    m_nTick = GetTickCountMs2();
 }
 
 // @0x141b744e0 (the UCRT header-inline memmove_s from corecrt_memcpy_s.h, emitted here as an ordinary function)

@@ -15,12 +15,15 @@
                off by default since TAG 17, whose links had no duplicate
   Always: the asm objs and libs of asm.py (<OUT>/asm/*.obj, *.lib: hookglue.lib's ms2::hook::Register) and the SDK
   data libs (dinput8; the DirectX SDK's dxguid).
-  --max-held   wait until at most N heavy slots are held before taking one (default 3: leave the gates a free slot)
+  --max-held   wait until at most N heavy slots are held before taking one (default 3: leave the gates a free slot);
+               meanwhile work/locks/heavy.drain holds new heavy_lock acquirers off (tools/heavy_lock.py)
 Outputs: <OUT>/link<TAG>.rsp, link<TAG>.log, fullexe<TAG>.exe/.map (TAG: FULLEXE_TAG)."""
 import argparse, collections, os, shutil, subprocess, sys, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import ROOT, OUT, TREE, copy_new, tagged, wine  # noqa: E402
 import ms2paths  # noqa: E402
+sys.path.insert(1, os.path.join(ROOT, "tools"))
+import heavy_lock  # noqa: E402
 
 # DirectX SDK / Gamebryo renderer libs the objs name by #pragma comment(lib): supplied via --libpath or not needed here
 NODEFAULT = ("D3DX9.lib", "D3DX10.lib", "D3DX11.lib", "D3DCompiler.lib", "NiDX9Renderer.lib")
@@ -154,9 +157,26 @@ def main():
     open(tagged("link.rsp"), "w").write("\n".join(rsp) + "\n")
     # under an outer heavy_lock (MS2_HEAVY_HELD) our own slot would count against --max-held and the inner
     # heavy_lock is a no-op anyway: link in the held slot
-    while not os.environ.get("MS2_HEAVY_HELD") and held() > a.max_held:
-        time.sleep(2)
-    env = dict(os.environ, WINEPREFIX=ms2paths.WINEPREFIX, WINEDEBUG="-all")
+    # while waiting, keep work/locks/heavy.drain fresh so new gates hold off and the held slots run down (heavy_lock.py
+    # drain; 2026-10-31: 15+ gating workers kept all 5 slots held and this loop starved the latest link for over an
+    # hour). Our own heavy_lock below is exempt; the file goes when the wait ends (or expires 15 min after a crash).
+    drain = os.path.join(heavy_lock.DIR, "heavy.drain")
+    drained = False
+    try:
+        while not os.environ.get("MS2_HEAVY_HELD") and held() > a.max_held:
+            if not drained:
+                print("link: %d heavy slots held > %d: draining (%s)" % (held(), a.max_held, drain), flush=True)
+            drained = True
+            open(drain, "a").close()
+            os.utime(drain)
+            time.sleep(2)
+    finally:
+        if drained:
+            try:
+                os.remove(drain)
+            except OSError:
+                pass
+    env = dict(os.environ, WINEPREFIX=ms2paths.WINEPREFIX, WINEDEBUG="-all", MS2_HEAVY_IGNORE_DRAIN="1")
     t0 = time.time()
     with open(tagged("link.log"), "w") as log:
         rc = subprocess.call([sys.executable, "-P", os.path.join(ROOT, "tools", "heavy_lock.py"), "--",

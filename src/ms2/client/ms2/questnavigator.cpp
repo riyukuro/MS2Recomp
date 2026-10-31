@@ -38,6 +38,8 @@ class NotifyObject;
 // The minimap dialog (UI type 0x4e29) lives in another unit; only the cast target is needed.
 class UIMinimapDialog : public UIDialog
 {
+public:
+    void FUN_141a3ada0();   // C3: was free FUN_141a3ada0
 };
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
@@ -48,7 +50,6 @@ class Unk_QnState
 {
 public:
     Unk_QnTracking* FUN_140c9b8b0() { return &m_160; }              // 0x140c9b8b0
-    void FUN_141243540();                                           // save the settings
     char m_pad_00[0x160];
     Unk_QnTracking m_160;
 };
@@ -58,10 +59,12 @@ CFeatureManager* FUN_140166410();
 NotifySystem* FUN_140939a10();
 
 UIQuestEventDispatcher* FUN_140bfc4b0();
-WorldService* FUN_1403ed2d0();
 CQuestManager* FUN_140764020();
-void* FUN_1403ed280();
-NiNode* FUN_1411a6b10(void* p);                                     // the scene root
+class CEffectService   // C3: member view for the former free stand-ins
+{
+public:
+    class NiNode* FUN_1411a6b10();
+};
 void* FUN_1408e57f0();
 int FUN_1422b9e00(void* p);
 CStringW GetStringCommonByKey(const CStringW& strKey);
@@ -72,8 +75,7 @@ int FUN_140408410(const ATL::CAtlArray<unsigned>& aValues, const unsigned& nValu
 UIMinimapDialog* FUN_140c9b540(int nId);
 
 // the minimap dialog (UI type 0x4e29) and the UI manager
-class Unk_QnUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-void FUN_141a3ada0(UIMinimapDialog* pDialog);                       // refresh the minimap's quest marker
+class Unk_QnUIMgr { public:  };
 
 // engine helpers (non-inlined in the exe)
 Vector3 FUN_140a0b080(const Vector3& a, const Vector3& b, const Vector3& c);
@@ -83,7 +85,6 @@ float FUN_140966f00(NiPoint3 a, Vector3 b);
 extern Vector3 DAT_143b01a60;                               // the zero point
 extern Vector3 DAT_143a08cf8;                               // the up axis
 extern const NiRTTI DAT_143afa4d8;                                  // NiNode::ms_RTTI
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);   // NiDynamicCast
 
 // the loaded effect model (a smart pointer, dtor 0x1405a85c0) and the model loader
 struct Unk_QnModelRef { void* m_p; ~Unk_QnModelRef(); };
@@ -228,7 +229,7 @@ void CQuestNavigator::FUN_140c99e30()
 // @0x140c99ee0
 void CQuestNavigator::FUN_140c99ee0()
 {
-    PCBase* pPC = (PCBase*)FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (m_10 != 0)
@@ -280,10 +281,10 @@ void CQuestNavigator::OnCompleteMyPC(NotifyObject* pNotify)
     if (m_10 == 0)
     {
         CString strPath("./Data/Resource/Model/Effect/ETC/Eff_Quest_Navigation.nif");
-        m_10 = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, FUN_1409849b0(FUN_140a0afd0()->FUN_141551ea0(strPath, 0, 5, 0, 0)));
+        m_10 = (NiNode*)NiObject::DynamicCast(&DAT_143afa4d8, (class NiObject const*)(FUN_1409849b0(FUN_140a0afd0()->FUN_141551ea0(strPath, 0, 5, 0, 0))));
         if ((NiNode*)m_10 != 0)
         {
-            NiNode* pScene = FUN_1411a6b10(FUN_1403ed280());
+            NiNode* pScene = ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->FUN_1411a6b10();
             if (pScene != 0)
             {
                 pScene->AttachChild(m_10, true);
@@ -297,7 +298,7 @@ void CQuestNavigator::OnCompleteMyPC(NotifyObject* pNotify)
     FUN_140c9ac80();
     UIMinimapDialog* pMinimap = FUN_140c9b540(0x4e29);
     if (pMinimap != 0)
-        FUN_141a3ada0(pMinimap);
+        ((class UIMinimapDialog*)(class UIMinimapDialog*)(pMinimap))->FUN_141a3ada0();
 }
 
 // @0x140c9a420
@@ -308,7 +309,7 @@ void CQuestNavigator::SelectQuest(int nQuestId)
     if (reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_30 != nQuestId)
     {
         reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_30 = nQuestId;
-        reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_141243540();
+        ((CGameOption*)(Unk_QnState*)(reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())))->FUN_141243540();
     }
 }
 
@@ -342,13 +343,13 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
         return 1;
     int nFailed = 1;
     int nTargetMap = spContext->m_18;
-    int nCurrentMap = FUN_1403ed2d0()->FUN_141bd3060();
+    int nCurrentMap = WorldService::GetInstance()->FUN_141bd3060();
     if (nTargetMap == nCurrentMap)
     {
         float fBest = FLT_MAX;
         float fDist = FLT_MAX;
         Vector3 pos = DAT_143b01a60;
-        if (FUN_1403ed2d0()->FUN_141bd49d0(spContext->m_20, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
+        if (WorldService::GetInstance()->FUN_141bd49d0(spContext->m_20, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
         {
             fBest = fDist;
             if (static_cast<CQuestManagerCommon&>(*FUN_140764020()).FUN_1407456d0(pResult->m_18) != 0)
@@ -357,13 +358,13 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
                 pResult->m_1c = 1;
             reinterpret_cast<Vector3&>(pResult->m_20) = pos;
         }
-        if (FUN_1403ed2d0()->FUN_141bd4ed0(spContext->m_30, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
+        if (WorldService::GetInstance()->FUN_141bd4ed0(spContext->m_30, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
         {
             fBest = fDist;
             pResult->m_1c = 3;
             reinterpret_cast<Vector3&>(pResult->m_20) = pos;
         }
-        if (FUN_1403ed2d0()->FUN_141bd51a0(spContext->m_40, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
+        if (WorldService::GetInstance()->FUN_141bd51a0(spContext->m_40, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
         {
             fBest = fDist;
             pResult->m_1c = 5;
@@ -377,7 +378,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
         {
             int bFound = 0;
             ATL::CAtlArray<MS2Ptr<CPortal> > aPortals;
-            FUN_1403ed2d0()->FUN_141bc2a70(6, &aPortals);
+            WorldService::GetInstance()->FUN_141bc2a70(6, &aPortals);
             for (size_t i = 0; i < aPortals.GetCount(); i++)
             {
                 MS2Ptr<CPortal> spPortal = aPortals[i];
@@ -398,7 +399,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
                 int nNextMap = FUN_140c9b8e0()->FUN_140c912d0(nCurrentMap, nTargetMap);
                 if (nNextMap != 0)
                 {
-                    MS2Ptr<CPortal> spNext = FUN_1403ed2d0()->FUN_141bc2880(nNextMap);
+                    MS2Ptr<CPortal> spNext = WorldService::GetInstance()->FUN_141bc2880(nNextMap);
                     if (spNext.get() ? true : false)
                     {
                         if (spNext->FUN_14169d160() == 1)
@@ -436,7 +437,7 @@ void CQuestNavigator::FUN_140c9ac80()
     m_70.m_20.clear();
     m_70.m_30.clear();
     m_70.m_40.clear();
-    int nMapId = FUN_1403ed2d0()->FUN_141bd3060();
+    int nMapId = WorldService::GetInstance()->FUN_141bd3060();
     ATL::CAtlArray<Unk_PayloadPtr<CQuest> > aQuests;
     FUN_140764020()->FUN_1416cb8b0(aQuests, 1, 0xb, -1);
     for (size_t i = 0; i < aQuests.GetCount(); i++)
@@ -482,7 +483,7 @@ bool CQuestNavigator::FUN_140c9af60()
 {
     if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
         return false;
-    PCBase* pPC = (PCBase*)FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return false;
     if (pPC->FUN_1416764d0() != 0)
@@ -499,7 +500,7 @@ bool CQuestNavigator::FUN_140c9af60()
 // @0x140c9b0a0
 Vector3 CQuestNavigator::FUN_140c9b0a0(const Vector3& pos)
 {
-    PCBase* pPC = (PCBase*)FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return DAT_143b01a60;
     const auto& ptPC = pPC->vfunc_18();
@@ -511,7 +512,7 @@ Vector3 CQuestNavigator::FUN_140c9b0a0(const Vector3& pos)
 // @0x140c9b150
 CStringW CQuestNavigator::FUN_140c9b150(const Vector3& pos)
 {
-    PCBase* pPC = (PCBase*)FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return CStringW(L"");
     CStringW strText;
@@ -540,7 +541,7 @@ UIMinimapDialog* FUN_140c9b540(int nId)
 {
     if (reinterpret_cast<Unk_QnUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_QnUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = ((CUIService*)(Unk_QnUIMgr*)(reinterpret_cast<Unk_QnUIMgr*>(TSingleton<CUIService>::GetInstance())))->FUN_141adcea0((eUIClassID)(nId));
         if (p.get())
             return dynamic_cast<UIMinimapDialog*>((UIObject*)p);
     }

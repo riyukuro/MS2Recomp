@@ -98,11 +98,8 @@ CStringW GetStringCommonByKey(const CStringW& str);
 CQuestManager* FUN_140764020();
 UIRewardNotify* FUN_140938cd0(int);
 UIFameContentsNotify* FUN_140e77d80(int);
-WorldService* FUN_1403ed2d0();
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
-
-CReservedWordTable* FUN_1403b4750();
 
 class Unk_QmTalkScript;
 class Unk_QmTalkScriptPtr {
@@ -252,14 +249,14 @@ void CStoryQuest::FUN_140d73960()
         {
             CStringW strWho = GetStringTable()->FUN_141811980(0x47, m_data->m_2f0.m_c);
             CStringW strText = FUN_1401e8510((const wchar_t*)strWho, GetStringTable()->FUN_141811980(3, m_data->m_2f0.m_4));
-            FUN_1403b4750()->FUN_1416fb340(strText);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
             {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x28, CStringW(strText), 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
                     spBox->FUN_140534050(FUN_14074b030(m_data.operator->()));
                     spBox->FUN_140533ff0(m_7c);
-                    spBox->SetTitle(FUN_1403ed2d0()->FUN_141bd0d30());
+                    spBox->SetTitle(WorldService::GetInstance()->FUN_141bd0d30());
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(FUN_140764020(), &CQuestManager::SendQuestMode20));
                     spBox->FUN_141a01690(GetStringCommonByKey(L"s_quest_dispatch_yes"), GetStringCommonByKey(L"s_quest_dispatch_no"), L"");
                     FUN_140d73c60(spBox);
@@ -332,7 +329,7 @@ int CStoryQuest::FUN_14180fc80()
     int nMap = m_data->m_32c.m_4;
     if (nMap != 0)
     {
-        if (FUN_1403ed2d0()->FUN_141bd3060() != nMap)
+        if (WorldService::GetInstance()->FUN_141bd3060() != nMap)
             return 0;
         if (nMap == 62000000 && FUN_1418fd280() == 0)
             return 0;
@@ -369,7 +366,7 @@ CFieldQuest::~CFieldQuest() {}
 // @0x141810070
 int CFieldQuest::GetTrackingState()
 {
-    return FUN_140744b90(FUN_1403ed2d0()->FUN_141bd3060());
+    return FUN_140744b90(WorldService::GetInstance()->FUN_141bd3060());
 }
 
 // @0x1418100c0
@@ -573,7 +570,7 @@ CStringW CStringTable::CDesc::FUN_141813a30(const CString& strTag)
     {
         if (pPair->m_value->m_bPending != 0)
         {
-            FUN_1403b4750()->FUN_1416fb380(pPair->m_value->m_strText);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(pPair->m_value->m_strText);
             pPair->m_value->m_bPending = pPair->m_value->m_strText.Find(L"$", 0) != -1;
         }
         return pPair->m_value->m_strText;
@@ -639,7 +636,7 @@ BOOL CStringTable::Load()
             CStringW strText(spCache->m_strings.GetValueAt(posStr));
             if (strText.Find(L"$", 0) != -1)
             {
-                FUN_1403b4750()->FUN_1416fb380(strText);
+                TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strText);
                 spCache->m_strings.SetAt(nStringId, strText);
             }
         }
@@ -794,7 +791,7 @@ CStringW CStringTable::FUN_141812290(int nBuffId, unsigned short nLevel, CString
         }
     }
     if (strTag.CompareNoCase("name") == 0)
-        FUN_1403b4750()->FUN_1416fbf60(strText, nLevel);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf60(strText, nLevel);
     if (DAT_143ae0fc0 != 0 && strTag.CompareNoCase("name") == 0)
         strText.AppendFormat(L" [%d][%d]", nBuffId, nLevel);
     return strText;
@@ -809,7 +806,7 @@ CStringW CStringTable::FUN_1418125b0(int nId)
         return FUN_141811980(4, nId);
     if (nId >= 0xaae61 && nId <= 0xaae63)
     {
-        Unk_StPlayer* pPlayer = static_cast<Unk_StPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        Unk_StPlayer* pPlayer = static_cast<Unk_StPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer != 0)
         {
             CStringW strName = pPlayer->FUN_141523bc0()->FUN_141767e60(nId);
@@ -923,7 +920,7 @@ CStringW CStringTable::FUN_141813150(int nRank)
 // @0x141813200
 CStringW CStringTable::FUN_141813200(__int64 nItemUid)
 {
-    Unk_StPlayer* pPlayer = static_cast<Unk_StPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    Unk_StPlayer* pPlayer = static_cast<Unk_StPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return GetStringCommon(0);
     MS2Ptr<CItem> spItem = pPlayer->FUN_141655b80(nItemUid);

@@ -74,8 +74,8 @@ extern NiRenderer* DAT_143afa648;               // NiRenderer::ms_pkRenderer
 extern int DAT_143ae2b34;                       // 1: the kinds are tested by the shell flags instead of the extra data
 extern int DAT_1439f4a8c;                       // counter of the marking passes
 //                       // counter of the marking passes
-int FUN_1415690c0(NiAVObject* pShell);
-int FUN_141568f60(NiAVObject* pShell);
+unsigned int FUN_1415690c0(class NiAVObject*);   // C3: was FUN_1415690c0
+unsigned int FUN_141568f60(class NiAVObject*);   // C3: was FUN_141568f60
 float FUN_141b71c50();
 
 // ---- small inlines of the engine headers ----

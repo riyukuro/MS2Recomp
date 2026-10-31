@@ -21,7 +21,7 @@ class Unk_FreeCamInput : public CInputKeyHandler
 public:
     bool FUN_14116da30(int nKey, bool b, int n);                    // key pressed
 };
-Unk_FreeCamInput* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The camera option row held by the game context (+0x1f4 fov).
 struct Unk_FreeCamOption
@@ -93,13 +93,13 @@ void CEditCameraMode::vfunc_8(double fTime)
 {
     vfunc_9();
     Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
-    if (FUN_14025e7c0()->FUN_14116daa0(0, false, 0) && FUN_14025e7c0()->FUN_14116daa0(1, false, 0))
+    if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116daa0(0, false, 0) && ((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0))
     {
         Vector3 ptPos = FUN_1409f2540();
         ptPos.z = ptPos.z - ptMove.z * 2.0f;
         vfunc_3(ptPos);
     }
-    else if (FUN_14025e7c0()->FUN_14116daa0(1, false, 0))
+    else if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0))
     {
         if (ptMove.FUN_140552700(g_143b01a60))
         {
@@ -152,18 +152,18 @@ void CEditCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
     m_78 = g_143b01a60;
-    if (FUN_14025e7c0()->FUN_14116d950(0x11, false, 0))
+    if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116d950(0x11, false, 0))
         m_78.z = -1.0f;
-    else if (FUN_14025e7c0()->FUN_14116d950(0x1f, false, 0))
+    else if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116d950(0x1f, false, 0))
         m_78.z = 1.0f;
-    if (FUN_14025e7c0()->FUN_14116d950(0x1e, false, 0))
+    if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116d950(0x1e, false, 0))
         m_78.y = 1.0f;
-    else if (FUN_14025e7c0()->FUN_14116d950(0x20, false, 0))
+    else if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116d950(0x20, false, 0))
         m_78.y = -1.0f;
     int nX;
     int nY;
     int nWheel;
-    if (FUN_14025e7c0()->FUN_14116dbf0(&nX, &nY, &nWheel, false, 0))
+    if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116dbf0(&nX, &nY, &nWheel, false, 0))
     {
         ptMove.y = (float)nX;
         ptMove.z = (float)nY;

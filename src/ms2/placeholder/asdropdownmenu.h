@@ -42,9 +42,5 @@ public:
     void FUN_1422e0510(int nIndex);                                 // remove the row at nIndex
     void FUN_1422e0580(const CStringW& strLabel);                   // remove the first row labelled strLabel
     // (*) only string members are compared, as numbers (GetInt / GetUInt on a string value): what the exe does.
-
-private:
-    // AScript's child-object getter template (0x1422de460 for T = ASDataProvider), used by FUN_1422df770 only
-    MS2Ptr<ASDataProvider> FUN_1422de460(const CString& strName);
 };
 MS2_CHECK_SIZE(ASDropdownMenu, 0x88);

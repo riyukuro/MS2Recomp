@@ -35,16 +35,14 @@
 #include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 CString FUN_140cc2ad0(const CString& strDir, const CString& strFile);    // <dir>/<file>
 CString FUN_14016a5c0(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
-bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* pszDelim);   // split into ints
-int FUN_140873600(Unk_140165cf0* pElem, const char* pszName, CMsTime& tOut);   // time attribute
+int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 __int64 GetServerTime();                                                 // the server time
 unsigned FUN_140768010(unsigned nMax, int nMin);                         // random index
 int FUN_1407181d0(CString* pStr);                                        // string to int
@@ -63,8 +61,8 @@ MS2_CHECK_SIZE(Unk_StrVec, 24);
 void FUN_140275080(CString& str, Unk_StrVec* pOut, const char* pszDelim);   // splits into a std::vector<CString>
 
 // The maps whose movie has already played (playOneTime).
-class Unk_IdList { public: int FUN_140408410(const int& nId); };
-extern Unk_IdList DAT_143ab3058;
+extern ATL::CAtlArray<unsigned int> DAT_143ab3058;
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 extern int DAT_143ab2874;                                                // the current map code
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
@@ -93,8 +91,8 @@ bool CLoadingImageTable::LoadingImage::IsSameCondition(const LoadingImage& o) co
 int CLoadingImageTable::LoadingImage::Load(Unk_140165cf0* pElem)
 {
     FUN_140873220(pElem, "code", m_nCode);
-    FUN_140873600(pElem, "startTime", m_startTime);
-    FUN_140873600(pElem, "endTime", m_endTime);
+    XmlGetAttr((class TiXmlElement*)(pElem), "startTime", m_startTime);
+    XmlGetAttr((class TiXmlElement*)(pElem), "endTime", m_endTime);
     ParseExceptMap(pElem, "exceptMap", m_exceptMaps);
     CString strBg;
     FUN_1408733e0(pElem, "bgLoading", strBg);
@@ -163,17 +161,17 @@ int CLoadingImageTable::Load()
     SetInit(true);
     CString strPath = FUN_14071a5b0("Table", "loadingImage.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("image"); pNode != 0; pNode = pNode->FUN_140168650("image"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         ImagePtr spImage(new LoadingImage);
         if (spImage.get()->Load(pNode) != 0)
@@ -268,7 +266,7 @@ CString CLoadingImageTable::GetMovieFile(int nMapCode, unsigned nIndex)
     MoviePtr spMovie(0);
     if (!m_movies.Lookup(nMapCode, spMovie))
         return strEmpty;
-    if (spMovie.get()->m_nPlayOneTime != 0 && DAT_143ab3058.FUN_140408410(nMapCode) != -1)
+    if (spMovie.get()->m_nPlayOneTime != 0 && Unk_ArrayFind<unsigned int>(DAT_143ab3058, reinterpret_cast<const unsigned int&>(nMapCode)) != -1)
         return strEmpty;
     if (spMovie.get()->m_files.empty())
         return strEmpty;

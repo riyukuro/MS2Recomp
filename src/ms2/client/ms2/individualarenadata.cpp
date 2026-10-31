@@ -17,18 +17,15 @@
 // Unrecovered helpers (same ones continentregiontable.cpp uses).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
-int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int& rOut);
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& rOut);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& rOut);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14016a5c0(const char* psz, int n);
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 
-unsigned __int64 FUN_1401662c0(void*);                                      // element count of an array
 void* FUN_140164930(void*, unsigned __int64);                               // element address
 int FUN_140768010(int nRange, int nBase);                                   // random number in [nBase, nBase + nRange)
 
@@ -76,7 +73,7 @@ bool CIndividualArenaDataTable::Load()
     m_map.RemoveAll();
     CString strPath = FUN_14071a5b0("Table", "IndividualArena.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -88,17 +85,17 @@ bool CIndividualArenaDataTable::Load()
          pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650("individualArena")))
     {
         int nType = 0;
-        FUN_1408731e0(pNode, "arenaType", nType);
+        XmlGetAttr((class TiXmlElement*)(pNode), "arenaType", nType);
         if (nType == 0)
             continue;
         DataPtr data(MS2SvrNewTag(0));
-        FUN_1408731e0(pNode, "arenaType", data->m_nArenaType);
+        XmlGetAttr((class TiXmlElement*)(pNode), "arenaType", data->m_nArenaType);
         CStringW strName;
         FUN_140873420(pNode, "arenaName", strName);
         const IndividualArenaStringMap::CPair* pName = strings->Lookup(strName);
         if (pName == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
             return false;
         }
         data->m_nNameId = pName->m_value;
@@ -107,19 +104,19 @@ bool CIndividualArenaDataTable::Load()
         const IndividualArenaStringMap::CPair* pDetail = strings->Lookup(strDetail);
         if (pDetail == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
             return false;
         }
         data->m_nDetailId = pDetail->m_value;
         FUN_1408733e0(pNode, "bannerPath", data->m_strBannerPath);
-        FUN_140873220(pNode, "fieldID", data->m_nFieldID);
-        FUN_1408731e0(pNode, "playerCount", data->m_nPlayerCount);
-        FUN_140873220(pNode, "rewardItemId1", data->m_nRewardItemId1);
-        FUN_1408731e0(pNode, "reward1Winner", data->m_nReward1Winner);
-        FUN_1408731e0(pNode, "reward1Loser", data->m_nReward1Loser);
-        FUN_140873220(pNode, "rewardItemId2", data->m_nRewardItemId2);
-        FUN_1408731e0(pNode, "reward2Winner", data->m_nReward2Winner);
-        FUN_1408731e0(pNode, "reward2Loser", data->m_nReward2Loser);
+        XmlGetAttr((class TiXmlElement*)(pNode), "fieldID", data->m_nFieldID);
+        XmlGetAttr((class TiXmlElement*)(pNode), "playerCount", data->m_nPlayerCount);
+        XmlGetAttr((class TiXmlElement*)(pNode), "rewardItemId1", data->m_nRewardItemId1);
+        XmlGetAttr((class TiXmlElement*)(pNode), "reward1Winner", data->m_nReward1Winner);
+        XmlGetAttr((class TiXmlElement*)(pNode), "reward1Loser", data->m_nReward1Loser);
+        XmlGetAttr((class TiXmlElement*)(pNode), "rewardItemId2", data->m_nRewardItemId2);
+        XmlGetAttr((class TiXmlElement*)(pNode), "reward2Winner", data->m_nReward2Winner);
+        XmlGetAttr((class TiXmlElement*)(pNode), "reward2Loser", data->m_nReward2Loser);
         m_map.SetAt(nType, data);
     }
     SetInit(true);
@@ -159,8 +156,8 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // @0x14051c870
 CString Unk_IaNames::FUN_14051c870()
 {
-    if (FUN_1401662c0(&m_names) == 0)
+    if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&m_names))->GetCount() == 0)
         return "";
-    int nIndex = FUN_140768010((int)FUN_1401662c0(&m_names), 0);
+    int nIndex = FUN_140768010((int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&m_names))->GetCount(), 0);
     return *(CString*)FUN_140164930(&m_names, nIndex);
 }

@@ -32,8 +32,8 @@
 #include "ms2/scaleform/include/kernel/sf_file.h"
 
 // ---- externs ----
-CFeatureManager* FUN_140166410();
-CGFxLanguage* FUN_141371b20();                              // the CGFxLanguage singleton
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+void* FUN_141371b20();   // C3: was FUN_141371b20
 CString FUN_14071ae20(const CString& strFile);              // the GFx UI's XML path of a file
 CString FUN_14071a6f0(const CString& strFile);              // the GFx debug XML path of a file
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
@@ -318,7 +318,7 @@ void FUN_141627390()
     efd::File::SetFileAccessFunc((efd::File::FILEACCESSFUNCW)efd::File::DefaultFileAccessFunc);
     efd::File::SetCreateDirectoryFunc((efd::File::CREATEDIRFUNCW)efd::File::DefaultCreateDirectoryFunc);
     efd::File::SetDirectoryExistsFunc((efd::File::DIREXISTSFUNCW)efd::File::DefaultDirectoryExistsFunc);
-    NiGFxLocalizeManager::FUN_141629eb0(FUN_140166410()->FUN_14036d8e0());
+    NiGFxLocalizeManager::FUN_141629eb0(((class CFeatureManager*)FUN_140166410())->FUN_14036d8e0());
     NiGFxLocalizeManager::FUN_141629df0(Delegate<bool(TiXmlDocument&)>(FUN_141628610));
     NiGFxLocalizeManager::FUN_141629e70(Delegate<bool(TiXmlDocument&)>(LoadUsmSubtitleText));
     NiGFxLocalizeManager::FUN_141629e30(Delegate<bool(TiXmlDocument&)>(LoadStringMovie));
@@ -347,7 +347,7 @@ void FUN_1416275e0()
     NiSearchPath::SetCreateFunc((NiSearchPath::CreateFunction)FUN_141508060);
     GFxFileOpener::FUN_1422eb400(FUN_1416282e0);
     UISwfEntity::FUN_141629ed0(Delegate<CString(CString, bool)>(FUN_141628470));
-    NiGFxLocalizeManager::FUN_141629eb0(FUN_140166410()->FUN_14036d8e0());
+    NiGFxLocalizeManager::FUN_141629eb0(((class CFeatureManager*)FUN_140166410())->FUN_14036d8e0());
     NiGFxLocalizeManager::FUN_141629df0(Delegate<bool(TiXmlDocument&)>(FUN_141628610));
     NiGFxLocalizeManager::FUN_141629e70(Delegate<bool(TiXmlDocument&)>(LoadUsmSubtitleText));
     NiGFxLocalizeManager::FUN_141629e30(Delegate<bool(TiXmlDocument&)>(LoadStringMovie));
@@ -540,7 +540,7 @@ CString FUN_141628470(CString strName, bool bDebug)
 // @0x141628610
 bool FUN_141628610(TiXmlDocument& doc)
 {
-    return FUN_141371b20()->LoadKorFlash(&doc);
+    return ((class CGFxLanguage*)FUN_141371b20())->LoadKorFlash(&doc);
 }
 
 // @0x141628640

@@ -35,6 +35,10 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local views of unrecovered callees -------------------------------------------------------------------------
 
@@ -80,17 +84,15 @@ Unk_CaQuestRef FUN_14074bc40(int nQuest);
 CStringW FUN_1416e4df0(int nQuest);                     // the quest name
 CStringW FUN_1416e7fb0(int n);
 
-class Unk_CaStrings { public: CStringW FUN_141811980(int, int); };
-Unk_CaStrings* FUN_1401a9d70();
 CStringW GetStringCommon(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_14028dee0(int nStringId, const fmt::ArgList& args);
 CStringW FUN_1409e9bc0(int nStringId, const int& nA, const unsigned& nB);
 CStringW FUN_14093fd30(int nStringId, const __int64* pDays, const __int64* pMeso);
-CStringW FUN_14086aec0(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);
+CStringW FormatTimeSpan(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_14151f200();
-__time64_t FUN_140869440();
+__time64_t GetServerTime();
 
 // The skill table: the row of a skill id.
 struct Unk_CaSkillRow { char m_pad_00[0xc0]; CString m_strIcon; };
@@ -105,20 +107,17 @@ public:
     void* m_p;
 };
 class Unk_CaSkillTable { public: Unk_CaSkillRef FUN_140aafef0(int nSkillId, unsigned short nLevel); };
-Unk_CaSkillTable* FUN_1401958b0();
 
 // The level rules.
 int FUN_1401e0800(unsigned short nLevel);
 unsigned FUN_1401e0790(unsigned short nLevel, int nPoints);
 
 class Unk_CaUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-Unk_CaUIManager* FUN_1403ed2b0();
 void* FUN_1403ed2d0();
 PCBase* FUN_141bd0cc0(void* pWorld);
 UIGameMenuDialog* FUN_140938b90(int nId);
 
-class Unk_CaNotices { public: void FUN_140da4e40(CStringW, Delegate<void(NotifyObject*)>); };
-Unk_CaNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 // 0x141746230: the level change notification (as in scenestategame.cpp).
 class NotifyChangeMyLevel : public NotifyObject
@@ -196,9 +195,9 @@ Unk_CaTable* FUN_140f2d250()
 // @0x140f2c530
 UICharacterAbilityDialog* FUN_140f2c530(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_CaUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_CaUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<UICharacterAbilityDialog*>((UIObject*)p);
     }
@@ -296,7 +295,7 @@ ATL::CTimeSpan CCharacterAbilityManager::FUN_140f29ea0()
     if (m_nResetTime == 0)
         return ATL::CTimeSpan(0);
     CMsTime tReset(m_nResetTime);
-    CMsTime tNow(FUN_140869440());
+    CMsTime tNow(GetServerTime());
     ATL::CTimeSpan elapsed = tNow - tReset;
     ATL::CTimeSpan cooldown((unsigned)(*FUN_1401d7c10(&FUN_1401d3200()->m_cooldown) * 0x3c));
     if (elapsed.GetTotalMinutes() >= cooldown.GetTotalMinutes())
@@ -371,7 +370,7 @@ int UICharacterAbilityDialog::vfunc_65()
 {
     if (!UIDialog::vfunc_65())
         return 0;
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UICharacterAbilityDialog::FUN_140f2b000));
+    FUN_140939a10()->RegisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UICharacterAbilityDialog::FUN_140f2b000));
     return 1;
 }
 
@@ -486,7 +485,7 @@ void UICharacterAbilityDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* 
         MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(nId);
         if (ref == NULL)
             return;
-        Unk_CaSkillRef skill = FUN_1401958b0()->FUN_140aafef0(ref->m_nSkillId, ref->m_nSkillLevel);
+        Unk_CaSkillRef skill = reinterpret_cast<Unk_CaSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(ref->m_nSkillId, ref->m_nSkillLevel);
         if (skill.FUN_14096e7e0(0))
             return;
         ASTooltip tip(*pRetVal, 2);
@@ -587,7 +586,7 @@ void UICharacterAbilityDialog::FUN_140f2b1e0()
         for (POSITION p = byLevel.GetHeadPosition(); p != NULL; byLevel.GetNext(p))
         {
             MS2Ptr<Unk_CaAbilityRow> a = byLevel.GetValueAt(p);
-            Unk_CaSkillRef skill = FUN_1401958b0()->FUN_140aafef0(a->m_nSkillId, a->m_nSkillLevel);
+            Unk_CaSkillRef skill = reinterpret_cast<Unk_CaSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(a->m_nSkillId, a->m_nSkillLevel);
             if (skill.FUN_14096e7e0(0))
                 continue;
             ASObj item(2);
@@ -628,7 +627,7 @@ void UICharacterAbilityDialog::FUN_140f2b850()
     if (remain > 0)
     {
         bCooling = 1;
-        strRemain = FUN_14086aec0(remain, true, true, remain.GetDays() == 0, remain.GetHours() == 0);
+        strRemain = FormatTimeSpan(remain, true, true, remain.GetDays() == 0, remain.GetHours() == 0);
     }
     int nIntermediate = FUN_140f2d240()->FUN_140f2a210();
     FUN_1409ee290(&m_30)->Invoke("SetRemainCoolButton", bCooling, CStringW(strRemain), nIntermediate);
@@ -643,7 +642,7 @@ void UICharacterAbilityDialog::FUN_140f2ba20()
     Unk_CaQuestRef quest = FUN_14074bc40(nQuest);
     if (quest.FUN_140747650(0))
         return;
-    CStringW strUnlock = FUN_1401a9d70()->FUN_141811980(0x50, nQuest);
+    CStringW strUnlock = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x50, nQuest);
     if (strUnlock.GetLength() == 0)
     {
         switch (quest.FUN_14064d520()->FUN_14074b050())

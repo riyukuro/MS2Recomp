@@ -56,6 +56,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/shopcategorytable.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uishopdialog.h"
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> Unk_ClickDelegate;
 
@@ -65,14 +67,12 @@ public:
     void FUN_1422ce240(const Unk_ClickDelegate& cb, void* pUser);   // click callback
 };
 
-class Unk_SbWorld { public: void* FUN_141bd0cc0(); };           // the local player (a MyPC)
-class Unk_SbShopDialog : public UIDialog { public: int FUN_141afb740(); };   // UIShopDialog: its current tab
+class Unk_SbShopDialog : public UIShopDialog { };   // UIShopDialog: its current tab
 
 CString FUN_14016a600(const wchar_t* psz, int n);                // wide -> narrow
 CString FUN_14102a0b0(int nType, const CString& strName, const CString& strUrl, CString strKey);   // banner image path
 void FUN_1418fe1c0(const CString& strUrl);                       // open a url
-Unk_SbWorld* FUN_1403ed2d0();
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CNetworkService* FUN_140714f90();
 Unk_SbShopDialog* FUN_140534780(int nUIType);
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
@@ -385,7 +385,7 @@ void FUN_1413490b0(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
 {
     if (spItem.IsNull() || spItem->FUN_140527840() == 0)
         return;
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     ASTooltip tipLhs(pPlayer, nLhsFlags, 2);
@@ -399,7 +399,7 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
 {
     if (spItem.IsNull() || spItem->FUN_140527840() == 0)
         return;
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     MS2Ptr<CItem> spEquipped(0);
@@ -480,7 +480,7 @@ int FUN_1413499b0(int nTab)
         int bOpen = 1;
         if (pDlg->vfunc_55() == 0)
         {
-            if (pDlg->FUN_141afb740() == nTab)
+            if (pDlg->GetSortKind() == nTab)
             {
                 bOpen = 0;
             }
@@ -672,7 +672,7 @@ MS2_REPLACE(0x14134a5a0, FUN_14134a5a0, 112, 0x127C11A5);
 // Binds the probability info button (KR builds only) and opens ShopProbInfoUrl on click.
 void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<Unk_140acd6e0>* pButton)
 {
-    if (!FUN_140166410()->FUN_14036e4c0())
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
         return;
     if (*pButton == 0)
         *pButton = root.FUN_140acce30<Unk_140acd6e0>(strName);

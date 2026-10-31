@@ -18,6 +18,11 @@
 #include <ecr/SceneGraphService.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/windowservice.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/cnpc.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -62,12 +67,10 @@ public:
     void* m_pad_00;
     void* m_p;
 };
-class Unk_DbgNpc : public PCBase
+class Unk_DbgNpc : public CNpc
 {
 public:
     Unk_DbgNpcDataPtr FUN_141093270();                                  // the npc's data record handle
-    int FUN_141092ff0();                                                // nonzero: the npc carries a custom model block
-    CString FUN_1416713e0();                                            // animation speed condition (PCBase view)
 };
 class Unk_DbgWorld
 {
@@ -75,7 +78,6 @@ public:
     Unk_DbgNpc* FUN_141bd1320(int nId);                                 // npc by object id
     void* FUN_141bd36d0();                                              // npc tree
 };
-Unk_DbgWorld* FUN_1403ed2d0();
 // The marker effect request: a NoticeMessage (placeholder/effectquery.h), 0x70 bytes. The ctor 0x140a52ef0 fills all of
 // it and SetActor 0x140a53190 writes +0x54 (a 16-byte stand-in was overrun, rt1 stackovf.py); only the name and the type
 // are used here.
@@ -94,18 +96,15 @@ public:
     int FUN_1411a49c0(Unk_DbgMarker* pRequest);                         // start the effect, returns its id
     void FUN_1411a6060(int nId);                                        // stop an effect
 };
-Unk_DbgEffectMgr* FUN_1403ed280();
 void FUN_140a53190(Unk_DbgMarker* p, int nTarget);
 struct Unk_DbgConfig { char m_pad[0x2e8]; CString m_strMarkerEffect; };   // the client config
 Unk_DbgConfig* FUN_1401d31f0();
-class Unk_DbgCameraMgr
+class Unk_DbgCameraMgr : public CameraMgr
 {
 public:
-    int FUN_140a18070();
     bool FUN_140af0520(const efd::Point2& kScreen, Unk_NiPoint3* pOrigin, Unk_NiPoint3* pDir);   // screen point to ray
 };
-Unk_DbgCameraMgr* FUN_1409478c0();
-struct Unk_DbgApp { int FUN_141b90e30(float* pX, float* pY); };         // cursor position
+struct Unk_DbgApp : public CWindowService { };         // cursor position
 Unk_DbgApp* FUN_140aadf80();
 struct Unk_DbgView { void* FUN_1409a8a60(); };                          // the view's camera
 Unk_DbgView* FUN_1413f9a70();
@@ -254,7 +253,7 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
     UISwfEntity::vfunc_33(p, fX, fY);
     if (vfunc_55() != 0)
         return;
-    if (m_bPicking != 0 && m_timer.FUN_140868c00() != 0 && FUN_1409478c0()->FUN_140a18070() != 0)
+    if (m_bPicking != 0 && m_timer.FUN_140868c00() != 0 && reinterpret_cast<Unk_DbgCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
     {
         void* pScene = FUN_1413f9850();
         if (pScene == 0)
@@ -262,11 +261,11 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
         efd::Point2 kScreen = FUN_140a0a600(fX, fY);
         Unk_NiPoint3 kOrigin(DAT_143b01a60);
         Unk_NiPoint3 kDir(DAT_143b01a60);
-        if (FUN_1409478c0()->FUN_140af0520(kScreen, &kOrigin, &kDir))
+        if (reinterpret_cast<Unk_DbgCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0520(kScreen, &kOrigin, &kDir))
         {
             if (void* pSceneData = FUN_140af2a30(FUN_1413f9850()))
             {
-                void* pMap = FUN_1403ed2d0()->FUN_141bd36d0();
+                void* pMap = reinterpret_cast<Unk_DbgWorld*>(WorldService::GetInstance())->FUN_141bd36d0();
                 bool bFound = false;
                 for (void* pos = FUN_140a7b840(pMap); pos != 0; FUN_140a7b860(pMap, &pos))
                 {
@@ -290,7 +289,7 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
                             Vector3 kNormal;
                             efd::Point2 kUV;
                             efd::Point2 kCursor;
-                            if (FUN_140aadf80()->FUN_141b90e30(&kCursor.x, &kCursor.x + 1) == 0)
+                            if (FUN_140aadf80()->GetCursorClientPos(&kCursor.x, &kCursor.x + 1) == 0)
                                 return;
                             unsigned nTri;
                             if (m_spPicker.FUN_141286290()->FUN_14147ea50(pMesh, static_cast<Unk_DbgView*>(pView)->FUN_1409a8a60(),
@@ -304,7 +303,7 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
                                 reinterpret_cast<CString&>(kMarker.m_pName) = FUN_1401d31f0()->m_strMarkerEffect;
                                 kMarker.m_nType = pNpc->FUN_141092ff0() != 0 ? 6 : 5;
                                 FUN_140a53190(&kMarker, pNpc->FUN_14123c580());
-                                m_nMarkerId = FUN_1403ed280()->FUN_1411a49c0(&kMarker);
+                                m_nMarkerId = reinterpret_cast<Unk_DbgEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kMarker);
                                 bFound = true;
                                 break;
                             }
@@ -333,7 +332,7 @@ void UIDebuggingDialog::vfunc_72()
     int bClear = 1;
     if (m_nTargetId != 0)
     {
-        Unk_DbgNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_nTargetId);
+        Unk_DbgNpc* pNpc = reinterpret_cast<Unk_DbgWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nTargetId);
         if (pNpc != 0)
         {
             Unk_DbgModelSet kModel = FUN_141b6f910()->FUN_141206030(pNpc->FUN_14123c460());
@@ -400,8 +399,8 @@ void UIDebuggingDialog::FUN_1412860c0()
 {
     if (m_nMarkerId != 0)
     {
-        if (FUN_1403ed280() != 0)
-            FUN_1403ed280()->FUN_1411a6060(m_nMarkerId);
+        if (reinterpret_cast<Unk_DbgEffectMgr*>(TSingleton<CEffectService>::GetInstance()) != 0)
+            reinterpret_cast<Unk_DbgEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nMarkerId);
     }
     m_nMarkerId = 0;
     m_nTargetId = 0;

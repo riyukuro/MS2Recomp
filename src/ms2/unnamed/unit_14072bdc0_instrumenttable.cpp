@@ -16,9 +16,12 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 
+// return types of the getters this unit calls
+class CFileSystem;
+
 // ---- unrecovered helpers (the tinyxml / string table wrappers the other table units share) ----
 class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
+CFileSystem* GetFileSystem();
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
@@ -141,7 +144,7 @@ bool CInstrumentDataTable::LoadInstruments()
 {
     CString strPath = FUN_14071a5b0("Table", "InstrumentInfo.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -164,7 +167,7 @@ bool CInstrumentDataTable::LoadCategories()
 {
     CString strPath = FUN_14071a5b0("Table", "InstrumentCategoryInfo.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

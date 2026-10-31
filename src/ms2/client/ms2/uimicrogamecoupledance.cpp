@@ -16,6 +16,9 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asgameentity.h"
+#include "ms2/client/ms2/pcbase.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
+#include "ms2/client/ms2/worldservice.h"
 static CString s_clickSound("System_PinkBeans_Arcade_Click_01");
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
@@ -858,7 +861,6 @@ MS2_CHECK_OFFSET(Unk_CoupleDanceEvent, m_dances, 0x80);
 MS2_CHECK_SIZE(Unk_CoupleDanceEvent, 0x98);
 class Unk_CoupleEventHolder { public: MS2Ptr<Unk_CoupleDanceEvent> FUN_140428700(); };
 class Unk_140302b00 { public: Unk_CoupleEventHolder* FUN_1403ed140(); };
-Unk_140302b00* FUN_140302b00();
 class State { public: virtual ~State(); };
 class StateMicroGameCoupleDance : public State {
 public:
@@ -871,9 +873,7 @@ private:
 };
 MS2_CHECK_OFFSET(StateMicroGameCoupleDance, m_round, 0x70);
 MS2_CHECK_SIZE(StateMicroGameCoupleDance, 0x78);
-class Unk_141bd0cc0 { public: int FUN_14166c930(); State* FUN_14166ccb0(); };
-class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
-Unk_1403ed2d0* FUN_1403ed2d0();
+class Unk_1403ed2d0 { public: PCBase* FUN_141bd0cc0(); };
 class Unk_CoupleEventData { public: virtual bool vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual int vfunc_3(); };
 // The interface at +8 has a runtime-selected implementation. Keep its storage opaque.
 struct Unk_CoupleEvent { void* m_00; void* m_data; };
@@ -940,7 +940,7 @@ void UIMicroGameCoupleDance::FUN_140e641d0(int mode, int time) {
 MS2_REPLACE_METHOD(0x140E641D0, UIMicroGameCoupleDance, FUN_140e641d0, 142, 0xDACF8A45);
 // @0x140e64270
 void UIMicroGameCoupleDance::FUN_140e64270() {
-    MS2Ptr<Unk_CoupleDanceEvent> event = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_CoupleDanceEvent> event = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
     if (event == NULL) return;
     std::vector<int> dances(event->m_dances.size());
     for (size_t i = 0; i < event->m_dances.size(); ++i) dances.push_back(static_cast<const int&>((int)i));
@@ -1023,13 +1023,13 @@ MS2_REPLACE_METHOD(0x140E64A90, UIMicroGameCoupleDance, SendPlayArcade, 349, 0xA
 // @0x140e64c00
 void UIMicroGameCoupleDance::FUN_140e64c00() {
     if (m_30 == NULL) return;
-    MS2Ptr<Unk_CoupleDanceEvent> event = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_CoupleDanceEvent> event = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
     if (event == NULL) return;
     if (m_selected < 0 || m_selected >= (int)event->m_dances.size()) {
         m_selected = m_dances[FUN_140768010((int)m_dances.size(),0)];
         m_30->Invoke("selectBtnByDanceIndex", m_selected);
     }
-    Unk_141bd0cc0* state = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* state = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!state) return;
     if (state->FUN_14166c930() != 0x45) return;
     StateMicroGameCoupleDance* dance = dynamic_cast<StateMicroGameCoupleDance*>(state->FUN_14166ccb0());
@@ -1047,7 +1047,7 @@ void UIMicroGameCoupleDance::FUN_140e64e70() {}
 MS2_REPLACE_METHOD(0x140E64E70, UIMicroGameCoupleDance, FUN_140e64e70, 6, 0xA9AF6E37);
 // @0x140e64e80
 int UIMicroGameCoupleDance::FUN_140e64e80() {
-    Unk_141bd0cc0* state = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* state = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!state) return 1;
     if (m_mode == 0 && state->FUN_14166c930() != 0x45) return 1;
     return 0;

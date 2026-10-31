@@ -25,6 +25,9 @@ static CStringW s_strBannerClose(L"bannerClose");
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
+#include "ms2/client/ms2/actionkeyobject.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
+#include "ms2/client/ms2/worldservice.h"
 
 static UICommon::CMyPCKeyInputController s_keyInputController;     // header static (origin unknown)
 // A second string table from another unidentified header (enum names of a sort/chart order).
@@ -65,7 +68,6 @@ public:
 // The singleton chain: 0x140302b00 -> +0xae0 -> the current event (copy under a lock).
 class Unk_EventHolder { public: MS2Ptr<Unk_Event> FUN_140428700(); };
 class Unk_140302b00 { public: Unk_EventHolder* FUN_1403ed140(); };
-Unk_140302b00* FUN_140302b00();
 
 // A table/cache of strings keyed by two ints (global at 0x143ab2fc0, map at +0x18, entry strings at +0x20).
 struct Unk_TableKey
@@ -93,7 +95,7 @@ public:
 private:
     __int64 m_0; __int64 m_8;
 };
-__int64 FUN_140869440();                         // the current time source
+__int64 GetServerTime();                         // the current time source
 class Unk_TableValue
 {
 public:
@@ -118,7 +120,7 @@ extern Unk_Table g_unkTable;                // 0x143ab2fc0
 // Local player (0x1403ed2d0 singleton -> 0x141bd0cc0): a large virtual class; only a few slots are used here.
 struct Unk_Pos { Unk_Pos(); float m_0; float m_4; float m_8; };
 class Unk_PartyInfo { public: int FUN_140f48d40(); };
-class Unk_Mode { public: int FUN_140953530(); };
+class Unk_Mode : public Unk_ActionKeyManager { };
 class Unk_141bd0cc0
 {
 public:
@@ -215,7 +217,6 @@ public:
     int FUN_14166c930();
 };
 class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
-Unk_1403ed2d0* FUN_1403ed2d0();
 bool FUN_140b884e0(Unk_Pos& pos);
 
 // Message boxes (CMsgBoxData, 0x2a0 bytes).
@@ -266,7 +267,7 @@ MS2_REPLACE_METHOD(0x140BFCC50, UICoupleDanceEventDialog, vfunc_72, 34, 0x3E6691
 // @0x140bfcc80
 void UICoupleDanceEventDialog::vfunc_67()
 {
-    Unk_141bd0cc0* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer) {
         if (pPlayer->FUN_14166c930() == 0x3b)
             pPlayer->vfunc_59(1, 0, 0, 0);
@@ -289,10 +290,10 @@ int UICoupleDanceEventDialog::vfunc_28(const char* szMethod, const Scaleform::GF
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
         return 1;
-    MS2Ptr<Unk_Event> pEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_Event> pEvent = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
     if (pEvent == NULL)
         return 1;
-    Unk_141bd0cc0* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pPlayer) {
         MS2_ASSERT_AT(232, 0);
         return 0;
@@ -302,7 +303,7 @@ int UICoupleDanceEventDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             FUN_1412752d0(L"s_microgame_couple_dance_open_banner_failed_wrong_state", 1);
             return 1;
         }
-        if (pPlayer->FUN_140a7b810()->FUN_140953530() != 0x1e) {
+        if (pPlayer->FUN_140a7b810()->GetCur() != 0x1e) {
             FUN_1412752d0(L"s_microgame_couple_dance_open_banner_failed_action_key", 1);
             return 1;
         }
@@ -348,7 +349,7 @@ MS2_REPLACE_METHOD(0x140BFCD30, UICoupleDanceEventDialog, vfunc_28, 1478, 0x6FA6
 // @0x140bfd300
 int UICoupleDanceEventDialog::vfunc_71()
 {
-    Unk_141bd0cc0* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pPlayer) {
         MS2_ASSERT_AT(310, 0);
         return 0;
@@ -386,7 +387,7 @@ MS2_REPLACE_METHOD_VIA(0x140BFD4D0, UICoupleDanceEventDialog, IMessageListener, 
 // @0x140bfd5e0
 void UICoupleDanceEventDialog::FUN_140bfd5e0()
 {
-    MS2Ptr<Unk_Event> pEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_Event> pEvent = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
     if (pEvent == NULL)
         return;
     FUN_140bfdc00();
@@ -445,7 +446,7 @@ MS2_REPLACE_METHOD(0x140BFD5E0, UICoupleDanceEventDialog, FUN_140bfd5e0, 1554, 0
 // @0x140bfdc00
 void UICoupleDanceEventDialog::FUN_140bfdc00()
 {
-    MS2Ptr<Unk_Event> pEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_Event> pEvent = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
     if (pEvent == NULL)
         return;
     CString strStates = g_unkTable.FUN_140bfe1e0(0x835, pEvent->m_18, "");
@@ -478,7 +479,7 @@ void UICoupleDanceEventDialog::FUN_140bfde00()
         return;
     if (!FUN_141924630())
         return;
-    Unk_141bd0cc0* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pPlayer)
         return;
     MS2Ptr<Unk_PartyInfo> pParty = pPlayer->vfunc_87();
@@ -495,7 +496,7 @@ MS2_REPLACE_METHOD(0x140BFDE00, UICoupleDanceEventDialog, FUN_140bfde00, 345, 0x
 // @0x140bfdf60
 void UICoupleDanceEventDialog::FUN_140bfdf60(int nStep)
 {
-    MS2Ptr<Unk_Event> pEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_Event> pEvent = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
     if (pEvent == NULL)
         return;
     if (nStep < 0 || nStep >= (int)pEvent->m_38.size())
@@ -547,7 +548,7 @@ inline CString Unk_Table::FUN_140bfe1e0(int nKind, int nId, const CString& strDe
 // @0x140bfe2c0
 inline CString Unk_TableValue::FUN_140bfe2c0(const CString& strDefault) const
 {
-    Unk_Time now(FUN_140869440());
+    Unk_Time now(GetServerTime());
     if (m_28.FUN_1406c4cc0(now))
         return strDefault;
     return FUN_1407186a0(m_20);

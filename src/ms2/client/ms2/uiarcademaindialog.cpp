@@ -90,6 +90,10 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/seasondatatable.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -129,8 +133,6 @@ public:
     MS2Ptr<Unk_140acd6e0> FUN_140acce30(const CString& strName);            // child button by name
 };
 
-class Unk_ArcStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_ArcStrings* FUN_1401a9d70();
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140763e10(int nScore);                                         // the score as text
 CStringW FUN_14016a730(const char* sz, int n);                              // narrow to wide
@@ -148,7 +150,6 @@ class Unk_ArcGameRule { public: CGameEventValueArcadeOpen* FUN_1403ecfe0(); };
 Unk_ArcGameRule* FUN_140302b00();
 
 class Unk_ArcWorld { public: MyPC* FUN_141bd0cc0(); };
-Unk_ArcWorld* FUN_1403ed2d0();
 bool FUN_1418fe060();                                                       // the map can be changed
 void FUN_141275260(int nNotice, int nA, int nB);                            // error notice
 extern int DAT_143ab2870;                                                   // the current field id
@@ -157,8 +158,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW t
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                // show it
 void FUN_1407105c0(COutPacket& packet, int nA, int nB);                     // send with a throttle
 
-class Unk_ArcSettings { public: bool FUN_14036d570(int nFlag); bool FUN_14036e4c0(); };
-Unk_ArcSettings* FUN_140166410();
+CFeatureManager* FUN_140166410();
 class Unk_ArcConfig { public: int FUN_1402c4c90(int nFlag); };
 struct Unk_ArcConfigRoot { char m_pad_00[8]; Unk_ArcConfig m_config; };
 Unk_ArcConfigRoot* FUN_14025e7b0();
@@ -171,7 +171,6 @@ struct Unk_ArcRankDataView
 };
 unsigned FUN_140869420();                                                   // the client clock (ms)
 class Unk_ArcRegionSvc { public: int FUN_140791f50(int nWhat); };
-Unk_ArcRegionSvc* FUN_1404f4540();
 
 // the xml helpers (TinyXML element: 0x90 bytes, ctor 0x14086f2f0, dtor 0x14086f450)
 class Unk_TiXmlElement
@@ -290,7 +289,7 @@ void UIArcadeMainDialog::OnLoadComplete()
                 continue;
         }
         m_games.push_back(spGame);
-        m_buttons[nButton]->FUN_1422cdfb0(FUN_1401a9d70()->FUN_141811980(0x20, spGame->m_nId));
+        m_buttons[nButton]->FUN_1422cdfb0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x20, spGame->m_nId));
         m_buttons[nButton]->Invoke("setImage", m_bannerPath, spGame->m_strArcadeBanner);
         FUN_140cff840((*m_buttons[nButton]).FUN_1422bb890(), "m_eventBand", spGame->m_bIsEventArcade);
         if (spGame->m_nTargetField == 0)
@@ -303,7 +302,7 @@ void UIArcadeMainDialog::OnLoadComplete()
         m_buttons[i]->FUN_1422c1fe0(0);
         FUN_140cff840((*m_buttons[i]).FUN_1422bb890(), "m_eventBand", 0);
     }
-    if (FUN_1404f4540()->FUN_140791f50(4) != m_nRegion)
+    if (reinterpret_cast<Unk_ArcRegionSvc*>(TSingleton<CSeasonDataTable>::GetInstance())->FUN_140791f50(4) != m_nRegion)
     {
         COutPacket packet(static_cast<int>(SendOp::PlayArcade), 0);
         packet.Encode4(9);
@@ -407,7 +406,7 @@ void UIArcadeMainDialog::FUN_140ef6a60(const Scaleform::GFx::FunctionHandler::Pa
         MS2SvrPtr<CArcadeMainData> spGame = m_games[m_nSelected];
         if (spGame == (CArcadeMainData*)0)
             return;
-        MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pPlayer = reinterpret_cast<Unk_ArcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return;
         bool bMovable = FUN_1418fe060();
@@ -498,8 +497,8 @@ void UIArcadeMainDialog::FUN_140ef7230()
             m_rankView->vfunc_3(1);
             if (m_emptyView.get() != 0)
                 m_emptyView->vfunc_3(0);
-            FUN_140cfee80((*m_rankView).FUN_1422bb890(), "m_gameName", FUN_1401a9d70()->FUN_141811980(0x20, spGame->m_nId));
-            FUN_140cfee80((*m_rankView).FUN_1422bb890(), "m_gameDesc", FUN_1401a9d70()->FUN_141811980(0x21, spGame->m_nId));
+            FUN_140cfee80((*m_rankView).FUN_1422bb890(), "m_gameName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x20, spGame->m_nId));
+            FUN_140cfee80((*m_rankView).FUN_1422bb890(), "m_gameDesc", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x21, spGame->m_nId));
             for (int i = 0; i < 10; i++)
             {
                 int nNo = i + 1;
@@ -542,7 +541,7 @@ bool UIArcadeMainDialog::FUN_140ef7b00(int nArcadeId)
     MS2SvrPtr<CArcadeMainData> spGame = FUN_140e37aa0()->GetMainData(nArcadeId);
     if (spGame == (CArcadeMainData*)0)
         return false;
-    efd::SmartPointer<MyPC> spPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    efd::SmartPointer<MyPC> spPC = reinterpret_cast<Unk_ArcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (spPC == (MyPC*)0)
         return false;
     if (spPC->FUN_14166ce30() == 1)
@@ -718,7 +717,7 @@ unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
     if (pDialog == 0)
         return 0;
     Unk_RankKey keys[6];
-    int nRegion = FUN_1404f4540()->FUN_140791f50(4);
+    int nRegion = reinterpret_cast<Unk_ArcRegionSvc*>(TSingleton<CSeasonDataTable>::GetInstance())->FUN_140791f50(4);
     for (int i = 1; i < 6; i++)
         CGameRankingCli::FUN_140b2e980()->FUN_140b2b870(&keys[i], 10, i, 0, nRegion);
     for (int i = 1; i < 6; i++)

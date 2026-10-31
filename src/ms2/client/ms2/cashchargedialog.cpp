@@ -29,7 +29,6 @@ void FUN_140ad4c30(void* pScreen, RECT* pRect);                     // the scree
 void FUN_14098a440(CDialogEx* pDlg, CDataExchange* pDX);
 void FUN_14098a5d0(CWnd* pWnd);
 void FUN_14015b020(void* pCounted);                                 // adds a reference
-int FUN_140159bc0(void* pCounted);                                  // drops a reference; the count
 void FUN_140159ba0(void* pCounted);
 
 IMPLEMENT_DYNAMIC(CCashChargeDialog, CDialogEx)
@@ -219,7 +218,7 @@ void Unk_CashShopRef::FUN_140b05530()
 // @0x140b05570
 void Unk_CashShopRef::FUN_140b05570(void*)
 {
-    if (FUN_140159bc0(m_pDialog) == 0)
+    if (CPtred::ReleasePtred((class CPtred*)(m_pDialog)) == 0)
     {
         FUN_140b054e0(m_pDialog);
         FUN_140159ba0(m_pDialog);

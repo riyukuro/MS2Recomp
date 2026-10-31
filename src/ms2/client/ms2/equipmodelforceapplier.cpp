@@ -39,7 +39,11 @@ extern unsigned char DAT_143afc898;                                        // as
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names) ----
 void* FUN_141200a90(CEquipModel* pModel);                           // the model's info record (CEquipModel +0x18)
-int FUN_1405451a0(void* pInfo);                                     // its type (+0x30); 7 = wind
+class ModelGroup   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1405451a0() const;
+};
 
 // The owner record's entity reference: a smart pointer to an object that carries the world id (+0x58).
 class Unk_WindRef { public: int FUN_140526b10() const; };
@@ -58,11 +62,19 @@ public:
     virtual Vector3 GetRotation();                          // slot 20 (+0xa0)
 };
 class Unk_WindWorld { public: Unk_WindObj* FUN_141bd1180(int nId); };
-Unk_WindWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 class Unk_WindModel;                                                // the object's 0x6200003 interface
 Unk_WindModel* FUN_14099eef0(Unk_WindObj* p);                       // EE_DYNAMIC_CAST-style query
-int FUN_14166c930(Unk_WindModel* p);                                // its state (3 = not simulated)
-char* FUN_1401d3200();                                              // Client::Constants
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14166c930();
+};
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 float FUN_1402bac70(void* pValue);                                  // Constants::Value<float>::get
 float FUN_1409f2310(float f);                                       // sin
 float FUN_1409f25a0(float f);                                       // cos
@@ -95,7 +107,7 @@ class Unk_WindActorDesc { public: Unk_WindSubPtr FUN_141ef37e0(unsigned nIdx); }
 // @0x141209640
 IEquipModelForceApplierPtr FUN_141209640(CEquipModel* pModel)
 {
-    if (!(pModel && FUN_141200a90(pModel) && FUN_1405451a0(FUN_141200a90(pModel)) == 7)) {
+    if (!(pModel && FUN_141200a90(pModel) && ((class ModelGroup*)(void*)(FUN_141200a90(pModel)))->FUN_1405451a0() == 7)) {
         return IEquipModelForceApplierPtr(EE_NEW EquipModelNullApplier());
     }
     return IEquipModelForceApplierPtr(EE_NEW EquipModelWindApplier(pModel));
@@ -154,22 +166,22 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
     if (spOwner == (Unk_EquipModelOwner*)0) {
         return;
     }
-    Unk_WindObj* pObj = FUN_1403ed2d0()->FUN_141bd1180(spOwner->FUN_1411dc7a0()->FUN_140526b10());
+    Unk_WindObj* pObj = ((class Unk_WindWorld*)WorldService::GetInstance())->FUN_141bd1180(spOwner->FUN_1411dc7a0()->FUN_140526b10());
     if (pObj == 0) {
         return;
     }
     Unk_WindModel* pWindModel = FUN_14099eef0(pObj);
-    if (pWindModel == 0 || FUN_14166c930(pWindModel) == 3) {
+    if (pWindModel == 0 || ((class PCBase*)(class Unk_WindModel*)(pWindModel))->FUN_14166c930() == 3) {
         return;
     }
 
     if (!(m_fElapsed < m_fPeriod)) {
-        static float s_fVariance = FUN_1402bac70(FUN_1401d3200() + 0x2f48);
-        static float s_fBase = FUN_1402bac70(FUN_1401d3200() + 0x2fa0);
+        static float s_fVariance = FUN_1402bac70(((char*)FUN_1401d3200()) + 0x2f48);
+        static float s_fBase = FUN_1402bac70(((char*)FUN_1401d3200()) + 0x2fa0);
         m_fPeriod = s_fBase + s_fVariance * (rand() / 32767.0f - 0.5f);
         m_fElapsed = 0;
     }
-    static float s_fStrength = FUN_1402bac70(FUN_1401d3200() + 0x2ff8);
+    static float s_fStrength = FUN_1402bac70(((char*)FUN_1401d3200()) + 0x2ff8);
     float fStrength = s_fStrength * (float)fDeltaTime;
     float fGust = fStrength * (FUN_1409f2310((m_fElapsed / m_fPeriod) * 2.0f * 3.1415927f - 3.1415927f) + 1.0f);
     m_fElapsed = (float)(m_fElapsed + fDeltaTime);

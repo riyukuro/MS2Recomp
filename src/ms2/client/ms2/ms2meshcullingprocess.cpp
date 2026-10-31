@@ -8,8 +8,6 @@
 #include "hook/ms2hook.h"
 
 // Unrecovered callees (real types unknown).
-const NiFrustum* FUN_1409a8de0(const NiCamera* cam);
-void FUN_140980460(void* obj);          // add-reference
 struct Unk_MCPPtr { Unk_MCPPtr(MS2MeshCullingProcess* p); ~Unk_MCPPtr(); MS2MeshCullingProcess* m_p; };
 void* FUN_140d96650(void* list);
 void** FUN_140d96660(void* list, void** it);
@@ -92,7 +90,7 @@ void MS2MeshCullingProcess::Process(const NiCamera* pkCamera, NiTPointerList<NiA
     if (pkCamera == 0 || pkSceneList == 0)
         return;
     m_pkCamera = pkCamera;
-    SetFrustum(*FUN_1409a8de0(m_pkCamera));
+    SetFrustum(*((class NiFrustum const*)&((class NiCamera*)(class NiCamera const*)(m_pkCamera))->GetViewFrustum()));
     NiVisibleArray* pkSaved = 0;
     if (pkVisibleSet != 0) {
         pkSaved = m_pkVisibleSet;
@@ -128,7 +126,7 @@ Unk_MCPPtr::Unk_MCPPtr(MS2MeshCullingProcess* p)
 {
     m_p = p;
     if (m_p != 0)
-        FUN_140980460(m_p);
+        ((class NiRefObject*)(void*)(m_p))->IncRefCount();
 }
 
 // @0x140d96630

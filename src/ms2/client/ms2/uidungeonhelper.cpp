@@ -59,6 +59,8 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/dungeonroom.h"
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_DhButton : public ASDisplayObject {
@@ -74,13 +76,11 @@ public:
     unsigned char m_bBg;                                // +0x24
 };
 class Unk_DungeonRoomData;
-class Unk_DhTable {
+class Unk_DhTable : public DungeonRoomTable {
 public:
     MS2Ptr<Unk_DungeonRoomData> FUN_1403206b0(int nRoomId);
-    size_t FUN_140321bc0();
     MS2Ptr<Unk_DhEntry> FUN_140321bf0(size_t index);
 };
-Unk_DhTable* FUN_14031c2a0();
 // The weekly/daily dungeon mission counters.
 class Unk_DhMission : public CPtred {
 public:
@@ -101,12 +101,20 @@ class Unk_DhSession {
 public:
     MS2Ptr<Unk_DhRecord> FUN_140d9f2c0();
 };
-Unk_DhSession* FUN_140931510();
-__int64 FUN_140869440();
-void* FUN_140166410();
-bool FUN_14036d570(void*, int);
-void* FUN_1403ed2d0();
-void* FUN_141bd0cc0(void*);
+class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
+__int64 GetServerTime();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 // The reward list of a reward id (meso, exp and the items); same layout as uidungeoncategory.cpp's.
 struct Unk_DcRewardHead { void* m_00; void* m_08; void* m_10; };
 struct Unk_DcRewardSlot { void* m_00; void* m_08; void* m_10; };
@@ -124,14 +132,12 @@ public:
 };
 MS2_CHECK_SIZE(Unk_DhRewardList, 0x30);
 class Unk_DhRewardManager { public: bool FUN_140770e40(int, short, Unk_DhRewardList&); };
-Unk_DhRewardManager* FUN_140764030();
+void* FUN_140764030();   // C3: was FUN_140764030
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nValue);
 void FUN_140d01670(const Scaleform::GFx::Value& root, CString strName, int nValue);
 void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140d013b0(const Scaleform::GFx::Value& root, int n);
 void FUN_140d01340(const Scaleform::GFx::Value& root, int a, int b);
-void FUN_1422c0840(ASTextField* pText, int nValue);
-void FUN_1422c0e50(ASMovieClip* pClip, int nFrame);
 CStringW FUN_140938ae0(CStringW strKey, const unsigned& n);
 CStringW FUN_1409e9890(CStringW strKey, const unsigned& a, const unsigned& b);
 CStringW FUN_140298ea0(CStringW);
@@ -152,8 +158,12 @@ void FUN_140710590(COutPacket&);
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 bool FUN_140930b40();
 void* FUN_1409670d0();
-bool FUN_14162ab20(void*);
-bool FUN_14162ab60(void*);
+class CPartyManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14162ab20();
+    bool FUN_14162ab60();
+};
 
 class Unk_DungeonRoomData : public CPtred {
 public:
@@ -173,16 +183,14 @@ class Unk_DhEventData { unsigned char m_pad_00[0x20]; public: int m_nRewardCount
 // An MS2Ptr (16 bytes, m_p at +8): FUN_14047a5b0 returns it through a hidden pointer, the dtor 0x1403e5240 writes 16.
 class Unk_DhEvent { public: ~Unk_DhEvent(); void* FUN_1403e8a50() const; Unk_DhEventData* FUN_1403e8bf0() const; void* m_00; void* m_p; };
 class Unk_DhEventMgr { public: Unk_DhEvent FUN_14047a5b0(int nEventId); };
-Unk_DhEventMgr* FUN_1401c0d90();
-class Unk_DhStrings { public: CStringW FUN_141811980(int nCategory, int nId); };
-Unk_DhStrings* FUN_1401a9d70();
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 CStringW FUN_140cbf840(int nDungeonKind);
 CStringW FUN_1409e8820(CStringW strKey, const short& n);
 CStringW FUN_1409e9890(CStringW strKey, const int& a, const int& b);
 CStringW FUN_1406e7810(const wchar_t* szFormat, const unsigned& a, const unsigned& b);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a, const CStringW& b);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
-CStringW FUN_1409eec40(int nStringId);
+CStringW BlockFormat(int nStringId);
 CStringW FUN_140b8f230(int n);
 
 // @0x140e12730
@@ -207,7 +215,7 @@ void ASWeeklyRewardItemSlot::vfunc_25(Scaleform::GFx::Value** ppOut)
         return;
     MS2Ptr<CItem> item(new CItem());
     if (item->FUN_14052b130(m_itemId, m_rarity, 0)) {
-        ASTooltip tooltip(FUN_141bd0cc0(FUN_1403ed2d0()), 32, 2);
+        ASTooltip tooltip(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0(), 32, 2);
         if (tooltip.FUN_1409e0d40(item.get())) {
             if (m_nMeso > 0 || m_nExp > 0) {
                 CStringW text = FUN_140298ea0(CStringW(L"s_dungeonSearch_united_reward_tooltip"));
@@ -226,12 +234,12 @@ MS2_REPLACE_METHOD(0x140E127D0, ASWeeklyRewardItemSlot, vfunc_25, 1045, 0xC063A5
 // @0x140e12bf0
 void ASWeeklyRewardItemSlot::FUN_140e12bf0()
 {
-    if (!FUN_14036d570(FUN_140166410(), 0xb9))
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xb9))
         return;
-    if (!FUN_140931510()->FUN_140d9f2c0()->FUN_140b22530())
+    if (!((class Unk_DhSession*)FUN_140931510())->FUN_140d9f2c0()->FUN_140b22530())
         return;
-    m_nMeso *= FUN_140931510()->FUN_140d9f2c0()->FUN_140b22640();
-    m_nExp *= FUN_140931510()->FUN_140d9f2c0()->FUN_140b22620();
+    m_nMeso *= ((class Unk_DhSession*)FUN_140931510())->FUN_140d9f2c0()->FUN_140b22640();
+    m_nExp *= ((class Unk_DhSession*)FUN_140931510())->FUN_140d9f2c0()->FUN_140b22620();
 }
 MS2_REPLACE_METHOD(0x140E12BF0, ASWeeklyRewardItemSlot, FUN_140e12bf0, 384, 0x31FE659B);
 
@@ -254,9 +262,9 @@ bool UIDungeonSearchUnitedReward::Init(MS2Ptr<ASMovieClip> root)
     if (root == NULL)
         return false;
     m_root = root;
-    const size_t count = FUN_14031c2a0()->FUN_140321bc0();
+    const size_t count = reinterpret_cast<Unk_DhTable*>(TSingleton<DungeonRoomTable>::GetInstance())->GetUnitedWeeklyRewardCount();
     for (size_t i = 0; i < count; ++i) {
-        MS2Ptr<Unk_DhEntry> entry = FUN_14031c2a0()->FUN_140321bf0(i);
+        MS2Ptr<Unk_DhEntry> entry = reinterpret_cast<Unk_DhTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_140321bf0(i);
         if (entry == NULL)
             return false;
         MS2Ptr<ASMovieClip> item(new ASMovieClip(CString("UIDungeonSearchUnitedRewardItem"), 2));
@@ -291,13 +299,13 @@ MS2_REPLACE_METHOD(0x140E12E40, UIDungeonSearchUnitedReward, Init, 3377, 0x93D91
 // @0x140e13c00
 void UIDungeonSearchUnitedReward::FUN_140e13c00()
 {
-    void* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pActor == NULL)
         return;
     unsigned nWeekly = 0;
     unsigned nWeeklyMax = 0;
     {
-        MS2Ptr<Unk_DhMission> mission = FUN_140931510()->FUN_140d9f2c0()->FUN_140b22160(0x3ee);
+        MS2Ptr<Unk_DhMission> mission = ((class Unk_DhSession*)FUN_140931510())->FUN_140d9f2c0()->FUN_140b22160(0x3ee);
         if (mission.get()) {
             nWeekly = mission->FUN_140b20750();
             nWeeklyMax = mission->FUN_140b20780();
@@ -305,9 +313,9 @@ void UIDungeonSearchUnitedReward::FUN_140e13c00()
         }
     }
     if (nWeekly < nWeeklyMax) {
-        MS2Ptr<Unk_DhMission> mission = FUN_140931510()->FUN_140d9f2c0()->FUN_140b22160(0x3ee);
+        MS2Ptr<Unk_DhMission> mission = ((class Unk_DhSession*)FUN_140931510())->FUN_140d9f2c0()->FUN_140b22160(0x3ee);
         if (mission.get()) {
-            unsigned nDaily = mission->FUN_14031b9d0(FUN_140869440());
+            unsigned nDaily = mission->FUN_14031b9d0(GetServerTime());
             unsigned nDailyMax = mission->FUN_14031ba10();
             m_daily->vfunc_3(1);
             m_daily->FUN_1422c4cd0(FUN_1409e9890(L"s_dungeonSearch_reward_daily", nDaily, nDailyMax));
@@ -316,14 +324,14 @@ void UIDungeonSearchUnitedReward::FUN_140e13c00()
         m_daily->vfunc_3(0);
     }
     unsigned nGauge = 0;
-    const size_t count = FUN_14031c2a0()->FUN_140321bc0();
+    const size_t count = reinterpret_cast<Unk_DhTable*>(TSingleton<DungeonRoomTable>::GetInstance())->GetUnitedWeeklyRewardCount();
     for (size_t i = 0; i < count; ++i) {
-        MS2Ptr<Unk_DhEntry> entry = FUN_14031c2a0()->FUN_140321bf0(i);
+        MS2Ptr<Unk_DhEntry> entry = reinterpret_cast<Unk_DhTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_140321bf0(i);
         if (entry == NULL)
             continue;
         Unk_DhRewardList rewards;
         short nJob = (short)static_cast<PCBase*>(pActor)->vfunc_78();     // slot 78 (+0x270)
-        FUN_140764030()->FUN_140770e40(entry->m_nRewardId, nJob, rewards);
+        ((class Unk_DhRewardManager*)FUN_140764030())->FUN_140770e40(entry->m_nRewardId, nJob, rewards);
         if (!rewards.m_items.empty())
             m_slots[i]->FUN_1409ba630(reinterpret_cast<const Unk_ItemSlotSource&>(static_cast<Unk_DcRewardSlot&>(rewards.m_items[0])));
         m_slots[i]->FUN_140e12780(rewards.m_nMeso, rewards.m_nExp);
@@ -333,18 +341,18 @@ void UIDungeonSearchUnitedReward::FUN_140e13c00()
         FUN_140cff840(m_points[i]->FUN_1422bb890(), "m_point", bReached);
         FUN_140cff840(m_points[i]->FUN_1422bb890(), "m_check", bReached);
     }
-    FUN_1422c0e50(m_gauge.get(), (std::max)(1u, nGauge));
+    ((class ASDisplayObject*)(class ASMovieClip*)(m_gauge.get()))->FUN_1422c0e50((std::max)(1u, nGauge));
 }
 MS2_REPLACE_METHOD(0x140E13C00, UIDungeonSearchUnitedReward, FUN_140e13c00, 1762, 0x193155DB);
 
 // @0x140e142f0
 void UIDungeonSearchUnitedReward::FUN_140e142f0()
 {
-    if (!FUN_14036d570(FUN_140166410(), 0xb9))
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xb9))
         return;
     const int nOffset = -22;
-    FUN_1422c0840(m_daily.get(), nOffset);
-    FUN_1422c0840(m_weekly.get(), nOffset);
+    ((class ASDisplayObject*)(class ASTextField*)(m_daily.get()))->FUN_1422c0840(nOffset);
+    ((class ASDisplayObject*)(class ASTextField*)(m_weekly.get()))->FUN_1422c0840(nOffset);
     m_resetButton->vfunc_4(true);
     m_resetButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchUnitedReward::FUN_140e14400), 0);
 }
@@ -374,18 +382,18 @@ MS2_REPLACE_METHOD(0x140E144B0, UIDungeonSearchUnitedReward, SendRoomDungeon, 93
 bool FUN_140e14520(int nKind)
 {
     switch (nKind) {
-    case 3: return FUN_14036d570(FUN_140166410(), 0x80);
-    case 4: return FUN_14036d570(FUN_140166410(), 0x76);
-    case 5: return FUN_14036d570(FUN_140166410(), 0xcb);
-    case 6: return FUN_14036d570(FUN_140166410(), 0x79);
-    case 7: return FUN_14036d570(FUN_140166410(), 5);
-    case 8: return FUN_14036d570(FUN_140166410(), 0xaa);
-    case 12: return FUN_14036d570(FUN_140166410(), 0xab);
-    case 9: return FUN_14036d570(FUN_140166410(), 0x4c);
-    case 10: return FUN_14036d570(FUN_140166410(), 0x4b);
-    case 11: return FUN_14036d570(FUN_140166410(), 0x55);
-    case 13: return FUN_14036d570(FUN_140166410(), 0xf0);
-    case 14: return FUN_14036d570(FUN_140166410(), 0x103);
+    case 3: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x80);
+    case 4: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x76);
+    case 5: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xcb);
+    case 6: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x79);
+    case 7: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(5);
+    case 8: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xaa);
+    case 12: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xab);
+    case 9: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x4c);
+    case 10: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x4b);
+    case 11: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x55);
+    case 13: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xf0);
+    case 14: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x103);
     default: return true;
     }
 }
@@ -395,7 +403,7 @@ bool FUN_140e146a0()
 {
     if (FUN_140930b40())
         return false;
-    if (FUN_14162ab20(FUN_1409670d0()) && !FUN_14162ab60(FUN_1409670d0()))
+    if (((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162ab20() && !((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162ab60())
         return false;
     return true;
 }
@@ -450,7 +458,7 @@ CStringW FUN_140e14bd0(MS2Ptr<Unk_DungeonRoomData> pRoom, bool bShowLimit)
 {
     if (pRoom == NULL)
         return CStringW(L"");
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(0x14, pRoom->FUN_14031ddd0());
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->FUN_14031ddd0());
     if (bShowLimit) {
         if ((unsigned short)pRoom->m_nLevelLimit > 0)
             strName += FUN_1409e8820(CStringW(L"s_dungeonRoom_list_limit_Level"), pRoom->m_nLevelLimit);
@@ -461,13 +469,13 @@ CStringW FUN_140e14bd0(MS2Ptr<Unk_DungeonRoomData> pRoom, bool bShowLimit)
 // @0x140e14d70
 CStringW FUN_140e14d70(int nMissionId)
 {
-    MS2Ptr<Unk_DhMission> mission = FUN_140931510()->FUN_140d9f2c0()->FUN_140b22160(nMissionId);
+    MS2Ptr<Unk_DhMission> mission = ((class Unk_DhSession*)FUN_140931510())->FUN_140d9f2c0()->FUN_140b22160(nMissionId);
     if (mission == NULL)
         return CStringW(L"");
     unsigned nCur = mission->FUN_140b20750();
     unsigned nMax = mission->FUN_140b20780();
     CStringW strCount = FUN_1406e7810(L"{0} / {1}", nCur, nMax);
-    Unk_DhEvent event = FUN_1401c0d90()->FUN_14047a5b0(nMissionId);
+    Unk_DhEvent event = ((class Unk_DhEventMgr*)FUN_1401c0d90())->FUN_14047a5b0(nMissionId);
     if (event.FUN_1403e8a50())
     {
         int nBonus = mission->FUN_140b207f0();
@@ -480,10 +488,10 @@ CStringW FUN_140e14d70(int nMissionId)
 // @0x140e14fd0
 CStringW FUN_140e14fd0(int nMissionId)
 {
-    MS2Ptr<Unk_DhMission> mission = FUN_140931510()->FUN_140d9f2c0()->FUN_140b22160(nMissionId);
+    MS2Ptr<Unk_DhMission> mission = ((class Unk_DhSession*)FUN_140931510())->FUN_140d9f2c0()->FUN_140b22160(nMissionId);
     if (mission == NULL)
         return CStringW(L"");
-    unsigned nCur = mission->FUN_14031b9d0(FUN_140869440());
+    unsigned nCur = mission->FUN_14031b9d0(GetServerTime());
     unsigned nMax = mission->FUN_14031ba10();
     CStringW strText = FUN_1406e7810(L"{0} / {1}", nCur, nMax);
     return strText;
@@ -492,13 +500,13 @@ CStringW FUN_140e14fd0(int nMissionId)
 // @0x140e15130
 CStringW FUN_140e15130(int nRoomId)
 {
-    MS2Ptr<Unk_DungeonRoomData> pRoom = FUN_14031c2a0()->FUN_1403206b0(nRoomId);
+    MS2Ptr<Unk_DungeonRoomData> pRoom = reinterpret_cast<Unk_DhTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(nRoomId);
     if (pRoom == NULL)
         return CStringW(L"");
     switch (pRoom->FUN_14031dfa0())
     {
     case 2:
-        return FUN_1409eec40(0x9b1);
+        return BlockFormat(0x9b1);
     case 1:
     {
         CStringW strDay = FUN_140b8f230(pRoom->FUN_14031dfd0());

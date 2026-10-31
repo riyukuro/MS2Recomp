@@ -56,7 +56,7 @@ class Unk_VwWearer;
 // The world service: the player and the object / entity lookups.
 class Unk_ItemEquipData : public CItemData { };             // CItem::FUN_140527840's record (item.cpp)
 class Unk_SgNifLoader { public: NiTexturePtr FUN_141553eb0(CString strPath, NiTexture* pkSelf); };
-Unk_SgNifLoader* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 CString FUN_1410280d0(int nKind, CString strName);          // the local file of a ugc content kind
 NiAVObject* FUN_141b6efc0(void* pEntity);                   // the scene root of an entity
 void FUN_141890b60(egf::Entity* pEntity, const efd::utf8string& strProp, efd::utf8string& strOut);
@@ -69,7 +69,7 @@ public:
     GameObject* FUN_141bd0fa0(egf::EntityID id);            // the game object of an entity
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);   // an interact object by name
 };
-Unk_VwWearer* FUN_140b120b0(GameObject* pPlayer);           // the player as a wearer of items
+class PCBase* FUN_140b120b0(class GameObject*);   // C3: was FUN_140b120b0
 
 class Unk_VwWearer : public PC
 {
@@ -80,31 +80,48 @@ void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Vector3* pOut);   /
 float FUN_140966f00(NiPoint3 kA, Vector3 kB);           // the distance
 float FUN_140966ea0(NiPoint3 kA, Vector3 kB);           // the planar distance
 struct Unk_VwConfig { char m_pad[0xd8]; CStringA m_strUploadDir; };   // the client config
-void* FUN_140166410();                                      // the game settings
-bool FUN_14036e510(void* pSettings);                        // a content switch
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036e510();
+};
 void* FUN_1403ed290();                                      // the guild manager (+8: the own guild)
 __int64 FUN_1404ccbd0(void* pGuild);                        // the guild id
 struct Unk_VwUIService;
-void* FUN_1409eed90();                                      // the singleton of the own character
 struct Unk_VwSummary { char m_pad[0x20]; int m_nState; };   // the own character's summary (+0x20: 2 = wedding done)
-Unk_VwSummary* FUN_140d295d0(void* pSingleton);
+class WeddingManager   // C3: member view for the former free stand-ins
+{
+public:
+    class WeddingProxy* FUN_140d295d0();
+};
 
 
 // The upload manager; the CUgcManager singleton.
-CUgcManager* FUN_14052d220();
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 
 // UI dialogs by id.
-void* FUN_140938c30(int nId);                               // 0x2711 the profile dialog
+class UIMyInfoDialog* FUN_140938c30(int);   // C3: was FUN_140938c30
 void* FUN_1418764c0(int nId);                               // 0x4f8c the wedding profile dialog
 void* FUN_14136f480(int nId);                               // 0x4e4f the guild mark dialog
 void FUN_14132faf0(void* pDialog, const CStringW& strFile);        // show the uploaded image (profile)
-void FUN_14132fa90(void* pDialog);
+class UIPCInfoDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_14132fa90();
+};
 void FUN_140fc7e80(void* pDialog, const CStringW& strFile);        // (wedding profile)
-void FUN_140fc7f30(void* pDialog);
+class UIWeddingDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140fc7f30();
+};
 void FUN_141976980(void* pDialog, const CStringW& strFile);        // (guild mark)
-void FUN_1419769d0(void* pDialog);
-void FUN_141403180(CInteractGuildPosterObject* pPoster, CStringW strFile);   // load the poster file into the entity
-void FUN_141402eb0(CInteractGuildPosterObject* pPoster, unsigned char bShow);
+class UIGuildDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419769d0();
+};
 
 // Textures of the preview files and the format helper strings.
 int SaveTextureTemplate(NiTexture* pTexture, int nItemId, int nKind, CStringW& strOut); // the texture fits the item mesh (0 = yes)
@@ -177,7 +194,7 @@ public:
     virtual void vfunc_54();
     virtual int vfunc_55();
 };
-Unk_VwDialogUi* FUN_140c300a0(int nId);
+class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
 // The upload event hub (slot 4 shows the finished upload of a dialog).
 class Unk_VwEvents
 {
@@ -197,9 +214,7 @@ private: void* unknown; UIObject* object;
 MS2_CHECK_SIZE(Unk_CommandUIRef,0x10);
 struct Unk_VwUIService { Unk_CommandUIRef FUN_141adcea0(int nId); };  // the UI lookup by class id
 UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
-bool FUN_140534e80(Unk_CommandUIRef&);
 void FUN_140c381b0(UIItemBlueprintCreateDialog* pDialog, MS2Ptr<CUploadFile> spFile);   // show the uploaded image
-void FUN_140c38240(UIItemBlueprintCreateDialog* pDialog);
 CStringW FUN_14016a730(const char* psz, int n);             // narrow -> wide
 extern __int64 DAT_143ab2820;                               // my account id
 extern __int64 DAT_143ab2828;                               // my character id
@@ -239,7 +254,7 @@ CUgcViewerEquip::~CUgcViewerEquip()
 // @0x14189ee30
 int CUgcViewerEquip::vfunc_2()
 {
-    Unk_VwWearer* pWearer = FUN_140b120b0(reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd1290(FUN_14189f730()));
+    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd1290(FUN_14189f730())));
     if (pWearer == 0)
         return 0;
     MS2Ptr<CEquipItem> spEquip = pWearer->FUN_141655c30(m_item.m_itemUid);
@@ -263,14 +278,14 @@ int CUgcViewerEquip::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spCtrl == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
     NiTexturePtr spTexture = LoadUgcTexture(strPath, vfunc_9(), true);
     if (spTexture == 0)
         return 0;
-    if (FUN_14052d220()->FUN_141886a90(&m_item, spTexture) == 0)
+    if (((class CUgcManager*)FUN_14052d220())->FUN_141886a90(&m_item, spTexture) == 0)
         return 0;
     spCtrl->m_spFile = spFile;
     return 1;
@@ -279,7 +294,7 @@ int CUgcViewerEquip::vfunc_3(MS2Ptr<CUploadFile> spFile)
 // @0x14189f260
 void CUgcViewerEquip::vfunc_4()
 {
-    Unk_VwWearer* pWearer = FUN_140b120b0(reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd1290(FUN_14189f730()));
+    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd1290(FUN_14189f730())));
     if (pWearer == 0)
         return;
     MS2Ptr<CEquipItem> spEquip = pWearer->FUN_141655c30(m_item.m_itemUid);
@@ -294,7 +309,7 @@ void CUgcViewerEquip::vfunc_4()
 // @0x14189f360
 void CUgcViewerEquip::vfunc_5()
 {
-    Unk_VwWearer* pWearer = FUN_140b120b0(reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd1290(FUN_14189f730()));
+    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd1290(FUN_14189f730())));
     if (pWearer == 0)
         return;
     MS2Ptr<CEquipItem> spEquip = pWearer->FUN_141655c30(m_item.m_itemUid);
@@ -409,14 +424,14 @@ int CUgcViewerCube::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spCtrl == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
     NiTexturePtr spTexture = LoadUgcTexture(strPath, vfunc_9(), true);
     if (spTexture == 0)
         return 0;
-    if (FUN_14052d220()->FUN_141886de0(&m_item, spTexture) == 0)
+    if (((class CUgcManager*)FUN_14052d220())->FUN_141886de0(&m_item, spTexture) == 0)
         return 0;
     spCtrl->m_spFile = spFile;
     return 1;
@@ -556,7 +571,7 @@ void CUgcViewerBanner::vfunc_1()
     float fDistance = bPlanar ? FUN_140966ea0(kPlayer, kBanner) : FUN_140966f00(kPlayer, kBanner);
     float fLimit = FUN_1401d3200()->RegistUgcDistanceClose.Read();
     if (fDistance > fLimit)
-        FUN_14052d220()->FUN_14187f1f0();
+        ((class CUgcManager*)FUN_14052d220())->FUN_14187f1f0();
 }
 
 // @0x1418a04d0
@@ -576,7 +591,7 @@ int CUgcViewerBanner::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spCtrl == 0)
         return 0;
     efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd04d0(m_post.m_nBannerId);
@@ -586,7 +601,7 @@ int CUgcViewerBanner::vfunc_3(MS2Ptr<CUploadFile> spFile)
     NiTexturePtr spTexture = LoadUgcTexture(strPath, vfunc_9(), true);
     if (spTexture == 0)
         return 0;
-    if (FUN_14052d220()->FUN_141888770(spEntity, spTexture) == 1)
+    if (((class CUgcManager*)FUN_14052d220())->FUN_141888770(spEntity, spTexture) == 1)
         spCtrl->m_spFile = spFile;
     return 1;
 }
@@ -599,7 +614,7 @@ void CUgcViewerBanner::vfunc_4()
     efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
-    MS2Ptr<CUgcRegistBanner> spRegist = FUN_14052d220()->FUN_141887ce0(nBannerId);
+    MS2Ptr<CUgcRegistBanner> spRegist = ((class CUgcManager*)FUN_14052d220())->FUN_141887ce0(nBannerId);
     if (spRegist == 0)
         spTexture = m_spImage;
     else
@@ -607,17 +622,17 @@ void CUgcViewerBanner::vfunc_4()
         CString strFile = FUN_1410280d0(3, spRegist->m_strUrl);
         if (_access(strFile, 0) == 0)
         {
-            spTexture = FUN_140a0afd0()->FUN_141553eb0(strFile, 0);
+            spTexture = ((class Unk_SgNifLoader*)FUN_140a0afd0())->FUN_141553eb0(strFile, 0);
             if (spTexture == 0)
             {
-                FUN_14052d220()->FUN_141884af0(spRegist);
+                ((class CUgcManager*)FUN_14052d220())->FUN_141884af0(spRegist);
                 return;
             }
         }
         else
             spTexture = m_spImage;
     }
-    FUN_14052d220()->FUN_141888770(spEntity, spTexture);
+    ((class CUgcManager*)FUN_14052d220())->FUN_141888770(spEntity, spTexture);
 }
 
 // @0x1418a0b10
@@ -700,7 +715,7 @@ void CUgcViewerBanner::FUN_1418a1000()
     if (spEntity == 0)
         return;
     NiTexturePtr spTexture = m_spImage;
-    FUN_14052d220()->FUN_141888770(spEntity, spTexture);
+    ((class CUgcManager*)FUN_14052d220())->FUN_141888770(spEntity, spTexture);
 }
 
 // ---- CUgcViewerProfile --------------------------------------------------------------------------------------------
@@ -722,7 +737,7 @@ int CUgcViewerProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spCtrl == 0)
         return 0;
     GameObject* pPlayer = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
@@ -735,7 +750,7 @@ int CUgcViewerProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
     if (strThumb.GetLength() == 0)
         return 0;
     spCtrl->m_spFile = spFile;
-    void* pDialog = FUN_140938c30(0x2711);
+    void* pDialog = ((void*)FUN_140938c30(0x2711));
     if (pDialog == 0)
         return 0;
     FUN_14132faf0(pDialog, strThumb);
@@ -745,10 +760,10 @@ int CUgcViewerProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
 // @0x1418a1430
 void CUgcViewerProfile::vfunc_4()
 {
-    void* pDialog = FUN_140938c30(0x2711);
+    void* pDialog = ((void*)FUN_140938c30(0x2711));
     if (pDialog == 0)
         return;
-    FUN_14132fa90(pDialog);
+    ((class UIPCInfoDialog*)(void*)(pDialog))->FUN_14132fa90();
 }
 
 // @0x1418a1470
@@ -801,13 +816,13 @@ int CUgcViewerWeddingProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spCtrl == 0)
         return 0;
     GameObject* pPlayer = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    if (FUN_140d295d0(FUN_1409eed90())->m_nState != 2)
+    if (((struct Unk_VwSummary*)((class WeddingManager*)(void*)(((void*)TSingleton<WeddingManager>::GetInstance())))->FUN_140d295d0())->m_nState != 2)
         return 0;
     CStringW strPath = spFile->GetPath();
     if (_waccess(strPath, 0) != 0)
@@ -829,7 +844,7 @@ void CUgcViewerWeddingProfile::vfunc_4()
     void* pDialog = FUN_1418764c0(0x4f8c);
     if (pDialog == 0)
         return;
-    FUN_140fc7f30(pDialog);
+    ((class UIWeddingDialog*)(void*)(pDialog))->FUN_140fc7f30();
 }
 
 // @0x1418a19b0
@@ -883,7 +898,7 @@ int CUgcViewerGuildMark::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spCtrl == 0)
         return 0;
     GameObject* pPlayer = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
@@ -911,7 +926,7 @@ void CUgcViewerGuildMark::vfunc_4()
     void* pDialog = FUN_14136f480(0x4e4f);
     if (pDialog == 0)
         return;
-    FUN_1419769d0(pDialog);
+    ((class UIGuildDialog*)(void*)(pDialog))->FUN_1419769d0();
 }
 
 // @0x1418a1f20
@@ -971,7 +986,7 @@ int CUgcViewerGuildPoster::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spCtrl == 0)
         return 0;
     GameObject* pPlayer = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
@@ -989,7 +1004,7 @@ int CUgcViewerGuildPoster::vfunc_3(MS2Ptr<CUploadFile> spFile)
     CInteractObject* pObject = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_poster.m_strName).get();
     CInteractGuildPosterObject* pPoster = dynamic_cast<CInteractGuildPosterObject*>(pObject);
     if (pPoster != 0)
-        FUN_141403180(pPoster, strThumb);
+        ((class CInteractGuildPosterObject*)(class CInteractGuildPosterObject*)(pPoster))->FUN_141403180(strThumb);
     return 1;
 }
 
@@ -999,7 +1014,7 @@ void CUgcViewerGuildPoster::vfunc_4()
     CInteractObject* pObject = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_poster.m_strName).get();
     CInteractGuildPosterObject* pPoster = dynamic_cast<CInteractGuildPosterObject*>(pObject);
     if (pPoster != 0)
-        FUN_141402eb0(pPoster, 1);
+        ((class CInteractGuildPosterObject*)(class CInteractGuildPosterObject*)(pPoster))->FUN_141402eb0(1);
 }
 
 // @0x1418a25d0
@@ -1076,14 +1091,14 @@ int CUgcViewerRidee::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spCtrl == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
     NiTexturePtr spTexture = LoadUgcTexture(strPath, vfunc_9(), true);
     if (spTexture == 0)
         return 0;
-    if (FUN_14052d220()->FUN_141887160(&m_item, spTexture) == 0)
+    if (((class CUgcManager*)FUN_14052d220())->FUN_141887160(&m_item, spTexture) == 0)
         return 0;
     spCtrl->m_spFile = spFile;
     return 1;
@@ -1200,7 +1215,7 @@ int CUgcViewerBlueprintImage::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spCtrl == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
@@ -1222,7 +1237,7 @@ void CUgcViewerBlueprintImage::vfunc_4()
 {
     UIItemBlueprintCreateDialog* pDialog = FUN_1418a6920();
     if (pDialog != 0)
-        FUN_140c38240(pDialog);
+        ((class UIItemBlueprintCreateDialog*)(class UIItemBlueprintCreateDialog*)(pDialog))->FUN_140c38240();
 }
 
 // @0x1418a33d0
@@ -1275,7 +1290,7 @@ UIItemBlueprintCreateDialog* FUN_1418a6920()
     if (pService == 0)
         return 0;
     Unk_CommandUIRef ref = pService->FUN_141adcea0(FUN_1418a7190());
-    if (FUN_140534e80(ref))
+    if (((MS2Ptr<UIObject>*)&(ref))->IsNull())
         return 0;
     return dynamic_cast<UIItemBlueprintCreateDialog*>(FUN_1403ed9e0(ref));
 }
@@ -1436,7 +1451,7 @@ void CUgcUploadCtrl::FUN_1418a3840(int nType)
 // @0x1418a38a0
 void CUgcUploadCtrl::FUN_1418a38a0()
 {
-    Unk_VwDialogUi* pDialog = FUN_140c300a0(m_nDialog);
+    Unk_VwDialogUi* pDialog = ((class Unk_VwDialogUi*)FUN_140c300a0(m_nDialog));
     if (pDialog == 0)
         return;
     if (pDialog->vfunc_55() == 1)
@@ -1593,7 +1608,7 @@ int CUgcUploadCtrl::FUN_1418a4470(__int64 uid)
     int nResult = 1;
     int nSize = m_spViewer->vfunc_9();
     bool bSwitch = false;
-    if (FUN_14036e510(FUN_140166410()))
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e510())
         bSwitch = true;
     Unk_UgcFileResult result = ChangeFormat(m_nKind, m_spFile, nSize, bSwitch);
     if (result.m_nResult != 0)

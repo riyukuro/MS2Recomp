@@ -20,12 +20,12 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/cpet.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 float FUN_14099eb30(const egf::EntityID& kKey, CString strAnim);           // 0x14099eb30 the animation length (the callee destroys the name)
 bool FUN_14028d470(float a, float b);                                      // approx equal
-int FUN_140b10150(PCBase* pMount);                                         // 0x140b10150 the mount's id
 
 // The mount's proxy handle (PCBase +0xd50, returned by value) and the entry it resolves to (the spawn effect path at +0x550).
 struct Unk_SpawnEntry
@@ -99,7 +99,7 @@ void StateSpawn::vfunc_5(int n)
     int nMountId = 0;
     PCBase* pMount = FUN_1417b83a0();
     if (pMount != 0)
-        nMountId = FUN_140b10150(pMount);
+        nMountId = reinterpret_cast<CPet*>(pMount)->FUN_140b10150();
     m_pOwner->FUN_14166ca80(10);
     m_pOwner->FUN_14123cb20(true);
     m_fElapsed = 0;

@@ -44,6 +44,8 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/uidialogeventdispatcher.h"
+#include "ms2/placeholder/webguide.h"
 
 #include <atlcoll.h>
 #include <algorithm>
@@ -115,8 +117,6 @@ public:
 };
 class ASUIComponentEx : public ASUIComponent
 {
-public:
-    void FUN_1422c3940();                                           // drop the component's AS callbacks
 };
 MS2Ptr<ASDialog> FUN_140e43fe0(int nMovieId, const Scaleform::GFx::Value& v);    // new ASDialog(v, nMovieId)
 bool FUN_1409b0350(const Scaleform::GFx::Value& v);
@@ -138,7 +138,6 @@ public:
     virtual void vfunc_1(int nUIType);                              // MS2: slot 1 (0x08) a dialog opened
     virtual void vfunc_2(int nUIType);                              // MS2: slot 2 (0x10) a dialog closed
 };
-Unk_14140ea40* FUN_14140ea40();
 class Unk_1409331e0;
 Unk_1409331e0* FUN_1409331e0();
 void FUN_14138d7e0(Unk_1409331e0* p, int a1, int a2);
@@ -182,7 +181,6 @@ private:
     char m_pad_00[0x38];
     ATL::CAtlMap<CString, MS2Ptr<Unk_WebGuideEntry>, ATL::CStringElementTraits<CString> > m_map;    // +0x38
 };
-Unk_1414a5880* FUN_1414a5880();
 
 // ---- xml (game TinyXML) ----
 class TiXmlElement
@@ -390,7 +388,7 @@ void UIDialog::FUN_141924190()
     FUN_141926890();
     vfunc_77();
     FUN_140b632f0()->FUN_1422d4840(this, m_e0);
-    FUN_14140ea40()->vfunc_2(vfunc_48());
+    reinterpret_cast<Unk_14140ea40*>(TSingleton<UIDialogEventDispatcher>::GetInstance())->vfunc_2(vfunc_48());
     if (FUN_1409331e0())
         FUN_14138d7e0(FUN_1409331e0(), 3, 0);
     if (!vfunc_56() && m_8c)
@@ -595,7 +593,7 @@ int UIDialog::vfunc_65()
     }
     FUN_140b632f0()->FUN_1422d4780(this, m_e0);
     FUN_140b632f0()->FUN_1422d4dd0(m_20);
-    FUN_14140ea40()->vfunc_1(vfunc_48());
+    reinterpret_cast<Unk_14140ea40*>(TSingleton<UIDialogEventDispatcher>::GetInstance())->vfunc_1(vfunc_48());
     if (FUN_1409331e0())
         FUN_14138d7e0(FUN_1409331e0(), 3, 0);
     if (m_58 && !vfunc_56() && m_8c)
@@ -1027,7 +1025,7 @@ void UIDialog::FUN_141926180(MS2Ptr<AScript> spRoot, CString strName, int n)
         spButton->vfunc_4(false);
         return;
     }
-    if (FUN_1414a5880()->FUN_141927640(FUN_1419268a0(n)) == 0) {
+    if (reinterpret_cast<Unk_1414a5880*>(TSingleton<WebGuideTable>::GetInstance())->FUN_141927640(FUN_1419268a0(n)) == 0) {
         spButton->vfunc_4(false);
         return;
     }

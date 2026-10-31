@@ -27,7 +27,7 @@
 extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 
 // The input state (FUN_14025e7c0).
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 class Unk_BuffContainer
 {
@@ -49,7 +49,11 @@ class Unk_GameContext
 public:
     Unk_CameraTargetEntity* FUN_141bd1050(__int64 nObjectId);
 };
-Unk_GameContext* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
@@ -65,7 +69,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-Unk_ClientConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The picked-object list returned by the camera manager's pick (FUN_140af0850).
 class Unk_PickEntry
@@ -107,7 +111,11 @@ namespace egf { class Entity; }
 class NiAVObject;
 egf::Entity* FUN_14123c410(Unk_CameraTargetEntity* p);      // m_80 of the game object
 NiAVObject* FUN_141b6efc0(egf::Entity* p);
-const Unk_EfdMatrix3* FUN_141024c90(NiAVObject* p);
+class NiAVObject   // C3: member view for the former free stand-ins
+{
+public:
+    class NiMatrix3 const& GetWorldRotate() const;
+};
 // efd::operator*(const Point3&, const Matrix3&) (0x1420834e0)
 Vector3 FUN_1420834e0(const Vector3& pt, const Unk_EfdMatrix3& m);
 
@@ -157,10 +165,10 @@ void CConsoleCameraMode::vfunc_9()
         else if (pActor->FUN_14166d240()->FUN_141682fe0(300009))
             ptMove.x = -1.0f;
     }
-    if (FUN_14025e7c0()->FUN_14116daa0(1, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, true, 0))
     {
         int nX, nY, nZ;
-        if (FUN_14025e7c0()->FUN_14116dbf0(&nX, &nY, &nZ, false, 0))
+        if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dbf0(&nX, &nY, &nZ, false, 0))
         {
             if (abs(nY) > abs(nX))
                 ptMove.x = (float)nY * -0.05f;
@@ -168,9 +176,9 @@ void CConsoleCameraMode::vfunc_9()
                 ptMove.y = (float)nX * 0.1f;
         }
     }
-    if (FUN_14025e7c0()->FUN_14116d950(0x33, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x33, false, 0))
         ptMove.y = 1.0f;
-    else if (FUN_14025e7c0()->FUN_14116d950(0x34, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x34, false, 0))
         ptMove.y = -1.0f;
     Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(ptMove);
 }
@@ -188,7 +196,7 @@ void CConsoleCameraMode::vfunc_8(double fTime)
         NiAVObject* pNode = FUN_141b6efc0(FUN_14123c410(pTarget));
         if (pNode)
         {
-            Unk_EfdMatrix3 kRot = *FUN_141024c90(pNode);
+            Unk_EfdMatrix3 kRot = *((struct Unk_EfdMatrix3 const*)&((class NiAVObject*)(pNode))->GetWorldRotate());
             m_78 = pTarget->vfunc_18().FUN_14097fd50(FUN_1420834e0(m_118, kRot));
         }
         else
@@ -338,7 +346,7 @@ void CConsoleCameraMode::vfunc_6(int n)
     if (pTarget)
     {
         NiAVObject* pNode = FUN_141b6efc0(FUN_14123c410(pTarget));
-        Unk_EfdMatrix3 kRot = *FUN_141024c90(pNode);
+        Unk_EfdMatrix3 kRot = *((struct Unk_EfdMatrix3 const*)&((class NiAVObject*)(pNode))->GetWorldRotate());
         m_78 = pTarget->vfunc_18().FUN_14097fd50(FUN_1420834e0(m_118, kRot));
         if (n == 0)
             vfunc_3(m_78.FUN_14097fd50(m_setting.m_c));
@@ -360,9 +368,9 @@ void CConsoleCameraMode::vfunc_6(int n)
         vfunc_3(Vector3(fX, fY, fZ));
         vfunc_4(ptRot);
     }
-    m_9c = FUN_1401d3200()->m_1a80.FUN_1402bac70();
-    m_a0 = FUN_1401d3200()->m_1ad8.FUN_1402bac70();
-    m_a4 = FUN_1401d3200()->m_1b30.FUN_1402bac70();
+    m_9c = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
+    m_a0 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
+    m_a4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
     m_108 = 1;
 }
 MS2_REPLACE_METHOD(0x14109fc60, CConsoleCameraMode, vfunc_6, 1298, 0x3DB4BDAE);
@@ -376,7 +384,7 @@ void CConsoleCameraMode::vfunc_30()
     Unk_PickListPtr pList = Unk_CameraManager::FUN_1409478c0()->FUN_140af0850(fX, fY, true, true, false, NULL);
     if (!pList.FUN_140a16c00())
         return;
-    Unk_GameContext* pContext = FUN_1403ed2d0();
+    Unk_GameContext* pContext = ((class Unk_GameContext*)WorldService::GetInstance());
     for (unsigned int i = 0; i < pList.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17ea0(); ++i)
     {
         Unk_PickEntry* pEntry = pList.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17d70(i);

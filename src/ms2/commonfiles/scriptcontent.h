@@ -13,7 +13,6 @@
 class Unk_ScriptXmlNode;    // game TinyXML element
 class Unk_ScriptTalk;       // a loaded NPC talk script (CPtred based)
 
-class Unk_ScriptRef { public: void FUN_14015b020(); int FUN_140159bc0(); void FUN_140159ba0(); };
 
 // The 16-byte intrusive smart pointer (pointee at +8) of the content classes.
 template<class T> class Unk_ScriptPtr {
@@ -32,10 +31,10 @@ public:
     T* operator->() const { return p; }
 private:
     void AddRef() const { if(p) AddRefImpl(0); }
-    static void AddRefObject(T* value) { reinterpret_cast<Unk_ScriptRef*>(value)->FUN_14015b020(); }
+    static void AddRefObject(T* value) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(value)); }
     void AddRefImpl(void*) const { AddRefObject(p); }
     void Release() { if(p) { ReleaseImpl(0); p=0; } }
-    void ReleaseImpl(void*) { if(reinterpret_cast<Unk_ScriptRef*>(p)->FUN_140159bc0()==0) { AddRefObject(p); reinterpret_cast<Unk_ScriptRef*>(p)->FUN_140159ba0(); } }
+    void ReleaseImpl(void*) { if(CPtred::ReleasePtred(reinterpret_cast<CPtred*>(p))==0) { AddRefObject(p); CPtred::DeletePtred(reinterpret_cast<CPtred*>(p)); } }
     void* pad_00; T* p;
 };
 

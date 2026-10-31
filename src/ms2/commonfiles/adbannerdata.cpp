@@ -13,10 +13,11 @@
 #include "adbannerdata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class COutputStream;
 
 // The packet writer / reader primitives (second flavours of the int / int64 / wide string helpers).
-void FUN_14070f960(Unk_AbOut* pOut, int n);
-void FUN_14070fa20(Unk_AbOut* pOut, __int64 n);
+COutputStream & FUN_14070f960(COutputStream &, long);  // C3: the definition's signature
+COutputStream & FUN_14070fa20(COutputStream &, unsigned __int64);  // C3: the definition's signature
 void FUN_14070fae0(Unk_AbOut* pOut, CStringW* pStr);
 void FUN_14070f440(Unk_AbIn* pIn, int* pn);
 void FUN_14070f500(Unk_AbIn* pIn, __int64* pn);
@@ -83,15 +84,15 @@ AdBannerData::AdBannerData()
 // @0x14016db80
 void AdBannerData::Write(Unk_AbOut* pOut)
 {
-    FUN_14070f960(pOut, m_nType);
+    FUN_14070f960(*(COutputStream *)pOut, m_nType);
     FUN_14070fae0(pOut, &m_strTypeName);
     FUN_14070fae0(pOut, &m_strName);
     FUN_14070fae0(pOut, &m_str30);
     FUN_14070fae0(pOut, &m_str38);
     FUN_14070fae0(pOut, &m_str40);
-    FUN_14070f960(pOut, m_nSlot);
-    FUN_14070fa20(pOut, m_nBegin);
-    FUN_14070fa20(pOut, m_nEnd);
+    FUN_14070f960(*(COutputStream *)pOut, m_nSlot);
+    FUN_14070fa20(*(COutputStream *)pOut, m_nBegin);
+    FUN_14070fa20(*(COutputStream *)pOut, m_nEnd);
 }
 
 // @0x14016dc60

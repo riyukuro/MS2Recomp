@@ -44,7 +44,6 @@ public:
 unsigned FUN_141472bc0();                                   // 0x141472bc0 the current tick (ms)
 bool FUN_140930110(int nObjectId);                          // 0x140930110 the object is the local player
 UIMainPlayerInfo* FUN_140931900(int nClass);                // 0x140931900 the main player info dialog
-int FUN_141092ff0(PCBase* pNpc);                            // 0x141092ff0 the npc shows an upper hp bar
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);            // 0x141b6efc0 the scene node of an entity
 
 // The stance bar argument (UIStanceBar::FUN_140ba2390); the exe zero-initializes it.
@@ -556,7 +555,7 @@ void AdditionalCli::FUN_14096d430()
         }
         else if (CNpc* pNpc = efd::DynamicCast<CNpc>(m_pOwner))
         {
-            if (FUN_141092ff0(pNpc))
+            if (((class CNpc*)(class PCBase*)(pNpc))->FUN_141092ff0())
             {
                 UIUpperHpBar* pBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)20029);
                 if (pBar)

@@ -29,6 +29,8 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- statics (.text$di): the sort type names a second time (another header of the unit pulls them in) ----
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -74,13 +76,12 @@ MS2_CHECK_SIZE(UIWeddingHallReservationPageConfirm, 0x30);
 
 class ASDialog : public ASDisplayObjectContainer {};
 
-class Unk_WrInventory { public: MS2Ptr<CItem> FUN_140a5e040(int nItemId); };   // the first item of an id
-extern Unk_WrInventory DAT_143ab2a90;                           // the local player's inventory
+   // the first item of an id
+extern Unk_Inventory DAT_143ab2a90;                             // the local player's inventory
 
 UITalkCinematic* FUN_140a7b2b0(int nUiId);                      // an open dialog of an id
 UIBillDialog* FUN_140f0a350(int nUiId);
 class Unk_WrUIManager { public: void FUN_141adc530(int nUiId); };   // open a dialog
-Unk_WrUIManager* FUN_1403ed2b0();
 bool FUN_140900f30(__int64 nTime);                              // the time is at night
 CStringW FUN_1409404f0(__int64 n);                              // a number with digit grouping
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);  // string table text with one argument
@@ -253,10 +254,6 @@ int UIWeddingHallReservationDialog::vfunc_28(const char* szMethod, const Scalefo
 MS2_REPLACE_METHOD(0x140fdb990, UIWeddingHallReservationDialog, vfunc_28, 1142, 0xEC17815D);
 
 // The shared imessagelistener.h declares UIMsg::FUN_1422b8a90 as int; the exe's returns bool.
-struct UIMsgBoolView
-{
-    bool FUN_1422b8a90();
-};
 
 // @0x140fdbe20
 int UIWeddingHallReservationDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
@@ -268,7 +265,7 @@ int UIWeddingHallReservationDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (dynamic_cast<UIBillDialog*>(pSender) != 0)
         {
             int nResult = pMsg->FUN_1422b8a10();
-            bool bCoupon = reinterpret_cast<UIMsgBoolView*>(pMsg)->FUN_1422b8a90();
+            bool bCoupon = reinterpret_cast<ASData*>(pMsg)->FUN_1422b8a90();
             if (nResult == 0)
             {
                 WeddingManager::GetInstance()->SendReservation(m_nPackage, m_nHall, m_nTime, m_bNight, bCoupon);
@@ -370,7 +367,7 @@ void UIWeddingHallReservationDialog::FUN_140fdc180()
     spBill->m_48 = (int)spHall->m_nMerat;
     UIBillDialog* pBillDlg = FUN_140f0a350(0x4e7b);
     pBillDlg->FUN_1418cda20(spBill);
-    FUN_1403ed2b0()->FUN_141adc530(0x4e7b);
+    reinterpret_cast<Unk_WrUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e7b);
 }
 // (not hooked: the inline UIBillDialog::TData ctor stores a DLL-local vftable)
 

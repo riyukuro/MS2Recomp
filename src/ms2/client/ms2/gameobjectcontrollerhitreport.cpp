@@ -18,7 +18,7 @@ static Unk_1401cd100 s_nullEntityId(NULL);
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-CPhysXHelper* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 Unk_Entity* FUN_141689970(CPhysXHelper* pHelper, NxActor* pActor);   // entity owning an actor (null if none)
 int FUN_140cfb1e0(const NxVec3& v);
 
@@ -61,7 +61,7 @@ NxControllerAction GameObjectControllerHitReport::onShapeHit(const NxControllerS
         if (FUN_140cfb1e0(hit.worldNormal) == 0)
             return NX_ACTION_NONE;
         m_normal = hit.worldNormal;
-        Unk_Entity* pEntity = FUN_141689970(FUN_1409f7ca0(), &hit.shape->getActor());
+        Unk_Entity* pEntity = FUN_141689970(((class CPhysXHelper*)FUN_1409f7ca0()), &hit.shape->getActor());
         if (pEntity != 0)
         {
             m_entity.FUN_1408b6ec0(pEntity);

@@ -92,6 +92,7 @@
 #include "ms2/client/ms2/statebannerdata.h"
 #include "ms2/placeholder/cserverstring.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/pcbase.h"
 #include "ms2/placeholder/cmainsystem.h"
 
 // Out-of-unit helpers.
@@ -103,8 +104,7 @@ struct Unk_GEFactoryRegistry {
 class Unk_SingletonObj;
 CStringTable* GetStringTable();                                  // the string table singleton
 __int64 GetServerTime();                                        // the server time
-UIGameMenuDialog* FUN_140938b90(unsigned nUIId);                // the game menu bar
-NotifySystem* FUN_140939a10();                                  // TSingleton<NotifySystem>::GetInstance
+class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 // The event-key table at 0x143ab2fc0: (kind, id) -> value, read through the typed lookups below.
 class Unk_CliEvtKeys {
 public:
@@ -120,43 +120,45 @@ extern unsigned __int64 DAT_143ab2828;
 extern Unk_CliEvtKeys DAT_143ab2fc0;
 // @0x140ce8590
 int Unk_CliEvtKeys::Get(int nKey, unsigned* pOut) { return FUN_1409617d0(nKey, 0, *(const int*)pOut); }
-void FUN_14086a6c0(const CMsTime& t);                           // checks the time is valid
 class Unk_CliClock { public: int FUN_141473560(); };            // seconds until the day ended
-void* FUN_140931510();                                          // the dungeon room manager
-__int64 FUN_140d9f580(void* pMgr, unsigned nId);                // the room's end time
+class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
+class CMyCharacter   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_140d9f580(int);
+};
 CStringW FUN_140275590(const wchar_t* pszFormat, const CStringW& a, const int& b);   // {0}({1})
 void* FUN_140c053e0(int nId);                                   // the attend gift dialog (UIAttendGiftDialog)
 int FUN_140397ab0(void* pFs, TiXmlDocument* pDoc, const CStringW& strPath);   // CFileSystem::LoadXml as a free call
 class Unk_CliTextFilter : public CServerStringGroup { };
 class Unk_CliCustomStr;
-void FUN_14087f0f0(Unk_CliCustomStr* p, const CStringW& key, const CStringW& value);
-void FUN_14087f140(Unk_CliCustomStr* p, const CStringW& key);
 class Unk_CliTextMgr { public: Unk_CliTextFilter* FUN_140be95b0(); };
-Unk_CliCustomStr* FUN_140a87690(Unk_CliTextMgr* p);
+class Unk_PatchTextOwner   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_PatchTextFilter* FUN_140a87690();
+};
       // the dungeon bookmark dialog
 UIDungeonRoomDialog* FUN_140961550(int nUiId);
-class Unk_CliMarket : public CMeratMarketMan { public: void FUN_140d59990(const CStringW* pStr);};
-Unk_CliMarket* FUN_140939a00();                                 // the ugc market
 class Unk_CliMeratDlg { public: void FUN_14130c5b0(const CStringW& str); };
-Unk_CliMeratDlg* FUN_140bfed50(int nUiId);
+class UIMeratMarketDialog* FUN_140bfed50(int);   // C3: was FUN_140bfed50
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 void FUN_1412751b0(const CStringW& str, int nType);             // chat / system message
 CommonString* FUN_14025e7d0();                                  // the CommonString singleton
 void FUN_140851c40(Unk_140165cf0* pElem);
 Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);              // the document's first child element
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& rOut);
-int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int& rOut);
-int FUN_140873360(Unk_140165cf0* pElem, const char* pszName, float* pOut);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
 class Unk_CliPortalMgr {                                        // the UGC portal map's icon list
 public:
     void FUN_141b9a300(int nFieldId, MS2Ptr<EventIconInfo> spInfo);
     void FUN_141b9a360(int nFieldId);
 };
-Unk_CliPortalMgr* FUN_140cb17d0();
-CGameRule* FUN_1401c0d90();                                     // TSingleton<CGameRule>::GetInstance
+class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
 class Unk_CliEvents { public: void FUN_140da5430(int nId, Delegate<void(GameEventVariable*)> handler); void FUN_140da5490(int nId, Delegate<void(GameEventVariable*)> handler); };
-Unk_CliEvents* FUN_140933220();                                 // the game event variable manager
+class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 UICoupleDanceEventDialog* FUN_140b769d0(int nUiId);
 typedef void (UICoupleDanceEventDialog::*Unk_CliCoupleFn)(GameEventVariable*);
 class Unk_CliAttendOps : public UIAttendGiftDialog {                                        // the attend popups' add / remove entries
@@ -183,97 +185,13 @@ template <class T> T* FindCliDialog(int id)
 class UIDTAttendPopup : public UIDialog {};
 
 class Unk_CliStateObj : public StateBanner { };
-// The local player (CWorldService::FUN_141bd0cc0), whose slot 78 is the level.
-class Unk_CliPlayer {
-public:
-    virtual void Unk_Slot0();
-    virtual void Unk_Slot1();
-    virtual void Unk_Slot2();
-    virtual void Unk_Slot3();
-    virtual void Unk_Slot4();
-    virtual void Unk_Slot5();
-    virtual void Unk_Slot6();
-    virtual void Unk_Slot7();
-    virtual void Unk_Slot8();
-    virtual void Unk_Slot9();
-    virtual void Unk_Slot10();
-    virtual void Unk_Slot11();
-    virtual void Unk_Slot12();
-    virtual void Unk_Slot13();
-    virtual void Unk_Slot14();
-    virtual void Unk_Slot15();
-    virtual void Unk_Slot16();
-    virtual void Unk_Slot17();
-    virtual void Unk_Slot18();
-    virtual void Unk_Slot19();
-    virtual void Unk_Slot20();
-    virtual void Unk_Slot21();
-    virtual void Unk_Slot22();
-    virtual void Unk_Slot23();
-    virtual void Unk_Slot24();
-    virtual void Unk_Slot25();
-    virtual void Unk_Slot26();
-    virtual void Unk_Slot27();
-    virtual void Unk_Slot28();
-    virtual void Unk_Slot29();
-    virtual void Unk_Slot30();
-    virtual void Unk_Slot31();
-    virtual void Unk_Slot32();
-    virtual void Unk_Slot33();
-    virtual void Unk_Slot34();
-    virtual void Unk_Slot35();
-    virtual void Unk_Slot36();
-    virtual void Unk_Slot37();
-    virtual void Unk_Slot38();
-    virtual void Unk_Slot39();
-    virtual void Unk_Slot40();
-    virtual void Unk_Slot41();
-    virtual void Unk_Slot42();
-    virtual void Unk_Slot43();
-    virtual void Unk_Slot44();
-    virtual void Unk_Slot45();
-    virtual void Unk_Slot46();
-    virtual void Unk_Slot47();
-    virtual void Unk_Slot48();
-    virtual void Unk_Slot49();
-    virtual void Unk_Slot50();
-    virtual void Unk_Slot51();
-    virtual void Unk_Slot52();
-    virtual void Unk_Slot53();
-    virtual void Unk_Slot54();
-    virtual void Unk_Slot55();
-    virtual void Unk_Slot56();
-    virtual void Unk_Slot57();
-    virtual void Unk_Slot58();
-    virtual void Unk_Slot59(int a, int b, int c, int d);
-    virtual void Unk_Slot60();
-    virtual void Unk_Slot61();
-    virtual void Unk_Slot62();
-    virtual void Unk_Slot63();
-    virtual void Unk_Slot64();
-    virtual void Unk_Slot65();
-    virtual void Unk_Slot66();
-    virtual void Unk_Slot67();
-    virtual void Unk_Slot68();
-    virtual void Unk_Slot69();
-    virtual void Unk_Slot70();
-    virtual void Unk_Slot71();
-    virtual void Unk_Slot72();
-    virtual void Unk_Slot73();
-    virtual void Unk_Slot74();
-    virtual void Unk_Slot75();
-    virtual void Unk_Slot76();
-    virtual void Unk_Slot77();
-    virtual unsigned short vfunc_78();
-    int FUN_14166c930();                                        // the state
-    Unk_CliStateObj* FUN_14166ccb0();                           // the state's object
-};
-class Unk_CliWorld : public WorldService {
-public:
-    Unk_CliPlayer* FUN_141bd0cc0();                             // the local player
-};
+class Unk_CliPlayer : public PCBase { };   // view of WorldService::FUN_141bd0cc0's local player (slot 78 is the level)
 void* FUN_14041beb0();                                          // the DT context manager
-int FUN_1408d7e60(void* p, unsigned short n);                   // the manager has a context for the level
+class CUserEventManager   // C3: member view for the former free stand-ins
+{
+public:
+    int HasDTReward(unsigned short);
+};
 extern Unk_SingletonObj* DAT_143ac0d40;
 // @0x140ce8270 (the DT dialog hands its reward through the by-value context handle)
 class Unk_CliDTOps {
@@ -404,10 +322,10 @@ void GameEventDTRewardCli::OnStart()
         if (pDlg->FUN_141924630() != 0) {
             reinterpret_cast<Unk_CliDTOps*>(pDlg)->FUN_140f38430(m_spContext);
         } else {
-            if (((Unk_CliWorld*)FUN_1403ed2d0())->FUN_141bcfbd0() != 0)
+            if (WorldService::GetInstance()->FUN_141bcfbd0() != 0)
                 pDlg->FUN_141924680();
             else
-                FUN_140939a10()->RegisterNotify(L"NotifyGameStart",
+                NotifySystem::GetInstance()->RegisterNotify(L"NotifyGameStart",
                     Delegate<void(NotifyObject*)>(this, &GameEventDTRewardCli::OnNotifyGameStart));
         }
     }
@@ -422,10 +340,10 @@ void GameEventDTRewardCli::vfunc_6()
         pDlg->FUN_140f38630(FUN_1402e1d00());
         if (pDlg->FUN_141924630()) {
             unsigned short nLevel = 0;
-            Unk_CliPlayer* pPlayer = ((Unk_CliWorld*)FUN_1403ed2d0())->FUN_141bd0cc0();
+            Unk_CliPlayer* pPlayer = (Unk_CliPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
             if (pPlayer)
                 nLevel = pPlayer->vfunc_78();
-            if (FUN_1408d7e60(FUN_14041beb0(), nLevel) == 0)
+            if (((class CUserEventManager*)(void*)(FUN_14041beb0()))->HasDTReward(nLevel) == 0)
                 pDlg->vfunc_67();
         }
     }
@@ -552,8 +470,8 @@ bool GameEventAttendGiftCli::FUN_140ce35c0()
     if (nEnd == 0)
         return false;
     CMsTime end(nEnd);
-    FUN_14086a6c0(now);
-    FUN_14086a6c0(end);
+    TruncateToDay(*(class CMsTime*)&static_cast<class CMsTime const&>(now));
+    TruncateToDay(*(class CMsTime*)&static_cast<class CMsTime const&>(end));
     return now <= end;
 }
 
@@ -654,7 +572,7 @@ CMsTime GameEventAttendGiftCli::FUN_140ce3aa0() { return m_28; }
 CMsTime GameEventAttendGiftCli::FUN_140ce3ae0()
 {
     if (m_i114 == 2) {
-        __int64 nTime = FUN_140d9f580(FUN_140931510(), FUN_1402e1d00());
+        __int64 nTime = ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->FUN_140d9f580(FUN_1402e1d00());
         if (nTime != 0)
             return CMsTime(nTime);
     }
@@ -705,8 +623,8 @@ bool GameEventCashAttendCli::FUN_140ce3da0()
     if (nEnd == 0)
         return false;
     CMsTime end(nEnd);
-    FUN_14086a6c0(now);
-    FUN_14086a6c0(end);
+    TruncateToDay(*(class CMsTime*)&static_cast<class CMsTime const&>(now));
+    TruncateToDay(*(class CMsTime*)&static_cast<class CMsTime const&>(end));
     return now <= end;
 }
 
@@ -798,14 +716,14 @@ CStringW GameEventItemBuffCli::GetTypeName() { return CStringW(L"GameEventItemBu
 // @0x140ce4420
 void GameEventItemBuffCli::OnStart()
 {
-    FUN_140939a10()->RegisterNotify(L"NotifyGameStart",
+    NotifySystem::GetInstance()->RegisterNotify(L"NotifyGameStart",
         Delegate<void(NotifyObject*)>(this, &GameEventItemBuffCli::FUN_140ce4580));
 }
 
 // @0x140ce44d0
 void GameEventItemBuffCli::vfunc_6()
 {
-    FUN_140939a10()->UnregisterNotify(L"NotifyGameStart",
+    NotifySystem::GetInstance()->UnregisterNotify(L"NotifyGameStart",
         Delegate<void(NotifyObject*)>(this, &GameEventItemBuffCli::FUN_140ce4580));
 }
 
@@ -857,11 +775,11 @@ CStringW GameEventMeratMarketNoticeCli::GetTypeName() { return CStringW(L"GameEv
 void GameEventMeratMarketNoticeCli::OnStart()
 {
     GameEventMeratMarketNotice::OnStart();
-    Unk_CliMeratDlg* pDlg = FUN_140bfed50(0x4ec1);
+    Unk_CliMeratDlg* pDlg = ((class Unk_CliMeratDlg*)FUN_140bfed50(0x4ec1));
     if (pDlg) {
         const CStringW* pStr = &m_d0;
-        FUN_140939a00()->FUN_140d59990(pStr);
-        pDlg->FUN_14130c5b0(FUN_140939a00()->FUN_140d599d0());
+        CMeratMarketMan::GetInstance()->FUN_140d59990(*pStr);
+        pDlg->FUN_14130c5b0(CMeratMarketMan::GetInstance()->FUN_140d599d0());
     }
 }
 
@@ -869,13 +787,13 @@ void GameEventMeratMarketNoticeCli::OnStart()
 void GameEventMeratMarketNoticeCli::vfunc_6()
 {
     GameEventMeratMarketNotice::vfunc_6();
-    Unk_CliMeratDlg* pDlg = FUN_140bfed50(0x4ec1);
+    Unk_CliMeratDlg* pDlg = ((class Unk_CliMeratDlg*)FUN_140bfed50(0x4ec1));
     if (pDlg) {
         {
             CStringW strEmpty(L"");
-            FUN_140939a00()->FUN_140d59990(&strEmpty);
+            CMeratMarketMan::GetInstance()->FUN_140d59990(strEmpty);
         }
-        pDlg->FUN_14130c5b0(FUN_140939a00()->FUN_140d599d0());
+        pDlg->FUN_14130c5b0(CMeratMarketMan::GetInstance()->FUN_140d599d0());
     }
 }
 
@@ -965,7 +883,7 @@ void GameEventWorldmapIconCli::OnStart()
         MS2Ptr<EventIconInfo> spInfo(new EventIconInfo);
         if (spInfo->Load(pIcon) == 0)
             continue;
-        FUN_140cb17d0()->FUN_141b9a300(spInfo->m_nFieldId, spInfo);
+        ((class Unk_CliPortalMgr*)FUN_140cb17d0())->FUN_141b9a300(spInfo->m_nFieldId, spInfo);
     }
 }
 
@@ -986,7 +904,7 @@ void GameEventWorldmapIconCli::vfunc_6()
         MS2Ptr<EventIconInfo> spInfo(new EventIconInfo);
         if (spInfo->Load(pIcon) == 0)
             continue;
-        FUN_140cb17d0()->FUN_141b9a360(spInfo->m_nFieldId);
+        ((class Unk_CliPortalMgr*)FUN_140cb17d0())->FUN_141b9a360(spInfo->m_nFieldId);
     }
 }
 
@@ -1007,11 +925,11 @@ void GameEventStringBoardCli::OnStart()
     else
         strText = m_80;
     if (!strText.IsEmpty())
-        FUN_1401c0d90()->FUN_14047d820(FUN_1402e1d00(), strText);
+        CGameRule::GetInstance()->FUN_14047d820(FUN_1402e1d00(), strText);
 }
 
 // @0x140ce5380
-void GameEventStringBoardCli::vfunc_6() { FUN_1401c0d90()->FUN_14047d900(FUN_1402e1d00()); }
+void GameEventStringBoardCli::vfunc_6() { CGameRule::GetInstance()->FUN_14047d900(FUN_1402e1d00()); }
 
 // ---- GameEventSnowmanCli ---------------------------------------------------------------------------------------------
 
@@ -1029,10 +947,10 @@ void GameEventSnowmanCli::OnStart()
     if (pDlg) {
         pDlg->FUN_140e96a90(m_e0);
         if (pDlg->FUN_141924630() == 0) {
-            if (((Unk_CliWorld*)FUN_1403ed2d0())->FUN_141bcfbd0() != 0)
+            if (WorldService::GetInstance()->FUN_141bcfbd0() != 0)
                 pDlg->FUN_141924680();
             else
-                FUN_140939a10()->RegisterNotify(L"NotifyGameStart",
+                NotifySystem::GetInstance()->RegisterNotify(L"NotifyGameStart",
                     Delegate<void(NotifyObject*)>(this, &GameEventSnowmanCli::FUN_140ce56a0));
         }
     }
@@ -1047,7 +965,7 @@ void GameEventSnowmanCli::vfunc_6()
         if (pDlg->FUN_141924630())
             pDlg->vfunc_67();
     }
-    FUN_140939a10()->UnregisterNotify(L"NotifyGameStart",
+    NotifySystem::GetInstance()->UnregisterNotify(L"NotifyGameStart",
         Delegate<void(NotifyObject*)>(this, &GameEventSnowmanCli::FUN_140ce56a0));
 }
 
@@ -1096,17 +1014,17 @@ void GameEventRpsCli::vfunc_6()
     UIRpsEventDialog* pDlg = FindCliDialog<UIRpsEventDialog>(0x4f5f);
     if (pDlg && pDlg->FUN_141924630() != 0)
         pDlg->vfunc_67();
-    Unk_CliPlayer* pPlayer = ((Unk_CliWorld*)FUN_1403ed2d0())->FUN_141bd0cc0();
+    Unk_CliPlayer* pPlayer = (Unk_CliPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     switch (pPlayer->FUN_14166c930()) {
     case 0x3c:
-        pPlayer->Unk_Slot59(1, 0, 0, 0);
+        pPlayer->vfunc_59(1, 0, 0, 0);
         break;
     case 0x3b: {
-        Unk_CliStateObj* pObj = pPlayer->FUN_14166ccb0();
+        Unk_CliStateObj* pObj = (Unk_CliStateObj*)pPlayer->FUN_14166ccb0();
         if (pObj && pObj->FUN_140b7f3b0() == 1)
-            pPlayer->Unk_Slot59(1, 0, 0, 0);
+            pPlayer->vfunc_59(1, 0, 0, 0);
         break;
     }
     }
@@ -1128,8 +1046,8 @@ void GameEventCoupleDanceCli::OnStart()
     UICoupleDanceEventDialog* pDlg = FUN_140b769d0(0x4f71);
     if (pDlg != 0) {
         Unk_CliCoupleFn pfn = reinterpret_cast<Unk_CliCoupleFn>(&UICoupleDanceEventDialog::FUN_140bfe1a0);
-        FUN_140933220()->FUN_140da5430(0x834, Delegate<void(GameEventVariable*)>(pDlg, pfn));
-        FUN_140933220()->FUN_140da5430(0x835, Delegate<void(GameEventVariable*)>(pDlg, pfn));
+        ((class Unk_CliEvents*)FUN_140933220())->FUN_140da5430(0x834, Delegate<void(GameEventVariable*)>(pDlg, pfn));
+        ((class Unk_CliEvents*)FUN_140933220())->FUN_140da5430(0x835, Delegate<void(GameEventVariable*)>(pDlg, pfn));
     }
 }
 
@@ -1140,22 +1058,22 @@ void GameEventCoupleDanceCli::vfunc_6()
     GameEventCoupleDance::vfunc_6();
     UICoupleDanceEventDialog* pDlg = FUN_140b769d0(0x4f71);
     if (pDlg != 0) {
-        FUN_140933220()->FUN_140da5490(0x834, Delegate<void(GameEventVariable*)>(pDlg, reinterpret_cast<Unk_CliCoupleFn>(&UICoupleDanceEventDialog::FUN_140bfe1a0)));
-        FUN_140933220()->FUN_140da5490(0x835, Delegate<void(GameEventVariable*)>(pDlg, reinterpret_cast<Unk_CliCoupleFn>(&UICoupleDanceEventDialog::FUN_140bfe1a0)));
+        ((class Unk_CliEvents*)FUN_140933220())->FUN_140da5490(0x834, Delegate<void(GameEventVariable*)>(pDlg, reinterpret_cast<Unk_CliCoupleFn>(&UICoupleDanceEventDialog::FUN_140bfe1a0)));
+        ((class Unk_CliEvents*)FUN_140933220())->FUN_140da5490(0x835, Delegate<void(GameEventVariable*)>(pDlg, reinterpret_cast<Unk_CliCoupleFn>(&UICoupleDanceEventDialog::FUN_140bfe1a0)));
         if (pDlg->FUN_141924630() != 0)
             pDlg->vfunc_67();
     }
-    Unk_CliPlayer* pPlayer = ((Unk_CliWorld*)FUN_1403ed2d0())->FUN_141bd0cc0();
+    Unk_CliPlayer* pPlayer = (Unk_CliPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     switch (pPlayer->FUN_14166c930()) {
     case 0x45:
-        pPlayer->Unk_Slot59(1, 0, 0, 0);
+        pPlayer->vfunc_59(1, 0, 0, 0);
         break;
     case 0x3b: {
-        Unk_CliStateObj* pObj = pPlayer->FUN_14166ccb0();
+        Unk_CliStateObj* pObj = (Unk_CliStateObj*)pPlayer->FUN_14166ccb0();
         if (pObj && pObj->FUN_140b7f3b0() == 2)
-            pPlayer->Unk_Slot59(1, 0, 0, 0);
+            pPlayer->vfunc_59(1, 0, 0, 0);
         break;
     }
     }
@@ -1175,7 +1093,7 @@ void GameEventCustomTriggerStringCli::OnStart()
     GameEventCustomTriggerString::OnStart();
     for (POSITION pos = m_d0.GetHeadPosition(); pos != 0; m_d0.GetNext(pos)) {
         CStringW strText = ((Unk_CliTextMgr*)reinterpret_cast<Unk_SingletonObj*>(TSingleton<CServerString>::GetInstance()))->FUN_140be95b0()->GetString(m_d0.GetValueAt(pos));
-        FUN_14087f0f0(FUN_140a87690((Unk_CliTextMgr*)reinterpret_cast<Unk_SingletonObj*>(TSingleton<CServerString>::GetInstance())), m_d0.GetKeyAt(pos), strText);
+        ((class CServerStringGroup*)(class Unk_CliCustomStr*)(((class Unk_CliCustomStr*)((class Unk_PatchTextOwner*)(class Unk_CliTextMgr*)((Unk_CliTextMgr*)reinterpret_cast<Unk_SingletonObj*>(TSingleton<CServerString>::GetInstance())))->FUN_140a87690())))->SetString(m_d0.GetKeyAt(pos), strText);
     }
 }
 
@@ -1184,7 +1102,7 @@ void GameEventCustomTriggerStringCli::vfunc_6()
 {
     GameEventCustomTriggerString::vfunc_6();
     for (POSITION pos = m_d0.GetHeadPosition(); pos != 0; m_d0.GetNext(pos)) {
-        FUN_14087f140(FUN_140a87690((Unk_CliTextMgr*)reinterpret_cast<Unk_SingletonObj*>(TSingleton<CServerString>::GetInstance())), m_d0.GetKeyAt(pos));
+        ((class CServerStringGroup*)(class Unk_CliCustomStr*)(((class Unk_CliCustomStr*)((class Unk_PatchTextOwner*)(class Unk_CliTextMgr*)((Unk_CliTextMgr*)reinterpret_cast<Unk_SingletonObj*>(TSingleton<CServerString>::GetInstance())))->FUN_140a87690())))->RemoveString(m_d0.GetKeyAt(pos));
     }
 }
 
@@ -1197,9 +1115,7 @@ public:
     void FUN_140da5180(int nOp, Delegate<void(CInPacket&)> handler);
     void FUN_140da51e0(int nOp, Delegate<void(CInPacket&)> handler);
 };
-Unk_CliMcPackets* FUN_140bccd50();
-class Unk_CliUiMgr { public: void FUN_141adc5d0(int nId); };
-void* FUN_1403ed2b0();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 void FUN_140710590(COutPacket&);
 
 class Unk_CliPktBody
@@ -1241,9 +1157,9 @@ void GameEventBurningLevelupCli::OnStart()
     UIBurningEventWidgetDialog* pDlg = FindCliDialog<UIBurningEventWidgetDialog>(0x4f6a);
     if (pDlg)
         pDlg->FUN_140c5ab30(MS2Ptr<Unk_MyPCBurningEvent>(reinterpret_cast<Unk_MyPCBurningEvent*>(this)));
-    FUN_140bccd50()->FUN_140da5180(0xf7,
+    ((class Unk_CliMcPackets*)FUN_140bccd50())->FUN_140da5180(0xf7,
         Delegate<void(CInPacket&)>(this, reinterpret_cast<Unk_CliBurnPktFn>(&GameEventBurningLevelupCli::FUN_140ce7250)));
-    FUN_140939a10()->RegisterNotify(L"NotifyChangeMyLevel",
+    NotifySystem::GetInstance()->RegisterNotify(L"NotifyChangeMyLevel",
         Delegate<void(NotifyObject*)>(this, &GameEventBurningLevelupCli::vfunc_10));
 }
 
@@ -1254,9 +1170,9 @@ void GameEventBurningLevelupCli::vfunc_6()
     UIBurningEventWidgetDialog* pDlg = FindCliDialog<UIBurningEventWidgetDialog>(0x4f6a);
     if (pDlg)
         pDlg->FUN_140c5ab30(MS2Ptr<Unk_MyPCBurningEvent>(0));
-    FUN_140bccd50()->FUN_140da51e0(0xf7,
+    ((class Unk_CliMcPackets*)FUN_140bccd50())->FUN_140da51e0(0xf7,
         Delegate<void(CInPacket&)>(this, reinterpret_cast<Unk_CliBurnPktFn>(&GameEventBurningLevelupCli::FUN_140ce7250)));
-    FUN_140939a10()->UnregisterNotify(L"NotifyChangeMyLevel",
+    NotifySystem::GetInstance()->UnregisterNotify(L"NotifyChangeMyLevel",
         Delegate<void(NotifyObject*)>(this, &GameEventBurningLevelupCli::vfunc_10));
 }
 
@@ -1297,7 +1213,7 @@ void GameEventLongTermAttendGiftCli::OnStart()
 void GameEventLongTermAttendGiftCli::vfunc_6()
 {
     GameEventLongTermAttendGift::vfunc_6();
-    ((Unk_CliUiMgr*)FUN_1403ed2b0())->FUN_141adc5d0(0x4f98);
+    CUIService::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f98);
 }
 
 // @0x140ce65f0
@@ -1518,12 +1434,12 @@ template <> Unk_14102fe10<Unk_140ce3510>::Unk_14102fe10(Unk_140ce3510* p)
 // @0x140cea090
 int EventIconInfo::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "fieldID", m_nFieldId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "fieldID", m_nFieldId);
     FUN_140873420(pElem, "iconFrame", m_strIconFrame);
     FUN_140873420(pElem, "eventStr", m_strEventStr);
-    FUN_1408731e0(pElem, "offsetX", m_nOffsetX);
-    FUN_1408731e0(pElem, "offsetY", m_nOffsetY);
-    FUN_140873360(pElem, "scale", m_fScale);
+    XmlGetAttr((class TiXmlElement*)(pElem), "offsetX", m_nOffsetX);
+    XmlGetAttr((class TiXmlElement*)(pElem), "offsetY", m_nOffsetY);
+    XmlGetAttr((class TiXmlElement*)(pElem), "scale", m_fScale);
     return m_nFieldId != 0;
 }
 

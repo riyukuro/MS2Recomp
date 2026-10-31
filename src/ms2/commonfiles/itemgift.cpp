@@ -18,7 +18,7 @@ struct Unk_GiftItemPtr {
 MS2_CHECK_SIZE(Unk_GiftItemPtr,0x10);
 Unk_GiftItemPtr FUN_14053f870(unsigned int);
 CStringW FUN_140292a70(const wchar_t*,const unsigned int&);
-int FUN_14053feb0(unsigned int);
+int FUN_14053feb0(int);  // C3: the definition's signature
 enum { ItemRank_Unknown=0 };
 void FUN_140873220(void*,const char*,unsigned int&);
 void FUN_1408731e0(void*,const char*,int&);

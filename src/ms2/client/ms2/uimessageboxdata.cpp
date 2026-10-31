@@ -25,6 +25,11 @@
 #include "ms2/client/ms2/iteminfoslot.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/gfxui/uiswfentity.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/commonfiles/itemdatatable.h"
 
 // 0x141a07950 is MS2Ptr<CItem>::operator=(int) (Release; return *this), the `= NULL` of ~CMsgBoxData; it lands in
 // this unit's range, so the instance is emitted here.
@@ -83,13 +88,11 @@ void FUN_141415560(const CString& strName, ItemInfoSlot::CreateParam* pParam);
 void FUN_141415600(const CString& strName);
 void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 int FUN_14151f9c0();                                                // the modaless setting
-class Unk_MsgPopup { public: int FUN_1422db730(); };
+class Unk_MsgPopup : public UISwfEntity { };
 Unk_MsgPopup* FUN_14151fcb0(int nUiType);                           // a dialog by type
 class Unk_MsgColors { public: int FUN_1405569f0(int nColor); };
-Unk_MsgColors* FUN_140281980();
 
-class Unk_MsgFeature { public: bool FUN_14036d570(int nId); bool FUN_14036d710(int nId); };
-Unk_MsgFeature* FUN_140166410();
+CFeatureManager* FUN_140166410();
 class Unk_MsgLocalizer { public: CStringW FUN_1422b0570(const CString& key); };
 Unk_MsgLocalizer* FUN_14025e7a0();
 class Unk_MsgOption { public: int* FUN_1402056b0(); char m_pad[0x58]; };
@@ -112,7 +115,6 @@ class Unk_MsgSkillTable
 public:
     MS2Ptr<Unk_MsgSkillAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel);
 };
-Unk_MsgSkillTable* FUN_1401958b0();
 
 class Unk_ClubBuffData : public CPtred
 {
@@ -127,12 +129,6 @@ public:
     void FUN_140211990(ATL::CAtlArray<MS2Ptr<Unk_ClubBuffData>>& out);
 };
 Unk_ClubBuffTable* FUN_140b1a4e0();
-class Unk_MsgStrings
-{
-public:
-    CStringW FUN_141812290(int nBuffId, unsigned short nLevel, CString strKey);
-};
-Unk_MsgStrings* FUN_1401a9d70();
 
 
 // The AS array push helpers (an AS array is built from objects and strings), and the int-valued AS object setter.
@@ -549,7 +545,7 @@ void CMsgBoxData::FUN_141a05730(ASObj& obj)
 // @0x141a05770
 void CMsgBoxData::FUN_141a05770(ASObj& obj)
 {
-    MS2Ptr<Unk_MsgSkillAttr> spAttr = FUN_1401958b0()->FUN_140aafef0(m_buff.m_nId, m_buff.m_nLevel);
+    MS2Ptr<Unk_MsgSkillAttr> spAttr = reinterpret_cast<Unk_MsgSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(m_buff.m_nId, m_buff.m_nLevel);
     if (spAttr.get() != 0)
     {
         obj.FUN_1407cbb20("buffDesc", m_buff.m_strDesc);
@@ -618,8 +614,8 @@ void CMsgBoxData::FUN_141a05f30(ASObj& obj)
         ASObj row(2);
         unsigned int nBuffId = buffs[i]->m_nBuffId;
         unsigned short nLevel = buffs[i]->m_nLevel;
-        CStringW strName = FUN_1401a9d70()->FUN_141812290(nBuffId, nLevel, CString("name"));
-        MS2Ptr<Unk_MsgSkillAttr> spAttr = FUN_1401958b0()->FUN_140aafef0(nBuffId, nLevel);
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141812290(nBuffId, nLevel, CString("name"));
+        MS2Ptr<Unk_MsgSkillAttr> spAttr = reinterpret_cast<Unk_MsgSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(nBuffId, nLevel);
         if (spAttr.get() != 0)
         {
             row.FUN_1409c0d20("effectID", nBuffId);
@@ -680,7 +676,7 @@ void CMsgBoxDataItem::FUN_141a06630(const CStringW& strName, bool bColor, int nC
     m_strName = strName;
     if (bColor)
     {
-        int nRgb = FUN_140281980()->FUN_1405569f0(nColor);
+        int nRgb = reinterpret_cast<Unk_MsgColors*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405569f0(nColor);
         m_strName = FUN_14183e930(strName, nRgb);
     }
 }

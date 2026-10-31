@@ -14,6 +14,7 @@ public:
     virtual ~ASLabel();                                             // 0 0x1422e49d0 (scalar deleting 0x1422e4f90)
     // ASUIComponent's own slots (0x1422c7260 / 0x1422c7ec0-0x1422c80c0: invalidate(...), validateNow), redeclared here
     // because asuicomponent.h does not list them yet (astextinput.h declares slot 24 as vfunc_24(int)).
+#ifndef MS2_ASUICOMPONENT_SLOTS
     virtual void vfunc_3(int nVisible);                             // 3 0x1422c7260
     virtual void vfunc_16();                                        // 16 0x1422c7ec0 invalidate()
     virtual void vfunc_17();                                        // 17 0x1422c7f00 invalidate("size")
@@ -24,6 +25,7 @@ public:
     virtual void vfunc_22();                                        // 22 0x1422c8040 invalidate("scrollBar")
     virtual void vfunc_23();                                        // 23 0x1422c8080 invalidate("selectedIndex")
     virtual void vfunc_24(bool bInvalidate);                        // 24 0x1422c80c0 validateNow (invalidate() first if set)
+#endif
     // recovered with ?\aslabel.cpp (src/ms2/gfxui/aslabel.cpp): the AS Label members
     void FUN_1422e4a00(const CString& strText);                     // set "text"
     void FUN_1422e4a50(const CStringW& strText);                    // set "text" (uiotherpetsystemdialog.cpp "m_title")

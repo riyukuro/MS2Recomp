@@ -40,6 +40,7 @@
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/placeholder/citemmergeoptiontable.h"
 #include "ms2/commonfiles/luautil.h"
+#include "ms2/client/ms2/invenslot.h"
 
 // ---- statics (.text$di): the sort-name table of the shared item header, twice (two headers of the unit pull it in) ----
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -55,18 +56,16 @@ template<> Unk_MrRemoveFn::DelegateImplBase::~DelegateImplBase();
 template<> Unk_MrDropFn::DelegateImplBase::~DelegateImplBase();
 
 // The inventory's bag of items by uid.
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 // The inventory slot (invenslot.cpp) a slot can be dropped on: id 0x6200023.
-class Unk_MrInvenSlot : public DragSlot
+class Unk_MrInvenSlot : public InvenSlot
 {
-public:
-    __int64 FUN_141405a10();                            // the uid of the item in the slot
 };
 Unk_MrInvenSlot* FUN_140a50b50(DragSlot* pSlot);        // pSlot->TypeCast(0x6200023), 0 on failure
 
 // The item price table (global of the lua state, FUN_1401c0db0).
-CLua* FUN_1401c0db0();
+class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 
 // The item option text builder (TSingleton<CItemMergeOptionTable>::GetInstance).
 
@@ -80,7 +79,11 @@ void FUN_140d42bc0(ItemScrollSlot* pSlot, Unk_MrRemoveFn fn);      // SetRemoveF
 
 void FUN_140710590(COutPacket&);                                    // send
 __int64 FUN_140718370(const CStringW& str);                         // the uid in the text
-bool FUN_140630810(void* pEnchantData);                             // the item has merge options
+class CItemStatus   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_140630810();
+};
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);    // string table text with one argument
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
@@ -144,7 +147,7 @@ int UIItemMergeRevertDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             __int64 nUid = FUN_140718370(data.FUN_1422b8f40());
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
             if (spItem.IsNull())
                 return 1;
             if (FUN_140e4d330(spItem.get()) != 0)
@@ -203,7 +206,7 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
     obj.FUN_1407cbb20("optionStr", CStringW(strText));
     obj.FUN_1407cbbe0("enabled", FUN_140e4d330(pItem) == 0);
     obj.FUN_1407cbb20("itemGUID", FUN_141b71910(pItem->FUN_140526a50()));
-    obj.FUN_1409c1180("price", FUN_1401c0db0()->CalcItemMergeRevertMeso(pItem->FUN_140526bd0(), nType));
+    obj.FUN_1409c1180("price", ((class CLua*)FUN_1401c0db0())->CalcItemMergeRevertMeso(pItem->FUN_140526bd0(), nType));
     m_30->Invoke("setData", obj);
 }
 
@@ -228,7 +231,7 @@ void UIItemMergeRevertDialog::FUN_140e4cea0(ItemScrollSlot& slot, DragSlot* pDra
     Unk_MrInvenSlot* pInven = FUN_140a50b50(pDrag);
     if (pInven != 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(pInven->FUN_141405a10());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(pInven->GetItemUid());
         if (spItem.IsNull())
         {
             FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_mergeitem"), 1, 1);
@@ -279,12 +282,12 @@ int UIItemMergeRevertDialog::FUN_140e4d330(CItem* pItem)
         return 3;
     if (reinterpret_cast<CItemData*>(pItem->FUN_140527840())->fusion.fusionable == 0)
         return 3;
-    MS2Ptr<CItem> spBase = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spBase = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spBase.IsNull())
         return 5;
     if (spBase->FUN_140526bd0() != pItem->FUN_140526bd0())
         return 6;
-    if (!FUN_140630810(pItem->FUN_1405278a0()))
+    if (!((class CItemStatus*)(void*)(pItem->FUN_1405278a0()))->FUN_140630810())
         return 7;
     if (spBase->FUN_140527840() == 0)
         return 5;

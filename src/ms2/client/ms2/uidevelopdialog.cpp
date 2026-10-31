@@ -34,19 +34,15 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local placeholders ----
 
 // The game's effect manager (FUN_1403ed280()).
-class Unk_DevEffectMgr
-{
-public:
-    bool FUN_1411a7830();               // effects enabled
-    void FUN_1411a7850(bool bOn);
-};
-Unk_DevEffectMgr* FUN_1403ed280();
+CEffectService* FUN_1403ed280();
 
-// The world (FUN_1403ed2d0()).
+// The world (reinterpret_cast<Unk_DevWorld*>(WorldService::GetInstance())).
 class Unk_DevList                       // ATL::CAtlList<efd::SmartPointer<..>> of world objects
 {
 public:
@@ -65,7 +61,6 @@ public:
     void* FUN_141bd36d0();                                              // npc tree
     void FUN_141bd2db0(Unk_DevList* pOut, int (*pfnFilter)(void*));     // collect the objects the filter accepts
 };
-Unk_DevWorld* FUN_1403ed2d0();
 static_assert(sizeof(Unk_DevList) == 0x38 && __alignof(Unk_DevList) == 8, "list");
 int FUN_141274b80(void* pObj);          // object filter (getexp.cpp)
 
@@ -139,7 +134,7 @@ efd::utf8string FUN_1414d7990(const efd::utf8string& kName);
 CStringW FUN_1401ceea0(const wchar_t* sz, const int& n);
 CStringW FUN_14016a730(const char* sz, int n);
 const char* FUN_1408ac310(const efd::utf8string& s);
-struct Unk_DevInstView { efd::utf8string FUN_14147d2f0(); };   // MeshInstancing member (this=rcx, hidden return=rdx)
+   // MeshInstancing member (this=rcx, hidden return=rdx)
 
 // ---- statics (the same header statics as header_statics_a.h, in another order) ----
 #ifndef MS2_HOOK_DLL
@@ -218,7 +213,7 @@ void UIDevelopDialog::OnLoadComplete()
         bPhysXDebug = pProps->GetDebugRender(kName);
     }
     obj.FUN_1407cbbe0("physXDebugRender", bPhysXDebug);
-    obj.FUN_1407cbbe0("enableEffect", FUN_1403ed280()->FUN_1411a7830());
+    obj.FUN_1407cbbe0("enableEffect", FUN_1403ed280()->IsEnabled());
     obj.FUN_1407cbbe0("showInstancing", m_bShowInstancing);
     obj.FUN_1407cbbe0("reloadMagicData", false);
     obj.FUN_1409c4a30("gameSpeed", 1.0f);
@@ -356,7 +351,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
 void UIDevelopDialog::OnClickReloadNpcExtent()
 {
     FUN_140a7cbe0(FUN_1406d6e90());
-    void* pMap = FUN_1403ed2d0()->FUN_141bd36d0();
+    void* pMap = reinterpret_cast<Unk_DevWorld*>(WorldService::GetInstance())->FUN_141bd36d0();
     for (void* pos = FUN_140a7b840(pMap); pos != 0; FUN_140a7b860(pMap, &pos))
     {
         PCBase* pNpc = FUN_140a7b650(FUN_140a7b8e0(pMap, pos));
@@ -418,7 +413,7 @@ void UIDevelopDialog::FUN_141293010(bool bOn)
 // @0x141293150
 void UIDevelopDialog::FUN_141293150(bool bOn)
 {
-    FUN_1403ed280()->FUN_1411a7850(bOn);
+    FUN_1403ed280()->SetEnabled(bOn);
 }
 
 // @0x141293180
@@ -454,7 +449,7 @@ void UIDevelopDialog::FUN_141293210(bool bOn, int nIndex)
 void UIDevelopDialog::FUN_1412932a0(float fScale)
 {
     Unk_DevList list(10);
-    FUN_1403ed2d0()->FUN_141bd2db0(&list, FUN_141274b80);
+    reinterpret_cast<Unk_DevWorld*>(WorldService::GetInstance())->FUN_141bd2db0(&list, FUN_141274b80);
     for (void* pos = list.FUN_140967000(); pos != 0; list.FUN_1409671f0(&pos))
     {
         Unk_DevObj* pObj = efd::DynamicCast<Unk_DevObj>(list.FUN_140a01110(pos));
@@ -472,7 +467,7 @@ void UIDevelopDialog::FUN_141293360(float fSpeed)
 // @0x141293390
 void UIDevelopDialog::FUN_141293390(float fScale)
 {
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_DevWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
         FUN_14123c330(pPlayer, fScale);
@@ -492,7 +487,7 @@ void UIDevelopDialog::FUN_1412933f0(int nIndex)
             int nCount = 0;
             if (pInstancing != 0)
                 nCount = pInstancing->FUN_14147cf40();
-            FUN_141292ca0("m_modelName", FUN_14016a730(FUN_1408ac310(reinterpret_cast<Unk_DevInstView*>(pInstancing)->FUN_14147d2f0()), 0));
+            FUN_141292ca0("m_modelName", FUN_14016a730(FUN_1408ac310(reinterpret_cast<MeshInstancing*>(pInstancing)->FUN_14147d2f0()), 0));
             CStringW strCount = FUN_1401ceea0(L"{0}", nCount);
             FUN_141292ca0("m_modelCount", strCount);
         }
@@ -510,7 +505,7 @@ void UIDevelopDialog::FUN_141293680(float fHeight)
     float fValue = fHeight;
     m_fDropItemHeight = fValue;
     Unk_DevList list(10);
-    FUN_1403ed2d0()->FUN_141bd2db0(&list, FUN_141274b80);
+    reinterpret_cast<Unk_DevWorld*>(WorldService::GetInstance())->FUN_141bd2db0(&list, FUN_141274b80);
     for (void* pos = list.FUN_140967000(); pos != 0; list.FUN_1409671f0(&pos))
     {
     }
@@ -522,7 +517,7 @@ void UIDevelopDialog::FUN_141293730(float fPeriod)
     float fValue = fPeriod;
     m_fDropItemPeriod = fValue;
     Unk_DevList list(10);
-    FUN_1403ed2d0()->FUN_141bd2db0(&list, FUN_141274b80);
+    reinterpret_cast<Unk_DevWorld*>(WorldService::GetInstance())->FUN_141bd2db0(&list, FUN_141274b80);
     for (void* pos = list.FUN_140967000(); pos != 0; list.FUN_1409671f0(&pos))
     {
     }

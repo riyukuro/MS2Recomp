@@ -47,15 +47,10 @@ public:
     virtual void vfunc_21(void* hwnd, float x, float y, float fDelta);                     // mouse wheel
 };
 
-class Unk_GfxLog
-{
-public:
-    void FUN_1403a1310(int nLevel, int nCategory, const wchar_t* szFormat, const char* const& a0, const char* const& a1);
-};
-Unk_GfxLog* FUN_140166440();
+class CLogString* GetLogString();
+template<class T, class U> void Unk_FileLog(CLogString* log, int level, int category, const wchar_t* format,
+                                            const T& a0, const U& a1);   // filesystem.cpp
 
-const char* FUN_140b63540(const Scaleform::GFx::Value& v);     // Value::GetString
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);            // the value is set
 
 // Defines the callbacks of a new notify handler T (NotifyBinding/NotifyDragSlot/NotifySwfEntity) on the AS object obj
 // of movie nMovieId. Instantiated at 0x1422f0470/0x1422f0560/0x1422f0650 (pinned at the end of the file).
@@ -107,7 +102,7 @@ void GFxMovieMain::vfunc_4(void* pMovie, const char* szEvent, const Scaleform::G
     GFxMovie::vfunc_4(pMovie, szEvent, pArgs, nArgs);
     if (_stricmp("Main", szEvent) == 0)
     {
-        const char* szName = FUN_140b63540(pArgs[0]);
+        const char* szName = pArgs[0].GetString();
         if (_stricmp("classMemberSendToClient", szName) == 0)
         {
             Scaleform::GFx::Value vStage(pArgs[1]);
@@ -137,7 +132,7 @@ void GFxMovieMain::vfunc_4(void* pMovie, const char* szEvent, const Scaleform::G
         GFxMovie* pTooltip = FUN_14025e7a0()->FUN_1422b01a0(5);
         if (pTooltip != 0)
         {
-            const char* szMethod = FUN_140b63540(pArgs[0]);
+            const char* szMethod = pArgs[0].GetString();
             pTooltip->vfunc_3(szMethod, &pArgs[1], nArgs - 1);
         }
     }
@@ -146,23 +141,23 @@ void GFxMovieMain::vfunc_4(void* pMovie, const char* szEvent, const Scaleform::G
         GFxMovie* pCursor = FUN_14025e7a0()->FUN_1422b01a0(6);
         if (pCursor != 0)
         {
-            const char* szMethod = FUN_140b63540(pArgs[0]);
+            const char* szMethod = pArgs[0].GetString();
             pCursor->vfunc_3(szMethod, &pArgs[1], nArgs - 1);
         }
     }
     else if (_stricmp("VideoPlayer", szEvent) == 0)
     {
-        const char* szName = FUN_140b63540(pArgs[0]);
+        const char* szName = pArgs[0].GetString();
         if (_stricmp("OnMovieStatus", szName) == 0)
         {
-            CString strC(FUN_140b63540(pArgs[3]));
-            CString strB(FUN_140b63540(pArgs[2]));
-            CString strA(FUN_140b63540(pArgs[1]));
+            CString strC(pArgs[3].GetString());
+            CString strB(pArgs[2].GetString());
+            CString strA(pArgs[1].GetString());
             ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_12(strA, strB, strC);
         }
         else if (_stricmp("onMovieCuePoint", szName) == 0)
         {
-            CString strName(FUN_140b63540(pArgs[1]));
+            CString strName(pArgs[1].GetString());
             float fTime = (float)pArgs[2].GetNumber();
             CAtlList<CString> params;
             ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_13(strName, fTime, params);
@@ -170,17 +165,17 @@ void GFxMovieMain::vfunc_4(void* pMovie, const char* szEvent, const Scaleform::G
     }
     else
     {
-        const char* szName = FUN_140b63540(pArgs[0]);
+        const char* szName = pArgs[0].GetString();
         if (_stricmp("loadInit", szName) == 0)
         {
             Scaleform::GFx::Value vRoot(pArgs[1]);
-            if (FUN_1409b4d40(vRoot))
+            if (vRoot.IsObject())
                 ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_7(szEvent, vRoot);
         }
         else if (_stricmp("loadComplete", szName) == 0)
         {
             Scaleform::GFx::Value vRoot(pArgs[1]);
-            if (FUN_1409b4d40(vRoot))
+            if (vRoot.IsObject())
                 ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_9(szEvent, vRoot, 0.0f);
         }
         else if (_stricmp("playSound", szName) == 0)
@@ -188,7 +183,7 @@ void GFxMovieMain::vfunc_4(void* pMovie, const char* szEvent, const Scaleform::G
             MS2Ptr<UISwfEntity> spEntity = FUN_140b632f0()->GetUISwfEntity(szEvent);
             if ((spEntity.get() ? true : false) && spEntity->FUN_1422dc390() != 0)
             {
-                CString strSound(FUN_140b63540(pArgs[1]));
+                CString strSound(pArgs[1].GetString());
                 spEntity->vfunc_29(&strSound);      // slot 29 takes the sound name (const CString&)
             }
         }
@@ -202,7 +197,7 @@ void GFxMovieMain::vfunc_4(void* pMovie, const char* szEvent, const Scaleform::G
                 if (spEntity->FUN_1422dc390() != 0)
                     spEntity->vfunc_28(szName, &pArgs[1], nArgs - 1);
                 else
-                    FUN_140166440()->FUN_1403a1310(2, 0x1a, L"DispatchEvent Warning[{0}][{1}]", szEvent, szName);
+                    Unk_FileLog(GetLogString(), 2, 0x1a, L"DispatchEvent Warning[{0}][{1}]", szEvent, szName);
             }
         }
     }

@@ -81,10 +81,8 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 
 // Unrecovered helpers.
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Data/Xml/<dir>/<file>
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>& out);
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly);  // filesystem.cpp
 int FUN_1406cfaa0(Unk_140165cf0* pElem, const char* pszName, std::vector<CString>& rOut);   // npcdata.cpp: list attribute
@@ -1366,12 +1364,12 @@ void SkillDataTable::LoadGlideData()
 {
     CString strPath = FUN_14071a5b0("Table", "glideData.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     for (Unk_140165cf0* pGlide : pRoot->FUN_140165cf0("glide"))
@@ -1387,7 +1385,7 @@ MS2_REPLACE_METHOD(0x1407eef70, SkillDataTable, LoadGlideData, 736, 0x25108745);
 // @0x1407ef260
 int LoadXml(TiXmlDocument& doc, const char* pszPath)
 {
-    return FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false);
+    return GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9c090-0x142c9c0d0 .text$yd

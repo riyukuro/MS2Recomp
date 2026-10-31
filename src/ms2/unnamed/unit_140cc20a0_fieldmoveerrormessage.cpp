@@ -42,7 +42,7 @@ struct Unk_MoveErrConfig {
 MS2_CHECK_OFFSET(Unk_MoveErrConfig, m_strDir60, 0x60);
 MS2_CHECK_OFFSET(Unk_MoveErrConfig, m_strDir68, 0x68);
 MS2_CHECK_OFFSET(Unk_MoveErrConfig, m_strDir70, 0x70);
-Unk_MoveErrConfig* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // ---- the int-argument formatter lambda and its closure ----
 
@@ -109,7 +109,7 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 CString FUN_140cc28f0(const CString& strA, const CString& strB)
 {
     CString str;
-    str.Format("%s%s/%s/%s", (LPCSTR)FUN_1401d31f0()->m_strDir68, (LPCSTR)FUN_140651350(),
+    str.Format("%s%s/%s/%s", (LPCSTR)((struct Unk_MoveErrConfig*)FUN_1401d31f0())->m_strDir68, (LPCSTR)FUN_140651350(),
                (LPCSTR)strA, (LPCSTR)strB);
     return str;
 }
@@ -118,7 +118,7 @@ CString FUN_140cc28f0(const CString& strA, const CString& strB)
 CString FUN_140cc2a00(const CString& strA, const CString& strB)
 {
     CString str;
-    str.Format("%s%s/%s", (LPCSTR)FUN_1401d31f0()->m_strDir60, (LPCSTR)strA, (LPCSTR)strB);
+    str.Format("%s%s/%s", (LPCSTR)((struct Unk_MoveErrConfig*)FUN_1401d31f0())->m_strDir60, (LPCSTR)strA, (LPCSTR)strB);
     return str;
 }
 
@@ -126,7 +126,7 @@ CString FUN_140cc2a00(const CString& strA, const CString& strB)
 CString FUN_140cc2ad0(const CString& strA, const CString& strB)
 {
     CString str;
-    str.Format("%s%s/%s", (LPCSTR)FUN_1401d31f0()->m_strDir68, (LPCSTR)strA, (LPCSTR)strB);
+    str.Format("%s%s/%s", (LPCSTR)((struct Unk_MoveErrConfig*)FUN_1401d31f0())->m_strDir68, (LPCSTR)strA, (LPCSTR)strB);
     return str;
 }
 
@@ -134,7 +134,7 @@ CString FUN_140cc2ad0(const CString& strA, const CString& strB)
 CString FUN_140cc2ba0(const CString& strA, const CString& strB)
 {
     CString str;
-    str.Format("%s%s/%s", (LPCSTR)FUN_1401d31f0()->m_strDir70, (LPCSTR)strA, (LPCSTR)strB);
+    str.Format("%s%s/%s", (LPCSTR)((struct Unk_MoveErrConfig*)FUN_1401d31f0())->m_strDir70, (LPCSTR)strA, (LPCSTR)strB);
     return str;
 }
 

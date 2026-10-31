@@ -16,10 +16,8 @@
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 void FUN_140873220(void*, const char*, int&);
 void FUN_140873360(void*, const char*, float&);
 void FUN_1408730a0(void*, const char*, bool&);
@@ -159,14 +157,14 @@ UGCMapPackageDataPtr LoadExportedUGCMap(const CString& strName)
     CString strPath;
     strPath.Format("./Data/Xml/ExportedUGCMap/%s.xml", (const char*)strName);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return UGCMapPackageDataPtr(0);
     UGCMapPackageDataPtr data(new CUGCMapPackageData);
     FUN_1401d1160(data.get(), strPath);
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ugcmap");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ugcmap> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ugcmap> {0}]", strPath);
         return UGCMapPackageDataPtr(0);
     }
     FUN_1408733e0(pRoot, "indoorSizeType", data->m_strIndoorSizeType);

@@ -12,6 +12,7 @@ class CSeasonDataTable : public TSingleton<CSeasonDataTable>
 public:
     CSeasonDataTable();                                     // 0x140791740
     virtual ~CSeasonDataTable();
+    int Load();                                             // 0x140791c30
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_8[0x148 - 0x8];

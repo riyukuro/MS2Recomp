@@ -86,19 +86,19 @@ void FUN_140059170(cri_any);
 void FUN_1400592c0(unsigned char const *, unsigned char *, int, int, int);
 void FUN_140059340(unsigned char const *, unsigned char *, int, int, int);
 void FUN_1400593b0(unsigned char const *, unsigned char *, int, int, int);
-void FUN_1400593f0(cri_any, cri_any, cri_any, cri_any, cri_any);
+void FUN_1400593f0(unsigned char const *, unsigned char *, int, int, int);
 void FUN_140059570(unsigned char const *, unsigned char *, int, int, int);
 void FUN_140059700(unsigned char const *, unsigned char *, int, int, int);
 void FUN_1400597b0(unsigned char const *, unsigned char *, int, int, int);
-void FUN_140059810(cri_any, cri_any, cri_any, cri_any, cri_any);
+void FUN_140059810(unsigned char const *, unsigned char *, int, int, int);
 void FUN_140059ac0(unsigned char const *, unsigned char *, int, int, int);
 void FUN_140059b80(unsigned char const *, unsigned char *, int, int, int);
 void FUN_140059c10(unsigned char const *, unsigned char *, int, int, int);
-void FUN_140059c40(cri_any, cri_any, cri_any, cri_any, cri_any);
+void FUN_140059c40(unsigned char const *, unsigned char *, int, int, int);
 void FUN_140059dd0(unsigned char const *, unsigned char *, int, int, int);
 void FUN_14005a070(unsigned char const *, unsigned char *, int, int, int);
 void FUN_14005a140(unsigned char const *, unsigned char *, int, int, int);
-void FUN_14005a1b0(cri_any, cri_any, cri_any, cri_any, cri_any);
+void FUN_14005a1b0(unsigned char const *, unsigned char *, int, int, int);
 void FUN_140062c10(cri_any, cri_any);
 void FUN_140066450(void *);
 void FUN_140066d80(unsigned __int64);
@@ -178,7 +178,6 @@ namespace Scaleform {
     float QueryMasterVolume(void *);
     unsigned int ReadSoundData(void *, void *, unsigned int);
     float QueryChannelPan(void *);
-    float QueryChannelTime(void *);
     float QueryAudioElapsedSeconds(void *);
     float QueryChannelVolume(void *);
     bool InitializeAudioSystem(void *, void *, unsigned char, unsigned char);
@@ -191,6 +190,9 @@ namespace Scaleform {
     void ClearPlayerSoundRecord(void *);
 }
 extern "C" void FUN_142746d70(void*);
+// 0x1427458e0 is the member Sfr22ChannelPlayerView::QueryChannelTime (sfr_as3_22.cpp), which this void* slot can't
+// name; the free Scaleform::QueryChannelTime this slot used to name has no definition (full exe trap stub)
+void FUN_1427458e0();
 
 extern unsigned char DAT_14001d720[];
 extern unsigned char DAT_1400284b0[];
@@ -1561,7 +1563,7 @@ alignas(16) Sd_1431bed60 DAT_1431bed60 = {
     (const void*)&Scaleform::GFx::FUN_142745ea0,
     (const void*)&Scaleform::QueryChannelPlaying,
     (const void*)&Scaleform::GFx::FUN_142746510,
-    (const void*)&Scaleform::QueryChannelTime,
+    (const void*)&FUN_1427458e0,
     (const void*)&Scaleform::ConfigureAudioLoop,
     (const void*)&Scaleform::QueryChannelVolume,
     (const void*)&Scaleform::GFx::FUN_142746a30,

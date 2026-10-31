@@ -17,6 +17,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/camera.h"
 
 // ---- unit-local placeholders ----
 
@@ -36,7 +37,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-Unk_ClientConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The camera target entity, with the slots past vfunc_18.
 class Unk_TargetEnt : public Unk_CameraTargetEntity
@@ -59,17 +60,16 @@ public:
     virtual Vector3 vfunc_20();
 };
 Unk_TargetRpg* FUN_1409ffd30(Unk_CameraTargetEntity* p);    // rpg object of a target
-void FUN_14166d8b0(Unk_TargetRpg* p, float fYaw);
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_14166d8b0(float);
+};
 
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 Unk_CameraSetting* FUN_140947880(CCameraMode* p);           // &p->m_setting
-bool FUN_140aed0d0(Unk_CameraManager* pMgr);                // the camera setup is active?
-void FUN_140aec8a0(Unk_CameraManager* pMgr, bool b);
-void FUN_140aeb920(Unk_CameraManager* pMgr);
-void FUN_140aed720(Unk_CameraManager* pMgr, Unk_CameraSetup* pSetup);
-void FUN_140947980(Unk_CameraManager* pMgr, int nMode);
-void* FUN_140ad4b90();                                      // world service
+class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
 bool FUN_141863100(void* service, int mapId, const Vector3& pos);   // is the position inside the map?
 float FUN_141b6fe40(float t, int nInterpolator);            // easing
 
@@ -127,9 +127,9 @@ CLocalTargetCameraMode::CLocalTargetCameraMode(Unk_CameraOwner* pOwner, MS2Ptr<C
             m_d8.m_pos = FUN_1409f2540();
             m_d8.m_rot = FUN_140af8260();
             m_c0 = m_d8;
-            m_9c = FUN_1401d3200()->m_1a80.FUN_1402bac70();
-            m_a0 = FUN_1401d3200()->m_1ad8.FUN_1402bac70();
-            m_a4 = FUN_1401d3200()->m_1b30.FUN_1402bac70();
+            m_9c = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
+            m_a0 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
+            m_a4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
         }
     }
 }
@@ -152,7 +152,7 @@ void CLocalTargetCameraMode::vfunc_7()
 {
     if (m_1ec == 2)
     {
-        CCameraMode* pMode = Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0();
+        CCameraMode* pMode = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af24f0();
         if (pMode)
             static_cast<CTargetCameraMode*>(pMode)->FUN_14183dfe0(m_c0, m_d8);
     }
@@ -162,16 +162,16 @@ MS2_REPLACE_METHOD(0x140d4e320, CLocalTargetCameraMode, vfunc_7, 93, 0xD7644922)
 // @0x140d4e390
 void CLocalTargetCameraMode::vfunc_8(double fTime)
 {
-    if (!FUN_140aed0d0(Unk_CameraManager::FUN_1409478c0()))
+    if (!TSingleton<CameraMgr>::GetInstance()->FUN_140aed0d0())
     {
         FUN_140d4f830();
     }
     else if (m_17c != 0)
     {
-        Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60());
+        Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60());
         if (!pTarget)
         {
-            FUN_140aec8a0(Unk_CameraManager::FUN_1409478c0(), false);
+            TSingleton<CameraMgr>::GetInstance()->FUN_140aec8a0(false);
         }
         else if (m_184 == 0)
         {
@@ -182,19 +182,19 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
     }
     else if (m_180 != 0)
     {
-        Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60());
+        Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60());
         if (!pTarget)
         {
-            FUN_140aec8a0(Unk_CameraManager::FUN_1409478c0(), false);
+            TSingleton<CameraMgr>::GetInstance()->FUN_140aec8a0(false);
         }
         else if (m_184 == 0)
         {
-            if (!FUN_141863100(FUN_140ad4b90(), m_108.m_34, pTarget->vfunc_18()))
+            if (!FUN_141863100(((void*)FUN_140ad4b90()), m_108.m_34, pTarget->vfunc_18()))
                 FUN_140d4f830();
         }
     }
 
-    Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60());
+    Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60());
     if (!pTarget)
         return;
 
@@ -227,11 +227,11 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 m_d8.m_pos = m_108.m_setting.m_c;
                 vfunc_39(fTime);
                 m_178 = 0;
-                FUN_140aed720(Unk_CameraManager::FUN_1409478c0(), &m_108);
+                ((class CameraMgr*)(class Unk_CameraManager*)(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140aed720(*(struct Unk_CameraSetting const*)(&m_108));
                 if (m_1ec == 0 || m_1ec == 2)
-                    FUN_140947980(Unk_CameraManager::FUN_1409478c0(), 2);
+                    ((class CameraMgr*)(class Unk_CameraManager*)(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140947980(2);
                 else
-                    FUN_140947980(Unk_CameraManager::FUN_1409478c0(), m_1ec);
+                    ((class CameraMgr*)(class Unk_CameraManager*)(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140947980(m_1ec);
                 vfunc_11(m_108.m_setting.m_0);
             }
             else
@@ -270,7 +270,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 {
                     pTarget->vfunc_21(m_108.m_4c);
                     if (pRpg)
-                        FUN_14166d8b0(pRpg, m_108.m_4c.z);
+                        ((class PCBase*)(class Unk_TargetRpg*)(pRpg))->FUN_14166d8b0(m_108.m_4c.z);
                 }
                 vfunc_11(m_108.m_setting.m_0);
             }
@@ -294,7 +294,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                     Vector3 ptRot = m_1ac.FUN_14097fd50(FUN_1409ab5c0(t, m_108.m_4c.FUN_140965c40(m_1ac)));
                     pTarget->vfunc_21(ptRot);
                     if (pRpg)
-                        FUN_14166d8b0(pRpg, ptRot.z);
+                        ((class PCBase*)(class Unk_TargetRpg*)(pRpg))->FUN_14166d8b0(ptRot.z);
                 }
                 vfunc_11(m_190 + t * (m_108.m_setting.m_0 - m_190));
             }
@@ -302,7 +302,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
     }
     else
     {
-        Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+        Vector3 ptMove = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d00();
         if (ptMove.FUN_140552700(g_143b01a60))
         {
             m_1f0 = (int)((float)m_1f0 - ptMove.x);
@@ -329,7 +329,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
 void CLocalTargetCameraMode::vfunc_10()
 {
     m_f0 = 0;
-    Unk_CameraManager::FUN_1409478c0()->FUN_140aeaf40(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60(), 1);
+    reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60(), 1);
 }
 MS2_REPLACE_METHOD(0x140d4f520, CLocalTargetCameraMode, vfunc_10, 74, 0x67DE058B);
 
@@ -362,7 +362,7 @@ void CLocalTargetCameraMode::FUN_140d4f680(const Unk_CameraSetup& setup)
     m_108 = setup;
     m_178 = 1;
     m_1f0 = 0;
-    Unk_TargetRpg* pRpg = FUN_1409ffd30(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60());
+    Unk_TargetRpg* pRpg = FUN_1409ffd30(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60());
     if (pRpg)
     {
         m_1ac = pRpg->vfunc_20();
@@ -379,7 +379,7 @@ MS2_REPLACE_METHOD(0x140d4f680, CLocalTargetCameraMode, FUN_140d4f680, 419, 0xF1
 // @0x140d4f830
 void CLocalTargetCameraMode::FUN_140d4f830()
 {
-    FUN_140aeb920(Unk_CameraManager::FUN_1409478c0());
+    TSingleton<CameraMgr>::GetInstance()->FUN_140aeb920();
     m_178 = 1;
     m_184 = 1;
     float fTime;
@@ -416,7 +416,7 @@ bool CLocalTargetCameraMode::FUN_140d4fa60(const Unk_CameraSetup& setup)
     if (m_178 == 0)
     {
         Vector3 ptPos = setup.m_setting.m_c;
-        Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60());
+        Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60());
         if (pTarget)
             ptPos = pTarget->vfunc_18();
         m_108 = setup;

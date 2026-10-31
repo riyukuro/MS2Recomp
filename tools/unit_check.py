@@ -10,9 +10,19 @@ Python implementation of tools/unit-check.sh for native Windows (no bash needed)
 2. Link check: builds build/hook-msvc-<name>/ (cl 19.16) and build/hook-clang-<name>/ (clang-cl) with ONLY this unit's .cpp
    (+ its difftest, if any) as game code, linked against build/progress-<name>/symbols.tsv. The post-link
    `ms2symobj.py --check` must print ok.
+3. Fullexe precheck (tools/fullexe/precheck.py): relinks the last published latest build (inputs kept by
+   tools/fullexe/latest-sidecar.sh) with the unit's fresh cl 19.16 obj and fails on a new LNK2005 or a new trap stub, which
+   the DLL link cannot see. Runs for units whose source or headers differ from that build's commit (or under an
+   MS2_UNIT_SOURCE scratch copy); MS2_FULLEXE_PRECHECK=0 turns it off, =1 runs it for every unit. Skipped (not failed)
+   when no baseline inputs exist.
+4. ADDR64 check (tools/addr64check.py): the unit's cl 19.16 hook objects may not hold a static pointer (an ADDR64 in a
+   data section) to a global that the merge's symbol tables bind to the exe; the merge's `ms2symobj.py --check` rejects
+   the DLL for it, but the gate's DLL drops such data under /OPT:REF when nothing in the unit calls its function
+   (sfr_gfx_07h, merge 45). It also scans the published build's game objects for the symbols-manual rows added or
+   rebound since that build (sfr_render_06e after 4418b8cd5). MS2_ADDR64_CHECK=0 turns it off.
 --functional: the functional gate: no stub function in the unit's ranges, every vftable paired and byte-matching, no symbol
    conflict from the unit, both DLL links OK. Without it the exact gate applies (every function byte-identical).
-Exit 0 = the unit meets done criteria 1-3.
+Exit 0 = the unit meets done criteria 1-4.
 """
 import os
 import re
@@ -107,7 +117,15 @@ def main(argv):
         print("unit-check: no src/ms2 unit matches: %s" % " ".join(units), file=sys.stderr)
         return 2
     say("unit-check [%s]: %s" % (agent, " ".join(srcs)))
+    # one heavy slot for the whole gate (progress.py and the DLL links): taken twice, every gate queued again between the
+    # steps behind the other agents' runs (2026-10-31, the last 16 gates with the precheck: median wall 444 s = progress.py
+    # 84 + precheck 16 + 289 from the slot release to the end, of which the two ninja builds took ~40 s: ~250 s queueing).
+    # progress.py and precheck.py see MS2_HEAVY_HELD and do not re-acquire.
+    with heavy_lock.heavy():
+        return gate(agent, srcs, units, py, clang, dll, func, verbose)
 
+
+def gate(agent, srcs, units, py, clang, dll, func, verbose):
     # 1. compile + bytematch (one cl at a time per agent keeps the CPU moderate)
     say("== progress.py --agent %s --check" % agent)
     env = ms2paths.toolchain_env()
@@ -163,8 +181,7 @@ def main(argv):
             ok = subprocess.call(["cmake", "-DMS2_SYMOBJ_PRUNE=OFF", d], env=cenv, stdout=lf, stderr=subprocess.STDOUT) == 0
         return ok and run(ninja + ["-C", d, "-j2"], env=cenv) == 0
 
-    with heavy_lock.heavy():    # the DLL links (wine link.exe, clang-cl) are the other memory-heavy step
-        return link_checks(agent, srcs, clang, func, pst, env, build)
+    return link_checks(agent, srcs, clang, func, pst, env, build)
 
 
 def link_checks(agent, srcs, clang, func, pst, env, build):
@@ -185,6 +202,9 @@ def link_checks(agent, srcs, clang, func, pst, env, build):
         if not build(os.path.join(R, "build", "hook-clang-%s" % agent), os.path.join(R, "cmake", "toolchain-clangcl-x64.cmake"), False):
             dst = 1
 
+    ast = addr64_check(agent, srcs, env)
+    fst = fullexe_precheck(agent, srcs, env)
+
     say()
     if func:
         say("functional gate: OK (progress.py --functional --check passed)" if pst == 0 else
@@ -192,7 +212,71 @@ def link_checks(agent, srcs, clang, func, pst, env, build):
     else:
         say("bytematch: OK" if pst == 0 else "bytematch: NOT DONE (see above; -v for diffs)")
     say("DLL link: OK" if dst == 0 else "DLL link: FAILED")
-    return 0 if pst == 0 and dst == 0 else 1
+    if ast is not None:
+        say("ADDR64 check: OK" if ast == 0 else "ADDR64 check: FAILED (static pointers to exe globals above)")
+    if fst is not None:
+        say("fullexe precheck: OK" if fst == 0 else "fullexe precheck: FAILED (new LNK2005 / trap stubs above)")
+    return 0 if pst == 0 and dst == 0 and not ast and not fst else 1
+
+
+def addr64_check(agent, srcs, env):
+    """tools/addr64check.py on the unit's cl 19.16 hook objects and the symbols-manual rows new since the published
+    build (None = not run)"""
+    if os.environ.get("MS2_ADDR64_CHECK", "") == "0":
+        return None
+    import glob
+    d = os.path.join(R, "build", "hook-msvc-%s" % agent, "ms2")
+    objs = []
+    for f in srcs:
+        objs += [o for o in [os.path.join(d, "CMakeFiles", "ms2game.dir", f + ".obj")] if os.path.isfile(o)]
+        objs += sorted(glob.glob(os.path.join(d, "toolset-*", f[:-4] + ".obj")))    # MS2-TOOLSET units
+    tables = [os.path.join(R, "progress", "symbols-engine.tsv"), os.path.join(R, "progress", "symbols.tsv"),
+              os.path.join(R, "build", "progress-%s" % agent, "symbols.tsv"),
+              os.path.join(R, "progress", "symbols-manual.tsv")]
+    cmd = [ms2paths.python_exe(), os.path.join(R, "tools", "addr64check.py")]
+    for t in tables:
+        cmd += ["--table", t]
+    snap = os.path.join(R, "work", "fx29", "fx", "latest-inputs", "current")
+    if os.path.exists(os.path.join(snap, "commit")):
+        cmd += ["--manual-since", snap] + ["--skip=" + f[:-4] for f in srcs]
+    say("== ADDR64 check: %d object(s)%s" % (len(objs), " + symbols-manual rows new since the published build"
+                                              if "--manual-since" in cmd else ""))
+    return run(cmd + objs, env=env)
+
+
+def fullexe_precheck(agent, srcs, env):
+    """tools/fullexe/precheck.py for the units that differ from the baseline build (None = not run)"""
+    mode = os.environ.get("MS2_FULLEXE_PRECHECK", "")
+    snap = os.path.join(R, "work", "fx29", "fx", "latest-inputs", "current")
+    if mode == "0" or NT:
+        return None
+    if not os.path.exists(os.path.join(snap, "commit")):
+        say("== fullexe precheck: skipped, no baseline inputs (%s)" % snap)
+        return None
+    base = open(os.path.join(snap, "commit")).read().strip()
+    cache = os.path.join(R, "build", "progress-%s" % agent)
+    scratch = os.environ.get("MS2_UNIT_SOURCE", "").strip()
+    run_for = []
+    for f in srcs:
+        obj = os.path.join(cache, "obj", f[:-4] + ".obj")
+        stem = os.path.basename(f)[:-4]
+        paths = [os.path.join("src", "ms2", f)]
+        try:
+            import json
+            with open(obj[:-4] + ".deps") as df:
+                paths += [os.path.relpath(d, R) for d in json.load(df).get("deps", [])
+                          if os.path.abspath(d).startswith(R + os.sep)]
+        except (OSError, ValueError):
+            pass
+        changed = subprocess.call(["git", "-C", R, "diff", "--quiet", base, "--"] + paths,
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) != 0
+        if mode == "1" or changed or ("%s=" % stem) in scratch:
+            run_for.append(f)
+    if not run_for:
+        say("== fullexe precheck: skipped, no unit differs from the baseline %s" % base[:12])
+        return None
+    say("== fullexe precheck vs %s: %s" % (base[:12], " ".join(run_for)))
+    return run([ms2paths.python_exe(), os.path.join(R, "tools", "fullexe", "precheck.py"), "--cache", cache] + run_for, env=env)
 
 
 if __name__ == "__main__":

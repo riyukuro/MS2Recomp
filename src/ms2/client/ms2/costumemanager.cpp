@@ -21,9 +21,7 @@
 #include "ms2/client/ms2/avatarpc.h"
 
 __int64 FUN_14028d0e0();                                    // the current server time
-int FUN_141658e60(PC* pPC);                                 // 0x141658e60 the partner gem id of an actor
 int FUN_141420f90(CItem* pItem, AvatarPC* pAvatar);         // 0x141420f90 the customize id of an item
-CItem* FUN_14052cd70(MS2Ptr<CItem>* pItem);                 // 0x14052cd70 the item of a handle
 
 extern Unk_CostumeTable* DAT_143aaf318;
 
@@ -46,7 +44,7 @@ CostumeManager::~CostumeManager()
 // @0x140b1d360
 void CostumeManager::FUN_140b1d360(int nCostumeId)
 {
-    MS2Ptr<Unk_CostumeRow> spRow = FUN_140b1db00()->FUN_1405360b0(nCostumeId, FUN_141658e60(m_pOwner));
+    MS2Ptr<Unk_CostumeRow> spRow = FUN_140b1db00()->FUN_1405360b0(nCostumeId, ((class PC*)(m_pOwner))->FUN_141658e60());
     if (spRow == 0)
         return;
     if (m_nCostumeId != 0)
@@ -59,12 +57,12 @@ void CostumeManager::FUN_140b1d360(int nCostumeId)
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nItemId, 1, 0))
             continue;
-        int nCustomize = FUN_141420f90(FUN_14052cd70(&spItem), m_pOwner);
+        int nCustomize = FUN_141420f90(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), m_pOwner);
         spItem->FUN_140526c10(nCustomize);
         spItem->FUN_140526a70(FUN_14028d0e0());
         spItem->FUN_140526b30(m_pOwner->FUN_14123c580());
         spItem->FUN_14052a130(4);
-        m_pOwner->vfunc_127(FUN_14052cd70(&spItem), 0);
+        m_pOwner->vfunc_127(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), 0);
         m_items.AddTail(spItem);
     }
     for (POSITION pos = spRow->m_mapPart1.GetStartPosition(); pos != 0; spRow->m_mapPart1.GetNext(pos))
@@ -75,12 +73,12 @@ void CostumeManager::FUN_140b1d360(int nCostumeId)
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nItemId, 1, 0))
             return;
-        int nCustomize = FUN_141420f90(FUN_14052cd70(&spItem), m_pOwner);
+        int nCustomize = FUN_141420f90(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), m_pOwner);
         spItem->FUN_140526c10(nCustomize);
         spItem->FUN_140526b30(m_pOwner->FUN_14123c580());
         spItem->FUN_140526a70(FUN_14028d0e0());
         spItem->FUN_14052a130(4);
-        m_pOwner->vfunc_127(FUN_14052cd70(&spItem), 0);
+        m_pOwner->vfunc_127(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), 0);
         m_items.AddTail(spItem);
     }
     m_nCostumeId = nCostumeId;
@@ -96,7 +94,7 @@ void CostumeManager::FUN_140b1d890(int nCostumeId)
         MS2Ptr<CItem> spItem = m_items.GetAt(pos);
         if (spItem == 0)
             continue;
-        m_pOwner->vfunc_128(FUN_14052cd70(&spItem), 0);
+        m_pOwner->vfunc_128(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), 0);
     }
     m_items.RemoveAll();
     m_nCostumeId = 0;

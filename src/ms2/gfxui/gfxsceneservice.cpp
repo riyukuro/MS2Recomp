@@ -11,14 +11,13 @@
 
 #include <efd/IConfigManager.h>
 #include <efd/IServiceDetailRegister.h>
+#include <efd/MessageService.h>
+#include <ecr/RenderService.h>
 
 #include "ms2/placeholder/gfxservice.h"
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/gfxui/uisceneentity.h"
 #include "hook/ms2hook.h"
-
-void FUN_1411ab770(efd::IDependencyRegistrar* pRegistrar, int nFlags);   // AddDependency<ecr::RenderService> (0x07002001)
-void FUN_1410db4c0(efd::IDependencyRegistrar* pRegistrar, int nFlags);   // AddDependency<0x07000003>
 
 // ms_ClassInfo's initializer lives in unit_14013acc0.cpp's .text$di range; this reference emits the SetupClassInfo
 // inline here, where the exe has it (0x1422ba5e0).
@@ -211,9 +210,9 @@ MS2_REPLACE_METHOD(0x1422BA290, GFxSceneService, FUN_1422ba290, 83, 0xF2598165);
 // @0x1422ba2f0
 efd::SyncResult GFxSceneService::OnPreInit(efd::IDependencyRegistrar* pDependencyRegistrar)
 {
-    FUN_1411ab770(pDependencyRegistrar, 1);
+    pDependencyRegistrar->AddDependency<ecr::RenderService>(1);
     pDependencyRegistrar->AddDependency<efd::IConfigManager>(1);
-    FUN_1410db4c0(pDependencyRegistrar, 1);
+    pDependencyRegistrar->AddDependency<efd::MessageService>(1);
     return efd::SyncResult_Success;
 }
 MS2_REPLACE_METHOD_VIA(0x1422BA2F0, GFxSceneService, efd::ISystemService, OnPreInit, 69, 0x525A65C5);

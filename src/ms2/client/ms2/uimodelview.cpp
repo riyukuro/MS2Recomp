@@ -32,21 +32,36 @@ public:
     GameObject* FUN_141bd1180(int nId);                         // 0x141bd1180 NULL when the id is free
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // 0x141bd30a0 the current field data
 };
-Unk_UmvWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 class Unk_UmvClock;
-Unk_UmvClock* FUN_14086d260();                                  // the game clock
-double FUN_141473280(Unk_UmvClock* pClock);                     // the current time
-double FUN_141473260(Unk_UmvClock* pClock);                     // the time of the last frame
+class CMainSystem   // C3: member view for the former free stand-ins
+{
+public:
+    double FUN_141473280();
+    double GetDeltaTime();
+};
 void FUN_14107b010();                                           // refreshes the sun direction constants
 void FUN_14107b050(const NiPoint3& kDirection);                 // sets the sun direction constants
 void FUN_1418bf270(float* pAngle);                              // wraps an angle (degrees)
 void FUN_141568a10(NiNode* pRoot);
-void FUN_1415687f0(NiNode* pNode);
-void FUN_141568880(NiNode* pNode);
+void FUN_1415687f0(class NiAVObject*);   // C3: was FUN_1415687f0
+void FUN_141568880(class NiAVObject*);   // C3: was FUN_141568880
 class Unk_UmvEffectMgr;
-Unk_UmvEffectMgr* FUN_1409a8b20();
-void FUN_1416aac60(Unk_UmvEffectMgr* pMgr, NiNode* pNode);
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
+class PostProcessingService   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1416aac60(class NiAVObject*);
+};
 extern efd::Point3 DAT_143b01a60;                               // zero
 float FUN_140bf4fd0(float f);                                   // the float ceil overload (out of line in the exe)
 NiPoint3& FUN_14097faa0(NiPoint3* pDst, NiPoint3&& kSrc);       // NiPoint3 move assignment (out of line in the exe)
@@ -93,7 +108,7 @@ void UIModelView::vfunc_3()
 {
     UIRenderView::vfunc_3();
     FUN_14107b010();
-    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = ((class Unk_UmvWorld*)WorldService::GetInstance())->FUN_141bd30a0();
     if (spField)
         FUN_141ab7b80(spField->m_bFog);
 }
@@ -138,9 +153,9 @@ void UIModelView::vfunc_7(float fX, float fY, float fZ)
     NiPoint3 kPos(kRotate * (m_kBackupTranslate - m_kBackupCenter) + m_kBackupCenter);
     NiPoint3 kUp(kRotate * m_kBackupUp);
     m_spCamera->SetTranslate(kPos);
-    m_spCamera->Update((float)FUN_141473280(FUN_14086d260()), true);
+    m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     m_spCamera->LookAtWorldPoint(m_kCamera.m_kTarget, kUp);
-    m_spCamera->Update((float)FUN_141473280(FUN_14086d260()), true);
+    m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
 }
 
 // @0x140e66fa0
@@ -156,7 +171,7 @@ void UIModelView::vfunc_8(float fDist)
     {
         NiPoint3 kDir = -m_spCamera->GetWorldDirection();
         m_spCamera->SetTranslate(NiPoint3(m_kCamera.m_kPosition + kDir * fDist));
-        m_spCamera->Update((float)FUN_141473280(FUN_14086d260()), true);
+        m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     }
 }
 
@@ -173,7 +188,7 @@ void UIModelView::vfunc_9(float fDist)
     {
         NiPoint3 kDir = -m_spCamera->GetWorldDirection();
         m_spCamera->SetTranslate(NiPoint3(m_kCamera.m_kPosition + kDir * fDist));
-        m_spCamera->Update((float)FUN_141473280(FUN_14086d260()), true);
+        m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     }
 }
 
@@ -211,15 +226,15 @@ void UIModelView::vfunc_12(const ATL::CAtlArray<NiNode*>& arrNodes, NiNodePtr sp
         NiNode* pNode = arrNodes[i];
         if (pNode != 0)
         {
-            FUN_1415687f0(pNode);
-            FUN_141568880(pNode);
+            FUN_1415687f0((class NiAVObject*)(pNode));
+            FUN_141568880((class NiAVObject*)(pNode));
             pNode->DetachEffect(m_spDirLight);
             pNode->DetachEffect(m_spAmbientLight);
             pNode->AttachEffect(m_spDirLight);
             pNode->AttachEffect(m_spAmbientLight);
             pNode->UpdateEffects();
             m_spClick->vfunc_12(pNode);
-            FUN_1416aac60(FUN_1409a8b20(), pNode);
+            ((class PostProcessingService*)(class Unk_UmvEffectMgr*)(((class Unk_UmvEffectMgr*)Unk_AeFeatureMgr::FUN_1409a8b20())))->FUN_1416aac60((class NiAVObject*)(pNode));
         }
     }
 }
@@ -233,9 +248,9 @@ int UIModelView::vfunc_13(const Unk_ModelViewCamera& kCamera)
     const NiPoint3& kTarget = m_kCamera.m_kTarget;
     const NiPoint3& kPos = m_kCamera.m_kPosition;
     m_spCamera->SetTranslate(kPos);
-    m_spCamera->Update((float)FUN_141473280(FUN_14086d260()), true);
+    m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     m_spCamera->LookAtWorldPoint(kTarget, DAT_143a08cf8);
-    m_spCamera->Update((float)FUN_141473280(FUN_14086d260()), true);
+    m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     float fDist = (kTarget - kPos).Length();
     float fMin = m_kCamera.m_fMinDistance;
     float fMax = m_kCamera.m_fMaxDistance;
@@ -257,7 +272,7 @@ int UIModelView::vfunc_13(const Unk_ModelViewCamera& kCamera)
         float fOffset = m_kCamera.m_fStep * (float)nDone;
         kNewPos += kDir * fOffset;
         m_spCamera->SetTranslate(kNewPos);
-        m_spCamera->Update((float)FUN_141473280(FUN_14086d260()), true);
+        m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     }
     return 1;
 }
@@ -304,7 +319,7 @@ int UIModelView::vfunc_14()
     kRotY.MakeYRotation((fAngleY * 3.1415927f) / 180.0f);
     kRotZ.MakeZRotation((fAngleZ * 3.1415927f) / 180.0f);
     m_spDirLight->SetRotate(kRotX * kRotY * kRotZ);
-    m_spDirLight->Update((float)FUN_141473280(FUN_14086d260()), true);
+    m_spDirLight->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     m_spAmbientLight = EE_NEW NiAmbientLight();
     m_spAmbientLight->SetDimmer(m_fLightDimmer);
     m_spAmbientLight->SetAmbientColor(NiColor(1.0f, 1.0f, 1.0f));
@@ -329,7 +344,7 @@ void UIModelView::FUN_140e685d0()
 {
     if ((unsigned int)m_nObjectId > 0)
     {
-        GameObject* pObject = FUN_1403ed2d0()->FUN_141bd1180(m_nObjectId);
+        GameObject* pObject = ((class Unk_UmvWorld*)WorldService::GetInstance())->FUN_141bd1180(m_nObjectId);
         if (pObject != 0)
         {
             if (m_nZoomState != 0)
@@ -337,7 +352,7 @@ void UIModelView::FUN_140e685d0()
                 NiPoint3 kTarget = m_kCamera.m_kTarget;
                 NiPoint3 kPos = m_spCamera->GetTranslate();
                 float fDist = (kTarget - kPos).Length();
-                float fDelta = (float)FUN_141473260(FUN_14086d260());
+                float fDelta = (float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->GetDeltaTime();
                 NiPoint3 kDir = -m_spCamera->GetWorldDirection();
                 if (m_nZoomState == 1)
                 {
@@ -380,7 +395,7 @@ void UIModelView::FUN_140e685d0()
                 if (m_nZoomState != 0 && (m_kZoomStart - kPos).Length() >= m_kCamera.m_fStep)
                     m_nZoomState = 0;
                 m_spCamera->SetTranslate(kPos);
-                m_spCamera->Update((float)FUN_141473280(FUN_14086d260()), true);
+                m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
             }
         }
     }

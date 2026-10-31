@@ -30,6 +30,7 @@ static CString s_strReportClose("System_ReportClose");
 static CString s_strReportOpen("System_ReportOpen");
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/blindmanager.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -41,7 +42,6 @@ CStringW BlockFormat(int nStringId);                          // string table te
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);   // open a message box
 void FUN_14028cd00(const CStringW& strText, CAtlArray<CStringW>& arrOut, const wchar_t* pszSep, int nMax);   // split
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);    // equals
-size_t FUN_14015a000(CAtlArray<CStringW>& arr);                 // element count
 void FUN_14151f200();
 void FUN_140710590(COutPacket& packet);                         // send
 
@@ -57,16 +57,15 @@ private:
     int m_kind;
     Unk_ReportTarget m_target;
 };
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 
-class Unk_ReportBlindManager
+class Unk_ReportBlindManager : public BlindManager
 {
 public:
     bool FUN_140a25950(int nKind, __int64 nId);
-    bool FUN_140a25730(int nKind, CStringW strName);
 };
-Unk_ReportBlindManager* FUN_1409c1730();
-CUgcManager* FUN_14052d220();
+class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 
 // ---- the report form ---------------------------------------------------------------------------------------------------
 
@@ -164,7 +163,7 @@ int UIReportDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             {
                 CAtlArray<CStringW> arrTag;
                 FUN_14028cd00(strTag, arrTag, L",", 2);
-                if (FUN_14015a000(arrTag) == 1)
+                if (((ATL::CAtlArray<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraits<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)&(arrTag))->GetCount() == 1)
                 {
                     if (FUN_1403b3c40(strTag, L"report"))
                     {
@@ -439,17 +438,17 @@ void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
     }
     else if (strMethod.CompareNoCase("OnSelectWallPoster") == 0)
     {
-        FUN_1409c1730()->FUN_140a25950(2, m_nPosterId);
-        FUN_14052d220()->FUN_1418885b0(m_nBannerId);
+        ((class Unk_ReportBlindManager*)FUN_1409c1730())->FUN_140a25950(2, m_nPosterId);
+        ((class CUgcManager*)FUN_14052d220())->FUN_1418885b0(m_nBannerId);
     }
     else if (strMethod.CompareNoCase("OnSelectDesignItem") == 0)
     {
-        FUN_1409c1730()->FUN_140a25950(3, m_nItemId);
-        FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyBlindTarget(3, reinterpret_cast<const Unk_ReportTarget&>(m_key))));
+        ((class Unk_ReportBlindManager*)FUN_1409c1730())->FUN_140a25950(3, m_nItemId);
+        ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyBlindTarget(3, reinterpret_cast<const Unk_ReportTarget&>(m_key))));
     }
     else if (strMethod.CompareNoCase("OnSelectRealStatePage") == 0)
     {
-        FUN_1409c1730()->FUN_140a25730(4, m_strTarget);
+        ((class Unk_ReportBlindManager*)FUN_1409c1730())->Block(4, m_strTarget);
     }
 }
 

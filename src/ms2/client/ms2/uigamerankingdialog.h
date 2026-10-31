@@ -23,7 +23,7 @@ class ASArray;
 class ASData;
 class ASObj;
 class CMsgBoxData;
-class Unk_RankList;
+class ASScrollingList;
 class Unk_RankTab;
 class Unk_RankInput;
 
@@ -283,7 +283,7 @@ public:
     void FUN_140e355d0(Scaleform::GFx::Value* pRet, int nRow, int nType);                           // party member tooltip
     bool FUN_140e359e0(int nBtn, const CMsgBoxData& data);                                         // move-home confirm result
 
-    MS2Ptr<Unk_RankList> FUN_140c02900(const CString& strName);                                     // bind a list child
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);                                     // bind a list child
     MS2Ptr<Unk_RankTab> FUN_140c02870(const CString& strName);                                      // bind a tab child
     MS2Ptr<Unk_RankInput> FUN_140e35bd0(const CString& strName);                                  // find the search input
 
@@ -293,7 +293,7 @@ private:
     ATL::CAtlMap<int, Unk_RankTabsPtr, Unk_RankKeyTraits> m_tabs;              // +0x1a8 board type -> tabs (17 bins, 0.75, 0.25, 2.25, block 10)
     ATL::CAtlArray<Unk_RankDataPtr> m_rows;                 // +0x1f0 the rows of the page
     ATL::CAtlArray<CString> m_missingMarks;                 // +0x210 mark files still downloading
-    MS2Ptr<Unk_RankList> m_items;                           // +0x230 the "m_items" list
+    MS2Ptr<ASScrollingList> m_items;                           // +0x230 the "m_items" list
     int m_nCategory;                                        // +0x240
     int m_nPage;                                            // +0x244
     int m_nTab;                                             // +0x248

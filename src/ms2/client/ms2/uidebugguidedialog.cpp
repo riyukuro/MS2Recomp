@@ -38,6 +38,7 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 
 // ---- header statics (the exe runs them in this order: two copies of the shared header's names, the handle, the condition) ----
 
@@ -95,8 +96,7 @@ public:
                        int a3, int a4, int a5, void* a6);
 };
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& rValue);
-class Unk_DebugGuideKeys { public: bool FUN_14116d9c0(int nKey, bool b, int n); };
-Unk_DebugGuideKeys* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 class Unk_DebugGuideDTPackets
 {
 public:

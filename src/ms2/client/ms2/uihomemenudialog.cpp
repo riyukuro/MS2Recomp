@@ -27,6 +27,8 @@
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/ugchomebgdata.h"
+#include "ms2/client/ms2/uiservice.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -56,15 +58,15 @@ class ASDialog : public ASDisplayObject {};
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 extern Unk_EntityAppFramework DAT_143b059e8;
 
-class Unk_HmStateBytes
+// The three-flag record of the cube service (ctor 0x140b68e60).
+struct Unk_CMISFlags3
 {
-public:
-    Unk_HmStateBytes();
-    unsigned char m_b0, m_b1, m_b2, m_b3, m_b4, m_b5, m_b6, m_b7;
+    Unk_CMISFlags3();
+    bool a, b, c;
 };
 
 
-class Unk_HmCubeSvc : public efd::ISystemService {
+class CubeMapInformationService : public efd::ISystemService {   // C3: member view (the real header brings dynamic initializers)
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
     bool FUN_1410c3600(int nRule);                                      // the mode (1 design, 3 blueprint) is active
@@ -76,10 +78,14 @@ public:
     int FUN_1410b9a50();                                                // the blueprints of the player
     CStringW FUN_1410c31d0();                                           // the home id
     CStringW FUN_1410c3260();                                           // the owner id
-    Unk_HmStateBytes FUN_1410c34f0();                                   // the camera / state bytes
+    Unk_CMISFlags3 FUN_1410c34f0();                                     // the camera / state bytes
 };
-Unk_HmCubeSvc* FUN_1401cd040(Unk_EntityAppFramework* framework);
-Unk_HmCubeSvc* FUN_1409670e0();
+class Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);   // the cube service from the framework
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-in
+{
+public:
+    static Unk_AkoHouseSvc* GetInstance();                              // the cube service singleton
+};
 
 // The local player.
 class Unk_HmPc {
@@ -104,10 +110,7 @@ public:
     void FUN_141adc5d0(int nId);                                        // hide
     void FUN_141adc750(int nId);                                        // toggle
 };
-Unk_HmUiMgr* FUN_1403ed2b0();
 
-class Unk_HmSingleton { public: void FUN_140b683f0(unsigned char n); };
-Unk_HmSingleton* FUN_140b6a040();
 class Unk_HmCamera { public: void FUN_140947980(int nMode); int FUN_140af7e30(); };
 Unk_HmCamera* FUN_1409478c0();
 class Unk_HmWorldMenu { public: void FUN_14130fb10(const int* pnA, const int* pnB); };
@@ -227,7 +230,7 @@ bool FUN_140930c50();
 int FUN_1418fd280();
 void FUN_141275260(int nId, int a, int b);
 void FUN_14151f200();
-CStringW FUN_141850100(int a, int b);
+CStringW TakeScreenshotJpg(int a, int b);
 void FUN_140710590(COutPacket& packet);
 
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
@@ -388,7 +391,7 @@ void UIHomeMenuDialog::FUN_140c29710()
     if (pPc == 0)
         return;
     {
-        efd::SmartPointer<Unk_HmCubeSvc> spService(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spService((CubeMapInformationService*)FUN_1401cd040(&DAT_143b059e8));
         if (spService != 0)
         {
             if (spService->FUN_1410d5640() == 0 && spService->FUN_1410d56a0() == 0)
@@ -397,9 +400,9 @@ void UIHomeMenuDialog::FUN_140c29710()
                 return;
             }
         }
-        if (FUN_1409670e0()->FUN_1410c3600(1) != 0)
+        if (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(1) != 0)
         {
-            if (FUN_1409670e0()->FUN_1410d5530() != 0)
+            if (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d5530() != 0)
             {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_home_info_exit_messagebox_save"), 1);
                 FUN_141a024a0(spBox.operator->(), 0);
@@ -423,9 +426,9 @@ void UIHomeMenuDialog::FUN_140c29980()
     Unk_HmPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == 0)
         return;
-    if (FUN_1409670e0()->FUN_1410c3600(3) != 0)
+    if (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(3) != 0)
     {
-        if (FUN_1409670e0()->FUN_1410d5530() != 0)
+        if (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d5530() != 0)
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_home_info_exit_blueprint_messagebox_save"), 1);
             FUN_141a024a0(spBox.operator->(), 0);
@@ -452,9 +455,9 @@ void UIHomeMenuDialog::ToggleCraftMode()
     Unk_HmPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == 0)
         return;
-    int nOwner = FUN_1409670e0()->FUN_1410d5640();
-    int nDesign = FUN_1409670e0()->FUN_1410c3600(1);
-    int nBlueprint = FUN_1409670e0()->FUN_1410c3600(3);
+    int nOwner = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d5640();
+    int nDesign = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(1);
+    int nBlueprint = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(3);
     if (nOwner != 0 || nDesign != 0 || nBlueprint != 0 || FUN_140930c50() != 0)
     {
         if (FUN_140c2af70() != 0)
@@ -496,7 +499,7 @@ void UIHomeMenuDialog::OnDesignSave()
     UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
     if (pDialog == 0)
         return;
-    unsigned nCount = FUN_1409670e0()->FUN_1410ce310();
+    unsigned nCount = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410ce310();
     if (nCount > 0)
     {
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0xbb1), 0, CStringW(L"")))
@@ -526,7 +529,7 @@ void UIHomeMenuDialog::OnBlueprintSave()
     UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
     if (pDialog == 0)
         return;
-    unsigned nCount = FUN_1409670e0()->FUN_1410ce310();
+    unsigned nCount = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410ce310();
     if (nCount > 0)
     {
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0xbb1), 0, CStringW(L"")))
@@ -553,11 +556,11 @@ void UIHomeMenuDialog::OnBlueprintImport()
 // @0x140c2a370
 void UIHomeMenuDialog::OnHomePriority()
 {
-    int nOwner = FUN_1409670e0()->FUN_1410d5640();
-    int nDesign = FUN_1409670e0()->FUN_1410c3600(1);
-    int nBlueprint = FUN_1409670e0()->FUN_1410c3600(3);
+    int nOwner = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d5640();
+    int nDesign = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(1);
+    int nBlueprint = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(3);
     if (nOwner != 0 || nDesign != 0 || nBlueprint != 0)
-        FUN_1403ed2b0()->FUN_141adc750(0x4f26);
+        reinterpret_cast<Unk_HmUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f26);
     else
         FUN_141275260(0x6e1, 1, 1);
 }
@@ -565,11 +568,11 @@ void UIHomeMenuDialog::OnHomePriority()
 // @0x140c2a410
 void UIHomeMenuDialog::OnHomeAttribute()
 {
-    int nOwner = FUN_1409670e0()->FUN_1410d5640();
-    int nDesign = FUN_1409670e0()->FUN_1410c3600(1);
-    int nBlueprint = FUN_1409670e0()->FUN_1410c3600(3);
+    int nOwner = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d5640();
+    int nDesign = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(1);
+    int nBlueprint = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(3);
     if (nOwner != 0 || nDesign != 0 || nBlueprint != 0)
-        FUN_1403ed2b0()->FUN_141adc750(0x4f7a);
+        reinterpret_cast<Unk_HmUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f7a);
     else
         FUN_141275260(0x6e1, 1, 1);
 }
@@ -594,8 +597,8 @@ void UIHomeMenuDialog::OnBlueprintExport()
 {
     if (!FUN_141902580(1))
         return;
-    if (FUN_1409670e0()->FUN_1410b9a50() > 0)
-        FUN_1403ed2b0()->FUN_141adc750(0x4f7b);
+    if (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410b9a50() > 0)
+        reinterpret_cast<Unk_HmUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f7b);
     else
         FUN_140d73bc0(0xbba, 0, 0, CStringW(L""));
 }
@@ -618,8 +621,8 @@ void UIHomeMenuDialog::OnBlueprintShop()
 void UIHomeMenuDialog::FUN_140c2a780()
 {
     int bCraft = FUN_140c2af70();
-    int bDesign = FUN_1409670e0()->FUN_1410c3600(1);
-    int bBlueprint = FUN_1409670e0()->FUN_1410c3600(3);
+    int bDesign = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(1);
+    int bBlueprint = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(3);
     if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_craftMode"))
     {
         sp->FUN_1422ce090(bCraft);
@@ -665,7 +668,7 @@ CString UIHomeMenuDialog::FUN_140c2ad90()
     bool bCraft = FUN_140c2af70();
     if (FUN_1418fd280() == 0)
         return CString(bCraft ? "other_craft" : "other");
-    switch (FUN_1409670e0()->FUN_1410c3650())
+    switch (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3650())
     {
     case 0:
         return CString(bCraft ? "default_craft" : "default");
@@ -700,14 +703,14 @@ void UIHomeMenuDialog::FUN_140c2afd0(bool bFreeCamera)
     if (m_bFreeCamera)
     {
         FUN_1409478c0()->FUN_140947980(6);
-        FUN_1403ed2b0()->FUN_141adc530(0x4f3e);
+        reinterpret_cast<Unk_HmUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f3e);
     }
     else
     {
-        Unk_HmStateBytes state = FUN_1409670e0()->FUN_1410c34f0();
-        Unk_HmStateBytes* pState = &state;
-        FUN_140b6a040()->FUN_140b683f0(pState->m_b2);
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4f3e);
+        Unk_CMISFlags3 state = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34f0();
+        Unk_CMISFlags3* pState = &state;
+        TSingleton<UgcHomeOptionData>::GetInstance()->ApplyCamera(pState->c);
+        reinterpret_cast<Unk_HmUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f3e);
     }
 }
 
@@ -715,7 +718,7 @@ void UIHomeMenuDialog::FUN_140c2afd0(bool bFreeCamera)
 // MS2-FUNCTIONAL: behaviour-equivalent; the exe keeps a dead movzx of the screenshot flag before the call
 CStringW UIHomeMenuDialog::FUN_140c2b080()
 {
-    return FUN_141850100(((int)m_screenshot.FUN_1405116c0(), 0), 1);
+    return TakeScreenshotJpg(((int)m_screenshot.FUN_1405116c0(), 0), 1);
 }
 
 // @0x140c2b0e0
@@ -766,7 +769,7 @@ bool UIHomeMenuDialog::FUN_140c2b180(int nResult, const CMsgBoxData& data)
     CStringW strUrl = FUN_140c2b080();
     if (nResult == 0 && !strUrl.IsEmpty())
     {
-        if (FUN_140d86260()->vfunc_54(FUN_1409670e0()->FUN_1410c31d0(), FUN_1409670e0()->FUN_1410c3260(), 0xd0, CStringW(strUrl)) == 1)
+        if (FUN_140d86260()->vfunc_54(((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0(), ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3260(), 0xd0, CStringW(strUrl)) == 1)
             FUN_141275260(0x466, 1, 1);
     }
     return 1;
@@ -804,9 +807,9 @@ bool UIHomeMenuDialog::SendRequestCube(int nResult, const CMsgBoxData& data)
 // @0x140c2b5c0
 UIHomeSaveSlotDialog* FUN_140c2b5c0(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_HmUiMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spUI = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = reinterpret_cast<Unk_HmUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIHomeSaveSlotDialog*>(spUI.operator->());
     }

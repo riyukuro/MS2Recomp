@@ -33,6 +33,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- externs used by the validator ----
 class PCBase;
@@ -70,11 +71,10 @@ Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework*);
 class Unk_QueryObj { public: virtual ~Unk_QueryObj(); virtual void vf1(); virtual void vf2(); virtual void vf3(); virtual void vf4(); virtual bool FUN_x28(unsigned nId, void* pOut); };
 
 // WorldService singleton (FUN_1403ed2d0): the current world, the local player and the current field.
-class Unk_1403ed2d0
+class Unk_1403ed2d0 : public WorldService
 {
 public:
     PCBase* FUN_141bd0cc0();                                    // the local player
-    int FUN_141bd3060();                                        // the current map id
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field data
     Unk_QueryObj* FUN_141bd1530(unsigned __int64 nEntityId);
 };
@@ -102,7 +102,7 @@ int FUN_1408a03c0(Unk_CubePoint point);
 unsigned FUN_1408b4e90(Cube*);
 int FUN_1408b4f20(Cube*);
 int FUN_1407072e0(int);
-int FUN_1407075a0(unsigned);
+int FUN_1407075a0(int);  // C3: the definition's signature
 int FUN_1408b5620(int nItemId);
 int FUN_1408b5820(int nItemId);
 int FUN_1408b54c0(int nItemId);
@@ -112,9 +112,9 @@ int FUN_1408b5ec0(int nItemId);
 int FUN_1408b5f70(int nItemId);
 int FUN_1408b5770(int nItemId);
 int FUN_1408b53d0(int nItemId);
-int FUN_1408b5480(int nItemId);
-int FUN_1408b6120(int nItemId);
-int FUN_1408b61c0(int nItemId);
+int FUN_1408b5480(unsigned int nItemId);  // C3: the definition's signature
+int FUN_1408b6120(unsigned int nItemId);  // C3: the definition's signature
+int FUN_1408b61c0(unsigned int nItemId);  // C3: the definition's signature
 int FUN_14053f9c0(int nItemId);
 
 // the cube recipe tables

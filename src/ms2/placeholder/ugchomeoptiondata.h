@@ -12,6 +12,7 @@ class UgcHomeOptionData : public TSingleton<UgcHomeOptionData>
 public:
     UgcHomeOptionData();                                    // 0x140b67f20
     virtual ~UgcHomeOptionData();
+    void Load();                                            // 0x140b67fa0
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_8[0x98 - 0x8];

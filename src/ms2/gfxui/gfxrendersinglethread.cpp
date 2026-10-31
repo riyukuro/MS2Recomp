@@ -30,8 +30,7 @@
 NiDX9Renderer* FUN_1422cf0a0();
 LPDIRECT3DDEVICE9 FUN_1422cf0d0();
 
-ecr::RenderService* FUN_14127bf80(Unk_AppFramework* pFramework);   // the render service of the framework
-ecr::RenderSurface* FUN_140af7da0(ecr::RenderService* pService);    // its main surface
+ecr::RenderService* Unk_GetRenderService(char* pCell);              // gfxmoviebackground.cpp; the render service of the framework
 void FUN_141aee8d0(NiRenderFrame* pFrame, NiRenderStep* pStep);     // NiRenderFrame::AppendRenderStep (uiservice.cpp copy)
 
 // GFxMovie as vfunc_6 sees it: slot 9 takes the HAL and the Renderer2D by value (gfxmovie.h types both parameters with
@@ -221,10 +220,10 @@ MS2_REPLACE_METHOD(0x1422F4C60, GFxRenderSingleThread, vfunc_14, 81, 0x43325BF2)
 int GFxRenderSingleThread::FUN_1422f4cc0()
 {
     FUN_1422f4f00();
-    ecr::RenderService* pService = FUN_14127bf80(&g_143b059e8);
+    ecr::RenderService* pService = Unk_GetRenderService((char*)&g_143b059e8);
     if (pService)
     {
-        NiRenderFrame* pFrame = FUN_140af7da0(pService)->GetRenderFrame();
+        NiRenderFrame* pFrame = pService->GetActiveRenderSurface()->GetRenderFrame();
         if (pFrame)
         {
             m_spRenderStep = NiNew NiDefaultClickRenderStep();
@@ -250,10 +249,10 @@ int GFxRenderSingleThread::FUN_1422f4f00()
 {
     if (!m_spRenderStep)
         return 0;
-    ecr::RenderService* pService = FUN_14127bf80(&g_143b059e8);
+    ecr::RenderService* pService = Unk_GetRenderService((char*)&g_143b059e8);
     if (pService)
     {
-        NiRenderFrame* pFrame = FUN_140af7da0(pService)->GetRenderFrame();
+        NiRenderFrame* pFrame = pService->GetActiveRenderSurface()->GetRenderFrame();
         if (pFrame)
         {
             pFrame->RemoveRenderStep(m_spRenderStep);
@@ -269,10 +268,10 @@ MS2_REPLACE_METHOD(0x1422F4F00, GFxRenderSingleThread, FUN_1422f4f00, 197, 0x6A5
 // @0x1422f4fd0
 int GFxRenderSingleThread::FUN_1422f4fd0()
 {
-    ecr::RenderService* pService = FUN_14127bf80(&g_143b059e8);
+    ecr::RenderService* pService = Unk_GetRenderService((char*)&g_143b059e8);
     if (pService)
     {
-        NiRenderTargetGroup* pTarget = FUN_140af7da0(pService)->GetRenderTargetGroup();
+        NiRenderTargetGroup* pTarget = pService->GetActiveRenderSurface()->GetRenderTargetGroup();
         if (pTarget)
         {
             NiTexture::FormatPrefs kPrefs;

@@ -10,6 +10,7 @@
 #include "ms2/placeholder/uirecallscrollnotifydialog.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // Unrecovered helpers (the UI service lookup the other UI units use).
 class Unk_CommandUIRef {
@@ -20,7 +21,6 @@ private: void* unknown; UIObject* object;
 };
 MS2_CHECK_SIZE(Unk_CommandUIRef,0x10);
 class Unk_UIService { public: Unk_CommandUIRef FUN_141adcea0(int nId); };   // dialog by id
-Unk_UIService* FUN_1403ed2b0();                             // the UI service
 UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
 
 // @0x140bc16c0
@@ -36,9 +36,9 @@ UIBottomCenterAlignManager::~UIBottomCenterAlignManager()
 // @0x140bc17d0
 UIHighlightGameMenu* FUN_140bc17d0(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_UIService*>(TSingleton<CUIService>::GetInstance()))
     {
-        Unk_CommandUIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        Unk_CommandUIRef ref = reinterpret_cast<Unk_UIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70())
             return dynamic_cast<UIHighlightGameMenu*>(FUN_1403ed9e0(ref));
     }
@@ -48,9 +48,9 @@ UIHighlightGameMenu* FUN_140bc17d0(int nId)
 // @0x140bc1870
 UIRecallScrollNotifyDialog* FUN_140bc1870(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_UIService*>(TSingleton<CUIService>::GetInstance()))
     {
-        Unk_CommandUIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        Unk_CommandUIRef ref = reinterpret_cast<Unk_UIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70())
             return dynamic_cast<UIRecallScrollNotifyDialog*>(FUN_1403ed9e0(ref));
     }

@@ -18,6 +18,8 @@ static CString s_itemCount("itemCount");
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/itemdroptable.h"
 
 // Unit-local declarations; Unk names and member names are invented.
 class ASData : public CPtred { public: int FUN_1422b8b10(); };
@@ -125,8 +127,6 @@ int FUN_1407181a0(const CStringW&);
 CStringW FUN_140323ab0(const wchar_t*, const int&, const int&);
 void FUN_141361e60(CStringW);
 int FUN_14053feb0(int);
-class Unk_1401a9d70 { public: CStringW FUN_141813150(int); };
-Unk_1401a9d70* FUN_1401a9d70();
 class Unk_DropRef { public: void* m_08; };
 int FUN_140159bc0(Unk_DropRef*);
 void FUN_140159ba0(Unk_DropRef*);
@@ -156,7 +156,6 @@ template <> void MS2Ptr<Unk_DropEntry>::Release() { if (m_p) { ReleaseImpl((Unk_
 // @0x1402fee10
 template <> MS2Ptr<Unk_DropEntry>::~MS2Ptr() { Release(); }
 class Unk_1405a1fd0 { public: void FUN_1402eab20(int, std::vector<MS2Ptr<Unk_DropEntry>>&); };
-Unk_1405a1fd0* FUN_1405a1fd0();
 MS2Ptr<Unk_ItemData> FUN_14053f870(int);
 class ASObj : public AScript {
 public: ASObj(int); virtual ~ASObj();
@@ -279,7 +278,7 @@ void UIItemDropInfoDialog::FUN_140c3af70() {
     if (data == NULL) return;
     if (m_box == 0) return;
     std::vector<MS2Ptr<Unk_DropEntry>> entries;
-    FUN_1405a1fd0()->FUN_1402eab20(m_box, entries);
+    reinterpret_cast<Unk_1405a1fd0*>(TSingleton<ItemDropTable>::GetInstance())->FUN_1402eab20(m_box, entries);
     Unk_DropArray array(2);
     for (auto& entry : entries) {
         MS2Ptr<Unk_ItemData> info = FUN_14053f870(entry->vfunc_0());
@@ -304,7 +303,7 @@ void UIItemDropInfoDialog::FUN_140c3af70() {
 MS2_REPLACE_METHOD(0x140C3AF70, UIItemDropInfoDialog, FUN_140c3af70, 1646, 0x97FF2445);
 // @0x140c3b5f0
 CStringW UIItemDropInfoDialog::FUN_140c3b5f0(int id) {
-    return FUN_1401a9d70()->FUN_141813150(id);
+    return TSingleton<CStringTable>::GetInstance()->FUN_141813150(id);
 }
 MS2_REPLACE_METHOD(0x140C3B5F0, UIItemDropInfoDialog, FUN_140c3b5f0, 71, 0xFC4CFB82);
 // @0x140c3b640

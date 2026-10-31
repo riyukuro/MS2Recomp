@@ -206,6 +206,7 @@
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "hook/ms2hook.h"
+class Unk_140165cf0;
 // MS2-FUNCTIONAL: equivalent source; container spellings and /Od temporary placement remain under recovery.
 extern bool FUN_14028f710(void*);
 extern int FUN_1408731e0(void*,const char*,int*);
@@ -221,18 +222,19 @@ extern Unk_GuildContribution FUN_14021a0a0(const CString&);
 int FUN_1404da980(void*,const char*,Unk_GuildContribution*);
 int FUN_1404daa40(void*,const char*,Unk_GuildNpcKind*);
 extern CString FUN_14071a5b0(const CString&,const CString&);
-extern void* FUN_140166420();
-extern void* FUN_140166440();
+class CFileSystem;
+CFileSystem* GetFileSystem();
+class CLogString* GetLogString();
 extern int FUN_1403974b0(void*,TiXmlDocument*,const char*,int,bool,bool);
 extern int FUN_140397ab0(void*,TiXmlDocument*,const CStringW&);
 extern void* FUN_140165cf0(const void*,const char*);
 extern void* FUN_140168650(const void*,const char*);
-extern void* FUN_140345b40(const void*);
+Unk_140165cf0 * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
 extern void* FUN_1403f0510(const void*);
 extern void FUN_14028faa0(void*,const char*,const char*,std::vector<void*>&);
 extern void FUN_14028fd90(void*,const char*,const char*,const char*,std::vector<void*>&);
-extern void FUN_14015eb90(void*,int,int,const wchar_t*,const CString&);
-extern void FUN_140353fc0(void*,int,int,const wchar_t*,const int&);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
+template <class T> void Unk_ShopLog(class CLogString*, int, int, const wchar_t*, const T&);
 extern int FUN_14015f500(void*,const char*,int*);
 extern void FUN_14026b1c0(ItemEntity*,int);
 extern void Unk_SetGuildFlag_a010(bool);
@@ -436,12 +438,12 @@ bool CGuildXmlData::GuildRaidReward::FUN_1404d54e0(void* node){
     FUN_140873420(node,"rewardItems",&path);
     if(0<path.GetLength()){
         TiXmlDocument doc;
-        if(!FUN_140397ab0(FUN_140166420(),&doc,path)){
-            FUN_140353fc0(FUN_140166440(),1,19,L"xml 형식이 잘못 되었습니다[GuildRaidReward raidPoint : {0}",f18);return false;
+        if(!FUN_140397ab0(GetFileSystem(),&doc,path)){
+            Unk_ShopLog<int>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[GuildRaidReward raidPoint : {0}",f18);return false;
         }
         void* root=FUN_140345b40(&doc);
-        if(!root){FUN_140353fc0(FUN_140166440(),1,19,L"xml 형식이 잘못 되었습니다[GuildRaidReward raidPoint : {0}",f18);return false;}
-        for(void* child=FUN_140345b40(root);child;child=FUN_1403f0510(child)){
+        if(!root){Unk_ShopLog<int>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[GuildRaidReward raidPoint : {0}",f18);return false;}
+        for(void* child=FUN_140345b40((TiXmlDocument *)root);child;child=FUN_1403f0510(child)){
             ItemEntity item;int rank=1;
             FUN_140873220(child,"id",&item.m_itemId);
             FUN_14015f500(child,"rank",&rank);
@@ -473,9 +475,9 @@ bool CGuildXmlData::FUN_1404d5960(){
 bool CGuildXmlData::LoadGuildProperty(){
     CString path=FUN_14071a5b0("Table","GuildProperty.xml");
     TiXmlDocument doc;
-    if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
+    if(!FUN_1403974b0(GetFileSystem(),&doc,path,0,true,0))return false;
     void* root=FUN_140165cf0(&doc,"ms2");
-    if(!root){FUN_14015eb90(FUN_140166440(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
+    if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
     FUN_14028faa0(root,"property","level",nodes);
     for(size_t index=0;index<nodes.size();++index){
@@ -489,9 +491,9 @@ bool CGuildXmlData::LoadGuildProperty(){
 bool CGuildXmlData::LoadGuildBuff(){
     CString path=FUN_14071a5b0("Table","GuildBuff.xml");
     TiXmlDocument doc;
-    if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
+    if(!FUN_1403974b0(GetFileSystem(),&doc,path,0,true,0))return false;
     void* root=FUN_140165cf0(&doc,"ms2");
-    if(!root){FUN_14015eb90(FUN_140166440(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
+    if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     for(void* node=FUN_140165cf0(root,"guildBuff");node;node=FUN_140168650(node,"guildBuff")){
         Unk_PayloadPtr<GuildSkill> value=new GuildSkill;
         if(!value->FUN_1404d4cb0(node))continue;
@@ -503,9 +505,9 @@ bool CGuildXmlData::LoadGuildBuff(){
 bool CGuildXmlData::LoadGuildEvent(){
     CString path=FUN_14071a5b0("Table","GuildEvent.xml");
     TiXmlDocument doc;
-    if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
+    if(!FUN_1403974b0(GetFileSystem(),&doc,path,0,true,0))return false;
     void* root=FUN_140165cf0(&doc,"ms2");
-    if(!root){FUN_14015eb90(FUN_140166440(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
+    if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     for(void* node=FUN_140165cf0(root,"guildEvent");node;node=FUN_140168650(node,"guildEvent")){
         Unk_PayloadPtr<GuildEvent> value=new GuildEvent;
         if(value->FUN_1404d4f10(node))event[value->f18]=value;
@@ -516,9 +518,9 @@ bool CGuildXmlData::LoadGuildEvent(){
 bool CGuildXmlData::LoadGuildHouse(){
     CString path=FUN_14071a5b0("Table","GuildHouse.xml");
     TiXmlDocument doc;
-    if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
+    if(!FUN_1403974b0(GetFileSystem(),&doc,path,0,true,0))return false;
     void* root=FUN_140165cf0(&doc,"ms2");
-    if(!root){FUN_14015eb90(FUN_140166440(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
+    if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     for(void* node=FUN_140165cf0(root,"guildHouse");node;node=FUN_140168650(node,"guildHouse")){
         Unk_PayloadPtr<GuildHouse> value=new GuildHouse;
         if(value->FUN_1404d5070(node)){std::pair<int,int> key(value->f18,value->f1c);house[key]=value;}
@@ -529,9 +531,9 @@ bool CGuildXmlData::LoadGuildHouse(){
 bool CGuildXmlData::LoadGuildNpc(){
     CString path=FUN_14071a5b0("Table","GuildNpc.xml");
     TiXmlDocument doc;
-    if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
+    if(!FUN_1403974b0(GetFileSystem(),&doc,path,0,true,0))return false;
     void* root=FUN_140165cf0(&doc,"ms2");
-    if(!root){FUN_14015eb90(FUN_140166440(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
+    if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
     FUN_14028fd90(root,"npc","type","level",nodes);
     for(size_t index=0;index<nodes.size();++index){
@@ -546,9 +548,9 @@ bool CGuildXmlData::LoadGuildNpc(){
 bool CGuildXmlData::LoadGuildRaid(){
     CString path=FUN_14071a5b0("Table","GuildRaid.xml");
     TiXmlDocument doc;
-    if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
+    if(!FUN_1403974b0(GetFileSystem(),&doc,path,0,true,0))return false;
     void* root=FUN_140165cf0(&doc,"ms2");
-    if(!root){FUN_14015eb90(FUN_140166440(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
+    if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
     FUN_14028faa0(root,"guildRaid","dungeonRoomID",nodes);
     for(size_t index=0;index<nodes.size();++index){
@@ -565,9 +567,9 @@ MS2_REPLACE_METHOD(0x1404d6ab0, CGuildXmlData, FUN_1404d6ab0, 8, 0x71679366);
 bool CGuildXmlData::LoadGuildQuestRewardFactor(){
     CString path=FUN_14071a5b0("Table","GuildQuestRewardFactor.xml");
     TiXmlDocument doc;
-    if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
+    if(!FUN_1403974b0(GetFileSystem(),&doc,path,0,true,0))return false;
     void* root=FUN_140165cf0(&doc,"ms2");
-    if(!root){FUN_14015eb90(FUN_140166440(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
+    if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
     FUN_14028faa0(root,"guildNpc","level",nodes);
     for(size_t index=0;index<nodes.size();++index){
@@ -587,9 +589,9 @@ bool CGuildXmlData::LoadGuildQuestRewardFactor(){
 bool CGuildXmlData::LoadGuildContribution(){
     CString path=FUN_14071a5b0("Table","GuildContribution.xml");
     TiXmlDocument doc;
-    if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
+    if(!FUN_1403974b0(GetFileSystem(),&doc,path,0,true,0))return false;
     void* root=FUN_140165cf0(&doc,"ms2");
-    if(!root){FUN_14015eb90(FUN_140166440(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
+    if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
     FUN_14028faa0(root,"contribution","type",nodes);
     for(size_t index=0;index<nodes.size();++index){

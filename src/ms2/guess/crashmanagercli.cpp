@@ -21,6 +21,9 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 
+// return types of the getters this unit calls
+class Unk_AltStringMgr;
+
 // The CrashReporter_64.dll imports; the exe calls through the IAT slots (SetDumpFileName/SetFullDumpPath
 // as dllimport functions: the IAT-pointer form spills the converted CString argument through an extra slot).
 extern "C" void (__cdecl* __imp_CrashReporter_Init)(const wchar_t*, int);
@@ -43,7 +46,7 @@ extern DWORD g_dwCrashMainThreadId;                         // 0x143aac530
 extern LPTOP_LEVEL_EXCEPTION_FILTER g_pfnPrevExceptionFilter;   // 0x143ab6728
 
 class Unk_ImgTagSource;
-Unk_ImgTagSource* FUN_14025e7a0();
+Unk_AltStringMgr* FUN_14025e7a0();
 unsigned FUN_1422af8a0(Unk_ImgTagSource* pSource, int nKind);
 CStringW GetStringCommon(int nStringId);
 CString FUN_14016a600(const wchar_t* pwsz, int n);          // wide -> narrow
@@ -120,7 +123,7 @@ void FUN_140a439d0()
     {
         if (TSingleton<CrashManagerCli>::GetInstance() != 0)
         {
-            unsigned nImgTag = FUN_1422af8a0(FUN_14025e7a0(), 2);
+            unsigned nImgTag = FUN_1422af8a0(reinterpret_cast<Unk_ImgTagSource*>(FUN_14025e7a0()), 2);
             TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("MyPreErrHandler ImgTag:%x", nImgTag);
             std::list<TFunctor<void, EmptyParam> >& callbacks = TSingleton<CrashManagerCli>::GetInstance()->FUN_140a44800();
             for (std::list<TFunctor<void, EmptyParam> >::iterator it = callbacks.begin(); it != callbacks.end(); ++it)

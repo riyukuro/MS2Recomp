@@ -13,6 +13,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/clientconstants.h"
+#include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -46,11 +47,14 @@ public:
     void FUN_141261e40(int a, int b);
     void FUN_1412627c0(CString s);
 };
-// The game-option settings object returned by FUN_1409a8b10 (+0x1b4 is the agreement setting).
+// The game-option settings object (CGameOption; +0x1b4 is the agreement setting).
 class Unk_PiSettings;
-Unk_PiSettings* FUN_1409a8b10();
 unsigned char* FUN_140a46860(Unk_PiSettings* p);
-void FUN_141262090(unsigned char* p);
+class CPersonalInfoAgreement   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141262090();
+};
 void FUN_1412627c0(Unk_PiAgreeState* p, CString s);
 void FUN_141261cf0(Unk_PiAgreeState* p);
 void FUN_141261d20(Unk_PiAgreeState* p);
@@ -73,7 +77,6 @@ struct Unk_PiDialog
 };
 void FUN_1422bce70(Scaleform::GFx::Value* v, const char* s);
 void FUN_1422bccb0(Scaleform::GFx::Value* v, int n);
-bool FUN_1407cce10(const Scaleform::GFx::Value* v);
 
 // AScript::Invoke(method, CString, int) (inline COMDAT; this in rcx, the return slot in rdx, the method name in r8).
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString name, int nIndex)   // 0x140a46640
@@ -96,7 +99,7 @@ MS2Ptr<Unk_PiCheck> Unk_PiDialog::FUN_140a46480(CString name, int nIndex)   // 0
     if (m_root.IsNull())
         return MS2Ptr<Unk_PiCheck>(0);
     Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
-    if (FUN_1407cce10(&child))
+    if (child.IsDisplayObject())
     {
         MS2Ptr<Unk_PiCheck> check = FUN_140a463d0(m_nDialogId, child);
         if (check.get())
@@ -119,7 +122,7 @@ CGameOptionPersonalInfoAgreement::~CGameOptionPersonalInfoAgreement()   // @0x14
 void CGameOptionPersonalInfoAgreement::vfunc_3(int n)   // @0x140a45dd0
 {
     if (n == 0)
-        FUN_141261da0(&m_state, FUN_140a46860(FUN_1409a8b10()));
+        FUN_141261da0(&m_state, FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())));
     CBaseOption::vfunc_3(n);
 }
 
@@ -167,23 +170,23 @@ void CGameOptionPersonalInfoAgreement::vfunc_7()   // @0x140a46040
     }
     int nMode = m_state.m_bAgree ? 2 : 4;
     FUN_141261e40(&m_state, 0, nMode);
-    FUN_141262090(FUN_140a46860(FUN_1409a8b10()));
+    ((class CPersonalInfoAgreement*)(unsigned char*)(FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance()))))->FUN_141262090();
 }
 
 void CGameOptionPersonalInfoAgreement::vfunc_10()   // @0x140a461f0
 {
     CBaseOption::vfunc_10();
     bool bChanged = false;
-    if (m_state.m_bAgree != *FUN_140a46860(FUN_1409a8b10()))
+    if (m_state.m_bAgree != *FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))
         bChanged = true;
-    if (!FUN_141261f00(FUN_140a46860(FUN_1409a8b10()), 0))
+    if (!FUN_141261f00(FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())), 0))
         bChanged = true;
     if (bChanged)
     {
         int nMode = m_state.m_bAgree ? 2 : 4;
-        FUN_141261da0(FUN_140a46860(FUN_1409a8b10()), &m_state);
-        FUN_141261dd0(FUN_140a46860(FUN_1409a8b10()), nMode);
-        FUN_141262090(FUN_140a46860(FUN_1409a8b10()));
+        FUN_141261da0(FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())), &m_state);
+        FUN_141261dd0(FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())), nMode);
+        ((class CPersonalInfoAgreement*)(unsigned char*)(FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance()))))->FUN_141262090();
     }
 }
 
@@ -202,7 +205,7 @@ CString CGameOptionPersonalInfoAgreement::GetTypeName()   // @0x140a46340
 
 int CGameOptionPersonalInfoAgreement::vfunc_14()   // @0x140a46390
 {
-    if (m_state.m_bAgree != *FUN_140a46860(FUN_1409a8b10()))
+    if (m_state.m_bAgree != *FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))
         return 1;
     return 0;
 }

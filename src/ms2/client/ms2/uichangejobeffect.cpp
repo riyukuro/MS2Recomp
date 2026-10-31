@@ -17,17 +17,17 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <string.h>
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-class Unk_CjStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_CjStrings* FUN_1401a9d70();
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);   // a localised key formatted with one argument
 
-class Unk_CjPC { public: int FUN_141654730(); };                  // job code
+class Unk_CjPC : public PC { };                  // job code
 class Unk_CjWorld { public: Unk_CjPC* FUN_141bd0cc0(); };         // the local player
-Unk_CjWorld* FUN_1403ed2d0();
 
 void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
@@ -80,11 +80,11 @@ void FUN_140bd0bb0(UIChangeJobEffect* pEffect)
 {
     if (FUN_140ba28d0(&((Unk_CjAS*)pEffect)->m_30, 0))
         return;
-    Unk_CjPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_CjPC* pPc = reinterpret_cast<Unk_CjWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     int nJob = pPc->FUN_141654730();
-    CStringW strText = FUN_1405c2690(CStringW(L"s_changejob_effect_text"), FUN_1401a9d70()->FUN_141811980(6, nJob));
+    CStringW strText = FUN_1405c2690(CStringW(L"s_changejob_effect_text"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, nJob));
     ASObj obj(2);
     obj.FUN_140bd0d90("jobCode", nJob);
     obj.FUN_1407cbb20("text", CStringW(strText));

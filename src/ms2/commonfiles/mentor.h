@@ -11,7 +11,6 @@ public:
     virtual void vfunc_0(Unk_MentorWriter&) = 0;
     virtual void vfunc_1(Unk_MentorReader&) = 0;
 };
-class Unk_MentorRef { public: void FUN_14015b020(); int FUN_140159bc0(); void FUN_140159ba0(); };
 template<class T> class Unk_MentorPtr {
 public:
     Unk_MentorPtr() : p(0) {}
@@ -28,10 +27,10 @@ public:
     bool operator==(T* o) const { return p == o; }     // 0x140b733c0 (mentoringmanager.cpp)
 private:
     void AddRef() const { if(p) AddRefImpl(0); }
-    static void AddRefObject(T* value) { reinterpret_cast<Unk_MentorRef*>(value)->FUN_14015b020(); }
+    static void AddRefObject(T* value) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(value)); }
     void AddRefImpl(void*) const { AddRefObject(p); }
     void Release() { if(p) { ReleaseImpl(0); p=0; } }
-    void ReleaseImpl(void*) { if(reinterpret_cast<Unk_MentorRef*>(p)->FUN_140159bc0()==0) { AddRefObject(p); reinterpret_cast<Unk_MentorRef*>(p)->FUN_140159ba0(); } }
+    void ReleaseImpl(void*) { if(CPtred::ReleasePtred(reinterpret_cast<CPtred*>(p))==0) { AddRefObject(p); CPtred::DeletePtred(reinterpret_cast<CPtred*>(p)); } }
     void* pad_00; T* p;
 };
 class CMentor : public CPtred, public CInOutStreamInterface {

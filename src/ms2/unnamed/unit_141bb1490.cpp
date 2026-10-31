@@ -12,7 +12,7 @@
 #include "hook/ms2hook.h"
 
 // The runtime's refcount-1 helper, the four types' pooled allocator+constructor and their release helpers (other units).
-void* FUN_1401ba820(void* pMemory);
+class CPtred* FUN_1401ba820(class CPtred*);   // C3: was FUN_1401ba820
 void* FUN_141b9d8e0(void* pTag);
 void* FUN_141b9d950(void* pTag);
 void* FUN_141b9d9c0(void* pTag);
@@ -66,23 +66,23 @@ void FUN_141bb1520(Unk_141bb1490_Obj8* pThis)
 // @0x141bb1550
 void* FUN_141bb1550(void*)
 {
-    return FUN_1401ba820(FUN_141b9d8e0(0));
+    return ((void*)FUN_1401ba820((class CPtred*)(FUN_141b9d8e0(0))));
 }
 
 // @0x141bb1570
 void* FUN_141bb1570(void*)
 {
-    return FUN_1401ba820(FUN_141b9d950(0));
+    return ((void*)FUN_1401ba820((class CPtred*)(FUN_141b9d950(0))));
 }
 
 // @0x141bb1590
 void* FUN_141bb1590(void*)
 {
-    return FUN_1401ba820(FUN_141b9d9c0(0));
+    return ((void*)FUN_1401ba820((class CPtred*)(FUN_141b9d9c0(0))));
 }
 
 // @0x141bb15b0
 void* FUN_141bb15b0(void*)
 {
-    return FUN_1401ba820(FUN_141b9da20(0));
+    return ((void*)FUN_1401ba820((class CPtred*)(FUN_141b9da20(0))));
 }

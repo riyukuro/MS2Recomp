@@ -52,8 +52,6 @@ MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 void* FUN_140876480(void* pOut, int nCat);      // category hint
 void* FUN_14208a860(size_t cb, int nCat);       // the engine allocator
-const NiMaterial* FUN_140a17cd0(NiMesh* pMesh); // the mesh's active material
-bool FUN_140a17fd0(NiObject* pObject, const NiRTTI* pRTTI);   // NiObject::IsKindOf
 Ni3DRenderView* FUN_1413f9a70();                // the main 3D view
 ecr::RenderSurface* FUN_1413f98d0();            // the render surface
 ecr::SceneGraphService* FUN_1413f98b0();        // the scene-graph service
@@ -138,7 +136,7 @@ void FUN_141773a90(void* pRegistry, void* pNode)
         if (pkObject == 0)
             continue;
 
-        if (!FUN_1417741e0(&DAT_143d691b8, FUN_140a17cd0((NiMesh*)pkObject)))
+        if (!FUN_1417741e0(&DAT_143d691b8, ((const NiMaterial*)(reinterpret_cast<NiRenderObject*>((NiMesh*)pkObject)->GetActiveMaterial()))))
             continue;
 
         pkObject->SetAppCulled(true);
@@ -171,7 +169,7 @@ void FUN_141773cc0(void* pRegistry, void* pNode)
         if (pkObject == 0)
             continue;
 
-        if (!FUN_1417741e0(&DAT_143d691b8, FUN_140a17cd0((NiMesh*)pkObject)))
+        if (!FUN_1417741e0(&DAT_143d691b8, ((const NiMaterial*)(reinterpret_cast<NiRenderObject*>((NiMesh*)pkObject)->GetActiveMaterial()))))
             continue;
 
         pkObject->SetAppCulled(false);
@@ -277,7 +275,7 @@ bool FUN_1417741e0(const NiRTTI* pRTTI, const void* pObject)
 {
     if (pObject == 0)
         return false;
-    return FUN_140a17fd0((NiObject*)pObject, pRTTI);
+    return reinterpret_cast<NiMaterial*>((NiObject*)pObject)->IsKindOf(pRTTI);
 }
 
 // @0x141774210

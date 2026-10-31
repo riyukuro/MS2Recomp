@@ -12,6 +12,7 @@ class CSmartPushManager : public TSingleton<CSmartPushManager>
 public:
     CSmartPushManager();                                    // 0x140dd81d0
     virtual ~CSmartPushManager();
+    void FUN_140dd82b0();                                   // 0x140dd82b0
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_8[0x58 - 0x8];

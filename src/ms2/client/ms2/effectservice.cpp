@@ -197,11 +197,10 @@ void FUN_1401d3700(CString& strPath);                                   // norma
 bool FUN_14028d470(float a, float b);                   // nearly equal
 
 // Game log (commonfiles singleton 0x140166440).
-void* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
 
 // Game clock (commonfiles singleton 0x14086d260, mainsystem.cpp 0x141473280: current time in seconds).
-CMainSystem* FUN_14086d260();
 
 // World service (singleton 0x1403ed2d0): the local player.
 // The local player (a MyPC; only its gender and job getters are used here).
@@ -343,7 +342,7 @@ CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget)
     }
     if (spEffect->FUN_14119f400() && spEffect->IsLoop())
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x133,
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x133,
             L"Loop가 걸린 이펙트의 경우 명시적으로 해당 이펙트를 비활성화 시켜주어야 합니다[{0}]", spEffect->GetName());
         return 0;
     }
@@ -358,7 +357,7 @@ bool CEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     m_b2f = pTarget->m_b34;
     double dStart = pTarget->FUN_140a53420();
     if (dStart == 0.0)
-        dStart = FUN_14086d260()->FUN_141473280();
+        dStart = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
     m_dStartTime = dStart + pParam->m_fStartDelay;
     m_fDuration = pParam->m_fDuration;
     m_b2c = pParam->m_b30;
@@ -403,7 +402,7 @@ bool CEffect::vfunc_9()
 {
     if (m_b2d)
         return false;
-    double dNow = FUN_14086d260()->FUN_141473280();
+    double dNow = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
     if (!FUN_14119f3c0() && m_dStartTime <= dNow)
         vfunc_4();
     bool bAlive;
@@ -597,13 +596,13 @@ CEffectDataPtr EffectDataManager::FUN_14119fc50(const CString& strPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strFile, 0, true, false) == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 2, 0x13, L"파일을 읽을 수 없습니다 CEffectDataMgr[{0}]", strFile);
+        FUN_14015eb90(((void*)GetLogString()), 2, 0x13, L"파일을 읽을 수 없습니다 CEffectDataMgr[{0}]", strFile);
         return CEffectDataPtr(0);
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strFile);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strFile);
         return CEffectDataPtr(0);
     }
     CEffectDataPtr spData(new CEffectData());
@@ -616,7 +615,7 @@ CEffectDataPtr EffectDataManager::FUN_14119fc50(const CString& strPath)
         CEffectParamPtr spParam = FUN_1411a04e0(strPath, pNode);
         if (spParam == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x133, L"Effect Fail CreateParam:{0}", strFile);
+            FUN_14015eb90(((void*)GetLogString()), 1, 0x133, L"Effect Fail CreateParam:{0}", strFile);
             return CEffectDataPtr(0);
         }
         spData->FUN_14119f560(spParam.get());
@@ -674,7 +673,7 @@ bool CEffectParam::vfunc_2()
         case kEffectFog:
         case kEffectVibrate:
         case kEffectTextureOverride:
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"Loop가 False이고, Duration이 0 입니다[{0}]", m_str20);
+            FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"Loop가 False이고, Duration이 0 입니다[{0}]", m_str20);
             return false;
         }
     }
@@ -880,7 +879,7 @@ public:
     int FUN_14168a310(const efd::Point3& kFrom, efd::Point3& kHit, Unk_EffNodeRayHit* pInfo, float fMaxDist,
                       efd::Point3* pNormal, int nMask);
 };
-Unk_EffNodePhysX* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 
 const NiRTTI EffectNode::ms_RTTI("EffectNode", &LightUnaffectedNode::ms_RTTI);
 
@@ -963,13 +962,13 @@ void EffectNode::UpdateWorldData()
         m_kWorld = m_kLocal;
     }
     if (m_spMovement.get()) {
-        double dTime = FUN_14086d260()->GetDeltaTime();
+        double dTime = TSingleton<CMainSystem>::GetInstance()->GetDeltaTime();
         m_kWorld = m_spMovement->FUN_141625430(dTime, m_kWorld);
     }
     if (m_bOnGround) {
         Unk_EffNodeRayHit kInfo;
         efd::Point3 kHit;
-        if (FUN_1409f7ca0()->FUN_14168a310(m_kWorld.m_Translate + NiPoint3(0.0f, 0.0f, 60.0f), kHit, &kInfo, 0, 0, 0)) {
+        if (((class Unk_EffNodePhysX*)FUN_1409f7ca0())->FUN_14168a310(m_kWorld.m_Translate + NiPoint3(0.0f, 0.0f, 60.0f), kHit, &kInfo, 0, 0, 0)) {
             m_kWorld.m_Translate = kHit;
             m_kWorld.m_Translate.z += 1.0f;
             if (kInfo.m_hitEntity != 0) {
@@ -1058,11 +1057,9 @@ namespace FMOD { class EventGroup; }
 // CEffectData / Unk_EffectTarget).
 bool FUN_140a8f300(PendingEffect* pPending, CEffectDataPtr spSet, const Unk_EffectTarget& kTarget);
 // PendingEffect members (pendingeffect.h declares none; this is the first argument).
-bool FUN_140a8f440(PendingEffect* pPending);                    // the resources are loaded
 void FUN_140a8f4a0(PendingEffect* pPending, std::vector<CEffectPtr>& vOut);    // create the effects
-unsigned FUN_140a8f5a0(PendingEffect* pPending);                // the effect id
 Unk_EffectTarget& FUN_140a8f5c0(PendingEffect* pPending);       // the request target (+0x30)
-NiCamera* FUN_1413f9950();                                      // the main camera
+void* FUN_1413f9950();   // C3: was FUN_1413f9950
 void FUN_140ab1290(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nArg0, const CString& strArg1);
 CString FUN_140298360(const char* psz, const CString& str);     // ATL operator+(const char*, const CString&)
 CString FUN_14038f6d0(const CString& str, const char* psz);     // ATL operator+(const CString&, const char*)
@@ -1082,7 +1079,6 @@ struct Unk_EsPoint3
     Unk_EsPoint3& operator=(Unk_EsPoint3&& o);                  // 0x14097faa0
 };
 MS2_CHECK_SIZE(Unk_EsPoint3, 0xc);
-int FUN_140976780(GameObject* pObject);                         // the owner id of an actor
 // One voice row of the sound property table (0x20 bytes, implicit ctor 0x1411af960 / dtor 0x1411b01c0).
 struct Unk_EsVoice
 {
@@ -1137,7 +1133,7 @@ public:
     void FUN_1422b0690(Unk_EsSoundFunctor callback);           // set the callback
 };
 Unk_EsSoundCallbackHost* FUN_14025e7a0();
-CNifLoadingService* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 int FUN_140ad0d60(int n, int nMin, int nMax);                  // clamp
 struct Unk_EsOptionData
 {
@@ -1182,7 +1178,6 @@ class Unk_EsCamera : public CameraMgr
 public:
     GameObject* FUN_140a38d60();
 };
-Unk_EsCamera* FUN_1409478c0();
 // The field data of a map (MS2Ptr<CFieldDataCli>, FUN_140a55460).
 struct Unk_EsFieldData
 {
@@ -1223,7 +1218,7 @@ class Unk_EsMapTable { public: Unk_EsMapRowPtr FUN_140428a90(); };
 class Unk_EsMapMgr { public: Unk_EsMapTable* FUN_1403ed1d0(); };
 CString FUN_1401d4330(const wchar_t* psz, int n);              // wide to multi-byte
 void* FUN_1409ffd30(GameObject* pObject);                       // the actor of an object
-// Depth-first walker over a scene graph (0x38 bytes; unrecovered class, same as util.cpp).
+// Depth-first walker over a scene graph (0x30 bytes; unrecovered class, same as util.cpp).
 class Unk_SceneWalker
 {
 public:
@@ -1231,9 +1226,9 @@ public:
     ~Unk_SceneWalker();                                         // 0x14098cf00
     NiAVObject* Next(bool bDescend);                            // 0x14098e0d0
 private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
+    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
-MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
+MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 // Objects with a "fade" virtual (slot 41).
 class Unk_EsFadeObject
 {
@@ -1252,7 +1247,6 @@ public:
     virtual void SetFadeValue(float fValue);                    // slot 41
 };
 extern char DAT_143afbfb8;                                      // RTTI descriptor of Unk_EsFadeObject
-Unk_EsFadeObject* FUN_14098d8d0(char* pRtti, NiAVObject* pObject);
 void FUN_141d2c900(NiAVObject* pObject, bool bFlag);
 
 // The application service (class id 0x06100001, physxhelper.cpp); only its dependency id is used here.
@@ -1336,7 +1330,7 @@ bool FUN_1411a4800(const CString& strName, int nArg)
             bError = true;
     }
     if (bError)
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"CEffectService::PreLoad Found Error effectID:{0}", strName);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"CEffectService::PreLoad Found Error effectID:{0}", strName);
     return true;
 }
 MS2_REPLACE(0x1411a4800, FUN_1411a4800, 405, 0x3BC9D76A);
@@ -1393,8 +1387,8 @@ unsigned CEffectService::FUN_1411a4a00(Unk_EffectTarget& kTarget)
     if (nCount == 0)
         return 0;
     pSkip->AddCount(kTarget.m_strName);
-    if (FUN_140166440() != 0)
-        FUN_140ab1290(FUN_140166440(), 0xc, 0x133, L"InsertEffect OID[{0}] Name[{1}]", nId, kTarget.m_strName);
+    if (((void*)GetLogString()) != 0)
+        FUN_140ab1290(((void*)GetLogString()), 0xc, 0x133, L"InsertEffect OID[{0}] Name[{1}]", nId, kTarget.m_strName);
     FUN_1411ab010(kTarget.m_strName);
     if (!kTarget.FUN_140a53460().IsNull())
         kTarget.FUN_140a53460()(nId, kTarget.m_strName, true);
@@ -1483,7 +1477,7 @@ unsigned CEffectService::FUN_1411a5770(int nId, GameObject* pActor)
             kXform.m_fScale = 1.0f;
             kXform.MakeIdentity();
             reinterpret_cast<Unk_EsPoint3&>(kXform.m_Translate) = pActor->vfunc_18();
-            return FUN_1411a5110(kVoice.m_strCategory, strName, "", nKind, &kXform, 1.0f, FUN_140976780(pActor));
+            return FUN_1411a5110(kVoice.m_strCategory, strName, "", nKind, &kXform, 1.0f, ((class PCBase*)(class GameObject*)(pActor))->FUN_140976780());
         }
     }
     return 0;
@@ -1983,7 +1977,7 @@ void CEffectService::FUN_1411a7960(unsigned nIndex)
             NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pObject);
             if (pRender != NULL) {
                 FUN_141d2c900(pRender, true);
-                Unk_EsFadeObject* pFade = FUN_14098d8d0(&DAT_143afbfb8, pRender);
+                Unk_EsFadeObject* pFade = ((class Unk_EsFadeObject*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afbfb8), (class NiObject const*)(pRender)));
                 if (pFade != NULL)
                     pFade->SetFadeValue(-FLT_MAX);
             }
@@ -2194,7 +2188,7 @@ int CEffectService::FUN_1411a88e0(int nKind, float fDistance)
     case 6:
     case 7:
     {
-        float fFps = FUN_14086d260()->GetFps();
+        float fFps = TSingleton<CMainSystem>::GetInstance()->GetFps();
         int nDrop = 0;
         if (fFps <= 50.0f)
             nDrop = 3;
@@ -2257,9 +2251,9 @@ void CEffectService::FUN_1411a8cb0(const CString& strName)
 {
     if (strName.IsEmpty())
         return;
-    if (FUN_1409478c0()->FUN_140a18070() == 0)
+    if (((class Unk_EsCamera*)TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() == 0)
         return;
-    GameObject* pTarget = FUN_1409478c0()->FUN_140a38d60();
+    GameObject* pTarget = ((class Unk_EsCamera*)TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60();
     if (pTarget == NULL)
         return;
     Unk_EffectTarget kTarget;
@@ -2357,7 +2351,7 @@ efd::AsyncResult CEffectService::OnInit()
     TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177d6e0("ms2sound/sound/attack/hit", 1);
     FUN_14025e7a0()->FUN_1422b0690(Unk_EsSoundFunctor(this, &CEffectService::FUN_1411a5a60));
     {
-        CNifLoadingService* pLoader = FUN_140a0afd0();
+        CNifLoadingService* pLoader = ((class CNifLoadingService*)FUN_140a0afd0());
         m_aPreloaded.Add(0);
         NiAVObjectPtr spSky = pLoader->Load(static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strSky208, false, 1, 0, 0);
         if (spSky)
@@ -2410,9 +2404,9 @@ efd::AsyncResult CEffectService::OnTick()
             if (!spEffect->vfunc_9()) {
                 vRemoved.push_back(spEffect);
                 itEffect = pGroup->FUN_1411b2df0(itEffect);
-                if (FUN_140166440() != 0) {
+                if (((void*)GetLogString()) != 0) {
                     unsigned nId = pGroup->FUN_1411b1ed0();
-                    FUN_140ab1290(FUN_140166440(), 0xc, 0x133, L"Remove Effect OID[{0}] [{1}]", nId, spEffect->GetName());
+                    FUN_140ab1290(((void*)GetLogString()), 0xc, 0x133, L"Remove Effect OID[{0}] [{1}]", nId, spEffect->GetName());
                 }
             } else {
                 if (spEffect->vfunc_12() == 3) {
@@ -2510,10 +2504,10 @@ void CEffectService::FUN_1411aa800()
     std::list<MS2Ptr<PendingEffect> >::iterator it = m_listPending.begin();
     while (it != m_listPending.end()) {
         MS2Ptr<PendingEffect> spPending = *it;
-        if (FUN_140a8f440(spPending.operator->())) {
+        if (((class PendingEffect*)(spPending.operator->()))->Poll()) {
             std::vector<CEffectPtr> vEffects;
             FUN_140a8f4a0(spPending.operator->(), vEffects);
-            Unk_EsEffectGroup* pGroup = FUN_1411aac40(FUN_140a8f5a0(spPending.operator->()));
+            Unk_EsEffectGroup* pGroup = FUN_1411aac40(((class PendingEffect*)(spPending.operator->()))->GetId());
             // cl's `for each` (C++/CLI-style extension) is the exe's loop shape; clang only has the range-for
 #ifdef __clang__
             for (CEffectPtr spEffect : vEffects) {
@@ -2526,7 +2520,7 @@ void CEffectService::FUN_1411aa800()
             if (!FUN_140a8f5c0(spPending.operator->()).FUN_140a53460().IsNull()) {
                 bool bInserted = !vEffects.empty();
                 Unk_EffectTarget& kTarget = FUN_140a8f5c0(spPending.operator->());
-                kTarget.FUN_140a53460()(FUN_140a8f5a0(spPending.operator->()), kTarget.m_strName, bInserted);
+                kTarget.FUN_140a53460()(((class PendingEffect*)(spPending.operator->()))->GetId(), kTarget.m_strName, bInserted);
             }
             it = m_listPending.erase(it);
         } else {
@@ -2542,7 +2536,7 @@ void CEffectService::FUN_1411aab90(NiAVObject* pObject)
 {
     if (pObject == 0)
         return;
-    NiCamera* pCamera = FUN_1413f9950();
+    NiCamera* pCamera = ((class NiCamera*)FUN_1413f9950());
     if (pCamera == 0)
         return;
     const float fDistance = 1500.0f;

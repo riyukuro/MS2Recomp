@@ -67,14 +67,12 @@
 
 // Unrecovered helpers (same ones the other xml table loaders use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071ae20(const CString& strFile);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW);
-int FUN_140197390(Unk_140165cf0*, const char*, int);                    // integer attribute with default
+unsigned int FUN_140197390(Unk_140165cf0 *, char const *, unsigned int);  // C3: the definition's signature
 
 // A list of child elements (24 bytes; a std::vector<Unk_140165cf0*> of the original) and its iterator.
 class Unk_ElemConstIter
@@ -117,15 +115,15 @@ bool CPortalTable::LoadNames()
 {
     CString strPath = FUN_14071ae20("stringPortal.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return false;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     Unk_ElemList list;
@@ -148,15 +146,15 @@ bool CPortalTable::LoadRandomTargets()
 {
     CString strPath = FUN_14071a5b0("Table", "portalRandomTarget.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return false;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     Unk_ElemList list;

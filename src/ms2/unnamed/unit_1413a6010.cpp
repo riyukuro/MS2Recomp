@@ -18,6 +18,9 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
+// return types of the getters this unit calls
+class Unk_Restrictions;
+
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 UIDialog* FUN_140c300a0(unsigned nDialogID);                // the dialog of a UI id
@@ -26,7 +29,7 @@ void FUN_141386b50(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CSt
 CStringW FUN_14016a730(const char* sz, int nFlags);         // FormatStringId(sz) without arguments
 
 class Unk_GdMgr { public: int FUN_14138d870(const CStringA* pName); };   // the dialog state service
-Unk_GdMgr* FUN_1409331e0();
+Unk_Restrictions* FUN_1409331e0();
 
 template <> MS2Ptr<ASDisplayObject> UISwfEntity::GetChild<ASDisplayObject>(const CString& strName);    // 0x1413b1a90
 
@@ -89,7 +92,7 @@ int CGuideConditionDialog::vfunc_8()
 {
     if (m_nIsOpen == 0)
         return 0;
-    int nResult = FUN_1409331e0()->FUN_14138d870(&m_strDialog);
+    int nResult = reinterpret_cast<Unk_GdMgr*>(FUN_1409331e0())->FUN_14138d870(&m_strDialog);
     return nResult;
 }
 

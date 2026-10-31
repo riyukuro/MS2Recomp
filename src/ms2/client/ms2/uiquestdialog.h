@@ -23,7 +23,7 @@ class CInPacket;
 class CMsgBoxData;
 class CQuest;
 class Unk_QdTabBar;
-class Unk_QdList;
+class ASScrollingList;
 class Unk_QdInfo;
 class Unk_QdCheck;
 
@@ -112,7 +112,7 @@ public:
 
     // child lookups (one COMDAT per wrapper class; defined in other units)
     MS2Ptr<Unk_QdTabBar> FUN_140c02870(const CString& strName);    // tab strips
-    MS2Ptr<Unk_QdList> FUN_140c02900(const CString& strName);      // "m_questList"
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);      // "m_questList"
     MS2Ptr<Unk_QdInfo> FUN_140c02990(const CString& strName);      // "m_questInfo"
     MS2Ptr<Unk_QdCheck> FUN_140e52670(const CString& strName);     // "m_properLevel" / "m_progressOnly" check boxes
 

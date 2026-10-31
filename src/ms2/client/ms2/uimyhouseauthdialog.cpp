@@ -16,7 +16,6 @@
 
 // ---- unit-local placeholders (unrecovered helpers; promote to src/ms2/placeholder/ when shared) ----
 
-bool FUN_140a467d0(const MS2Ptr<AScript>* p);                                 // has the AS object been released
 int FUN_1418fc760(const char* szMethod, const void* pArgs, unsigned int nArgs, int n);   // the shared vfunc_28 back end
 void FUN_14151f200();                                                         // show the next queued message box
 
@@ -63,7 +62,7 @@ void UIMyHouseAuthDialog::OnLoadComplete()
 void UIMyHouseAuthDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    if (vfunc_55() == 0 && FUN_140a467d0(&m_30))
+    if (vfunc_55() == 0 && ((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
     {
     }
 }

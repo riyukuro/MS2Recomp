@@ -31,7 +31,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-extern Unk_Inventory DAT_143ab2a90;                         // the player's inventory
+extern Unk_Inventory g_143ab2a90;                           // the player's inventory
 CItemData* FUN_140527840(CItem* pItem);                     // the item's data record
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);   // the common dialog AS calls
 
@@ -108,7 +108,7 @@ void UISelectSuperWorldChatDialog::OnLoadComplete()
             continue;
         int nItemId = spItem->FUN_1405276c0();
         int nRarity = spItem->FUN_140526bd0();
-        int nAmount = DAT_143ab2a90.FUN_140a5f180(nItemId, nRarity);
+        int nAmount = g_143ab2a90.FUN_140a5f180(nItemId, nRarity);
         CString strBind = m_binder.FUN_140d43310(nItemId, nRarity, nAmount);
         if (strBind.IsEmpty())
             continue;
@@ -190,7 +190,7 @@ MS2_REPLACE_METHOD(0x140E8C8E0, UISelectSuperWorldChatDialog, FUN_140e8c8e0, 292
 void UISelectSuperWorldChatDialog::FUN_140e8ca10(ATL::CAtlArray<MS2Ptr<CItem> >& aOut)
 {
     ATL::CAtlArray<MS2Ptr<CItem> > aItems;
-    DAT_143ab2a90.FUN_140a60880(7, aItems);
+    g_143ab2a90.FUN_140a60880(7, aItems);
     for (size_t i = 0; i < aItems.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem = aItems[i];
@@ -210,7 +210,7 @@ MS2_REPLACE_METHOD(0x140E8CA10, UISelectSuperWorldChatDialog, FUN_140e8ca10, 362
 void UISelectSuperWorldChatDialog::FUN_140e8cb80(ATL::CAtlArray<MS2Ptr<CItem> >& aOut)
 {
     ATL::CAtlArray<MS2Ptr<CItem> > aItems;
-    DAT_143ab2a90.FUN_140a60880(7, aItems);
+    g_143ab2a90.FUN_140a60880(7, aItems);
     for (size_t i = 0; i < aItems.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem = aItems[i];

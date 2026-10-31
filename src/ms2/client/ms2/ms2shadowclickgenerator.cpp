@@ -93,7 +93,7 @@ extern char DAT_143ae51a8;      // NiFixedString: extra-data name that marks a s
 extern int DAT_143ae2b34;       // 0: casters are found by that extra data, otherwise by the DISPLAY_OBJECT flag
 extern char DAT_143ad1588;      // NiRTTI of the model node class (mode at +0x17c, flag byte at +0x131)
 extern int DAT_143ae2b44;       // model-node culling enabled
-COptimizer* FUN_1409f7c90();    // the optimizer (singleton); IsModelCullingOn 0x1414c98a0 reads DAT_143ae2b44
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 unsigned int FUN_141569010(NiAVObject* pkObject);   // the flag-based caster test (out of unit; also used by unit_141567000)
 
 // "is this one of the shadow casters", written out inline at each use (a macro in the source: the exe has no call)
@@ -170,7 +170,11 @@ public:
 };
 
 // The camera manager's current mode accepts shadow-follow cameras? (inline of ?\actioncameramode.cpp's obj)
-bool FUN_140af0d80(Unk_CameraManager* pMgr);
+class CameraMgr   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_140af0d80();
+};
 
 // ---- MS2ShadowClickGenerator ----
 
@@ -460,7 +464,7 @@ bool MS2ShadowClickGenerator::HandleDirectionalLight(NiShadowGenerator* pkGenera
 
     // With a camera target and a following camera mode the shadow camera tracks the player.
     if (Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60() != 0 &&
-        !FUN_140af0d80(Unk_CameraManager::FUN_1409478c0()))
+        !((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af0d80())
         return HandleCameraFollowDirectionalLight(pkGenerator, pkDirLight, bRegenerateViews, bUpdateShadowMaps);
 
     NiShadowRenderClick* pkShadowClick = pkShadowMap->GetRenderClick();
@@ -926,7 +930,7 @@ void MS2ShadowVisitor::AdditiveListHelperAtl(NiNode* pkNode, MS2CasterList* pkOb
     if (pkNode && (pkNode->GetMS2Flags() & MS2_FLAG_SHADOW_EXCLUDED) == 0)
     {
         Unk_ShadowModelNode* pkModel;
-        if (FUN_1409f7c90()->IsModelCullingOn() &&
+        if (((class COptimizer*)FUN_1409f7c90())->IsModelCullingOn() &&
             (pkModel = (Unk_ShadowModelNode*)NiObject::DynamicCast((const NiRTTI*)&DAT_143ad1588, pkNode)) != 0 &&
             pkModel->FUN_1410444a0() == 1 && !pkModel->FUN_14144e250())
             return;

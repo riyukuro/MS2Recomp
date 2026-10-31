@@ -80,7 +80,6 @@ class Unk_SrBuffs
 public:
     MS2Ptr<AdditionalCli> FUN_14096fc80(int nBuffId);       // one buff
 };
-Unk_SrBuffs* FUN_1416749a0(Unk_SrEntity* pEntity);          // the buffs of an actor
 
 // ---- SkillTargetRecord ----
 
@@ -672,7 +671,7 @@ int CDotDamageRecord::vfunc_1()
     Unk_SrEntity* pCaster = reinterpret_cast<Unk_SrWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nCasterId);
     if (pCaster == 0)
         return 0;
-    MS2Ptr<AdditionalCli> spBuff = FUN_1416749a0(pCaster)->FUN_14096fc80(m_nEffectLevel);
+    MS2Ptr<AdditionalCli> spBuff = ((Unk_SrBuffs*)(reinterpret_cast<PCBase*>(pCaster)->FUN_1416749a0()))->FUN_14096fc80(m_nEffectLevel);
     if (spBuff == 0)
         return 0;
     return spBuff->FUN_14096d810()->m_nDotDamageType;

@@ -55,7 +55,6 @@ public:
 };
 
 // The status-listener registry (singleton 0x140aa6d40).
-UIStatusEventDispatcher* FUN_140aa6d40();
 
 // The movie root (m_30) with the child lookup of the trade controls.
 class Unk_TdRoot : public AScript
@@ -68,14 +67,13 @@ public:
 class Unk_TdEquipSet { public: float FUN_1411e1110(int nStat); };
 
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);
+int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 
 // The trade slot bags (trademanagerex_2.cpp) and the registry of bound slot bags.
 void FUN_14185e850(const CString& strName, int nCount, bool bMine);
 void FUN_14185e920(const CString& strName);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 TradeSlotBag* FUN_14185edc0(NotifyContext::BindData* p);
-DragSlot* FUN_1422cd070(DragSlotBag* pBag, int nIndex);        // the slot of the bag by index
 TradeSlot* FUN_14140e720(DragSlot* p);                         // the trade slot behind a drag source (null: not one)
 
 // The meso limits and the trade checks.
@@ -99,14 +97,21 @@ void FUN_141276180(const CString& strEvent, const CString& strArg);   // sound e
 CString FUN_14038f6d0(const CString& str, const char* sz);     // str + sz
 
 // The local player.
-unsigned int FUN_141662de0(PC* pPlayer);                        // the player has the vip bonus
-void* FUN_1403ed2d0();                                         // the session
-void* FUN_141bd0cc0(void* pSession);                           // the local player
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 CString FUN_141028be0(__int64 nCharId, const CString& strKey, int nFlag, CString strEmpty);   // the profile image key
 
 // The feature manager and the status registry.
-void* FUN_140166410();
-bool FUN_14036d570(void* pFeatures, int nFeature);
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
 
 // The meso the player owns, the zero offset and the trade table.
 extern __int64 DAT_143ab2898;
@@ -166,7 +171,7 @@ int UITradeDialogEx::vfunc_65()
 // @0x141b27250
 void UITradeDialogEx::vfunc_67()
 {
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode7();
     TSingleton<CTradeManagerEx>::GetInstance()->FUN_14185d7b0();
     UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
@@ -214,7 +219,7 @@ void UITradeDialogEx::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_141b27580();
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
 }
 
 // @0x141b27550
@@ -231,7 +236,7 @@ void UITradeDialogEx::FUN_141b27580()
     m_uidTarget = TSingleton<CTradeManagerEx>::GetInstance()->FUN_141b29c10();
     m_strTargetName = TSingleton<CTradeManagerEx>::GetInstance()->FUN_141b29c20();
     m_strTargetChar = TSingleton<CTradeManagerEx>::GetInstance()->FUN_141b29c70();
-    PC* pPlayer = static_cast<PC*>(FUN_141bd0cc0(FUN_1403ed2d0()));
+    PC* pPlayer = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     ASObj data(2);
@@ -261,7 +266,7 @@ int UITradeDialogEx::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, 0) != 0)
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, (void*)(0)) != 0)
         return 1;
     if (_stricmp("OnClose", szMethod) == 0)
     {
@@ -330,7 +335,7 @@ void UITradeDialogEx::FUN_141b27de0(int nSide, int nIndex, MS2Ptr<CItem> spItem)
     TradeSlotBag* pBag = FUN_14185edc0(FUN_1422c8e90(strBagId));
     if (pBag != 0)
     {
-        efd::SmartPointer<TradeSlot> spSlot(FUN_14140e720(FUN_1422cd070(pBag, nIndex)));
+        efd::SmartPointer<TradeSlot> spSlot(FUN_14140e720(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex)));
         if (spSlot == 0)
             return;
         spSlot->SetItem(spItem);
@@ -347,7 +352,7 @@ void UITradeDialogEx::FUN_141b27fa0(int nSide, int nIndex)
     TradeSlotBag* pBag = FUN_14185edc0(FUN_1422c8e90(strBagId));
     if (pBag != 0)
     {
-        efd::SmartPointer<TradeSlot> spSlot(FUN_14140e720(FUN_1422cd070(pBag, nIndex)));
+        efd::SmartPointer<TradeSlot> spSlot(FUN_14140e720(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex)));
         if (spSlot == 0)
             return;
         spSlot->SetItem(MS2Ptr<CItem>(0));
@@ -431,7 +436,7 @@ void UITradeDialogEx::FUN_141b284b0()
     m_spTargetMeso = m_30->FUN_1409b4620("m_targetMesoNumberString");
     FUN_141b28d10(true, 0);
     FUN_141b28d10(false, 0);
-    if (FUN_14036d570(FUN_140166410(), 0xc5) == 0)
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xc5) == 0)
     {
         m_spMyMeso->vfunc_4(false);
         float fMyY = m_spMyMeso->FUN_1422c1110();
@@ -452,7 +457,7 @@ void UITradeDialogEx::FUN_141b28d10(bool bMine, __int64 nMeso)
     MS2Ptr<ASTextField> spText = bMine ? m_spMyMeso : m_spTargetMeso;
     if (spText == 0)
         return;
-    if (FUN_14036d570(FUN_140166410(), 0xc5))
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xc5))
     {
         CStringW strMeso = FUN_141275860(nMeso);
         spText->FUN_1422c4f00(strMeso);
@@ -483,11 +488,11 @@ void UITradeDialogEx::FUN_141b28f40(__int64 nMeso, bool bMine)
     int bVip = 0;
     if (bMine == 0)
     {
-        PC* pPlayer = static_cast<PC*>(FUN_141bd0cc0(FUN_1403ed2d0()));
+        PC* pPlayer = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return;
         fReduce = reinterpret_cast<Unk_TdEquipSet*>(pPlayer->FUN_1416561a0())->FUN_1411e1110(0x40);
-        if (FUN_141662de0(pPlayer) != 0)
+        if (((class PC*)(class PC*)(pPlayer))->FUN_141662de0() != 0)
             bVip = 1;
     }
     __int64 nFee = FUN_14087d150(nMeso, fReduce);

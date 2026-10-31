@@ -16,9 +16,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-CFeatureManager* FUN_140166410();
-void* FUN_140166440();                                                          // the log
-void FUN_140353fc0(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const int& arg);
+class CLogString* GetLogString();
+template <class T> void Unk_ShopLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_140188f50(const char* psz, int nCodePage);                         // CString from a C string
 
 namespace Probability
@@ -118,7 +117,7 @@ bool Probability::IsLogEnabled()
 bool FUN_14073e6a0()
 {
     if (IsLogEnabled() == true)
-        return FUN_140166410()->FUN_14036d570(0x115);
+        return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x115);
     return false;
 }
 
@@ -126,14 +125,14 @@ bool FUN_14073e6a0()
 bool FUN_14073e6e0()
 {
     if (IsLogEnabled() == true)
-        return FUN_140166410()->FUN_14036d570(0x114);
+        return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x114);
     return false;
 }
 
 // @0x14073e720
 bool FUN_14073e720()
 {
-    return FUN_140166410()->FUN_14036d570(0x116);
+    return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x116);
 }
 
 // The random option picks of one reroll: each picked value is popped from a copy of the picker so the next trial is
@@ -165,7 +164,7 @@ bool AppendItemOptionRandomOptionLog(unsigned nProbVer, int nCode, const Unk_Ite
         Unk_ItemOptionValuePicker::Entry kEntry;
         if (!kPicker.PopFirstItemData(pValue, kEntry))
         {
-            FUN_140353fc0(FUN_140166440(), 1, 0x13b, L"AppendLogContext, PopFirstItemData is null, pickedVec index: {0}", i);
+            Unk_ShopLog<int>(GetLogString(), 1, 0x13b, L"AppendLogContext, PopFirstItemData is null, pickedVec index: {0}", i);
             continue;
         }
         unsigned nWeight = kEntry.weight;

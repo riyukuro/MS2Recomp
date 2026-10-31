@@ -47,10 +47,8 @@ static const CString s_lapenSortNames[] = {"None", "Buy", "Like", "PriceLow", "P
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
 bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
@@ -181,12 +179,12 @@ int CItemLapenshardTable::Load()
     CString strPath = FUN_14071a5b0("Table", "itemLapenshardUpgrade.xml");
     FUN_1401d1160(strPath);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 1;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 1;
     }
     const CString& strKey = "key";
@@ -228,7 +226,7 @@ int CItemLapenshardTable::Load()
             if (next.get() != 0 && nTransfer != next->limit.transferType)
             {
                 unsigned nNextId = next->FUN_14053c510();
-                FUN_1405b1bd0(FUN_140166440(), 2, 0x13,
+                FUN_1405b1bd0(GetLogString(), 2, 0x13,
                               L"라펜샤드 거래타입(귀속,거래불가 등)이 같지않습니다(itemID: {0}, nextItemID: {1}). itemProperty transferType을 확인해 주세요. [{2}]",
                               nItemId, nNextId, strPath);
             }

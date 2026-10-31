@@ -14,6 +14,8 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/partymanager.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local declarations (names describe uses, not original class names) ----
 
@@ -76,7 +78,6 @@ void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void FUN_14151f200();
 void FUN_140a30ad0(const BlockPtr& rec, int action, unsigned long long cb);
 CBlockManager* FUN_140a6a830();
-CPartyManager* FUN_1409670d0();
 int FUN_140695080(CMatchPartyRecruit* pRecruit);   // recruitId == 0
 
 // Name filter (bad words) of the title.
@@ -124,7 +125,6 @@ class Unk_PsUIManager
 public:
     Unk_PsUIRef FUN_141adcea0(int nUiId);
 };
-Unk_PsUIManager* FUN_1403ed2b0();
 UIObject* FUN_1403ed9e0(Unk_PsUIRef& ref);
 
 // The party search list dialog (UI id 0x4eda); only its RTTI is needed here.
@@ -147,9 +147,9 @@ MS2_CHECK_SIZE(Unk_140694210, 0x10);
 // @0x1413226d0
 UIPartySearchDialog* FUN_1413226d0(int nUiId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_PsUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        Unk_PsUIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        Unk_PsUIRef ref = reinterpret_cast<Unk_PsUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (ref.FUN_1403e8a70())
             return dynamic_cast<UIPartySearchDialog*>(FUN_1403ed9e0(ref));
     }
@@ -254,7 +254,7 @@ void UIPartySearchRegisterDialog::OnLoadComplete()
         {
             m_1b0->FUN_1422dfce0(FUN_140719630(*FUN_1401d3200()->m_e770.FUN_1404f0a10(i)));
         }
-        CMatchPartyRecruit* pRecruit = &FUN_1409670d0()->FUN_141631ce0();
+        CMatchPartyRecruit* pRecruit = &TSingleton<CPartyManager>::GetInstance()->FUN_141631ce0();
         if (FUN_140695080(pRecruit))
         {
             m_1c0->FUN_1422e0ab0(m_190.m_text);
@@ -326,7 +326,7 @@ int UIPartySearchRegisterDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         {
             if (FUN_1403b3c40(strTag, L"remove"))
             {
-                FUN_1409670d0()->SendMatchPartyMode1();
+                TSingleton<CPartyManager>::GetInstance()->SendMatchPartyMode1();
                 vfunc_67();
             }
             else if (FUN_1403b3c40(strTag, L"modify") && FUN_1413220d0(&m_180, 1) != 0)
@@ -407,7 +407,7 @@ int UIPartySearchRegisterDialog::FUN_1413220d0(Unk_PsRegState* pState, int bSile
     request.m_08 = nAutoJoin;
     request.m_0c = FUN_141322020();
     if (bSilent == 0)
-        FUN_1409670d0()->SendMatchPartyMode0(*(const Unk_PartyRecruitRequest*)&request);
+        TSingleton<CPartyManager>::GetInstance()->SendMatchPartyMode0(*(const Unk_PartyRecruitRequest*)&request);
     FUN_141321cc0(pTitle, nAutoJoin, &m_190);
     return 1;
 }

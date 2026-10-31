@@ -50,7 +50,6 @@ UIObject* FUN_1403ed9e0(Unk_SpUIRef& rRef);
 
 CSmartPush* FUN_1401f7f50(CStringW strClass);                   // class factory: new object by registered name
 unsigned FUN_140869420();                                       // client millisecond clock
-int FUN_141986d30(UISmartPush* pUi);                            // the strip's movie is ready
 
 // The "do not disturb" option block (+0x14: suppress every push).
 struct Unk_SpOptionData
@@ -171,7 +170,7 @@ void CSmartPushManager::FUN_140dd87d0()
     UISmartPush* pUi = FindStripUI(0x4ef7);
     if (pUi == 0)
         return;
-    if (FUN_141986d30(pUi) == 0)
+    if (reinterpret_cast<UIHeadUpDisplay*>(pUi)->FUN_141986d30() == 0)
         return;
     for (POSITION pos = m_pushes.GetStartPosition(); pos != 0; m_pushes.GetNext(pos))
     {

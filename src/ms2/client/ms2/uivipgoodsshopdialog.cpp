@@ -58,6 +58,8 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 static CString s_strSortTypeNamesBuy[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uiservice.h"
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_strJobCode = "jobCode";
 static CString s_strSortValue = "sortValue";
@@ -111,10 +113,8 @@ void* FUN_1403ed2d0();                                          // the world
 PCBase* FUN_141bd0cc0(void* pWorld);                            // the local player
 int FUN_141662de0(PCBase* pPC);                                 // the player has VIP
 __int64 FUN_141662e90(PCBase* pPC);                             // the VIP end time
-__int64 FUN_140869440();                                        // the server time
+__int64 GetServerTime();                                        // the server time
 
-class Unk_VgStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_VgStrings* FUN_1401a9d70();
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
 CStringW FUN_140938ae0(CStringW strKey, const unsigned& nValue);
@@ -138,7 +138,6 @@ void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Sca
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);    // pRetVal = v
 
 class Unk_VgUiMgr { public: void FUN_141adc530(int uiId); };
-Unk_VgUiMgr* FUN_1403ed2b0();
 UIMarketBillDialog* FUN_140b09580(int uiId);                    // the open dialog of a UI id
 bool FUN_140ebc590(const TMarketBillDataParam::PaymentMap& mapPay);    // the payment map is the VIP price
 
@@ -328,7 +327,7 @@ void UIVIPGoodsShopDialog::vfunc_79(void* pPacket)
         MS2Ptr<CVIPGoods> spGoods = FUN_140fb9980()->GetGoods(nGoodsId);
         if (spGoods == 0)
             return;
-        CStringW strMsg = FUN_140656190(GetStringCommon(0x9f6), FUN_1401a9d70()->FUN_141811980(0x2e, nGoodsId), spGoods->GetPriceText(0));
+        CStringW strMsg = FUN_140656190(GetStringCommon(0x9f6), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2e, nGoodsId), spGoods->GetPriceText(0));
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x10, FUN_140632a60(0x9f4, GetStringCommon(0x9f8), strMsg), 0, CStringW(L""))) {
             spBox->SetTitle(GetStringCommon(0x9f5));
             static_cast<Unk_VgMsgBox*>(spBox.operator->())->FUN_141a01c30(s_sndCashBuy);
@@ -363,7 +362,7 @@ void UIVIPGoodsShopDialog::FUN_140fbaca0()
             continue;
         int nDisableType = 0;
         if (spGoods->HasSalesPeriod() != 0) {
-            CMsTime now(FUN_140869440());
+            CMsTime now(GetServerTime());
             if (spGoods->m_salesStartDate > now)
                 nDisableType = 1;
         }
@@ -372,7 +371,7 @@ void UIVIPGoodsShopDialog::FUN_140fbaca0()
             m_mapBought.Lookup(spGoods->m_nId, nLimit);
         ASObj row(2);
         row.FUN_1409c0d20("id", spGoods->m_nId);
-        row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141811980(0x2e, spGoods->m_nId));
+        row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2e, spGoods->m_nId));
         row.FUN_1407cb9c0("disableType", nDisableType);
         row.FUN_1409c1180("originalPrice", spGoods->m_nSalePrice == spGoods->m_nPrice ? 0 : spGoods->m_nPrice);
         row.FUN_1407cbb20("salePriceText", spGoods->GetPriceText(1));
@@ -429,7 +428,7 @@ void UIVIPGoodsShopDialog::FUN_140fbb940(std::vector<MS2Ptr<CVIPGoods> >& rOut)
         if (spGoods == 0)
             continue;
         if (spGoods->HasSalesPeriod() != 0) {
-            CMsTime now(FUN_140869440());
+            CMsTime now(GetServerTime());
             if (spGoods->m_salesEndDate < now)
                 continue;
         }
@@ -455,7 +454,7 @@ void UIVIPGoodsShopDialog::FUN_140fbbae0(int nGoodsId)
     if (FUN_141662de0(pPlayer) != 0) {
         unsigned nDays = *FUN_1401d7c10((Unk_VgConstUInt*)(FUN_1401d3200() + 0x6f40));
         __int64 nWindow = *FUN_1401d7c10((Unk_VgConstUInt*)(FUN_1401d3200() + 0x6f40)) * 60 * 60 * 24;
-        if (FUN_141662e90(pPlayer) - FUN_140869440() > nWindow) {
+        if (FUN_141662e90(pPlayer) - GetServerTime() > nWindow) {
             CMsTime until(FUN_141662e90(pPlayer) - nWindow);
             int nMinute = until.GetMinute();
             int nHour = until.GetHour();
@@ -513,7 +512,7 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
             return;
         MS2Ptr<ASBillData> spBill(new ASBillData(2));
         spBill->FUN_1409ab940(spSlot->FUN_1422bb870());
-        spBill->FUN_1409aba80(FUN_1401a9d70()->FUN_141811980(0x2e, spGoods->m_nId));
+        spBill->FUN_1409aba80(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2e, spGoods->m_nId));
         spBill->FUN_1409abad0(FUN_1418fec00(nPayType, spGoods->m_nSalePrice, 0), spGoods->m_nSalePrice);
         spBill->FUN_1409abc90(0);
         spBill->FUN_1409abcd0(nPayType);
@@ -530,7 +529,7 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
         spItemSlot->FUN_1409c2190(spGoods->m_bonusItemCounts[i]);
         MS2Ptr<ASBillData> spItemBill(new ASBillData(2));
         spItemBill->FUN_1409ab940(spItemSlot->FUN_1422bb870());
-        spItemBill->FUN_1409aba80(FUN_1401a9d70()->FUN_141811980(1, FUN_1405276c0(spItem.operator->())));
+        spItemBill->FUN_1409aba80(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1405276c0(spItem.operator->())));
         spItemBill->FUN_1409abc90(0);
         spItemBill->FUN_1409abad0(CStringW(), 0);
         spItemBill->FUN_1409abcd0(nPayType);
@@ -550,7 +549,7 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
         return;
     MS2Ptr<TMarketBillDataParam> spBase(spParam);
     pBillDialog->FUN_140ea7770(spBase);
-    FUN_1403ed2b0()->FUN_141adc530(0x4f17);
+    reinterpret_cast<Unk_VgUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f17);
 }
 
 // @0x140fbcca0

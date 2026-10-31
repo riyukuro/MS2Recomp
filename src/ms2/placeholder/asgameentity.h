@@ -17,6 +17,7 @@ public:
     virtual ~ASGameEntity();                                // 0 0x1422de5e0
     // Slots 3 and 16-24 are ASUIComponent's (asuicomponent.h does not declare them yet; same convention as
     // asitemslot.h): redeclared here so slot 25 lands right. symbols-manual binds the names to the base VAs.
+#ifndef MS2_ASUICOMPONENT_SLOTS
     virtual void vfunc_3(int nVisible);                     // 3 0x1422c7260
     virtual void vfunc_16();                                // 16 0x1422c7ec0
     virtual void vfunc_17();                                // 17 0x1422c7f00
@@ -27,6 +28,7 @@ public:
     virtual void vfunc_22();                                // 22 0x1422c8040
     virtual void vfunc_23();                                // 23 0x1422c8080
     virtual void vfunc_24(bool bRefresh);                   // 24 0x1422c80c0
+#endif
     virtual void vfunc_25();                                // 25 0x1422de610 invoke AS "alignment" (UpdateAlignment)
     int FUN_1422c1500();                                    // width
     int FUN_1422c1530();                                    // height

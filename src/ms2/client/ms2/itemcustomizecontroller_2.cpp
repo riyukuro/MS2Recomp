@@ -41,10 +41,8 @@ public:
     char m_pad[0x290];
     CStringW m_strClass;
 };
-Unk_ItemDataX* FUN_140527840(CItem* pItem);             // CItem::GetItemData
 
 // Game context: FUN_141bd0cc0 returns the local player (the tooltip owner).
-WorldService* FUN_1403ed2d0();
 
 // Exchange-scroll records: the singleton hands out a ref-counted record by item id.
 class Unk_ExchangeData : public CPtred
@@ -74,7 +72,6 @@ void Unk_140657820();                                   // 'invalid call' of an 
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
-void FUN_1422cc9e0(DragSlotBag* pBag);                  // clear the bag's slots
 ItemInfoSlot* FUN_140c69ab0(NotifyContext::BindData* p);   // BindData -> ItemInfoSlot (TypeCast), 0 on failure
 
 // The empty-delegate error of ItemInfoSlotCanFn.
@@ -165,7 +162,7 @@ void FUN_141414e50(const CString& strName)
     ItemEnchantSlotBag* pBag = FUN_1414151d0(FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         FUN_1422c8f70(strName);
     }
 }
@@ -345,7 +342,7 @@ int ItemInfoSlot::vfunc_0(void* p)
         return 0;
     if (m_spItem == 0 && m_strTip.GetLength() != 0)
     {
-        ASTooltip tip((Unk_TooltipOwner*)FUN_1403ed2d0()->FUN_141bd0cc0(), m_nFlags, 2);
+        ASTooltip tip((Unk_TooltipOwner*)WorldService::GetInstance()->FUN_141bd0cc0(), m_nFlags, 2);
         if (tip.FUN_1409e26b0(m_strTip))
         {
             if (m_nTipArg != -1)
@@ -354,7 +351,7 @@ int ItemInfoSlot::vfunc_0(void* p)
             return 1;
         }
     }
-    ASTooltip tip((Unk_TooltipOwner*)FUN_1403ed2d0()->FUN_141bd0cc0(), m_nFlags, 2);
+    ASTooltip tip((Unk_TooltipOwner*)WorldService::GetInstance()->FUN_141bd0cc0(), m_nFlags, 2);
     int nResult = 0;
     if (!m_fnTip.IsNull())
     {
@@ -363,10 +360,10 @@ int ItemInfoSlot::vfunc_0(void* p)
     }
     else
     {
-        if ((m_spItem.get() ? true : false) && FUN_1403b3c40(FUN_140527840(m_spItem.operator->())->m_strClass, L"ItemExchangeScroll"))
+        if ((m_spItem.get() ? true : false) && FUN_1403b3c40(((class Unk_ItemDataX*)((class CItem*)(class CItem*)(m_spItem.operator->()))->FUN_140527840())->m_strClass, L"ItemExchangeScroll"))
         {
             {
-                void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+                void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
                 if (pPlayer == 0)
                     return 0;
                 MS2Ptr<Unk_ExchangeData> spData = reinterpret_cast<Unk_ExchangeMgr*>(TSingleton<CItemExchangeScrollTable>::GetInstance())->FUN_140595750(m_spItem->FUN_1405276c0());
@@ -428,7 +425,7 @@ int ItemInfoSlot::vfunc_8(void* p)
         }
         return 0;
     }
-    if (slot.FUN_1409c3860(spItem.get(), FUN_1403ed2d0()->FUN_141bd0cc0(), m_nIconType))
+    if (slot.FUN_1409c3860(spItem.get(), WorldService::GetInstance()->FUN_141bd0cc0(), m_nIconType))
     {
         if (!m_fnSlot.IsNull())
             m_fnSlot(this, &slot);

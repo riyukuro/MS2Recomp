@@ -13,6 +13,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/partymanager.h"
+#include "ms2/placeholder/ascript.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 // The mentee/mentor record of one user (a CPtred; +0x30 serial number, names at +0x38/+0x40, icon url at +0x48).
@@ -38,16 +41,15 @@ public:
     int FUN_140b71750();
 };
 class Unk_MentorRewards { public: int FUN_14069c120(); };
-Unk_MentorRewards* FUN_1406c7610();
+struct Unk_NametagFlags* FUN_1406c7610();   // C3: was FUN_1406c7610
 extern Unk_MentorInfo* DAT_143abb6d8;
 class Unk_MentorFlag { public: int FUN_1402c4c90(int); };
 class Unk_MentorFlags { public: void* p0; Unk_MentorFlag flags; };
-Unk_MentorFlags* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class Unk_MentorInviteDialog { public: void FUN_140c2f040(); };
 Unk_MentorInviteDialog* FUN_140b6f4c0(int nId);
 void FUN_141275260(int, int, int);
-class Unk_PartyService { public: void FUN_14162ba50(CStringW strName); };
-Unk_PartyService* FUN_1409670d0();
+CPartyManager* FUN_1409670d0();
 // The popup-menu request (0x80 bytes), built by the ctor at 0x140c302f0 and released by the dtor at 0x140c304c0.
 class Unk_PopupMenuInfo
 {
@@ -70,19 +72,11 @@ class Unk_MentorClip : public ASMovieClip {};
 class Unk_MentorScript : public AScript
 {
 public:
-    MS2Ptr<ASMovieClip> FUN_1409b4560(const CString& strName);          // bind a movie clip child
     MS2Ptr<ASUIComponent> FUN_140accfb0(const CString& strName);          // bind a movie clip child (list clip)
 };
-void FUN_140bf2260(Scaleform::GFx::Value& v);                            // clear an AS object
 CString FUN_141028be0(unsigned __int64 nSerial, const CString& strPath, int n, CString strExtra);   // profile image url
 CString FUN_14016a600(const wchar_t* sz, int n);                         // wide to narrow
 CString FUN_140719530(unsigned __int64 n);                               // number to string
-class Unk_Localizer
-{
-public:
-    CStringW FUN_141811980(int nCategory, int nId);   // localized name (exe member: this=rcx, hidden return=rdx)
-};
-Unk_Localizer* FUN_1401a9d70();
 CStringW FUN_14052b9d0(CStringW strFormat, const CStringW& a, const CStringW& b);
 
 // @0x140c70240
@@ -114,9 +108,9 @@ MS2_REPLACE_METHOD(0x140C6E860, ASMentoringMenteePage, OnInit, 515, 0x4AC55F75);
 // @0x140c6ea90
 void ASMentoringMenteePage::Refresh()
 {
-    if (!FUN_1406c7610()) return;
+    if (!((class Unk_MentorRewards*)FUN_1406c7610())) return;
     int nMentee = FUN_140c70240()->FUN_140b71650();
-    int nReward = FUN_1406c7610()->FUN_14069c120();
+    int nReward = ((class Unk_MentorRewards*)FUN_1406c7610())->FUN_14069c120();
     m_coin->FUN_1422c4cd0(FUN_1409e9890(L"s_mentoring_coin_info", nMentee, nReward));
 }
 MS2_REPLACE_METHOD(0x140C6EA90, ASMentoringMenteePage, Refresh, 187, 0x8A4892D4);
@@ -151,7 +145,7 @@ int UIMentoringMenteePage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
     if (UIMentoringPage::vfunc_5(szMethod, pArgs, nArgs)) return 1;
     if (_stricmp(szMethod, "onOpenInviteMenteePage") == 0)
     {
-        if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x42) != 0)
+        if (((class Unk_MentorFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x42) != 0)
         {
             FUN_141275260(0x2f7, 1, 1);
             return 1;
@@ -164,7 +158,7 @@ int UIMentoringMenteePage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_1409670d0()->FUN_14162ba50(data.FUN_1422b8f40());
+            FUN_1409670d0()->SendPartyMode1(data.FUN_1422b8f40());
     }
     else if (_stricmp(szMethod, "OnPopupMenu") == 0)
     {
@@ -249,13 +243,13 @@ void UIMentoringPage::FUN_140c6f7a0(CString strName, MS2Ptr<Unk_MentorEntry> pEn
             obj.FUN_1407cba60("iconPath", FUN_141028be0(pEntry->m_30, FUN_14016a600(pEntry->m_48, 0), 1, ""));
             obj.FUN_1407cbbe0("isOnline", pEntry->m_58);
             obj.FUN_1407cbb20("name", pEntry->m_38);
-            obj.FUN_1407cbb20("extra", FUN_14052b9d0(L"s_mentoring_user_info", pEntry->m_40, FUN_1401a9d70()->FUN_141811980(6, pEntry->m_54)));
+            obj.FUN_1407cbb20("extra", FUN_14052b9d0(L"s_mentoring_user_info", pEntry->m_40, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pEntry->m_54)));
             obj.FUN_1407cbb20("charName", pEntry->m_38);
             obj.FUN_1407cba60("charSN", FUN_140719530(pEntry->m_30));
         }
         else
         {
-            FUN_140bf2260(obj.FUN_1422bb870());
+            ((Scaleform::GFx::Value*)&(obj.FUN_1422bb870()))->SetNull();
         }
         pClip->Invoke("setData", obj);
     }

@@ -25,20 +25,16 @@
 #include "ms2/client/ms2/cubecraft_2.h"
 #include "ms2/unnamed/unit_140ad1860.h"
 #include "ms2/client/ms2/ms2inputservice.h"
+#include "ms2/client/ms2/gameobjectcontroller.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 const char* FUN_1408ac310(const efd::utf8string& str);     // 0x1408ac310 the string's c string
 Ridee* FUN_141468360(PCBase* p);                           // 0x141468360 the ridee the actor sits on
-int FUN_1416764d0(MyPC* p);                                // 0x1416764d0 is riding
-int FUN_1416595d0(PCBase* p);                              // 0x1416595d0
-float FUN_141240c40(bool b);                               // 0x141240c40 the move speed (xmm0)
 float FUN_14059d930(float f);                              // 0x14059d930 fabs
 int FUN_14028d260(float f);                                // 0x14028d260 round to ms
 class Unk_CubeSelection;
-Unk_CubeSelection* FUN_141659700(PCBase* p);               // 0x141659700 the cube selection of a player
         // the cube selection is in the craft mode
-egf::Entity* FUN_141659b80(PCBase* p, int n, unsigned nProp, float fRange);   // 0x141659b80 the nearby object to sit on
 int* FUN_1404eb7e0(int* pA, int* pB);                      // 0x1404eb7e0 the larger of two ints
 
 // The animation service: the sequence id of the model / the model's animation name by the entity id.
@@ -88,7 +84,6 @@ public:
 };
 
 class Unk_PCBaseBody;
-void FUN_141240700(Unk_PCBaseBody* pBody, efd::Point3 kVel);               // 0x141240700
 
 // ---- StateWalk ----
 
@@ -218,7 +213,7 @@ void StateWalk::vfunc_3(double fTime)
     efd::Point3 kDir = m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
     efd::Point3 kVel = kDir * m_pOwner->vfunc_95();
     efd::Point3 kMove = kVel * (float)fTime;
-    FUN_141240700(m_pOwner->FUN_14166d220(), kVel);
+    reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->SetKVelocity(kVel);
     reinterpret_cast<Unk_WkOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
 }
 
@@ -304,9 +299,9 @@ void StateWalk::vfunc_8(double fTime)
         return;
     if (pPC != 0 && (pBuff->FUN_141682fe0(0x30d41) || TSingleton<CMouseController>::GetInstance()->FUN_140ad2220() != 0))
     {
-        if (FUN_141659b80(pPC, 1, 0xbadf0a13, 90.0f) != 0)
+        if (reinterpret_cast<PC*>(pPC)->FUN_141659b80(1, 0xbadf0a13, 90.0f) != 0)
         {
-            if (FUN_1416764d0(pPC) != 0)
+            if (reinterpret_cast<PCBase*>(pPC)->FUN_1416764d0() != 0)
             {
                 MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
                 spAction->m_n2c = 0xbadf0a13;
@@ -335,7 +330,7 @@ void StateWalk::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     int bFalling = m_pOwner->FUN_141675ed0();
-    static int s_nDelay = FUN_14028d260(sqrt(3.0f / FUN_14059d930(FUN_141240c40(true))));
+    static int s_nDelay = FUN_14028d260(sqrt(3.0f / FUN_14059d930(GameObjectController::FUN_141240c40(true))));
     if (bFalling != 0)
     {
         m_pOwner->vfunc_59(0x1b, 0, 0, 0);
@@ -353,9 +348,9 @@ void StateWalk::vfunc_9(double fTime)
     if (m_n48 == 0)
         nKey = 0x1d;
     PCBase* pPC = FUN_1417b8370();
-    if (pPC != 0 && FUN_1416595d0(pPC) != 0)
+    if (pPC != 0 && reinterpret_cast<PC*>(pPC)->FUN_1416595d0() != 0)
     {
-        if (((Unk_PCCubeCraft*)FUN_141659700(pPC))->FUN_1410aa010())
+        if (((Unk_PCCubeCraft*)((Unk_CubeSelection*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft())))->FUN_1410aa010())
         {
             if (nKey == 0x1c)
                 nKey = 0x38;

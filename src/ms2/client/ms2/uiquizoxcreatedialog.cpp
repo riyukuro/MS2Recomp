@@ -18,6 +18,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/astextinput.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -55,10 +56,8 @@ public:
     void FUN_1422dfc70(ASObj& obj);                             // add an item
     void FUN_1422df690(int n);                                  // select an item
 };
-class Unk_QoText
+class Unk_QoText : public ASTextInput
 {
-public:
-    void FUN_1422e0ab0(const CStringW& str);                    // set the text
 };
 
 struct Unk_QoDlgView                                            // the dialog's child lookups, returning the handle by value
@@ -68,7 +67,6 @@ struct Unk_QoDlgView                                            // the dialog's 
 };
 bool FUN_140bc03e0(Unk_QoComboRef* p, int n);                   // handle is empty
 Unk_QoCombo* FUN_140bc0530(Unk_QoComboRef* p);                  // the control
-void* FUN_140bc0500(Unk_QoTextRef* p);                          // handle is set
 Unk_QoText* FUN_140bc0550(Unk_QoTextRef* p);                    // the control
 CStringW FUN_140763e10(int n);                                  // integer to text
 void FUN_140dfee10(__int64 n1, int n2, int n3);                 // send the create request (packet 0x90)
@@ -125,7 +123,7 @@ void UIQuizOXCreateDialog::OnLoadComplete()
         FUN_140bc0530(&spCombo)->FUN_1422df690(0);
         FUN_140bc0530(&spCombo)->vfunc_24(true);
         Unk_QoTextRef spText = reinterpret_cast<Unk_QoDlgView*>(this)->FUN_140e35bd0("m_textHostFee");
-        if (FUN_140bc0500(&spText) != 0) {
+        if (((void*)((MS2Ptr<ASTextInput>*)(void*)(&spText))->get()) != 0) {
             FUN_140bc0550(&spText)->FUN_1422e0ab0(FUN_140763e10(m_fees[0]));
         }
     }

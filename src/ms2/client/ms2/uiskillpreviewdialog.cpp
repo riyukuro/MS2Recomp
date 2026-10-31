@@ -6,6 +6,9 @@
 #include "uiskillpreviewdialog.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/skilloverlapcompare.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
 
 // Unit-local declarations for unrecovered avatar, camera and skill-data helpers.
 struct Unk_SkillPreviewVector
@@ -159,10 +162,8 @@ private:
     void* m_20; void* m_28; void* m_30; void* m_38;
 };
 MS2_CHECK_SIZE(Unk_SkillPreviewAScript, 0x40);
-class Unk_SkillPreviewSkill
+class Unk_SkillPreviewSkill : public SkillData
 {
-public:
-    bool FUN_1407e9d30();
 };
 class Unk_SkillPreviewSkillPtr
 {
@@ -180,13 +181,7 @@ class Unk_SkillPreviewSkillManager
 public:
     Unk_SkillPreviewSkillPtr FUN_1407ee1d0(int);
 };
-Unk_SkillPreviewSkillManager* FUN_1401958b0();
-class Unk_SkillPreviewPlayer
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_SkillPreviewPlayer* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 // @0x140e93690
 UISkillPreviewDialog::UISkillPreviewDialog() : m_skill(0), m_level(0) {}
@@ -310,7 +305,7 @@ void UISkillPreviewDialog::FUN_140e93e70(int skill, unsigned short level)
     m_skill = skill;
     m_level = level;
     if (!m_avatar->FUN_1418b9b80()) return;
-    Unk_SkillPreviewSkillPtr data = FUN_1401958b0()->FUN_1407ee1d0(skill);
+    Unk_SkillPreviewSkillPtr data = reinterpret_cast<Unk_SkillPreviewSkillManager*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(skill);
     if (data.IsNull()) { MS2_ASSERT_AT(162, 0); return; }
     if (data->FUN_1407e9d30()) m_avatar->FUN_1418bce80(skill);
     else m_avatar->FUN_1418bcf60(skill, level);
@@ -323,7 +318,7 @@ MS2_REPLACE_METHOD(0x140E93E70, UISkillPreviewDialog, FUN_140e93e70, 368, 0xA3D6
 void UISkillPreviewDialog::FUN_140e93ff0()
 {
     if (m_avatar.get()) return;
-    Unk_SkillPreviewPlayer* player = FUN_1403ed2d0();
+    WorldService* player = FUN_1403ed2d0();
     if (!player) { MS2_ASSERT_AT(188, 0); return; }
     void* actor = player->FUN_141bd0cc0();
     if (!actor) { MS2_ASSERT_AT(195, 0); return; }

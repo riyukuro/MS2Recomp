@@ -13,14 +13,13 @@
 #include <egf/Entity.h>
 #include <ecr/SceneGraphService.h>
 #include "ms2/client/ms2/questmanager_2.h"
+#include "ms2/commonfiles/timeutil.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
 // ---- unit-local views of exe objects ----
 
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
-void FUN_140a0b6c0(NiWireframeProperty* pProp, bool bWireframe);        // NiWireframeProperty::SetWireframe
-void FUN_140980200(NiAVObject* pObject, NiProperty* pProp);             // NiAVObject::AttachProperty
 CQuestManager* FUN_140764020();                                         // the quest manager
 
 // The dungeon room table: a record handle (released through FUN_14031c0f0) and the room's open period.
@@ -44,7 +43,6 @@ Unk_WfRoomTable* FUN_14031c2a0();
 void* FUN_14031c160(Unk_WfRoomRef* pRoom);                               // the handle is valid
 Unk_WfPeriod* FUN_1403347d0(Unk_WfRoomRef* pRoom);                      // the room record
 bool FUN_140b91330(void* pPeriod);                                      // the period is unlimited
-int FUN_1408694c0();                                                // the current time
 
 // An entry that can be gated by a dungeon room and a quest (the tail of this unit's range).
 struct Unk_WfGate
@@ -86,9 +84,9 @@ void CWireframeManager::FUN_141b940c0(egf::Entity* pEntity)
         if (pWire == 0)
         {
             pWire = NiNew NiWireframeProperty;
-            FUN_140980200(pObject, pWire);
+            pObject->AttachProperty(pWire);
         }
-        FUN_140a0b6c0(pWire, m_bWireframe);
+        pWire->SetWireframe(m_bWireframe);
         Unk_EntRef ref(reinterpret_cast<Unk_Entity*>(pEntity));
         m_entities.AddTail(ref);
     }
@@ -121,7 +119,7 @@ void CWireframeManager::FUN_141b94260(bool bWireframe)
             {
                 NiWireframeProperty* pWire = NiDynamicCast(NiWireframeProperty, pObject->GetProperty(NiProperty::WIREFRAME));
                 if (pWire)
-                    FUN_140a0b6c0(pWire, m_bWireframe);
+                    pWire->SetWireframe(m_bWireframe);
             }
         }
     }
@@ -152,7 +150,7 @@ int Unk_WfGate::FUN_141b94b90()
         {
             if (!FUN_140b91330(&FUN_1403347d0(&room)->m_period))
             {
-                int nNow = FUN_1408694c0();
+                int nNow = GetServerDayOfWeek();
                 if (!FUN_1403347d0(&room)->m_period.FUN_1402e4e80(nNow).FUN_140837280())
                     return 0;
             }

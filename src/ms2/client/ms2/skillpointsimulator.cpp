@@ -14,14 +14,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cquestmanagercommon.h"
 
 // Out-of-unit callees.
 class Unk_SpSkillTable { public: MS2Ptr<SkillData> FUN_1407ee1d0(int nSkillId); };
-void* FUN_1403ed2d0();                                  // the game
-void* FUN_141bd0cc0(void*);                             // the local player
-JobSystem* FUN_1416546d0(void*);                        // its job system
 char* FUN_141523ba0(void*);                             // its quest state holder
-int FUN_140745590(void*, unsigned nQuestId);            // quest completed
 
 // @0x140abc2b0
 CSkillPointSimulator::CSkillPointSimulator()
@@ -283,10 +282,10 @@ int CSkillPointSimulator::CanLevelDown(unsigned nSkillId)
 // @0x140abd760
 int CSkillPointSimulator::CheckRequirements(unsigned nSkillId, unsigned short nLevel)
 {
-    void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pPlayer = reinterpret_cast<WorldService*>(((void*)(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    JobDataPtr spJob = FUN_1416546d0(pPlayer)->GetJobData();
+    JobDataPtr spJob = ((JobSystem*)(reinterpret_cast<PC*>(pPlayer)->FUN_1416546d0()))->GetJobData();
     if (spJob == 0)
         return 0;
     JobSkillDataPtr spData = spJob->FindSkill(nSkillId);
@@ -308,7 +307,7 @@ int CSkillPointSimulator::CheckRequirements(unsigned nSkillId, unsigned short nL
     }
     if (spData->m_requireQuestID != 0)
     {
-        if (!FUN_140745590(FUN_141523ba0(pPlayer) + 0x10, spData->m_requireQuestID))
+        if (!reinterpret_cast<CQuestManagerCommon*>(FUN_141523ba0(pPlayer) + 0x10)->FUN_140745590(spData->m_requireQuestID))
             return 0;
     }
     return 1;

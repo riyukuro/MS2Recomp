@@ -15,16 +15,16 @@
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/astextinput.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 class ASDialog : public ASDisplayObject { };
 
 // The text input.
-class Unk_TpInput : public ASDisplayObject
+class Unk_TpInput : public ASTextInput
 {
-public:
-    void FUN_1422e0ab0(const CStringW& strText);                // set the text
 };
 
 // The button bar.
@@ -37,14 +37,11 @@ public:
 extern template class MS2Ptr<Unk_TpBar>;                        // instances owned by other objs
 
 // The reserved-word filters of the text singleton.
-class Unk_TpFilter
+class Unk_TpFilter : public CReservedWordTable
 {
 public:
     void FUN_1416fb3c0(CStringW& str);
-    void FUN_1416fb380(CStringW& str);
-    void FUN_1416fb340(CStringW& str);
 };
-Unk_TpFilter* FUN_1403b4750();
 
 void* FUN_140281980();                                          // the table singleton
 void FUN_1405594b0(void* pTable, std::vector<unsigned int>* pOut);   // collect the ids
@@ -145,9 +142,9 @@ int UITextPreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             CStringW strText = data.FUN_1422b8f40();
-            FUN_1403b4750()->FUN_1416fb3c0(strText);
-            FUN_1403b4750()->FUN_1416fb380(strText);
-            FUN_1403b4750()->FUN_1416fb340(strText);
+            reinterpret_cast<Unk_TpFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb3c0(strText);
+            reinterpret_cast<Unk_TpFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb380(strText);
+            reinterpret_cast<Unk_TpFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb340(strText);
             FUN_142575b00(FUN_1422bb8b0(m_28), Scaleform::GFx::Value((const wchar_t*)strText));
         }
     }

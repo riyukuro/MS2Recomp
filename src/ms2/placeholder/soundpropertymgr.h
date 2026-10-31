@@ -13,6 +13,7 @@ class SoundPropertyMgr : public TSingleton<SoundPropertyMgr>, public CValidData<
 public:
     SoundPropertyMgr();                                     // 0x141791810
     virtual ~SoundPropertyMgr();
+    unsigned Load();                                        // 0x141791940
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_10[0xe0 - 0x10];

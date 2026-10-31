@@ -11,7 +11,10 @@
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uinpccreatedialog.cpp"    // assumed
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uinpccreatedialog.h"
 
@@ -34,27 +37,16 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/commandchat.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/commonfiles/fieldmetatable.h"
+#include "ms2/client/ms2/worldservice.h"
 
 extern template class MS2Ptr<CProxyGameObject>;
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-// The list control of the movie (the AS list with append / refresh).
-class Unk_NpcList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd230(const ASObj& row);               // append a row
-};
-
 // The key input state (singleton).
-class Unk_14025e7c0 { public: bool FUN_14116d9c0(int nKey, int a, int b); bool FUN_14116d840(); };
+class Unk_14025e7c0 : public CInputKeyHandler { public: bool FUN_14116d9c0(int nKey, int a, int b);};
 Unk_14025e7c0* FUN_14025e7c0();
 
 // The local player: the position (slot 18) and direction (slot 20) getters.
@@ -80,15 +72,13 @@ bool FUN_14087ddc0(void* pKind, int nMask);
 class Unk_UpperEvt { public: Unk_UpperEvt(const Unk_UpperEvt&); private: void* m_0; };
 
 // The world: the local player, the entity of an event, the proxy of an object id, the current map.
-class Unk_NcWorld
+class Unk_NcWorld : public WorldService
 {
 public:
     Unk_NcPlayer* FUN_141bd0cc0();
     Unk_NcActor* FUN_141bd0fa0(Unk_UpperEvt evt);
     MS2Ptr<CProxyGameObject> FUN_141bc9e70(int nId);
-    int FUN_141bd3060();
 };
-Unk_NcWorld* FUN_1403ed2d0();
 
 bool FUN_140ac5aa0(const MS2Ptr<CProxyGameObject>& sp);      // the actor is gone
 void FUN_1406c70a0(void* sp);                                // ~MS2Ptr<CProxyGameObject>
@@ -124,7 +114,6 @@ Unk_NcMgr* FUN_1406d6e90();
 MS2Ptr<CNpcData> FUN_1406cd330(unsigned nNpc);   // the npc row; FUN_141a6b800 discards it
 
 class Unk_NcWalk { public: int FUN_1406fb700(int nNpc, int* pField); };
-Unk_NcWalk* FUN_140700390();
 CStringW GetStringCommon(int nId);                        // string table text
 void FUN_1412751f0(const CStringW& strText, int a, int b);
 
@@ -219,7 +208,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     ASData data;
     if (_stricmp("OnNpcCreate", szMethod) == 0) {
         if (data.FUN_1422b9620(pArgs, nArgs)) {
-            Unk_NcPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+            Unk_NcPlayer* pPlayer = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
             if (pPlayer == 0)
                 return 1;
             int nNpc = data.FUN_1422b8a10();
@@ -236,7 +225,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     } else if (_stricmp("OnSummonPet", szMethod) == 0) {
         if (data.FUN_1422b9620(pArgs, nArgs)) {
-            Unk_NcPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+            Unk_NcPlayer* pPlayer = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
             if (pPlayer == 0)
                 return 1;
             int nNpc = data.FUN_1422b8a10();
@@ -269,10 +258,10 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             int nNpc = data.FUN_1422b8a10();
             int nField;
-            if (FUN_140700390()->FUN_1406fb700(nNpc, &nField) == 0) {
+            if (reinterpret_cast<Unk_NcWalk*>(TSingleton<CFieldMetaTable>::GetInstance())->FUN_1406fb700(nNpc, &nField) == 0) {
                 FUN_1412751f0(GetStringCommon(0x578), 1, 1);
-            } else if (FUN_1403ed2d0()->FUN_141bd3060() == nField) {
-                MS2Ptr<CProxyGameObject> spObj = FUN_1403ed2d0()->FUN_141bc9e70(nNpc);
+            } else if (reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd3060() == nField) {
+                MS2Ptr<CProxyGameObject> spObj = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bc9e70(nNpc);
                 if (spObj.get() != 0) {
                     COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
                     pkt.WriteUInt8(2);
@@ -280,8 +269,8 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                     FUN_140710590(pkt);
                 }
             } else {
-                if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
-                    FUN_1403ed2d0()->FUN_141bd0cc0()->FUN_1415293b0();
+                if (reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0() != 0)
+                    reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0()->FUN_1415293b0();
                 Unk_CommandChat chat;
                 chat.kind = 0;
                 CString strCmd = FUN_140513200("/MoveField {0}", nField);
@@ -300,12 +289,12 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 // @0x141a6b030
 void UINpcCreateDialog::vfunc_1(void* pEvt)
 {
-    Unk_NcActor* pActor = FUN_1403ed2d0()->FUN_141bd0fa0(*(const Unk_UpperEvt*)pEvt);
+    Unk_NcActor* pActor = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd0fa0(*(const Unk_UpperEvt*)pEvt);
     if (pActor != 0) {
         if (FUN_14087ddc0(pActor != 0 ? pActor->vfunc_6() : 0, 0x6200004)) {
             if (m_nPendingNpc == 0)
                 return;
-            MS2Ptr<CProxyGameObject> spObj = FUN_1403ed2d0()->FUN_141bc9e70(m_nPendingNpc);
+            MS2Ptr<CProxyGameObject> spObj = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bc9e70(m_nPendingNpc);
             if (spObj.get() != 0) {
                 COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
                 pkt.WriteUInt8(2);
@@ -442,7 +431,7 @@ void UINpcCreateDialog::FUN_141a6be40(CStringW& strFilter)
         FUN_141a6b8f0();
     FUN_140841420(strFilter);
     strFilter.Remove(L' ');
-    MS2Ptr<Unk_NpcList> list = FUN_140c02900("m_npcList");
+    MS2Ptr<ASScrollingList> list = FUN_140c02900("m_npcList");
     if (list == 0)
         return;
     bool bEmpty = strFilter.IsEmpty();
@@ -457,9 +446,9 @@ void UINpcCreateDialog::FUN_141a6be40(CStringW& strFilter)
         ASObj row(2);
         row.FUN_1407cbb20("code", e.m_strId);
         row.FUN_1407cbb20("field", e.m_strLine);
-        ((Unk_NpcList*)list)->FUN_1422dd230(row);
+        ((ASScrollingList*)list)->FUN_1422dd230(row);
     }
-    ((Unk_NpcList*)list)->vfunc_24(true);
+    ((ASScrollingList*)list)->vfunc_24(true);
     m_strFilter = strFilter;
 }
 

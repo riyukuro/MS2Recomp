@@ -149,7 +149,7 @@ extern NiFixedString DAT_143ae5188;                             // render group 
 WorldService* FUN_1403ed2d0();                                  // world service singleton
 ecr::PickService* FUN_1413f98f0();                              // pick service (manager id 0x7002004)
 ecr::SceneGraphService* FUN_1413f98b0();
-HardwareInstancingService* FUN_14098c5b0(char* pCell);
+class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 NiNode* FUN_1413fa030(egf::Entity* pEntity);                    // entity -> scene root
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);            // the entity's flat model
 int FUN_1408a20a0(egf::Entity* pEntity, unsigned nHash, bool* pbOut);        // get a bool property
@@ -157,7 +157,6 @@ void FUN_1409618c0(egf::Entity* pEntity, unsigned nHash, efd::Point3* pOut); // 
 void FUN_140961880(egf::Entity* pEntity, unsigned nHash, float* pOut);       // get a float property
 void FUN_14098c6e0(egf::Entity* pEntity, unsigned nHash, const bool* pValue);// set a bool property
 void FUN_14098f4d0(NiAVObject* pNode, bool b);
-const NiBound* FUN_140994490(NiAVObject* pNode);                // world bound
 extern char DAT_143d69198;                                      // NiRTTI of the material class the fade supports
 extern Vector3 DAT_143b01a60;                           // zero point
 
@@ -504,7 +503,7 @@ void BGTransparencyMgr::Apply(Unk_BGTEntitySet& kHit)
                 if (pRoot != 0)
                 {
                     FUN_14098f4d0(pRoot, false);
-                    NiBound kBound = *FUN_140994490(pRoot);
+                    NiBound kBound = *((class NiBound const*)&((class NiAVObject*)(pRoot))->GetWorldBound());
                     Unk_CmWalker kWalker(pRoot);
                     while (NiAVObject* pObject = kWalker.FUN_14098e0d0(true))
                     {
@@ -517,7 +516,7 @@ void BGTransparencyMgr::Apply(Unk_BGTEntitySet& kHit)
                                 pMaterial = new (efd::MemHint(efd::MemHint::NONE)) TransparencyStandardMaterial(pMesh);
                             if (pMaterial != 0)
                             {
-                                efd::SmartPointer<HardwareInstancingService> spInstancing(FUN_14098c5b0(&DAT_143b059e8));
+                                efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
                                 if (spInstancing)
                                 {
                                     if (spInstancing->FUN_1413d6f40(pEntity) != 0)
@@ -612,7 +611,7 @@ void BGTransparencyMgr::UpdateFadeIn()
         TransparencyElement* pElement = it->second;
         if (pElement->m_timer.FUN_140868ba0() == 0)
         {
-            efd::SmartPointer<HardwareInstancingService> spInstancing(FUN_14098c5b0(&DAT_143b059e8));
+            efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
             if (spInstancing)
             {
                 if (spInstancing->FUN_1413d6fc0(pEntity) != 0)

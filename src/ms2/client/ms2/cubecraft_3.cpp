@@ -69,10 +69,8 @@ public:
     NiPointer<NiAVObject> FUN_141551ea0(CString, int, int, int, int);
     NiPointer<NiSourceTexture> FUN_141553eb0(CString, const void*);
 };
-Unk_CubeResourceService* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 extern NiFixedString DAT_143ae50a0;
-void FUN_140a0b300(NiAVObject*, bool);
-bool FUN_14098dad0(NiAVObject*);
 float FUN_140a38cd0(float);
 struct Unk_NiPt3 { float x, y, z; Unk_NiPt3(const void* efdPoint); };   // NiPoint3(const efd::Point3&) 0x14027dcf0
 void* FUN_140a44830();
@@ -81,7 +79,7 @@ MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_1410280d0(int, CString);
 NiPointer<NiAVObject> FUN_141423480(NiPointer<NiAVObject>, const CString&);
 int FUN_1414232f0(NiPointer<NiAVObject>, NiPointer<NiSourceTexture>);
-void* FUN_14052d220();
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 // CUgcManager::FUN_1418845a0 (ugcmanager_4.cpp): the entity id goes by value.
 void FUN_1418845a0(void*, CubeItemInfo*, egf::EntityID id);
 FittingDollPC* FUN_14121b590(int, int, int);
@@ -90,7 +88,11 @@ void FUN_140b86230(const NiPoint3&, NiMatrix3&);
 int FUN_14123c660(GameObject*);
 void FUN_14123c300(GameObject*, float);
 void FUN_14121c170(GameObject*, NiFixedString);
-void* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 void FUN_141bbb7f0(void*, GameObject*, int);
 void* FUN_1409670f0();
 bool FUN_1411cf0b0(void*, efd::utf8string, efd::AssetID*, bool*);
@@ -140,7 +142,7 @@ MS2_REPLACE_METHOD(0x1410afbc0, CNifCubeGuide, vfunc_1, 65, 0x6D059F2B);
 // @0x1410afc10
 int CNifCubeGuide::FUN_1410afc10(CString assetName) {
     asset = assetName;
-    node = NiDynamicCast(NiNode, (NiAVObject*)FUN_140a0afd0()->FUN_141551ea0(assetName, 0, 5, 0, 0));
+    node = NiDynamicCast(NiNode, (NiAVObject*)((class Unk_CubeResourceService*)FUN_140a0afd0())->FUN_141551ea0(assetName, 0, 5, 0, 0));
     if (node != NULL)
         return 1;
     return 0;
@@ -191,10 +193,10 @@ void CNifCubeGuide::vfunc_8(float alpha) {
     node->UpdateProperties();
 }
 // @0x1410b0200
-void CNifCubeGuide::vfunc_6(int visible) { FUN_140a0b300(node.operator->(), visible != 0); }
+void CNifCubeGuide::vfunc_6(int visible) { ((class NiAVObject*)(node.operator->()))->SetAppCulled(visible != 0); }
 MS2_REPLACE_METHOD(0x1410b0200, CNifCubeGuide, vfunc_6, 67, 0xFA29BA64);
 // @0x1410b0250
-int CNifCubeGuide::vfunc_7() { return FUN_14098dad0(node.operator->()); }
+int CNifCubeGuide::vfunc_7() { return ((class NiAVObject*)(node.operator->()))->GetAppCulled(); }
 MS2_REPLACE_METHOD(0x1410b0250, CNifCubeGuide, vfunc_7, 42, 0xA9AF37C9);
 // @0x1410b0280
 void CNifCubeGuide::vfunc_9(float scale) { node->SetScale(scale); }   // NiAVObject::SetScale 0x1410b2450
@@ -248,9 +250,9 @@ int CNifCubeGuide::FUN_1410b0680() {
     if (textureName.GetLength() == 0) return 0;
     CString path = FUN_1410280d0(2, item->look->m_strUrl);
     if (_access(path, 4) != 0) return 1;
-    NiPointer<NiSourceTexture> texture = FUN_140a0afd0()->FUN_141553eb0(path, NULL);
+    NiPointer<NiSourceTexture> texture = ((class Unk_CubeResourceService*)FUN_140a0afd0())->FUN_141553eb0(path, NULL);
     if (texture == NULL) {
-        FUN_1418845a0(FUN_14052d220(), item.get(), 0);
+        FUN_1418845a0(((void*)FUN_14052d220()), item.get(), 0);
         return 1;
     }
     NiPointer<NiAVObject> target = FUN_141423480(NiDynamicCast(NiAVObject, (NiNode*)node), textureName);
@@ -310,7 +312,7 @@ void CFittingDollCubeGuide::vfunc_10(NiNode* parent, int attachName) {
 }
 MS2_REPLACE_METHOD(0x1410b0f10, CFittingDollCubeGuide, vfunc_10, 119, 0x619129BF);
 // @0x1410b0f90
-void CFittingDollCubeGuide::vfunc_11() { doll->vfunc_23(1); FUN_141bbb7f0(FUN_1403ed2d0(), doll, 1); }
+void CFittingDollCubeGuide::vfunc_11() { doll->vfunc_23(1); FUN_141bbb7f0(((void*)WorldService::GetInstance()), doll, 1); }
 MS2_REPLACE_METHOD(0x1410b0f90, CFittingDollCubeGuide, vfunc_11, 109, 0xC273D985);
 
 // @0x1410b1010
@@ -440,11 +442,15 @@ public:
     int FUN_1410b24b0(unsigned, unsigned);
     Unk_CubeDisplayMap m_map;               // +0x00
 };
-int FUN_1410b2790(unsigned, unsigned);
+class Unk_CubeHeightIndex   // C3: member view for the former free stand-ins
+{
+public:
+    static int Key(int, int);
+};
 // @0x1410b24b0
 int Unk_CubeDisplayLookup::FUN_1410b24b0(unsigned a, unsigned b) {
     int value = INT_MIN;
-    int key = FUN_1410b2790(a, b);
+    int key = Unk_CubeHeightIndex::Key(a, b);
     m_map.FUN_1410b4ba0(key, value);
     return value;
 }

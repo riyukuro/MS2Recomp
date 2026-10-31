@@ -80,8 +80,11 @@ extern Unk_Inventory g_143ab2a90;
 bool FUN_140222e10(int nGemType);                       // the gem type is valid
 CString Name_140219b10(int nGemType);                   // the name of a gem type
 void* FUN_140a50b50(DragSlot* pSlot);                   // the item slot behind a drag source
-__int64 FUN_141405a10(void* pItemSlot);                 // its item uid
-bool FUN_1409b0350(Scaleform::GFx::Value* pValue);
+class InvenSlot   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 GetItemUid();
+};
 bool FUN_141271f90(MS2Ptr<CItem> spItem);               // take the gem item off (packet 0x47)
 bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag);   // put the gem item on (packet 0x47)
 
@@ -89,7 +92,6 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag);   // put the gem
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
-void FUN_1422cc9e0(DragSlotBag* pBag);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(GemSlot);
 
@@ -126,7 +128,7 @@ int GemSlot::vfunc_18(void* p)
             void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
             if (pItemSlot != 0)
             {
-                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
+                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
                 if (FUN_14126d880(spItem.get()) != 0)
                 {
                     int nType = spItem->FUN_140527900()->vfunc_1();
@@ -299,7 +301,7 @@ int GemSlot::vfunc_8(void* p)
 // @0x14126e080
 void GemSlot::vfunc_9()
 {
-    if (FUN_1409b0350(&m_value18) == 0)
+    if (((Scaleform::GFx::Value*)(void*)(&m_value18))->IsNull() == 0)
     {
         ASObj obj(m_value18, 2);
         if (obj.FUN_1422ba9a0() == 0)
@@ -325,7 +327,7 @@ void FUN_14126e3f0(const CString& strName)
     GemSlotBag* pBag = FUN_14126e9a0(FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         FUN_1422c8f70(strName);
     }
 }

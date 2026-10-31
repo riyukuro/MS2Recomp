@@ -5,6 +5,7 @@
 // The unit name and directory are assumed (the GFx UI library 0x1422b0000-0x142304000 has no __FILE__ strings). The
 // class is declared in src/ms2/placeholder/asslider.h (shared; Ghidra's FUN_<va> names are kept there). The accessors
 // read / write the Number members of the AS Slider ("value", "maximum", "minimum", "position", "snapInterval").
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "ms2/placeholder/asslider.h"

@@ -49,7 +49,7 @@ public:
 };
 
 class Unk_GpHudMgr { public: MS2Ptr<Unk_GpHud> FUN_1422b0370(int nDialogId); };
-Unk_GpHudMgr* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 
 // The game-option settings object returned by FUN_1409a8b10 (+0x1a0 is the saved gamepad block).
 class Unk_GpSettings
@@ -62,16 +62,19 @@ public:
 };
 Unk_GpSettings* FUN_1409a8b10();
 Unk_GpState* FUN_140a58500(Unk_GpSettings* p);
-void* FUN_1412442a0(Unk_GpSettings* p);
+class CGameOption   // C3: member view for the former free stand-ins
+{
+public:
+    class TiXmlDocument* FUN_1412442a0();
+};
 
 // The state block's methods (0x14125f290...).
-void FUN_14125f290(Unk_GpState* p);
+struct Unk_GpState* FUN_14125f290(struct Unk_GpState*);   // C3: was FUN_14125f290
 void FUN_14125f2c0(Unk_GpState* p);
-void FUN_14125f330(Unk_GpState* p, void* pDefaults);
+int LoadGameOptionGamepad(struct Unk_GpState*, class TiXmlDocument*);   // C3: was FUN_14125f330
 void FUN_14125f640(Unk_GpState* pDst, const Unk_GpState* pSrc);
 void FUN_14125f670(Unk_GpState* p, bool bUse, bool bNotify);
 
-CFeatureManager* FUN_140166410();
 
 // View of the option dialog: the option id at +0x28 and the AS root at +0x30.
 struct Unk_GpDialog
@@ -89,7 +92,6 @@ MS2InputService* FUN_140a58540();                               // TSingleton<MS
 
 MS2Ptr<Unk_GpCheck> FUN_140a57df0(int nId, const Scaleform::GFx::Value& v);
 MS2Ptr<Unk_GpSlider> FUN_140a57ea0(int nId, const Scaleform::GFx::Value& v);
-bool FUN_1407cce10(const Scaleform::GFx::Value* v);
 
 // ---- CGameOptionGamePad ----
 // @0x140a571b0
@@ -180,7 +182,7 @@ void CGameOptionGamePad::vfunc_7()
         MS2Ptr<Unk_GpSlider> spStick = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_gamePadLStickMoveSensitivity"), -1);
         if (static_cast<Unk_GpSlider*>(spStick) != 0)
         {
-            if (FUN_140166410()->FUN_14036d570(0xd6))
+            if (CFeatureManager::GetInstance()->FUN_14036d570(0xd6))
                 m_state.m_nLStickSensitivity = (int)spStick->FUN_1422ce630();
             else
                 m_state.m_nLStickSensitivity = 0;
@@ -190,7 +192,7 @@ void CGameOptionGamePad::vfunc_7()
         MS2Ptr<Unk_GpCheck> spVibration = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bVibration"), -1);
         if (static_cast<Unk_GpCheck*>(spVibration) != 0)
         {
-            if (FUN_140166410()->FUN_14036d570(0xc3))
+            if (CFeatureManager::GetInstance()->FUN_14036d570(0xc3))
                 m_state.m_bVibration = spVibration->FUN_1422ce0e0() ? true : false;
             else
                 m_state.m_bVibration = false;
@@ -225,7 +227,7 @@ void CGameOptionGamePad::vfunc_10()
     FUN_14125f670(&m_state, m_state.m_bUse, true);
     if (FUN_140a58520(FUN_140a58540()) != 0)
     {
-        MS2Ptr<Unk_GpHud> spHud = FUN_14025e7a0()->FUN_1422b0370(6);
+        MS2Ptr<Unk_GpHud> spHud = ((class Unk_GpHudMgr*)FUN_14025e7a0())->FUN_1422b0370(6);
         if (static_cast<Unk_GpHud*>(spHud) != 0)
         {
             spHud->FUN_1422cee00();
@@ -240,7 +242,7 @@ void CGameOptionGamePad::vfunc_12()
 {
     CBaseOption::vfunc_12();
     FUN_14125f2c0(&m_state);
-    FUN_14125f330(&m_state, FUN_1412442a0(FUN_1409a8b10()));
+    LoadGameOptionGamepad(&m_state, (class TiXmlDocument*)(((void*)((class CGameOption*)(class Unk_GpSettings*)(FUN_1409a8b10()))->FUN_1412442a0())));
     vfunc_6();
 }
 MS2_REPLACE_METHOD(0x140A57D00, CGameOptionGamePad, vfunc_12, 87, 0x743F787E);
@@ -279,7 +281,7 @@ MS2Ptr<Unk_GpCheck> Unk_GpDialog::FUN_140a57f50(CString name, int nIndex)
     if (m_root.IsNull())
         return MS2Ptr<Unk_GpCheck>(0);
     Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
-    if (FUN_1407cce10(&child))
+    if (((Scaleform::GFx::Value*)(void*)(&child))->IsDisplayObject())
     {
         MS2Ptr<Unk_GpCheck> check = FUN_140a57df0(m_nId, child);
         if (static_cast<Unk_GpCheck*>(check) != 0)
@@ -294,7 +296,7 @@ MS2Ptr<Unk_GpSlider> Unk_GpDialog::FUN_140a58110(CString name, int nIndex)
     if (m_root.IsNull())
         return MS2Ptr<Unk_GpSlider>(0);
     Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
-    if (FUN_1407cce10(&child))
+    if (((Scaleform::GFx::Value*)(void*)(&child))->IsDisplayObject())
     {
         MS2Ptr<Unk_GpSlider> slider = FUN_140a57ea0(m_nId, child);
         if (static_cast<Unk_GpSlider*>(slider) != 0)

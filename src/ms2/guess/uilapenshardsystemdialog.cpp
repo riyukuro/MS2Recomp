@@ -112,6 +112,13 @@ template <> inline TPtr<Unk_UISwfEntity_25>::TPtr(const TPtr& o)
 
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/commonfiles/itemlapensharddata.h"
+#include "ms2/client/ms2/worldservice.h"
+
+// return types of the getters this unit calls
+class Unk_InventoryListener;
+class Unk_SingletonObj1;
+class Unk_SlotLapenTable;
+struct Unk_BanConfig;
 // ---- statics of the headers this unit includes (three translation units folded into one: the .di of each constructs them
 // in this order; the third and fourth sets also carry a CMyPCKeyInputController) ----
 
@@ -178,7 +185,6 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 
 class Unk_McMapPtr;
 class Unk_LsWorld { public: MyPC* FUN_141bd0cc0(); Unk_McMapPtr FUN_141bd30a0(); };                   // the local player
-Unk_LsWorld* FUN_1403ed2d0();
 
 // The item bag control inside a section clip (as Unk_PetItemBag in tabcontentspetcompose.cpp).
 class Unk_LsBag : public ASMovieClip
@@ -334,7 +340,7 @@ void LapenshardSystemTabContents::vfunc_10(void* a1, bool b)
 // @0x140c608f0
 MyPC* LapenshardSystemTabContents::vfunc_11()
 {
-    return FUN_1403ed2d0()->FUN_141bd0cc0();
+    return reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
 }
 
 // ---- LapenshardItemSlotBagPanel ----
@@ -434,14 +440,13 @@ public:
 Unk_LsBagReg* FUN_140a703d0(CString* pstrBag);                          // the bag of a name
 class Unk_LsRecord;
 class Unk_LsTable : public CItemLapenshardTable { public: int FUN_1405b5810(unsigned nSlot); MS2Ptr<Unk_LsRecord> FUN_1405b56a0(unsigned nItemId);};   // lapenshard slot -> equip kind; item id -> record
-Unk_LsTable* FUN_1409c4b30();
+class Unk_SlotLapenTable* FUN_1409c4b30();   // C3: was FUN_1409c4b30
 struct Unk_LsSlotArg { unsigned m_n; Unk_LsSlotArg() : m_n(0) {} };      // 0x140c5e480
-void FUN_1405b5e40(Unk_LsSlotArg* pArg, COutPacket* pPacket);            // write it
 Unk_LsBagReg* FUN_140a70b70(NotifyContext::BindData* pEntry);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strBag);   // the registry entry of a bag name
 ItemInfoSlot* FUN_140c69ab0(NotifyContext::BindData* pEntry);                              // the bag component (class id 0x6200084) of a registry entry
 UILapenshardSystemDialog* FUN_140a6ff40(int nId);                      // the open Lapenshard window
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 int FUN_140c62520();                                                    // the window may be used (not in battle / disabled field)
 
 // @0x140c610e0
@@ -459,7 +464,7 @@ void LapenshardEquipSlotPanel::vfunc_3()
     if (m_pTab == 0)
         return;
     vfunc_4();
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     m_strBag = "LapenshardEquipSlotBag";
@@ -526,7 +531,7 @@ void LapenshardEquipSlotPanel::FUN_140c5d9c0(int bOn)
         return;
     for (unsigned i = 1; i < 7; ++i)
     {
-        int nSlotKind = FUN_1409c4b30()->FUN_1405b5810(i);
+        int nSlotKind = reinterpret_cast<Unk_LsTable*>(((class Unk_LsTable*)FUN_1409c4b30()))->FUN_1405b5810(i);
         if (nKind != nSlotKind)
             continue;
         CString strName;
@@ -616,7 +621,7 @@ void UILapenshardEquipTab::vfunc_3(MS2Ptr<ASUIComponent> ui)
 // @0x140c5e140
 int UILapenshardEquipTab::vfunc_6(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     if (_stricmp("OnUnmountEquipSlot", szMethod) == 0)
@@ -634,7 +639,7 @@ int UILapenshardEquipTab::vfunc_6(const char* szMethod, const Scaleform::GFx::Va
                 pkt.WriteUInt8(2);
                 Unk_LsSlotArg arg;
                 arg.m_n = nSlot;
-                FUN_1405b5e40(&arg, &pkt);
+                ((struct Unk_LapenUnequip*)(struct Unk_LsSlotArg*)(&arg))->Write((class COutputStream*)(&pkt));
                 FUN_140710590(pkt);
             }
         }
@@ -692,10 +697,14 @@ public:
 };
 
 class Unk_LsItemEvents;
-Unk_LsItemEvents* FUN_140a6a840();
-void FUN_1419cae20(Unk_LsItemEvents*, UIItemEventListener*);
-void FUN_1419caeb0(Unk_LsItemEvents*, UIItemEventListener*);
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419cae20(class UIItemEventListener*);
+    void FUN_1419caeb0(class UIItemEventListener*);
+};
+int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 CStringW GetStringCommonByKey(const CStringW& str);
 
@@ -722,7 +731,7 @@ CString UILapenshardSystemDialog::GetTypeName()
 // @0x140c616f0
 void UILapenshardSystemDialog::vfunc_67()
 {
-    FUN_1419caeb0(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_LsItemEvents*)(reinterpret_cast<Unk_LsItemEvents*>(((class Unk_LsItemEvents*)FUN_140a6a840()))))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     OnLeaveTab();
     for (unsigned i = 0; i < m_tabs.GetCount(); ++i)
     {
@@ -776,7 +785,7 @@ int UILapenshardSystemDialog::vfunc_28(const char* szMethod, const Scaleform::GF
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, this) != 0)
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, (void*)(this)) != 0)
         return 1;
     if (m_spPage.get() != 0 && m_spPage->vfunc_6(szMethod, pArgs, nArgs) != 0)
         return 1;
@@ -833,7 +842,7 @@ void UILapenshardSystemDialog::vfunc_3(void* pItem, bool b)
 // @0x140c62390
 bool UILapenshardSystemDialog::vfunc_75()
 {
-    return FUN_140166410()->FUN_14036d570(0xd3);
+    return ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd3);
 }
 
 // @0x140c623c0
@@ -898,12 +907,16 @@ class UIRewardNotify;
 #endif
 
 extern Unk_LsEntityEvents* DAT_143abf028;                               // the entity event hub
-void FUN_1419308c0(Unk_LsEntityEvents* pHub, UIEntityEventListener* pListener);
-void FUN_141930950(Unk_LsEntityEvents* pHub, UIEntityEventListener* pListener);
+class Unk_UpperEvents   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419308c0(class UIEntityEventListener*);
+    void FUN_141930950(class UIEntityEventListener*);
+};
 void FUN_1422c8f70(const CString& strName);                             // unbind a bag / slot name
 UIRewardNotify* FUN_140938cd0(int nId);
 UIObject* FUN_14096e340(int nId);                                       // a shown UI by id
-unsigned FUN_141472bc0();                                               // the server tick
+int FUN_141472bc0();   // C3: was FUN_141472bc0
 float FUN_14028d280(unsigned nMs);                                      // ms -> s
 
 // @0x140c607b0
@@ -935,7 +948,7 @@ CString UILapenshardShieldBar::GetTypeName()
 void UILapenshardShieldBar::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    FUN_1419308c0(FUN_140c607b0(), static_cast<UIEntityEventListener*>(this));
+    ((class Unk_UpperEvents*)(class Unk_LsEntityEvents*)(FUN_140c607b0()))->FUN_1419308c0(static_cast<UIEntityEventListener*>(this));
 }
 
 // @0x140c5f1d0
@@ -949,7 +962,7 @@ void UILapenshardShieldBar::OnLoadComplete()
 void UILapenshardShieldBar::vfunc_26()
 {
     UIObject::vfunc_26();
-    FUN_141930950(FUN_140c607b0(), static_cast<UIEntityEventListener*>(this));
+    ((class Unk_UpperEvents*)(class Unk_LsEntityEvents*)(FUN_140c607b0()))->FUN_141930950(static_cast<UIEntityEventListener*>(this));
     if (!m_strBind.IsEmpty())
         FUN_1422c8f70(m_strBind);
     m_strBind.Empty();
@@ -1001,7 +1014,7 @@ void UILapenshardShieldBar::vfunc_15()
         FUN_140c5fbd0();
     if (m_bEnded == 0 && m_tick.FUN_140268870(100) != 0)
     {
-        MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return;
         if (m_bImpending == 0)
@@ -1154,7 +1167,6 @@ public:
     MS2Ptr<class Unk_LsRecipe> FUN_1405b41b0(unsigned nTier);           // the recipe of an upgrade tier
 };
 
-void FUN_1422c8be0(Unk_LsBagReg* pReg);                                 // refresh the bag slots
 void FUN_140710590(COutPacket& packet);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -1287,7 +1299,7 @@ void LapenshardIngredientItemSlotBagPanel::vfunc_3()
     MS2Ptr<CItem> spSource = m_pTab->GetSource();
     if (spSource == 0)
         return;
-    MS2Ptr<Unk_LsRecord> spRec = FUN_1409c4b30()->FUN_1405b56a0(spSource->FUN_1405276c0());
+    MS2Ptr<Unk_LsRecord> spRec = reinterpret_cast<Unk_LsTable*>(((class Unk_LsTable*)FUN_1409c4b30()))->FUN_1405b56a0(spSource->FUN_1405276c0());
     if (spRec == 0)
         return;
     if (spRec->m_nNeed <= 0)
@@ -1383,13 +1395,13 @@ void LapenshardIngredientItemSlotBagPanel::FUN_140c64390(int nIndex)
     MS2Ptr<CItem> spSource = m_pTab->GetSource();
     if (spSource == 0)
         return;
-    MS2Ptr<Unk_LsRecord> spSrcRec = FUN_1409c4b30()->FUN_1405b56a0(spSource->FUN_1405276c0());
+    MS2Ptr<Unk_LsRecord> spSrcRec = reinterpret_cast<Unk_LsTable*>(((class Unk_LsTable*)FUN_1409c4b30()))->FUN_1405b56a0(spSource->FUN_1405276c0());
     if (spSrcRec == 0)
         return;
     MS2Ptr<CItem> spItem = m_items[nIndex];
     if (spItem == 0)
         return;
-    MS2Ptr<Unk_LsRecord> spItemRec = FUN_1409c4b30()->FUN_1405b56a0(spItem->FUN_1405276c0());
+    MS2Ptr<Unk_LsRecord> spItemRec = reinterpret_cast<Unk_LsTable*>(((class Unk_LsTable*)FUN_1409c4b30()))->FUN_1405b56a0(spItem->FUN_1405276c0());
     if (spItemRec == 0)
         return;
     if (spItem->FUN_14052a290(2))
@@ -1437,7 +1449,7 @@ void LapenshardIngredientItemSlotBagPanel::FUN_140c64960(int nIndex, int nCount)
         if (pReg != 0)
         {
             pReg->vfunc_14(nIndex);
-            FUN_1422c8be0(pReg);
+            ((NotifyContext::BindData*)(class Unk_LsBagReg*)(pReg))->FUN_1422c8be0();
         }
         m_ui->Invoke("toggleIngredientSelectItem", nIndex);
     }
@@ -1464,7 +1476,7 @@ bool LapenshardIngredientItemSlotBagPanel::FUN_140c64bc0(int nResult, const CMsg
         int nIndex = box.FUN_141a02e50(0, 0);
         unsigned nItemId = box.FUN_141a02e90(1, 0);
         unsigned nCount = box.FUN_141a02e90(2, 0);
-        MS2Ptr<Unk_LsRecord> spRec = FUN_1409c4b30()->FUN_1405b56a0(nItemId);
+        MS2Ptr<Unk_LsRecord> spRec = reinterpret_cast<Unk_LsTable*>(((class Unk_LsTable*)FUN_1409c4b30()))->FUN_1405b56a0(nItemId);
         if (spRec == 0)
             return false;
         MS2Ptr<CItem> spItem = m_items[nIndex];
@@ -1506,19 +1518,25 @@ Unk_LsRecHead::Unk_LsRecHead() : m_nUid(0), m_nItemId(0), m_nSlot(0) {}
 Unk_LsPktA::Unk_LsPktA() : m_n10(0), m_nTotal(0) {}
 // @0x140c69fb0
 Unk_LsPktB::Unk_LsPktB() : m_ingredients(0x11, 0.75f, 0.25f, 2.25f, 10), m_bSuccess(false), m_n5c(0) {}
-void FUN_1405b6360(Unk_LsPktA* pRecord, CInPacket& packet);             // read
 void FUN_1405b6280(Unk_LsPktA* pRecord, COutPacket& packet);            // write the source record
 void FUN_1405b5ec0(Unk_LsRecHead* pRecord, COutPacket& packet);         // write the source record (pick)
-void FUN_1405b6220(Unk_LsPktB* pRecord, CInPacket& packet);             // read
 void FUN_1405b5fd0(Unk_LsPktB* pRecord, COutPacket& packet);            // write
 void* FUN_14025e7c0();
-bool FUN_14116d720(void* p);                                            // the debug fill is allowed
+class CInputKeyHandler   // C3: member view for the former free stand-ins
+{
+public:
+    bool IsDebugMode();
+};
 void FUN_141415600(CString* pstrSlot);                                  // unbind a slot name
 void FUN_14141f970(CString* pstrSlot);
 void FUN_141415450(CString* pstrSlot, MS2Ptr<CItem> spItem, int a, int b, int c);   // create the item slot of a name
 int FUN_14053feb0(int nItemId);
 void* FUN_1401c0d90();
-int FUN_14047f880(void* p);
+class CGameRule   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned int FUN_14047f880();
+};
 
 // ---- LapenshardUpgradeSlotPanel ----
 
@@ -1546,7 +1564,7 @@ void LapenshardUpgradeSlotPanel::vfunc_3()
     if (m_pTab == 0)
         return;
     vfunc_4();
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     m_body = m_ui->FUN_140accfb0<ASUIComponent>("m_body");
@@ -1746,7 +1764,7 @@ int UILapenshardUpgradeTab::vfunc_6(const char* szMethod, const Scaleform::GFx::
             continue;
         p->vfunc_8(szMethod, pArgs, nArgs);
     }
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     if (_stricmp("OnAction", szMethod) == 0)
@@ -1771,7 +1789,7 @@ int UILapenshardUpgradeTab::vfunc_6(const char* szMethod, const Scaleform::GFx::
     {
         if (m_nState != 1)
             return 0;
-        if (!FUN_14116d720(FUN_14025e7c0()))
+        if (!((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsDebugMode())
             return 0;
         if (m_spSource == 0)
             return 0;
@@ -1807,7 +1825,7 @@ void UILapenshardUpgradeTab::vfunc_9(CInPacket& packet)
         case 4:
         {
             Unk_LsPktA rec;
-            FUN_1405b6360(&rec, packet);
+            ((struct Unk_LapenPreview*)(struct Unk_LsPktA*)(&rec))->Read(packet);
             m_n_bc = rec.m_n10;
             vfunc_2(5);
             break;
@@ -1817,7 +1835,7 @@ void UILapenshardUpgradeTab::vfunc_9(CInPacket& packet)
             if (m_nState != 2)
                 return;
             Unk_LsPktB rec;
-            FUN_1405b6220(&rec, packet);
+            ((struct Unk_LapenUpgradeResult*)(struct Unk_LsPktB*)(&rec))->Read(packet);
             if (m_spSource->FUN_1405276c0() != rec.m_nItemId)
                 return;
             if (rec.m_bSuccess)
@@ -1947,7 +1965,7 @@ int UILapenshardUpgradeTab::FUN_140c68ff0(unsigned __int64 nUid)
 // @0x140c69620
 void UILapenshardUpgradeTab::FUN_140c69620()
 {
-    m_n_c0 = FUN_14047f880(FUN_1401c0d90());
+    m_n_c0 = ((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_14047f880();
 }
 
 // ---- the bag registry helpers and the rest of the upgrade slot panel ----
@@ -1997,7 +2015,7 @@ MS2Ptr<Unk_LsRecord> LapenshardUpgradeSlotPanel::FUN_140c65d60()
 {
     if (m_spSource == 0)
         return MS2Ptr<Unk_LsRecord>(0);
-    return FUN_1409c4b30()->FUN_1405b56a0(m_spSource->FUN_1405276c0());
+    return reinterpret_cast<Unk_LsTable*>(((class Unk_LsTable*)FUN_1409c4b30()))->FUN_1405b56a0(m_spSource->FUN_1405276c0());
 }
 
 // @0x140c65e00
@@ -2014,7 +2032,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c65ef0()
 {
     if (m_spSource == 0)
         return;
-    MS2Ptr<Unk_LsRecord> spRec = FUN_1409c4b30()->FUN_1405b56a0(m_spSource->FUN_1405276c0());
+    MS2Ptr<Unk_LsRecord> spRec = reinterpret_cast<Unk_LsTable*>(((class Unk_LsTable*)FUN_1409c4b30()))->FUN_1405b56a0(m_spSource->FUN_1405276c0());
     if (spRec == 0)
         return;
     if ((unsigned)spRec->m_nNeed <= 0)
@@ -2035,7 +2053,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c67ce0()
 {
     if (m_body == 0)
         return;
-    if (!(FUN_14116d720(FUN_14025e7c0())))
+    if (!(((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsDebugMode()))
         return;
     if (MS2Ptr<ASMovieClip> spButton = m_body->FUN_140acce30<ASMovieClip>("m_fillIngredientDebug"))
         spButton->vfunc_3(1);
@@ -2062,7 +2080,7 @@ void FUN_141275260(int nStringId, int nA, int nB);
 // @0x140c62520
 int FUN_140c62520()
 {
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     if (pPlayer->vfunc_65() != 0)
@@ -2070,7 +2088,7 @@ int FUN_140c62520()
         FUN_140d73aa0(GetStringCommonByKey(L"s_lapenshard_disable_battle"), 0, 0, L"");
         return 0;
     }
-    Unk_McMapPtr info = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_McMapPtr info = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (info.FUN_140965240(0))
         return 0;
     if (info.FUN_140885340()->FUN_140375660(0x200) != 0)
@@ -2084,7 +2102,7 @@ int FUN_140c62520()
 // The singletons the opening conditions read.
 class Unk_LsRuleFlags { public: int FUN_1402c4c90(int nRule); };
 class Unk_LsRules { public: unsigned char m_pad[8]; Unk_LsRuleFlags m_flags; };
-Unk_LsRules* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 // The constants manager's int-array setting (inventory.cpp has the same layout).
 struct Unk_InventoryArraySetting {
     void* unknown0;
@@ -2096,10 +2114,10 @@ struct Unk_InventoryArraySetting {
 };
 MS2_CHECK_SIZE(Unk_InventoryArraySetting, 0x80);
 class Unk_LsGameTables { public: unsigned char m_pad[0xa040]; Unk_InventoryArraySetting m_quests; };   // +0xa040 embedded, not a pointer
-Unk_LsGameTables* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_LsQuestDone { public: int FUN_140745590(int nQuest); };
 class Unk_LsQuestLog { public: unsigned char m_pad[0x10]; Unk_LsQuestDone m_done; };
-Unk_LsQuestLog* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 CStringW FUN_1416e4df0(int nQuest);                                     // the name of a quest
 CStringW FUN_1405c2690(CStringW fmt, const CStringW& arg);
 
@@ -2108,25 +2126,25 @@ int UILapenshardSystemDialog::vfunc_73()
 {
     if (UIDialog::vfunc_73() == 0)
         return 0;
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x5b) != 0)
+    if (reinterpret_cast<Unk_LsRules*>(((class Unk_LsRules*)FUN_14025e7b0()))->m_flags.FUN_1402c4c90(0x5b) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
     }
-    std::vector<int> quests = FUN_1401d3200()->m_quests.FUN_140a6aa40();
+    std::vector<int> quests = reinterpret_cast<Unk_LsGameTables*>(((class Unk_LsGameTables*)FUN_1401d3200()))->m_quests.FUN_140a6aa40();
     if (quests.size() != 2)
         return 0;
     int nNewbie = quests[0];
     int nQuest = quests[1];
-    if (FUN_14116d720(FUN_14025e7c0()))
+    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsDebugMode())
         return 1;
     for (size_t i = 0; i < quests.size(); ++i)
     {
         int nId = quests[i];
-        if (FUN_140764020()->m_done.FUN_140745590(nId) != 0)
+        if (reinterpret_cast<Unk_LsQuestLog*>(((class Unk_LsQuestLog*)FUN_140764020()))->m_done.FUN_140745590(nId) != 0)
             return 1;
     }
     CStringW strName;
@@ -2149,7 +2167,7 @@ int UILapenshardSystemDialog::vfunc_65()
         return 0;
     m_tabs.Add(new TabInfo("equip", GetStringCommonByKey(L"s_lapenshard_tabname_equip"), new UILapenshardEquipTab()));
     m_tabs.Add(new TabInfo("upgrade", GetStringCommonByKey(L"s_lapenshard_tabname_upgrade"), new UILapenshardUpgradeTab()));
-    FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_LsItemEvents*)(reinterpret_cast<Unk_LsItemEvents*>(((class Unk_LsItemEvents*)FUN_140a6a840()))))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     return 0;
 }
 
@@ -2194,7 +2212,7 @@ int UILapenshardUpgradeTab::FUN_140c691f0()
         return 0;
     if (m_spSource == 0)
         return 0;
-    MS2Ptr<Unk_LsRecord> spRec = FUN_1409c4b30()->FUN_1405b56a0(m_spSource->FUN_1405276c0());
+    MS2Ptr<Unk_LsRecord> spRec = reinterpret_cast<Unk_LsTable*>(((class Unk_LsTable*)FUN_1409c4b30()))->FUN_1405b56a0(m_spSource->FUN_1405276c0());
     if (spRec == 0)
         return 0;
     if (0 < spRec->m_nCost && DAT_143ab2898 < spRec->m_nCost)
@@ -2308,14 +2326,12 @@ void UILapenshardShieldBar::FUN_140c5fbd0()
 // ---- the lapenshard bag filter ----
 
 class Unk_ItemOwnerRef { public: int FUN_140635190(); };                // the binding owner holder of an item
-int FUN_1405b5a50(Unk_LsTable* pTable, unsigned nItemId);               // the item is a lapenshard of the table
-int FUN_1405b59d0(Unk_LsTable* pTable, unsigned nItemId);               // its category
 
 // @0x140c60920
 void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEquipped, int bTableOnly, int nKind, __int64 nExcludeUid)
 {
     pOut->RemoveAll();
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     ItemArray items;
@@ -2327,7 +2343,7 @@ void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEqui
         for (unsigned i = 0; i < equipped.GetCount(); ++i)
         {
             unsigned nItemId = equipped[i];
-            if (bTableOnly != 0 && FUN_1405b5a50(FUN_1409c4b30(), nItemId) == 0)
+            if (bTableOnly != 0 && ((class CItemLapenshardTable*)(class Unk_LsTable*)(reinterpret_cast<Unk_LsTable*>(((class Unk_LsTable*)FUN_1409c4b30()))))->HasUpgrade(nItemId) == 0)
                 continue;
             MS2Ptr<CItem> spItem(new CItem());
             int nGrade = FUN_14053feb0(nItemId);
@@ -2362,9 +2378,9 @@ void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEqui
                 continue;
             if (bWithBound == 0 && spItem->FUN_140528e20())
                 continue;
-            if (bTableOnly != 0 && FUN_1405b5a50(FUN_1409c4b30(), spItem->FUN_1405276c0()) == 0)
+            if (bTableOnly != 0 && ((class CItemLapenshardTable*)(class Unk_LsTable*)(reinterpret_cast<Unk_LsTable*>(((class Unk_LsTable*)FUN_1409c4b30()))))->HasUpgrade(spItem->FUN_1405276c0()) == 0)
                 continue;
-            if (nKind != 0 && FUN_1405b59d0(FUN_1409c4b30(), spItem->FUN_1405276c0()) != nKind)
+            if (nKind != 0 && ((class CItemLapenshardTable*)(class Unk_LsTable*)(reinterpret_cast<Unk_LsTable*>(((class Unk_LsTable*)FUN_1409c4b30()))))->GetGroup(spItem->FUN_1405276c0()) != nKind)
                 continue;
             if (nExcludeUid != 0 && spItem->FUN_140526a50() == nExcludeUid)
                 continue;
@@ -2384,7 +2400,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c65540(CString& strBag, MS2Ptr<Unk_LsRec
     int bNeed = spRec->m_nNeed > 0;
     if (bNeed != 0)
     {
-        unsigned nItemId = FUN_1409c4b30()->GetFirstItem(spRec->m_nKind);
+        unsigned nItemId = reinterpret_cast<Unk_LsTable*>(((class Unk_LsTable*)FUN_1409c4b30()))->GetFirstItem(spRec->m_nKind);
         int nGrade = FUN_14053feb0(nItemId);
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_14052b2e0(nItemId, nGrade, 0, spRec->m_nNeed) != 0)
@@ -2606,7 +2622,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c67440(bool bSuccess)
     int bLimit = 0;
     if (bSuccess != 0)
     {
-        MS2Ptr<Unk_LsRecord> spNext = FUN_1409c4b30()->FUN_1405b56a0(spRec->m_n20);
+        MS2Ptr<Unk_LsRecord> spNext = reinterpret_cast<Unk_LsTable*>(((class Unk_LsTable*)FUN_1409c4b30()))->FUN_1405b56a0(spRec->m_n20);
         if (spNext && spNext->m_n20 == 0)
             bLimit = 1;
     }

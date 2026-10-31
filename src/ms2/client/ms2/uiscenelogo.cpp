@@ -11,6 +11,9 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/filepreload_1.h"
+#include "ms2/client/ms2/stateeffectmgr.h"
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -19,16 +22,13 @@ class UIIntroMovie : public UIVideoContents
 {
 };
 
-class Unk_SlUIMgr                                       // the UI service (FUN_1403ed2b0)
+class Unk_SlUIMgr : public CUIService                                       // the UI service (FUN_1403ed2b0)
 {
-public:
-    void FUN_141adafd0(int nSceneId);
 };
 Unk_SlUIMgr* FUN_1403ed2b0();
 
 class Unk_SlA;  class Unk_SlB;  class Unk_SlC;  class Unk_SlD;  class Unk_SlE;
 class Unk_SlF;  class Unk_SlG;
-Unk_SlA* FUN_1414a5870();
 void FUN_140c9f8f0(Unk_SlA* p);
 Unk_SlB* FUN_140166430();
 void FUN_1405f4720(Unk_SlB* p);
@@ -38,7 +38,6 @@ Unk_SlD* FUN_1414a5720();
 void FUN_141215220(Unk_SlD* p, Unk_SlC* pC, int a, int b, int c, void* d);
 Unk_SlE* FUN_1406aeee0();
 bool FUN_1406af080(Unk_SlE* p);
-Unk_SlF* FUN_140ab7a10();
 void FUN_141210cc0(Unk_SlF* p, int n);
 void FUN_14120fcc0(Unk_SlF* p);
 
@@ -79,13 +78,13 @@ void UISceneLogo::OnLoadComplete()
     UIIntroMovie* pIntro = FUN_140e85420(0x4e33);
     if (pIntro != 0)
         pIntro->vfunc_52("Common/MS2Intro.usm", 0);
-    FUN_140c9f8f0(FUN_1414a5870());
+    FUN_140c9f8f0(reinterpret_cast<Unk_SlA*>(TSingleton<StateEffectMgr>::GetInstance()));
     FUN_1405f4720(FUN_140166430());
     FUN_140583fa0();
     FUN_141215220(FUN_1414a5720(), FUN_140166420(), 0, 0, 0, 0);
     if (FUN_1406af080(FUN_1406aeee0()))
-        FUN_141210cc0(FUN_140ab7a10(), 0);
-    FUN_14120fcc0(FUN_140ab7a10());
+        FUN_141210cc0(reinterpret_cast<Unk_SlF*>(TSingleton<CFilePreload>::GetInstance()), 0);
+    FUN_14120fcc0(reinterpret_cast<Unk_SlF*>(TSingleton<CFilePreload>::GetInstance()));
 }
 MS2_REPLACE_METHOD(0x141AD0510, UISceneLogo, OnLoadComplete, 247, 0x8935B023);
 

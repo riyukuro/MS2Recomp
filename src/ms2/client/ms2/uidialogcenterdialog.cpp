@@ -24,6 +24,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "triggerdebugdialog.h"
 #include "ms2/ms2recover.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -55,7 +57,6 @@ class ASDialog : public ASDisplayObjectContainer {};
 
 // The ui manager: toggle a dialog, look one up.
 class Unk_DcUiMgr { public: void FUN_141adc750(int nId); };
-Unk_DcUiMgr* FUN_1403ed2b0();
 class Unk_DcUiRef
 {
 public:
@@ -75,7 +76,6 @@ int FUN_1409c17e0(const Scaleform::GFx::Value& v);
 
 // The main window of the application.
 class Unk_DcApp { public: void* m_pad; char m_svc; };
-Unk_DcApp* FUN_14086d260();
 class Unk_DcHost;
 Unk_DcHost* FUN_140af8310(void* pHolder);
 void* FUN_140aadf80();
@@ -171,9 +171,9 @@ Unk_DcService* FUN_141296b50(Unk_DcHost* pHost)
 // @0x141296ab0
 UIWeddingHallReservationDialog* FUN_141296ab0(int nId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_DcUiMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        Unk_DcUiRef ref = reinterpret_cast<Unk_DcUiMgrCall*>(FUN_1403ed2b0())->FUN_141adcea0(nId);
+        Unk_DcUiRef ref = reinterpret_cast<Unk_DcUiMgrCall*>(reinterpret_cast<Unk_DcUiMgr*>(TSingleton<CUIService>::GetInstance()))->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70() != 0)
             return dynamic_cast<UIWeddingHallReservationDialog*>(FUN_1403ed9e0(ref));
     }
@@ -339,7 +339,7 @@ void UIDialogCenterDialog::FUN_141295930(const Scaleform::GFx::FunctionHandler::
 // @0x141295a70
 void UIDialogCenterDialog::FUN_141295a70(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    auto pHost = FUN_140af8310(&FUN_14086d260()->m_svc);
+    auto pHost = FUN_140af8310(&reinterpret_cast<Unk_DcApp*>(TSingleton<CMainSystem>::GetInstance())->m_svc);
     Unk_DcService* pSvc = FUN_141296b50(pHost);
     if (pSvc != 0)
         pSvc->vfunc_16();
@@ -355,7 +355,7 @@ void UIDialogCenterDialog::FUN_141295ad0(const Scaleform::GFx::FunctionHandler::
 // @0x141295b00
 void UIDialogCenterDialog::FUN_141295b00(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_1403ed2b0()->FUN_141adc750(0x4f7f);
+    reinterpret_cast<Unk_DcUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f7f);
 }
 
 // @0x141295b30

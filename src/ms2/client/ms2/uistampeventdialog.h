@@ -9,7 +9,7 @@
 class ASTextField;
 class NotifyObject;
 class StampEventContext;
-class Unk_StampList;
+class ASScrollingList;
 class UIStampEventDialog : public UIDialog, public UIQuestEventListener
 {
 public:
@@ -39,7 +39,7 @@ public:
     int FUN_140ed9180(int nCount, int nSpecial);                    // reward state: 0 locked, 1 claimable, 2 claimed
     CString FUN_140ed9480(int nItemId);                             // item icon name
     CString FUN_140ed9560();                                        // the event tag
-    MS2Ptr<Unk_StampList> FUN_140c02900(const CString& strName);    // bind a list child
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);    // bind a list child
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);      // text field child lookup
 };
 MS2_CHECK_SIZE(UIStampEventDialog, 0x180);

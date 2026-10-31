@@ -33,8 +33,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // ---- unit-local views of exe objects ----
 
 // The world service: only the local player accessor is used here.
-WorldService* FUN_1403ed2d0();
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CStringTable* GetStringTable();
 int FUN_140f02bc0();                                            // the hair palette id
 CStringW FUN_141b71990(unsigned nValue);
@@ -45,7 +44,6 @@ ItemModelHead* FUN_14053ec70(CItemData* pData);                 // &model.head
 class Unk_CustomizeView : public Customize
 {
 };
-unsigned FUN_140cd1b20(Customize* pCustomize);                  // what the item can customize (bit 1/2 size, 4 degree, 8 position)
 
 // The part handle (an efd::SmartPointer<CItemCustomizeController>, 8 bytes).
 class Unk_BSPartHandle
@@ -60,7 +58,7 @@ public:
 
 // The worn item / colour helpers of the avatar units.
 MS2Ptr<CEquipItem> FUN_1414211a0(int nSlotKind, void* pPc);                 // the worn item of the kind
-void FUN_1414239e0(int* pnColor, int n, void* pPc);
+int FUN_1414239e0(unsigned int*, int, struct Unk_UgcPlayer*);   // C3: was FUN_1414239e0
 void FUN_141424580(MS2Ptr<CEquipItem> spEquip, int* pnColor, int n);        // the colour of the worn item (spEquip by value)
 void FUN_141424760(MS2Ptr<CItem> spItem, int* pnColor, int n, void* pPc);   // the colour of an item (spItem by value)
 bool FUN_140f026f0(MS2Ptr<ItemColorEx> spColor, bool* pbLocked);            // the colour is locked
@@ -201,7 +199,7 @@ void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASOb
     Unk_BSPartHandle part = spCustomize->FUN_140cd1a30();
     if (part == 0)
         return;
-    *pnFlags = FUN_140cd1b20(spCustomize.get());
+    *pnFlags = ((class Customize*)(class Customize*)(spCustomize.get()))->FUN_140cd1b20();
     if ((int)*pnFlags <= 0)
         return;
     if ((*pnFlags & 1) != 0 || (*pnFlags & 2) != 0)
@@ -336,15 +334,15 @@ MS2_REPLACE(0x140F33400, FUN_140f33400, 349, 0x8BD542F8);
 // @0x140f33570
 void FUN_140f33570(MS2Ptr<CItemData> spData, int* pnColor1, int* pnColor2)
 {
-    void* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPc = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (spData == 0)
         return;
     if (spData->FUN_14053cf00())
     {
-        FUN_1414239e0(pnColor1, 0, pPc);
-        FUN_1414239e0(pnColor2, 1, pPc);
+        FUN_1414239e0((unsigned int*)(pnColor1), 0, (struct Unk_UgcPlayer*)(pPc));
+        FUN_1414239e0((unsigned int*)(pnColor2), 1, (struct Unk_UgcPlayer*)(pPc));
     }
     else
     {
@@ -364,7 +362,7 @@ MS2_REPLACE(0x140F33570, FUN_140f33570, 542, 0xAC452C00);
 // @0x140f337a0
 void FUN_140f337a0(MS2Ptr<CItem> spItem, int* pnColor1, int* pnColor2)
 {
-    void* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPc = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (spItem == 0)
@@ -374,8 +372,8 @@ void FUN_140f337a0(MS2Ptr<CItem> spItem, int* pnColor1, int* pnColor2)
         return;
     if (spData->FUN_14053cf00())
     {
-        FUN_1414239e0(pnColor1, 0, pPc);
-        FUN_1414239e0(pnColor2, 1, pPc);
+        FUN_1414239e0((unsigned int*)(pnColor1), 0, (struct Unk_UgcPlayer*)(pPc));
+        FUN_1414239e0((unsigned int*)(pnColor2), 1, (struct Unk_UgcPlayer*)(pPc));
     }
     else
     {
@@ -402,7 +400,7 @@ void FUN_140f33950(ASArray& arr, int* pnIndex, int nColor1, int nColor2, MS2Ptr<
     else
         nWorn = 2;
     unsigned nIndex1 = nWorn;
-    bool bLockFeature = FUN_140166410()->FUN_14036d570(0xb7);
+    bool bLockFeature = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb7);
     size_t nCount = spColors->GetCount();
     int nMatch = 0;
     for (size_t i = 0; i < nCount; i++)
@@ -473,7 +471,7 @@ void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPale
         FUN_140f33950(kColors, &nSelected, nColor1, nColor2, MS2Ptr<CItemData>(spData), nPalette, ColorArrayPtr(spPalette),
                       bBuild);
     bF8 = (nFlags & 8) > 0;
-    bLockFeature = FUN_140166410()->FUN_14036d570(0xb7);
+    bLockFeature = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb7);
     if (bLockFeature)
     {
         int nSelected2 = -1;

@@ -99,27 +99,26 @@ void FUN_1412751b0(const CStringW& strText, int nSeconds);          // center no
 // The ui dialogs a pickup notifies.
 UIDamageText* FUN_140b624b0(int nUiId);
 class Unk_DropBagDlg { public: void FUN_141abfa10(MS2Ptr<CItem> spItem); };
-Unk_DropBagDlg* FUN_140938cd0(int nUiId);
+class UIRewardNotify* FUN_140938cd0(int);   // C3: was FUN_140938cd0
 void FUN_14098c6e0(egf::Entity* pEntity, unsigned int uiPropId, const bool& b);   // set an entity bool property
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                           // the scene root of an entity
 void FUN_141851f90(void* pRoot, float fWeight);
 void FUN_141852050(void* pRoot, unsigned int uValue);
-void* FUN_14086d260();
-double FUN_141473280(void* p);                                      // the frame time
+class CMainSystem   // C3: member view for the former free stand-ins
+{
+public:
+    double FUN_141473280();
+};
 void FUN_141545250(egf::EntityID kId, int b);
-bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);  // is of the class id
-unsigned int FUN_140869420();                                       // the tick count (ms)
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CString FUN_140540050(const char* szFormat, const CString& strArg); // StringFormat<CString>
 bool FUN_14053f8c0(unsigned nItemId);                               // the item id is meso
 bool FUN_14053f900(unsigned nItemId);                               // the item id is a special item
 void FUN_1401d3700(CString& str);
-bool FUN_14109a9a0(const NiRTTI* pRtti, NiAVObject* pObj);          // is of the type
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);    // dynamic cast through an NiRTTI
 extern char DAT_143afbbb0;                                          // NiMesh::ms_RTTI
 extern char DAT_143afa4f0;                                          // NiTexturingProperty::ms_RTTI
-NiTexturingProperty::Map* FUN_14109a6b0(NiTexturingProperty* pProp);   // the base map
 void FUN_140981040(NiTexturingProperty::Map* pMap, NiTexture* pTex);   // Map::SetTexture
-CNifLoadingService* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 class Unk_DropPickTick                                              // 8-byte throttle (static of FUN_141190900)
 {
 public:
@@ -140,13 +139,13 @@ GameObject* FUN_14096e160(Unk_WsC_GameObj* pObj);                   // the objec
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 CString* FUN_140298f80(Common::Constants::Value<CString>* pValue);   // Value<CString>::Get as a free function
 bool FUN_140184310(const CStringA& str, const char* psz);            // str == psz
-class CBlockManager* FUN_140a6a830();
+class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 extern Unk_Inventory g_143ab2a90;
-int FUN_140768010(unsigned nRange, unsigned nBase);                  // random in base..base+range-1
+int FUN_140768010(int, int);   // C3: was FUN_140768010
 float FUN_140966f00(Vector3 kA, Vector3 kB);        // the horizontal distance
 float FUN_140966f00(Vector3 kA, efd::Point3 kB);    // the same, the second point sliced from an NiPoint3
 float FUN_140966f00(Vector3 kA, NiPoint3 kB);       // the same, the second point an NiPoint3 call result
-CPhysXHelper* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, float fProbeLen, const NxGroupsMask* pMask);
 extern Vector3 DAT_143a08ce8;                               // NiPoint3::UNIT_Y
 extern Vector3 DAT_143a08cf8;                               // NiPoint3::UNIT_Z
@@ -320,7 +319,7 @@ int CDropItem::vfunc_10()
         bool bValue = false;
         FUN_14098c6e0(FUN_14123c410(), 0x2a7fd9f4, bValue);
         FUN_141851f90(FUN_141b6efc0(FUN_14123c410()), 0.0f);
-        FUN_141b6efc0(FUN_14123c410())->Update((float)FUN_141473280(FUN_14086d260()), true);
+        FUN_141b6efc0(FUN_14123c410())->Update((float)((class CMainSystem*)(void*)(((void*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
         FUN_141852050(FUN_141b6efc0(FUN_14123c410()), 0);
         FUN_141545250(FUN_14123c460(), 1);
     }
@@ -368,7 +367,7 @@ void CDropItem::vfunc_32(bool bForce)
             {
                 if (m_spShadow->FUN_141192830())
                 {
-                    nHit = FUN_1409f7ca0()->FUN_14168a310(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), kHit, &kInfo, 0.0f, &kNormal, 0);
+                    nHit = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), kHit, &kInfo, 0.0f, &kNormal, 0);
                 }
             }
             m_spShadow->FUN_14160feb0(nHit, reinterpret_cast<efd::Point3&>(kHit), reinterpret_cast<efd::Point3&>(kNormal), kInfo.m_hitDist, bForce);
@@ -388,12 +387,12 @@ void CDropItem::FUN_14118d720(NiAVObject* pRoot)
 {
     if (NiAVObject* pIcon = pRoot->GetObjectByName("Item_Icon:0"))
     {
-        if (FUN_14109a9a0(reinterpret_cast<const NiRTTI*>(&DAT_143afbbb0), pIcon))
+        if (NiObject::IsExactKindOf(reinterpret_cast<const NiRTTI*>(&DAT_143afbbb0), (class NiObject const*)(pIcon)))
         {
-            NiTexturingProperty* pTexturing = static_cast<NiTexturingProperty*>(FUN_14098d8d0(reinterpret_cast<const NiRTTI*>(&DAT_143afa4f0), pIcon->GetProperty(8)));
+            NiTexturingProperty* pTexturing = static_cast<NiTexturingProperty*>(NiObject::DynamicCast(reinterpret_cast<const NiRTTI*>(&DAT_143afa4f0), (class NiObject const*)(pIcon->GetProperty(8))));
             if (pTexturing)
             {
-                NiTexturingProperty::Map* pMap = FUN_14109a6b0(pTexturing);
+                NiTexturingProperty::Map* pMap = ((class NiTexturingProperty*)(pTexturing))->GetBaseMap();
                 if (pMap)
                 {
                     CString strPath = m_spItem->FUN_140528590();
@@ -408,7 +407,7 @@ void CDropItem::FUN_14118d720(NiAVObject* pRoot)
                     FUN_1401d3700(strPath);
                     if (!strPath.IsEmpty())
                     {
-                        FUN_140981040(pMap, FUN_140a0afd0()->GetTexture(CString(strPath), 5));
+                        FUN_140981040(pMap, ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString(strPath), 5));
                     }
                 }
             }
@@ -476,7 +475,7 @@ void CDropItem::FUN_14118d9a0(int nState)
                 kTarget.m_nKind = 0;
                 kTarget.FUN_140a53190(FUN_14123c580());
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(kTarget);
-                m_nFadeTime = FUN_140869420() + *Client::Constants::GetInstance()->PetTrapDropVisibleDelay.Get();
+                m_nFadeTime = GetTickCountMs2() + *Client::Constants::GetInstance()->PetTrapDropVisibleDelay.Get();
                 vfunc_23(1);
             }
         }
@@ -567,7 +566,7 @@ void CDropItem::FUN_14118d9a0(int nState)
             kInfo.m_dir = DAT_143a08cf8.FUN_1409f7960();
             kInfo.m_maxDist = 0.0f;
             kInfo.m_groups = 0x389;
-            if (FUN_1409f7ca0()->CastRay(&kInfo, &kMask))
+            if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, &kMask))
             {
                 kHit = reinterpret_cast<const efd::Point3&>(kInfo.m_hitPoint);
                 kHit.z += m_spEffect->unknown1c;
@@ -602,7 +601,7 @@ void CDropItem::FUN_14118d9a0(int nState)
                     kInfoSide.m_dir = DAT_143a08cf8.FUN_1409f7960();
                     kInfoSide.m_maxDist = 0.0f;
                     kInfoSide.m_groups = 0x389;
-                    if (FUN_1409f7ca0()->CastRay(&kInfoSide, &kMaskSide))
+                    if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfoSide, &kMaskSide))
                     {
                         kHit = reinterpret_cast<const efd::Point3&>(kInfoSide.m_hitPoint);
                         kHit.z += m_spEffect->unknown1c;
@@ -689,7 +688,7 @@ void CDropItem::FUN_14118d9a0(int nState)
         {
             Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
             const efd::ClassInfo* pInfo = pOwner ? pOwner->GetClassDesc() : 0;
-            if (FUN_14087ddc0(pInfo, 0x6200004))
+            if (efd::ClassInfo::IsKindOf(pInfo, 0x6200004))
             {
                 UIDamageText* pDlg = FUN_140b624b0(0x4e32);
                 if (pDlg)
@@ -700,7 +699,7 @@ void CDropItem::FUN_14118d9a0(int nState)
         {
             Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
             const efd::ClassInfo* pInfo = pOwner ? pOwner->GetClassDesc() : 0;
-            if (FUN_14087ddc0(pInfo, 0x6200004))
+            if (efd::ClassInfo::IsKindOf(pInfo, 0x6200004))
             {
                 UIDamageText* pDlg = FUN_140b624b0(0x4e32);
                 if (pDlg)
@@ -811,7 +810,7 @@ int CDropItem::FUN_141190120(const efd::Point3& kPos, int nA, int nB)
         {
             if (!FUN_141191060())
                 return 0;
-            if (FUN_140869420() < m_nFadeTime)
+            if (GetTickCountMs2() < m_nFadeTime)
                 return 0;
             if (FUN_1409331e0()->IsRestricted(7))
                 return 0;
@@ -872,7 +871,7 @@ int CDropItem::FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB)
         {
             if (!FUN_141191060())
                 return 0;
-            if (FUN_140869420() < m_nFadeTime)
+            if (GetTickCountMs2() < m_nFadeTime)
                 return 0;
             if (FUN_1409331e0()->IsRestricted(7))
                 return 0;
@@ -984,7 +983,7 @@ void CDropItem::FUN_141190900(int nPickerId)
         return;
     }
     {
-        BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0x13);
+        BlockPtr spBlock = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(0x13);
         if (spBlock.get())
         {
             static Unk_DropPickTick s_kNoticeTick;
@@ -1036,7 +1035,7 @@ void CDropItem::FUN_141190b70(int nPickerId)
                     {
                         if (m_spItem->FUN_140525950() == 0 && FUN_14118fee0() == 0)
                         {
-                            Unk_DropBagDlg* pBag = FUN_140938cd0(0x4e5d);
+                            Unk_DropBagDlg* pBag = ((class Unk_DropBagDlg*)FUN_140938cd0(0x4e5d));
                             if (pBag)
                                 pBag->FUN_141abfa10(m_spItem);
                         }
@@ -1065,12 +1064,12 @@ void CDropItem::FUN_141190b70(int nPickerId)
 }
 
 // @0x141191030
-void CDropItem::FUN_141191030() { m_nTick = FUN_140869420(); }
+void CDropItem::FUN_141191030() { m_nTick = GetTickCountMs2(); }
 
 // @0x141191060
 bool CDropItem::FUN_141191060()
 {
-    unsigned int nNow = FUN_140869420();
+    unsigned int nNow = GetTickCountMs2();
     if (m_nTick + 1000 > nNow)
         return false;
     return true;
@@ -1152,7 +1151,7 @@ void CDropItem::vfunc_49()
 void CDropItem::vfunc_53(float fTime)
 {
     GameObject::vfunc_53(fTime);
-    if (m_nFadeTime != 0 && m_nFadeTime < FUN_140869420())
+    if (m_nFadeTime != 0 && m_nFadeTime < GetTickCountMs2())
     {
         vfunc_23(0);
         if (m_spShadow)
@@ -1165,11 +1164,11 @@ void CDropItem::vfunc_53(float fTime)
     {
         if (m_nFadeTime == 0)
         {
-            m_nFadeTime = FUN_140869420() + *Client::Constants::GetInstance()->PetTrapDropVisibleDelay.Get();
+            m_nFadeTime = GetTickCountMs2() + *Client::Constants::GetInstance()->PetTrapDropVisibleDelay.Get();
             vfunc_23(1);
             return;
         }
-        else if (m_nFadeTime > FUN_140869420())
+        else if (m_nFadeTime > GetTickCountMs2())
             return;
     }
     if (m_nState == 6)

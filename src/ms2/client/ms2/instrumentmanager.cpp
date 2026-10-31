@@ -66,6 +66,8 @@
 #include "ms2/client/ms2/uisystemshopdialog.h"
 #include "ms2/client/ms2/additionalclilist.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/timeutil.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/uiservice.h"
 
@@ -141,7 +143,7 @@ public:
     virtual void vfunc_52(__int64 nScoreUid, int bRemote);                 // a performance started
     virtual void vfunc_53(__int64 nScoreUid, int bRemote);                 // a performance ended
 };
-Unk_ImPlatform* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 
 // The item event dispatcher (slot 3: an item changed).
 class Unk_ImItemEvents
@@ -152,10 +154,10 @@ public:
     virtual void vfunc_2();
     virtual void vfunc_3(CItem* pItem, int n);
 };
-Unk_ImItemEvents* FUN_140a6a840();
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 
 // The player inventory (global at 0x143ab2a90): item lookup by uid.
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 class Unk_ItemEquipData { public: bool FUN_14053cd10(); };
 
 // CommonResource: +0x598 the ensemble notice effect file.
@@ -165,28 +167,27 @@ public:
     char m_pad[0x598];
     CString m_strEnsembleEffect;                                            // +0x598
 };
-Unk_ImResource* FUN_1401d31f0();
-CEffectService* FUN_1403ed280();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
           // a feature is enabled
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_ImFiles : public CFileSystem { };
-Unk_ImFiles* FUN_140166420();
 class Unk_ImLog { public: void FUN_14015eb90(int nLevel, int nFlags, const wchar_t* pszFormat, const CString& strArg); };
-Unk_ImLog* FUN_140166440();
-class Unk_ImDebug;
-Unk_ImDebug* FUN_14025e7c0();
-bool FUN_14116d720(Unk_ImDebug* pDebug);                                    // the debug mode is on
+class CLogString* GetLogString();   // C3: was FUN_140166440
+CInputKeyHandler* FUN_14025e7c0();
 
 class Unk_ImXmlNode;
-Unk_ImXmlNode* FUN_140165cf0(void* pNode, const char* pszName);            // first child element
-Unk_ImXmlNode* FUN_140168650(Unk_ImXmlNode* pNode, const char* pszName);    // next sibling element
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 int FUN_1408733e0(Unk_ImXmlNode* pNode, const char* pszName, CString* pstrValue);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 
 void FUN_14125fe20(Unk_SoundState* pSound);                                 // reapply the sound volumes
 int FUN_141260310(Unk_SoundState* pSound);                                  // the instrument volume
-unsigned FUN_140869420();                                                   // the client clock (ms)
 int FUN_141472bc0();                                                        // the server clock bias
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW BlockFormat(int nId);                                              // system notice text
@@ -195,7 +196,7 @@ void FUN_1412751f0(const CStringW& str, int a, int b);                      // n
 void FUN_1412751b0(const CStringW& str, int nType);                         // system chat notice
 int FUN_141276180(const CString& strChannel, const CString& strArg);        // the notice log
 void FUN_1402c8940(const CString& strText, std::vector<CString>& out, const char* pszSep);   // split
-void FUN_1401ffdc0(void* pScore, COutPacket* pPacket);                      // write a composed score
+void FUN_1401ffdc0(unsigned char*, class COutputStream&);   // C3: was FUN_1401ffdc0
 
 extern Vector3 DAT_143b01a60;                                       // the zero point
 
@@ -243,7 +244,7 @@ CInstrumentManager::CInstrumentManager()
     : m_flags(0), m_instrument(0), m_instrumentUid(0), m_scoreUid(0), m_ensemble(false), m_playing(false),
       m_performing(false), m_refs(0), m_remote(false), m_baseTime(0x7fffffff), m_muted(false), m_volume(0)
 {
-    if (!FUN_140166410()->FUN_14036d570(10))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(10))
         return;
     m_midi.Open();
     for (int i = 0; i < 0x10; i++)
@@ -263,7 +264,7 @@ CInstrumentManager::~CInstrumentManager()
 // @0x140d05f70
 void CInstrumentManager::vfunc_1(int nMap)
 {
-    m_baseTime = FUN_140869420() - FUN_141472bc0();
+    m_baseTime = GetTickCountMs2() - FUN_141472bc0();
     unsigned nResult = 0;
     if (!m_midi.IsOpen())
         nResult = m_midi.Open();
@@ -388,7 +389,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         if (nSlot == 0x10)
             return;
         if (m_baseTime == 0x7fffffff)
-            m_baseTime = FUN_140869420() - FUN_141472bc0();
+            m_baseTime = GetTickCountMs2() - FUN_141472bc0();
         int nStartTime = nStart + 300 + m_baseTime;
         int nEnd = 0;
         if (nKind == 0)
@@ -432,11 +433,11 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
     {
         // a composed score item
         __int64 nUid = packet.ReadInt64();
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
         if (spItem.get())
         {
             spItem->FUN_140524eb0(packet);
-            FUN_140a6a840()->vfunc_3(spItem.get(), 0);
+            ((class Unk_ImItemEvents*)FUN_140a6a840())->vfunc_3(spItem.get(), 0);
             UIWriteMusicDialog* pDialog = Unk_ImGetDialog<UIWriteMusicDialog>(0x4eed);
             if (pDialog != 0)
                 pDialog->FUN_140fefd00(MS2Ptr<CItem>(spItem));
@@ -446,11 +447,11 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
     {
         __int64 nUid = packet.ReadInt64();
         int nValue = packet.ReadInt32();
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
         if (spItem.get())
         {
             spItem->FUN_140527320(nValue);
-            FUN_140a6a840()->vfunc_3(spItem.get(), 0);
+            ((class Unk_ImItemEvents*)FUN_140a6a840())->vfunc_3(spItem.get(), 0);
         }
     }
     else if (nType == 10)
@@ -458,7 +459,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         // the score text of an item
         __int64 nUid = packet.ReadInt64();
         CString strScore = packet.ReadString();
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
         if (spItem.get())
         {
             UIWriteMusicDialog* pDialog = Unk_ImGetDialog<UIWriteMusicDialog>(0x4eed);
@@ -477,10 +478,10 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         if (pMe == 0)
             return;
         Unk_EffectTarget kTarget;
-        kTarget.m_strName = FUN_1401d31f0()->m_strEnsembleEffect;
+        kTarget.m_strName = ((class Unk_ImResource*)FUN_1401d31f0())->m_strEnsembleEffect;
         kTarget.m_nKind = pActor == pMe ? 1 : 3;
         kTarget.FUN_140a53190(pActor->FUN_14123c580());
-        FUN_1403ed280()->FUN_1411a4a00(kTarget);
+        TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->FUN_1411a4a00(kTarget);
     }
     else if (nType == 17)
     {
@@ -552,7 +553,7 @@ bool CInstrumentManager::SetPcState(int nState)
 // @0x140d07260
 void CInstrumentManager::SetEnsemble(bool bEnsemble)
 {
-    if (!FUN_140166410()->FUN_14036d570(10))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(10))
         return;
     if (m_ensemble == bEnsemble)
         return;
@@ -586,7 +587,7 @@ void CInstrumentManager::NoteOn(int nNote)
 {
     if (!m_ensemble)
         return;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_instrumentUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_instrumentUid);
     if (spItem == 0)
         return;
     if (!spItem->FUN_140528980())
@@ -656,7 +657,7 @@ void CInstrumentManager::NoteOff(int nNote)
 // @0x140d07960
 bool CInstrumentManager::PlayScore(__int64 nScoreUid)
 {
-    MS2Ptr<CItem> spScore = DAT_143ab2a90.FUN_140a5d680(nScoreUid);
+    MS2Ptr<CItem> spScore = g_143ab2a90.FUN_140a5d680(nScoreUid);
     if (spScore == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
@@ -667,7 +668,7 @@ bool CInstrumentManager::PlayScore(__int64 nScoreUid)
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
         return false;
     }
-    MS2Ptr<CItem> spInstrument = DAT_143ab2a90.FUN_140a5d680(m_instrumentUid);
+    MS2Ptr<CItem> spInstrument = g_143ab2a90.FUN_140a5d680(m_instrumentUid);
     if (spInstrument == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
@@ -709,7 +710,7 @@ bool CInstrumentManager::PlayEnsemble(__int64 nScoreUid)
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_ui_need_party_for_ensemble"), 0, 0, CStringW(L""));
         return false;
     }
-    MS2Ptr<CItem> spInstrument = DAT_143ab2a90.FUN_140a5d680(m_instrumentUid);
+    MS2Ptr<CItem> spInstrument = g_143ab2a90.FUN_140a5d680(m_instrumentUid);
     if (spInstrument == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
@@ -720,7 +721,7 @@ bool CInstrumentManager::PlayEnsemble(__int64 nScoreUid)
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
         return false;
     }
-    MS2Ptr<CItem> spScore = DAT_143ab2a90.FUN_140a5d680(nScoreUid);
+    MS2Ptr<CItem> spScore = g_143ab2a90.FUN_140a5d680(nScoreUid);
     if (spScore == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
@@ -802,7 +803,7 @@ unsigned CInstrumentManager::ParseLine(int nChannel, int nProgram, int nPercussi
         if (tokens[i]->m_nType == 2)
         {
             // a control change (only the sustain pedal unless debugging)
-            if (tokens[i]->m_nPitch == 0x40 || FUN_14116d720(FUN_14025e7c0()))
+            if (tokens[i]->m_nPitch == 0x40 || FUN_14025e7c0()->IsDebugMode())
             {
                 if (tokens[i]->m_nPitch == 0x40 && nProgram >= 0x40 && nProgram <= 0x4f)
                     continue;
@@ -862,12 +863,12 @@ int CInstrumentManager::PlayScoreFile(const CString& strName, int nTime, int nPr
         nProgram = m_programOverride.Value();
     CString strPath = FUN_14071a5b0("MusicScore", strName);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_ImFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_ImXmlNode* pRoot = FUN_140165cf0(&doc, "ms2");
+    Unk_ImXmlNode* pRoot = ((class Unk_ImXmlNode*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        ((class Unk_ImLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     unsigned nLast = nTime;
@@ -877,9 +878,9 @@ int CInstrumentManager::PlayScoreFile(const CString& strName, int nTime, int nPr
     Unk_ImScoreEvents empty;
     m_events[nOwner] = empty;
     Unk_ImScoreEvents* pEvents = &m_events[nOwner];
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = GetTickCountMs2();
     bool bFirst = true;
-    for (Unk_ImXmlNode* pNode = FUN_140165cf0(pRoot, "harmony"); pNode != 0; pNode = FUN_140168650(pNode, "harmony"))
+    for (Unk_ImXmlNode* pNode = ((class Unk_ImXmlNode*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("harmony")); pNode != 0; pNode = ((class Unk_ImXmlNode*)((class Unk_XmlNode*)(class Unk_ImXmlNode*)(pNode))->NextSibling("harmony")))
     {
         CString strChord;
         FUN_1408733e0(pNode, "chord", &strChord);
@@ -894,7 +895,7 @@ int CInstrumentManager::PlayScoreFile(const CString& strName, int nTime, int nPr
     int nSec = nElapsed / 1000;
     int nMin = nSec / 60;
     nSec = nSec % 60;
-    if (FUN_14116d720(FUN_14025e7c0()))
+    if (FUN_14025e7c0()->IsDebugMode())
         FUN_1412751b0(StringFormat(L"[디버그용] 악보 시간 {0}분 {1}초 ({2} msec)", nMin, nSec, nElapsed), 0x11);
     if (nPercussion == 0)
     {
@@ -926,7 +927,7 @@ int CInstrumentManager::PlayScoreText(const CString& strText, int nTime, int nPr
     Unk_ImScoreEvents empty;
     m_events[nOwner] = empty;
     Unk_ImScoreEvents* pEvents = &m_events[nOwner];
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = GetTickCountMs2();
     for (unsigned __int64 i = 0; i < lines.size(); i++)
     {
         const CString& strLine = lines[i];
@@ -934,7 +935,7 @@ int CInstrumentManager::PlayScoreText(const CString& strText, int nTime, int nPr
         unsigned nEnd = ParseLine(nChannel, nProgram, nPercussion, &track, pEvents, nTime, nNow, strLine, bFirst);
         nLast = (std::max)(nLast, nEnd);
     }
-    if (FUN_14116d720(FUN_14025e7c0()))
+    if (FUN_14025e7c0()->IsDebugMode())
     {
         unsigned long nElapsed = nLast - nTime;
         int nSec = nElapsed / 1000;
@@ -963,7 +964,7 @@ void CInstrumentManager::OnPerformStart(int nOwner, int nStart, int nEnd, bool b
     Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe != 0 && pMe->FUN_14123c580() == nOwner)
     {
-        FUN_140d86260()->vfunc_52(m_scoreUid, bRemote == true ? 1 : 0);
+        ((class Unk_ImPlatform*)FUN_140d86260())->vfunc_52(m_scoreUid, bRemote == true ? 1 : 0);
         m_performing = true;
         m_remote = bRemote;
         if (pMe->FUN_14166c930() != 0x2f)
@@ -1001,7 +1002,7 @@ void CInstrumentManager::OnPerformEnd(int nOwner)
     Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe != 0 && pMe->FUN_14123c580() == nOwner)
     {
-        FUN_140d86260()->vfunc_53(m_scoreUid, m_remote == true ? 1 : 0);
+        ((class Unk_ImPlatform*)FUN_140d86260())->vfunc_53(m_scoreUid, m_remote == true ? 1 : 0);
         m_performing = false;
         m_scoreUid = 0;
         UIPlayInstrumentDialog* pDialog = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
@@ -1030,7 +1031,7 @@ bool CInstrumentManager::PreviewScore(const CString& strText, int nCategory, int
     voice.m_program = nProgram;
     voice.m_percussion = spCategory->m_nPercussionId;
     int nSlot = GetSlot(0, voice);
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = GetTickCountMs2();
     unsigned nEnd = PlayScoreText(strText, nNow - nOffset, nProgram, voice.m_percussion, nSlot, 0, pMe->FUN_14123c580());
     *pnDuration = nEnd - (nNow - nOffset);
     if (nEnd > nNow)
@@ -1053,7 +1054,7 @@ void CInstrumentManager::SendCompose(void* pScore)
 {
     COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.Encode1(8);
-    FUN_1401ffdc0(pScore, &packet);
+    FUN_1401ffdc0((unsigned char*)(pScore), *(class COutputStream*)(&packet));
     FUN_140710590(packet);
 }
 
@@ -1349,7 +1350,7 @@ int CInstrumentManager::ScaleVolume(int nVolume, int nProgram)
 // @0x140d0ac80
 void CInstrumentManager::PlayEvents()
 {
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = GetTickCountMs2();
     std::map<unsigned, Unk_ImScoreEvents>::iterator it = m_events.begin();
     std::map<unsigned, Unk_ImScoreEvents>::iterator itEnd = m_events.end();
     while (it != itEnd)

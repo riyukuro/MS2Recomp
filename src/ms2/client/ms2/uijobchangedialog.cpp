@@ -31,6 +31,11 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/client/ms2/uitalkcinematic.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // ---- unit-local views of unrecovered callees -------------------------------------------------------------------------
 
@@ -39,7 +44,7 @@ class ASDialog : public ASDisplayObject {};
 // The xml reader of the exe (see achievemanager.cpp).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
-class Unk_JcFileSystem { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int nUnused, bool bA, bool bB); };
+class Unk_JcFileSystem : public CFileSystem { };
 Unk_JcFileSystem* FUN_140166420();
 CStringA FUN_14071ae20(const CStringA& strFile);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
@@ -62,21 +67,14 @@ class Unk_JcSkillTable { public: Unk_JcSkillRef FUN_1407ee1d0(int nSkillId); };
 Unk_JcSkillTable* FUN_1401958b0();
 CStringW FUN_1409e88d0(int nStringId, const unsigned short& n);     // formatted string table entry
 
-class Unk_JcStrings { public: CStringW FUN_141811980(int, int); };
-Unk_JcStrings* FUN_1401a9d70();
-
 class Unk_JcUi { public: float FUN_1422afec0(int nUiId); };
 Unk_JcUi* FUN_14025e7a0();
-class Unk_JcRewardUI { public: int FUN_141b1d3d0(); };
-Unk_JcRewardUI* FUN_140a7b2b0(int nId);
+UITalkCinematic* FUN_140a7b2b0(int nId);
 
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
-struct Unk_JcInvoke4 { Scaleform::GFx::Value FUN_14190b490(const char* szMethod, unsigned nW, unsigned nH, float fScale); };
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);   // GallerySet: 64-bit value
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
-struct Unk_JcInvoke1 { Scaleform::GFx::Value FUN_1409ba030(const char* szMethod, int n); };
-struct Unk_JcInvoke2 { Scaleform::GFx::Value FUN_1409ba0d0(const char* szMethod, int a1, int a2); };
 struct Unk_JcInvokeS { Scaleform::GFx::Value FUN_140e78470(const char* szMethod, CStringW a1, CStringW a2); };
 CString FUN_14016a5c0(const char* pszName, int nFlags);          // undecorated class name
 
@@ -86,8 +84,7 @@ extern unsigned DAT_143af62d8;                                  // client area h
 // The tooltip of a skill (a member of ASTooltip in the exe).
 int FUN_1409e1b80(ASTooltip* pTip, int nSkillId, int n);
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
-class Unk_JcWorld { public: void* FUN_141bd0cc0(); };
-Unk_JcWorld* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 static bool s_bValid;                                           // 0x143af3588 the tables were read
 
@@ -193,7 +190,7 @@ int UIJobChangeDialog::vfunc_13()
 void UIJobChangeDialog::vfunc_43()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
-    Unk_JcRewardUI* pUI;
+    UITalkCinematic* pUI;
     int n;
     if (pDlg != 0 && (pUI = FUN_140a7b2b0(0x4e40)) != 0 && (n = pUI->FUN_141b1d3d0()) != -1)
     {
@@ -202,7 +199,7 @@ void UIJobChangeDialog::vfunc_43()
         return;
     }
     if (FUN_1409ee240(&m_30) != 0)
-        reinterpret_cast<Unk_JcInvoke4*>(FUN_1409ee290(&m_30))->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8,
+        reinterpret_cast<AScript*>(FUN_1409ee290(&m_30))->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8,
                       FUN_14025e7a0()->FUN_1422afec0(m_28));
 }
 
@@ -295,12 +292,12 @@ void UIJobChangeDialog::FUN_1419dbe30(int nJob)
                 CStringW strLevel;
                 strLevel = FUN_1409e88d0(0x582, nLevel);
                 ASObj obj(2);
-                obj.FUN_1407cbb20("skillName", FUN_1401a9d70()->FUN_141811980(4, nSkill));
+                obj.FUN_1407cbb20("skillName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nSkill));
                 obj.FUN_1407cbb20("skillLevel", strLevel);
                 obj.FUN_1407cba60("imgPath", ref.FUN_14063ed50()->m_strIcon);
                 reinterpret_cast<Unk_JcInvokeSkill*>(pDlg)->FUN_1419dc5e0("setSkill", i, obj);
             }
-            reinterpret_cast<Unk_JcInvoke1*>(pDlg)->FUN_1409ba030("setDifficulty", spPreview->m_nDifficulty);
+            reinterpret_cast<AScript*>(pDlg)->Invoke("setDifficulty", spPreview->m_nDifficulty);
         }
     }
 }
@@ -320,8 +317,8 @@ void UIJobChangeDialog::FUN_1419dc1e0(int nJob)
             if (MS2Ptr<ASTextField> spHistoryText = FUN_140bb4cf0("m_jobHistory"))
                 spHistoryText->FUN_1422c4cd0(spDesc->m_strHistory);
             reinterpret_cast<Unk_JcInvokeS*>(pDlg)->FUN_140e78470("setJobName", spDesc->m_strMain, spDesc->m_strSub);
-            reinterpret_cast<Unk_JcInvoke1*>(pDlg)->FUN_1409ba030("setJob", nJob);
-            reinterpret_cast<Unk_JcInvoke2*>(pDlg)->FUN_1409ba0d0("setVideo", 1, nJob);
+            reinterpret_cast<AScript*>(pDlg)->Invoke("setJob", nJob);
+            reinterpret_cast<AScript*>(pDlg)->FUN_1409ba0d0("setVideo", 1, nJob);
         }
     }
 }

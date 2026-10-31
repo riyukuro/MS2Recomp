@@ -40,6 +40,7 @@
 #include "ms2/placeholder/weddingtable.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -77,8 +78,8 @@ void FUN_141b87760(WeddingManager* pMgr, int n);                // the wedding m
 int FUN_140908f90(WeddingTable* pTable, __int64 nExp);          // the grade of an exp
 __int64 FUN_140909070(WeddingTable* pTable, int nGrade);        // the exp a grade starts at
 CStringW FUN_140b8e850(const CMsTime& kTime);                   // the date text
-int FUN_14086b900(__int64 nThen, __int64 nNow);                 // days between two times
-__int64 FUN_140869440();                                        // the current time
+int GetDayNumberDifference(__int64 nThen, __int64 nNow);        // days between two times
+__int64 GetServerTime();                                        // the current time
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a1, const CStringW& a2);   // string table text, two args
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& a1);    // string table text, one arg
 CStringW FUN_14062b4f0(CStringW strKey, const int& n);
@@ -86,7 +87,6 @@ CString FUN_1410291d0(__int64 nCharacterId, const CString& strKey);   // a UGC p
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
-Unk_WdUIManager* FUN_1403ed2b0();
 CUgcManager* FUN_14052d220();
 void FUN_14187fd80(CUgcManager* pUgc);                          // open the profile image editor
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
@@ -174,7 +174,7 @@ void UIWeddingDialog::OnLoadComplete()
     ASObj data(2);
     data.FUN_1407cbb20("coupleName", FUN_1408f71a0(CStringW(L"s_wedding_dialog_couple_name"), pPC->vfunc_77(), pPartner->m_strName));
     data.FUN_1407cbb20("anniversary", FUN_1405c2690(CStringW(L"s_wedding_dialog_anniversary"), FUN_140b8e850(CMsTime(WdProxyTime(pProxy, 0x30)))));
-    data.FUN_1407cbb20("counter", FUN_14062b4f0(CStringW(L"s_wedding_dialog_counter"), FUN_14086b900(WdProxyTime(pProxy, 0x30), FUN_140869440())));
+    data.FUN_1407cbb20("counter", FUN_14062b4f0(CStringW(L"s_wedding_dialog_counter"), GetDayNumberDifference(WdProxyTime(pProxy, 0x30), GetServerTime())));
     data.FUN_1407cba60("profile", FUN_140fc88d0());
     data.FUN_1407cbbe0("divorce", bDivorce);
     ASObj affinity(2);
@@ -243,7 +243,7 @@ int UIWeddingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp(szMethod, "onInfo") == 0)
     {
-        FUN_1403ed2b0()->FUN_141adc750(0x4f95);
+        reinterpret_cast<Unk_WdUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f95);
         return 1;
     }
     else if (_stricmp(szMethod, "onChangeTab") == 0)

@@ -6,7 +6,10 @@
 // MS2-PIN: ?vfunc_48@UIObjectCreateDialog@@UEAAHXZ 0x141320530
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiobjectcreatedialog.cpp"    // assumed
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uiobjectcreatedialog.h"
 
@@ -23,6 +26,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -39,21 +43,6 @@ static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local placeholders (unrecovered helpers) ----
 
-// The list control of the movie (the AS list with clear / append).
-class Unk_ObjectCreateList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                               // clear
-    void FUN_1422dd230(const ASObj& row);               // append a row
-};
-
 // The text input control of the movie.
 class Unk_ObjectCreateInput : public AScript
 {
@@ -62,8 +51,9 @@ public:
 };
 
 // The exe inlines MS2Ptr<T>'s dtor / conversion / arrow for these two unit-local controls; the generic bodies of
-// ms2ptr_impl.h cannot be included here (they would instantiate every other MS2Ptr<T> of mypc.h), so write these three.
-template <> MS2Ptr<Unk_ObjectCreateList>::~MS2Ptr()
+// ms2ptr_impl.h cannot be included here (they would instantiate every other MS2Ptr<T> of mypc.h), so write these three
+// (inline for ASScrollingList: other units instantiate the same COMDATs).
+template <> inline MS2Ptr<ASScrollingList>::~MS2Ptr()
 {
     if (m_p)
     {
@@ -75,8 +65,8 @@ template <> MS2Ptr<Unk_ObjectCreateList>::~MS2Ptr()
         m_p = 0;
     }
 }
-template <> MS2Ptr<Unk_ObjectCreateList>::operator Unk_ObjectCreateList*() const { return m_p; }
-template <> Unk_ObjectCreateList* MS2Ptr<Unk_ObjectCreateList>::operator->() const { return m_p; }
+template <> inline MS2Ptr<ASScrollingList>::operator ASScrollingList*() const { return m_p; }
+template <> inline ASScrollingList* MS2Ptr<ASScrollingList>::operator->() const { return m_p; }
 template <> MS2Ptr<Unk_ObjectCreateInput>::~MS2Ptr()
 {
     if (m_p)
@@ -94,7 +84,7 @@ template <> Unk_ObjectCreateInput* MS2Ptr<Unk_ObjectCreateInput>::operator->() c
 
 // The key input state (singleton).
 class Unk_14025e7c0 { public: bool FUN_14116d9c0(int nKey, int a, int b); };
-Unk_14025e7c0* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The world manager (singleton): the local player and the interact objects of the field.
 class Unk_ObjectCreateWorld
@@ -103,12 +93,12 @@ public:
     MyPC* FUN_141bd0cc0();
     void FUN_141bc5f10(ATL::CAtlArray<MS2Ptr<CInteractObject> >& aObjects);     // every interact object of the field
 };
-Unk_ObjectCreateWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
-class Unk_ObjectCreateStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_ObjectCreateStrings* FUN_1401a9d70();
-
-void FUN_14051f800(ATL::CAtlArray<MS2Ptr<CInteractObjectData> >& aData);            // every row of the interact-object table
 MS2Ptr<CInteractObjectData> FUN_14051f670(int nIndex);                              // a row by index
 int FUN_1407181d0(const CString& str);                                              // text to number
 void FUN_14020af60_ref(COutPacket* pPacket, const Vector3& pt);             // FUN_14020af60: encode a point
@@ -146,7 +136,7 @@ int UIObjectCreateDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+    if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
         FUN_14131ff70();
     return 0;
 }
@@ -160,7 +150,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+            MyPC* pPlayer = ((class Unk_ObjectCreateWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
             if (pPlayer == 0)
                 return 0;
             int nKind = data.FUN_1422b8a10();
@@ -190,11 +180,11 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             int nIndex = data.FUN_1422b8a10();
             if (FUN_14051f670(nIndex).IsNull())
                 return 0;
-            if (MS2Ptr<Unk_ObjectCreateList> list = FUN_140c02900("m_position"))
+            if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_position"))
             {
                 list->FUN_1422dd1d0();
                 ATL::CAtlArray<MS2Ptr<CInteractObject> > aObjects;
-                FUN_1403ed2d0()->FUN_141bc5f10(aObjects);
+                ((class Unk_ObjectCreateWorld*)WorldService::GetInstance())->FUN_141bc5f10(aObjects);
                 for (size_t i = 0; i < aObjects.GetCount(); i++)
                 {
                     MS2Ptr<CInteractObject> obj = aObjects[i];
@@ -233,15 +223,15 @@ void UIObjectCreateDialog::FUN_14131ff70()
     CStringW strSearch;
     if (MS2Ptr<Unk_ObjectCreateInput> input = FUN_140e35bd0("m_search"))
         strSearch = input->FUN_1422e0b00();
-    if (MS2Ptr<Unk_ObjectCreateList> list = FUN_140c02900("m_objects"))
+    if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_objects"))
     {
         list->FUN_1422dd1d0();
         ATL::CAtlArray<MS2Ptr<CInteractObjectData> > aData;
-        FUN_14051f800(aData);
+        CInteractObjectData::GetAll(aData);
         for (size_t i = 0; i < aData.GetCount(); i++)
         {
             MS2Ptr<CInteractObjectData> data = aData[i];
-            CStringW strName = FUN_1401a9d70()->FUN_141811980(11, data->m_nId);
+            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(11, data->m_nId);
             if (strSearch.GetLength() != 0)
             {
                 CStringW strId = StringFormat(L"{0}", data->m_nId);

@@ -15,7 +15,10 @@
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiachievedialog.cpp"
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 #include "uiachievedialog.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -32,6 +35,12 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/cpetmanager.h"
+#include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/placeholder/fishingmanager.h"
 #include <algorithm>
 #include <stdlib.h>
 #include <string.h>
@@ -39,21 +48,6 @@
 
 // ---- unit-local views of exe types ----
 
-// The list control of the movie (the AS tile list): clear / append / select.
-class Unk_AcList : public ASDisplayObject
-{
-public:
-    virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
-    virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13();
-    virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
-    virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21();
-    virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                                       // clear
-    void FUN_1422dd230(const ASObj& row);                       // append a row
-    void FUN_1422dcca0(int nIndex);                             // select
-    int FUN_1422dccd0();                                        // selected index
-};
 class Unk_AcText : public ASDisplayObject
 {
 public:
@@ -70,7 +64,7 @@ public:
 class Unk_AcHero : public ASUIComponent
 {
 public:
-    MS2Ptr<Unk_AcList> FUN_140bc7280(const CString& strName);
+    MS2Ptr<ASScrollingList> FUN_140bc7280(const CString& strName);
     MS2Ptr<Unk_AcText> FUN_140bbe880(const CString& strName);
     MS2Ptr<Unk_AcDrop> FUN_140bbe700(const CString& strName);
     Scaleform::GFx::Value FUN_1418adea0(const char* szMethod, unsigned char nIndex, const ASObj& row);
@@ -86,28 +80,32 @@ public:
 #define AC_ROOT(p) static_cast<Unk_AcRoot*>((p).operator->())
 
 // the root pointer of the movie (m_30)
-bool FUN_140a467d0(const MS2Ptr<AScript>* pAS);
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 
 // the local player and the client options
-void* FUN_1403ed2d0();
-void* FUN_141bd0cc0(void* pWorld);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 void* FUN_14025e7c0();                                          // the text hook object
-bool FUN_14116d720(void* p);
-bool FUN_14116d840(void* p);
+class CInputKeyHandler   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14116d840();
+    bool IsDebugMode();
+};
 bool FUN_14116d9c0(void* p, int a1, int a2, int a3);
 int FUN_14166ce30(void* pPlayer);
-class Unk_AcOptions { public: bool FUN_14036d570(int nFlag); };
-Unk_AcOptions* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 // strings
-class Unk_AcNames { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_AcNames* FUN_1401a9d70();
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& a1);
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a1, const CStringW& a2);
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1408116a0(int nStringId, const int& n);
-CStringW FUN_1409eec40(int nStringId);
+CStringW BlockFormat(int nStringId);
 CStringW FUN_1416e4df0(int nId);
 CStringW FUN_140cbf840(int nDungeonKind);
 CString FUN_1402bad60(const char* szFormat, const int* pn);
@@ -124,17 +122,15 @@ void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wc
 void FUN_140710590(COutPacket& packet);
 
 // the xml persistence
-void FUN_140873bc0(void* pNode, const char* szName, bool b);
-void FUN_140873ca0(void* pNode, const char* szName, int n);
-int FUN_1408730a0(void* pNode, const char* szName, bool& rOut);
-int FUN_1408731e0(void* pNode, const char* szName, int& rOut);
+void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
+void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 
 // the unit's own setters of the Invoke argument lists and members
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);
 void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);
-unsigned int FUN_1409c17e0(const Scaleform::GFx::Value& v);
 
 // the platform: request answers
 class Unk_AcPlatform
@@ -148,7 +144,7 @@ public:
     virtual int vfunc_37(void* pRequest);
 #undef AC_V
 };
-Unk_AcPlatform* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 
 // the request (search box) objects
 class Unk_AcRequest
@@ -212,22 +208,18 @@ public:
     Unk_AmColorSet FUN_140558ad0(int nId);
     Unk_AmColorElem FUN_140558960(int nPaletteId, int nSN);
 };
-Unk_AmIngTable* FUN_140281980();
 
 // collected ids: dungeons, fish, pets, quests, items
 struct Unk_AcRoom : public CPtred { int m_pad_18; int m_1c; };
 class Unk_AcRoomTable { public: MS2Ptr<Unk_AcRoom> FUN_1403206b0(int nRoomId); };
-Unk_AcRoomTable* FUN_14031c2a0();
 class Unk_AcDungeonMgr : public CPtred { public: int FUN_140b22890(int nId); };
 class Unk_AcMyChar { public: MS2Ptr<Unk_AcDungeonMgr> FUN_140d9f2c0(); };
 Unk_AcMyChar* FUN_140931510();
 class Unk_AcFishMgr { public: unsigned __int64 FUN_140cdc380(unsigned nId); };
-Unk_AcFishMgr* FUN_140953f20();
-class Unk_AcPetMgr { public: int FUN_140c8b220(int nId); };
-Unk_AcPetMgr* FUN_140535320();
+CPetManager* FUN_140535320();
 class Unk_AcQuestState { public: int FUN_140745590(int nQuest); };
 struct Unk_AcQuestMgr { char m_pad_00[0x10]; Unk_AcQuestState m_10; };
-Unk_AcQuestMgr* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 extern ATL::CAtlMap<unsigned int, unsigned int> DAT_143ab30e0;        // achievement id -> grade
 
 extern int DAT_143ab2914;                                       // the GM level
@@ -238,7 +230,7 @@ class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; }
 Unk_Handle1401cd100 DAT_143af0fc8(0);
 static CString kTrophyRewardGet("system_Trophy_Reward_Get");
 
-CAchieveManager* FUN_1406c7600();
+class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 
 // the summary page rows
 struct Unk_AcCount { int m_id; int m_count; };
@@ -339,7 +331,7 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp(szMethod, "onReward") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
-            void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+            void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
             if (pPlayer == 0)
                 return 0;
             if (FUN_14166ce30(pPlayer) != 0) {
@@ -439,7 +431,7 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             unsigned nId = data.FUN_1422b8b10();
             int bBookmark = data.FUN_1422b8a90();
-            MS2Ptr<CAchieve> spAchieve = FUN_1406c7600()->Find(nId);
+            MS2Ptr<CAchieve> spAchieve = ((class CAchieveManager*)FUN_1406c7600())->Find(nId);
             if (spAchieve.get() != 0) {
                 spAchieve->SetBookmark(bBookmark);
                 COutPacket packet(static_cast<int>(SendOp::Achieve), 0);
@@ -519,9 +511,9 @@ void UIAchieveDialog::vfunc_15()
 // @0x1418a8430
 int UIAchieveDialog::vfunc_13()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
-    if (FUN_14116d840(FUN_14025e7c0())) {
+    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d840()) {
         bool bHandled = FUN_1409ee290(&m_30)->Invoke("closePopup").GetBool();
         if (bHandled)
             return 1;
@@ -543,7 +535,7 @@ void UIAchieveDialog::vfunc_80(void* pRequest)
             FUN_1418a8ff0();
         }
         else {
-            FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, L"");
+            FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, L"");
             FUN_1418aaee0(L"");
         }
     }
@@ -555,7 +547,7 @@ void UIAchieveDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     UIObject::vfunc_49(pRetVal, pArgs);
     int nItemId = pArgs->FUN_1422b8b10();
     int nRank = FUN_14053feb0(nItemId);
-    ASTooltip tip(FUN_141bd0cc0(FUN_1403ed2d0()), 0x20, 2);
+    ASTooltip tip(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0(), 0x20, 2);
     if (tip.FUN_1409e1770(nItemId, nRank) != 0)
         FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
 }
@@ -565,11 +557,11 @@ int UIAchieveDialog::vfunc_53(void* pCfg)
 {
     if (UIDialog::vfunc_53(pCfg) == 0)
         return 0;
-    FUN_140873bc0(pCfg, "all", m_190);
+    XmlSetAttr((class TiXmlElement*)(pCfg), "all", m_190);
     for (POSITION pos = m_198.GetStartPosition(); pos != 0; m_198.GetNext(pos)) {
         CStringW strName = CAchieveData::GetRewardTypeName(m_198.GetKeyAt(pos));
         int nValue = m_198.GetValueAt(pos);
-        FUN_140873ca0(pCfg, FUN_14016a600(strName, 0), nValue);
+        XmlSetAttr((class TiXmlElement*)(pCfg), FUN_14016a600(strName, 0), nValue);
     }
     return 1;
 }
@@ -579,11 +571,11 @@ int UIAchieveDialog::vfunc_54(void* pCfg)
 {
     if (UIDialog::vfunc_54(pCfg) == 0)
         return 0;
-    FUN_1408730a0(pCfg, "all", m_190);
+    XmlGetAttr((class TiXmlElement*)(pCfg), "all", m_190);
     for (size_t i = 0; i < 14; i++) {
         CStringW strName = CAchieveData::GetRewardTypeName(i);
         int nValue = 1;
-        FUN_1408731e0(pCfg, FUN_14016a600(strName, 0), nValue);
+        XmlGetAttr((class TiXmlElement*)(pCfg), FUN_14016a600(strName, 0), nValue);
         m_198.SetAt(i, nValue);
     }
     return 1;
@@ -607,16 +599,16 @@ void UIAchieveDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
         unsigned nUnk3 = pArgs->FUN_1422b8b10();
         unsigned nUnk4 = pArgs->FUN_1422b8b10();
         ASObj data(pArgs->FUN_1422b9260(), 2);
-        unsigned nPalette = FUN_1409c17e0(data.FUN_1422baa20("paletteID"));
-        unsigned nSN = FUN_1409c17e0(data.FUN_1422baa20("colorSN"));
-        Unk_AmColorElem elem = FUN_140281980()->FUN_140558960(nPalette, nSN);
+        unsigned nPalette = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(data.FUN_1422baa20("paletteID")))->GetUInt();
+        unsigned nSN = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(data.FUN_1422baa20("colorSN")))->GetUInt();
+        Unk_AmColorElem elem = reinterpret_cast<Unk_AmIngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558960(nPalette, nSN);
         if (elem.FUN_14059cf00() != 0) {
             CStringW strDesc;
             if (elem.FUN_14056d570()->m_nColorId > 0) {
                 int nKey = elem.FUN_14056d570()->m_nColorId;
-                CStringW strName = FUN_1401a9d70()->FUN_141811980(0x48, nKey);
+                CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x48, nKey);
                 if (!strName.IsEmpty()) {
-                    strDesc = FUN_1408f71a0(CStringW(L"s_beauty_tooltip_color_desc"), strName, FUN_1401a9d70()->FUN_141811980(0x49, nKey));
+                    strDesc = FUN_1408f71a0(CStringW(L"s_beauty_tooltip_color_desc"), strName, TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x49, nKey));
                     strDesc.Append(L"\n");
                 }
                 ASTooltip tip(1, 2);
@@ -628,7 +620,7 @@ void UIAchieveDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
         }
     }
     else if (_stricmp("getTooltipAchieve", strMethod) == 0) {
-        void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+        void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
         unsigned nId = pArgs->FUN_1422b8b10();
         unsigned nGrade = pArgs->FUN_1422b8b10();
         ASTooltip tip(pPlayer, 2, 2);
@@ -642,7 +634,7 @@ void UIAchieveDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
 // @0x1418a8f80
 void UIAchieveDialog::FUN_1418a8f80()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     FUN_1418ac710(m_178);
     FUN_1418a8ff0();
@@ -653,7 +645,7 @@ void UIAchieveDialog::FUN_1418a8f80()
 // @0x1418a8ff0
 void UIAchieveDialog::FUN_1418a8ff0()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     MS2Ptr<CAchieveCategory> spCategory = CAchieveCategory::FindById(m_17c);
     if (spCategory.IsNull())
@@ -696,7 +688,7 @@ void UIAchieveDialog::FUN_1418a8ff0()
 // @0x1418a9360
 void UIAchieveDialog::FUN_1418a9360()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     ASObj tree(2);
     ASArray nodes(2);
@@ -708,7 +700,7 @@ void UIAchieveDialog::FUN_1418a9360()
         MS2Ptr<CAchieveCategory> spRoot = roots[i];
         ASObj node(2);
         node.FUN_1407cb9c0("id", spRoot->m_nId);
-        node.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141811980(0x4a, spRoot->m_nId));
+        node.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4a, spRoot->m_nId));
         node.FUN_1409c0dc0("rendererClassName", "export_renderer_category");
         FUN_1418ae010(node, "tabType", spRoot->m_nTab);
         node.FUN_1407cbbe0("alwaysOpen", spRoot->m_nTree == 2);
@@ -718,7 +710,7 @@ void UIAchieveDialog::FUN_1418a9360()
             MS2Ptr<CAchieveCategory> spChild = spRoot->m_aChildren[j];
             ASObj row(2);
             row.FUN_1407cb9c0("id", spChild->m_nId);
-            row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141811980(0x4a, spChild->m_nId));
+            row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4a, spChild->m_nId));
             row.FUN_1409c0dc0("rendererClassName", "export_renderer_category_low");
             FUN_1418ae010(row, "tabType", spChild->m_nTab);
             children.FUN_1422bbf00(row);
@@ -733,12 +725,12 @@ void UIAchieveDialog::FUN_1418a9360()
 // @0x1418a9800
 void UIAchieveDialog::FUN_1418a9800()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     CAchieveList achieves;
     CAchieveCategory::List roots;
     CAchieveCategory::GetRows(roots);
-    FUN_1406c7600()->GetList(achieves, 0, 0, 0, 0);
+    ((class CAchieveManager*)FUN_1406c7600())->GetList(achieves, 0, 0, 0, 0);
     std::vector<std::pair<int, int> > counts;
     for (size_t i = 0; i < roots.GetCount(); i++) {
         counts.push_back(std::make_pair(roots[i]->m_nId, 0));
@@ -756,7 +748,7 @@ void UIAchieveDialog::FUN_1418a9800()
         }
     }
     for (size_t i = 0; i < counts.size(); i++) {
-        CStringW strTitle = FUN_1401a9d70()->FUN_141811980(0x4a, counts[i].first);
+        CStringW strTitle = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4a, counts[i].first);
         if (counts[i].second > 0) {
             CStringW strCount = FUN_1408116a0(0x784, counts[i].second);
             strTitle.Append(strCount);
@@ -775,7 +767,7 @@ void UIAchieveDialog::FUN_1418a9c20()
         unsigned char nIndex = 0;
         for (std::vector<ClearRecord>::iterator it = records.begin(); it != records.end(); ++it) {
             ASObj row(2);
-            MS2Ptr<CAchieve> spAchieve = FUN_1406c7600()->Find(it->m_id);
+            MS2Ptr<CAchieve> spAchieve = ((class CAchieveManager*)FUN_1406c7600())->Find(it->m_id);
             MS2Ptr<CAchieveData> spData = spAchieve->GetDataRef();
             if (spData.IsNull())
                 continue;
@@ -793,7 +785,7 @@ void UIAchieveDialog::FUN_1418a9c20()
             if (nIndex++ >= 12)
                 break;
         }
-        Unk_AchieveTab* pTally = FUN_1406c7600()->GetTally();
+        Unk_AchieveTab* pTally = ((class CAchieveManager*)FUN_1406c7600())->GetTally();
         int nA = reinterpret_cast<Unk_AdTally*>(pTally)->FUN_140267d70(0);
         int nB = reinterpret_cast<Unk_AdTally*>(pTally)->FUN_140267d70(1);
         int nC = reinterpret_cast<Unk_AdTally*>(pTally)->FUN_140267d70(2);
@@ -807,7 +799,7 @@ void UIAchieveDialog::FUN_1418aa190(const FilterOptions* pOptions)
     MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy");
     if (spHero.IsNull())
         return;
-    MS2Ptr<Unk_AcList> spList = spHero->FUN_140bc7280("m_list");
+    MS2Ptr<ASScrollingList> spList = spHero->FUN_140bc7280("m_list");
     if (spList.IsNull())
         return;
     spList->FUN_1422dd1d0();
@@ -815,7 +807,7 @@ void UIAchieveDialog::FUN_1418aa190(const FilterOptions* pOptions)
     int nSelected = 0;
     int nCount = 0;
     CAchieveList achieves;
-    FUN_1406c7600()->GetListFromTable(achieves, 0, 0, 0, 0);
+    ((class CAchieveManager*)FUN_1406c7600())->GetListFromTable(achieves, 0, 0, 0, 0);
     if (achieves.GetCount() != 0) {
         ATL::CRBMap<unsigned __int64, MS2Ptr<CAchieve> > sorted(10);
         for (size_t i = 0; i < achieves.GetCount(); i++) {
@@ -853,9 +845,9 @@ void UIAchieveDialog::FUN_1418aa190(const FilterOptions* pOptions)
 // @0x1418aa660
 void UIAchieveDialog::FUN_1418aa660(int nId)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    MS2Ptr<CAchieve> spAchieve = FUN_1406c7600()->Find(nId);
+    MS2Ptr<CAchieve> spAchieve = ((class CAchieveManager*)FUN_1406c7600())->Find(nId);
     if (spAchieve.IsNull())
         return;
     FUN_1418a9800();
@@ -887,7 +879,7 @@ void UIAchieveDialog::FUN_1418aa890()
         return;
     Unk_AcRequest request(0x4e73);
     request.FUN_1401bac80("m_searchInput", CStringW(strSearch), 0);
-    if (FUN_140d86260()->vfunc_37(&request) == 1)
+    if (((class Unk_AcPlatform*)FUN_140d86260())->vfunc_37(&request) == 1)
         FUN_1418a8ff0();
 }
 
@@ -974,7 +966,7 @@ void UIAchieveDialog::FUN_1418ab000(ASObj& rRow, CAchieve* pAchieve)
             if (pReward != 0 && pReward->m_nType == 8) {
                 strText = FUN_1405c2690(CStringW(L"s_achieve_reward_item_coloring"), strReward);
                 int nPalette = pReward->m_nCode;
-                Unk_AmColorSet set = FUN_140281980()->FUN_140558ad0(nPalette);
+                Unk_AmColorSet set = reinterpret_cast<Unk_AmIngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558ad0(nPalette);
                 if (set.FUN_14056d460() != 0) {
                     int nIndex = 0;
                     for (size_t i = 0; i < set.FUN_14056d540()->FUN_140570e10(); i++) {
@@ -1028,7 +1020,7 @@ void UIAchieveDialog::FUN_1418ab520(ASObj& rRow, CAchieve* pAchieve)
         rRow.FUN_1407cb9c0("grade", nGrade);
         rRow.FUN_1407cbb20("progress", FUN_14093bf10(pAchieve, nGrade));
         if (DAT_143ab2914 >= 50)
-            rRow.FUN_1407cbbe0("debug", FUN_14116d720(FUN_14025e7c0()));
+            rRow.FUN_1407cbbe0("debug", ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsDebugMode());
     }
     else {
         rRow.FUN_1407cb9c0("grade", 11);
@@ -1038,7 +1030,7 @@ void UIAchieveDialog::FUN_1418ab520(ASObj& rRow, CAchieve* pAchieve)
 // @0x1418ab7e0
 void UIAchieveDialog::FUN_1418ab7e0(ASObj& rRow, CAchieve* pAchieve)
 {
-    void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     unsigned nItem = 0;
@@ -1109,7 +1101,7 @@ void UIAchieveDialog::FUN_1418abc60(ASObj& rRow, CAchieve* pAchieve)
                     ASObj item(2);
                     item.FUN_1409c0d20("id", nId);
                     item.FUN_1407cbb20("trophy", FUN_14093b970(nId));
-                    item.FUN_1407cb9c0("complete", FUN_1406c7600()->IsGradeCleared(nId, nReqGrade));
+                    item.FUN_1407cb9c0("complete", ((class CAchieveManager*)FUN_1406c7600())->IsGradeCleared(nId, nReqGrade));
                     item.FUN_1407cb9c0("grade", nReqGrade);
                     list.FUN_1422bbf00(item);
                 }
@@ -1122,7 +1114,7 @@ void UIAchieveDialog::FUN_1418abc60(ASObj& rRow, CAchieve* pAchieve)
 // @0x1418abfa0
 void UIAchieveDialog::FUN_1418abfa0(ASObj& rRow, CAchieve* pAchieve)
 {
-    void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     MS2Ptr<CAchieveData> spData = pAchieve->GetDataRef();
@@ -1192,7 +1184,7 @@ void UIAchieveDialog::FUN_1418ac5f0(int nIndex)
 // @0x1418ac710
 void UIAchieveDialog::FUN_1418ac710(int nTab)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     AC_ROOT(m_30)->FUN_1409ba030("setTabIndex", m_178);
 }
@@ -1200,7 +1192,7 @@ void UIAchieveDialog::FUN_1418ac710(int nTab)
 // @0x1418ac780
 int UIAchieveDialog::FUN_1418ac780(CAchieve* pAchieve)
 {
-    if (FUN_14116d720(FUN_14025e7c0()))
+    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsDebugMode())
         return 0;
     if (pAchieve == 0)
         return 0;
@@ -1246,7 +1238,7 @@ int UIAchieveDialog::FUN_1418ac8f0(CAchieve* pAchieve)
 // @0x1418ac9e0
 int UIAchieveDialog::FUN_1418ac9e0()
 {
-    if (MS2Ptr<Unk_AcList> spTabs = FUN_140c02900("m_tabList"))
+    if (MS2Ptr<ASScrollingList> spTabs = FUN_140c02900("m_tabList"))
         return spTabs->FUN_1422dccd0();
     return 0;
 }
@@ -1297,7 +1289,7 @@ int UIAchieveDialog::FUN_1418acce0(CAchieve* pAchieve)
 // @0x1418acd10
 int UIAchieveDialog::FUN_1418acd10(int nId)
 {
-    MS2Ptr<CAchieve> spAchieve = FUN_1406c7600()->Find(nId);
+    MS2Ptr<CAchieve> spAchieve = ((class CAchieveManager*)FUN_1406c7600())->Find(nId);
     if (spAchieve.IsNull())
         return 0;
     __int64 nProgress = spAchieve->GetProgress();
@@ -1319,7 +1311,7 @@ int UIAchieveDialog::FUN_1418ace00(CAchieve* pAchieve, const CStringW& strSearch
     if (FUN_1418ac870(pAchieve) != 0)
         nState = 3;
     if (pAchieve->GetType() == 8) {
-        if (!FUN_14116d720(FUN_14025e7c0()))
+        if (!((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsDebugMode())
             return 0;
     }
     if (!m_190) {
@@ -1342,7 +1334,7 @@ int UIAchieveDialog::FUN_1418ace00(CAchieve* pAchieve, const CStringW& strSearch
         if (spData->m_nType != 9)
             return 0;
         if (pAchieve->IsGradeReached() == 0 && nState != 3) {
-            if (!FUN_14116d720(FUN_14025e7c0()))
+            if (!((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsDebugMode())
                 return 0;
         }
     }
@@ -1411,19 +1403,19 @@ CStringW UIAchieveDialog::FUN_1418ad5d0(int nCondType, __int64 nId)
     switch (nCondType) {
     case 8:
     case 10:
-        return FUN_1401a9d70()->FUN_141811980(1, nId);
+        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nId);
     case 0x3b:
     case 0x31:
         return FUN_1416e4df0(nId);
     case 0xd1:
-        return FUN_1405c2690(CStringW(L"s_achieve_collectiong_fish_collect"), FUN_1401a9d70()->FUN_141811980(0x1d, nId));
+        return FUN_1405c2690(CStringW(L"s_achieve_collectiong_fish_collect"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nId));
     case 0x10a:
-        return FUN_1405c2690(CStringW(L"s_achieve_collectiong_pet_collect"), FUN_1401a9d70()->FUN_141811980(0x3b, nId));
+        return FUN_1405c2690(CStringW(L"s_achieve_collectiong_pet_collect"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3b, nId));
     case 0xc5: {
-        MS2Ptr<Unk_AcRoom> spRoom = FUN_14031c2a0()->FUN_1403206b0(nId);
+        MS2Ptr<Unk_AcRoom> spRoom = reinterpret_cast<Unk_AcRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(nId);
         if (spRoom.get() != 0)
             return FUN_1408f71a0(CStringW(L"s_achieve_collectiong_dungeon_clear"), FUN_140cbf840(spRoom->m_1c),
-                                 FUN_1401a9d70()->FUN_141811980(0x14, nId));
+                                 TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nId));
     }
         break;
     }
@@ -1439,9 +1431,9 @@ int UIAchieveDialog::FUN_1418ad960(int nCondType, __int64 nId)
         return DAT_143ab30e0.Lookup(nId) != 0;
     case 0x3b:
     case 0x31:
-        return FUN_140764020()->m_10.FUN_140745590(nId);
+        return ((struct Unk_AcQuestMgr*)FUN_140764020())->m_10.FUN_140745590(nId);
     case 0xd1:
-        return (int)FUN_140953f20()->FUN_140cdc380(nId);
+        return (int)reinterpret_cast<Unk_AcFishMgr*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdc380(nId);
     case 0x10a:
         return FUN_140535320()->FUN_140c8b220(nId) != 0;
     case 0xc5: {
@@ -1455,7 +1447,7 @@ int UIAchieveDialog::FUN_1418ad960(int nCondType, __int64 nId)
 static void AcCollectClears(std::vector<UIAchieveDialog::ClearRecord>& rRecords)
 {
     CAchieveList achieves;
-    FUN_1406c7600()->GetFirstList(achieves);
+    ((class CAchieveManager*)FUN_1406c7600())->GetFirstList(achieves);
     for (size_t i = 0; i < achieves.GetCount(); i++) {
         MS2Ptr<CAchieve> spAchieve = achieves[i];
         for (int nGrade = spAchieve->GetDataRef()->m_nFirstGrade; nGrade <= spAchieve->GetCurGrade(); nGrade++) {
@@ -1500,7 +1492,7 @@ static void FUN_1418ae010(ASObj& rObj, const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&static_cast<Unk_AcObjView&>(rObj).m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&static_cast<Unk_AcObjView&>(rObj).m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x1418adf60
@@ -1508,7 +1500,7 @@ void AScript::FUN_1418adf60(const char* szName, AScript obj)
 {
     ASData data;
     data.FUN_1422b83f0(obj.FUN_1422bb890());
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbc7e0-0x142cbc890 .text$yd

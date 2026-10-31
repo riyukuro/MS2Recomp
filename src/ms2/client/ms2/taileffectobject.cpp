@@ -28,15 +28,16 @@
 // ---- exe callees (recovered elsewhere / not yet) ----
 extern char DAT_143afa4d8;                                  // shadow-node table (see FUN_14098d8d0)
 extern char DAT_143a08cf8;                                  // the up axis handed to FUN_140a0b080
-float FUN_14123c260(GameObject* pOwner);                    // the owner's model scale
-void* FUN_14123c410(GameObject* pOwner);                    // the owner's entity
 
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                // entity -> its scene graph root (util.cpp)
 void* FUN_141b6efc0(void* p);                               // entity -> its scene root key
-void* FUN_14098d8d0(void* pTable, void* pKey);              // table lookup -> node
-int FUN_14166ce30(GameObject* pOwner);                      // non-zero while the owner is alive
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14166ce30();
+};
 bool FUN_14028d470(float a, float b);                       // nearly equal
-void FUN_140a0b2a0(void* pNode);                            // detach the node from its parent
+void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
 void FUN_14098b3e0(void* pNode, float fAlpha, int nFlags);  // apply an alpha to the node tree
 void FUN_140a01250(efd::Point3 kAngles, efd::Point3* pForward, efd::Point3* pRight);   // euler angles -> axes
 NiPoint3 FUN_140a0b080(const NiPoint3& kFrom, const NiPoint3& kTo, const void* pUp);  // look-at angles
@@ -54,7 +55,11 @@ struct Unk_TeRequest
     char m_pad_20[0x70 - 0x20];
 };
 MS2_CHECK_SIZE(Unk_TeRequest, 0x70);
-void FUN_140a53190(Unk_TeRequest* p, int nOwnerId);         // set owner
+class NoticeMessage   // C3: member view for the former free stand-ins
+{
+public:
+    void SetActor(int);
+};
 void FUN_1409fabf0(void* pSmartPointer, void* pNode);       // efd::SmartPointer<NiAVObject>::operator=
 
 // The effect manager singleton (0x1403ed280).
@@ -160,13 +165,13 @@ void CTailEffectObject::FUN_140acee90()
         return;
 
     const CString& strPath = m_spData->m_strEffectPath;
-    float fScale = FUN_14123c260(m_pOwner);
+    float fScale = ((class GameObject*)(class GameObject*)(m_pOwner))->FUN_14123c260();
     float fSpacing = m_spData->m_fDistance * fScale;
 
     Unk_NodePtr spNode(NiNew NiNode(0));
     if (m_pOwner->GetClassID() == 0x6200044)
     {
-        NiNode* pRoot = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(FUN_14123c410(m_pOwner))));
+        NiNode* pRoot = static_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(((void*)((class GameObject*)(class GameObject*)(m_pOwner))->FUN_14123c410()))))));
         pRoot->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&spNode)), false);
     }
     else
@@ -178,7 +183,7 @@ void CTailEffectObject::FUN_140acee90()
     Unk_TeRequest kRequest;
     kRequest.m_strName = strPath;
     kRequest.m_nOwnerId = 0;
-    FUN_140a53190(&kRequest, m_pOwner->FUN_14123c580());
+    ((class NoticeMessage*)(struct Unk_TeRequest*)(&kRequest))->SetActor(m_pOwner->FUN_14123c580());
     FUN_1409fabf0(&kRequest.m_spNode, FUN_1409475d0(&spNode));
     int nHandle = reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kRequest);
     reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(nHandle, m_bVisible);
@@ -188,7 +193,7 @@ void CTailEffectObject::FUN_140acee90()
     spInfo->m_spNode = spNode;
     spInfo->m_nEffectId = nHandle;
 
-    Unk_NodePtr spBase(FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6ef70(m_pOwner->FUN_14123c460())));
+    Unk_NodePtr spBase(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6ef70(m_pOwner->FUN_14123c460())))));
     if (!FUN_1409475d0(&spBase))
         return;
 
@@ -255,7 +260,7 @@ void CTailEffectObject::FUN_140acf570()
         kRequest.m_nOwnerId = 0;
         reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kRequest);
     } while (0);
-    FUN_140a0b2a0(FUN_1409475d0(&spInfo->m_spNode));
+    FUN_140a0b2a0((class NiAVObject*)(FUN_1409475d0(&spInfo->m_spNode)));
     m_listInfo.pop_back();
 }
 
@@ -297,10 +302,10 @@ void CTailEffectObject::FUN_140acf8f0()
         return;
 
     float fSpeed = m_spData->m_fSpeed;
-    float fScale = FUN_14123c260(m_pOwner);
+    float fScale = ((class GameObject*)(class GameObject*)(m_pOwner))->FUN_14123c260();
     float fDist = m_spData->m_fDistance * fScale;
 
-    Unk_NodePtr spPrev(FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6ef70(m_pOwner->FUN_14123c460())));
+    Unk_NodePtr spPrev(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6ef70(m_pOwner->FUN_14123c460())))));
     std::list<MS2Ptr<TailEffectInfo> >& rList = m_listInfo;
     for (std::list<MS2Ptr<TailEffectInfo> >::const_iterator itEnd = rList.end(), it = rList.begin(); it != itEnd; ++it)
     {
@@ -427,7 +432,7 @@ bool CTailEffectObject::vfunc_1()
 {
     if (m_pOwner == 0)
         return false;
-    if (FUN_14166ce30(m_pOwner))
+    if (((class PCBase*)(class GameObject*)(m_pOwner))->FUN_14166ce30())
         return true;
     return false;
 }

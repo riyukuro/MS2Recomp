@@ -24,6 +24,8 @@ static CString s_tabIndex = "tabIndex";
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/itempreview.h"
 
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
 
@@ -45,16 +47,9 @@ class AvatarPC;
 AvatarPC* FUN_140a535c0(Unk_IpActor* pObj);
 
 // The preview service (singleton 0x1409bb9e0): the item shown on the preview avatar.
-class Unk_IpPreview
+class Unk_IpPreview : public ItemPreviewMgr
 {
 public:
-    void FUN_140d407d0();
-    int FUN_140d409e0(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
-    void FUN_140d40910(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4);
-    MS2Ptr<CItem> FUN_140d40470();
-    int FUN_140d40850();
-    MS2Ptr<CItem> FUN_140d40500();
-    MS2Ptr<CItemData> FUN_140d40590();
     int FUN_140d40800();
     MS2Ptr<Unk_IpOutfit> FUN_140d40620();
 };
@@ -63,8 +58,7 @@ Unk_IpPreview* FUN_1409bb9e0();
 class Unk_IpOutfitView : public CPtred { public: Unk_IpOutfitView(); };
 class Unk_IpOutfit : public CPtred { public: MS2Ptr<Unk_IpOutfitView> FUN_140d3cf00(); };
 class Unk_EquipOutfit : public CPtred { public: Unk_EquipOutfit(); };
-class Unk_IpPlayer { public: void* FUN_141bd0cc0(); };
-Unk_IpPlayer* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 CStringW GetStringCommon(int nStringId);
 CItemData* FUN_140527840(CItem* pItem);
 bool FUN_141b487f0(MS2Ptr<CItemData> spData);
@@ -150,7 +144,7 @@ void UIItemPreviewDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* 
         int bNoSlot = 0;
         MS2Ptr<CItem> spItem = FUN_1409bb9e0()->FUN_140d40470();
         if (spItem.get() ? true : false) {
-            if (FUN_1409bb9e0()->FUN_140d40850() != 0) {
+            if (FUN_1409bb9e0()->GetArg() != 0) {
                 MS2Ptr<CItemData> spData(FUN_140527840(spItem));
                 if (spData.get() != 0) {
                     if (spData->FUN_14053e260() != 0) {

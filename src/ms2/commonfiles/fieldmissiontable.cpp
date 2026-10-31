@@ -28,7 +28,7 @@ class Unk_CommonLog
 public:
     void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg);
 };
-Unk_CommonLog* FUN_140166440();
+class CLogString* GetLogString();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 
 // @0x14037c8c0
@@ -91,7 +91,7 @@ int CFieldMissionTable::Load()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        reinterpret_cast<Unk_CommonLog*>(GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pRound = pRoot->FUN_140165cf0("round"); pRound != 0; pRound = pRound->FUN_140168650("round"))

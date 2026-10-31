@@ -67,21 +67,24 @@
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-WorldService* FUN_1403ed2d0();
 
 // Feature switches of the client.
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 int CashRegionSelectA();
 int CashRegionSelectB();
 int CashRegionSelectC();
 __int64 GetServerTime();                                // now
 
 // The cash shop dialog (id 0x4ebc); the exe calls its members through the handle of the cash shop ref.
-int FUN_141034dc0(UICashShopDialog* pDlg, int nId);
+class UICashShopDialog   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141034dc0(int);
+    int FUN_1410356a0();
+};
 void FUN_141035050(UICashShopDialog* pDlg);
 void FUN_141034e00(UICashShopDialog* pDlg, int n);
 void FUN_141035080(UICashShopDialog* pDlg, int n);
-int FUN_1410356a0(UICashShopDialog* pDlg);
 void FUN_141034ef0(UICashShopDialog* pDlg, int n, CInPacket& packet);
 
 // The market bill dialog (id 0x4f17) and the handle it gives of its owner.
@@ -107,8 +110,12 @@ class Unk_CashUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); vo
 // Item data of an item id (only the item class test is used).
 class Unk_CashItemData : public CPtred { public: char m_pad[8]; };
 MS2Ptr<Unk_CashItemData> FUN_14053f870(int nItemId);
-bool FUN_14053c6b0(Unk_CashItemData* pData, int nFlag);
-void* FUN_1401d3200();
+class CItemData   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14053c6b0(int);
+};
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 void* FUN_140298f80(void* p);
 void FUN_1418fe1c0(void* p);
 
@@ -263,7 +270,7 @@ DragSlot* CashInventoryBag::vfunc_16(int nIndex)
             if (ref.FUN_140b051c0() != 0)
             {
                 int nProductId = aInv[nIndex]->m_n1c;
-                int nType = FUN_141034dc0(ref.FUN_140b051d0(), nProductId);
+                int nType = ((class UICashShopDialog*)(ref.FUN_140b051d0()))->FUN_141034dc0(nProductId);
                 return new (efd::MemHint(efd::MemHint::NONE)) CashInventorySlot(vfunc_15(nIndex), nProductId, nType, nIndex);
             }
         }
@@ -611,7 +618,7 @@ void CCashMarketMan::FUN_140b07120(CInPacket& packet)
         m_mapSale.SetAt(sp->m_n18, sp);
         m_aSale.Add(sp);
     }
-    if (FUN_140166410()->FUN_14036e4c0())
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
     {
         Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
         if (ref.FUN_140b051c0() != 0)
@@ -626,7 +633,7 @@ void CCashMarketMan::FUN_140b072d0(CInPacket& packet)
     int nArg = packet.ReadInt32();
     if (nCode == 1)
     {
-        if (FUN_140166410()->FUN_14036e4c0())
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
         {
             Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
             if (ref.FUN_140b051c0() != 0)
@@ -665,13 +672,13 @@ void CCashMarketMan::FUN_140b07490(CInPacket& packet)
             if (spBox.get() != 0)
                 FUN_141a01c30(spBox.operator->(), s_strCashBuy);
         }
-        if (FUN_140166410()->FUN_14036e4c0())
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
         {
             {
                 Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
                 if (ref.FUN_140b051c0() != 0)
                 {
-                    if (FUN_1410356a0(ref.FUN_140b051d0()) == 0)
+                    if (((class UICashShopDialog*)(ref.FUN_140b051d0()))->FUN_1410356a0() == 0)
                         FUN_140d73bc0(0xa60, 0, 0, CStringW(L""));
                     FUN_141034ef0(ref.FUN_140b051d0(), nArg, packet);
                 }
@@ -865,7 +872,7 @@ void CCashMarketMan::FUN_140b08760(CInPacket& packet)
             nIndexBase = (nPage - 1) * 0x1e + i;
             m_aInv[i] = sp;
         }
-        if (FUN_140166410()->FUN_14036e4c0())
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
         {
             Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
             if (ref.FUN_140b051c0() != 0)
@@ -902,12 +909,12 @@ void CCashMarketMan::FUN_140b08ab0(CInPacket& packet)
         int nB = packet.ReadInt32();
         int nC = packet.ReadInt32();
         unsigned nD = packet.ReadInt32();
-        if (FUN_140166410()->FUN_14036e4c0())
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
         {
             FUN_140d73bc0(0xa65, 0, 0, CStringW(L""));
             FUN_141276180(s_strCashInventoryToBag, "");
         }
-        else if (FUN_140166410()->FUN_14036e5b0())
+        else if (((class CFeatureManager*)FUN_140166410())->FUN_14036e5b0())
         {
             if (nD >= 900000 && nD < 1000000)
                 FUN_140d73bc0(0xa61, 0, 0, CStringW(L""));
@@ -922,8 +929,8 @@ void CCashMarketMan::FUN_140b08ab0(CInPacket& packet)
             MS2Ptr<Unk_CashItemData> spData = FUN_14053f870(nItemId);
             if (spData.get() != 0)
             {
-                if (FUN_14053c6b0(spData.operator->(), 0x13))
-                    FUN_1418fe1c0(FUN_140298f80((char*)FUN_1401d3200() + 0xdaa0));
+                if (((class CItemData*)(class Unk_CashItemData*)(spData.operator->()))->FUN_14053c6b0(0x13))
+                    FUN_1418fe1c0(FUN_140298f80((char*)((void*)FUN_1401d3200()) + 0xdaa0));
             }
         }
     }
@@ -1025,7 +1032,7 @@ int CashInventorySlot::vfunc_14()
 // @0x140b0d0a0 (ITooltip::vfunc_0)
 int CashInventorySlot::vfunc_0(void* p)
 {
-    ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x20, 2);
+    ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x20, 2);
     if (tip.FUN_1409e0d40(m_spItem.get()))
     {
         tip.FUN_1409c65f0(GetStringCommon(0xa5d));
@@ -1038,7 +1045,7 @@ int CashInventorySlot::vfunc_0(void* p)
 // @0x140b0d1a0
 int CashInventorySlot::vfunc_8(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ASSlot slot(2);

@@ -30,6 +30,7 @@ static CString s_sndChoice = "Enchant_ItemChoice";
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uitalkcinematic.h"
 
 #define MS2_ASCRIPT_INL_ASSERT(line, expression) \
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\ascript.inl", (unsigned)(line)), 0))
@@ -59,8 +60,7 @@ private:
 MS2_CHECK_SIZE(Unk_TmBag, 0x88);
 
 // A dialog's position record (the maid dialog's, UI type 0x4e40).
-class Unk_TmRefPos { public: int FUN_141b1d3d0(); int FUN_141b1d460(); };
-Unk_TmRefPos* FUN_140a7b2b0(int nId);
+class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                      // has the AS object been released
 
@@ -84,7 +84,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                          
 CStringW FUN_1409404f0(__int64 nValue);                                     // money text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 extern __int64 DAT_143ab2898;                                               // the player's meso
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 #include "ms2/placeholder/gfxvalue.h"
 
@@ -128,8 +128,8 @@ CString UIItemTreasureMapDialog::GetTypeName()
 void UIItemTreasureMapDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    Unk_TmRefPos* pRef;
-    if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
+    UITalkCinematic* pRef;
+    if (pDialog != 0 && (pRef = ((class UITalkCinematic*)FUN_140a7b2b0(0x4e40))) != 0)
     {
         int nX = pRef->FUN_141b1d3d0();
         int nY = pRef->FUN_141b1d460() - 0x50;
@@ -268,7 +268,7 @@ void UIItemTreasureMapDialog::FUN_140c55d20(const Scaleform::GFx::FunctionHandle
         FUN_140c56670();
         if (m_nTargetUid > 0)
         {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nTargetUid);
+            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nTargetUid);
             if (spItem.get() != 0)
             {
                 if ((unsigned int)spItem->vfunc_4() > 0)
@@ -305,10 +305,10 @@ void UIItemTreasureMapDialog::FUN_140c560f0()
 {
     m_items.RemoveAll();
     ATL::CAtlArray<unsigned __int64> uids;
-    DAT_143ab2a90.FUN_140a609a0(7, uids);
+    g_143ab2a90.FUN_140a609a0(7, uids);
     for (unsigned i = 0; i < uids.GetCount(); i++)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(uids[i]);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(uids[i]);
         if (spItem == 0)
             continue;
         if (!FUN_140c57a70(MS2Ptr<CItem>(spItem)))
@@ -344,7 +344,7 @@ void UIItemTreasureMapDialog::FUN_140c563d0()
         CStringW strArg;
         if (m_bFree != 0)
             strArg = L"free";
-        if (DAT_143ab2a90.FUN_140a63880(m_spTarget.get(), strArg) == 0)
+        if (g_143ab2a90.FUN_140a63880(m_spTarget.get(), strArg) == 0)
             return;
         m_nState = 1;
         m_nTargetUid = m_spTarget->FUN_140526a50();
@@ -390,7 +390,7 @@ void UIItemTreasureMapDialog::FUN_140c56a50(__int64 nUid, __int64 nCost)
     if (m_board == 0)
         return;
     m_nCost = nCost;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
     if (spItem == 0)
         return;
     if (FUN_140c57a70(MS2Ptr<CItem>(spItem)) == 0)

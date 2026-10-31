@@ -136,28 +136,37 @@ extern Unk_MfInventory DAT_143ab2a90;                           // the player's 
 extern __int64 DAT_143ab2820;                                   // own account id
 
 // ---- out-of-unit callees ----
-void* FUN_1403ed2d0();                                          // the world of my character
-Unk_MfPC* FUN_141bd0cc0(void* pWorld);                          // my character
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 CGameRule* FUN_1401c0d90();
-Unk_MfCubeService* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_14053feb0(int nItemId);                                 // default rarity of an item
 __int64 GetServerTime();                                        // server time
 void FUN_140710590(COutPacket& packet);                         // send
-void* FUN_1403ed2b0();                                          // the UI service
+class CUIService;
+template<> CUIService* TSingleton<CUIService>::GetInstance();
 int FUN_141adc890(void* pService, int nUiId);                   // is the dialog open
 struct Unk_MfUIService { MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };  // the dialog's UI object
 void FUN_141276180(const CString& strName, const CString& strArg);  // play a system sound
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1408116a0(int nStringId, const int& nValue);
-void FUN_140694050(CManufacture& v, CInPacket& in);             // reads a record from the packet
-void FUN_1412e6110(UIManufactureDialog* pDlg, int a);
-void FUN_1412e6850(UIManufactureDialog* pDlg, int a);
-void FUN_1412e6af0(UIManufactureDialog* pDlg, int a);
-void FUN_1412e6c30(UIManufactureDialog* pDlg, int a, int b, int c, int d, int e, int f, int g);
+void FUN_140694050(class CManufacture&, class CByteBuffer&);   // C3: was FUN_140694050
 void FUN_1412dc3c0(UIManufactureStatus* pDlg);
 
-class UIManufactureDialog : public UIObject {};
+class UIManufactureDialog : public UIObject {public:
+    void FUN_1412e6110(int);   // C3: was free FUN_1412e6110
+public:
+    void FUN_1412e6850(int);   // C3: was free FUN_1412e6850
+public:
+    void FUN_1412e6af0(int);   // C3: was free FUN_1412e6af0
+public:
+    void FUN_1412e6c30(int, int, int, int, int, int, int);   // C3: was free FUN_1412e6c30
+};
 class UIManufactureStatus : public UIObject {};
 
 // @0x140d50010
@@ -183,20 +192,20 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
         for (unsigned __int64 i = 0; i < nCount; i++)
         {
             MS2Ptr<CManufacture> spItem(new CManufacture);
-            FUN_140694050(*spItem.get(), *pPacket);
+            FUN_140694050(*spItem.get(), *(class CByteBuffer*)&(*pPacket));
             m_mapManufacture.SetAt(spItem->FUN_140d52020(), spItem);
         }
     }
     else if (cMode == 1)
     {
         MS2Ptr<CManufacture> spItem(new CManufacture);
-        FUN_140694050(*spItem.get(), *pPacket);
+        FUN_140694050(*spItem.get(), *(class CByteBuffer*)&(*pPacket));
         m_mapManufacture.SetAt(spItem->FUN_140d52020(), spItem);
     }
     else if (cMode == 2)
     {
         MS2Ptr<CManufacture> spItem(new CManufacture);
-        FUN_140694050(*spItem.get(), *pPacket);
+        FUN_140694050(*spItem.get(), *(class CByteBuffer*)&(*pPacket));
         m_mapManufacture.SetAt(spItem->FUN_140d52020(), spItem);
     }
     else if (cMode == 3)
@@ -207,61 +216,61 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     else if (cMode == 4)
     {
         int nValue = pPacket->ReadInt32();
-        if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
+        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
             if (pDlg != 0)
-                FUN_1412e6110(pDlg, nValue);
+                ((class UIManufactureDialog*)(class UIManufactureDialog*)(pDlg))->FUN_1412e6110(nValue);
         }
     }
     else if (cMode == 6)
     {
         int nValue = pPacket->ReadInt32();
-        if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
+        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
             if (pDlg != 0)
-                FUN_1412e6850(pDlg, nValue);
+                ((class UIManufactureDialog*)(class UIManufactureDialog*)(pDlg))->FUN_1412e6850(nValue);
         }
     }
     else if (cMode == 7)
     {
         int nValue = pPacket->ReadInt32();
-        if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
+        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
             if (pDlg != 0)
-                FUN_1412e6850(pDlg, nValue);
+                ((class UIManufactureDialog*)(class UIManufactureDialog*)(pDlg))->FUN_1412e6850(nValue);
         }
     }
     else if (cMode == 8)
     {
         int nValue = pPacket->ReadInt32();
-        if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
+        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
             if (pDlg != 0)
-                FUN_1412e6850(pDlg, nValue);
+                ((class UIManufactureDialog*)(class UIManufactureDialog*)(pDlg))->FUN_1412e6850(nValue);
         }
     }
     else if (cMode == 9)
     {
         int nValue = pPacket->ReadInt32();
-        if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
+        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
             if (pDlg != 0)
-                FUN_1412e6850(pDlg, nValue);
+                ((class UIManufactureDialog*)(class UIManufactureDialog*)(pDlg))->FUN_1412e6850(nValue);
         }
     }
     else if (cMode == 10)
     {
         int nValue = pPacket->ReadInt32();
-        if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
+        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
             if (pDlg != 0)
-                FUN_1412e6af0(pDlg, nValue);
+                ((class UIManufactureDialog*)(class UIManufactureDialog*)(pDlg))->FUN_1412e6af0(nValue);
         }
     }
     else if (cMode == 11)
@@ -273,16 +282,16 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
         int nE = pPacket->ReadInt32();
         int cF = pPacket->ReadUInt8();
         int cG = pPacket->ReadUInt8();
-        if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
+        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
             if (pDlg != 0)
-                FUN_1412e6c30(pDlg, nA, cC, nB, nD, nE, cF, cG);
+                ((class UIManufactureDialog*)(class UIManufactureDialog*)(pDlg))->FUN_1412e6c30(nA, cC, nB, nD, nE, cF, cG);
         }
     }
     if (cMode == 1 || cMode == 2 || cMode == 3)
     {
-        if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec9) != 0)
+        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec9) != 0)
         {
             UIManufactureStatus* pDlg = GetManufactureStatus(0x4ec9);
             if (pDlg != 0)
@@ -294,7 +303,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
 // @0x140d509b0
 int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* pnResult)
 {
-    Unk_MfPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_MfPC* pPC = ((class Unk_MfPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     {
@@ -326,7 +335,7 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
             if (0 < spRecipe->m_nMeso)
             {
                 int nCode = 0;
-                efd::SmartPointer<Unk_MfCubeService> spService(FUN_1401cd040(&DAT_143b059e8));
+                efd::SmartPointer<Unk_MfCubeService> spService(((class Unk_MfCubeService*)FUN_1401cd040(&DAT_143b059e8)));
                 int nOk = spService->FUN_1410d2fb0(DAT_143ab2820, spRecipe->m_nMeso, &nCode);
                 if (nOk == 0)
                 {
@@ -532,9 +541,9 @@ CStringW CManufactureManager::GetMaidText(int nType, Unk_MfNpc* pNpc)
 // @0x140d51900
 UIManufactureDialog* CManufactureManager::GetManufactureDialog(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spUI = ((Unk_MfUIService*)FUN_1403ed2b0())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = ((Unk_MfUIService*)TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIManufactureDialog*>((UIObject*)spUI);
     }
@@ -544,9 +553,9 @@ UIManufactureDialog* CManufactureManager::GetManufactureDialog(int nUiId)
 // @0x140d519a0
 UIManufactureStatus* CManufactureManager::GetManufactureStatus(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spUI = ((Unk_MfUIService*)FUN_1403ed2b0())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = ((Unk_MfUIService*)TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIManufactureStatus*>((UIObject*)spUI);
     }

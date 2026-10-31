@@ -31,6 +31,8 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_WcClip : public AScript {
@@ -90,10 +92,7 @@ public:
 };
 Unk_WcPacketManager* FUN_140bccd50();
 class Unk_WcAvatar;
-class Unk_WcField { public: int FUN_141bd3060(); Unk_WcAvatar* FUN_141bd0cc0(); };
-Unk_WcField* FUN_1403ed2d0();
-class Unk_WcStrings { public: CStringW FUN_141811980(int, int); };
-Unk_WcStrings* FUN_1401a9d70();
+class Unk_WcField : public WorldService { public: Unk_WcAvatar* FUN_141bd0cc0(); };
 CStringW FUN_140298ea0(CStringW);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_140d73ff0(CStringW);
@@ -370,7 +369,7 @@ MS2_REPLACE_METHOD(0x140feb870, UIWorldChampionRewardDialog, FUN_140feb870, 963,
 // @0x140febc40
 void UIWorldChampionRewardDialog::FUN_140febc40() {
     if (m_title == NULL || m_area == NULL) return;
-    Unk_WcAvatar* avatar = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_WcAvatar* avatar = reinterpret_cast<Unk_WcField*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!avatar) return;
     size_t index = m_selected - 1;
     if (index >= m_rewardVector.size()) {
@@ -425,12 +424,12 @@ void UIWorldChampionRewardDialog::FUN_140fec2b0(const Scaleform::GFx::FunctionHa
 MS2_REPLACE_METHOD(0x140fec2b0, UIWorldChampionRewardDialog, FUN_140fec2b0, 84, 0x1B6547EA);
 // @0x140fec310
 void UIWorldChampionRewardDialog::FUN_140fec310(const Scaleform::GFx::FunctionHandler::Params&) {
-    if (FUN_1403ed2d0()->FUN_141bd3060() == m_field) {
+    if (reinterpret_cast<Unk_WcField*>(WorldService::GetInstance())->FUN_141bd3060() == m_field) {
         FUN_140d73ff0(L"s_world_champion_msg_current_field");
         return;
     }
     FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWorldChampionRewardDialog::SendWorldChampionMode9),
-        FUN_1405c2690(L"s_world_champion_msg_move_field", FUN_1401a9d70()->FUN_141811980(3, m_field)));
+        FUN_1405c2690(L"s_world_champion_msg_move_field", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_field)));
 }
 MS2_REPLACE_METHOD(0x140fec310, UIWorldChampionRewardDialog, FUN_140fec310, 422, 0x718A91D0);
 // @0x140fec4c0

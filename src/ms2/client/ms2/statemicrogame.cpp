@@ -144,8 +144,6 @@ Unk_MgGameService* FUN_140302b00();
 
 // Actor helpers (the bodies are in the earlier objs).
 class Unk_MgBuffMgr { public: efd::Point3 FUN_141683290(); };
-Unk_MgBuffMgr* FUN_14166d240(PCBase* p);                 // 0x14166d240
-bool FUN_1416749c0(PCBase* p);                           // 0x1416749c0
 Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3& kUp);   // 0x140a0b080 look-at euler
 unsigned FUN_140869420();                                // 0x140869420 the clock
 bool FUN_1401647e0(const CString& strA, const CString& strB) noexcept;   // 0x1401647e0 the strings are equal
@@ -157,7 +155,6 @@ CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg); // 0x1405c2690 
 void FUN_141275260(int nStringId, int nA, int nB);       // 0x141275260 notice by string id
 unsigned FUN_140768010(unsigned nMax, int nMin);         // 0x140768010 random index
 int FUN_140a5f180(const void* pTable, int nKey, int nDefault);   // 0x140a5f180
-void FUN_141924680(void* pPane);                         // 0x141924680 close the dance pane
 void* FUN_140b769d0(int nId);                            // 0x140b769d0 the dock pane of a dialog
 
 // The scene-graph probes of the placement test (see statecoupleemotion.cpp: the same helper sits in that obj).
@@ -309,9 +306,9 @@ void StateMicroGameRps::vfunc_8(double fTime)
     State::vfunc_8(fTime);
     if (FUN_1417b8560() == 0)
         return;
-    Unk_MgBuffMgr* pBuff = FUN_14166d240(m_pOwner);
+    Unk_MgBuffMgr* pBuff = ((Unk_MgBuffMgr*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     m_pOwner->vfunc_22(pBuff->FUN_141683290());
-    if (FUN_1416749c0(m_pOwner))
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
     else
         FUN_1417b9460();
@@ -816,9 +813,9 @@ void StateMicroGameCoupleDance::vfunc_8(double fTime)
     State::vfunc_8(fTime);
     if (FUN_1417b8560() == 0)
         return;
-    Unk_MgBuffMgr* pBuff = FUN_14166d240(m_pOwner);
+    Unk_MgBuffMgr* pBuff = ((Unk_MgBuffMgr*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     m_pOwner->vfunc_22(pBuff->FUN_141683290());
-    if (FUN_1416749c0(m_pOwner))
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
     else
         FUN_1417b9460();
@@ -1065,7 +1062,7 @@ void StateMicroGameCoupleDance::FUN_140b8a060()
         {
             UIDialog* pPane = (UIDialog*)FUN_140b769d0(0x4f71);
             if (pPane != 0 && pPane->FUN_141924630() == 0)
-                FUN_141924680(pPane);
+                reinterpret_cast<UIDialog*>(pPane)->FUN_141924680();
             pRider->FUN_14166cc40(0xb1);
             pRider->vfunc_59(1, 0, 0, 0);
         }

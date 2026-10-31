@@ -17,7 +17,7 @@
 extern int DAT_143ae2b34;                                       // flag-based mesh cull mode
 extern NiFixedString DAT_143ae5190;                             // extra-data key of the culled meshes
 void FUN_1410865e0(NiObjectNET* pObj, const NiFixedString& kKey, bool bValue);
-int FUN_141568f60(NiAVObject* pObj);                            // flags & 0x10
+unsigned int FUN_141568f60(class NiAVObject*);   // C3: was FUN_141568f60
 void FUN_141568f90(NiAVObject* pObj);                           // flags |= 0x10
 
 // @0x14185ff70

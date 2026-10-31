@@ -18,6 +18,7 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/fittingdollpc.h"
 
 class MyPC;
 
@@ -33,8 +34,6 @@ Unk_SingletonObj* FUN_140ac74e0();                          // 0x140ac74e0 (defi
 extern Unk_SingletonObj* DAT_143ab26c8;                     // 0x143ab26c8
 
 // MyPC / PCBase helpers (free-function form: `this` is the first argument).
-void* FUN_14165f100(MyPC* p);                               // 0x14165f100
-void FUN_14165f170(MyPC* p);                                // 0x14165f170
 unsigned FUN_140869420();                                   // 0x140869420 client time in ms
 
 // ---- StateWeddingEmotionData ----
@@ -125,8 +124,8 @@ void StateWeddingEmotion::vfunc_4(StateData* pData)
     }
     m_spData = spData;
     MyPC* pPC = FUN_1417b84b0();
-    if (pPC != 0 && m_spData.get()->m_b2d == 0 && FUN_14165f100(pPC) != 0)
-        FUN_14165f170(pPC);
+    if (pPC != 0 && m_spData.get()->m_b2d == 0 && ((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())) != 0)
+        reinterpret_cast<PC*>(pPC)->SendRequestCube();
     m_n50 = FUN_140869420();
     if (m_spData.get()->m_b18 != 0)
     {

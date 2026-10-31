@@ -17,10 +17,10 @@
 class Unk_140165cf0;
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp); they return 0 on success.
-int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);
-int FUN_1408730a0(Unk_140165cf0* pNode, const char* pszName, bool& bOut);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 
 // "#RRGGBB"-style string to colour.
 Unk_AfterImageColor FUN_140db93e0(const CString& str);
@@ -41,9 +41,9 @@ CAfterImageEffectParam::~CAfterImageEffectParam()
 void CAfterImageEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    if (FUN_1408731e0(pNode, "imageSize", m_nImageSize))
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "imageSize", m_nImageSize))
         m_nImageSize = 0x100;
-    if (FUN_1408730a0(pNode, "lightenMode", m_bLightenMode))
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "lightenMode", m_bLightenMode))
         m_bLightenMode = true;
     CString strColor;
     if (!FUN_1408733e0(pNode, "color", strColor))
@@ -56,14 +56,14 @@ void CAfterImageEffectParam::vfunc_1(Unk_140165cf0* pNode)
         m_kColor = kDefault;
     }
     float fTimeLife = 1.0f;
-    if (FUN_140873360(pNode, "timeLife", fTimeLife))
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "timeLife", fTimeLife))
         fTimeLife = 1.0f;
     m_nTimeLife = (unsigned)(fTimeLife * 1000.0f);
     float fTimeInterval = 0.2f;
-    if (FUN_140873360(pNode, "timeInterval", fTimeInterval))
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "timeInterval", fTimeInterval))
         fTimeInterval = 0.2f;
     m_nTimeInterval = (unsigned)(fTimeInterval * 1000.0f);
-    if (FUN_140873360(pNode, "moveInterval", m_fMoveInterval))
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "moveInterval", m_fMoveInterval))
         m_fMoveInterval = 100.0f;
 }
 MS2_REPLACE_METHOD(0x140987520, CAfterImageEffectParam, vfunc_1, 527, 0x29700881);

@@ -10,7 +10,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 
-class Unk_DeList;
+class ASScrollingList;
 struct Unk_DeVec2;
 
 class UIDecoEditDialog : public UIDialog
@@ -36,6 +36,6 @@ public:
     void FUN_14191c280(Unk_DeVec2 vScale);                      // OnBrushScaleChange
     void FUN_14191c2d0(Unk_DeVec2 vRotation);                   // OnBrushRotationChange
 
-    MS2Ptr<Unk_DeList> FUN_140c02900(const CString& strName);   // bind a list child
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);   // bind a list child
 };
 MS2_CHECK_SIZE(UIDecoEditDialog, 0x178);

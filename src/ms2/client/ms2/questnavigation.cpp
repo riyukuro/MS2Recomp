@@ -39,12 +39,16 @@
 #include "hook/ms2hook.h"
 
 class WorldService;
-WorldService* FUN_1403ed2d0();                              // WorldService::GetInstance
-unsigned FUN_141bd3060(WorldService* pWorld);               // the current map id
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141bd3060();
+public:
+    static class WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
+};
 int FUN_1412755a0();
 int FUN_14074b030(CQuestData* pQuest);                      // the quest id
 CQuestManager* FUN_140764020();
-int FUN_1406fc7b0(CFieldMetaTable* pTable, unsigned nFrom, unsigned nTo);   // a portal leads from nFrom to nTo
 
 // The game's TPtr has a private allocating reset (`p = New(0)`); a specialization is a friend of every MS2Ptr<T>.
 struct Unk_QnAccess;
@@ -206,7 +210,7 @@ int CQuestNavigationMap::BuildMapPaths()
             unsigned nTo = m_10[j];
             if (i == j)
                 costs[i][j] = 0;
-            else if (FUN_1406fc7b0(TSingleton<CFieldMetaTable>::GetInstance(), nFrom, nTo))
+            else if (((class CFieldMetaTable*)(class CFieldMetaTable*)(TSingleton<CFieldMetaTable>::GetInstance()))->FUN_1406fc7b0(nFrom, nTo))
             {
                 short nCost = 1;
                 if (nFrom == 0x3197542 || nTo == 0x3197542)
@@ -248,7 +252,7 @@ int CQuestNavigationMap::FindMapPath(int nFrom, int nTo, ATL::CAtlArray<unsigned
         return 0;
     if (m_78[nFromIndex][nToIndex] == 0)
     {
-        if (!FUN_1406fc7b0(TSingleton<CFieldMetaTable>::GetInstance(), nFrom, nTo))
+        if (!((class CFieldMetaTable*)(class CFieldMetaTable*)(TSingleton<CFieldMetaTable>::GetInstance()))->FUN_1406fc7b0(nFrom, nTo))
             return 0;
     }
     path.Add(nFrom);
@@ -288,7 +292,7 @@ void CQuestNavigationMap::CollectMapPath(short nFrom, short nTo, ATL::CAtlArray<
 // @0x140c915a0
 int CQuestNavigationMap::NearestMap(const ATL::CAtlArray<unsigned>& maps)
 {
-    unsigned nCurrent = FUN_141bd3060(FUN_1403ed2d0());
+    unsigned nCurrent = ((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FUN_141bd3060();
     int nBest = 0x7fffffff;
     int nNearest = 0;
     for (size_t i = 0; i < maps.GetCount(); i++)

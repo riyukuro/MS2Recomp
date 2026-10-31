@@ -19,6 +19,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // ---- unit-local stand-ins for classes whose units are not recovered yet ----
 
@@ -37,7 +38,7 @@ public:
     void FUN_1422dfce0(const CStringW& strEntry);               // add an entry
 };
 
-// The graphics option block (FUN_1409a8b10()->FUN_1409a8ac0()): HDR, shimmer, mirror flags and the shadow quality.
+// The graphics option block (reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()): HDR, shimmer, mirror flags and the shadow quality.
 class Unk_GoGraphics
 {
 public:
@@ -67,7 +68,6 @@ public:
     Unk_GoGraphics* FUN_1409a8ac0();
     Unk_GoScale* FUN_140e09150();
 };
-Unk_GoOptions* FUN_1409a8b10();                     // the game option manager
 
 // The swf entity manager's slot 6 (vtable 0x143112518): refreshes the loaded movies after a UI scale change.
 class Unk_GoMovieMgr
@@ -82,7 +82,6 @@ unsigned char FUN_1412642d0(void* pStep);
 void FUN_1409a5850(void* pDst, const void* pSrc, int nSize);
 extern bool DAT_143ae53c0;                          // "any shimmer object this frame" flag
 CStringW GetStringCommon(int nStringId);
-CUIService* FUN_1403ed2b0();                        // the UI service
 
 class UIGraphicOptionDialog : public UIDialog
 {
@@ -136,13 +135,13 @@ MS2_REPLACE_METHOD(0x141946cf0, UIGraphicOptionDialog, vfunc_65, 37, 0xE40486DA)
 int UIGraphicOptionDialog::vfunc_5()
 {
     if (MS2Ptr<Unk_GoCheck> spHdr = FUN_140e52670("m_hdr"))
-        spHdr->FUN_1422ce090(FUN_1409a8b10()->FUN_1409a8ac0()->m_bHdr);
+        spHdr->FUN_1422ce090(reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bHdr);
     if (MS2Ptr<Unk_GoCheck> spShimmer = FUN_140e52670("m_shimmer"))
-        spShimmer->FUN_1422ce090(FUN_1409a8b10()->FUN_1409a8ac0()->m_bShimmer);
+        spShimmer->FUN_1422ce090(reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bShimmer);
     if (MS2Ptr<Unk_GoCheck> spMirror = FUN_140e52670("m_mirror"))
-        spMirror->FUN_1422ce090(FUN_1409a8b10()->FUN_1409a8ac0()->m_bMirror);
+        spMirror->FUN_1422ce090(reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bMirror);
     if (MS2Ptr<Unk_GoCombo> spShadow = FUN_140c28560("m_shadow"))
-        spShadow->FUN_1422df690(FUN_1409a8b10()->FUN_1409a8ac0()->m_nShadow);
+        spShadow->FUN_1422df690(reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_nShadow);
     return UIDialog::vfunc_5();
 }
 MS2_REPLACE_METHOD(0x141946d20, UIGraphicOptionDialog, vfunc_5, 718, 0x445E1ECF);
@@ -161,7 +160,7 @@ void UIGraphicOptionDialog::OnLoadInit()
         }
     }
     if (m_30.get() != 0) {
-        m_30->Invoke("initData", FUN_1409a8b10()->FUN_140e09150()->m_fScale);
+        m_30->Invoke("initData", reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()->m_fScale);
     }
 }
 MS2_REPLACE_METHOD(0x141947000, UIGraphicOptionDialog, OnLoadInit, 641, 0x9F3488BD);
@@ -199,7 +198,7 @@ int UIGraphicOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     else if (_stricmp("OnUIScale", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs)) {
         int nValue = data.FUN_1422b8a10();
         float fScale = (200 - nValue) * 0.01;
-        if (FUN_1403ed2b0()->FUN_141adbe00(fScale, 1) != 0)
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adbe00(fScale, 1) != 0)
             reinterpret_cast<Unk_GoMovieMgr*>(FUN_140b632f0())->vfunc_6();      // MS2: slot 6
         return 1;
     }
@@ -210,16 +209,16 @@ MS2_REPLACE_METHOD(0x141947290, UIGraphicOptionDialog, vfunc_28, 766, 0x22DD0AE9
 // @0x1419475a0
 void UIGraphicOptionDialog::FUN_1419475a0(int bHdr)
 {
-    if (FUN_1409a8b10()->FUN_1409a8ac0()->m_bHdr != bHdr)
-        FUN_1409a8b10()->FUN_1409a8ac0()->m_bHdr = bHdr ? true : false;
+    if (reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bHdr != bHdr)
+        reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bHdr = bHdr ? true : false;
 }
 MS2_REPLACE_METHOD(0x1419475a0, UIGraphicOptionDialog, FUN_1419475a0, 81, 0x89AE58C7);
 
 // @0x141947600
 void UIGraphicOptionDialog::FUN_141947600(int bShimmer)
 {
-    if (FUN_1409a8b10()->FUN_1409a8ac0()->m_bShimmer != bShimmer) {
-        FUN_1409a8b10()->FUN_1409a8ac0()->m_bShimmer = bShimmer ? true : false;
+    if (reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bShimmer != bShimmer) {
+        reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bShimmer = bShimmer ? true : false;
         if (FUN_1409a8b20()->FUN_1416aa850(6) != bShimmer)
             FUN_1409a8b20()->FUN_1416aa450(6, bShimmer != 0);
         if (bShimmer == 0) {
@@ -236,16 +235,16 @@ MS2_REPLACE_METHOD(0x141947600, UIGraphicOptionDialog, FUN_141947600, 251, 0x884
 // @0x141947710
 void UIGraphicOptionDialog::FUN_141947710(int bMirror)
 {
-    if (FUN_1409a8b10()->FUN_1409a8ac0()->m_bMirror != bMirror)
-        FUN_1409a8b10()->FUN_1409a8ac0()->m_bMirror = bMirror ? true : false;
+    if (reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bMirror != bMirror)
+        reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bMirror = bMirror ? true : false;
 }
 MS2_REPLACE_METHOD(0x141947710, UIGraphicOptionDialog, FUN_141947710, 81, 0xA404FEDE);
 
 // @0x141947770
 void UIGraphicOptionDialog::FUN_141947770(int nShadow)
 {
-    if (FUN_1409a8b10()->FUN_1409a8ac0()->m_nShadow != nShadow)
-        FUN_1409a8b10()->FUN_1409a8ac0()->m_nShadow = nShadow;
+    if (reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_nShadow != nShadow)
+        reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_nShadow = nShadow;
 }
 MS2_REPLACE_METHOD(0x141947770, UIGraphicOptionDialog, FUN_141947770, 60, 0x8A6148B2);
 

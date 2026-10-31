@@ -25,7 +25,11 @@ public:
 };
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp) and string helpers.
-const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
 int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
@@ -87,7 +91,7 @@ void CBeamEffectParam::vfunc_1(Unk_140165cf0* pNode)
         return;
     FUN_140873360(pNode, "width", m_fWidth);
     FUN_1408731e0(pNode, "quality", m_nQuality);
-    CString strAlpha = FUN_140188f50(FUN_14086f4b0(pNode, "alphaMode"), 0);
+    CString strAlpha = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("alphaMode"), 0);
     if (strAlpha.GetLength() > 0)
     {
         if (strAlpha.CompareNoCase("SWOOSH") == 0)

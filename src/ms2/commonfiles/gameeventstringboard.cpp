@@ -24,7 +24,7 @@ struct Unk_GEFactoryRegistry {
 // The string id of a GameEvent string field (commonutil).
 int FUN_140718200(CStringW* text);
 // Stream helpers (CInputStream / COutputStream operator<< / >> overloads, packet.cpp).
-Unk_GEOut* FUN_14070f9a0(Unk_GEOut* out, int value);
+COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
 Unk_GEOut* FUN_14070fae0(Unk_GEOut* out, const CStringW* text);
 Unk_GEReader* FUN_14070f480(Unk_GEReader* in, int* value);
 Unk_GEReader* FUN_14070f5f0(Unk_GEReader* in, CStringW* text);
@@ -68,7 +68,7 @@ void GameEventStringBoard::vfunc_2()
 void GameEventStringBoard::vfunc_3(Unk_GEOut* out)
 {
     GameEvent::vfunc_3(out);
-    FUN_14070f9a0(out, m_nId);
+    FUN_14070f9a0(*(COutputStream *)out, m_nId);
     FUN_14070fae0(out, &m_80);
 }
 

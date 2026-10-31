@@ -26,10 +26,8 @@
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 bool FUN_14028f710(Unk_140165cf0*);                                     // the element is usable
 void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
@@ -225,12 +223,12 @@ int CEnchantScrollTable::LoadScrolls()
 {
     CString strPath = FUN_14071a5b0("Table", "enchantScroll.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 1;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("scroll"); pNode != 0; pNode = pNode->FUN_140168650("scroll"))
@@ -252,12 +250,12 @@ int CEnchantScrollTable::LoadRecipes()
 {
     CString strPath = FUN_14071a5b0("Table", "enchantScrollRecipe.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 1;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("recipe"); pNode != 0; pNode = pNode->FUN_140168650("recipe"))

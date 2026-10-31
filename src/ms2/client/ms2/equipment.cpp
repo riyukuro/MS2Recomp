@@ -173,15 +173,14 @@ public:
 };
 struct Unk_EquipItemData : public Unk_ItemEquipData {};
 
-CFeatureManager* FUN_140166410();
-COptimizer* FUN_1409f7c90();
-CGameRule* FUN_1401c0d90();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 int FUN_14081d8a0(int nType);                       // a skill stat option type
 int FUN_14081d8e0(int nType);                       // an effect stat option type
 float FUN_14028d3a0(float f);                       // f / 100
 int FUN_14028d260(float fSeconds);                  // seconds -> ms
 int FUN_141421690(CItem* pItem);                    // the item kind
-bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);   // is of the class id
 bool FUN_14028d470(float a, float b);               // a == b (epsilon)
 CString Name_14021c050(int nSlot);                  // the slot name
 void FUN_141653f00(PC* pPC);                        // refresh the PC's look
@@ -196,7 +195,11 @@ bool FUN_14116e080(NiAVObject* pObject);            // the skin decal is set up
 bool FUN_14116e3f0(NiMesh* pMesh, float fA, float fB, float fC, float fD, int bFlag, const CString& strTexture,
     const NiColor& kColor0, const NiColor& kColor1, const NiColor& kColor2);   // apply the skin decal (unit_14116e3f0)
 NiColor FUN_141b6dea0(unsigned nColor);             // a colour value
-int FUN_140ddcc90(COptimizer* pOptimizer);          // mesh merging is on
+class Unk_FsOptimizer   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140ddcc90();
+};
 // The world service (WorldService) as the equipment uses it.
 struct Unk_EqWorld
 {
@@ -204,7 +207,6 @@ struct Unk_EqWorld
     PCBase* FUN_141bd3620();                        // the local player
     int FUN_141bd1a10(GameObject* pObject);         // the object's actor id
 };
-PCBase* FUN_141bd0cc0(Unk_EqWorld* pWorld);         // the local player
 CString FUN_1414253b0(const CString& strPath, int bDiffuse);   // the face model path of a variant (the exe passes it by reference)
 CString FUN_141425220(const CString& strPath, int bDiffuse);  // the ear model path of a variant
 CString FUN_141421740(const CString& strPath, int* pnFlag);   // the variant letter of a model path
@@ -232,7 +234,6 @@ struct Unk_EqApp
     void* m_00;
     Unk_EqSvcHolder m_spServiceManager;                 // +0x08
 };
-double FUN_141473280(Unk_EqApp* pApp);
 int FUN_141424d00(MS2Ptr<CEquipItem> spHair, const NiPoint3& kOrigin, const NiPoint3& kDir, NiPick& kPick, int* pnResult);   // pick the hair
 void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue);   // (unit_1411673f0)
 // The item's status (CItemStatus) as the update sums it: the PvP option value returns int.
@@ -288,7 +289,7 @@ int FUN_1406198a0(int nValue, float fRate);             // (int)(nValue * fRate 
 extern int DAT_143ae2b50;                               // the mesh optimizer is on
 extern const NiPoint3 DAT_143a08cf8;                    // the cap pick axis
 extern const NiPoint3 DAT_143b01a60;                    // NiPoint3::ZERO                 // the app time
-bool FUN_141b701f0(NiMesh* pMesh, unsigned nMask);     // every sub mesh has the flag (util.cpp)
+bool FUN_141b701f0(struct Unk_UtilNodeList*, unsigned int);   // C3: was FUN_141b701f0
 void* FUN_140af8310(Unk_EqSvcHolder* pSmart);           // operator->
 Unk_EqAssetSvc* FUN_140998330(void* pMgr);              // the system service (NULL when absent)
 // The animation service (WorldService's actor cache).
@@ -317,9 +318,8 @@ class Unk_EqNotice : public NoticeMessage
 public:
     void FUN_140a531f0(Delegate<void(unsigned, CString, bool)> callback);
 };
-unsigned FUN_1411a49c0(CEffectService* pService, NoticeMessage& msg);   // spawn the effect
-int FUN_141420a30(int nType, CItem* pItem, PC* pPC);    // the slot a model group of the item takes off
-int FUN_141420990(int nType, CItem* pItem, PC* pPC);    // the slot a model group of the item goes on
+unsigned int FUN_141420a30(unsigned int, class CItem*, class AvatarPC*);   // C3: was FUN_141420a30
+int FUN_141420990(int, class CItem*, class AvatarPC*);   // C3: was FUN_141420990
 void FUN_140a0b2a0(NiAVObject* pObj);                   // detach from the parent
 void FUN_1412751b0(const CStringW& strMessage, int nColor);   // the debug chat line
 extern int DAT_143ae2b58;                               // the optimizer debug level
@@ -440,7 +440,7 @@ MS2_REPLACE_METHOD(0x1411DF700, CEquipmentSlotLayerInfo, FUN_1411df700, 187, 0x4
 // @0x1411df7d0
 bool CEquipmentSlotLayerInfo::FUN_1411df7d0()
 {
-    if (m_nKind == 2 && FUN_140166410()->FUN_14036d570(0x8e) == true)
+    if (m_nKind == 2 && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8e) == true)
         return true;
     return false;
 }
@@ -766,7 +766,7 @@ int CEquipment::FUN_1411e1160(SAType eType)
 {
     int nValue = m_abilities[eType];
     nValue += m_pPC->FUN_1416749a0()->FUN_1409716f0(eType);
-    nValue += FUN_1401c0d90()->FUN_1404774a0(eType, m_pPC->FUN_141658f30());
+    nValue += ((class CGameRule*)FUN_1401c0d90())->FUN_1404774a0(eType, m_pPC->FUN_141658f30());
     nValue += m_pPC->GetSetItems()->GetSpecialAbility(eType);
     return nValue;
 }
@@ -1105,7 +1105,7 @@ void CEquipment::FUN_1411e3de0(int bKeepLoaded)
         for (int i = 0; i < 6; i++) {
             MS2Ptr<CEquipItem> spItem = spSlot->m_items[i];
             if (spItem.get() != NULL) {
-                if (bKeepLoaded == 0 && FUN_1409f7c90()->FUN_1409f7ea0() != 0)
+                if (bKeepLoaded == 0 && ((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
                     FUN_1411e3c70(spItem, 0);
                 else
                     FUN_1411e3bd0(spItem, 0);
@@ -1125,7 +1125,7 @@ void CEquipment::FUN_1411e3f80(const ATL::CRBMap<Unk_EquipSlotId, int>& keep, in
                 continue;
             MS2Ptr<CEquipItem> spItem = spSlot->m_items[i];
             if (spItem.get() != NULL) {
-                if (bKeepLoaded == 0 && FUN_1409f7c90()->FUN_1409f7ea0() != 0)
+                if (bKeepLoaded == 0 && ((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
                     FUN_1411e3c70(spItem, 0);
                 else
                     FUN_1411e3bd0(spItem, 0);
@@ -1216,7 +1216,7 @@ MS2_REPLACE_METHOD(0x1411E2A60, CEquipment, FUN_1411e2a60, 980, 0x3A9CCBCA);
 // MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e3000(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nMaxLayer, int bCheck, bool bForce)
 {
-    bool bNotFitting = !FUN_14087ddc0(m_pPC != 0 ? m_pPC->GetClassDesc() : 0, 0x6200044);
+    bool bNotFitting = !efd::ClassInfo::IsKindOf(m_pPC != 0 ? m_pPC->GetClassDesc() : 0, 0x6200044);
     Unk_LayerBits shown;
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
         MS2Ptr<CEquipmentSlot> spSlot = m_slots.GetValueAt(pos);
@@ -1268,22 +1268,22 @@ void CEquipment::FUN_1411e3000(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nM
 MS2_REPLACE_METHOD(0x1411E3000, CEquipment, FUN_1411e3000, 1524, 0xF09AC989);
 
 // @0x1411e4150
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e4150(__int64 nItemUid, int nSlot, int nLayer)
 {
     MS2Ptr<CEquipItem> spItem = FUN_1411e1580(nItemUid);
     if (!spItem)
         return;
     int nOldSlot = spItem->GetItem()->FUN_140526c30();
-    Unk_EquipSlotId eSlot = (Unk_EquipSlotId)nSlot;
+    // the exe keeps an int copy of the slot for the setters and looks up through the argument itself
+    int nSlotId = nSlot;
     MS2Ptr<CEquipmentSlot> spSlot(0);
-    if (m_slots.Lookup(eSlot, spSlot)) {
+    if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot)) {
         int nIndex = nLayer == 0 ? spItem->GetItem()->FUN_14052a170() : nLayer;
         MS2Ptr<CEquipItem> spOther = spSlot->m_items[nIndex];
         if (spOther.get() != NULL) {
             FUN_1411ebec0(spItem, 1);
             FUN_1411ebec0(spOther, 1);
-            spItem->GetItem()->FUN_140526c10(nSlot);
+            spItem->GetItem()->FUN_140526c10(nSlotId);
             spItem->FUN_1411dcf10(s_tagLower);
             spItem->FUN_1411dd280();
             spOther->GetItem()->FUN_140526c10(nOldSlot);
@@ -1293,7 +1293,7 @@ void CEquipment::FUN_1411e4150(__int64 nItemUid, int nSlot, int nLayer)
             FUN_1411ec190(spOther, 1);
         } else {
             FUN_1411ebec0(spItem, 1);
-            spItem->GetItem()->FUN_140526c10(nSlot);
+            spItem->GetItem()->FUN_140526c10(nSlotId);
             spItem->FUN_1411dcf10(s_tagLower);
             spItem->FUN_1411dd280();
             FUN_1411ec190(spItem, 1);
@@ -1792,7 +1792,7 @@ void CEquipment::FUN_1411e6e70()
                 continue;
             if (m_pPC->FUN_14123c660() != 0)
                 spItem->FUN_1411dce60(s_tagDefault);
-            if (m_pPC->vfunc_25() != 0 && FUN_140ddcc90(FUN_1409f7c90()) == 0)
+            if (m_pPC->vfunc_25() != 0 && ((class Unk_FsOptimizer*)(class COptimizer*)(((class COptimizer*)FUN_1409f7c90())))->FUN_140ddcc90() == 0)
                 spItem->FUN_1411dce60(s_tagOptimizer);
             spItem->FUN_1411dd280();
         }
@@ -2067,7 +2067,7 @@ void CEquipment::FUN_1411ea7c0()
 {
     if (m_spLayerInfo == 0)
         return;
-    if (FUN_14087ddc0(m_pPC != 0 ? m_pPC->GetClassDesc() : 0, 0x6200004)) {
+    if (efd::ClassInfo::IsKindOf(m_pPC != 0 ? m_pPC->GetClassDesc() : 0, 0x6200004)) {
         PCBase* pMyPC = reinterpret_cast<Unk_EqWorld*>(WorldService::GetInstance())->FUN_141bd3620();
         if (pMyPC != NULL)
             static_cast<PC*>(pMyPC)->FUN_1416561a0()->FUN_1411ea620(m_spLayerInfo->m_start, m_spLayerInfo->m_end);
@@ -2080,7 +2080,7 @@ void CEquipment::FUN_1411ea8c0()
 {
     if (m_spLayerInfo == 0)
         return;
-    PCBase* pMyPC = FUN_141bd0cc0(reinterpret_cast<Unk_EqWorld*>(WorldService::GetInstance()));
+    PCBase* pMyPC = ((class PCBase*)((class WorldService*)(struct Unk_EqWorld*)(reinterpret_cast<Unk_EqWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pMyPC != NULL && m_pPC != 0 && m_pPC->FUN_14123c580() == pMyPC->FUN_14123c580())
         NotifySystem::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyChangeActiveMyCodiTab(m_spLayerInfo->IsActive())));
 }
@@ -2097,7 +2097,7 @@ void CEquipment::FUN_1411eaa00(MS2Ptr<Equipment::SetEffectInfo> spInfo)
     msg.SetActor(m_pPC->FUN_14123c580());
     static_cast<Unk_EqNotice&>(msg).FUN_140a531f0(Delegate<void(unsigned, CString, bool)>(this, &CEquipment::FUN_1411efcb0));
     msg.SetMode48(spInfo->m_nGroup);
-    spInfo->m_nEffect = FUN_1411a49c0(CEffectService::GetInstance(), msg);
+    spInfo->m_nEffect = ((class CEffectService*)(CEffectService::GetInstance()))->FUN_1411a49c0(*(class Unk_EffectTarget*)&(msg));
     size_t nGroup = spInfo->m_nGroup;
     if (nGroup >= 0 && nGroup < m_setEffects.size())
         m_setEffects[spInfo->m_nGroup] = spInfo;
@@ -2191,8 +2191,7 @@ void CEquipment::FUN_1411ebec0(MS2Ptr<CEquipItem> spItem, int nFlag)
     int nLayer = spData->FUN_14052a170();
     for (size_t i = 0; i < pData->FUN_14053eba0()->FUN_14054b3d0(); i++) {
         MS2Ptr<CEquipmentSlot> spSlot(0);
-        int nSlot = FUN_141420a30(spData->FUN_140527840()->FUN_14053eba0()->FUN_14054b2f0(i)->FUN_1405451a0(),
-            spData.get(), m_pPC);
+        int nSlot = FUN_141420a30(spData->FUN_140527840()->FUN_14053eba0()->FUN_14054b2f0(i)->FUN_1405451a0(), spData.get(), (class AvatarPC*)(m_pPC));
         if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot) && spSlot->m_items[nLayer] == spItem.get()) {
             spSlot->m_items[nLayer] = 0;
             spSlot->m_bShown[nLayer] = 0;
@@ -2217,7 +2216,7 @@ void CEquipment::FUN_1411ec190(MS2Ptr<CEquipItem> spItem, int nFlag)
     size_t nCount = spItemData->FUN_14053eba0()->FUN_14054b3d0();
     for (size_t i = 0; i < nCount; i++) {
         MS2Ptr<CEquipmentSlot> spSlot(0);
-        int nSlot = FUN_141420990(spItemData->FUN_14053eba0()->FUN_14054b2f0(i)->FUN_1405451a0(), spData.get(), m_pPC);
+        int nSlot = FUN_141420990(spItemData->FUN_14053eba0()->FUN_14054b2f0(i)->FUN_1405451a0(), spData.get(), (class AvatarPC*)(m_pPC));
         if (nSlot == 0)
             continue;
         if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot)) {
@@ -2611,7 +2610,7 @@ void CEquipment::FUN_1411ed270()
     }
     if (pCapNode == NULL)
         return;
-    float fTime = (float)FUN_141473280(reinterpret_cast<Unk_EqApp*>(TSingleton<CMainSystem>::GetInstance()));
+    float fTime = (float)((class CMainSystem*)(struct Unk_EqApp*)(reinterpret_cast<Unk_EqApp*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     Unk_EqAnimSvc* pAnim = FUN_141b6f910();
     pCapNode->Update(fTime, true);
     for (size_t i = 1; i < hairModels.GetCount(); i++) {
@@ -2647,7 +2646,7 @@ void CEquipment::FUN_1411ed270()
                     NiAVObject* pObject;
                     while ((pObject = kWalk.FUN_14098e0d0(true)) != NULL) {
                         NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
-                        if (pMesh != NULL && !FUN_141b701f0(pMesh, 1))
+                        if (pMesh != NULL && !FUN_141b701f0((struct Unk_UtilNodeList*)(pMesh), 1))
                             continue;
                         if (pObject->GetCollisionObject() != NULL)
                             kGroup.AddCollider(pObject, true, -1, 1);
@@ -2667,13 +2666,13 @@ void CEquipment::FUN_1411ed270()
 // MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411edbb0()
 {
-    if (FUN_14087ddc0(m_pPC != 0 ? m_pPC->GetClassDesc() : 0, 0x6200044))
+    if (efd::ClassInfo::IsKindOf(m_pPC != 0 ? m_pPC->GetClassDesc() : 0, 0x6200044))
         return;
     MS2Ptr<CEquipItem> spTop = FUN_1411e1780(5, 1);
     MS2Ptr<CEquipItem> spTopBase = FUN_1411e1780(5, 0);
     MS2Ptr<CEquipItem> spBottom = FUN_1411e1780(4, 1);
     MS2Ptr<CEquipItem> spBottomBase = FUN_1411e1780(4, 0);
-    bool bLayer2 = FUN_140166410()->FUN_14036d570(0x8e);
+    bool bLayer2 = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8e);
     MS2Ptr<CEquipItem> spTop2(0);
     MS2Ptr<CEquipItem> spBottom2(0);
     if (bLayer2) {

@@ -148,6 +148,10 @@
 #include "ms2/placeholder/ms2renderprocessors.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/applyeffect.h"
+#include "ms2/placeholder/cgameoption.h"
 
 extern NiFixedString DAT_143ae53e0;                         // "gakNormalSampleOffsets" (global shader constant name)
 void FUN_1411781e0(const NiFixedString& kName, const NiPoint2* pkValues, int nCount);   // set a global shader constant array
@@ -1233,7 +1237,7 @@ NiViewRenderClick* FUN_1413f99a0();                         // the main scene cl
 void FUN_1411ab770(efd::IDependencyRegistrar* pRegistrar, int nFlags);     // AddDependency<ecr::RenderService> (0x07002001)
 void FUN_1411ab740(efd::IDependencyRegistrar* pRegistrar, int nFlags);     // AddDependency<MS2 service 0x06100001>
 
-// The graphics options block (FUN_1409a8b10()->FUN_1409a8ac0()); only the plane-reflection flag is known.
+// The graphics options block (reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()); only the plane-reflection flag is known.
 class Unk_PPGraphicsOptions
 {
 public:
@@ -1252,43 +1256,28 @@ class Unk_PPOptions
 public:
     Unk_PPGraphicsOptions* FUN_1409a8ac0();
 };
-Unk_PPOptions* FUN_1409a8b10();
 class Unk_PPSecondView;
-class Unk_PPPostEffectMgr
+class Unk_PPPostEffectMgr : public ApplyEffect
 {
 public:
-    void FUN_1409a5190(bool bEnable);
     Unk_PPSecondView* FUN_1409a5160();
     void FUN_1409a3b60(bool bBeforeReset);      // device reset notification
 };
-Unk_PPPostEffectMgr* FUN_1409a8b00();
 class WorldService;
 WorldService* FUN_1403ed2d0();
 void FUN_141bbae40(WorldService* pWorld, IWorldServiceCallback* pCallback);
 // The game clock (FUN_14086d260()).
-class Unk_PPClock
-{
-public:
-    float FUN_141473230();      // frame delta (s)
-    double FUN_141473280();     // elapsed time (s)
-};
-Unk_PPClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 // The keyboard state (FUN_14025e7c0()).
-class Unk_PPKeyboard
-{
-public:
-    bool FUN_14116d950(int nKey, bool b, int n);    // key down
-    bool FUN_14116d9c0(int nKey, bool b, int n);    // key pressed this frame
-};
-Unk_PPKeyboard* FUN_14025e7c0();
-// The post-effect manager's second scene view (FUN_1409a8b00()->FUN_1409a5160()).
+CInputKeyHandler* FUN_14025e7c0();
+// The post-effect manager's second scene view (reinterpret_cast<Unk_PPPostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->FUN_1409a5160()).
 class Unk_PPSecondView
 {
 public:
     NiViewRenderClick* GetClick();
 };
 CLogString* GetLogString();                                                // the client log
-void FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pwszText);
+void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pwszText);
 // The log with two format arguments.
 // @0x1416ac870
 template<class T, class U> inline void Unk_PPLog2(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pwszFormat,
@@ -1309,7 +1298,6 @@ extern NiFixedString DAT_143ae52d0;
 extern NiFixedString DAT_143ae52d8;
 extern NiFixedString DAT_143ae5268;
 extern const efd::Category DAT_143ae4c20;                                   // the entity channel (defined below)
-EntityWorldManager* FUN_1409670f0();                                        // the entity world manager (iterates the current map's entities)
 
 // CEffectService (0x0610000c) has no recovered header; this carries its class id for AddDependency<>.
 struct Unk_PPEffectServiceDep
@@ -1652,12 +1640,12 @@ void PostProcessingService::FUN_1416a4350(const egf::EntityChangeMessage* pMessa
 void PostProcessingService::FUN_1416a43e0(const egf::EntityChangeMessage* pMessage, efd::Category targetChannel)
 {
     egf::Entity* pEntity = pMessage->GetEntity();
-    if (pEntity != 0 && FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1416b0b20()
+    if (pEntity != 0 && reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b0b20()
         && FUN_1408a9bd0(pEntity)->ContainsModel(0xddb91342))
     {
         bool bEnable;
         pEntity->GetPropertyValue(0x2683e9ec, bEnable);
-        FUN_1416aa450(7, bEnable && FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1416b0b20());
+        FUN_1416aa450(7, bEnable && reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b0b20());
     }
 }
 
@@ -1806,7 +1794,7 @@ efd::AsyncResult PostProcessingService::OnInit()
     if (pkRenderer != 0)
         pkRenderer->AddResetNotificationFunc(FUN_1416abce0, this);
 
-    FUN_1416aa450(6, FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1416b0b30());
+    FUN_1416aa450(6, reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b0b30());
     FUN_1416aa450(7, false);
     FUN_1416aa450(8, true);
     FUN_1416aa450(10, true);
@@ -1817,7 +1805,7 @@ efd::AsyncResult PostProcessingService::OnInit()
         m_spDoF = NiNew CDepthOfFieldManager();
         m_spDoF->FUN_141177fa0();
     }
-    FUN_1409a8b00()->FUN_1409a5190(FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1416b1d40());
+    reinterpret_cast<Unk_PPPostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->SetSoftParticlesEnabled(reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b1d40());
     return efd::AsyncResult_Complete;
 }
 
@@ -1825,7 +1813,7 @@ efd::AsyncResult PostProcessingService::OnInit()
 efd::AsyncResult PostProcessingService::OnTick()
 {
     if (m_spSetting)
-        m_spSetting->ApplyShaderConstants(FUN_14086d260()->FUN_141473230());
+        m_spSetting->ApplyShaderConstants(FUN_14086d260()->GetLastGameTimeDelta());
     FUN_1416a6fc0();
     FUN_1416aae50();
     if (m_spTextureEffect)
@@ -1835,7 +1823,7 @@ efd::AsyncResult PostProcessingService::OnTick()
         m_spTextureEffect->Update((float)FUN_14086d260()->FUN_141473280());
     }
     if (m_spDoF)
-        m_spDoF->FUN_141178000(FUN_14086d260()->FUN_141473230());
+        m_spDoF->FUN_141178000(FUN_14086d260()->GetLastGameTimeDelta());
     return efd::AsyncResult_Pending;
 }
 
@@ -1847,7 +1835,7 @@ efd::AsyncResult PostProcessingService::OnShutdown()
     ecr::RenderService* pkRenderService = m_pServiceManager->GetSystemServiceAs<ecr::RenderService>();
     if (pkRenderService == 0)
     {
-        FUN_1401859c0(GetLogString(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pRenderService is Null");
+        Unk_AdditionalLog(GetLogString(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pRenderService is Null");
         return efd::AsyncResult_Pending;
     }
     if (pkRenderService->GetActiveRenderSurface() != 0)
@@ -1856,7 +1844,7 @@ efd::AsyncResult PostProcessingService::OnShutdown()
         NiRenderFrame* pkFrame = pkRenderService->GetActiveRenderSurface()->GetRenderFrame();
         if (pkFrame == 0)
         {
-            FUN_1401859c0(GetLogString(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pFrame is Null");
+            Unk_AdditionalLog(GetLogString(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pFrame is Null");
             return efd::AsyncResult_Pending;
         }
         MS2_FOR_EACH(const auto& kStep, m_kSteps)
@@ -2065,7 +2053,7 @@ void PostProcessingService::FUN_1416ac3b0(NiRenderTargetGroup* pkTarget)
     if (pkClick == 0)
         return;
     pkClick->SetRenderTargetGroup(pkTarget);
-    Unk_PPPostEffectMgr* pkMgr = FUN_1409a8b00();
+    Unk_PPPostEffectMgr* pkMgr = reinterpret_cast<Unk_PPPostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance());
     if (pkMgr == 0)
         return;
     Unk_PPSecondView* pkView = pkMgr->FUN_1409a5160();
@@ -2183,9 +2171,9 @@ void PostProcessingService::FUN_1416aa450(int nClick, bool bActive)
         else
         {
             m_spTextureEffect->DetachAllAffectedNodes();
-            Unk_WorldEntityMap::iterator kPos = FUN_1409670f0()->FUN_1411ce4c0();
+            Unk_WorldEntityMap::iterator kPos = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce4c0();
             egf::Entity* pkEntity = 0;
-            while (FUN_1409670f0()->FUN_1411ce510(kPos, pkEntity))
+            while (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce510(kPos, pkEntity))
             {
                 NiNode* pkNode = NiDynamicCast(NiNode, FUN_141b6efc0(pkEntity));
                 if (pkNode == 0)
@@ -2308,19 +2296,19 @@ void PostProcessingService::LinkEffects()
     ecr::RenderService* pkRenderService = m_pServiceManager->GetSystemServiceAs<ecr::RenderService>();
     if (pkRenderService == 0)
     {
-        FUN_1401859c0(GetLogString(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pRenderService is Null");
+        Unk_AdditionalLog(GetLogString(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pRenderService is Null");
         return;
     }
     NiRenderFrame* pkFrame = pkRenderService->GetActiveRenderSurface()->GetRenderFrame();
     if (pkFrame == 0)
     {
-        FUN_1401859c0(GetLogString(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pFrame is Null");
+        Unk_AdditionalLog(GetLogString(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pFrame is Null");
         return;
     }
     NiRenderStep* pkMainSceneRenderStep = pkRenderService->GetActiveRenderSurface()->GetRenderStep();
     if (pkMainSceneRenderStep == 0)
     {
-        FUN_1401859c0(GetLogString(), 1, 0x13,
+        Unk_AdditionalLog(GetLogString(), 1, 0x13,
             L"ERROR: PostProcessingService::LinkEffects pMainSceneRenderStep is Null");
         return;
     }
@@ -2516,7 +2504,7 @@ void PostProcessingService::FUN_1416a7050()
 
     kPrefs.m_ePixelLayout = static_cast<NiTexture::FormatPrefs::PixelLayout>(8);
     m_aspTextures[1] = NiRenderedTexture::Create(uiWidth, uiHeight, pkRenderer, kPrefs, 0x100);
-    FUN_141773ed0(FUN_1409a8b00()->FUN_1409a5160());
+    FUN_141773ed0(reinterpret_cast<Unk_PPPostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->FUN_1409a5160());
     kPrefs.m_ePixelLayout = static_cast<NiTexture::FormatPrefs::PixelLayout>(2);
     m_aspTextures[2] = NiRenderedTexture::Create(uiWidth, uiHeight, pkRenderer, kPrefs, 0x100);
     kPrefs.m_ePixelLayout = static_cast<NiTexture::FormatPrefs::PixelLayout>(0xd);
@@ -2914,7 +2902,7 @@ void PostProcessingService::FUN_1416aa950()
     if (!m_spTextureEffect)
         return;
     m_spTextureEffect->DetachAllAffectedNodes();
-    if (!FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1416b0b20())
+    if (!reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b0b20())
         return;
     if (m_spReflection)
         pkView->SetMirrorPoints((const NiPoint3&)m_spReflection->FUN_1416b0e20(),
@@ -2930,9 +2918,9 @@ void PostProcessingService::FUN_1416aa950()
             NiAVObject* pkScene = kScenes.GetNext(kPos);
             pkView->AppendScene(pkScene);
         }
-        Unk_WorldEntityMap::iterator kIter = FUN_1409670f0()->FUN_1411ce4c0();
+        Unk_WorldEntityMap::iterator kIter = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce4c0();
         egf::Entity* pEntity = 0;
-        while (FUN_1409670f0()->FUN_1411ce510(kIter, pEntity))
+        while (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce510(kIter, pEntity))
         {
             NiNode* pkRoot = NiDynamicCast(NiNode, FUN_141b6efc0(pEntity));
             if (!pkRoot)
@@ -2964,7 +2952,7 @@ bool PostProcessingService::FUN_1416abd20(bool bBeforeReset)
 {
     if (bBeforeReset)
     {
-        if (FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1416b0b20())
+        if (reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b0b20())
             FUN_1416aa450(7, false);
         NiRenderer::GetRenderer()->EndUsingRenderTargetGroup();
         ecr::RenderService* pkRenderService = m_pServiceManager->GetSystemServiceAs<ecr::RenderService>();
@@ -3006,12 +2994,12 @@ bool PostProcessingService::FUN_1416abd20(bool bBeforeReset)
     {
         FUN_1416a3bb0();
         FUN_1416a7570();
-        if (FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1416b0b20())
+        if (reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b0b20())
             FUN_1416aa450(7, true);
         FUN_1416ab960();
         LinkEffects();
     }
-    FUN_1409a8b00()->FUN_1409a3b60(bBeforeReset);
+    reinterpret_cast<Unk_PPPostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->FUN_1409a3b60(bBeforeReset);
     return true;
 }
 MS2_REPLACE_METHOD(0x1416abd20, PostProcessingService, FUN_1416abd20, 820, 0x723AFA3D);

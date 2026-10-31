@@ -30,7 +30,7 @@ void FUN_140873eb0(void* pElem, const char* pszName, const __int64* pnValue);   
 bool FUN_1408710c0(void* pDoc, const char* pszPath);                    // SaveFile
 __int64 FUN_140190260();                                                // the default block duration end
 __int64 GetServerTime();                                                // the server time
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const unsigned __int64& nArg);   // "{0}" formatter
 void* FUN_14086e9c0(void* pNode, int nType);                            // TiXmlNode::TiXmlNode
 void FUN_140872b60(void* pNode, const char* pszValue);                  // TiXmlNode::SetValue
@@ -168,7 +168,7 @@ bool BlindManager::Block(int nType, CStringW strKey)
     __time64_t nNow;
     _time64(&nNow);
     entry.m_expire = FUN_140190260();
-    if (FUN_140166410()->FUN_14036e4c0())
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
         entry.m_expire = nNow + 0x15180;
     (*pList)[strKey] = entry;
     Save();

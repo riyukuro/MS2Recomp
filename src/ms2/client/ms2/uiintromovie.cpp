@@ -20,26 +20,27 @@ static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", 
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/placeholder/uivideocontents.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/client/ms2/windowservice.h"
+namespace egf { class Entity; }
+#include "ms2/client/ms2/statemanager.h"   // C3: TSingleton<> needs the class
 
 template <> MS2Ptr<Unk_ASVideoPlayer> UISwfEntity::GetChild<Unk_ASVideoPlayer>(const CString& strName);
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 UISwfEntityManager* FUN_140b632f0();
-class Unk_IntroScenes { public: void FUN_1417e25a0(int nSceneId); };
-Unk_IntroScenes* FUN_140aa6d30();
-int FUN_1417e2610(Unk_IntroScenes* p);
-CInputKeyHandler* FUN_14025e7c0();
-CFeatureManager* FUN_140166410();
-class Unk_IntroWindow { public: void FUN_141b91ba0(); };
-Unk_IntroWindow* FUN_140aadf80();
-class Unk_IntroFiles { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
-Unk_IntroFiles* FUN_140166420();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class Unk_IntroWindow : public CWindowService { };
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
+class Unk_IntroFiles : public CFileSystem { };
+class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 CLogString* GetLogString();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
-bool FUN_14028f710(Unk_140165cf0* pNode);
-int FUN_140873600(Unk_140165cf0* pElem, const char* pszName, CMsTime& rOut);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 void FUN_1402928e0(const CStringW& str, ATL::CAtlArray<float>& arr, const wchar_t* pszDelim);
 bool FUN_140184310(const CString&, const char*);
 unsigned char FUN_1401c0090(const CString&, const CString&);
@@ -65,7 +66,7 @@ int UIIntroMovie::vfunc_52(const CString& strPath, float fVolume)
     FUN_140b632f0()->FUN_1422d4780(this, 2);
     if (!UIVideoContents::vfunc_52(strPath, fVolume))
     {
-        FUN_140aadf80()->FUN_141b91ba0();
+        ((class Unk_IntroWindow*)FUN_140aadf80())->ShowGameWindow();
         return 0;
     }
     return 1;
@@ -104,7 +105,7 @@ MS2_REPLACE_METHOD(0x1419952A0, UIIntroMovie, OnLoadInit, 311, 0xE238D1C8);
 // @0x1419953e0
 void UIIntroMovie::OnLoadComplete()
 {
-    FUN_140aadf80()->FUN_141b91ba0();
+    ((class Unk_IntroWindow*)FUN_140aadf80())->ShowGameWindow();
     UIVideoContents::OnLoadComplete();
 }
 MS2_REPLACE_METHOD(0x1419953E0, UIIntroMovie, OnLoadComplete, 37, 0xBAB0DE70);
@@ -112,7 +113,7 @@ MS2_REPLACE_METHOD(0x1419953E0, UIIntroMovie, OnLoadComplete, 37, 0xBAB0DE70);
 // @0x141995410
 void UIIntroMovie::vfunc_23(void* p)
 {
-    FUN_140aadf80()->FUN_141b91ba0();
+    ((class Unk_IntroWindow*)FUN_140aadf80())->ShowGameWindow();
     UISwfEntity::vfunc_23(p);
 }
 MS2_REPLACE_METHOD(0x141995410, UIIntroMovie, vfunc_23, 47, 0xF2665358);
@@ -120,8 +121,8 @@ MS2_REPLACE_METHOD(0x141995410, UIIntroMovie, vfunc_23, 47, 0xF2665358);
 // @0x141995450
 int UIIntroMovie::vfunc_13()
 {
-    if (FUN_1417e2610(FUN_140aa6d30()) != 0x620000b) return 0;
-    if (FUN_14025e7c0()->FUN_14116d840()) {
+    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000b) return 0;
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840()) {
         FUN_141995cd0();
         return 1;
     }
@@ -133,7 +134,7 @@ MS2_REPLACE_METHOD(0x141995450, UIIntroMovie, vfunc_13, 77, 0x51321992);
 void UIIntroMovie::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    if (FUN_1417e2610(FUN_140aa6d30()) == 0x620000b) {
+    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000b) {
         if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
             if (m_78.IsEmpty()) {
                 FUN_141995e70(FUN_141995eb0());
@@ -162,7 +163,7 @@ MS2_REPLACE_METHOD(0x1419954B0, UIIntroMovie, vfunc_15, 496, 0x174AE2F8);
 void UIIntroMovie::vfunc_30(const CString& a1, const CString& a2, const CString& a3)
 {
     if (FUN_140184310(a3, "error") && FUN_1401c0090(a1, m_strPath)) {
-        FUN_140aadf80()->FUN_141b91ba0();
+        ((class Unk_IntroWindow*)FUN_140aadf80())->ShowGameWindow();
         FUN_141995e70(FUN_141995eb0());
         return;
     }
@@ -196,7 +197,7 @@ void UIIntroMovie::LoadIntroMovie()
 {
     CString strPath = FUN_14071a5b0("Table", "introMovie.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0) return;
+    if (((class Unk_IntroFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0) return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0) {
         FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -205,11 +206,11 @@ void UIIntroMovie::LoadIntroMovie()
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("introMovie"); pNode != 0; pNode = pNode->FUN_140168650("introMovie")) {
         CStringW strFeature;
         FUN_140873420(pNode, "feature", strFeature);
-        if (!FUN_14028f710(pNode)) continue;
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode))) continue;
         CMsTime start;
         CMsTime end;
-        FUN_140873600(pNode, "startDate", start);
-        FUN_140873600(pNode, "endDate", end);
+        XmlGetAttr((class TiXmlElement*)(pNode), "startDate", start);
+        XmlGetAttr((class TiXmlElement*)(pNode), "endDate", end);
         CMsTime now(GetServerTime());
         if (start > now && end < now) continue;
         MS2Ptr<MovieInfo> spInfo(new MovieInfo);
@@ -252,14 +253,14 @@ MS2_REPLACE_METHOD(0x141995CD0, UIIntroMovie, FUN_141995cd0, 392, 0x7DAD9A19);
 // @0x141995e70
 void UIIntroMovie::FUN_141995e70(int)
 {
-    FUN_140aa6d30()->FUN_1417e25a0(FUN_141995eb0());
+    TSingleton<CStateService>::GetInstance()->FUN_1417e25a0(FUN_141995eb0());
 }
 MS2_REPLACE_METHOD(0x141995E70, UIIntroMovie, FUN_141995e70, 46, 0x459B338F);
 
 // @0x141995eb0
 int FUN_141995eb0()
 {
-    if (FUN_140166410()->FUN_14036d570(0xd8)) return 0x6200085;
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd8)) return 0x6200085;
     return 0x6200009;
 }
 MS2_REPLACE(0x141995EB0, FUN_141995eb0, 46, 0xD3368098);

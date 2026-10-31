@@ -6,6 +6,7 @@
 // The unit name and directory are assumed (the GFx UI library 0x1422b0000-0x142304000 has no __FILE__ strings). Both
 // classes are declared in src/ms2/placeholder/ascorelist.h. The "focusable" / "selectable" getters return the member's
 // IsBool() (whether it is a Boolean at all), not its value: that is what the exe calls (0x141a4bfb0).
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "ms2/placeholder/ascorelist.h"

@@ -25,7 +25,7 @@ class CItemOption;
 class CCCreateItemPacket;
 class CCCompareItemPacket;
 class Unk_IcButton;
-class Unk_IcList;
+class ASScrollingList;
 class Unk_IcCombo;
 class Unk_IcCheck;
 class Unk_IcInput;
@@ -59,7 +59,7 @@ public:
     void FUN_1419b6350();                                       // build the context menu
     void FUN_1419b6790();                                       // fill the function list
     MS2Ptr<Unk_IcButton> FUN_140bb4b10(const CString& strName); // child "m_clearInven" (UISwfEntity::GetChild<button>)
-    MS2Ptr<Unk_IcList> FUN_140c02900(const CString& strName);   // child "m_items" / "m_contextMenu" / "m_function"
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);   // child "m_items" / "m_contextMenu" / "m_function"
     MS2Ptr<Unk_IcCombo> FUN_140c28560(const CString& strName);  // child "m_itemGrade"
     MS2Ptr<Unk_IcInput> FUN_140e35bd0(const CString& strName);  // child "m_periodInput"
     MS2Ptr<Unk_IcCheck> FUN_140e52670(const CString& strName);  // child "m_checkJob" / "m_checkGender"
@@ -68,7 +68,7 @@ protected:
     MS2_LAYOUT_FRIEND;
     ATL::CAtlArray<MS2Ptr<CItemData> > m_items;                 // +0x178 the item rows of the list
     MS2Ptr<Unk_IcButton> m_spClearInven;                        // +0x198
-    MS2Ptr<Unk_IcList> m_spContextMenu;                         // +0x1a8
+    MS2Ptr<ASScrollingList> m_spContextMenu;                         // +0x1a8
     std::set<CStringW> m_functions;                             // +0x1b8 the item function names
 };
 MS2_CHECK_SIZE(UIItemCreateDialog, 0x1c8);

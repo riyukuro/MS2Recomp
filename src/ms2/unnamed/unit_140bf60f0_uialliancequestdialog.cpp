@@ -47,9 +47,15 @@
 #include "ms2/client/ms2/npcdatacli.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/itemdatatable.h"
 #include <algorithm>
 #include <stdlib.h>
 #include <vector>
+
+// return types of the getters this unit calls
+class CUIService;
+class Unk_140166410;
+class Unk_BmPriceMgr;
 
 // ---- statics of the unit's header (init order: the two sort name lists, skill, stun, a condition object, the key
 // controller, then three attribute names) ----
@@ -125,32 +131,38 @@ Unk_PnScriptPtr FUN_140856c50(unsigned nNpcId, int nMode);              // the d
 Unk_PnScriptPtr FUN_140856980(unsigned nNpcId, const CStringW& strTag); // the script with the tag
 
 struct Unk_AqPos { Unk_AqPos(); float x, y, z; };
-void* FUN_1403ed2d0();                                                  // the world service
-void* FUN_141bd0cc0(void* pWorld);                                      // its local player
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 void* FUN_1403ed280();                                                  // the effect service
-void* FUN_140166410();
-bool FUN_14036d570(void* pOption, int nIndex);
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
 // the local player's vtable up to its level getter (slot 78)
 struct Unk_AqActorView
 {
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual Unk_AqPos GetPos(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23(); virtual void vfunc_24(); virtual void vfunc_25(); virtual void vfunc_26(); virtual void vfunc_27(); virtual void vfunc_28(); virtual void vfunc_29(); virtual void vfunc_30(); virtual void vfunc_31(); virtual void vfunc_32(); virtual void vfunc_33(); virtual void vfunc_34(); virtual void vfunc_35(); virtual void vfunc_36(); virtual void vfunc_37(); virtual void vfunc_38(); virtual void vfunc_39(); virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44(); virtual void vfunc_45(); virtual void vfunc_46(); virtual void vfunc_47(); virtual void vfunc_48(); virtual void vfunc_49(); virtual void vfunc_50(); virtual void vfunc_51(); virtual void vfunc_52(); virtual void vfunc_53(); virtual void vfunc_54(); virtual void vfunc_55(); virtual void vfunc_56(); virtual void vfunc_57(); virtual void vfunc_58(); virtual void vfunc_59(); virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63(); virtual void vfunc_64(); virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67(); virtual void vfunc_68(); virtual void vfunc_69(); virtual void vfunc_70(); virtual void vfunc_71(); virtual void vfunc_72(); virtual void vfunc_73(); virtual void vfunc_74(); virtual void vfunc_75(); virtual void vfunc_76(); virtual void vfunc_77();
     virtual unsigned short GetLevel();
 };
-NpcDataTableCli* FUN_1406d6e90();
+class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 CString FUN_140cc2c70(const CString& strPath);                          // the full path of an illust
 CStringW FUN_1401aa6a0(int nId);                                        // npc name
 
 // out-of-unit callees (names describe uses)
 class Unk_AqTicketRules { public: int FUN_14067a0b0(Unk_FameAlliance nAlliance, int nGrade); };
-Unk_AqTicketRules* FUN_1401c0db0();
+class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 class Unk_AqItemTable;
-Unk_AqItemTable* FUN_140281980();
 unsigned FUN_1405575b0(Unk_AqItemTable* p, int nTag);                  // the item of a tag
 class Unk_AqInventory { public: char m_pad; };
 extern Unk_AqInventory DAT_143ab2a90;
 int FUN_140a5f780(Unk_AqInventory* pInv, int nTag, int n);              // item count by tag
 extern int DAT_143abdc30;                                               // the alliance npc shown
-CUIService* FUN_1403ed2b0();
 class Unk_AqMsgBox : public CPtred {};
 MS2Ptr<Unk_AqMsgBox> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);
@@ -158,11 +170,19 @@ void FUN_140534d60(MS2Ptr<Unk_AqMsgBox>* p);                            // handl
 class Unk_AqPane : public UIDialog { };                                 // the 0x4e3b dialog
 class Unk_AqShopMgr;
 Unk_AqPane* FUN_140534780(int nUIType);
-void FUN_141afb760(Unk_AqPane* p);
-void FUN_141b1feb0(void* pTalk);
+class UIShopDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void SetSearchDirty();
+};
+class UITalkManager   // C3: member view for the former free stand-ins
+{
+public:
+    void SendNpcTalkMode0();
+};
 void* FUN_140967100();
-CQuestManager* FUN_140764020();
-CFameTable* FUN_140764010();
+void* FUN_140764020();   // C3: was FUN_140764020
+class Unk_EmoNpcTable* FUN_140764010();   // C3: was FUN_140764010
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b070(CQuestData* pData);
 int FUN_14074b1c0(CQuestData* pData, int nBit);
@@ -223,13 +243,13 @@ int FUN_140bfa1b0(int nRepeat)
 // @0x140bfa200 the order of a quest state
 int FUN_140bfa200(int nQuest)
 {
-    int nDone = FUN_140764020()->vfunc_1(nQuest, 0);
+    int nDone = ((class CQuestManager*)FUN_140764020())->vfunc_1(nQuest, 0);
     if (nDone != 0)
         return 0;
-    Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuest);
+    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
     if (spQuest.IsNull() && nDone == 0)
         return 1;
-    return FUN_140764020()->FUN_140745590(nQuest);
+    return ((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuest);
 }
 
 // @0x140bfa2d0 the quest row order
@@ -286,7 +306,7 @@ void UIAllianceQuestDialog::vfunc_67()
 {
     m_180.FUN_140d43990();
     UIDialog::vfunc_67();
-    FUN_141b1feb0(FUN_140967100());
+    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
     FUN_140bfc4b0()->FUN_141aa8850(this);
 }
 
@@ -316,7 +336,7 @@ int UIAllianceQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             int nQuest = data.FUN_1422b8b10();
-            if (FUN_140764020()->FUN_1407456d0(nQuest) != 0)
+            if (((class CQuestManager*)FUN_140764020())->FUN_1407456d0(nQuest) != 0)
             {
                 COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
                 packet.WriteUInt8(8);
@@ -324,7 +344,7 @@ int UIAllianceQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 packet.WriteInt16(2);
                 FUN_140710590(packet);
             }
-            else if (FUN_140764020()->vfunc_1(nQuest, 0) != 0)
+            else if (((class CQuestManager*)FUN_140764020())->vfunc_1(nQuest, 0) != 0)
             {
                 COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
                 packet.WriteUInt8(8);
@@ -344,7 +364,7 @@ int UIAllianceQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 pPane->vfunc_67();
             else
             {
-                FUN_141afb760(pPane);
+                ((class UIShopDialog*)(class Unk_AqPane*)(pPane))->SetSearchDirty();
                 pPane->FUN_141924680();
             }
         }
@@ -461,7 +481,7 @@ void UIAllianceQuestDialog::FUN_140bf70f0()
     if (strRequire.GetLength() != 0)
     {
         int nAlliance = FUN_140bf6af0(DAT_143abdc30);
-        MS2Ptr<CFameSeasonDef> spSeason = FUN_140764010()->GetSeason(static_cast<Unk_FameAlliance>(nAlliance));
+        MS2Ptr<CFameSeasonDef> spSeason = ((class CFameTable*)FUN_140764010())->GetSeason(static_cast<Unk_FameAlliance>(nAlliance));
         if (!spSeason)
             return;
         spScript = FUN_140856980(DAT_143abdc30, FUN_14016a730(spSeason->m_strLimitNpcScriptTag, 0));
@@ -474,14 +494,14 @@ void UIAllianceQuestDialog::FUN_140bf70f0()
             strText = pScript->m_contents.FUN_14078f350(0).FUN_14078f3d0()->m_strText;
             if (pScript->m_contents.FUN_14078f350(0).FUN_14078f3d0()->m_strSound.GetLength() != 0)
             {
-                void* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+                void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
                 if (pActor != 0)
                     FUN_1411a4f40(FUN_1403ed280(), pScript->m_contents.FUN_14078f350(0).FUN_14078f3d0()->m_strSound, static_cast<Unk_AqActorView*>(pActor)->GetPos());
             }
         }
     }
     ASObj data(2);
-    data.FUN_1407cba60("imgPath", FUN_140cc2c70(FUN_1406d6e90()->GetIllust(DAT_143abdc30)));
+    data.FUN_1407cba60("imgPath", FUN_140cc2c70(((class NpcDataTableCli*)FUN_1406d6e90())->GetIllust(DAT_143abdc30)));
     data.FUN_1407cbb20("npcName", FUN_1401aa6a0(DAT_143abdc30));
     data.FUN_1407cbb20("npcScript", strText);
     static_cast<Unk_AqRoot*>(FUN_1409ee290(&m_30))->FUN_140ba4cc0("setNpc", data);
@@ -503,18 +523,18 @@ void UIAllianceQuestDialog::FUN_140bf7630()
             continue;
         if (FUN_14074b070(spData.operator->()) == 0)
         {
-            Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuest);
-            if (spQuest.IsNull() && FUN_140764020()->vfunc_1(nQuest, 0) == 0)
+            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
+            if (spQuest.IsNull() && ((class CQuestManager*)FUN_140764020())->vfunc_1(nQuest, 0) == 0)
                 continue;
-            if (FUN_140764020()->FUN_140745590(nQuest) != 0)
+            if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuest) != 0)
                 continue;
         }
         else if (FUN_14074b070(spData.operator->()) == 2)
         {
-            Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuest);
-            if (spQuest.IsNull() && FUN_140764020()->vfunc_1(nQuest, 0) == 0)
+            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
+            if (spQuest.IsNull() && ((class CQuestManager*)FUN_140764020())->vfunc_1(nQuest, 0) == 0)
                 continue;
-            if (FUN_140764020()->FUN_1416d0780(nQuest) == 0)
+            if (((class CQuestManager*)FUN_140764020())->FUN_1416d0780(nQuest) == 0)
                 continue;
         }
         else if (FUN_14074b070(spData.operator->()) == 3)
@@ -584,23 +604,23 @@ void UIAllianceQuestDialog::FUN_140bf7630()
             }
             if (FUN_140bf8800(nQuest) != 0)
             {
-                int nCost = FUN_1401c0db0()->FUN_14067a0b0(spData->m_4c, spData->m_50);
+                int nCost = reinterpret_cast<Unk_AqTicketRules*>(((class Unk_AqTicketRules*)FUN_1401c0db0()))->FUN_14067a0b0(spData->m_4c, spData->m_50);
                 if (nCost > 0)
                     row.FUN_1407cbb20("ticketStr", FUN_14062b4f0(L"s_alliance_quest_completion_ticket_count", &nCost));
             }
-            int bCanStart = FUN_140764020()->vfunc_1(nQuest, 0);
+            int bCanStart = ((class CQuestManager*)FUN_140764020())->vfunc_1(nQuest, 0);
             if (strLimit.GetLength() != 0)
                 row.FUN_1407cbb20("complete", strLimit);
             else if (bCanStart == 0)
             {
-                if (FUN_140764020()->FUN_140745590(nQuest) != 0)
+                if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuest) != 0)
                     row.FUN_1407cbb20("complete", FUN_140bf6c90(nQuest));
-                else if (FUN_140764020()->vfunc_o10_3(nQuest) == 0)
+                else if (((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest) == 0)
                 {
                     unsigned nPrev = FUN_140bf9580(nQuest);
-                    if (FUN_140764020()->FUN_140745590(nPrev) != 0)
+                    if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nPrev) != 0)
                         row.FUN_1407cbb20("complete", FUN_140bf6c90(nQuest));
-                    else if (FUN_140764020()->FUN_140745630(nPrev) != 0)
+                    else if (((class CQuestManager*)FUN_140764020())->FUN_140745630(nPrev) != 0)
                         row.FUN_1407cbb20("complete", GetStringCommonByKey(L"s_alliance_quest_rumble_warn"));
                 }
             }
@@ -614,7 +634,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
             else
             {
                 strButton = GetStringCommonByKey(L"s_alliance_quest_complete");
-                bEnabled = FUN_140764020()->FUN_1407456d0(nQuest);
+                bEnabled = ((class CQuestManager*)FUN_140764020())->FUN_1407456d0(nQuest);
             }
             row.FUN_1407cb9c0("enabled", bEnabled);
             row.FUN_1407cbb20("buttonStr", strButton);
@@ -627,14 +647,14 @@ void UIAllianceQuestDialog::FUN_140bf7630()
 // @0x140bf8800
 int UIAllianceQuestDialog::FUN_140bf8800(unsigned nQuest)
 {
-    if (!FUN_14036d570(FUN_140166410(), 0xef))
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xef))
         return 0;
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
     if (!spData)
         return 0;
     if (FUN_14074b1c0(spData.get(), 2) == 0)
         return 0;
-    if (FUN_140764020()->FUN_140745630(nQuest) == 0)
+    if (((class CQuestManager*)FUN_140764020())->FUN_140745630(nQuest) == 0)
         return 0;
     return 1;
 }
@@ -654,7 +674,7 @@ int UIAllianceQuestDialog::FUN_140bf8900()
             continue;
         if (spData->m_require.m_unrequireGroup.GetCount() != 0)
             continue;
-        if (FUN_140764020()->vfunc_1(nQuest, 0) == 0)
+        if (((class CQuestManager*)FUN_140764020())->vfunc_1(nQuest, 0) == 0)
             continue;
         return 1;
     }
@@ -674,7 +694,7 @@ int UIAllianceQuestDialog::FUN_140bf8ab0()
             continue;
         if (FUN_14074b070(spData.get()) != 2 && FUN_14074b070(spData.get()) != 3)
             continue;
-        if (FUN_140764020()->FUN_140746ba0(nQuest, 0, 0) != 0)
+        if (((class CQuestManager*)FUN_140764020())->FUN_140746ba0(nQuest, 0, 0) != 0)
             continue;
         return 1;
     }
@@ -689,16 +709,16 @@ void UIAllianceQuestDialog::FUN_140bf8c30(unsigned nQuest)
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
     if (!spData)
         return;
-    int nCost = FUN_1401c0db0()->FUN_14067a0b0(spData->m_4c, spData->m_50);
+    int nCost = reinterpret_cast<Unk_AqTicketRules*>(((class Unk_AqTicketRules*)FUN_1401c0db0()))->FUN_14067a0b0(spData->m_4c, spData->m_50);
     if (nCost == 0)
         return;
     int nCount = FUN_140a5f780(&DAT_143ab2a90, 0xd1, 0);
-    unsigned nItem = FUN_1405575b0(FUN_140281980(), 0xd1);
+    unsigned nItem = FUN_1405575b0(reinterpret_cast<Unk_AqItemTable*>(TSingleton<CItemDataTable>::GetInstance()), 0xd1);
     if (nCount < nCost)
     {
-        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1405575b0(FUN_140281980(), 0xd1));
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1405575b0(reinterpret_cast<Unk_AqItemTable*>(TSingleton<CItemDataTable>::GetInstance()), 0xd1));
         CStringW strText = FUN_1405c2690(L"s_alliance_quest_completion_ticket_lack", strName);
-        FUN_1403ed2b0()->FUN_141add520(CStringW(strText), CStringW(strName));
+        TSingleton<CUIService>::GetInstance()->FUN_141add520(CStringW(strText), CStringW(strName));
     }
     else
     {
@@ -761,7 +781,7 @@ void UIAllianceQuestDialog::FUN_140bf91b0()
             continue;
         if (spData->m_require.m_unrequireGroup.GetCount() != 0)
             continue;
-        if (FUN_140764020()->vfunc_1(nQuest, 0) == 0)
+        if (((class CQuestManager*)FUN_140764020())->vfunc_1(nQuest, 0) == 0)
             continue;
         m_1c0.Add(nQuest);
     }
@@ -781,7 +801,7 @@ void UIAllianceQuestDialog::FUN_140bf9360()
             continue;
         if (FUN_14074b070(spData.get()) != 2 && FUN_14074b070(spData.get()) != 3)
             continue;
-        if (FUN_140764020()->FUN_140746ba0(nQuest, 0, 0) != 0)
+        if (((class CQuestManager*)FUN_140764020())->FUN_140746ba0(nQuest, 0, 0) != 0)
             continue;
         m_1e0.Add(nQuest);
     }
@@ -802,17 +822,17 @@ int UIAllianceQuestDialog::FUN_140bf9530(int nQuest)
 // @0x140bf9580
 unsigned UIAllianceQuestDialog::FUN_140bf9580(unsigned nQuest)
 {
-    if (FUN_140764020()->FUN_140745630(nQuest) != 0)
+    if (((class CQuestManager*)FUN_140764020())->FUN_140745630(nQuest) != 0)
         return nQuest;
-    if (FUN_140764020()->FUN_140745590(nQuest) != 0)
+    if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuest) != 0)
     {
         MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
         if (!spData)
             return 0;
         if (spData->m_require.m_groupId != 0)
         {
-            int nSelector = FUN_140bfc5b0(&static_cast<CQuestManagerCommon&>(*FUN_140764020()));
-            int nSeed = FUN_140764020()->FUN_140747000(nQuest);
+            int nSelector = FUN_140bfc5b0(&static_cast<CQuestManagerCommon&>(*((class CQuestManager*)FUN_140764020())));
+            int nSeed = ((class CQuestManager*)FUN_140764020())->FUN_140747000(nQuest);
             ATL::CAtlArray<unsigned> picked;
             TSingleton<QuestDataTable>::GetInstance()->FUN_14074e6c0(spData->m_require.m_groupId, nSelector, nSeed, picked);
             if (FUN_140408410(&picked, &nQuest) != -1)
@@ -820,11 +840,11 @@ unsigned UIAllianceQuestDialog::FUN_140bf9580(unsigned nQuest)
         }
         else
         {
-            if (FUN_140764020()->FUN_1416d07c0(nQuest) != 0)
+            if (((class CQuestManager*)FUN_140764020())->FUN_1416d07c0(nQuest) != 0)
                 return nQuest;
         }
     }
-    if (FUN_140764020()->vfunc_1(nQuest, 0) != 0)
+    if (((class CQuestManager*)FUN_140764020())->vfunc_1(nQuest, 0) != 0)
         return nQuest;
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
     if (!spData)
@@ -835,13 +855,13 @@ unsigned UIAllianceQuestDialog::FUN_140bf9580(unsigned nQuest)
             return 0;
         for (size_t i = 0; i < spData->m_require.m_unrequireGroup.GetCount(); i++)
         {
-            int nSelector = FUN_140bfc5b0(&static_cast<CQuestManagerCommon&>(*FUN_140764020()));
-            int nSeed = FUN_140764020()->FUN_140747000(nQuest);
+            int nSelector = FUN_140bfc5b0(&static_cast<CQuestManagerCommon&>(*((class CQuestManager*)FUN_140764020())));
+            int nSeed = ((class CQuestManager*)FUN_140764020())->FUN_140747000(nQuest);
             ATL::CAtlArray<unsigned> picked;
             TSingleton<QuestDataTable>::GetInstance()->FUN_14074e6c0(spData->m_require.m_groupId, nSelector, nSeed, picked);
             for (size_t j = 0; j < picked.GetCount(); j++)
             {
-                Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(picked[j]);
+                Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(picked[j]);
                 if (spQuest.IsNull())
                     continue;
                 return spQuest->FUN_140bfc580();
@@ -866,7 +886,7 @@ int UIAllianceQuestDialog::FUN_140bf9a40(unsigned nQuest)
     ATL::CAtlArray<unsigned>& rQuests = spData->m_require.m_quest;
     for (size_t i = 0; i < rQuests.GetCount(); i++)
     {
-        if (rQuests[i] != 0 && FUN_140764020()->FUN_140745590(rQuests[i]) == 0)
+        if (rQuests[i] != 0 && ((class CQuestManager*)FUN_140764020())->FUN_140745590(rQuests[i]) == 0)
             return 0;
     }
     return 1;
@@ -876,13 +896,13 @@ int UIAllianceQuestDialog::FUN_140bf9a40(unsigned nQuest)
 CStringW UIAllianceQuestDialog::FUN_140bf9bd0()
 {
     int nAlliance = FUN_140bf6af0(DAT_143abdc30);
-    MS2Ptr<CFameSeasonDef> spSeason = FUN_140764010()->GetSeason(static_cast<Unk_FameAlliance>(nAlliance));
+    MS2Ptr<CFameSeasonDef> spSeason = ((class CFameTable*)FUN_140764010())->GetSeason(static_cast<Unk_FameAlliance>(nAlliance));
     if (!spSeason)
         return L"";
-    void* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pActor == 0)
         return L"";
-    if (static_cast<Unk_AqActorView*>(pActor)->GetLevel() < spSeason->m_nRequireLv || FUN_140764020()->FUN_140745590(spSeason->m_nRequireQuest) == 0)
+    if (static_cast<Unk_AqActorView*>(pActor)->GetLevel() < spSeason->m_nRequireLv || ((class CQuestManager*)FUN_140764020())->FUN_140745590(spSeason->m_nRequireQuest) == 0)
     {
         unsigned short nRequireLv = spSeason->m_nRequireLv;
         CStringW strQuest = FUN_1416e4df0(spSeason->m_nRequireQuest);
@@ -895,7 +915,7 @@ CStringW UIAllianceQuestDialog::FUN_140bf9bd0()
 // @0x140bf9e10
 CStringW UIAllianceQuestDialog::FUN_140bf9e10()
 {
-    MS2Ptr<CFameLimitData> spLimit = FUN_140764010()->GetLimit(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)));
+    MS2Ptr<CFameLimitData> spLimit = ((class CFameTable*)FUN_140764010())->GetLimit(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)));
     if (!spLimit)
         return L"";
     CStringW strLimits;

@@ -152,7 +152,7 @@ public:
     bool GetOr(const CString& key, bool* out, const bool& def);
     bool GetOr(const CString& key, CStringW* out, const CStringW& def);
 
-    __int64 m_unk8;
+    bool m_unk8;                                     // +0x08 (the exe ctor stores a byte)
     CAtlArray<Unk_ConstCacheRef> cacheRefs;               // +0x10
     ATL::CRBMap<CString, CString> values;            // +0x30
     Value<MS2Tick> LookAtInterval;                   // +0x60
@@ -561,14 +561,8 @@ public:
     Value<float> GamePadRumbleMultiple;              // +0x90a0
     float MesoRevivalFeeReduceLimit;                 // +0x90f8
     float IngredientFeeReduceLimit;                  // +0x90fc
-    int StatPointLimit_str;                          // +0x9100
-    int StatPointLimit_dex;                          // +0x9104
-    int StatPointLimit_int;                          // +0x9108
-    int StatPointLimit_luk;                          // +0x910c
-    int StatPointLimit_hp;                           // +0x9110
-    unsigned char m_pad_9114[0x30];
-    int StatPointLimit_cap;                          // +0x9144
-    unsigned char m_pad_9148[0x48];
+    int StatPointLimit[35];                          // +0x9100, by stat key: str 0, dex 1, int 2, luk 3, hp 4, cap 0x11
+    unsigned char m_pad_918c[4];
     Value<unsigned int> AdventureLevelLvUpRewardItem; // +0x9190
     Value<unsigned int> AdventureLevelLvUpExp;       // +0x91e8
     Value<unsigned int> AdventureLevelMaxExp;        // +0x9240

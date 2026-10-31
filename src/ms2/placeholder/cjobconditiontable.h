@@ -13,6 +13,7 @@ class CJobConditionTable : public TSingleton<CJobConditionTable>, public CValidD
 public:
     CJobConditionTable();                                   // 0x140635ec0
     virtual ~CJobConditionTable();
+    int Load();                                             // 0x140636000
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_10[0x88 - 0x10];

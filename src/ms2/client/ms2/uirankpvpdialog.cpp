@@ -39,6 +39,11 @@ static CStringW s_strRankArenaObserve = L"rankArenaObserve";
 static CStringW s_strRankArenaRegister = L"rankArenaRegister";
 static CString s_strBuyTypeNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/uiupperhuddialog.h"
+#include "ms2/client/ms2/uigamerankingdialog.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -46,22 +51,16 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> RankClick
 
 class Unk_PCBaseBuffs { public: int FUN_140970020(int nBuffId, unsigned short nLevel, int a, int b); };
 class Unk_RankWorld { public: PCBase* FUN_141bd0cc0(); };          // the local player
-Unk_RankWorld* FUN_1403ed2d0();
 class Unk_RankUIService { public: void FUN_141adc530(int nUiId); }; // close
-Unk_RankUIService* FUN_1403ed2b0();
-class Unk_RankGradeDialog { public: void FUN_140e2dfc0(int a, int b); };
-Unk_RankGradeDialog* FUN_140b2d030(int nUiId);                      // GetDialog
-class Unk_RankBrowser { public: void FUN_14135ec00(const CString& strUrl, bool b); };
-Unk_RankBrowser* FUN_140c43790(int nUiId);                          // GetDialog
+UIGameRankingDialog* FUN_140b2d030(int nUiId);                      // GetDialog
+UIWebBrowserBase* FUN_140c43790(int nUiId);                         // GetDialog
 class Unk_RankClientState { public: };
-Unk_RankClientState* FUN_1409a8b10();
 struct Unk_RankClientFlags { unsigned char m_0; unsigned char m_observer; };
 Unk_RankClientFlags* FUN_140c9b8b0(Unk_RankClientState* p);
 void FUN_141243540(Unk_RankClientState* p);                         // save the client flags
 
 CFeatureManager* FUN_140166410();
 CStringTable* GetStringTable();
-JobTable* FUN_1401d7a50();
 CRankingArenaDataTable* FUN_140dc19b0();
 CStringW GetStringCommonByKey(const CStringW& str);                        // string table text by key
 CStringW GetStringCommon(int nId);                                    // string table text by id
@@ -135,7 +134,7 @@ void UIRankPvPDialog::OnLoadComplete()
         m_seasonBestRating = m_registerPage->FUN_1409b4620("m_seasonBestRating");
         m_rating = m_registerPage->FUN_1409b4620("m_rating");
         m_rankMark = m_registerPage->FUN_1409b4560("m_rankMark");
-        m_observeCheck->FUN_1422ce090(FUN_140c9b8b0(FUN_1409a8b10())->m_observer);
+        m_observeCheck->FUN_1422ce090(FUN_140c9b8b0(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance()))->m_observer);
         m_register->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95260), 0);
         m_unregister->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::SendPVPMode15), 0);
         m_showGrade->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95550), 0);
@@ -366,7 +365,7 @@ void UIRankPvPDialog::FUN_140f94840()
         MS2Ptr<RankDuelStatisticalData> spRecord = CPVPManager::GetInstance()->GetRankDuel()->FindRecord(nJobGroup);
         if (spRecord == 0)
             spRecord.AssignRaw(new RankDuelStatisticalData);
-        FUN_140cffca0((*spRow).FUN_1422bb890(), "jobIcon", FUN_140e10af0("_{0}", FUN_1401d7a50()->GetSubJob1(nJobGroup)));
+        FUN_140cffca0((*spRow).FUN_1422bb890(), "jobIcon", FUN_140e10af0("_{0}", TSingleton<JobTable>::GetInstance()->GetSubJob1(nJobGroup)));
         FUN_140cfee80((*spRow).FUN_1422bb890(), "jobName", GetStringTable()->FUN_141811980(0x4d, nJobGroup));
         MS2Ptr<ASTextField> spWinRate = spRow->FUN_1409b4620("winRate");
         CStringW strNone(L"-");
@@ -435,7 +434,7 @@ void UIRankPvPDialog::FUN_140f95260(const Scaleform::GFx::FunctionHandler::Param
 {
     if (m_30 == 0)
         return;
-    unsigned char nObserver = FUN_140c9b8b0(FUN_1409a8b10())->m_observer;
+    unsigned char nObserver = FUN_140c9b8b0(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance()))->m_observer;
     if (nObserver == 1)
     {
         // Registering while observing: ask first (OnMessage "rankArenaRegister").
@@ -476,16 +475,16 @@ void UIRankPvPDialog::FUN_140f95550(const Scaleform::GFx::FunctionHandler::Param
 {
     if (FUN_140166410()->FUN_14036d570(0x3f) == 1)
     {
-        Unk_RankGradeDialog* pDialog = FUN_140b2d030(0x4f24);
+        UIGameRankingDialog* pDialog = FUN_140b2d030(0x4f24);
         if (pDialog)
         {
             pDialog->FUN_140e2dfc0(4, 0);
-            FUN_1403ed2b0()->FUN_141adc530(0x4f24);
+            reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f24);
         }
     }
     else if (FUN_140166410()->FUN_14036d570(0x3b) == 1)
     {
-        Unk_RankBrowser* pBrowser = FUN_140c43790(0x4e6a);
+        UIWebBrowserBase* pBrowser = FUN_140c43790(0x4e6a);
         if (pBrowser == 0)
             return;
         pBrowser->FUN_14135ec00("maview:/Rank/PVP", true);
@@ -499,8 +498,8 @@ void UIRankPvPDialog::FUN_140f95630(const Scaleform::GFx::FunctionHandler::Param
     if (m_30 == 0)
         return;
     bool bObserve = FUN_14028d780(m_observeCheck->FUN_1422ce0e0());
-    FUN_140c9b8b0(FUN_1409a8b10())->m_observer = bObserve;
-    FUN_141243540(FUN_1409a8b10());
+    FUN_140c9b8b0(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance()))->m_observer = bObserve;
+    FUN_141243540(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance()));
     if (bObserve)
         FUN_140d73aa0(GetStringCommonByKey(L"s_rank_duel_ui_observe_notify"), 0, 0, CStringW(L""));
 }
@@ -515,7 +514,7 @@ bool UIRankPvPDialog::FUN_140f95750()
         FUN_140d73aa0(GetStringCommon(0x428), 0, 0, CStringW(L""));
         return false;
     }
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_RankWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
     if (pPlayer->FUN_1416749a0()->FUN_140970020(0x5f5e107, 0, 0, 1) != 0)

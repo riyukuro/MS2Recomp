@@ -105,17 +105,17 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 // ---- unit-local views of exe objects ----
 
 unsigned int FUN_140869420();                                       // the tick
 int FUN_141277f50();                                                // the UI layer id
 bool FUN_141276180(CString& strKey, const CString& strArg);        // 0x141276180 close a notice by key
-class Unk_StTextFilter { public: void FUN_1416fb340(CStringW& str); };
-Unk_StTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 UISwfEntity* FUN_14096e340(int nId);
 bool FUN_140a467d0(const MS2Ptr<AScript>*);                         // has the AS object been released
-class Unk_StEntity : public ASGameEntity { public: float FUN_1422c1110(); };   // y                                // the UI of a class id
+class Unk_StEntity : public ASGameEntity { };   // y                                // the UI of a class id
 
 void FUN_141275460(int nStringId, int nA, int nB, const fmt::ArgList& args);   // show a formatted notice
 

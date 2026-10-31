@@ -70,7 +70,6 @@ void FUN_1411a4a00(void* pEffects, NoticeMessage& msg);                    // 0x
 void FUN_141191330(void* pField, int nId);                                 // 0x141191330
 void FUN_141190900(void* pField, int nId);                                 // 0x141190900
 void* FUN_140b12380(void* pField);                                         // 0x140b12380 the field's drop manager
-int FUN_14123c580(void* pActor);                                           // 0x14123c580 the actor's object id
 
 // The actor registry the pet state queries by entity id.
 void* FUN_141b6f910();                                                     // 0x141b6f910
@@ -85,13 +84,10 @@ void* FUN_140c8b450(void* pSvc);                                           // 0x
 class Unk_SmPetSkills { public: MS2Ptr<Unk_ItemEquipData> FUN_140c892c0(int nSkillId); };   // 0x140c892c0 (member)
 Unk_SmPetSkills* FUN_140c8b430(void* pSvc);                                // 0x140c8b430
 bool FUN_1401c0050(MS2Ptr<Unk_ItemEquipData>& ref, int n);                 // 0x1401c0050 the reference is set
-int FUN_1409a1a00(NiActorManager* pkManager);                              // 0x1409a1a00 the manager's sequence id
 
 // The pet actor and its manager.
 void* FUN_140b10360(PCBase* pPet);                                         // 0x140b10360 the pet's manager
 int FUN_140b11e90(void* pList, void* pItem);                               // 0x140b11e90 index of the item
-void* FUN_14165f100(PCBase* p);                                            // 0x14165f100 the playing emotion
-void FUN_14165f170(PCBase* p);                                             // 0x14165f170 stop it
 void FUN_140b11180(void* pPet);                                            // 0x140b11180 update
 void FUN_140b114e0(PCBase* pPet, int nAnimId);                             // 0x140b114e0 play a pet animation
 struct Unk_SmPet
@@ -99,7 +95,6 @@ struct Unk_SmPet
     MS2Ptr<Unk_PetRow> FUN_140b102b0();                                    // 0x140b102b0 CPet: the pet's row (by value)
     PCBase* FUN_140b10320();                                               // 0x140b10320 CPet: the owner
 };
-int FUN_141661970(PCBase* pActor);                                         // 0x141661970 the actor is busy
 int FUN_140f48d40(void* pComp);                                            // 0x140f48d40 the component's flag
 
 // The client constants table and its Value<T> accessors.
@@ -121,7 +116,6 @@ void FUN_141276180(const CStringA& strCommand, const CStringA& strArg);    // 0x
 
 // The pet's position buffer (statehomemade.cpp owns the real one).
 class Unk_SmBuffMgr { public: Vector3 FUN_141683290(); };
-Unk_SmBuffMgr* FUN_14166d240(PCBase* p);                                   // 0x14166d240 &m_unk_6d8
 // PCBase vtable view: slot 22 takes the position by value (the exe copies it to a 16-aligned temp)
 class Unk_SmPointSlots
 {
@@ -239,7 +233,7 @@ void StateSummon::vfunc_4(StateData* pData)
             NoticeMessage msg;
             msg.m_strName = "CH/Common/Eff_PetOn.xml";
             msg.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), m_pOwner);
-            msg.SetActor(FUN_14123c580(m_pOwner));
+            msg.SetActor(reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c580());
             FUN_1411a4a00(FUN_1403ed280(), msg);
         }
     }
@@ -247,8 +241,8 @@ void StateSummon::vfunc_4(StateData* pData)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider != 0)
     {
-        if (FUN_14165f100(pRider) != 0)
-            FUN_14165f170(pRider);
+        if (((void*)(reinterpret_cast<PC*>(pRider)->FUN_14165f100())) != 0)
+            reinterpret_cast<PC*>(pRider)->SendRequestCube();
         UICastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar != 0)
         {
@@ -350,7 +344,7 @@ void StateSummon::vfunc_8(double fTime)
         return;
     }
 
-    Unk_SmBuffMgr* pBuff = FUN_14166d240(pRider);
+    Unk_SmBuffMgr* pBuff = ((Unk_SmBuffMgr*)(reinterpret_cast<PCBase*>(pRider)->FUN_14166d240()));
     reinterpret_cast<Unk_SmPointSlots*>(pRider)->vfunc_22(
         reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
     if (m_pOwner->FUN_1416749c0())
@@ -408,8 +402,8 @@ void StateGoToHome::vfunc_4(StateData* pData)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider != 0)
     {
-        if (FUN_14165f100(pRider) != 0)
-            FUN_14165f170(pRider);
+        if (((void*)(reinterpret_cast<PC*>(pRider)->FUN_14165f100())) != 0)
+            reinterpret_cast<PC*>(pRider)->SendRequestCube();
     }
 
     int nDuration = FUN_140ad5c50(reinterpret_cast<const char*>(FUN_1401d3200()) + 0x35d0);
@@ -484,8 +478,8 @@ void StateRecall::vfunc_4(StateData* pData)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider != 0)
     {
-        if (FUN_14165f100(pRider) != 0)
-            FUN_14165f170(pRider);
+        if (((void*)(reinterpret_cast<PC*>(pRider)->FUN_14165f100())) != 0)
+            reinterpret_cast<PC*>(pRider)->SendRequestCube();
     }
 
     int nDuration = FUN_140ad5c50(reinterpret_cast<const char*>(FUN_1401d3200()) + 0x3628);
@@ -552,7 +546,7 @@ void StateRecall::vfunc_8(double fTime)
         return;
     }
 
-    Unk_SmBuffMgr* pBuff = FUN_14166d240(pRider);
+    Unk_SmBuffMgr* pBuff = ((Unk_SmBuffMgr*)(reinterpret_cast<PCBase*>(pRider)->FUN_14166d240()));
     reinterpret_cast<Unk_SmPointSlots*>(pRider)->vfunc_22(
         reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
     if (m_pOwner->FUN_1416749c0())
@@ -624,7 +618,7 @@ void StateSummonIdle::vfunc_9(double fTime)
     if (pOwner == 0)
         return;
 
-    if (pOwner->FUN_14166ce30() != 0 && FUN_141661970(pOwner) != 0)
+    if (pOwner->FUN_14166ce30() != 0 && reinterpret_cast<PC*>(pOwner)->FUN_141661970() != 0)
     {
         m_pOwner->FUN_14166dd20("Tired_A", m_pOwner->FUN_1416713c0(), false, false);
         return;
@@ -679,7 +673,7 @@ void StateSummonIdle::EndOfSequence(NiActorManager* pkManager, unsigned int nSeq
     if (m_pOwner->FUN_14166de90(0x27, nSequenceID))
     {
         m_n10 = 1;
-        int nMotion = FUN_1409a1a00(pkManager);
+        int nMotion = static_cast<NiActorManager*>(pkManager)->GetTargetAnimation();
         FUN_1417f9100(this, nMotion);
     }
     else if (m_pOwner->FUN_14166de90(0x44, nSequenceID))
@@ -796,11 +790,11 @@ void StateSummonRevive::vfunc_3(double fTime)
     if (m_timer.FUN_140868c00() != 0)    // expired (0x140868c00), not still running
     {
         m_timer.FUN_1408687f0();
-        if (pPet->FUN_14166ce30() != 0 && FUN_141661970(pPet) == 0)
+        if (pPet->FUN_14166ce30() != 0 && reinterpret_cast<PC*>(pPet)->FUN_141661970() == 0)
         {
             COutPacket packet(static_cast<int>(SendOp::Revival), 0);
             packet.Encode1(3);
-            packet.Encode4(FUN_14123c580(m_pOwner));
+            packet.Encode4(reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c580());
             FUN_140710590(packet);
         }
     }
@@ -824,7 +818,7 @@ void StateSummonRevive::vfunc_9(double fTime)
     if (pOwner == 0)
         return;
 
-    if (pOwner->FUN_14166ce30() != 0 && FUN_141661970(pOwner) != 0)
+    if (pOwner->FUN_14166ce30() != 0 && reinterpret_cast<PC*>(pOwner)->FUN_141661970() != 0)
     {
         m_pOwner->FUN_14166dd20("Tired_A", m_pOwner->FUN_1416713c0(), false, false);
         return;
@@ -895,8 +889,8 @@ void StateSummonItemPick::vfunc_3(double fTime)
         void* pDrop = FUN_140b12380(pField);
         if (pDrop == 0)
             return;
-        FUN_141191330(pField, FUN_14123c580(pPet));
-        FUN_141190900(pField, FUN_14123c580(pPet));
+        FUN_141191330(pField, reinterpret_cast<GameObject*>(pPet)->FUN_14123c580());
+        FUN_141190900(pField, reinterpret_cast<GameObject*>(pPet)->FUN_14123c580());
     }
 }
 

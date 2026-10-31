@@ -18,6 +18,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- statics (.text$di): the shared header statics a second time (another header of the unit pulls them in) ----
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -40,12 +43,10 @@ public:
     template <class T> MS2Ptr<T> FUN_140c12120(const Scaleform::GFx::Value& v, const CString& strName);
 };
 
-class Unk_SsWorld { public: void* FUN_141bd0cc0(); };            // the local player
-Unk_SsWorld* FUN_1403ed2d0();
+            // the local player
+WorldService* FUN_1403ed2d0();
 class Unk_SsUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };
-Unk_SsUIManager* FUN_1403ed2b0();
 
-DungeonRoomTable* FUN_14031c2a0();
 void* FUN_1409670d0();
 bool FUN_14162ac70(void*, int);
 unsigned FUN_140bd09c0(void* pUserData);
@@ -157,14 +158,14 @@ void UIDungeonSearchSettingDialog::FUN_140c11190(int nGroup)
     m_nGroup = nGroup;
     switch (nGroup) {
     case 0:
-        FUN_14031c2a0()->GetGroupRooms((DungeonGroupType)1, m_rooms);
-        FUN_14031c2a0()->GetGroupRooms((DungeonGroupType)2, m_rooms);
+        TSingleton<DungeonRoomTable>::GetInstance()->GetGroupRooms((DungeonGroupType)1, m_rooms);
+        TSingleton<DungeonRoomTable>::GetInstance()->GetGroupRooms((DungeonGroupType)2, m_rooms);
         break;
     case 1:
-        FUN_14031c2a0()->GetGroupRooms((DungeonGroupType)1, m_rooms);
+        TSingleton<DungeonRoomTable>::GetInstance()->GetGroupRooms((DungeonGroupType)1, m_rooms);
         break;
     case 2:
-        FUN_14031c2a0()->GetGroupRooms((DungeonGroupType)2, m_rooms);
+        TSingleton<DungeonRoomTable>::GetInstance()->GetGroupRooms((DungeonGroupType)2, m_rooms);
         break;
     }
 }
@@ -337,8 +338,8 @@ template <class T> bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString
 // @0x140c125c0
 UIDungeonControlCenter* FUN_140c125c0(int nUIType)
 {
-    if (FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nUIType);
+    if (reinterpret_cast<Unk_SsUIManager*>(TSingleton<CUIService>::GetInstance())) {
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_SsUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUIType);
         if (p.get())
             return dynamic_cast<UIDungeonControlCenter*>((UIObject*)p);
     }

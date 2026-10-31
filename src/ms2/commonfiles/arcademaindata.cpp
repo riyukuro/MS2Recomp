@@ -34,11 +34,9 @@
 
 // Unrecovered helpers (same ones continentregiontable.cpp uses).
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14016a5c0(const char* psz, int n);
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
 
 // The client string tables (singleton at 0x143aac298): FUN_141811980(table, id) is the string of id in table.
@@ -94,12 +92,12 @@ bool CArcadeDataTable::LoadMain()
 {
     CString strPath = FUN_14071a5b0("Table", "arcadeGame.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("arcadeGame"); pNode != 0; pNode = pNode->FUN_140168650("arcadeGame"))
@@ -122,12 +120,12 @@ bool CArcadeDataTable::LoadReward()
 {
     CString strPath = FUN_14071a5b0("Table/Server", "arcadeReward.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("arcadeGame"); pNode != 0; pNode = pNode->FUN_140168650("arcadeGame"))
@@ -161,12 +159,12 @@ bool CArcadeDataTable::LoadRecord()
 {
     CString strPath = FUN_14071a5b0("Table", "arcadeGameRecord.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("arcadeGame"); pNode != 0; pNode = pNode->FUN_140168650("arcadeGame"))

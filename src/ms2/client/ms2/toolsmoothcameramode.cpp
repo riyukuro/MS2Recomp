@@ -31,7 +31,7 @@ static CString s_sortNames2[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh"
 // ---- unit-local placeholders ----
 
 // The input state (FUN_14025e7c0).
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The camera option row held by the game context (+0x154 rotation).
 struct Unk_CameraOption
@@ -65,7 +65,11 @@ public:
     Unk_CameraOptionPtr FUN_141bd30a0();            // copy of +0x298
     Unk_CameraTargetEntity* FUN_141bd1050(__int64 nObjectId);
 };
-Unk_GameContext* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // The picked-object list returned by the camera manager's pick (FUN_140af0850).
 class Unk_PickEntry
@@ -100,7 +104,7 @@ class Unk_Cursor
 public:
     void FUN_141b90e30(float* pfX, float* pfY);
 };
-Unk_Cursor* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
 // Camera tuning values of the camera xml (FUN_140ae8910 consumes its by-value CString key).
 float FUN_140ae8910(CString key);
@@ -160,28 +164,28 @@ void CToolSmoothCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
     m_148 = m_13c = m_130 = g_143b01a60;
-    if (FUN_14025e7c0()->FUN_14116d950(0x11, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x11, false, 0))
         m_130.x = m_154 * m_160;
-    else if (FUN_14025e7c0()->FUN_14116d950(0x1f, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1f, false, 0))
         m_130.x = -m_154 * m_160;
-    if (FUN_14025e7c0()->FUN_14116d950(0x1e, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1e, false, 0))
         m_130.y = m_154 * m_160;
-    else if (FUN_14025e7c0()->FUN_14116d950(0x20, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x20, false, 0))
         m_130.y = -m_154 * m_160;
-    if (FUN_14025e7c0()->FUN_14116d950(0x10, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x10, false, 0))
         ptMove.y = m_158 * m_160;
-    else if (FUN_14025e7c0()->FUN_14116d950(0x12, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x12, false, 0))
         ptMove.y = -m_158 * m_160;
-    if (FUN_14025e7c0()->FUN_14116d950(0x39, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x39, false, 0))
         m_148.z = m_154 * m_160 * 10.0f;
-    else if (FUN_14025e7c0()->FUN_14116d950(0x2e, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x2e, false, 0))
         m_148.z = -m_154 * m_160 * 10.0f;
-    unsigned int bLeft = FUN_14025e7c0()->FUN_14116daa0(0, false, 0);
-    unsigned int bRight = FUN_14025e7c0()->FUN_14116daa0(1, false, 0);
+    unsigned int bLeft = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(0, false, 0);
+    unsigned int bRight = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0);
     int nX;
     int nY;
     int nWheel;
-    unsigned int bMoved = FUN_14025e7c0()->FUN_14116dbf0(&nX, &nY, &nWheel, false, 0);
+    unsigned int bMoved = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dbf0(&nX, &nY, &nWheel, false, 0);
     if (bMoved != 0)
     {
         if (bRight != 0)
@@ -217,14 +221,14 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
         bEnabled = DAT_143ab2914 >= 0x34;
     if (bEnabled)
     {
-        if (FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0) || FUN_14025e7c0()->FUN_14116d950(0x6b, true, 0))
+        if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x6b, true, 0))
         {
             float fOld = m_160;
-            if (FUN_14025e7c0()->FUN_14116d9c0(0x52, true, 0) || FUN_14025e7c0()->FUN_14116d9c0(0xb, true, 0))
+            if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x52, true, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0xb, true, 0))
                 m_160 = 1.0f;
-            else if (FUN_14025e7c0()->FUN_14116d9c0(0x4e, true, 0) || FUN_14025e7c0()->FUN_14116d9c0(0xd, true, 0))
+            else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x4e, true, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0xd, true, 0))
                 m_160 = m_160 + 0.05f;
-            else if (FUN_14025e7c0()->FUN_14116d9c0(0x4a, true, 0) || FUN_14025e7c0()->FUN_14116d9c0(0xc, true, 0))
+            else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x4a, true, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0xc, true, 0))
                 m_160 = m_160 - 0.05f;
             float fMax = 3.0f;
             m_160 = FUN_1409ffe80(m_160, fMax);
@@ -292,7 +296,7 @@ void CToolSmoothCameraMode::vfunc_6(int n)
     Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
     if (pTarget)
     {
-        float fRotation = FUN_1403ed2d0()->FUN_141bd30a0().FUN_140885340()->m_154;
+        float fRotation = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->m_154;
         Vector3 ptRot(90.0f, fRotation, -60.0f);
         vfunc_4(ptRot);
         vfunc_24(pTarget, 1);
@@ -367,11 +371,11 @@ void CToolSmoothCameraMode::vfunc_30()
 {
     float fX;
     float fY;
-    FUN_140aadf80()->FUN_141b90e30(&fX, &fY);
+    ((class Unk_Cursor*)FUN_140aadf80())->FUN_141b90e30(&fX, &fY);
     Unk_PickListPtr pList = Unk_CameraManager::FUN_1409478c0()->FUN_140af0850(fX, fY, true, true, false, NULL);
     if (!pList.FUN_140a16c00())
         return;
-    Unk_GameContext* pContext = FUN_1403ed2d0();
+    Unk_GameContext* pContext = ((class Unk_GameContext*)WorldService::GetInstance());
     for (unsigned int i = 0; i < pList.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17ea0(); ++i)
     {
         Unk_PickEntry* pEntry = pList.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17d70(i);

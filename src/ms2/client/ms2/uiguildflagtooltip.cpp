@@ -20,6 +20,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/camera.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -28,7 +30,6 @@ class Unk_FtWorld
 public:
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);      // an interact object by name
 };
-Unk_FtWorld* FUN_1403ed2d0();
 void* FUN_1403ed290();                                                  // the guild manager (its CGuildInfo sits at +8)
 
 // The score table of the guild ranking seasons: the entry of a trophy count has a value at +0x18.
@@ -38,7 +39,6 @@ Unk_FtSeasonTable* FUN_140dc19b0();
 Unk_FtSeasonEntry* FUN_140769000(Unk_FtSeasonTable* pTable, int nTrophy);
 
 class Unk_FtWorldToScreen { public: bool FUN_140af0700(const Vector3& world, Vector3& out); };
-Unk_FtWorldToScreen* FUN_1409478c0();                                   // camera service
 class Unk_FtUIScale;
 Unk_FtUIScale* FUN_14025e7a0();                                         // ui scale service
 float FUN_1422afec0(Unk_FtUIScale* pScale, int nLayer);                 // scale of a layer
@@ -112,7 +112,7 @@ void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity.get())
     {
-        CInteractObject* pObject = FUN_1403ed2d0()->FUN_141bc66b0(m_78).get();
+        CInteractObject* pObject = reinterpret_cast<Unk_FtWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_78).get();
         if (pObject == 0)
             return;
         CInteractDisplayImage* pImage = dynamic_cast<CInteractDisplayImage*>(pObject);
@@ -172,7 +172,7 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
 {
     if (m_78.GetLength() < 1)
         return false;
-    CInteractObject* pObject = FUN_1403ed2d0()->FUN_141bc66b0(m_78).get();
+    CInteractObject* pObject = reinterpret_cast<Unk_FtWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_78).get();
     if (pObject == 0)
         return false;
     CInteractDisplayImage* pImage = dynamic_cast<CInteractDisplayImage*>(pObject);
@@ -181,7 +181,7 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
     Vector3 kWorld = pObject->GetPos();
     kWorld.z += 150.0f;
     Vector3 kScreen;
-    if (FUN_1409478c0()->FUN_140af0700(kWorld, kScreen))
+    if (reinterpret_cast<Unk_FtWorldToScreen*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(kWorld, kScreen))
     {
         MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
         if (pEntity.get())

@@ -48,6 +48,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/crashmanagercli.h"
+#include "ms2/client/ms2/caprotationcontroller.h"
 
 // ---- file statics (.text$di) ----
 #ifndef MS2_HOOK_DLL
@@ -60,7 +61,6 @@ const NiRTTI GFxMovieBackground::ms_RTTI("GFxMovieBackground", &GFxMovieEventHan
 #endif
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
-class Unk_BgLog { public: void FUN_1401ce2f0(const char* szMessage); };
 extern char DAT_143b059e8;                                                  // efd::SmartPointer<efd::ServiceManager> cell
 extern char DAT_143ae52e0;                                                  // material name of the screen quad
 extern char DAT_143a08cd8;                                                  // the reference axis of the camera angle
@@ -140,7 +140,7 @@ public:
     virtual void vfunc_66();
     virtual Unk_BgTarget* vfunc_67(IDirect3DSurface9* pSurface, int nFlags);
 };
-Unk_BgHal* FUN_1422cf060();
+class Unk_GFxUIHal* FUN_1422cf060();   // C3: was FUN_1422cf060
 
 // The UI entity that owns the movie (looked up by the id of the local player); slots 60/61 take the movie's AS object.
 class Unk_BgOwner
@@ -209,18 +209,20 @@ public:
     virtual void vfunc_60(MS2Ptr<AScript> spScript);
     virtual void vfunc_61(MS2Ptr<AScript> spScript, const Scaleform::GFx::Value* pArgs, unsigned nArgs);
 };
-Unk_BgOwner* FUN_1422b9e50(void* pId);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    class UISceneEntity* FUN_1422b9e50();
+};
 void* FUN_1408e57f0();
 MS2Ptr<AScript> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 
-// The camera manager (FUN_1409478c0): the direction the camera looks along.
+// The camera manager: the direction the camera looks along.
 class Unk_BgCamera : public CameraMgr
 {
 public:
     Vector3 FUN_140af0340();
 };
-Unk_BgCamera* FUN_1409478c0();
-float FUN_140b02b90(float f);                                               // angle of the dot product
 
 // The minimap viewport: projects a world position to the background (returns false when it is off screen).
 class MinimapViewport : public NiRefObject
@@ -289,8 +291,11 @@ void FUN_14257ec50(Unk_BgDispHandle* p) throw();
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
 class Unk_BgWorldMgr : public WorldService { public: NiPoint3 FUN_141bd3dc0(); };   // 3dc0 returns by value (hidden pointer, worldservice.h)
 bool* FUN_1422dad70(void* pThis, void* pOut, char n);   // pOut: caller temp (key-state flags), returned
-NiMaterial* FUN_141d284a0(char* szName);
-void FUN_14116d500(void* pMat, const NiColor& kColor);
+class NiMaterialLibrary   // C3: member view for the former free stand-ins
+{
+public:
+    static class NiMaterial* CreateMaterial(class NiFixedString const&);
+};
 void FUN_1409807b0(void* p, int v);
 void FUN_1409805c0(void* p, int v);
 void FUN_1409806e0(void* p, int v);
@@ -428,13 +433,13 @@ void GFxMovieBackground::vfunc_4(void* pUnused, const char* szEvent, const Scale
     else if (_stricmp("loadComplete", szEvent) == 0)
     {
         m_bLoaded = 1;
-        Unk_BgOwner* pOwner = FUN_1422b9e50(FUN_1408e57f0());
+        Unk_BgOwner* pOwner = ((class Unk_BgOwner*)((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9e50());
         if (pOwner != 0)
             pOwner->vfunc_60(m_spScript);
     }
     else if (_stricmp("dispatchEvent", szEvent) == 0)
     {
-        Unk_BgOwner* pOwner = FUN_1422b9e50(FUN_1408e57f0());
+        Unk_BgOwner* pOwner = ((class Unk_BgOwner*)((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9e50());
         if (pOwner != 0)
             pOwner->vfunc_61(m_spScript, pArgs, nArgs);
     }
@@ -476,18 +481,18 @@ int GFxMovieBackground::vfunc_7(int x, int y)
 void GFxMovieBackground::vfunc_8(float fTime)
 {
     GFxMovie::vfunc_8(fTime);
-    if (FUN_1409478c0()->FUN_140a18070() == 0)
+    if (static_cast<Unk_BgCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() == 0)
         return;
     if (m_spScript.IsNull())
         return;
     if (m_n98 == 0)
         return;
-    Vector3 kDir = FUN_1409478c0()->FUN_140af0340();
+    Vector3 kDir = static_cast<Unk_BgCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0340();
     kDir.FUN_140968990();
     float fDot = kDir.FUN_140a00f20(*(const Vector3*)&DAT_143a08cd8);
     if (m_nCameraFlag != 0)
     {
-        float fAngle = FUN_140b02b90(fDot);
+        float fAngle = CCapRotationController::SafeAcos(fDot);
         m_spScript->Invoke("setCameraDistance", 1.0471976f, 1.5707964f, fAngle);
     }
     if (m_nPosFlag != 0)
@@ -713,20 +718,20 @@ int GFxMovieBackground::AppendScene()
 {
     if (!m_spRenderView)
     {
-        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed m_renderView == NULL");
+        TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed m_renderView == NULL");
         return 0;
     }
     ecr::RenderService* pRender = Unk_GetRenderService(&DAT_143b059e8);
     if (pRender == 0)
     {
-        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed ecr::RenderService == NULL");
+        TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed ecr::RenderService == NULL");
         return 0;
     }
     NiDefaultClickRenderStep* pClickStep = NiDynamicCast(NiDefaultClickRenderStep,
         pRender->GetActiveRenderSurface()->GetRenderStep());
     if (pClickStep == 0)
     {
-        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed NiDefaultClickRenderStep == NULL");
+        TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed NiDefaultClickRenderStep == NULL");
         return 0;
     }
     NiViewRenderClick* pClick = 0;
@@ -741,7 +746,7 @@ int GFxMovieBackground::AppendScene()
             return 1;
         }
     }
-    reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed SceneGraphClick No Search");
+    TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed SceneGraphClick No Search");
     return 0;
 }
 // @0x14127b290
@@ -777,10 +782,10 @@ int GFxMovieBackground::CreateRenderView()
     NiMeshScreenElements* pQuad = NiDynamicCast(NiMeshScreenElements, &m_spRenderView->GetScreenFillingQuad());
     if (pQuad == 0)
     {
-        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderView Failed");
+        TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderView Failed");
         return 0;
     }
-    NiMaterial* pMaterial = FUN_141d284a0(&DAT_143ae52e0);
+    NiMaterial* pMaterial = NiMaterialLibrary::CreateMaterial(*(class NiFixedString const*)(&DAT_143ae52e0));
     pQuad->ApplyAndSetActiveMaterial(pMaterial, 0xffffffff);
     NiAlphaProperty* pAlpha = NiNew NiAlphaProperty;
     if (pAlpha != 0)
@@ -793,7 +798,7 @@ int GFxMovieBackground::CreateRenderView()
         NiMaterialPropertyPtr spMaterial = NiNew NiMaterialProperty;
         if (spMaterial)
         {
-            FUN_14116d500(spMaterial.operator->(), NiColor(1.0f, 1.0f, 1.0f));
+            ((class NiMaterialProperty*)(void*)(spMaterial.operator->()))->SetEmittance(NiColor(1.0f, 1.0f, 1.0f));
             spMaterial->SetAlpha(1.0f);
             pQuad->AttachProperty(spMaterial);
         }
@@ -843,7 +848,7 @@ int GFxMovieBackground::CreateRenderTarget()
 {
     if (!m_spRenderTexture)
     {
-        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed m_renderTexture == NULL");
+        TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed m_renderTexture == NULL");
         return 0;
     }
     NiDX9TextureData* pData = (NiDX9TextureData*)m_spRenderTexture->GetRendererData();
@@ -854,22 +859,22 @@ int GFxMovieBackground::CreateRenderTarget()
         {
             IDirect3DSurface9* pSurface = 0;
             pTexture->GetSurfaceLevel(0, &pSurface);
-            m_spRenderTarget = FUN_1422cf060()->vfunc_67(pSurface, 0);
+            m_spRenderTarget = ((class Unk_BgHal*)FUN_1422cf060())->vfunc_67(pSurface, 0);
             if (pSurface != 0)
                 pSurface->Release();
             if (m_spRenderTarget)
                 return 1;
             else
-                reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed m_renderTarget == NULL");
+                TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed m_renderTarget == NULL");
         }
         else
         {
-            reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed IDirect3DTexture9 == NULL");
+            TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed IDirect3DTexture9 == NULL");
         }
     }
     else
     {
-        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed renderData == NULL");
+        TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed renderData == NULL");
     }
     return 0;
 }
@@ -888,16 +893,16 @@ int GFxMovieBackground::CreateRenderTexture()
             if (m_spRenderTexture)
                 return 1;
             else
-                reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTexture Failed m_renderTexture == NULL");
+                TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTexture Failed m_renderTexture == NULL");
         }
         else
         {
-            reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTexture Failed NiRenderTargetGroup == NULL");
+            TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTexture Failed NiRenderTargetGroup == NULL");
         }
     }
     else
     {
-        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTexture Failed ecr::RenderService == NULL");
+        TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTexture Failed ecr::RenderService == NULL");
     }
     return 0;
 }
@@ -906,13 +911,13 @@ int GFxMovieBackground::SetBaseTexture(NiRenderedTexture* pTexture)
 {
     if (!m_spRenderView)
     {
-        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::SetBaseTexture Failed m_renderView == NULL");
+        TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::SetBaseTexture Failed m_renderView == NULL");
         return 0;
     }
     NiMeshScreenElements* pQuad = NiDynamicCast(NiMeshScreenElements, &m_spRenderView->GetScreenFillingQuad());
     if (pQuad == 0)
     {
-        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::SetBaseTexture Failed NiMeshScreenElements == NULL");
+        TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::SetBaseTexture Failed NiMeshScreenElements == NULL");
         return 0;
     }
     NiTPointerList<NiPropertyPtr>& kProps = pQuad->GetPropertyList();
@@ -929,7 +934,7 @@ int GFxMovieBackground::SetBaseTexture(NiRenderedTexture* pTexture)
             return 1;
         }
     }
-    reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::SetBaseTexture Failed NiTexturingProperty No Search");
+    TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::SetBaseTexture Failed NiTexturingProperty No Search");
     return 0;
 }
 // @0x14127be10

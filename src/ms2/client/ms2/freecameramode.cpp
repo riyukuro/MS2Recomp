@@ -17,7 +17,7 @@
 // ---- unit-local placeholders ----
 
 // The input state (FUN_14025e7c0).
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The camera option row held by the game context (+0x1f4 fov).
 struct Unk_FreeCamOption
@@ -45,8 +45,12 @@ class Unk_FreeCamContext
 public:
     Unk_FreeCamOptionPtr FUN_141bd30a0();           // copy of +0x298
 };
-Unk_FreeCamContext* FUN_1403ed2d0();
-Unk_CameraTargetEntity* FUN_141bd0cc0(Unk_FreeCamContext* p);   // the local player
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 
 // The UI service (TSingleton<CUIService>::GetInstance).
 
@@ -59,7 +63,11 @@ private:
     char m_pad_00[0x90];
 };
 void* FUN_14086e090(void* pParent, Unk_TiXmlElement* pChild);       // LinkEndChild
-Unk_TiXmlElement* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);  // FirstChildElement
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 void FUN_140873e30(Unk_TiXmlElement* pElem, const char* pszName, float fValue);   // SetFloatAttribute
 void FUN_140873ca0(Unk_TiXmlElement* pElem, const char* pszName, int nValue);     // SetAttribute
 // The exe writes NiPoint3 attributes: each efd::Point3 converts through the out-of-line NiPoint3(const efd::Point3&).
@@ -93,13 +101,13 @@ CFreeCameraMode::~CFreeCameraMode()
 void CFreeCameraMode::vfunc_8(double fTime)
 {
     Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
-    if (FUN_14025e7c0()->FUN_14116daa0(0, true, 0) && FUN_14025e7c0()->FUN_14116daa0(1, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(0, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, true, 0))
     {
         Vector3 ptPos = FUN_1409f2540();
         ptPos.z = ptPos.z - ptMove.z * 2.0f;
         vfunc_3(ptPos);
     }
-    else if (FUN_14025e7c0()->FUN_14116daa0(1, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, true, 0))
     {
         if (ptMove.FUN_140552700(g_143b01a60))
         {
@@ -127,12 +135,12 @@ void CFreeCameraMode::vfunc_8(double fTime)
     }
     else
     {
-        if (FUN_14025e7c0()->FUN_14116da30(0x22, true, 0))
+        if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116da30(0x22, true, 0))
         {
-            Unk_CameraTargetEntity* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+            Unk_CameraTargetEntity* pActor = ((class Unk_CameraTargetEntity*)((class WorldService*)(class Unk_FreeCamContext*)(((class Unk_FreeCamContext*)WorldService::GetInstance())))->FUN_141bd0cc0());
             if (pActor != 0)
             {
-                Unk_FreeCamOptionPtr spOption = FUN_1403ed2d0()->FUN_141bd30a0();
+                Unk_FreeCamOptionPtr spOption = ((class Unk_FreeCamContext*)WorldService::GetInstance())->FUN_141bd30a0();
                 if (spOption.FUN_1409657a0() != 0)
                 {
                     TiXmlDocument doc;
@@ -140,7 +148,7 @@ void CFreeCameraMode::vfunc_8(double fTime)
                     {
                         FUN_14086e090(&doc, new Unk_TiXmlElement("ms2"));
                     }
-                    Unk_TiXmlElement* pMs2 = FUN_140165cf0(&doc, "ms2");
+                    Unk_TiXmlElement* pMs2 = ((class Unk_TiXmlElement*)((class Unk_XmlNode*)(class TiXmlDocument*)(&doc))->FirstChild("ms2"));
                     if (pMs2 != 0)
                     {
                         Vector3 ptDir = FUN_1409f2540().FUN_140965c40(pActor->vfunc_18());
@@ -184,18 +192,18 @@ void CFreeCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
     m_78 = g_143b01a60;
-    if (FUN_14025e7c0()->FUN_14116d950(0x11, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x11, true, 0))
         m_78.x = 1.0f;
-    else if (FUN_14025e7c0()->FUN_14116d950(0x1f, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1f, true, 0))
         m_78.x = -1.0f;
-    if (FUN_14025e7c0()->FUN_14116d950(0x1e, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1e, true, 0))
         m_78.y = 1.0f;
-    else if (FUN_14025e7c0()->FUN_14116d950(0x20, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x20, true, 0))
         m_78.y = -1.0f;
     int nX;
     int nY;
     int nWheel;
-    if (FUN_14025e7c0()->FUN_14116dbf0(&nX, &nY, &nWheel, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dbf0(&nX, &nY, &nWheel, false, 0))
     {
         ptMove.y = (float)nX;
         ptMove.z = (float)nY;

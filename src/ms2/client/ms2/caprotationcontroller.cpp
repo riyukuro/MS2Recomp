@@ -134,7 +134,7 @@ struct Unk_CapCamera : public CameraMgr
 };
 
 struct Unk_CapInput { bool FUN_14116d950(int nKey, int nA, int nB); };   // key state
-Unk_CapInput* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 float FUN_140a17940(float fValue, float fMin, float fMax);      // clamp
 float Unk_Acos(float fCos);                                     // acos
@@ -146,15 +146,12 @@ char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& k
                    float fRadius, Vector3* pHit);       // ray / sphere hit
 void FUN_141422950(const NiTransform& kXf, Vector3* pEuler);   // transform -> euler angles (degrees)
 void FUN_140aacaa0(NiAVObject* pNode, const NiTransform& kXf);  // sets the node's transform
-NiTransform* FUN_140a33f90(NiAVObject* pNode);                  // the node's transform
 NiTransform* FUN_140a33de0(const NiTransform* pThis, void* pOut, const NiTransform* pOther);   // NiTransform::operator*
 void FUN_140aacb60(NiAVObject* pNode, const NiTransform* pXf);  // sets the node's local transform
 void FUN_14097fad0(NiPoint3* pDst, const NiPoint3* pSrc);       // NiPoint3 assignment
 // efd::Matrix3::Inverse() (0x1420845e0): a member that returns the matrix by value.
 struct Unk_CapMatrix : public Unk_EfdMatrix3 { Unk_EfdMatrix3 FUN_1420845e0() const; };
-const NiFixedString& FUN_1409a8b90(NiAVObject* pNode);          // node name
 const Vector3& FUN_140947900(NiAVObject* pNode);        // world translate
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);   // dynamic cast (NULL-safe)
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class). Next(bDescend) yields the next NiAVObject.
 class Unk_SceneWalker
@@ -361,7 +358,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
         return;
     if (pItem->FUN_14053ec70()->FUN_1405471b0() != 0)
     {
-        if (FUN_14025e7c0()->FUN_14116d950(0x1d, 0, 0) != 0)
+        if (((struct Unk_CapInput*)FUN_14025e7c0())->FUN_14116d950(0x1d, 0, 0) != 0)
         {
             vfunc_31();
         }
@@ -388,7 +385,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
                 NiAVObjectPtr spNode(*it);
                 FUN_140aacaa0(spNode.operator->(), kXf);
                 spNode.operator->()->UpdateWorldData();
-                NiTransform kWorld = *FUN_140a33f90(spNode.operator->());
+                NiTransform kWorld = *((class NiTransform*)&((class NiAVObject*)(spNode.operator->()))->GetLocalTransform());
                 pData->m_fScale = kWorld.m_fScale;
                 pData->m_aOffset[0] = reinterpret_cast<const Vector3&>(kWorld.m_Translate);
                 FUN_141422950(kWorld, &pData->m_aEuler[0]);
@@ -474,7 +471,7 @@ int CCapRotationController::InitPart()
         NiAVObject* pObject;
         while ((pObject = walker.Next(true)) != 0)
         {
-            NiMesh* pMesh = (NiMesh*)FUN_14098d8d0(&NiMesh::ms_RTTI, pObject);
+            NiMesh* pMesh = (NiMesh*)NiObject::DynamicCast(&NiMesh::ms_RTTI, (class NiObject const*)(pObject));
             if (pMesh != 0)
                 m_spMesh = pMesh;
         }
@@ -483,7 +480,7 @@ int CCapRotationController::InitPart()
         return 0;
     m_kInitEuler = UpdateRotationMatrix();
     m_aPartNames.RemoveAll();
-    m_aPartNames.Add((const char*)FUN_1409a8b90(m_spMesh.operator->()));
+    m_aPartNames.Add((const char*)((class NiObjectNET*)(class NiAVObject*)(m_spMesh.operator->()))->GetName());
     return 1;
 }
 
@@ -551,7 +548,7 @@ void CCapRotationController::SetPartEuler(Vector3 kEuler)
     {
         NiAVObjectPtr spNode(*it);
         alignas(8) char kTmp[sizeof(NiTransform)];
-        FUN_140aacb60(spNode.operator->(), FUN_140a33de0(FUN_140a33f90(spNode.operator->()), kTmp, &kDelta));
+        FUN_140aacb60(spNode.operator->(), FUN_140a33de0(((class NiTransform*)&((class NiAVObject*)(spNode.operator->()))->GetLocalTransform()), kTmp, &kDelta));
     }
     m_spPart->FUN_141200100(kEuler);
     pData->m_aEuler[0] = kEuler;

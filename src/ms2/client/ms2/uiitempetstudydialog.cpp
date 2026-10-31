@@ -59,17 +59,17 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #include "ms2/commonfiles/itemsocket.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
 
 // ---- unit-local views of exe objects ----
 
 // The exe's delegate types take the slot by reference (RTTI names them so); ItemScrollSlot's setters are bound by name.
 typedef Delegate<void(ItemScrollSlot&)> PsRemoveFn;
 typedef Delegate<void(ItemScrollSlot&, DragSlot*)> PsDropFn;
-void FUN_140d428a0(ItemScrollSlot* pSlot, MS2Ptr<CItem> spItem);   // ItemScrollSlot::SetItem
 void FUN_140d42bc0(ItemScrollSlot* pSlot, PsRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
 void FUN_140d42b70(ItemScrollSlot* pSlot, PsDropFn fn);        // ItemScrollSlot::SetDropFn
 
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 class Unk_PsPackets
 {
@@ -77,12 +77,11 @@ public:
     void FUN_140da5180(int nPacket, Delegate<void(CInPacket&)> fn);     // register a packet handler
     void FUN_140da51e0(int nPacket, Delegate<void(CInPacket&)> fn);     // unregister it
 };
-Unk_PsPackets* FUN_140bccd50();
-class Unk_PsFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_PsFeatures* FUN_140166410();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_PetRow : public CPtred { public: int m_n18; };
 class Unk_PsPetRowTable { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nPetId); };
-Unk_PsPetRowTable* FUN_14052d210();
+class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 
 class CMsgBoxData : public CPtred
 {
@@ -93,7 +92,6 @@ public:
     void FUN_141a01700(int nA, int nB, int nC);
 };
 
-WorldService* FUN_1403ed2d0();
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_141b71910(__int64 nValue);
@@ -108,7 +106,11 @@ ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);
 void FUN_140d42630(const CString& strName);
 MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);
-__int64 FUN_141405a10(MS2DragSlot* pSlot);
+class InvenSlot   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 GetItemUid();
+};
 
 // @0x140e54b60
 UIItemPetStudyDialog::UIItemPetStudyDialog()
@@ -116,13 +118,13 @@ UIItemPetStudyDialog::UIItemPetStudyDialog()
 {
     FUN_141924170(1);
     m_164 = 1;
-    FUN_140bccd50()->FUN_140da5180(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetStudyDialog::FUN_140e55820));
+    ((class Unk_PsPackets*)FUN_140bccd50())->FUN_140da5180(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetStudyDialog::FUN_140e55820));
 }
 
 // @0x140e54cd0
 UIItemPetStudyDialog::~UIItemPetStudyDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetStudyDialog::FUN_140e55820));
+    ((class Unk_PsPackets*)FUN_140bccd50())->FUN_140da51e0(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetStudyDialog::FUN_140e55820));
 }
 
 // @0x140e54df0
@@ -143,7 +145,7 @@ void UIItemPetStudyDialog::OnLoadComplete()
         FUN_140d42bc0(pSlot, PsRemoveFn(this, &UIItemPetStudyDialog::FUN_140e55f10));
         FUN_140d42b70(pSlot, PsDropFn(this, &UIItemPetStudyDialog::FUN_140e55f90));
     }
-    m_spBox = DAT_143ab2a90.FUN_140a5d680(m_nOwner);
+    m_spBox = g_143ab2a90.FUN_140a5d680(m_nOwner);
     if (m_spBox == 0)
         return;
     if (m_spBox->FUN_140527840() == 0)
@@ -165,7 +167,7 @@ int UIItemPetStudyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     if (_stricmp(szMethod, "onClickConfirm") == 0)
     {
-        PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPC == 0)
             return 0;
         if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->FUN_140635100() != 0)
@@ -235,7 +237,7 @@ void UIItemPetStudyDialog::FUN_140e558d0()
     if (m_spBox == 0 || m_spPet == 0)
         return;
     __int64 nUid = m_spPet->FUN_140526a50();
-    DAT_143ab2a90.FUN_140a63880(m_spBox.get(), FUN_1406c6bd0(L"{0}", nUid));
+    g_143ab2a90.FUN_140a63880(m_spBox.get(), FUN_1406c6bd0(L"{0}", nUid));
 }
 
 // @0x140e559c0
@@ -250,7 +252,7 @@ ItemScrollSlot* UIItemPetStudyDialog::FUN_140e559c0(CString strName)
 // @0x140e55a40
 int UIItemPetStudyDialog::FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x94))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x94))
         return 0;
     if (spPet == 0)
         return 0;
@@ -260,7 +262,7 @@ int UIItemPetStudyDialog::FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->FUN_14053dc60());
+    MS2Ptr<Unk_PetRow> spRow = ((class Unk_PsPetRowTable*)FUN_14052d210())->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->FUN_14053dc60());
     if (spRow == 0)
     {
         if (bMessage != 0)
@@ -310,14 +312,14 @@ void UIItemPetStudyDialog::FUN_140e55f90(ItemScrollSlot& slot, DragSlot* pDrag)
     MS2DragSlot* pSrc = FUN_140a50b50(pDrag);
     if (pSrc != 0)
     {
-        MS2Ptr<CItem> spPet = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pSrc));
+        MS2Ptr<CItem> spPet = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
         if (FUN_140e55a40(spPet, 1) == 0)
             return;
-        MS2Ptr<CItem> spBox = DAT_143ab2a90.FUN_140a5d680(m_nOwner);
+        MS2Ptr<CItem> spBox = g_143ab2a90.FUN_140a5d680(m_nOwner);
         if (spBox == 0 || spBox->FUN_140527840() == 0)
             return;
         {
-            FUN_140d428a0(&slot, spPet);
+            ((class ItemScrollSlot*)(class ItemScrollSlot*)(&slot))->SetItem(spPet);
             slot.vfunc_10();
             m_spPet = spPet;
             CStringW strName = spPet->FUN_140528160();

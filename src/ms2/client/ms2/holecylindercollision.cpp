@@ -15,7 +15,6 @@
 #include "hook/ms2hook.h"
 
 NiRenderer* GetNiRenderer();   // NiRenderer::GetRenderer()
-void FUN_140980200(NiAVObject* pObj, NiProperty* pProp);            // NiAVObject::AttachProperty
 
 static const int kRingPoints = 360;
 
@@ -122,7 +121,7 @@ void CHoleCylinderCollision::vfunc_5()
         for (int i = 0; i < 5; i++)
         {
             *apTarget[i] = new (efd::MemHint(efd::MemHint::NONE)) NiMesh;
-            FUN_140980200(*apTarget[i], pProp);
+            ((class NiAVObject*)(class NiAVObject*)(*apTarget[i]))->AttachProperty(pProp);
         }
     }
 

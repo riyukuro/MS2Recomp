@@ -44,6 +44,11 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/commonfiles/adventureleveltablehelper.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
@@ -73,11 +78,9 @@ public:
 #undef AL_V
 };
 class Unk_1403ed2d0 { public: Unk_ALPlayer* FUN_141bd0cc0(); };
-Unk_1403ed2d0* FUN_1403ed2d0();
 
 // The status-listener registry (singleton 0x140aa6d40).
-class Unk_ALStatusMgr { public: void FUN_141b0cd00(UIStatusEventListener*); void FUN_141b0cd90(UIStatusEventListener*); };
-Unk_ALStatusMgr* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 
 void FUN_141415600(const CString& strBindID);                           // release the item bound to the name
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
@@ -94,7 +97,6 @@ public:
 MS2_CHECK_OFFSET(Unk_ALSkillAttr, m_c0, 0xc0);
 extern template class MS2Ptr<Unk_ALSkillAttr>;
 class Unk_ALSkillTable { public: MS2Ptr<Unk_ALSkillAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel); };
-Unk_ALSkillTable* FUN_1401958b0();
 
 // An ability of the adventure level (a skill per character level step).
 class Unk_ALAbility
@@ -164,7 +166,6 @@ public:
     Unk_ALReward* FUN_140195e30(unsigned int nLevel);
     Unk_ALMission* FUN_140196090(unsigned int nMissionId);
 };
-Unk_ALTable* FUN_1401958a0();
 
 // The state of a mission of the player.
 class Unk_ALMissionState
@@ -215,8 +216,6 @@ CStringW FUN_140938ae0(CStringW strKey, const unsigned int& n);
 CStringW FUN_14062b4f0(CStringW strKey, const int* pn);
 CString FUN_1402bad60(const char* szFormat, const int* pn);
 CStringW FUN_14183e9c0(CStringW str, int n);
-class Unk_1401a9d70 { public: CStringW FUN_141811980(int a1, int a2); };
-Unk_1401a9d70* FUN_1401a9d70();
 
 // The list control of the movie (the AS list with clear / append).
 class Unk_ALList : public AScript
@@ -305,7 +304,7 @@ void UIAdventureLevelDialog::vfunc_67()
 void UIAdventureLevelDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_ALPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     FUN_140ba3330();
@@ -342,17 +341,17 @@ int UIAdventureLevelDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 void UIAdventureLevelDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    Unk_ALPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == NULL)
         return;
     unsigned int nId = pArgs->FUN_1422b8b10();
-    Unk_ALAbility* pAbility = FUN_1401958a0()->FUN_140195ed0(nId);
+    Unk_ALAbility* pAbility = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195ed0(nId);
     if (pAbility->m_0 == 0)
         return;
     unsigned short nStep = pAbility->FUN_140195910(pPlayer->vfunc_141());
-    MS2Ptr<Unk_ALSkillAttr> spAttr = FUN_1401958b0()->FUN_140aafef0(pAbility->m_0, nStep);
+    MS2Ptr<Unk_ALSkillAttr> spAttr = reinterpret_cast<Unk_ALSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(pAbility->m_0, nStep);
     if (spAttr == NULL) {
-        spAttr = FUN_1401958b0()->FUN_140aafef0(pAbility->m_0, 1);
+        spAttr = reinterpret_cast<Unk_ALSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(pAbility->m_0, 1);
         if (spAttr == NULL)
             return;
     }
@@ -407,7 +406,7 @@ int UIAdventureLevelDialog::FUN_140ba3240()
         if (it->second.m_1c != 0)
             continue;
         const unsigned int* pId = &it->first;
-        Unk_ALMission* pMission = FUN_1401958a0()->FUN_140196090(*pId);
+        Unk_ALMission* pMission = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140196090(*pId);
         if (pMission->FUN_140195ae0())
             continue;
         if (it->second.m_18 < pMission->m_0)
@@ -422,7 +421,7 @@ void UIAdventureLevelDialog::FUN_140ba3330()
 {
     if (m_30.IsNull())
         return;
-    Unk_ALIdSet<unsigned short>& levels = FUN_1401958a0()->FUN_140195eb0();
+    Unk_ALIdSet<unsigned short>& levels = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195eb0();
     for (Unk_ALIter<unsigned short> it = levels.FUN_140194c80(); it.FUN_140195770(levels.FUN_1401950d0()); it.FUN_1401957c0()) {
         unsigned short nLevel = *it.FUN_1401957b0();
         ASObj obj(2);
@@ -439,7 +438,7 @@ void UIAdventureLevelDialog::FUN_140ba34b0()
 {
     if (m_30.IsNull())
         return;
-    Unk_ALPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == NULL)
         return;
     float fExp = (float)DAT_143ab2958;
@@ -452,7 +451,7 @@ void UIAdventureLevelDialog::FUN_140ba35a0()
 {
     if (m_30.IsNull())
         return;
-    Unk_ALPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == NULL)
         return;
     MS2Ptr<Unk_ALList> spList = FUN_140ba4b70("m_abilityList");
@@ -460,14 +459,14 @@ void UIAdventureLevelDialog::FUN_140ba35a0()
         return;
     spList->Invoke("resetRenderer");
     spList->FUN_1422dd1d0();
-    Unk_ALIdSet<unsigned int>& abilities = FUN_1401958a0()->FUN_140195f50();
+    Unk_ALIdSet<unsigned int>& abilities = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195f50();
     for (Unk_ALIter<unsigned int> it = abilities.FUN_140194c80(); it.FUN_140195770(abilities.FUN_1401950d0()); it.FUN_1401957c0()) {
         unsigned int* pId = it.FUN_1401957b0();
-        Unk_ALAbility* pAbility = FUN_1401958a0()->FUN_140195ed0(*pId);
+        Unk_ALAbility* pAbility = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195ed0(*pId);
         unsigned short nStep = pAbility->FUN_140195910(pPlayer->vfunc_141());
-        MS2Ptr<Unk_ALSkillAttr> spAttr = FUN_1401958b0()->FUN_140aafef0(pAbility->m_0, nStep);
+        MS2Ptr<Unk_ALSkillAttr> spAttr = reinterpret_cast<Unk_ALSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(pAbility->m_0, nStep);
         if (spAttr == NULL) {
-            spAttr = FUN_1401958b0()->FUN_140aafef0(pAbility->m_0, 1);
+            spAttr = reinterpret_cast<Unk_ALSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(pAbility->m_0, 1);
             if (spAttr == NULL)
                 continue;
         }
@@ -495,7 +494,7 @@ void UIAdventureLevelDialog::FUN_140ba3a30()
 {
     if (m_30.IsNull())
         return;
-    Unk_ALPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == NULL)
         return;
     MS2Ptr<Unk_ALList> spList = FUN_140ba4b70("m_missionList");
@@ -505,7 +504,7 @@ void UIAdventureLevelDialog::FUN_140ba3a30()
     spList->FUN_1422dd1d0();
     for (std::map<unsigned int, Unk_ALMissionState>::const_iterator it = g_unkMissionStates.begin(); it != g_unkMissionStates.end(); ++it) {
         const unsigned int* pId = &it->first;
-        Unk_ALMission* pMission = FUN_1401958a0()->FUN_140196090(*pId);
+        Unk_ALMission* pMission = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140196090(*pId);
         if (pMission->FUN_140195ae0())
             continue;
         ASObj obj(2);
@@ -524,7 +523,7 @@ int UIAdventureLevelDialog::FUN_140ba3d60(ASObj& obj, unsigned int nLevel)
 {
     if (m_30.IsNull())
         return 0;
-    Unk_ALPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == NULL)
         return 0;
     CString strState("active");
@@ -543,12 +542,12 @@ int UIAdventureLevelDialog::FUN_140ba3d60(ASObj& obj, unsigned int nLevel)
 // @0x140ba3f80
 int UIAdventureLevelDialog::FUN_140ba3f80(ASObj& obj, unsigned int nLevel)
 {
-    Unk_ALReward* pReward = FUN_1401958a0()->FUN_140195e30(nLevel);
+    Unk_ALReward* pReward = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195e30(nLevel);
     if (pReward->FUN_1401958d0())
         return 0;
     if (pReward->m_0 != 1)
         return 0;
-    Unk_ALPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == NULL)
         return 0;
     MS2Ptr<CItem> spItem(new CItem);
@@ -567,12 +566,12 @@ int UIAdventureLevelDialog::FUN_140ba3f80(ASObj& obj, unsigned int nLevel)
 // @0x140ba4250
 int UIAdventureLevelDialog::FUN_140ba4250(ASObj& obj, unsigned int nLevel)
 {
-    Unk_ALReward* pReward = FUN_1401958a0()->FUN_140195e30(nLevel);
+    Unk_ALReward* pReward = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195e30(nLevel);
     if (pReward->FUN_1401958d0())
         return 0;
     if (pReward->m_0 != 2)
         return 0;
-    Unk_ALPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == NULL)
         return 0;
     if (nLevel <= pPlayer->vfunc_141())
@@ -596,12 +595,12 @@ int UIAdventureLevelDialog::FUN_140ba4250(ASObj& obj, unsigned int nLevel)
 // @0x140ba45c0
 int UIAdventureLevelDialog::FUN_140ba45c0(ASObj& obj, unsigned int nMissionId)
 {
-    Unk_ALMission* pMission = FUN_1401958a0()->FUN_140196090(nMissionId);
+    Unk_ALMission* pMission = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140196090(nMissionId);
     if (pMission->FUN_140195ae0())
         return 0;
     if (pMission->m_4 != 1)
         return 0;
-    Unk_ALPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == NULL)
         return 0;
     MS2Ptr<CItem> spItem(new CItem);
@@ -613,7 +612,7 @@ int UIAdventureLevelDialog::FUN_140ba45c0(ASObj& obj, unsigned int nMissionId)
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
     FUN_141415450(strBindID, spItem, 0, nIconType, 0x800);
     obj.FUN_1407cba60("binding", strBindID);
-    obj.FUN_1407cbb20("slotName", FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0()), spItem->FUN_140526bd0()));
+    obj.FUN_1407cbb20("slotName", FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()), spItem->FUN_140526bd0()));
     m_binds.Add(strBindID);
     return 1;
 }
@@ -621,7 +620,7 @@ int UIAdventureLevelDialog::FUN_140ba45c0(ASObj& obj, unsigned int nMissionId)
 // @0x140ba4960
 void UIAdventureLevelDialog::FUN_140ba4960(unsigned int nLevel)
 {
-    Unk_ALReward* pReward = FUN_1401958a0()->FUN_140195e30(nLevel);
+    Unk_ALReward* pReward = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195e30(nLevel);
     if (pReward->FUN_1401958d0())
         return;
     if (pReward->m_0 == 2)
@@ -637,7 +636,7 @@ void UIAdventureLevelDialog::FUN_140ba4960(unsigned int nLevel)
 // @0x140ba4a10
 void UIAdventureLevelDialog::FUN_140ba4a10(unsigned int nMissionId)
 {
-    Unk_ALMission* pMission = FUN_1401958a0()->FUN_140196090(nMissionId);
+    Unk_ALMission* pMission = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140196090(nMissionId);
     if (pMission->FUN_140195ae0())
         return;
     std::map<unsigned int, Unk_ALMissionState>::const_iterator it = g_unkMissionStates.find(nMissionId);

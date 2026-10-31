@@ -52,7 +52,6 @@ template <> void MS2Ptr<Unk_PackageItems>::ReleaseImpl(void*)
     }
 }
 MS2Ptr<Unk_PackageItems> FUN_1406e5af0(int nPackageId);                 // the items of a package id
-bool FUN_1405729c0(const Unk_PackageItems* pItems);                     // the list is empty
 
 // The gamepad cursor HUD (UI id 6, see gameoptiongamepad.cpp).
 class Unk_GpHud : public CPtred
@@ -63,7 +62,7 @@ public:
     void FUN_1422cee50(int n);
 };
 class Unk_GpHudMgr { public: MS2Ptr<Unk_GpHud> FUN_1422b0370(int nDialogId); };
-Unk_GpHudMgr* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 // UIAvatarBase slot 28 takes a fourth argument here (the exe passes pUnused on the stack); uiavatarbase.h declares
 // three, so the call goes through this slot view.
 class Unk_IpAvatarSlots
@@ -77,13 +76,9 @@ public:
     virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pArg2);
 };
 
-CItemData* FUN_140527840(CItem* pItem);                                 // the item's data row
-CItemTransfer* FUN_140527930(CItem* pItem);                             // the item's transfer block
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                           // the item data row of an id
 int FUN_14053feb0(int nItemId);                                         // the default rarity of an item id
 __int64 FUN_14028d0e0();                                                // the server time
-int FUN_141658e60(PC* pPC);                                             // the gender
-int FUN_141654700(PC* pPC);                                             // the job
 void FUN_141275260(int nStringId, int nA, int nB);                      // system notice
 int FUN_1408b5f70(int nItemId);                                         // the cube has a model view
 Unk_RideePtr FUN_1407844b0(int nRideeId);                               // the ridee table row of an id
@@ -179,7 +174,7 @@ int ItemPreview::FUN_140d3c3c0(std::vector<MS2Ptr<CItem> > items)
         return 0;
     m_spAvatar = FUN_140d3e2f0();
     m_items.clear();
-    int nGender = FUN_141658e60(m_pPC);
+    int nGender = ((class PC*)(class PC*)(m_pPC))->FUN_141658e60();
     for (size_t i = 0; i < items.size(); ++i)
     {
         if (!FUN_141b48950(items[i]))
@@ -187,7 +182,7 @@ int ItemPreview::FUN_140d3c3c0(std::vector<MS2Ptr<CItem> > items)
         MS2Ptr<CItem> spShown = FUN_140d3c760(items[i]);
         if (spShown.get())
         {
-            if (!FUN_140527840(spShown)->FUN_14053c940(nGender))
+            if (!((class CItemData*)((class CItem*)(class CItem*)(spShown))->FUN_140527840())->FUN_14053c940(nGender))
                 continue;
             spShown->FUN_140526a70(FUN_14028d0e0());
             spShown->FUN_140526b30(FUN_140d3bc30());
@@ -229,7 +224,7 @@ MS2Ptr<CItem> ItemPreview::FUN_140d3c760(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return 0;
-    MS2Ptr<CItemData> spData(FUN_140527840(spItem));
+    MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem))->FUN_140527840()));
     if (spData == 0)
         return 0;
     ItemFunction* pFunction = &spData->function;
@@ -242,7 +237,7 @@ MS2Ptr<CItem> ItemPreview::FUN_140d3c760(MS2Ptr<CItem> spItem)
         if (nPackageId == 0)
             return 0;
         MS2Ptr<Unk_PackageItems> spPackage = FUN_1406e5af0(nPackageId);
-        if (spPackage == 0 || FUN_1405729c0(spPackage.operator->()))
+        if (spPackage == 0 || ((ATL::CAtlArray<MS2Ptr<CItemData>, ATL::CElementTraits<MS2Ptr<CItemData>>>*)(void*)(spPackage.operator->()))->IsEmpty())
             return 0;
         size_t nSize = spPackage->GetCount();
         for (size_t i = 0; i < nSize; ++i)
@@ -279,7 +274,7 @@ MS2Ptr<CItemData> ItemPreview::FUN_140d3ce10()
         return m_spData;
     MS2Ptr<CItem> spShown = GetPreview();
     if (spShown.get())
-        return MS2Ptr<CItemData>(FUN_140527840(spShown));
+        return MS2Ptr<CItemData>(((class CItemData*)((class CItem*)(class CItem*)(spShown))->FUN_140527840()));
     return 0;
 }
 MS2_REPLACE_METHOD(0x140D3CE10, ItemPreview, FUN_140d3ce10, 229, 0x38F6D89B);
@@ -390,7 +385,7 @@ void ItemPreview::FUN_140d3d600(MS2Ptr<CItem> spItem)
     GameObject* pObj = m_spAvatar->vfunc_23();
     if (pObj == 0)
         return;
-    MS2Ptr<CItemData> spItemData(FUN_140527840(spItem));
+    MS2Ptr<CItemData> spItemData(((class CItemData*)((class CItem*)(class CItem*)(spItem))->FUN_140527840()));
     if (spItemData == 0)
         return;
     MS2Ptr<CItemData> spData = spItemData;
@@ -495,7 +490,7 @@ bool ItemPreview::FUN_140d3de80(MS2Ptr<CItemData> spData)
         if (nPackageId == 0)
             return false;
         MS2Ptr<Unk_PackageItems> spPackage = FUN_1406e5af0(nPackageId);
-        if (spPackage == 0 || FUN_1405729c0(spPackage.operator->()))
+        if (spPackage == 0 || ((ATL::CAtlArray<MS2Ptr<CItemData>, ATL::CElementTraits<MS2Ptr<CItemData>>>*)(void*)(spPackage.operator->()))->IsEmpty())
             return false;
         return true;
     }
@@ -548,13 +543,13 @@ MS2Ptr<UIAvatarBase> ItemPreview::FUN_140d3e450(MS2Ptr<CItemData> spData, int nU
 {
     if (spData == 0)
         return 0;
-    int nGender = FUN_141658e60(m_pPC);
+    int nGender = ((class PC*)(class PC*)(m_pPC))->FUN_141658e60();
     bool bShowEquip = true;
     if (spData->FUN_14053cc00() && spData->FUN_14053e900() == 5)
         bShowEquip = false;
     MS2Ptr<WeaponType> spFilter(new WeaponType(m_pPC));
     UIAvatarPC* pAvatar = 0;
-    if (static_cast<bool>(spFilter.get()) && spFilter->FUN_140ebb780(nGender, FUN_141654700(m_pPC), spData) && !bDefault)
+    if (static_cast<bool>(spFilter.get()) && spFilter->FUN_140ebb780(nGender, ((class PC*)(class PC*)(m_pPC))->FUN_141654700(), spData) && !bDefault)
     {
         pAvatar = new UIAvatarPC(m_pPC, true);
     }
@@ -614,7 +609,7 @@ void ItemPreview::FUN_140d3eb30(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0 || m_spAvatar == 0)
         return;
-    MS2Ptr<CItemData> spData(FUN_140527840(spItem));
+    MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem))->FUN_140527840()));
     if (spData == 0)
         return;
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
@@ -633,14 +628,14 @@ void ItemPreview::FUN_140d3eb30(MS2Ptr<CItem> spItem)
             int nType = spData->FUN_14053e900();
             if (nType == 5 || nType == 8 || nType == 6)
             {
-                FUN_140527930(spItem)->FUN_1406352b0();
+                ((class CItemTransfer*)((class CItem*)(class CItem*)(spItem))->FUN_140527930())->FUN_1406352b0();
                 pAvatar->FUN_1418bc110(spItem);
             }
         }
         else if (FUN_141b49b50(spData))
         {
             int nSlot = 0;
-            if (!FUN_1405729c0(&m_packageItems))
+            if (!((ATL::CAtlArray<MS2Ptr<CItemData>, ATL::CElementTraits<MS2Ptr<CItemData>>>*)(void*)(&m_packageItems))->IsEmpty())
                 pAvatar->FUN_1418bb2a0(spData, nSlot, &m_packageItems);
             if (m_spPackageData.get())
             {
@@ -779,7 +774,7 @@ void ItemPreview::FUN_140d3fac0(__int64 nItemUid)
             UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
             if (pAvatar)
             {
-                if (FUN_140527840(spCur)->FUN_14053cbc0())
+                if (((class CItemData*)((class CItem*)(class CItem*)(spCur))->FUN_140527840())->FUN_14053cbc0())
                 {
                     pAvatar->FUN_1418bc380(spCur.get());
                     m_items.erase(m_items.begin() + i);
@@ -948,7 +943,7 @@ void ItemPreviewMgr::FUN_140d406d0(int bOn)
 {
     if (m_bHudOn == bOn)
         return;
-    MS2Ptr<Unk_GpHud> spHud = FUN_14025e7a0()->FUN_1422b0370(6);
+    MS2Ptr<Unk_GpHud> spHud = ((class Unk_GpHudMgr*)FUN_14025e7a0())->FUN_1422b0370(6);
     if (spHud == 0)
         return;
     m_bHudOn = bOn;

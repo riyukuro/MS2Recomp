@@ -25,6 +25,9 @@
 #include "hook/ms2hook.h"
 #include <stdlib.h>
 #include <string.h>
+#include "ms2/commonfiles/itemdroptable.h"   // C3: TSingleton<> needs the class
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/commonfiles/gamerule.h"
 
 // ---- unit-local views of exe types ----
 
@@ -53,16 +56,14 @@ void* FUN_141bd0cc0(void* pWorld);                              // its local pla
 
 // listener registries
 UIQuestEventDispatcher* FUN_140bfc4b0();
-class Unk_LgStatusMgr { public: void FUN_141b0cd00(UIStatusEventListener*); void FUN_141b0cd90(UIStatusEventListener*); };
-Unk_LgStatusMgr* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 
 // items bound to the slots of the rewards
 void FUN_141415600(const CString& strBindID);
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
 
 // quests: the ids of the package quests come from the game rule table
-class Unk_LvpGameRule { public: void FUN_14047c870(ATL::CAtlArray<unsigned>& rIds); };
-Unk_LvpGameRule* FUN_1401c0d90();
+CGameRule* FUN_1401c0d90();
 CQuestManager* FUN_140764020();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pData);                           // the quest id
@@ -93,7 +94,6 @@ public:
 };
 MS2_CHECK_SIZE(Unk_PetBoxDropVec, 24);
 class Unk_PetBoxDropTable { public: void FUN_1402ea4c0(int, Unk_PetBoxDropVec&); };
-Unk_PetBoxDropTable* FUN_1405a1fd0();
 
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
@@ -247,7 +247,7 @@ void UILevelUpPackageDialog::FUN_140ea4f10(unsigned short nLevel)
             return;
         int nBoxId = spItem->function.parameter.FUN_1408d1fd0(nArgs - 1, 0);
         Unk_PetBoxDropVec drops;
-        FUN_1405a1fd0()->FUN_1402ea4c0(nBoxId, drops);
+        reinterpret_cast<Unk_PetBoxDropTable*>(TSingleton<ItemDropTable>::GetInstance())->FUN_1402ea4c0(nBoxId, drops);
         ASObj obj(2);
         obj.FUN_140e846b0("count", drops.FUN_140314170());
         obj.FUN_1407cbb20("text", FUN_1409e8820(CStringW(L"s_quest_scroll_package_title"), (short&)nLevel));

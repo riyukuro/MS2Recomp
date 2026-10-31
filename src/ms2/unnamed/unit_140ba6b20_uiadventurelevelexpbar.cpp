@@ -23,7 +23,13 @@
 #include "ms2/placeholder/gfxmanager.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <string.h>
+
+// return types of the getters this unit calls
+class CReservedWordTable;
+class UIStatusEventDispatcher;
+class Unk_SingletonObj1;
 
 // ---- unit-local views of exe objects ----
 
@@ -47,15 +53,13 @@ public:
     char m_pad_91e9[0x9298 - 0x91e9];
     Unk_AdvCfgLevel m_9298;
 };
-Unk_AdvGlobals* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-CFeatureManager* FUN_140166410();
-UIStatusEventDispatcher* FUN_140aa6d40();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_AdvUIMgr { public: void FUN_141adc750(int nUiId); };      // opens a ui
 struct Unk_AdvCfgData { char m_pad_00[8]; unsigned char m_bShowPoint; };
 class Unk_AdvCfg { public: Unk_AdvCfgData* FUN_140b123b0(); };
 GFxManager* FUN_14025e7a0();
-CReservedWordTable* FUN_1403b4750();
 int FUN_1412755a0();
 int FUN_1418dd0c0();                                                // height of the exp bar
 bool FUN_140184310(const CString& str, const char* psz);            // str == psz
@@ -92,8 +96,6 @@ public:
 };
 class Unk_AdvActor : public PC { public: Unk_AdvHolder* FUN_1416764a0(); };
 class Unk_AdvWorld { };
-Unk_AdvWorld* FUN_1403ed2d0();
-Unk_AdvActor* FUN_141bd0cc0(Unk_AdvWorld* pWorld);                  // the local player
 
 // The bar clip: ASGameEntity declares only slots 0..5; slot 25 is "validateNow".
 class Unk_AdvEntity : public ASGameEntity
@@ -145,7 +147,7 @@ void UIAdventureLevelExpBar::vfunc_3()
     if (FUN_1412755a0())
         return;
     FUN_1422dc080();
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
 }
 
 // @0x140ba6cf0
@@ -154,7 +156,7 @@ void UIAdventureLevelExpBar::FUN_140ba6cf0(__int64 nGain)
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity == 0)
         return;
-    Unk_AdvActor* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_AdvActor* pPlayer = ((class Unk_AdvActor*)((class WorldService*)(class Unk_AdvWorld*)(reinterpret_cast<Unk_AdvWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     float fCur = (float)(FUN_140ba6fa0() * 100) / (float)FUN_140ba6fc0();
@@ -163,7 +165,7 @@ void UIAdventureLevelExpBar::FUN_140ba6cf0(__int64 nGain)
         nGain = 0;
     if (nGain > FUN_140ba6fc0() - FUN_140ba6fa0())
         nGain = FUN_140ba6fc0() - FUN_140ba6fa0();
-    static_cast<Unk_AdvEntity*>(pEntity.operator->())->FUN_140ba79c0("setPoint", fCur, fNext, StringFormat(L"0", nGain), pPlayer->vfunc_78() >= FUN_1401d3200()->m_9298.FUN_140ba4b30());
+    static_cast<Unk_AdvEntity*>(pEntity.operator->())->FUN_140ba79c0("setPoint", fCur, fNext, StringFormat(L"0", nGain), pPlayer->vfunc_78() >= reinterpret_cast<Unk_AdvGlobals*>(((class Unk_AdvGlobals*)FUN_1401d3200()))->m_9298.FUN_140ba4b30());
 }
 
 // @0x140ba6fa0
@@ -175,13 +177,13 @@ __int64 UIAdventureLevelExpBar::FUN_140ba6fa0()
 // @0x140ba6fc0
 __int64 UIAdventureLevelExpBar::FUN_140ba6fc0()
 {
-    return FUN_1401d3200()->m_91e8.FUN_140ba77c0();
+    return reinterpret_cast<Unk_AdvGlobals*>(((class Unk_AdvGlobals*)FUN_1401d3200()))->m_91e8.FUN_140ba77c0();
 }
 
 // @0x140ba6ff0
 __int64 UIAdventureLevelExpBar::FUN_140ba6ff0()
 {
-    Unk_AdvActor* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_AdvActor* pPlayer = ((class Unk_AdvActor*)((class WorldService*)(class Unk_AdvWorld*)(reinterpret_cast<Unk_AdvWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if ((unsigned int)pPlayer->vfunc_141() <= DAT_143ab2960)
@@ -202,7 +204,7 @@ void UIAdventureLevelExpBar::FUN_140ba7080(int nVisible)
 void UIAdventureLevelExpBar::FUN_140ba7130()
 {
     int nVisible = 1;
-    Unk_AdvActor* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_AdvActor* pPlayer = ((class Unk_AdvActor*)((class WorldService*)(class Unk_AdvWorld*)(reinterpret_cast<Unk_AdvWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     Unk_AdvHolderRef spHolder(pPlayer->FUN_1416764a0());
@@ -221,7 +223,7 @@ void UIAdventureLevelExpBar::FUN_140ba7130()
 void UIAdventureLevelExpBar::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    if (FUN_140166410()->FUN_14036d570(0xbd) == false)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbd) == false)
     {
         vfunc_3();
     }
@@ -229,7 +231,7 @@ void UIAdventureLevelExpBar::OnLoadComplete()
     {
         FUN_140ba6cf0(0);
         FUN_140ba7080(reinterpret_cast<Unk_AdvCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bShowPoint);
-        FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+        TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
         FUN_140ba7130();
     }
 }
@@ -252,7 +254,7 @@ void UIAdventureLevelExpBar::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
     if (FUN_140184310(strMethod, "getExp"))
     {
         CStringW strText = FUN_1408f71a0(L"s_tooltip_adventure_exp", FUN_1409404f0(FUN_140ba6fa0()), FUN_1409404f0(FUN_140ba6fc0()));
-        FUN_1403b4750()->FUN_1416fb340(strText);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
         ASObj obj(2);
         obj.FUN_1407cbb20("text", CStringW(strText));
         *pRetVal = obj.FUN_1422bb870();
@@ -272,7 +274,7 @@ int UIAdventureLevelExpBar::vfunc_28(const char* szMethod, const Scaleform::GFx:
         return 1;
     if (_stricmp("OnClickBar", szMethod) == 0)
     {
-        if (FUN_140166410()->FUN_14036d570(0xfb))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xfb))
             reinterpret_cast<Unk_AdvUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f67);
         else
             reinterpret_cast<Unk_AdvUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f87);

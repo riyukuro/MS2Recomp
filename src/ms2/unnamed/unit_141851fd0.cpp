@@ -5,6 +5,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\unknown_141851fd0.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // ---- exe callees (types unrecovered; same helpers nifanimationcontroller.cpp uses) ----
 void* FUN_14098dc80(void* pObj);                    // first controller of the object
@@ -25,8 +26,6 @@ float FUN_140af7f50(void* pCtrl);                   // controller end time
 void FUN_14098e870(void* pCtrl, int nValue);
 void FUN_14098e9e0(void* pCtrl, float fValue);   // exe takes the value in xmm1
 void FUN_1416f18b0(void* pCtrl, unsigned int uValue);
-void* FUN_14086d260();
-double FUN_141473280(void* pHandle);
 extern char DAT_143af8940;                          // NiRTTI: controller kind
 extern char DAT_143afa458;                          // NiRTTI: NiAVObject
 extern char DAT_143afa4d8;                          // NiRTTI: NiNode
@@ -311,6 +310,6 @@ void FUN_141852930(Unk_CtrlValueB* pArg, void* pCtrl)
 void FUN_141852970(Unk_CtrlValue* pArg, void* pCtrl)
 {
     FUN_14098e870(pCtrl, 1);
-    ((Unk_CtrlIface*)pCtrl)->vfunc_18((float)FUN_141473280(FUN_14086d260()));
+    ((Unk_CtrlIface*)pCtrl)->vfunc_18((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280());
     FUN_14098e9e0(pCtrl, pArg->m_fValue);
 }

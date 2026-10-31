@@ -37,6 +37,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/client/ms2/pcbase.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* NextSiblingElement(); };
@@ -54,12 +56,9 @@ int FUN_1417b90f0(CString strName);                                      // stat
 class Unk_StateActorInfo;
 Unk_StateActorInfo* FUN_140974230(GameObject* pObject);
 int FUN_141658e60(Unk_StateActorInfo* pInfo);                            // gender
-int FUN_14166f6d0(GameObject* pObject);                                  // emotion skill id of the object
 void* FUN_1403ed2d0();                                                   // player manager
 void* FUN_1403ed280();                                                   // effect manager
 int FUN_141bd1a10(void* pPlayer, GameObject* pObject);
-int FUN_14123c580(GameObject* pObject);
-int FUN_1411a49c0(void* pEffectMgr, Unk_EffectQuery* pQuery);
 
 // State name table (the strings the stateType attribute is matched against) and two single names.
 static CString s_strStateNames[7] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
@@ -119,14 +118,14 @@ void StateEffectMgr::GetEffects(GameObject* pObject, int nStateType, Unk_StateEf
         {
             if (!(nStateType == 0xb || nStateType == 0xf || nStateType == 0x3a))
                 continue;
-            else if (FUN_14166f6d0(pObject) != it->m_nEmotionSkillId)
+            else if (reinterpret_cast<PCBase*>(pObject)->FUN_14166f6d0() != it->m_nEmotionSkillId)
                 continue;
         }
         Unk_EffectQuery query;
         query.m_strName = it->m_strEffect;
         query.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), pObject);
-        query.SetActor(FUN_14123c580(pObject));
-        int nEffectId = FUN_1411a49c0(FUN_1403ed280(), &query);
+        query.SetActor(reinterpret_cast<GameObject*>(pObject)->FUN_14123c580());
+        int nEffectId = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
         if (nEffectId != 0)
             pOut->FUN_140a3fce0(nEffectId);
     }

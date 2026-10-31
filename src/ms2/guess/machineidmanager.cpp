@@ -11,6 +11,9 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
+// the singleton classes whose TSingleton<T>::s_instance this unit uses (only the pointer)
+class CMachineIDManager;
+
 // The 40-byte working buffer the id builder passes to the (unrecovered) id helpers.
 struct Unk_MachineIDLocal
 {

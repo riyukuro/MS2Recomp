@@ -28,9 +28,8 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 unsigned char FUN_1401d1320(CCacheData*);
 
 class Unk_ActionFiles : public CFileSystem { };
-Unk_ActionFiles* FUN_140166420();
 class Unk_ActionLog { public: void FUN_14015eb90(int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg); };
-Unk_ActionLog* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 
 extern int DAT_1439ed00c;   // camera cache enabled
 
@@ -65,12 +64,12 @@ CActionCameraData::DataPtr CActionCameraData::Load(const CString& strName)
 {
     CString strPath = FUN_14071a5b0("Camera", strName);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_ActionFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return DataPtr(0);
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        ((class Unk_ActionLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         EE_LOG_AT(1, 1, ("Failed to read %s", (const char*)strPath), MS2_THIS_FILE, 0x34);
         return DataPtr(0);
     }

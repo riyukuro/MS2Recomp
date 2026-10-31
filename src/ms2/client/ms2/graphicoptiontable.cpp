@@ -17,8 +17,6 @@ public:
     Unk_140165cf0* FUN_140165cf0(const char* pszName);              // FirstChildElement
     Unk_140165cf0* FUN_140168650(const char* pszName);              // NextSiblingElement
 };
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
 void FUN_14036e770(CLogString* log, int level, int category, const wchar_t* format, const CStringW& arg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
@@ -43,7 +41,7 @@ CGraphicOptionTable::~CGraphicOptionTable()
 // @0x141375e50
 void CGraphicOptionTable::Load()
 {
-    if (FUN_140166420()->FUN_1403974b0(&m_doc, FUN_14071a5b0("Table", "graphicOption.xml"), 0, true, false))
+    if (GetFileSystem()->FUN_1403974b0(&m_doc, FUN_14071a5b0("Table", "graphicOption.xml"), 0, true, false))
     {
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&m_doc)->FUN_140165cf0("ms2");
         if (pRoot != 0)

@@ -296,9 +296,9 @@ struct Unk_GEFactoryRegistry {
 };
 int FUN_140718200(CStringW* text);
 // Stream helpers (CInputStream / COutputStream operator<< / >> overloads).
-Unk_GEOut* FUN_14070f9a0(Unk_GEOut* out, int value);
-Unk_GEOut* FUN_14070fa20(Unk_GEOut* out, __int64 value);
-Unk_GEOut* FUN_14070f820(Unk_GEOut* out, bool value);
+COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
+COutputStream & FUN_14070fa20(COutputStream &, unsigned __int64);  // C3: the definition's signature
+COutputStream & FUN_14070f820(COutputStream &, bool);  // C3: the definition's signature
 Unk_GEOut* FUN_14070fb70(Unk_GEOut* out, const CMsTime* date);
 Unk_GEOut* FUN_14070fae0(Unk_GEOut* out, const CStringW* text);
 Unk_GEOut* FUN_14070faa0(Unk_GEOut* out, const CStringA* text);
@@ -312,7 +312,6 @@ Unk_AttendGiftDataGroup* FUN_1403fc330();
 // Typed stream operators (packet.cpp).
 COutputStream& FUN_14070f860(COutputStream& out, unsigned char value);
 COutputStream& FUN_14070f960(COutputStream& out, long value);
-COutputStream& FUN_14070f9a0(COutputStream& out, unsigned int value);
 COutputStream& FUN_14070fa60(COutputStream& out, float value);
 CInputStream& FUN_14070f440(CInputStream& in, long& value);
 CInputStream& FUN_14070f480(CInputStream& in, int& value);
@@ -329,8 +328,7 @@ int FUN_140274f40(const CStringW& str);                                         
 void FUN_1401cdae0(ATL::CAtlArray<int>& arr, unsigned seed);                            // shuffle by the seed
 int FUN_1402bacf0(ATL::CAtlArray<int>& arr, const int& value);                           // index of the value or -1
 int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, long& nOut);   // tinyxmlhelper int attribute, long overload
-Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);   // the document's first child element
-Unk_140165cf0* FUN_140345b40(Unk_140165cf0* pNode);  // first child element
+Unk_140165cf0 * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
 Unk_140165cf0* FUN_1403f0510(Unk_140165cf0* pNode);  // next sibling element
 CString FUN_140223380(int result);                    // rps result node name: draw / win / lose
 void FUN_14015f0b0(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);  // split into strings
@@ -405,16 +403,16 @@ void GameEventAttendGift::vfunc_3(Unk_GEOut* out)
     FUN_14070fb70(out, &m_38);
     FUN_14070fae0(out, &m_strName);
     FUN_14070faa0(out, &m_strDesc);
-    FUN_14070f820(out, m_b124);
-    FUN_14070f820(out, m_b125);
-    FUN_14070f9a0(out, m_i120);
+    FUN_14070f820(*(COutputStream *)out, m_b124);
+    FUN_14070f820(*(COutputStream *)out, m_b125);
+    FUN_14070f9a0(*(COutputStream *)out, m_i120);
     out->WriteByte(m_i114);
-    FUN_14070f9a0(out, m_i118);
+    FUN_14070f9a0(*(COutputStream *)out, m_i118);
     out->WriteByte(m_i100);
     if (m_i100 != 0) {
-        FUN_14070f9a0(out, m_i104);
-        FUN_14070fa20(out, m_i108);
-        FUN_14070f9a0(out, m_i110);
+        FUN_14070f9a0(*(COutputStream *)out, m_i104);
+        FUN_14070fa20(*(COutputStream *)out, m_i108);
+        FUN_14070f9a0(*(COutputStream *)out, m_i110);
     }
     FUN_1403fbf30(out, &m_gifts);
 }
@@ -487,8 +485,8 @@ void GameEventCashAttend::vfunc_3(Unk_GEOut* out)
     GameEvent::vfunc_3(out);
     FUN_14070fb70(out, &m_28);
     FUN_14070fb70(out, &m_38);
-    FUN_14070f9a0(out, m_i0);
-    FUN_14070f9a0(out, m_i4);
+    FUN_14070f9a0(*(COutputStream *)out, m_i0);
+    FUN_14070f9a0(*(COutputStream *)out, m_i4);
     FUN_14070fae0(out, &m_strDesc);
 }
 MS2_REPLACE_METHOD(0x1403fbbd0, GameEventCashAttend, vfunc_3, 144, 0xD55548FA);
@@ -1204,7 +1202,7 @@ bool RpsGameData::Load(Unk_140165cf0* pElem)
         MS2_ASSERT_AT(0x2d8, 0);
         return false;
     }
-    Unk_140165cf0* pRoot = FUN_140345b40(pElem);
+    Unk_140165cf0* pRoot = FUN_140345b40((TiXmlDocument *)pElem);
     if (pRoot == NULL) {
         MS2_ASSERT_AT(0x2df, 0);
         return false;
@@ -1227,7 +1225,7 @@ bool RpsGameData::Load(Unk_140165cf0* pElem)
         MS2_ASSERT_AT(0x2f9, 0);
         return false;
     }
-    for (Unk_140165cf0* pNode = FUN_140345b40(pMessages); pNode != NULL; pNode = FUN_1403f0510(pNode)) {
+    for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pMessages); pNode != NULL; pNode = FUN_1403f0510(pNode)) {
         CStringW strValue;
         FUN_140873420(pNode, "value", strValue);
         m_play.m_messages.Add(strValue);
@@ -1250,7 +1248,7 @@ bool RpsGameData::Load(Unk_140165cf0* pElem)
             MS2_ASSERT_AT(0x31c, 0);
             return false;
         }
-        for (Unk_140165cf0* pNode = FUN_140345b40(pResultActions); pNode != NULL; pNode = FUN_1403f0510(pNode)) {
+        for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pResultActions); pNode != NULL; pNode = FUN_1403f0510(pNode)) {
             CStringW strValue;
             FUN_140873420(pNode, "value", strValue);
             result.m_actions.Add(strValue);
@@ -1260,7 +1258,7 @@ bool RpsGameData::Load(Unk_140165cf0* pElem)
             MS2_ASSERT_AT(0x32a, 0);
             return false;
         }
-        for (Unk_140165cf0* pNode = FUN_140345b40(pResultMessages); pNode != NULL; pNode = FUN_1403f0510(pNode)) {
+        for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pResultMessages); pNode != NULL; pNode = FUN_1403f0510(pNode)) {
             CStringW strValue;
             FUN_140873420(pNode, "value", strValue);
             result.m_messages.Add(strValue);
@@ -1391,7 +1389,7 @@ bool CoupleDanceContext::LoadDance(Unk_140165cf0* pElem)
         MS2_ASSERT_AT(0x3ed, 0);
         return false;
     }
-    for (Unk_140165cf0* pDance = FUN_140345b40(pDances); pDance != NULL; pDance = FUN_1403f0510(pDance)) {
+    for (Unk_140165cf0* pDance = FUN_140345b40((TiXmlDocument *)pDances); pDance != NULL; pDance = FUN_1403f0510(pDance)) {
         CStringW strAnim;
         FUN_140873420(pDance, "anim", strAnim);
         m_dances.push_back(strAnim);

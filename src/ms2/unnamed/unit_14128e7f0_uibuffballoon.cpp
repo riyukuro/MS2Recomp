@@ -27,21 +27,24 @@ struct Unk_BuffCfg
     char m_pad_0000[0x378];
     Unk_BuffCfgFloat m_378;
 };
-Unk_BuffCfg* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_BuffUIScale;
-Unk_BuffUIScale* FUN_14025e7a0();                                           // ui scale service
-float FUN_1422afec0(Unk_BuffUIScale* pScale, int nLayer);                   // scale of a layer
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1422afec0(int);
+};
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 float FUN_1412762d0(const NiPoint3& pt);
 class Unk_BuffActor : public PCBase
 {
 };
 class Unk_BuffMgr;
-int FUN_140a18070(Unk_BuffMgr*);
 CStringW FUN_14016a730(const char* sz, int nFlags);                         // FormatStringId(id) without arguments
 bool FUN_140930110(int nActorId);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
-class Unk_BuffUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
+class Unk_BuffUIMgr { };   // C3: FUN_141adcea0 is CUIService's
 class Unk_BuffInfoAS : public AScript
 {
 public:
@@ -55,7 +58,7 @@ UIBuffBalloon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int
     : TimerEntity(nLayer, clip, nActorId), m_a0("")
 {
     m_a8 = 0;
-    m_54 = FUN_1401d3200()->m_378.FUN_1402bac70();
+    m_54 = ((struct Unk_BuffCfg*)FUN_1401d3200())->m_378.FUN_1402bac70();
 }
 
 // @0x14128e890
@@ -66,7 +69,7 @@ UIBuffBalloon::Entity::~Entity()
 // @0x14128e8e0
 void UIBuffBalloon::Entity::vfunc_2()
 {
-    if (FUN_140a18070(reinterpret_cast<Unk_BuffMgr*>(TSingleton<CameraMgr>::GetInstance())) == 0)
+    if (((class CameraMgr*)(class Unk_BuffMgr*)(reinterpret_cast<Unk_BuffMgr*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140a18070() == 0)
         return;
     TimerEntity::vfunc_2();
 }
@@ -90,7 +93,7 @@ void UIBuffBalloon::Entity::vfunc_4()
 void UIBuffBalloon::Entity::vfunc_5()
 {
     UIHudEntity::Entity::vfunc_5();
-    if (FUN_140a18070(reinterpret_cast<Unk_BuffMgr*>(TSingleton<CameraMgr>::GetInstance())) == 0)
+    if (((class CameraMgr*)(class Unk_BuffMgr*)(reinterpret_cast<Unk_BuffMgr*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140a18070() == 0)
         return;
     if (m_38.get() != 0)
     {
@@ -105,7 +108,7 @@ void UIBuffBalloon::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (m_38.get())
     {
-        FUN_140ad0c10(pPos, FUN_1422afec0(FUN_14025e7a0(), m_18));
+        FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_BuffUIScale*)(((class Unk_BuffUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
         pPos->y = pPos->y + vfunc_9();
         pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
         ((Unk_BuffEntity*)m_38.operator->())->FUN_1422c00f0(pPos->x - 55.0f, pPos->y - 110.0f);
@@ -290,7 +293,7 @@ UIBuffBalloon* FUN_14128f650(int nUiId)
 {
     if (reinterpret_cast<Unk_BuffUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_BuffUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UIBuffBalloon*>((UIObject*)p);
     }

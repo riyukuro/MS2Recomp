@@ -1248,6 +1248,52 @@ def needs_gate_pass(u, res, starts):
     return any(n.startswith("ambiguous") for n in res["notes"])
 
 
+_MATCH_CTX = None     # (exe, starts, finfo, bases, vft) of the forked match workers
+
+
+def _match_one(u, ctx, verbose):
+    bm.HARVEST.clear()
+    nconf0 = len(bm.CONFLICTS)
+    res = process_unit(u, *ctx, verbose)
+    # in-unit conflicts (one mangled name paired to two non-identical exe functions inside this unit) are kept in
+    # the unit's cache entry so that they survive cached runs and carry the unit name; the global stage reports them
+    res["conflicts"] = [list(c) for c in bm.CONFLICTS[nconf0:]]
+    del bm.CONFLICTS[nconf0:]
+    return res
+
+
+def _match_job(u):
+    return _match_one(u, _MATCH_CTX, False)
+
+
+def match_units(units, ctx, verbose, label="matching"):
+    """yields (unit, result) in order. A unit's match reads only its obj, the exe and the loaded symbol table (bm.HARVEST,
+    bm.CONFLICTS and the other per-unit lists are reset or moved into the result per unit), so MS2_MATCH_J=N > 1 runs
+    them in N forked workers (the table loaded at fork time); default (unset) and -v: one by one in this process.
+    Parallel results equal a one-by-one run whose earlier stage was cached; one-by-one after an in-process main match can
+    differ in look-alike pairs (lazy state carried from the manual-table match: charactermeshmerger gate pass, 1562 vs
+    1539 res2 pairs, same exact count and symbols.tsv)"""
+    global _MATCH_CTX
+    try:
+        j = 0 if verbose else int(os.environ.get("MS2_MATCH_J") or 0)
+    except ValueError:
+        j = 0
+    if j > 1 and len(units) > 1:
+        import heavy_lock
+        import multiprocessing
+        _MATCH_CTX = ctx
+        with multiprocessing.get_context("fork").Pool(min(heavy_lock.clamp_jobs(j, "MS2_MATCH_J"), len(units))) as p:
+            for u, res in zip(units, p.imap(_match_job, units)):
+                if label:
+                    print(f"{label} {u.rel} ...", flush=True)
+                yield u, res
+        return
+    for u in units:
+        if label:
+            print(f"{label} {u.rel} ...", flush=True)
+        yield u, _match_one(u, ctx, verbose)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("filters", nargs="*", help="only units whose path/name contains one of these")
@@ -1325,6 +1371,8 @@ def main():
     # units); stale entries of the previous table never win. Report mode checks against the committed table.
     bm.load_symbols(manual_tsv if merge_mode else bm.SYMBOLS_TSV)
 
+    ctx = (exe, starts, finfo, bases, vft)
+    mtodo = []
     for u in units:
         if u.rel in failed or not os.path.exists(u.obj):
             cache[u.rel] = {"key": None, "failed": True, "res": None}
@@ -1336,15 +1384,10 @@ def main():
         c = cache.get(u.rel)
         if not a.force and c and c.get("key") == json.loads(json.dumps(key)) and not a.verbose:
             continue
-        bm.HARVEST.clear()
-        print(f"matching {u.rel} ...", flush=True)
-        nconf0 = len(bm.CONFLICTS)
-        res = process_unit(u, exe, starts, finfo, bases, vft, a.verbose)
-        # in-unit conflicts (one mangled name paired to two non-identical exe functions inside this unit) are kept in
-        # the unit's cache entry so that they survive cached runs and carry the unit name; the global stage reports them
-        res["conflicts"] = [list(c) for c in bm.CONFLICTS[nconf0:]]
-        del bm.CONFLICTS[nconf0:]
-        cache[u.rel] = {"key": key, "failed": False, "res": res}
+        mtodo.append((u, key))
+    keys = dict((u.rel, key) for u, key in mtodo)
+    for u, res in match_units([u for u, _ in mtodo], ctx, a.verbose):
+        cache[u.rel] = {"key": keys[u.rel], "failed": False, "res": res}
         if a.verbose:
             for n, p in res["pairs"].items():
                 if not p["ok"]:
@@ -1378,13 +1421,8 @@ def main():
             print(f"gate pass: re-matching {len(gate_todo)} unit(s) against the committed symbols.tsv ...", flush=True)
             bm.load_symbols(bm.SYMBOLS_TSV)
             kept = 0
-            for u in gate_todo:
+            for u, res2 in match_units(gate_todo, ctx, False, None):
                 c = cache[u.rel]
-                bm.HARVEST.clear()
-                nconf0 = len(bm.CONFLICTS)
-                res2 = process_unit(u, exe, starts, finfo, bases, vft, False)
-                res2["conflicts"] = [list(x) for x in bm.CONFLICTS[nconf0:]]
-                del bm.CONFLICTS[nconf0:]
                 s1, s2 = unit_score(u, c["res"], starts), unit_score(u, res2, starts)
                 if s2 <= s1:
                     c["res2"] = res2
@@ -1397,7 +1435,11 @@ def main():
     # drop cache entries of units that no longer exist
     live = {u.rel for u in all_units}
     cache = {k: v for k, v in cache.items() if k in live}
-    json.dump(cache, open(cache_path, "w"))
+    # temp file + rename: a timeout kill mid-write used to truncate results.json and lose every other unit's entry
+    tmp = "%s.%d.tmp" % (cache_path, os.getpid())
+    with open(tmp, "w") as f:
+        json.dump(cache, f)
+    os.replace(tmp, cache_path)
     if merge_mode and not os.environ.get("MS2_NO_GATE_PASS"):
         cache = {k: (dict(v, res=v["res2"]) if v.get("res2") else v) for k, v in cache.items()}
 

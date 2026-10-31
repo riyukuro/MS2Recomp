@@ -40,19 +40,19 @@ public:
 MS2_CHECK_SIZE(CBannerUrlGetter, 0x38);
 
 // ---- callees ----
-extern CAdBannerManagerCli* DAT_143ab3920;
-NotifySystem* FUN_140939a10();
+// C3: was extern CAdBannerManagerCli* DAT_143ab3920 (TSingleton<CAdBannerManagerCli>::s_instance)
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 CAdBannerManagerCli* GetAdBannerManagerCli();
 AdBannerData* FUN_14016e5a0(Unk_AdBannerPtr* pPtr);
 CString FUN_14016a600(const wchar_t* psz, int n);           // wide -> narrow
 CString FUN_141029ed0(int nKind, const CString& strUrl);    // the cached file of a url
-CUgcManager* FUN_14052d220();
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 void FUN_1418fe1c0(const CString& strLink);
 
 // @0x1409faff0
 CBannerUrlGetter::~CBannerUrlGetter()
 {
-    FUN_140939a10()->UnregisterNotify(L"NotifyUgcDownloadComplete", Delegate<void(NotifyObject*)>(this, &CBannerUrlGetter::OnNotify));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyUgcDownloadComplete", Delegate<void(NotifyObject*)>(this, &CBannerUrlGetter::OnNotify));
 }
 
 // @0x1409fb100
@@ -104,7 +104,7 @@ void CBannerUrlGetter::OnNotify(NotifyObject* pNotify)
         {
             m_strPath = pDone->m_strPath;
             m_bReady = true;
-            FUN_140939a10()->UnregisterNotify(L"NotifyUgcDownloadComplete", Delegate<void(NotifyObject*)>(this, &CBannerUrlGetter::OnNotify));
+            ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyUgcDownloadComplete", Delegate<void(NotifyObject*)>(this, &CBannerUrlGetter::OnNotify));
         }
     }
 }
@@ -119,10 +119,10 @@ void CBannerUrlGetter::RequestFile()
         m_bReady = true;
         return;
     }
-    if (FUN_14052d220() != 0)
+    if (((class CUgcManager*)FUN_14052d220()) != 0)
     {
-        FUN_140939a10()->RegisterNotify(L"NotifyUgcDownloadComplete", Delegate<void(NotifyObject*)>(this, &CBannerUrlGetter::OnNotify));
-        FUN_14052d220()->FUN_141885670(0xcd, m_strUrl);
+        ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyUgcDownloadComplete", Delegate<void(NotifyObject*)>(this, &CBannerUrlGetter::OnNotify));
+        ((class CUgcManager*)FUN_14052d220())->FUN_141885670(0xcd, m_strUrl);
     }
 }
 
@@ -140,6 +140,6 @@ template<> Delegate<void(NotifyObject*)>::DelegateImplBase::~DelegateImplBase() 
 AdBannerData* Unk_AdBannerPtr::get() const { return m_p; }
 
 // @0x1409fb930
-CAdBannerManagerCli* GetAdBannerManagerCli() { return DAT_143ab3920; }
+CAdBannerManagerCli* GetAdBannerManagerCli() { return TSingleton<CAdBannerManagerCli>::s_instance; }
 
 MS2_EMIT_CRT_MEMMOVE_S();

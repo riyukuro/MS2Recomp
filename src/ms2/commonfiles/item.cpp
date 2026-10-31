@@ -96,8 +96,8 @@ class Unk_PetRowTable : public Unk_SingletonObj { public: MS2Ptr<Unk_PetRow> FUN
 CStringW FUN_141277a90(CUgcItemLook* pLook, const CStringW& strFallback);
 class Unk_ItemSetTable { public: int FUN_140597430(int); };   // behind DAT_143aaf1b8 (FUN_14052d1f0 returns it as void*)
 extern void* DAT_143aaf1b8;
-void* FUN_140166440();
-void FUN_140177a80(void* logger, int level, int category, const wchar_t* fmt, const int& arg);
+class CLogString* GetLogString();
+template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 extern void* DAT_143aaf1c0;
 extern Unk_SingletonObj* DAT_143aaf1c8;
 extern Unk_SingletonObj* DAT_143aaf1d8;
@@ -771,9 +771,9 @@ CItem::~CItem()
 {
 }
 
-unsigned char FUN_14053f8c0(unsigned);
-unsigned char FUN_14053f940(unsigned);
-int FUN_14053f990(unsigned);
+bool FUN_14053f8c0(unsigned int);  // C3: the definition's signature
+bool FUN_14053f940(unsigned int);  // C3: the definition's signature
+int FUN_14053f990(int);  // C3: the definition's signature
 
 // @0x140524240
 void CItem::vfunc_1()
@@ -2781,7 +2781,7 @@ bool CItem::FUN_140523c40(int nItemId, int nRarity, int nStatusArg)
     m_spData = FUN_14053f870(nItemId);
     if (m_spData.IsNull())
     {
-        FUN_140177a80(FUN_140166440(), 1, 0x13, L"Item 정보를 읽을 수 없습니다.itemID {0}", nItemId);
+        Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"Item 정보를 읽을 수 없습니다.itemID {0}", reinterpret_cast<const unsigned&>(nItemId));
         return false;
     }
     if (m_spData->FUN_14053c5a0() == 0)
@@ -2893,9 +2893,7 @@ static const CString s_sortNamesCopy[] = { "None", "Buy", "Like", "PriceLow", "P
 // ---- w106: CItemBreakIngredientTable (itemBreakIngredient.xml and the gacha box coin costs)
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 void FUN_140873220(Unk_140165cf0*, const char*, int&);
 bool FUN_14028f710(Unk_140165cf0*);                                       // the element is usable
@@ -2941,12 +2939,12 @@ int CItemBreakIngredientTable::LoadBreakItems()
     m_spCache.AssignRaw(new CCacheData);
     m_spCache->FUN_1401d1160(strPath);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("item"); pNode != 0; pNode = pNode->FUN_140168650("item"))

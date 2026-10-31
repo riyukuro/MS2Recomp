@@ -38,10 +38,8 @@
 
 // ---- unit-local views of callees emitted in other units ----
 
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071ae20(const CString& strFile);                              // path of a table file
 CString FUN_14016a5c0(const char* psz, int nCodePage);                      // narrows a string (the RTTI name in CheckInit)
 void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* pszDelim);   // split into ints
@@ -159,13 +157,13 @@ int CLoadingDescriptionTable::LoadXml(CString strPath)
     {
         m_spData->m_descs.RemoveAll();
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             return 0;
         m_spData->FUN_1401d1160(CString(strPath));
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)
         {
-            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
             return 0;
         }
         std::vector<Unk_140165cf0*> nodes;

@@ -2,7 +2,10 @@
 // MS2-UNIT: ?\uistatcontroldialog.cpp
 // MS2-RANGE: 0x14134e450-0x14134fc90 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uistatcontroldialog.cpp"    // assumed
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uistatcontroldialog.h"
 
@@ -14,53 +17,38 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/commandchat.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/client/ms2/pcbase.h"
 
 // ---- unit-local placeholders (unrecovered helpers) ----
-
-// The list control of the movie (the AS list with clear / append).
-class Unk_StatList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                               // clear
-    void FUN_1422dd230(const ASObj& row);               // append a row
-};
 
 class ASDialog : public AScript { };
 
 // The key input state (singleton).
-class Unk_14025e7c0 { public: bool FUN_14116d840(); };
-Unk_14025e7c0* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The local player: the stat values (current / max / base).
-class Unk_StatActor
+class Unk_StatActor : public PCBase
 {
-public:
-    __int64 FUN_1416709d0(int nStat);                   // bonus-free value
-    __int64 FUN_141670a30(int nStat);                   // max value
-    __int64 FUN_141670a00(int nStat);                   // current value
 };
 class Unk_StatPlayers { public: Unk_StatActor* FUN_141bd0cc0(); };
-Unk_StatPlayers* FUN_1403ed2d0();
-
-// The status / item listener registries (singletons 0x140aa6d40 / 0x140a6a840).
-class Unk_StatStatusMgr
+class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141b0cd00(UIStatusEventListener* pListener);   // register
-    void FUN_141b0cd90(UIStatusEventListener* pListener);   // unregister
+    static class WorldService* GetInstance();
 };
-Unk_StatStatusMgr* FUN_140aa6d40();
+
+// The status / item listener registries (singletons 0x140aa6d40 / 0x140a6a840).
+UIStatusEventDispatcher* FUN_140aa6d40();
 class Unk_StatItemEvents;
-Unk_StatItemEvents* FUN_140a6a840();
-void FUN_1419cae20(Unk_StatItemEvents*, UIItemEventListener*);
-void FUN_1419caeb0(Unk_StatItemEvents*, UIItemEventListener*);
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419cae20(class UIItemEventListener*);
+    void FUN_1419caeb0(class UIItemEventListener*);
+};
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 void FUN_141276f80(const Unk_CommandChat&);
@@ -106,7 +94,7 @@ int UIStatControlDialog::vfunc_oa0_1()
 // @0x14134e600
 void UIStatControlDialog::vfunc_67()
 {
-    FUN_1419caeb0(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_StatItemEvents*)(((class Unk_StatItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIDialog::vfunc_67();
 }
@@ -115,7 +103,7 @@ void UIStatControlDialog::vfunc_67()
 void UIStatControlDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_StatItemEvents*)(((class Unk_StatItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     FUN_14134f150();
 }
@@ -125,7 +113,7 @@ int UIStatControlDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d840() != 0)
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840() != 0)
     {
         vfunc_67();
         return 1;
@@ -146,7 +134,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         {
             int nStat = data.FUN_1422b8b10();
             float fValue = (float)data.FUN_1422b8ca0();
-            Unk_StatActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+            Unk_StatActor* pActor = ((class Unk_StatPlayers*)WorldService::GetInstance())->FUN_141bd0cc0();
             if (pActor != 0)
             {
                 CString strCommand;
@@ -163,7 +151,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            Unk_StatActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+            Unk_StatActor* pActor = ((class Unk_StatPlayers*)WorldService::GetInstance())->FUN_141bd0cc0();
             if (pActor == 0)
                 return 0;
             int nStat = data.FUN_1422b8b10();
@@ -180,7 +168,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             int nStat = data.FUN_1422b8b10();
-            Unk_StatActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+            Unk_StatActor* pActor = ((class Unk_StatPlayers*)WorldService::GetInstance())->FUN_141bd0cc0();
             if (pActor != 0)
             {
                 CString strCommand;
@@ -195,7 +183,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("onAllResetButton", szMethod) == 0)
     {
-        Unk_StatActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_StatActor* pActor = ((class Unk_StatPlayers*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (pActor != 0)
         {
             CString strCommand;
@@ -301,7 +289,7 @@ void UIStatControlDialog::vfunc_il23(void* pItem)
 // @0x14134f150
 void UIStatControlDialog::FUN_14134f150()
 {
-    MS2Ptr<Unk_StatList> list = FUN_140c02900("m_stats");
+    MS2Ptr<ASScrollingList> list = FUN_140c02900("m_stats");
     if (!list)
         return;
     list->FUN_1422dd1d0();
@@ -329,10 +317,10 @@ void UIStatControlDialog::FUN_14134f150()
 }
 
 // @0x14134f790
-void UIStatControlDialog::FUN_14134f790(MS2Ptr<Unk_StatList> list, int nStat, int bFloat)
+void UIStatControlDialog::FUN_14134f790(MS2Ptr<ASScrollingList> list, int nStat, int bFloat)
 {
     ASObj row(2);
-    Unk_StatActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_StatActor* pActor = ((class Unk_StatPlayers*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pActor == 0)
         return;
     float fBase = (float)pActor->FUN_1416709d0(nStat);

@@ -20,7 +20,6 @@ public:
     static CLogString* s_instance;
     static CLogString* GetInstance();                   // 0x140166440
 };
-class Unk_1406583d0Ref { public: void FUN_14015b020(); int FUN_140159bc0(); void FUN_140159ba0(); };
 template<class T> class Unk_1406583d0 {
 public:
     Unk_1406583d0() : m_p(0) {}
@@ -34,10 +33,10 @@ public:
     T* operator->() const { return m_p; }
 private:
     void AddRef() const { if(m_p) AddRefImpl(0); }
-    static void Reference(T* p) { reinterpret_cast<Unk_1406583d0Ref*>(p)->FUN_14015b020(); }
+    static void Reference(T* p) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(p)); }
     void AddRefImpl(void*) const { Reference(m_p); }
     void Release() { if(m_p) { ReleaseImpl(0); m_p=0; } }
-    void ReleaseImpl(void*) { if(reinterpret_cast<Unk_1406583d0Ref*>(m_p)->FUN_140159bc0()==0) { Reference(m_p); reinterpret_cast<Unk_1406583d0Ref*>(m_p)->FUN_140159ba0(); } }
+    void ReleaseImpl(void*) { if(CPtred::ReleasePtred(reinterpret_cast<CPtred*>(m_p))==0) { Reference(m_p); CPtred::DeletePtred(reinterpret_cast<CPtred*>(m_p)); } }
     void* m_00; T* m_p;
 };
 class CLogCustomGroup : public CPtred {

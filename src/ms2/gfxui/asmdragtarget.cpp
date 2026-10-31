@@ -3,6 +3,7 @@
 // MS2-RANGE: 0x1422e47c0-0x1422e4900 .text$mn
 //
 // The unit name and directory are assumed (the GFx UI library has no __FILE__ strings).
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "asmdragtarget.h"

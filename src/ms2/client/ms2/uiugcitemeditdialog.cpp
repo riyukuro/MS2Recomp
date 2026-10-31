@@ -122,7 +122,6 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // ---- unit-local views of exe objects ----
 
 // The status-listener registry (singleton 0x140aa6d40).
-UIStatusEventDispatcher* FUN_140aa6d40();
 
 // The AS function object calling back into C++ (ctor 0x1422c8430, dtor 0x1422c85b0).
 class ASFunction : public AScript
@@ -332,7 +331,7 @@ void UIUGCItemEditDialog::OnLoadComplete()
     FUN_141b40c30();
     FUN_14052d220()->m_str1b0 = "";
     FUN_14052d220()->m_str1b8 = "";
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     UIUGCEventDispatcher::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
     FUN_140939a10()->RegisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUGCItemEditDialog::FUN_141b44d50));
     FUN_140d86260()->vfunc_43(0xe, 0, 1000);
@@ -529,7 +528,7 @@ void UIUGCItemEditDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     FUN_140939a10()->UnregisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUGCItemEditDialog::FUN_141b44d50));
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIUGCEventDispatcher::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
     FUN_14052d220()->FUN_141880ec0(vfunc_48());
     FUN_141b3e370();
@@ -2580,50 +2579,46 @@ ItemPreviewCommon::CLimitCharRotate::CLimitCharRotate(float fMin, float fMax)
 }
 
 // @0x141b49d40
-// MS2-FUNCTIONAL: from the decompile (the clamp of a drag rotation)
 float ItemPreviewCommon::CLimitCharRotate::FUN_141b49d40(float fAngle, float fDelta, float fCurrent, float fFallback)
 {
-    if (m_bLimited)
+    if (!m_bLimited)
+        return fAngle;
+    float fNormal = fAngle;
+    FUN_1418bf270(&fNormal);
+    bool bIn = FUN_141b49f30(&m_range, fNormal);
+    if (!bIn)
+        return fFallback;
+    float fAbs = FUN_14029d220(fDelta);
+    bool bOver = fAbs >= 360.0f;
+    if (!bOver)
     {
-        float fNormal = fAngle;
-        FUN_1418bf270(&fNormal);
-        fAngle = fFallback;
-        if (FUN_141b49f30(&m_range, fNormal))
+        float fRoom = 0.0f;
+        if (fDelta > 0.0f)
         {
-            float fAbs = FUN_14029d220(fDelta);
-            bool bOver = 360.0f <= fAbs;
-            if (!bOver)
-            {
-                float fRoom;
-                if (fDelta <= 0.0f)
-                {
-                    fRoom = m_limit.second;
-                    if (fCurrent < fRoom)
-                        fRoom = (360.0f - fRoom) + fCurrent;
-                    else
-                        fRoom = fCurrent - fRoom;
-                }
-                else
-                {
-                    fRoom = m_limit.first;
-                    if (fRoom < fCurrent)
-                        fRoom = (360.0f - fCurrent) + fRoom;
-                    else
-                        fRoom = fRoom - fCurrent;
-                }
-                bOver = fRoom < fAbs;
-            }
-            fAngle = fNormal;
-            if (bOver)
-            {
-                if (fDelta <= 0.0f)
-                    fAngle = m_range.first;
-                else
-                    fAngle = m_range.second;
-            }
+            float fFirst = m_limit.first;
+            if (fCurrent <= fFirst)
+                fRoom = fFirst - fCurrent;
+            else
+                fRoom = (360.0f - fCurrent) + fFirst;
         }
+        else
+        {
+            float fSecond = m_limit.second;
+            if (fCurrent >= fSecond)
+                fRoom = fCurrent - fSecond;
+            else
+                fRoom = (360.0f - fSecond) + fCurrent;
+        }
+        bOver = fRoom < fAbs;
     }
-    return fAngle;
+    if (bOver)
+    {
+        if (fDelta > 0.0f)
+            fNormal = m_range.second;
+        else
+            fNormal = m_range.first;
+    }
+    return fNormal;
 }
 MS2_REPLACE_METHOD(0x141B49D40, ItemPreviewCommon::CLimitCharRotate, FUN_141b49d40, 482, 0x03EF5216);
 

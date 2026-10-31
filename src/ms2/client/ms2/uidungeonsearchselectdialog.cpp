@@ -6,7 +6,10 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uidungeonsearchselectdialog.cpp"
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uidungeonsearchselectdialog.h"
 #include "uidungeonsearchdialog.h"
@@ -20,6 +23,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- statics (.text$di): the shared header statics a second time (another header of the unit pulls them in) and a bare
 // sort-name table ----
@@ -47,11 +53,6 @@ public:
 class Unk_SdRadio : public Unk_SdToggle {};
 class Unk_SdCheck : public Unk_SdToggle {};
 class Unk_SdButton : public ASDisplayObject {};
-class Unk_SdList : public ASDisplayObject
-{
-public:
-    void FUN_1422dcf40(int nCount);                             // the number of rows
-};
 // A row of the list.
 class Unk_SdRow : public ASDisplayObject
 {
@@ -61,13 +62,11 @@ public:
     template <class T> MS2Ptr<T> FUN_140c12010(const CString& strName, MS2Ptr<T>& outChild);   // bind a check box
 };
 
-class Unk_SdWorld { public: void* FUN_141bd0cc0(); };            // the local player
-Unk_SdWorld* FUN_1403ed2d0();
+            // the local player
+WorldService* FUN_1403ed2d0();
 class Unk_SdUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };
-Unk_SdUIManager* FUN_1403ed2b0();
 
 UIDungeonSearchDialog* FUN_140e28d40(int nUIType);
-DungeonRoomTable* FUN_14031c2a0();
 void* FUN_1409670d0();
 bool FUN_14162ac70(void*, int);
 unsigned FUN_140bd09c0(void* pUserData);
@@ -158,7 +157,7 @@ void UIDungeonSearchSelectDialog::OnLoadComplete()
     SD_BIND(m_30->FUN_140bbe640<Unk_SdRadio>("m_radioRecommend", m_radio), m_radio, 0x27);
     SD_BIND(m_30->FUN_140bc71c0<ASMovieClip>("m_customPage", m_page), m_page, 0x28);
     SD_BIND(m_30->FUN_140bbe640<Unk_SdButton>("m_okButton", m_okButton), m_okButton, 0x29);
-    SD_BIND(m_page->FUN_140bc7340<Unk_SdList>("m_customList", m_list), m_list, 0x2b);
+    SD_BIND(m_page->FUN_140bc7340<ASScrollingList>("m_customList", m_list), m_list, 0x2b);
     if (!FUN_140c123f0((*m_page).FUN_1422bb890(), "m_listItem", 11, m_rows, 1))
         throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
                                                   MS2_THIS_FILE, MS2_LINE(0x2e), __FUNCTION__));
@@ -177,7 +176,7 @@ void UIDungeonSearchSelectDialog::OnLoadComplete()
             m_checks[i]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e28a40), 0);
         }
     }
-    FUN_14031c2a0()->GetGroupRooms((DungeonGroupType)m_nPage, m_rooms);
+    TSingleton<DungeonRoomTable>::GetInstance()->GetGroupRooms((DungeonGroupType)m_nPage, m_rooms);
     FUN_140e27f80();
 }
 
@@ -334,8 +333,8 @@ void UIDungeonSearchSelectDialog::FUN_140e28a40(const Scaleform::GFx::FunctionHa
 // @0x140e28d40
 UIDungeonSearchDialog* FUN_140e28d40(int nUIType)
 {
-    if (FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nUIType);
+    if (reinterpret_cast<Unk_SdUIManager*>(TSingleton<CUIService>::GetInstance())) {
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_SdUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUIType);
         if (p.get())
             return dynamic_cast<UIDungeonSearchDialog*>((UIObject*)p);
     }

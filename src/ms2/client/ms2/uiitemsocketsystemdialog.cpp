@@ -124,8 +124,8 @@ public:
     virtual ~Unk_IssTabArray();                                 // 0x1422df070
 };
 
-Unk_IssPackets* FUN_140bccd50();
-CFeatureManager* FUN_140166410();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int n);
 void FUN_1418fff20(ASArray* pArray, int nTabIndex, const CStringW& strLabel, const CStringW& strText);
@@ -148,13 +148,13 @@ UIItemSocketSystemDialog::UIItemSocketSystemDialog()
     : m_pPage(0), m_nTab(0)
 {
     FUN_141924170(1);
-    FUN_140bccd50()->FUN_140da5180(0xde, Delegate<void(CInPacket&)>(this, &UIItemSocketSystemDialog::FUN_140f69b50));
+    ((class Unk_IssPackets*)FUN_140bccd50())->FUN_140da5180(0xde, Delegate<void(CInPacket&)>(this, &UIItemSocketSystemDialog::FUN_140f69b50));
 }
 
 // @0x140f68ed0
 UIItemSocketSystemDialog::~UIItemSocketSystemDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0xde, Delegate<void(CInPacket&)>(this, &UIItemSocketSystemDialog::FUN_140f69b50));
+    ((class Unk_IssPackets*)FUN_140bccd50())->FUN_140da51e0(0xde, Delegate<void(CInPacket&)>(this, &UIItemSocketSystemDialog::FUN_140f69b50));
 }
 
 // @0x140f68fc0
@@ -174,9 +174,9 @@ void UIItemSocketSystemDialog::OnLoadComplete()
         tabs.push_back(std::pair<int, CStringW>(0, L"gemstone_upgrade"));
         tabs.push_back(std::pair<int, CStringW>(1, L"gemstone_puton_off"));
         tabs.push_back(std::pair<int, CStringW>(2, L"socket_unlock"));
-        if (FUN_140166410()->FUN_14036d570(0xa7))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xa7))
             tabs.push_back(std::pair<int, CStringW>(3, L"socket_transfer"));
-        if (FUN_140166410()->FUN_14036d570(0x10f))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x10f))
             tabs.push_back(std::pair<int, CStringW>(4, L"gemstone_swap"));
         int nSelected = 0;
         Unk_IssTabArray array(2);
@@ -246,9 +246,9 @@ int UIItemSocketSystemDialog::vfunc_65()
         m_pages[0] = new ItemSocketSystemPageGemStoneUpgrade();
         m_pages[1] = new ItemSocketSystemPageGemStoneManage();
         m_pages[2] = new ItemSocketSystemPageSocketUnlock();
-        if (FUN_140166410()->FUN_14036d570(0xa7))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xa7))
             m_pages[3] = new ItemSocketSystemPageSocketTransfer();
-        if (FUN_140166410()->FUN_14036d570(0x10f))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x10f))
             m_pages[4] = new ItemSocketSystemPageGemstoneSwap();
     }
     return 1;

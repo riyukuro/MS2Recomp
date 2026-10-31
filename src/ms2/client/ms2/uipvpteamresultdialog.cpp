@@ -27,6 +27,8 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/pvpmanager.h"
 
 // ---- unit-local views of exe types ----
 
@@ -55,7 +57,11 @@ public:
     MS2Ptr<Unk_PtTeam> FUN_140967420();                         // the own team
 };
 class Unk_PtWorld { public: Unk_PtPlayer* FUN_141bd0cc0(); };
-Unk_PtWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 __int64 FUN_141656a80(Unk_PtPlayer* pPlayer);                   // the character id
 
 // The PvP service: the team lists (+0x68).
@@ -80,7 +86,6 @@ private:
     char m_pad_00[0x68];
     Unk_PtTeams m_68;
 };
-Unk_PtMgr* FUN_140f97ef0();
 
 // The AS root with the PvP-result Invoke helpers (the strings by value: the callee destroys them).
 class Unk_PtScript : public AScript
@@ -99,11 +104,8 @@ public:
     char m_pad_0[0x4f70];
     Unk_PtConst m_rewardItem;                                   // +0x4f70
 };
-Unk_PtConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 unsigned int* FUN_1402056b0(Unk_PtConst* p);
-
-class Unk_PtStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_PtStrings* FUN_1401a9d70();
 
 class Unk_PtSound                                               // the sound / cursor service
 {
@@ -182,7 +184,7 @@ void UIPvPTeamResultDialog::FUN_1413452c0()
 // @0x141345310
 void UIPvPTeamResultDialog::FUN_141345310()
 {
-    Unk_PtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PtPlayer* pPlayer = ((class Unk_PtWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     bool bNoTeam = pPlayer->FUN_140967420() == NULL;
@@ -205,7 +207,7 @@ void UIPvPTeamResultDialog::FUN_1413454b0()
     int teams[2] = {0xc9, 0xca};
     for (int i = 0; i < 2; i++)
     {
-        Unk_PtVec* pList = FUN_140f97ef0()->FUN_1413465d0(teams[i]);
+        Unk_PtVec* pList = reinterpret_cast<Unk_PtMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1413465d0(teams[i]);
         if (pList != 0)
         {
             for (size_t j = 0; j < pList->FUN_1410201c0(); j++)
@@ -229,7 +231,7 @@ void UIPvPTeamResultDialog::FUN_1413456a0()
         return;
     int nScoreA = 0;
     int nScoreB = 0;
-    FUN_140f97ef0()->FUN_141346600(&nScoreA, &nScoreB);
+    reinterpret_cast<Unk_PtMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_141346600(&nScoreA, &nScoreB);
     static_cast<Unk_PtScript*>(m_30.operator->())->FUN_1409ba0d0("UpdateScore", nScoreA, nScoreB);
 }
 
@@ -259,11 +261,11 @@ void UIPvPTeamResultDialog::FUN_1413457f0()
     }
     else if (m_nCount >= 0)
     {
-        unsigned int nItemId = *FUN_1402056b0(&FUN_1401d3200()->m_rewardItem);
+        unsigned int nItemId = *FUN_1402056b0(&((class Unk_PtConfig*)FUN_1401d3200())->m_rewardItem);
         CString strBind = FUN_141345eb0(nItemId, m_nCount);
         CStringW strIcon = FUN_14016a730(strBind, 0);
         CStringW strReward(L"");
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nItemId);
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
         if (m_nCount == 0)
             strIcon = L"";
         if (m_nMyTeam == m_nWinTeam)
@@ -287,7 +289,7 @@ bool UIPvPTeamResultDialog::FUN_141345c60(ASObj& obj, int nIndex, Unk_PtMember* 
 {
     if (pMember == 0)
         return false;
-    Unk_PtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PtPlayer* pPlayer = ((class Unk_PtWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
     obj.FUN_1407cb9c0("index", nIndex);

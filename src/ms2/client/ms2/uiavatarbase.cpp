@@ -42,6 +42,8 @@
 
 static CString s_strBuyTypeNames[8] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};   // 0x14010fe10
 #include "ms2/placeholder/header_statics_a.h"                  // 0x14010fee0, 0x14010ffa0, 0x14010ffd0, 0x140110000
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/worldservice.h"
 static CString s_strCap = "Cap";                                // 0x140110050
 
 // ---- unit-local types ---------------------------------------------------------------------------------------------
@@ -88,13 +90,11 @@ public:
 MS2_CHECK_SIZE(ItemPreviewCommon::CLimitCharRotate, 0x30);
 
 // The world manager (singleton FUN_1403ed2d0).
-class Unk_UabWorld
+class Unk_UabWorld : public WorldService
 {
 public:
     GameObject* FUN_141bd1180(int nId);                                 // 0x141bd1180 NULL when the id is free
-    void FUN_141bbbcf0(unsigned int nId, int bImmediate);               // 0x141bbbcf0 destroys the object
     PCBase* FUN_141bd1290(int nId);                                     // 0x141bd1290 the PC of an id
-    int FUN_141bbb1e0(GameObject* pObj, int bFullInit, unsigned nCamera);   // 0x141bbb1e0 registers an object
     PCBase* FUN_141bd0cc0();                                            // 0x141bd0cc0 the local player
 };
 Unk_UabWorld* FUN_1403ed2d0();
@@ -102,13 +102,14 @@ Unk_UabWorld* FUN_1403ed2d0();
 // The game clock (singleton FUN_14086d260).
 class Unk_UabClock;
 Unk_UabClock* FUN_14086d260();
-double FUN_141473280(Unk_UabClock* pClock);
+class CMainSystem   // C3: member view for the former free stand-ins
+{
+public:
+    double FUN_141473280();
+};
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                        // the scene root of an entity
 const Vector3& FUN_140e69200(NiAVObject* pNode);                // local translation
-Unk_NiMatrix3* FUN_1410b23c0(NiAVObject* pNode);                        // local rotation
-void FUN_140981070(NiAVObject* pNode, const Unk_NiPoint3& kPos);        // SetTranslate
-void FUN_140ddcca0(NiAVObject* pNode, const Unk_NiMatrix3* pRot);       // SetRotate
 // NiAVObject::m_kLocal.m_Translate (+0x74) as an NiPoint3 with its assignment operator.
 struct Unk_UabNodeTranslate
 {
@@ -117,15 +118,11 @@ struct Unk_UabNodeTranslate
 };
 void FUN_1410a7800(NiAVObject* pNode, float fX, float fY, float fZ);    // SetTranslate(x, y, z)
 Unk_NiPoint3 FUN_14027dcf0(const Vector3& kPt);                 // NiPoint3(const efd::Point3&)
-void FUN_1420849a0(Unk_NiMatrix3* pMat);                                // MakeIdentity
 float FUN_14059d930(float f);                                           // fabs
-void* FUN_140166440();                                                  // the log
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_140e68a40(void* pLog, int nLevel, int nLine, const wchar_t* szFmt,
                    const float* pA, const float* pB, const float* pC);  // formatted log (3 arguments)
 void FUN_1418c1dd0(NiAVObject* pNode, Unk_NiMatrix3* pRot, const Unk_NiPoint3& kPivot, const Unk_NiPoint3& kPos);   // rotates about a pivot
-const Vector3* FUN_140947900(NiAVObject* pNode);                // world translate
-void* FUN_140994490(NiAVObject* pNode);                                 // GetWorldBound
-const Vector3* FUN_140980350(void* pBound);                     // bound centre
 int FUN_141b48430(int nKind);                                           // camera set of a kind
 float FUN_141b48480(int nSet, int nIndex);                              // default angle
 void FUN_1408995b0(Unk_GoModelKey* pKey);                               // Unk_GoModelKey()
@@ -265,11 +262,11 @@ void UIAvatarBase::vfunc_10(int dx, int dy, int dz, int bUpdate)
                 float fClamp = m_kPos.z - kTarget.z > 0.0f ? -fLimit : fLimit;
                 kTarget.z = m_kPos.z + fClamp;
             }
-            kNewPos = kTarget.FUN_14097fd50(m_kPivot).FUN_140965c40(FUN_1410b23c0(pNode)->FUN_140a00720(m_kPivot));
+            kNewPos = kTarget.FUN_14097fd50(m_kPivot).FUN_140965c40(((struct Unk_NiMatrix3*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate())->FUN_140a00720(m_kPivot));
         }
-        FUN_140981070(pNode, kNewPos);
+        ((class NiAVObject*)(class NiAVObject*)(pNode))->SetTranslate(*(class NiPoint3 const*)&static_cast<struct Unk_NiPoint3 const&>(kNewPos));
         if (bUpdate)
-            pNode->Update((float)FUN_141473280(FUN_14086d260()), true);
+            pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(FUN_14086d260()))->FUN_141473280(), true);
     }
 }
 
@@ -342,17 +339,17 @@ void UIAvatarBase::vfunc_13(float rx, float ry, float rz, const Vector3* pPivot,
         FUN_1418bf270(&ry);
         FUN_1418bf270(&rz);
         FUN_1418ba200(&m_kAngleBase, rx, ry, rz);
-        if (FUN_140166440())
-            FUN_140e68a40(FUN_140166440(), 0xb, 0x135, L"avatarDegree: {0}, {1}, {2}", &m_kAngleBase.x, &m_kAngleBase.y, &m_kAngleBase.z);
+        if (((void*)GetLogString()))
+            FUN_140e68a40(((void*)GetLogString()), 0xb, 0x135, L"avatarDegree: {0}, {1}, {2}", &m_kAngleBase.x, &m_kAngleBase.y, &m_kAngleBase.z);
         Unk_NiMatrix3 kRot;
-        FUN_1420849a0(&kRot);
+        ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&kRot))->MakeIdentity();
         float fRadX = (rx * 3.1415927f) / 180.0f;
         float fRadY = (ry * 3.1415927f) / 180.0f;
         float fRadZ = (rz * 3.1415927f) / 180.0f;
         kRot.FUN_142083d40(fRadX, fRadY, fRadZ);
         FUN_1418c1dd0(pNode, &kRot, *pPivot, *pPos);
         if (bUpdate)
-            pNode->Update((float)FUN_141473280(FUN_14086d260()), true);
+            pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(FUN_14086d260()))->FUN_141473280(), true);
     }
 }
 
@@ -451,14 +448,14 @@ void UIAvatarBase::vfunc_20(float x, float y, float z, int bUpdate)
     if (!pNode)
         return;
     Unk_NiMatrix3 kRot;
-    FUN_1420849a0(&kRot);
+    ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&kRot))->MakeIdentity();
     float fRadX = x > 0.0f ? (x * 3.1415927f) / 180.0f : 0.0f;
     float fRadY = y > 0.0f ? (y * 3.1415927f) / 180.0f : 0.0f;
     float fRadZ = z > 0.0f ? (z * 3.1415927f) / 180.0f : 0.0f;
     kRot.FUN_142083d40(fRadX, fRadY, fRadZ);
-    FUN_140ddcca0(pNode, &kRot);
+    ((class NiAVObject*)(class NiAVObject*)(pNode))->SetRotate(*(class NiMatrix3 const*)(&kRot));
     if (bUpdate)
-        pNode->Update((float)FUN_141473280(FUN_14086d260()), true);
+        pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(FUN_14086d260()))->FUN_141473280(), true);
 }
 
 // @0x1418b9140
@@ -474,7 +471,7 @@ void UIAvatarBase::vfunc_9(float x, float y, float z, int bUpdate)
         return;
     FUN_1410a7800(pNode, x, y, z);
     if (bUpdate)
-        pNode->Update((float)FUN_141473280(FUN_14086d260()), true);
+        pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(FUN_14086d260()))->FUN_141473280(), true);
 }
 
 // @0x1418b9200
@@ -714,7 +711,7 @@ void UIAvatarBase::FUN_1418b9c10()
         NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
         if (!pNode)
             return;
-        Unk_NiMatrix3* pRot = FUN_1410b23c0(pNode);
+        Unk_NiMatrix3* pRot = ((struct Unk_NiMatrix3*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate());
         FUN_1418ba250(&m_kAngle, &m_kAngleBase);
         const Vector3& kPos = FUN_140e69200(pNode);
         m_kPosBase = kPos;
@@ -756,15 +753,15 @@ void UIAvatarBase::FUN_1418b9e40()
         float fBody = 0.0f;
         NiAVObject* pBody = pNode->GetObjectByName("Eff_Body");
         if (pBody)
-            fBody = FUN_140947900(pBody)->FUN_140965c40(m_kPos).FUN_140967ac0();
-        void* pBound = FUN_140994490(pNode);
-        float fHeight = FUN_140980350(pBound)->z - m_kPos.z;
+            fBody = ((struct Vector3 const*)&((class NiAVObject*)(class NiAVObject*)(pBody))->GetWorldTranslate())->FUN_140965c40(m_kPos).FUN_140967ac0();
+        void* pBound = ((void*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetWorldBound());
+        float fHeight = ((struct Vector3 const*)&((class NiBound*)(void*)(pBound))->GetCenter())->z - m_kPos.z;
         float fExtra = fHeight - fBody;
         if (fBody > 0.0f && fExtra > 25.0f)
             fHeight = fBody + 25.0f;
         m_kPivot = Vector3(0.0f, 0.0f, fHeight);
         NiPoint3 kAngle = pObj->vfunc_20();
-        Unk_NiMatrix3* pRot = FUN_1410b23c0(pNode);
+        Unk_NiMatrix3* pRot = ((struct Unk_NiMatrix3*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate());
         pRot->FUN_142085840(kAngle.x, kAngle.y, kAngle.z);
         kAngle.x = (kAngle.x * 180.0f) / 3.1415927f;
         kAngle.y = (kAngle.y * 180.0f) / 3.1415927f;
@@ -866,7 +863,7 @@ void UIAvatarBase::FUN_1418ba410(Vector3* pOut)
         NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
         if (pNode == 0)
             return;
-        Unk_NiMatrix3* pRot = FUN_1410b23c0(pNode);
+        Unk_NiMatrix3* pRot = ((struct Unk_NiMatrix3*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate());
         FUN_1418ba4a0(pRot, &FUN_140e69200(pNode), pOut);
     }
 }
@@ -915,10 +912,9 @@ class Unk_UabEquip : public CPtred
 public:
     CItem* FUN_1411dc870();                                             // the equipped item
 };
-class Unk_UabPlayer : public PCBase
+class Unk_UabPlayer : public PC
 {
 public:
-    MS2Ptr<CItem> FUN_141655b80(__int64 nItemUid);                      // item of an uid
     MS2Ptr<Unk_UabEquip> FUN_141655cf0(int nSlot);                      // equipped item of a slot
     MS2Ptr<Unk_UabEquip> FUN_141655c90(int nSlot);                      // equipped item of a slot (second table)
 };
@@ -930,16 +926,10 @@ struct Unk_UabCfgFloat { float FUN_1402bac70(); char m_pad[0x58]; };
 struct Unk_UabCfgInt { int* FUN_1402056b0(); char m_pad[0x58]; };
 struct Unk_UabConfig { char m_pad0[0xc6b8]; Unk_UabCfgFloat m_fRotateSpeed; Unk_UabCfgInt m_nRotateMax; };
 MS2_CHECK_OFFSET(Unk_UabConfig, m_nRotateMax, 0xc710);
-Unk_UabConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 float FUN_1418bffd0(Unk_UabCfgInt* pValue);                             // the int value as a float
 
 int FUN_141658e60(PCBase* pPc);                                         // the state of a PC
-CItemData* FUN_140527840(CItem* pItem);                                 // the item data of an item
-int FUN_14053c5c0(CItemData* pData);                                    // the item type (0x19 = cube item set)
-bool FUN_14053d2b0(CItemData* pData);
-bool FUN_14053d460(CItemData* pData);
-bool FUN_14053cc00(CItemData* pData);
-bool FUN_1405729c0(const ATL::CAtlArray<MS2Ptr<CItemData> >* pArray);      // array is empty
 MS2Ptr<CItemData> FUN_1403bb3b0(const MS2Ptr<CItemData>& sp);
 
 // The ingredient table row of a skin colour (FUN_140281980 / avatarpc.cpp).
@@ -959,20 +949,15 @@ public:
 class Unk_UabColorSet;
 class Unk_UabIngTable { public: Unk_UabPresetPtr FUN_1405587f0(int nId, int n); Unk_UabColorSet FUN_140558ad0(int nId); };
 Unk_UabIngTable* FUN_140281980();
-void FUN_141423cf0(__int64 nItemUid, Unk_UabPresetRow* pRow, AvatarPC* pAvatar, int n);   // plays the effect of a row on an item
+int FUN_141423cf0(__int64, struct Unk_UgcExtra const&, struct Unk_UgcPlayer*, int);   // C3: was FUN_141423cf0
 Unk_CharEquip FUN_141b6dea0(unsigned uColor);                           // colour value -> equip record
 
 // Item data -> customize range (the morph range of the first section).
 struct Unk_UabRangeList { int FUN_1405451a0(); };
 struct Unk_UabSection { Unk_UabRangeList* FUN_14054b2f0(int nKind); };
-Unk_UabSection* FUN_14053eba0(CItemData* pData);
-int FUN_141420a30(int nRange, CItem* pItem, Unk_UabPlayer* pPlayer);    // the customize id of an item
+unsigned int FUN_141420a30(unsigned int, class CItem*, class AvatarPC*);   // C3: was FUN_141420a30
 
 // Avatar state helpers.
-void FUN_14166cc40(PCBase* pPc, int nParam);                            // sets the action parameter
-void FUN_14166ce70(PCBase* pPc, int nValue);
-void FUN_141653f00(PCBase* pPc);
-bool FUN_14096ad40(const efd::utf8string& str);                         // string is empty
 CString FUN_1409a2360(const char* psz, int n);                          // converts the string
 
 // @0x1418ba570
@@ -1028,8 +1013,8 @@ UIAvatarPC::~UIAvatarPC()
 void UIAvatarPC::vfunc_1(IUIAvatarEventListener* pListener)
 {
     UIAvatarBase::vfunc_1(pListener);
-    m_spRotLimit.AssignRaw(new ItemPreviewCommon::CLimitCharRotate(FUN_1401d3200()->m_fRotateSpeed.FUN_1402bac70(),
-                                                                   FUN_1418bffd0(&FUN_1401d3200()->m_nRotateMax)));
+    m_spRotLimit.AssignRaw(new ItemPreviewCommon::CLimitCharRotate(((struct Unk_UabConfig*)FUN_1401d3200())->m_fRotateSpeed.FUN_1402bac70(),
+                                                                   FUN_1418bffd0(&((struct Unk_UabConfig*)FUN_1401d3200())->m_nRotateMax)));
 }
 
 // @0x1418baab0
@@ -1138,7 +1123,7 @@ void UIAvatarPC::FUN_1418bafa0(CItem* pItem, int nEffect)
         Unk_UabPresetPtr kRow = FUN_140281980()->FUN_1405587f0(nEffect, 0);
         if (kRow.FUN_14056cf90(0))
             return;
-        FUN_141423cf0(pItem->FUN_140526a50(), kRow.FUN_14056d630(), pAvatar, 0);
+        FUN_141423cf0(pItem->FUN_140526a50(), *(struct Unk_UgcExtra const*)(kRow.FUN_14056d630()), (struct Unk_UgcPlayer*)(pAvatar), 0);
     }
 }
 
@@ -1149,8 +1134,6 @@ bool UIAvatarPC::FUN_1418bb0c0(CItem* pItem)
 }
 
 bool FUN_1418bf430(MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<CItemData> >* pItems, ATL::CAtlArray<MS2Ptr<CItemData> >* pOthers);   // walks the drops of a cube item set
-void FUN_140526c10(CItem* pItem, int nCustomizeId);
-void FUN_140526b30(CItem* pItem, int nObjectId);
 Unk_InventoryEquipSlot FUN_140526c30(CItem* pItem);                                        // the equip slot of an item
 int FUN_141420f10(CItemData* pData, AvatarPC* pAvatar);                 // the customize id of an item data
 __int64 FUN_14028d0e0();                                                // next item uid
@@ -1161,8 +1144,8 @@ bool UIAvatarPC::FUN_1418bb0f0(CItem* pItem, int nEffect)
 {
     if (m_spCustomize == 0 || pItem == 0)
         return false;
-    MS2Ptr<CItemData> spData(FUN_140527840(pItem));
-    if (spData == 0 || FUN_14053c5c0(spData.operator->()) != 0x19)
+    MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840()));
+    if (spData == 0 || ((class CItemData*)(class CItemData*)(spData.operator->()))->FUN_14053c5c0() != 0x19)
         return false;
     ATL::CAtlArray<MS2Ptr<CItemData> > kItems;
     ATL::CAtlArray<MS2Ptr<CItemData> > kOthers;
@@ -1187,9 +1170,9 @@ bool UIAvatarPC::FUN_1418bb2a0(MS2Ptr<CItemData> spData, int nEffect, ATL::CAtlA
         return false;
     if (spData == 0)
         return false;
-    if (FUN_14053c5c0(spData.operator->()) != 0x19)
+    if (((class CItemData*)(class CItemData*)(spData.operator->()))->FUN_14053c5c0() != 0x19)
         return false;
-    if (FUN_1405729c0(pItems))
+    if (((ATL::CAtlArray<MS2Ptr<CItemData>, ATL::CElementTraits<MS2Ptr<CItemData>>>*)(void*)(pItems))->IsEmpty())
         return false;
     unsigned nId = spData->FUN_14053c510();
     int nZero = 0;
@@ -1201,7 +1184,7 @@ bool UIAvatarPC::FUN_1418bb2a0(MS2Ptr<CItemData> spData, int nEffect, ATL::CAtlA
 // @0x1418bb3f0
 bool UIAvatarPC::FUN_1418bb3f0(Unk_AvPackageKey* pKey, int nEffect, ATL::CAtlArray<MS2Ptr<CItemData> >* pItems)
 {
-    if (m_spCustomize == 0 || FUN_1405729c0(pItems))
+    if (m_spCustomize == 0 || ((ATL::CAtlArray<MS2Ptr<CItemData>, ATL::CElementTraits<MS2Ptr<CItemData>>>*)(void*)(pItems))->IsEmpty())
         return false;
     MS2Ptr<CAvatarPackageEquip> spOld = FUN_1418bd200(pKey);
     if (spOld.get())
@@ -1223,9 +1206,9 @@ bool UIAvatarPC::FUN_1418bb3f0(Unk_AvPackageKey* pKey, int nEffect, ATL::CAtlArr
             continue;
         spItem->FUN_140523c40(spItemData->FUN_14053c510(), 1, 0);
         int nCustomizeId = FUN_141420f10(spItemData.get(), FUN_1418bd1d0());
-        FUN_140526c10(spItem.operator->(), nCustomizeId);
+        ((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140526c10(nCustomizeId);
         spItem->FUN_140526a70(FUN_14028d0e0());
-        FUN_140526b30(spItem.operator->(), vfunc_25());
+        ((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140526b30(vfunc_25());
         if (FUN_1418bd350(&kItemKey, nCustomizeId))
             kKeys.Add(kItemKey);
         kNewItems.Add(spItem);
@@ -1238,16 +1221,16 @@ bool UIAvatarPC::FUN_1418bb3f0(Unk_AvPackageKey* pKey, int nEffect, ATL::CAtlArr
     for (size_t i = 0; i < kNewItems.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem(kNewItems[i]);
-        if (spItem == 0 || FUN_140527840(spItem.operator->()) == 0)
+        if (spItem == 0 || ((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()) == 0)
             continue;
         FUN_1418bafa0(spItem.get(), nEffect);
-        MS2Ptr<CItemData> spData(FUN_140527840(spItem.operator->()));
-        if (FUN_14053d2b0(spData.operator->()))
+        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()));
+        if (((class CItemData*)(class CItemData*)(spData.operator->()))->FUN_14053d2b0())
         {
             spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)8, MS2Ptr<CItem>(spItem));
             spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)9, MS2Ptr<CItem>(spItem));
         }
-        else if (FUN_14053d460(spData.operator->()))
+        else if (((class CItemData*)(class CItemData*)(spData.operator->()))->FUN_14053d460())
         {
             spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)4, MS2Ptr<CItem>(spItem));
             spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)5, MS2Ptr<CItem>(spItem));
@@ -1259,8 +1242,11 @@ bool UIAvatarPC::FUN_1418bb3f0(Unk_AvPackageKey* pKey, int nEffect, ATL::CAtlArr
     return !spNew->FUN_1418bfcc0();
 }
 
-void* FUN_1416561a0(AvatarPC* pAvatar);                                 // the state record of an avatar
-void FUN_1411ea620(void* pRecord, const CMsTime& kStart, const CMsTime& kEnd);  // CEquipment::FUN_1411ea620: sets the codi tab period
+class CEquipment   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1411ea620(class CMsTime const&, class CMsTime const&);
+};
 __int64 GetServerTime();                                                // the server time
 
 // @0x1418bbc20
@@ -1347,9 +1333,9 @@ void UIAvatarPC::FUN_1418bc110(MS2Ptr<CItem> spItem)
 {
     if (IsLoaded() == 0)
         return;
-    if (spItem == 0 || !FUN_140527840(spItem.operator->()))
+    if (spItem == 0 || !((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()))
         return;
-    if (!FUN_14053cc00(FUN_140527840(spItem.operator->())))
+    if (!((class CItemData*)(class CItemData*)(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840())))->FUN_14053cc00())
         return;
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (pAvatar)
@@ -1397,8 +1383,8 @@ void UIAvatarPC::FUN_1418bc380(CItem* pItem)
     if (m_spCustomize.get())
     {
         m_spCustomize->FUN_140cd1ed0(pItem);
-        int nCustomizeId = FUN_141420a30(FUN_14053eba0(FUN_140527840(pItem))->FUN_14054b2f0(0)->FUN_1405451a0(), pItem, pPlayer);
-        MS2Ptr<CItemData> spData(FUN_140527840(pItem));
+        int nCustomizeId = FUN_141420a30(((struct Unk_UabSection*)((class CItemData*)(class CItemData*)(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840())))->FUN_14053eba0())->FUN_14054b2f0(0)->FUN_1405451a0(), pItem, (class AvatarPC*)(pPlayer));
+        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840()));
         if (spData.get())
             m_spCustomize->FUN_140cd23e0(MS2Ptr<CItem>(pItem), nCustomizeId);
     }
@@ -1459,7 +1445,7 @@ void UIAvatarPC::FUN_1418bc790(int nState, int nParam)
             {
                 if (pAvatar->FUN_14166c930() != nState)
                     pAvatar->vfunc_59(nState, 0, 0, 0);
-                FUN_14166cc40(pAvatar, nParam);
+                ((class PCBase*)(class PCBase*)(pAvatar))->FUN_14166cc40(nParam);
             }
         }
     }
@@ -1473,7 +1459,7 @@ void UIAvatarPC::FUN_1418bc860(int nParam)
     {
         AvatarPC* pAvatar = FUN_140a535c0(pObj);
         if (pAvatar)
-            FUN_14166cc40(pAvatar, nParam);
+            ((class PCBase*)(class PCBase*)(pAvatar))->FUN_14166cc40(nParam);
     }
 }
 MS2_REPLACE_METHOD(0x1418BC860, UIAvatarPC, FUN_1418bc860, 87, 0x23A51193);
@@ -1515,7 +1501,7 @@ void UIAvatarPC::FUN_1418bca60(int nState, int nParam)
         pAvatar->vfunc_59(nState, 0, 0, 0);
     if (nState == 1)
     {
-        FUN_14166cc40(pAvatar, nParam);
+        ((class PCBase*)(class PCBase*)(pAvatar))->FUN_14166cc40(nParam);
         if (nParam == 10)
         {
             efd::utf8string kIdle("Idle_A");
@@ -1529,10 +1515,10 @@ void UIAvatarPC::FUN_1418bca60(int nState, int nParam)
     }
     else if (nState == 0xe)
     {
-        FUN_14166ce70(pAvatar, 1);
-        FUN_141653f00(pAvatar);
+        ((class PCBase*)(class PCBase*)(pAvatar))->FUN_14166ce70(1);
+        ((class PC*)(class PCBase*)(pAvatar))->FUN_141653f00();
         efd::utf8string kName((const char*)FUN_1409a2360((const char*)pAvatar->vfunc_60(), 0));
-        if (FUN_14096ad40(kName))
+        if (((efd::utf8string*)&static_cast<class efd::utf8string const&>(kName))->empty())
         {
             efd::utf8string kSword("Sword");
             pAvatar->FUN_14166dd20(kSword, 1.0f, false, false);
@@ -1753,7 +1739,7 @@ void UIAvatarPC::FUN_1418bd780(PC* pSource, AvatarPC* pAvatar)
     __int64 nNow = GetServerTime();
     CMsTime kZero((__time64_t)0);
     CMsTime kNow(nNow);
-    FUN_1411ea620(FUN_1416561a0(pAvatar), kNow, kZero);
+    ((class CEquipment*)(void*)(((void*)((class PC*)(class AvatarPC*)(pAvatar))->FUN_1416561a0())))->FUN_1411ea620(kNow, kZero);
 }
 
 // @0x1418bd7f0
@@ -2194,8 +2180,7 @@ public:
 };
 
 struct Unk_UabColor3 { float x; float y; float z; };
-const Unk_UabColor3* FUN_141659220(PCBase* pPlayer, int nIndex);        // colour of an equip slot of a player
-unsigned FUN_141b6df90(const Unk_UabColor3* pColor);                    // colour -> packed value
+unsigned int FUN_141b6df90(struct Unk_UtilFloat3 const*);   // C3: was FUN_141b6df90
 MS2_REPLACE_METHOD(0x1418BEE00, UIAvatarPet, FUN_1418bee00, 41, 0x51CA81FA);
 
 // @0x1418bee30
@@ -2226,9 +2211,9 @@ void FUN_1418bee30(ASObj* pObj, int nSkinTable)
     if (pPlayer)
     {
         ASObj kObj(2);
-        unsigned long nColor0 = FUN_141b6df90(FUN_141659220(pPlayer, 0));
+        unsigned long nColor0 = FUN_141b6df90((struct Unk_UtilFloat3 const*)(((struct Unk_UabColor3 const*)&((class PC*)(class PCBase*)(pPlayer))->FUN_141659220(0))));
         kObj.FUN_1409c4990("color0", nColor0);
-        kObj.FUN_1409c4990("color1", FUN_141b6df90(FUN_141659220(pPlayer, 1)));
+        kObj.FUN_1409c4990("color1", FUN_141b6df90((struct Unk_UtilFloat3 const*)(((struct Unk_UabColor3 const*)&((class PC*)(class PCBase*)(pPlayer))->FUN_141659220(1)))));
         unsigned long nColor = nColor0;
         kObj.FUN_1409c4990("realColor", nColor);
         kObj.FUN_1409c4990("visibleColor", nColor);
@@ -2319,8 +2304,6 @@ MS2_CHECK_SIZE(Unk_UabDrop, 0x70);
 MS2_CHECK_OFFSET(Unk_UabDrop, m_nItemId, 0x20);
 class Unk_UabDropTable { public: void FUN_1402ea4c0(int nGroup, std::vector<Unk_UabDrop>& kOut); };
 Unk_UabDropTable* FUN_1405a1fd0();
-int FUN_14054a460(CStringW* pFunction);                         // the drop group id of an item function
-bool FUN_14053cbc0(CItemData* pData);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 bool FUN_1418bf500(int nDepth, MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<CItemData> >* pItems, ATL::CAtlArray<MS2Ptr<CItemData> >* pOthers);
@@ -2332,7 +2315,7 @@ bool FUN_1418bf430(MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<CItemData> >*
         return false;
     int nDepth = 0;
     FUN_1418bf500(nDepth, spData, pItems, pOthers);
-    return !FUN_1405729c0(pItems);
+    return !((ATL::CAtlArray<MS2Ptr<CItemData>, ATL::CElementTraits<MS2Ptr<CItemData>>>*)(void*)(pItems))->IsEmpty();
 }
 
 // @0x1418bf500
@@ -2344,7 +2327,7 @@ bool FUN_1418bf500(int nDepth, MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<C
     if (spData == 0)
         return false;
     int nItemId = spData->FUN_14053c510();
-    int nGroup = FUN_14054a460(&spData->function.name);
+    int nGroup = ((struct ItemFunction*)(void*)(&spData->function.name))->FUN_14054a460();
     if (nGroup == 0)
         return false;
     std::vector<Unk_UabDrop> kDrops;
@@ -2359,9 +2342,9 @@ bool FUN_1418bf500(int nDepth, MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<C
         MS2Ptr<CItemData> spItem = FUN_14053f870(kDrop.m_nItemId);
         if (!spItem)
             continue;
-        if (FUN_14053c5c0(spItem.operator->()) != 0x19)
+        if (((class CItemData*)(class CItemData*)(spItem.operator->()))->FUN_14053c5c0() != 0x19)
         {
-            if (FUN_14053cbc0(spItem.operator->()))
+            if (((class CItemData*)(class CItemData*)(spItem.operator->()))->FUN_14053cbc0())
                 pItems->Add(spItem);
             else
                 pOthers->Add(spItem);

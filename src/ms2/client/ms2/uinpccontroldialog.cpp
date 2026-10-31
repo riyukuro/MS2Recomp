@@ -14,7 +14,10 @@
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uinpccontroldialog.cpp"    // assumed
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uinpccontroldialog.h"
 
@@ -63,26 +66,14 @@ template <> MS2Ptr<AiDebugDialog>::MS2Ptr(AiDebugDialog* p)
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/cnpc.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-// The list control of the movie (the AS list with clear / append / refresh).
-class Unk_CtlList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                               // clear
-    void FUN_1422dd230(const ASObj& row);               // append a row
-};
-
 // The key input state (singleton).
-class Unk_CtlKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); bool FUN_14116d840(); };
+class Unk_CtlKeys : public CInputKeyHandler { public: bool FUN_14116d9c0(int nKey, int a, int b);};
 Unk_CtlKeys* FUN_14025e7c0();
 
 // The ui text service (singleton): the text of a "$s_..." key.
@@ -97,10 +88,9 @@ public:
     PCBase* FUN_141bd1320(int nId);                     // the actor of an object id
     Unk_CtlObj* FUN_141bd1180(int nId);                 // the game object of an object id
 };
-Unk_CtlWorld* FUN_1403ed2d0();
 
 // A game object that is an npc: the name of its data row.
-class Unk_CtlNpc { public: CStringW FUN_141093310(); };
+class Unk_CtlNpc : public CNpc { };
 PCBase* FUN_14099eef0(Unk_CtlObj* pObj);                // efd::DynamicCast<PC>
 Unk_CtlNpc* FUN_140a38a00(Unk_CtlObj* pObj);
 int FUN_141092fa0(PCBase* pActor);                      // the npc id of an actor
@@ -219,7 +209,7 @@ void UINpcControlDialog::vfunc_79(void* p)
             int nId = static_cast<CInPacket*>(p)->ReadInt32();
             if (nId != m_nNpcId)
                 return;
-            PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1320(nId);
+            PCBase* pActor = reinterpret_cast<Unk_CtlWorld*>(WorldService::GetInstance())->FUN_141bd1320(nId);
             if (pActor == 0)
                 return;
             CString strNode = static_cast<CInPacket*>(p)->ReadUnicodeStringA();
@@ -236,7 +226,7 @@ void UINpcControlDialog::vfunc_79(void* p)
                 strExtra += FUN_14136e740(L"\n{0} : {1}", strKey, nValue);
             }
             CStringW strTarget(L"");
-            Unk_CtlObj* pObj = FUN_1403ed2d0()->FUN_141bd1180(nTarget);
+            Unk_CtlObj* pObj = reinterpret_cast<Unk_CtlWorld*>(WorldService::GetInstance())->FUN_141bd1180(nTarget);
             if (pObj != 0) {
                 PCBase* pPc = FUN_14099eef0(pObj);
                 if (pPc != 0) {
@@ -277,7 +267,7 @@ void UINpcControlDialog::vfunc_79(void* p)
         } else if (nKind == 8) {
             int nId = static_cast<CInPacket*>(p)->ReadInt32();
             int nLine = static_cast<CInPacket*>(p)->ReadInt32();
-            PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1320(nId);
+            PCBase* pActor = reinterpret_cast<Unk_CtlWorld*>(WorldService::GetInstance())->FUN_141bd1320(nId);
             if (pActor == 0)
                 return;
             if (m_spAi == 0)
@@ -358,7 +348,7 @@ int UINpcControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 // @0x141a63770
 void UINpcControlDialog::FUN_141a63770()
 {
-    PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1320(m_nNpcId);
+    PCBase* pActor = reinterpret_cast<Unk_CtlWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
     if (pActor == 0)
         return;
     CStringW strName = FUN_1401aa6a0(FUN_141092fa0(pActor));
@@ -444,7 +434,7 @@ void UINpcControlDialog::FUN_141a63a10(int nCmd, const CStringW& strArgs)
 // @0x141a63ce0
 void UINpcControlDialog::FUN_141a63ce0(const CString& strGroup)
 {
-    MS2Ptr<Unk_CtlList> spList = FUN_140c02900("m_items");
+    MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_items");
     if (spList.IsNull())
         return;
     spList->FUN_1422dd1d0();

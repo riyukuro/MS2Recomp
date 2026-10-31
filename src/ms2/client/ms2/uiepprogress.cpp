@@ -11,20 +11,15 @@
 #include <NiPoint3.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // ---- unit-local views of exe objects ----
 
-class Unk_EpStatusMgr
-{
-public:
-    void FUN_141b0cd00(UIStatusEventListener* pListener);           // register
-    void FUN_141b0cd90(UIStatusEventListener* pListener);           // unregister
-};
-Unk_EpStatusMgr* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 
 struct Unk_EpCfgData { char m_pad_00[5]; unsigned char m_bEnabled; };
 class Unk_EpCfgHolder { public: Unk_EpCfgData* FUN_141248630(); };
-Unk_EpCfgHolder* FUN_1409a8b10();
 class Unk_EpScene { public: int FUN_1422b9e00(); };                 // current scene id
 Unk_EpScene* FUN_1408e57f0();
 
@@ -121,7 +116,7 @@ int UIEpProgress::vfunc_57(int nForce)
         return 1;
     if (FUN_1408e57f0()->FUN_1422b9e00() != 0x620001d)
         return 1;
-    if (FUN_1409a8b10()->FUN_141248630()->m_bEnabled == 0)
+    if (reinterpret_cast<Unk_EpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_141248630()->m_bEnabled == 0)
         return 1;
     return 0;
 }
@@ -141,7 +136,7 @@ void UIEpProgress::vfunc_oa0_5(int a1, int a2)
     m_e0 = a1;
     if (nOld <= (unsigned int)a1)
         return;
-    if (FUN_1409a8b10()->FUN_141248630()->m_bEnabled == 0)
+    if (reinterpret_cast<Unk_EpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_141248630()->m_bEnabled == 0)
         return;
     if (vfunc_56() == 0)
         vfunc_54(0);
@@ -155,7 +150,7 @@ void UIEpProgress::FUN_141931bd0(int nEp, int a2)
 {
     int nOld = m_e0;
     m_e0 = nEp;
-    if (FUN_1409a8b10()->FUN_141248630()->m_bEnabled == 0)
+    if (reinterpret_cast<Unk_EpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_141248630()->m_bEnabled == 0)
         return;
     if (vfunc_56() == 0)
         vfunc_54(0);

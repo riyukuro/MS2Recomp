@@ -97,6 +97,10 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/client/ms2/uidungeonroomdialog.h"
+#include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local placeholders (unrecovered classes / helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -119,13 +123,7 @@ public:
 Unk_DsPacketManager* FUN_140bccd50();
 
 // The notification centre ("NotifyGameStart" ...).
-class Unk_DsNotifyCenter
-{
-public:
-    void FUN_140da4e40(CStringW strName, Delegate<void(NotifyObject*)> handler);   // add
-    void FUN_140da4eb0(CStringW strName, Delegate<void(NotifyObject*)> handler);   // remove
-};
-Unk_DsNotifyCenter* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 class Unk_DsButton : public ASDisplayObject
 {
@@ -152,7 +150,6 @@ class Unk_DsRoomTable
 public:
     void FUN_140320da0(short nLevelMin, int nLevelMax, Unk_DsRoomVec& out);
 };
-Unk_DsRoomTable* FUN_14031c2a0();
 
 // The session record (cleared dungeon flags).
 class Unk_DsRecord : public CPtred
@@ -271,14 +268,11 @@ class UIDungeonSearchSelectDialog : public UIDialog
 public:
     void FUN_140e27ed0(int nPage, std::set<unsigned>& rooms, std::set<unsigned>* pSelected);
 };
-class Unk_DsHelperDialog : public UIDialog
+class Unk_DsHelperDialog : public UIDungeonRoomDialog
 {
-public:
-    void FUN_1412b90d0(int nIndex);
 };
 Unk_DsHelperDialog* FUN_140961550(int nUIType);
 class Unk_DsUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
-Unk_DsUIManager* FUN_1403ed2b0();
 void FUN_141adc750(void*, int);
 
 void* FUN_140166410();
@@ -504,7 +498,7 @@ void UIDungeonSearchPage::FUN_140e199b0(Unk_DsRoomVec& out)
         nLevelMax = FUN_14152ea50(pActor);
     }
     Unk_DsRoomVec rooms;
-    FUN_14031c2a0()->FUN_140320da0(nLevelMin, nLevelMax, rooms);
+    reinterpret_cast<Unk_DsRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_140320da0(nLevelMin, nLevelMax, rooms);
     for (unsigned i = 0; i < rooms.size(); ++i) {
         if (!FUN_14162ac70(FUN_1409670d0(), rooms[i]->FUN_14031ddd0()))
             continue;
@@ -522,14 +516,14 @@ UIDungeonSearchDialog::UIDungeonSearchDialog()
 {
     m_80 = 0;
     FUN_141924170(1);
-    FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyGameStart"),
+    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyGameStart"),
                                    Delegate<void(NotifyObject*)>(this, &UIDungeonSearchDialog::FUN_140e1b800));
 }
 
 // @0x140e19dd0
 UIDungeonSearchDialog::~UIDungeonSearchDialog()
 {
-    FUN_140939a10()->FUN_140da4eb0(CStringW(L"NotifyGameStart"),
+    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyGameStart"),
                                    Delegate<void(NotifyObject*)>(this, &UIDungeonSearchDialog::FUN_140e1b800));
 }
 
@@ -699,7 +693,7 @@ MS2_REPLACE_METHOD(0x140e1b9f0, UIDungeonSearchDialog, SendRoomDungeonMode14, 80
 // @0x140e1ba50
 void UIDungeonSearchDialog::FUN_140e1ba50(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_141adc750(FUN_1403ed2b0(), 0x4eda);
+    FUN_141adc750(reinterpret_cast<Unk_DsUIManager*>(TSingleton<CUIService>::GetInstance()), 0x4eda);
 }
 MS2_REPLACE_METHOD(0x140e1ba50, UIDungeonSearchDialog, FUN_140e1ba50, 37, 0x93C9A0C4);
 
@@ -762,8 +756,8 @@ MS2_REPLACE_METHOD(0x140e1bd90, UIDungeonSearchDialog, FUN_140e1bd90, 159, 0xDB4
 // @0x140e1cfe0
 UIDungeonSearchSelectDialog* FUN_140e1cfe0(int nUIType)
 {
-    if (FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nUIType);
+    if (reinterpret_cast<Unk_DsUIManager*>(TSingleton<CUIService>::GetInstance())) {
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_DsUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUIType);
         if (p.get())
             return dynamic_cast<UIDungeonSearchSelectDialog*>((UIObject*)p);
     }

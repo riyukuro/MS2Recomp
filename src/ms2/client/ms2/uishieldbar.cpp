@@ -12,6 +12,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_ShieldClip : public ASMovieClip
@@ -41,17 +43,18 @@ struct Unk_ShieldCfg
     char m_pad_0320[0xe610 - 0x2c8 - sizeof(Unk_ShieldCfgFloat)];
     Unk_ShieldCfgInt m_e610;
 };
-Unk_ShieldCfg* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_ShieldUIScale;
-Unk_ShieldUIScale* FUN_14025e7a0();                                         // ui scale service
-float FUN_1422afec0(Unk_ShieldUIScale* pScale, int nLayer);                 // scale of a layer
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1422afec0(int);
+};
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 float FUN_1412762d0(const NiPoint3& pt);
 class Unk_ShieldActor : public PCBase
 {
-public:
-    int FUN_14166ce30();
-    float FUN_141670390();
 };
 class Unk_ShieldPlayer
 {
@@ -59,18 +62,18 @@ public:
     int FUN_1415278d0(__int64 nId);
 };
 class Unk_ShieldWorld;
-Unk_ShieldWorld* FUN_1403ed2d0();
-Unk_ShieldPlayer* FUN_141bd0cc0(Unk_ShieldWorld*);
-bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 PCBase* FUN_140974230(PCBase*);
-__int64 FUN_141656a80(PCBase*);
 struct Unk_ShieldCfgData { char m_pad[0xb]; bool m_b; char m_c; bool m_d; };
 class Unk_ShieldCfgHolder { public: Unk_ShieldCfgData* FUN_140b123b0(); };
-Unk_ShieldCfgHolder* FUN_1409a8b10();
 bool FUN_140930110(int nActorId);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 class Unk_ShieldUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
-Unk_ShieldUIMgr* FUN_1403ed2b0();
 
 // @0x140e855f0
 UIShieldBar::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nActorId)
@@ -81,7 +84,7 @@ UIShieldBar::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int n
     m_b0 = 0;
     m_b4 = 0;
     m_b8 = 0;
-    m_54 = FUN_1401d3200()->m_2c8.FUN_1402bac70();
+    m_54 = ((struct Unk_ShieldCfg*)FUN_1401d3200())->m_2c8.FUN_1402bac70();
 }
 
 // @0x140e856c0
@@ -151,7 +154,7 @@ void UIShieldBar::Entity::vfunc_6(NiPoint3* pPos)
                         ((Unk_ShieldClip*)gaugeMc.operator->())->vfunc_13("defence");
                         m_b4 = 0;
                     }
-                    FUN_140ad0c10(pPos, FUN_1422afec0(FUN_14025e7a0(), m_18));
+                    FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_ShieldUIScale*)(((class Unk_ShieldUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
                     pPos->y = pPos->y + vfunc_9();
                     pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
                     pPos->x = pPos->x - (float)(m_38->FUN_1422c1340() / 2);
@@ -196,7 +199,7 @@ float UIShieldBar::Entity::vfunc_9()
     if (pActor == 0)
         return 0.0f;
     float f = pActor->FUN_141670390();
-    return f + (float)*FUN_1401d3200()->m_e610.FUN_1402056b0();
+    return f + (float)*((struct Unk_ShieldCfg*)FUN_1401d3200())->m_e610.FUN_1402056b0();
 }
 
 // @0x140e85ed0
@@ -251,22 +254,22 @@ void UIShieldBar::Entity::FUN_140e86090()
 // @0x140e860f0
 int UIShieldBar::Entity::FUN_140e860f0()
 {
-    Unk_ShieldPlayer* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_ShieldPlayer* pPlayer = ((class Unk_ShieldPlayer*)((class WorldService*)(class Unk_ShieldWorld*)(((class Unk_ShieldWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     PCBase* pActor = FUN_140f49330();
     if (pActor == 0)
         return 0;
-    if (FUN_14087ddc0(pActor ? pActor->GetClassDesc() : 0, 0x6200004) != 0)
-        return FUN_1409a8b10()->FUN_140b123b0()->m_b;
+    if (efd::ClassInfo::IsKindOf(pActor ? pActor->GetClassDesc() : 0, 0x6200004) != 0)
+        return reinterpret_cast<Unk_ShieldCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_b;
     else
     {
         PCBase* pPc = FUN_140974230(pActor);
         if (pPc != 0)
         {
-            if (pPlayer->FUN_1415278d0(FUN_141656a80(pPc)) == 0)
+            if (pPlayer->FUN_1415278d0(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80()) == 0)
                 return 0;
-            return FUN_1409a8b10()->FUN_140b123b0()->m_d;
+            return reinterpret_cast<Unk_ShieldCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_d;
         }
     }
     return 1;
@@ -299,9 +302,9 @@ void UIShieldBar::OnLoadComplete()
 // @0x140e86a50
 UIShieldBar* FUN_140e86a50(int nUiId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_ShieldUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_ShieldUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (p.get())
             return dynamic_cast<UIShieldBar*>((UIObject*)p);
     }

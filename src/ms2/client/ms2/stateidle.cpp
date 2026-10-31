@@ -97,7 +97,6 @@ public:
     NiActorManager* FUN_140999440(const egf::EntityID& kKey);
 };
 Unk_SiAnimSvc* FUN_141b6f910();
-unsigned FUN_1409a1a00(NiActorManager* pMgr);              // 0x1409a1a00 the manager's target animation
 
 // Config constants singleton (FUN_1401d3200).
 class Unk_SiDelay { public: unsigned FUN_14025a620(); char m_c; };
@@ -124,7 +123,6 @@ MS2_CHECK_OFFSET(Unk_SiConsts, m_intervalB, 0x7e90);
 MS2_CHECK_OFFSET(Unk_SiConsts, m_strSoundJob110, 0xe098);
 Unk_SiConsts* FUN_1401d3200();
 class Unk_PCBaseComp_aa8 : public CPtred { public: int FUN_140f48d40(); };     // the pet component
-egf::Entity* FUN_141659af0(MyPC* p, int n);                // 0x141659af0 the nearby object to sit on
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);       // 0x1408a9bd0
 Ridee* FUN_141468360(PCBase* p);                           // 0x141468360 the ridee the actor sits on
 
@@ -250,7 +248,7 @@ void StateIdle::vfunc_8(double fTime)
     }
     if (pPC != 0 && pBuff->FUN_141683100(0x30d41))
     {
-        egf::Entity* pEntity = FUN_141659af0(pPC, 1);
+        egf::Entity* pEntity = reinterpret_cast<PC*>(pPC)->FUN_141659af0(1);
         if (pEntity != 0)
         {
             if (pPC->FUN_1416764a0() != 0)
@@ -469,13 +467,13 @@ void StateIdle::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
     if (m_pOwner->FUN_14166de90(0x27, eSequenceID))
     {
         vfunc_2(1);
-        unsigned nSeq = FUN_1409a1a00(pkManager);
+        unsigned nSeq = static_cast<NiActorManager*>(pkManager)->GetTargetAnimation();
         FUN_1417ce6f0(nSeq);
     }
     else if (m_pOwner->FUN_14166de90(0x49, eSequenceID))
     {
         vfunc_2(0x15);
-        unsigned nSeq = FUN_1409a1a00(pkManager);
+        unsigned nSeq = static_cast<NiActorManager*>(pkManager)->GetTargetAnimation();
         FUN_1417cee90(nSeq);
         FUN_1417cf360();
     }
@@ -775,7 +773,7 @@ void StateIdleNPC::vfunc_4(StateData* pData)
     NiActorManager* pMgr = FUN_141b6f910()->FUN_140999440(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
     if (pMgr != 0)
     {
-        unsigned nSeq = FUN_1409a1a00(pMgr);
+        unsigned nSeq = static_cast<NiActorManager*>(pMgr)->GetTargetAnimation();
         m_pOwner->FUN_14166de90(0, nSeq) || m_pOwner->FUN_14166de90(1, nSeq) ||
             m_pOwner->FUN_14166de90(0x27, nSeq);
     }
@@ -903,7 +901,7 @@ void StateIdlePet::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
         if (m_pOwner->FUN_14166de90(0x27, eSequenceID))
         {
             m_n10 = 1;
-            unsigned nSeq = FUN_1409a1a00(pkManager);
+            unsigned nSeq = static_cast<NiActorManager*>(pkManager)->GetTargetAnimation();
             FUN_1417cfea0(nSeq);
         }
         else if (m_pOwner->FUN_14166de90(0x44, eSequenceID))

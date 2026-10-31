@@ -12,6 +12,7 @@ class CChangeJobTable : public TSingleton<CChangeJobTable>
 public:
     CChangeJobTable();                                      // 0x1401d64a0
     virtual ~CChangeJobTable();
+    void Load();                                            // 0x1401d6550
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_8[0x50 - 0x8];

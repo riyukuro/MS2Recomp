@@ -39,6 +39,13 @@
 #include "ms2/placeholder/webguide.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/client/ms2/bigdatalogsystem.h"
+#include "ms2/placeholder/coffscreenwebbrowser.h"
+#include "ms2/placeholder/cwebbrowserservice.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- header statics ----
 static CString s_strMaviewClose("System_MaviewClose");                      // @0x14011f460
@@ -48,40 +55,21 @@ static CString s_strMaviewOpen("System_MaviewOpen");                        // @
 class Unk_140acd6e0 : public ASDisplayObject { public:
     void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, int);   // set the click handler
 };
-class ASDialog : public ASDisplayObject { public:
-    void FUN_1422c0f60(float* pX, float* pY);                               // position
-    void FUN_1422c00f0(float fX, float fY);                                 // set the position
+class ASDialog : public ASDisplayObject {};
+NotifySystem* FUN_140939a10();
+class Unk_WbBrowser : public COffscreenWebBrowser { public:                                               // one browser page of the manager
 };
-class Unk_WbNotices { public:                                               // the notify table (TSingleton)
-    void FUN_140da4e40(CStringW, Delegate<void(NotifyObject*)>);
-    void FUN_140da4eb0(CStringW, Delegate<void(NotifyObject*)>);
-};
-Unk_WbNotices* FUN_140939a10();
-class Unk_WbSound { public: void FUN_140a1f970(const CString& strEvent, const CString& strArg); };
-Unk_WbSound* FUN_140d8ee90();
-class Unk_WbBrowser { public:                                               // one browser page of the manager
-    void FUN_141612ba0();                                                   // close the page
-    void FUN_141612b50(Delegate<void(const CString&)> onUrl);               // url changed callback
-};
-class Unk_WbBrowserMgr { public:                                            // the browser manager
+class Unk_WbBrowserMgr : public CWebBrowserService { public:                                            // the browser manager
     Unk_WbBrowser* FUN_141b796e0(int nId);
-    void FUN_141b78b40(bool b, int nId);
-    void FUN_141b78760(int nId, int nKind);
-    void FUN_141b78af0(int nId, int nKind);
 };
-Unk_WbBrowserMgr* FUN_140cc18a0();
 class Unk_WbPages { public: MS2Ptr<WebGuide> FUN_141927640(CString strKey); };   // the web guide of a dialog
-Unk_WbPages* FUN_1414a5880();
-class Unk_WbFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_WbFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 class Unk_WbActor { public:
     void FUN_14166cce0(int nFlag);                                          // set the flag
     void FUN_14166cd70(int nFlag);                                          // clear the flag
 };
 class Unk_WbWorld { public: Unk_WbActor* FUN_141bd0cc0(); };
-Unk_WbWorld* FUN_1403ed2d0();
 class Unk_WbUIMgr { public: float FUN_141adbe70(); };
-Unk_WbUIMgr* FUN_1403ed2b0();
 class Unk_WbInt { public: int m_n; char m_pad_04[0x54]; };                  // one value of the client constants
 class Unk_WbBool { public: bool m_b; char m_pad_01[0x57]; };
 class Unk_WbConsts { public:
@@ -118,13 +106,13 @@ UIWebBrowser::UIWebBrowser()
     FUN_141924170(1);
     m_c8 = s_strMaviewOpen;
     m_d0 = s_strMaviewClose;
-    FUN_140939a10()->FUN_140da4e40(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIWebBrowser::FUN_141b50420));
+    FUN_140939a10()->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIWebBrowser::FUN_141b50420));
 }
 
 // @0x141b4f470
 UIWebBrowser::~UIWebBrowser()
 {
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIWebBrowser::FUN_141b50420));
+    FUN_140939a10()->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIWebBrowser::FUN_141b50420));
 }
 
 // @0x141b4f620
@@ -176,12 +164,12 @@ void UIWebBrowser::OnLoadComplete()
     if (FUN_140bc6d10("m_btnMaxSize", m_btnMaxSize).get())
         m_btnMaxSize->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50910), 0);
     FUN_141b509b0();
-    float fScale = FUN_1403ed2b0()->FUN_141adbe70();
+    float fScale = reinterpret_cast<Unk_WbUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
     unsigned nWidth = (unsigned)(m_nSmallSize / fScale);
     unsigned nHeight = (unsigned)(m_nSmallSize / fScale);
     FUN_14135eda0(nWidth, nHeight);
     if (m_b18d != 0)
-        FUN_140cc18a0()->FUN_141b78b40(1, m_nBrowserId);
+        reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78b40(1, m_nBrowserId);
     ASDialog* pDlg = dynamic_cast<ASDialog*>(FUN_140ba7c60(&m_30));
     if (pDlg != 0)
     {
@@ -212,8 +200,8 @@ void UIWebBrowser::vfunc_26()
     m_btnRefresh = 0;
     m_btnMinSize = 0;
     m_btnMaxSize = 0;
-    FUN_140d8ee90()->FUN_140a1f970("dialog_close", "webbrowser");
-    Unk_WbBrowser* pBrowser = FUN_140cc18a0()->FUN_141b796e0(m_nBrowserId);
+    TSingleton<CBigDataLogSystem>::GetInstance()->SendLog("dialog_close", "webbrowser");
+    Unk_WbBrowser* pBrowser = reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b796e0(m_nBrowserId);
     if (pBrowser != 0)
         pBrowser->FUN_141612ba0();
 }
@@ -249,7 +237,7 @@ void UIWebBrowser::SetStored(const CString& strUrl)
 // @0x141b50490
 void UIWebBrowser::FUN_141b50490(const CString& strKey)
 {
-    MS2Ptr<WebGuide> spGuide = FUN_1414a5880()->FUN_141927640(strKey);
+    MS2Ptr<WebGuide> spGuide = reinterpret_cast<Unk_WbPages*>(TSingleton<WebGuideTable>::GetInstance())->FUN_141927640(strKey);
     if (spGuide)
         FUN_14135ec00(spGuide->m_strWebUrl, 1);
 }
@@ -275,7 +263,7 @@ int UIWebBrowser::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
 void UIWebBrowser::vfunc_84(bool bVisible)
 {
     UIWebBrowserBase::vfunc_84(bVisible);
-    Unk_WbActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_WbActor* pActor = reinterpret_cast<Unk_WbWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pActor != 0)
     {
         if (bVisible)
@@ -289,10 +277,10 @@ void UIWebBrowser::vfunc_84(bool bVisible)
 void UIWebBrowser::vfunc_89(const CString& strUrl)
 {
     UIWebBrowserBase::vfunc_89(strUrl);
-    Unk_WbBrowser* pBrowser = FUN_140cc18a0()->FUN_141b796e0(m_nBrowserId);
+    Unk_WbBrowser* pBrowser = reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b796e0(m_nBrowserId);
     if (pBrowser != 0)
-        pBrowser->FUN_141612b50(Delegate<void(const CString&)>(this, &UIWebBrowser::SetStored));
-    FUN_140d8ee90()->FUN_140a1f970("dialog_open", "webbrowser");
+        pBrowser->SetOnNavigate(Delegate<void(const CString&)>(this, &UIWebBrowser::SetStored));
+    TSingleton<CBigDataLogSystem>::GetInstance()->SendLog("dialog_open", "webbrowser");
 }
 
 // @0x141b507b0
@@ -308,7 +296,7 @@ void UIWebBrowser::FUN_141b50830(const Scaleform::GFx::FunctionHandler::Params& 
 {
     void* pUserData = params.pUserData;
     int nKind = FUN_140bb9640(pUserData);
-    FUN_140cc18a0()->FUN_141b78760(m_nBrowserId, nKind);
+    reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78760(m_nBrowserId, nKind);
 }
 
 // @0x141b50890
@@ -316,8 +304,8 @@ void UIWebBrowser::FUN_141b50890(const Scaleform::GFx::FunctionHandler::Params&)
 {
     FUN_141b507b0(m_nMinWidth, m_nMinHeight);
     FUN_141b509b0();
-    FUN_140cc18a0()->FUN_141b78af0(m_nBrowserId, 2);
-    FUN_140cc18a0()->FUN_141b78760(m_nBrowserId, 3);
+    reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78af0(m_nBrowserId, 2);
+    reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78760(m_nBrowserId, 3);
 }
 
 // @0x141b50910
@@ -325,8 +313,8 @@ void UIWebBrowser::FUN_141b50910(const Scaleform::GFx::FunctionHandler::Params&)
 {
     FUN_141b507b0(m_nMaxWidth, m_nMaxHeight);
     FUN_141b509b0();
-    FUN_140cc18a0()->FUN_141b78af0(m_nBrowserId, 1);
-    FUN_140cc18a0()->FUN_141b78760(m_nBrowserId, 3);
+    reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78af0(m_nBrowserId, 1);
+    reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78760(m_nBrowserId, 3);
 }
 
 // @0x141b50990

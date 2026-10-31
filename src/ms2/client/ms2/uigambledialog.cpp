@@ -13,6 +13,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uitalkcinematic.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -51,8 +52,7 @@ public:
 };
 Unk_GbTalk* FUN_140967100();
 
-class Unk_GbRewardUI { public: int FUN_141b1d3d0(); };
-Unk_GbRewardUI* FUN_140a7b2b0(int nId);
+UITalkCinematic* FUN_140a7b2b0(int nId);
 
 void FUN_141415600(const CString& strBindID);                    // release the item bound to the name
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
@@ -100,7 +100,7 @@ void UIGambleDialog::vfunc_43()
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
     {
-        Unk_GbRewardUI* pUI = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* pUI = FUN_140a7b2b0(0x4e40);
         if (pUI != 0)
         {
             int n = pUI->FUN_141b1d3d0();

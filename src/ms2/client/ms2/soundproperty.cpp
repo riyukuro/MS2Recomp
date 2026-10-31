@@ -139,11 +139,11 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/fittingdollpc.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 CLogString* GetLogString();
 void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);
-Unk_140165cf0* FUN_1403f0510(Unk_140165cf0* pElem);                     // the next element with the same name
 const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);   // attribute text
 int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);   // string attribute
 CString FUN_14028d1f0(const char* psz);                                 // CString of attribute text
@@ -153,11 +153,10 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);  // Table/
 CString FUN_140298360(const char* a, const CString& b);                 // a + b
 void FUN_1401d3700(CString& str);                                       // lower-cases in place
 CString& FUN_1401c0cc0(ATL::CAtlArray<CString>* pArray, unsigned __int64 nIndex);   // folded CAtlArray<CString>::operator[] copy
-bool FUN_140184310(const CString& str, const char* psz);                // equals
+bool FUN_140184310(const CString& str, const char* psz) throw();        // equals (the exe's callers carry no unwind state for it)
 unsigned FUN_140767ff0();                                               // random number
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
 int FUN_141658e60(GameObject* pActor);                                  // gender of the player (0 male, 1 female)
-int FUN_141654700(GameObject* pActor);                                  // job code
 class Unk_SpWorld { public: GameObject* FUN_141bd0cc0(); };
 class Unk_SpOptions { public: int FUN_141260470(); };
 class Unk_SpConfig { public: Unk_SpOptions* FUN_1411b1f30(); };
@@ -176,10 +175,14 @@ bool SoundPropertyMgr::s_bInit;
 typedef std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned, Unk_EventVoice> > > > Unk_UEventIter;
 template Unk_UEventIter& Unk_UEventIter::operator--();
 // The TU's own copy of the MS2Ptr<CCacheData> copy constructor (the shared one is 0x1401ef790).
+// A view of the pointer's two slots; FUN_1417a6bd0 is the folded AddRef.
+struct Unk_CachePtrView { void* m_pad; CCacheData* m_p; void FUN_1417a6bd0() const; };
 // @0x14179f040
 MS2Ptr<CCacheData>* FUN_14179f040(MS2Ptr<CCacheData>* self, const MS2Ptr<CCacheData>* other)
 {
-    return new (self) MS2Ptr<CCacheData>(*other);
+    ((Unk_CachePtrView*)self)->m_p = ((const Unk_CachePtrView*)other)->m_p;
+    ((Unk_CachePtrView*)self)->FUN_1417a6bd0();
+    return self;
 }
 typedef std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned, Unk_SoundPitch> > > > Unk_UPitchIter;
 template Unk_UPitchIter& Unk_UPitchIter::operator--();
@@ -274,13 +277,12 @@ CString SystemSoundProperty::GetCategory(int nGender)
     return CString(m_strGroup);
 }
 
-// MS2-FUNCTIONAL: bytes differ from the exe (local/temporary slot layout, SEH state numbering); behaviour equivalent
 // @0x141790ed0
 CString SystemSoundProperty::GetSoundName(unsigned nGender, int nJob)
 {
-    bool bByJob = m_bByJob;
+    int bByJob = m_bByJob;
     if (reinterpret_cast<Unk_SpConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_1411b1f30()->FUN_141260470() != 0)
-        bByJob = false;
+        bByJob = 0;
     if (m_bByGender && bByJob)
     {
         if (m_jobSounds.IsEmpty())
@@ -288,18 +290,20 @@ CString SystemSoundProperty::GetSoundName(unsigned nGender, int nJob)
         Unk_SoundNameArrayPtr spNames;
         if (m_jobSounds.Lookup(nJob, spNames))
         {
-            if (1 < nGender)
+            if (nGender >= 2)
                 return CString((const char*)0);
-            return CString((*spNames.get())[nGender]);
+            return CString(FUN_1401c0cc0(spNames.get(), nGender));
         }
     }
     if (m_sounds.IsEmpty())
         return CString((const char*)0);
-    if (!m_bByGender)
-        return CString(m_sounds[0]);
-    if (nGender < 2)
+    if (m_bByGender)
+    {
+        if (nGender >= 2)
+            return CString((const char*)0);
         return CString(m_sounds[nGender]);
-    return CString((const char*)0);
+    }
+    return CString(m_sounds[0]);
 }
 
 // @0x141791120
@@ -344,7 +348,6 @@ void TriggerVoiceProperty::Load(Unk_140165cf0* pElem)
     }
 }
 
-// MS2-FUNCTIONAL: bytes differ from the exe (local/temporary slot layout, SEH state numbering); behaviour equivalent
 // @0x141791400
 bool TriggerVoiceProperty::GetVoice(unsigned nGender, int nJob, CString& strOut)
 {
@@ -353,16 +356,14 @@ bool TriggerVoiceProperty::GetVoice(unsigned nGender, int nJob, CString& strOut)
     {
         if (m_bByGender != 0 && m_sounds.GetCount() != 2)
             return false;
-        if (1 < nGender)
+        if (nGender >= 2)
             return false;
-        if (nGender < m_sounds.GetCount())
+        if (m_sounds.GetCount() > nGender)
             strOut = m_sounds[nGender];
-        else
-        {
-            if (m_sounds.GetCount() == 0)
-                return false;
+        else if (m_sounds.GetCount() > 0)
             strOut = m_sounds[0];
-        }
+        else
+            return false;
     }
     else
     {
@@ -374,11 +375,11 @@ bool TriggerVoiceProperty::GetVoice(unsigned nGender, int nJob, CString& strOut)
             if (spNames->GetCount() != 2)
                 return false;
         }
-        if (1 < nGender)
+        if (nGender >= 2)
             return false;
-        if (spNames->GetCount() <= nGender)
+        if (nGender >= spNames->GetCount())
             return false;
-        strOut = (*spNames.get())[nGender];
+        strOut = FUN_1401c0cc0(spNames.get(), nGender);
     }
     return true;
 }
@@ -477,7 +478,7 @@ int SoundPropertyMgr::LoadHitSound(const char* pszPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("hitSound"); pElem != 0; pElem = FUN_1403f0510(pElem))
+        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("hitSound"); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
         {
             int nAttack;
             int nDefence;
@@ -506,7 +507,7 @@ int SoundPropertyMgr::LoadSystemSound(const char* pszPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("systemSound"); pElem != 0; pElem = FUN_1403f0510(pElem))
+        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("systemSound"); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
         {
             CString strKey = FUN_140188f50(FUN_14086f4b0(pElem, "key"), 0);
             SystemPtr spProp(new SystemSoundProperty);
@@ -528,7 +529,7 @@ int SoundPropertyMgr::LoadPitchSound(const char* pszPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("pitchSound"); pElem != 0; pElem = FUN_1403f0510(pElem))
+        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("pitchSound"); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
         {
             int nId = 0;
             float fPitch = 0.0f;
@@ -545,7 +546,6 @@ int SoundPropertyMgr::LoadPitchSound(const char* pszPath)
     return 0;
 }
 
-// MS2-FUNCTIONAL: bytes differ from the exe (local/temporary slot layout, SEH state numbering); behaviour equivalent
 // @0x141792740
 int SoundPropertyMgr::LoadEventSound(const char* pszPath)
 {
@@ -555,32 +555,30 @@ int SoundPropertyMgr::LoadEventSound(const char* pszPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("eventSound"); pElem != 0; pElem = FUN_1403f0510(pElem))
+        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("eventSound"); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
         {
             Unk_EventVoice voice;
             int nType = 0;
             CString strEvent = FUN_14028d1f0(FUN_14086f4b0(pElem, "event"));
             voice.m_strSoundId = FUN_14028d1f0(FUN_14086f4b0(pElem, "soundID"));
             voice.m_strRestoreSoundId = FUN_14028d1f0(FUN_14086f4b0(pElem, "restoreSoundID"));
-            if (strEvent.IsEmpty() || (voice.m_strSoundId.IsEmpty() && voice.m_strRestoreSoundId.IsEmpty()))
-                continue;
-            nType = FUN_141793500(CString(strEvent));
-            if (nType == 0)
-                continue;
-            const char* pszCaster = FUN_14086f4b0(pElem, "onlyCasterMyPC");
-            if (pszCaster != 0)
+            if (!strEvent.IsEmpty() && (!voice.m_strSoundId.IsEmpty() || !voice.m_strRestoreSoundId.IsEmpty()))
             {
-                unsigned bOnlyCaster = strcmp(pszCaster, "true") == 0;
-                voice.m_bOnlyCasterMyPC = bOnlyCaster;
+                nType = FUN_141793500(CString(strEvent));
+                if (nType == 0)
+                    continue;
+                const char* pszCaster = FUN_14086f4b0(pElem, "onlyCasterMyPC");
+                if (pszCaster != 0)
+                    voice.m_bOnlyCasterMyPC = strcmp(pszCaster, "true") == 0;
+                voice.m_strGroup = FUN_14086f4b0(pElem, "group");
+                if (!voice.m_strGroup.IsEmpty())
+                    FUN_1401d3700(voice.m_strGroup);
+                int nJob = 0;
+                int nGender = 0;
+                FUN_1408731e0(pElem, "job", nJob);
+                FUN_1408731e0(pElem, "gender", nGender);
+                m_events[nType][nGender][nJob][voice.m_bOnlyCasterMyPC] = voice;
             }
-            voice.m_strGroup = FUN_14086f4b0(pElem, "group");
-            if (!voice.m_strGroup.IsEmpty())
-                FUN_1401d3700(voice.m_strGroup);
-            int nJob = 0;
-            int nGender = 0;
-            FUN_1408731e0(pElem, "job", nJob);
-            FUN_1408731e0(pElem, "gender", nGender);
-            m_events[nType][nGender][nJob][voice.m_bOnlyCasterMyPC] = voice;
         }
         return 1;
     }
@@ -597,7 +595,7 @@ int SoundPropertyMgr::LoadTriggerVoice(const char* pszPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("voice"); pElem != 0; pElem = FUN_1403f0510(pElem))
+        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("voice"); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
         {
             CString strKey = FUN_140188f50(FUN_14086f4b0(pElem, "key"), 0);
             VoicePtr spProp(new TriggerVoiceProperty);
@@ -628,8 +626,8 @@ int SoundPropertyMgr::FUN_141792e00(int nEventId, GameObject* pActor, Unk_EventV
     if (nEventId != 0 && pActor != 0)
     {
         int nGender = FUN_141658e60(pActor);
-        int nJob = FUN_141654700(pActor);
-        unsigned bCaster = reinterpret_cast<Unk_SpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0() == pActor;
+        int nJob = reinterpret_cast<PC*>(pActor)->FUN_141654700();
+        int bCaster = reinterpret_cast<Unk_SpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0() == pActor ? 1 : 0;
         *pOut = m_events[nEventId][nGender][nJob][bCaster];
         return 1;
     }
@@ -727,7 +725,6 @@ void SoundPropertyMgr::FUN_141793450()
         Reload();
 }
 
-// MS2-FUNCTIONAL: bytes differ from the exe (vftable store / unwind info of the destructor body); behaviour equivalent
 // @0x141793500
 int FUN_141793500(CString strEvent)
 {
@@ -735,15 +732,15 @@ int FUN_141793500(CString strEvent)
         return 0;
     if (FUN_140184310(strEvent, "Boss_Kill"))
         return 1;
-    if (FUN_140184310(strEvent, "Boss_EndKill"))
+    else if (FUN_140184310(strEvent, "Boss_EndKill"))
         return 2;
-    if (FUN_140184310(strEvent, "otherPC_Kill"))
+    else if (FUN_140184310(strEvent, "otherPC_Kill"))
         return 3;
-    if (FUN_140184310(strEvent, "myPC_Resurrection"))
+    else if (FUN_140184310(strEvent, "myPC_Resurrection"))
         return 4;
-    if (FUN_140184310(strEvent, "myPC_Dead"))
+    else if (FUN_140184310(strEvent, "myPC_Dead"))
         return 5;
-    if (FUN_140184310(strEvent, "skill_action"))
+    else if (FUN_140184310(strEvent, "skill_action"))
         return 6;
     return 0;
 }

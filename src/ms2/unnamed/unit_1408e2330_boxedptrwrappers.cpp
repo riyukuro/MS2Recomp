@@ -46,7 +46,11 @@ void FUN_1408e2750(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e2780(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e27b0(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e27e0(Unk_BoxedPointer* p, void* pUnused);
-void FUN_14015b020(void* p);   // outside this unit
+class CPtred   // C3: member view for the former free stand-ins
+{
+public:
+    static void AddRefPtred(class CPtred*);
+};
 void FUN_14041d1b0(void* p);   // outside this unit
 
 // ---------------------------------------------------------------------------
@@ -126,55 +130,55 @@ void FUN_1408e24e0(Unk_BoxedPointer* p)
 // @0x1408e2510
 void FUN_1408e2510(void* p)
 {
-    FUN_14015b020(p);
+    CPtred::AddRefPtred((class CPtred*)(p));
 }
 
 // @0x1408e2530
 void FUN_1408e2530(void* p)
 {
-    FUN_14015b020(p);
+    CPtred::AddRefPtred((class CPtred*)(p));
 }
 
 // @0x1408e2550
 void FUN_1408e2550(void* p)
 {
-    FUN_14015b020(p);
+    CPtred::AddRefPtred((class CPtred*)(p));
 }
 
 // @0x1408e2570
 void FUN_1408e2570(void* p)
 {
-    FUN_14015b020(p);
+    CPtred::AddRefPtred((class CPtred*)(p));
 }
 
 // @0x1408e2590
 void FUN_1408e2590(void* p)
 {
-    FUN_14015b020(p);
+    CPtred::AddRefPtred((class CPtred*)(p));
 }
 
 // @0x1408e25b0
 void FUN_1408e25b0(void* p)
 {
-    FUN_14015b020(p);
+    CPtred::AddRefPtred((class CPtred*)(p));
 }
 
 // @0x1408e25d0
 void FUN_1408e25d0(void* p)
 {
-    FUN_14015b020(p);
+    CPtred::AddRefPtred((class CPtred*)(p));
 }
 
 // @0x1408e25f0
 void FUN_1408e25f0(void* p)
 {
-    FUN_14015b020(p);
+    CPtred::AddRefPtred((class CPtred*)(p));
 }
 
 // @0x1408e2610
 void FUN_1408e2610(void* p)
 {
-    FUN_14015b020(p);
+    CPtred::AddRefPtred((class CPtred*)(p));
 }
 
 // @0x1408e2630

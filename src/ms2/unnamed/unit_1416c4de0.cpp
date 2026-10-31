@@ -26,7 +26,11 @@ class Unk_GameContext
 public:
     Unk_CameraTargetEntity* FUN_141bd1180(int nObjectId);
 };
-Unk_GameContext* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
@@ -42,7 +46,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-Unk_ClientConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // Camera tuning values of the camera xml (FUN_140ae8910 consumes its by-value CString key).
 float FUN_140ae8910(CString key);
@@ -100,9 +104,9 @@ void CPVPCameraMode::vfunc_6(int n)
     m_setting.m_18 = m_c0.m_rot;
     m_pOwner->FUN_140a38dc0(m_c0.m_pos);
     m_pOwner->FUN_140a38e00(m_c0.m_rot);
-    m_9c = FUN_1401d3200()->m_1a80.FUN_1402bac70();
-    m_a0 = FUN_1401d3200()->m_1ad8.FUN_1402bac70();
-    m_a4 = FUN_1401d3200()->m_1b30.FUN_1402bac70();
+    m_9c = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
+    m_a0 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
+    m_a4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
 }
 MS2_REPLACE_METHOD(0x1416c4f10, CPVPCameraMode, vfunc_6, 793, 0x057BE7BB);
 
@@ -264,7 +268,7 @@ Vector3 CPVPCameraMode::FUN_1416c5d30()
         ptOther = ptCenter = pSelf->vfunc_18().FUN_14097fd50(Vector3(0.0f, 0.0f, m_128));
         m_50 = m_124;
     }
-    m_110 = FUN_1403ed2d0()->FUN_141bd1180(m_108);
+    m_110 = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd1180(m_108);
     if (m_110 != NULL)
     {
         float fDist = 0.0f;

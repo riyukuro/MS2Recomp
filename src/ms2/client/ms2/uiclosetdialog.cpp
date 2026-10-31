@@ -201,7 +201,7 @@ void FUN_140d01340(const Scaleform::GFx::Value& v, unsigned nFont, int n);   // 
 void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 int FUN_1407181a0(const CStringW& str);                                      // _wtoi
 MS2Ptr<CItem> FUN_140ebc360(int nItemId, int nRarity);                       // a display item
-CString FUN_14021c050(int nSlot);                                            // the slot type name
+CString Name_14021c050(int nSlot);                                           // the slot type name
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);           // string table format, one arg
 CStringW FUN_14132ba90(const int& nLayer);                                   // the equip layer name
 int FUN_140222f60(int nLayer);                                               // the equip kind of a layer
@@ -210,7 +210,7 @@ bool FUN_1412532b0(int nKey);                                                // 
 IClientPlatform* FUN_140d86260();
 PacketHandlerManager* FUN_140bccd50();
 CFeatureManager* FUN_140166410();                                           // TSingleton<CFeatureManager>::GetInstance
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 #define Unk_ClPlayer() static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0())   // the local player
 
@@ -799,7 +799,7 @@ void UIClosetDialog::BuildSlot(ASSlot& slot, MS2Ptr<UICloset::CSlotData> spSlot,
     {
         GetGroup(nIndex, eType);
     }
-    slot.FUN_1407cba60("strSlotType", FUN_14021c050(eType));
+    slot.FUN_1407cba60("strSlotType", Name_14021c050(eType));
 }
 
 // @0x140bdcbb0
@@ -940,7 +940,7 @@ void UIClosetDialog::BuildSlots(ASObj& obj)
             {
                 GetGroup(i, eType);
             }
-            slot.FUN_1407cba60("strSlotType", FUN_14021c050(eType));
+            slot.FUN_1407cba60("strSlotType", Name_14021c050(eType));
         }
         arr.FUN_1422bc050(slot.FUN_1422bb870());
     }
@@ -1568,7 +1568,7 @@ bool UIClosetDialog::SendClear(MS2Ptr<UICloset::CTab> spTab)
 // @0x140be14c0
 MS2Ptr<CItem> UIClosetDialog::FindItem(const __int64& nUid)
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
     if (spItem == 0)
     {
         MyPC* pPlayer = Unk_ClPlayer();

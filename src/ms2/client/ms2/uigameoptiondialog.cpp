@@ -32,6 +32,8 @@
 #include "ms2/commonfiles/usermail.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cgameoption.h"
+#include "ms2/client/ms2/buddymanager.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -55,13 +57,7 @@ struct Unk_GoTipPaths
 };
 Unk_GoTipPaths* FUN_1401d31f0();
 
-// The option settings object (FUN_1409a8b10).
-class Unk_GoSettings
-{
-public:
-    void FUN_1412432d0();                                       // write the settings out
-};
-Unk_GoSettings* FUN_1409a8b10();
+// The option settings object (TSingleton<CGameOption>::GetInstance).
 
 // The tables the "pending" check walks (a quest-like list, FUN_1409331f0).
 class Unk_GoPending
@@ -77,8 +73,6 @@ Unk_GoPending* FUN_1409331f0();
 class Unk_GoBuffs;
 Unk_GoBuffs* FUN_1409331e0();
 int FUN_14138c900(Unk_GoBuffs* p, int n);
-
-CBuddyManager* FUN_14097a780();
 
 CFeatureManager* FUN_140166410();
 CInputKeyHandler* FUN_14025e7c0();
@@ -486,13 +480,13 @@ void UIGameOptionDialog::FUN_141943ec0()
         MS2Ptr<CBaseOption> sp = m_mapPages.GetValueAt(pos);
         sp->vfunc_10();
     }
-    FUN_1409a8b10()->FUN_1412432d0();
+    TSingleton<CGameOption>::GetInstance()->FUN_1412432d0();
     for (POSITION pos = m_mapPages.GetStartPosition(); pos != 0; m_mapPages.GetNext(pos))
     {
         MS2Ptr<CBaseOption> sp = m_mapPages.GetValueAt(pos);
         sp->vfunc_11();
     }
-    FUN_14097a780()->SendBuddyMode20();
+    TSingleton<CBuddyManager>::GetInstance()->SendBuddyMode20();
 }
 
 // @0x141944030

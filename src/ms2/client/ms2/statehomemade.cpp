@@ -33,6 +33,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/pcgemequip.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
 
 // ---- unit-local placeholders ----
 
@@ -108,7 +109,6 @@ void FUN_1401fc610(Unk_HmUseInfo* pInfo, COutPacket* pPacket);   // serialize
 
 // The cursor manager scales a duration (shared with the interact objects).
 class Unk_HmCursorMgr { public: int FUN_1404240e0(int n); };
-Unk_HmCursorMgr* FUN_1403ef660(void* p);
 void* FUN_140302b00();
 
 // The gathering table service: how the cube's kind may be gathered.
@@ -117,13 +117,8 @@ Unk_HmGatherMgr* FUN_1409670c0();
 
 // The equipment of a player: the worn item of a slot.
 class Unk_HmEquip : public PCGemEquip { };
-Unk_HmEquip* FUN_14165f460(PCBase* p);
 
-void* FUN_14165f100(PCBase* p);
-void FUN_14165f170(PCBase* p);
 class Unk_HmBuffMgr { public: Vector3 FUN_141683290(); };
-Unk_HmBuffMgr* FUN_14166d240(PCBase* p);
-bool FUN_1416749c0(PCBase* p);
 // vtable-slot view: slot 22 takes the point by value (the exe copies 12 bytes into an arg slot)
 class Unk_HmSlots
 {
@@ -138,7 +133,6 @@ public:
 int FUN_1408a1360(Vector3 a, Vector3 b);
 CStringW GetStringCommonByKey(const CStringW& str);
 CFunctionCubeService* FUN_1409670b0();
-__int64 FUN_141656ad0(PCBase* p);
 
 // The homemade cube seen through the data copy this unit inlines (its COMDAT sits at 0x140ca6580).
 class Unk_HmCube : public CHomemadeCubeObject
@@ -164,8 +158,8 @@ void StateHomemade::vfunc_4(StateData* pData)
     m_pOwner->FUN_14166dd20(FUN_140ca4e50(), 1.0f, false, false);
     m_spHarvest.AssignRaw(dynamic_cast<StateHomemadeData*>(pData));
     PCBase* pPC = FUN_1417b8370();
-    if (pPC && FUN_14165f100(pPC))
-        FUN_14165f170(pPC);
+    if (pPC && ((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())))
+        reinterpret_cast<PC*>(pPC)->SendRequestCube();
     MyPC* pRider = FUN_1417b84b0();
     if (pRider && m_n10 == 0x8f)
     {
@@ -178,7 +172,7 @@ void StateHomemade::vfunc_4(StateData* pData)
         }
         m_aCubes.clear();
         ATL::CAtlArray<MS2Ptr<CHomemadeCubeObject> > aCubes;
-        FUN_1409670b0()->FUN_141232660(aCubes, FUN_141656ad0(pRider));
+        FUN_1409670b0()->FUN_141232660(aCubes, reinterpret_cast<PC*>(pRider)->FUN_141656ad0());
         for (size_t i = 0; i < aCubes.GetCount(); i++)
         {
             if (aCubes[i]->FUN_141229000(0) == 0)
@@ -262,9 +256,9 @@ void StateHomemade::vfunc_8(double fTime)
         MS2Ptr<StateHomemadeData> spData(new StateHomemadeData(m_spHarvest->m_n24, CString(m_spHarvest->m_str), m_spHarvest->m_n20));
         pPC->vfunc_59(0x37, spData.get(), 0x8f, 0);
     }
-    Unk_HmBuffMgr* pBuff = FUN_14166d240(pPC);
+    Unk_HmBuffMgr* pBuff = ((Unk_HmBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
     reinterpret_cast<Unk_HmSlots*>(pPC)->vfunc_22(pBuff->FUN_141683290());
-    if (FUN_1416749c0(m_pOwner))
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
 }
 MS2_REPLACE_METHOD(0x140CA4AD0, StateHomemade, vfunc_8, 600, 0xE8474A38);
@@ -297,7 +291,7 @@ MS2_REPLACE_METHOD(0x140CA4DE0, StateHomemade, vfunc_25, 17, 0xFFB1988B);
 int StateHomemade::FUN_140ca4e00()
 {
     unsigned nDuration = static_cast<Client::Constants*>(FUN_1401d3200())->HarvestDuration.Read();
-    return FUN_1403ef660(FUN_140302b00())->FUN_1404240e0(nDuration);
+    return ((Unk_HmCursorMgr*)(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->MasteryReduce()))->FUN_1404240e0(nDuration);
 }
 MS2_REPLACE_METHOD(0x140CA4E00, StateHomemade, FUN_140ca4e00, 62, 0xFE21669A);
 
@@ -329,11 +323,11 @@ int StateHomemade::FUN_140ca4fd0(int nMode)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
         return 0;
-    MS2Ptr<CGemBase> spGem = FUN_14165f460(pRider)->FUN_141270740(9);
+    MS2Ptr<CGemBase> spGem = ((Unk_HmEquip*)(reinterpret_cast<PC*>(pRider)->FUN_14165f460()))->FUN_141270740(9);
     if (!spGem)
         return 0;
     ATL::CAtlArray<MS2Ptr<CHomemadeCubeObject> > aCubes;
-    FUN_1409670b0()->FUN_141232660(aCubes, FUN_141656ad0(pRider));
+    FUN_1409670b0()->FUN_141232660(aCubes, reinterpret_cast<PC*>(pRider)->FUN_141656ad0());
     for (size_t i = 0; i < aCubes.GetCount(); i++)
     {
         MS2Ptr<CHomemadeCubeObject> spCube = aCubes[i];

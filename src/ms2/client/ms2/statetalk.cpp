@@ -38,6 +38,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/uitalkmanager.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/effectquery.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -109,13 +110,10 @@ public:
     Unk_TalkModelKey FUN_14123c460();                      // 0x14123c460 the model key
     bool FUN_14166dd20(const Unk_TalkString& strAnim, float fSpeed, bool bA, bool bB);   // 0x14166dd20 play animation
 };
-unsigned int FUN_1409a1a00(NiActorManager* pActor);        // 0x1409a1a00 the actor's playing sequence id
 
 // The owner's play-actor component (pcbase.cpp owns the full one) and its flag.
 class Unk_PCBaseComp_aa8 : public CPtred { };
 int FUN_140f48d40(void* pComp);                            // 0x140f48d40 the component's flag
-void* FUN_14165f100(PCBase* p);                            // 0x14165f100 the playing emotion
-void FUN_14165f170(PCBase* p);                             // 0x14165f170 stop it
 
 extern Vector3 DAT_143b01a60;                      // 0x143b01a60 the zero point
 
@@ -132,7 +130,6 @@ struct Unk_TalkEffectReq
 };
 MS2_CHECK_SIZE(Unk_TalkEffectReq, 0x70);
 MS2_CHECK_OFFSET(Unk_TalkEffectReq, m_nObject, 0x08);
-void FUN_140a53190(Unk_TalkEffectReq* p, int nObject);     // bind the object
 class Unk_TalkEffectMgr
 {
 public:
@@ -177,8 +174,8 @@ void StateTalk::vfunc_4(StateData* pData)
                 != (int)NiActorManager::INVALID_SEQUENCE_ID;
         }
         MyPC* pPlayer = FUN_1417b84b0();
-        if (pPlayer != 0 && FUN_14165f100(pPlayer) != 0)
-            FUN_14165f170(pPlayer);
+        if (pPlayer != 0 && ((void*)(reinterpret_cast<PC*>(pPlayer)->FUN_14165f100())) != 0)
+            reinterpret_cast<PC*>(pPlayer)->SendRequestCube();
     }
     if (bFirst && bSecond && bTalk)
     {
@@ -241,7 +238,7 @@ void StateTalk::vfunc_9(double fTime)
             Unk_TalkEffectReq kReq;
             kReq.m_strName = *(const CString*)((const char*)FUN_1401d31f0() + 0x290);
             kReq.m_nObject = 0;
-            FUN_140a53190(&kReq, m_pOwner->FUN_14123c580());
+            reinterpret_cast<NoticeMessage*>(&kReq)->SetActor(m_pOwner->FUN_14123c580());
             m_n44 = reinterpret_cast<Unk_TalkEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
         }
         else if (m_n10 == 0x4b)
@@ -249,7 +246,7 @@ void StateTalk::vfunc_9(double fTime)
             Unk_TalkEffectReq kReq;
             kReq.m_strName = *(const CString*)((const char*)FUN_1401d31f0() + 0x298);
             kReq.m_nObject = 0;
-            FUN_140a53190(&kReq, m_pOwner->FUN_14123c580());
+            reinterpret_cast<NoticeMessage*>(&kReq)->SetActor(m_pOwner->FUN_14123c580());
             m_n44 = reinterpret_cast<Unk_TalkEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
         }
         m_n40 = m_n10;
@@ -275,7 +272,7 @@ void StateTalk::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
 {
     (void)pkSeq;
     (void)fEventTime;
-    if (FUN_1417b8560() && FUN_1417b7e40() == 0x47 && eSequenceID == FUN_1409a1a00(pkManager))
+    if (FUN_1417b8560() && FUN_1417b7e40() == 0x47 && eSequenceID == static_cast<NiActorManager*>(pkManager)->GetTargetAnimation())
         m_n10 = 0x48;
 }
 

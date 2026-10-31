@@ -8,6 +8,7 @@
 // the scalar deleting dtor, the render helpers of gfxrenderhelpers.h 0x1422cf060-0x1422cf120 (their caller in this obj
 // was dropped by /OPT:REF; written here as plain functions) and the CRT memmove_s copy 0x1422cf170.
 #define MS2_THIS_FILE "asmousecursor.cpp"
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "ms2/placeholder/asdata.h"
