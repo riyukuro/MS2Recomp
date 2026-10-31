@@ -12,6 +12,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <string.h>
+#include "ms2/placeholder/cgameoption.h"   // C3: TSingleton<> needs the class
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -29,11 +31,9 @@ public:
     char m_pad_00[0x18];
     Unk_IndOpt m_opt;                                       // +0x18
 };
-Unk_IndSettings* FUN_1409a8b10();
 
 class PCBase;
 class Unk_IndWorld;
-Unk_IndWorld* FUN_1403ed2d0();
 PCBase* FUN_141bd0cc0(Unk_IndWorld* pWorld);
 __int64 FUN_141656a80(PCBase* pPC);
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
@@ -41,8 +41,6 @@ CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
 // The AS root object of the dialog, with the invoke the exe instantiates for it.
 class Unk_IndAS : public AScript
 {
-public:
-    Scaleform::GFx::Value FUN_140acd130(const char* szMethod, CStringW str);        // 0x140acd130 Invoke(name, string)
 };
 
 // @0x140f4ab90
@@ -71,7 +69,7 @@ void UIIndividualDPSDialog::OnTextToggle()
     if (m_30.IsNull())
         return;
     CStringW strTitle = FUN_1405c2690(CStringW(L"s_individualdps_titlebar"), CBattleRecordManager::FUN_140a04bc0(m_nMode));
-    static_cast<Unk_IndAS*>(m_30.operator->())->FUN_140acd130("setTitle", strTitle);
+    static_cast<Unk_IndAS*>(m_30.operator->())->Invoke("setTitle", strTitle);
 }
 
 // @0x140f4ade0
@@ -79,14 +77,14 @@ void UIIndividualDPSDialog::FUN_140f4ade0()
 {
     if (m_30.IsNull())
         return;
-    PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPC = FUN_141bd0cc0(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance()));
     if (pPC == 0)
         return;
     {
         CStringW strMeter = CBattleRecordManager::GetInstance()->FUN_140a04830(m_nGroup, FUN_141656a80(pPC), m_nMode);
-        static_cast<Unk_IndAS*>(m_30.operator->())->FUN_140acd130("setMeterText", strMeter);
+        static_cast<Unk_IndAS*>(m_30.operator->())->Invoke("setMeterText", strMeter);
         CStringW strTime = CBattleRecordManager::GetInstance()->FUN_140a04b00(m_nGroup);
-        static_cast<Unk_IndAS*>(m_30.operator->())->FUN_140acd130("setTime", strTime);
+        static_cast<Unk_IndAS*>(m_30.operator->())->Invoke("setTime", strTime);
     }
 }
 
@@ -101,7 +99,7 @@ void UIIndividualDPSDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_tick.FUN_140268840();
-    PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPC = FUN_141bd0cc0(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance()));
     if (pPC == 0)
         return;
     {
@@ -117,7 +115,7 @@ int UIIndividualDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 {
     if (_stricmp("OnCloseDialog", szMethod) == 0)
     {
-        FUN_1409a8b10()->FUN_140e09150()->m_bFlag = 0;
+        reinterpret_cast<Unk_IndSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()->m_bFlag = 0;
         CBattleRecordManager::GetInstance()->FUN_140a03fe0(m_nGroup);
         vfunc_67();
         return 1;
@@ -144,7 +142,7 @@ int UIIndividualDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 void UIIndividualDPSDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (FUN_1409a8b10()->FUN_140e09150()->FUN_14125bb90() == 0)
+    if (reinterpret_cast<Unk_IndSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()->FUN_14125bb90() == 0)
         vfunc_67();
     else
     {
@@ -152,7 +150,7 @@ void UIIndividualDPSDialog::vfunc_72()
             return;
         if (!m_tick.FUN_140268870(100))
             return;
-        PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+        PCBase* pPC = FUN_141bd0cc0(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance()));
         if (pPC == 0)
             return;
         FUN_140f4ade0();

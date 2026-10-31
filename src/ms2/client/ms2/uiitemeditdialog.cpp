@@ -37,6 +37,8 @@
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/placeholder/uitalkmanager.h"
 #include "ms2/placeholder/notifysystem.h"
+#include "ms2/client/ms2/effectservice.h"   // C3: TSingleton<> needs the class
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
 
@@ -77,7 +79,6 @@ struct Unk_IEEffectRequest
 };
 MS2_CHECK_SIZE(Unk_IEEffectRequest, 0x70);
 class Unk_IEEffectMgr { public: void FUN_1411a4a00(Unk_IEEffectRequest* pRequest); };
-Unk_IEEffectMgr* FUN_1403ed280();
 void FUN_140a53190(Unk_IEEffectRequest* p, int nObjectId);
 struct Unk_IEEffectPaths { char m_pad_0[0x2e0]; CString m_hairApply; };   // +0x2e0
 Unk_IEEffectPaths* FUN_1401d31f0();
@@ -147,7 +148,6 @@ public:
     Unk_IEPlayer* FUN_141bd0cc0();              // the player (NULL outside the game)
     Unk_IEField* FUN_141bd3620();
 };
-Unk_IEWorld* FUN_1403ed2d0();
 
 // Misc singletons.
 CInputKeyHandler* FUN_14025e7c0();
@@ -220,7 +220,7 @@ void UIItemEditDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_1419bdb50(0);
-    Unk_IEPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IEPlayer* pPc = reinterpret_cast<Unk_IEWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc)
     {
         m_198.AssignRaw(new Customize(FUN_14123c580(pPc), static_cast<IItemCustomizeEventListener*>(this), 0));
@@ -337,7 +337,7 @@ void UIItemEditDialog::vfunc_24(void* p)
 {
     if (p == 0)
         return;
-    Unk_IEPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IEPlayer* pPc = reinterpret_cast<Unk_IEWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (pPc->FUN_14166c930() != 0xe)
@@ -347,7 +347,7 @@ void UIItemEditDialog::vfunc_24(void* p)
     effect.m_strName = FUN_1401d31f0()->m_hairApply;
     effect.m_n08 = 1;
     FUN_140a53190(&effect, FUN_14123c580(pPc));
-    FUN_1403ed280()->FUN_1411a4a00(&effect);
+    reinterpret_cast<Unk_IEEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&effect);
     FUN_1419bdb50(0);
     m_1b0 = 0;
 }
@@ -436,7 +436,7 @@ bool UIItemEditDialog::FUN_1419bd710()
 // @0x1419bd7a0
 bool UIItemEditDialog::FUN_1419bd7a0()
 {
-    Unk_IEPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IEPlayer* pPc = reinterpret_cast<Unk_IEWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
     {
@@ -455,7 +455,7 @@ BOOL UIItemEditDialog::FUN_1419bd860()
         return false;
     if (m_198->FUN_140cd2a00() != 0)
         m_198->FUN_140cd22f0(6);
-    Unk_IEField* pField = FUN_1403ed2d0()->FUN_141bd3620();
+    Unk_IEField* pField = reinterpret_cast<Unk_IEWorld*>(WorldService::GetInstance())->FUN_141bd3620();
     if (pField)
         pField->vfunc_149();
     FUN_1422b9fd0(FUN_1408e57f0(), 0x620001d);

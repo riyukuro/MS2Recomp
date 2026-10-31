@@ -17,7 +17,6 @@
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-WorldService* FUN_1403ed2d0();
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for the item
 CStringW GetStringCommon(int id);                         // string table lookup
 
@@ -88,7 +87,7 @@ int MailItemSlot::vfunc_0(void* p)
 {
     if (m_spItem == 0)
         return 0;
-    ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x80, 2);
+    ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x80, 2);
     if (tip.FUN_1409e25e0(m_spItem.get(), m_nValue))
     {
         {
@@ -107,7 +106,7 @@ int MailItemSlot::vfunc_8(void* p)
     if (m_spItem == 0)
         return 0;
     ASSlot slot(2);
-    if (slot.FUN_1409c3860(m_spItem.get(), FUN_1403ed2d0()->FUN_141bd0cc0(), 0x15))
+    if (slot.FUN_1409c3860(m_spItem.get(), WorldService::GetInstance()->FUN_141bd0cc0(), 0x15))
     {
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
         return 1;

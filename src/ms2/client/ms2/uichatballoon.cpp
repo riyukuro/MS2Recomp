@@ -21,6 +21,14 @@
 // confirmCommend string id.
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uichatballoon_ptr.h"
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/uicutscenemovie.h"
+#include "ms2/client/ms2/uiguideeventarrow.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/placeholder/fishingmanager.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cgameoption.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
 #ifndef MS2_HOOK_DLL   // s_confirmCommend: the exe's object at 0x143af1c18, which other units reach as DAT_143af1c18 (the hook DLL binds it)
 CStringW DAT_143af1c18 = L"confirmCommend";
@@ -122,21 +130,17 @@ CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString st
 CStringW FUN_14016a730(const char* sz, int nFlags);                 // FormatStringId(id) without arguments
 struct Unk_CbFlags { bool m_0; bool m_1; };
 class Unk_CbFlagHolder { public: Unk_CbFlags* FUN_14124ab20(); unsigned char* FUN_140e09150(); };
-Unk_CbFlagHolder* FUN_1409a8b10();
-class Unk_CbSvc1 { public: int FUN_140a18070(); };
-Unk_CbSvc1* FUN_1409478c0();
+CameraMgr* FUN_1409478c0();
 void* FUN_1408e57f0();
 int FUN_1422b9e00(void*);
 int FUN_1422b9ea0(void*);
-class Unk_CbUIMgr
+class Unk_CbUIMgr : public CUIService
 {
 public:
     MS2Ptr<UIObject> FUN_141adcea0(int);
     void FUN_141adc530(int nUiId);
-    int FUN_141adbb00();
     void FUN_141adc750(int nUiId);
 };
-Unk_CbUIMgr* FUN_1403ed2b0();
 bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);
 
 
@@ -168,7 +172,7 @@ public:
     void* m_p;
 };
 // MS2-PIN: ??0Unk_CbItemPtr@@QEAA@H@Z 0x14053f870
-struct Unk_CbItemData { int FUN_14053c5a0(); };
+struct Unk_CbItemData : public CItemData { };
 class Unk_CbItemPtr
 {
 public:
@@ -180,12 +184,8 @@ public:
     void* m_pad_00;
     void* m_p;
 };
-class Unk_CbStrSvc { public: CStringW FUN_141813150(int nId); };
-Unk_CbStrSvc* FUN_1401a9d70();
-class Unk_CbDlgA { public: int FUN_1419102c0(); };
-class Unk_CbDlgB { public: int FUN_141959a20(); };
-Unk_CbDlgA* FUN_14138fd50(int nUiId);
-Unk_CbDlgB* FUN_14136f3e0(int nUiId);
+UICutSceneMovie* FUN_14138fd50(int nUiId);
+UIGuideEvent* FUN_14136f3e0(int nUiId);
 class Unk_CbPtr                                                     // a 16 byte smart pointer passed by value
 {
 public:
@@ -197,8 +197,7 @@ public:
     void* m_p;
 };
 // MS2-PIN: ??0Unk_CbPtr@@QEAA@H@Z 0x140203510
-class Unk_CbSvc2 { public: int FUN_140954150(); void FUN_140cdadb0(Unk_CbPtr tag); };
-Unk_CbSvc2* FUN_140953f20();
+class Unk_CbSvc2 : public CFishingManager { public: void FUN_140cdadb0(Unk_CbPtr tag); };
 int FUN_141274ff0();
 int FUN_141275080();
 void FUN_141274f50();
@@ -400,13 +399,13 @@ int UIChatBalloon::Entity::FUN_1418fbbf0()
     void* pMonster = FUN_14096e160(pActor);
     if (pMonster != 0)
     {
-        return FUN_1409a8b10()->FUN_14124ab20()->m_0;
+        return reinterpret_cast<Unk_CbFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_14124ab20()->m_0;
     }
     else
     {
         Unk_CbPC* pPc = FUN_140974230(pActor);
         if (pPc != 0)
-            return FUN_1409a8b10()->FUN_14124ab20()->m_1;
+            return reinterpret_cast<Unk_CbFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_14124ab20()->m_1;
     }
     return 1;
 }
@@ -438,9 +437,9 @@ void UIChatBalloon::OnLoadComplete()
 // @0x1418fc4e0
 UIChatBalloon* FUN_1418fc4e0(int nUiId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_CbUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_CbUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (p.get())
             return dynamic_cast<UIChatBalloon*>((UIObject*)p);
     }
@@ -566,7 +565,7 @@ int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4)
     }
     else if (_stricmp("OnGameOption", szEvent) == 0)
     {
-        FUN_1403ed2b0()->FUN_141adc530(0x4ef3);
+        reinterpret_cast<Unk_CbUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ef3);
         return 1;
     }
     return 0;
@@ -593,7 +592,7 @@ void FUN_1418fc840(Unk_CbList list, int nItemId, int nSelRank)
     if (item.FUN_1401b52a0()->FUN_14053c5a0() != 0)
     {
         ASObj row(2);
-        row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141813150(item.FUN_1401b52a0()->FUN_14053c5a0()));
+        row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141813150(item.FUN_1401b52a0()->FUN_14053c5a0()));
         row.FUN_1409adc90("itemRank", item.FUN_1401b52a0()->FUN_14053c5a0());
         list.FUN_140bc0530()->FUN_1422dfc70(row);
         nSel = 0;
@@ -604,7 +603,7 @@ void FUN_1418fc840(Unk_CbList list, int nItemId, int nSelRank)
         {
             int nRank = i;
             ASObj row(2);
-            row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141813150(nRank));
+            row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141813150(nRank));
             row.FUN_1407cb9c0("itemRank", i);
             if (nRank == nSelRank)
                 nSel = list.FUN_140bc0530()->FUN_1422dfb90();
@@ -622,30 +621,30 @@ int FUN_1418fcb70()
 {
     if (FUN_14025e7a0()->FUN_1422b0f10() != 0)
         return 1;
-    Unk_CbDlgA* pA = FUN_14138fd50(0x4e7e);
+    UICutSceneMovie* pA = FUN_14138fd50(0x4e7e);
     if (pA != 0 && pA->FUN_1419102c0() != 0)
         return 0;
-    Unk_CbDlgB* pB = FUN_14136f3e0(0x4e53);
+    UIGuideEvent* pB = FUN_14136f3e0(0x4e53);
     if (pB != 0 && pB->FUN_141959a20() != 0)
         return 1;
-    if (FUN_1403ed2b0()->FUN_141adbb00() != 0)
+    if (reinterpret_cast<Unk_CbUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0)
         return 0;
     if (FUN_141274ff0() != 0)
     {
-        if (*FUN_1409a8b10()->FUN_140e09150() == 0)
+        if (*reinterpret_cast<Unk_CbFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150() == 0)
             return 0;
         FUN_141274f50();
     }
     else
     {
-        if (FUN_140953f20()->FUN_140954150() != 0)
+        if (reinterpret_cast<Unk_CbSvc2*>(TSingleton<CFishingManager>::GetInstance())->FUN_140954150() != 0)
         {
-            FUN_140953f20()->FUN_140cdadb0(0);
+            reinterpret_cast<Unk_CbSvc2*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdadb0(0);
             return 1;
         }
         if (FUN_141275080() == 0)
             return 0;
-        FUN_1403ed2b0()->FUN_141adc750(0x4e21);
+        reinterpret_cast<Unk_CbUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e21);
     }
     return 1;
 }

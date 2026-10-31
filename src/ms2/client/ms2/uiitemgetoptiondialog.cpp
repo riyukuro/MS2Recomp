@@ -46,7 +46,7 @@ struct Unk_GoPacket
     unsigned int m_nOther;
     int m_nGrade;
 };
-void FUN_1401ff810(Unk_GoPacket* p, COutPacket* packet);        // write
+void FUN_1401ff810(unsigned char*, class COutputStream&);   // C3: was FUN_1401ff810
 
 // The account settings (+0xb0.. the auto-loot flags the server sent).
 struct Unk_GoAutoCfg
@@ -73,10 +73,14 @@ public:
 };
 
 // ---- out-of-unit callees ----
-void* FUN_140166410();                                          // the feature manager
-bool FUN_14036d570(void* pMgr, int nFeature);                   // the feature is switched on
-bool FUN_14036e510(void* pMgr);                                 // locale CN
-void* FUN_140535320();                                          // the account settings holder
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+    bool FUN_14036e510();
+};
+class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 Unk_GoAutoCfg* FUN_140c8b450(void* pHolder);
 Unk_GoGameCfg* FUN_1409a8b10();
 void FUN_140710590(COutPacket& packet);                         // send
@@ -292,7 +296,7 @@ void UIItemGetOptionDialog::SetMode(int nMode)
 // @0x1419da640
 int UIItemGetOptionDialog::vfunc_46()
 {
-    if (!FUN_14036d570(FUN_140166410(), 0x8d))
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x8d))
     {
         if (MS2Ptr<Unk_GoCheck> hPet = ((Unk_GoEntity*)this)->FUN_140e52670("m_pet"))
         {
@@ -301,7 +305,7 @@ int UIItemGetOptionDialog::vfunc_46()
             hPet.get()->FUN_1422c1fe0(0);
         }
     }
-    if (!FUN_14036d570(FUN_140166410(), 0x2e))
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2e))
     {
         if (MS2Ptr<Unk_GoCheck> hGem = ((Unk_GoEntity*)this)->FUN_140e52670("m_gemstone"))
         {
@@ -309,7 +313,7 @@ int UIItemGetOptionDialog::vfunc_46()
             pCheck->vfunc_3(0);
         }
     }
-    if (FUN_14036e510(FUN_140166410()) == true)
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e510() == true)
     {
         if (MS2Ptr<Unk_GoCheck> hMerat = ((Unk_GoEntity*)this)->FUN_140e52670("m_merat"))
         {
@@ -332,19 +336,19 @@ void UIItemGetOptionDialog::FUN_1419da8f0()
     }
     else
     {
-        m_opt.FUN_1412615b0(FUN_140c8b450(FUN_140535320())->m_nMeso != 0);
-        if (!FUN_14036e510(FUN_140166410()))
-            m_opt.FUN_1412615d0(FUN_140c8b450(FUN_140535320())->m_nMerat != 0);
-        m_opt.FUN_141261590(FUN_140c8b450(FUN_140535320())->m_nEtc != 0);
-        m_opt.FUN_1412615f0(FUN_140c8b450(FUN_140535320())->m_nToken != 0);
-        m_opt.FUN_141261530(FUN_140c8b450(FUN_140535320())->m_nEquip != 0);
-        m_opt.FUN_141261570(FUN_140c8b450(FUN_140535320())->m_nConsume != 0);
-        m_opt.FUN_141261610(FUN_140c8b450(FUN_140535320())->m_nOther != 0);
-        m_opt.FUN_141261550(FUN_140c8b450(FUN_140535320())->m_nGrade);
-        if (FUN_14036d570(FUN_140166410(), 0x2e) == true)
-            m_opt.FUN_141261630(FUN_140c8b450(FUN_140535320())->m_nGemstone != 0);
-        if (FUN_14036d570(FUN_140166410(), 0x8c))
-            m_opt.FUN_141261650(FUN_140c8b450(FUN_140535320())->m_nPet != 0);
+        m_opt.FUN_1412615b0(FUN_140c8b450(((void*)FUN_140535320()))->m_nMeso != 0);
+        if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e510())
+            m_opt.FUN_1412615d0(FUN_140c8b450(((void*)FUN_140535320()))->m_nMerat != 0);
+        m_opt.FUN_141261590(FUN_140c8b450(((void*)FUN_140535320()))->m_nEtc != 0);
+        m_opt.FUN_1412615f0(FUN_140c8b450(((void*)FUN_140535320()))->m_nToken != 0);
+        m_opt.FUN_141261530(FUN_140c8b450(((void*)FUN_140535320()))->m_nEquip != 0);
+        m_opt.FUN_141261570(FUN_140c8b450(((void*)FUN_140535320()))->m_nConsume != 0);
+        m_opt.FUN_141261610(FUN_140c8b450(((void*)FUN_140535320()))->m_nOther != 0);
+        m_opt.FUN_141261550(FUN_140c8b450(((void*)FUN_140535320()))->m_nGrade);
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2e) == true)
+            m_opt.FUN_141261630(FUN_140c8b450(((void*)FUN_140535320()))->m_nGemstone != 0);
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x8c))
+            m_opt.FUN_141261650(FUN_140c8b450(((void*)FUN_140535320()))->m_nPet != 0);
     }
 }
 
@@ -360,7 +364,7 @@ void UIItemGetOptionDialog::FUN_1419dabc0()
     {
         Unk_GoPacket data;
         data.m_nMeso = m_opt.FUN_1419daea0();
-        if (!FUN_14036e510(FUN_140166410()))
+        if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e510())
             data.m_nMerat = m_opt.FUN_1419dae90();
         data.m_nEtc = m_opt.FUN_1419dae60();
         data.m_nToken = m_opt.FUN_1419daed0();
@@ -368,13 +372,13 @@ void UIItemGetOptionDialog::FUN_1419dabc0()
         data.m_nConsume = m_opt.FUN_1419dae50();
         data.m_nOther = m_opt.FUN_1419daeb0();
         data.m_nGrade = m_opt.FUN_1419dae30();
-        if (FUN_14036d570(FUN_140166410(), 0x2e) == true)
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2e) == true)
             data.m_nGemstone = m_opt.FUN_1419dae80();
-        if (FUN_14036d570(FUN_140166410(), 0x8c))
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x8c))
             data.m_nPet = m_opt.FUN_1419daec0();
         COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
         packet.WriteUInt8(6);
-        FUN_1401ff810(&data, &packet);
+        FUN_1401ff810((unsigned char*)(&data), *(class COutputStream*)(&packet));
         FUN_140710590(packet);
     }
 }

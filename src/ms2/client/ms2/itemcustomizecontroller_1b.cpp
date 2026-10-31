@@ -61,7 +61,6 @@ struct Unk_FactoryNodeName { Unk_FactoryNodeName(const Unk_FactoryNodeName& k); 
 extern Unk_FactoryNodeName DAT_143a09680;
 struct Unk_FactoryNode { void FUN_141b71d10(bool bOn, const Unk_FactoryNodeName& kName); };
 extern char DAT_143afa4d8;                                      // NiNode::ms_RTTI
-Unk_FactoryNode* FUN_14098d8d0(char* pRtti, NiAVObject* pObj);  // checked cast
 
 // ---- the controller registry (statics defined in this TU) ----
 typedef efd::SmartPointer<CItemCustomizeController> ControllerPtr;
@@ -305,7 +304,7 @@ void FUN_141414250(bool bOn)
         pPlayer->vfunc_44(&listNodes);
         for (efd::list<NiAVObject*>::iterator it = listNodes.begin(); it != listNodes.end(); ++it)
         {
-            Unk_FactoryNode* pNode = FUN_14098d8d0(&DAT_143afa4d8, *it);
+            Unk_FactoryNode* pNode = ((struct Unk_FactoryNode*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(*it)));
             if (pNode == 0)
                 continue;
             Unk_FactoryNodeName kName(DAT_143a09680);

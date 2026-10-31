@@ -222,12 +222,11 @@ public:
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2();
     virtual void vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale);
 };
-CBoxCollision* FUN_140a006f0(const MS2Ptr<CBoxCollision>& sp);
 
 // @0x140addf10
 MS2Ptr<CBoxCollision> CBreakableObject::FUN_140addf10()
 {
-    if (FUN_140a006f0(m_spBox))
+    if (((MS2Ptr<CBoxCollision>*)&(m_spBox))->get())
         reinterpret_cast<Unk_BoBoxSlots*>(m_spBox.operator->())->vfunc_3(m_ptPos, m_ptRot, 1.0f);
     return m_spBox;
 }

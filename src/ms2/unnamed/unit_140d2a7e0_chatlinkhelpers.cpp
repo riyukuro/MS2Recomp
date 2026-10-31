@@ -38,6 +38,9 @@
 #include "ms2/client/ms2/uimessenger.h"
 #include "ms2/client/ms2/inventory.h"
 
+// return types of the getters this unit calls
+struct Unk_MdState;
+
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
 // The chat links' second argument: what the link points at (item sources differ, 4 = achievement, 5 = bill, 7 = Merat Market).
@@ -92,7 +95,7 @@ MS2_CHECK_OFFSET(Unk_ChatWindow, m_pMessenger, 0x50);
 // The messenger browser (UI id 0x4e61): finds an item that was linked into a chat line.
 
 // shared helpers of other units
-Unk_ChatWindow* FUN_141482e80();
+Unk_MdState* FUN_141482e80();
 void FUN_141a24fb0(Unk_ChatLog* pLog, CStringW strText);
 void FUN_141953660(Unk_ChatMessenger* pMessenger, CStringW strText);
 UIMessengerBrowser* FUN_140a3ab70(int nUiId);
@@ -551,10 +554,10 @@ __int64 FUN_140d2caf0(const CStringW& strText)
 void FUN_140d2cca0(unsigned nId, unsigned nRank)
 {
     CStringW strLink = FUN_140d2d440(nId, nRank);
-    if (FUN_141482e80()->m_pLog != NULL)
-        FUN_141a24fb0(FUN_141482e80()->m_pLog, CStringW(strLink));
-    if (FUN_141482e80()->m_pMessenger != NULL)
-        FUN_141953660(FUN_141482e80()->m_pMessenger, CStringW(strLink));
+    if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
+        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
+    if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
+        FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
 }
 
 // Post a chat line of a cash product link.
@@ -562,8 +565,8 @@ void FUN_140d2cca0(unsigned nId, unsigned nRank)
 void FUN_140d2cd80(MS2Ptr<CCashSaleProduct> spProduct)
 {
     CStringW strLink = FUN_140d2da30(spProduct);
-    if (FUN_141482e80()->m_pLog != NULL)
-        FUN_141a24fb0(FUN_141482e80()->m_pLog, CStringW(strLink));
+    if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
+        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
 }
 
 // Post a chat line of a Merat Market product link.
@@ -571,8 +574,8 @@ void FUN_140d2cd80(MS2Ptr<CCashSaleProduct> spProduct)
 void FUN_140d2ce40(MS2Ptr<CMeratMarketProduct> spProduct)
 {
     CStringW strLink = FUN_140d2dc70(spProduct);
-    if (FUN_141482e80()->m_pLog != NULL)
-        FUN_141a24fb0(FUN_141482e80()->m_pLog, CStringW(strLink));
+    if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
+        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
 }
 
 // Post a chat line of an item link of a uid.
@@ -580,8 +583,8 @@ void FUN_140d2ce40(MS2Ptr<CMeratMarketProduct> spProduct)
 void FUN_140d2cf00(unsigned __int64 nUid, MS2Ptr<CItem> spItem)
 {
     CStringW strLink = FUN_140d2e090(nUid, spItem);
-    if (FUN_141482e80()->m_pLog != NULL)
-        FUN_141a24fb0(FUN_141482e80()->m_pLog, CStringW(strLink));
+    if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
+        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
 }
 
 // Post the link of an item.
@@ -597,30 +600,30 @@ void FUN_140d2cfc0(MS2Ptr<CItem> spItem)
 void FUN_140d2d060(int nItemId, int nGrade, __int64 nUid)
 {
     CStringW strLink = FUN_140d2e2b0(nItemId, nGrade, nUid);
-    if (FUN_141482e80()->m_pLog != NULL)
-        FUN_141a24fb0(FUN_141482e80()->m_pLog, CStringW(strLink));
-    if (FUN_141482e80()->m_pMessenger != NULL)
-        FUN_141953660(FUN_141482e80()->m_pMessenger, CStringW(strLink));
+    if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
+        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
+    if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
+        FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
 }
 
 // @0x140d2d150
 void FUN_140d2d150(int nItemId, int nGrade)
 {
     CStringW strLink = FUN_140d2e900(nItemId, nGrade);
-    if (FUN_141482e80()->m_pLog != NULL)
-        FUN_141a24fb0(FUN_141482e80()->m_pLog, CStringW(strLink));
-    if (FUN_141482e80()->m_pMessenger != NULL)
-        FUN_141953660(FUN_141482e80()->m_pMessenger, CStringW(strLink));
+    if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
+        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
+    if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
+        FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
 }
 
 // @0x140d2d230
 void FUN_140d2d230(int nNameId, int nGrade, unsigned nCount, int nUid)
 {
     CStringW strLink = FUN_140d2ea90(nNameId, nGrade, nCount, nUid);
-    if (FUN_141482e80()->m_pLog != NULL)
-        FUN_141a24fb0(FUN_141482e80()->m_pLog, CStringW(strLink));
-    if (FUN_141482e80()->m_pMessenger != NULL)
-        FUN_141953660(FUN_141482e80()->m_pMessenger, CStringW(strLink));
+    if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
+        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
+    if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
+        FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
 }
 
 // Post a chat line of a Merat Market premium product link.
@@ -628,10 +631,10 @@ void FUN_140d2d230(int nNameId, int nGrade, unsigned nCount, int nUid)
 void FUN_140d2d330(MS2Ptr<CMeratMarketPremiumProduct> spProduct)
 {
     CStringW strLink = FUN_140d2ec30(spProduct);
-    if (FUN_141482e80()->m_pLog != NULL)
-        FUN_141a24fb0(FUN_141482e80()->m_pLog, CStringW(strLink));
-    if (FUN_141482e80()->m_pMessenger != NULL)
-        FUN_141953660(FUN_141482e80()->m_pMessenger, CStringW(strLink));
+    if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
+        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
+    if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
+        FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
 }
 
 // The achievement link text: "<name> (user info)" for the earned grade.

@@ -51,6 +51,8 @@
 #include <set>
 #include <vector>
 #include "ms2/placeholder/unk_1402a9d70.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/placeholder/ckeytable.h"
 
 // header statics
 static CString s_strSkill1 = "skill";
@@ -104,26 +106,12 @@ class Unk_DaInputState { public: bool FUN_14116d9c0(int a, int b, int c); };
 Unk_DaInputState* FUN_14025e7c0();
 class Unk_DaUiMgr { public: int FUN_1422d4e20(CString strKey); };
 Unk_DaUiMgr* FUN_140b632f0();
-class Unk_DaKeyBinds
-{
-public:
-    int FUN_14142e340(int n);                               // the key being pressed
-    int FUN_14142cc40(int nKey);                            // the key may be bound
-    __int64 FUN_14142d190(int nKey);                        // the action bound to a key (0 = none)
-    int FUN_14142cf10(unsigned __int64 nAction);
-    int FUN_141430470(unsigned __int64 nAction);
-    int FUN_14142c940(unsigned __int64 nAction, int n);     // the key of an action
-    CStringW FUN_14142d220(int nKey);                       // the text of a key
-    int FUN_14142b250(int nKey, int a, unsigned __int64 nAction, int b, int c);
-    void FUN_14142a8b0(unsigned __int64 nAction);
-};
-Unk_DaKeyBinds* FUN_1409331f0();
+// the key table: FUN_1409331f0 (ckeytable.h)
 
 int FUN_1409e1b80(ASTooltip* p, int nId, int n);            // the learned skill tooltip
 CStringTable* GetStringTable();
 char FUN_1403b3c40(const CStringW& str, const wchar_t* szText);
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);
-SkillDataTable* FUN_1401958b0();                            // the skill table
 void FUN_140710590(COutPacket& packet);                     // send
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
@@ -131,11 +119,10 @@ void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
-__int64 FUN_140869440();                                    // the server time
+__int64 GetServerTime();                                    // the server time
 CStringW FUN_1409e90c0(int nStringId, const int& nYear, const int& nMonth, const int& nDay, const int& nHour,
                        const int& nMinute);
 int FUN_1416595d0(PCBase* pActor);
-CUIService* FUN_1403ed2b0();                                // the UI service
 
 // Sort orders of the action pages (the comparators live in the skill system unit).
 struct Unk_EmotionLess { bool operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const; };   // runs the 0x141764570 body (skillslot.cpp)
@@ -321,7 +308,7 @@ void UIDynamicActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pAr
         if (0 < nPeriod) {
             CMsTime time(nPeriod);
             int nStringId = 0xb8;
-            if (FUN_140869440() > nPeriod)
+            if (GetServerTime() > nPeriod)
                 nStringId = 0xb9;
             int nMinute = time.GetMinute();
             int nHour = time.GetHour();
@@ -455,7 +442,7 @@ void UIDynamicActionDialog::FUN_14192c6b0()
     std::map<unsigned int, Unk_Emotion> unused;
     for (size_t i = 0; i < list.GetCount(); i++) {
         unsigned int nId = list[i]->m_id;
-        SkillData* pSkill = FUN_1401958b0()->GetSkillData(nId);
+        SkillData* pSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nId);
         if (pSkill == 0)
             continue;
         if (pSkill->GetMainType() != 0xe)
@@ -494,8 +481,8 @@ MS2_REPLACE_METHOD(0x14192C9B0, UIDynamicActionDialog, FUN_14192c9b0, 79, 0);
 // @0x14192e1f0
 UISkillPreviewDialog* FUN_14192e1f0(int nDialog)
 {
-    if (FUN_1403ed2b0() != 0) {
-        MS2Ptr<UIObject> spUI = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nDialog);
+    if (TSingleton<CUIService>::GetInstance() != 0) {
+        MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nDialog);
         if (spUI.get() != 0)
             return dynamic_cast<UISkillPreviewDialog*>((UIObject*)spUI);
     }
@@ -508,7 +495,7 @@ void UIDynamicActionDialog::FUN_14192ca10(int nAction)
     UISkillPreviewDialog* pPreview = FUN_14192e1f0(0x4ec3);
     if (pPreview == 0)
         return;
-    FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ec3);
+    TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4ec3);
     pPreview->FUN_140e93e70(nAction, 0);
 }
 MS2_REPLACE_METHOD(0x14192CA10, UIDynamicActionDialog, FUN_14192ca10, 78, 0);
@@ -534,7 +521,7 @@ void UIDynamicActionDialog::FUN_14192ca70()
             int nId = spAction->m_id;
             int nNew = spAction->m_isNew;
             bool bFavorite = spAction->m_favorite;
-            SkillData* pSkill = FUN_1401958b0()->GetSkillData(nId);
+            SkillData* pSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nId);
             if (pSkill == 0)
                 continue;
             if (m_1b1 != 0 && !bFavorite)
@@ -601,7 +588,7 @@ void UIDynamicActionDialog::FUN_14192d100()
             int nId = spAction->m_id;
             int nNew = spAction->m_isNew;
             bool bFavorite = spAction->m_favorite;
-            SkillData* pSkill = FUN_1401958b0()->GetSkillData(nId);
+            SkillData* pSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nId);
             if (pSkill == 0)
                 continue;
             if (m_1b1 != 0 && !bFavorite)

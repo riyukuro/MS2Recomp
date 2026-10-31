@@ -30,12 +30,24 @@
 extern Vector3 DAT_143b01a60;                               // the zero point
 
 egf::EntityManager* FUN_1409670f0();
-egf::Entity* FUN_1411cf440(egf::EntityManager* pMgr, const egf::EntityID& id);
+class EntityWorldManager   // C3: member view for the former free stand-ins
+{
+public:
+    class egf::Entity* FUN_1411cf440(class egf::EntityID const&);
+};
 int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, Vector3* pOut);   // read a Point3 property (0 = ok)
 void FUN_140a38a50(egf::Entity* pEntity, unsigned uPropId, const Vector3& pt);   // write a Point3 property
-void FUN_140add1a0(Unk_CtbBounds3* pSelf, float x0, float y0, float z0, float x1, float y1, float z1);   // set
-void FUN_140adca00(Unk_CtbMat33* pSelf);                            // identity
-void FUN_140add040(Unk_CtbMat33* pSelf, float fAngle);              // rotation about z
+class NxBounds3   // C3: member view for the former free stand-ins
+{
+public:
+    void set(float, float, float, float, float, float);
+};
+class NxMat33   // C3: member view for the former free stand-ins
+{
+public:
+    void id();
+    void rotZ(float);
+};
 void FUN_140adc690(Unk_CtbObb* pOut, const Unk_CtbBounds3* pBounds, const Unk_CtbMat34* pPose);   // box from bounds + pose
 bool FUN_140adc610(const Unk_CtbObb* pObb, const Unk_CtbVec3& pt);  // point inside the box
 void FUN_140adbf00(Unk_CtbObb* pObb, const Unk_CtbVec3& pt);        // set the box centre
@@ -64,13 +76,12 @@ float FUN_14028d280(unsigned uMilliseconds);                        // ms -> sec
 
 // The clock and tick count.
 struct Unk_PortalClockOwner;
-unsigned FUN_141473390(Unk_PortalClockOwner* pOwner);               // the server time in seconds
 unsigned FUN_141472bc0();                                           // tick count
 
 // The field world and the portal table.
 class Unk_PortalWorld { };
 unsigned FUN_141bd3060(Unk_PortalWorld* pWorld);                    // the current map id
-class Unk_PortalTableHolder { public: CStringW FUN_140730b80(unsigned nMapId, int nPortalId); };   // CPortalTable::GetName
+class Unk_PortalTableHolder { public:  };   // CPortalTable::GetName
 
 // The dungeon room table and a room row.
 class Unk_PortalRoom : public CPtred
@@ -94,12 +105,8 @@ public:
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // scene root of an entity
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);                       // scene root by id
 void FUN_140ae1e80(NiAVObject* pObject, float a, float b, float c, float d, egf::EntityID kId);
-bool FUN_14109a9a0(const NiRTTI* pRTTI, NiAVObject* pObject);       // IsKindOf
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);    // dynamic cast through an NiRTTI
 extern char DAT_143afbbb0;                                          // NiMesh::ms_RTTI
 extern char DAT_143afa4f0;                                          // NiTexturingProperty::ms_RTTI
-NiTexturingProperty::Map* FUN_14109a6b0(NiTexturingProperty* pProp);   // GetBaseMap
-void FUN_140981040(NiTexturingProperty::Map* pMap, void* pTexture);    // SetTexture
 void* FUN_140a0afd0();                                              // texture manager
 void FUN_141552f90(void* pMgr, void* pOutTexture, CString strPath, int nFlags);   // load a texture
 void* FUN_14097fbf0(void* pTexture);                                // texture pointer
@@ -154,12 +161,12 @@ int Unk_PortalBox::FUN_14169b080(egf::Entity* pEntity)
     if (FUN_1409618c0(pEntity, 0x68c7c29d, &ptRot) != 0)
         return 0;
     Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
-    FUN_140add1a0(&m_bounds, -ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
+    ((class NxBounds3*)(struct Unk_CtbBounds3*)(&m_bounds))->set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
     m_pose.m_pos.x = ptPos.x;
     m_pose.m_pos.y = ptPos.y;
     m_pose.m_pos.z = ptPos.z;
-    FUN_140adca00(&m_pose.m_rot);
-    FUN_140add040(&m_pose.m_rot, (ptRot.z * 3.1415927f) / 180.0f);
+    ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->id();
+    ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->rotZ((ptRot.z * 3.1415927f) / 180.0f);
     FUN_140adc690(&m_obb, &m_bounds, &m_pose);
     Unk_CtbVec3 vCenter(ptCenter.x, ptCenter.y, ptCenter.z);
     FUN_140adbf00(&m_obb, vCenter);
@@ -212,7 +219,7 @@ int CPortal::FUN_14169b890()
 {
     if (m_nEndTime > 0)
     {
-        egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
+        egf::Entity* pEntity = ((class EntityWorldManager*)(class egf::EntityManager*)(FUN_1409670f0()))->FUN_1411cf440(m_idEntity);
         if (pEntity == 0)
             return 0;
         Vector3 ptPos = DAT_143b01a60;
@@ -230,7 +237,7 @@ int CPortal::FUN_14169b890()
 // @0x14169ba90
 bool CPortal::FUN_14169ba90()
 {
-    egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
+    egf::Entity* pEntity = ((class EntityWorldManager*)(class egf::EntityManager*)(FUN_1409670f0()))->FUN_1411cf440(m_idEntity);
     if (pEntity == 0)
         return false;
     int nMapId = 0;
@@ -239,12 +246,12 @@ bool CPortal::FUN_14169ba90()
     if (pRoot != 0)
     {
         NiAVObject* pPlane = pRoot->GetObjectByName(NiFixedString("Theme_Image_Plane"));
-        if (pPlane != 0 && FUN_14109a9a0((const NiRTTI*)&DAT_143afbbb0, pPlane))
+        if (pPlane != 0 && NiObject::IsExactKindOf((const NiRTTI*)&DAT_143afbbb0, (class NiObject const*)(pPlane)))
         {
             NiProperty* pProp = pPlane->GetProperty(NiProperty::TEXTURING);
-            NiTexturingProperty* pTexProp = (NiTexturingProperty*)FUN_14098d8d0((const NiRTTI*)&DAT_143afa4f0, pProp);
+            NiTexturingProperty* pTexProp = (NiTexturingProperty*)NiObject::DynamicCast((const NiRTTI*)&DAT_143afa4f0, (class NiObject const*)(pProp));
             NiTexturingProperty::Map* pMap = 0;
-            if (pTexProp != 0 && (pMap = FUN_14109a6b0(pTexProp)) != 0)
+            if (pTexProp != 0 && (pMap = ((class NiTexturingProperty*)(class NiTexturingProperty*)(pTexProp))->GetBaseMap()) != 0)
             {
                 Unk_PortalMapRef spMap;
                 FUN_140a55460(&spMap, nMapId);
@@ -260,7 +267,7 @@ bool CPortal::FUN_14169ba90()
                             void* spTex[2];
                             FUN_141552f90(FUN_140a0afd0(), spTex, strLoad, 5);
                             if (FUN_14097fbf0(spTex) != 0)
-                                FUN_140981040(pMap, FUN_14097fbf0(spTex));
+                                ((NiTexturingProperty::Map*)(class NiTexturingProperty::Map*)(pMap))->SetTexture((class NiTexture*)(FUN_14097fbf0(spTex)));
                             FUN_14097f4a0(spTex);
                         }
                     }
@@ -278,7 +285,7 @@ void CPortal::FUN_14169bd40()
     if ((m_nType == 6 || m_nType == 3 || m_nType == 10 || m_nType == 0x10) && m_nEndTime > 0 && m_tooltip.get() != 0)
     {
         CStringW strText;
-        unsigned nNow = FUN_141473390(reinterpret_cast<Unk_PortalClockOwner*>(TSingleton<CMainSystem>::GetInstance()));
+        unsigned nNow = ((class CMainSystem*)(struct Unk_PortalClockOwner*)(reinterpret_cast<Unk_PortalClockOwner*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473390();
         if (nNow >= m_nEndTime)
         {
             strText = L"00:00";
@@ -426,7 +433,7 @@ CStringW CPortal::FUN_14169cae0()
     if (nName > 0)
         return TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nName);
     unsigned nMapId = FUN_141bd3060(reinterpret_cast<Unk_PortalWorld*>(WorldService::GetInstance()));
-    CStringW strName = reinterpret_cast<Unk_PortalTableHolder*>(TSingleton<CPortalTable>::GetInstance())->FUN_140730b80(nMapId, m_nId);
+    CStringW strName = ((CPortalTable*)(Unk_PortalTableHolder*)(reinterpret_cast<Unk_PortalTableHolder*>(TSingleton<CPortalTable>::GetInstance())))->GetName(nMapId, m_nId);
     if (!strName.IsEmpty())
         return strName;
     return CStringW(L"");
@@ -441,7 +448,7 @@ int CPortal::FUN_14169cc40()
 // @0x14169cc70
 void CPortal::FUN_14169cc70(const Vector3& pos, const Vector3& rot)
 {
-    efd::SmartPointer<egf::Entity> spEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
+    efd::SmartPointer<egf::Entity> spEntity = ((class EntityWorldManager*)(class egf::EntityManager*)(FUN_1409670f0()))->FUN_1411cf440(m_idEntity);
     if (spEntity == 0)
         return;
     FUN_140a38a50((egf::Entity*)spEntity, 0xfd95ca52, pos);
@@ -452,7 +459,7 @@ void CPortal::FUN_14169cc70(const Vector3& pos, const Vector3& rot)
 // @0x14169cd50
 void CPortal::FUN_14169cd50(int bShown, int bGlow)
 {
-    egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
+    egf::Entity* pEntity = ((class EntityWorldManager*)(class egf::EntityManager*)(FUN_1409670f0()))->FUN_1411cf440(m_idEntity);
     if (pEntity == 0)
         return;
     if (!FUN_14169c330())
@@ -468,7 +475,7 @@ void CPortal::FUN_14169cd50(int bShown, int bGlow)
 // @0x14169ce50
 void CPortal::FUN_14169ce50(int bShown, int bGlow, int bExtra)
 {
-    egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
+    egf::Entity* pEntity = ((class EntityWorldManager*)(class egf::EntityManager*)(FUN_1409670f0()))->FUN_1411cf440(m_idEntity);
     if (pEntity == 0)
         return;
     if (!FUN_14169c330())
@@ -486,7 +493,7 @@ void CPortal::FUN_14169ce50(int bShown, int bGlow, int bExtra)
 // @0x14169cf90
 void CPortal::FUN_14169cf90(int bShown)
 {
-    egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
+    egf::Entity* pEntity = ((class EntityWorldManager*)(class egf::EntityManager*)(FUN_1409670f0()))->FUN_1411cf440(m_idEntity);
     if (pEntity == 0)
         return;
     if (!FUN_14169c330())
@@ -498,7 +505,7 @@ void CPortal::FUN_14169cf90(int bShown)
 // @0x14169d050
 void CPortal::FUN_14169d050(int bGlow)
 {
-    egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
+    egf::Entity* pEntity = ((class EntityWorldManager*)(class egf::EntityManager*)(FUN_1409670f0()))->FUN_1411cf440(m_idEntity);
     if (pEntity == 0)
         return;
     if (!FUN_14169c330())
@@ -521,7 +528,7 @@ void CPortal::FUN_14169d0e0()
 // @0x14169d160
 bool CPortal::FUN_14169d160()
 {
-    egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
+    egf::Entity* pEntity = ((class EntityWorldManager*)(class egf::EntityManager*)(FUN_1409670f0()))->FUN_1411cf440(m_idEntity);
     if (pEntity == 0)
         return false;
     bool bShown = false;
@@ -532,7 +539,7 @@ bool CPortal::FUN_14169d160()
 // @0x14169d1d0
 bool CPortal::FUN_14169d1d0()
 {
-    egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
+    egf::Entity* pEntity = ((class EntityWorldManager*)(class egf::EntityManager*)(FUN_1409670f0()))->FUN_1411cf440(m_idEntity);
     if (pEntity == 0)
         return false;
     bool bExtra = true;
@@ -545,7 +552,7 @@ bool CPortal::FUN_14169d1d0()
 // @0x14169d280
 int CPortal::FUN_14169d280()
 {
-    egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
+    egf::Entity* pEntity = ((class EntityWorldManager*)(class egf::EntityManager*)(FUN_1409670f0()))->FUN_1411cf440(m_idEntity);
     if (pEntity == 0)
         return 0;
     int nValue = 0;
@@ -556,7 +563,7 @@ int CPortal::FUN_14169d280()
 // @0x14169d2f0
 Vector3 CPortal::FUN_14169d2f0()
 {
-    egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
+    egf::Entity* pEntity = ((class EntityWorldManager*)(class egf::EntityManager*)(FUN_1409670f0()))->FUN_1411cf440(m_idEntity);
     if (pEntity == 0)
         return DAT_143b01a60;
     Vector3 ptPos = DAT_143b01a60;
@@ -567,7 +574,7 @@ Vector3 CPortal::FUN_14169d2f0()
 // @0x14169d3a0
 void CPortal::FUN_14169d3a0()
 {
-    egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
+    egf::Entity* pEntity = ((class EntityWorldManager*)(class egf::EntityManager*)(FUN_1409670f0()))->FUN_1411cf440(m_idEntity);
     if (pEntity == 0)
         return;
     if (m_nType == 0x10)

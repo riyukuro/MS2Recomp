@@ -15,11 +15,13 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/asbutton.h"
+#include "ms2/placeholder/pcgemequip.h"
 
 // ---- unit-local views of exe types ----
 
 // The check box child (value at FUN_1422ce0e0, set at FUN_1422ce090) and the handle it is returned in (16 bytes).
-class Unk_GsCheck { public: bool FUN_1422ce0e0(); void FUN_1422ce090(int checked); };
+class Unk_GsCheck : public ASButton { };
 class Unk_GsHandle
 {
 public:
@@ -34,7 +36,7 @@ private:
 class Unk_GsEntity : public UIDialog { public: Unk_GsHandle FUN_140e52670(const CString& strName); };
 
 // The worn equipment: the gem in a slot.
-class Unk_GsEquip { public: MS2Ptr<CGemBase> FUN_141270740(int nSlot); };
+class Unk_GsEquip : public PCGemEquip { };
 
 // The setting the server gets: the gem type and one hidden flag per equip slot.
 struct Unk_GsSetting

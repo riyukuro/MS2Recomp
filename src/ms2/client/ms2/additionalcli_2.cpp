@@ -129,7 +129,6 @@ public:
 
 bool FUN_140930110(int nObjectId);                          // 0x140930110 the object is the local player
 UIMainPlayerInfo* FUN_140931900(int nClass);                // 0x140931900 the main player info dialog
-int FUN_141092ff0(PCBase* pNpc);                            // 0x141092ff0 the npc shows an upper hp bar
 bool FUN_14028d470(float a, float b);                       // 0x14028d470 nearly equal
 __int64 FUN_140632990(__int64 nValue, float fRate);         // 0x140632990 scale and round
 float FUN_140768090();                                      // 0x140768090 random [0, 1)
@@ -1216,7 +1215,7 @@ bool AdditionalCliList::FUN_140973680(MS2Ptr<AdditionalCli> sp)
     }
     if (CNpc* pNpc = efd::DynamicCast<CNpc>(m_pOwner))
     {
-        if (FUN_141092ff0(pNpc))
+        if (((class CNpc*)(class PCBase*)(pNpc))->FUN_141092ff0())
             return true;
         if (sp && sp->FUN_14096d810()->GetParent()->GetCategory() == 9)
             return true;

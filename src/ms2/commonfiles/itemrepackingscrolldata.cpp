@@ -25,13 +25,10 @@
 
 bool FUN_14028f710(Unk_140165cf0* pElem);                   // the node is a usable element
 int FUN_140873710(Unk_140165cf0* pElem, const char* pszName, int& nOut);   // XmlGetBool (petType is read as a bool)
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-class Unk_CommonLog { public: void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg); };
-Unk_CommonLog* FUN_140166440();
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
-CFeatureManager* FUN_140166410();
 bool FUN_140634230(MS2Ptr<CItem> pItem);
 __int64 GetServerTime();
 CItemData* FUN_140527840(CItem* pItem);
@@ -81,12 +78,12 @@ int CItemRePackingScrollTable::Load()
     CString strPath = FUN_14071a5b0("Table", "itemRePackingScroll.xml");
     FUN_1401d1160(strPath);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 1;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("rePackingScroll"); pNode != 0; pNode = pNode->FUN_140168650("rePackingScroll"))
@@ -177,7 +174,7 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
         break;
     }
     case 1:
-        if (!FUN_140166410()->FUN_14036d570(0xa4))
+        if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xa4))
             return 7;
         if (!pItemData->FUN_14053cc40())
             return 3;

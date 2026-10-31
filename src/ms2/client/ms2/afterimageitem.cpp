@@ -107,9 +107,13 @@ extern unsigned DAT_143af62d4;
 extern unsigned DAT_143af62d8;
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
-unsigned FUN_140869420();                                           // tick count in ms
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class Unk_GameClock : public CMainSystem { public: float FUN_141473210(); };
-int FUN_140a53390(Unk_EffectTarget* pTarget);                       // the target's owner id
+class NoticeMessage   // C3: member view for the former free stand-ins
+{
+public:
+    int GetActor();
+};
 bool FUN_14119f3c0(CEffect* pEffect);                               // the effect has been started
 float FUN_140966f00(efd::Point3 kA, efd::Point3 kB);                    // distance
 class Unk_Camera { public: void FUN_140af05d0(const efd::Point3& kWorld, efd::Point2* pkScreen); };   // world -> screen
@@ -258,7 +262,7 @@ void AfterImageItem::Init(Unk_AfterImageRef kParam, NiDynamicTexturePtr spTextur
     m_spNode->UpdateProperties();
     m_spNode->Update((float)reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280(), true);
     m_fSize = fSize;
-    m_nBirth = FUN_140869420();
+    m_nBirth = GetTickCountMs2();
     m_nLife = nLife;
 }
 
@@ -279,7 +283,7 @@ void AfterImageItem::Release()
 // @0x14097c7a0
 void AfterImageItem::UpdateColor()
 {
-    unsigned nAge = FUN_140869420() - m_nBirth;
+    unsigned nAge = GetTickCountMs2() - m_nBirth;
     float fRatio = (float)nAge / (float)m_nLife;
     if (fRatio < 0.1f)
         fRatio = 0.0f;
@@ -291,7 +295,7 @@ void AfterImageItem::UpdateColor()
 // @0x14097c890
 bool AfterImageItem::IsExpired() const
 {
-    return FUN_140869420() > m_nBirth + m_nLife;
+    return GetTickCountMs2() > m_nBirth + m_nLife;
 }
 
 // @0x14097c8e0
@@ -373,7 +377,7 @@ bool CAfterImageEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
     bool bOk = CEffect::vfunc_3(pParam, pTarget);
     if (!bOk)
         return bOk;
-    m_nTarget = FUN_140a53390(pTarget);
+    m_nTarget = ((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetActor();
     m_spTarget = reinterpret_cast<Unk_AfterImageTarget*>(pTarget)->m_spNode;
     return true;
 }
@@ -413,7 +417,7 @@ bool CAfterImageEffect::ShouldCapture()
         return false;
     if (IsTimeUp())
         return false;
-    if (FUN_140869420() > m_nLastCapture + m_kParam->GetTimeInterval())
+    if (GetTickCountMs2() > m_nLastCapture + m_kParam->GetTimeInterval())
         return true;
     if (reinterpret_cast<Unk_AfterImageWorld*>(WorldService::GetInstance()) == 0)
         return false;
@@ -433,7 +437,7 @@ void CAfterImageEffect::StartCapture()
     Unk_AfterImageActor* pActor = reinterpret_cast<Unk_AfterImageWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nTarget);
     if (pActor == 0)
         return;
-    m_nLastCapture = FUN_140869420();
+    m_nLastCapture = GetTickCountMs2();
     m_bPending = true;
     m_kPos = pActor->vfunc_18() + NiPoint3(0.0f, 0.0f, 75.0f);
     m_fRadius = 200.0f;

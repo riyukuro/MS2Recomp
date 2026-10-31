@@ -8,6 +8,9 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
+// return types of the getters this unit calls
+class Unk_SingletonObj1;
+
 // ---- out-of-unit callees (names describe uses) ----
 class Unk_GmGuideCfg
 {
@@ -20,13 +23,13 @@ public:
     char m_pad_00[0xcd70];
     Unk_GmGuideCfg m_guide;                                     // +0xcd70
 };
-Unk_GmConfig* FUN_1401d3200();
+Unk_SingletonObj1* FUN_1401d3200();
 class Unk_GmKeys
 {
 public:
     bool FUN_14116d9c0(int nKey, int a, int b);
 };
-Unk_GmKeys* FUN_14025e7c0();
+void* FUN_14025e7c0();
 
 // @0x1412c3ac0
 UIIGuideMovieDialog::UIIGuideMovieDialog()
@@ -76,7 +79,7 @@ MS2_REPLACE_METHOD(0x1412C3C20, UIIGuideMovieDialog, vfunc_69, 83, 0x2124D088);
 void UIIGuideMovieDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
-    CString strMovie = FUN_1401d3200()->m_guide.FUN_1409f6f30();
+    CString strMovie = reinterpret_cast<Unk_GmConfig*>(FUN_1401d3200())->m_guide.FUN_1409f6f30();
     m_30->Invoke("initData", strMovie);
 }
 MS2_REPLACE_METHOD(0x1412C3C80, UIIGuideMovieDialog, OnLoadComplete, 204, 0x1460A601);
@@ -86,7 +89,7 @@ int UIIGuideMovieDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+    if (reinterpret_cast<Unk_GmKeys*>(FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
         return 1;
     return 0;
 }

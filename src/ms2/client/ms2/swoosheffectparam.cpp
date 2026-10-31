@@ -130,34 +130,12 @@ const int& FUN_1404eb7e0(const int& a, const int& b);               // max
 unsigned FUN_14181fd60(unsigned nA, unsigned nB);                     // max by value
 CMainSystem* FUN_14086d260();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
-void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
 void* FUN_14098d0f0(void* pHandle);                                 // handle -> object
-const Vector3& FUN_140947900(void* pNode);                  // world translate
-bool FUN_14098dad0(void* pNode);                                    // node is app-culled
-void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
 void FUN_14097fad0(NiPoint3* pDst, const Vector3* pSrc);    // NiPoint3 assignment
 bool FUN_1409a7f70(NiAVObjectPtr* pPtr, int nNull);                 // pointer == NULL?
 void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
-void FUN_140a0b300(NiAVObject* pObj, bool bCulled);                 // SetAppCulled
-bool FUN_14109a9a0(const NiRTTI* pRtti, void* pObj);                // object is of the type
-void FUN_140980200(NiAVObject* pObj, NiProperty* pProp);            // NiAVObject::AttachProperty
-void FUN_140980880(NiTexturingProperty* pProp, void* pTexture);     // SetBaseTexture
-void FUN_1409807b0(NiTexturingProperty* pProp, int n);
-void FUN_1409805c0(NiTexturingProperty* pProp, int n);
-void FUN_1409806e0(NiTexturingProperty* pProp, int n);
-void FUN_140980560(NiAlphaProperty* pProp, bool b);                 // SetAlphaBlending
-void FUN_140980f60(NiAlphaProperty* pProp, int nMode);              // source blend mode
-void FUN_140980af0(NiAlphaProperty* pProp, int nMode);              // destination blend mode
-void FUN_140a0b6c0(NiWireframeProperty* pProp, bool b);             // SetWireframe
 void FUN_1415672e0(NiAVObject* pObj, int n);
 // Time controller helpers.
-NiTimeController* FUN_14098dc80(NiObjectNET* pObj);                 // first controller
-NiTimeController* FUN_14098de40(NiTimeController* pCtrl);           // next controller
-void FUN_1416f18b0(NiTimeController* pCtrl, int n);
-float FUN_1415467d0(NiTimeController* pCtrl);                       // start time
-void FUN_141d18aa0(NiObjectNET* pObj, NiTimeController* pCtrl);     // NiObjectNET::SetControllers
-unsigned short FUN_14106bc50(NiObjectNET* pObj);                    // extra data count
-NiExtraData* FUN_14106bc30(NiObjectNET* pObj, unsigned short i);    // extra data by index
 // Property list of an NiMesh (hash/list walk with a position cursor).
 class Unk_PropList;
 Unk_PropList* FUN_14127cc40(NiMesh* pMesh);
@@ -331,7 +309,7 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
     const CSwooshEffectParam* pSwoosh = static_cast<const CSwooshEffectParam*>(pParam);
-    NiNode* pNode = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, FUN_1409849b0(&reinterpret_cast<Unk_SwooshTarget*>(pTarget)->m_hNode)));
+    NiNode* pNode = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(FUN_1409849b0(&reinterpret_cast<Unk_SwooshTarget*>(pTarget)->m_hNode))))));
     if (pNode == 0)
         return false;
 
@@ -383,8 +361,8 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
     FUN_1409f76f0(&m_spTarget, pNode);
     m_strNode1 = pSwoosh->m_strNode1;
     m_strNode2 = pSwoosh->m_strNode2;
-    m_spTrail1 = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, pNode->GetObjectByName((const char*)pSwoosh->m_strNode1)));
-    m_spTrail2 = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, pNode->GetObjectByName((const char*)pSwoosh->m_strNode2)));
+    m_spTrail1 = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(pNode->GetObjectByName((const char*)pSwoosh->m_strNode1))))));
+    m_spTrail2 = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(pNode->GetObjectByName((const char*)pSwoosh->m_strNode2))))));
 
     if (pSwoosh->m_strNifPath.GetLength() > 0)
     {
@@ -395,7 +373,7 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
             NiAVObject* pObj;
             while ((pObj = kWalker.Next(true)) != 0)
             {
-                if (FUN_14109a9a0(&NiMesh::ms_RTTI, pObj))
+                if (NiObject::IsExactKindOf(&NiMesh::ms_RTTI, (const NiObject*)(void*)(pObj)))
                 {
                     pFound = static_cast<NiMesh*>(pObj);
                     break;
@@ -414,40 +392,40 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
             while (pPos != 0)
             {
                 NiProperty* pProp = FUN_140993f00(FUN_14098de00(pList, &pPos));
-                bool bMaterial = FUN_14109a9a0(&NiMaterialProperty::ms_RTTI, pProp);
-                if (bMaterial || FUN_14109a9a0(&NiTexturingProperty::ms_RTTI, pProp))
+                bool bMaterial = NiObject::IsExactKindOf(&NiMaterialProperty::ms_RTTI, (const NiObject*)(void*)(pProp));
+                if (bMaterial || NiObject::IsExactKindOf(&NiTexturingProperty::ms_RTTI, (const NiObject*)(void*)(pProp)))
                 {
-                    NiTimeController* pCtrl = FUN_14098dc80(pProp);
+                    NiTimeController* pCtrl = static_cast<NiObjectNET*>(pProp)->GetControllers();
                     while (pCtrl != 0)
                     {
                         if (!bMaterial)
-                            FUN_1416f18b0(pCtrl, 0);
-                        pCtrl->Update(FUN_1415467d0(pCtrl));
-                        pCtrl = FUN_14098de40(pCtrl);
+                            static_cast<NiTimeController*>(pCtrl)->SetCycleType((NiTimeController::CycleType)(0));
+                        pCtrl->Update(static_cast<NiTimeController*>(pCtrl)->GetBeginKeyTime());
+                        pCtrl = static_cast<NiTimeController*>(pCtrl)->GetNext();
                     }
                 }
-                FUN_140980200(pMeshObj, pProp);
+                static_cast<NiAVObject*>(pMeshObj)->AttachProperty(pProp);
             }
             if (pMeshObj->GetProperty(7) == 0)
             {
                 NiStencilProperty* spStencil = new (efd::MemHint(efd::MemHint::NONE)) NiStencilProperty;
                 spStencil->SetDrawMode(NiStencilProperty::DRAW_BOTH);
-                FUN_140980200(pMeshObj, spStencil);
+                static_cast<NiAVObject*>(pMeshObj)->AttachProperty(spStencil);
             }
             if (pMeshObj->GetProperty(0xb) == 0)
             {
                 NiZBufferProperty* spZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
                 spZBuffer->SetZBufferWrite(false);
-                FUN_140980200(pMeshObj, spZBuffer);
+                static_cast<NiAVObject*>(pMeshObj)->AttachProperty(spZBuffer);
             }
-            unsigned short nExtra = FUN_14106bc50(pFound);
+            unsigned short nExtra = static_cast<NiObjectNET*>(pFound)->GetExtraDataSize();
             for (unsigned short i = 0; i < nExtra; ++i)
             {
-                NiExtraData* pExtra = FUN_14106bc30(pFound, i);
+                NiExtraData* pExtra = static_cast<NiObjectNET*>(pFound)->GetExtraDataAt(i);
                 m_spMesh->GetMesh()->AddExtraData(pExtra);
             }
-            NiTimeController* pCtrls = FUN_14098dc80(pFound);
-            FUN_141d18aa0(m_spMesh->GetMesh(), pCtrls);
+            NiTimeController* pCtrls = static_cast<NiObjectNET*>(pFound)->GetControllers();
+            static_cast<NiObjectNET*>(m_spMesh->GetMesh())->SetControllers(pCtrls);
         }
     }
     else
@@ -457,51 +435,51 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         m_spMesh = new (efd::MemHint(efd::MemHint::NONE)) CMesh(false, true, m_nUVSets, nTris, nVerts, 0x15);
         m_spMesh->GetMesh()->SetName("SwooshEffect");
         NiPointer<NiTexturingProperty> spTexture = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty;
-        FUN_1409807b0(spTexture.operator->(), 0);
-        FUN_1409805c0(spTexture.operator->(), 1);
-        FUN_1409806e0(spTexture.operator->(), 0);
-        FUN_140980880(spTexture.operator->(), FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_140cc2ba0("Effect/Textures", pSwoosh->m_strTexturePath)), 5).Get());
-        FUN_140980200(m_spMesh->GetMesh(), spTexture);
+        static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseFilterMode((NiTexturingProperty::FilterMode)(0));
+        static_cast<NiTexturingProperty*>(spTexture.operator->())->SetApplyMode((NiTexturingProperty::ApplyMode)(1));
+        static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseClampMode((NiTexturingProperty::ClampMode)(0));
+        static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseTexture(reinterpret_cast<NiTexture*>(static_cast<void*>(FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_140cc2ba0("Effect/Textures", pSwoosh->m_strTexturePath)), 5).Get())));
+        static_cast<NiAVObject*>(m_spMesh->GetMesh())->AttachProperty(spTexture);
 
         NiVertexColorProperty* spVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
         spVertexColor->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
         spVertexColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
-        FUN_140980200(m_spMesh->GetMesh(), spVertexColor);
+        static_cast<NiAVObject*>(m_spMesh->GetMesh())->AttachProperty(spVertexColor);
 
         NiAlphaProperty* spAlpha = new (efd::MemHint(efd::MemHint::NONE)) NiAlphaProperty;
-        FUN_140980560(spAlpha, true);
+        static_cast<NiAlphaProperty*>(spAlpha)->SetAlphaBlending(true);
         switch (pSwoosh->m_nAlphaMode)
         {
         case 0:
-            FUN_140980f60(spAlpha, 6);
-            FUN_140980af0(spAlpha, 0);
+            static_cast<NiAlphaProperty*>(spAlpha)->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)(6));
+            static_cast<NiAlphaProperty*>(spAlpha)->SetDestBlendMode((NiAlphaProperty::AlphaFunction)(0));
             break;
         case 1:
-            FUN_140980f60(spAlpha, 6);
-            FUN_140980af0(spAlpha, 7);
+            static_cast<NiAlphaProperty*>(spAlpha)->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)(6));
+            static_cast<NiAlphaProperty*>(spAlpha)->SetDestBlendMode((NiAlphaProperty::AlphaFunction)(7));
             break;
         case 2:
-            FUN_140980f60(spAlpha, 0);
-            FUN_140980af0(spAlpha, 0);
+            static_cast<NiAlphaProperty*>(spAlpha)->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)(0));
+            static_cast<NiAlphaProperty*>(spAlpha)->SetDestBlendMode((NiAlphaProperty::AlphaFunction)(0));
             break;
         }
-        FUN_140980200(m_spMesh->GetMesh(), spAlpha);
+        static_cast<NiAVObject*>(m_spMesh->GetMesh())->AttachProperty(spAlpha);
 
         NiFogProperty* spFog = new (efd::MemHint(efd::MemHint::NONE)) NiFogProperty;
         spFog->SetFog(false);
-        FUN_140980200(m_spMesh->GetMesh(), spFog);
+        static_cast<NiAVObject*>(m_spMesh->GetMesh())->AttachProperty(spFog);
 
         NiWireframeProperty* spWireframe = new (efd::MemHint(efd::MemHint::NONE)) NiWireframeProperty;
-        FUN_140a0b6c0(spWireframe, false);
-        FUN_140980200(m_spMesh->GetMesh(), spWireframe);
+        static_cast<NiWireframeProperty*>(spWireframe)->SetWireframe(false);
+        static_cast<NiAVObject*>(m_spMesh->GetMesh())->AttachProperty(spWireframe);
 
         NiStencilProperty* spStencil = new (efd::MemHint(efd::MemHint::NONE)) NiStencilProperty;
         spStencil->SetDrawMode(NiStencilProperty::DRAW_BOTH);
-        FUN_140980200(m_spMesh->GetMesh(), spStencil);
+        static_cast<NiAVObject*>(m_spMesh->GetMesh())->AttachProperty(spStencil);
 
         NiZBufferProperty* spZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
         spZBuffer->SetZBufferWrite(false);
-        FUN_140980200(m_spMesh->GetMesh(), spZBuffer);
+        static_cast<NiAVObject*>(m_spMesh->GetMesh())->AttachProperty(spZBuffer);
     }
     m_spMesh->UpdateBound();
     FUN_1415672e0(m_spMesh->GetMesh(), 0);
@@ -517,7 +495,7 @@ bool CSwooshEffect::vfunc_9()
 {
     if (CEffect::vfunc_9())
     {
-        if ((FUN_1409475d0(&m_spRoot) ? true : false) && FUN_14098dad0(FUN_1409475f0(&m_spRoot)))
+        if ((FUN_1409475d0(&m_spRoot) ? true : false) && reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->GetAppCulled())
             return true;
         if (m_b2e)
             UpdateTrail();
@@ -535,10 +513,10 @@ void CSwooshEffect::vfunc_4()
         static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateEffects();
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateProperties();
-        FUN_141d16040(FUN_1409475f0(&m_spRoot), (float)FUN_14086d260()->FUN_141473280(), true);
+        reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->Update((float)FUN_14086d260()->FUN_141473280(), true);
         {
             NiFixedString kName((const char*)m_strNode1);
-            m_spTrail1 = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->GetObjectByName(kName)));
+            m_spTrail1 = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->GetObjectByName(kName))))));
         }
         if (FUN_1409a7f70(&m_spTrail1, 0))
         {
@@ -550,7 +528,7 @@ void CSwooshEffect::vfunc_4()
         }
         {
             NiFixedString kName((const char*)m_strNode2);
-            m_spTrail2 = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->GetObjectByName(kName)));
+            m_spTrail2 = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->GetObjectByName(kName))))));
         }
         if (FUN_1409a7f70(&m_spTrail2, 0))
         {
@@ -572,7 +550,7 @@ void CSwooshEffect::vfunc_7()
 // @0x14181f0f0
 void CSwooshEffect::vfunc_10(bool bVisible)
 {
-    FUN_140a0b300(static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot)), !bVisible);
+    static_cast<NiAVObject*>(static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot)))->SetAppCulled(!bVisible);
 }
 
 // @0x14181f140
@@ -580,12 +558,12 @@ int CSwooshEffect::vfunc_8(void* p)
 {
     if (m_b2e)
     {
-        *static_cast<Vector3*>(p) = FUN_140947900(FUN_1409475f0(&m_spRoot));
+        *static_cast<Vector3*>(p) = reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->GetWorldTranslate());
     }
     else
     {
         if (FUN_1409475d0(&m_spTarget) != 0)
-            *static_cast<Vector3*>(p) = FUN_140947900(FUN_1409475f0(&m_spTarget));
+            *static_cast<Vector3*>(p) = reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spTarget))->GetWorldTranslate());
     }
     return 1;
 }
@@ -602,9 +580,9 @@ void CSwooshEffect::UpdateTrail()
     if (dElapsed >= (double)m_fInterval)
     {
         m_dLastSample = m_dLastSample + dElapsed;
-        const Vector3& kHeadA = FUN_140947900(FUN_14098d0f0(&m_spTrail1));
+        const Vector3& kHeadA = reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_14098d0f0(&m_spTrail1))->GetWorldTranslate());
         m_kPointsA.push_back(kHeadA);
-        const Vector3& kHeadB = FUN_140947900(FUN_14098d0f0(&m_spTrail2));
+        const Vector3& kHeadB = reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_14098d0f0(&m_spTrail2))->GetWorldTranslate());
         m_kPointsB.push_back(kHeadB);
         unsigned short nPoints = (unsigned short)m_kPointsA.size();
         if (nPoints < 4)

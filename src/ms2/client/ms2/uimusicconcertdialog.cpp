@@ -23,6 +23,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/camera.h"
 
 // The header statics of the including TU: the sort type names and the skill / stun marks.
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -42,18 +43,16 @@ public:
 };
 class ASDialog : public ASDisplayObjectContainer { public: virtual void vfunc_2(int, int, int); };   // vfunc_2: place the movie
 
-WorldService* FUN_1403ed2d0();
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CString FUN_1402bad60(const char* szFormat, const int* pn);     // format one int
 void* FUN_140bb9630(int n);                                     // int -> delegate user data
 int FUN_140bb9640(void* p);                                     // delegate user data -> int
-unsigned FUN_141472bc0();                                       // the tick count
+int FUN_141472bc0();   // C3: was FUN_141472bc0
 CStringW FUN_1409e8970(CStringW strFormat, const unsigned& a, const unsigned& b);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 bool FUN_1407105c0(COutPacket* packet, int key, int delay);
-CameraMgr* FUN_1409478c0();
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 
@@ -208,11 +207,11 @@ void UIMusicConcertDialog::FUN_140e6a290()
 {
     if (m_topText == 0)
         return;
-    PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     CStringW strAction = GetStringCommonByKey(L"s_music_concert_can_play");
-    unsigned nStart = FUN_1403ed2d0()->FUN_141bcaf60();
+    unsigned nStart = WorldService::GetInstance()->FUN_141bcaf60();
     unsigned nNow = FUN_141472bc0();
     if (nNow > nStart)
     {
@@ -225,7 +224,7 @@ void UIMusicConcertDialog::FUN_140e6a290()
         unsigned nMin = nRemain / 0x3c;
         unsigned nSec = nRemain % 0x3c;
         m_topText->FUN_1422c4cd0(FUN_1409e8970(CStringW(L"s_music_concert_playing_text"), nMin, nSec));
-        __int64 nOwner = (__int64)FUN_1403ed2d0()->FUN_141bcaf80();
+        __int64 nOwner = (__int64)WorldService::GetInstance()->FUN_141bcaf80();
         if (pPC->FUN_141656a80() == nOwner)
             strAction = GetStringCommonByKey(L"s_music_concert_abort_play");
     }
@@ -252,10 +251,10 @@ void UIMusicConcertDialog::FUN_140e6a5d0(int nIndex, const CString& strIcon, con
 // @0x140e6a780
 void UIMusicConcertDialog::FUN_140e6a780()
 {
-    PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    unsigned nStart = FUN_1403ed2d0()->FUN_141bcaf60();
+    unsigned nStart = WorldService::GetInstance()->FUN_141bcaf60();
     unsigned nNow = FUN_141472bc0();
     if (nNow > nStart)
     {
@@ -265,7 +264,7 @@ void UIMusicConcertDialog::FUN_140e6a780()
     }
     else
     {
-        __int64 nOwner = (__int64)FUN_1403ed2d0()->FUN_141bcaf80();
+        __int64 nOwner = (__int64)WorldService::GetInstance()->FUN_141bcaf80();
         if (nOwner == pPC->FUN_141656a80())
         {
             FUN_140e6a9d0();
@@ -287,7 +286,7 @@ void UIMusicConcertDialog::FUN_140e6a9d0()
 // @0x140e6ab10
 void UIMusicConcertDialog::SendPlayInstrumentMode13()
 {
-    PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
@@ -298,13 +297,13 @@ void UIMusicConcertDialog::SendPlayInstrumentMode13()
 // @0x140e6ab90
 void UIMusicConcertDialog::FUN_140e6ab90()
 {
-    CCameraMode* pMode = FUN_1409478c0()->FUN_140af2520();
+    CCameraMode* pMode = TSingleton<CameraMgr>::GetInstance()->FUN_140af2520();
     if (pMode != 0 && pMode->vfunc_1() == 0x10)
     {
         CLocalTargetCameraMode* pLocal = static_cast<CLocalTargetCameraMode*>(pMode);
         int nTarget = pLocal->FUN_140af7e10();
         if (nTarget != 0 && pLocal->FUN_140af8600())
-            FUN_1409478c0()->FUN_140aeb950(pLocal);
+            TSingleton<CameraMgr>::GetInstance()->FUN_140aeb950(pLocal);
     }
     else
     {
@@ -315,7 +314,7 @@ void UIMusicConcertDialog::FUN_140e6ab90()
 // @0x140e6ac80
 void UIMusicConcertDialog::SendPlayInstrumentMode14()
 {
-    PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
@@ -326,7 +325,7 @@ void UIMusicConcertDialog::SendPlayInstrumentMode14()
 // @0x140e6ad00
 void UIMusicConcertDialog::SendPlayInstrumentMode15(int nEmotion)
 {
-    PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     if (pPC->FUN_141675ed0() == 1)

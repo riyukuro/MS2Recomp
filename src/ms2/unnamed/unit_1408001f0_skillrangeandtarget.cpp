@@ -10,15 +10,15 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "hook/ms2hook.h"
 
 // Unrecovered helpers.
-int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int* pnOut);
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned* pnOut);
-int FUN_140873360(Unk_140165cf0* pElem, const char* pszName, float* pfOut);
-int FUN_140873710(Unk_140165cf0* pElem, const char* pszName, int* pnOut);       // flag attribute
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
-int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& kOut);
-void FUN_140873e30(void* pElem, const char* pszName, float fValue);
-void FUN_140873ca0(void* pElem, const char* pszName, int nValue);
-void FUN_140873ce0(void* pElem, const char* pszName, unsigned nValue);
+int XmlGetAttr(class TiXmlElement*, char const*, class efd::Point3&);   // C3: was FUN_140874670
+void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
+void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
+void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
 void FUN_140874050(void* pElem, const char* pszName, const CString& strValue);
 void* FUN_14086e000(void* pParent, const void* pChild);                         // InsertEndChild
 CString FUN_14028ef00(efd::Point3 kPoint);                                      // point -> "x, y, z"
@@ -75,13 +75,13 @@ void Unk_RangeShape::Load(Unk_140165cf0* pElem)
         m_nType = 3;
     else if (m_str == "hole_cylinder")
         m_nType = 4;
-    FUN_140873360(pElem, "distance", &m_f10);
-    FUN_140873360(pElem, "height", &m_f14);
-    FUN_140873360(pElem, "width", &m_f18);
-    FUN_140873360(pElem, "endWidth", &m_f1c);
-    FUN_140874670(pElem, "rangeAdd", m_pt20);
-    FUN_140874670(pElem, "rangeOffset", m_pt2c);
-    FUN_140873360(pElem, "rangeZRotateDegree", &m_f38);
+    XmlGetAttr((class TiXmlElement*)(pElem), "distance", *(float*)(&m_f10));
+    XmlGetAttr((class TiXmlElement*)(pElem), "height", *(float*)(&m_f14));
+    XmlGetAttr((class TiXmlElement*)(pElem), "width", *(float*)(&m_f18));
+    XmlGetAttr((class TiXmlElement*)(pElem), "endWidth", *(float*)(&m_f1c));
+    XmlGetAttr((class TiXmlElement*)(pElem), "rangeAdd", m_pt20);
+    XmlGetAttr((class TiXmlElement*)(pElem), "rangeOffset", m_pt2c);
+    XmlGetAttr((class TiXmlElement*)(pElem), "rangeZRotateDegree", *(float*)(&m_f38));
 }
 
 // @0x140800570
@@ -91,19 +91,19 @@ void Unk_RangeShape::FUN_140800570(void* pElem)
     if (m_str != kDefault.m_str)
         FUN_140874050(pElem, "rangeType", m_str);
     if (kDefault.m_f10 != m_f10)
-        FUN_140873e30(pElem, "distance", m_f10);
+        XmlSetAttr((class TiXmlElement*)(pElem), "distance", m_f10);
     if (kDefault.m_f14 != m_f14)
-        FUN_140873e30(pElem, "height", m_f14);
+        XmlSetAttr((class TiXmlElement*)(pElem), "height", m_f14);
     if (kDefault.m_f18 != m_f18)
-        FUN_140873e30(pElem, "width", m_f18);
+        XmlSetAttr((class TiXmlElement*)(pElem), "width", m_f18);
     if (kDefault.m_f1c != m_f1c)
-        FUN_140873e30(pElem, "endWidth", m_f1c);
+        XmlSetAttr((class TiXmlElement*)(pElem), "endWidth", m_f1c);
     if (m_pt20 != kDefault.m_pt20)
         FUN_140874050(pElem, "rangeAdd", FUN_14028ef00(m_pt20));
     if (m_pt2c != kDefault.m_pt2c)
         FUN_140874050(pElem, "rangeOffset", FUN_14028ef00(m_pt2c));
     if (kDefault.m_f38 != m_f38)
-        FUN_140873e30(pElem, "rangeZRotateDegree", m_f38);
+        XmlSetAttr((class TiXmlElement*)(pElem), "rangeZRotateDegree", m_f38);
 }
 
 // @0x140800860
@@ -154,21 +154,21 @@ void Unk_RangeProperty::LoadElement(Unk_140165cf0* pElem, CString strName)
         return;
     {
         Load(pRange);
-        FUN_1408731e0(pRange, "includeCaster", &m_n40);
-        FUN_1408731e0(pRange, "applyTarget", &m_n44);
-        FUN_1408731e0(pRange, "castTarget", &m_n48);
-        FUN_140873220(pRange, "targetSelectType", (unsigned*)&m_n5c);
+        XmlGetAttr((class TiXmlElement*)(pRange), "includeCaster", *(int*)(&m_n40));
+        XmlGetAttr((class TiXmlElement*)(pRange), "applyTarget", *(int*)(&m_n44));
+        XmlGetAttr((class TiXmlElement*)(pRange), "castTarget", *(int*)(&m_n48));
+        XmlGetAttr((class TiXmlElement*)(pRange), "targetSelectType", *(unsigned int*)((unsigned*)&m_n5c));
         if (m_n5c != 0)
         {
-            FUN_140873220(pRange, "targetHasBuffID", (unsigned*)&m_n4c);
-            FUN_140873220(pRange, "targetHasBuffOverlapCount", (unsigned*)&m_n50);
-            FUN_140873220(pRange, "targetHasNotBuffID", (unsigned*)&m_n54);
-            FUN_1408731e0(pRange, "targetHasBuffOwner", &m_n58);
-            FUN_140873710(pRange, "targetSelectParty", &m_n60);
-            FUN_140873710(pRange, "targetSelectGuild", &m_n64);
+            XmlGetAttr((class TiXmlElement*)(pRange), "targetHasBuffID", *(unsigned int*)((unsigned*)&m_n4c));
+            XmlGetAttr((class TiXmlElement*)(pRange), "targetHasBuffOverlapCount", *(unsigned int*)((unsigned*)&m_n50));
+            XmlGetAttr((class TiXmlElement*)(pRange), "targetHasNotBuffID", *(unsigned int*)((unsigned*)&m_n54));
+            XmlGetAttr((class TiXmlElement*)(pRange), "targetHasBuffOwner", *(int*)(&m_n58));
+            XmlGetBool((class TiXmlElement*)(pRange), "targetSelectParty", *(int*)(&m_n60));
+            XmlGetBool((class TiXmlElement*)(pRange), "targetSelectGuild", *(int*)(&m_n64));
         }
-        FUN_1408731e0(pRange, "targetStatCompare", &m_n68);
-        FUN_1408731e0(pRange, "targetStatCompareFunction", &m_n6c);
+        XmlGetAttr((class TiXmlElement*)(pRange), "targetStatCompare", *(int*)(&m_n68));
+        XmlGetAttr((class TiXmlElement*)(pRange), "targetStatCompareFunction", *(int*)(&m_n6c));
         ATL::CAtlArray<unsigned> arrRank;
         XmlTokenList(pRange, "applyTargetIgnoreNpcRanks", arrRank);
         for (unsigned i = 0; i < arrRank.GetCount(); i++)
@@ -185,32 +185,32 @@ void Unk_RangeProperty::SaveElement(void* pParent, CString strName)
         Unk_TiXmlElement elem(strName);
         FUN_140800570(&elem);
         if (m_n40 != kDefault.m_n40)
-            FUN_140873ca0(&elem, "includeCaster", m_n40);
+            XmlSetAttr((class TiXmlElement*)(&elem), "includeCaster", m_n40);
         if (m_n44 != kDefault.m_n44)
-            FUN_140873ca0(&elem, "applyTarget", m_n44);
+            XmlSetAttr((class TiXmlElement*)(&elem), "applyTarget", m_n44);
         if (m_n48 != kDefault.m_n48)
-            FUN_140873ca0(&elem, "castTarget", m_n48);
+            XmlSetAttr((class TiXmlElement*)(&elem), "castTarget", m_n48);
         if (m_n5c != 0)
         {
-            FUN_140873ce0(&elem, "targetSelectType", m_n5c);
+            XmlSetAttr((class TiXmlElement*)(&elem), "targetSelectType", (unsigned int)m_n5c);
             if (m_n4c != kDefault.m_n4c)
-                FUN_140873ce0(&elem, "targetHasBuffID", m_n4c);
+                XmlSetAttr((class TiXmlElement*)(&elem), "targetHasBuffID", (unsigned int)m_n4c);
             if (m_n50 != kDefault.m_n50)
-                FUN_140873ce0(&elem, "targetHasBuffOverlapCount", m_n50);
+                XmlSetAttr((class TiXmlElement*)(&elem), "targetHasBuffOverlapCount", (unsigned int)m_n50);
             if (m_n54 != kDefault.m_n54)
-                FUN_140873ce0(&elem, "targetHasNotBuffID", m_n54);
+                XmlSetAttr((class TiXmlElement*)(&elem), "targetHasNotBuffID", (unsigned int)m_n54);
             if (m_n58 != kDefault.m_n58)
-                FUN_140873ca0(&elem, "targetHasBuffOwner", m_n58);
+                XmlSetAttr((class TiXmlElement*)(&elem), "targetHasBuffOwner", m_n58);
             if (m_n60 != kDefault.m_n60)
-                FUN_140873ca0(&elem, "targetSelectParty", m_n60);
+                XmlSetAttr((class TiXmlElement*)(&elem), "targetSelectParty", m_n60);
             if (m_n64 != kDefault.m_n64)
-                FUN_140873ca0(&elem, "targetSelectGuild", m_n64);
+                XmlSetAttr((class TiXmlElement*)(&elem), "targetSelectGuild", m_n64);
         }
         if (m_n6c != kDefault.m_n6c)
         {
             if (m_n68 != kDefault.m_n68)
-                FUN_140873ca0(&elem, "targetStatCompare", m_n68);
-            FUN_140873ca0(&elem, "targetStatCompareFunction", m_n6c);
+                XmlSetAttr((class TiXmlElement*)(&elem), "targetStatCompare", m_n68);
+            XmlSetAttr((class TiXmlElement*)(&elem), "targetStatCompareFunction", m_n6c);
         }
         if (m_n70 != kDefault.m_n70)
         {

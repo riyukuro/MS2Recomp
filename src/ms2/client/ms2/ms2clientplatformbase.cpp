@@ -9,6 +9,7 @@
 // MS2-PIN: ?Release@?$MS2Ptr@VCUserReportData@@@@AEAAXXZ 0x140c77760 ; merge-bind
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCUserReportData@@@@AEAAXPEAX@Z 0x140c777a0 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ms2clientplatformbase.cpp"
+#define MS2_ICLIENTPLATFORM_PURE = 0   // the IClientPlatform vftable is all _purecall (iclientplatform.h)
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/ms2clientplatformbase.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -19,6 +20,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uidialog.h"
 #include <stdarg.h>
+#include <efd/Win32/Win32PlatformService.h>
 
 // ---- header statics (the order of the unit's dynamic initializers) ----
 static CStringA s_strReportSiren("PremiumShop_ReportSiren");        // 0x143abf4c0
@@ -38,7 +40,6 @@ static CStringA s_strReportSiren2("PremiumShop_ReportSiren");       // 0x143abf5
 // ---- out-of-unit types and functions ----
 void FUN_14092e580(void* p) noexcept;
 void FUN_14092ea10(void* p, int n);
-void* FUN_140159860(int nSize, void* pStorage);
 class CFeatureManager { public: bool FUN_14036d650(); };
 class UIReportDialog;
 Unk_NexonAnalytics* FUN_140c77900();
@@ -54,34 +55,37 @@ public:
     void FUN_141ab9ce0(CStringW strA, CStringW strB);
 };
 void FUN_141276180(const CStringA& strTarget, const CStringA& strValue);
-void* FUN_140166440();                                              // the common log
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_140ab1290(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const int& nArg0, const CStringA& strArg1);
 void FUN_1403a1280(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg0);
-void FUN_1401859c0(void* pLog, int nLevel, int nCategory, const wchar_t* pszText);
+void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
 void FUN_140c76c70(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const __int64& nArg0,
                    const CStringA& strArg1, const CStringA& strArg2);
 __int64 FUN_140930240();
-__int64 FUN_140930390(int nKind);
+__int64 FUN_140930390(unsigned int);   // C3: was FUN_140930390
 __int64 FUN_140930ae0();
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 extern int DAT_143ab2914;
-void* FUN_1403ed2b0();                                              // the UI service
+class CUIService;
+template<> CUIService* TSingleton<CUIService>::GetInstance();
 struct Unk_CpUIService {
     MS2Ptr<UIObject> FUN_141adcea0(int nId);                         // 0x141adcea0 object by id
 };
 const CStringA& FUN_141adc5d0(void* pStrings, int nId);
 const CStringA& FUN_141adc530(void* pStrings, int nId);
-void* FUN_140b04f80(int nId);
+class UICashShopDialog* FUN_140b04f80(int);   // C3: was FUN_140b04f80
 void FUN_1410355e0(void* pWindow, CStringA strA, CStringA strB);
 void* FUN_140aadf80();
-HWND FUN_14209c720(void* pApp);
 void FUN_1416a0e70();
-void* FUN_1409a8b10();
 void* FUN_140c77560(void* pGame);
-void FUN_14125ec20(Unk_OptionProfile* p);
-void FUN_14125ef90(Unk_OptionProfile* p);
-void FUN_14125ef60(void* pTarget, const Unk_OptionProfile* pSource);
-void FUN_1412432d0(void* pGame);
+struct Unk_GraphicState2* FUN_14125ec20(struct Unk_GraphicState2*);   // C3: was FUN_14125ec20
+void FUN_14125ef90(struct Unk_GraphicState2*);   // C3: was FUN_14125ef90
+void FUN_14125ef60(struct Unk_GraphicState2*, struct Unk_GraphicState2 const*);   // C3: was FUN_14125ef60
+class CGameOption   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1412432d0();
+};
 __int64 FUN_140718350(const CStringA& str);
 extern int DAT_1439f4840;
 
@@ -250,7 +254,7 @@ void CClientPlatformBase::vfunc_22(int nCode, const char* pszFormat, ...)
         strLog.FormatV(pszFormat, args);
         va_end(args);
         FUN_140c77900()->FUN_14092d1f0(nCode, strLog);
-        FUN_140ab1290(FUN_140166440(), 0xb, 400, L"enqueueStageLog with nCode: {0}, strLog: {1}", nCode, strLog);
+        FUN_140ab1290(((void*)GetLogString()), 0xb, 400, L"enqueueStageLog with nCode: {0}, strLog: {1}", nCode, strLog);
     }
 }
 
@@ -264,7 +268,7 @@ void CClientPlatformBase::vfunc_23(int nCode, const char* pszFormat, ...)
         strLog.FormatV(pszFormat, args);
         va_end(args);
         FUN_140c77900()->FUN_14092d280(nCode, strLog);
-        FUN_140ab1290(FUN_140166440(), 0xb, 400, L"enqueueErrorLog with nCode: {0}, strLog: {1}", nCode, strLog);
+        FUN_140ab1290(((void*)GetLogString()), 0xb, 400, L"enqueueErrorLog with nCode: {0}, strLog: {1}", nCode, strLog);
     }
 }
 
@@ -293,7 +297,7 @@ void CClientPlatformBase::vfunc_30() {}
 // @0x140c75ab0
 void CClientPlatformBase::vfunc_31(CStringA, int, int a3)
 {
-    PostMessageA(FUN_14209c720(FUN_140aadf80()), 0x467, (WPARAM)a3, 0);
+    PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), 0x467, (WPARAM)a3, 0);
 }
 
 // @0x140c75b20
@@ -326,7 +330,7 @@ bool CClientPlatformBase::vfunc_39(__int64 nTime, int nKind)
 // @0x140c75c80
 bool CClientPlatformBase::vfunc_41(__int64 nTime)
 {
-    if (!FUN_140166410()->FUN_14036d650())
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d650())
         return false;
     if (DAT_143ab2914 >= 52)
         return FUN_140930ae0() - nTime >= 0;
@@ -341,13 +345,13 @@ bool CClientPlatformBase::vfunc_43(int, bool, int) { return false; }
 // @0x140c75d30
 const CStringA& CClientPlatformBase::vfunc_44()
 {
-    return FUN_141adc5d0(FUN_1403ed2b0(), 20156);
+    return FUN_141adc5d0(TSingleton<CUIService>::GetInstance(), 20156);
 }
 
 // @0x140c75d60
 const CStringA& CClientPlatformBase::vfunc_45()
 {
-    return FUN_141adc530(FUN_1403ed2b0(), 20156);
+    return FUN_141adc530(TSingleton<CUIService>::GetInstance(), 20156);
 }
 
 // @0x140c75d90
@@ -356,7 +360,7 @@ int CClientPlatformBase::vfunc_46() { return 2; }
 // @0x140c75db0
 void CClientPlatformBase::vfunc_47(CStringA strA, CStringA strB)
 {
-    void* pWindow = FUN_140b04f80(20156);
+    void* pWindow = ((void*)FUN_140b04f80(20156));
     if (pWindow != 0)
         FUN_1410355e0(pWindow, CStringA(strA), CStringA(strB));
 }
@@ -438,12 +442,12 @@ void CClientPlatformBase::vfunc_64(int nMode)
     if (nMode >= 0 && nMode < 3) {
         {
             Unk_OptionProfile kProfile;
-            FUN_14125ec20(&kProfile);
+            FUN_14125ec20((struct Unk_GraphicState2*)(&kProfile));
             kProfile.m_nMode = nMode;
-            FUN_14125ef60(FUN_140c77560(FUN_1409a8b10()), &kProfile);
-            FUN_14125ef90(&kProfile);
+            FUN_14125ef60((struct Unk_GraphicState2*)(FUN_140c77560(((void*)TSingleton<CGameOption>::GetInstance()))), (struct Unk_GraphicState2 const*)(&kProfile));
+            FUN_14125ef90((struct Unk_GraphicState2*)(&kProfile));
         }
-        FUN_1412432d0(FUN_1409a8b10());
+        ((class CGameOption*)(void*)(((void*)TSingleton<CGameOption>::GetInstance())))->FUN_1412432d0();
     }
 }
 
@@ -456,11 +460,11 @@ void CClientPlatformBase::vfunc_67()
     Unk_NexonAnalytics* pAnalytics = FUN_140c77900();
     if (pAnalytics->FUN_14092ca70(pAnalytics->GetModuleName()) == 1) {
         const char* pszModule = pAnalytics->GetModuleName();
-        FUN_1403a1280(FUN_140166440(), 0xb, 400, L"{0} 파일을 정상적으로 로드했습니다.", pszModule);
+        FUN_1403a1280(((void*)GetLogString()), 0xb, 400, L"{0} 파일을 정상적으로 로드했습니다.", pszModule);
         m_bAnalyticsLoaded = true;
     } else {
         const char* pszModule = pAnalytics->GetModuleName();
-        FUN_1403a1280(FUN_140166440(), 1, 400, L"{0} 파일을 로드하지 못했습니다.", pszModule);
+        FUN_1403a1280(((void*)GetLogString()), 1, 400, L"{0} 파일을 로드하지 못했습니다.", pszModule);
     }
 }
 
@@ -486,7 +490,7 @@ void CClientPlatformBase::vfunc_68()
     CStringA strSession = vfunc_76();
     if (!strSession.IsEmpty())
         kEvent.m_strSession.Set((const char*)strSession, 3);
-    FUN_140c76c70(FUN_140166440(), 0xb, 400, L"InitializeNexonAnalytics nexonSn={0} sessionId={1} serviceId={2}", nId,
+    FUN_140c76c70(((void*)GetLogString()), 0xb, 400, L"InitializeNexonAnalytics nexonSn={0} sessionId={1} serviceId={2}", nId,
                   strSession, strSerial);
     Unk_NxNumber kService(DAT_1439f4840);
     Unk_NexonAnalytics* pAnalytics = FUN_140c77900();
@@ -502,7 +506,7 @@ void CClientPlatformBase::vfunc_68()
         bResult = false;
     }
     if (bResult) {
-        FUN_1401859c0(FUN_140166440(), 0xb, 400, L"Nexon Analytics SDK 의 초기화를 완료했습니다.");
+        Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xb, 400, L"Nexon Analytics SDK 의 초기화를 완료했습니다.");
         m_bAnalyticsOn = true;
     }
 }
@@ -513,7 +517,7 @@ void CClientPlatformBase::vfunc_69()
     if (m_bAnalyticsOn) {
         m_bAnalyticsOn = false;
         FUN_140c77900()->FUN_14092d070(true);
-        FUN_1401859c0(FUN_140166440(), 0xb, 400, L"Nexon Analytics SDK 를 정상적으로 종료했습니다.");
+        Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xb, 400, L"Nexon Analytics SDK 를 정상적으로 종료했습니다.");
     }
 }
 
@@ -524,7 +528,7 @@ void CClientPlatformBase::vfunc_70()
         Unk_NexonAnalytics* pAnalytics = FUN_140c77900();
         pAnalytics->FUN_14092cbf0();
         const char* pszModule = pAnalytics->GetModuleName();
-        FUN_1403a1280(FUN_140166440(), 0xb, 400, L"{0} 파일을 정상적으로 언로드했습니다.", pszModule);
+        FUN_1403a1280(((void*)GetLogString()), 0xb, 400, L"{0} 파일을 정상적으로 언로드했습니다.", pszModule);
     }
 }
 
@@ -570,14 +574,14 @@ void FUN_140c76c70(void* pLog, int nLevel, int nCategory, const wchar_t* pszForm
     strText.Replace(L"{0}", strValue);
     strText.Replace(L"{1}", CStringW(strArg1));
     strText.Replace(L"{2}", CStringW(strArg2));
-    FUN_1401859c0(pLog, nLevel, nCategory, strText);
+    Unk_AdditionalLog((class CLogString*)(pLog), nLevel, nCategory, strText);
 }
 
 // @0x140c76fd0
 UIReportDialog* FUN_140c76fd0(int nId)
 {
-    if (FUN_1403ed2b0() != 0) {
-        MS2Ptr<UIObject> spObject = ((Unk_CpUIService*)FUN_1403ed2b0())->FUN_141adcea0(nId);
+    if (TSingleton<CUIService>::GetInstance() != 0) {
+        MS2Ptr<UIObject> spObject = ((Unk_CpUIService*)TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (spObject.get() != 0)
             return dynamic_cast<UIReportDialog*>((UIObject*)spObject);
     }
@@ -657,7 +661,7 @@ void Unk_NxNumber::Set(__int64 n)
 void Unk_NxNumber::Set(unsigned n)
 {
     FUN_14092ea10(this, 3);
-    void* p = FUN_140159860(8, &m_n10);
+    void* p = ::operator new(8, &m_n10);
     *(unsigned __int64*)p = n;
 }
 
@@ -665,7 +669,7 @@ void Unk_NxNumber::Set(unsigned n)
 void Unk_NxNumber::SetStorage(__int64 n)
 {
     FUN_14092ea10(this, 3);
-    void* p = FUN_140159860(8, &m_n10);
+    void* p = ::operator new(8, &m_n10);
     *(__int64*)p = n;
 }
 

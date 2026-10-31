@@ -105,7 +105,7 @@ CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a1, const CStringW& a2, 
 bool FUN_1407105c0(COutPacket* packet, int key, int delay);                // send (rate limited)
 __int64 FUN_140718320(const CStringW& value);                              // _wtoi64
 void FUN_140429690(Unk_GameEventLockedValue<0x40>* pValue, std::vector<MS2Ptr<CollectItemGroupContext> >& contexts);   // CGameEventValueCollectItemGroup::GetAll
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 // @0x140be9030
 template <> inline __int64 GameEventVariable::GetValue<__int64>(const __int64& nDefault)
@@ -295,7 +295,7 @@ bool UICollectItemGroupEventDialog::HasItem(int nItemId, int nRarity, int nCount
     Unk_InventoryItemKey key;
     key.m_id = nItemId;
     key.m_rarity = nRarity;
-    int nHave = DAT_143ab2a90.FUN_140a5eda0(&key.m_id);
+    int nHave = g_143ab2a90.FUN_140a5eda0(&key.m_id);
     if (nHave < nCount)
     {
         bool bWorn = false;

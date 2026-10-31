@@ -16,7 +16,10 @@
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiitemcreatedialog.cpp"    // assumed
 
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uiitemcreatedialog.h"
 
@@ -85,17 +88,6 @@ public:
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);                   // refresh the control
 };
-class Unk_IcList : public Unk_IcControl
-{
-public:
-    void FUN_1422dd1d0();                                   // remove all rows
-    void FUN_1422dcca0(int nSelected);                      // select a row
-    void FUN_1422dd230(const ASObj& row);                   // append a row
-    void FUN_1422dd310(const CStringW& strLabel);           // append a text row
-    int FUN_1422dd150();                                    // row count
-    CStringW FUN_1422dd520();                               // label of the selected row
-    void FUN_1422de0e0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& callback, int n);   // change handler
-};
 class Unk_IcDataProvider : public ASArray
 {
 public:
@@ -130,12 +122,17 @@ public:
 private:
     char m_pad[0x90];
 };
-void* FUN_14081b310(TiXmlDocument* pDoc);                   // the root element
-void FUN_14086ddc0(TiXmlDocument* pDoc);                    // load the document
-void* FUN_14086e090(void* pParent, TiXmlElement* pChild);   // link a child
+class Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc);   // the root element
+// The TinyXML node base (Clear 0x14086ddc0, LinkEndChild 0x14086e090).
+class TiXmlNode
+{
+public:
+    void Clear();
+    TiXmlNode* LinkEndChild(TiXmlNode* pChild);
+};
 bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szPath);   // save
-void FUN_140873ce0(void* pElement, const char* szName, int n);           // set an int attribute
-void FUN_140873e30(void* pElement, const char* szName, float f);         // set a float attribute
+void XmlSetAttr(TiXmlElement* pElem, const char* pszName, unsigned nValue);   // set an int attribute
+void XmlSetAttr(TiXmlElement* pElem, const char* pszName, float fValue);      // set a float attribute
 void FUN_140874050(void* pElement, const char* szName, const CString& str);   // set a string attribute
 
 MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);          // the item row (NULL: no such item)
@@ -426,7 +423,7 @@ MS2_REPLACE_METHOD(0x1419b4e30, UIItemCreateDialog, FUN_1419b4e30, 584, 0x6CAD08
 // @0x1419b5080
 int UIItemCreateDialog::FUN_1419b5080()
 {
-    MS2Ptr<Unk_IcList> list = FUN_140c02900("m_items");
+    MS2Ptr<ASScrollingList> list = FUN_140c02900("m_items");
     if (!list)
         return 0;
     CStringW strLabel = list->FUN_1422dd520();
@@ -527,7 +524,7 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
     PC* pPC = (PC*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return;
-    MS2Ptr<Unk_IcList> list = FUN_140c02900("m_items");
+    MS2Ptr<ASScrollingList> list = FUN_140c02900("m_items");
     if (list == 0)
         return;
     MS2Ptr<Unk_IcCheck> checkJob = FUN_140e52670("m_checkJob");
@@ -648,7 +645,7 @@ MS2_REPLACE_METHOD(0x1419b5730, UIItemCreateDialog, FUN_1419b5730, 3090, 0xA1CFB
 void UIItemCreateDialog::FUN_1419b6350()
 {
     m_spContextMenu = FUN_140c02900("m_contextMenu");
-    if ((Unk_IcList*)m_spContextMenu) {
+    if ((ASScrollingList*)m_spContextMenu) {
         int bShow = !GetFileSystem()->FUN_140398190();
         m_spContextMenu->vfunc_3(bShow);
         if (bShow != 0) {
@@ -681,7 +678,7 @@ MS2_REPLACE_METHOD(0x1419b6350, UIItemCreateDialog, FUN_1419b6350, 1078, 0x57B2A
 // @0x1419b6790
 void UIItemCreateDialog::FUN_1419b6790()
 {
-    if (MS2Ptr<Unk_IcList> list = FUN_140c02900("m_function")) {
+    if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_function")) {
         list->FUN_1422dd1d0();
         for (std::set<CStringW>::iterator it = m_functions.begin(); it != m_functions.end(); ++it)
             list->FUN_1422dd310(*it);
@@ -998,8 +995,8 @@ TiXmlElement* ItemOptionDebug::FUN_1419b7b10(int nGroup, int nStat)
     float fMaximum = FUN_1419b6a90(nGroup, nStat);
     TiXmlElement* pRate = new TiXmlElement("rate");
     FUN_140874050(pRate, "name", FUN_14016a600(FUN_14082f000(nStat), 0));
-    FUN_140873e30(pRate, "minimum", fMinimum);
-    FUN_140873e30(pRate, "maximum", fMaximum);
+    XmlSetAttr(pRate, "minimum", (float)fMinimum);
+    XmlSetAttr(pRate, "maximum", (float)fMaximum);
     Unk_IcRateCounts counts(10);
     FUN_1419b6be0(nGroup, nStat, counts);
     if (!counts.IsEmpty()) {
@@ -1007,9 +1004,9 @@ TiXmlElement* ItemOptionDebug::FUN_1419b7b10(int nGroup, int nStat)
             float fKey = counts.GetKeyAt(pos);
             int nCount = counts.GetValueAt(pos);
             TiXmlElement* pOutput = new TiXmlElement("output");
-            FUN_140873e30(pOutput, "option", fKey);
-            FUN_140873ce0(pOutput, "count", nCount);
-            FUN_14086e090(pRate, pOutput);
+            XmlSetAttr(pOutput, "option", (float)fKey);
+            XmlSetAttr(pOutput, "count", (unsigned)nCount);
+            ((TiXmlNode*)(void*)(pRate))->LinkEndChild((TiXmlNode*)(pOutput));
         }
     }
     return pRate;
@@ -1024,8 +1021,8 @@ TiXmlElement* ItemOptionDebug::FUN_1419b7e00(int nGroup, int nStat)
     int nMaximum = (int)FUN_1419b6e80(nGroup, nStat);
     TiXmlElement* pValue = new TiXmlElement("value");
     FUN_140874050(pValue, "name", FUN_14016a600(FUN_14082f000(nStat), 0));
-    FUN_140873ce0(pValue, "minimum", nMinimum);
-    FUN_140873ce0(pValue, "maximum", nMaximum);
+    XmlSetAttr(pValue, "minimum", (unsigned)nMinimum);
+    XmlSetAttr(pValue, "maximum", (unsigned)nMaximum);
     Unk_IcValueCounts counts(10);
     FUN_1419b6fc0(nGroup, nStat, counts);
     if (!counts.IsEmpty()) {
@@ -1033,9 +1030,9 @@ TiXmlElement* ItemOptionDebug::FUN_1419b7e00(int nGroup, int nStat)
             int nKey = (int)counts.GetKeyAt(pos);
             int nCount = counts.GetValueAt(pos);
             TiXmlElement* pOutput = new TiXmlElement("output");
-            FUN_140873ce0(pOutput, "option", nKey);
-            FUN_140873ce0(pOutput, "count", nCount);
-            FUN_14086e090(pValue, pOutput);
+            XmlSetAttr(pOutput, "option", (unsigned)nKey);
+            XmlSetAttr(pOutput, "count", (unsigned)nCount);
+            ((TiXmlNode*)(void*)(pValue))->LinkEndChild((TiXmlNode*)(pOutput));
         }
     }
     return pValue;
@@ -1049,8 +1046,8 @@ TiXmlElement* ItemOptionDebug::FUN_1419b80e0(int nGroup, unsigned nSpecial)
     float fMaximum = FUN_1419b7270(nGroup, nSpecial);
     TiXmlElement* pRate = new TiXmlElement("rate");
     FUN_140874050(pRate, "name", FUN_14016a600(FUN_140630e10(nSpecial), 0));
-    FUN_140873e30(pRate, "minimum", fMinimum);
-    FUN_140873e30(pRate, "maximum", fMaximum);
+    XmlSetAttr(pRate, "minimum", (float)fMinimum);
+    XmlSetAttr(pRate, "maximum", (float)fMaximum);
     Unk_IcRateCounts counts(10);
     FUN_1419b73c0(nGroup, nSpecial, counts);
     if (!counts.IsEmpty()) {
@@ -1058,9 +1055,9 @@ TiXmlElement* ItemOptionDebug::FUN_1419b80e0(int nGroup, unsigned nSpecial)
             float fKey = counts.GetKeyAt(pos);
             int nCount = counts.GetValueAt(pos);
             TiXmlElement* pOutput = new TiXmlElement("output");
-            FUN_140873e30(pOutput, "option", fKey);
-            FUN_140873ce0(pOutput, "count", nCount);
-            FUN_14086e090(pRate, pOutput);
+            XmlSetAttr(pOutput, "option", (float)fKey);
+            XmlSetAttr(pOutput, "count", (unsigned)nCount);
+            ((TiXmlNode*)(void*)(pRate))->LinkEndChild((TiXmlNode*)(pOutput));
         }
     }
     return pRate;
@@ -1074,8 +1071,8 @@ TiXmlElement* ItemOptionDebug::FUN_1419b83d0(int nGroup, unsigned nSpecial)
     unsigned nMaximum = (unsigned)FUN_1419b7670(nGroup, nSpecial);
     TiXmlElement* pValue = new TiXmlElement("value");
     FUN_140874050(pValue, "name", FUN_14016a600(FUN_140630e10(nSpecial), 0));
-    FUN_140873ce0(pValue, "minimum", nMinimum);
-    FUN_140873ce0(pValue, "maximum", nMaximum);
+    XmlSetAttr(pValue, "minimum", (unsigned)nMinimum);
+    XmlSetAttr(pValue, "maximum", (unsigned)nMaximum);
     Unk_IcRateCounts counts(10);
     FUN_1419b77c0(nGroup, nSpecial, counts);
     if (!counts.IsEmpty()) {
@@ -1083,9 +1080,9 @@ TiXmlElement* ItemOptionDebug::FUN_1419b83d0(int nGroup, unsigned nSpecial)
             float fKey = counts.GetKeyAt(pos);
             int nCount = counts.GetValueAt(pos);
             TiXmlElement* pOutput = new TiXmlElement("output");
-            FUN_140873e30(pOutput, "option", fKey);
-            FUN_140873ce0(pOutput, "count", nCount);
-            FUN_14086e090(pValue, pOutput);
+            XmlSetAttr(pOutput, "option", (float)fKey);
+            XmlSetAttr(pOutput, "count", (unsigned)nCount);
+            ((TiXmlNode*)(void*)(pValue))->LinkEndChild((TiXmlNode*)(pOutput));
         }
     }
     return pValue;
@@ -1106,10 +1103,10 @@ Unk_ItemOptionSimulator::Unk_ItemOptionSimulator()
 void Unk_ItemOptionSimulator::FUN_1419b8730()
 {
     FUN_1412751b0(L"Item Simulate Start", 0x14);
-    FUN_14086ddc0(&m_doc);
-    if (FUN_14081b310(&m_doc) == 0)
-        FUN_14086e090(&m_doc, new TiXmlElement("ms2"));
-    void* pRoot = FUN_14081b310(&m_doc);
+    ((TiXmlNode*)(void*)&m_doc)->Clear();
+    if ((void*)DocRootElement(&m_doc) == 0)
+        ((TiXmlNode*)(void*)(&m_doc))->LinkEndChild((TiXmlNode*)(new TiXmlElement("ms2")));
+    void* pRoot = (void*)DocRootElement(&m_doc);
 }
 MS2_REPLACE_METHOD(0x1419b8730, Unk_ItemOptionSimulator, FUN_1419b8730, 218, 0x43485A38);
 
@@ -1119,7 +1116,7 @@ MS2_REPLACE_METHOD(0x1419b8730, Unk_ItemOptionSimulator, FUN_1419b8730, 218, 0x4
 void Unk_ItemOptionSimulator::FUN_1419b8810()
 {
     FUN_1412751b0(L"Item Simulate End", 0x14);
-    void* pRoot = FUN_14081b310(&m_doc);
+    void* pRoot = (void*)DocRootElement(&m_doc);
     if (pRoot == 0)
         return;
     CString strGroups[4] = {"constant", "static", "random", "title"};
@@ -1130,7 +1127,7 @@ void Unk_ItemOptionSimulator::FUN_1419b8810()
         int nItemId = debug->m_nItemId;
         int nRank = debug->m_nRank;
         TiXmlElement* pItem = new TiXmlElement("item");
-        FUN_140873ce0(pItem, "id", nItemId);
+        XmlSetAttr(pItem, "id", (unsigned)nItemId);
         FUN_140874050(pItem, "name", FUN_14016a600(CStringTable::GetInstance()->FUN_141811980(1, nItemId), 0));
         FUN_140874050(pItem, "rank", FUN_14016a600(CStringTable::GetInstance()->FUN_141813150(nRank), 0));
         for (unsigned nGroup = 0; nGroup < 3; ++nGroup) {
@@ -1141,22 +1138,22 @@ void Unk_ItemOptionSimulator::FUN_1419b8810()
             for (unsigned nStat = 0; nStat < 0x23; ++nStat) {
                 int nS = nStat;
                 if (debug->FUN_1419b7920(nG, nS))
-                    FUN_14086e090(pStat, debug->FUN_1419b7b10(nG, nS));
+                    ((TiXmlNode*)(void*)(pStat))->LinkEndChild((TiXmlNode*)(debug->FUN_1419b7b10(nG, nS)));
                 if (debug->FUN_1419b79a0(nG, nS))
-                    FUN_14086e090(pStat, debug->FUN_1419b7e00(nG, nS));
+                    ((TiXmlNode*)(void*)(pStat))->LinkEndChild((TiXmlNode*)(debug->FUN_1419b7e00(nG, nS)));
             }
             for (unsigned nSpecial = 1; nSpecial < 0xcf; ++nSpecial) {
                 unsigned nSp = nSpecial;
                 if (debug->FUN_1419b7a10(nG, nSp))
-                    FUN_14086e090(pSpecial, debug->FUN_1419b80e0(nG, nSp));
+                    ((TiXmlNode*)(void*)(pSpecial))->LinkEndChild((TiXmlNode*)(debug->FUN_1419b80e0(nG, nSp)));
                 if (debug->FUN_1419b7a90(nG, nSp))
-                    FUN_14086e090(pSpecial, debug->FUN_1419b83d0(nG, nSp));
+                    ((TiXmlNode*)(void*)(pSpecial))->LinkEndChild((TiXmlNode*)(debug->FUN_1419b83d0(nG, nSp)));
             }
-            FUN_14086e090(pGroup, pStat);
-            FUN_14086e090(pGroup, pSpecial);
-            FUN_14086e090(pItem, pGroup);
+            ((TiXmlNode*)(void*)(pGroup))->LinkEndChild((TiXmlNode*)(pStat));
+            ((TiXmlNode*)(void*)(pGroup))->LinkEndChild((TiXmlNode*)(pSpecial));
+            ((TiXmlNode*)(void*)(pItem))->LinkEndChild((TiXmlNode*)(pGroup));
         }
-        FUN_14086e090(pRoot, pItem);
+        ((TiXmlNode*)(void*)(pRoot))->LinkEndChild((TiXmlNode*)(pItem));
     }
     CString strDir;
     strDir.Format("%s%s", (const char*)FUN_14016a5c0(CommonResource::GetInstance()->m_strResourcePath, 0), "../Debug/");

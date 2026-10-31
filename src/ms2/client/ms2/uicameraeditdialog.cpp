@@ -145,8 +145,7 @@ Unk_CamInput* FUN_14025e7a0();
 // Game object -> player (0 if it is not one).
 PCBase* FUN_14099eef0(GameObject* pObject);
 
-WorldService* FUN_1403ed2d0();
-int FUN_1408746f0(Unk_140165cf0* pElem, const char* pszName, efd::Point3& kOut);   // Point3 attribute
+int XmlGetAttr(class TiXmlElement*, char const*, class NiPoint3&);   // C3: was FUN_1408746f0
 
 // The camera manager's "move the current camera mode to a point" helper (a CameraMgr inline).
 // @0x1418df360
@@ -212,10 +211,10 @@ NiPoint3 UICameraEditDialog::CameraData::GetRotation() const
 // @0x1418dd590
 GameObject* UICameraEditDialog::CameraData::GetTarget() const
 {
-    GameObject* pTarget = FUN_1403ed2d0()->FUN_141bd1180(m_nTargetId);
+    GameObject* pTarget = WorldService::GetInstance()->FUN_141bd1180(m_nTargetId);
     if (pTarget != 0)
         return pTarget;
-    return static_cast<GameObject*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    return static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
 }
 
 // ---- UICameraEditDialog ----
@@ -467,8 +466,8 @@ unsigned UICameraEditDialog::LoadCustomizeCamera()
                 FUN_140873360(pElem, "distance", spData->m_fDistance);
                 FUN_140873360(pElem, "zoomIn", spData->m_fZoomIn);
                 FUN_140873360(pElem, "zoomOut", spData->m_fZoomOut);
-                FUN_1408746f0(pElem, "direction", spData->m_vDirection);
-                FUN_1408746f0(pElem, "rotation", spData->m_vRotation);
+                XmlGetAttr((class TiXmlElement*)(pElem), "direction", *(class NiPoint3*)&static_cast<class efd::Point3&>(spData->m_vDirection));
+                XmlGetAttr((class TiXmlElement*)(pElem), "rotation", *(class NiPoint3*)&static_cast<class efd::Point3&>(spData->m_vRotation));
                 m_aPresets.Add(spData);
             }
         }
@@ -540,7 +539,7 @@ void UICameraEditDialog::FUN_1418de980()
     {
         Vector3 vDirection;
         Vector3 vPosition;
-        if (FUN_1403ed2d0()->FUN_141bd0dd0(&vPosition, &vDirection) == 0)
+        if (WorldService::GetInstance()->FUN_141bd0dd0(&vPosition, &vDirection) == 0)
             return;
         pTarget->vfunc_21(*reinterpret_cast<efd::Point3*>(&vDirection));
         PCBase* pPlayer = FUN_14099eef0(pTarget);
@@ -552,10 +551,10 @@ void UICameraEditDialog::FUN_1418de980()
 // @0x1418dea40
 GameObject* UICameraEditDialog::FUN_1418dea40()
 {
-    GameObject* pTarget = FUN_1403ed2d0()->FUN_141bd1180(m_nTargetId);
+    GameObject* pTarget = WorldService::GetInstance()->FUN_141bd1180(m_nTargetId);
     if (pTarget != 0)
         return pTarget;
-    return static_cast<GameObject*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    return static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
 }
 
 // @0x1418dead0
@@ -582,13 +581,12 @@ public:
     void FUN_140da5180(int nOp, Delegate<void(CInPacket&)> handler);
     void FUN_140da51e0(int nOp, Delegate<void(CInPacket&)> handler);
 };
-Unk_CtPackets* FUN_140bccd50();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 
 // The key block list (what keys the UI swallows).
 CKeyTable* FUN_1409331f0();
 
-bool FUN_140a467d0(const MS2Ptr<AScript>*);                         // has the AS object been released
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The prev/next buttons.
 class Unk_CtButton : public ASDisplayObject
@@ -613,13 +611,13 @@ UICartoonDialog::UICartoonDialog()
     : m_nBookId(0), m_nPage(0)
 {
     FUN_141924170(1);
-    FUN_140bccd50()->FUN_140da5180(0x88, Delegate<void(CInPacket&)>(this, &UICartoonDialog::FUN_1418dfc60));
+    ((class Unk_CtPackets*)FUN_140bccd50())->FUN_140da5180(0x88, Delegate<void(CInPacket&)>(this, &UICartoonDialog::FUN_1418dfc60));
 }
 
 // @0x1418df5f0
 UICartoonDialog::~UICartoonDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0x88, Delegate<void(CInPacket&)>(this, &UICartoonDialog::FUN_1418dfc60));
+    ((class Unk_CtPackets*)FUN_140bccd50())->FUN_140da51e0(0x88, Delegate<void(CInPacket&)>(this, &UICartoonDialog::FUN_1418dfc60));
 }
 
 // @0x1418df6c0
@@ -654,27 +652,27 @@ int UICartoonDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x7a, 0, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x7a, 0, 0))
     {
         OnPrev();
         m_30->Invoke("handleKeyDown", 1);
         return 1;
     }
-    else if (FUN_14025e7c0()->FUN_14116d9c0(0x7f, 0, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x7f, 0, 0))
     {
         OnNext();
         m_30->Invoke("handleKeyDown", 0);
         return 1;
     }
-    else if (FUN_14025e7c0()->FUN_14116da30(0x7a, 0, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116da30(0x7a, 0, 0))
         m_30->Invoke("handleKeyUp", 1);
-    else if (FUN_14025e7c0()->FUN_14116da30(0x7f, 0, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116da30(0x7f, 0, 0))
         m_30->Invoke("handleKeyUp", 0);
-    else if (FUN_14025e7c0()->FUN_14116d840())
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840())
         m_30->Invoke("handleEscDown", 0);
-    else if (FUN_14025e7c0()->FUN_14116da30(1, 0, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116da30(1, 0, 0))
         m_30->Invoke("handleEscUp", 0);
     return 0;
 }
@@ -1131,24 +1129,21 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/commonfiles/itemdatatable.h"
 #include "uicharactercreatedialog.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/gameeventvalue.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/ascript.h"
 
 // The local player as the lobby sees it (a MyPC): the gender / job / equip accessors of its PC base.
-class Unk_CcPlayer
+class Unk_CcPlayer : public PC
 {
 public:
-    int FUN_141658e60();                                            // gender
-    int FUN_141654700();                                            // job
     const void* FUN_141659220(int nSlot);                           // the colour of a skin slot
     void* FUN_1416561a0();                                          // the equip holder
-    MS2Ptr<CEquipItem> FUN_141655e10(int nSlotKind);                // the worn item of a slot kind
 };
 
 // The game event value manager (what FUN_140302b00 hands out).
-class Unk_CcGESub
+class Unk_CcGESub : public Unk_GameEventValue408
 {
-public:
-    bool FUN_140424b80();                                           // IsSet
-    unsigned FUN_140424ba0();                                       // GetValue
 };
 class Unk_CcGEMgr
 {
@@ -1180,26 +1175,34 @@ struct Unk_FcUIMsg
     char m_pad[0x50];
 };
 void FUN_1422e4490(Unk_FcUIMsg* p);                                 // construct
-void FUN_1422b8310(Unk_FcUIMsg* p, const wchar_t* psz);             // append a wide string argument
 UIDialog* FUN_140c300a0(int nClass);                                // the open dialog of a class
 
 // The scene / app / popup.
 CSceneStateMulti* FUN_140f30370();
 void* FUN_140aadf80();
 HWND FUN_14209c720(void* p);
-void* FUN_140a6a840();
-void FUN_1419cae20(void* pMgr, UIItemEventListener* pListener);
-void FUN_1419caeb0(void* pMgr, UIItemEventListener* pListener);
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419cae20(class UIItemEventListener*);
+    void FUN_1419caeb0(class UIItemEventListener*);
+};
 UICameraEditDialog* FUN_140cd47b0(int nClass);
 UIDialog* FUN_140b72de0(int nClass);
-int FUN_1418f1c20(UIDialog* pDialog);
+class UICharacterListDialog   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1418f1c20();
+};
 int FUN_140222b30(int nGender, int n);
 
 // The item customize controller's extra members and the part it edits.
-void FUN_140cd3160(Customize* pCustomize, int nColor, int n);
-unsigned FUN_140cd1b20(Customize* pCustomize);                      // what the item can customize (bit 1/2 size, 4 degree, 8 position)
-void FUN_140cd1ff0(Customize* pCustomize);
-int FUN_1414124a0(void* pPart);                                     // the item id the part belongs to
+class CItemCustomizeController   // C3: member view for the former free stand-ins
+{
+public:
+    int GetEquipItemValue();
+};
 struct Unk_BSPartRange
 {
     float fMax;
@@ -1268,9 +1271,9 @@ void FUN_140586e50(DefaultItemData* p, int nItemId, int n);                 // c
 void FUN_1405849c0(int nJob, int nGender, int nKind, ATL::CAtlArray<MS2Ptr<DefaultItemData> >& out);     // the default items of a job
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 MS2Ptr<CEquipItem> FUN_1414211a0(int nSlotKind, void* pPc);                 // the worn item of the kind
-void FUN_1414239e0(int* pnColor, int n, void* pPc);
+int FUN_1414239e0(unsigned int*, int, struct Unk_UgcPlayer*);   // C3: was FUN_1414239e0
 void FUN_141900750(ASObj& obj);                                             // fill the initData object
-unsigned FUN_141b6df90(const void* pColor);                                 // a colour as 0xAARRGGBB
+unsigned int FUN_141b6df90(struct Unk_UtilFloat3 const*);   // C3: was FUN_141b6df90
 CString FUN_140719210(long n);
 void* FUN_140d86260();
 void FUN_141424580(MS2Ptr<CEquipItem> spEquip, int* pnColor, int n);        // the colour of the worn item (spEquip by value)
@@ -1281,8 +1284,6 @@ void FUN_140710590(COutPacket& packet);                                     // s
 void FUN_140f324f0(ASObj& row, MS2Ptr<CItemData> spData, bool b);            // fill a list row (spData by value)
 class Unk_CcScript : public AScript
 {
-public:
-    Scaleform::GFx::Value FUN_140e813f0(const char* szMethod, const ASArray& arr, int n);
 };
 class Unk_CcProxy                                                           // Unk_UserProxyItemData
 {
@@ -1319,10 +1320,10 @@ CString UICharacterCreateDialog::GetTypeName()
 void UICharacterCreateDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(void*)(((void*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_140f0b710(0);
     m_spCustomize.AssignRaw(new Customize(pPc->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
     int nCount = 7;
@@ -1337,7 +1338,7 @@ void UICharacterCreateDialog::OnLoadComplete()
     FUN_141900750(kInit);
     m_30->Invoke("initData", nGender, Scaleform::GFx::Value(kInit.FUN_1422bb870()));
     UIDialog* pSelect = FUN_140b72de0(0x4ef1);
-    if (pSelect != 0 && FUN_1418f1c20(pSelect) == 0 && m_bGuideOpened == 0)
+    if (pSelect != 0 && ((class UICharacterListDialog*)(class UIDialog*)(pSelect))->FUN_1418f1c20() == 0 && m_bGuideOpened == 0)
     {
         TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4ea7);
         m_bGuideOpened = 1;
@@ -1518,7 +1519,7 @@ int UICharacterCreateDialog::vfunc_13()
         return 0;
     if (m_nState != 1)
         return 0;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
     {
         m_30->Invoke("onEnterKey");
         return 1;
@@ -1540,7 +1541,7 @@ void UICharacterCreateDialog::vfunc_12()
     if (!(vfunc_55() == 0 && !(m_30 == 0)))
         return;
     UISwfEntity::vfunc_12();
-    void* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPc = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     m_spCustomize.AssignRaw(new Customize(static_cast<PCBase*>(pPc)->FUN_14123c580(),
@@ -1557,7 +1558,7 @@ void UICharacterCreateDialog::vfunc_26(int nItemId)
         return;
     if (m_nTab == -1 || m_nCategory == -1)
         return;
-    PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (pPc->FUN_14166c930() != 0xe)
@@ -1576,7 +1577,7 @@ int UICharacterCreateDialog::vfunc_1(void* p)
         return 0;
     if ((m_30.get() ? true : false) && p != 0)
     {
-        if (m_spCustomize->FUN_140cd17e0() == FUN_1414124a0(p))
+        if (m_spCustomize->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
             m_30->Invoke("startChangeCutomPosition");
     }
     return 1;
@@ -1589,7 +1590,7 @@ int UICharacterCreateDialog::vfunc_2(void* p, float fValue, int nIndex)
         return 0;
     if ((m_30.get() ? true : false) && p != 0)
     {
-        if (m_spCustomize->FUN_140cd17e0() == FUN_1414124a0(p))
+        if (m_spCustomize->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         {
             const Unk_BSPartRange* pRange = ((Unk_BSPartObj*)p)->vfunc_24(nIndex);
             if (pRange->bReverse)
@@ -1612,7 +1613,7 @@ int UICharacterCreateDialog::vfunc_3(void* p, float fValue)
         return 0;
     if ((m_30.get() ? true : false) && p != 0)
     {
-        if (m_spCustomize->FUN_140cd17e0() == FUN_1414124a0(p))
+        if (m_spCustomize->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         {
             int nDegree = (int)fValue;
             if (nDegree < 0)
@@ -1639,7 +1640,7 @@ void UICharacterCreateDialog::vfunc_67()
     m_spBackUp = 0;
     m_aLoaded.RemoveAll();
     m_items.RemoveAll();
-    FUN_1419caeb0(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(void*)(((void*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ea7);
     m_nChangedMask = 0;
 }
@@ -1677,10 +1678,10 @@ void UICharacterCreateDialog::FUN_1418e3980(CInPacket* pPacket)
         bNotify = 1;
         int nMsgId = 9;
         int nValue = DAT_1439f4a84;
-        if (FUN_140302b00()->FUN_14041cb30()->FUN_140424b80())
+        if (FUN_140302b00()->FUN_14041cb30()->IsSet())
         {
             nMsgId = 10;
-            nValue = FUN_140302b00()->FUN_14041cb30()->FUN_140424ba0();
+            nValue = FUN_140302b00()->FUN_14041cb30()->GetValue();
         }
         strMsg = FUN_1408116a0(nMsgId, nValue);
     }
@@ -1734,15 +1735,15 @@ void UICharacterCreateDialog::FUN_1418e3980(CInPacket* pPacket)
 // @0x1418e3f50
 int UICharacterCreateDialog::FUN_1418e3f50(const CStringW& strName)
 {
-    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     CCCharacterManagementPacket::Create kCreate;
     kCreate.m_nGender = (char)pPc->FUN_141658e60();
     kCreate.m_nJob = pPc->FUN_141654700();
     kCreate.m_strName = strName;
-    kCreate.m_nColor0 = FUN_141b6df90(pPc->FUN_141659220(0));
-    kCreate.m_nColor1 = FUN_141b6df90(pPc->FUN_141659220(1));
+    kCreate.m_nColor0 = FUN_141b6df90((struct Unk_UtilFloat3 const*)(pPc->FUN_141659220(0)));
+    kCreate.m_nColor1 = FUN_141b6df90((struct Unk_UtilFloat3 const*)(pPc->FUN_141659220(1)));
     ATL::CAtlList<MS2Ptr<CEquipItem> > aEquips(10);
     FUN_1411e1b80(pPc->FUN_1416561a0(), aEquips);
     kCreate.m_items.WriteUInt8((unsigned char)aEquips.GetCount());
@@ -1867,7 +1868,7 @@ void UICharacterCreateDialog::FUN_1418e47e0(int nTab, int nCategory)
     m_aRows.RemoveAll();
     if (nTab != -1 && nCategory != -1)
     {
-        Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPc != 0)
         {
             int nGender = pPc->FUN_141658e60();
@@ -1907,7 +1908,7 @@ void UICharacterCreateDialog::FUN_1418e4a80(int nTab, int nCategory)
 {
     if (m_aRows.IsEmpty())
         return;
-    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (!m_aRows.IsEmpty())
@@ -1944,7 +1945,7 @@ void UICharacterCreateDialog::FUN_1418e4a80(int nTab, int nCategory)
             kRow.FUN_1407cb9c0("saleTag", spRow->m_nSaleTag);
             aItems.FUN_1422bc050(Scaleform::GFx::Value(kRow.FUN_1422bb870()));
         }
-        static_cast<Unk_CcScript*>(m_30.get())->FUN_140e813f0("buildItems", aItems, nSelect);
+        static_cast<Unk_CcScript*>(m_30.get())->Invoke("buildItems", aItems, nSelect);
     }
 }
 
@@ -1956,7 +1957,7 @@ void UICharacterCreateDialog::FUN_1418e4f50()
         return;
     if (m_spCustomize == 0)
         return;
-    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     ATL::CAtlList<MS2Ptr<CEquipItem> > aEquips(10);
@@ -2004,7 +2005,7 @@ void UICharacterCreateDialog::FUN_1418e4f50()
     if (spDefault.get() != 0)
     {
         int nSkin;
-        FUN_1414239e0(&nSkin, 0, pPc);
+        FUN_1414239e0((unsigned int*)(&nSkin), 0, (struct Unk_UgcPlayer*)(pPc));
         int nColor = nSkin;
         FUN_1414248a0(spDefault, &nSkin, &nColor);
         int nTab;
@@ -2031,7 +2032,7 @@ void UICharacterCreateDialog::FUN_1418e5580(MS2Ptr<CItemData> spData)
     if (spData.get() != 0 && spData->FUN_14053e260() != 0)
     {
         int nCurColor = 0;
-        Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPc == 0)
             return;
         if (!spData->FUN_14053cf00())
@@ -2047,7 +2048,7 @@ void UICharacterCreateDialog::FUN_1418e5580(MS2Ptr<CItemData> spData)
             }
         }
         else
-            FUN_1414239e0(&nCurColor, 0, pPc);
+            FUN_1414239e0((unsigned int*)(&nCurColor), 0, (struct Unk_UgcPlayer*)(pPc));
         int nRealColor = 0;
         Unk_BmBoxPtr<CColorPaletteInfo::ColorArray> spColors = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColors(spData->FUN_14053e260());
         if (spColors.get() != 0 && !spColors->IsEmpty())
@@ -2068,7 +2069,7 @@ void UICharacterCreateDialog::FUN_1418e5580(MS2Ptr<CItemData> spData)
             }
         }
     }
-    static_cast<Unk_CcScript*>(m_30.get())->FUN_140e813f0("buildColors", aColors, nSelect);
+    static_cast<Unk_CcScript*>(m_30.get())->Invoke("buildColors", aColors, nSelect);
 }
 
 // buildCustom
@@ -2082,7 +2083,7 @@ void UICharacterCreateDialog::FUN_1418e5a10(MS2Ptr<CItemData> spData)
     Unk_BSPartObj* pPart = m_spCustomize->FUN_140cd1a30().FUN_140cd5210();
     if (pPart == 0)
         return;
-    unsigned nFlags = FUN_140cd1b20(m_spCustomize);
+    unsigned nFlags = ((class Customize*)(class Customize*)(m_spCustomize))->FUN_140cd1b20();
     if (0 < (int)nFlags)
     {
         ASObj kData(2);
@@ -2212,7 +2213,7 @@ bool UICharacterCreateDialog::FUN_1418e6430(const CStringW& strName)
                         m_30->Invoke("requestCreate");
                     Unk_FcUIMsg kMsg;
                     FUN_1422e4490(&kMsg);
-                    FUN_1422b8310(&kMsg, (const wchar_t*)strName);
+                    ((class ASData*)(struct Unk_FcUIMsg*)(&kMsg))->FUN_1422b8310((const wchar_t*)strName);
                     UIDialog* pDialog = FUN_140c300a0(0x4ef1);
                     if (pDialog != 0)
                         pDialog->OnMessage(this, reinterpret_cast<UIMsg*>(&kMsg));
@@ -2238,7 +2239,7 @@ void UICharacterCreateDialog::FUN_1418e6680(int nRandom)
     CSceneStateMulti* pScene = FUN_140f30370();
     if (!pScene)
         return;
-    void* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPc = WorldService::GetInstance()->FUN_141bd0cc0();
     if (!pPc)
         return;
     pScene->FUN_14174ec40(nRandom, false);
@@ -2258,7 +2259,7 @@ void UICharacterCreateDialog::FUN_1418e6730(int nGender)
     CSceneStateMulti* pScene = FUN_140f30370();
     if (!pScene)
         return;
-    void* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPc = WorldService::GetInstance()->FUN_141bd0cc0();
     if (!pPc)
         return;
     MS2Ptr<CSceneStateMulti::BackUpCharacterInfo> spOld(m_spBackUp);
@@ -2276,7 +2277,7 @@ void UICharacterCreateDialog::FUN_1418e6730(int nGender)
 // @0x1418e6950
 int UICharacterCreateDialog::FUN_1418e6950(int nItemId, int nTab, int nCategory)
 {
-    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
@@ -2314,7 +2315,7 @@ void UICharacterCreateDialog::FUN_1418e6b20(int nTab)
     {
         if (nTab == -1)
             return;
-        PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPc != 0)
         {
             if (pPc->FUN_14166c930() != 0xe)
@@ -2335,7 +2336,7 @@ void UICharacterCreateDialog::FUN_1418e6bf0(int nTab, int nCategory)
         return;
     if (nTab == -1 || nCategory == -1)
         return;
-    PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (pPc->FUN_14166c930() != 0xe)
@@ -2383,7 +2384,7 @@ void UICharacterCreateDialog::FUN_1418e6fc0(int nColor)
 {
     if (m_spCustomize == 0)
         return;
-    FUN_140cd3160(m_spCustomize, nColor, 0);
+    ((class Customize*)(class Customize*)(m_spCustomize))->FUN_140cd3160(nColor, 0);
     m_nCurItemId = m_spCustomize->FUN_140cd17e0();
 }
 
@@ -2443,7 +2444,7 @@ void UICharacterCreateDialog::FUN_1418e7340(int, int, int)
 // @0x1418e7380
 void UICharacterCreateDialog::FUN_1418e7380(int nItemId)
 {
-    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
@@ -2469,7 +2470,7 @@ void UICharacterCreateDialog::FUN_1418e74c0(MS2Ptr<CItemData> spData)
         return;
     if (spData->FUN_14053c620() == 0xe || spData->FUN_14053c620() == 0xf || spData->FUN_14053c620() == 0x16)
     {
-        void* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+        void* pPc = WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPc != 0)
         {
             int nCategory;
@@ -2534,7 +2535,7 @@ void UICharacterCreateDialog::vfunc_85()
 {
     if (m_spCustomize == 0)
         return;
-    FUN_140cd1ff0(m_spCustomize);
+    ((class Customize*)(class Customize*)(m_spCustomize))->FUN_140cd1ff0();
 }
 
 // @0x1418e8430

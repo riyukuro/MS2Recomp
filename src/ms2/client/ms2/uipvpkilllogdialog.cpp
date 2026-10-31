@@ -16,17 +16,21 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 static CString s_strBattleFieldKill = "BattleField_Kill";
 static CString s_strSystemKillPlayer = "System_KillPlayer";
 
 // ---- unit-local views of exe objects ----
 
-class Unk_PkTextFilter { public: void FUN_1416fb340(CStringW& str); };
-Unk_PkTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 
-void* FUN_1403ed2d0();                                          // the world
-PCBase* FUN_141bd0cc0(void* pWorld);                            // the own character
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 bool FUN_14025cd60(const CStringW& strA, const CStringW& strB); // names are equal
 CStringW FUN_14052bd00(int nId, const CStringW& strName);       // string table text with one name
 void FUN_141276180(const CString& strName, const CString& strOpt);   // play a sound
@@ -98,7 +102,7 @@ void UIPvPKillLogDialog::FUN_141342880(CStringW strAttacker, CStringW strTarget)
         m_strTarget = strTarget;
         return;
     }
-    PCBase* pMe = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pMe = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pMe == 0)
         return;
     ASObj obj(2);

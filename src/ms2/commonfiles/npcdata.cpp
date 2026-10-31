@@ -948,11 +948,9 @@ MS2_REPLACE_METHOD(0x1406CD310, CNpcData, GetRace, 14, 0x828204CF);
 
 // --- Table/NpcRegionSpawnData.xml and the NpcData xml cache ---------------------------------------------------------
 
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
-void FUN_1402804e0(void*, unsigned __int64, unsigned __int64, int, const wchar_t*);
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
@@ -1220,7 +1218,7 @@ void CNpcDataTable::IndexRegionSpawn(Unk_BmPtr<CNpcRegionSpawnData> pData)
 void CNpcDataTable::LoadNpcCache()
 {
     std::vector<CString> aFiles;
-    FUN_140166420();
+    GetFileSystem();
     FUN_1403992a0(".xml", "./Data/Xml/NpcData/", aFiles, "", false);
     for (CString& strFile : aFiles)
     {
@@ -1236,15 +1234,15 @@ void CNpcDataTable::LoadRegionSpawn()
 {
     CString strPath = FUN_14071a5b0(CString("Table"), CString("NpcRegionSpawnData.xml"));
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_1402804e0(FUN_140166440(), 0, 0, 0xc, L"NpcDataTable.cpp:Init : File not found NpcRegionSpawnData.xml");
+        reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0xc, L"NpcDataTable.cpp:Init : File not found NpcRegionSpawnData.xml");
         return;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("NpcRegionSpawnData"); pNode != 0;
@@ -1386,7 +1384,7 @@ int Parse_14021bc30(const CStringA& strName);                                   
 const CString& FUN_14082efb0(int nStat);                                                // xml name of the nStat-th stat
 bool FUN_14036d570(void* pOptions, int nFeature);                                       // feature id check
 void FUN_1406a6d70(void* pLog, int a, int b, int c, const wchar_t* pszFormat, const int& nArg);
-void FUN_140177a80(void* pLog, int a, int b, const wchar_t* pszFormat, const int& nArg);
+template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);
 void FUN_140177db0(const CString& str, ATL::CAtlArray<unsigned short>& out, const char* szDelimiter);
 void FUN_1402c8940(const CString& str, std::vector<CString>& vec, const char* pszDelim);
@@ -1645,7 +1643,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         if (m_capsule.m_fRadius <= 0.0f || m_capsule.m_fHeight <= 0.0f)
         {
             int nId = GetId();
-            FUN_1406a6d70(FUN_140166440(), 0, 0, 0x16, L"NpcID={0}, Capsule.radius, Capsule.height는 0보다 커야합니다.", nId);
+            FUN_1406a6d70(GetLogString(), 0, 0, 0x16, L"NpcID={0}, Capsule.radius, Capsule.height는 0보다 커야합니다.", nId);
         }
     }
     pChild = pElem->FUN_140165cf0("dead");
@@ -1678,7 +1676,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         if (probs.GetCount() < actions.GetCount())
         {
             int nId = GetId();
-            FUN_140177a80(FUN_140166440(), 1, 0x13, L"입력한 값의 갯수가 맞지 않습니다. NpcID {0} [normal : prob < action]", nId);
+            Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"입력한 값의 갯수가 맞지 않습니다. NpcID {0} [normal : prob < action]", reinterpret_cast<const unsigned&>(nId));
             probs.SetCount(actions.GetCount(), -1);
         }
         for (unsigned i = 0; i < actions.GetCount(); ++i)

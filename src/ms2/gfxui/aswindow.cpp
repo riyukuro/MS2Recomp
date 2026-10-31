@@ -5,6 +5,7 @@
 //
 // The unit name and directory are assumed (the GFx UI library 0x1422b0000-0x142304000 has no __FILE__ strings). The
 // class is declared in src/ms2/placeholder/aswindow.h (shared with ASDialog).
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include <math.h>

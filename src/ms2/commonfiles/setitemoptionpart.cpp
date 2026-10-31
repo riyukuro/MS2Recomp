@@ -14,8 +14,8 @@ void FUN_140178670(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<int
 void FUN_140645110(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<unsigned short>& arr);
 const CStringA& FUN_14082efb0(UnlimitedEnchantInfo::OptionKey nStat);       // the xml name of a stat
 const CStringA& FUN_14081d380(Unk_SocketSpecialStat nStat);                 // the xml name of a special ability
-void* FUN_140166440();
-unsigned __int64 FUN_1401859c0(void* pLogger, int nLevel, int nCategory, const wchar_t* pszText);
+class CLogString* GetLogString();
+void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*);
 extern const UnlimitedEnchantInfo::OptionKey DAT_1439f48d0[16];
 extern const Unk_SocketSpecialStat DAT_1439f4910[4];
 
@@ -30,14 +30,14 @@ bool SetItemOptionPart::Load(Unk_140165cf0* pElem)
     FUN_140873220(pElem, "count", m_nCount);
     if (m_nCount == 0)
     {
-        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"\uac12\uc774 0 \uc785\ub2c8\ub2e4.PartCount is NULL");
+        Unk_AdditionalLog(GetLogString(), 1, 0x13, L"\uac12\uc774 0 \uc785\ub2c8\ub2e4.PartCount is NULL");
         return false;
     }
     FUN_140178670(pElem, "additionalEffectID", m_effectIds);
     FUN_140645110(pElem, "additionalEffectLevel", m_effectLevels);
     if (m_effectIds.GetCount() != m_effectLevels.GetCount())
     {
-        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"\uac12\uc774 0 \uc785\ub2c8\ub2e4.additionalEffect Count Error!");
+        Unk_AdditionalLog(GetLogString(), 1, 0x13, L"\uac12\uc774 0 \uc785\ub2c8\ub2e4.additionalEffect Count Error!");
         return false;
     }
     FUN_1408733e0(pElem, "animationPrefix", m_animationPrefix);

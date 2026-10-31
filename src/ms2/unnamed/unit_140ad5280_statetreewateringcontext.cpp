@@ -4,6 +4,7 @@
 // MS2-RANGE: 0x140ad5280-0x140ad5df0 .text$mn
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "unit_140ad5280.h"
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/mypc.h"
@@ -19,7 +20,7 @@
 
 // ---- unit-local stand-ins and unrecovered callees ----
 
-extern Vector3 DAT_143b01a60;                    // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // A Constants::Value<int> seen through its Read (the inline COMDAT 0x140ad5c50 of this obj; Get is FUN_1402056b0).
 class Unk_SSGConstValue { public: int* FUN_1402056b0(); int FUN_140ad5c50(); };
@@ -43,11 +44,7 @@ public:
 };
 UICastingBar* FUN_140ac2270(int nId);
 CStringW GetStringCommon(int nId);                         // string table text by id
-void* FUN_14165f100(PCBase* p);
-void FUN_14165f170(PCBase* p);
 class Unk_TwBuffMgr { public: Vector3 FUN_141683290(); };
-Unk_TwBuffMgr* FUN_14166d240(PCBase* p);
-bool FUN_1416749c0(PCBase* p);
 
 // @0x140ad5c50
 int Unk_SSGConstValue::FUN_140ad5c50()
@@ -116,8 +113,8 @@ void StateTreeWatering::vfunc_4(StateData* pData)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider != 0)
     {
-        if (FUN_14165f100(pRider) != 0)
-            FUN_14165f170(pRider);
+        if (((void*)((class PC*)(class PCBase*)(pRider))->FUN_14165f100()) != 0)
+            ((class PC*)(class PCBase*)(pRider))->SendRequestCube();
         UICastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar != 0)
         {
@@ -183,11 +180,11 @@ void StateTreeWatering::vfunc_8(double fTime)
         }
         m_pOwner->vfunc_59(1, 0, 0, 0);
     }
-    Unk_TwBuffMgr* pBuff = FUN_14166d240(pRider);
+    Unk_TwBuffMgr* pBuff = ((class Unk_TwBuffMgr*)((class PCBase*)(class PCBase*)(pRider))->FUN_14166d240());
     Vector3 kPos = pBuff->FUN_141683290();
     Vector3 kArg = kPos;
     pRider->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
-    if (FUN_1416749c0(m_pOwner) != 0)
+    if (((class PCBase*)(class PCBase*)(m_pOwner))->FUN_1416749c0() != 0)
         pRider->vfunc_59(2, 0, 0, 0);
     else
         FUN_1417b9460();

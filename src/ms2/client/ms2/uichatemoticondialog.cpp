@@ -49,6 +49,10 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/cmycharacter.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- statics (.text$di): the icons of the favourites and shop tabs, and the statics of the headers the unit includes ----
 static CStringW s_strCategoryPath = L"./Data/Resource/Image/Emoticon/Category/tab_bookmark.png";   // 0x143abd858 (??__E 0x1400ca6a0)
@@ -77,7 +81,6 @@ class Unk_EdUIManager
 public:
     MS2Ptr<UIObject> FUN_141adcea0(int nUiId);
 };
-Unk_EdUIManager* FUN_1403ed2b0();
 
 // The Merat market dialog (ui id 0x4ec1): opened on the emoticon page by the shop button.
 class UIMeratMarketDialog : public UIDialog
@@ -89,25 +92,21 @@ public:
 };
 
 // The world (the own character) and the chat window.
-class Unk_EdWorld { public: void* FUN_141bd0cc0(); };
-Unk_EdWorld* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 class Unk_EdChat { public: CStringW FUN_1414829e0(); };
 Unk_EdChat* FUN_141482e80();
 
 // The notify manager.
-class Unk_EdNotifyMgr { public: void FUN_140da4fe0(MS2Ptr<NotifyObject> spNotify); };
-Unk_EdNotifyMgr* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 // The restrictions object (0x143ab3330 holder): FUN_14138d7e0 posts a restriction event.
 class Unk_EdRestrictions { public: void FUN_14138d7e0(int a1, int a2); };
 Unk_EdRestrictions* FUN_1409331e0();
 
 // The per-user client state: the chat emoticon pack state is an MS2Ptr<CChatEmoticonCli> at +0x80.
-class Unk_EdUser { public: MS2Ptr<CChatEmoticonCli> FUN_140d9f8f0(); };
-Unk_EdUser* FUN_140931510();
+CMyCharacter* FUN_140931510();
 
-__int64 FUN_140869440();                                            // server time
-CChatEmoticonTable* FUN_1409eecd0();
+__int64 GetServerTime();                                            // server time
 CStringW FUN_1409e90c0(int nStringId, const int& nYear, const int& nMonth, const int& nDay, const int& nHour,
                        const int& nMinute);                         // the string table text with five numbers
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
@@ -141,7 +140,7 @@ MS2_REPLACE_METHOD(0x140BD2CB0, AScript, FUN_140bd2cb0, 148, 0x01016A6F);
 // @0x140bd2c00
 UIMeratMarketDialog* FUN_140bd2c00()
 {
-    Unk_EdUIManager* pManager = FUN_1403ed2b0();
+    Unk_EdUIManager* pManager = reinterpret_cast<Unk_EdUIManager*>(TSingleton<CUIService>::GetInstance());
     if (pManager == 0)
         return 0;
     MS2Ptr<UIObject> spDialog = pManager->FUN_141adcea0(FUN_140bd5bd0());
@@ -203,7 +202,7 @@ void UIChatEmoticonDialog::vfunc_72()
     if (m_nNextExpire == 0)
         return;
     CMsTime expire(m_nNextExpire);
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (expire < now)
         FUN_140bd1a60();
 }
@@ -213,7 +212,7 @@ MS2_REPLACE_METHOD(0x140BD1000, UIChatEmoticonDialog, vfunc_72, 113, 0x36F391CA)
 void UIChatEmoticonDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x4e, 0);
@@ -248,11 +247,11 @@ MS2_REPLACE_METHOD(0x140BD11A0, UIChatEmoticonDialog, vfunc_13, 51, 0xC446B2C6);
 // @0x140bd11e0
 void UIChatEmoticonDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
     if (spCli.IsNull())
         return;
     int nEmoticonId = pArgs->FUN_1422b8b10();
-    ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!spEmo)
         return;
     MS2Ptr<ChatEmoticonGroupInfo> spGroup = spCli->FUN_140a3a640(spEmo->m_nGroupId);
@@ -260,7 +259,7 @@ void UIChatEmoticonDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
         return;
     if (spGroup->m_nExpire >= (std::numeric_limits<__int64>::max)())
         return;
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     CMsTime expire(spGroup->m_nExpire);
     int nStringId = 0xb8;
     if (now > expire)
@@ -329,7 +328,7 @@ void UIChatEmoticonDialog::FUN_140bd1720()
     for (std::list<UIChatEmoticonTab>::const_iterator it = tabList.begin(); it != itEnd; ++it)
     {
         int nCategoryId = it->m_nCategoryId;
-        ChatEmoticonCategoryDataPtr spCategory = FUN_1409eecd0()->FUN_1401e7270(nCategoryId);
+        ChatEmoticonCategoryDataPtr spCategory = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7270(nCategoryId);
         if (!spCategory)
             continue;
         bool bNew = m_setNewTabs.find(nCategoryId) != m_setNewTabs.end();
@@ -349,7 +348,7 @@ void UIChatEmoticonDialog::FUN_140bd1a60()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog == 0)
         return;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0xcb, 0);
@@ -374,7 +373,7 @@ void UIChatEmoticonDialog::FUN_140bd1a60()
         MS2Ptr<UIChatEmoticonInfo> spInfo = *it;
         if (spInfo.IsNull())
             continue;
-        ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(spInfo->m_nEmoticonId);
+        ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(spInfo->m_nEmoticonId);
         if (!spEmo)
             continue;
         bool bEnable = !spCli->FUN_140a3a140(spEmo->m_nGroupId) ? true : false;
@@ -398,7 +397,7 @@ MS2_REPLACE_METHOD(0x140BD1A60, UIChatEmoticonDialog, FUN_140bd1a60, 1361, 0x091
 // @0x140bd1fc0
 void UIChatEmoticonDialog::FUN_140bd1fc0()
 {
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x68, 0);
@@ -416,7 +415,7 @@ void UIChatEmoticonDialog::FUN_140bd1fc0()
         if (spGroup.IsNull())
             continue;
         std::list<ChatEmoticonDataPtr> emoticons;
-        FUN_1409eecd0()->FUN_1401e73c0(spGroup->m_nId, &emoticons);
+        TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e73c0(spGroup->m_nId, &emoticons);
         bool bNew = m_setNewGroups.find(spGroup->m_nId) != m_setNewGroups.end();
         std::list<ChatEmoticonDataPtr>& emoList = emoticons;
         std::list<ChatEmoticonDataPtr>::const_iterator itEmoEnd = emoList.end();
@@ -440,7 +439,7 @@ void UIChatEmoticonDialog::FUN_140bd1fc0()
     for (std::list<unsigned>::const_iterator itId = ids.begin(); itId != ids.end(); ++itId)
     {
         int nEmoticonId = *itId;
-        ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+        ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
         if (!spEmo)
             continue;
         MS2Ptr<UIChatEmoticonInfo> spInfo(new UIChatEmoticonInfo);
@@ -483,7 +482,7 @@ MS2_REPLACE_METHOD(0x140BD26C0, UIChatEmoticonDialog, FUN_140bd26c0, 80, 0x9F8D5
 // @0x140bd2720
 CStringW UIChatEmoticonDialog::FUN_140bd2720(int nEmoticonId)
 {
-    ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!spEmo)
         return CStringW(L"");
     return CStringW(spEmo->m_strCommand);
@@ -514,7 +513,7 @@ MS2_REPLACE_METHOD(0x140BD27E0, UIChatEmoticonDialog, FUN_140bd27e0, 187, 0x7E80
 void UIChatEmoticonDialog::FUN_140bd28b0(int nEmoticonId)
 {
     const CStringW& strTarget = FUN_141482e80()->FUN_1414829e0();
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyChatEmoticonSelected(strTarget, nEmoticonId)));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyChatEmoticonSelected(strTarget, nEmoticonId)));
 }
 MS2_REPLACE_METHOD(0x140BD28B0, UIChatEmoticonDialog, FUN_140bd28b0, 205, 0x4516C159);
 

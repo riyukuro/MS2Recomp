@@ -33,6 +33,7 @@
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/creservedwordtable.h"   // C3: TSingleton<> needs the class
 
 // ---- unit-local views of exe objects ----
 
@@ -81,15 +82,12 @@ public:
 CInputKeyHandler* FUN_14025e7c0();
 
 // The status listener registry.
-UIStatusEventDispatcher* FUN_140aa6d40();
 
 // The string table (item names).
 
 // AS views.
 class Unk_IesChild : public ASMovieClip
 {
-public:
-    Scaleform::GFx::Value FUN_1409ba030(const char* szMethod, int n);     // call a method with one int
 };
 class Unk_IesArray : public ASArray
 {
@@ -190,7 +188,7 @@ void UIItemExchangeScrollDialog::vfunc_26()
     m_spIngredients = 0;
     m_spDebugAdd10 = 0;
     m_spDebugAddMax = 0;
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
 }
 
 // @0x140f51150
@@ -754,7 +752,7 @@ void UIItemExchangeScrollDialog::FUN_140f54a20(const Scaleform::GFx::FunctionHan
     MS2Ptr<ASMovieClip> spSlot = argSlot.FUN_1409b4560("slot");
     if (spSlot.get() != 0)
     {
-        static_cast<Unk_IesChild*>(spSlot.operator->())->FUN_1409ba030("updateItemCount", m_spExchange->m_exchange.m_nCount * nMake);
+        static_cast<Unk_IesChild*>(spSlot.operator->())->Invoke("updateItemCount", m_spExchange->m_exchange.m_nCount * nMake);
     }
     if (m_spOk.get() != 0)
     {
@@ -952,7 +950,7 @@ void UIItemExchangeScrollDialog::FUN_140f55d10()
     }
     else if (m_spExchange->m_require.FUN_14026bf40())
         return;
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     MS2Ptr<ASMovieClip> spScroll(m_spScroll);
     if (spScroll.get() != 0)
     {

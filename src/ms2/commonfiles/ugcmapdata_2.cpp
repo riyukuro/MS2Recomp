@@ -180,10 +180,10 @@ private:
 };
 MS2_CHECK_SIZE(Unk_140163940,8);
 class Unk_140165cf0;
-void* FUN_140166440();
+class CLogString* GetLogString();
 Unk_140165cf0* FUN_140165cf0(void*,const char*);
 Unk_140165cf0* FUN_140168650(void*,const char*);
-void FUN_14015eb90(void*,int,int,const wchar_t*,const CString&);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 int FUN_1408731e0(void*,const char*,int*);
 int FUN_140873220(void*,const char*,unsigned*);
 int FUN_140873360(void*,const char*,float*);
@@ -232,7 +232,7 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
     Unk_UGCMapPtr value(new CUGCMapData);
     class Unk_140165cf0* root=FUN_140165cf0(&document,"ugcmap");
     if(root==0) {
-        FUN_14015eb90(FUN_140166440(),1,0x13,L"xml 형식이 잘못 되었습니다[<ugcmap> {0}]",path);
+        Unk_AchieveLog<CString>(GetLogString(),1,0x13,L"xml 형식이 잘못 되었습니다[<ugcmap> {0}]",path);
         return Unk_UGCMapPtr(0);
     }
     for(auto* node=FUN_140165cf0(root,"group");node;node=FUN_140168650(node,"group")) {

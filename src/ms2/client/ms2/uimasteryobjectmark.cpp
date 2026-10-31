@@ -19,6 +19,9 @@
 #include "ms2/client/ms2/functioncubeobject.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/camera.h"   // C3: TSingleton<> needs the class
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- out-of-unit callees (names describe uses) ----
 class Unk_SSGWorld
@@ -27,23 +30,15 @@ public:
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);   // find a field object by name
     PCBase* FUN_141bd0cc0();                                    // the local player actor
 };
-Unk_SSGWorld* FUN_1403ed2d0();
-class Unk_MmCubeService
-{
-public:
-    MS2Ptr<CFunctionCubeObject> FUN_141230c00(CString strName); // a cube by its id (by value: the callee destroys it)
-};
-Unk_MmCubeService* FUN_1409670b0();
+CFunctionCubeService* FUN_1409670b0();
 class Unk_CameraHousing;
 Unk_CameraHousing* FUN_1409670e0();
 unsigned char FUN_1410c35c0(void* pHousing);                    // the camera housing mode is active
 CMasteryTable* FUN_1409670c0();
 __int64 FUN_141656ad0(PCBase* pActor);                          // the actor's account id
 unsigned FUN_141662750(PCBase* pActor, int nType);              // the actor's mastery exp of a type
-class Unk_McPc : public PCBase
+class Unk_McPc : public PC
 {
-public:
-    int FUN_1416595b0();                                        // the actor is riding
 };
 class Unk_HmCube
 {
@@ -51,7 +46,6 @@ public:
     MS2Ptr<FunctionCubeData> FUN_140ca6580();                   // the cube's table row
 };
 class Unk_QgCamera { public: bool FUN_140af0700(const Vector3& ptWorld, Vector3& rptScreen); };
-Unk_QgCamera* FUN_1409478c0();
 class Unk_QgUIScale;
 Unk_QgUIScale* FUN_14025e7a0();
 float FUN_1422afec0(Unk_QgUIScale* pScale, int nMovie);
@@ -205,7 +199,7 @@ void UIMasteryObjectMark::OnLoadComplete()
         MS2Ptr<EntityContext> spContext = m_nodes.GetValueAt(pos);
         if (spContext == 0)
         {
-            CInteractObject* pObject = FUN_1403ed2d0()->FUN_141bc66b0(m_nodes.GetKeyAt(pos));
+            CInteractObject* pObject = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_nodes.GetKeyAt(pos));
             if (!pObject)
                 continue;
             CInteractGatheringObject* pGather = dynamic_cast<CInteractGatheringObject*>(pObject);
@@ -251,7 +245,7 @@ int UIMasteryObjectMark::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 // @0x140e5a600
 void UIMasteryObjectMark::FUN_140e5a600()
 {
-    PCBase* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPC = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pPC)
         return;
     POSITION pos = m_nodes.GetStartPosition();
@@ -263,7 +257,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
         MS2Ptr<EntityContext> spContext = m_nodes.GetValueAt(posCur);
         if (spContext == 0)
             continue;
-        MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc66b0(strKey);
+        MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc66b0(strKey);
         if (spObject.IsNull())
         {
             FUN_140e5b450(strKey);
@@ -274,7 +268,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
             Vector3 ptScreen;
             Vector3 ptWorld = pGather->GetPos().FUN_14097fd50(Vector3(0.0f, 0.0f, 200.0f));
             float fDist = reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18().FUN_140965c40(pGather->GetPos()).FUN_140967ac0();
-            if (!FUN_1409478c0()->FUN_140af0700(ptWorld, ptScreen) || 1000.0f < fDist)
+            if (!reinterpret_cast<Unk_QgCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(ptWorld, ptScreen) || 1000.0f < fDist)
             {
                 spContext->m_spEntity->vfunc_3(0);
             }
@@ -310,7 +304,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
 // @0x140e5ac30
 void UIMasteryObjectMark::FUN_140e5ac30()
 {
-    PCBase* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPC = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pPC)
         return;
     if (FUN_1410c35c0(FUN_1409670e0()) != 0)
@@ -343,7 +337,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
             Vector3 ptWorld = spHome->FUN_141226d00().FUN_14097fd50(Vector3(0.0f, 0.0f, 200.0f));
             float fDist = reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18().FUN_140965c40(spHome->FUN_141226d00()).FUN_140967ac0();
             int nRiding = static_cast<Unk_McPc*>(pPC)->FUN_1416595b0() != 0;
-            if (!FUN_1409478c0()->FUN_140af0700(ptWorld, ptScreen) || 1000.0f < fDist || nRiding != 0)
+            if (!reinterpret_cast<Unk_QgCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(ptWorld, ptScreen) || 1000.0f < fDist || nRiding != 0)
             {
                 spContext->m_spEntity->vfunc_3(0);
                 if (spContext->m_nShown != 0)
@@ -460,7 +454,7 @@ unsigned UIMasteryObjectMark::FUN_140e5b720(int nReceipeId, EntityContext* pCont
             strType = L"farming";
             break;
         }
-        PCBase* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+        PCBase* pPC = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPC)
         {
             int nLevel = FUN_141662750(pPC, spReceipe->m_nType);

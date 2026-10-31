@@ -102,10 +102,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-class Unk_CommonLog { public: void FUN_140177a80(int level, int category, const wchar_t* format, const unsigned& arg); };
-Unk_CommonLog* FUN_140166440();
+class CLogString* GetLogString();
+template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 unsigned FUN_140869420();                                   // millisecond clock
@@ -131,7 +129,7 @@ void CooltimeManager::Load()
     m_ticks.clear();
     CString strPath = FUN_14071a5b0("Table", "CooltimeTable.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -164,8 +162,8 @@ bool CooltimeManager::Use(unsigned nCooltimeId)
     {
         if (now < itReady->second)
         {
-            if (FUN_140166440() != 0)
-                FUN_140166440()->FUN_140177a80(0xb, 0x136, L"cooltimeID:{0} Has cooldown", nCooltimeId);
+            if (GetLogString() != 0)
+                Unk_AdditionalLog<unsigned>(GetLogString(), 0xb, 0x136, L"cooltimeID:{0} Has cooldown", nCooltimeId);
             return false;
         }
         itReady->second = now + itTick->second;

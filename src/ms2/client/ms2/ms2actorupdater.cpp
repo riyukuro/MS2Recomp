@@ -30,12 +30,8 @@ struct Unk_AuConfig
     Unk_AuCfgValue m_kUpdateDuration;   // +0xab0
 };
 MS2_CHECK_OFFSET(Unk_AuConfig, m_kUpdateDuration, 0xab0);
-Unk_AuConfig* FUN_1401d3200();
-void FUN_14108c240(CMeshUpdateGate* pGate, float fInterval);
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 void* FUN_14123ed90(CMeshUpdateGate* pGate, unsigned int nFlags) throw();
-
-// The world service (FUN_1403ed2d0); only the update mode is read here.
-WorldService* FUN_1403ed2d0();
 
 // Property access on the entity (hash id, value).
 class Unk_AuEntity
@@ -49,11 +45,11 @@ MS2ActorUpdater::MS2ActorUpdater(const egf::EntityID& kId)
     : m_kId(kId), m_fDistA(0.0f), m_fDistB(0.0f)
 {
     m_pGate = new CMeshUpdateGate;
-    float fRate = FUN_1401d3200()->m_kUpdateRate.FUN_1402bac70();
+    float fRate = ((struct Unk_AuConfig*)FUN_1401d3200())->m_kUpdateRate.FUN_1402bac70();
     if (fRate <= 0.0f)
         fRate = 60.0f;
-    FUN_14108c240(m_pGate, 1.0f / fRate);
-    m_pGate->FUN_14123ef30(FUN_1401d3200()->m_kUpdateDuration.FUN_1402bac70());
+    ((class CMeshUpdateGate*)(class CMeshUpdateGate*)(m_pGate))->FUN_14108c240(1.0f / fRate);
+    m_pGate->FUN_14123ef30(((struct Unk_AuConfig*)FUN_1401d3200())->m_kUpdateDuration.FUN_1402bac70());
 }
 
 // @0x1414a8380
@@ -93,7 +89,7 @@ float MS2ActorUpdater::FUN_1414a84f0(const Vector3& kPos)
 // @0x1414a85d0
 void MS2ActorUpdater::FUN_1414a85d0(float fInterval)
 {
-    int nMode = FUN_1403ed2d0()->FUN_141bdb5c0();
+    int nMode = WorldService::GetInstance()->FUN_141bdb5c0();
     float fDuration = 0.0f;
     switch (nMode)
     {
@@ -104,7 +100,7 @@ void MS2ActorUpdater::FUN_1414a85d0(float fInterval)
         fDuration = GetDistB();
         break;
     case 2:
-        fDuration = GetDistB() - FUN_1401d3200()->m_kUpdateDuration.FUN_140298f40();
+        fDuration = GetDistB() - ((struct Unk_AuConfig*)FUN_1401d3200())->m_kUpdateDuration.FUN_140298f40();
         break;
     default:
         MS2_ASSERT_AT(0x31, FALSE);

@@ -28,6 +28,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include <egf/EntityID.h>
+#include "ms2/client/ms2/worldservice.h"
 
 // The statics of three header copies sit in this .text$di range: the first full copy comes from header_statics_a.h
 // above, then a copy of only the sort type names, then a second full copy.
@@ -46,11 +47,10 @@ public:
 };
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
 const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);   // string attribute
-int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);   // integer attribute, 0 when present
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 class Unk_GroundFiles : public CFileSystem { };
-Unk_GroundFiles* FUN_140166420();
 class Unk_GroundLog { public: void FUN_14015eb90(int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg); };
-Unk_GroundLog* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 
 extern int DAT_1439ed00c;   // ground effect cache enabled
 
@@ -73,17 +73,21 @@ private:
 };
 int FUN_141654700(PCBase* pPc);
 PCBase* FUN_140974230(GameObject* pObject);
-void* FUN_1409f7c90();
-int FUN_14161d0f0(void* pWindowSvc);
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class COptimizer   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14161d0f0() const;
+};
 void* FUN_1408b6b20(Unk_ModelKeyCopy* pDst, const Unk_ModelKey* pSrc);
 void* FUN_141b6ef70(void* pKey);
 extern char DAT_143afa4d8;                      // shadow-node table
-void* FUN_14098d8d0(void* pTable, void* pKey);  // table lookup -> node
-void* FUN_1403ed2d0();                          // player manager
 void* FUN_1403ed280();                          // effect manager
-int FUN_141bd1a10(void* pPlayer, GameObject* pObject);
-int FUN_14123c580(GameObject* pObject);
-void FUN_1411a4a00(void* pEffectMgr, Unk_EffectQuery* pQuery);
+class CEffectService   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned int FUN_1411a4a00(class Unk_EffectTarget&);
+};
 unsigned char FUN_1401d1320(void*);
 
 // @0x141376d00
@@ -166,15 +170,15 @@ CGroundEffectDataManager::GroundPtr CGroundEffectDataManager::Load(const CString
     strPath += strGround;
     strPath += ".xml";
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_GroundFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
+        ((class Unk_GroundLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return GroundPtr(0);
     }
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        ((class Unk_GroundLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return GroundPtr(0);
     }
     GroundPtr spGround(0);
@@ -207,7 +211,7 @@ CGroundEffectDataManager::GroundPtr CGroundEffectDataManager::Load(const CString
                         spEffect->m_files.Add(strFile);
                     }
                     int nPercent = 0;
-                    if (FUN_1408731e0(pEffect, "percent", nPercent) == 0)
+                    if (XmlGetAttr((class TiXmlElement*)(pEffect), "percent", nPercent) == 0)
                         spEffect->m_percents.Add(nPercent);
                     else
                         spEffect->m_percents.Add(0);
@@ -278,7 +282,7 @@ void CGroundEffectDataManager::PlayEffects(GameObject* pObject, CString strActio
     static_cast<Unk_GroundOwner*>(pObject)->FUN_14123c460(&kModel);
     if (static_cast<Unk_GroundOwner*>(pObject)->FUN_14123c660() != 0)
         return;
-    if (FUN_14161d0f0(FUN_1409f7c90()) == 0)
+    if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14161d0f0() == 0)
     {
         if (Unk_ObjectRef(pObject).FUN_141b71120() == 0)
             return;
@@ -286,16 +290,16 @@ void CGroundEffectDataManager::PlayEffects(GameObject* pObject, CString strActio
     ATL::CAtlArray<CString> files;
     GetEffectFiles(CString(strGround), CString(strAction), &files);
     Unk_ModelKeyCopy kCopy;
-    void* pNode = FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6ef70(FUN_1408b6b20(&kCopy, &kModel)));
+    void* pNode = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6ef70(FUN_1408b6b20(&kCopy, &kModel)))));
     if (pNode != 0)
     {
         Unk_EffectQuery query;
-        query.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), pObject);
-        query.SetActor(FUN_14123c580(pObject));
+        query.m_nObject = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd1a10((class Unk_WsC_GameObj*)(pObject));
+        query.SetActor(((class GameObject*)(class GameObject*)(pObject))->FUN_14123c580());
         for (unsigned int i = 0; i < files.GetCount(); i++)
         {
             query.m_strName = files[i];
-            FUN_1411a4a00(FUN_1403ed280(), &query);
+            ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a4a00(*(class Unk_EffectTarget*)(&query));
         }
     }
 }

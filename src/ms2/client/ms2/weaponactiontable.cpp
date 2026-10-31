@@ -26,16 +26,13 @@
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
-int FUN_14086f500(Unk_140165cf0*, const char*, int*);       // int attribute
-const char* FUN_14086f4b0(Unk_140165cf0*, const char*);     // attribute text
+class TiXmlElement { public: const char* Attribute(const char* name) const; const char* Attribute(const char* name, int* i) const; };   // view (tinyxml)
 CString FUN_140188f50(const char* psz, int nCodePage);      // string from an attribute value
-void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's table (symbols.tsv); a local copy would stay empty
 bool CWeaponActionTable::s_bInit;
@@ -77,30 +74,30 @@ int CWeaponActionTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "weaponAction.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("weapon"); pNode != 0; pNode = pNode->FUN_140168650("weapon"))
     {
         ActionPtr action(new CWeaponAction);
-        FUN_14086f500(pNode, "rh", &action->m_nRightHand);
-        FUN_14086f500(pNode, "lh", &action->m_nLeftHand);
-        FUN_14086f500(pNode, "normalAttack", &action->m_nNormalAttack);
-        action->m_strPrefix = FUN_14086f4b0(pNode, "actionprefix");
+        ((TiXmlElement*)pNode)->Attribute("rh", &action->m_nRightHand);
+        ((TiXmlElement*)pNode)->Attribute("lh", &action->m_nLeftHand);
+        ((TiXmlElement*)pNode)->Attribute("normalAttack", &action->m_nNormalAttack);
+        action->m_strPrefix = ((TiXmlElement*)pNode)->Attribute("actionprefix");
         s_actions.Add(action);
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("allowWeapon"); pNode != 0; pNode = pNode->FUN_140168650("allowWeapon"))
     {
         AllowPtr allow(new CWeaponAllow);
         int nRightHand;
-        FUN_14086f500(pNode, "rh", &nRightHand);
-        CStringA strList(FUN_140188f50(FUN_14086f4b0(pNode, "lh"), 0));
-        FUN_140177de0(strList, allow->m_leftHands, ",");
+        ((TiXmlElement*)pNode)->Attribute("rh", &nRightHand);
+        CStringA strList(FUN_140188f50(((TiXmlElement*)pNode)->Attribute("lh"), 0));
+        XmlSplit<ATL::CAtlArray<int> >(strList, allow->m_leftHands, ",");
         s_allows.SetAt(nRightHand, allow);
     }
     SetInit(true);

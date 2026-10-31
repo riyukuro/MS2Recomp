@@ -122,6 +122,7 @@ template<> inline CQuestData::NavigationData* Unk_SocketRef<CQuestData::Navigati
 #include "ms2/ms2recover.h"
 #include "ms2/ms2format.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/termtagcontext.h"
 
 // Header statics (the same list as header_statics_a.h, twice: the sort names of two enums).
 #ifndef MS2_HOOK_DLL
@@ -138,8 +139,9 @@ int DaysToSeconds(int nDays);                               // DaysToSeconds
 __int64 GetWeekOfYear(int nYear, int nMonth, int nDay);
 const __int64& FUN_1402e49a0(const __int64& a, const __int64& b);   // the smaller of the two
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
-void* FUN_140166440();
+class CLogString;
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
+class CLogString* GetLogString();
 int ConditionHasTarget(int nType);                          // 0x14029f330
 
 // The game random generator (0x40 bytes; defined in randomeffectparam.h of the client unit). Seeded ctor 0x140768210.
@@ -156,8 +158,6 @@ private:
 // A scheduled game event (the <eventTag> lookup), handed out as an intrusive pointer.
 class Unk_EventEntry;
 bool FUN_140866880(Unk_EventEntry* pEntry, __int64* pTime);          // the time falls into the event
-struct Unk_QdEventStart { CMsTime FUN_140866720(); }; // the event's start
-struct Unk_QdEventEnd { CMsTime FUN_1408666e0(); }; // the event's end
 bool FUN_140866820(Unk_EventEntry* pEntry, const CMsTime& time);
 bool FUN_140866760(Unk_EventEntry* pEntry);
 class Unk_GEManagerA { public: Unk_PayloadPtr<Unk_EventEntry> FUN_140479410(CStringW* pTag); bool FUN_1404793a0(const CStringW* pTag); };
@@ -259,7 +259,7 @@ __int64 CQuestCommon::FUN_1407448a0()
             if (!FUN_140866880(event.operator->(), &tStart))
                 return 0;
         }
-        tEvent = reinterpret_cast<Unk_QdEventStart*>(event.operator->())->FUN_140866720().Get();
+        tEvent = reinterpret_cast<TermTagContext*>(event.operator->())->FUN_140866720().Get();
     }
     if (tPeriod != 0 && tEvent != 0)
         return FUN_1402e49a0(tPeriod, tEvent);
@@ -339,7 +339,7 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
             return 0;
         if (FUN_140866760(event.operator->()))
         {
-            if (vfunc_o10_8() < reinterpret_cast<Unk_QdEventEnd*>(event.operator->())->FUN_1408666e0().Get())
+            if (vfunc_o10_8() < reinterpret_cast<TermTagContext*>(event.operator->())->FUN_1408666e0().Get())
                 return 0;
         }
         if (tStart != 0)
@@ -1786,7 +1786,7 @@ void QuestDataTable::LoadQuestData()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     for (Unk_140165cf0* pNode : pRoot->FUN_140165cf0("quest"))
@@ -2361,9 +2361,9 @@ void QuestDataTable::FUN_14074ee30()
 }
 MS2_REPLACE_METHOD(0x14074EE30, QuestDataTable, FUN_14074ee30, 806, 0x83205888);
 
-void* FUN_140166440();
+class CLogString* GetLogString();
 void FUN_1406e7140(void* pLog, int a, int b, int nFlags, const wchar_t* pszFormat, const int& arg0, const int& arg1);
-void FUN_140177a80(void* pLog, int a, int nFlags, const wchar_t* pszFormat, const int& arg0);
+template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);
 void* FUN_1406aeee0();
 bool FUN_1406af060(void* p);
@@ -2458,12 +2458,12 @@ void QuestDataTable::FUN_14074f160()
                 if (!spItem)
                 {
                     int nQuest = FUN_14074b030(spData.operator->());
-                    FUN_1406e7140(FUN_140166440(), 0, 0, 0x30, L"invalid quest item [qid:{0}, itemid:{1}]", nQuest, reward.m_itemId);
+                    FUN_1406e7140(GetLogString(), 0, 0, 0x30, L"invalid quest item [qid:{0}, itemid:{1}]", nQuest, reward.m_itemId);
                 }
                 if (spItem->limit.shopSell != 0)
                 {
                     int nQuest = FUN_14074b030(spData.operator->());
-                    FUN_1406e7140(FUN_140166440(), 0, 0, 0x30, L"abusing item [qid:{0}, itemid:{1}]", nQuest, reward.m_itemId);
+                    FUN_1406e7140(GetLogString(), 0, 0, 0x30, L"abusing item [qid:{0}, itemid:{1}]", nQuest, reward.m_itemId);
                 }
             }
         }
@@ -2471,7 +2471,7 @@ void QuestDataTable::FUN_14074f160()
         if (FUN_14074b070(spData.operator->()) == 3 && spData->m_resetType == 0)
         {
             int nQuest = FUN_14074b030(spData.operator->());
-            FUN_140177a80(FUN_140166440(), 1, 0x30, L"주간 퀘스트인데 초기화 날짜가 없습니다. usePeriod에 초기화 요일을 적어주세요 [quest={0}]", nQuest);
+            Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x30, L"주간 퀘스트인데 초기화 날짜가 없습니다. usePeriod에 초기화 요일을 적어주세요 [quest={0}]", reinterpret_cast<const unsigned&>(nQuest));
         }
     }
     FUN_14074d480();
@@ -2505,7 +2505,7 @@ void QuestDataTable::FUN_14074fee0()
 }
 MS2_REPLACE_METHOD(0x14074FEE0, QuestDataTable, FUN_14074fee0, 557, 0xD7488436);
 
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 bool FUN_14028f710(Unk_140165cf0* pElem);
 int FUN_140752030(Unk_140165cf0* pElem, const char* pszName, int* pOut);
@@ -2520,7 +2520,7 @@ void QuestDataTable::LoadQuestGroupTable()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -2537,7 +2537,7 @@ void QuestDataTable::LoadQuestGroupTable()
 }
 MS2_REPLACE_METHOD(0x140750120, QuestDataTable, LoadQuestGroupTable, 713, 0x932C35CB);
 
-void FUN_140353fc0(void* pLog, int a, int nFlags, const wchar_t* pszFormat, const int& arg0);
+template <class T> void Unk_ShopLog(class CLogString*, int, int, const wchar_t*, const T&);
 
 // MS2-FUNCTIONAL: links the quests (reverse require lists) and rebuilds each chapter's id list in chain order
 // @0x1407503f0
@@ -2624,7 +2624,7 @@ void QuestDataTable::FUN_1407503f0()
         {
             if (!spHead)
             {
-                FUN_140353fc0(FUN_140166440(), 2, 0x13, L"ChapterID:{0} 챕터 연계 퀘스트 오류. Require Quest 확인해 주세요.", nChain);
+                Unk_ShopLog<int>(GetLogString(), 2, 0x13, L"ChapterID:{0} 챕터 연계 퀘스트 오류. Require Quest 확인해 주세요.", nChain);
             }
             else
             {

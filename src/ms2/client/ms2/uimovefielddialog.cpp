@@ -7,7 +7,10 @@
 // MS2-PINS-END tplpin
 // MS2-PIN: ??1UIMoveFieldDialog@@UEAA@XZ 0x141a57940
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimovefielddialog.cpp"    // assumed
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uimovefielddialog.h"
 
@@ -26,32 +29,23 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/commandchat.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 
 static UICommon::CMyPCKeyInputController s_keyInput;
 
 // ---- unit-local placeholders (unrecovered helpers) ----
 
-// The list control of the movie (the AS list with clear / append).
-class Unk_MoveFieldList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd230(const ASObj& row);               // append a row
-};
-
 // The key input state (singleton).
-class Unk_14025e7c0 { public: bool FUN_14116d9c0(int nKey, int a, int b); bool FUN_14116d840(); };
-Unk_14025e7c0* FUN_14025e7c0();
+class Unk_14025e7c0 : public CInputKeyHandler { public: bool FUN_14116d9c0(int nKey, int a, int b);};
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The player manager (singleton): the local player.
 class Unk_MoveFieldPlayers { public: MyPC* FUN_141bd0cc0(); };
-Unk_MoveFieldPlayers* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 void FUN_141276f80(const Unk_CommandChat&);
@@ -88,11 +82,11 @@ int UIMoveFieldDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0)) {
+    if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0)) {
         if (m_30.get())
             m_30->Invoke("onEnterKey");
         return 1;
-    } else if (FUN_14025e7c0()->FUN_14116d840()) {
+    } else if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d840()) {
         vfunc_67();
         return 1;
     }
@@ -108,7 +102,7 @@ int UIMoveFieldDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 0;
     ASData data;
     if (_stricmp("OnMoveField", szMethod) == 0) {
-        MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pPlayer = ((class Unk_MoveFieldPlayers*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0 || pPlayer->FUN_14166ce30() != 0) {
             FUN_140d73bc0(0x42, 0, 0, CStringW(L""));
             return 1;
@@ -163,7 +157,7 @@ void UIMoveFieldDialog::FUN_141a55de0()
 // @0x141a55e30
 void UIMoveFieldDialog::FUN_141a55e30(const CStringW& strFilter)
 {
-    MS2Ptr<Unk_MoveFieldList> list = FUN_140c02900("m_fieldList");
+    MS2Ptr<ASScrollingList> list = FUN_140c02900("m_fieldList");
     if (list == 0)
         return;
     std::vector<MS2Ptr<CFieldData> > fields;
@@ -191,10 +185,10 @@ void UIMoveFieldDialog::FUN_141a55e30(const CStringW& strFilter)
             ASObj row(2);
             row.FUN_1407cbb20("code", strId);
             row.FUN_1407cbb20("field", strName);
-            ((Unk_MoveFieldList*)list)->FUN_1422dd230(row);
+            ((ASScrollingList*)list)->FUN_1422dd230(row);
         }
     }
-    ((Unk_MoveFieldList*)list)->vfunc_24(true);
+    ((ASScrollingList*)list)->vfunc_24(true);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc0d10-0x142cc0dc0 .text$yd

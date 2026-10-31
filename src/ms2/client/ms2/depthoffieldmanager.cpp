@@ -7,13 +7,29 @@
 #include "hook/ms2hook.h"
 
 // Unrecovered callees (real types unknown).
-void* FUN_1409a8b20();
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 void* FUN_1409a8b10();
-void* FUN_1409a8ac0(void* p);
-void* FUN_1409a8c40(void* p);
+class Unk_AeGameOption   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_AeGraphicOption* FUN_1409a8ac0();
+};
+class NiViewRenderClick   // C3: member view for the former free stand-ins
+{
+public:
+    class NiRenderListProcessor* GetProcessor() const;
+};
 void* FUN_1414cfbe0(void* p);
 void FUN_1414cf920(void* p, unsigned char v);
-void* FUN_1416a3a90(void* p, int n);
+class PostProcessingService   // C3: member view for the former free stand-ins
+{
+public:
+    class PostProcessEffect* FUN_1416a3a90(int);
+};
 void FUN_1416a3920(void* p, int n, unsigned char v);
 void FUN_1416aa6a0(void* p, int n, unsigned char v);
 void FUN_1409a5770(void* obj, void* value, int n);
@@ -47,8 +63,8 @@ CDepthOfFieldManager::~CDepthOfFieldManager()
 // @0x141177fa0
 void CDepthOfFieldManager::FUN_141177fa0()
 {
-    m_10 = FUN_1416a3a90(FUN_1409a8b20(), 4);
-    FUN_141178020(FUN_1411782b0(FUN_1409a8ac0(FUN_1409a8b10())));
+    m_10 = ((void*)((class PostProcessingService*)(void*)(((void*)Unk_AeFeatureMgr::FUN_1409a8b20())))->FUN_1416a3a90(4));
+    FUN_141178020(FUN_1411782b0(((void*)((class Unk_AeGameOption*)(void*)(FUN_1409a8b10()))->FUN_1409a8ac0())));
 }
 MS2_REPLACE_METHOD(0x141177FA0, CDepthOfFieldManager, FUN_141177fa0, 75, 0xEEBEED69);
 
@@ -63,8 +79,8 @@ void CDepthOfFieldManager::FUN_141178020(unsigned char on)
     if (m_10 == 0)
         return;
     m_50 = on;
-    FUN_1416a3920(FUN_1409a8b20(), 4, on);
-    FUN_1416aa6a0(FUN_1409a8b20(), 1, on);
+    FUN_1416a3920(((void*)Unk_AeFeatureMgr::FUN_1409a8b20()), 4, on);
+    FUN_1416aa6a0(((void*)Unk_AeFeatureMgr::FUN_1409a8b20()), 1, on);
     Unk_DOFVecA v(1.5f, 1.5f);
     FUN_140c900e0(&DAT_143ae53a8, &v, 1);
 }
@@ -88,8 +104,8 @@ MS2_REPLACE(0x1411780E0, FUN_1411780e0, 94, 0xC811E5B5);
 // @0x141178150
 void FUN_141178150(unsigned char on)
 {
-    void* a = FUN_1411782c0(FUN_1409a8b20(), 1);
-    void* b = FUN_1409a8c40(a);
+    void* a = FUN_1411782c0(((void*)Unk_AeFeatureMgr::FUN_1409a8b20()), 1);
+    void* b = ((void*)((class NiViewRenderClick*)(void*)(a))->GetProcessor());
     void* p = FUN_1414cfbe0(b);
     FUN_1414cf920(FUN_141178240(FUN_141178210(p, 1)), on);
     FUN_1414cf920(FUN_141178240(FUN_141178210(p, 2)), on);

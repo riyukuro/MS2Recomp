@@ -20,7 +20,7 @@
 
 class ASTextField;
 class CInPacket;
-class Unk_WbList;
+class ASScrollingList;
 class Unk_140acd6e0;
 
 class UIWeddingBillboardDialog : public UIDialog
@@ -43,7 +43,7 @@ public:
     void FUN_140fc3680();                                               // show the current page
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);          // 0x140bb4cf0 text field child lookup
     MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName);        // 0x140bb4b10 bind a button child
-    MS2Ptr<Unk_WbList> FUN_140c02900(const CString& strName);           // 0x140c02900 bind a list child
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);           // 0x140c02900 bind a list child
 
 private:
     MS2_LAYOUT_FRIEND;

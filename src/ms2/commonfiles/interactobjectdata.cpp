@@ -42,7 +42,7 @@ CString FUN_14016a5c0(const char* psz, int n);
 CLogString* GetLogString();
 MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);                      // the item data of an id
 // The one-argument log of additionalactionadditional.cpp (an FMT_VARIADIC instance it emitted first).
-void FUN_140177a80(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nArg);
+template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 
 // QuestMask's entry array (+0x20; the shared placeholder keeps the mask opaque, unit_140266860.cpp has the class).
 enum Unk_MaskEntry { Unk_MaskEntry_Unset = 0 };
@@ -163,7 +163,7 @@ bool CInteractObjectData::Load(Unk_140165cf0* pElem)
         {
             if (spItem->FUN_14053cbc0() && m_item.m_nConsume > 1)
             {
-                FUN_140177a80(GetLogString(), 1, 0x13, L"InteractObjectData : consume item error {0}", m_item.m_nCode);
+                Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"InteractObjectData : consume item error {0}", m_item.m_nCode);
                 return false;
             }
         }
@@ -180,7 +180,7 @@ bool CInteractObjectData::Load(Unk_140165cf0* pElem)
             XmlTokenList(pCondition, "level", aLevel);
             if (aId.size() != aLevel.size())
             {
-                FUN_140177a80(GetLogString(), 1, 0x13, L"InteractObjectData : conditionEffect id,level not pair",
+                Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"InteractObjectData : conditionEffect id,level not pair",
                               m_item.m_nCode);
                 return false;
             }

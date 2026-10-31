@@ -8,6 +8,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cube.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/notifysystem.h"
 
 // ---- unrecovered helpers (declared with their exe signatures) ----
 
@@ -28,14 +29,13 @@ public:
     void FUN_1411a6060(int nHandle);                                // stop
 };
 void FUN_1409fabf0(void* pSub, void* pAnchor);                      // construct the 0x68 block from an anchor
-void* FUN_14098d8d0(void* pCell, void* pRoot);
 extern char DAT_143afa4d8;
 void* FUN_141b6efc0(Unk_Entity* pEntity);                           // the scene-graph root of an entity
-void* FUN_1401d31f0();                                              // the string table (+0x350: the lift sound)
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The physics helper (singleton): collision group of the lifted prop.
 class CPhysXHelper;
-CPhysXHelper* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 void FUN_141689ec0(CPhysXHelper* pHelper, Unk_Entity* pEntity, short nKind, int nArg, int bFlag);
 
 // Entity properties read by hash.
@@ -43,7 +43,7 @@ int FUN_140961880(Unk_Entity* pEntity, unsigned nHash, float* pValue);
 int FUN_1408a20a0(Unk_Entity* pEntity, unsigned nHash, bool* pValue);
 int FUN_1409618c0(Unk_Entity* pEntity, unsigned nHash, Vector3* pValue);
 int FUN_140ae11a0(Unk_Entity* pEntity, unsigned nHash, int* pValue);
-void FUN_14098c6e0(Unk_Entity* pEntity, unsigned nHash, bool* pValue);
+void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 
 // The entity's model name (a 32-byte string object).
 struct Unk_LiftName
@@ -52,8 +52,6 @@ struct Unk_LiftName
 };
 void FUN_1408a8700(Unk_LiftName* p);                                // construct
 void FUN_1408a8900(Unk_LiftName* p);                                // destroy
-const char* FUN_1408ac310(Unk_LiftName* p);                         // c_str
-void* FUN_140ae1be0(Unk_Entity* pEntity);
 void FUN_140ae1f60(void* pModel, Unk_LiftName* pName);
 void FUN_1401d3700(CString* p);
 
@@ -74,7 +72,7 @@ struct Unk_LiftSvcPtr
     Unk_LiftSvc* m_p;
 };
 extern char DAT_143b059e8;
-Unk_LiftSvc* FUN_1401cd040(char* pCell);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 void FUN_1401cd0b0(Unk_LiftSvcPtr* pThis, Unk_LiftSvc* p);          // construct
 Unk_LiftSvc* FUN_1401cd1a0(Unk_LiftSvcPtr* pThis);                  // operator->
 void FUN_1401cd150(Unk_LiftSvcPtr* pThis);                          // destroy
@@ -89,7 +87,6 @@ struct Unk_LiftNotifyPtr
 };
 void* FUN_140db4ab0(void* pMem, CLiftableObject* pOwner);          // construct the notice
 Unk_LiftNotifyPtr* FUN_140938f40(Unk_LiftNotifyPtr* pPtr, void* pNotice);   // smart pointer from raw
-void* FUN_140939a10();                                              // the notify manager
 void FUN_140da4fe0(void* pMgr, Unk_LiftNotifyPtr* pNotice);         // post
 
 // Quest-mask checks (the quest manager's condition interface sits at +0x10).
@@ -125,7 +122,7 @@ struct Unk_LiftQuestMgr
     char m_pad[0x10];
     Unk_LiftQuestCond m_cond;                                       // +0x10
 };
-Unk_LiftQuestMgr* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 void FUN_140764310(const CString& strA, const CString& strB, QuestMask* pMask);
 
 // The entity's collision / highlight components and their calls.
@@ -137,14 +134,17 @@ struct Unk_LiftHandle
     void* m_a;
     void* m_b;
 };
-void* FUN_1408b76f0(Unk_Entity* pEntity);
 void FUN_141b71e70(Unk_LiftHandle kHandle, bool bOn, int nArg, bool bFlag);   // the handle by value
 void FUN_140ae1e80(void* pComp, float fA, float fB, float fC, float fD, Unk_LiftHandle kHandle);
 void FUN_14098b3e0(void* pComp, float fA, int nB);
-void FUN_141567330(void* pComp, bool bOn);
+void FUN_141567330(class NiAVObject*, bool);   // C3: was FUN_141567330
 int FUN_140ae1c10();
 void* FUN_140ae1c00();
-int FUN_141376880(void* pObj, int nKind);
+class CGraphicOptionTable   // C3: member view for the former free stand-ins
+{
+public:
+    int GetShadowOption(int);
+};
 
 // @0x141447080
 CLiftableObject::CLiftableObject() : m_ent(0), m_bC2(true)
@@ -215,8 +215,8 @@ void CLiftableObject::FUN_141447410(Unk_Entity* pEntity)
         {
             Unk_LiftName name;
             FUN_1408a8700(&name);
-            FUN_140ae1f60(FUN_140ae1be0(m_ent.FUN_1408a9280()), &name);
-            m_strName = FUN_1408ac310(&name);
+            FUN_140ae1f60(((void*)&((egf::Entity*)(class Unk_Entity*)(m_ent.FUN_1408a9280()))->GetDataFileID()), &name);
+            m_strName = ((efd::utf8string*)(struct Unk_LiftName*)(&name))->c_str();
             FUN_1401d3700(&m_strName);
             FUN_1408a8900(&name);
         }
@@ -235,7 +235,7 @@ void CLiftableObject::FUN_141447410(Unk_Entity* pEntity)
             Vector3 pt;
             FUN_1409618c0(pEntity, 0xfd95ca52, &pt);
             Unk_LiftSvcPtr spSvc;
-            FUN_1401cd0b0(&spSvc, FUN_1401cd040(&DAT_143b059e8));
+            FUN_1401cd0b0(&spSvc, ((class Unk_LiftSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
             Vector3 cell = FUN_1408a1430(pt);
             int nKey = FUN_1408a03c0(cell);
             Unk_LiftCube* pCube = FUN_1401cd1a0(&spSvc)->FUN_1410b8b00(nKey);
@@ -247,7 +247,7 @@ void CLiftableObject::FUN_141447410(Unk_Entity* pEntity)
         void* pNotice = ::operator new(0x20);
         void* pBuilt = pNotice ? FUN_140db4ab0(pNotice, this) : 0;
         Unk_LiftNotifyPtr spNotice;
-        FUN_140da4fe0(FUN_140939a10(), FUN_140938f40(&spNotice, pBuilt));
+        FUN_140da4fe0(NotifySystem::GetInstance(), FUN_140938f40(&spNotice, pBuilt));
     }
 }
 
@@ -285,9 +285,9 @@ void CLiftableObject::FUN_141447910(bool bOn)
     if (bOn && m_nEffect == 0)
     {
         Unk_LiftSoundReq kReq;
-        kReq.m_strName = *(CString*)((char*)FUN_1401d31f0() + 0x350);
+        kReq.m_strName = *(CString*)((char*)((void*)FUN_1401d31f0()) + 0x350);
         kReq.m_nType = 0;
-        FUN_1409fabf0(kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
+        FUN_1409fabf0(kReq.m_unk, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(m_ent.FUN_1408a9090())))));
         m_nEffect = reinterpret_cast<Unk_LiftFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
     }
     else if (!bOn && m_nEffect != 0)
@@ -337,11 +337,11 @@ void CLiftableObject::FUN_141447b00(int nState)
     {
     case 0:
     case 2:
-        FUN_141689ec0(FUN_1409f7ca0(), m_ent.FUN_1408a9090(), 9, 0, 1);
+        FUN_141689ec0(((class CPhysXHelper*)FUN_1409f7ca0()), m_ent.FUN_1408a9090(), 9, 0, 1);
         FUN_141447ec0(1);
         break;
     case 1:
-        FUN_141689ec0(FUN_1409f7ca0(), m_ent.FUN_1408a9090(), 5, 0, 1);
+        FUN_141689ec0(((class CPhysXHelper*)FUN_1409f7ca0()), m_ent.FUN_1408a9090(), 5, 0, 1);
         FUN_141447ec0(0);
         break;
     }
@@ -355,7 +355,7 @@ void CLiftableObject::FUN_141447c10()
     {
         m_timer.FUN_1408687f0();
         bool bOff = false;
-        FUN_14098c6e0(m_ent.FUN_1408a9280(), 0xa0b6b179, &bOff);
+        FUN_14098c6e0((class Unk_CachedEntity*)(m_ent.FUN_1408a9280()), 0xa0b6b179, *(bool const*)(&bOff));
     }
 }
 
@@ -388,17 +388,17 @@ void CLiftableObject::FUN_141447d50(int nOn)
 {
     if (m_ent.FUN_1408a9090() == 0)
         return;
-    FUN_141b71e70(FUN_1408b76f0(m_ent.FUN_1408a9280()), nOn ? true : false, 1, 0);
+    FUN_141b71e70(((void*)&((egf::Entity*)(class Unk_Entity*)(m_ent.FUN_1408a9280()))->GetEntityID()), nOn ? true : false, 1, 0);
 }
 
 // @0x141447de0
 void CLiftableObject::FUN_141447de0()
 {
-    if ((&FUN_140764020()->m_cond)->vfunc_23(&m_maskA))
+    if ((&((struct Unk_LiftQuestMgr*)FUN_140764020())->m_cond)->vfunc_23(&m_maskA))
         FUN_1414478b0(1);
     else
         FUN_1414478b0(0);
-    if (m_bC2 != 0 && (&FUN_140764020()->m_cond)->vfunc_23(&m_maskB) && FUN_141447340() != 0)
+    if (m_bC2 != 0 && (&((struct Unk_LiftQuestMgr*)FUN_140764020())->m_cond)->vfunc_23(&m_maskB) && FUN_141447340() != 0)
     {
         FUN_141447910(1);
         return;
@@ -415,7 +415,7 @@ void CLiftableObject::FUN_141447ec0(bool bActive)
         if (m_ent.FUN_1408a9090() != 0)
         {
             bool bOn = true;
-            FUN_14098c6e0(m_ent.FUN_1408a9280(), 0xa0b6b179, &bOn);
+            FUN_14098c6e0((class Unk_CachedEntity*)(m_ent.FUN_1408a9280()), 0xa0b6b179, *(bool const*)(&bOn));
             void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
             if (pComp != 0)
                 FUN_14098b3e0(pComp, 1.0f, 0);
@@ -427,7 +427,7 @@ void CLiftableObject::FUN_141447ec0(bool bActive)
         {
             void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
             if (pComp != 0)
-                FUN_140ae1e80(pComp, 1.0f, 0.0f, 0.0f, FUN_14028d280(500), FUN_1408b76f0(m_ent.FUN_1408a9280()));
+                FUN_140ae1e80(pComp, 1.0f, 0.0f, 0.0f, FUN_14028d280(500), ((void*)&((egf::Entity*)(class Unk_Entity*)(m_ent.FUN_1408a9280()))->GetEntityID()));
         }
         m_timer.FUN_140868750(500);
     }
@@ -444,14 +444,14 @@ void CLiftableObject::FUN_141448050(bool bActive)
         void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
         if (pComp != 0 && m_b108 != 0)
         {
-            bool bOn = FUN_140ae1c10() >= FUN_141376880(FUN_140ae1c00(), 5);
-            FUN_141567330(pComp, bOn);
+            bool bOn = FUN_140ae1c10() >= ((class CGraphicOptionTable*)(void*)(FUN_140ae1c00()))->GetShadowOption(5);
+            FUN_141567330((class NiAVObject*)(pComp), bOn);
         }
     }
     else
     {
         void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
         if (pComp != 0)
-            FUN_141567330(pComp, false);
+            FUN_141567330((class NiAVObject*)(pComp), false);
     }
 }

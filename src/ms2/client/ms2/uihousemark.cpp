@@ -54,6 +54,11 @@ static UICommon::CMyPCKeyInputController s_keyInputController;      // header st
 static CString s_strHouseIcon = "System_HouseIcon";                 // the popup sound @0x140114aa0
 
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/buddymanager.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uirealestatedialog.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/camera.h"
 
 // ---- unit-local views of exe types ----
 
@@ -61,16 +66,17 @@ static CString s_strHouseIcon = "System_HouseIcon";                 // the popup
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 extern Unk_EntityAppFramework DAT_143b059e8;
 
-class Unk_Service6100017 : public efd::ISystemService {
+template <int N> struct Unk_CMISTree;                              // the owners tree (Unk_CubeOwners)
+class CubeMapInformationService : public efd::ISystemService {   // C3: member view (the real header brings dynamic initializers)
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
     int FUN_1410c3000();                                            // the current block of the map
     int FUN_1410c8470(int nGroup, int nMapId, int* pnStatus, __int64* pnStartTime);  // the contract of a group
     int FUN_1410c8670(int nGroup, int* pnSub);                      // the icon state of a group
     CStringW FUN_1410c7ce0(int nGroup, int nBlock);                 // the address text
-    Unk_CubeOwners* FUN_1410d3360();                                // the owners by group and block
+    Unk_CMISTree<0x10c>* FUN_1410d3360();                           // the owners by group and block
 };
-Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);
+class Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);   // the cube service from the framework
 
 // The house button of the mark.
 class Unk_140acd6e0 : public ASDisplayObject
@@ -82,15 +88,12 @@ public:
 };
 
 // The house contract dialog (UI 0x4e76).
-class Unk_UgcContractDialog : public UIDialog
+class Unk_UgcContractDialog : public UIRealEstateDialog
 {
-public:
-    void FUN_141ab4000(int nGroup, int nMapId);                     // open on a group
 };
 Unk_UgcContractDialog* FUN_140961690(int nId);
 
 class Unk_HouseMarkUIMgr { public: void FUN_141adc750(int nId); };  // toggle the UI nId
-Unk_HouseMarkUIMgr* FUN_1403ed2b0();
 WorldService* FUN_1403ed2d0();
 
 // The client constants (0x58-byte value cells).
@@ -119,15 +122,11 @@ class Unk_HouseMarkUIScale;
 Unk_HouseMarkUIScale* FUN_14025e7a0();
 float FUN_1422afec0(Unk_HouseMarkUIScale* pScale, int nLayer);     // the scale of a movie
 class Unk_HouseMarkCamera { public: bool FUN_140af0700(const NiPoint3& ptWorld, NiPoint3& ptScreen); };
-Unk_HouseMarkCamera* FUN_1409478c0();
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                     // Point3 operator*=
 float FUN_140966f00(NiPoint3 a, NiPoint3 b);                        // distance
 float FUN_14029d220(float f);                                       // fabs
 
-class Unk_HouseMarkBuddyMgr { public: int FUN_140ae52d0(int nMapId, int nGroup); };
-Unk_HouseMarkBuddyMgr* FUN_14097a780();
-class Unk_HouseMarkStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_HouseMarkStrings* FUN_1401a9d70();
+CBuddyManager* FUN_14097a780();
 
 __int64 FUN_141656ad0(PCBase* pPc);                                 // the character id
 int FUN_1416595d0(PCBase* pPc);
@@ -297,7 +296,7 @@ void UIHouseMarkEntity::FUN_14198b340()
     if (bShow)
     {
         NiPoint3 ptScreen;
-        if (FUN_1409478c0()->FUN_140af0700(m_pos, ptScreen))
+        if (reinterpret_cast<Unk_HouseMarkCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(m_pos, ptScreen))
         {
             FUN_14198c0d0(true);
             FUN_140ad0c10(&ptScreen, FUN_1422afec0(FUN_14025e7a0(), m_clip->FUN_14198f250()));
@@ -318,7 +317,7 @@ MS2_REPLACE_METHOD(0x14198B340, UIHouseMarkEntity, FUN_14198b340, 608, 0x1077E10
 // @0x14198b5b0
 void UIHouseMarkEntity::FUN_14198b5b0()
 {
-    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService((CubeMapInformationService*)FUN_1401cd040(&DAT_143b059e8));
     int nSub;
     int nState = spService->FUN_1410c8670(m_nId, &nSub);
     if (m_nIconType != nState)
@@ -389,8 +388,8 @@ void UIHouseMarkEntity::FUN_14198b970()
     Unk_UGCGroup group;
     if (FUN_1408a0d30(nGroup, group, nMapId) == 0)
         return;
-    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-    if (spService == (Unk_Service6100017*)NULL)
+    efd::SmartPointer<CubeMapInformationService> spService((CubeMapInformationService*)FUN_1401cd040(&DAT_143b059e8));
+    if (spService == (CubeMapInformationService*)NULL)
         return;
     int nResult = 0;
     FUN_1408a0890(nMapId, nGroup, &nResult);
@@ -400,7 +399,7 @@ void UIHouseMarkEntity::FUN_14198b970()
     int nState = 3;
     CStringW strOwner;
     {
-        Unk_CubeOwners* pOwners = spService->FUN_1410d3360();
+        Unk_CubeOwners* pOwners = (Unk_CubeOwners*)spService->FUN_1410d3360();
         Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(*pOwners, nGroup, nBlock);
         if (spOwner.get() != NULL)
         {
@@ -433,7 +432,7 @@ void UIHouseMarkEntity::FUN_14198b970()
     else
     {
         strPrice = FUN_1409404f0(nPrice);
-        strItem = FUN_1401a9d70()->FUN_141811980(1, nItem);
+        strItem = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItem);
     }
     CStringW strAddress = spService->FUN_1410c7ce0(nGroup, nBlock);
     m_clip->Invoke("setAddress", nState, strMap, strEmpty, strOwner, strPrice, strItem, strAddress);
@@ -538,7 +537,7 @@ void UIHouseMarkEntity::FUN_14198c5a0()
     Unk_UgcContractDialog* pDlg = FUN_140961690(0x4e76);
     if (pDlg != NULL && pDlg->FUN_141924630() == 0)
         pDlg->FUN_141ab4000(m_nId, FUN_1403ed2d0()->FUN_141bd3060());
-    FUN_1403ed2b0()->FUN_141adc750(0x4e76);
+    reinterpret_cast<Unk_HouseMarkUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e76);
 }
 MS2_REPLACE_METHOD(0x14198C5A0, UIHouseMarkEntity, FUN_14198c5a0, 103, 0x92B76A5E);
 

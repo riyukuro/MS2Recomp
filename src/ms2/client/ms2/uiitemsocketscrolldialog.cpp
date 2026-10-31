@@ -71,6 +71,8 @@ static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "Pric
 #include "ms2/commonfiles/itemsocket.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"   // C3: TSingleton<> needs the class
+#include "ms2/commonfiles/featuremanager.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -82,7 +84,7 @@ void FUN_140d428a0(ItemScrollSlot* pSlot, MS2Ptr<CItem> spItem);   // ItemScroll
 void FUN_140d42bc0(ItemScrollSlot* pSlot, SsRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
 void FUN_140d42b70(ItemScrollSlot* pSlot, SsDropFn fn);        // ItemScrollSlot::SetDropFn
 
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 class Unk_SsPackets
 {
@@ -91,8 +93,7 @@ public:
     void FUN_140da51e0(int nPacket, Delegate<void(CInPacket&)> fn);     // unregister it
 };
 Unk_SsPackets* FUN_140bccd50();
-class Unk_SsFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_SsFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 extern CStringTable* GetStringTable();                          // FUN_1401a9d70
 
 // The unit's three packet records (the item socket system util reads / writes them with these shapes).
@@ -227,7 +228,7 @@ void UIItemSocketScrollDialog::OnLoadComplete()
     }
     CStringW strNotice;
     CStringW strDesc;
-    MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
     if (FUN_14052cd70(&spScroll) ? true : false)
     {
         if (spScroll->FUN_140527840() != 0)
@@ -280,13 +281,13 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
     MS2DragSlot* pSrc = FUN_140a50b50(pDrag);
     if (pSrc != 0)
     {
-        MS2Ptr<CItem> spTarget = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pSrc));
+        MS2Ptr<CItem> spTarget = g_143ab2a90.FUN_140a5d680(FUN_141405a10(pSrc));
         if (spTarget == 0)
         {
             FUN_140d73aa0(GetStringCommonByKey(L"s_itemsocket_scroll_error_have_not_item"), 0, 0, CStringW(L""));
             return;
         }
-        MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
+        MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
         if (spScroll == 0 || spScroll->FUN_140527840() == 0)
         {
             FUN_140d73aa0(GetStringCommonByKey(L"s_itemsocket_scroll_error_have_not_scroll"), 0, 0, CStringW(L""));
@@ -465,13 +466,13 @@ void UIItemSocketScrollDialog::OnClickAction()
     if (pSlot == 0 || pSlot->vfunc_25() == 0)
         return;
     __int64 nTargetUid = pSlot->FUN_140d428f0();
-    MS2Ptr<CItem> spTarget = DAT_143ab2a90.FUN_140a5d680(pSlot->FUN_140d428f0());
+    MS2Ptr<CItem> spTarget = g_143ab2a90.FUN_140a5d680(pSlot->FUN_140d428f0());
     if (spTarget == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_itemsocket_scroll_error_have_not_item"), 0, 0, CStringW(L""));
         return;
     }
-    MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
     if (spScroll == 0 || spScroll->FUN_140527840() == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_itemsocket_scroll_error_have_not_scroll"), 0, 0, CStringW(L""));
@@ -541,7 +542,7 @@ void UIItemSocketScrollDialog::FUN_140f67170(CInPacket& packet)
     Unk_SsdUidIntByte data;
     FUN_140629fa0(data, packet);
     __int64 nUid = data.m_nUid;
-    if (DAT_143ab2a90.FUN_140a5d680(nUid) == 0)
+    if (g_143ab2a90.FUN_140a5d680(nUid) == 0)
         return;
     m_nScrollUid = nUid;
     m_nCount = data.m_nByte;
@@ -556,7 +557,7 @@ void UIItemSocketScrollDialog::FUN_140f672a0(CInPacket& packet)
     one.m_spItem = m_spItem;
     FUN_14062a230(one, packet);
     __int64 nUid = one.m_nUid;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
     if (spItem == 0)
         return;
     CStringW strMessage = FUN_140938ae0(L"s_itemsocket_scroll_complete_use", one.m_nByte);

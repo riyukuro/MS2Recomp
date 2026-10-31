@@ -52,8 +52,8 @@ public:
 // Unrecovered helpers.
 CString FUN_14016a5c0(const char* psz, int nCodePage);          // narrows a string (the RTTI name in CheckInit)
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
-void FUN_140177a80(CLogString* log, int level, int category, const wchar_t* format, const int& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
+template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 bool FUN_14028f710(Unk_140165cf0* pElem);                                   // the node is an element
 int FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int* pOut);
@@ -62,7 +62,7 @@ int FUN_1408733a0(Unk_140165cf0* pElem, const char* pszName, double* pOut);
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CStringA* pOut);
 int FUN_14021af40(CStringA* pStr);                                          // the string as a number
 CStringA FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CStringA strDefault);
-unsigned short FUN_140197350(Unk_140165cf0* pElem, const char* pszName, unsigned short nDefault);
+int FUN_140197350(Unk_140165cf0 *, char const *, int);  // C3: the definition's signature
 unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);
 // the same attribute reader read as an int (ReadExpTable keeps the full register)
 struct Unk_ExpIntAttrView
@@ -233,7 +233,7 @@ bool CExpTable::LoadNextExp()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(CLogString::GetInstance(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
+        Unk_AchieveLog<CString>(CLogString::GetInstance(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
         return false;
     }
     for (Unk_140165cf0* pExp = pRoot->FUN_140165cf0("exp"); pExp != 0; pExp = pExp->FUN_140168650("exp"))
@@ -270,7 +270,7 @@ bool CExpTable::LoadCommonExp()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(CLogString::GetInstance(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
+        Unk_AchieveLog<CString>(CLogString::GetInstance(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
         return false;
     }
     for (Unk_140165cf0* pExp = pRoot->FUN_140165cf0("exp"); pExp != 0; pExp = pExp->FUN_140168650("exp"))
@@ -300,7 +300,7 @@ bool CExpTable::LoadPetExp()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(CLogString::GetInstance(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
+        Unk_AchieveLog<CString>(CLogString::GetInstance(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
         return false;
     }
     for (Unk_140165cf0* pExp = pRoot->FUN_140165cf0("exp"); pExp != 0; pExp = pExp->FUN_140168650("exp"))
@@ -338,7 +338,7 @@ bool CExpTable::LoadPetEvolution()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(CLogString::GetInstance(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
+        Unk_AchieveLog<CString>(CLogString::GetInstance(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
         return false;
     }
     for (Unk_140165cf0* pEvo = pRoot->FUN_140165cf0("petEvolution"); pEvo != 0; pEvo = pEvo->FUN_140168650("petEvolution"))
@@ -365,13 +365,13 @@ bool CExpTable::ReadExpTable(const CString& strFile)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_14015eb90(CLogString::GetInstance(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[file: {0}]", strPath);
+        Unk_AchieveLog<CString>(CLogString::GetInstance(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[file: {0}]", strPath);
         return false;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(CLogString::GetInstance(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
+        Unk_AchieveLog<CString>(CLogString::GetInstance(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
         return false;
     }
     for (Unk_140165cf0* pTable = pRoot->FUN_140165cf0("table"); pTable != 0; pTable = pTable->FUN_140168650("table"))
@@ -383,7 +383,7 @@ bool CExpTable::ReadExpTable(const CString& strFile)
         Unk_ExpCurve& curve = m_curves[reinterpret_cast<const unsigned&>(nTableId)];
         if (curve.IsValid())
         {
-            FUN_140177a80(CLogString::GetInstance(), 1, 0x13, L"CExpTable::ReadExpTable DuplicateID:{0}", nTableId);
+            Unk_AdditionalLog<unsigned>(CLogString::GetInstance(), 1, 0x13, L"CExpTable::ReadExpTable DuplicateID:{0}", reinterpret_cast<const unsigned&>(nTableId));
             continue;
         }
         for (Unk_140165cf0* pBase = pTable->FUN_140165cf0("base"); pBase != 0; pBase = pBase->FUN_140168650("base"))

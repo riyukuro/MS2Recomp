@@ -454,7 +454,7 @@ public:
     bool FUN_14116dd30(int nKeyCode, int a, int b);                 // bound key pressed
     bool FUN_14116d7a0(int nKey);                                   // a key is held
 };
-Unk_MsgKeys* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The own field state.
 class Unk_MsgField : public CUIService
@@ -466,27 +466,34 @@ public:
 };
 
 // The notify manager.
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 
 // The data file loader.
 class Unk_MsgFiles : public CFileSystem { };
-Unk_MsgFiles* FUN_140166420();
 
 CString FUN_14071a6f0(const CString& strFile);                      // the data path of a file
 CString FUN_14016a600(const wchar_t* psz, int n);                   // wide -> narrow
 CString FUN_1412755f0();                                            // the UI settings directory
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
-void FUN_14086ddc0(TiXmlDocument* pDoc);                            // Clear
-void* FUN_14081b310(TiXmlDocument* pDoc);                           // RootElement
-void* FUN_14086e090(TiXmlDocument* pDoc, class TiXmlElement* pChild);   // LinkEndChild
+class TiXmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    void Clear();
+    class TiXmlNode* LinkEndChild(class TiXmlNode*);
+};
+class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
 bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szPath);        // SaveFile
 void* FUN_140165cf0(TiXmlDocument* pDoc, const char* szName);       // FirstChildElement
 void* FUN_140165cf0(void* pNode, const char* szName);               // FirstChildElement
-void* FUN_140168650(void* pNode, const char* szName);               // NextSiblingElement
-void FUN_140873e30(void* pCfg, const char* szName, float f);
-void FUN_140873ca0(void* pCfg, const char* szName, int n);
-int FUN_140873360(void* pCfg, const char* szName, float* pf);
-int FUN_1408731e0(void* pCfg, const char* szName, int* pn);
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* NextSibling(char const*);
+};
+void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
+void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_140873420(void* pCfg, const char* szName, CStringW* pstr);
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& arr, const wchar_t* szDelim);   // split
 void FUN_140988d60(CStringW& str, std::vector<CStringW>& arr, const wchar_t* szDelim);   // split
@@ -502,7 +509,7 @@ class Unk_MsgUser : public CMyCharacter
 public:
     int FUN_140d9f880(int nRoomId);                                 // the room's entry state (10+: refused)
 };
-Unk_MsgUser* FUN_140931510();
+class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 
 // The world and its local player (the selected super world chat item).
 class Unk_MsgWorld
@@ -527,7 +534,7 @@ public:
     UIMessenger* m_pNewTabWindow;                                   // +0x40 the window asking for a new tab
     UIMessengerBrowser* m_pBrowser;                                 // +0x48
 };
-Unk_MsgState* FUN_141482e80();
+struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 int FUN_141482f00(int nChannel);                                    // the line type of a chat channel
 
 void FUN_141276f80(const Unk_CommandChat& chat);                       // sends a chat line
@@ -550,7 +557,6 @@ CStringW FUN_141842320(const CStringW& strText);                    // text to h
 void FUN_140d2c650(CStringW& strHtml);                              // encodes the item links
 void FUN_140d2c2a0(MS2Ptr<ASTextInput> spInput, ATL::CAtlArray<CStringW>& history);   // the input history keys
 void* FUN_1422bb8b0(int nMovieId);                                  // the movie of a UI layer
-void FUN_14256e3e0(void* pMovie, Scaleform::GFx::Value* pValue);   // movie->CreateArray
 CStringW FUN_140298ea0(CStringW strKey);                            // the string of a key
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
 CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& a, const int& b);
@@ -607,9 +613,9 @@ int UIMessenger::vfunc_65()
 {
     if (!UIDialog::vfunc_65())
         return 0;
-    FUN_140939a10()->RegisterNotify(L"NotifyGameEventChanged",
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyGameEventChanged",
                                    Delegate<void(NotifyObject*)>(this, &UIMessenger::FUN_141a0f550));
-    FUN_140939a10()->RegisterNotify(L"NotifyChatEmoticonSelected",
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChatEmoticonSelected",
                                    Delegate<void(NotifyObject*)>(this, &UIMessenger::FUN_141a0f5d0));
     return 1;
 }
@@ -618,9 +624,9 @@ int UIMessenger::vfunc_65()
 void UIMessenger::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140939a10()->UnregisterNotify(L"NotifyGameEventChanged",
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameEventChanged",
                                    Delegate<void(NotifyObject*)>(this, &UIMessenger::FUN_141a0f550));
-    FUN_140939a10()->UnregisterNotify(L"NotifyChatEmoticonSelected",
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChatEmoticonSelected",
                                    Delegate<void(NotifyObject*)>(this, &UIMessenger::FUN_141a0f5d0));
     m_inputHistory.RemoveAll();
     m_tabs.RemoveAll();
@@ -638,9 +644,9 @@ int UIMessenger::vfunc_4()
     if (!m_4c)
         return 1;
     TiXmlDocument doc;
-    if (!FUN_14081b310(&doc))
-        FUN_14086e090(&doc, new TiXmlElement(GetTypeName()));
-    void* pRoot = FUN_14081b310(&doc);
+    if (!((void*)DocRootElement(&doc)))
+        ((void*)((class TiXmlNode*)(class TiXmlDocument*)(&doc))->LinkEndChild((class TiXmlNode*)(new TiXmlElement(GetTypeName()))));
+    void* pRoot = ((void*)DocRootElement(&doc));
     if (!pRoot)
         return 0;
     FUN_141a15970();
@@ -660,7 +666,7 @@ int UIMessenger::vfunc_5()
     if (pNode != 0)
     {
         m_78 = vfunc_54(pNode);
-        FUN_14086ddc0(&m_doc);
+        ((class TiXmlNode*)(class TiXmlDocument*)(&m_doc))->Clear();
     }
     else
     {
@@ -686,13 +692,13 @@ int UIMessenger::vfunc_53(void* pCfg)
     if (m_90 == 0)
         return 0;
     FUN_141a0f180();
-    FUN_140873ca0(pCfg, "width", m_90->FUN_1422c1340());
-    FUN_140873ca0(pCfg, "height", m_90->FUN_1422c13b0());
-    FUN_140873e30(pCfg, "offsetX", m_fOffsetX);
-    FUN_140873e30(pCfg, "offsetY", m_fOffsetY);
-    FUN_140873ca0(pCfg, "alignType", m_nAlignType);
-    FUN_140873ca0(pCfg, "tabSelectedIndex", m_nTabSelectedIndex);
-    FUN_140873ca0(pCfg, "targetSelectedIndex", m_nTargetSelectedIndex);
+    XmlSetAttr((class TiXmlElement*)(pCfg), "width", m_90->FUN_1422c1340());
+    XmlSetAttr((class TiXmlElement*)(pCfg), "height", m_90->FUN_1422c13b0());
+    XmlSetAttr((class TiXmlElement*)(pCfg), "offsetX", m_fOffsetX);
+    XmlSetAttr((class TiXmlElement*)(pCfg), "offsetY", m_fOffsetY);
+    XmlSetAttr((class TiXmlElement*)(pCfg), "alignType", m_nAlignType);
+    XmlSetAttr((class TiXmlElement*)(pCfg), "tabSelectedIndex", m_nTabSelectedIndex);
+    XmlSetAttr((class TiXmlElement*)(pCfg), "targetSelectedIndex", m_nTargetSelectedIndex);
     for (unsigned int i = 0; i < m_tabs.GetCount(); i++)
     {
         MS2Ptr<TalkTab> spTab = m_tabs[i];
@@ -714,20 +720,20 @@ int UIMessenger::vfunc_54(void* pCfg)
     {
         int nWidth = 0;
         int nHeight = 0;
-        FUN_1408731e0(pCfg, "width", &nWidth);
-        FUN_1408731e0(pCfg, "height", &nHeight);
-        FUN_140873360(pCfg, "offsetX", &m_fOffsetX);
-        FUN_140873360(pCfg, "offsetY", &m_fOffsetY);
-        FUN_1408731e0(pCfg, "alignType", &m_nAlignType);
-        FUN_1408731e0(pCfg, "tabSelectedIndex", &m_nTabSelectedIndex);
-        FUN_1408731e0(pCfg, "targetSelectedIndex", &m_nTargetSelectedIndex);
+        XmlGetAttr((class TiXmlElement*)(pCfg), "width", *(int*)(&nWidth));
+        XmlGetAttr((class TiXmlElement*)(pCfg), "height", *(int*)(&nHeight));
+        XmlGetAttr((class TiXmlElement*)(pCfg), "offsetX", *(float*)(&m_fOffsetX));
+        XmlGetAttr((class TiXmlElement*)(pCfg), "offsetY", *(float*)(&m_fOffsetY));
+        XmlGetAttr((class TiXmlElement*)(pCfg), "alignType", *(int*)(&m_nAlignType));
+        XmlGetAttr((class TiXmlElement*)(pCfg), "tabSelectedIndex", *(int*)(&m_nTabSelectedIndex));
+        XmlGetAttr((class TiXmlElement*)(pCfg), "targetSelectedIndex", *(int*)(&m_nTargetSelectedIndex));
         if (m_bFirst)
         {
             m_nTabSelectedIndex = 0;
             m_nTargetSelectedIndex = FUN_141a14110();
             m_bFirst = 0;
         }
-        for (void* pNode = FUN_140165cf0(pCfg, "Tab"); pNode != 0; pNode = FUN_140168650(pNode, "Tab"))
+        for (void* pNode = FUN_140165cf0(pCfg, "Tab"); pNode != 0; pNode = ((void*)((class Unk_XmlNode*)(void*)(pNode))->NextSibling("Tab")))
         {
             TalkTab* pTab = new TalkTab;
             if (pTab != 0)
@@ -811,12 +817,12 @@ int UIMessenger::vfunc_13()
         return 0;
     if (!m_pBrowser->m_180)
         return 0;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+    if (((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
     {
         FUN_141a17700();
         return 1;
     }
-    else if (FUN_14025e7c0()->FUN_14116dd30(0x49405, 0, 0))
+    else if (((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116dd30(0x49405, 0, 0))
     {
         if (m_textInput)
         {
@@ -828,7 +834,7 @@ int UIMessenger::vfunc_13()
             }
         }
     }
-    else if (FUN_14025e7c0()->FUN_14116d9c0(0x39, 0, 0))
+    else if (((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x39, 0, 0))
     {
         if (reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00())
         {
@@ -836,19 +842,19 @@ int UIMessenger::vfunc_13()
             return 1;
         }
     }
-    else if (FUN_14025e7c0()->FUN_14116d840())
+    else if (((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116d840())
         return FUN_141a12260();
-    else if (m_textInput && m_textInput->FUN_1422c76c0() && FUN_14025e7c0()->FUN_14116d9c0(0x79, 0, 0))
+    else if (m_textInput && m_textInput->FUN_1422c76c0() && ((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x79, 0, 0))
     {
         FUN_141a13c20(1);
         return 1;
     }
-    else if (m_textInput && m_textInput->FUN_1422c76c0() && FUN_14025e7c0()->FUN_14116d9c0(0x7e, 0, 0))
+    else if (m_textInput && m_textInput->FUN_1422c76c0() && ((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x7e, 0, 0))
     {
         FUN_141a13c20(0);
         return 1;
     }
-    else if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0))
+    else if (((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0))
     {
         if (m_textInput)
         {
@@ -906,12 +912,12 @@ bool UIMessenger::LoadDebugChatCommand()
         s_spDebugCommandCache.AssignRaw(new CCacheData);
         s_spDebugCommandCache->FUN_1401d1160(strPath);
     }
-    if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!((class Unk_MsgFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false))
         return false;
     void* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
         return false;
-    for (void* pSet = FUN_140165cf0(pRoot, "CommandSet"); pSet != 0; pSet = FUN_140168650(pSet, "CommandSet"))
+    for (void* pSet = FUN_140165cf0(pRoot, "CommandSet"); pSet != 0; pSet = ((void*)((class Unk_XmlNode*)(void*)(pSet))->NextSibling("CommandSet")))
     {
         CStringW strCmd;
         FUN_140873420(pSet, "cmd", &strCmd);
@@ -1278,7 +1284,7 @@ void UIMessenger::FUN_141a0f5d0(NotifyObject* pNotify)
     ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(pSelected->m_nEmoticonId);
     if (!spEmo)
         return;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
+    MS2Ptr<CChatEmoticonCli> spCli = ((class Unk_MsgUser*)FUN_140931510())->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x4c3, 0);
@@ -1421,7 +1427,7 @@ int UIMessenger::FUN_141a0fe20(int nEmoticonId)
     ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!spEmo)
         return 0;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
+    MS2Ptr<CChatEmoticonCli> spCli = ((class Unk_MsgUser*)FUN_140931510())->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x782, 0);
@@ -1487,7 +1493,7 @@ int UIMessenger::FUN_141a10490(int nEmoticonId, bool bFavorite)
     ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!spEmo)
         return 0;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
+    MS2Ptr<CChatEmoticonCli> spCli = ((class Unk_MsgUser*)FUN_140931510())->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x7d3, 0);
@@ -1616,14 +1622,14 @@ void UIMessenger::FUN_141a12e40(int nType, CStringW strText, bool bHistory)
 // @0x141a12f30
 int UIMessenger::FUN_141a12f30()
 {
-    if (FUN_141482e80()->FUN_1414829e0() != m_strName)
+    if (((class Unk_MsgState*)FUN_141482e80())->FUN_1414829e0() != m_strName)
         return 0;
     {
         MS2Ptr<ASTextInput> spInput = m_textInput;
         if (spInput.get() != 0 && spInput->FUN_1422c76c0() != 0)
             return 1;
     }
-    if (FUN_14025e7c0()->FUN_14116d7a0(0xf))
+    if (((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116d7a0(0xf))
         return 0;
     return 1;
 }
@@ -1669,7 +1675,7 @@ void UIMessenger::FUN_141a13210()
     MS2Ptr<ASTextInput> spInput = m_textInput;
     if (spInput.IsNull())
         return;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
+    MS2Ptr<CChatEmoticonCli> spCli = ((class Unk_MsgUser*)FUN_140931510())->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x720, 0);
@@ -1703,7 +1709,7 @@ void UIMessenger::FUN_141a13510(std::list<ChatEmoticonDataPtr>& emoticons)
 {
     if (emoticons.empty())
         return;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
+    MS2Ptr<CChatEmoticonCli> spCli = ((class Unk_MsgUser*)FUN_140931510())->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x747, 0);
@@ -1717,7 +1723,7 @@ void UIMessenger::FUN_141a13510(std::list<ChatEmoticonDataPtr>& emoticons)
         return;
     ASObj data(2);
     Scaleform::GFx::Value arr;
-    FUN_14256e3e0(pMovie, &arr);
+    ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&arr);
     std::list<ChatEmoticonDataPtr>& rList = emoticons;
     std::list<ChatEmoticonDataPtr>::iterator itEnd = rList.end();
     for (std::list<ChatEmoticonDataPtr>::iterator it = rList.begin(); it != itEnd; ++it)
@@ -1804,12 +1810,12 @@ void UIMessenger::FUN_141a13c20(int bUp)
 // @0x141a13d20
 CStringW UIMessenger::FUN_141a13d20()
 {
-    if (FUN_141482e80()->m_pBrowser != 0)
+    if (((class Unk_MsgState*)FUN_141482e80())->m_pBrowser != 0)
     {
         for (unsigned i = 1; i < 100; i++)
         {
             CStringW strName = FUN_1409e97f0(0x57d, i);
-            if (FUN_141482e80()->m_pBrowser->FUN_141a25410(0, strName))
+            if (((class Unk_MsgState*)FUN_141482e80())->m_pBrowser->FUN_141a25410(0, strName))
                 return strName;
         }
     }
@@ -1890,7 +1896,7 @@ int UIMessenger::FUN_141a14250()
         }
         do
         {
-            bool bEmoticons = FUN_14025e7c0()->IsDebugMode();
+            bool bEmoticons = ((class Unk_MsgKeys*)FUN_14025e7c0())->IsDebugMode();
             if (!bEmoticons)
                 break;
             int nLast = strText.GetLength() - 1;
@@ -2115,7 +2121,7 @@ void UIMessenger::vfunc_87(const CStringW& strMsg, const CString& strWindow)
     if (pDialog != 0)
     {
         Scaleform::GFx::Value names;
-        FUN_14256e3e0(pMovie, &names);
+        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&names);
         for (unsigned i = 0; i < m_tabs.GetCount(); i++)
         {
             MS2Ptr<TalkTab> spTab = m_tabs[i];
@@ -2154,7 +2160,7 @@ int UIMessenger::vfunc_88(const CStringW& strText, int nType)
 // @0x141a15e80
 void UIMessenger::vfunc_90()
 {
-    FUN_141482e80()->FUN_141482c80(m_strName);
+    ((class Unk_MsgState*)FUN_141482e80())->FUN_141482c80(m_strName);
 }
 
 // @0x141a15ef0
@@ -2173,8 +2179,8 @@ void UIMessenger::vfunc_92()
         {
             FUN_141a0e2a0(strName);
             vfunc_4();
-            FUN_141482e80()->m_nNewTabMode = 2;
-            FUN_141482e80()->m_pNewTabWindow = this;
+            ((class Unk_MsgState*)FUN_141482e80())->m_nNewTabMode = 2;
+            ((class Unk_MsgState*)FUN_141482e80())->m_pNewTabWindow = this;
             reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e62);
         }
     }
@@ -2231,16 +2237,16 @@ void UIMessenger::vfunc_96(int nMenu)
 {
     if (nMenu == 0)
     {
-        FUN_141482e80()->m_nNewTabMode = 1;
-        FUN_141482e80()->m_pNewTabWindow = this;
+        ((class Unk_MsgState*)FUN_141482e80())->m_nNewTabMode = 1;
+        ((class Unk_MsgState*)FUN_141482e80())->m_pNewTabWindow = this;
         reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e62);
     }
     else if (nMenu == 1)
     {
         if (FUN_141a0e350(FUN_141a0dfc0()))
         {
-            if (FUN_141482e80()->m_pBrowser != 0)
-                FUN_141482e80()->m_pBrowser->FUN_141a245d0(m_strName);
+            if (((class Unk_MsgState*)FUN_141482e80())->m_pBrowser != 0)
+                ((class Unk_MsgState*)FUN_141482e80())->m_pBrowser->FUN_141a245d0(m_strName);
             vfunc_4();
         }
     }
@@ -2286,8 +2292,8 @@ void UIMessenger::vfunc_98(const CStringW& strName, const CString& strWindow)
             pWindow->FUN_141a0e2a0(spTab->m_strName);
             pWindow->vfunc_4();
         }
-        if (FUN_141482e80()->m_pBrowser != 0)
-            FUN_141482e80()->m_pBrowser->FUN_141a245d0(m_strName);
+        if (((class Unk_MsgState*)FUN_141482e80())->m_pBrowser != 0)
+            ((class Unk_MsgState*)FUN_141482e80())->m_pBrowser->FUN_141a245d0(m_strName);
         vfunc_4();
     }
 }
@@ -2304,8 +2310,8 @@ void UIMessenger::FUN_141a16730(const CStringW& strName, int nX, int nY, int nWi
     {
         ATL::CAtlArray<MS2Ptr<TalkTab> > tabs;
         tabs.Add(spTab);
-        if (FUN_141482e80()->m_pBrowser != 0)
-            FUN_141482e80()->m_pBrowser->FUN_141a24160(tabs, nX, nY, nWidth, nHeight, nTarget);
+        if (((class Unk_MsgState*)FUN_141482e80())->m_pBrowser != 0)
+            ((class Unk_MsgState*)FUN_141482e80())->m_pBrowser->FUN_141a24160(tabs, nX, nY, nWidth, nHeight, nTarget);
         FUN_141a0e990();
         vfunc_4();
     }
@@ -2389,13 +2395,13 @@ void UIMessenger::FUN_141a16cc0(int nPartyId, CStringW strLeader, int nRoomId)
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_has_party")), 1, 1);
         return;
     }
-    int nState = FUN_140931510()->FUN_140d9f880(nRoomId);
+    int nState = ((class Unk_MsgUser*)FUN_140931510())->FUN_140d9f880(nRoomId);
     if (nState >= 10)
     {
         FUN_1412b9870(nRoomId, nState);
         return;
     }
-    if (!FUN_140931510()->GetRecord()->CanClaimHelperReward(nRoomId))
+    if (!((class Unk_MsgUser*)FUN_140931510())->GetRecord()->CanClaimHelperReward(nRoomId))
     {
         DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nRoomId);
         if (spRoom == 0)
@@ -2432,7 +2438,7 @@ void UIMessenger::FUN_141a172a0(int nPartyId, CStringW strLeader, int nRoomId)
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_has_party")), 1, 1);
         return;
     }
-    int nState = FUN_140931510()->FUN_140d9f880(nRoomId);
+    int nState = ((class Unk_MsgUser*)FUN_140931510())->FUN_140d9f880(nRoomId);
     if (nState >= 10)
     {
         FUN_1412b9870(nRoomId, nState);
@@ -2641,9 +2647,7 @@ Unk_MbStrings* FUN_14025e7d0();
    // 2: drop, 1: replaced
    // the user is blinded
 BlindManager* FUN_1409c1730();
-CBuddyManager* FUN_14097a780();
 CFeatureManager* FUN_140166410();
-CReservedWordTable* FUN_1403b4750();
 
 // The game options: the community switches and the chat balloon switches.
 class Unk_MbBalloons { public: int FUN_14125c820(int nType); };   // the balloon shows the chat type
@@ -2739,7 +2743,7 @@ UIMessengerBrowser::UIMessengerBrowser()
     m_88 = 1;
     FUN_141925e70(0, 1);
     m_itHistory = m_history.end();
-    FUN_141482e80()->m_pBrowser = this;
+    ((class Unk_MsgState*)FUN_141482e80())->m_pBrowser = this;
     FUN_140bccd50()->FUN_140da5180(0x1d, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_84));
     FUN_140bccd50()->FUN_140da5180(0x1e, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_85));
     FUN_140bccd50()->FUN_140da5180(0x90, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22ee0));
@@ -2752,7 +2756,7 @@ UIMessengerBrowser::~UIMessengerBrowser()
 {
     m_history.clear();
     m_itHistory = m_history.end();
-    FUN_141482e80()->m_pBrowser = 0;
+    ((class Unk_MsgState*)FUN_141482e80())->m_pBrowser = 0;
     FUN_140bccd50()->FUN_140da51e0(0x1d, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_84));
     FUN_140bccd50()->FUN_140da51e0(0x1e, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_85));
     FUN_140bccd50()->FUN_140da51e0(0x90, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22ee0));
@@ -2978,9 +2982,9 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     }
     if (nType != 4)
     {
-        if (FUN_14097a780()->FUN_140ae5240(strName))
+        if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae5240(strName))
             return;
-        if (nCharId != 0 && FUN_14097a780()->FUN_140ae51b0(nCharId))
+        if (nCharId != 0 && TSingleton<CBuddyManager>::GetInstance()->FUN_140ae51b0(nCharId))
             return;
     }
     FUN_141a25ad0(strText);
@@ -3073,7 +3077,7 @@ void UIMessengerBrowser::FUN_141a230e0(CInPacket& packet)
     DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nRoomId);
     if (spRoom == 0)
         return;
-    if (FUN_14097a780()->FUN_140ae51b0(nCharId))
+    if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae51b0(nCharId))
         return;
     TSingleton<CPartyManager>::GetInstance()->FUN_1416312f0(nPartyId);
     CStringW strHtml = FUN_141841c60(nPartyId, strLeader, nA, nCharId, nRoomId, spRoom->m_groupType, bFlag,
@@ -3097,7 +3101,7 @@ void UIMessengerBrowser::FUN_141a233d0(CInPacket& packet)
     DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nRoomId);
     if (spRoom == 0)
         return;
-    if (FUN_14097a780()->FUN_140ae51b0(nCharId))
+    if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae51b0(nCharId))
         return;
     TSingleton<CPartyManager>::GetInstance()->FUN_1416312f0(nPartyId);
     CStringW strUserEvent = FUN_141842c40(L"'event:userSelect,{0},{1},{2}'", strLeader, nAccountId, nCharId);
@@ -3173,7 +3177,7 @@ void UIMessengerBrowser::FUN_141a23c20()
     m_reports.RemoveAll();
     m_history.clear();
     m_itHistory = m_history.end();
-    FUN_141482e80()->FUN_141482b70();
+    ((class Unk_MsgState*)FUN_141482e80())->FUN_141482b70();
 }
 
 // @0x141a23d50
@@ -3207,7 +3211,7 @@ void UIMessengerBrowser::FUN_141a23e80()
         strDefault.Format("DefaultMessenger%d.xml", i);
         FUN_1401d3700(strDefault);
         TiXmlDocument doc;
-        int bLoaded = FUN_140166420()->FUN_1403974b0(
+        int bLoaded = ((class Unk_MsgFiles*)GetFileSystem())->FUN_1403974b0(
             &doc, FUN_140cc2a00(FUN_140188f50(FUN_141275750(), 0), strDefault), 0, true, false);
         if (bLoaded)
         {
@@ -3226,18 +3230,18 @@ void UIMessengerBrowser::FUN_141a24160(const ATL::CAtlArray<MS2Ptr<TalkTab> >& t
                                        int nHeight, int nTarget)
 {
     TiXmlDocument doc;
-    if (FUN_14081b310(&doc) == 0)
-        FUN_14086e090(&doc, new TiXmlElement("MessengerDialog"));
-    void* pRoot = FUN_14081b310(&doc);
+    if (((void*)DocRootElement(&doc)) == 0)
+        ((void*)((class TiXmlNode*)(class TiXmlDocument*)(&doc))->LinkEndChild((class TiXmlNode*)(new TiXmlElement("MessengerDialog"))));
+    void* pRoot = ((void*)DocRootElement(&doc));
     if (pRoot == 0)
         return;
-    FUN_140873ca0(pRoot, "width", nWidth);
-    FUN_140873ca0(pRoot, "height", nHeight);
-    FUN_140873ca0(pRoot, "offsetX", nX);
-    FUN_140873ca0(pRoot, "offsetY", nY);
-    FUN_140873ca0(pRoot, "alignType", 5);
-    FUN_140873ca0(pRoot, "additive", 0);
-    FUN_140873ca0(pRoot, "targetSelectedIndex", nTarget);
+    XmlSetAttr((class TiXmlElement*)(pRoot), "width", nWidth);
+    XmlSetAttr((class TiXmlElement*)(pRoot), "height", nHeight);
+    XmlSetAttr((class TiXmlElement*)(pRoot), "offsetX", nX);
+    XmlSetAttr((class TiXmlElement*)(pRoot), "offsetY", nY);
+    XmlSetAttr((class TiXmlElement*)(pRoot), "alignType", 5);
+    XmlSetAttr((class TiXmlElement*)(pRoot), "additive", 0);
+    XmlSetAttr((class TiXmlElement*)(pRoot), "targetSelectedIndex", nTarget);
     for (unsigned i = 0; i < tabs.GetCount(); i++)
     {
         MS2Ptr<TalkTab> spTab = tabs[i];
@@ -3264,7 +3268,7 @@ void UIMessengerBrowser::FUN_141a24490()
         UIMessenger* pWindow = m_windows[i];
         if (pWindow != 0)
         {
-            FUN_141482e80()->FUN_141482d30(pWindow->GetName());
+            ((class Unk_MsgState*)FUN_141482e80())->FUN_141482d30(pWindow->GetName());
             pWindow->vfunc_84();
             FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pWindow));
         }
@@ -3282,7 +3286,7 @@ void UIMessengerBrowser::FUN_141a245d0(const CStringW& strName)
         {
             if (pWindow->m_tabs.IsEmpty())
             {
-                FUN_141482e80()->FUN_141482d30(pWindow->GetName());
+                ((class Unk_MsgState*)FUN_141482e80())->FUN_141482d30(pWindow->GetName());
                 pWindow->vfunc_84();
                 m_windows.RemoveAt(i, 1);
                 FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pWindow));
@@ -3297,7 +3301,7 @@ void UIMessengerBrowser::FUN_141a247c0(const CStringW& strText, int nType)
     if (strText.IsEmpty())
         return;
     CStringW strLine(strText);
-    FUN_1403b4750()->FUN_1416fb340(strLine);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strLine);
     strLine = FUN_14183f080(strLine, 0, DAT_143adda48.m_nFontSize);
     FUN_141a26e00(strLine, nType);
 }
@@ -3328,7 +3332,7 @@ void UIMessengerBrowser::FUN_141a24890(CItem* pItem, unsigned nCount, int nManyI
         strText = FUN_1401e8510(strFormat, strItem);
     }
     int nBefore = pItem->FUN_140526c50() - nCount;
-    if (FUN_14025e7c0()->IsDebugMode())
+    if (((class Unk_MsgKeys*)FUN_14025e7c0())->IsDebugMode())
     {
         CStringW strDebug;
         unsigned nNow = pItem->FUN_140526c50();
@@ -3341,7 +3345,7 @@ void UIMessengerBrowser::FUN_141a24890(CItem* pItem, unsigned nCount, int nManyI
 // @0x141a24cb0
 void UIMessengerBrowser::FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta)
 {
-    if (!FUN_14025e7c0()->IsDebugMode())
+    if (!((class Unk_MsgKeys*)FUN_14025e7c0())->IsDebugMode())
         return;
     CStringW strItem = FUN_141841b40(pItem, L"inven", DAT_143adda48.m_nFontSize);
     unsigned nBefore = nCount - nDelta;
@@ -3360,7 +3364,7 @@ void UIMessengerBrowser::FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta
 // @0x141a24e10
 void UIMessengerBrowser::FUN_141a24e10(CItem* pItem)
 {
-    if (!FUN_14025e7c0()->IsDebugMode())
+    if (!((class Unk_MsgKeys*)FUN_14025e7c0())->IsDebugMode())
         return;
     CStringW strItem = FUN_141841b40(pItem, L"inven", DAT_143adda48.m_nFontSize);
     unsigned nCount = pItem->FUN_140526c50();
@@ -3370,7 +3374,7 @@ void UIMessengerBrowser::FUN_141a24e10(CItem* pItem)
 // @0x141a24ee0
 void UIMessengerBrowser::FUN_141a24ee0(CItem* pItem)
 {
-    if (!FUN_14025e7c0()->IsDebugMode())
+    if (!((class Unk_MsgKeys*)FUN_14025e7c0())->IsDebugMode())
         return;
     CStringW strItem = FUN_141841b40(pItem, L"inven", DAT_143adda48.m_nFontSize);
     unsigned nCount = pItem->FUN_140526c50();
@@ -3383,7 +3387,7 @@ void UIMessengerBrowser::FUN_141a24fb0(CStringW strText)
     for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
-        if (pWindow != 0 && FUN_141482e80()->FUN_1414829e0() == pWindow->GetName())
+        if (pWindow != 0 && ((class Unk_MsgState*)FUN_141482e80())->FUN_1414829e0() == pWindow->GetName())
             pWindow->FUN_141a0ec30(strText);
     }
 }
@@ -3429,7 +3433,7 @@ void UIMessengerBrowser::FUN_141a252a0(const CStringW& strTarget)
     for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
-        if (pWindow != 0 && FUN_141482e80()->FUN_141482a50() == pWindow->GetName())
+        if (pWindow != 0 && ((class Unk_MsgState*)FUN_141482e80())->FUN_141482a50() == pWindow->GetName())
             pWindow->FUN_141a14bb0(strTarget);
     }
 }
@@ -3747,7 +3751,7 @@ void UIMessengerBrowser::FUN_141a26a00()
             strFile.Format("%s%d.xml", "MessengerDialog", i);
             FUN_1401d3700(strFile);
             TiXmlDocument doc;
-            int bLoaded = FUN_140166420()->FUN_1403974b0(
+            int bLoaded = ((class Unk_MsgFiles*)GetFileSystem())->FUN_1403974b0(
                 &doc, FUN_140cc2a00(FUN_140188f50(FUN_1412755f0(), 0), strFile), 0, false, false);
             if (bLoaded)
             {
@@ -3869,7 +3873,7 @@ int UIMessengerBrowser::FUN_141a27570()
         strFile.Format("%s%d.xml", "MessengerDialog", i);
         FUN_1401d3700(strFile);
         TiXmlDocument doc;
-        int bLoaded = FUN_140166420()->FUN_1403974b0(
+        int bLoaded = ((class Unk_MsgFiles*)GetFileSystem())->FUN_1403974b0(
             &doc, FUN_140cc2a00(FUN_140188f50(FUN_1412755f0(), 0), strFile), 0, false, false);
         if (!bLoaded)
             continue;
@@ -3885,7 +3889,7 @@ int UIMessengerBrowser::FUN_141a27570()
             bValid = false;
             break;
         }
-        for (; pTabXml != 0; pTabXml = FUN_140168650(pTabXml, "Tab"))
+        for (; pTabXml != 0; pTabXml = ((void*)((class Unk_XmlNode*)(void*)(pTabXml))->NextSibling("Tab")))
         {
             MS2Ptr<TalkTab> spTab(new TalkTab);
             if (spTab.get() == 0 || !spTab->FUN_1414827c0((Unk_MdXml*)pTabXml))

@@ -25,6 +25,10 @@
 #include "ms2/client/ms2/nifeffectparam.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/client/ms2/instrumentmanager.h"
+
+// return types of the getters this unit calls
+struct Unk_PmFixedItem;
 
 // The notice posted when the debug mode toggles (the name virtual GetTypeName lives in another unit).
 class NotifyDebugMode : public NotifyObject
@@ -39,19 +43,23 @@ MS2_CHECK_SIZE(NotifyDebugMode, 0x20);
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-class Unk_KhUI { public: int FUN_141adbb00(); int FUN_141adbd10(); };   // CUIService
-class Unk_KhCamera { public: bool FUN_140d07330(); };
-Unk_KhCamera* FUN_140c8dac0();
+class Unk_KhUI : public CUIService { };   // CUIService (C3: FUN_141adbd10 is CUIService's)
+class Unk_KhCamera : public CInstrumentManager { };
+struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
 CKeyTable* FUN_1409331f0();
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_KhState { public: unsigned char* FUN_140a58500(); };
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 MS2InputService* FUN_140a58540();                           // TSingleton<MS2InputService>::GetInstance
 void FUN_1412751b0(const CStringW& text, int nType);        // chat/system line
 
-CNifLoadingService* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 class Unk_KhSkinView { public: void FUN_141047900(); };
-Unk_KhSkinView* FUN_140d89420(NiAVObject* pObject);
+class NiRenderObject   // C3: member view for the former free stand-ins
+{
+public:
+    class NiMaterialInstance const* GetActiveMaterialInstance() const;
+};
 
 extern int DAT_143ab2914;                                   // the GM level
 extern int DAT_143af7d40;                                   // input enabled
@@ -90,7 +98,7 @@ void CInputKeyHandler::SetDebugMode(bool bOn)
             pszState = L"Off";
         strMsg.Format(L"Debug Mode: %s", pszState);
         FUN_1412751b0(strMsg, 20);
-        FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyDebugMode(m_bDebugMode)));
+        ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyDebugMode(m_bDebugMode)));
     }
 }
 MS2_REPLACE_METHOD(0x14116D5D0, CInputKeyHandler, SetDebugMode, 317, 0x97A7D3E9);
@@ -123,7 +131,7 @@ bool CInputKeyHandler::FUN_14116d7a0(unsigned nMask)
 {
     if (reinterpret_cast<Unk_KhUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0 && (nMask & 2) != 0)
         return true;
-    if (FUN_140c8dac0()->FUN_140d07330() != 0 && (nMask & 4) != 0)
+    if (reinterpret_cast<Unk_KhCamera*>(((class Unk_KhCamera*)FUN_140c8dac0()))->IsEnsemble() != 0 && (nMask & 4) != 0)
         return true;
     if (m_bModifier1 != false && (nMask & 1) != 0)
         return true;
@@ -151,7 +159,7 @@ bool CInputKeyHandler::FUN_14116d890(bool bAlt)
         return true;
     if (FUN_1409331f0()->FUN_14142c4b0(0x49408) != 0)
         return true;
-    if (FUN_140166410()->FUN_14036d570(0xb5) == true)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == true)
     {
         if (*reinterpret_cast<Unk_KhState*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500() != 0)
         {
@@ -353,7 +361,7 @@ bool FUN_14116e080(NiAVObject* pObject)
     NiStringExtraData* pBaseDead = pBase = NiDynamicCast(NiStringExtraData, pObject->GetExtraData("OriginalBaseTexturePath"));
     if (pBase != 0)
     {
-        NiTexturePtr spBase = FUN_140a0afd0()->GetTexture(CString((const char*)pBase->GetValue()), 5);
+        NiTexturePtr spBase = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString((const char*)pBase->GetValue()), 5);
         pTexturing->SetBaseTexture(spBase);
         pObject->RemoveExtraData("OriginalBaseTexturePath");
     }
@@ -361,7 +369,7 @@ bool FUN_14116e080(NiAVObject* pObject)
     NiStringExtraData* pControlDead = pControl = NiDynamicCast(NiStringExtraData, pObject->GetExtraData("OriginalControlTexturePath"));
     if (pControl != 0)
     {
-        NiTexturePtr spControl = FUN_140a0afd0()->GetTexture(CString((const char*)pControl->GetValue()), 5);
+        NiTexturePtr spControl = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString((const char*)pControl->GetValue()), 5);
         NiTexturingProperty::ShaderMap* pMap = new (efd::MemHint(efd::MemHint::NONE))
             NiTexturingProperty::ShaderMap(spControl, 0, (NiTexturingProperty::ClampMode)3, (NiTexturingProperty::FilterMode)2, 0);
         pTexturing->SetShaderMap(0, pMap);
@@ -370,6 +378,6 @@ bool FUN_14116e080(NiAVObject* pObject)
     pTexturing->SetShaderMap(1, 0);
     pTexturing->SetShaderMap(2, 0);
     pObject->UpdateProperties();
-    FUN_140d89420(pObject)->FUN_141047900();
+    ((class Unk_KhSkinView*)((class NiRenderObject*)(class NiAVObject*)(pObject))->GetActiveMaterialInstance())->FUN_141047900();
     return true;
 }

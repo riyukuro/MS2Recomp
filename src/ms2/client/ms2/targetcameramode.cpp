@@ -26,7 +26,7 @@ extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 extern float g_143aef240;                   // remembered camera distance (vfunc_7 / vfunc_24)
 
 // The input state (FUN_14025e7c0).
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 class Unk_BuffContainer
 {
@@ -69,7 +69,6 @@ public:
     Unk_LocalPlayer* FUN_141bd0cc0();
     Unk_CameraOptionPtr FUN_141bd30a0();            // copy of +0x298
 };
-Unk_GameContext* FUN_1403ed2d0();
 
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
@@ -85,7 +84,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-Unk_ClientConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The scene camera (FUN_1413f9890()->FUN_140af7da0()->FUN_140af7df0()) and its frustum.
 struct Unk_Frustum
@@ -153,7 +152,7 @@ CTargetCameraMode::CTargetCameraMode(Unk_CameraOwner* pOwner, MS2Ptr<CCameraMode
 {
     if (Unk_CameraManager::FUN_1409478c0()->FUN_140af01d0())
         CTargetCameraMode::vfunc_31();
-    m_b4 = FUN_1403ed2d0()->FUN_141bd4120();
+    m_b4 = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd4120();
 }
 
 // @0x14183a230
@@ -191,9 +190,9 @@ void CTargetCameraMode::vfunc_6(int n)
         m_d8.m_pos = FUN_1409f2540();
         m_d8.m_rot = FUN_140af8260();
         m_c0 = m_d8;
-        m_9c = FUN_1401d3200()->m_1a80.FUN_1402bac70();
-        m_a0 = FUN_1401d3200()->m_1ad8.FUN_1402bac70();
-        m_a4 = FUN_1401d3200()->m_1b30.FUN_1402bac70();
+        m_9c = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
+        m_a0 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
+        m_a4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
     }
     m_f8 = 0;
 }
@@ -338,22 +337,22 @@ MS2_REPLACE_METHOD(0x14183a560, CTargetCameraMode, vfunc_8, 3332, 0x40364A33);
 void CTargetCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
-    if (FUN_14025e7c0()->FUN_14116d950(5, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(5, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         ptMove.z = 1.0f;
-    else if (FUN_14025e7c0()->FUN_14116d950(6, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(6, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         ptMove.z = -1.0f;
-    if (FUN_14025e7c0()->FUN_14116d950(7, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(7, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         ptMove.y = -1.0f;
-    else if (FUN_14025e7c0()->FUN_14116d950(8, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(8, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         ptMove.y = 1.0f;
-    Unk_LocalPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_LocalPlayer* pPlayer = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer && pPlayer->FUN_14166d240()->FUN_141682fe0(300008))
         ptMove.x = 1.0f;
     else if (pPlayer && pPlayer->FUN_14166d240()->FUN_141682fe0(300009))
         ptMove.x = -1.0f;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x14, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x14, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         vfunc_18(m_60 + 5.0f, m_64 + 5.0f);
-    else if (FUN_14025e7c0()->FUN_14116d9c0(0x15, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x15, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         vfunc_18(m_60 - 5.0f, m_64 - 5.0f);
     Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(ptMove);
 }
@@ -398,7 +397,7 @@ void CTargetCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         m_50 = m_54;
         if (m_bc && g_143aef240 != 0.0f)
             m_50 = g_143aef240;
-        m_b4 = FUN_1403ed2d0()->FUN_141bd4120();
+        m_b4 = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd4120();
         m_68 = m_48;
         m_6c = FUN_14183ce10(m_58, m_50, m_54, m_4c * 180.0f / 3.14159265f, 90.0f);
         m_78 = pTarget->vfunc_17();
@@ -500,7 +499,7 @@ MS2_REPLACE_METHOD(0x14183bdf0, CTargetCameraMode, vfunc_21, 120, 0x6EA7BBE0);
 // @0x14183be70
 void CTargetCameraMode::vfunc_33()
 {
-    Unk_CameraOptionPtr spOption = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_CameraOptionPtr spOption = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd30a0();
     if (spOption.FUN_1409657a0())
     {
         float fRotation = spOption.FUN_140885340()->m_154;
@@ -514,7 +513,7 @@ void CTargetCameraMode::vfunc_33()
         else
         {
             vfunc_16(spOption.FUN_140885340()->m_23c);
-            vfunc_11(FUN_1403ed2d0()->FUN_141bcfc50());
+            vfunc_11(((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bcfc50());
             vfunc_12(fRotation);
         }
         vfunc_10();

@@ -13,8 +13,6 @@
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
@@ -45,7 +43,7 @@ bool CTailEffectDataTable::Load()
     CString strPath = FUN_14071a5b0("Table", "tailEffect.xml");
     m_cache.FUN_1401d1160(CString(strPath));
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

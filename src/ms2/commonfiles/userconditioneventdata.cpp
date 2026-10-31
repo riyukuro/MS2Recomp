@@ -25,8 +25,6 @@ typedef ATL::CRBMap<int, CUserConditionEventData::Ptr> Unk_UceMap;
 
 // ---- unrecovered helpers ----
 
-class Unk_UceLoader : public CFileSystem { };
-Unk_UceLoader* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);         // undecorated class name
    // the item exists
@@ -93,7 +91,7 @@ void CUserConditionEventData::Load()
 {
     TiXmlDocument doc;
     CString strPath = FUN_14071a5b0("Table", "userConditionEvent.xml");
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

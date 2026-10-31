@@ -7,12 +7,18 @@
 // MS2-PIN: ??_7?$Unk_ReportDelegateImpl@U?$pair@PEAVUITencentUserReportDialog@TencentUserReport@@P812@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Unk_ReportDelegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@6B@ 0x142e691b0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uitencentuserreportdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/gfxmanager.h"
 #include "uitencentuserreportdialog.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <stdarg.h>
 #include "ms2/placeholder/asdata.h"
+#include "ms2/placeholder/cugcmanager.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/blindmanager.h"
+#include "ms2/client/ms2/guildmanager.h"
+#include "ms2/client/ms2/buddymanager.h"
 
 static CString s_marketSort[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
 static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -73,18 +79,13 @@ public:
 extern const int g_reportTypes[16]; // exe table; no mutable DLL-local copy
 void FUN_141275260(int message, int a, int b);
 CStringW GetStringCommon(int id);
-class Unk_ReportLocalizer { public: CStringW FUN_1422b0570(const CString& key); };
-Unk_ReportLocalizer* FUN_14025e7a0();
-class Unk_ReportBlindManager {
+class Unk_ReportBlindManager : public BlindManager {
 public:
     bool FUN_140a25950(int kind, __int64 id);
-    bool FUN_140a25730(int kind, CStringW name);
 };
 Unk_ReportBlindManager* FUN_1409c1730();
-class Unk_ReportGuildManager { public: void FUN_1418885b0(int id); };
-Unk_ReportGuildManager* FUN_14052d220();
+CUgcManager* FUN_14052d220();
 class Unk_ReportUserManager { public: void FUN_1413baef0(int id, int flag); };
-Unk_ReportUserManager* FUN_1403ed290();
 
 template<class F> class Unk_ReportDelegate;
 template <class R, class A1, class A2>
@@ -159,8 +160,7 @@ private:
     Unk_ReportTarget m_target;
 };
 MS2_CHECK_SIZE(NotifyBlindTarget, 0x30);
-class Unk_ReportNotifyManager { public: void FUN_140da4fe0(MS2Ptr<NotifyObject>); };
-Unk_ReportNotifyManager* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 class Unk_ReportContact {
 public:
     int FUN_1401cc5b0();
@@ -180,7 +180,6 @@ public:
     MS2Ptr<Unk_ReportContact> FUN_140ae4950(const CStringW&);
     void FUN_140ae4820(const Unk_ReportContactRequest&);
 };
-Unk_ReportContactManager* FUN_14097a780();
 
 namespace TencentUserReport {
 
@@ -308,7 +307,7 @@ MS2_REPLACE_METHOD(0x140EDBC60, UITencentUserReportDialog, FUN_140edbc60, 133, 0
 void UITencentUserReportDialog::FUN_140edbcf0()
 {
     if (FUN_1409c1730()->FUN_140a25950(3, m_data.itemId) == true)
-        FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyBlindTarget(3, reinterpret_cast<const Unk_ReportTarget&>(m_data.m_38))));
+        FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyBlindTarget(3, reinterpret_cast<const Unk_ReportTarget&>(m_data.m_38))));
 }
 MS2_REPLACE_METHOD(0x140EDBCF0, UITencentUserReportDialog, FUN_140edbcf0, 216, 0x99A521CC);
 
@@ -323,7 +322,7 @@ MS2_REPLACE_METHOD(0x140EDBDD0, UITencentUserReportDialog, FUN_140edbdd0, 76, 0x
 // @0x140edbe30
 void UITencentUserReportDialog::FUN_140edbe30()
 {
-    MS2Ptr<Unk_ReportContact> contact = FUN_14097a780()->FUN_140ae4950(m_data.name);
+    MS2Ptr<Unk_ReportContact> contact = reinterpret_cast<Unk_ReportContactManager*>(TSingleton<CBuddyManager>::GetInstance())->FUN_140ae4950(m_data.name);
     if (contact.get() && contact->FUN_1401cc5b0() == 1)
         return;
     Unk_ReportContactRequest request;
@@ -331,15 +330,15 @@ void UITencentUserReportDialog::FUN_140edbe30()
     request.name = m_data.name;
     request.reason = GetStringCommon(0x8af);
     request.id = contact.get() ? contact->FUN_1401cc2f0() : 0;
-    FUN_14097a780()->FUN_140ae4820(request);
+    reinterpret_cast<Unk_ReportContactManager*>(TSingleton<CBuddyManager>::GetInstance())->FUN_140ae4820(request);
 }
 MS2_REPLACE_METHOD(0x140EDBE30, UITencentUserReportDialog, FUN_140edbe30, 329, 0xC76388B8);
 
 // @0x140edbf80
 void UITencentUserReportDialog::FUN_140edbf80()
 {
-    if (FUN_1409c1730()->FUN_140a25730(5, m_data.content) == true)
-        FUN_1403ed290()->FUN_1413baef0(m_data.m_28, 0);
+    if (FUN_1409c1730()->Block(5, m_data.content) == true)
+        reinterpret_cast<Unk_ReportUserManager*>(TSingleton<CGuildManager>::GetInstance())->FUN_1413baef0(m_data.m_28, 0);
 }
 MS2_REPLACE_METHOD(0x140EDBF80, UITencentUserReportDialog, FUN_140edbf80, 132, 0x3A397539);
 

@@ -17,7 +17,7 @@
 #include "ms2/client/ms2/uiupperhpbar.h"        // UIEntityEventListener
 #include "ms2/placeholder/ascript.h"
 
-class Unk_NpcList;
+class ASScrollingList;
 
 // One row of the npc list: the id text (the file's npc id), the lower-cased name with the spaces removed (what the
 // filter matches) and the line shown in the list.
@@ -63,7 +63,7 @@ public:
     void FUN_141a6b800();                               // log + preload every npc
     void FUN_141a6b8f0();                               // build m_entries
     void FUN_141a6be40(CStringW& strFilter);        // refill "m_npcList"
-    MS2Ptr<Unk_NpcList> FUN_140c02900(const CString& strName);     // bind a list child of the movie
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);     // bind a list child of the movie
 
 private:
     MS2_LAYOUT_FRIEND;

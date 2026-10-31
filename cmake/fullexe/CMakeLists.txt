@@ -156,5 +156,8 @@ endif()
 stage(initorder 2 COMMAND ${PY} "${FE}/initorder.py")
 # 7. closed link: no /force:unresolved; objs taken in place through the response file
 stage(link2 3 COMMAND ${PY} "${FE}/link.py" --alias --order --shim --before "${OUT}/initorder2.tsv")
+# 8. the game's file name: a plain copy of fullexe3.exe (the lanes and smoke tools keep reading fullexe3.exe)
+add_custom_target(exename COMMAND ${CMAKE_COMMAND} -E copy "${OUT}/fullexe3.exe" "${OUT}/MapleStory2.exe" VERBATIM)
+add_dependencies(exename link2)
 
-add_custom_target(fullexe ALL DEPENDS link2)
+add_custom_target(fullexe ALL DEPENDS exename)

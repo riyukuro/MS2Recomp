@@ -32,12 +32,10 @@ int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
 bool FUN_14028d470(float a, float b);                               // nearly equal
 unsigned FUN_140869420();                                           // millisecond clock
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
-void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
 void FUN_1409f76f0(void* pSelf, void* pNew);                        // SmartPointer<NiNode>::Reset(pNew)
 void* FUN_1409475f0(efd::SmartPointer<NiNode>* p);                  // const get
 const void* FUN_140947900(void* pNode);                             // world translate
 void FUN_140194470(void* pDst, const void* pSrc);                   // copy a point
-const NiMaterial* FUN_140a17cd0(NiMesh* pMesh);                     // active material
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
 class Unk_SceneWalker
@@ -61,7 +59,6 @@ struct Unk_MaterialEntry
     bool IsActive() const { return m_nState - 1 <= 2; }
 };
 extern Unk_MaterialTable DAT_143d69198;
-Unk_MaterialEntry* FUN_140a17af0(Unk_MaterialTable* pTable, const NiMaterial* pMaterial);   // table lookup, NULL-safe
 extern NiFixedString DAT_143ae5130;                                 // extra-data keys
 extern NiFixedString DAT_143ae5138;
 extern unsigned DAT_1439f8244;                                      // blink interval (ms)
@@ -136,7 +133,7 @@ bool CStatusEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
     m_dStartTime = (double)(unsigned)(FUN_140869420() + (int)(__int64)(pStatus->m_fStartDelay * 1000.0f));
     m_bSuper = false;
     m_bFlag = false;
-    FUN_1409f76f0(&m_spNode, FUN_14098d8d0(&NiNode::ms_RTTI, FUN_1409849b0(&reinterpret_cast<Unk_StatusTarget*>(pTarget)->m_hNode)));
+    FUN_1409f76f0(&m_spNode, ((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(FUN_1409849b0(&reinterpret_cast<Unk_StatusTarget*>(pTarget)->m_hNode))))));
     if (pStatus->m_strCategory.CompareNoCase("ice") == 0)
         m_nKind = 0;
     else if (pStatus->m_strCategory.CompareNoCase("fire") == 0)
@@ -235,10 +232,10 @@ void CStatusEffect::FUN_141801900(void* pUnused)
     NiAVObject* pObj;
     while ((pObj = walker.Next(true)) != 0)
     {
-        NiMesh* pMesh = (NiMesh*)FUN_14098d8d0(&NiMesh::ms_RTTI, pObj);
+        NiMesh* pMesh = (NiMesh*)((void*)(NiObject::DynamicCast(&NiMesh::ms_RTTI, (const NiObject*)(void*)(pObj))));
         if (pMesh)
         {
-            Unk_MaterialEntry* pEntry = FUN_140a17af0(&DAT_143d69198, FUN_140a17cd0(pMesh));
+            Unk_MaterialEntry* pEntry = ((Unk_MaterialEntry*)(NiMaterial::DynamicCast((const NiRTTI*)(Unk_MaterialTable*)(&DAT_143d69198), ((const NiMaterial*)(reinterpret_cast<NiRenderObject*>(pMesh)->GetActiveMaterial())))));
             if (pEntry && pEntry->IsActive())
             {
                 float fB = m_bFlag ? 0.7f : 0.0f;

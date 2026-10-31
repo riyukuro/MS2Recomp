@@ -21,6 +21,7 @@
 #include "ms2/placeholder/uimessagebox.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/pvpmanager.h"
 
 // ---- unit-local views of exe types ----
 
@@ -32,7 +33,11 @@ public:
     MyPC* FUN_141bd0cc0();                                          // the local player
     PCBase* FUN_141bd1530(__int64 nCharId);                         // a player by character id
 };
-Unk_PvPRankWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // One row of the ranking.
 class Unk_PvPRankEntry
@@ -69,12 +74,9 @@ private:
     void* m_pad_00;
     Unk_PvPRankTable m_table;
 };
-Unk_PvPRankService* FUN_140f97ef0();
 
-bool FUN_140a467d0(const MS2Ptr<AScript>*);
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);
 int FUN_141654730(PCBase* pPC);                                     // the job
-__int64 FUN_141656a80(PCBase* pPC);                                 // the character id
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void* FUN_1403ed2b0();                                              // the UI service
 int FUN_141adc940(void* pUI, int nUiId);
@@ -127,7 +129,7 @@ MS2_REPLACE_METHOD(0x141343060, UIPvPRankingDialog, OnLoadComplete, 34, 0xDC8B58
 void UIPvPRankingDialog::vfunc_79(void* pData)
 {
     UIDialog::vfunc_79(pData);
-    if (vfunc_55() == 0 && FUN_140a467d0(&m_30))
+    if (vfunc_55() == 0 && ((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
     {
     }
 }
@@ -138,7 +140,7 @@ bool UIPvPRankingDialog::FUN_1413430f0(ASObj* pObj, int nRank, Unk_PvPRankEntry*
     if (pEntry == 0)
         return false;
     {
-        PCBase* pPC = FUN_1403ed2d0()->FUN_141bd1530(pEntry->m_nCharId);
+        PCBase* pPC = ((class Unk_PvPRankWorld*)WorldService::GetInstance())->FUN_141bd1530(pEntry->m_nCharId);
         pObj->FUN_1407cb9c0("rank", nRank);
         CStringW strRank(L"-");
         if (pEntry->FUN_141343860())
@@ -155,13 +157,13 @@ bool UIPvPRankingDialog::FUN_1413430f0(ASObj* pObj, int nRank, Unk_PvPRankEntry*
 // @0x1413432b0
 void UIPvPRankingDialog::FUN_1413432b0()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_PvPRankWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     for (int nRank = 1; nRank <= 3; nRank++) {
-        Unk_PvPRankEntry* pEntry = FUN_140f97ef0()->FUN_141343810(nRank);
+        Unk_PvPRankEntry* pEntry = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(nRank);
         if (pEntry == 0)
             continue;
         ASObj obj(2);
@@ -169,8 +171,8 @@ void UIPvPRankingDialog::FUN_1413432b0()
             continue;
         m_30->Invoke("updateMember", obj.FUN_1422bb870());
     }
-    int nMyRank = FUN_140f97ef0()->FUN_1413437e0(FUN_141656a80(pPC));
-    Unk_PvPRankEntry* pEntry = FUN_140f97ef0()->FUN_141343810(nMyRank);
+    int nMyRank = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_1413437e0(((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80());
+    Unk_PvPRankEntry* pEntry = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(nMyRank);
     if (pEntry != 0) {
         ASObj obj(2);
         if (FUN_1413430f0(&obj, nMyRank, pEntry) == true)

@@ -57,6 +57,10 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/worldservice.h"
+
+// return types of the getters this unit calls
+class Unk_InventoryListener;
 
 // ---- the unit's header statics ----
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -102,7 +106,6 @@ class Unk_CinWorld
 public:
     MyPC* FUN_141bd0cc0();
 };
-Unk_CinWorld* FUN_1403ed2d0();
 
 // AS script views.
 class Unk_EnButton : public ASDisplayObject
@@ -172,7 +175,7 @@ public:
     void* m_vfptr;
     ATL::CAtlArray<UIItemEventListener*> m_listeners;       // +0x08
 };
-Unk_ItemEventSystem* FUN_140a6a840();
+Unk_InventoryListener* FUN_140a6a840();
 
 // The remake stat of an item (the 0x20 byte record the stat text is built from).
 class Unk_RemakeStat
@@ -259,7 +262,7 @@ void UIItemRemakeOptionDialog::OnLoadComplete()
     UIItemModifyDialogBase::OnLoadComplete();
     SetState(0);
     FUN_14129dd50();
-    FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    reinterpret_cast<Unk_ItemEventSystem*>(FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_140939a10()->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
         Delegate<void(NotifyObject*)>(this, &UIItemRemakeOptionDialog::FUN_14129dc60));
     Unk_PetDialog* pane = FUN_140b99ba0(0x4f38);
@@ -332,7 +335,7 @@ void UIItemRemakeOptionDialog::vfunc_67()
     m_optionCount = 0;
     m_cur = 0;
     m_new = 0;
-    FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    reinterpret_cast<Unk_ItemEventSystem*>(FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
         Delegate<void(NotifyObject*)>(this, &UIItemRemakeOptionDialog::FUN_14129dc60));
 }
@@ -399,7 +402,7 @@ void UIItemRemakeOptionDialog::FUN_14129dd50()
             uids.Add(uid);
         }
     }
-    MyPC* pc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pc != 0) {
         ATL::CAtlList<MS2Ptr<Unk_BackUpItem> > equips(10);
         FUN_1411e1ce0(FUN_1416561a0(pc), &equips, 0);
@@ -797,7 +800,7 @@ bool UIItemRemakeOptionDialog::FUN_1412a0940(MS2Ptr<CItem> item)
         return false;
     unsigned discount = 0;
     unsigned rate = 0;
-    MyPC* pc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pc != 0)
         rate = (unsigned)(__int64)(FUN_1411e1110(FUN_1416561a0(pc), 0xa9) * 10000.0f);
     int bSale = FUN_140616b60(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(item->FUN_140527840())), &discount, rate);
@@ -846,7 +849,7 @@ void UIItemRemakeOptionDialog::FUN_1412a0e30(ASObj& obj, MS2Ptr<CItem> item, CIn
     MS2Ptr<CItemData> equipData(reinterpret_cast<CItemData*>(item->FUN_140527840()));
     unsigned discount = 0;
     unsigned rate = 0;
-    MyPC* pc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pc != 0)
         rate = (unsigned)(__int64)(FUN_1411e1110(FUN_1416561a0(pc), 0xa9) * 10000.0f);
     __int64 fee = 0;
@@ -899,7 +902,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1650(MS2Ptr<CItem> item)
         if (FUN_1419beef0(item->FUN_140526a50()) != 0) {
             g_143ab2a90.FUN_140a5d530(item.get());
         } else {
-            MyPC* pc = FUN_1403ed2d0()->FUN_141bd0cc0();
+            MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
             if (pc != 0) {
                 MS2Ptr<Unk_BackUpItem> equip = FUN_1416561a0(pc)->FUN_1411e1580(item->FUN_140526a50());
                 if (equip.get() != 0) {

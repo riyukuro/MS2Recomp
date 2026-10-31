@@ -117,7 +117,10 @@
 // The COMDAT tail is the dialog's containers (map/CAtlArray of events, the row and slot vectors), the delegate glue,
 // the ascript.inl / uiswfentity.inl child binders and the gfxutil.h array loader.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicashattenddialog.cpp"
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 #include "uicashattenddialog.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asuicomponent.h"
@@ -128,6 +131,7 @@
 #include "ms2/commonfiles/gameeventcontext.h"
 #include "ms2/ms2recover.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/cmycharacter.h"
 
 static CString s_shopSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static UICommon::CMyPCKeyInputController s_keyController;
@@ -157,8 +161,7 @@ template<> Delegate<void(CInPacket&)>::DelegateImplBase::~DelegateImplBase();
 template<> Delegate<void(GameEventVariable*)>::DelegateImplBase::~DelegateImplBase();
 template<> Delegate<void(CInPacket&)>::~Delegate();
 template<> Delegate<void(GameEventVariable*)>::~Delegate();
-class Unk_140931510 { public: void FUN_140d9f1c0(CInPacket&); bool FUN_140d9f530(int); };
-Unk_140931510* FUN_140931510();
+CMyCharacter* FUN_140931510();
 class CMsgBoxData { public: bool FUN_141a04aa0() const; __int64 FUN_141a02f10(int,__int64) const; };
 class Unk_AttendTable { public:
     int FUN_1409617d0(int nKind,unsigned nId,const int& nDefault);
@@ -200,11 +203,6 @@ class Unk_140acd6e0 : public ASDisplayObject { public:
 class Unk_CadGiftClip : public ASUIComponent { public:
     Unk_CadGiftClip(const Scaleform::GFx::Value& v,int nMovieId);
     void FUN_1422e1f50(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>,void*);
-};
-// The day list (0x88 bytes, ctor 0x1422e1720).
-class Unk_CadGiftList : public ASUIComponent { public:
-    Unk_CadGiftList(const Scaleform::GFx::Value& v,int nMovieId);
-    void FUN_1422dcf40(unsigned nCount);
 };
 class ASGaugeControl : public ASUIComponent { public:
     ASGaugeControl(const Scaleform::GFx::Value& v,int nMovieId);

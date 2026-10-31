@@ -443,19 +443,22 @@ MS2_CHECK_SIZE(UISceneLogin, 0xf8);
 
 // Stand-ins for unrecovered singletons MS2 drives.
 class Unk_Ms2Window { public: HWND FUN_14209c720(); };                       // efd::Win32PlatformService::GetWindowRef
-Unk_Ms2Window* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class Unk_Ms2SceneState { public: void FUN_1417e25a0(int nScene); };
 CNetworkService* FUN_140714f90();
-COptimizer* FUN_1409f7c90();
-void FUN_14161c360(COptimizer* pOptimizer);
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class Unk_Ms2PhysXHelper;
-Unk_Ms2PhysXHelper* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 void FUN_1414a2a10();                                           // TSingleton delete of FUN_1409f7ca0()
 void FUN_1414a3f10();                                           // TSingleton delete of CrashManagerCli::GetInstance()
 void FUN_140cca840(int n);                                      // crash on purpose (the /crash command)
 class Unk_Ms2PrecacheOption;
-Unk_Ms2PrecacheOption* FUN_1406aeee0();
-bool FUN_1406af0a0(Unk_Ms2PrecacheOption* p);
+class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_1406af0a0();
+};
 ecr::RenderService* FUN_1413f9890();
 NiCullingProcess* FUN_141753990();                              // the shadow culling process factory
 void MS2ExcludeFromShadows(NiAVObject* pkObject);               // excludes an object from the shadow casters
@@ -493,10 +496,12 @@ struct Unk_MCPPtr;
 Unk_MCPPtr FUN_140d96230(NiVisibleArray* pVisibleSet, NiSPWorkflowManager* pWorkflowManager);  // MS2MeshCullingProcess
 extern Unk_MCPPtr (*DAT_143afe6f8)(NiVisibleArray*, NiSPWorkflowManager*);   // the mesh culling process factory
 extern void (*DAT_143b0d368)();
+extern "C" {
 int luaopen_egmAnimation(lua_State* L);
 int luaopen_ecr(lua_State* L);
 int luaopen_bapiPhysXBase(lua_State* L);
 int luaopen_PhysX(lua_State* L);
+}
 
 // ---- statics (.text$di 0x1400f82a0..)
 // @0x1400f82a0
@@ -581,7 +586,7 @@ bool MS2::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int
     DAT_143afcb90 = 0;
     DAT_143afcba8 = 0;
     DAT_143b08a3c = 0;
-    FUN_14161c360(FUN_1409f7c90());
+    ((class COptimizer*)(class COptimizer*)(((class COptimizer*)FUN_1409f7c90())))->FUN_14161c360();
     MessageLoop();
     Shutdown();
     return true;
@@ -713,7 +718,7 @@ void MS2::MessageLoop()
             }
         } else {
             Tick();
-            int nFrameTime = FUN_1409f7c90()->FUN_1414a5910();
+            int nFrameTime = ((class COptimizer*)FUN_1409f7c90())->FUN_1414a5910();
             if (nFrameTime) {
                 DWORD dwNow = GetTickCountMs2();
                 int nElapsed = dwNow - m_uiLastTickTime;
@@ -754,7 +759,7 @@ private:
 MS2_CHECK_SIZE(Unk_TiXmlComment, 0x50);
 Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc);             // the root element
 void* FUN_14086e000(void* pParent, const void* pChild);         // InsertEndChild
-void FUN_140873ca0(void* pElem, const char* pszName, int nValue);   // SetAttribute(name, int)
+void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 bool FUN_1408710c0(TiXmlDocument* pDoc, const char* pszPath);   // SaveFile
 CString FUN_1409a2360(const char* psz, int n);                  // text conversion
 void FUN_141b70490(const CStringA& strDir);                     // deletes a directory tree
@@ -785,7 +790,7 @@ void MS2::PrepareShaderCache()
             FUN_1408731e0(pShader, "ver", nVersion);
             if (nVersion != 8)
             {
-                FUN_140873ca0(pShader, "ver", 8);
+                XmlSetAttr((class TiXmlElement*)(pShader), "ver", 8);
                 FUN_1408710c0(&kDoc, strVersionFile);
             }
             bWriteVersion = false;
@@ -808,7 +813,7 @@ void MS2::PrepareShaderCache()
 #endif
         Unk_TiXmlElement kRoot("ms2");
         Unk_TiXmlElement kShader("shader");
-        FUN_140873ca0(&kShader, "ver", 8);
+        XmlSetAttr((class TiXmlElement*)(&kShader), "ver", 8);
         FUN_14086e000(&kRoot, &kShader);
         FUN_14086e000(&kNewDoc, &kRoot);
         FUN_1408710c0(&kNewDoc, strVersionFile);
@@ -842,8 +847,8 @@ MS2_REPLACE_METHOD(0x14148B090, MS2, SetCrashOnShutdown, 21, 0x28735968);
 // @0x14148b0b0
 void MS2::Shutdown()
 {
-    if (FUN_140aadf80() && FUN_140aadf80()->FUN_14209c720())
-        KillTimer(FUN_140aadf80()->FUN_14209c720(), 1000);
+    if (((class Unk_Ms2Window*)FUN_140aadf80()) && ((class Unk_Ms2Window*)FUN_140aadf80())->FUN_14209c720())
+        KillTimer(((class Unk_Ms2Window*)FUN_140aadf80())->FUN_14209c720(), 1000);
     if (reinterpret_cast<Unk_Ms2SceneState*>(TSingleton<CStateService>::GetInstance()))
         reinterpret_cast<Unk_Ms2SceneState*>(TSingleton<CStateService>::GetInstance())->FUN_1417e25a0(0);
     if (CrashManagerCli::GetInstance())
@@ -856,7 +861,7 @@ void MS2::Shutdown()
             m_spServiceManager->RunOnce();
             nState = m_spServiceManager->GetCurrentState();
         }
-        if (FUN_1409f7ca0())
+        if (((class Unk_Ms2PhysXHelper*)FUN_1409f7ca0()))
             FUN_1414a2a10();
         m_spServiceManager = 0;
     }
@@ -963,7 +968,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     efd::SmartPointer<ecr::LightService> spLight = EE_NEW MS2LightService;
     m_spServiceManager->RegisterSystemService(spLight);
     efd::SmartPointer<ecr::TextureRapidIterationService> spTextureRapidIteration = EE_NEW ecr::TextureRapidIterationService;
-    if (FUN_1409f7c90()->FUN_1414a5a30())
+    if (((class COptimizer*)FUN_1409f7c90())->FUN_1414a5a30())
         FUN_1414a6230(FUN_1414a9a10);
     efd::SmartPointer<egmAnimation::AnimationService> spAnimation = EE_NEW MS2AnimationService;
     m_spServiceManager->RegisterSystemService(spAnimation, 1785);
@@ -1140,7 +1145,7 @@ efd::AsyncResult MS2::OnInit()
     NiShadowManager::SetActiveShadowClickGenerator(spGenerator);
 
     efd::SmartPointer<ecr::RenderService> spRenderService = m_spServiceManager->GetSystemServiceAs<ecr::RenderService>();
-    if (FUN_1406af0a0(FUN_1406aeee0()))
+    if (((class Unk_LaunchOptions*)(class Unk_Ms2PrecacheOption*)(((class Unk_Ms2PrecacheOption*)FUN_1406aeee0())))->FUN_1406af0a0())
         Precache();
     CGameOption::GetInstance()->FUN_141243860();
     NiDX9Renderer* pkRenderer = NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer());
@@ -1208,88 +1213,56 @@ CStringW FUN_140719630(int n);                                  // int -> CStrin
 int FUN_1414a5690(CFileSystem* pFileSystem);                    // the ignore file mode of the file system
 void FUN_141851840(int n);
 class CChatEmoticonCli;
-CChatEmoticonCli* FUN_140931510();
-void FUN_140d9f140(CChatEmoticonCli* p);
-void FUN_1401a2e40(CArcadeDataTable* p);
+class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
+class CMyCharacter   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140d9f140();
+};
 void FUN_1401ae2f0(AttendGiftDataTable* p);
-void FUN_1401c06d0();
-void FUN_1401d6550(CChangeJobTable* p);
+class CBlackMarketTable* FUN_1401c06d0();   // C3: was FUN_1401c06d0
 void RegisterConditionTypes();
-void FUN_1402c6f50(CCoupleEmotionTable* p);
-void FUN_1402e9ad0(ItemDropTable* p);
-void FUN_140347180();
-void FUN_1403527a0(CExpTable* p);
+class CDynamicActionData   // C3: member view for the former free stand-ins
+{
+public:
+    static void Load();
+};
 void FUN_14037c010(CFieldMissionTable* p);
-void FUN_1403826e0(FieldWarDataTable* p);
-void FUN_1403b1f00(CFishingTable* p);
-void FUN_1404c1290(CGloabalFactor* p);
-void FUN_14051a360(CIndividualArenaDataTable* p);
-void FUN_140556b70(CItemDataTable* p);
-void FUN_140557050(CItemDataTable* p);
-void FUN_14058dc50(CItemEnchantLimitTable* p);
-void FUN_1405915b0(CItemEnchantTransformTable* p);
 void FUN_1405943b0(CItemEnchantUtil* p);
-void FUN_1405951f0(CItemExchangeScrollTable* p);
-void FUN_140597150(CItemExtractionTable* p);
-void FUN_14059dea0(ItemGachaBoxTable* p);
-void FUN_1405abe50(CItemGemPropertyTable* p);
-void FUN_1405b0dc0(CItemGemStoneUpgradeTable* p);
-void FUN_1405b4880(CItemLapenshardTable* p);
-void FUN_1405bfc70(CItemMergeOptionTable* p);
-void FUN_140615700(CItemRemakeScrollTable* p);
-void FUN_14061d130(CItemRePackingScrollTable* p);
-void FUN_140624cc0(CItemSocketScrollTable* p);
-void FUN_140636000(CJobConditionTable* p);
-void FUN_140644540(JobTable* p);
-void FUN_140661d80(CMasteryInteriorTable* p);
-void FUN_140669c30(CMasteryTable* p);
-void FUN_14067eab0(CMaidExpTable* p);
-void FUN_14067ee90(CMaidInfoTable* p);
-void FUN_14067f320(CMaidDescTable* p);
-void FUN_14067f920(CMaidManufactureMsgTable* p);
-void FUN_140684ea0(CMaidRecipeTable* p);
-void FUN_140685760(CMaidRecipeGroupTable* p);
 void MD5Unknown0();
-void FUN_14069bd60(MentoringDataTable* p);
-void FUN_1406a9940();
+class CShopCategoryTable   // C3: member view for the former free stand-ins
+{
+public:
+    static class CShopCategoryTable* CreateInstance();
+};
 void FUN_1406c54d0(CNametagSymbolTable* p);
-void FUN_1406e55b0();
-void FUN_14071aff0(PaybackTable* p);
-void FUN_140728a30(CPetDataTable* p);
-void FUN_14072c670(CInstrumentDataTable* p);
-void FUN_140738ba0(CPriceTable* p);
-void FUN_1407649d0(CQuestMaskTable* p);
-void FUN_140768c90(CRankingArenaDataTable* p);
-void FUN_140770d30(RewardContentsTable* p);
-void FUN_140791c30(CSeasonDataTable* p);
-void FUN_1407c4ae0(SetItemTable* p);
-void FUN_14080bc00();
-void FUN_140810730(CSmartPushTable* p);
-void FUN_14081c880();
-void FUN_1408273f0(CSpecialDungeonDataTable* p);
-void FUN_140829730(StanceTable* p);
-void FUN_14082e4b0();
+bool LoadShopBeautyCoupon();   // C3: was FUN_1406e55b0
+int LoadItemOptionSkillTier();   // C3: was FUN_14080bc00
+int FUN_14081c880();   // C3: was FUN_14081c880
+bool FUN_1408273f0(void*);   // C3: was FUN_1408273f0
+int LoadStats();   // C3: was FUN_14082e4b0
 void FUN_140837660();
 void LoadSystemMailContent();
-void FUN_14087a4e0(CTitleTable* p);
-void FUN_14087f2f0(CServerString* p);
 void FUN_1408b9c90();
-void FUN_1408d2640();
-void FUN_140903250(WeddingEmotionTable* p);
-void FUN_140907d40(WeddingTable* p);
+class CUserConditionEventData   // C3: member view for the former free stand-ins
+{
+public:
+    static void Load();
+};
 void FUN_140978fb0();
-void FUN_140978fd0();
-void FUN_140a72170(LoginBgBgmTable* p);
-void FUN_140b67fa0(UgcHomeOptionData* p);
-void FUN_140cca010(CommonResource* p);
-void FUN_140d44590(CLoadingImageTable* p);
+class CAddressTable   // C3: member view for the former free stand-ins
+{
+public:
+    static int LoadTable();
+};
 void FUN_140d4fd50(CMachineIDManager* p);
 void FUN_140d86330();
-void FUN_140dc3c20(CRewardPreviewTable* p);
 void FUN_140dca800();
-void FUN_140dd82b0(CSmartPushManager* p);
-void FUN_141168710();
-void FUN_14138b3e0(CGuideManager* p);
+class CDebugConsole   // C3: member view for the former free stand-ins
+{
+public:
+    static void FUN_141168710();
+};
 void FUN_14145c4b0();
 void FUN_14149fec0();
 void FUN_14149fee0();
@@ -1517,12 +1490,8 @@ void FUN_1414a52d0();
 void FUN_1414a5330();
 void FUN_1414a5390();
 void FUN_1414a53f0();
-void FUN_1414a57a0();
-void FUN_14161baf0(COptimizer* p);
-void FUN_14161c490(COptimizer* p);
 void FUN_141627390();
 void FUN_1416275e0();
-void FUN_1416841f0(CPCEffectDummy* p);
 void FUN_1416bb2e0();
 void FUN_1416bb5f0();
 void FUN_1416bc0f0();
@@ -1531,12 +1500,12 @@ void InitShaderConstantNames();
 void ResetShaderConstantNames();
 void InitDummyNames();
 void ResetDummyNames();
-void FUN_141791940(SoundPropertyMgr* p);
-void FUN_141810f70(CStringTable* p);
 void FUN_14183e690();
-void FUN_14186df80(CUgcDownloadLoad* p);
-void FUN_141875140(CUgcDownloadDown* p);
-void FUN_141b74720();
+class CWeaponActionTable   // C3: member view for the former free stand-ins
+{
+public:
+    static int Load();
+};
 
 // The platform error text table InitInstance keeps on its stack (0x48 bytes).
 struct Unk_PlatformErrorTable
@@ -1734,7 +1703,7 @@ BOOL CGameApp::InitInstance()
     CWinApp::InitInstance();
     MS2::SetWorkingDirectory(true);
     Unk_SingletonCreator<COptimizer>::CreateInstance();
-    FUN_14161baf0(TSingleton<COptimizer>::GetInstance());
+    ((class COptimizer*)(class COptimizer*)(TSingleton<COptimizer>::GetInstance()))->FUN_14161baf0();
     NiInitOptions* pInitOptions = new NiInitOptions;
     pInitOptions->SetFloodgateDefineWorkerThreadCountFunc(Unk_WorkerThreadCount);
     pInitOptions->SetFloodgateParallelExecution(Unk_WorkerThreadCount() != 0);
@@ -1776,11 +1745,11 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<Client::Constants>::CreateInstance();
     TSingleton<Client::Constants>::GetInstance()->Load();
     Unk_SingletonCreator<CommonResource>::CreateInstance();
-    FUN_140cca010(TSingleton<CommonResource>::GetInstance());
+    ((class CommonResource*)(class CommonResource*)(TSingleton<CommonResource>::GetInstance()))->Load();
     g_kInventory.FUN_140a5c8e0();
     Unk_SingletonCreator<CGraphicOptionTable>::CreateInstance();
     Unk_SingletonCreator<CGameOption>::CreateInstance();
-    FUN_14161c490(TSingleton<COptimizer>::GetInstance());
+    ((class COptimizer*)(class COptimizer*)(TSingleton<COptimizer>::GetInstance()))->LoadOptimization();
     if (DAT_143ae2b30 != 0)
         Unk_SingletonCreator<MultiSceneUpdater>::CreateInstance();
     Unk_SingletonCreator<CommonString>::CreateInstance();
@@ -1791,12 +1760,12 @@ BOOL CGameApp::InitInstance()
         DAT_143af7d58 = 1;
     }
     Unk_SingletonCreator<EngineLog>::CreateInstance();
-    FUN_14082e4b0();
+    LoadStats();
     FUN_14081c880();
     Unk_SingletonCreator<GameDictionaryManager>::CreateInstance();
-    FUN_140738ba0(Unk_SingletonCreator<CPriceTable>::CreateInstance());
+    ((class CPriceTable*)(class CPriceTable*)(Unk_SingletonCreator<CPriceTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<CItemDataTable>::CreateInstance();
-    FUN_140556b70(TSingleton<CItemDataTable>::GetInstance());
+    ((class CItemDataTable*)(class CItemDataTable*)(TSingleton<CItemDataTable>::GetInstance()))->Load();
     Unk_SingletonCreator<CommonEffectDummy>::CreateInstance();
     TSingleton<CommonEffectDummy>::GetInstance()->Load();
     Unk_SingletonCreator<NpcDataTableCli>::CreateInstance();
@@ -1823,14 +1792,14 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<PacketHandlerManager>::CreateInstance();
     Unk_SingletonCreator<GameEventUserValueManager>::CreateInstance();
     Unk_SingletonCreator<CReservedWordTable>::CreateInstance();
-    FUN_140829730(Unk_SingletonCreator<StanceTable>::CreateInstance());
+    ((class StanceTable*)(class StanceTable*)(Unk_SingletonCreator<StanceTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<SkillDataTableCli>::CreateInstance();
     Unk_SingletonCreator<CStringTable>::CreateInstance();
-    FUN_141810f70(TSingleton<CStringTable>::GetInstance());
-    FUN_140557050(TSingleton<CItemDataTable>::GetInstance());
+    ((class CStringTable*)(class CStringTable*)(TSingleton<CStringTable>::GetInstance()))->Load();
+    ((class CItemDataTable*)(class CItemDataTable*)(TSingleton<CItemDataTable>::GetInstance()))->LoadBlackMarketSearchable();
     Unk_SingletonCreator<CKeyTable>::CreateInstance();
-    FUN_14087f2f0(Unk_SingletonCreator<CServerString>::CreateInstance());
-    FUN_1406a9940();
+    ((class CServerString*)(class CServerString*)(Unk_SingletonCreator<CServerString>::CreateInstance()))->Load();
+    CShopCategoryTable::CreateInstance();
     Unk_SingletonCreator<CServerListTable>::CreateInstance();
     Unk_SingletonCreator<CScriptTable>::CreateInstance();
     Unk_SingletonCreator<CPCEffectDummy>::CreateInstance();
@@ -1848,7 +1817,7 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CBankTable>::CreateInstance();
     TSingleton<CBankTable>::GetInstance()->Load();
     Unk_SingletonCreator<CGuideManager>::CreateInstance();
-    FUN_14138b3e0(TSingleton<CGuideManager>::GetInstance());
+    ((class CGuideManager*)(class CGuideManager*)(TSingleton<CGuideManager>::GetInstance()))->Load();
     Unk_SingletonCreator<CLoadingDescriptionTable>::CreateInstance();
     Unk_SingletonCreator<CItemBreakManager>::CreateInstance();
     Unk_SingletonCreator<CItemEnchantLimitTable>::CreateInstance();
@@ -1865,53 +1834,53 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CUserCommandCli>::CreateInstance();
     Unk_SingletonCreator<CItemLockManager>::CreateInstance();
     Unk_SingletonCreator<CCoupleEmotionTable>::CreateInstance();
-    FUN_1402c6f50(TSingleton<CCoupleEmotionTable>::GetInstance());
+    ((class CCoupleEmotionTable*)(class CCoupleEmotionTable*)(TSingleton<CCoupleEmotionTable>::GetInstance()))->Load();
     Unk_SingletonCreator<WeddingEmotionTable>::CreateInstance();
-    FUN_140903250(TSingleton<WeddingEmotionTable>::GetInstance());
+    ((class WeddingEmotionTable*)(class WeddingEmotionTable*)(TSingleton<WeddingEmotionTable>::GetInstance()))->Load();
     Unk_SingletonCreator<LoginBgBgmTable>::CreateInstance();
-    FUN_140a72170(TSingleton<LoginBgBgmTable>::GetInstance());
+    TSingleton<LoginBgBgmTable>::GetInstance()->Load();
     Unk_SingletonCreator<UGCCubeCategoryTable>::CreateInstance();
     TSingleton<UGCCubeCategoryTable>::GetInstance()->Load();
     Unk_SingletonCreator<CLocaleLanguage>::CreateInstance();
     Unk_SingletonCreator<CReconnectionManagerCli>::CreateInstance();
     Unk_SingletonCreator<CExpTable>::CreateInstance();
-    FUN_1403527a0(TSingleton<CExpTable>::GetInstance());
-    FUN_141b74720();
+    ((class CExpTable*)(class CExpTable*)(TSingleton<CExpTable>::GetInstance()))->Load();
+    CWeaponActionTable::Load();
     Unk_SingletonCreator<JobTable>::CreateInstance();
-    FUN_140644540(TSingleton<JobTable>::GetInstance());
-    FUN_140978fd0();
-    FUN_1416841f0(TSingleton<CPCEffectDummy>::GetInstance());
+    ((class JobTable*)(class JobTable*)(TSingleton<JobTable>::GetInstance()))->Load();
+    CAddressTable::LoadTable();
+    ((class CPCEffectDummy*)(class CPCEffectDummy*)(TSingleton<CPCEffectDummy>::GetInstance()))->Load();
     TSingleton<EffectSkipMgr>::GetInstance()->LoadOption();
     TSingleton<EffectSkipMgr>::GetInstance()->LoadLimitCount();
-    FUN_141791940(TSingleton<SoundPropertyMgr>::GetInstance());
-    FUN_140347180();
+    TSingleton<SoundPropertyMgr>::GetInstance()->Load();
+    CDynamicActionData::Load();
     FUN_1405943b0(TSingleton<CItemEnchantUtil>::GetInstance());
-    FUN_1402e9ad0(TSingleton<ItemDropTable>::GetInstance());
-    FUN_14058dc50(TSingleton<CItemEnchantLimitTable>::GetInstance());
-    FUN_1407c4ae0(TSingleton<SetItemTable>::GetInstance());
-    FUN_14067eab0(Unk_SingletonCreator<CMaidExpTable>::CreateInstance());
-    FUN_14067ee90(Unk_SingletonCreator<CMaidInfoTable>::CreateInstance());
-    FUN_14067f320(Unk_SingletonCreator<CMaidDescTable>::CreateInstance());
-    FUN_14067f920(Unk_SingletonCreator<CMaidManufactureMsgTable>::CreateInstance());
-    FUN_140684ea0(Unk_SingletonCreator<CMaidRecipeTable>::CreateInstance());
-    FUN_140685760(Unk_SingletonCreator<CMaidRecipeGroupTable>::CreateInstance());
+    ((class ItemDropTable*)(class ItemDropTable*)(TSingleton<ItemDropTable>::GetInstance()))->Initialize();
+    ((class CItemEnchantLimitTable*)(class CItemEnchantLimitTable*)(TSingleton<CItemEnchantLimitTable>::GetInstance()))->Load();
+    ((class SetItemTable*)(class SetItemTable*)(TSingleton<SetItemTable>::GetInstance()))->Load();
+    ((class CMaidExpTable*)(class CMaidExpTable*)(Unk_SingletonCreator<CMaidExpTable>::CreateInstance()))->Load();
+    ((class CMaidInfoTable*)(class CMaidInfoTable*)(Unk_SingletonCreator<CMaidInfoTable>::CreateInstance()))->Load();
+    ((class CMaidDescTable*)(class CMaidDescTable*)(Unk_SingletonCreator<CMaidDescTable>::CreateInstance()))->Load();
+    ((class CMaidManufactureMsgTable*)(class CMaidManufactureMsgTable*)(Unk_SingletonCreator<CMaidManufactureMsgTable>::CreateInstance()))->Load();
+    ((class CMaidRecipeTable*)(class CMaidRecipeTable*)(Unk_SingletonCreator<CMaidRecipeTable>::CreateInstance()))->Load();
+    ((class CMaidRecipeGroupTable*)(class CMaidRecipeGroupTable*)(Unk_SingletonCreator<CMaidRecipeGroupTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<CCashCallManager>::CreateInstance();
     Unk_SingletonCreator<CGuildXmlData>::CreateInstance();
     TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d5960();
     Unk_SingletonCreator<CClubDataTable>::CreateInstance();
     TSingleton<CClubDataTable>::GetInstance()->FUN_1402113c0();
     Unk_SingletonCreator<CSpecialDungeonDataTable>::CreateInstance();
-    FUN_1408273f0(TSingleton<CSpecialDungeonDataTable>::GetInstance());
+    FUN_1408273f0((void*)(TSingleton<CSpecialDungeonDataTable>::GetInstance()));
     Unk_SingletonCreator<CArcadeDataTable>::CreateInstance();
-    FUN_1401a2e40(TSingleton<CArcadeDataTable>::GetInstance());
+    ((class CArcadeDataTable*)(class CArcadeDataTable*)(TSingleton<CArcadeDataTable>::GetInstance()))->Load();
     LoadSystemMailContent();
-    FUN_1408d2640();
+    CUserConditionEventData::Load();
     Unk_SingletonCreator<CLuaClient>::CreateInstance();
     Unk_SingletonCreator<StateEffectMgr>::CreateInstance();
     Unk_SingletonCreator<AttendGiftDataTable>::CreateInstance();
     FUN_1401ae2f0(TSingleton<AttendGiftDataTable>::GetInstance());
     Unk_SingletonCreator<PCActionDataTable>::CreateInstance();
-    FUN_14059dea0(Unk_SingletonCreator<ItemGachaBoxTable>::CreateInstance());
+    ((class ItemGachaBoxTable*)(class ItemGachaBoxTable*)(Unk_SingletonCreator<ItemGachaBoxTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<CItemBreakIngredientTable>::CreateInstance();
     Unk_SingletonCreator<CDynamicBanWordManager>::CreateInstance();
     if (!TSingleton<CLuaClient>::GetInstance()->vfunc_1())
@@ -1939,7 +1908,7 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CQuestTable>::CreateInstance();
     Unk_SingletonCreator<CContinentRegionTable>::CreateInstance();
     Unk_SingletonCreator<CJobConditionTable>::CreateInstance();
-    FUN_140636000(TSingleton<CJobConditionTable>::GetInstance());
+    TSingleton<CJobConditionTable>::GetInstance()->Load();
     Unk_SingletonCreator<WorldMapManager>::CreateInstance();
     Unk_SingletonCreator<BGTransparencyMgr>::CreateInstance();
     Unk_SingletonCreator<CTaxiManager>::CreateInstance();
@@ -1955,7 +1924,7 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CMenteeSearchManager>::CreateInstance();
     Unk_SingletonCreator<CMentoringManager>::CreateInstance();
     Unk_SingletonCreator<MentoringDataTable>::CreateInstance();
-    FUN_14069bd60(TSingleton<MentoringDataTable>::GetInstance());
+    ((class MentoringDataTable*)(class MentoringDataTable*)(TSingleton<MentoringDataTable>::GetInstance()))->Init();
     Unk_SingletonCreator<CMicroGameManagerCli>::CreateInstance();
     Unk_SingletonCreator<CReactorDataTable>::CreateInstance()->Reload();
     Unk_SingletonCreator<CTailEffectDataTable>::CreateInstance()->Reload();
@@ -1964,7 +1933,7 @@ BOOL CGameApp::InitInstance()
         FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x34).GetStr(), CStringW(L""), 0);
         return FALSE;
     }
-    if (FUN_1409f7c90()->FUN_1409f7ea0() != 0)
+    if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
     {
         if (!TSingleton<CItemLoader>::GetInstance()->Start(0, 0, 0, 0, 0))
         {
@@ -2000,83 +1969,83 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<ItemPreviewMgr>::CreateInstance();
     Unk_SingletonCreator<CGameRule>::CreateInstance();
     Unk_SingletonCreator<CGameEventValueManager>::CreateInstance();
-    FUN_14051a360(Unk_SingletonCreator<CIndividualArenaDataTable>::CreateInstance());
-    FUN_140768c90(Unk_SingletonCreator<CRankingArenaDataTable>::CreateInstance());
+    Unk_SingletonCreator<CIndividualArenaDataTable>::CreateInstance()->Load();
+    ((class CRankingArenaDataTable*)(class CRankingArenaDataTable*)(Unk_SingletonCreator<CRankingArenaDataTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<CRewardPreviewTable>::CreateInstance();
-    FUN_140dc3c20(TSingleton<CRewardPreviewTable>::GetInstance());
+    ((class CRewardPreviewTable*)(class CRewardPreviewTable*)(TSingleton<CRewardPreviewTable>::GetInstance()))->Load();
     if (DAT_143ae2b30 != 0)
         Unk_SingletonCreator<AnimationCallbackManager>::CreateInstance();
     Unk_SingletonCreator<StringManager>::CreateInstance();
     Unk_SingletonCreator<CFishingManager>::CreateInstance();
     Unk_SingletonCreator<CFishingTable>::CreateInstance();
-    FUN_1403b1f00(TSingleton<CFishingTable>::GetInstance());
+    ((class CFishingTable*)(class CFishingTable*)(TSingleton<CFishingTable>::GetInstance()))->Load();
     Unk_SingletonCreator<CInstrumentDataTable>::CreateInstance();
-    FUN_14072c670(TSingleton<CInstrumentDataTable>::GetInstance());
+    ((class CInstrumentDataTable*)(class CInstrumentDataTable*)(TSingleton<CInstrumentDataTable>::GetInstance()))->Load();
     Unk_SingletonCreator<CSkillCompactControlTable>::CreateInstance();
-    FUN_1414a57a0();
+    TSingleton<CSkillCompactControlTable>::GetInstance();
     FUN_140dca800();
     Unk_SingletonCreator<CGloabalFactor>::CreateInstance();
-    FUN_1404c1290(TSingleton<CGloabalFactor>::GetInstance());
+    ((class CGloabalFactor*)(class CGloabalFactor*)(TSingleton<CGloabalFactor>::GetInstance()))->Load();
     Unk_SingletonCreator<CSmartPushTable>::CreateInstance();
-    FUN_140810730(TSingleton<CSmartPushTable>::GetInstance());
+    TSingleton<CSmartPushTable>::GetInstance()->Load();
     Unk_SingletonCreator<CSmartPushManager>::CreateInstance();
-    FUN_140dd82b0(TSingleton<CSmartPushManager>::GetInstance());
-    FUN_140615700(Unk_SingletonCreator<CItemRemakeScrollTable>::CreateInstance());
+    TSingleton<CSmartPushManager>::GetInstance()->FUN_140dd82b0();
+    ((class CItemRemakeScrollTable*)(class CItemRemakeScrollTable*)(Unk_SingletonCreator<CItemRemakeScrollTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<CTrafficOptimizer>::CreateInstance();
     Unk_SingletonCreator<CItemSocketTable>::CreateInstance()->Load();
-    FUN_1405b0dc0(Unk_SingletonCreator<CItemGemStoneUpgradeTable>::CreateInstance());
+    ((class CItemGemStoneUpgradeTable*)(class CItemGemStoneUpgradeTable*)(Unk_SingletonCreator<CItemGemStoneUpgradeTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<CSpecialEffectFunctionManager>::CreateInstance();
     Unk_SingletonCreator<CCharacterAbilityTable>::CreateInstance();
     Unk_SingletonCreator<CCharacterAbilityManager>::CreateInstance();
     Unk_SingletonCreator<CNametagSymbolTable>::CreateInstance();
     FUN_1406c54d0(TSingleton<CNametagSymbolTable>::GetInstance());
-    FUN_140624cc0(Unk_SingletonCreator<CItemSocketScrollTable>::CreateInstance());
-    FUN_14061d130(Unk_SingletonCreator<CItemRePackingScrollTable>::CreateInstance());
-    FUN_1405951f0(Unk_SingletonCreator<CItemExchangeScrollTable>::CreateInstance());
-    FUN_140597150(Unk_SingletonCreator<CItemExtractionTable>::CreateInstance());
-    FUN_1405b4880(Unk_SingletonCreator<CItemLapenshardTable>::CreateInstance());
+    ((class CItemSocketScrollTable*)(class CItemSocketScrollTable*)(Unk_SingletonCreator<CItemSocketScrollTable>::CreateInstance()))->Load();
+    ((class CItemRePackingScrollTable*)(class CItemRePackingScrollTable*)(Unk_SingletonCreator<CItemRePackingScrollTable>::CreateInstance()))->Load();
+    ((class CItemExchangeScrollTable*)(class CItemExchangeScrollTable*)(Unk_SingletonCreator<CItemExchangeScrollTable>::CreateInstance()))->Load();
+    Unk_SingletonCreator<CItemExtractionTable>::CreateInstance()->Load();
+    ((class CItemLapenshardTable*)(class CItemLapenshardTable*)(Unk_SingletonCreator<CItemLapenshardTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<CSkillSetTable>::CreateInstance();
     FUN_14037c010(Unk_SingletonCreator<CFieldMissionTable>::CreateInstance());
-    FUN_140d44590(Unk_SingletonCreator<CLoadingImageTable>::CreateInstance());
+    ((class CLoadingImageTable*)(class CLoadingImageTable*)(Unk_SingletonCreator<CLoadingImageTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<CVIPTable>::CreateInstance();
     Unk_SingletonCreator<CUGCDesignTable>::CreateInstance();
-    FUN_140669c30(Unk_SingletonCreator<CMasteryTable>::CreateInstance());
-    FUN_140661d80(Unk_SingletonCreator<CMasteryInteriorTable>::CreateInstance());
+    ((class CMasteryTable*)(class CMasteryTable*)(Unk_SingletonCreator<CMasteryTable>::CreateInstance()))->Load();
+    ((class CMasteryInteriorTable*)(class CMasteryInteriorTable*)(Unk_SingletonCreator<CMasteryInteriorTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<CBattleRecordManager>::CreateInstance();
     Unk_SingletonCreator<CMasteryManager>::CreateInstance();
-    FUN_140b67fa0(Unk_SingletonCreator<UgcHomeOptionData>::CreateInstance());
+    Unk_SingletonCreator<UgcHomeOptionData>::CreateInstance()->Load();
     Unk_SingletonCreator<CEnchantScrollTable>::CreateInstance();
     Unk_SingletonCreator<OnceCallbackTimer>::CreateInstance();
     Unk_SingletonCreator<CAutoFindTaxiStation>::CreateInstance();
     Unk_SingletonCreator<WebGuideTable>::CreateInstance();
-    FUN_1407649d0(Unk_SingletonCreator<CQuestMaskTable>::CreateInstance());
-    FUN_14087a4e0(Unk_SingletonCreator<CTitleTable>::CreateInstance());
+    ((class CQuestMaskTable*)(class CQuestMaskTable*)(Unk_SingletonCreator<CQuestMaskTable>::CreateInstance()))->Load();
+    ((class CTitleTable*)(class CTitleTable*)(Unk_SingletonCreator<CTitleTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<CChapterBookTable>::CreateInstance()->Load();
-    FUN_140728a30(Unk_SingletonCreator<CPetDataTable>::CreateInstance());
+    ((class CPetDataTable*)(class CPetDataTable*)(Unk_SingletonCreator<CPetDataTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<CPetManager>::CreateInstance();
-    FUN_1405abe50(Unk_SingletonCreator<CItemGemPropertyTable>::CreateInstance());
-    FUN_14080bc00();
-    FUN_1405bfc70(Unk_SingletonCreator<CItemMergeOptionTable>::CreateInstance());
+    ((class CItemGemPropertyTable*)(class CItemGemPropertyTable*)(Unk_SingletonCreator<CItemGemPropertyTable>::CreateInstance()))->Load();
+    LoadItemOptionSkillTier();
+    ((class CItemMergeOptionTable*)(class CItemMergeOptionTable*)(Unk_SingletonCreator<CItemMergeOptionTable>::CreateInstance()))->LoadItemMergeOptionBase();
     FUN_140837660();
     Unk_SingletonCreator<CostumeSetTable>::CreateInstance();
-    FUN_140770d30(Unk_SingletonCreator<RewardContentsTable>::CreateInstance());
-    FUN_140791c30(TSingleton<CSeasonDataTable>::GetInstance());
-    FUN_1406e55b0();
+    ((class RewardContentsTable*)(class RewardContentsTable*)(Unk_SingletonCreator<RewardContentsTable>::CreateInstance()))->Load();
+    TSingleton<CSeasonDataTable>::GetInstance()->Load();
+    LoadShopBeautyCoupon();
     Unk_SingletonCreator<CUGCMapSetItemTable>::CreateInstance();
     Unk_SingletonCreator<CFameTable>::CreateInstance()->Load();
-    FUN_1405915b0(Unk_SingletonCreator<CItemEnchantTransformTable>::CreateInstance());
+    Unk_SingletonCreator<CItemEnchantTransformTable>::CreateInstance()->FUN_1405915b0();
     Unk_SingletonCreator<CMouseController>::CreateInstance();
     Unk_SingletonCreator<CAdventureLevelTable>::CreateInstance()->LoadAll();
     Unk_SingletonCreator<CSoundDataTable>::CreateInstance()->Load();
     Unk_SingletonCreator<CAdventureLevelTableHelper>::CreateInstance()->FindCurrent();
-    FUN_1401d6550(Unk_SingletonCreator<CChangeJobTable>::CreateInstance());
+    Unk_SingletonCreator<CChangeJobTable>::CreateInstance()->Load();
     Unk_SingletonCreator<CooltimeManager>::CreateInstance();
-    FUN_1403826e0(Unk_SingletonCreator<FieldWarDataTable>::CreateInstance());
+    ((class FieldWarDataTable*)(class FieldWarDataTable*)(Unk_SingletonCreator<FieldWarDataTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<CChatEmoticonTable>::CreateInstance()->Load();
     Unk_SingletonCreator<CPortalTable>::CreateInstance()->Load();
-    FUN_140907d40(Unk_SingletonCreator<WeddingTable>::CreateInstance());
+    ((class WeddingTable*)(class WeddingTable*)(Unk_SingletonCreator<WeddingTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<WeddingManager>::CreateInstance();
-    FUN_14071aff0(Unk_SingletonCreator<PaybackTable>::CreateInstance());
+    ((class PaybackTable*)(class PaybackTable*)(Unk_SingletonCreator<PaybackTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<PaybackManagerClient>::CreateInstance();
     FUN_14145c4b0();
     Unk_SingletonCreator<RecodeMgr>::CreateInstance();
@@ -2104,11 +2073,11 @@ BOOL CGameApp::InitInstance()
         FUN_14149fee0();
         FUN_1414a4630();
     }
-    FUN_140d9f140(FUN_140931510());
+    ((class CMyCharacter*)(class CChatEmoticonCli*)(((class CChatEmoticonCli*)FUN_140931510())))->FUN_140d9f140();
     if (TSingleton<CUgcDownloadDown>::GetInstance())
-        FUN_141875140(TSingleton<CUgcDownloadDown>::GetInstance());
+        ((class CUgcDownloadDown*)(class CUgcDownloadDown*)(TSingleton<CUgcDownloadDown>::GetInstance()))->Stop();
     if (TSingleton<CUgcDownloadLoad>::GetInstance())
-        FUN_14186df80(TSingleton<CUgcDownloadLoad>::GetInstance());
+        ((class CUgcDownloadLoad*)(class CUgcDownloadLoad*)(TSingleton<CUgcDownloadLoad>::GetInstance()))->Stop();
     if (TSingleton<CAsyncImageLoader>::GetInstance())
         TSingleton<CAsyncImageLoader>::GetInstance()->FUN_140a58b10();
     FUN_14149fec0();
@@ -2312,7 +2281,7 @@ BOOL CGameApp::InitInstance()
     GetClientPlatform()->vfunc_29();
     GetClientPlatform()->vfunc_15();
     GetClientPlatform()->vfunc_51();
-    FUN_141168710();
+    CDebugConsole::FUN_141168710();
     FUN_1414a3c70();
     GetClientPlatform()->vfunc_69();
     GetClientPlatform()->vfunc_70();

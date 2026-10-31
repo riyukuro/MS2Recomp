@@ -111,7 +111,6 @@ __int64 FUN_14028d0e0();                // next shape handle
 Unk_EmoPlayer* FUN_14096e110(PCBase* p);
 PCBase* FUN_140974230(PCBase* p);
 void* FUN_141468360(PCBase* p);
-void FUN_141bc49c0(Unk_1403ed2d0* p);
 
 typedef CSkillCollisionManager::CollisionPtr CollisionPtr;
 
@@ -243,7 +242,7 @@ void CSkillCollisionManager::Tick()
         Remove(aExpired.GetAt(posExpired));
     }
     if (DAT_143ae95e0 != 0 || DAT_143ae95e1 != 0)
-        FUN_141bc49c0(reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance()));
+        reinterpret_cast<WorldService*>(reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance()))->FUN_141bc49c0();
 }
 
 // @0x1417551b0

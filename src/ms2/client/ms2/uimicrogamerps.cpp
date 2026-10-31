@@ -18,6 +18,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asgameentity.h"
+#include "ms2/client/ms2/statemicrogame.h"
+#include "ms2/client/ms2/pcbase.h"
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -841,18 +843,21 @@ public:
 MS2_CHECK_OFFSET(Unk_1401d3200, m_c768, 0xc768);
 MS2_CHECK_OFFSET(Unk_1401d3200, m_c7c0, 0xc7c0);
 MS2_CHECK_SIZE(Unk_1401d3200, 0xc7c8); // recovered prefix only
-Unk_1401d3200* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The state object of the local player (0x1403ed2d0 singleton -> 0x141bd0cc0).
-class Unk_14166ccb0 { public: void FUN_140b877c0(); };
-class Unk_141bd0cc0
+class Unk_14166ccb0 : public StateMicroGameRps { };
+class Unk_141bd0cc0 : public PCBase
 {
 public:
-    int FUN_14166c930();                                    // state type (0x3c = micro game)
     Unk_14166ccb0* FUN_14166ccb0();
 };
 class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
-Unk_1403ed2d0* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 int FUN_141277f40();
 int FUN_140768010(int n1, int n2);
@@ -969,8 +974,8 @@ void UIMicroGameRps::FUN_140e664a0()
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity == NULL)
         return;
-    int nX = FUN_1401d3200()->m_c768.FUN_14025a620();
-    int nY = *FUN_1401d3200()->m_c7c0.FUN_1402056b0() - 0x32;
+    int nX = ((class Unk_1401d3200*)FUN_1401d3200())->m_c768.FUN_14025a620();
+    int nY = *((class Unk_1401d3200*)FUN_1401d3200())->m_c7c0.FUN_1402056b0() - 0x32;
     int nWidth = (int)(pEntity->FUN_1422c1500() * 0.5f + nX);
     int nHeight = (int)(pEntity->FUN_1422c1530() * 0.5f + nY);
     pEntity->FUN_1422bffe0(nWidth, nHeight);
@@ -1001,7 +1006,7 @@ MS2_REPLACE_METHOD(0x140E66600, UIMicroGameRps, SendMicrogame, 154, 0xD9F68C75);
 // @0x140e666a0
 void UIMicroGameRps::OnRandChat()
 {
-    Unk_141bd0cc0* pState = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_141bd0cc0* pState = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pState == NULL)
         return;
     if (pState->FUN_14166c930() != 0x3c)
@@ -1017,7 +1022,7 @@ MS2_REPLACE_METHOD(0x140E666A0, UIMicroGameRps, OnRandChat, 94, 0x948CB5A7);
 // @0x140e66710
 int UIMicroGameRps::FUN_140e66710()
 {
-    Unk_141bd0cc0* pState = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_141bd0cc0* pState = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pState)
         return 1;
     if (pState->FUN_14166c930() != 0x3c)

@@ -125,7 +125,7 @@ void CStatPointManager::RequestAdd(int nStat, int nAmount)
 {
     if (m_nRemaining == 0)
         return;
-    if ((unsigned)(GetStatPoints((Unk_StatKey)nStat) + nAmount) > (unsigned)(&FUN_1401d3200()->StatPointLimit_str)[nStat])
+    if ((unsigned)(GetStatPoints((Unk_StatKey)nStat) + nAmount) > (unsigned)(&FUN_1401d3200()->StatPointLimit[0])[nStat])
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_char_info_limit_stat_point"), 1, 1);
     }

@@ -22,7 +22,11 @@ template<> void Unk_PayloadPtr<CBuddy>::Reference(CBuddy*);
 // Two-argument scoped lock helper shared with ugcmappackageinfo.
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&,int); ~Unk_1401b4ec0(); private: void* m_p; };
 MS2_CHECK_SIZE(Unk_1401b4ec0,8);
-__int64 FUN_141656a80(PCBase*);
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_141656a80();
+};
 void FUN_141275260(int,int,int);
 void FUN_141275460(int,int,int,const fmt::ArgList&);
 // Notification interface observed at the buddy/home service singleton.
@@ -80,7 +84,7 @@ MS2_REPLACE_METHOD(0x140a46c60, HomeBlockManager, FUN_140a46c60, 483, 0x37E066E1
 void HomeBlockManager::FUN_140a46e50(Unk_SocketPtr<PCBase> actor,CStringW text) {
     COutPacket out(0xc1,0);
     out.WriteUInt8(2);
-    out.WriteInt64(FUN_141656a80(actor.operator->()));
+    out.WriteInt64(((class PCBase*)(class PCBase*)(actor.operator->()))->FUN_141656a80());
     out.WriteUnicodeString(text);
     FUN_140710590(out);
 }

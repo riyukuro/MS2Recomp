@@ -32,7 +32,6 @@ struct Unk_TriggerTimerCfg { char m_pad_00[0x2f0]; CString m_strEffect; };
 Unk_TriggerTimerCfg* FUN_1401d31f0();
 
 WorldService* FUN_1403ed2d0();
-CEffectService* FUN_1403ed280();               // the effect service singleton
 
 // @0x141b330c0
 UITriggerTimerDialog::UITriggerTimerDialog()
@@ -86,7 +85,7 @@ void UITriggerTimerDialog::vfunc_72()
             Unk_EffectTarget kTarget;
             kTarget.m_strName = FUN_1401d31f0()->m_strEffect;
             kTarget.m_nKind = 0;
-            m_nEffect = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+            m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
             m_nEffectRunning = 1;
         }
     }
@@ -106,7 +105,7 @@ void UITriggerTimerDialog::vfunc_67()
 {
     if (m_nEffect != 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_nEffect);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
     UIDialog::vfunc_67();

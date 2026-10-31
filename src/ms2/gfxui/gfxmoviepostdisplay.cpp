@@ -32,15 +32,10 @@ public:
 
 GFxManager* FUN_14025e7a0();
 
-class Unk_GfxLog
-{
-public:
-    void FUN_1403a1310(int nLevel, int nCategory, const wchar_t* szFormat, const char* const& a0, const char* const& a1);
-};
-Unk_GfxLog* FUN_140166440();
+class CLogString* GetLogString();
+template<class T, class U> void Unk_FileLog(CLogString* log, int level, int category, const wchar_t* format,
+                                            const T& a0, const U& a1);   // filesystem.cpp
 
-const char* FUN_140b63540(const Scaleform::GFx::Value& v);     // Value::GetString
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);            // the value is set
 
 // @0x1422f3990
 GFxMoviePostDisplay::GFxMoviePostDisplay()
@@ -74,17 +69,17 @@ void GFxMoviePostDisplay::vfunc_4(void* pMovie, const char* szEvent, const Scale
     }
     else
     {
-        const char* szName = FUN_140b63540(pArgs[0]);
+        const char* szName = pArgs[0].GetString();
         if (_stricmp("loadInit", szName) == 0)
         {
             Scaleform::GFx::Value vRoot(pArgs[1]);
-            if (FUN_1409b4d40(vRoot))
+            if (vRoot.IsObject())
                 ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_7(szEvent, vRoot);
         }
         else if (_stricmp("loadComplete", szName) == 0)
         {
             Scaleform::GFx::Value vRoot(pArgs[1]);
-            if (FUN_1409b4d40(vRoot))
+            if (vRoot.IsObject())
                 ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_9(szEvent, vRoot, 0.0f);
         }
         else if (_stricmp("playSound", szName) == 0)
@@ -92,7 +87,7 @@ void GFxMoviePostDisplay::vfunc_4(void* pMovie, const char* szEvent, const Scale
             MS2Ptr<UISwfEntity> spEntity = FUN_140b632f0()->GetUISwfEntity(szEvent);
             if ((spEntity.get() ? true : false) && spEntity->FUN_1422dc390() != 0)
             {
-                CString strSound(FUN_140b63540(pArgs[1]));
+                CString strSound(pArgs[1].GetString());
                 spEntity->vfunc_29(&strSound);      // slot 29 takes the sound name (const CString&)
             }
         }
@@ -106,7 +101,7 @@ void GFxMoviePostDisplay::vfunc_4(void* pMovie, const char* szEvent, const Scale
                 if (spEntity->FUN_1422dc390() != 0)
                     spEntity->vfunc_28(szName, &pArgs[1], nArgs - 1);
                 else
-                    FUN_140166440()->FUN_1403a1310(2, 0x1a, L"DispatchEvent Warning[{0}][{1}]", szEvent, szName);
+                    Unk_FileLog(GetLogString(), 2, 0x1a, L"DispatchEvent Warning[{0}][{1}]", szEvent, szName);
             }
         }
     }

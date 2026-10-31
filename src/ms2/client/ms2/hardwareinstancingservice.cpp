@@ -196,6 +196,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/entityworldmanager.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- the entity property cache (MS2's keyed Entity::SetPropertyValue<T>) ----
 // @0x1413d9bb0
@@ -295,27 +296,23 @@ void MeshInstancing::FUN_1413ed300(int nCount)
 
 // ---- services reached through globals ----
 extern char DAT_143b059e8;                                          // the application framework
-HardwareInstancingService* FUN_14098c5b0(char* pFramework);
-class WorldService;
-WorldService* FUN_1403ed2d0();
+class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 void FUN_141bbae40(WorldService* pWorld, IWorldServiceCallback* pCallback);
-bool FUN_141bc7b20(void* pWorld, const egf::EntityID& id);         // is the entity drawn by the world itself
 efd::MessageService* FUN_1413f9830();
 ecr::RenderService* FUN_1413f9890();
-CMainSystem* FUN_14086d260();
-double FUN_141473280(CMainSystem* pClock);
 int FUN_140ae1c10();                                                // the current game mode
 class COptimizer;
-COptimizer* FUN_1409f7c90();
-int FUN_14112f0b0(COptimizer* pOptimizer);
-void FUN_1410db460(efd::IDependencyRegistrar* pRegistrar, unsigned n);   // <MS2 service 0x0610001a>
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_CMISGlue   // C3: member view for the former free stand-ins
+{
+public:
+    int Global();
+};
+void Unk_CMISNotifyA(struct Unk_CMISSink*, int);   // C3: was FUN_1410db460
 
 // ---- entities ----
-egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
-void FUN_1408a20a0(egf::Entity* pEntity, unsigned uPropId, bool* pOut);
-void FUN_14098c6e0(egf::Entity* pEntity, unsigned uPropId, const bool& rValue);
+void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, efd::Point3* pOut);
-void FUN_140961880(egf::Entity* pEntity, unsigned uPropId, float* pOut);
 egf::Entity* FUN_1408a9090(const void* pSmartPointer);
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 efd::AssetID FUN_1413fa0d0(egf::Entity* pEntity);
@@ -323,8 +320,7 @@ bool FUN_1413fa2a0(egf::Entity* pEntity);
 bool FUN_1413fa2e0(egf::Entity* pEntity);
 Unk_InstancingScale FUN_1413fa320(egf::Entity* pEntity);
 void FUN_1413fa1b0(egf::Entity* pEntity);
-bool FUN_140a56f50(const Unk_InstancingScale* pA, const Unk_InstancingScale* pB);   // differ
-bool FUN_14106bee0(NiMeshModifier* pModifier);
+bool FUN_140a56f50(struct Unk_Vec3Cli const*, struct Unk_Vec3Cli const*);   // C3: was FUN_140a56f50
 extern NiRTTI DAT_143afbef0;                                        // the hardware skinning modifier type
 extern efd::AssetID DAT_143a0acf8;                                  // the null asset
 
@@ -367,8 +363,8 @@ Unk_MeshInstancingConfig::Unk_MeshInstancingConfig(egf::Entity* pEntity, int nCe
     flags30 = FUN_1413fa2a0(pEntity);
     flags31 = FUN_1413fa2e0(pEntity);
     unknown58 = FUN_1413fa320(pEntity);
-    FUN_1408a20a0(pEntity, 0x861681cb, &flags32);
-    efd::SmartPointer<HardwareInstancingService> spService(FUN_14098c5b0(&DAT_143b059e8));
+    pEntity->GetPropertyValue<bool>(0x861681cb, flags32);
+    efd::SmartPointer<HardwareInstancingService> spService(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     ids = spService->FUN_1413d7160(pEntity);
 }
 
@@ -411,7 +407,7 @@ bool Unk_MeshInstancingConfig::FUN_1413d33c0(const Unk_MeshInstancingConfig& oth
         return false;
     if (!flags32 && unknown48 != other.unknown48)
         return false;
-    if (FUN_140a56f50(&unknown58, &other.unknown58))
+    if (FUN_140a56f50((struct Unk_Vec3Cli const*)(&unknown58), (struct Unk_Vec3Cli const*)(&other.unknown58)))
         return false;
     if (unknown64 != other.unknown64)
         return false;
@@ -554,7 +550,7 @@ efd::SyncResult HardwareInstancingService::OnPreInit(efd::IDependencyRegistrar* 
     pRegistrar->AddDependency<egf::FlatModelManager>(1);
     pRegistrar->AddDependency<efd::MessageService>(1);
     pRegistrar->AddDependency<ecr::ShaderService>(1);
-    FUN_1410db460(pRegistrar, 1);
+    Unk_CMISNotifyA((struct Unk_CMISSink*)(pRegistrar), 1);
     egf::PlaceableModel::AddCallback(this);
     return efd::SyncResult_Success;
 }
@@ -564,7 +560,7 @@ MS2_REPLACE_METHOD(0x1413D4490, HardwareInstancingService, OnPreInit, 127, 0x5C2
 efd::AsyncResult HardwareInstancingService::OnInit()
 {
     FUN_1413f9830()->Subscribe(this, s_catEntityChannel, 0, false);
-    FUN_141bbae40(FUN_1403ed2d0(), this);
+    FUN_141bbae40(WorldService::GetInstance(), this);
     return efd::AsyncResult_Complete;
 }
 MS2_REPLACE_METHOD(0x1413D4520, HardwareInstancingService, OnInit, 119, 0x716913E8);
@@ -600,10 +596,10 @@ void HardwareInstancingService::OnPropertyUpdate(const efd::ClassID& callerID, e
     {
         if (m_mapQueued.Lookup(pEntity->GetEntityIDValue()) == NULL)
         {
-            if (FUN_1408a9bd0(pEntity)->ContainsProperty(0x23f9860e))
+            if (pEntity->GetModel()->ContainsProperty(0x23f9860e))
             {
                 bool bInstanced = false;
-                FUN_1408a20a0(pEntity, 0x23f9860e, &bInstanced);
+                pEntity->GetPropertyValue<bool>(0x23f9860e, bInstanced);
                 if (bInstanced)
                     m_mapQueued.SetAt(pEntity->GetEntityIDValue(), pEntity);
             }
@@ -615,7 +611,7 @@ MS2_REPLACE_METHOD_VIA(0x1413D4680, HardwareInstancingService, egf::IPropertyCal
 // @0x1413d47b0
 void HardwareInstancingService::FUN_1413d47b0()
 {
-    double dTime = FUN_141473280(FUN_14086d260());
+    double dTime = ((class CMainSystem*)(class Unk_Clock*)(TSingleton<CMainSystem>::GetInstance()))->FUN_141473280();
     if (!m_mapQueued.IsEmpty())
     {
         std::set<MeshInstancing*> setDirty;
@@ -651,7 +647,7 @@ egf::EntityID HardwareInstancingService::FUN_1413d49f0(const efd::utf8string& st
     egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id);
     if (pEntity == NULL)
         return s_invalidId;
-    FUN_14098c6e0(pEntity, 0x2a7fd9f4, bInstanced);
+    FUN_14098c6e0((class Unk_CachedEntity*)(pEntity), 0x2a7fd9f4, bInstanced);
     NiAVObject* pObject = FUN_141b6efc0(pEntity);
     if (pObject != NULL)
     {
@@ -685,7 +681,7 @@ MeshInstancing* HardwareInstancingService::FUN_1413d4b40(egf::Entity* pEntity, i
     if (FUN_1413d6890(pEntity) != 0)
         return NULL;
     bool bInstanced = false;
-    FUN_1408a20a0(pEntity, 0x23f9860e, &bInstanced);
+    pEntity->GetPropertyValue<bool>(0x23f9860e, bInstanced);
     if (!bInstanced)
         return NULL;
     kAsset = FUN_1413fa0d0(pEntity);
@@ -700,10 +696,10 @@ MeshInstancing* HardwareInstancingService::FUN_1413d4b40(egf::Entity* pEntity, i
     m_maps[m_nMap].m_mapByValue.insert(std::make_pair(pEntity->GetEntityIDValue(), pInstancing));
     ecr::RenderService* pRender = FUN_1413f9890();
     bool bHidden = false;
-    FUN_14098c6e0(pEntity, 0xa0b6b179, bHidden);
+    FUN_14098c6e0((class Unk_CachedEntity*)(pEntity), 0xa0b6b179, bHidden);
     bool bDrawn = true;
-    FUN_14098c6e0(pEntity, 0x2a7fd9f4, bDrawn);
-    if (!FUN_141bc7b20(FUN_1403ed2d0(), pEntity->GetEntityID()))
+    FUN_14098c6e0((class Unk_CachedEntity*)(pEntity), 0x2a7fd9f4, bDrawn);
+    if (!((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bc7b20(*(unsigned __int64 const*)&static_cast<class egf::EntityID const&>(pEntity->GetEntityID())))
     {
         NiAVObject* pObject = FUN_141b6efc0(pEntity);
         pRender->RemoveRenderedEntity(pEntity, pObject);
@@ -720,10 +716,10 @@ int HardwareInstancingService::FUN_1413d4fe0(EntityInstancing* pInstancing, egf:
     if (pInstancing == NULL || pEntity == NULL)
         return 0;
     bool bInstanced = false;
-    FUN_1408a20a0(pEntity, 0x23f9860e, &bInstanced);
+    pEntity->GetPropertyValue<bool>(0x23f9860e, bInstanced);
     if (!bInstanced)
         return 0;
-    if (FUN_14112f0b0(FUN_1409f7c90()) != 0)
+    if (((class Unk_CMISGlue*)(class COptimizer*)(((class COptimizer*)FUN_1409f7c90())))->Global() != 0)
     {
         int nCount = pInstancing->FUN_1413ebb30();
         unsigned nNeeded = nCount + 1;
@@ -737,10 +733,10 @@ int HardwareInstancingService::FUN_1413d4fe0(EntityInstancing* pInstancing, egf:
         pInstancing->FUN_1413ed2f0();
         ecr::RenderService* pRender = FUN_1413f9890();
         bool bHidden = false;
-        FUN_14098c6e0(pEntity, 0xa0b6b179, bHidden);
+        FUN_14098c6e0((class Unk_CachedEntity*)(pEntity), 0xa0b6b179, bHidden);
         bool bDrawn = true;
-        FUN_14098c6e0(pEntity, 0x2a7fd9f4, bDrawn);
-        if (!FUN_141bc7b20(FUN_1403ed2d0(), pEntity->GetEntityID()))
+        FUN_14098c6e0((class Unk_CachedEntity*)(pEntity), 0x2a7fd9f4, bDrawn);
+        if (!((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bc7b20(*(unsigned __int64 const*)&static_cast<class egf::EntityID const&>(pEntity->GetEntityID())))
         {
             NiAVObject* pObject = FUN_141b6efc0(pEntity);
             pRender->RemoveRenderedEntity(pEntity, pObject);
@@ -818,17 +814,17 @@ void HardwareInstancingService::FUN_1413d5710()
     m_maps[m_nMap].m_listNearby.clear();
     while (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce5f0(itEntity, pEntity))
     {
-        if (FUN_1408a9bd0(pEntity) != NULL)
+        if (pEntity->GetModel() != NULL)
         {
-            if (FUN_1408a9bd0(pEntity)->ContainsModel(0x2c4767f5))
+            if (pEntity->GetModel()->ContainsModel(0x2c4767f5))
             {
-                if (!FUN_1408a9bd0(pEntity)->ContainsModel(0x171049c9))
+                if (!pEntity->GetModel()->ContainsModel(0x171049c9))
                 {
-                    if (!FUN_1408a9bd0(pEntity)->ContainsModel(0x169ea355))
+                    if (!pEntity->GetModel()->ContainsModel(0x169ea355))
                     {
                         kNearby.m_pEntity = pEntity;
                         FUN_1409618c0(pEntity, 0xfd95ca52, &kNearby.m_kPos);
-                        FUN_140961880(pEntity, 0x4871503b, &kNearby.m_fRadius);
+                        pEntity->GetPropertyValue<float>(0x4871503b, kNearby.m_fRadius);
                         m_maps[m_nMap].m_listNearby.push_back(kNearby);
                     }
                 }
@@ -846,7 +842,7 @@ void HardwareInstancingService::FUN_1413d5710()
             bool bVisible = false;
             bool bInstanced = false;
             efd::AssetID kAsset;
-            FUN_1408a20a0(pEntity, 0x23f9860e, &bInstanced);
+            pEntity->GetPropertyValue<bool>(0x23f9860e, bInstanced);
             if (!bInstanced)
                 continue;
             if (FUN_1413d6890(pEntity) != 0)
@@ -854,7 +850,7 @@ void HardwareInstancingService::FUN_1413d5710()
             kAsset = FUN_1413fa0d0(pEntity);
             if (kAsset == DAT_143a0acf8)
                 continue;
-            FUN_1408a20a0(pEntity, 0xa0b6b179, &bVisible);
+            pEntity->GetPropertyValue<bool>(0xa0b6b179, bVisible);
             if (!bVisible)
                 continue;
             bool bShared = false;
@@ -1071,8 +1067,8 @@ bool HardwareInstancingService::FUN_1413d6b60(egf::Entity* pEntity)
         {
             bool bVisible = false;
             bool bInstanced = false;
-            FUN_1408a20a0(pEntity, 0x23f9860e, &bInstanced);
-            FUN_1408a20a0(pEntity, 0xa0b6b179, &bVisible);
+            pEntity->GetPropertyValue<bool>(0x23f9860e, bInstanced);
+            pEntity->GetPropertyValue<bool>(0xa0b6b179, bVisible);
             if (bVisible & bInstanced)
                 return !FUN_1413d6c70(pEntity);
         }
@@ -1097,7 +1093,7 @@ bool HardwareInstancingService::FUN_1413d6c70(egf::Entity* pEntity)
         {
             NiMesh* pMesh = *it;
             NiMeshModifier* pModifier = pMesh->GetModifierByType(&DAT_143afbef0);
-            if (pModifier != NULL && !FUN_14106bee0(pModifier))
+            if (pModifier != NULL && !((class NiSkinningMeshModifier*)(class NiMeshModifier*)(pModifier))->GetSoftwareSkinned())
                 return true;
         }
         return false;
@@ -1121,12 +1117,12 @@ int HardwareInstancingService::FUN_1413d6e60(egf::Entity* pEntity, bool bFlag)
     if (IsEnabled() && m_bReady && pEntity != NULL)
     {
         bool bInstanced = false;
-        FUN_1408a20a0(pEntity, 0x23f9860e, &bInstanced);
+        pEntity->GetPropertyValue<bool>(0x23f9860e, bInstanced);
         MeshInstancing* pInstancing;
         if (bInstanced && (pInstancing = FUN_1413d66b0(pEntity)) != NULL && pInstancing->FUN_140ad4bb0() == 0)
         {
             static_cast<EntityInstancing*>(pInstancing)->FUN_1411c5e30(pEntity, bFlag);
-            pInstancing->FUN_14147c910(FUN_141473280(FUN_14086d260()));
+            pInstancing->FUN_14147c910(((class CMainSystem*)(class Unk_Clock*)(TSingleton<CMainSystem>::GetInstance()))->FUN_141473280());
             return 1;
         }
     }
@@ -1251,7 +1247,7 @@ void HardwareInstancingService::FUN_1413d7710(const egf::EntityChangeMessage* pM
     if (IsEnabled() & m_bReady)
     {
         bool bInstanced = false;
-        FUN_1408a20a0(pMsg->GetEntity(), 0x23f9860e, &bInstanced);
+        pMsg->GetEntity()->GetPropertyValue<bool>(0x23f9860e, bInstanced);
         if (bInstanced)
         {
             MeshInstancing* pInstancing = FUN_1413d66b0(pMsg->GetEntity());
@@ -1277,7 +1273,7 @@ void HardwareInstancingService::FUN_1413d7800(const egf::EntityChangeMessage* pM
             if (pEntity->IsDirty(0x23f9860e))
             {
                 bool bInstanced = false;
-                FUN_1408a20a0(pEntity, 0x23f9860e, &bInstanced);
+                pEntity->GetPropertyValue<bool>(0x23f9860e, bInstanced);
                 if (bInstanced)
                 {
                     MeshInstancing* pInstancing = FUN_1413d66b0(pEntity);
@@ -1459,7 +1455,7 @@ MeshInstancing* HardwareInstancingService::FUN_1413d80f0(egf::Entity* pEntity)
     if (pInstancing != NULL)
         m_maps[m_nMap].m_mapByValue.insert(std::make_pair(pEntity->GetEntityIDValue(), pInstancing));
     bool bHidden = false;
-    FUN_14098c6e0(pEntity, 0xa0b6b179, bHidden);
+    FUN_14098c6e0((class Unk_CachedEntity*)(pEntity), 0xa0b6b179, bHidden);
     FUN_1413fa1b0(pEntity);
     return pInstancing;
 }
@@ -1475,7 +1471,7 @@ void HardwareInstancingService::FUN_1413d83f0(egf::Entity* pEntity)
         return;
     MeshInstancing* pInstancing = FUN_1413d66b0(pEntity);
     if (pInstancing != NULL)
-        pInstancing->FUN_14147c910(FUN_14086d260()->GetDeltaTime());
+        pInstancing->FUN_14147c910(TSingleton<CMainSystem>::GetInstance()->GetDeltaTime());
 }
 MS2_REPLACE_METHOD(0x1413D83F0, HardwareInstancingService, FUN_1413d83f0, 195, 0xBD0271EA);
 

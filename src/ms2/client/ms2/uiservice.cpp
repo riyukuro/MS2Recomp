@@ -98,6 +98,9 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <windowsx.h>
+// cef_dom.h (via cwebbrowserservice.h) declares CefDOMNode::GetNextSibling(); windowsx.h has it as a macro
+#undef GetNextSibling
+#undef GetFirstChild
 #include "uiservice.h"
 #include "ms2/client/ms2/gfxmoviebackground.h"
 #include "ms2/client/ms2/uidialog.h"
@@ -137,6 +140,11 @@
 #include <direct.h>
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
+#include "ms2/commonfiles/loginbgbgmdata.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/ugchomebgdata.h"
+#include "ms2/placeholder/cwebbrowserservice.h"
+#include "ms2/commonfiles/featuremanager.h"
 
 // ---- unit-local placeholders ----
 
@@ -170,18 +178,13 @@ Unk_UisMovieMgr* FUN_14025e7a0();
 
 // ---- exe helpers the service reaches ----
 class PCBase;
-class Unk_UisWorld                                                  // world service
+class Unk_UisWorld : public WorldService                                                  // world service
 {
 public:
     PCBase* FUN_141bd0cc0();                                        // the player character
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                          // the current field data
-    void FUN_141bdb7a0();
-    void FUN_141bdb6a0();
 };
-Unk_UisWorld* FUN_1403ed2d0();
-class Unk_UisBgSource { public: CString FUN_140a72cc0(); };     // background movie name override
-Unk_UisBgSource* FUN_1414a5840();
-CUIService* FUN_1403ed2b0();                                        // the UI service
+     // background movie name override
 class Unk_UisRootsSub { public: void* FUN_14151e180(); };
 class Unk_UisRootsOwner { public: char m_unk00[0x20]; Unk_UisRootsSub m_sub; };
 class Unk_UisMovieObj
@@ -218,16 +221,33 @@ public:
 };
 Unk_UisMovie* FUN_1422bb8b0(int nMovieId);
 class Unk_UisPlayerInfo { public: void FUN_1410c3330(CStringW& strOut); };   // the local player's name
-Unk_UisPlayerInfo* FUN_1409670e0();
-bool FUN_1410c3600(void* p, int n);
-void* FUN_140166410();
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoHouseSvc* GetInstance();
+};
+class CubeMapInformationService   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1410bc1c0();
+    void FUN_1410bc320();
+    bool FUN_1410c3600(int);
+};
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 unsigned char FUN_14036d570(void* p, int n);
 class UIMeratMarketDialog;                                          // unit-local in uichatemoticondialog.cpp; only used by pointer here
 UIMeratMarketDialog* FUN_140bfed50(eUIClassID nClass);              // find the dialog (dynamic_cast)
 void FUN_14130fa80(UIMeratMarketDialog* pDlg, CStringW& str);
-void* FUN_140b632f0();
+class UISwfEntityManager* FUN_140b632f0();   // C3: was FUN_140b632f0
 void FUN_1422d4a30(void* p, char b);
-void FUN_1422d49f0(void* p);
+class UISwfEntityManager   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1422d2250();
+    void FUN_1422d49f0();
+    void FUN_1422d4b70(bool);
+    void FUN_1422d4d10();
+};
 void FUN_140d73cd0();
 class UIGroupMessengerBrowser;                                      // unit-local elsewhere; only used by pointer here
 class UIAdPushDialog;
@@ -237,8 +257,12 @@ void FUN_141952780(UIGroupMessengerBrowser* pDlg);
 UIAdPushDialog* FUN_140d61c00(eUIClassID nClass);                   // find the dialog (dynamic_cast)
 bool FUN_140e41110(UIAdPushDialog* pDlg);
 void FUN_140e411d0(UIAdPushDialog* pDlg);
-void* FUN_140939a00();
-void FUN_140d5a290(void* p);
+class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
+class CMeratMarketMan   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140d5a290();
+};
 void FUN_141a8a010(float x, float y);      // right mouse button down at (x, y)
 UIObject* FUN_141540270(int nClass);                                // dialog by class id
 class Unk_UisLoading : public UIObject                              // UILoadingProgress
@@ -248,29 +272,27 @@ public:
     void FUN_1419dfd90();
     void FUN_1419dff50(const CStringW& str, int a, int b);
 };
-void* FUN_14151f890();
+class UIMessageBox* FUN_14151f890();   // C3: was FUN_14151f890
 void FUN_14151f460(int n);
 void FUN_141a60d40(int n);
 int FUN_1418fd280();
-void* FUN_140ef49b0(int nClass);
+class UIHomeMenuDialog* FUN_140ef49b0(int);   // C3: was FUN_140ef49b0
 void FUN_140c296e0(void* p, int n);
 int FUN_1412755a0();
 class Unk_UisSysText { public: void FUN_141b15ec0(const CStringW& str, int a, int b); };   // UISystemText
 Unk_UisSysText* FUN_141278110(int nClass);
 void* FUN_141742c80(int nClass);
-void* FUN_140e86a50(int nClass);
-void* FUN_140e98660(int nClass);
-void* FUN_141994a90(int nClass);
-void* FUN_141a62100(int nClass);
-void* FUN_141930440(int nClass);
-void* FUN_14128f650(int nClass);
-void* FUN_1418fc4e0(int nClass);
-void* FUN_141a90250(int nClass);
+class UIShieldBar* FUN_140e86a50(int);   // C3: was FUN_140e86a50
+class UITamingBar* FUN_140e98660(int);   // C3: was FUN_140e98660
+class UITombStoneBar* FUN_141994a90(int);   // C3: was FUN_141994a90
+class UINameTag* FUN_141a62100(int);   // C3: was FUN_141a62100
+class UIEmoticon* FUN_141930440(int);   // C3: was FUN_141930440
+class UIBuffBalloon* FUN_14128f650(int);   // C3: was FUN_14128f650
+class UIChatBalloon* FUN_1418fc4e0(int);   // C3: was FUN_1418fc4e0
+class UIPopupProfileImage* FUN_141a90250(int);   // C3: was FUN_141a90250
 void* FUN_1409614b0(int nClass);
-void* FUN_1419949f0(int nClass);
-void FUN_1422dbf00(void* p, int a, int b, int c);
-void FUN_1422dc080(void* p);
-void* FUN_14138fd50(int nClass);
+class UISlimeEventBar* FUN_1419949f0(int);   // C3: was FUN_1419949f0
+class Unk_GmMovie* FUN_14138fd50(unsigned int);   // C3: was FUN_14138fd50
 void FUN_14190f180(void* p);
 class Unk_UisUpperHpBar { public: void FUN_141b4d0a0(); };          // UIUpperHpBar
 Unk_UisUpperHpBar* FUN_14096e340(int nClass);
@@ -293,12 +315,15 @@ public:
 };
 class Unk_UisSceneMgr;
 Unk_UisSceneMgr* FUN_1408e57f0();
-int FUN_1422b9e00(Unk_UisSceneMgr* p);
-Unk_UisScene* FUN_1422b9e50(Unk_UisSceneMgr* p);
-int FUN_1422b9ea0(Unk_UisSceneMgr* p);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    class UISceneEntity* FUN_1422b9e50();
+    int FUN_1422b9ea0();
+    class UISceneEntity* GetScene();
+    int GetSubSceneId();
+};
 class Unk_UisBrowserMgr;
-Unk_UisBrowserMgr* FUN_140cc18a0();
-int FUN_141b78650(Unk_UisBrowserMgr* p);
 float FUN_141276490(float f, float g);
 extern unsigned DAT_143af62d4;
 extern unsigned DAT_143af62d8;
@@ -319,9 +344,9 @@ class UILoadingProgressLobby : public UIObject { public: UILoadingProgressLobby(
 // MS2-PIN: ??$Unk_UisFind@VUIVideoContents@@@@YAPEAVUIVideoContents@@W4eUIClassID@@@Z 0x141aed5a0
 template<class T> T* Unk_UisFind(eUIClassID nClass)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spObj = FUN_1403ed2b0()->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0(nClass);
         if (spObj)
             return dynamic_cast<T*>(spObj.operator->());
     }
@@ -355,7 +380,6 @@ inline Unk_UisMap::~Unk_UisMap() { FUN_1401642a0(this); }
 inline Unk_UisPtr8::~Unk_UisPtr8() { FUN_1416aecf0(this); }
 inline Unk_UisLogger::~Unk_UisLogger() { reinterpret_cast<GFxLogger*>(this)->GFxLogger::~GFxLogger(); }
 unsigned char FUN_140361ab0(void* pMap, int nKey, int* pVal);                // CAtlMap<int,int>::Lookup
-void FUN_14016a050(void* pMap, int nKey, int nVal);                 // CAtlMap<int,int>::SetAt
 CStringA FUN_14071a5b0(const CStringA& strKey, const CStringA& strFile);
 
 // A weak dialog reference (vptr / pointer pair, 0x20 bytes of storage in the callers).
@@ -413,22 +437,22 @@ CUIService::CUIService()
     FUN_141926ff0(&m_listClose, 10);
     new (&m_log) GFxLogger;
     FUN_140a5bb80(&m_log);
-    FUN_14016a050(&m_mapOpen, 0x6200018, 0);
-    FUN_14016a050(&m_mapOpen, 0x620001d, 0);
-    FUN_14016a050(&m_mapOpen, 0x620001f, 0);
-    FUN_14016a050(&m_mapOpen, 0x6200031, 0);
-    FUN_14016a050(&m_mapOpen, 0x6200041, 0);
-    FUN_14016a050(&m_mapOpen, 0x6200022, 0);
-    FUN_14016a050(&m_mapOpen, 0x620007f, 0);
-    FUN_14016a050(&m_mapOpen2, 0x6200018, 0);
-    FUN_14016a050(&m_mapOpen2, 0x620000d, 0);
-    FUN_14016a050(&m_mapOpen2, 0x620001d, 0);
-    FUN_14016a050(&m_mapOpen2, 0x620001f, 0);
-    FUN_14016a050(&m_mapOpen2, 0x6200031, 0);
-    FUN_14016a050(&m_mapOpen2, 0x6200041, 0);
-    FUN_14016a050(&m_mapOpen2, 0x6200022, 0);
-    FUN_14016a050(&m_mapOpen2, 0x620007f, 0);
-    FUN_14016a050(&m_mapOpen2, 0x6200086, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->SetAt(0x6200018, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->SetAt(0x620001d, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->SetAt(0x620001f, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->SetAt(0x6200031, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->SetAt(0x6200041, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->SetAt(0x6200022, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->SetAt(0x620007f, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen2))->SetAt(0x6200018, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen2))->SetAt(0x620000d, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen2))->SetAt(0x620001d, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen2))->SetAt(0x620001f, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen2))->SetAt(0x6200031, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen2))->SetAt(0x6200041, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen2))->SetAt(0x6200022, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen2))->SetAt(0x620007f, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen2))->SetAt(0x6200086, 0);
     m_spDebugClick = 0;
     FUN_141aee9a0();
     m_strTable = FUN_14071a5b0(CStringA("Table"), CStringA("alignWidget.xml"));
@@ -453,7 +477,6 @@ MS2_REPLACE_METHOD(0x141AD9330, CUIService, GetDisplayName, 13, 0xDFB7B125);
 
 // ---- more exe helpers (chunk 2) ----
 class Unk_UisBgSvc { public: CStringA FUN_140b67fe0(char nStage); };
-Unk_UisBgSvc* FUN_140b6a040();
 void* FUN_140876480(void* pOut, int nCat);                          // memory category helper, returns int*
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCat);
 // The damage overlay movie (class of an unrecovered unit, ?\gfxmoviedamage.cpp).
@@ -475,10 +498,18 @@ public:
 private:
     char m_pad[0x90];
 };
-TiXmlElement* FUN_140165cf0(TiXmlDocument* pDoc, const char* szName);        // FirstChildElement
-int FUN_1408731e0(TiXmlElement* pElem, const char* szName, int* pValue);     // QueryIntAttribute
-void FUN_140873ca0(TiXmlElement* pElem, const char* szName, int nValue);     // SetAttribute
-void* FUN_14086e090(TiXmlDocument* pDoc, TiXmlElement* pElem);               // LinkEndChild
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+void XmlSetAttr(TiXmlElement* pElem, const char* szName, int nValue);        // SetAttribute
+class TiXmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class TiXmlNode* LinkEndChild(class TiXmlNode*);
+};
 bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szPath);                // SaveFile
 CString FUN_1412755f0();                                                     // the user data folder
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);       // path join
@@ -497,12 +528,12 @@ MS2_REPLACE_METHOD(0x141ad9350, CUIService, FUN_141ad9350, 79, 0xD2BAAC08);
 // @0x141ad9650
 void CUIService::FUN_141ad9650()
 {
-    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bd30a0();
     if (spField == 0)
         return;
-    if (spField->m_nFieldID == 1 && FUN_1414a5840() != 0)
+    if (spField->m_nFieldID == 1 && TSingleton<LoginBgBgmTable>::GetInstance() != 0)
     {
-        CString strBg = FUN_1414a5840()->FUN_140a72cc0();
+        CString strBg = TSingleton<LoginBgBgmTable>::GetInstance()->GetBgDay();
         if (!strBg.IsEmpty())
         {
             GFxMovieBackground* pBg = EE_NEW GFxMovieBackground(strBg, spField->m_nVScroll, spField->m_nHScroll);
@@ -526,7 +557,7 @@ MS2_REPLACE_METHOD(0x141ad9650, CUIService, FUN_141ad9650, 805, 0x6765F254);
 // @0x141ad9980
 void CUIService::FUN_141ad9980(char nStage)
 {
-    CStringA strBg = FUN_140b6a040()->FUN_140b67fe0(nStage);
+    CStringA strBg = reinterpret_cast<Unk_UisBgSvc*>(TSingleton<UgcHomeOptionData>::GetInstance())->FUN_140b67fe0(nStage);
     if (!strBg.IsEmpty())
     {
         GFxMovieBackground* pBg = EE_NEW GFxMovieBackground(strBg, 1, 1);
@@ -576,11 +607,11 @@ void CUIService::FUN_141ad93b0()
         bool bLoaded = kDoc.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), "version.xml"), 0);
         if (bLoaded)
         {
-            TiXmlElement* pRoot = FUN_140165cf0(&kDoc, "ms2");
+            TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlDocument*)(&kDoc))->FirstChild("ms2"));
             if (pRoot != 0)
             {
                 int nVersion = 0;
-                FUN_1408731e0(pRoot, "version", &nVersion);
+                XmlGetAttr(pRoot, "version", *(int*)(&nVersion));
                 if (nVersion != 0x15)
                     FUN_141aec3e0();
             }
@@ -593,8 +624,8 @@ void CUIService::FUN_141ad93b0()
     FUN_141b70290();
     TiXmlDocument kDoc;
     TiXmlElement* pRoot = new TiXmlElement("ms2");
-    FUN_140873ca0(pRoot, "version", 0x15);
-    FUN_14086e090(&kDoc, pRoot);
+    XmlSetAttr(pRoot, "version", 0x15);
+    ((void*)((class TiXmlNode*)(class TiXmlDocument*)(&kDoc))->LinkEndChild((class TiXmlNode*)(pRoot)));
     FUN_1408710c0(&kDoc, FUN_140cc2a00(FUN_1412755f0(), "version.xml"));
 }
 MS2_REPLACE_METHOD(0x141ad93b0, CUIService, FUN_141ad93b0, 655, 0x104E5C39);
@@ -639,28 +670,56 @@ class Unk_ConfigString { public: CString* FUN_140298f80(); };      // Value<CStr
 
 // ---- scene entry helpers ----
 void* FUN_1409a8b10();
-void* FUN_1409a8ac0(void* p);
-void* FUN_140ee0d10();
-void FUN_140b8cbe0(void* p);
-bool FUN_141527280(void* pPlayer);
+class Unk_AeGameOption   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_AeGraphicOption* FUN_1409a8ac0();
+};
+class Unk_TimerPlayer   // C3: member view for the former free stand-ins
+{
+public:
+    static void* Get();
+};
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_141527280();
+    class Unk_PCCubeCraft* FUN_141530290();
+};
 struct Unk_UisInfo { char m_unk00[8]; float m_fValue; };
-Unk_UisInfo* FUN_140e09150(void* p);
-bool FUN_14125bb90(void* p);
-bool FUN_14125bbe0(void* p);
-void* FUN_1409670d0();
-bool FUN_14162ab20(void* p);
-void* FUN_14041beb0();
-int FUN_1408d7e60(void* p, unsigned short n);
+class Unk_ChaosSettings   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_ChaosOpt* FUN_140e09150();
+};
+bool FUN_14125bb90(struct Unk_InterfaceState const*);   // C3: was FUN_14125bb90
+bool FUN_14125bbe0(struct Unk_InterfaceState const*);   // C3: was FUN_14125bbe0
+class CPartyManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14162ab20();
+};
+class CUserEventManager   // C3: member view for the former free stand-ins
+{
+public:
+    int HasDTReward(unsigned short);
+};
 void* FUN_1401c0d90();
-int FUN_1404795e0(void* p);
-bool FUN_141bcb1a0(void* pWorld);
-bool FUN_141bcb150(void* pWorld);
+class CGameRule   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1404795e0();
+};
 void* FUN_14047d050(void* pOwner, void* pOut);
 void* FUN_1417472c0(void* p);
 void FUN_1403e54e0(void* p);
-void FUN_140c59350();
+class UIEventWidgetDialog   // C3: member view for the former free stand-ins
+{
+public:
+    static void FUN_140c59350();
+};
 void* FUN_140938f40(void* pHolder, void* pNotify);
-void* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 void FUN_140da4fe0(void* pMgr, void* pNotify);
 
 // Posted to the global notify manager when a scene's dialogs have been opened.
@@ -686,17 +745,17 @@ void CUIService::FUN_141ad9e50(int nScene)
     int nOpen = 0;
     if (!FUN_140361ab0(&m_mapOpen, nScene, &nOpen) || nOpen != 0)
         return;
-    FUN_14016a050(&m_mapOpen, nScene, 1);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->SetAt(nScene, 1);
     if (nScene == 0x620001d) {
         FUN_141adbd60(0);
         if (FUN_1412755a0() != 0)
             return;
-        PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        PCBase* pPlayer = ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (!pPlayer)
             return;
         AddOpenId(m_listOpen, 0x4e29);
-        bool bTab2 = FUN_1410c3600(FUN_1409670e0(), 2) == 1;
-        if (!FUN_1410c3600(FUN_1409670e0(), 3))
+        bool bTab2 = ((class CubeMapInformationService*)(void*)(((class Unk_UisPlayerInfo*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c3600(2) == 1;
+        if (!((class CubeMapInformationService*)(void*)(((class Unk_UisPlayerInfo*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c3600(3))
             AddOpenId(m_listOpen, 0x4ed8);
         AddOpenId(m_listOpen, 0x4e61);
         AddOpenId(m_listOpen, 0x4e43);
@@ -710,35 +769,35 @@ void CUIService::FUN_141ad9e50(int nScene)
         }
         if (!reinterpret_cast<Unk_ConfigString*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NoticeDialogUrl)->FUN_140298f80()->IsEmpty())
             AddOpenId(m_listOpen, 0x4ee9);
-        if (static_cast<char*>(FUN_1409a8ac0(FUN_1409a8b10()))[0x14] != 0)   // flag byte at +0x14 (0x141ada11b)
+        if (static_cast<char*>(((void*)((class Unk_AeGameOption*)(void*)(FUN_1409a8b10()))->FUN_1409a8ac0()))[0x14] != 0)   // flag byte at +0x14 (0x141ada11b)
             AddOpenId(m_listOpen, 0x4e7d);
-        if (FUN_140ee0d10() != 0)
-            FUN_140b8cbe0(FUN_140ee0d10());
-        if (FUN_141527280(pPlayer))
+        if (Unk_TimerPlayer::Get() != 0)
+            ((class RoomTimerManager*)(void*)(Unk_TimerPlayer::Get()))->Show();
+        if (((class MyPC*)(void*)(pPlayer))->FUN_141527280())
             AddOpenId(m_listOpen, 0x4e45);
-        if (FUN_14125bb90(FUN_140e09150(FUN_1409a8b10())))
+        if (FUN_14125bb90((struct Unk_InterfaceState const*)(((struct Unk_UisInfo*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150()))))
             AddOpenId(m_listOpen, 0x4edf);
-        if (FUN_14125bbe0(FUN_140e09150(FUN_1409a8b10()))) {
-            if (FUN_14162ab20(FUN_1409670d0()))
+        if (FUN_14125bbe0((struct Unk_InterfaceState const*)(((struct Unk_UisInfo*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150())))) {
+            if (((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->FUN_14162ab20())
                 AddOpenId(m_listOpen, 0x4f23);
         }
-        if (FUN_1408d7e60(FUN_14041beb0(), (unsigned short)pPlayer->vfunc_78()) != 0)
+        if (((class CUserEventManager*)(void*)(((void*)TSingleton<CUserEventManager>::GetInstance())))->HasDTReward((unsigned short)pPlayer->vfunc_78()) != 0)
             AddOpenId(m_listOpen, 0x4f01);
-        if (FUN_1404795e0(FUN_1401c0d90()) != 0)
+        if (((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_1404795e0() != 0)
             AddOpenId(m_listOpen, 0x4f00);
         if (FUN_1418fd280() != 0) {
             AddOpenId(m_listOpen, 0x4f7d);
-            if (FUN_1410c3600(FUN_1409670e0(), 3))
+            if (((class CubeMapInformationService*)(void*)(((class Unk_UisPlayerInfo*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c3600(3))
                 AddOpenId(m_listOpen, 0x4f7e);
             else if (!bTab2)
                 AddOpenId(m_listOpen, 0x4f28);
         }
-        if (FUN_141bcb1a0(FUN_1403ed2d0())) {
+        if (((class WorldService*)(void*)(((class Unk_UisWorld*)WorldService::GetInstance())))->FUN_141bcb1a0()) {
             AddOpenId(m_listOpen, 0x4f7c);
             if (bTab2)
                 AddOpenId(m_listOpen, 0x4f7f);
         }
-        if (FUN_141bcb150(FUN_1403ed2d0()))
+        if (((class WorldService*)(void*)(((class Unk_UisWorld*)WorldService::GetInstance())))->FUN_141bcb150())
             AddOpenId(m_listOpen, 0x4f36);
         char tmpRef[16];
         void* pRef = FUN_14047d050(FUN_1401c0d90(), tmpRef);
@@ -747,17 +806,17 @@ void CUIService::FUN_141ad9e50(int nScene)
         if (pObj != 0)
             AddOpenId(m_listOpen, 0x4f5d);
         AddOpenId(m_listOpen, eUI_4f34);
-        FUN_140c59350();
-        if (FUN_14036d570(FUN_140166410(), 0xdd) && !bTab2)
+        UIEventWidgetDialog::FUN_140c59350();
+        if (FUN_14036d570(((void*)FUN_140166410()), 0xdd) && !bTab2)
             AddOpenId(m_listOpen, 0x4f75);
         char notifyHolder[32];
         NotifyOpenDialogByScene* pNotify = new NotifyOpenDialogByScene(0x620001d);
         void* pHolder = FUN_140938f40(notifyHolder, pNotify);
-        FUN_140da4fe0(FUN_140939a10(), pHolder);
+        FUN_140da4fe0(((void*)FUN_140939a10()), pHolder);
     } else if (nScene == 0x620001f) {
         AddOpenId(m_listOpen, eUI_4ef2);
         if (FUN_1418fd280() != 0) {
-            void* pDlg = FUN_140ef49b0(0x4f7c);
+            void* pDlg = ((void*)FUN_140ef49b0(0x4f7c));
             if (pDlg)
                 FUN_140c296e0(pDlg, true);
         }
@@ -772,7 +831,7 @@ void CUIService::FUN_141ada6f0(int nScene)
         return;
     if (nOpen != 0)
         return;
-    FUN_14016a050(&m_mapOpen2, nScene, 1);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen2))->SetAt(nScene, 1);
     if (nScene == 0x6200018) {
         m_listClose.AddTail((eUIClassID)0x4e55);
     } else if (nScene == 0x620000d) {
@@ -838,7 +897,7 @@ void CUIService::FUN_141adad20(int nScene)
     int nOpen = 0;
     if (!FUN_140361ab0(&m_mapOpen2, nScene, &nOpen) || nOpen == 0)
         return;
-    FUN_14016a050(&m_mapOpen2, nScene, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen2))->SetAt(nScene, 0);
     if (nScene == 0x6200018) {
         FUN_141add0b0((eUIClassID)0x4e55);
     } else if (nScene == 0x620000d) {
@@ -884,30 +943,30 @@ void CUIService::FUN_141adafd0(int nScene)
         reinterpret_cast<Unk_UisToggle*>(p)->vfunc_2();
     if (UILoadingProgressLobby* p = Unk_UisFind<UILoadingProgressLobby>(eUI_3ef))
         reinterpret_cast<Unk_UisToggle*>(p)->vfunc_2();
-    if (void* p = FUN_14151f890())
+    if (void* p = ((void*)FUN_14151f890()))
         static_cast<Unk_UisToggle*>(p)->vfunc_2();
     if (void* p = FUN_141742c80(0x4e36))
-        FUN_1422dbf00(p, 3, 0, 0);
-    if (void* p = FUN_140e86a50(0x4f77))
-        FUN_1422dbf00(p, 3, 0, 0);
-    if (void* p = FUN_140e98660(0x4f3b))
-        FUN_1422dbf00(p, 3, 0, 0);
-    if (void* p = FUN_141994a90(0x4e64))
-        FUN_1422dbf00(p, 3, 0, 0);
-    if (void* p = FUN_141a62100(0x4e5a))
-        FUN_1422dbf00(p, 2, 0, 0);
-    if (void* p = FUN_141930440(0x4e2f))
-        FUN_1422dbf00(p, 4, 0, 0);
-    if (void* p = FUN_14128f650(0x4ea4))
-        FUN_1422dbf00(p, 3, 0, 0);
-    if (void* p = FUN_1418fc4e0(0x4e2e))
-        FUN_1422dbf00(p, 7, 0, 0);
-    if (void* p = FUN_141a90250(0x4e57))
-        FUN_1422dbf00(p, 7, 0, 0);
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(3, 0, 0);
+    if (void* p = ((void*)FUN_140e86a50(0x4f77)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(3, 0, 0);
+    if (void* p = ((void*)FUN_140e98660(0x4f3b)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(3, 0, 0);
+    if (void* p = ((void*)FUN_141994a90(0x4e64)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(3, 0, 0);
+    if (void* p = ((void*)FUN_141a62100(0x4e5a)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(2, 0, 0);
+    if (void* p = ((void*)FUN_141930440(0x4e2f)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(4, 0, 0);
+    if (void* p = ((void*)FUN_14128f650(0x4ea4)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(3, 0, 0);
+    if (void* p = ((void*)FUN_1418fc4e0(0x4e2e)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(7, 0, 0);
+    if (void* p = ((void*)FUN_141a90250(0x4e57)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(7, 0, 0);
     if (void* p = FUN_1409614b0(0x4e30))
-        FUN_1422dbf00(p, 7, 0, 0);
-    if (void* p = FUN_1419949f0(0x4e65))
-        FUN_1422dbf00(p, 3, 0, 0);
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(7, 0, 0);
+    if (void* p = ((void*)FUN_1419949f0(0x4e65)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(3, 0, 0);
     if (nScene != 0x6200009 && nScene != 0x620000b) {
         if (Unk_UisSysText* p = FUN_141278110(0x4e41))
             reinterpret_cast<Unk_UisToggle*>(p)->vfunc_2();
@@ -922,28 +981,28 @@ void CUIService::FUN_141adb2a0(int nScene)
         reinterpret_cast<Unk_UisToggle*>(p)->vfunc_3();
     if (UILoadingProgressLobby* p = Unk_UisFind<UILoadingProgressLobby>(eUI_3ef))
         reinterpret_cast<Unk_UisToggle*>(p)->vfunc_3();
-    if (void* p = FUN_14151f890())
+    if (void* p = ((void*)FUN_14151f890()))
         static_cast<Unk_UisToggle*>(p)->vfunc_3();
     if (void* p = FUN_141742c80(0x4e36))
-        FUN_1422dc080(p);
-    if (void* p = FUN_140e86a50(0x4f77))
-        FUN_1422dc080(p);
-    if (void* p = FUN_140e98660(0x4f3b))
-        FUN_1422dc080(p);
-    if (void* p = FUN_141994a90(0x4e64))
-        FUN_1422dc080(p);
-    if (void* p = FUN_141a62100(0x4e5a))
-        FUN_1422dc080(p);
-    if (void* p = FUN_141930440(0x4e2f))
-        FUN_1422dc080(p);
-    if (void* p = FUN_14128f650(0x4ea4))
-        FUN_1422dc080(p);
-    if (void* p = FUN_1418fc4e0(0x4e2e))
-        FUN_1422dc080(p);
-    if (void* p = FUN_141a90250(0x4e57))
-        FUN_1422dc080(p);
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
+    if (void* p = ((void*)FUN_140e86a50(0x4f77)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
+    if (void* p = ((void*)FUN_140e98660(0x4f3b)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
+    if (void* p = ((void*)FUN_141994a90(0x4e64)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
+    if (void* p = ((void*)FUN_141a62100(0x4e5a)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
+    if (void* p = ((void*)FUN_141930440(0x4e2f)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
+    if (void* p = ((void*)FUN_14128f650(0x4ea4)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
+    if (void* p = ((void*)FUN_1418fc4e0(0x4e2e)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
+    if (void* p = ((void*)FUN_141a90250(0x4e57)))
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
     if (void* p = FUN_1409614b0(0x4e30))
-        FUN_1422dc080(p);
+        ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
     if (Unk_UisSysText* p = FUN_141278110(0x4e41))
         reinterpret_cast<Unk_UisToggle*>(p)->vfunc_3();
 }
@@ -988,11 +1047,21 @@ int CUIService::FUN_141adcd40()
 }
 
 // ---- player toggles ----
-bool FUN_14036e510(void* p);
-bool FUN_1410af770(void* p);
-void* FUN_1416625b0(PCBase* p);
-void* FUN_141530290(PCBase* p);
-void FUN_1410aa380(void* p, bool b);
+class Unk_C2UiMgr   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_1410af770();
+};
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    class CConstructionGuideObject* FUN_1416625b0();
+};
+class Unk_PCCubeCraft   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1410aa380(bool);
+};
 class Unk_UisSlot23
 {
 public:
@@ -1008,19 +1077,19 @@ public:
 // @0x141adbbb0
 void CUIService::FUN_141adbbb0()
 {
-    if (FUN_140b632f0() != 0)
+    if (((void*)FUN_140b632f0()) != 0)
     {
-        FUN_1422d49f0(FUN_140b632f0());
-        if (FUN_14036e510(FUN_140166410()))
+        ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d49f0();
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e510())
         {
-            bool bOn = FUN_1410af770(FUN_140b632f0());
-            PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+            bool bOn = ((class Unk_C2UiMgr*)(void*)(((void*)FUN_140b632f0())))->FUN_1410af770();
+            PCBase* pPlayer = ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
             if (pPlayer)
             {
-                if (Unk_UisSlot23* p = static_cast<Unk_UisSlot23*>(FUN_1416625b0(pPlayer)))
+                if (Unk_UisSlot23* p = static_cast<Unk_UisSlot23*>(((void*)((class PC*)(class PCBase*)(pPlayer))->FUN_1416625b0())))
                     p->vfunc_23(bOn);
-                if (void* q = FUN_141530290(pPlayer))
-                    FUN_1410aa380(q, bOn == 0);
+                if (void* q = ((void*)((class MyPC*)(class PCBase*)(pPlayer))->FUN_141530290()))
+                    ((class Unk_PCCubeCraft*)(void*)(q))->FUN_1410aa380(bOn == 0);
             }
         }
     }
@@ -1030,6 +1099,10 @@ void CUIService::FUN_141adbbb0()
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 #include "ms2/commonfiles/commonutil.h"
+#include "ms2/gfxui/uiswfentity.h"
+#include "ms2/commonfiles/crashmanager.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/crashmanagercli.h"
 
 // @0x141add1f0
 void CUIService::FUN_141add1f0()
@@ -1080,12 +1153,12 @@ void CUIService::FUN_141ada610(int nScene)
         return;
     if (nOpen == 0)
         return;
-    FUN_14016a050(&m_mapOpen, nScene, 0);
+    ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->SetAt(nScene, 0);
     if (nScene == 0x6200018) {
         FUN_141adc050();
     } else if (nScene == 0x620001d) {
         FUN_141adc050();
-        FUN_140d5a290(FUN_140939a00());
+        ((class CMeratMarketMan*)(void*)(((void*)FUN_140939a00())))->FUN_140d5a290();
     } else if (nScene == 0x620001f) {
         FUN_141adc5d0(eUI_4ef2);
         FUN_140d86260()->vfunc_44();
@@ -1148,8 +1221,8 @@ MS2_REPLACE_METHOD(0x141adbca0, CUIService, FUN_141adbca0, 35, 0x3F0A8ADB);
 // @0x141adbcd0
 void CUIService::FUN_141adbcd0(char b)
 {
-    if (FUN_140b632f0() != 0)
-        FUN_1422d4a30(FUN_140b632f0(), b);
+    if (((void*)FUN_140b632f0()) != 0)
+        FUN_1422d4a30(((void*)FUN_140b632f0()), b);
 }
 MS2_REPLACE_METHOD(0x141adbcd0, CUIService, FUN_141adbcd0, 46, 0x858157CF);
 
@@ -1165,7 +1238,7 @@ MS2_REPLACE_METHOD(0x141adbf00, CUIService, FUN_141adbf00, 37, 0xCC1A7CE0);
 // @0x141adbf30
 void CUIService::FUN_141adbf30()
 {
-    void* p = FUN_14138fd50(0x4e7e);
+    void* p = ((void*)FUN_14138fd50(0x4e7e));
     if (p != 0)
         FUN_14190f180(p);
 }
@@ -1218,9 +1291,9 @@ MS2_REPLACE_METHOD(0x141adcb40, CUIService, FUN_141adcb40, 17, 0x10229582);
 // @0x141adb810
 void CUIService::FUN_141adb810()
 {
-    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
+    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
     {
-        Unk_UisScene* pScene = FUN_1422b9e50(FUN_1408e57f0());
+        Unk_UisScene* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9e50());
         if (pScene != 0)
         {
             if (pScene->vfunc_62() == 0)
@@ -1235,7 +1308,7 @@ MS2_REPLACE_METHOD(0x141adb810, CUIService, FUN_141adb810, 105, 0x5CD42794);
 // @0x141adb880
 void CUIService::FUN_141adb880()
 {
-    Unk_UisScene* pScene = FUN_1422b9e50(FUN_1408e57f0());
+    Unk_UisScene* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9e50());
     if (pScene != 0)
     {
         if (pScene->vfunc_63() == 0)
@@ -1286,7 +1359,7 @@ void CUIService::FUN_141adba40()
         if (pText != 0)
         {
             CStringW str = L"";
-            FUN_1409670e0()->FUN_1410c3330(str);
+            ((class Unk_UisPlayerInfo*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3330(str);
             pText->FUN_141b15ec0(str, 7, 0);
         }
     }
@@ -1297,7 +1370,7 @@ MS2_REPLACE_METHOD(0x141adba40, CUIService, FUN_141adba40, 174, 0x72FCEE36);
 // @0x141adbb00
 int CUIService::FUN_141adbb00()
 {
-    if (FUN_141b78650(FUN_140cc18a0()) != 0)
+    if (((class CWebBrowserService*)(class Unk_UisBrowserMgr*)(reinterpret_cast<Unk_UisBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())))->FUN_141b78650() != 0)
         return 1;
     return FUN_14025e7a0()->FUN_1422af2d0(2);
 }
@@ -1389,7 +1462,7 @@ MS2_REPLACE_METHOD(0x141add880, CUIService, FUN_141add880, 180, 0x01ADF378);
 bool CUIService::FUN_141add940(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0) {
-        if (FUN_14036d570(FUN_140166410(), 0xc2) == 0) {
+        if (FUN_14036d570(((void*)FUN_140166410()), 0xc2) == 0) {
             FUN_140d73cd0();
             return false;
         }
@@ -1405,7 +1478,7 @@ bool CUIService::FUN_141add9b0(int nResult, const CMsgBoxData&)
     if (nResult != 0) {
         return true;
     }
-    if (!FUN_14036d570(FUN_140166410(), 0xc2)) {
+    if (!FUN_14036d570(((void*)FUN_140166410()), 0xc2)) {
         FUN_140d73cd0();
         return false;
     }
@@ -1417,9 +1490,9 @@ MS2_REPLACE_METHOD(0x141add9b0, CUIService, FUN_141add9b0, 99, 0x19D19D27);
 // @0x141aec350
 int CUIService::FUN_141aec350()
 {
-    if (FUN_1422b9ea0(FUN_1408e57f0()) != 0)
+    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9ea0() != 0)
         return 0;
-    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bd30a0();
     if (!spField)
         return 0;
     return spField->m_nFieldName;
@@ -1612,7 +1685,7 @@ MS2_REPLACE_METHOD(0x141adc9e0, CUIService, FUN_141adc9e0, 123, 0xB9DBFA3E);
 // @0x141adca70
 void CUIService::FUN_141adca70()
 {
-    PCBase* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPC = ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     Unk_UisMovie* pMovie = FUN_1422bb8b0(2);
@@ -1632,7 +1705,7 @@ void CUIService::FUN_141adcb60(int n)
     if (m_n128 == n)
         return;
     m_n128 = n;
-    FUN_1403ed2b0()->FUN_141adca70();
+    TSingleton<CUIService>::GetInstance()->FUN_141adca70();
 }
 MS2_REPLACE_METHOD(0x141adcb60, CUIService, FUN_141adcb60, 65, 0x9BF97C8B);
 
@@ -1750,7 +1823,7 @@ void CUIService::FUN_141adb4c0(int bOn)
     FUN_141add1b0(0xe, b);
     FUN_141add1b0(3, b);
     FUN_141add1b0(0xf, b);
-    if (FUN_14036d570(FUN_140166410(), 0xbd) != 0)
+    if (FUN_14036d570(((void*)FUN_140166410()), 0xbd) != 0)
         FUN_141add1b0(0x10, b);
     FUN_141add1b0(8, b);
     FUN_141add1b0(0x28, b);
@@ -1792,17 +1865,14 @@ NiRenderer* FUN_140994450();
 void* FUN_14098d8d0(void* pTable, void* p);
 void FUN_1411d7c70(void* p, bool (*pfn)(bool, void*), void* pSelf);
 void FUN_1411d7c10(void* p, bool (*pfn)(void*), void* pSelf);
-class Unk_UisLog
+class Unk_UisLog : public CCrashManager
 {
 public:
     void FUN_1401ce2f0(const char* szFormat, const char* szArg);
     void FUN_1401ce2f0(const char* szFormat, int n);
     void FUN_1401ce2f0(const char* szFormat, unsigned __int64 n);
     void FUN_1401ce2f0(const char* szFormat, const char* szName, int a, int b, int c);
-    void FUN_1401ce2b0(const char* szText);
-    void FUN_1401ce270(const CString& strText);
 };   // debug log (printf-style)
-Unk_UisLog* FUN_140a44830();
 void FUN_1401ce3d0(Unk_UisLog* p, TFunctor<void, EmptyParam> fn);   // the exe callee destroys fn
 void* FUN_141aee920();
 void FUN_140cf10d0(void* p);
@@ -1848,7 +1918,7 @@ efd::AsyncResult CUIService::OnInit()
     void* pEvt = FUN_14098d8d0(&DAT_143d6eb58, FUN_140994450());
     FUN_1411d7c70(pEvt, &CUIService::FUN_141ade1f0, this);
     FUN_1411d7c10(pEvt, &CUIService::FUN_141ade2d0, this);
-    FUN_1401ce3d0(FUN_140a44830(), TFunctor<void, EmptyParam>(this, &CUIService::FUN_141aece70));
+    FUN_1401ce3d0(reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance()), TFunctor<void, EmptyParam>(this, &CUIService::FUN_141aece70));
     FUN_140cf10d0(FUN_141aee920());
     return efd::AsyncResult_Complete;
 }
@@ -2295,7 +2365,7 @@ class UIUnlimitedEnchantDialog : public UIDialog { public: UIUnlimitedEnchantDia
 // @0x141adf580
 void CUIService::FUN_141adf580()
 {
-    FUN_1422d4b40(FUN_140b632f0(), FUN_141adda20);
+    FUN_1422d4b40(((void*)FUN_140b632f0()), FUN_141adda20);
     FUN_1422aee20(FUN_14025e7a0(), FUN_141addb30);
     FUN_1422aeea0(FUN_14025e7a0(), FUN_141ade430);
     FUN_141aebfa0(MS2Ptr<UIObject>(new UIGuideEvent));
@@ -2663,7 +2733,7 @@ MS2_REPLACE_METHOD(0x141aec8c0, CUIService, FUN_141aec8c0, 35, 0x66E851B8);
 // @0x141aecf60
 int CUIService::FUN_141aecf60(MS2Ptr<UIDialog> spDlg)
 {
-    FUN_140a44830()->FUN_1401ce2f0("*Lost \xbf\xad\xb7\xc1\xc0\xd6\xb4\xc2 dlg [%s]", (const char*)spDlg->GetTypeName());
+    reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("*Lost \xbf\xad\xb7\xc1\xc0\xd6\xb4\xc2 dlg [%s]", (const char*)spDlg->GetTypeName());
     return 0;
 }
 MS2_REPLACE(0x141aecf60, CUIService::FUN_141aecf60, 152, 0x2A7C9D69);
@@ -2671,7 +2741,7 @@ MS2_REPLACE(0x141aecf60, CUIService::FUN_141aecf60, 152, 0x2A7C9D69);
 // @0x141aed000
 int CUIService::FUN_141aed000(MS2Ptr<UIDialog> spDlg)
 {
-    FUN_140a44830()->FUN_1401ce2f0("*Reset \xbf\xad\xb7\xc1\xc0\xd6\xb4\xc2 dlg [%s]", (const char*)spDlg->GetTypeName());
+    reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("*Reset \xbf\xad\xb7\xc1\xc0\xd6\xb4\xc2 dlg [%s]", (const char*)spDlg->GetTypeName());
     return 0;
 }
 MS2_REPLACE(0x141aed000, CUIService::FUN_141aed000, 152, 0x11E968B0);
@@ -2694,8 +2764,8 @@ long long FUN_141ade340(void*, int nMsg, void* wParam, void* lParam)
         break;
     }
     }
-    if (FUN_1403ed2b0())
-        return FUN_1403ed2b0()->FUN_141adf0f0(nMsg, wParam, lParam);
+    if (TSingleton<CUIService>::GetInstance())
+        return TSingleton<CUIService>::GetInstance()->FUN_141adf0f0(nMsg, wParam, lParam);
     else
         return 0;
 }
@@ -2721,14 +2791,14 @@ MS2_REPLACE_METHOD(0x141adf0f0, CUIService, FUN_141adf0f0, 336, 0xCB80458D);
 // @0x141ade400
 void CUIService::FUN_141ade400()
 {
-    if (FUN_1403ed2b0() != 0)
-        FUN_1403ed2b0()->FUN_141ad9350();
+    if (TSingleton<CUIService>::GetInstance() != 0)
+        TSingleton<CUIService>::GetInstance()->FUN_141ad9350();
 }
 MS2_REPLACE(0x141ade400, CUIService::FUN_141ade400, 32, 0x600272B3);
 
 // ---- movie-manager callbacks ----
 class Unk_UisHousingSvc;
-Unk_UisHousingSvc* FUN_1401cd040(char* pCell);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 // The efd::SmartPointer the exe wraps the housing service in (its glue COMDATs live in another unit).
 class Unk_UisHousingSvcPtr
 {
@@ -2741,37 +2811,43 @@ private:
     Unk_UisHousingSvc* m_p;
 };
 extern char DAT_143b059e8;
-void FUN_1410bc320(Unk_UisHousingSvc* p);
-void* FUN_140a58540();
-bool FUN_140d8ac50(void* p, int n, int m);
-bool FUN_140d8ad60(void* p, int n);
+class MS2InputService* FUN_140a58540();   // C3: was FUN_140a58540
+class MS2InputService   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_140d8ac50(int, int);
+    bool FUN_140d8ad60(int);
+};
 void* FUN_14025e7c0();
-bool FUN_14116d840(void* p);
-bool FUN_1410af770(void* p);
+class CInputKeyHandler   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14116d7a0(unsigned int);
+    bool FUN_14116d840();
+    bool FUN_14116d950(int, bool, int);
+    bool FUN_14116d9c0(int, bool, int);
+};
 unsigned long long FUN_1418fcb70();
-void FUN_1422d4b70(void* p, bool b);
-void FUN_1422d4d10(void* p);
-void FUN_1422d2250(void* p);
 float FUN_141276460();
 
 // @0x141adda20
 unsigned long long FUN_141adda20()
 {
-    int nScene = FUN_1422b9e00(FUN_1408e57f0());
+    int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId();
     if (FUN_14025e7a0()->FUN_1422af090() == 0
-        && FUN_140d8ac50(FUN_140a58540(), 0x1d, 0)
-        && FUN_140d8ac50(FUN_140a58540(), 0x38, 0)
-        && FUN_140d8ad60(FUN_140a58540(), 0x13))
+        && ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8ac50(0x1d, 0)
+        && ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8ac50(0x38, 0)
+        && ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8ad60(0x13))
     {
-        FUN_1403ed2b0()->FUN_141aecc30();
+        TSingleton<CUIService>::GetInstance()->FUN_141aecc30();
         return 1;
     }
-    if (FUN_14116d840(FUN_14025e7c0()) && FUN_1410af770(FUN_140b632f0()) && nScene == 0x620001d)
+    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d840() && ((class Unk_C2UiMgr*)(void*)(((void*)FUN_140b632f0())))->FUN_1410af770() && nScene == 0x620001d)
     {
-        FUN_1422d4a30(FUN_140b632f0(), 0);
+        FUN_1422d4a30(((void*)FUN_140b632f0()), 0);
         return 1;
     }
-    if (nScene == 0x620001d && FUN_14116d840(FUN_14025e7c0()))
+    if (nScene == 0x620001d && ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d840())
         return FUN_1418fcb70();
     return 0;
 }
@@ -2782,23 +2858,23 @@ void CUIService::FUN_141aecc30()
     if (FUN_14025e7a0()->FUN_1422b27c0() != 0)
         return;
     FUN_14025e7a0()->FUN_1422afb00();
-    if (CUIService* pService = FUN_1403ed2b0())
+    if (CUIService* pService = TSingleton<CUIService>::GetInstance())
     {
         pService->FUN_141aecd70();
-        int nScene = FUN_1422b9e00(FUN_1408e57f0());
+        int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId();
         pService->FUN_141adad20(nScene);
         pService->FUN_141ada610(nScene);
         pService->FUN_141adb2a0(nScene);
         pService->FUN_141ad9b30();
     }
-    if (Unk_UisHousingSvcPtr spHousing = FUN_1401cd040(&DAT_143b059e8))
-        FUN_1410bc320(spHousing.FUN_1401cd1a0());
-    FUN_1403ed2d0()->FUN_141bdb7a0();
-    FUN_1422d4b70(FUN_140b632f0(), 1);
-    FUN_1422d4d10(FUN_140b632f0());
-    FUN_1422d2250(FUN_140b632f0());
+    if (Unk_UisHousingSvcPtr spHousing = ((class Unk_UisHousingSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))))
+        ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(spHousing.FUN_1401cd1a0()))->FUN_1410bc320();
+    ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bdb7a0();
+    ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d4b70(1);
+    ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d4d10();
+    ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d2250();
     FUN_14025e7a0()->FUN_1422b24f0();
-    FUN_1403ed2b0()->FUN_141ad9c10();
+    TSingleton<CUIService>::GetInstance()->FUN_141ad9c10();
 }
 
 // @0x141ade1f0
@@ -2809,7 +2885,7 @@ bool CUIService::FUN_141ade1f0(bool bFlag, void* pUnused)
     }
     else
     {
-        FUN_1403ed2b0()->FUN_141adcbb0(&CUIService::FUN_141aed000);
+        TSingleton<CUIService>::GetInstance()->FUN_141adcbb0(&CUIService::FUN_141aed000);
         NiRenderTargetGroup* pGroup = FUN_140994450()->GetDefaultRenderTargetGroup();
         DAT_143af62d4 = pGroup->GetWidth(0);
         DAT_143af62d8 = pGroup->GetHeight(0);
@@ -2821,29 +2897,29 @@ bool CUIService::FUN_141ade1f0(bool bFlag, void* pUnused)
 // @0x141ade300
 void CUIService::FUN_141ade300(CString strText)
 {
-    FUN_140a44830()->FUN_1401ce270(strText);
+    reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
 }
 
 // ---- per-tick and mode helpers ----
-bool FUN_14116d7a0(void* p, int n);
-bool FUN_14116d9c0(void* p, int a, bool b, int c);
-bool FUN_14116d950(void* p, int a, bool b, int c);
-int FUN_140869420();
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void* FUN_140aadf80();
-void FUN_141b90e30(void* p, float* pX, float* pY);
+class CWindowService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetCursorClientPos(float*, float*);
+};
 int FUN_141277f40();
 int FUN_141277f50();
 void FUN_141e2f970(NiDebugVisualizationClick* p);
 void FUN_141e311f0(NiDebugVisualizationClick* p, bool b);
 void FUN_141e310e0(NiDebugVisualizationClick* p, void* pArg);
 void* FUN_1413f9950();
-void* FUN_1422b9e80(Unk_UisSceneMgr* p);
-int FUN_1422db750(void* p);
-struct Unk_UisSceneView { CString FUN_1422db790(); };   // scene name (member: this=rcx, hidden return=rdx)
-void FUN_1422dbf80(void* p, const CString& str, int n, int a, int b);
-void FUN_1410bc1c0(Unk_UisHousingSvc* p);
-unsigned __int64 FUN_14151e8c0(void* p);
-int FUN_1422dc430(UIDialog* p);
+   // scene name (member: this=rcx, hidden return=rdx)
+class Unk_VtmObjectTable   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned __int64 FUN_14151e8c0();
+};
 
 // The dialog's state fields are protected; the unit reads them through these two inline accessors.
 // MS2-PIN: ?GetC0@Unk_UisDlgPeek@@QEAAHXZ 0x141aef300
@@ -2857,14 +2933,14 @@ struct Unk_UisDlgPeek : public UIDialog
 // @0x141aec690
 void CUIService::FUN_141aec690()
 {
-    if (FUN_14116d7a0(FUN_14025e7c0(), 0xf) != 0)
+    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d7a0(0xf) != 0)
         return;
-    if (FUN_14116d9c0(FUN_14025e7c0(), 0x19, 1, 0) && FUN_14116d950(FUN_14025e7c0(), 0x1d, 1, 0))
+    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d9c0(0x19, 1, 0) && ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d950(0x1d, 1, 0))
     {
         ToggleDialog((eUIClassID)0x4e7d);
         return;
     }
-    if (FUN_14116d9c0(FUN_14025e7c0(), 0x3b, 1, 0) && FUN_14116d950(FUN_14025e7c0(), 0x1d, 1, 0))
+    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d9c0(0x3b, 1, 0) && ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d950(0x1d, 1, 0))
         ToggleDialog((eUIClassID)0x4ea9);
 }
 
@@ -2873,12 +2949,12 @@ void CUIService::FUN_141aec760(float fDelta)
 {
     if (Unk_UisDlg4e52* pDlg = FUN_14136f290(0x4e52))
         pDlg->FUN_141908720(fDelta);
-    int nNow = FUN_140869420();
+    int nNow = GetTickCountMs2();
     if ((unsigned)(nNow - m_n130) > 0x32)
     {
         m_n130 = nNow;
         float x, y;
-        FUN_141b90e30(FUN_140aadf80(), &x, &y);
+        ((class CWindowService*)(void*)(FUN_140aadf80()))->GetCursorClientPos(&x, &y);
         if (Unk_UisMovie* pMovie = FUN_1422bb8b0(2))
         {
             int bHit = pMovie->vfunc_37(x, y, 3, 0);
@@ -2912,26 +2988,26 @@ void CUIService::FUN_141aec9c0()
 {
     if (FUN_14025e7a0()->FUN_1422b27c0() != 0 && FUN_14025e7a0()->FUN_1422b2760() != 0)
     {
-        CUIService* pService = FUN_1403ed2b0();
+        CUIService* pService = TSingleton<CUIService>::GetInstance();
         if (pService == 0)
             return;
-        FUN_1422d4b70(FUN_140b632f0(), 0);
+        ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d4b70(0);
         pService->FUN_141ad9b60();
-        if (pService->FUN_141adbe00(FUN_140e09150(FUN_1409a8b10())->m_fValue, 0) != 0)
-            static_cast<Unk_UisSlot6*>(FUN_140b632f0())->vfunc_6();
-        if (void* pScene = FUN_1422b9e80(FUN_1408e57f0()))
-            FUN_1422dbf80(pScene, static_cast<Unk_UisSceneView*>(pScene)->FUN_1422db790(), FUN_1422db750(pScene), 0, 0);
-        if (void* pScene = FUN_1422b9e50(FUN_1408e57f0()))
-            FUN_1422dbf80(pScene, static_cast<Unk_UisSceneView*>(pScene)->FUN_1422db790(), FUN_1422db750(pScene), 0, 0);
-        int nScene = FUN_1422b9e00(FUN_1408e57f0());
+        if (pService->FUN_141adbe00(((struct Unk_UisInfo*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150())->m_fValue, 0) != 0)
+            static_cast<Unk_UisSlot6*>(((void*)FUN_140b632f0()))->vfunc_6();
+        if (void* pScene = ((void*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->GetScene()))
+            ((class UISwfEntity*)(void*)(pScene))->FUN_1422dbf80(static_cast<UISwfEntity*>(pScene)->FUN_1422db790(), ((class UISwfEntity*)(void*)(pScene))->FUN_1422db750(), 0, 0);
+        if (void* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9e50()))
+            ((class UISwfEntity*)(void*)(pScene))->FUN_1422dbf80(static_cast<UISwfEntity*>(pScene)->FUN_1422db790(), ((class UISwfEntity*)(void*)(pScene))->FUN_1422db750(), 0, 0);
+        int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId();
         pService->FUN_141ada6f0(nScene);
         pService->FUN_141ad9e50(nScene);
         pService->FUN_141adafd0(nScene);
         pService->FUN_141ad9650();
-        Unk_UisHousingSvcPtr spHousing = FUN_1401cd040(&DAT_143b059e8);
+        Unk_UisHousingSvcPtr spHousing = ((class Unk_UisHousingSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
         if (spHousing)
-            FUN_1410bc1c0(spHousing.FUN_1401cd1a0());
-        FUN_1403ed2d0()->FUN_141bdb6a0();
+            ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(spHousing.FUN_1401cd1a0()))->FUN_1410bc1c0();
+        ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bdb6a0();
         FUN_14025e7a0()->FUN_1422b27e0(0);
     }
 }
@@ -2954,13 +3030,13 @@ void CUIService::FUN_141aecd70()
 // @0x141aece70
 void CUIService::FUN_141aece70()
 {
-    FUN_140a44830()->FUN_1401ce2b0("\n--- CUIService Log ---");
+    reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- CUIService Log ---");
     if (Unk_UisMovie* pMovie = FUN_1422bb8b0(2))
     {
         if (pMovie->m_slot.FUN_14151e150() ? true : false)
         {
             if (Unk_UisRootsOwner* pOwner = pMovie->m_slot.FUN_14151e170()->vfunc_49())
-                FUN_140a44830()->FUN_1401ce2f0("MaxCollectionRoots: %d", FUN_14151e8c0(pOwner->m_sub.FUN_14151e180()));
+                reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("MaxCollectionRoots: %d", ((class Unk_VtmObjectTable*)(void*)(pOwner->m_sub.FUN_14151e180()))->FUN_14151e8c0());
         }
     }
     FUN_141adcbb0(&CUIService::FUN_141aed0a0);
@@ -2969,14 +3045,14 @@ void CUIService::FUN_141aece70()
 // @0x141aed0a0
 int CUIService::FUN_141aed0a0(MS2Ptr<UIDialog> spDlg)
 {
-    FUN_140a44830()->FUN_1401ce2f0("*Dialog [%s] closed %d AniState %d LoadComplete %d", (const char*)spDlg->GetTypeName(), static_cast<Unk_UisDlgPeek*>(spDlg.get())->Get68(), static_cast<Unk_UisDlgPeek*>(spDlg.get())->GetC0(), FUN_1422dc430(spDlg.get()));
+    reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("*Dialog [%s] closed %d AniState %d LoadComplete %d", (const char*)spDlg->GetTypeName(), static_cast<Unk_UisDlgPeek*>(spDlg.get())->Get68(), static_cast<Unk_UisDlgPeek*>(spDlg.get())->GetC0(), ((class UISwfEntity*)(class UIDialog*)(spDlg.get()))->FUN_1422dc430());
     return 0;
 }
 
 // @0x141aebed0
 void CUIService::FUN_141aebed0()
 {
-    FUN_1422d4b40(FUN_140b632f0(), FUN_141adda20);
+    FUN_1422d4b40(((void*)FUN_140b632f0()), FUN_141adda20);
     FUN_1422aee20(FUN_14025e7a0(), FUN_141addb30);
     FUN_1422aeea0(FUN_14025e7a0(), FUN_141ade430);
     FUN_141aec080(MS2Ptr<UIDialog>(new UICameraDialog));
@@ -2985,7 +3061,7 @@ void CUIService::FUN_141aebed0()
 // @0x141ade2d0
 bool CUIService::FUN_141ade2d0(void* pContext)
 {
-    FUN_1403ed2b0()->FUN_141adcbb0(&CUIService::FUN_141aecf60);
+    TSingleton<CUIService>::GetInstance()->FUN_141adcbb0(&CUIService::FUN_141aecf60);
     return true;
 }
 MS2_REPLACE(0x141ade2d0, CUIService::FUN_141ade2d0, 36, 0xCAD73910);
@@ -3032,18 +3108,18 @@ MS2_REPLACE(0x141af1a90, FUN_141af1a90, 28, 0x5C733F66);
 struct Unk_UisSingleton { virtual ~Unk_UisSingleton(); };          // MS2: slot 0 is the deleting destructor
 extern Unk_UisSingleton* DAT_143abe318;                           // game menu table instance
 struct Unk_UisMenuTable { Unk_UisMenuTable(); char m_buf[0xb8]; };   // game menu table (ctor 0x140cf0fd0)
-void* FUN_140c1d2f0();                                            // game menu table GetInstance
+class Unk_GpDb* FUN_140c1d2f0();   // C3: was FUN_140c1d2f0
 
 // @0x141aee920
 void* FUN_141aee920()
 {
-    return DAT_143abe318 ? FUN_140c1d2f0() : new Unk_UisMenuTable;
+    return DAT_143abe318 ? ((void*)FUN_140c1d2f0()) : new Unk_UisMenuTable;
 }
 
 // @0x141aee9a0
 void* FUN_141aee9a0()
 {
-    return TSingleton<RoomTimerManager>::s_instance ? FUN_140ee0d10() : new RoomTimerManager;
+    return TSingleton<RoomTimerManager>::s_instance ? Unk_TimerPlayer::Get() : new RoomTimerManager;
 }
 
 // @0x141aeec30
@@ -3051,7 +3127,7 @@ void FUN_141aeec30()
 {
     if (DAT_143abe318)
     {
-        delete static_cast<Unk_UisSingleton*>(FUN_140c1d2f0());
+        delete static_cast<Unk_UisSingleton*>(((void*)FUN_140c1d2f0()));
         DAT_143abe318 = 0;
     }
 }
@@ -3061,7 +3137,7 @@ void FUN_141aeec90()
 {
     if (TSingleton<RoomTimerManager>::s_instance)
     {
-        delete static_cast<Unk_UisSingleton*>(FUN_140ee0d10());
+        delete static_cast<Unk_UisSingleton*>(Unk_TimerPlayer::Get());
         TSingleton<RoomTimerManager>::s_instance = 0;
     }
 }
@@ -3070,11 +3146,8 @@ void FUN_141aeec90()
 struct Unk_UisRenderer { virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual NiRenderTargetGroup* vfunc_4(); };   // MS2: slot 4
 extern char DAT_143afaa18;
 void* FUN_141ff5ca0(void* pScene);
-Unk_UisRenderer* FUN_1409a8880(void* pTable, void* pKey);
-void FUN_140c8f950(NiDefaultClickRenderStep* pStep, const NiFixedString& kName);
 NiDebugVisualizationClick* FUN_141e2ede0(void* pMem, unsigned char uiMask);
 void FUN_141476010(NiDebugVisualizationClick* pClick, int n);
-void FUN_1414756e0(NiDefaultClickRenderStep* pStep, NiRenderClick* pClick);
 
 // @0x141aee8d0
 void FUN_141aee8d0(NiRenderFrame* pFrame, NiRenderStep* pStep)
@@ -3088,7 +3161,7 @@ void FUN_141aee8d0(NiRenderFrame* pFrame, NiRenderStep* pStep)
 void CUIService::FUN_141adf250()
 {
     void* pScene = FUN_140af7da0(m_pWorldSvc30);
-    NiRenderTargetGroup* pTarget = FUN_1409a8880(&DAT_143afaa18, FUN_141ff5ca0(pScene))->vfunc_4();
+    NiRenderTargetGroup* pTarget = ((struct Unk_UisRenderer*)NiRenderStep::DynamicCast((class NiRTTI const*)(&DAT_143afaa18), (class NiRenderStep const*)(FUN_141ff5ca0(pScene))))->vfunc_4();
     DAT_143af62d4 = pTarget->GetWidth(0);
     DAT_143af62d8 = pTarget->GetHeight(0);
     NiRenderFrame* pFrame = static_cast<NiRenderFrame*>(FUN_1413fc250(pScene));
@@ -3099,7 +3172,7 @@ void CUIService::FUN_141adf250()
     FUN_1416af350(&m_x38, pStep);
     {
         NiFixedString kName("UI Render Step");
-        FUN_140c8f950(static_cast<NiDefaultClickRenderStep*>(FUN_1416af950(&m_x38)), kName);
+        ((class NiRenderStep*)(class NiDefaultClickRenderStep*)(static_cast<NiDefaultClickRenderStep*>(FUN_1416af950(&m_x38))))->SetName(kName);
     }
     FUN_141aee8d0(pFrame, static_cast<NiRenderStep*>(FUN_1416af8c0(&m_x38)));
 
@@ -3114,7 +3187,7 @@ void CUIService::FUN_141adf250()
     FUN_141476010(m_spDebugClick, 0);
     m_spDebugClick->ProcessScene();
     if (FUN_1416af8c0(&m_x38) != 0)
-        FUN_1414756e0(static_cast<NiDefaultClickRenderStep*>(FUN_1416af950(&m_x38)), m_spDebugClick);
+        ((class NiDefaultClickRenderStep*)(class NiDefaultClickRenderStep*)(static_cast<NiDefaultClickRenderStep*>(FUN_1416af950(&m_x38))))->AppendRenderClick(m_spDebugClick);
 }
 
 // ---- AS callbacks registered on the movie manager's root object ----
@@ -3122,7 +3195,7 @@ typedef Scaleform::GFx::FunctionHandler::Params Unk_UisAsParams;
 int FUN_1418dd0c0();
 int FUN_1418dd110();
 int FUN_1418dd0d0();
-struct Unk_UisFeatureView { CStringW FUN_14036da50(int n); };   // feature name (member: this=rcx, hidden return=rdx)
+   // feature name (member: this=rcx, hidden return=rdx)
 CStringW FUN_14061ad70(const CStringW& str, const wchar_t* sz);
 CStringW FUN_140e70010(CStringW str);
 CStringW FUN_14083ccf0(const CStringW& str);
@@ -3182,9 +3255,9 @@ void FUN_141ade430(void* p, int nMovieId)
     for (int i = 1; i < 0x118; ++i)
     {
         int nFeature = i;
-        if (!FUN_14036d570(FUN_140166410(), nFeature))
+        if (!FUN_14036d570(((void*)FUN_140166410()), nFeature))
             continue;
-        strFeatures += FUN_14061ad70(static_cast<Unk_UisFeatureView*>(FUN_140166410())->FUN_14036da50(nFeature), L",");
+        strFeatures += FUN_14061ad70(static_cast<CFeatureManager*>(((void*)FUN_140166410()))->FUN_14036da50(nFeature), L",");
     }
     static_cast<ASObj*>(p)->FUN_1407cbb20("m_currentFeatureByString", CStringW(strFeatures));
     static_cast<ASObj*>(p)->FUN_1409c0d20("m_bottomMarginOfStage", FUN_1418dd0c0() + FUN_1418dd110());
@@ -3210,7 +3283,7 @@ template void format_arg<wchar_t, eUIClassID>(BasicFormatter<wchar_t>& formatter
 extern __int64 DAT_143ab2828;
 struct Unk_UisFindFiles {};
 void FUN_140399100(CString strExt, CString strDir, ATL::CAtlArray<CString>& arrOut, CString strFilter, bool bRecursive);
-Unk_UisFindFiles* FUN_140166420();
+class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 CString FUN_140188f50(const char* szPath, int n);
 
 // @0x141aec3e0
@@ -3220,7 +3293,7 @@ void CUIService::FUN_141aec3e0()
     CString strDir;
     strDir.Format("./Config/%I64u", DAT_143ab2828);
     ATL::CAtlArray<CString> arrFiles;
-    FUN_140166420();
+    ((struct Unk_UisFindFiles*)GetFileSystem());
     FUN_140399100(CString(".xml"), CString(strDir), arrFiles, CString(""), false);
     for (size_t i = 0; i < arrFiles.GetCount(); ++i)
     {
@@ -3237,15 +3310,11 @@ void CUIService::FUN_141aec3e0()
 
 // ---- AS callback: localized text with fmt arguments ----
 int FUN_1407cccd0(const Scaleform::GFx::Value* pValue);                      // Value type
-unsigned FUN_1409c17e0(const Scaleform::GFx::Value* pValue);
-double FUN_140f17ed0(const Scaleform::GFx::Value* pValue);
 CStringW FUN_140719630(int n);
 CStringW FUN_1407196b0(unsigned n);
 CStringW FUN_1407197a0(float f);
 CStringW FUN_141277dd0(const Scaleform::GFx::Value* pValue);
 Scaleform::GFx::Value FUN_1412dd680(const wchar_t* sz);
-int FUN_1409c1750(const Scaleform::GFx::Value& v);
-void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);
 
 // @0x141addb30
 // MS2-FUNCTIONAL: the fmt argument storage is a std::vector here (the exe uses an out-of-line buffer class)
@@ -3290,11 +3359,11 @@ void FUN_141addb30(long long n)
             CStringW strArg;
             int nType = FUN_1407cccd0(&kArg);
             if (nType == 3)
-                strArg = FUN_140719630(FUN_1409c1750(kArg));
+                strArg = FUN_140719630(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(kArg))->GetInt());
             else if (nType == 4)
-                strArg = FUN_1407196b0(FUN_1409c17e0(&kArg));
+                strArg = FUN_1407196b0(((Scaleform::GFx::Value*)(void*)(&kArg))->GetUInt());
             else if (nType == 5)
-                strArg = FUN_1407197a0((float)FUN_140f17ed0(&kArg));
+                strArg = FUN_1407197a0((float)((Scaleform::GFx::Value*)(void*)(&kArg))->GetNumber());
             else if (nType > 5 && nType < 8)
                 strArg = FUN_141277dd0(&kArg);
             fmt::ULongLong kType = fmt::internal::make_type(strArg);
@@ -3308,7 +3377,7 @@ void FUN_141addb30(long long n)
         }
         strResult = StringFormat(strFormat, fmt::ArgList(kTypes, &arrValues[0]));
     }
-    FUN_1407cd930(&kRet, "text", FUN_1412dd680(strResult));
+    ((Scaleform::GFx::Value*)(void*)(&kRet))->SetMember("text", FUN_1412dd680(strResult));
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc2670-0x142cc27b0 .text$yd

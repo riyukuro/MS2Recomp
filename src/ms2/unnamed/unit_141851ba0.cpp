@@ -14,15 +14,19 @@
 
 // ---- unrecovered callees (bound by VA) --------------------------------------------------------------------------------
 
-int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& rValue);   // string attribute
-int FUN_140873360(Unk_140165cf0* pElem, const char* pszName, float& rValue);     // float attribute
-int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int& rValue);       // int attribute
-int FUN_140873710(Unk_140165cf0* pElem, const char* pszName, int* pValue);       // int attribute
-Unk_140165cf0* FUN_140165cf0(Unk_140165cf0* pElem, const char* pszName);         // first child element
-Unk_140165cf0* FUN_140168650(Unk_140165cf0* pElem, const char* pszName);         // next sibling element
+int XmlGetAttr(class TiXmlElement*, char const*, CString&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 void FUN_1418528d0(void* pVisitor, float fWeight);                               // ctor of the weight visitor (next TU)
 #pragma comment(linker, "/alternatename:?FUN_1418528d0@@YAXPEAXM@Z=??0Unk_CtrlValue@@QEAA@M@Z")   // sfr36: full-exe link: unit_141851fd0 defines it as the ctor
-void FUN_141852690(void* pObject, void* pVisitor);                               // walk the scene graph with a visitor
+void FUN_141852690(void*, struct Unk_CtrlValue*);   // C3: was FUN_141852690
 
 // 0x141851ba0
 CMorphingAnimationData::CMorphingAnimationData()
@@ -77,20 +81,20 @@ MS2_REPLACE_METHOD(0x141851C20, CMorphingAnimationData, FUN_141851c20, 386, 0xD6
 // @0x141851db0
 void CMorphingAnimationData::FUN_141851db0(Unk_140165cf0* pElem)
 {
-    FUN_1408733e0(pElem, "target", m_strNodeName);
+    XmlGetAttr((class TiXmlElement*)(pElem), "target", m_strNodeName);
     if (m_strNodeName.IsEmpty())
         m_strNodeName = "FA_Skin";
-    for (Unk_140165cf0* pWeight = FUN_140165cf0(pElem, "weight"); pWeight != 0;
-         pWeight = FUN_140168650(pWeight, "weight"))
+    for (Unk_140165cf0* pWeight = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pElem))->FirstChild("weight")); pWeight != 0;
+         pWeight = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pWeight))->NextSibling("weight")))
     {
         float fValue;
-        FUN_140873360(pWeight, "value", fValue);
+        XmlGetAttr((class TiXmlElement*)(pWeight), "value", fValue);
         m_weights.Add(fValue);
         int nDelay = 0;
-        FUN_1408731e0(pWeight, "delay", nDelay);
+        XmlGetAttr((class TiXmlElement*)(pWeight), "delay", nDelay);
         m_frameTimes.Add(nDelay);
         int nLoop = 0;
-        FUN_140873710(pWeight, "loop", &nLoop);
+        XmlGetBool((class TiXmlElement*)(pWeight), "loop", *(int*)(&nLoop));
         if (nLoop != 0)
             m_nLoopStart = (int)(m_frameTimes.GetCount() - 1);
     }
@@ -108,6 +112,6 @@ void FUN_141851f90(void* pObject, float fWeight)
 {
     Unk_MorphWeightVisitor visitor;
     FUN_1418528d0(&visitor, fWeight);
-    FUN_141852690(pObject, &visitor);
+    FUN_141852690(pObject, (struct Unk_CtrlValue*)(&visitor));
 }
 MS2_REPLACE(0x141851F90, FUN_141851f90, 51, 0x641A0F3B);

@@ -228,10 +228,10 @@
 // Header-defined statics of the first obj (the ChromaEffectBase one also defines the dummy service instance).
 #include "ms2/placeholder/header_statics_a.h"
 
-unsigned FUN_140869420();                                   // the raw timer tick (ms)
-int FUN_14028d260(float fSecond);                           // seconds -> ticks
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
+__int64 FUN_14028d260(float fSecond);                           // seconds -> ticks
 
-#define GetCurrentTick() FUN_140869420()
+#define GetCurrentTick() GetTickCountMs2()
 
 // assert() of the inline Cooldown members in chromaeffectplaying.h
 #define CHROMA_ASSERT_H(line, expression)                                                                         \

@@ -23,7 +23,6 @@ typedef long long i64;
 // reinstalls the sentinel as the head.
 bool FUN_140a44a40(void* pContainer, void* pNode);   // true when pNode is the container's sentinel (nothing to erase)
 void FUN_140a44760(void* pContainer, void* pNode);   // returns one node to the container's allocator
-void FUN_140159e70(void* p);                          // frees a raw block
 
 struct Unk_TreeHead {
     void* m_pHead;      // +0x00  root, or the sentinel when the container is empty
@@ -59,7 +58,7 @@ void FUN_1414a6010(Unk_TreeHead* pTree)
     if (!FUN_140a44a40(pTree, pTree->m_pHead))
         FUN_1414a6090(pTree, (Unk_TreeNode*)pTree->m_pHead);
     pTree->m_nCount = 0;
-    FUN_140159e70(pTree->m_pBuffer);
+    ((ATL::CAtlPlex*)(void*)(pTree->m_pBuffer))->FreeDataChain();
     pTree->m_pBuffer = 0;
     pTree->m_field10 = 0;
     pTree->m_pHead = pTree->m_pSentinel;

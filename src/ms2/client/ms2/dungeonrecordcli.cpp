@@ -71,7 +71,7 @@ void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_1412752d0(const CStringW& text, int nA);
 CStringW FUN_140298ea0(CStringW str);
 CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
-CStringW FUN_1409eec40(int nId);
+CStringW BlockFormat(int nId);
 CStringW FUN_14062b4f0(CStringW key, const int& nArg);
 CStringW FUN_14052bd00(int nId, const CStringW& arg);
 CStringW FUN_140b8e9a0(const CMsTime& t);
@@ -698,7 +698,7 @@ void DungeonRecordManagerCli::ShowLackExtraTicket(unsigned nRoomID)
         return;
     if (!FUN_14031e190(spRoom.operator->()))
     {
-        FUN_1412751f0(FUN_1409eec40(0x31), 1, 1);
+        FUN_1412751f0(BlockFormat(0x31), 1, 1);
         return;
     }
     CStringW strItem = FUN_1401a9d70()->FUN_141811980(1, FUN_14031e110(spRoom.operator->()));

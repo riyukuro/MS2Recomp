@@ -24,7 +24,11 @@
 // ---- unit-local views of exe types ----
 
 class Unk_RsWorld { public: MyPC* FUN_141bd0cc0(); };               // the local player
-Unk_RsWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // The sellable-house record of a house (0xc0 bytes; ctor 0x1408ad110, dtor 0x14050de70).
 struct Unk_RsSalable
@@ -37,7 +41,7 @@ void FUN_1408ad110(Unk_RsSalable* p);
 void FUN_14050de70(Unk_RsSalable* p);
 Unk_RsSalable::Unk_RsSalable() { FUN_1408ad110(this); }
 Unk_RsSalable::~Unk_RsSalable() { FUN_14050de70(this); }
-int FUN_1408a0d30(int nGroup, Unk_RsSalable* pSalable, int nMapId);   // the house group is sellable (fills pSalable)
+int FUN_1408a0d30(int, struct Unk_UGCGroup&, int);   // C3: was FUN_1408a0d30
 
 // The map / group record the house stands on.
 class Unk_GmTarget { public: int m_pad_0[7]; int m_1c; int m_20; int m_24; };
@@ -62,11 +66,19 @@ public:
     ~Unk_HoServicePtr();                                            // 0x1401cd150
     Unk_HoService* m_p;
 };
-Unk_HoService* FUN_1401cd040(Unk_EntityAppFramework* framework);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
 class Unk_RsGrid;                                                   // the cube map information service
-Unk_RsGrid* FUN_1409670e0();
-__int64 FUN_1410c3180(Unk_RsGrid* p);                               // the account id of the house owner? (compared to the own account)
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoHouseSvc* GetInstance();
+};
+class CubeMapInformationService   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_1410c3180();
+};
 extern __int64 DAT_143ab2820;                                       // my account id
 
    // string table by (table, id)
@@ -163,7 +175,7 @@ int UIRealEstateSell::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("OnConfirm", szMethod) == 0)
     {
-        __int64 nOwner = FUN_1410c3180(FUN_1409670e0());
+        __int64 nOwner = ((class CubeMapInformationService*)(class Unk_RsGrid*)(((class Unk_RsGrid*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c3180();
         if (nOwner != 0 && nOwner == DAT_143ab2820)
         {
             FUN_140d73bc0(0x7e6, 0, 0, CStringW(L""));
@@ -186,7 +198,7 @@ int UIRealEstateSell::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 // @0x141ab6230
 void UIRealEstateSell::FUN_141ab6230()
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_RsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (pPC->FUN_141527e00() != 0)
@@ -196,10 +208,10 @@ void UIRealEstateSell::FUN_141ab6230()
     if (m_30.IsNull())
         return;
     ASObj obj(2);
-    Unk_HoServicePtr spService(FUN_1401cd040(&DAT_143b059e8));
+    Unk_HoServicePtr spService(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
     Unk_GmTargetRef target(pPC->FUN_141523c50());
     Unk_RsSalable salable;
-    if (FUN_1408a0d30(target.FUN_14050dee0()->m_24, &salable, target.FUN_14050dee0()->m_20) == 0)
+    if (FUN_1408a0d30(target.FUN_14050dee0()->m_24, *(struct Unk_UGCGroup*)(&salable), target.FUN_14050dee0()->m_20) == 0)
         return;
     CStringW strName = pPC->vfunc_77();
     obj.FUN_1407cbb20("houseName", strName);
@@ -253,7 +265,7 @@ void UIRealEstateSell::FUN_141ab6230()
 // @0x141ab6ad0
 int UIRealEstateSell::SendRequestCube(const CStringW& strName)
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_RsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     if (pPC->vfunc_77() != strName)
@@ -308,7 +320,7 @@ public:
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
 };
-void FUN_1410865e0(NiAVObject* pkObject, const NiFixedString& kKey, bool bRecursive);
+void FUN_1410865e0(class NiObjectNET*, class NiFixedString const&, bool);   // C3: was FUN_1410865e0
 void FUN_141568d80(NiAVObject* pkObject);
 
 // @0x141ab6e80
@@ -328,7 +340,7 @@ void FUN_141ab6e80(NiAVObject* pRoot)
             {
                 NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
                 if (pMesh != 0 && pMesh->GetExtraData(DAT_143ae51c0) == 0)
-                    FUN_1410865e0(pMesh, DAT_143ae51c0, true);
+                    FUN_1410865e0((class NiObjectNET*)(pMesh), DAT_143ae51c0, true);
             }
         }
     }

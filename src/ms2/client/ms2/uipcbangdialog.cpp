@@ -64,14 +64,17 @@ template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString
 template <> MS2Ptr<ASTextField> UISwfEntity::GetChild<ASTextField>(const CString& strName);
 
 // ---- callees (instances in other units; declared with their real argument lists) ------------------------------------
-NotifySystem* FUN_140939a10();
-PacketHandlerManager* FUN_140bccd50();
-CFeatureManager* FUN_140166410();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CStringTable* GetStringTable();
-SkillDataTableCli* FUN_1401958b0();                            // TSingleton<SkillDataTableCli>::GetInstance
 class Unk_PcBangWorld { public: PCBase* FUN_141bd0cc0(); };     // the world service: the local player
-Unk_PcBangWorld* FUN_1403ed2d0();
-unsigned FUN_141472bc0();                                       // the server clock (ms)
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
+int FUN_141472bc0();   // C3: was FUN_141472bc0
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_141275a10(CItem* pItem);                                // the usable state (1 locked, 2 disabled, 3 condition)
 void FUN_140710590(COutPacket& packet);                         // send
@@ -127,19 +130,19 @@ UIPcBangDialog::UIPcBangDialog()
 {
     FUN_141924170(1);
     FUN_141925e70(3, 1);
-    FUN_140939a10()->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIPcBangDialog::OnGameStart));
-    FUN_140939a10()->RegisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIPcBangDialog::OnChangeMyLevel));
-    FUN_140bccd50()->RegisterHandler(0xa5, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnPacket));
-    FUN_140bccd50()->RegisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnResetBonus));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIPcBangDialog::OnGameStart));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIPcBangDialog::OnChangeMyLevel));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xa5, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnPacket));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnResetBonus));
 }
 
 // @0x1413230d0
 UIPcBangDialog::~UIPcBangDialog()
 {
-    FUN_140939a10()->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIPcBangDialog::OnGameStart));
-    FUN_140939a10()->UnregisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIPcBangDialog::OnChangeMyLevel));
-    FUN_140bccd50()->UnregisterHandler(0xa5, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnPacket));
-    FUN_140bccd50()->UnregisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnResetBonus));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIPcBangDialog::OnGameStart));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIPcBangDialog::OnChangeMyLevel));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xa5, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnPacket));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnResetBonus));
 }
 
 // @0x141323490
@@ -189,7 +192,7 @@ void UIPcBangDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
     CString strType = pArgs->FUN_1422b8d30();
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = ((class Unk_PcBangWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (FUN_140184310(strType, "giftItem"))
@@ -203,7 +206,7 @@ void UIPcBangDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         {
             spItem->FUN_140526c70(spGift->m_count);
             MS2Ptr<CItem> spWorn = static_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
-            ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), 4, 2);
+            ASTooltip tip(((class Unk_PcBangWorld*)WorldService::GetInstance())->FUN_141bd0cc0(), 4, 2);
             if (tip.FUN_1409e13a0(spWorn.get(), spItem.get()) != 0)
                 *pRetVal = tip.FUN_1422bb870();
         }
@@ -284,7 +287,7 @@ MS2_REPLACE_METHOD(0x141323F40, UIPcBangDialog, OnPacket, 188, 0xF2997A0E);
 void UIPcBangDialog::OnPacketInfo(CInPacket& packet)
 {
     ResetInfo();
-    if (!FUN_140166410()->FUN_14036d570(0x3c))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3c))
         return;
     m_nGrade = packet.ReadUInt8();
     m_nStartTime = packet.ReadInt32();
@@ -308,7 +311,7 @@ void UIPcBangDialog::OnPacketInfo(CInPacket& packet)
     int bShow = packet.ReadUInt8();
     RebuildGiftOrder();
     m_nState = 1;
-    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyPcBang()));
+    ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyPcBang()));
     if (FUN_141924630())
         RefreshAll();
     else if (bShow)
@@ -323,7 +326,7 @@ void UIPcBangDialog::OnPacketPlayed(CInPacket& packet)
     ReadBits(m_received, packet);
     UpdateProgress();
     m_nReceivable = CountReachedBonus() - CountBits(m_received);
-    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyPcBang()));
+    ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyPcBang()));
     if (nIndex >= m_playBonus.GetCount())
         return;
     FUN_141276180(FUN_140513200(s_strGiftSound, nIndex), "");
@@ -461,7 +464,7 @@ void UIPcBangDialog::UpdateBuff()
 {
     if (!FUN_1422dc2d0())
         return;
-    MS2Ptr<AdditionalLevelData> spBuff = FUN_1401958b0()->FUN_140aafef0(m_nBuffId, 1);
+    MS2Ptr<AdditionalLevelData> spBuff = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(m_nBuffId, 1);
     if (spBuff == 0)
         return;
     m_30->Invoke("setIcon", spBuff->GetIcon());
@@ -649,7 +652,7 @@ struct Unk_PcBangGiftLevelLess
 // @0x141326040
 void UIPcBangDialog::RebuildGiftOrder()
 {
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = ((class Unk_PcBangWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (m_bGiftOrderDirty == 0)
@@ -710,7 +713,7 @@ void UIPcBangDialog::UpdateReceivable()
     int nPrev = m_nReceivable;
     m_nReceivable = CountReachedBonus() - CountBits(m_received);
     if (nPrev != m_nReceivable)
-        FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyPcBang()));
+        ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyPcBang()));
 }
 MS2_REPLACE_METHOD(0x1413265A0, UIPcBangDialog, UpdateReceivable, 308, 0xC35F1551);
 

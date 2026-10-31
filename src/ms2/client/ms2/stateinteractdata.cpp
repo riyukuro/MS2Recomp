@@ -45,6 +45,7 @@
 #include "ms2/placeholder/pcgemequip.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/cguidemanager.h"
 
 // ---- unit-local placeholders ----
 
@@ -102,10 +103,7 @@ public:
 };
 UICastingBar* FUN_140ac2270(int nId);
 
-void* FUN_14165f100(PCBase* p);
-void FUN_14165f170(PCBase* p);
 class Unk_SiBuffMgr { public: Vector3 FUN_141683290(); };
-Unk_SiBuffMgr* FUN_14166d240(PCBase* p);
 // PCBase vtable view: slot 22 takes the position by value (the exe copies it to a 16-aligned temp)
 class Unk_SiPointSlots
 {
@@ -117,7 +115,6 @@ public:
     virtual void vfunc_20(); virtual void vfunc_21();
     virtual void vfunc_22(efd::Point3 kPos);                                // 22 0x14123c3a0
 };
-bool FUN_1416749c0(PCBase* p);
 CStringW GetStringCommonByKey(const CStringW& str);
 CString FUN_1409a2360(const char* psz, int nCodePage);   // CString from a narrow string (0 = default code page)
 
@@ -179,11 +176,9 @@ struct Unk_SiQuestMgr
 };
 Unk_SiQuestMgr* FUN_140764020();
 
-MS2Ptr<CInteractObjectData> FUN_14051f670(int nId);
 
 // The equipment of a player: the worn item of a slot.
 class Unk_SiEquip : public PCGemEquip { };
-Unk_SiEquip* FUN_14165f460(PCBase* p);
 
 // The pieces of the interact row this unit reads (offsets proven by the callers).
 class Unk_SiRowNames { public: CString FUN_14051c870(); };           // +0xc8: the reaction animation name
@@ -204,7 +199,6 @@ struct Unk_SiSyncRecord
 };
 
 void* FUN_1409331e0();
-void FUN_14138bf00(void* pSvc, int nKind, int nId, int nFlag);
 
 struct Unk_RegMarker {};
 
@@ -278,7 +272,7 @@ void StateInteraction::vfunc_4(StateData* pData)
         if (spObject.get())
             m_spInteract->m_nObjectId = spObject->GetRowId();
     }
-    MS2Ptr<CInteractObjectData> spRow = FUN_14051f670(m_spInteract->m_nObjectId);
+    MS2Ptr<CInteractObjectData> spRow = CInteractObjectData::Get(m_spInteract->m_nObjectId);
     if (m_n10 == 0x8a)
     {
         FUN_1417d22f0(MS2Ptr<CInteractObjectData>(spRow));
@@ -286,8 +280,8 @@ void StateInteraction::vfunc_4(StateData* pData)
         MyPC* pPC = FUN_1417b84b0();
         if (pPC)
         {
-            if (FUN_14165f100(pPC))
-                FUN_14165f170(pPC);
+            if (((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())))
+                reinterpret_cast<PC*>(pPC)->SendRequestCube();
             Unk_CastInfo kInfo;
             MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc6090(reinterpret_cast<Unk_SiPos*>(m_pOwner)->vfunc_18(), 1);
             if (spObject == 0)
@@ -418,9 +412,9 @@ void StateInteraction::vfunc_8(double fTime)
             return;
         }
     }
-    Unk_SiBuffMgr* pBuff = FUN_14166d240(pPC);
+    Unk_SiBuffMgr* pBuff = ((Unk_SiBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
     reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
-    if (FUN_1416749c0(m_pOwner))
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
     else
         FUN_1417b9460();
@@ -506,7 +500,7 @@ void StateInteraction::FUN_1417d2230(CInteractObject* pObject)
     }
     else
         pObject->vfunc_10();
-    FUN_14138bf00(FUN_1409331e0(), 9, pObject->GetRowId(), 0);
+    reinterpret_cast<CGuideManager*>(FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)(9), pObject->GetRowId(), 0);
 }
 
 // @0x1417d22f0
@@ -572,7 +566,7 @@ int StateInteraction::FUN_1417d2880()
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
         return 0;
-    MS2Ptr<CGemBase> spGem = FUN_14165f460(pPC)->FUN_141270740(9);
+    MS2Ptr<CGemBase> spGem = ((Unk_SiEquip*)(reinterpret_cast<PC*>(pPC)->FUN_14165f460()))->FUN_141270740(9);
     if (spGem.IsNull())
         return 0;
     if (m_spInteract.IsNull())
@@ -627,8 +621,8 @@ void StateInteractionNpc::vfunc_4(StateData* pData)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC)
     {
-        if (FUN_14165f100(pPC))
-            FUN_14165f170(pPC);
+        if (((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())))
+            reinterpret_cast<PC*>(pPC)->SendRequestCube();
         UICastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar)
             pBar->FUN_1418e12b0(this, kInfo);
@@ -677,9 +671,9 @@ void StateInteractionNpc::vfunc_8(double fTime)
             return;
         }
     }
-    Unk_SiBuffMgr* pBuff = FUN_14166d240(pPC);
+    Unk_SiBuffMgr* pBuff = ((Unk_SiBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
     reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
-    if (FUN_1416749c0(m_pOwner))
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
     else
         FUN_1417b9460();
@@ -716,8 +710,8 @@ void StateAutoInteraction::vfunc_4(StateData* pData)
     PCBase* pPC = FUN_1417b8370();
     if (pPC)
     {
-        if (FUN_14165f100(pPC))
-            FUN_14165f170(pPC);
+        if (((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())))
+            reinterpret_cast<PC*>(pPC)->SendRequestCube();
     }
     if (FUN_1417b8560() != 0)
     {
@@ -775,9 +769,9 @@ void StateAutoInteraction::vfunc_8(double fTime)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
         return;
-    Unk_SiBuffMgr* pBuff = FUN_14166d240(pPC);
+    Unk_SiBuffMgr* pBuff = ((Unk_SiBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
     reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
-    if (FUN_1416749c0(m_pOwner))
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
 }
 

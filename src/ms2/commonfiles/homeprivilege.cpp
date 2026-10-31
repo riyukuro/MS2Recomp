@@ -12,10 +12,9 @@
 #include "ms2/placeholder/mypc.h"
 #include "ms2/commonfiles/ugcmapdata.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // The world manager singleton: the current map id.
-class Unk_HpWorld { public: int FUN_141bd3060(); };
-Unk_HpWorld* FUN_1403ed2d0();
 int FUN_1408a0d30(int nGroup, Unk_UGCGroup& rResult, int nMapId);
 
 // @0x14050d4c0
@@ -43,7 +42,7 @@ int CHomePrivilege::FUN_14050d550(int nNpcId)
     if (m_pOwner->FUN_141527e00() == 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(m_pOwner->FUN_141523c50());
-        if (spHouse->m_n20 != FUN_1403ed2d0()->FUN_141bd3060())
+        if (spHouse->m_n20 != WorldService::GetInstance()->FUN_141bd3060())
             return 0;
         Unk_UGCGroup group;
         if (FUN_1408a0d30(spHouse->m_n24, group, spHouse->m_n20) != 0)
@@ -68,7 +67,7 @@ int CHomePrivilege::FUN_14050d6f0(int nPortalId)
     if (m_pOwner->FUN_141527e00() == 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(m_pOwner->FUN_141523c50());
-        if (spHouse->m_n20 != FUN_1403ed2d0()->FUN_141bd3060())
+        if (spHouse->m_n20 != WorldService::GetInstance()->FUN_141bd3060())
             return 0;
         Unk_UGCGroup group;
         if (FUN_1408a0d30(spHouse->m_n24, group, spHouse->m_n20) != 0)
@@ -93,7 +92,7 @@ int CHomePrivilege::FUN_14050d890(int nInteractId)
     if (m_pOwner->FUN_141527e00() == 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(m_pOwner->FUN_141523c50());
-        if (spHouse->m_n20 != FUN_1403ed2d0()->FUN_141bd3060())
+        if (spHouse->m_n20 != WorldService::GetInstance()->FUN_141bd3060())
             return 0;
         Unk_UGCGroup group;
         if (FUN_1408a0d30(spHouse->m_n24, group, spHouse->m_n20) != 0)
@@ -118,7 +117,7 @@ int CHomePrivilege::FUN_14050da30()
     if (m_pOwner->FUN_141527e00() == 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(m_pOwner->FUN_141523c50());
-        if (spHouse->m_n20 != FUN_1403ed2d0()->FUN_141bd3060())
+        if (spHouse->m_n20 != WorldService::GetInstance()->FUN_141bd3060())
             return 0;
         Unk_UGCGroup group;
         if (FUN_1408a0d30(spHouse->m_n24, group, spHouse->m_n20) != 0)

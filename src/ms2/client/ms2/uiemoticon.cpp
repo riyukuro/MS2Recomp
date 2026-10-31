@@ -23,6 +23,8 @@ static ATL::CAtlMap<unsigned int, CString, ATL::CElementTraits<unsigned int>, AT
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/client/ms2/uiquesteventlistener.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/placeholder/cnpc.h"
+#include "ms2/client/ms2/uiservice.h"
 static CString s_sortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
@@ -40,12 +42,9 @@ struct Unk_EmoCfg
     Unk_EmoCfgFloat m_2600;
 };
 Unk_EmoCfg* FUN_1401d3200();
-class Unk_EmoPlayer                                                         // the player-side object of an actor (quest/status)
+class Unk_EmoPlayer : public CNpc                                                         // the player-side object of an actor (quest/status)
 {
 public:
-    int FUN_141093c60();                                                    // kind: 4 = npc movie
-    unsigned int FUN_141093c20();                                           // quest id
-    void FUN_141093e90();
     unsigned int FUN_1410937b0();                                           // npc id
 };
 Unk_EmoPlayer* FUN_14096e110(PCBase* pActor);
@@ -53,7 +52,6 @@ class Unk_EmoNpcTable { public: int FUN_14035b0a0(unsigned int nId); CString FUN
 Unk_EmoNpcTable* FUN_140764010();
 CString FUN_141082090(unsigned int nQuestId, const CString& a, const CString& b, const CString& c, const CString& d);
 UIQuestEventDispatcher* FUN_140bfc4b0();
-UIStatusEventDispatcher* FUN_140aa6d40();
 class Unk_EmoUIScale;
 Unk_EmoUIScale* FUN_14025e7a0();                                            // ui scale service
 float FUN_1422afec0(Unk_EmoUIScale* pScale, int nLayer);                    // scale of a layer
@@ -85,7 +83,6 @@ public:
     virtual void vfunc_24(bool b);                                          // MS2: slot 24
 };
 class Unk_EmoPopupMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
-Unk_EmoPopupMgr* FUN_1403ed2b0();
 UIEmoticon* FUN_141930440(int nUiId);
 unsigned int FUN_14192fe00(Unk_EmoPlayer* pPlayer);
 
@@ -160,7 +157,7 @@ UIEmoticon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nA
     m_c0 = *FUN_1401d3200()->m_218.FUN_140967520(&fDefault);
     m_54 = FUN_1401d3200()->m_2600.FUN_1402bac70();
     FUN_140bfc4b0()->FUN_141aa87c0(static_cast<UIQuestEventListener*>(this));
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     FUN_14192f910();
 }
 
@@ -168,7 +165,7 @@ UIEmoticon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nA
 UIEmoticon::Entity::~Entity()
 {
     FUN_140bfc4b0()->FUN_141aa8850(static_cast<UIQuestEventListener*>(this));
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
 }
 
 // @0x14192f200
@@ -524,9 +521,9 @@ UIEmoticon::Entity* UIEmoticon::FUN_141930000(int nActorId)
 // @0x141930440
 UIEmoticon* FUN_141930440(int nUiId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_EmoPopupMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_EmoPopupMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (p.get())
             return dynamic_cast<UIEmoticon*>((UIObject*)p);
     }

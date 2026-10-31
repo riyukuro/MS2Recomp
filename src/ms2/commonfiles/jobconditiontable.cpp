@@ -18,8 +18,6 @@
 
 // ---- unrecovered helpers (the tinyxml wrappers the other table units share) ----
 
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
 bool FUN_14028f710(Unk_140165cf0* pElem);                   // the node is a usable element
@@ -56,7 +54,7 @@ int CJobConditionTable::Load()
 int CJobConditionTable::LoadFile(const CString& strPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

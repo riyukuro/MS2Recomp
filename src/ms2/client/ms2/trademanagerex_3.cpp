@@ -17,7 +17,7 @@ public:
     void FUN_1419cae20(UIItemEventListener* pListener);     // register (no duplicates)
     void FUN_1419caeb0(UIItemEventListener* pListener);     // unregister
 };
-Unk_ItemEventSystem* FUN_140a6a840();
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 
 // Registry of named bags/slots (GFx bind data): lookup by name, add, remove.
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
@@ -33,13 +33,13 @@ static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Crea
 TradeSlotBag::TradeSlotBag(const CString& strName)
     : DragSlotBag(strName)
 {
-    FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
 }
 
 // @0x14185ea20
 TradeSlotBag::~TradeSlotBag()
 {
-    FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
 }
 
 // @0x14185eac0

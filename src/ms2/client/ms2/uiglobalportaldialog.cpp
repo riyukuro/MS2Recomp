@@ -15,6 +15,7 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/asbutton.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -22,11 +23,10 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> GpClickDelegate;
 
-class Unk_GpButton : public ASDisplayObject
+class Unk_GpButton : public ASButton
 {
 public:
     void FUN_1422ce240(const GpClickDelegate& onClick, int nFlags);     // click callback
-    void FUN_1422cdfb0(const CStringW& strLabel);                       // set the caption
 };
 
 class ASDialog : public ASDisplayObject

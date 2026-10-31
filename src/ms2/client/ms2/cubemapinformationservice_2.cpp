@@ -27,17 +27,29 @@ extern Unk_Inventory g_143ab2a90;
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 class PCBase;
 class Unk_CubeCraftCore;
-void* FUN_1403ed2d0();
-PCBase* FUN_141bd0cc0(void*);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 int FUN_1416595d0(PCBase*);
-Unk_CubeCraftCore* FUN_141530290(PCBase*);
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_PCCubeCraft* FUN_141530290();
+};
 int FUN_1410a8a90(Unk_CubeCraftCore*);
 // WorldService singleton viewed through its +0x298 current-field handle getter (0x141bd30a0).
 class Unk_CubeWorld { public: MS2Ptr<CFieldDataCli> FUN_141bd30a0(); };
 MS2Ptr<CItemData> FUN_14053f870(int);
 class UIUGCCubePaletteDialog;
 UIUGCCubePaletteDialog* FUN_140ef4a50(int);
-void FUN_140eef560(UIUGCCubePaletteDialog*,int);
+class UIUGCCubePaletteDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140eef560(int);
+};
 
 // @0x1410b4e80
 CubeHolderManager::CubeHolderManager() : palette(0),selected(0) {}
@@ -193,16 +205,16 @@ MS2Ptr<CItem> CubeHolderManager::FUN_1410b5dc0(__int64 instanceId) {
 MS2_REPLACE_METHOD(0x1410B5DC0, CubeHolderManager, FUN_1410b5dc0, 170, 0xC00EE4A8);
 // @0x1410b5e70
 int CubeHolderManager::FUN_1410b5e70() {
-    PCBase* pc=FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pc=((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if(pc==0) return 0;
     return FUN_1416595d0(pc);
 }
 MS2_REPLACE_METHOD(0x1410B5E70, CubeHolderManager, FUN_1410b5e70, 54, 0x2F3817D5);
 // @0x1410b5eb0
 int CubeHolderManager::FUN_1410b5eb0() {
-    PCBase* pc=FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pc=((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if(pc==0) return 0;
-    Unk_CubeCraftCore* craft=FUN_141530290(pc);
+    Unk_CubeCraftCore* craft=((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pc))->FUN_141530290());
     if(craft==0) return 0;
     return FUN_1410a8a90(craft);
 }
@@ -210,7 +222,7 @@ MS2_REPLACE_METHOD(0x1410B5EB0, CubeHolderManager, FUN_1410b5eb0, 81, 0x1BD6028B
 // @0x1410b5f10
 int CubeHolderManager::FUN_1410b5f10(int itemId) {
     if(FUN_1410b5eb0()==2) return 0;
-    MS2Ptr<CFieldDataCli> field=static_cast<Unk_CubeWorld*>(FUN_1403ed2d0())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> field=static_cast<Unk_CubeWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd30a0();
     if(field==0) return 0;
     MS2Ptr<CItemData> item=FUN_14053f870(itemId);
     if(item==0) return 0;
@@ -228,7 +240,7 @@ int CubeHolderManager::FUN_1410b6060(unsigned index) {
         if(info==0) return 2;
         MS2Ptr<CItemData> item=FUN_14053f870(info->itemId);
         if(item==0) return 2;
-        MS2Ptr<CFieldDataCli> field=static_cast<Unk_CubeWorld*>(FUN_1403ed2d0())->FUN_141bd30a0();
+        MS2Ptr<CFieldDataCli> field=static_cast<Unk_CubeWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd30a0();
         if((item->install.space&field->m_nIndoorMask)!=field->m_nIndoorMask) return 3;
     }
     return 0;
@@ -259,7 +271,7 @@ MS2_REPLACE_METHOD(0x1410B62D0, CubeHolderManager, FUN_1410b62d0, 94, 0xEFE7B3D8
 // @0x1410b6340
 void CubeHolderManager::FUN_1410b6340(int index) {
     UIUGCCubePaletteDialog* dialog=FUN_140ef4a50(0x4f16);
-    if(dialog!=0) FUN_140eef560(dialog,index);
+    if(dialog!=0) ((class UIUGCCubePaletteDialog*)(dialog))->FUN_140eef560(index);
 }
 MS2_REPLACE_METHOD(0x1410B6340, CubeHolderManager, FUN_1410b6340, 55, 0x4EA4BF9E);
 MS2_EMIT_CRT_MEMMOVE_S();

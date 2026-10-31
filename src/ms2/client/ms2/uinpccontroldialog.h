@@ -29,7 +29,7 @@ MS2_CHECK_SIZE(Unk_CtlSkill, 8);
 class AiDebugDialog;
 class ASObj;
 class ASTextField;
-class Unk_CtlList;
+class ASScrollingList;
 class Unk_CtlIntArray;
 
 class UINpcControlDialog : public UIDialog
@@ -55,7 +55,7 @@ public:
     void FUN_141a64ba0(int nCommand, const CStringW& strArg);   // run a command of the list
     void FUN_141a65000();                               // pick an AI xml file and send it (packet 0x50 / 4 / id / 0xd)
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // text field child lookup (a UIDialog member)
-    MS2Ptr<Unk_CtlList> FUN_140c02900(const CString& strName);  // bind a list child of the movie
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);  // bind a list child of the movie
 
 private:
     MS2_LAYOUT_FRIEND;

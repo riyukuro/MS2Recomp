@@ -16,6 +16,10 @@
 #include "ms2/placeholder/mypc.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/pvpmanager.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -29,7 +33,6 @@ public:
     MyPC* FUN_141bd0cc0();                                          // the local player
     PCBase* FUN_141bd1530(__int64 nCharId);                         // a player by character id
 };
-Unk_PrWorld* FUN_1403ed2d0();
 
 // One row of the result (the ranking's row, see uipvprankingdialog.cpp).
 class Unk_PrEntry
@@ -57,7 +60,6 @@ private:
     void* m_pad_00;
     Unk_PrTable m_table;
 };
-Unk_PrService* FUN_140f97ef0();
 
 // The player's PvP info proxy (PC method 0x140967420): get 0x140965810, operator-> 0x140965970, release 0x140964aa0.
 class Unk_PrInfoPtr
@@ -73,7 +75,7 @@ public:
 class Unk_PrActor { public: Unk_PrInfoPtr FUN_140967420(); };
 
 // The reward item: pointer 0x14053f870, get 0x140203c60, operator-> 0x1401b52a0, release 0x1401b50d0.
-class Unk_PrItemData { public: CString FUN_14053fdd0(); };         // the icon name
+class Unk_PrItemData : public CItemData { };         // the icon name
 class Unk_PrItemPtr
 {
 public:
@@ -94,8 +96,6 @@ class Unk_PrScript : public AScript { public: Scaleform::GFx::Value FUN_14129cce
 bool FUN_140a467d0(const MS2Ptr<AScript>*);
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);
 CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount);   // formatted message
-class Unk_PrStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_PrStrings* FUN_1401a9d70();
 const int* FUN_1402fbd20(const int* a, const int* b);               // std::min<int>
 const int* FUN_1404eb7e0(const int* a, const int* b);               // std::max<int>
 int FUN_141654730(PCBase* pPC);                                     // the job
@@ -167,7 +167,7 @@ void UIPvPResultDialog::FUN_141343c10(int nFrom, int nTo)
     int nLast = *FUN_1404eb7e0(&nFrom, &nTo);
     for (int nRank = nFirst; nRank <= nLast; nRank++)
     {
-        Unk_PrEntry* pEntry = (Unk_PrEntry*)FUN_140f97ef0()->FUN_141343810(nRank);
+        Unk_PrEntry* pEntry = (Unk_PrEntry*)reinterpret_cast<Unk_PrService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(nRank);
         if (pEntry == 0)
             continue;
         ASObj obj(2);
@@ -186,7 +186,7 @@ void UIPvPResultDialog::FUN_141343da0(int nRank)
     CStringW strText(L"");
     if (0 < m_180)
     {
-        strText = FUN_14093fa20(0x401, FUN_1401a9d70()->FUN_141811980(1, m_17c), m_180);
+        strText = FUN_14093fa20(0x401, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_17c), m_180);
         m_30->Invoke("setRewardText", strText);
         Unk_PrItemPtr spItem = FUN_14053f870(m_17c);
         if (spItem.FUN_140203c60() != 0)
@@ -198,7 +198,7 @@ void UIPvPResultDialog::FUN_141343da0(int nRank)
 // @0x1413440a0
 void UIPvPResultDialog::FUN_1413440a0()
 {
-    Unk_PrActor* pPC = (Unk_PrActor*)FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PrActor* pPC = (Unk_PrActor*)reinterpret_cast<Unk_PrWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     bool bInPvP = pPC && (pPC->FUN_140967420().FUN_140965810() ? true : false);
     if (bInPvP)
     {
@@ -212,10 +212,10 @@ bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PrEntry* pEntr
 {
     if (pEntry == 0)
         return false;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_PrWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return false;
-    PCBase* pOther = FUN_1403ed2d0()->FUN_141bd1530(pEntry->m_nCharId);
+    PCBase* pOther = reinterpret_cast<Unk_PrWorld*>(WorldService::GetInstance())->FUN_141bd1530(pEntry->m_nCharId);
     CString strIcon("");
     Unk_PrItemPtr spItem = FUN_14053f870(m_17c);
     if (spItem.FUN_140203c60() != 0)
@@ -275,10 +275,10 @@ void UIPvPResultDialog::FUN_141344780(int nRank)
 {
     if (FUN_140a467d0(&m_30))
         return;
-    int nCount = FUN_140f97ef0()->FUN_141344a80();
+    int nCount = reinterpret_cast<Unk_PrService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141344a80();
     for (int n = 1; n <= nCount; n++)
     {
-        Unk_PrEntry* pEntry = (Unk_PrEntry*)FUN_140f97ef0()->FUN_141343810(n);
+        Unk_PrEntry* pEntry = (Unk_PrEntry*)reinterpret_cast<Unk_PrService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(n);
         if (pEntry == 0)
             continue;
         ASObj obj(2);

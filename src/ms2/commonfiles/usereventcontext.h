@@ -3,7 +3,6 @@
 #include <afx.h>
 #include <atlcoll.h>
 #include "ms2/placeholder/cptred.h"
-class Unk_EventRefOps { public: void FUN_14015b020(); int FUN_140159bc0(); void FUN_140159ba0(); };
 struct Unk_EventPayload { void* value; };
 struct Unk_EventHolder : CPtred, Unk_EventPayload {};
 namespace EventStruct {
@@ -36,16 +35,16 @@ private:
     void AddRef() const { if (p) AddRefImpl(0); }
     void ReleaseImpl(void*) {
         Unk_EventHolder* base = Unk_EventBase<T>::Get(p);
-        if (reinterpret_cast<Unk_EventRefOps*>(base)->FUN_140159bc0() == 0) {
+        if (CPtred::ReleasePtred(reinterpret_cast<CPtred*>(base)) == 0) {
             AddRefObject(base);
-            reinterpret_cast<Unk_EventRefOps*>(base)->FUN_140159ba0();
+            CPtred::DeletePtred(reinterpret_cast<CPtred*>(base));
         }
     }
     void Release() { if (p) { ReleaseImpl(0); p=0; } }
     void* pad; T* p;
 };
 template<> inline void Unk_EventPtr<Unk_EventPayload>::AddRefObject(Unk_EventHolder* value) {
-    reinterpret_cast<Unk_EventRefOps*>(value)->FUN_14015b020();
+    CPtred::AddRefPtred(reinterpret_cast<CPtred*>(value));
 }
 template<> inline void Unk_EventPtr<Unk_EventPayload>::AddRefImpl(void*) const {
     AddRefObject(Unk_EventBase<Unk_EventPayload>::Get(p));

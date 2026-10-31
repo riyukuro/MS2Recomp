@@ -29,10 +29,7 @@
 #include "ms2/commonfiles/logstring.h"
 #include "hook/ms2hook.h"
 
-void FUN_1411ab770(efd::IDependencyRegistrar* pRegistrar, int nFlags);   // AddDependency<ecr::RenderService> (0x07002001)
-void FUN_1410db4c0(efd::IDependencyRegistrar* pRegistrar, int nFlags);   // AddDependency<0x07000003>
-void* FUN_14127bf80(void* pFramework);                          // its render service (null if none)
-ecr::RenderSurface* FUN_140af7da0(ecr::RenderService* pService);  // the service's default surface
+ecr::RenderService* Unk_GetRenderService(char* pCell);          // gfxmoviebackground.cpp; the framework's render service (null if none)
 int FUN_14151e740();                                            // GFx allocator bytes in use
 void FUN_1422d9020(int n);
 CLogString* GetLogString();
@@ -102,10 +99,10 @@ MS2_REPLACE_METHOD(0x1422E9C40, GFxService, vfunc_16, 73, 0x437B21B6);
 // @0x1422e9c90
 bool GFxService::vfunc_17()
 {
-    void* pService = FUN_14127bf80(&DAT_143b059e8);
+    ecr::RenderService* pService = Unk_GetRenderService(&DAT_143b059e8);
     if (pService != 0)
     {
-        NiRenderTargetGroup* pTarget = FUN_140af7da0((ecr::RenderService*)pService)->GetRenderTargetGroup();
+        NiRenderTargetGroup* pTarget = pService->GetActiveRenderSurface()->GetRenderTargetGroup();
         if (pTarget != 0)
             GFxManager::GetInstance()->FUN_1422adb80(pTarget->GetWidth(0), pTarget->GetHeight(0));
     }
@@ -154,9 +151,9 @@ MS2_REPLACE_METHOD(0x1422E9E50, GFxService, FUN_1422e9e50, 35, 0x1F721578);
 // @0x1422e9e80
 efd::SyncResult GFxService::OnPreInit(efd::IDependencyRegistrar* pDependencyRegistrar)
 {
-    FUN_1411ab770(pDependencyRegistrar, 1);
+    pDependencyRegistrar->AddDependency<ecr::RenderService>(1);
     pDependencyRegistrar->AddDependency<efd::IConfigManager>(1);
-    FUN_1410db4c0(pDependencyRegistrar, 1);
+    pDependencyRegistrar->AddDependency<efd::MessageService>(1);
     return efd::SyncResult_Success;
 }
 MS2_REPLACE_METHOD_VIA(0x1422E9E80, GFxService, efd::ISystemService, OnPreInit, 69, 0xDDBBB9D3);
@@ -173,7 +170,7 @@ efd::AsyncResult GFxService::OnInit()
     ecr::RenderService* pRenderService = m_pServiceManager->GetSystemServiceAs<ecr::RenderService>();
     if (pRenderService)
     {
-        HWND hWnd = FUN_140af7da0(pRenderService)->GetWindowRef();
+        HWND hWnd = pRenderService->GetActiveRenderSurface()->GetWindowRef();
         if (!GFxManager::GetInstance()->FUN_1422ad620(hWnd, NiRenderer::GetRenderer()))
         {
             MessageBoxA(NULL, "Scaleform Initialize Failed", "Scaleform Initialize Failed", MB_OK);

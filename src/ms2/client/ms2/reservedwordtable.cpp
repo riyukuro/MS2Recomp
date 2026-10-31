@@ -52,7 +52,6 @@ CStringW GetStringCommon(int nStringId);
 CStringW FUN_1401aa6a0(int nId);                                                    // an npc name by id
 CStringW FUN_141700820(int nId);                                                    // 0x141700820
 CStringW FUN_1416ff950(int nId);                                                    // 0x1416ff950
-int FUN_141658e60(PC* pPc);                                                         // the gender of the player
 CString FUN_140740ef0(const char* pszFormat, const CString& strKind, const int& nId);                                              // a text of the common string table
 
 // The local player / world.
@@ -63,18 +62,24 @@ public:
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                  // the field data of the player
 };
 struct Unk_RwLevelView { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };   // the local player: the level (slot 78, +0x270) returns a word
-int FUN_1403754f0(void* pCode);
-__int64 FUN_141670a00(PC* pPc, int nStat);                  // PCBase stat
 CLua* FUN_1401c0db0();
 
 // Locale switch of the name tables ("npcNamePlural" differs by locale).
 class Unk_RwLocale { public: };
-int* FUN_140cfd280(Unk_RwLocale* pLocale);
+class Unk_LgSettings   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_LgState* FUN_140cfd280();
+};
 
 // A map name with its world map entry.
 class Unk_RwMapTable { public: };
 Unk_RwMapTable* FUN_140cb17d0();
-int FUN_141b98380(Unk_RwMapTable* pTable, int nMapId);
+class WorldMapManager   // C3: member view for the former free stand-ins
+{
+public:
+    int HasFieldSearchInfo(unsigned int);
+};
 
 class Unk_RwUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
 UIRouletteDialog* FUN_1416ffcb0(int nId);
@@ -388,7 +393,7 @@ MS2_REPLACE_METHOD(0x1416FBF60, CReservedWordTable, FUN_1416fbf60, 115, 0x395CBD
 CStringW CReservedWordTable::FUN_1416fbfe0(unsigned int nMapId, CStringW strColor)
 {
     CStringW strRet;
-    if (FUN_141b98380(FUN_140cb17d0(), nMapId) != 0)
+    if (((class WorldMapManager*)(class Unk_RwMapTable*)(FUN_140cb17d0()))->HasFieldSearchInfo(nMapId) != 0)
     {
         CStringW strName = CStringTable::GetInstance()->FUN_141811980(3, nMapId);
         CStringW strId = StringFormat(L"{0}", nMapId);
@@ -521,7 +526,7 @@ static void Rw_MyPCHp(CStringW& strOut, CStringW strArg, CStringW& strWhole)
         strOut = L"";
         return;
     }
-    strOut.Format(L"%d", FUN_141670a00(pPc, 4));
+    strOut.Format(L"%d", ((class PCBase*)(class PC*)(pPc))->FUN_141670a00(4));
 }
 
 // @0x1416fca60
@@ -570,7 +575,7 @@ static void Rw_NpcName(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fcd70
 static void Rw_NpcPlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    switch (*FUN_140cfd280(reinterpret_cast<Unk_RwLocale*>(TSingleton<CGameOption>::GetInstance())))
+    switch (*((int*)((class Unk_LgSettings*)(class Unk_RwLocale*)(reinterpret_cast<Unk_RwLocale*>(TSingleton<CGameOption>::GetInstance())))->FUN_140cfd280()))
     {
     case 0:
     case 1:
@@ -585,7 +590,7 @@ static void Rw_NpcPlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fce70
 static void Rw_NpcNamePlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    switch (*FUN_140cfd280(reinterpret_cast<Unk_RwLocale*>(TSingleton<CGameOption>::GetInstance())))
+    switch (*((int*)((class Unk_LgSettings*)(class Unk_RwLocale*)(reinterpret_cast<Unk_RwLocale*>(TSingleton<CGameOption>::GetInstance())))->FUN_140cfd280()))
     {
     case 0:
     case 1:
@@ -612,7 +617,7 @@ static void Rw_Item(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fd0f0
 static void Rw_ItemPlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    switch (*FUN_140cfd280(reinterpret_cast<Unk_RwLocale*>(TSingleton<CGameOption>::GetInstance())))
+    switch (*((int*)((class Unk_LgSettings*)(class Unk_RwLocale*)(reinterpret_cast<Unk_RwLocale*>(TSingleton<CGameOption>::GetInstance())))->FUN_140cfd280()))
     {
     case 0:
     case 1:
@@ -651,7 +656,7 @@ static void Rw_PenaltyPrice(CStringW& strOut, CStringW strArg, CStringW& strWhol
         return;
     }
     unsigned int nPrice = FUN_1401c0db0()->CalcResolvePaneltyPrice(((Unk_RwLevelView*)pPc)->vfunc_78(), pPc->FUN_141661aa0(),
-                                                          FUN_1403754f0(reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd30a0().operator->()));
+                                                          ((class CFieldData*)(void*)(reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd30a0().operator->()))->FUN_1403754f0());
     strOut.Format(L"%d", nPrice);
 }
 
@@ -816,10 +821,10 @@ static void Rw_Gender(CStringW& strOut, CStringW strArg, CStringW& strWhole)
             continue;
         if (aParts[0].CompareNoCase(L"male") == 0)
         {
-            if (FUN_141658e60(pPc) == 0)
+            if (((class PC*)(class PC*)(pPc))->FUN_141658e60() == 0)
                 strPick = aParts[1];
         }
-        else if (aParts[0].CompareNoCase(L"female") == 0 && FUN_141658e60(pPc) == 1)
+        else if (aParts[0].CompareNoCase(L"female") == 0 && ((class PC*)(class PC*)(pPc))->FUN_141658e60() == 1)
             strPick = aParts[1];
     }
     strOut = strPick;
@@ -866,10 +871,10 @@ static void Rw_GenderOf(CStringW& strToken, PC* pPc)
             strToken = L"";
             return;
         }
-        nGender = FUN_141658e60(pLocal);
+        nGender = ((class PC*)(class PC*)(pLocal))->FUN_141658e60();
     }
     else
-        nGender = FUN_141658e60(pPc);
+        nGender = ((class PC*)(class PC*)(pPc))->FUN_141658e60();
     strToken.Replace(L"$", L"");
     CStrArray aItems;
     FUN_14025a680(strToken, aItems, L",");
@@ -1021,7 +1026,7 @@ static void Rw_MapBold(CStringW& strOut, CStringW strArg, CStringW& strWhole)
     unsigned int nMapId = _wtoi(strArg);
     if (nMapId == 0)
         return;
-    if (FUN_141b98380(FUN_140cb17d0(), nMapId) != 0)
+    if (((class WorldMapManager*)(class Unk_RwMapTable*)(FUN_140cb17d0()))->HasFieldSearchInfo(nMapId) != 0)
     {
         CStringW strName = CStringTable::GetInstance()->FUN_141811980(3, nMapId);
         CStringW strId = StringFormat(L"{0}", nMapId);

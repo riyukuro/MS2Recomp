@@ -19,7 +19,11 @@ public:
 };
 class Unk_NodeManager { public: Unk_TreeNode* FUN_14098d8d0(Unk_TreeNode* pEntry); };   // the node of an entry (NULL: gone)
 extern int DAT_143afa4d8;                                       // the global node manager
-void* FUN_1409a8b90(Unk_TreeNode* pNode);                       // the node's name object
+class NiObjectNET   // C3: member view for the former free stand-ins
+{
+public:
+    class NiFixedString const& GetName() const;
+};
 const char* FUN_142087e50(void* pName);                         // its text
 
 IMPLEMENT_DYNAMIC(CToolTreeNodesDialog, CDialog)
@@ -101,7 +105,7 @@ void CToolTreeNodesDialog::FUN_141858b50(Unk_TreeNode* pRoot)
     tvis.hParent = TVI_ROOT;
     tvis.hInsertAfter = TVI_LAST;
     tvis.item.mask = TVIF_TEXT;
-    tvis.item.pszText = (LPSTR)FUN_142087e50(FUN_1409a8b90(pRoot));
+    tvis.item.pszText = (LPSTR)FUN_142087e50(((void*)&((class NiObjectNET*)(class Unk_TreeNode*)(pRoot))->GetName()));
     HTREEITEM hItem = m_treeNodes.InsertItem(&tvis);
     FUN_141858c00(hItem, pRoot);
 }
@@ -116,7 +120,7 @@ void CToolTreeNodesDialog::FUN_141858c00(HTREEITEM hParent, Unk_TreeNode* pNode)
             tvis.hParent = hParent;
             tvis.hInsertAfter = TVI_LAST;
             tvis.item.mask = TVIF_TEXT;
-            tvis.item.pszText = (LPSTR)FUN_142087e50(FUN_1409a8b90(pEntry));
+            tvis.item.pszText = (LPSTR)FUN_142087e50(((void*)&((class NiObjectNET*)(class Unk_TreeNode*)(pEntry))->GetName()));
             FUN_141858c00(m_treeNodes.InsertItem(&tvis), ((Unk_NodeManager*)&DAT_143afa4d8)->FUN_14098d8d0(pEntry));
         }
     }

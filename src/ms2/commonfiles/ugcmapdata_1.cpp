@@ -36,6 +36,9 @@
 #include "ms2/placeholder/ms2color.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/worldservice.h"
+struct Unk_EntityAppFramework;
+struct Unk_LevelArray;
+class Unk_Service6100017;
 
 static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 // Earlier objects own these shared bodies.
@@ -68,12 +71,12 @@ public:
     Unk_UgcPhysSvc* FUN_1401cd1a0();
     Unk_UgcPhysSvc* m_p;
 };
-Unk_UgcPhysSvc* FUN_1401cd040(char*);
+Unk_Service6100017 * FUN_1401cd040(Unk_EntityAppFramework *);  // C3: the definition's signature
 class Unk_UgcWorld { public: PCBase* FUN_141bd0cc0(); };
 int FUN_1408b4f20(Cube*);
 MS2Ptr<CItemData> FUN_14053f870(int);
 void FUN_140194470(void*,const void*);
-void FUN_1402237c0(Unk_IntArr*);
+void FUN_1402237c0(Unk_LevelArray *);  // C3: the definition's signature
 __int64 FUN_141656a80(PCBase*);
 
 // @0x1408a0190
@@ -310,7 +313,7 @@ void FUN_1408a1640(Cube* cube) {
     Unk_IntArr types;
     CString typeText("");
     efd::utf8string typeNames;
-    FUN_1402237c0(&types);
+    FUN_1402237c0((Unk_LevelArray *)&types);
     entity->GetPropertyValue(0x6b780e9d,typeNames);
     typeText=typeNames.c_str();
     FUN_140177de0(typeText,&types,",");
@@ -328,7 +331,7 @@ void FUN_1408a1640(Cube* cube) {
 MS2_REPLACE(0x1408a1640, FUN_1408a1640, 640, 0x80A95CB0);
 // @0x1408a18d0
 int FUN_1408a18d0(__int64 charID) {
-    Unk_Ptr1401cd040 service(FUN_1401cd040(&DAT_143b059e8));
+    Unk_Ptr1401cd040 service(FUN_1401cd040((Unk_EntityAppFramework *)&DAT_143b059e8));
     int style=0;
     PCBase* player=reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if(player!=0) {

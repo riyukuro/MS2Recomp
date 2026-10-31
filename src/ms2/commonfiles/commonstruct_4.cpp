@@ -222,14 +222,14 @@ void*& FUN_140288ac0(void* list);                       // list::_Myhead
 void* FUN_140287e70(void* list);                        // list::_Get_data
 void* FUN_14027b560(void* p);                           // std::addressof
 void FUN_14027ce50(Unk_It* it, void* node, void* cont); // list iterator ctor
-void FUN_14027ced0(Unk_It* it, void* node, void* cont); // list unchecked iterator ctor
+void * FUN_14027ced0(void *, __int64, __int64);  // C3: the definition's signature
 void FUN_14027d630(Unk_It* it, Unk_It base);            // reverse_iterator ctor
 
 // list::_Unchecked_begin: an unchecked iterator at the head's next node.
 // @0x140289d20
 Unk_It* Unk_HistList::FUN_140289d20(Unk_It* out)
 {
-    FUN_14027ced0(out, *(void**)FUN_140288ac0(this), 0);
+    FUN_14027ced0(out, (__int64)(*(void**)FUN_140288ac0(this)), 0);
     return out;
 }
 

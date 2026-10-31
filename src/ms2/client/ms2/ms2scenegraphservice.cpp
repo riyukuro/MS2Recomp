@@ -76,7 +76,7 @@ public:
     NiTexturePtr FUN_141553eb0(CString strPath, NiTexture* pkSelf);    // cached texture by path
     void FUN_1415540f0(CString strPath, NiTexture* pkTex);              // cache a texture under a path
 };
-Unk_SgNifLoader* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
 // The client options (FUN_1411b1db0 returns them): the scene graph worker thread count.
 class Unk_SgOptions
@@ -84,7 +84,6 @@ class Unk_SgOptions
 public:
     UInt32 FUN_14070f0a0();
 };
-Unk_SgOptions* FUN_1411b1db0();
 
 
 // The world objects (WorldService::m_118, an ATL::CRBMap<unsigned, Unk_WsV118> in worldservice.h) and the rider seat
@@ -94,13 +93,11 @@ class Unk_SgRider { public: Unk_SgRidee* FUN_1416764a0(); };           // PCBase
 struct Unk_SgWorldObjectRef;                                            // map value: intrusive pointer to the object
 Unk_SgRider* FUN_140aac420(Unk_SgWorldObjectRef* pRef);
 class Unk_SgWorldObjects;
-POSITION FUN_140c20a10(Unk_SgWorldObjects* pMap);                       // GetHeadPosition
-Unk_SgWorldObjectRef* FUN_140c20a80(Unk_SgWorldObjects* pMap, POSITION pos);   // GetValueAt
 void FUN_140c20a30(Unk_SgWorldObjects* pMap, POSITION* pPos);           // GetNext
 class Unk_SgWorld { public: Unk_SgWorldObjects* FUN_141bd36b0(); };
 
-MS2AnimationService* FUN_1413f9b10();
-unsigned FUN_140d868f0(egf::FlatModelManager* pFlatModels);     // the loaded flat model count
+void* FUN_1413f9b10();   // C3: was FUN_1413f9b10
+unsigned int FUN_140d868f0(char*);   // C3: was FUN_140d868f0
 
 // ---- static initializers (.text$di, in this order) ----
 #ifndef MS2_HOOK_DLL
@@ -182,14 +179,14 @@ MS2DefaultTexturePalette::~MS2DefaultTexturePalette()
 // @0x1414f0c00
 NiTexture* MS2DefaultTexturePalette::GetTexture(const char* pcPath, NiTexture* pkSelf) const
 {
-    return FUN_140a0afd0()->FUN_141553eb0(CString(pcPath), pkSelf);
+    return ((class Unk_SgNifLoader*)FUN_140a0afd0())->FUN_141553eb0(CString(pcPath), pkSelf);
 }
 MS2_REPLACE_METHOD(0x1414F0C00, MS2DefaultTexturePalette, GetTexture, 154, 0xA8167CF8);
 
 // @0x1414f0ca0
 void MS2DefaultTexturePalette::SetTexture(const char* pcPath, NiTexture* pkTex)
 {
-    FUN_140a0afd0()->FUN_1415540f0(CString(pcPath), pkTex);
+    ((class Unk_SgNifLoader*)FUN_140a0afd0())->FUN_1415540f0(CString(pcPath), pkTex);
 }
 MS2_REPLACE_METHOD(0x1414F0CA0, MS2DefaultTexturePalette, SetTexture, 98, 0x7EC1F0B7);
 
@@ -233,7 +230,7 @@ efd::AsyncResult MS2SceneGraphService::OnInit()
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &MS2SceneGraphService::FUN_1414f3700));
     if (DAT_143ae2b30 != 0)
     {
-        m_uiThreadCount = FUN_1411b1db0()->FUN_14070f0a0();
+        m_uiThreadCount = ((class Unk_SgOptions*)TSingleton<COSInfo>::GetInstance())->FUN_14070f0a0();
         MultiSceneUpdater::GetInstance()->Create(m_uiThreadCount);
         MultiSceneUpdater::s_pfnCallback = reinterpret_cast<SceneUpdateCallback>(FUN_1414f1d00);
         MultiSceneUpdater::s_pCallbackContext = this;
@@ -325,9 +322,9 @@ void MS2SceneGraphService::UpdateDynamicEntities(bool advanceUpdateTime, bool pe
             FUN_1414f1f50(4);
             FUN_1414f1f50(5);
             Unk_SgWorldObjects* pObjects = reinterpret_cast<Unk_SgWorld*>(WorldService::GetInstance())->FUN_141bd36b0();
-            for (POSITION pos = FUN_140c20a10(pObjects); pos != NULL; FUN_140c20a30(pObjects, &pos))
+            for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetHeadPosition(); pos != NULL; FUN_140c20a30(pObjects, &pos))
             {
-                Unk_SgRider* pRider = FUN_140aac420(FUN_140c20a80(pObjects, pos));
+                Unk_SgRider* pRider = FUN_140aac420(((struct Unk_SgWorldObjectRef*)&((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetValueAt(pos)));
                 if (pRider != NULL)
                 {
                     Unk_SgRidee* pRidee = pRider->FUN_1416764a0();
@@ -920,8 +917,8 @@ void MS2SceneGraphService::FUN_1414f3700()
     pFlatModels =
         EE_DYNAMIC_CAST(egf::FlatModelManager, m_pServiceManager->GetSystemServiceAs<egf::FlatModelManager>());
     if (pFlatModels)
-        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("FlatModel count: %d", FUN_140d868f0(pFlatModels));
-    pAnimation = FUN_1413f9b10();
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("FlatModel count: %d", FUN_140d868f0((char*)(pFlatModels)));
+    pAnimation = ((class MS2AnimationService*)FUN_1413f9b10());
     if (pAnimation)
     {
         reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Asset count: %d", pAnimation->GetAssetCount());

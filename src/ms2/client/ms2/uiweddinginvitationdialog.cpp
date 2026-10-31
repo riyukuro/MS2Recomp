@@ -25,6 +25,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uitalkcinematic.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/weddingtable.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -72,12 +74,10 @@ class Unk_WiMsgOwner { };
 
 void* FUN_1409eed90();                                          // the singleton of the own character
 Unk_WiTicket* FUN_141b87160(void* pCharacter);                  // the character's current wedding hall ticket
-Unk_WiHallTable* FUN_1409023c0();
 bool FUN_140900f30(__int64 nTime);                              // the time is at night
 CStringW FUN_140b8e850(const CMsTime& kTime);                   // the date text
 CStringTable* GetStringTable();
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
-Unk_WiUIManager* FUN_1403ed2b0();
 __int64 FUN_140900da0();                                        // the price of one invitation
 UITalkCinematic* FUN_140a7b2b0(int nId);                           // a dialog's position record
 void FUN_141b1feb0(void* p);
@@ -164,7 +164,7 @@ void UIWeddingInvitationDialog::OnLoadComplete()
     obj.FUN_1407cbb20("groom", CStringW(pTicket->m_strGroom));
     obj.FUN_1407cbb20("bride", CStringW(pTicket->m_strBride));
     obj.FUN_1407cbb20("hall", GetStringTable()->FUN_141811980(3,
-        FUN_1409023c0()->FUN_140908d50(pTicket->m_nPackageId, pTicket->m_nHallId, FUN_140900f30(pTicket->m_nTime))));
+        reinterpret_cast<Unk_WiHallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908d50(pTicket->m_nPackageId, pTicket->m_nHallId, FUN_140900f30(pTicket->m_nTime))));
     obj.FUN_1407cbb20("date", FUN_140b8e850(CMsTime(pTicket->m_nTime)));
     m_30->Invoke("setData", obj);
 }
@@ -176,7 +176,7 @@ int UIWeddingInvitationDialog::vfunc_28(const char* szMethod, const Scaleform::G
         return 1;
     if (_stricmp(szMethod, "onClickPopup") == 0)
     {
-        FUN_1403ed2b0()->FUN_141adc750(0x4f94);
+        reinterpret_cast<Unk_WiUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f94);
     }
     else if (_stricmp(szMethod, "onClickSend") == 0)
     {
@@ -241,9 +241,9 @@ bool UIWeddingInvitationDialog::FUN_140fe60d0(int nResult, const CMsgBoxData& bo
 // @0x140fe6700
 UIWeddingGuestDialog* FUN_140fe6700(int nId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_WiUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_WiUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (spObj.get() != 0)
             return dynamic_cast<UIWeddingGuestDialog*>((UIObject*)spObj);
     }

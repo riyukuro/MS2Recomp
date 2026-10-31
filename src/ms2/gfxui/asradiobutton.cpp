@@ -5,6 +5,7 @@
 //
 // The unit name and directory are assumed (the GFx UI library 0x1422b0000-0x142304000 has no __FILE__ strings). The
 // class is declared in src/ms2/placeholder/asradiobutton.h; it only adds a vftable to ASButton.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "ms2/placeholder/asradiobutton.h"

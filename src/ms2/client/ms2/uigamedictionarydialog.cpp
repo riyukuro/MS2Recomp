@@ -14,7 +14,10 @@
 // MS2-PIN: ??_7ASObj@@6B@ 0x142db7e28
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uigamedictionarydialog.cpp"    // assumed
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 #include "uigamedictionarydialog.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/asdata.h"
@@ -30,6 +33,8 @@
 #include "ms2/placeholder/gamedictionarymanager.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/creservedwordtable.h"
 #include <atlcoll.h>
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
@@ -45,15 +50,6 @@ public:
     virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool b);
-};
-// "m_items": the rows list.
-class Unk_DictList : public Unk_DictCtl
-{
-public:
-    void FUN_1422dd1d0();                                   // clear
-    void FUN_1422dcca0(int n);                              // select the row
-    void FUN_1422dd230(const ASObj& row);                   // append a row
-    MS2Ptr<ASDataProvider> FUN_1422dcd80();                 // the data provider (ASCoreList, 0x1422dcd80)
 };
 // "m_tab": the tab strip.
 class Unk_DictTab : public Unk_DictCtl
@@ -118,17 +114,13 @@ class Unk_DictInputState { public: unsigned char FUN_14116d9c0(int a, int b, int
 Unk_DictInputState* FUN_14025e7c0();
 class Unk_DictUiMgr { public: int FUN_1422d4e20(CString strKey); };
 Unk_DictUiMgr* FUN_140b632f0();
-class Unk_DictPlayerMgr { public: void* FUN_141bd0cc0(); };
-Unk_DictPlayerMgr* FUN_1403ed2d0();
-class Unk_DictTextHook { public: void FUN_1416fbf20(CStringW& str); };
-Unk_DictTextHook* FUN_1403b4750();
+WorldService* FUN_1403ed2d0();
+CReservedWordTable* FUN_1403b4750();
 CStringW GetStringCommon(int nStringId);                      // common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);             // common string by key
-CStringW FUN_1409eec40(int nStringId);
+CStringW BlockFormat(int nStringId);
 void FUN_140d73aa0(CStringW str, int a, int b, CStringW strExtra);
 int FUN_14083fec0(CStringW strText, CStringW strSearch);    // find the search text (-1 = none)
-struct Unk_DictStrings { CStringW FUN_141811980(int, int); };
-Unk_DictStrings* FUN_1401a9d70();
 
 // The string formatters (key by value: the callee destroys it).
 CStringW FUN_140292a70(const wchar_t* szFormat, const unsigned& a);
@@ -239,7 +231,7 @@ void UIGameDictionaryDialog::OnLoadComplete()
         spTab->FUN_1422e31e0(m_178);
     if (m_17c != 0)
     {
-        if (MS2Ptr<Unk_DictList> spItems = FUN_140c02900("m_items"))
+        if (MS2Ptr<ASScrollingList> spItems = FUN_140c02900("m_items"))
         {
             if (spItems->FUN_1422dcd80()->FUN_1422bc5d0() > 0)
             {
@@ -328,7 +320,7 @@ void UIGameDictionaryDialog::vfunc_80(void* pRequest)
         else
         {
             m_180 = L"";
-            FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, CStringW(L""));
+            FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
         }
     }
 }
@@ -377,7 +369,7 @@ void UIGameDictionaryDialog::FUN_140f452e0()
         if (spData == 0)
             continue;
         Entry entry;
-        entry.m_name = FUN_1401a9d70()->FUN_141811980(1, spData->m_id);
+        entry.m_name = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spData->m_id);
         entry.m_id = spData->m_id;
         entry.m_type = 3;
         entry.m_levelOrGrade = spData->m_grade;
@@ -391,7 +383,7 @@ void UIGameDictionaryDialog::FUN_140f452e0()
 // @0x140f45870
 void UIGameDictionaryDialog::FUN_140f45870()
 {
-    MS2Ptr<Unk_DictList> spItems = FUN_140c02900("m_items");
+    MS2Ptr<ASScrollingList> spItems = FUN_140c02900("m_items");
     if (spItems.IsNull())
         return;
     spItems->FUN_1422dd1d0();
@@ -482,7 +474,7 @@ void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSe
         }
         if (m_17c != 0)
         {
-            if (MS2Ptr<Unk_DictList> spItems = FUN_140c02900("m_items"))
+            if (MS2Ptr<ASScrollingList> spItems = FUN_140c02900("m_items"))
             {
                 if (spItems->FUN_1422dcd80()->FUN_1422bc5d0() > 0)
                 {
@@ -552,7 +544,7 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                         else
                             strMini = FUN_14052b9d0(CStringW(L"s_gamedictionary_monster_mini_info"), nLevel, GetStringCommon(aGradeNames[nGrade]));
                         detail.FUN_1407cbb20("npcInfo", CStringW(strMini));
-                        CStringW strRace = FUN_1401a9d70()->FUN_141811980(0x11, pNpc->GetRace());
+                        CStringW strRace = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, pNpc->GetRace());
                         CStringW strMaps;
                         ATL::CAtlList<unsigned> fields(10);
                         CFieldMetaTable::GetInstance()->FUN_1406fb3a0(entry.m_id, fields);

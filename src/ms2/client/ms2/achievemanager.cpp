@@ -95,7 +95,7 @@ public:
 };
 
 void FUN_141937ea0(UIGameMenuDialog* pDialog, CAchieve* pAchieve, int bCleared);   // the menu dialog's achievement refresh
-Unk_AmMainInfo* FUN_140931900(int nUiId);
+class UIMainPlayerInfo* FUN_140931900(int);   // C3: was FUN_140931900
 void FUN_1419f0bb0(Unk_AmMainInfo* pInfo, CAchieve* pAchieve);
 void FUN_141a5a560(UIMyInfoDialog* pDialog);
 
@@ -105,7 +105,6 @@ CStringW FUN_140d2d440(unsigned nId, int nGrade);               // the notice's 
 class Unk_AmTrigCmdMgr { public: void FUN_14138bf00(int nCmd, int nArg1, int nArg2); };
 Unk_AmTrigCmdMgr* FUN_1409331e0();
 void FUN_1412751b0(const CStringW& strMsg, int nType);          // system message line
-GameEventManagerCli* FUN_14015a050();
 int ConditionKindOfType(int nConditionType);                    // ConditionKindOfType
 
 // Strings.
@@ -126,13 +125,20 @@ CStringW FUN_14016a730(const char* psz, int nCodePage);
 void FUN_141842290(CStringW& str);                              // text post-processing (colour tags)
 
 // The names, services and tables the reward texts read.
-void* FUN_1403ed2d0();
-Unk_AmPC* FUN_141bd0cc0(void* pWorld);
-unsigned FUN_141658e60(Unk_AmPC* pPC);                          // gender: 0 male
-CFeatureManager* FUN_140166410();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141658e60();
+};
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 // The text filter of the exe (strips markup).
-CReservedWordTable* FUN_1403b4750();
 
 // The coloring table: a row set of (achievement id, grade) -> colour.
 struct Unk_AmColorEntry { char m_pad_00[0x24]; int m_nAchieveId; int m_nGrade; int m_nColorId; };
@@ -172,8 +178,7 @@ class Unk_AmSkillTable { public: Unk_AmSkillRef FUN_1407ee1d0(int nSkillId); };
 // The xml reader of the exe (see continentregiontable.cpp / learningquesttable.cpp).
 class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
 class Unk_AmFileSystem : public CFileSystem { };
-Unk_AmFileSystem* FUN_140166420();
-void* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CStringA& strArg);
 CStringA FUN_14071ae20(const CStringA& strFile);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
@@ -245,7 +250,7 @@ CStringW FUN_14093f800(__int64 nTime);
 CStringW FUN_1409404f0(__int64 nValue);
 int FUN_140940370(Unk_140165cf0* pNode, const char* pszName, int* pOut);
 int FUN_140940430(Unk_140165cf0* pNode, const char* pszName, int* pOut);
-CAchieveManager* FUN_1406c7600();                               // CAchieveManager::GetInstance
+class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 CMsTime FUN_1406c47a0(__int64 nTime);
 CString FUN_14016a5c0(const char* psz, int n);
 
@@ -567,7 +572,7 @@ void CAchieveManager::OnPacket(CByteBuffer& rBuf)
                 UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
                 if (pMenu != 0)
                     FUN_141937ea0(pMenu, pAchieve.get(), bNotified);
-                Unk_AmMainInfo* pInfo = FUN_140931900(0x4e5f);
+                Unk_AmMainInfo* pInfo = ((class Unk_AmMainInfo*)FUN_140931900(0x4e5f));
                 if (pInfo != 0)
                     FUN_1419f0bb0(pInfo, pAchieve.get());
                 UIMyInfoDialog* pMyInfo = FUN_140938c30(0x2711);
@@ -660,7 +665,7 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
                                    FUN_1405c2690(CStringW(L"s_system_achieve_reward_shop_unlock"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pGrade->m_reward.m_nCode)), 0);
             FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_shop_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pGrade->m_reward.m_nCode)), 0x1c);
         }
-        if (FUN_140166410()->FUN_14036d570(0xbb))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbb))
         {
             int nType = pGrade->m_reward.m_nType;
             if (nType == 8)
@@ -687,10 +692,10 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
             {
                 if (nType < 12)
                 {
-                    Unk_AmPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+                    Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
                     if (pPC != 0)
                     {
-                        CStringA strGender(FUN_141658e60(pPC) == 0 ? "male" : "female");
+                        CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->FUN_141658e60() == 0 ? "male" : "female");
                         CStringA strValue;
                         if (pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue))
                         {
@@ -712,12 +717,12 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
                 }
             }
         }
-        if (FUN_140166410()->FUN_14036d570(0xbc) && pGrade->m_reward.m_nType == 9)
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbc) && pGrade->m_reward.m_nType == 9)
         {
-            Unk_AmPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+            Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
             if (pPC == 0)
                 return;
-            CStringA strGender(FUN_141658e60(pPC) == 0 ? "male" : "female");
+            CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->FUN_141658e60() == 0 ? "male" : "female");
             CStringA strValue;
             if (pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue))
             {
@@ -828,12 +833,12 @@ void CAchieveUIData::LoadDesc()
 {
     TiXmlDocument doc;
     CStringA strPath = FUN_14071ae20("achieveDescription.xml");
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_AmFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     Unk_ElemArray aElem;
@@ -848,10 +853,10 @@ void CAchieveUIData::LoadDesc()
         CStringW strComplete = FUN_1401bf530(pElem, "complete", CStringW(L""));
         CStringW strManualDesc = FUN_1401bf530(pElem, "manualDesc", CStringW(L""));
         CStringW strManualComplete = FUN_1401bf530(pElem, "manualComplete", CStringW(L""));
-        FUN_1403b4750()->FUN_1416fb380(strComplete);
-        FUN_1403b4750()->FUN_1416fb380(strManualComplete);
-        FUN_1403b4750()->FUN_1416fbf20(strDesc);
-        FUN_1403b4750()->FUN_1416fbf20(strManualDesc);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strComplete);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strManualComplete);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf20(strDesc);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf20(strManualDesc);
         pUI->m_strDesc = strDesc;
         pUI->m_strComplete = strComplete;
         pUI->m_strManualDesc = strManualDesc;
@@ -870,12 +875,12 @@ void CAchieveUIData::LoadSpecialReward()
 {
     TiXmlDocument doc;
     CStringA strPath = FUN_14071ae20("achieveSpecialRewardDescription.xml");
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_AmFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("achieve"); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pElem)->FUN_140168650("achieve")))
@@ -886,8 +891,8 @@ void CAchieveUIData::LoadSpecialReward()
         pDesc->m_strSpecialDesc = FUN_1401bf530(pElem, "specialDesc", CStringW(L""));
         pDesc->m_strNotifyIcon = FUN_1401bf530(pElem, "specialNotifyIcon", CStringW(L""));
         pDesc->m_strNotifyString = FUN_1401bf530(pElem, "specialNotifyString", CStringW(L""));
-        FUN_1403b4750()->FUN_1416fb380(pDesc->m_strSpecialDesc);
-        FUN_1403b4750()->FUN_1416fb380(pDesc->m_strNotifyString);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(pDesc->m_strSpecialDesc);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(pDesc->m_strNotifyString);
         if (Unk_LockGuard guard = s_lockTables) {} else
         {
             s_mapSpecial.SetAt((ULONGLONG)nId << 32 | (__int64)nGrade, pDesc);
@@ -1068,7 +1073,7 @@ CStringW FUN_14093c8d0(int nId, int nGrade, int bRaw)
 // @0x14093cdb0
 CStringW FUN_14093cdb0(int nId)
 {
-    MS2Ptr<CAchieve> pAchieve = FUN_1406c7600()->Find(nId);
+    MS2Ptr<CAchieve> pAchieve = ((class CAchieveManager*)FUN_1406c7600())->Find(nId);
     if (pAchieve.IsNull())
         return CStringW(L"");
     return FUN_14093ce70(nId, pAchieve->GetStartGrade());
@@ -1113,7 +1118,7 @@ CStringW FUN_14093ce70(int nId, int nGrade)
     case 6:
         return FUN_1405c2690(CStringW(L"s_achieve_reward_item_buy_auth"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nCode));
     default:
-        if (FUN_140166410()->FUN_14036d570(0xbb))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbb))
         {
             int nType = pGrade->m_reward.m_nType;
             if (nType == 8)
@@ -1142,10 +1147,10 @@ CStringW FUN_14093ce70(int nId, int nGrade)
             {
                 if (nType < 12)
                 {
-                    Unk_AmPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+                    Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
                     if (pPC != 0)
                     {
-                        CStringA strGender(FUN_141658e60(pPC) == 0 ? "male" : "female");
+                        CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->FUN_141658e60() == 0 ? "male" : "female");
                         CStringA strValue;
                         pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue);
                         return FUN_1405c2690(CStringW(L"s_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue)));
@@ -1157,12 +1162,12 @@ CStringW FUN_14093ce70(int nId, int nGrade)
                 }
             }
         }
-        if (!FUN_140166410()->FUN_14036d570(0xbc) || pGrade->m_reward.m_nType != 9)
+        if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbc) || pGrade->m_reward.m_nType != 9)
             return CStringW(L"");
-        Unk_AmPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+        Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC == 0)
             return CStringW(L"");
-        CStringA strGender(FUN_141658e60(pPC) == 0 ? "male" : "female");
+        CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->FUN_141658e60() == 0 ? "male" : "female");
         CStringA strValue;
         pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue);
         return FUN_1405c2690(CStringW(L"s_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue)));
@@ -1306,12 +1311,12 @@ int CAchieveCategory::Load()
 {
     TiXmlDocument doc;
     CStringA strPath = FUN_14071a5b0("Table", "achieveCategory.xml");
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_AmFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     Unk_ElemArray aElem;
@@ -1449,7 +1454,7 @@ int CAchieveCategory::IsOpen()
 {
     if (m_strEventFilter.GetLength() != 0)
     {
-        if (FUN_14015a050()->IsEnabled(m_strEventFilter))
+        if (TSingleton<GameEventManagerCli>::GetInstance()->IsEnabled(m_strEventFilter))
             return 1;
         return 0;
     }

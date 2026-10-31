@@ -50,7 +50,11 @@ public:
     PCBase* FUN_141bd1290(int nId);                         // the actor with the object id (other map)
     int FUN_141bbb1e0(GameObject* pObject, int bFullInit, int nCamera);   // register a created object
 };
-Unk_FdWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // The record of an item (CItemData): +0x1e0 is the object id the item places (the doll).
 class Unk_FdItemRec : public CPtred
@@ -68,7 +72,7 @@ class Unk_FdGfx
 public:
     int FUN_14109a9d0();                                    // 0: the colour keys are looked up by name
 };
-Unk_FdGfx* FUN_1409f7c90();
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 
 // The texture swap table of the fitting doll (global config, FUN_1401d31f0): the file names of the textures to swap.
 class Unk_FdTexConfig
@@ -81,12 +85,12 @@ public:
     CString m_strGlossTo;                                   // +0x120
 };
 MS2_CHECK_OFFSET(Unk_FdTexConfig, m_strGlossTo, 0x120);
-Unk_FdTexConfig* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The texture loader (FUN_140a0afd0).
-CNifLoadingService* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
-// Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
+// Depth-first walker over a scene graph (0x30 bytes; unrecovered class).
 class Unk_SceneWalker
 {
 public:
@@ -94,16 +98,18 @@ public:
     ~Unk_SceneWalker();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
+    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
-MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
+MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 class Unk_FdMaterialTable;
 struct Unk_FdMaterialEntry;
 extern Unk_FdMaterialTable DAT_143d69198;                   // the material table
-Unk_FdMaterialEntry* FUN_140a17af0(Unk_FdMaterialTable* pTable, const NiMaterial* pMaterial);   // table lookup, NULL-safe
-int FUN_140ef4dd0(Unk_FdMaterialEntry* pEntry);             // the entry's kind
-const NiMaterial* FUN_140a17cd0(NiRenderObject* pObject);   // the object's active material
+class Unk_CubeKind   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140ef4dd0();
+};
 extern NiFixedString DAT_143ae50c8;                         // colour keys of the three colour slots
 extern NiFixedString DAT_143ae50d0;
 extern NiFixedString DAT_143ae50d8;
@@ -166,17 +172,17 @@ FittingDollPC* FUN_14121b590(int nType, int nSourceId, int nItemId)
     if (nType == 1)
     {
         nObjectId = 0xf;
-        pObject = FUN_1403ed2d0()->FUN_141bd1290(0xf);
+        pObject = ((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bd1290(0xf);
     }
     else if (nType == 0)
     {
         nObjectId = 0x10;
-        pObject = FUN_1403ed2d0()->FUN_141bd1290(0x10);
+        pObject = ((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bd1290(0x10);
     }
     else if (nType == 2)
     {
         nObjectId = 0x11;
-        pObject = FUN_1403ed2d0()->FUN_141bd1290(0x11);
+        pObject = ((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bd1290(0x11);
     }
     if (pObject == 0 && nObjectId != 0)
     {
@@ -192,7 +198,7 @@ FittingDollPC* FUN_14121b590(int nType, int nSourceId, int nItemId)
             return 0;
         ((FittingDollPC*)pObject)->type = nType;
         ((FittingDollPC*)pObject)->index = nSourceId;
-        if (FUN_1403ed2d0()->FUN_141bbb1e0(pObject, 0, 1) == 0)
+        if (((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bbb1e0(pObject, 0, 1) == 0)
             return 0;
     }
     return (FittingDollPC*)pObject;
@@ -326,7 +332,7 @@ void FittingDollPC::vfunc_53(float f)
     PC::vfunc_53(f);
     if (parentName.GetLength() != 0)
     {
-        PCBase* pSource = FUN_1403ed2d0()->FUN_141bd1200(index);
+        PCBase* pSource = ((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bd1200(index);
         if (pSource != 0)
         {
             NiAVObject* pRoot = FUN_141b6efc0(pSource->FUN_14123c410());
@@ -373,7 +379,7 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
     if (pRoot == 0)
         return;
     const char* pszKey = 0;
-    if (FUN_1409f7c90()->FUN_14109a9d0() == 0)
+    if (((class Unk_FdGfx*)FUN_1409f7c90())->FUN_14109a9d0() == 0)
     {
         if (nSlot == 0)
             pszKey = FUN_142087e50(&DAT_143ae50c8);
@@ -388,8 +394,8 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
         NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pNode);
         if (pRender != 0)
         {
-            Unk_FdMaterialEntry* pInfo = FUN_140a17af0(&DAT_143d69198, FUN_140a17cd0(pRender));
-            if (pInfo != 0 && FUN_140ef4dd0(pInfo) == 2)
+            Unk_FdMaterialEntry* pInfo = ((struct Unk_FdMaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), ((class NiRenderObject*)(pRender))->GetActiveMaterial()));
+            if (pInfo != 0 && ((class Unk_CubeKind*)(struct Unk_FdMaterialEntry*)(pInfo))->FUN_140ef4dd0() == 2)
             {
                 NiTexturingProperty* pTexturing = (NiTexturingProperty*)pRender->GetProperty(NiProperty::TEXTURING);
                 if (pTexturing != 0)
@@ -398,21 +404,21 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
                     if (pBase != 0)
                     {
                         NiSourceTexture* pSource = NiDynamicCast(NiSourceTexture, pBase->GetTexture());
-                        if (pSource != 0 && FUN_141068d50(pSource->GetFilename(), FUN_1401d31f0()->m_strBaseFrom))
+                        if (pSource != 0 && FUN_141068d50(pSource->GetFilename(), ((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strBaseFrom))
                         {
-                            pBase->SetTexture(FUN_140a0afd0()->GetTexture(CString(FUN_1401d31f0()->m_strBaseTo), 1));
+                            pBase->SetTexture(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString(((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strBaseTo), 1));
                         }
                     }
                     NiTexturingProperty::Map* pGloss = pTexturing->GetGlossMap();
                     if (pGloss != 0)
                     {
                         NiSourceTexture* pSource = NiDynamicCast(NiSourceTexture, pGloss->GetTexture());
-                        if (pSource != 0 && FUN_141068d50(pSource->GetFilename(), FUN_1401d31f0()->m_strGlossFrom))
+                        if (pSource != 0 && FUN_141068d50(pSource->GetFilename(), ((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strGlossFrom))
                         {
-                            pGloss->SetTexture(FUN_140a0afd0()->GetTexture(CString(FUN_1401d31f0()->m_strGlossTo), 1));
+                            pGloss->SetTexture(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString(((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strGlossTo), 1));
                         }
                     }
-                    if (FUN_1409f7c90()->FUN_14109a9d0() != 0)
+                    if (((class Unk_FdGfx*)FUN_1409f7c90())->FUN_14109a9d0() != 0)
                     {
                         switch (nSlot)
                         {
@@ -477,7 +483,7 @@ int FittingDollPC::FUN_14121c870(CItem* pItem)
 {
     if (pItem == 0)
         return 0xc;
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = ((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0xb;
     if (pPlayer->FUN_14166ce30() != 0)

@@ -7,6 +7,7 @@
 // MS2-RANGE: 0x1413b4e40-0x1413b4e80 .text$mn
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <new>
 
@@ -35,7 +36,11 @@ class Unk_GcWorld
 public:
     Unk_GcPC* FUN_141bd0cc0();                              // the local player
 };
-Unk_GcWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // The inventory dialog (id 0x4e2d); vfunc_55 is UIDialog's "closed" test.
 class Unk_TabInventory : public UIDialog
@@ -46,9 +51,13 @@ public:
 Unk_TabInventory* FUN_1405344f0(int nId);
 
 void* FUN_1408e57f0();
-int FUN_1422b9e00(void* p);                                 // the current scene id
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSubSceneId();
+};
 
-extern Vector3 DAT_143b01a60;                       // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 #ifndef MS2_HOOK_DLL
 static ClassObjectRegistrar s_regGameScene(L"CGuideConditionGameScene", CGuideConditionGameScene::CreateObject);     // .text$di 0x1400f36a0
@@ -80,7 +89,7 @@ CGuideConditionMovement::CGuideConditionMovement()
 // @0x1413a7820
 int CGuideConditionMovement::vfunc_3()
 {
-    Unk_GcPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_GcPC* pPC = ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     if (m_vLastPos.FUN_140552690(DAT_143b01a60))
@@ -148,6 +157,6 @@ MS2_REPLACE_METHOD(0x1413A7B30, CGuideConditionGameScene, GetTypeName, 61, 0xCE0
 // @0x1413a7b80
 int CGuideConditionGameScene::vfunc_3()
 {
-    return FUN_1422b9e00(FUN_1408e57f0()) == 0x620001d;
+    return ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001d;
 }
 MS2_REPLACE_METHOD(0x1413A7B80, CGuideConditionGameScene, vfunc_3, 56, 0xA135E761);

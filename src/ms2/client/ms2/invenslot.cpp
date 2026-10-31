@@ -84,6 +84,10 @@
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/itembreakmanager.h"
+#include "ms2/commonfiles/jobsystem.h"
+#include "ms2/client/ms2/instrumentmanager.h"
+#include "ms2/placeholder/cguidemanager.h"
+#include "ms2/client/ms2/uimyinfodialog.h"
 #include <utility>
 #include <efd/IBase.h>
 #include <efd/MemHint.h>
@@ -104,10 +108,9 @@ public:
     MyPC* FUN_141bd0cc0();                                // the local player
     Unk_IsNetObject* FUN_141bd1530(__int64 nId);          // a field object by id
 };
-CEffectService* FUN_1403ed280();                          // the sound service
-FittingDollPC* FUN_140884db0(Unk_IsNetObject* pObject);   // the object as a fitting doll (class 0x6200046)
+class MyPC* FUN_140884db0(class Unk_QueryObj*);   // C3: was FUN_140884db0
 void FUN_14121b840(int nResult);                          // the notice of a doll item result (fittingdollslot#1)
-int FUN_141420a70(CItem* pItem, FittingDollPC* pDoll);   // the equip slot the item goes to on the avatar
+int FUN_141420a70(class CItem*, class AvatarPC*);   // C3: was FUN_141420a70
 
 // The skill book of the local player (JobSystemCli, FUN_1416546d0) and the skill table.
 class Unk_IsSkillBook
@@ -116,8 +119,6 @@ public:
     virtual void vfunc_0();
     virtual MS2Ptr<SkillLevelData> vfunc_1(unsigned nSkillId);    // 1 the learned level of a skill
 };
-Unk_IsSkillBook* FUN_1416546d0(MyPC* pPc);
-MS2Ptr<SkillData> FUN_140639210(unsigned nSkillId);      // JobSystem::GetSkillData
 
 // The inventory window (UI class 0x4e2d).
 class UIInventoryDialog : public UIDialog
@@ -129,16 +130,23 @@ public:
     bool FUN_14199b4e0(int nResult, const CMsgBoxData& box);   // the destroy box answer
 };
 UIInventoryDialog* FUN_1405344f0(int nId);
-void FUN_140c3fe30(UIInventoryDialog* pDialog, int n);
+class Unk_McInventoryDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140c3fe30(unsigned int);
+};
 
 // The quest event dispatcher (FUN_140bfc4b0) the slot registers with.
 UIQuestEventDispatcher* FUN_140bfc4b0();
 // The item / UGC event hubs the bag registers with.
 struct Unk_IsItemEvents;
-Unk_IsItemEvents* FUN_140a6a840();
-void FUN_1419cae20(Unk_IsItemEvents*, UIItemEventListener*);
-void FUN_1419caeb0(Unk_IsItemEvents*, UIItemEventListener*);
-UIUGCEventDispatcher* FUN_140bc09f0();
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419cae20(class UIItemEventListener*);
+    void FUN_1419caeb0(class UIItemEventListener*);
+};
 
 
 // The item break manager (FUN_1409c4b20).
@@ -149,7 +157,7 @@ public:
     int FUN_140532de0(MS2Ptr<CItem> spItem, int nSlot);   // add the item
     int FUN_140533340(MS2Ptr<CItem> spItem);              // replace the item
 };
-Unk_IsBreakMgr* FUN_1409c4b20();
+class Unk_SlotBreakManager* FUN_1409c4b20();   // C3: was FUN_1409c4b20
 
 // The item lock manager (FUN_140535310).
 class Unk_IsLockMgr
@@ -161,10 +169,9 @@ public:
     int FUN_140613160(CItem* pItem);                      // the item may be used (not locked)
 };
 Unk_IsLockMgr* FUN_140535310();
-CPetManager* FUN_140535320();
+class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 
-// The feature switches (FUN_140166410).
-CFeatureManager* FUN_140166410();
+// The feature switches.
 
 // The key state.
 class Unk_IsKeys : public CInputKeyHandler
@@ -172,7 +179,7 @@ class Unk_IsKeys : public CInputKeyHandler
 public:
     bool FUN_14116dcb0(int nAction, int a, int b);        // an action key is bound
 };
-Unk_IsKeys* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The key bindings (FUN_1409331f0).
 class Unk_IsKeyMap
@@ -181,7 +188,7 @@ public:
     CStringW FUN_14142d760(int nAction, int n);           // the key text of an action
     int FUN_140a700b0();
 };
-Unk_IsKeyMap* FUN_1409331f0();
+class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 
 // The gamepad HUD.
 class Unk_IsPadHud
@@ -203,12 +210,12 @@ class Unk_IsUiScale
 public:
     Unk_IsPadHudPtr FUN_1422b0370(int nDialogId);
 };
-Unk_IsUiScale* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 
 // The names of the inventory tabs / item kinds.
 
 // The item rules (quest items, ...).
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 CStringW FUN_1416e5210(int nQuestId, CStringW strFormat);
 
 // Strings and notices.
@@ -226,15 +233,12 @@ void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nId, void* p, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spData);
-unsigned FUN_1412773a0(unsigned nMax);
+int FUN_1412773a0(int);   // C3: was FUN_1412773a0
 CString FUN_140719530(unsigned __int64 v);                // "%I64u"
 CString FUN_140719210(long v);                            // "%ld"
-void FUN_140165270(ATL::CAtlArray<CString>* pArr, const CString& str);   // append a string to the slot's data array
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);       // the value is an object
 void FUN_140614800(Scaleform::GFx::Value v);
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                 // item link / popup for the item
 CStringW FUN_1413fa9b0(const CStringW& str);
-bool FUN_14025cd60(const CStringW& a, const CStringW& b);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void FUN_140710590(COutPacket& packet);                   // send the packet
 
@@ -248,9 +252,9 @@ public:
     Scaleform::GFx::Value FUN_1422bb330(const char* szMethod);
     Scaleform::GFx::Value FUN_140bfe360(const char* szMethod, bool b);
 private:
-    void* m_pad[9];
+    void* m_pad[8];
 };
-MS2_CHECK_SIZE(Unk_IsScript, 0x48);
+MS2_CHECK_SIZE(Unk_IsScript, 0x40);   // AScript (ascript.h)
 
 // Slots of other units.
 InvenSlot* FUN_140a50b50(DragSlot* pSlot);                // the inventory slot behind a drag source
@@ -262,10 +266,8 @@ void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
-void FUN_1422cc9e0(DragSlotBag* pBag);
 
 // The use-item paths (vfunc_13).
-int FUN_141659690(MyPC* pPC);                             // the player is in the cube craft mode
 class Unk_PCCubeCraft
 {
 public:
@@ -283,7 +285,7 @@ public:
     bool FUN_140d09d90(int nMode);                        // a pre-listening is running
     __int64 FUN_140c8dab0();                              // the uid of the score being played
 };
-Unk_IsInstrumentMgr* FUN_140c8dac0();                     // TSingleton<CInstrumentManager>::GetInstance
+struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
 class Unk_IsInstrumentDialog
 {
 public:
@@ -301,8 +303,8 @@ struct Unk_IsAccountFlags
     void* m_0;
     Unk_IsAccountFlagSet m_flags;                         // +0x08
 };
-Unk_IsAccountFlags* FUN_14025e7b0();
-CBlockManager* FUN_140a6a830();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
+class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void FUN_140a30ad0(const BlockPtr& rec, int action, unsigned __int64 cb);   // the blocked-action notice
 void FUN_140a2ff20(const BlockPtr& rec, int action, unsigned __int64 cb);   // the blocked-action notice (drop)
 
@@ -316,10 +318,9 @@ public:
     MS2Ptr<SkillData> FUN_1407ee1d0(int nSkillId);        // the skill record
 };
 int FUN_141769320(MS2Ptr<CItemData> spData);              // the skill of an emotion / skill book item
-void FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nPage);   // register a shortcut
-void* FUN_140938c30(int nId);                             // the profile dialog (0x2711)
+int FUN_14092fac0(int, int, __int64, int);   // C3: was FUN_14092fac0
+class UIMyInfoDialog* FUN_140938c30(int);   // C3: was FUN_140938c30
 bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag);   // put the gem item on (packet 0x47)
-void FUN_140c887b0(MS2Ptr<CItem> spItem, int nSlot);      // put the item into the pet inventory (count box when stacked)
 UIPlayInstrumentDialog* FUN_140d0c040(int nId);
 UIItemMergeRevertDialog* FUN_140d274e0(int nId);
 UIItemExtractionScrollDialog* FUN_140d27300(int nId);
@@ -330,21 +331,22 @@ static void FUN_14140c4d0(__int64 nUid, int nItemId, int nCount, int nMax);
 // The drop paths (vfunc_18).
 #define IS_INVENTORY_VIEW (*reinterpret_cast<Unk_Inventory*>(&g_143ab2a90))
 bool FUN_141271f90(MS2Ptr<CItem> spItem);                 // take the gem item off (packet 0x47)
-void FUN_140c88c30(MS2Ptr<CItem> spItem, int nSlot);      // take the item out of the pet inventory
 bool FUN_140633fb0(MS2Ptr<CItem> spItem, int* pReason);   // may the item go to the black market
 
 // The destroy paths (vfunc_26).
-int FUN_14138c900(void* pBuffs, int nKind);               // a buff of the kind is on
-void* FUN_1409331e0();                                    // the player's buff table
-__int64 FUN_1410947c0(void* pObject);                     // the item uid of a ride
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
+class CNpc   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_1410947c0();
+};
 bool FUN_140633700(MS2Ptr<CItem> spItem);                 // the item is destroyed without a box
 void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pHas);   // the warning prefix of the item
-CPhysXHelper* FUN_1409f7ca0();                            // the physics scene
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 extern Vector3 DAT_143a08cf8;                     // NiPoint3::UNIT_Z
 static CStringW FUN_14140c2b0(MS2Ptr<CItem> spItem);
 
 // The tooltip paths (vfunc_0).
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);   // str == sz
 class Unk_IsEquipView : public MyPC
 {
 public:
@@ -353,7 +355,7 @@ public:
 
 // The trade / sell paths.
 bool FUN_140633e40(MS2Ptr<CItem> spItem, int* pReason);   // may the item be traded
-void FUN_141425fc0(__int64 nUid, unsigned int nCount, CItem* pItem);   // sell the item to the npc shop
+void FUN_141425fc0(__int64, int, void*);   // C3: was FUN_141425fc0
 static void FUN_14140d200(__int64 nUid, int nCount, int nMax);
 static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int nPrice, CStringW strName);
 CNetworkService* FUN_140714f90();
@@ -365,13 +367,12 @@ extern ATL::CAtlList<int> DAT_143af2258;                  // the ids of the open
 bool FUN_140633a20(MS2Ptr<CItem> spItem);                 // may be traded
 bool FUN_140633840(MS2Ptr<CItem> spItem);                 // may be sold
 bool FUN_140633b80(MS2Ptr<CItem> spItem);                 // may be registered on the black market
-int FUN_141a5c7a0(void* pDialog);                         // the profile dialog shows the own character
 
 // The put-on checks (FUN_14140dea0) and the shop (FUN_14140e3f0).
 class Unk_IsItemRequire : public CItem
 {
 public:
-    int FUN_140526810(int nLevel);                        // the level is enough
+    int FUN_140526810(unsigned short nLevel);                        // the level is enough
 };
 bool FUN_1406343b0(MS2Ptr<CItem> spItem, const __int64* pCharacterId);   // the binding allows the character
 class UIShopDialog : public UIDialog
@@ -491,7 +492,7 @@ MS2_REPLACE(0x1414045D0, FUN_1414045d0, 478, 0xED9C79B9);
 void FUN_1414047c0(MS2Ptr<CItemData> spData)
 {
     if (spData.get() != 0)
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"), spData->FUN_14053eca0(), CString(""), 0, 0,
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"), spData->FUN_14053eca0(), CString(""), 0, 0,
             1.0f, 0);
 }
 MS2_REPLACE(0x1414047C0, FUN_1414047c0, 288, 0x8BC70F5B);
@@ -522,21 +523,21 @@ void FUN_1414049c0(ATL::CAtlArray<CString>* pArr, int nSkillId)
     MyPC* pPc = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
-    FUN_1416546d0(pPc);
-    MS2Ptr<SkillData> spSkill(std::move(FUN_140639210(nSkillId)));
+    ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0());
+    MS2Ptr<SkillData> spSkill(std::move(JobSystem::GetSkillData(nSkillId)));
     if (!spSkill)
         return;
     MS2Ptr<SkillLevelData> spLevel(0);
     if (pPc->FUN_1416764d0() == 0)
-        spLevel = FUN_1416546d0(pPc)->vfunc_1(nSkillId);
+        spLevel = ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0())->vfunc_1(nSkillId);
     else
         spLevel = spSkill->FUN_1407e90a0(1);
     if (!spLevel)
         return;
     if (spSkill->m_condition.m_nUseCoolDownShowUI != 0)
     {
-        FUN_140165270(pArr, FUN_140719210(spSkill->m_nCooldownGroupID));
-        FUN_140165270(pArr, FUN_140719210(nSkillId));
+        ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(pArr))->Add(FUN_140719210(spSkill->m_nCooldownGroupID));
+        ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(pArr))->Add(FUN_140719210(nSkillId));
     }
 }
 MS2_REPLACE(0x1414049C0, FUN_1414049c0, 670, 0x0CFBAC74);
@@ -569,13 +570,13 @@ bool FUN_141404ce0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* p
     MyPC* pPc = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
-    FUN_1416546d0(pPc);
-    MS2Ptr<SkillData> spSkill(std::move(FUN_140639210(nSkillId)));
+    ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0());
+    MS2Ptr<SkillData> spSkill(std::move(JobSystem::GetSkillData(nSkillId)));
     if (!spSkill)
         return false;
     MS2Ptr<SkillLevelData> spLevel(0);
     if (pPc->FUN_1416764d0() == 0)
-        spLevel = FUN_1416546d0(pPc)->vfunc_1(nSkillId);
+        spLevel = ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0())->vfunc_1(nSkillId);
     else
         spLevel = spSkill->FUN_1407e90a0(1);
     if (!spLevel)
@@ -588,7 +589,7 @@ bool FUN_141404ce0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* p
         if (nKey == 0 || nKey != spSkill->GetCooldownKey())
             return false;
     }
-    if (FUN_1409b4d40(*pValue))
+    if (pValue->IsObject())
     {
         float fRemain = 0;
         float fTotal = 0;
@@ -620,18 +621,18 @@ bool FUN_1414050c0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* p
     MyPC* pPc = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
-    FUN_1416546d0(pPc);
-    MS2Ptr<SkillData> spSkill(std::move(FUN_140639210(nSkillId)));
+    ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0());
+    MS2Ptr<SkillData> spSkill(std::move(JobSystem::GetSkillData(nSkillId)));
     if (!spSkill)
         return false;
     MS2Ptr<SkillLevelData> spLevel(0);
     if (pPc->FUN_1416764d0() == 0)
-        spLevel = FUN_1416546d0(pPc)->vfunc_1(nSkillId);
+        spLevel = ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0())->vfunc_1(nSkillId);
     else
         spLevel = spSkill->FUN_1407e90a0(1);
     if (!spLevel)
         return false;
-    if (FUN_140166410()->FUN_14036d570(0xca) == false && spSkill->m_condition.m_nUseCoolDownShowUI == 0)
+    if (CFeatureManager::GetInstance()->FUN_14036d570(0xca) == false && spSkill->m_condition.m_nUseCoolDownShowUI == 0)
         return false;
     int nGroup = FUN_141404c70(nKey);
     if (nGroup == 0 || nGroup != (int)spSkill->GetCooldownGroupId())
@@ -639,7 +640,7 @@ bool FUN_1414050c0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* p
         if (nKey == 0 || nKey != spSkill->GetCooldownKey())
             return false;
     }
-    if (FUN_1409b4d40(*pValue))
+    if (pValue->IsObject())
     {
         float fRemain = pPc->FUN_141523bc0()->FUN_141765fe0(nSkillId, 1);
         if (fRemain <= 0.0f)
@@ -681,9 +682,9 @@ int FUN_1414056b0(MS2Ptr<CItem> spItem)
     int nResult = 0;
     if (spItem->FUN_1405258b0() != 0)
     {
-        if (FUN_140166410()->FUN_14036d570(0x8e))
+        if (CFeatureManager::GetInstance()->FUN_14036d570(0x8e))
         {
-            if (FUN_14025e7c0()->FUN_14116dcb0(0x4940d, 0, 0))
+            if (((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116dcb0(0x4940d, 0, 0))
                 nResult = 1;
             else
                 nResult = 2;
@@ -760,7 +761,7 @@ int InvenSlot::FUN_141405a60(CItem* pItem, int nSlot)
         return false;
     if (pItem->FUN_140526c30() == 0)
         return false;
-    FittingDollPC* pDoll = FUN_140884db0(reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0));
+    FittingDollPC* pDoll = ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0))));
     if (pDoll == 0)
         return false;
     if (nSlot != 0 && pItem->FUN_140527840()->FUN_14053eba0()->FUN_14054b450(nSlot) == false)
@@ -768,7 +769,7 @@ int InvenSlot::FUN_141405a60(CItem* pItem, int nSlot)
         FUN_14121b840(0x10);
         return false;
     }
-    int nType = nSlot == 0 ? FUN_141420a70(pItem, pDoll) : nSlot;
+    int nType = nSlot == 0 ? FUN_141420a70(pItem, (class AvatarPC*)(pDoll)) : nSlot;
     if (pItem->FUN_140527840()->FUN_14053d460())
         nType = 5;
     else if (pItem->FUN_140527840()->FUN_14053d2b0())
@@ -795,13 +796,13 @@ MS2_REPLACE_METHOD(0x141405A60, InvenSlot, FUN_141405a60, 573, 0xE7C18AAB);
 // @0x141405cb0
 void InvenSlot::vfunc_6(void* p)
 {
-    FUN_140165270(static_cast<ATL::CAtlArray<CString>*>(p), FUN_140719530(m_nItemUid));
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(static_cast<ATL::CAtlArray<CString>*>(p)))->Add(FUN_140719530(m_nItemUid));
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem == 0)
         return;
     int nItemId = spItem->FUN_1405276c0();
     if (spItem->FUN_140527840()->FUN_14053c5c0() == 2 || spItem->FUN_140527840()->FUN_14053c5c0() == 0x18)
-        FUN_140165270(static_cast<ATL::CAtlArray<CString>*>(p), FUN_140719210(nItemId));
+        ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(static_cast<ATL::CAtlArray<CString>*>(p)))->Add(FUN_140719210(nItemId));
     FUN_1414049c0(static_cast<ATL::CAtlArray<CString>*>(p), spItem->FUN_140527840()->FUN_14053dc20());
 }
 MS2_REPLACE_METHOD(0x141405CB0, InvenSlot, vfunc_6, 360, 0xF25982D8);
@@ -830,7 +831,7 @@ MS2_REPLACE_METHOD_VIA(0x141405E80, InvenSlot, UIQuestEventListener, vfunc_o178_
 // @0x141405eb0
 int InvenSlot::vfunc_11()
 {
-    if (FUN_1409b4d40(m_value18))
+    if (m_value18.IsObject())
         m_value18.Invoke((const char*)s_strOnCooldownEnd, 0);
     m_nItemUid = 0;
     return DragSlot::vfunc_11();
@@ -852,7 +853,7 @@ int InvenSlot::vfunc_13()
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(GetItemUid());
         if (!(spItem == 0))
         {
-            if (FUN_141659690(pPC) == 0)
+            if (((class PC*)(class MyPC*)(pPC))->FUN_141659690() == 0)
             {
                 if (spItem->FUN_140525f10() == 1 && spItem->FUN_140525f60() == 0)
                 {
@@ -938,9 +939,9 @@ int InvenSlot::vfunc_13()
                 }
                 else
                 {
-                    if (FUN_140166410()->FUN_14036d570(10) == false)
+                    if (CFeatureManager::GetInstance()->FUN_14036d570(10) == false)
                         return 0;
-                    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(5) != 0)
+                    if (((struct Unk_IsAccountFlags*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(5) != 0)
                     {
                         FUN_141275260(0x2f7, 1, 1);
                         return 0;
@@ -951,13 +952,13 @@ int InvenSlot::vfunc_13()
                         FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
                         return 0;
                     }
-                    if (FUN_140c8dac0()->FUN_140d09d90(1))
+                    if (((CInstrumentManager*)((class Unk_IsInstrumentMgr*)FUN_140c8dac0()))->HasOtherFlags(1))
                     {
                         CStringW strKey(L"s_play_instrument_cant_while_pre_listening");
                         FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
                         return 0;
                     }
-                    BlockPtr spBlocked = FUN_140a6a830()->FindBlockedAction(0x10);
+                    BlockPtr spBlocked = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(0x10);
                     if (spBlocked.get() != 0)
                     {
                         FUN_140a30ad0(spBlocked, 0x10, 0);
@@ -1016,7 +1017,7 @@ int InvenSlot::vfunc_14()
     case 2:
         if (FUN_14140be60(spItem) != 0)
         {
-            Unk_IsPadHudPtr spHud = FUN_14025e7a0()->FUN_1422b0370(6);
+            Unk_IsPadHudPtr spHud = ((class Unk_IsUiScale*)FUN_14025e7a0())->FUN_1422b0370(6);
             if (spHud.FUN_140a58470() != 0)
                 spHud.FUN_140a584a0()->FUN_1422cee50(0);
         }
@@ -1024,7 +1025,7 @@ int InvenSlot::vfunc_14()
     case 3:
     {
         bool bAll;
-        if (FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0) || FUN_14025e7c0()->FUN_14116d950(0x36, false, 0))
+        if (((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0) || ((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116d950(0x36, false, 0))
             bAll = true;
         else
             bAll = false;
@@ -1094,14 +1095,14 @@ int InvenSlot::vfunc_14()
                 nUid = spItem->FUN_140526a50();
             else
                 nUid = 0;
-            int nPage = FUN_1409331f0()->FUN_140a700b0();
+            int nPage = ((class Unk_IsKeyMap*)FUN_1409331f0())->FUN_140a700b0();
             FUN_14092fac0(nSkillId, spItem->FUN_1405276c0(), nUid, nPage);
         }
         break;
     case 8:
     case 9:
-        if (FUN_1409c4b20()->FUN_140532ab0() != 0)
-            FUN_1409c4b20()->FUN_140532de0(spItem, -1);
+        if (((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140532ab0() != 0)
+            ((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140532de0(spItem, -1);
         break;
     case 10:
         if (FUN_140535310()->FUN_140612d60() != 0)
@@ -1115,7 +1116,7 @@ int InvenSlot::vfunc_14()
         break;
     }
     case 12:
-        if (FUN_140938c30(0x2711) != 0)
+        if (((void*)FUN_140938c30(0x2711)) != 0)
             FUN_141271960(spItem, -1, 0);
         break;
     case 13:
@@ -1146,13 +1147,13 @@ int InvenSlot::vfunc_14()
     }
     case 14:
     {
-        unsigned nFree = FUN_140535320()->FUN_140c8b410()->FUN_140c87b90();
+        unsigned nFree = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87b90();
         if (nFree == -1 && spItem->FUN_1405281e0() < 2)
         {
             FUN_141275260(0xf2, 1, 1);
             return 0;
         }
-        FUN_140c887b0(spItem, 0);
+        CPetInventory::FUN_140c887b0(spItem, 0);
         break;
     }
     case 15:
@@ -1183,7 +1184,7 @@ int InvenSlot::vfunc_14()
     case 18:
     {
         UIItemExtractionScrollDialog* pScroll;
-        if (FUN_140166410()->FUN_14036d570(0x8f) && (pScroll = FUN_140d27300(0x4f49)) != 0)
+        if (CFeatureManager::GetInstance()->FUN_14036d570(0x8f) && (pScroll = FUN_140d27300(0x4f49)) != 0)
             pScroll->FUN_140e4a920(m_nItemUid);
         break;
     }
@@ -1216,7 +1217,7 @@ int InvenSlot::vfunc_17()
         vfunc_12();
         int nAction = 0x14;
         {
-            BlockPtr spBlocked = FUN_140a6a830()->FindBlockedAction(nAction);
+            BlockPtr spBlocked = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(nAction);
             if (spBlocked.get() != 0)
             {
                 FUN_140a2ff20(spBlocked, nAction, 0);
@@ -1339,12 +1340,12 @@ int InvenSlot::vfunc_18(void* p)
     {
         MS2Ptr<CItem> spOld = pBreak->vfunc_25();
         MS2Ptr<CItem> spMine = g_143ab2a90.FUN_140a5d680(m_nItemUid);
-        if (FUN_1409c4b20()->FUN_140531270(spOld) != 0)
+        if (((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140531270(spOld) != 0)
         {
-            if (FUN_1409c4b20()->FUN_140531270(spMine) == 0)
-                FUN_1409c4b20()->FUN_140533340(spOld);
+            if (((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140531270(spMine) == 0)
+                ((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140533340(spOld);
             else
-                FUN_1409c4b20()->FUN_140532de0(spMine, spOld->FUN_140526b50());
+                ((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140532de0(spMine, spOld->FUN_140526b50());
         }
     }
     else if (ItemLockSlot* pLock = efd::DynamicCast<ItemLockSlot>(pDrag))
@@ -1362,10 +1363,10 @@ int InvenSlot::vfunc_18(void* p)
     else if (PetSlot* pPet = FUN_140dbc0d0(pDrag))
     {
         __int64 nUid = pPet->GetPetItemUid();
-        MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(nUid);
+        MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(nUid);
         if (spItem.get() != 0)
         {
-            FUN_140c88c30(spItem, m_nIndex);
+            CPetInventory::FUN_140c88c30(spItem, m_nIndex);
             FUN_141404930(nUid);
         }
     }
@@ -1403,7 +1404,7 @@ int InvenSlot::vfunc_20()
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem.get() != 0)
     {
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
             spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
         if (spItem->FUN_1405268f0() != 0)
             spItem->FUN_1405268d0(0);
@@ -1420,7 +1421,7 @@ int InvenSlot::vfunc_21()
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem.get() != 0)
     {
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
             spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
         UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
         if (pInventory != 0)
@@ -1484,7 +1485,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
     MS2Ptr<CItemData> spData(spItem->FUN_140527840());
     if (spData == 0)
         return 0;
-    if (FUN_14138c900(FUN_1409331e0(), 6) != 0)
+    if (((CGuideManager*)((void*)FUN_1409331e0()))->IsRestricted(6) != 0)
     {
         FUN_141275260(0x88a, 1, 1);
         return 0;
@@ -1498,7 +1499,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
         return 0;
     }
     void* pRide = pPC->FUN_141676a10();
-    if (pRide != 0 && FUN_1410947c0(pRide) == spItem->FUN_140526a50())
+    if (pRide != 0 && ((class CNpc*)(void*)(pRide))->FUN_1410947c0() == spItem->FUN_140526a50())
     {
         FUN_140d73bc0(0x71, 0, 0, CStringW(L""));
         return 0;
@@ -1513,32 +1514,28 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
     CItemSocket* pSocket = spItem->FUN_1405279c0();
     if (pSocket != 0 && pSocket->FUN_140622750() == 0)
     {
-        CStringW strKey(L"s_itembreak_usedgemstone_item");
-        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_itembreak_usedgemstone_item"), 0, 0, L"");
         return 0;
     }
     if (spItem->FUN_140525640() != 0 && TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4f38) != 0)
     {
-        CStringW strKey(L"s_err_cannot_destroy_petsystem_opendialog");
-        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_err_cannot_destroy_petsystem_opendialog"), 0, 0, L"");
         return 0;
     }
     if (spData->FUN_14053c6f0() == 0xd8 && TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4f38) != 0)
     {
-        CStringW strKey(L"s_err_cannot_destroy_petsystem_opendialog");
-        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_err_cannot_destroy_petsystem_opendialog"), 0, 0, L"");
         return 0;
     }
-    if (spItem->FUN_140527840()->FUN_14053cd10() && FUN_140c8dac0()->FUN_140c8dab0() == spItem->FUN_140526a50())
+    if (spItem->FUN_140527840()->FUN_14053cd10() && ((class Unk_IsInstrumentMgr*)FUN_140c8dac0())->FUN_140c8dab0() == spItem->FUN_140526a50())
     {
-        CStringW strKey(L"s_play_instrument_cant_destory_score");
-        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_cant_destory_score"), 0, 0, L"");
         return 0;
     }
     if (FUN_140633700(spItem) == false)
     {
         CStringW strError;
-        if (FUN_140764020()->FUN_1416ce170(spItem) == 0)
+        if (((class CQuestManager*)FUN_140764020())->FUN_1416ce170(spItem) == 0)
         {
             if (spItem->FUN_140527930()->FUN_140635120() == 0)
             {
@@ -1608,7 +1605,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
     kInfo.m_dir = DAT_143a08cf8.FUN_1409f7960();
     kInfo.m_maxDist = 0.0f;
     kInfo.m_groups = 0x389;
-    if (FUN_1409f7ca0()->CastRay(&kInfo, &kMask) == false)
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, &kMask) == false)
         return 0;
     return 1;
 }
@@ -1627,11 +1624,11 @@ int InvenSlot::vfunc_0(void* p)
     int nMode = FUN_14140d3e0(spItem, 1);
     if (nMode == 2)
     {
-        Unk_IsPadHudPtr spHud = FUN_14025e7a0()->FUN_1422b0370(6);
+        Unk_IsPadHudPtr spHud = ((class Unk_IsUiScale*)FUN_14025e7a0())->FUN_1422b0370(6);
         if (spHud.FUN_140a58470() != 0)
             spHud.FUN_140a584a0()->FUN_1422cee50(8);
     }
-    if (FUN_1403b3c40(spItem->FUN_140527840()->function.name, L"ItemExchangeScroll"))
+    if (spItem->FUN_140527840()->function.name == L"ItemExchangeScroll")
     {
         MS2Ptr<CExchangeItemInfo> spInfo = TSingleton<CItemExchangeScrollTable>::GetInstance()->GetData(spItem->FUN_1405276c0());
         if (spInfo.get() != 0)
@@ -1734,10 +1731,10 @@ CStringW InvenSlot::vfunc_22()
     case 5:
         return GetStringCommonByKey(CStringW(L"s_msg_rclick_puton_equip_to_skintab"));
     case 6:
-        if (FUN_140166410()->FUN_14036d570(0x8e) && spItem->FUN_1405258b0() != 0)
+        if (CFeatureManager::GetInstance()->FUN_14036d570(0x8e) && spItem->FUN_1405258b0() != 0)
         {
             CStringW strText = GetStringCommonByKey(CStringW(L"s_msg_rclick_puton_equip_to_coditab"));
-            CStringW strKey = FUN_1409331f0()->FUN_14142d760(0x4940d, 0);
+            CStringW strKey = ((class Unk_IsKeyMap*)FUN_1409331f0())->FUN_14142d760(0x4940d, 0);
             if (!strKey.IsEmpty())
             {
                 strText += L"\n";
@@ -1781,7 +1778,6 @@ void InvenSlot::vfunc_24(void* p)
 }
 MS2_REPLACE_METHOD(0x14140B680, InvenSlot, vfunc_24, 63, 0x5BBBA7AD);
 
-// MS2-FUNCTIONAL: equivalent control flow; branch order / temporaries differ (not tuned)
 // @0x14140b6d0
 int InvenSlot::FUN_14140b6d0(MS2Ptr<CItem> spItem)
 {
@@ -1796,16 +1792,18 @@ int InvenSlot::FUN_14140b6d0(MS2Ptr<CItem> spItem)
     {
         CStringW strError;
         if (nReason == 2)
-            strError = GetStringCommonByKey(CStringW(L"s_trade_tradelimit_by_gemstone"));
+            strError = GetStringCommonByKey(L"s_trade_tradelimit_by_gemstone");
         else
             strError = GetStringCommon(0x83f);
         FUN_1412751f0(strError, 1, 1);
         return 0;
     }
-    if (spItem->FUN_140527840()->FUN_14053cd10() && FUN_140c8dac0()->FUN_140c8dab0() == spItem->FUN_140526a50())
+    if (spItem->FUN_140527840()->FUN_14053cd10() && ((class Unk_IsInstrumentMgr*)FUN_140c8dac0())->FUN_140c8dab0() == spItem->FUN_140526a50())
     {
-        CStringW strKey(L"s_trade_tradelimit_playing_score");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        {
+            CStringW strKey(L"s_trade_tradelimit_playing_score");
+            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        }
         return 0;
     }
     UITradeDialogEx* pTrade = Unk_InvGetDialogById<UITradeDialogEx>(0x4e83);
@@ -1817,15 +1815,10 @@ int InvenSlot::FUN_14140b6d0(MS2Ptr<CItem> spItem)
             FUN_140d73aa0(GetStringCommon(0x82f), 0, 0, CStringW(L""));
             return 0;
         }
-        bool bAll;
-        if (FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0) || FUN_14025e7c0()->FUN_14116d950(0x36, false, 0))
-            bAll = true;
-        else
-            bAll = false;
+        bool bAll = ((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0) || ((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116d950(0x36, false, 0);
         if (spItem->FUN_140526850() == false || bAll)
         {
-            int nCount = spItem->FUN_140526c50();
-            CTradeManagerEx::GetInstance()->SendTradeMode8(spItem->FUN_140526a50(), nCount, nSlot);
+            CTradeManagerEx::GetInstance()->SendTradeMode8(spItem->FUN_140526a50(), spItem->FUN_140526c50(), nSlot);
             FUN_141404930(spItem->FUN_140526a50());
         }
         else
@@ -1837,7 +1830,6 @@ int InvenSlot::FUN_14140b6d0(MS2Ptr<CItem> spItem)
 }
 MS2_REPLACE_METHOD(0x14140B6D0, InvenSlot, FUN_14140b6d0, 1397, 0xA82B334A);
 
-// MS2-FUNCTIONAL: equivalent control flow; branch order / temporaries differ (not tuned)
 // @0x14140bc50
 int InvenSlot::FUN_14140bc50(CStringW strSearch)
 {
@@ -1851,9 +1843,9 @@ int InvenSlot::FUN_14140bc50(CStringW strSearch)
     {
         strSearch.MakeLower();
         strLower.MakeLower();
-        bFound = FUN_14025cd60(strLower, strSearch);
+        bFound = strLower == strSearch;
     }
-    if (FUN_1409b4d40(m_value18))
+    if (m_value18.IsObject())
     {
         Unk_IsScript script(m_value18, 2);
         script.FUN_140bfe360(s_strUpdateIconSearchOn, bFound);
@@ -1869,10 +1861,10 @@ int InvenSlot::FUN_14140be60(CItem* pItem)
 {
     if (FUN_14140e3f0(MS2Ptr<CItem>(pItem)) != 0)
     {
-        int bAll = FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0) || FUN_14025e7c0()->FUN_14116d950(0x36, false, 0);
+        int bAll = ((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0) || ((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116d950(0x36, false, 0);
         if (bAll != 0 || pItem->FUN_140525c60() != 0)
         {
-            FUN_141425fc0(pItem->FUN_140526a50(), pItem->FUN_140526c50(), pItem);
+            FUN_141425fc0(pItem->FUN_140526a50(), pItem->FUN_140526c50(), (void*)(pItem));
             return 1;
         }
         FUN_14140cb90(GetItemUid(), FUN_141405980(), pItem->FUN_140526c50(), pItem->FUN_140526c50(),
@@ -1896,7 +1888,7 @@ MS2_REPLACE_METHOD(0x14140C030, InvenSlot, FUN_14140c030, 201, 0x6ED00564);
 // @0x14140c100
 void InvenSlot::FUN_14140c100()
 {
-    if (FUN_140764020()->FUN_1416ce170(vfunc_25()) != 2)
+    if (((class CQuestManager*)FUN_140764020())->FUN_1416ce170(vfunc_25()) != 2)
         vfunc_10();
 }
 MS2_REPLACE_METHOD(0x14140C100, InvenSlot, FUN_14140c100, 112, 0xA309D40E);
@@ -1919,7 +1911,7 @@ bool InvenSlot::FUN_14140c180(MS2Ptr<CItem> spItem)
                 CStringW strLower = FUN_1413fa9b0(strName);
                 strQuery.MakeLower();
                 strLower.MakeLower();
-                bResult = FUN_14025cd60(strLower, strQuery);
+                bResult = strLower == strQuery;
             }
         }
     }
@@ -1927,23 +1919,24 @@ bool InvenSlot::FUN_14140c180(MS2Ptr<CItem> spItem)
 }
 MS2_REPLACE_METHOD(0x14140C180, InvenSlot, FUN_14140c180, 297, 0x5F3CA500);
 
-// MS2-FUNCTIONAL: equivalent control flow; branch order / temporaries differ (not tuned)
 // @0x14140c2b0
 // The names of the quests that use the item, one per line.
 static CStringW FUN_14140c2b0(MS2Ptr<CItem> spItem)
 {
     ATL::CAtlArray<Unk_QuestItemLink> arrQuests;
-    FUN_140764020()->FUN_1416ce860(spItem, arrQuests);
-    if (arrQuests.GetCount() == 0)
-        return CStringW(L"");
-    CStringW strNames;
-    for (size_t i = 0; i < arrQuests.GetCount(); i++)
+    ((class CQuestManager*)FUN_140764020())->FUN_1416ce860(spItem, arrQuests);
+    if (arrQuests.GetCount() != 0)
     {
-        if (!strNames.IsEmpty())
-            strNames += L"\n";
-        strNames += FUN_1416e5210(arrQuests[i].m_questId, CStringW(L"s_msg_tooltip_quest_name"));
+        CStringW strNames;
+        for (size_t i = 0; i < arrQuests.GetCount(); i++)
+        {
+            if (!strNames.IsEmpty())
+                strNames += L"\n";
+            strNames += FUN_1416e5210(arrQuests[i].m_questId, CStringW(L"s_msg_tooltip_quest_name"));
+        }
+        return strNames;
     }
-    return strNames;
+    return CStringW(L"");
 }
 MS2_REPLACE(0x14140C2B0, FUN_14140c2b0, 526, 0x185916FD);
 
@@ -1953,7 +1946,7 @@ MS2_REPLACE(0x14140C2B0, FUN_14140c2b0, 526, 0x185916FD);
 static void FUN_14140c4d0(__int64 nUid, int nItemId, int nCount, int nMax)
 {
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
-    int nQuest = FUN_140764020()->FUN_1416ce170(spItem);
+    int nQuest = ((class CQuestManager*)FUN_140764020())->FUN_1416ce170(spItem);
     if (nCount < 2 && nQuest == 0)
     {
         FUN_140714f90()->SendRequestItemInventoryMode4(nUid, nCount);
@@ -1995,7 +1988,7 @@ MS2_REPLACE(0x14140C4D0, FUN_14140c4d0, 1719, 0x28342F3F);
 static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int nPrice, CStringW strName)
 {
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
-    int nQuest = FUN_140764020()->FUN_1416ce170(spItem);
+    int nQuest = ((class CQuestManager*)FUN_140764020())->FUN_1416ce170(spItem);
     if (nMax < 2 && nQuest == 0)
     {
         FUN_1419f8920(g_143ab2a90.FUN_140a5d680(nUid), nCount);
@@ -2054,7 +2047,7 @@ static int FUN_14140d350(CItem* pItem)
         return 0;
     if (pItem->FUN_140527840()->FUN_14053cbc0() == false)
         return 0;
-    FittingDollPC* pDoll = FUN_140884db0(reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0));
+    FittingDollPC* pDoll = ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0))));
     if (pDoll == 0)
         return 0;
     if (pDoll->FUN_14121c910(pItem) != 0)
@@ -2063,7 +2056,6 @@ static int FUN_14140d350(CItem* pItem)
 }
 MS2_REPLACE(0x14140D350, FUN_14140d350, 128, 0x40533BAE);
 
-// MS2-FUNCTIONAL: equivalent control flow; branch order / temporaries differ (not tuned)
 // @0x14140d3e0
 // The right click action for the item by the latest open dialog (1 trade, 2 sell, 3 store, 4 fitting doll, 5 codi,
 // 6 equip, 7 shortcut, 8 break, 10 lock, 11 black market, 12 gem, 13 instrument, 14 pet inventory, 15 destroy,
@@ -2072,42 +2064,42 @@ static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint)
 {
     if (!spItem)
         return 0;
-    int nDialog = !DAT_143af2258.IsEmpty() ? DAT_143af2258.GetHead() : 0;
+    int nDialog = DAT_143af2258.IsEmpty() ? 0 : DAT_143af2258.GetHead();
     if (nDialog == 0x4e83)
     {
-        if (FUN_140633a20(spItem) == false)
-            return bHint ? 0 : 1;
-        return 1;
+        if (FUN_140633a20(spItem))
+            return 1;
+        return bHint ? 0 : 1;
     }
     else if (nDialog == 0x4e3b)
     {
-        if (FUN_140633840(spItem) == false)
-            return bHint ? 0 : 2;
-        return 2;
+        if (FUN_140633840(spItem))
+            return 2;
+        return bHint ? 0 : 2;
     }
     else if (nDialog == 0x4e47 || nDialog == 0x4e78)
     {
-        if (MS2_STORE_TABLE.Allowed(spItem->FUN_1405276c0()) == 0)
-            return bHint ? 0 : 3;
-        return 3;
+        if (MS2_STORE_TABLE.Allowed(spItem->FUN_1405276c0()) != 0)
+            return 3;
+        return bHint ? 0 : 3;
     }
     else if (nDialog == 0x4e77)
     {
-        if (FUN_14140d350(spItem.get()) == 0)
-            return bHint ? 0 : 4;
-        return 4;
+        if (FUN_14140d350(spItem.get()) != 0)
+            return 4;
+        return bHint ? 0 : 4;
     }
     else if (nDialog == 0x4e8d || nDialog == 0x4e8e)
     {
-        if (FUN_1409c4b20()->FUN_140531270(spItem) == 0)
-            return bHint ? 0 : 8;
-        return 8;
+        if (((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140531270(spItem) != 0)
+            return 8;
+        return bHint ? 0 : 8;
     }
     else if (nDialog == 0x4f08)
     {
-        if (spItem->FUN_140528cc0() == false)
-            return bHint ? 0 : 10;
-        return 10;
+        if (spItem->FUN_140528cc0())
+            return 10;
+        return bHint ? 0 : 10;
     }
     else if (nDialog == 0x4f49)
     {
@@ -2116,9 +2108,9 @@ static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint)
     else if (nDialog == 0x4e97)
     {
         UIBlackMarketDialog* pMarket;
-        if (FUN_140633b80(spItem) == false || (pMarket = FUN_140a22f10(0x4e97)) == 0 || pMarket->FUN_1418d0be0() == false)
-            return bHint ? 0 : 11;
-        return 11;
+        if (FUN_140633b80(spItem) && (pMarket = FUN_140a22f10(0x4e97)) != 0 && pMarket->FUN_1418d0be0())
+            return 11;
+        return bHint ? 0 : 11;
     }
     else if (nDialog == 0x4eec)
     {
@@ -2132,7 +2124,7 @@ static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint)
         {
             if (spItem->FUN_140525640() != 0)
                 return 16;
-            if (FUN_140535320()->FUN_140c8b410()->FUN_140c875e0() > 0)
+            if (((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c875e0() > 0)
                 return 14;
         }
         else if (nDialog == 0x4f3d)
@@ -2146,24 +2138,24 @@ static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint)
         else if (nDialog == 0x2711)
         {
             void* pProfile;
-            if (FUN_140166410()->FUN_14036d570(0x8e) && spItem->FUN_140527840()->FUN_14053cbc0()
-                && spItem->FUN_1405258b0() != 0 && (pProfile = FUN_140938c30(0x2711)) != 0
-                && FUN_141a5c7a0(pProfile) == 1)
+            if (CFeatureManager::GetInstance()->FUN_14036d570(0x8e) && spItem->FUN_140527840()->FUN_14053cbc0()
+                && spItem->FUN_1405258b0() != 0 && (pProfile = ((void*)FUN_140938c30(0x2711))) != 0
+                && ((UIMyInfoDialog*)pProfile)->GetTab() == 1)
                 return 5;
         }
-        if (spItem.get() != 0)
-        {
-            if (spItem->FUN_140525fc0() != 0)
-                return 15;
-            if (spItem->FUN_140527840()->FUN_14053cbc0())
-                return 6;
-            if (spItem->FUN_140527840()->FUN_14053e460())
-                return 7;
-            if (spItem->FUN_140525a30() != 0)
-                return 12;
-        }
-        return 0;
     }
+    if (spItem.get() != 0)
+    {
+        if (spItem->FUN_140525fc0() != 0)
+            return 15;
+        else if (spItem->FUN_140527840()->FUN_14053cbc0())
+            return 6;
+        else if (spItem->FUN_140527840()->FUN_14053e460())
+            return 7;
+        else if (spItem->FUN_140525a30() != 0)
+            return 12;
+    }
+    return 0;
 }
 MS2_REPLACE(0x14140D3E0, FUN_14140d3e0, 2320, 0x7B8340F6);
 
@@ -2191,7 +2183,6 @@ static CStringW FUN_14140dd30(int nUnused, int nKind)
 }
 MS2_REPLACE(0x14140DD30, FUN_14140dd30, 318, 0x900560A2);
 
-// MS2-FUNCTIONAL: equivalent control flow; branch order / temporaries differ (not tuned)
 // @0x14140dea0
 // The player may put the item on (notices why not).
 static int FUN_14140dea0(CItem* pItem, MyPC* pPC)
@@ -2202,35 +2193,29 @@ static int FUN_14140dea0(CItem* pItem, MyPC* pPC)
             FUN_140d73bc0(0xe1, 0, 0, CStringW(L""));
         return 0;
     }
-    Unk_IsEquipView* pView = static_cast<Unk_IsEquipView*>(pPC);
-    if (pItem->FUN_140525ca0() != 0 && pView->FUN_141658f30() == 0)
+    if (pItem->FUN_140525ca0() != 0 && static_cast<Unk_IsEquipView*>(pPC)->FUN_141658f30() == 0)
     {
         FUN_140d73bc0(0xe2, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pItem->FUN_140525db0() != 0 && pView->FUN_141662de0() == 0)
+    if (pItem->FUN_140525db0() != 0 && static_cast<Unk_IsEquipView*>(pPC)->FUN_141662de0() == 0)
     {
-        CStringW strKey(L"s_item_err_puton_vip");
-        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_puton_vip"), 0, 0, L"");
         return 0;
     }
     if (pItem->FUN_140525e00() != 0 && pPC->vfunc_146() == false)
     {
-        CStringW strKey(L"s_item_err_puton_wedding");
-        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_puton_wedding"), 0, 0, L"");
         return 0;
     }
-    Unk_IsItemRequire* pRequire = static_cast<Unk_IsItemRequire*>(pItem);
-    if (pRequire->FUN_140526810(pPC->vfunc_78()) == 0)
+    if (static_cast<Unk_IsItemRequire*>(pItem)->FUN_140526810(pPC->vfunc_78()) == 0)
     {
-        CStringW strKey(L"s_err_not_enough_level");
-        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_err_not_enough_level"), 0, 0, L"");
         return 0;
     }
-    if (pRequire->FUN_140526790(pPC->FUN_141654700()) == 0)
+    if (static_cast<Unk_IsItemRequire*>(pItem)->FUN_140526790(pPC->FUN_141654700()) == 0)
     {
-        CStringW strKey(L"s_item_err_disable_job");
-        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_disable_job"), 0, 0, L"");
         return 0;
     }
     __int64 nCharacterId = pPC->FUN_141656a80();
@@ -2239,7 +2224,7 @@ static int FUN_14140dea0(CItem* pItem, MyPC* pPC)
         FUN_140d73bc0(0xfe, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pRequire->FUN_1405267d0(pPC->FUN_141658e60()) == 0)
+    if (static_cast<Unk_IsItemRequire*>(pItem)->FUN_1405267d0(pPC->FUN_141658e60()) == 0)
     {
         FUN_140d73bc0(0x2d, 0, 0, CStringW(L""));
         return 0;
@@ -2288,7 +2273,7 @@ void FUN_14140ed60(const CString& strName)
     InventorySlotBag* pBag = efd::DynamicCast<InventorySlotBag>(FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         FUN_1422c8f70(strName);
     }
 }
@@ -2298,15 +2283,15 @@ MS2_REPLACE(0x14140ED60, FUN_14140ed60, 65, 0xE9E644AD);
 InventorySlotBag::InventorySlotBag(const CString& strName, int nTab)
     : DragSlotBag(strName), m_nTab(nTab), m_nPendingSlot(-1)
 {
-    FUN_1419cae20(FUN_140a6a840(), this);
-    FUN_140bc09f0()->FUN_141b38be0(this);
+    ((class Unk_ItemEventSystem*)(struct Unk_IsItemEvents*)(((struct Unk_IsItemEvents*)FUN_140a6a840())))->FUN_1419cae20(this);
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(this);
 }
 
 // @0x14140eee0
 InventorySlotBag::~InventorySlotBag()
 {
-    FUN_1419caeb0(FUN_140a6a840(), this);
-    FUN_140bc09f0()->FUN_141b38c70(this);
+    ((class Unk_ItemEventSystem*)(struct Unk_IsItemEvents*)(((struct Unk_IsItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(this);
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(this);
 }
 
 // @0x14140efe0
@@ -2338,7 +2323,7 @@ void InventorySlotBag::vfunc_2(void* p)
 {
     UIInventoryDialog* pDlg = FUN_1405344f0(0x4e2d);
     if (pDlg != 0)
-        FUN_140c3fe30(pDlg, 2);
+        ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pDlg))->FUN_140c3fe30(2);
     if (FUN_14140f990(static_cast<CItem*>(p)) != 0)
     {
         InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50()));
@@ -2356,7 +2341,7 @@ void InventorySlotBag::vfunc_3(void* p, bool b)
 {
     UIInventoryDialog* pDlg = FUN_1405344f0(0x4e2d);
     if (pDlg != 0)
-        FUN_140c3fe30(pDlg, 2);
+        ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pDlg))->FUN_140c3fe30(2);
     if (FUN_14140f990(static_cast<CItem*>(p)) != 0)
     {
         DragSlot* pSlot = FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50());
@@ -2386,7 +2371,7 @@ void InventorySlotBag::vfunc_5(void* p, int n)
 {
     UIInventoryDialog* pDlg = FUN_1405344f0(0x4e2d);
     if (pDlg != 0)
-        FUN_140c3fe30(pDlg, 1);
+        ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pDlg))->FUN_140c3fe30(1);
     if (FUN_14140f990(static_cast<CItem*>(p)) != 0)
     {
         InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50()));

@@ -28,7 +28,6 @@ void FUN_1409618c0(egf::Entity* pEntity, unsigned int nHash, efd::Point3* pOut);
 bool FUN_140998dc0(const NiFixedString& kStr, const char* psz);                           // string compare
 bool FUN_14028d470(float a, float b);                                                      // approx equal
 float FUN_14059d930(float f);                                                              // fabsf
-egf::Entity* FUN_141659b80(PCBase* pPC, int nSide, unsigned int nKey, float fRange);       // the ladder next to the actor
 bool FUN_1412410c0(Unk_PCBaseBody* pBody, const efd::Point3& kPos, float fHeight);                // blocked test of the body
 void FUN_141240730(Unk_PCBaseBody* pBody);
 void* FUN_141240f20(Unk_PCBaseBody* pBody);
@@ -61,9 +60,6 @@ public:
 CPhysXHelper* FUN_1409f7ca0();
 int FUN_140961880(egf::Entity* pEntity, unsigned int nHash, float* pOut);                 // property read (float)
 void FUN_140291bc0(efd::Point3* pDegrees);                                                 // wrap the angles into 0..359
-void* FUN_14165f100(PCBase* p);                                                            // the playing emotion
-void FUN_14165f170(PCBase* p);                                                             // stop it
-egf::Entity* FUN_141659af0(PCBase* pPC, int nSide);                                        // the ladder to get on / off at
 extern efd::Point3 DAT_143a08cf8;                                                          // the up axis
 
 // The owner seen through its vftable: the exe returns slot 18's point straight into an efd::Point3 local, and slot 22
@@ -160,11 +156,11 @@ void StateLadder::vfunc_4(StateData* pData)
     MyPC* pMyPC = FUN_1417b84b0();
     if (pMyPC != 0)
     {
-        if (FUN_14165f100(pMyPC) != 0)
-            FUN_14165f170(pMyPC);
+        if (((void*)(reinterpret_cast<PC*>(pMyPC)->FUN_14165f100())) != 0)
+            reinterpret_cast<PC*>(pMyPC)->SendRequestCube();
     }
     PCBase* pPC = FUN_1417b8370();
-    egf::Entity* pLadder = FUN_141659af0(pPC, nSide);
+    egf::Entity* pLadder = reinterpret_cast<PC*>(pPC)->FUN_141659af0(nSide);
     if (pLadder != 0 && pPC != 0)
     {
         efd::Point3 kRot;
@@ -349,7 +345,7 @@ egf::Entity* StateLadder::FUN_1417d8b20(int nSide, unsigned int nKey)
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
-        egf::Entity* pFound = FUN_141659b80(pPC, nSide, nKey, 90.0f);
+        egf::Entity* pFound = reinterpret_cast<PC*>(pPC)->FUN_141659b80(nSide, nKey, 90.0f);
         if (pFound == 0)
             return 0;
         if (pFound != m_pLadder)

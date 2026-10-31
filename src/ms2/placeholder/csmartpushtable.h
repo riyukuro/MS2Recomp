@@ -13,6 +13,7 @@ class CSmartPushTable : public TSingleton<CSmartPushTable>, public CValidData<CS
 public:
     CSmartPushTable();                                      // 0x1408105e0
     virtual ~CSmartPushTable();
+    void Load();                                            // 0x140810730
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_10[0xa0 - 0x10];

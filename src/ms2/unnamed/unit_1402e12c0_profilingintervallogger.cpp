@@ -17,8 +17,8 @@
 typedef __int64 i64;
 typedef unsigned __int64 u64;
 
-unsigned FUN_140869420();   // client millisecond clock
-void* FUN_140166440();      // the CLogString singleton
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
+class CLogString* GetLogString();   // C3: was FUN_140166440
 
 
 // fmt slot helpers (16-byte argument record + 8-byte bound slot)
@@ -132,14 +132,14 @@ void FUN_1402e1600(i64 pLog, i64 a, i64 c, int nCategory, const wchar_t* pszForm
 void Unk_PerfLog::FUN_1402e12c0(const char* pszFormat, ...)
 {
     bool bHasMessage = !m_strMessage.IsEmpty();
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = GetTickCountMs2();
     if (m_nFirstTick == 0)
         m_nFirstTick = nNow;
     int nDeltaLast = (int)(nNow - m_nLastTick);
     int nDeltaFirst = (int)(nNow - m_nFirstTick);
     if (bHasMessage) {
         m_nCount++;
-        void* pLog = FUN_140166440();
+        void* pLog = ((void*)GetLogString());
         FUN_1402e1600((i64)pLog, 0, 0, 1, L"[{0}_{1}:{2} {3}/{4}]",
                       &m_strLabel, &m_nCount, &m_strMessage, &nDeltaLast, &nDeltaFirst);
     }

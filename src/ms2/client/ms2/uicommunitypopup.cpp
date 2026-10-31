@@ -11,6 +11,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/uiupperhuddialog.h"
+#include "ms2/client/ms2/uiservice.h"
 // This unit includes the shared header statics in a different order.
 class Unk_1402a9d70 {
 public: Unk_1402a9d70(int,float,float,float,int); ~Unk_1402a9d70();
@@ -41,16 +44,14 @@ class Unk_PopupBinding { public: MS2Ptr<Unk_PopupMovie> FUN_140bc71c0(const CStr
 class ASGameEntity : public ASDisplayObject {
 public: virtual void vfunc_2(int,int,int);
 };
-class Unk_14086d260 { public: float FUN_141473230(); };
-Unk_14086d260* FUN_14086d260();
-__int64 FUN_140869440();
-class UIWebBrowserPopup : public UIObject { public: void FUN_14135ec00(const CString&, bool); };
+CMainSystem* FUN_14086d260();
+__int64 GetServerTime();
+class UIWebBrowserPopup : public UIWebBrowserBase { };
 class Unk_PopupUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
-Unk_PopupUIManager* FUN_1403ed2b0();
 // @0x140beafe0
 UIWebBrowserPopup* FUN_140beafe0(int id) {
-    if (FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> obj = FUN_1403ed2b0()->FUN_141adcea0(id);
+    if (reinterpret_cast<Unk_PopupUIManager*>(TSingleton<CUIService>::GetInstance())) {
+        MS2Ptr<UIObject> obj = reinterpret_cast<Unk_PopupUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(id);
         if (obj.get())
             return dynamic_cast<UIWebBrowserPopup*>((UIObject*)obj);
     }
@@ -78,7 +79,7 @@ MS2Ptr<Unk_PopupField> Unk_PopupMovie::FUN_140beaf20(const CString& name, MS2Ptr
 
 // @0x140be99c0
 UICommunityPopup::UICommunityPopup() : m_pending(false),m_speed(50.0f),m_x(0.0f),m_y(0),m_width(0),m_queue(10) {
-    m_time = FUN_140869440();
+    m_time = GetServerTime();
     FUN_1422dc3b0(1);
 }
 // @0x140be9af0
@@ -111,9 +112,9 @@ void UICommunityPopup::vfunc_26() {
 MS2_REPLACE_METHOD(0x140BEA090, UICommunityPopup, vfunc_26, 64, 0x5AA2226E);
 // @0x140bea0e0
 void UICommunityPopup::vfunc_15() {
-    if (FUN_140869440() - m_time > 120) {
+    if (GetServerTime() - m_time > 120) {
         FUN_140bea6b0();
-        m_time = FUN_140869440();
+        m_time = GetServerTime();
         if (m_queue.GetCount() == 0) vfunc_3();
         else {
             Unk_PopupPtr<PopupText> text(m_queue.GetHead());
@@ -147,7 +148,7 @@ void UICommunityPopup::FUN_140bea390(CStringW text, CString url) {
 #endif
         m_url = url;
         m_pending = true;
-        m_time = FUN_140869440();
+        m_time = GetServerTime();
         if (m_width == 0) FUN_140bea730();
     } else {
         Unk_PopupPtr<PopupText> pending(Unk_PopupNewTag(0));
@@ -161,7 +162,7 @@ MS2_REPLACE_METHOD(0x140BEA390, UICommunityPopup, FUN_140bea390, 423, 0xD6A3F5FA
 void UICommunityPopup::FUN_140bea540() {
     if (m_field == NULL) return;
     if (m_width == 0) return;
-    float delta = FUN_14086d260()->FUN_141473230();
+    float delta = FUN_14086d260()->GetLastGameTimeDelta();
     m_x -= m_speed * delta;
     int x = (int)m_x;
     if (!m_pending) {

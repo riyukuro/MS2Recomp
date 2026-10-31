@@ -154,6 +154,8 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/placeholder/uiugceventdispatcher.h"
+#include "ms2/client/ms2/cubemapinformationservice_3.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- Delegate<void()> (UIPopUpMenu's menu handlers, RTTI vftable 0x142fd4958): this TU's own COMDAT copies. The
 // TInterpolator / OnceCallbackTimer callbacks bound at 0x1401cffb0 / 0x14098d150 are TFunctor<void, EmptyParam>. ----
@@ -195,18 +197,13 @@ template <> void Delegate<void()>::operator()() const
 }
 
 // ---- out-of-unit callees ----
-class Unk_PdWorld                                                       // the world service (FUN_1403ed2d0)
+class Unk_WsC_GameObj : public GameObject {};                         // WorldService's game object results
+class Unk_PdWorld : public WorldService                                 // the world service (WorldService::GetInstance)
 {
 public:
-    MyPC* FUN_141bd0cc0();                                              // the local player
-    PC* FUN_141bd1530(__int64 nCharId);                                 // a player by character id
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                              // the current field data
-    int FUN_141bc2bc0();
-    int FUN_141bc2b30();
-    GameObject* FUN_141bd0fe0(unsigned __int64 nObjectId);              // a game object by id
     MS2Ptr<CProxyGameObject> FUN_141bc9be0(unsigned int nObjectId);     // the proxy of an object id
 };
-Unk_PdWorld* FUN_1403ed2d0();
 class Unk_PdApp                                                         // the application / ui service (FUN_1403ed2b0)
 {
 public:
@@ -218,24 +215,27 @@ public:
     MS2Ptr<UIObject> FUN_141adcea0(int nUiId);                          // a dialog by id
 };
 Unk_PdApp* FUN_1403ed2b0();
-void FUN_141add1f0(Unk_PdApp* pApp);                                    // open the merat charge page
-CFeatureManager* FUN_140166410();                                       // TSingleton<CFeatureManager>::GetInstance
+class CUIService   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141add1f0();
+};
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CStringTable* GetStringTable();                                          // TSingleton<CStringTable>::GetInstance
-IClientPlatform* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 class Unk_PdPopupMenu;                                                  // UIPopUpMenu (below) as seen by the lookup
-UIDialog* FUN_140c30140(int nDialogId);                                 // the open dialog of this id
+class Unk_PopupMenu* FUN_140c30140(int);   // C3: was FUN_140c30140
 struct Unk_PdBuddyLevel { int FUN_1401cc210(); };                        // CBuddy's level getter as UIPopUpMenu reads it: the zero-extended 32-bit result
 class Unk_PdClubManager : public CClubClientManager { public: void FUN_140b15c10(CStringW strName); };
-Unk_PdClubManager* FUN_140e0d900();
+class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
 class Unk_PdNametagFlags { public: char m_00[0x30]; bool m_30; };       // m_30: show the returning-user mark
-Unk_PdNametagFlags* FUN_1406c7610();
+struct Unk_NametagFlags* FUN_1406c7610();   // C3: was FUN_1406c7610
 class Unk_PdKeyState;                                                   // the input state; +8 is the lock set (FUN_1402c4c90)
-char* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 int FUN_1402c4c90(void* pLocks, int nLock);
 bool FUN_140930b10();
 bool FUN_140930b40();
 CMyCharacter* FUN_140931510();
-unsigned int FUN_140869420();                                           // the server time (seconds)
 extern __int64 DAT_143ab2828;                                           // the own character id
 extern int DAT_1439f4a7c;
 extern Unk_Inventory g_143ab2a90;
@@ -243,9 +243,6 @@ extern Unk_Inventory g_143ab2a90;
 CString FUN_140719530(unsigned __int64 n);                              // decimal text
 __int64 FUN_140718350(const CString& str);                              // parse an __int64
 CStringW FUN_140719630(int n);                                          // decimal text
-double FUN_140f17ed0(const Scaleform::GFx::Value& v);                   // a number value
-bool FUN_141a4bfb0(const Scaleform::GFx::Value& v);                     // is a bool value
-bool FUN_1409c1720(const Scaleform::GFx::Value& v);                     // the bool value
 CStringW FUN_1408116a0(int nStringId, const int& n);                    // FormatStringId<int>
 CStringW FUN_140632a60(int nStringId, const CStringW& a, const CStringW& b);   // FormatStringId<CStringW, CStringW>
 CStringW GetStringCommon(int nStringId);                                  // the string of an id
@@ -258,7 +255,6 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                            // show 
 void FUN_140710590(COutPacket& packet);                                 // send
 void FUN_14151f200();                                                   // close the message box
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szSep);   // split
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 int FUN_141637c40(CPartyMember* pMember);                               // the member state
 double FUN_1407184e0(const CStringW& str);                              // parse a number
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);     // FUN_14028dfa0<CStringW>
@@ -276,7 +272,6 @@ struct Unk_PdScript : AScript
 {
     Scaleform::GFx::Value FUN_140f0c520(const char* szMethod, CString a1, Scaleform::GFx::Value a2);   // Invoke(method, string, value)
     Scaleform::GFx::Value FUN_140e06cc0(const char* szMethod, double d);   // Invoke(method, number) (uichaosdpsdialog.cpp)
-    Scaleform::GFx::Value FUN_1422bb330(const char* szMethod);             // Invoke(method)
     using AScript::m_value;
 };
 
@@ -285,7 +280,7 @@ template <class T> void Unk_PdSetData(ASObj* pObj, const char* szName, T value)
 {
     ASData data;
     data.FUN_1422b7f70(value);
-    FUN_1407cd930(&static_cast<Unk_PdScript*>(static_cast<AScript*>(pObj))->m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&static_cast<Unk_PdScript*>(static_cast<AScript*>(pObj))->m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 enum Unk_PdTombType : int { Unk_PdTombNone = 0 };
 
@@ -432,7 +427,7 @@ void UIPartyDialog::FUN_141a74f50(CPartyMember* pOld, CPartyMember* pNew)
     CString strOld = pOld != 0 ? FUN_140719530(pOld->FUN_141637bb0()) : CString("");
     CString strNew = pNew != 0 ? FUN_140719530(pNew->FUN_141637bb0()) : CString("");
     m_30->FUN_1413127f0("changeChief", strOld, strNew);
-    if (FUN_140166410()->FUN_14036d570(0x56) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x56) == 1)
     {
         FUN_141a79770();
         FUN_141a75a20();
@@ -472,22 +467,22 @@ int UIPartyDialog::FUN_141a75490(__int64 nCharId, float* pPos)
     Scaleform::GFx::Value y;
     ret.GetMember(DAT_142fd1144, &x);
     ret.GetMember(DAT_142fd116c, &y);
-    if (FUN_140f17ed0(x) == 0.0 && FUN_140f17ed0(y) == 0.0)
+    if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(x))->GetNumber() == 0.0 && ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(y))->GetNumber() == 0.0)
         return 0;
-    *pPos += FUN_140f17ed0(x);
-    *(pPos + 1) += FUN_140f17ed0(y);
+    *pPos += ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(x))->GetNumber();
+    *(pPos + 1) += ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(y))->GetNumber();
     return 1;
 }
 
 // @0x141a75680
 int UIPartyDialog::FUN_141a75680(float* pPos)
 {
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMe == 0)
         return 0;
     if (pMe->FUN_14166ce30() == 0)
         return 0;
-    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spField == 0 || spField->m_nGlobalSplit == 0)
         return 0;
     ATL::CAtlArray<MS2Ptr<CPartyMember>>& members = TSingleton<CPartyManager>::GetInstance()->FUN_14162ba30();
@@ -508,17 +503,17 @@ int UIPartyDialog::FUN_141a75840()
 {
     if (m_30 == 0)
         return 0;
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMe == 0)
         return 0;
     if (pMe->FUN_14166ce30() == 0)
         return 0;
-    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spField == 0 || spField->m_nGlobalSplit == 0)
         return 0;
-    Scaleform::GFx::Value ret = static_cast<Unk_PdScript*>(m_30.get())->FUN_1422bb330("isCanObserveMode");
-    if (FUN_141a4bfb0(ret))
-        return FUN_1409c1720(ret) ? 1 : 0;
+    Scaleform::GFx::Value ret = static_cast<Unk_PdScript*>(m_30.get())->Invoke("isCanObserveMode");
+    if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(ret))->IsBool())
+        return ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(ret))->GetBool() ? 1 : 0;
     return 0;
 }
 
@@ -540,7 +535,7 @@ void UIPartyDialog::FUN_141a75a20()
 {
     if (m_30 == 0)
         return;
-    static_cast<Unk_PdScript*>(m_30.get())->FUN_1422bb330("arrangeBottomButton");
+    static_cast<Unk_PdScript*>(m_30.get())->Invoke("arrangeBottomButton");
 }
 
 // MS2-FUNCTIONAL: written from the decompile (binder temporaries)
@@ -577,7 +572,7 @@ void UIPartyDialog::OnLoadComplete()
 void UIPartyDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+    UIPopUpMenu* pMenu = (UIPopUpMenu*)((class UIDialog*)FUN_140c30140(0x4e39));
     if (pMenu != 0)
         pMenu->FUN_141a80770();
     m_vote = 0;
@@ -599,7 +594,7 @@ void UIPartyDialog::vfunc_15()
         return;
     if (TSingleton<CPartyManager>::GetInstance()->FUN_14162c300())
         m_vote->FUN_141a74760();
-    if (m_deadline != 0 && FUN_140869420() > m_deadline)
+    if (m_deadline != 0 && GetTickCountMs2() > m_deadline)
         TSingleton<CPartyManager>::GetInstance()->FUN_14162c4a0(0);
 }
 
@@ -627,8 +622,8 @@ int UIPartyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             __int64 nCharId = FUN_140718350(data.FUN_1422b8d30());
-            PC* pTarget = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
-            MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+            PC* pTarget = static_cast<PC*>(static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1530(nCharId)));
+            MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
             if (pMe != 0 && pTarget != 0)
                 pMe->FUN_14152a4a0(pTarget);
         }
@@ -643,12 +638,12 @@ int UIPartyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         {
             int nMerat = *FUN_1401d3200()->PartyRecallMerat.Get();
             CStringW strText = FUN_1408116a0(0xc64, nMerat);
-            if (!FUN_140d86260()->vfunc_40(nMerat))
+            if (!((class IClientPlatform*)FUN_140d86260())->vfunc_40(nMerat))
             {
-                FUN_141add1f0(FUN_1403ed2b0());
+                ((class CUIService*)(class Unk_PdApp*)(FUN_1403ed2b0()))->FUN_141add1f0();
                 return 1;
             }
-            FUN_140d86260()->vfunc_43(2, false, 1000);
+            ((class IClientPlatform*)FUN_140d86260())->vfunc_43(2, false, 1000);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, this, CStringW(L"buy_scroll"));
             if (spBox == 0)
                 return 1;
@@ -669,7 +664,7 @@ void UIPartyDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strM
     {
         if (m_70 != 0)
             return;
-        UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+        UIPopUpMenu* pMenu = (UIPopUpMenu*)((class UIDialog*)FUN_140c30140(0x4e39));
         if (pMenu != 0)
         {
             bool bSlotMenu = pMenu->FUN_141a80880() == 0 && _stricmp(pMenu->FUN_141a808c0(), "partySlot") == 0;
@@ -749,7 +744,7 @@ bool UIPartyDialog::FUN_141a77600(int nResult, const CMsgBoxData& box)
     strName.Trim(L",");
     if (strName.IsEmpty())
         return false;
-    FUN_140e0d900()->FUN_140b15c10(strName);
+    ((class Unk_PdClubManager*)FUN_140e0d900())->FUN_140b15c10(strName);
     return true;
 }
 
@@ -767,12 +762,12 @@ bool UIPartyDialog::SendDungeonReward(int nResult, const CMsgBoxData& box)
 // @0x141a77760
 void UIPartyDialog::FUN_141a77760(float x, float y, __int64 nCharId)
 {
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMe != 0)
     {
         if (pMe->FUN_141656a80() == nCharId)
         {
-            UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+            UIPopUpMenu* pMenu = (UIPopUpMenu*)((class UIDialog*)FUN_140c30140(0x4e39));
             if (pMenu != 0)
             {
                 Unk_PopupMenuInfo info(x, y, 3, 0x63fe, 1, "partySlot", 0);
@@ -783,7 +778,7 @@ void UIPartyDialog::FUN_141a77760(float x, float y, __int64 nCharId)
         {
             MS2Ptr<CPartyMember> spMember = TSingleton<CPartyManager>::GetInstance()->FUN_14162afc0(nCharId);
             UIPopUpMenu* pMenu;
-            if (spMember.get() != 0 && (pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39)) != 0)
+            if (spMember.get() != 0 && (pMenu = (UIPopUpMenu*)((class UIDialog*)FUN_140c30140(0x4e39))) != 0)
             {
                 Unk_PopupMenuInfo info(x, y, 3, 0x63fe, 1, "partySlot", 0);
                 pMenu->PopUpMenuFromPartyMember(info, spMember);
@@ -841,7 +836,7 @@ void UIPartyDialog::FUN_141a77ae0(const Scaleform::GFx::FunctionHandler::Params&
 {
     if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
     {
-        if (FUN_140e0d900()->FUN_140b14cd0() == 1)
+        if (((class Unk_PdClubManager*)FUN_140e0d900())->FUN_140b14cd0() == 1)
         {
             int nKind = 3;
             FUN_1412751f0(FUN_1408116a0(0x381, nKind), 1, 1);
@@ -871,7 +866,7 @@ void UIPartyDialog::FUN_141a77dd0(const Scaleform::GFx::FunctionHandler::Params&
 // @0x141a77eb0
 bool UIPartyDialog::FUN_141a77eb0()
 {
-    if (FUN_1402c4c90(FUN_14025e7b0() + 8, 0x1a) != 0)
+    if (FUN_1402c4c90(((char*)FUN_14025e7b0()) + 8, 0x1a) != 0)
     {
         FUN_140d73bc0(0x2f7, 0, 0, CStringW(L""));
         return false;
@@ -888,7 +883,7 @@ bool UIPartyDialog::FUN_141a77eb0()
         FUN_140d73bc0(0xb5d, 0, 0, CStringW(L""));
         return false;
     }
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMe == 0)
         return false;
     if (pMe->FUN_14166ce30() != 0)
@@ -916,16 +911,16 @@ bool UIPartyDialog::FUN_141a77eb0()
         FUN_140d73bc0(0xb58, 0, 0, CStringW(L""));
         return false;
     }
-    if (FUN_1403ed2d0()->FUN_141bd30a0()->FUN_140375490() == 0)
+    if (static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0()->FUN_140375490() == 0)
     {
         FUN_140d73bc0(0xb58, 0, 0, CStringW(L""));
         return false;
     }
-    int nLimit = FUN_1403ed2d0()->FUN_141bd30a0()->vfunc_2();
+    int nLimit = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0()->vfunc_2();
     if (nLimit > 0)
     {
-        int nA = FUN_1403ed2d0()->FUN_141bc2bc0();
-        if (FUN_1403ed2d0()->FUN_141bc2b30() + (nCount + nA) > nLimit)
+        int nA = WorldService::GetInstance()->FUN_141bc2bc0();
+        if (WorldService::GetInstance()->FUN_141bc2b30() + (nCount + nA) > nLimit)
         {
             FUN_140d73bc0(0xb5f, 0, 0, CStringW(L""));
             return false;
@@ -942,7 +937,7 @@ bool UIPartyDialog::FUN_141a77eb0()
 // @0x141a783d0
 void UIPartyDialog::FUN_141a783d0(__int64 nItemUid)
 {
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMe == 0)
         return;
     NiPoint3 kRot = pMe->vfunc_20();
@@ -1030,9 +1025,9 @@ int UIPartyDialog::FUN_141a784b0(ASObj& obj, CPartyMember* pMember, unsigned int
     if (nFlags & 0x100)
     {
         int nObserve = 0;
-        MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         MS2Ptr<CPartyMember> spMine = TSingleton<CPartyManager>::GetInstance()->FUN_14162afc0(DAT_143ab2828);
-        MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+        MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
         if (pMe != 0 && spMine.get() != 0)
         {
             if (pMe->FUN_141656a80() == pMember->user.m_8)
@@ -1063,7 +1058,7 @@ int UIPartyDialog::FUN_141a784b0(ASObj& obj, CPartyMember* pMember, unsigned int
     }
     if (nFlags & 0x1ff)
     {
-        if (FUN_1406c7610()->m_30)
+        if (((class Unk_PdNametagFlags*)FUN_1406c7610())->m_30)
             obj.FUN_1407cbbe0("returnUser", pMember->user.m_180 == 2);
         obj.FUN_1407cba60(s_charSN, FUN_140719530(pMember->user.m_8));
     }
@@ -1128,7 +1123,7 @@ void UIPartyDialog::FUN_141a79570()
 // @0x141a796b0
 void UIPartyDialog::FUN_141a796b0()
 {
-    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spField == 0 || spField->FUN_140375490() == 0)
         m_recall->vfunc_3(0);
     else
@@ -1138,7 +1133,7 @@ void UIPartyDialog::FUN_141a796b0()
 // @0x141a79770
 void UIPartyDialog::FUN_141a79770()
 {
-    if (FUN_140166410()->FUN_14036d570(0x56) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x56) == 1)
     {
         if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
             m_createClub->vfunc_3(1);
@@ -1270,7 +1265,7 @@ void UIPartyDPSDialog::FUN_141a7b540()
         }
         do
         {
-            PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+            PCBase* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
             if (pMe == 0)
                 break;
             __int64 nMyId = pMe->FUN_141656a80();
@@ -1472,16 +1467,12 @@ static UICommon::CMyPCKeyInputController s_pePopupKeyInput;            // 0x1401
 
 // ======== UIPopupEntity (the fourth TU of this range) ========
 
-// The owner's PCBase / GameObject members the popup entity calls (UIPopupEntity keeps the owner as Unk_PopupOwner*).
+// The owner (UIPopupEntity keeps it as Unk_PopupOwner*) is a PCBase; this unit calls its PCBase / GameObject members
+// through reinterpret_cast<PCBase*>(m_68), and the distance getter through this view.
 struct Unk_PeOwner : Unk_PopupOwner
 {
-    int FUN_141674bc0();                                                    // PCBase: is the local player
-    NiAVObject* FUN_141675150(const CString& strName);                      // PCBase: effect dummy node by name
-    void FUN_141676310(int nUiId);                                          // PCBase: drop a ui slot
-    egf::EntityID FUN_14123c460();                                          // GameObject: entity id
     float FUN_140f4a450();                                                  // GameObject: distance to the camera
 };
-egf::Entity* FUN_14123c410(Unk_PopupOwner* pOwner);                      // the owner's entity
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                          // the entity's scene graph
 class Unk_PeAnimService;
 Unk_PeAnimService* FUN_141b6f910();
@@ -1542,9 +1533,8 @@ void UIPopupEntity::OnLoadComplete()
 class Unk_PmCamera
 {
 public:
-    bool FUN_140af0700(const efd::Point3& kWorld, NiPoint3& kScreen);
-    bool FUN_140af0700(const Unk_PopupPos& kWorld, NiPoint3& kScreen);   // the same function, fed vfunc_60's result
-    int FUN_140a18070(); float FUN_141032df0(); float FUN_140b67d10(); float FUN_1409f2430();
+    bool FUN_140af0700(const Unk_PopupPos& kWorld, NiPoint3& kScreen);   // CameraMgr::FUN_140af0700, fed vfunc_60's result
+    float FUN_141032df0(); float FUN_140b67d10(); float FUN_1409f2430();
 };
 
 // @0x141a7cdf0
@@ -1617,18 +1607,18 @@ int UIPopupEntity::vfunc_57(int nForce)
 {
     if (m_68 == 0)
         return 1;
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    if (static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0()) == 0)
         return 1;
     if (m_80 == 0 && m_98.FUN_140868ba0() == 0)
         return 1;
     if (vfunc_58() == 0)
         return 1;
-    NiAVObject* pNode = FUN_141b6efc0(FUN_14123c410(m_68));
+    NiAVObject* pNode = FUN_141b6efc0(((class GameObject*)(class Unk_PopupOwner*)(m_68))->FUN_14123c410());
     if (pNode == 0)
         return 1;
-    if (static_cast<Unk_PeOwner*>(m_68)->FUN_141674bc0() != 0 && nForce == 0)
+    if (reinterpret_cast<PCBase*>(m_68)->FUN_141674bc0() != 0 && nForce == 0)
         return 1;
-    void* pActors = FUN_140999440(FUN_141b6f910(), static_cast<Unk_PeOwner*>(m_68)->FUN_14123c460());
+    void* pActors = FUN_140999440(FUN_141b6f910(), reinterpret_cast<PCBase*>(m_68)->FUN_14123c460());
     if (pActors == 0)
         return 1;
     return 0;
@@ -1656,7 +1646,7 @@ Unk_PopupPos UIPopupEntity::vfunc_60()
     if (m_68 != 0)
     {
         if (m_70 == 0)
-            m_70 = static_cast<Unk_PeOwner*>(m_68)->FUN_141675150(m_78);
+            m_70 = reinterpret_cast<PCBase*>(m_68)->FUN_141675150(m_78);
         if (m_70 != 0)
             return FUN_140947900(static_cast<NiAVObject*>(m_70));
     }
@@ -1667,7 +1657,7 @@ Unk_PopupPos UIPopupEntity::vfunc_60()
 void UIPopupEntity::FUN_141a7d300()
 {
     if (m_68 != 0 && 0 < m_d0)
-        static_cast<Unk_PeOwner*>(m_68)->FUN_141676310(m_d0);
+        reinterpret_cast<PCBase*>(m_68)->FUN_141676310(m_d0);
     m_d0 = 0;
 }
 
@@ -1705,32 +1695,29 @@ static CString s_strStun5 = "stun";
 // The callees of the popup menu.
 CLogString* GetLogString();                                            // TSingleton<CLogString>::GetInstance
 int FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szText);   // log a line
-int FUN_1409c17e0(const Scaleform::GFx::Value& v);                      // an int value
 class Unk_PmInput;
-Unk_PmInput* FUN_14025e7c0();                                           // the key input handler
-bool FUN_14116d840(Unk_PmInput* pInput);                                // escape pressed
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+class CInputKeyHandler   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14116d840();
+};
 UISwfEntityManager* FUN_140b632f0();                                    // UISwfEntityManager
 class Unk_PmEntityEvents;
-Unk_PmEntityEvents* FUN_140c607b0();
-void FUN_1419308c0(Unk_PmEntityEvents* pEvents, UIEntityEventListener* pListener);   // register
-void FUN_141930950(Unk_PmEntityEvents* pEvents, UIEntityEventListener* pListener);   // unregister
+class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
+class Unk_UpperEvents   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419308c0(class UIEntityEventListener*);
+    void FUN_141930950(class UIEntityEventListener*);
+};
 class Unk_PmUgcEvents;
-void FUN_141b38be0(Unk_PmUgcEvents* pEvents, UIUGCEventListener* pListener);         // register
-void FUN_141b38c70(Unk_PmUgcEvents* pEvents, UIUGCEventListener* pListener);         // unregister
 MS2Ptr<ASScrollingList> FUN_140bc61d0(int nMovieId, const Scaleform::GFx::Value& v);  // new ASScrollingList
 class Unk_PmRoot { public: Scaleform::GFx::Value FUN_140ba4cc0(const char* szMethod, const ASObj& obj); };
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                     // is an object value
 void FUN_14028cd00(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szSep, int n);   // split
 bool FUN_140841300(const CStringW& str, const char* sz);               // equals
-void FUN_14162b7d0(CPartyManager* pParty, CStringW strName);            // expel member
-void FUN_14162b8b0(CPartyManager* pParty, __int64 nCharId);             // vote kick
-void FUN_14162bdb0(CPartyManager* pParty);                              // leave
-void FUN_14162be10(CPartyManager* pParty);
-void FUN_14162ba50(CPartyManager* pParty, CStringW strName);            // invite
 bool FUN_14162ab60(CPartyManager* pParty);                              // in a party
-int FUN_14162ad50(CPartyManager* pParty, CStringW strName);             // is a member
 __int64 FUN_141a02ed0(const CMsgBoxData& data, int nIndex, int nDefault);
-int FUN_141a02e50(const CMsgBoxData* pData, int nIndex, int nDefault);
 int FUN_1418fd740(__int64 nAccount, __int64 nCharId, int nKind);       // report
 int FUN_1418fd330(__int64 nCharId);
 int FUN_1418fd530(__int64 nCharId);
@@ -1738,23 +1725,19 @@ int FUN_1418fd580(__int64 nCharId);
 int FUN_1418fd5d0(__int64 nCharId);
 int FUN_1418fd670(__int64 nCharId);
 void FUN_1418fde20(__int64 nAccount, __int64 nCharId, int nKind, const CStringW& strName, Delegate<bool(int, const CMsgBoxData&)> cb);
-WeddingManager* FUN_1409eed90();                                        // WeddingManager
 CString FUN_141028a90(CString strImage, int n);                         // profile image path
 CString FUN_141028be0(__int64 nCharId, const CString& strImage, int n, CString strDefault);
 __int64 FUN_141656a80(PCBase* pPC);                                     // character id
-__int64 FUN_141656ad0(PCBase* pPC);                                     // account id
 int FUN_14166ce30(PCBase* pPC);
-int FUN_141654700(PCBase* pPC);
-int FUN_141654730(PCBase* pPC);
 CStringW FUN_14016a730(const char* sz, int nCodePage);                  // to wide
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);                // to multibyte
-class Unk_PmGuild { public: char m_00[8]; CGuildInfo m_info; };
-int FUN_1413b6160(Unk_PmGuild* pGuild);                                 // has a guild
-bool FUN_1413b71c0(Unk_PmGuild* pGuild, CStringW strName);              // invite to the guild
 CStringW FUN_1401aa6a0(int nNpcId);                                     // the npc name
-int FUN_141092fa0(CNpc* pNpc);                                          // the npc id
-class Unk_PmCubeMap { public: __int64 FUN_1410c3180(); };
-Unk_PmCubeMap* FUN_1409670e0();                                         // CubeMapInformationService
+class Unk_PmCubeMap : public CubeMapInformationService { };
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoHouseSvc* GetInstance();
+};
 extern __int64 DAT_143ab2820;                                           // the own account id
 extern int DAT_143af62d8;                                               // the screen height
 float FUN_140bf4fd0(float f);
@@ -1766,18 +1749,20 @@ MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CS
 struct Unk_PmMsgBox : CMsgBoxData { void FUN_1405340b0(__int64 n); };    // Append<__int64>
 void FUN_14151f150(MS2Ptr<CMsgBoxData> box);                            // show a box
 class Unk_PmMdState { public: char m_00[0x48]; void* m_48; void* m_50; };
-Unk_PmMdState* FUN_141482e80();
+struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 void FUN_141a252a0(void* pWhisper, const CStringW& strName);            // whisper to
 void FUN_141951f70(void* pMail, const CStringW& strName);               // mail to
 class Unk_PmCommunity { public: virtual void s0(); };                   // UICommunityDialog
-int FUN_1418d6960(Unk_PmCommunity* pDialog);                            // the current tab
-UIDialog* FUN_140ae5990(int nUiId);                                     // UICommunityDialog lookup
-UIDialog* FUN_140ae5a30(int nUiId);                                     // UICommunityQueryDialog lookup
-UIDialog* FUN_1417f5780(int nUiId);                                     // UICoupleActionDialog lookup
+class UICommunityDialog   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1418d6960();
+};
+class UICommunityDialog* FUN_140ae5990(int);   // C3: was FUN_140ae5990
+class UICommunityQueryDialog* FUN_140ae5a30(int);   // C3: was FUN_140ae5a30
+class UICoupleActionDialog* FUN_1417f5780(int);   // C3: was FUN_1417f5780
 void FUN_140f8ff40(int nStringId, int a, int b);                        // notice
-CBlockManager* FUN_140a6a830();                                         // TSingleton<CBlockManager>::GetInstance
-CTradeManagerEx* FUN_14140ea30();                                       // CTradeManagerEx
-__int64 FUN_1416769f0(PCBase* pPC);
+class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void FUN_14152b800(MyPC* pMe, void* p);
 __int64 FUN_140c75430(CUserReportData* pData, int nKind);                // the report category
 // The UIMsg built on the stack (uitalkcinematic.cpp: its ASData setters are free functions bound by address).
@@ -1787,8 +1772,6 @@ struct Unk_FcUIMsg
     ~Unk_FcUIMsg();                                                     // 0x140c30570
     void* m_pad[0x50 / 8];                                              // pointers, not a char array: the exe has no /GS cookie
 };
-void FUN_1422b82b0(Unk_FcUIMsg* p, const char* psz);
-void FUN_1422b8310(Unk_FcUIMsg* p, const wchar_t* psz);
 void FUN_1422b7f70(Unk_FcUIMsg* p, int n);
 // The entry the user-proxy menu reads (FUN_141a7f890): a CPtred with a user proxy at +0x18.
 class Unk_PmUserEntry : public CPtred
@@ -1797,9 +1780,7 @@ public:
     Unk_UserProxy m_user;
 };
 
-CNpc* FUN_140a38a00(GameObject* pObject);                                // the npc of an object
-PCBase* FUN_141706540(Ridee* pRidee);                                   // the rider
-bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);      // is of the class id
+class Unk_CameraTargetEntity* FUN_140a38a00(class Unk_BossObject*);   // C3: was FUN_140a38a00
 float FUN_1412762d0(const Unk_PopupPos& pt);
 const Unk_PopupPos& FUN_140947900(NiAVObject* pNode);
 void FUN_140a2ff20(const BlockPtr& spBlock, int nAction, int n);        // notice of a blocked action
@@ -1876,7 +1857,7 @@ int UIPopUpMenu::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
         return 1;
     if (_stricmp("MenuItemClick", szMethod) == 0)
     {
-        int nMenuId = FUN_1409c17e0(pArgs[0]);
+        int nMenuId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(pArgs[0]))->GetUInt();
         Delegate<void()> handler;
         if (m_160.Lookup(nMenuId, handler))
             handler();
@@ -1894,11 +1875,11 @@ void UIPopUpMenu::vfunc_15()
         FUN_141a80770();
     if (m_80 == 1)
     {
-        PCBase* pTarget = efd::DynamicCast<PCBase>(FUN_1403ed2d0()->FUN_141bd0fe0(m_98));
+        PCBase* pTarget = efd::DynamicCast<PCBase>(static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0fe0(m_98)));
         if (pTarget != 0)
         {
             NiPoint3 kScreen;
-            if (!reinterpret_cast<Unk_PmCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(pTarget->vfunc_18(), kScreen) && (1.1f < kScreen.x || 1.1f < 1.0f - kScreen.y))
+            if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(pTarget->vfunc_18(), kScreen) && (1.1f < kScreen.x || 1.1f < 1.0f - kScreen.y))
                 FUN_141a80770();
         }
     }
@@ -1918,7 +1899,7 @@ int UIPopUpMenu::vfunc_13()
 {
     if (UISwfEntity::vfunc_13() != 0)
         return 1;
-    if ((m_f0.get() ? true : false) && m_f0->FUN_1422bfca0() && FUN_14116d840(FUN_14025e7c0()))
+    if ((m_f0.get() ? true : false) && m_f0->FUN_1422bfca0() && ((class CInputKeyHandler*)(class Unk_PmInput*)(((class Unk_PmInput*)FUN_14025e7c0())))->FUN_14116d840())
     {
         FUN_141a80770();
         return 1;
@@ -1950,7 +1931,7 @@ int UIPopUpMenu::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 }
                 else if (FUN_140841300(args[0], "expelMember"))
                 {
-                    FUN_14162b7d0(TSingleton<CPartyManager>::GetInstance(), args[1]);
+                    ((class CPartyManager*)(class CPartyManager*)(TSingleton<CPartyManager>::GetInstance()))->SendPartyMode4(args[1]);
                 }
             }
         }
@@ -1979,7 +1960,7 @@ bool UIPopUpMenu::FUN_141a7e020(int nButton, const CMsgBoxData& data)
     if (nButton == 0) {
         auto p0 = FUN_141a02ed0(data, 0, 0);
         auto p1 = FUN_141a02ed0(data, 1, 0);
-        auto n2 = FUN_141a02e50(&data, 2, 0);
+        auto n2 = ((class CMsgBoxData*)(class CMsgBoxData const*)(&data))->FUN_141a02e50(2, 0);
         FUN_1418fd740(p0, p1, n2);
     }
     return true;
@@ -1990,7 +1971,7 @@ bool UIPopUpMenu::FUN_141a7e0a0(int nButton, const CMsgBoxData& data)
 {
     if (nButton != 0)
         return true;
-    FUN_14162b8b0(TSingleton<CPartyManager>::GetInstance(), data.FUN_141a02f10(0, 0));
+    ((class CPartyManager*)(class CPartyManager*)(TSingleton<CPartyManager>::GetInstance()))->SendPartyMode45(data.FUN_141a02f10(0, 0));
     return true;
 }
 
@@ -1999,7 +1980,7 @@ bool UIPopUpMenu::FUN_141a7e100(int nButton, const CMsgBoxData& data)
 {
     if (nButton != 0)
         return true;
-    FUN_1409eed90()->SendPropose(data.FUN_141a02fd0(0, CStringW()));
+    TSingleton<WeddingManager>::GetInstance()->SendPropose(data.FUN_141a02fd0(0, CStringW()));
     return true;
 }
 
@@ -2042,14 +2023,14 @@ void UIPopUpMenu::PopUpMenu(const Unk_PopupMenuInfo& info, PCBase* pTarget, int 
     target.m_strName = strName;
     target.m_b38 = FUN_14166ce30(pTarget) == 0;
     target.m_bOnline = 1;
-    target.m_n20 = FUN_141654700(pTarget);
-    target.m_nJobCode = FUN_141654730(pTarget);
+    target.m_n20 = ((class PC*)(class PCBase*)(pTarget))->FUN_141654700();
+    target.m_nJobCode = ((class PC*)(class PCBase*)(pTarget))->FUN_141654730();
     {
-        MS2Ptr<CProxyGameObject> spProxy = FUN_1403ed2d0()->FUN_141bc9be0(pTarget->FUN_14123c580());
+        MS2Ptr<CProxyGameObject> spProxy = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bc9be0(pTarget->FUN_14123c580());
         if (spProxy.get() != 0)
             target.m_nTrophy = reinterpret_cast<Unk_GuildTriple*>(spProxy->FUN_1416c2950())->FUN_140267c10();
     }
-    m_a0 = FUN_141656ad0(pTarget);
+    m_a0 = ((class PC*)(class PCBase*)(pTarget))->FUN_141656ad0();
     m_a8 = FUN_141656a80(pTarget);
     m_b0 = pTarget->vfunc_77();
     m_158 = target.m_strImage;
@@ -2145,7 +2126,7 @@ void UIPopUpMenu::FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGame
 void UIPopUpMenu::FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nCharId, void* pAccount, int nType, int nDir)
 {
     FUN_141a80770();
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMe == 0)
         return;
     m_110 = nType;
@@ -2298,7 +2279,7 @@ void UIPopUpMenu::FUN_141a7ff60(const Unk_PopupMenuInfo& info, int nIndex, MS2Pt
     if (spBanner == 0)
         return;
     FUN_141a80770();
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMe == 0)
         return;
     CStringW strName(spBanner->m_user.m_strName);
@@ -2381,11 +2362,11 @@ void UIPopUpMenu::FUN_141a80770()
         return;
     vfunc_47(1);
     if ((ASScrollingList*)m_f0 != 0)
-        static_cast<Unk_PdScript*>((AScript*)m_f0.operator->())->FUN_1422bb330("close");
+        static_cast<Unk_PdScript*>((AScript*)m_f0.operator->())->Invoke("close");
     FUN_141a82dd0();
     FUN_140b632f0()->FUN_1422d4840(this, 0);
-    FUN_141930950(FUN_140c607b0(), this);
-    FUN_141b38c70(reinterpret_cast<Unk_PmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance()), this);
+    ((class Unk_UpperEvents*)(class Unk_PmEntityEvents*)(((class Unk_PmEntityEvents*)FUN_140c607b0())))->FUN_141930950(this);
+    ((class UIUGCEventDispatcher*)(class Unk_PmUgcEvents*)(reinterpret_cast<Unk_PmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->FUN_141b38c70(this);
 }
 
 // @0x141a80880
@@ -2409,9 +2390,9 @@ CString UIPopUpMenu::FUN_141a808c0()
 // @0x141a80910
 void UIPopUpMenu::FUN_141a80910()
 {
-    m_138 = reinterpret_cast<Unk_PmGuild*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccbd0();
-    m_140 = reinterpret_cast<Unk_PmGuild*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404cccb0();
-    m_148 = reinterpret_cast<Unk_PmGuild*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccdb0();
+    m_138 = TSingleton<CGuildManager>::GetInstance()->FUN_1404ccbd0();
+    m_140 = TSingleton<CGuildManager>::GetInstance()->FUN_1404cccb0();
+    m_148 = TSingleton<CGuildManager>::GetInstance()->FUN_1404ccdb0();
 }
 
 // @0x141a809e0
@@ -2478,7 +2459,7 @@ void UIPopUpMenu::FUN_141a80c40()
     m_160.SetAt(0x1f8, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86a50));
     m_160.SetAt(0x1f9, Delegate<void()>(this, &UIPopUpMenu::SendRequestPet));
     m_160.SetAt(0x1fa, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86b80));
-    if (FUN_140166410()->FUN_14036d570(0x100))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x100))
         m_160.SetAt(0x1fb, Delegate<void()>(this, &UIPopUpMenu::SendRequestCube));
     m_160.SetAt(0x1fc, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86ca0));
     m_160.SetAt(600, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86d20));
@@ -2496,10 +2477,10 @@ int UIPopUpMenu::Open(const Unk_PmTarget& target, int nFlags, int nType)
 {
     if (m_30 == 0)
         return 0;
-    if (reinterpret_cast<Unk_PmCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() == 0)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
         return 0;
     {
-        MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+        MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
         bool bPopup = spField->m_bPopupMenu;
         if (!bPopup)
             return 0;
@@ -2522,12 +2503,12 @@ int UIPopUpMenu::Open(const Unk_PmTarget& target, int nFlags, int nType)
         nDirY = 2;
         NiPoint3 kWorld;
         FUN_141a82f30(target.m_pos, kWorld, 1.0f);
-        bPlaced = reinterpret_cast<Unk_PmCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(kWorld, kPos);
+        bPlaced = TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(kWorld, kPos);
         if (!bPlaced)
         {
             fDirX = -1.0f;
             FUN_141a82f30(target.m_pos, kWorld, -1.0f);
-            bPlaced = reinterpret_cast<Unk_PmCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(kWorld, kPos);
+            bPlaced = TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(kWorld, kPos);
         }
         kPos *= fScale;
         fOffset = FUN_141a83db0();
@@ -2563,7 +2544,7 @@ int UIPopUpMenu::Open(const Unk_PmTarget& target, int nFlags, int nType)
         obj.FUN_1407cb9c0("jobcode", target.m_nJobCode);
     }
     Scaleform::GFx::Value list = reinterpret_cast<Unk_PmRoot*>(m_30.get())->FUN_140ba4cc0("open", obj);
-    if (!FUN_1409b4d40(list))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(list))->IsObject())
         return 0;
     m_100 = 0;
     m_90 = target.m_strName;
@@ -2571,8 +2552,8 @@ int UIPopUpMenu::Open(const Unk_PmTarget& target, int nFlags, int nType)
     vfunc_8(1);
     vfunc_47(0);
     FUN_140b632f0()->FUN_1422d4780(this, 0);
-    FUN_1419308c0(FUN_140c607b0(), this);
-    FUN_141b38be0(reinterpret_cast<Unk_PmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance()), this);
+    ((class Unk_UpperEvents*)(class Unk_PmEntityEvents*)(((class Unk_PmEntityEvents*)FUN_140c607b0())))->FUN_1419308c0(this);
+    ((class UIUGCEventDispatcher*)(class Unk_PmUgcEvents*)(reinterpret_cast<Unk_PmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->FUN_141b38be0(this);
     m_f0 = FUN_140bc61d0(m_28, list);
     return 1;
 }
@@ -2582,7 +2563,7 @@ int UIPopUpMenu::OpenFromCharName(CStringW strName, const Unk_PopupMenuInfo& inf
 {
     if (m_30 == 0)
         return 0;
-    if (reinterpret_cast<Unk_PmCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() == 0)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
         return 0;
     float fX = info.m_x;
     float fY = info.m_y;
@@ -2611,15 +2592,15 @@ int UIPopUpMenu::OpenFromCharName(CStringW strName, const Unk_PopupMenuInfo& inf
         Unk_PdSetData(&obj, "diry", Unk_PmDirOn);
     }
     Scaleform::GFx::Value list = reinterpret_cast<Unk_PmRoot*>(m_30.get())->FUN_140ba4cc0("open", obj);
-    if (!FUN_1409b4d40(list))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(list))->IsObject())
         return 0;
     m_100 = 0;
     m_90 = strName;
     vfunc_8(1);
     vfunc_47(0);
     FUN_140b632f0()->FUN_1422d4780(this, 0);
-    FUN_1419308c0(FUN_140c607b0(), this);
-    FUN_141b38be0(reinterpret_cast<Unk_PmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance()), this);
+    ((class Unk_UpperEvents*)(class Unk_PmEntityEvents*)(((class Unk_PmEntityEvents*)FUN_140c607b0())))->FUN_1419308c0(this);
+    ((class UIUGCEventDispatcher*)(class Unk_PmUgcEvents*)(reinterpret_cast<Unk_PmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->FUN_141b38be0(this);
     m_f0 = FUN_140bc61d0(m_28, list);
     return 1;
 }
@@ -2669,26 +2650,26 @@ void UIPopUpMenu::FUN_141a82fb0(const CString& strImage)
 // @0x141a83080
 int UIPopUpMenu::FUN_141a83080(GameObject* pObject)
 {
-    if (FUN_14087ddc0(pObject ? pObject->GetClassDesc() : 0, 0x6200004))
+    if (efd::ClassInfo::IsKindOf(pObject ? pObject->GetClassDesc() : 0, 0x6200004))
         return 1;
-    else if (FUN_14087ddc0(pObject ? pObject->GetClassDesc() : 0, 0x6200045))
+    else if (efd::ClassInfo::IsKindOf(pObject ? pObject->GetClassDesc() : 0, 0x6200045))
     {
         // A ridee counts as its rider: 1 when that is my PC, 2 for another PC.
         efd::SmartPointer<Ridee> spRidee = efd::DynamicCast<Ridee>(pObject);
         if (spRidee)
         {
-            MyPC* pMyPC = efd::DynamicCast<MyPC>(FUN_141706540(spRidee.operator->()));
+            MyPC* pMyPC = efd::DynamicCast<MyPC>(((class Ridee*)(class Ridee*)(spRidee.operator->()))->GetRider());
             if (pMyPC != 0)
                 return 1;
             else
                 return 2;
         }
     }
-    else if (FUN_14087ddc0(pObject ? pObject->GetClassDesc() : 0, 0x6200003))
+    else if (efd::ClassInfo::IsKindOf(pObject ? pObject->GetClassDesc() : 0, 0x6200003))
         return 2;
-    else if (FUN_14087ddc0(pObject ? pObject->GetClassDesc() : 0, 0x6200074))
+    else if (efd::ClassInfo::IsKindOf(pObject ? pObject->GetClassDesc() : 0, 0x6200074))
         return 5;
-    else if (FUN_14087ddc0(pObject ? pObject->GetClassDesc() : 0, 0x6200028))
+    else if (efd::ClassInfo::IsKindOf(pObject ? pObject->GetClassDesc() : 0, 0x6200028))
         return 3;
     return 0;
 }
@@ -2702,10 +2683,10 @@ void UIPopUpMenu::FUN_141a832e0(GameObject* pObject, CStringW& strName)
         strName = pPet->vfunc_77();
         return;
     }
-    CNpc* pNpc = FUN_140a38a00(pObject);
+    CNpc* pNpc = ((class CNpc*)FUN_140a38a00((class Unk_BossObject*)(pObject)));
     if (pNpc != 0)
     {
-        strName = FUN_1401aa6a0(FUN_141092fa0(pNpc));
+        strName = FUN_1401aa6a0(((class CNpc*)(class CNpc*)(pNpc))->FUN_141092fa0());
         return;
     }
     PC* pPC = efd::DynamicCast<PC>(pObject);
@@ -2717,7 +2698,7 @@ void UIPopUpMenu::FUN_141a832e0(GameObject* pObject, CStringW& strName)
     Ridee* pRidee = efd::DynamicCast<Ridee>(pObject);
     if (pRidee != 0)
     {
-        PC* pOwner = efd::DynamicCast<PC>(FUN_141706540(pRidee));
+        PC* pOwner = efd::DynamicCast<PC>(((class Ridee*)(class Ridee*)(pRidee))->GetRider());
         if (pOwner != 0)
             strName = pOwner->vfunc_77();
     }
@@ -2728,7 +2709,7 @@ int UIPopUpMenu::FUN_141a834e0(unsigned nFlags, int nType, const CStringW& strNa
 {
     if (strName.IsEmpty())
         return 0;
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMe == 0)
         return 0;
     if ((nFlags & 2) != 0)
@@ -2767,7 +2748,7 @@ int UIPopUpMenu::FUN_141a83810(unsigned nFlags, int nType, const Unk_PmTarget& t
     __int64 nCharId = target.m_nCharId;
     if (strName.IsEmpty())
         return 0;
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMe == 0)
         return 0;
     int bOnline = target.m_bOnline;
@@ -2811,9 +2792,9 @@ int UIPopUpMenu::FUN_141a83810(unsigned nFlags, int nType, const Unk_PmTarget& t
         FUN_141a84a90(nType);
     if ((nFlags & 0x8000) != 0)
         FUN_141a84b10(nType);
-    if (FUN_140166410()->FUN_14036d570(0x39) && (nFlags & 0x1000) == 0x1000)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x39) && (nFlags & 0x1000) == 0x1000)
     {
-        if (FUN_1409670e0()->FUN_1410c3180() == DAT_143ab2820 && nType != 1)
+        if (((class Unk_PmCubeMap*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() == DAT_143ab2820 && nType != 1)
         {
             if (target.m_b38)
             {
@@ -2875,10 +2856,10 @@ void UIPopUpMenu::FUN_141a83ed0(int nQuery, int nKind)
     Unk_FcUIMsg msg;
     FUN_1422b7f70(&msg, nQuery);
     FUN_1422b7f70(&msg, nKind);
-    FUN_1422b8310(&msg, m_90);
-    FUN_1422b82b0(&msg, strBuddy);
-    FUN_1422b82b0(&msg, strChar);
-    UIDialog* pQuery = FUN_140ae5a30(0x4e4e);
+    ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b8310(m_90);
+    ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0(strBuddy);
+    ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0(strChar);
+    UIDialog* pQuery = ((class UIDialog*)FUN_140ae5a30(0x4e4e));
     if (pQuery != 0)
         pQuery->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
 }
@@ -2899,10 +2880,10 @@ void UIPopUpMenu::FUN_141a84130(int nQuery, int nKind)
     Unk_FcUIMsg msg;
     FUN_1422b7f70(&msg, nQuery);
     FUN_1422b7f70(&msg, nKind);
-    FUN_1422b8310(&msg, m_90);
-    FUN_1422b82b0(&msg, strHome);
-    FUN_1422b82b0(&msg, strChar);
-    UIDialog* pQuery = FUN_140ae5a30(0x4e4e);
+    ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b8310(m_90);
+    ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0(strHome);
+    ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0(strChar);
+    UIDialog* pQuery = ((class UIDialog*)FUN_140ae5a30(0x4e4e));
     if (pQuery != 0)
         pQuery->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
 }
@@ -2910,7 +2891,7 @@ void UIPopUpMenu::FUN_141a84130(int nQuery, int nKind)
 // @0x141a842f0
 void UIPopUpMenu::FUN_141a842f0()
 {
-    FUN_14162bdb0(TSingleton<CPartyManager>::GetInstance());
+    ((class CPartyManager*)(class CPartyManager*)(TSingleton<CPartyManager>::GetInstance()))->SendPartyMode46();
 }
 
 // @0x141a84320
@@ -2973,12 +2954,12 @@ void UIPopUpMenu::FUN_141a84590(int nType, MyPC* pMe, const CStringW& strName, i
     {
         if (FUN_14162ab60(TSingleton<CPartyManager>::GetInstance()))
         {
-            if (FUN_14162ad50(TSingleton<CPartyManager>::GetInstance(), strName) != 0)
+            if (((class CPartyManager*)(class CPartyManager*)(TSingleton<CPartyManager>::GetInstance()))->FUN_14162ad50(strName) != 0)
             {
                 AddPopupMenu((Unk_PmMenuId)0xca);
                 if (bOnline != 0)
                     AddPopupMenu((Unk_PmMenuId)0xcb);
-                if (FUN_140166410()->FUN_14036d570(0xe0))
+                if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe0))
                     AddPopupMenu((Unk_PmMenuId)0xcc);
             }
             else
@@ -2989,7 +2970,7 @@ void UIPopUpMenu::FUN_141a84590(int nType, MyPC* pMe, const CStringW& strName, i
         }
         else
         {
-            if (FUN_14162ad50(TSingleton<CPartyManager>::GetInstance(), strName) != 0 && FUN_140166410()->FUN_14036d570(0xe0))
+            if (((class CPartyManager*)(class CPartyManager*)(TSingleton<CPartyManager>::GetInstance()))->FUN_14162ad50(strName) != 0 && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe0))
                 AddPopupMenu((Unk_PmMenuId)0xcc);
         }
     }
@@ -3042,7 +3023,7 @@ void UIPopUpMenu::FUN_141a848d0(int nType, int bOnline, __int64 nCharId)
         return;
     if (nCharId == 0)
         return;
-    PC* pPc = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
+    PC* pPc = static_cast<PC*>(static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1530(nCharId)));
     if (pPc == 0)
         return;
     AddPopupMenu((Unk_PmMenuId)500);
@@ -3116,13 +3097,13 @@ void UIPopUpMenu::FUN_141a84b40(int nType, MyPC* pMe, const CStringW& strName)
 {
     if (pMe == 0)
         return;
-    if (FUN_1413b6160(reinterpret_cast<Unk_PmGuild*>(TSingleton<CGuildManager>::GetInstance())) == 0)
+    if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() == 0)
         return;
     if (nType == 1)
         return;
     if (strName.GetLength() < 1)
         return;
-    if (reinterpret_cast<Unk_PmGuild*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404cf9f0(strName).get() != 0)
+    if (TSingleton<CGuildManager>::GetInstance()->FUN_1404cf9f0(strName).get() != 0)
         return;
     AddPopupMenu((Unk_PmMenuId)0x2bd);
 }
@@ -3147,7 +3128,7 @@ void UIPopUpMenu::FUN_141a84cb0(int nType, MyPC* pMe, HomeBlockManager::HomePtr 
     }
     else
     {
-        if (FUN_1409670e0()->FUN_1410c3180() == DAT_143ab2820)
+        if (((class Unk_PmCubeMap*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() == DAT_143ab2820)
             AddPopupMenu((Unk_PmMenuId)0x385);
     }
 }
@@ -3157,7 +3138,7 @@ void UIPopUpMenu::FUN_141a84cb0(int nType, MyPC* pMe, HomeBlockManager::HomePtr 
 // @0x141a84d40
 void UIPopUpMenu::FUN_141a84d40()
 {
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMe == 0)
         return;
     if (FUN_141656a80(pMe) == m_a8)
@@ -3167,8 +3148,8 @@ void UIPopUpMenu::FUN_141a84d40()
 // @0x141a84da0
 void UIPopUpMenu::FUN_141a84da0()
 {
-    if (FUN_141482e80()->m_48 != 0)
-        FUN_141a252a0(FUN_141482e80()->m_48, m_90);
+    if (((class Unk_PmMdState*)FUN_141482e80())->m_48 != 0)
+        FUN_141a252a0(((class Unk_PmMdState*)FUN_141482e80())->m_48, m_90);
 }
 
 // @0x141a84df0
@@ -3199,14 +3180,14 @@ void UIPopUpMenu::SendCharacterInfo()
 // @0x141a84f60
 void UIPopUpMenu::FUN_141a84f60()
 {
-    FUN_14162be10(TSingleton<CPartyManager>::GetInstance());
+    ((class CPartyManager*)(class CPartyManager*)(TSingleton<CPartyManager>::GetInstance()))->SendPartyMode3();
 }
 
 // @0x141a84f90
 void UIPopUpMenu::FUN_141a84f90()
 {
     if (!m_90.IsEmpty())
-        FUN_14162ba50(TSingleton<CPartyManager>::GetInstance(), m_90);
+        ((class CPartyManager*)(class CPartyManager*)(TSingleton<CPartyManager>::GetInstance()))->SendPartyMode1(m_90);
 }
 
 // @0x141a85010
@@ -3283,13 +3264,13 @@ void UIPopUpMenu::FUN_141a85500()
     UIDialog* pDialog;
     int nState;
     bool bMemoTab;
-    if (m_d0 != 0 && (pDialog = FUN_140ae5990(0x4e4d)) != 0 && pDialog->vfunc_55() == 0 &&
-        (bMemoTab = (nState = FUN_1418d6960(reinterpret_cast<Unk_PmCommunity*>(pDialog))) == 3))
+    if (m_d0 != 0 && (pDialog = ((class UIDialog*)FUN_140ae5990(0x4e4d))) != 0 && pDialog->vfunc_55() == 0 &&
+        (bMemoTab = (nState = ((class UICommunityDialog*)(class Unk_PmCommunity*)(reinterpret_cast<Unk_PmCommunity*>(pDialog)))->FUN_1418d6960()) == 3))
     {
         CString strBuddy = FUN_140719530(m_d0);
         Unk_FcUIMsg msg;
-        FUN_1422b82b0(&msg, "editMemo");
-        FUN_1422b82b0(&msg, strBuddy);
+        ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0("editMemo");
+        ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0(strBuddy);
         pDialog->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
     }
     else
@@ -3310,7 +3291,7 @@ void UIPopUpMenu::FUN_141a85680()
     else
     {
         {
-            BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0x20);
+            BlockPtr spBlock = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(0x20);
             if (spBlock.get() != 0)
             {
                 FUN_140a2ff20(spBlock, 0x20, 0);
@@ -3318,7 +3299,7 @@ void UIPopUpMenu::FUN_141a85680()
             }
         }
         if ((unsigned __int64)m_a8 > 0)
-            FUN_14140ea30()->SendTradeMode0(m_a8);
+            TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode0(m_a8);
     }
 }
 
@@ -3339,7 +3320,7 @@ void UIPopUpMenu::FUN_141a85760()
             spReport->SetFielda8(m_a8);
             spReport->SetFieldb0(m_b0);
             spReport->SetFieldd0(m_108);
-            FUN_140d86260()->vfunc_48(spReport);
+            ((class IClientPlatform*)FUN_140d86260())->vfunc_48(spReport);
         }
         else if (m_110 == 0xf)
         {
@@ -3355,7 +3336,7 @@ void UIPopUpMenu::FUN_141a85760()
             spReport->SetFieldb8(m_90);
             spReport->SetFieldf0(m_1a8.m_18);
             spReport->SetFieldf8(m_1a8.m_20);
-            FUN_140d86260()->vfunc_48(spReport);
+            ((class IClientPlatform*)FUN_140d86260())->vfunc_48(spReport);
         }
         else if (m_110 == 0x10)
         {
@@ -3372,7 +3353,7 @@ void UIPopUpMenu::FUN_141a85760()
             spReport->SetFielde0(m_1d0.m_00);
             spReport->SetFieldc0(m_1d0.m_08);
             spReport->SetFieldc8(FUN_14016a600(m_1d0.m_10, 0));
-            FUN_140d86260()->vfunc_48(spReport);
+            ((class IClientPlatform*)FUN_140d86260())->vfunc_48(spReport);
         }
         else
         {
@@ -3388,7 +3369,7 @@ void UIPopUpMenu::FUN_141a85760()
             spReport->SetFielde0(m_138);
             spReport->SetField100(m_140);
             spReport->SetField108(m_148);
-            FUN_140d86260()->vfunc_48(spReport);
+            ((class IClientPlatform*)FUN_140d86260())->vfunc_48(spReport);
         }
     }
     else
@@ -3404,15 +3385,15 @@ void UIPopUpMenu::FUN_141a85760()
         spReport->SetFieldb0(m_b0);
         spReport->SetFieldc0(m_c8);
         spReport->SetFieldc8(m_158);
-        FUN_140d86260()->vfunc_48(spReport);
+        ((class IClientPlatform*)FUN_140d86260())->vfunc_48(spReport);
     }
 }
 
 // @0x141a86920
 void UIPopUpMenu::FUN_141a86920()
 {
-    if (FUN_141482e80()->m_50 != 0)
-        FUN_141951f70(FUN_141482e80()->m_50, m_90);
+    if (((class Unk_PmMdState*)FUN_141482e80())->m_50 != 0)
+        FUN_141951f70(((class Unk_PmMdState*)FUN_141482e80())->m_50, m_90);
 }
 
 // @0x141a86970
@@ -3454,16 +3435,16 @@ void UIPopUpMenu::SendRequestPet()
 // @0x141a86b80
 void UIPopUpMenu::FUN_141a86b80()
 {
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMe == 0)
         return;
-    pMe->SendRequestPet(FUN_1416769f0(pMe));
+    pMe->SendRequestPet(((class PCBase*)(class PCBase*)(pMe))->FUN_1416769f0());
 }
 
 // @0x141a86bd0
 void UIPopUpMenu::SendRequestCube()
 {
-    if (FUN_140166410()->FUN_14036d570(0x100))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x100))
     {
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.Encode1(0x39);
@@ -3478,7 +3459,7 @@ void UIPopUpMenu::FUN_141a86ca0()
     __int64 nCharId = m_a8;
     if (FUN_1403ed2b0()->FUN_141adc940(0x4f4e) != 0)
         FUN_1403ed2b0()->FUN_141adc530(0x4f4e);
-    UICoupleActionDialog* pCouple = reinterpret_cast<UICoupleActionDialog*>(FUN_1417f5780(0x4f4e));
+    UICoupleActionDialog* pCouple = reinterpret_cast<UICoupleActionDialog*>(((class UIDialog*)FUN_1417f5780(0x4f4e)));
     if (pCouple != 0)
         pCouple->FUN_140bed2a0(nCharId);
 }
@@ -3524,7 +3505,7 @@ void UIPopUpMenu::FUN_141a86ed0()
 {
     if (m_90.IsEmpty() == true)
         return;
-    FUN_1413b71c0(reinterpret_cast<Unk_PmGuild*>(TSingleton<CGuildManager>::GetInstance()), m_90);
+    TSingleton<CGuildManager>::GetInstance()->FUN_1413b71c0(m_90);
 }
 
 // @0x141a86f50
@@ -3559,13 +3540,13 @@ void UIPopUpMenu::FUN_141a871a0()
         return;
     UIDialog* pDialog;
     int nState;
-    if (m_d8 != 0 && (pDialog = FUN_140ae5990(0x4e4d)) != 0 && pDialog->vfunc_55() == 0 &&
-        (nState = FUN_1418d6960(reinterpret_cast<Unk_PmCommunity*>(pDialog))) == 4)
+    if (m_d8 != 0 && (pDialog = ((class UIDialog*)FUN_140ae5990(0x4e4d))) != 0 && pDialog->vfunc_55() == 0 &&
+        (nState = ((class UICommunityDialog*)(class Unk_PmCommunity*)(reinterpret_cast<Unk_PmCommunity*>(pDialog)))->FUN_1418d6960()) == 4)
     {
         CString strHome = FUN_140719530(m_d8);
         Unk_FcUIMsg msg;
-        FUN_1422b82b0(&msg, "editMemoHomeBlock");
-        FUN_1422b82b0(&msg, strHome);
+        ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0("editMemoHomeBlock");
+        ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0(strHome);
         pDialog->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
     }
     else
@@ -3578,7 +3559,6 @@ void UIPopUpMenu::FUN_141a871a0()
 
 // The pick result of CameraMgr::FUN_140af0850 (camera.cpp layout; dtor 0x140a16120 bound in symbols-manual.tsv).
 class Unk_GoPickHit;
-void* FUN_140a17cb0(Unk_GoPickHit* pHit);                               // the picked mesh
 class Unk_GoPickVec
 {
 public:
@@ -3594,16 +3574,14 @@ public:
     ecr::PickService::PickRecord* FUN_140a16c30() const;
     ecr::PickService::PickRecord* m_p;
 };
-class Unk_PpCamera : public Unk_PmCamera
-{
-public:
-    Unk_GoPickListPtr FUN_140af0850(float fX, float fY, bool bFrontOnly, bool bAppCulled, bool bClosestOnly, NiAVObject* pRoot);
-};
 class Unk_PpScene;
 Unk_PpScene* FUN_1408e57f0();                                           // the ui scene manager
-int FUN_1422b9e00(Unk_PpScene* pScene);                                 // the focused scene id
-int FUN_1422b9dc0(Unk_PpScene* pScene);                                 // the current scene id
-class Unk_PpKeyState : public GFxManager { public: int FUN_1422aeed0(int nKey); };      // a mouse button state
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSceneId();
+    int GetSubSceneId();
+};
 ecr::SceneGraphService* GetSceneGraphService();
 int FUN_140ae11a0(egf::Entity* pEntity, unsigned int nPropId, int* pValue);   // an int property
 void FUN_1408a2020(egf::Entity* pEntity, unsigned int nPropId, int* pValue);  // an int property
@@ -3618,11 +3596,9 @@ struct Unk_PdCursor
 };
 float FUN_140966f00(Unk_PdCursor kA, NiPoint3 kB);                      // the distance
    // CStateService
-CStateService* FUN_140aa6d30();
-CUgcManager* FUN_14052d220();
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 MS2Ptr<CInteractObjectData> FUN_14051f670(int nId);                    // the interact table row
 extern int DAT_143ab0248;                                               // the client country
-struct Unk_PpGuild : Unk_PmGuild { MS2Ptr<CGuildMember> FUN_1413b6200(__int64 nCharId); };
 struct Unk_PpInteract : CInteractObjectData
 {
     // @0x141a8e590
@@ -3632,21 +3608,14 @@ struct Unk_PpInteract : CInteractObjectData
 // The entities of a world type hash (worldservice_1.cpp: a 16-byte box pointer to a list of entity references).
 typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_PpEntityList;
 void FUN_1409f20e0(void* pTagPtr);                                      // release
-struct Unk_PpTagPtr;
-bool FUN_1409f2130(Unk_PpTagPtr* p, void* other);                         // p == other
-struct Unk_PpTagPtr
+struct Unk_WsC_TagPtr;
+bool FUN_1409f2130(Unk_WsC_TagPtr* p, void* other);                         // p == other
+struct Unk_WsC_TagPtr
 {
-    ~Unk_PpTagPtr() { FUN_1409f20e0(this); }
+    ~Unk_WsC_TagPtr() { FUN_1409f20e0(this); }
     Unk_PpEntityList* operator->() const { return m_list; }
     void* m_unk;
     Unk_PpEntityList* m_list;
-};
-struct Unk_PpWorld : Unk_PdWorld
-{
-    Unk_PpTagPtr FUN_141bd0420(unsigned int nKey);
-    GameObject* FUN_141bd1050(void* pMesh);                             // the game object of a mesh
-    GameObject* FUN_141bd1180(int nId);
-    PCBase* FUN_141bd1290(int nId);                                     // a player by object id
 };
 
 // The log calls with two and three arguments (0x141a8bdf0 / 0x141a8ba80 / 0x141a8c0f0).
@@ -3681,14 +3650,14 @@ void FUN_141a8a010(float x, float y)
         return;
     if (!FUN_141a8b910())
         return;
-    if (static_cast<Unk_PpKeyState*>(FUN_14025e7a0())->FUN_1422aeed0(2) == 0)
+    if (FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
     {
-        if (reinterpret_cast<Unk_PmCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() == 0)
+        if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
             return;
-        Unk_GoPickListPtr spPick = static_cast<Unk_PpCamera*>(reinterpret_cast<Unk_PmCamera*>(TSingleton<CameraMgr>::GetInstance()))->FUN_140af0850(x, y, true, true, false, 0);
+        Unk_GoPickListPtr spPick = TSingleton<CameraMgr>::GetInstance()->FUN_140af0850(x, y, true, true, false, 0);
         if (spPick.FUN_140a16c00() == 0)
             return;
-        if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001f)
+        if (((class GFxSceneService*)(class Unk_PpScene*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001f)
             return;
         std::vector<GameObject*> objects;
         std::list<Unk_GoPickHit*> hits;
@@ -3697,8 +3666,8 @@ void FUN_141a8a010(float x, float y)
             Unk_GoPickHit* pHit = FUN_140a17e00(spPick.FUN_140a16c30())->FUN_140a17d70(i);
             if (pHit == 0)
                 continue;
-            void* pMesh = FUN_140a17cb0(pHit);
-            GameObject* pObject = static_cast<Unk_PpWorld*>(FUN_1403ed2d0())->FUN_141bd1050(pMesh);
+            void* pMesh = ((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject());
+            GameObject* pObject = WorldService::GetInstance()->FUN_141bd1050(pMesh);
             if (pObject == 0)
                 hits.push_back(pHit);
             else if (std::find(objects.begin(), objects.end(), pObject) == objects.end())
@@ -3710,9 +3679,9 @@ void FUN_141a8a010(float x, float y)
                 return false;
             NiPoint3 kScreenA;
             NiPoint3 kScreenB;
-            if (!reinterpret_cast<Unk_PmCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(pA->vfunc_18(), kScreenA))
+            if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(pA->vfunc_18(), kScreenA))
                 return false;
-            if (!reinterpret_cast<Unk_PmCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(pB->vfunc_18(), kScreenB))
+            if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(pB->vfunc_18(), kScreenB))
                 return false;
             return FUN_140966f00(kCursor, kScreenA) < FUN_140966f00(kCursor, kScreenB);
         });
@@ -3735,15 +3704,15 @@ void FUN_141a8a010(float x, float y)
         {
             Unk_GoPickHit* pHit = FUN_140a17e00(spPick.FUN_140a16c30())->FUN_140a17d70(i);
             GameObject* pObject = 0;
-            NiAVObject* pNode = static_cast<NiAVObject*>(FUN_140a17cb0(pHit));
+            NiAVObject* pNode = static_cast<NiAVObject*>(((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject()));
             egf::Entity* pEntity = GetSceneGraphService()->GetEntityFromSceneGraphNode(pNode);
             int nId = 0;
             if (FUN_140ae11a0(pEntity, 0x85b708e6, &nId) == 0)
-                pObject = static_cast<Unk_PpWorld*>(FUN_1403ed2d0())->FUN_141bd1180(nId);
+                pObject = WorldService::GetInstance()->FUN_141bd1180(nId);
             if (pObject != 0 && FUN_141a8ab90(pObject, x, y))
                 return;
         }
-        efd::SmartPointer<CSceneStateBase> spState = FUN_140aa6d30()->GetCurrent();
+        efd::SmartPointer<CSceneStateBase> spState = TSingleton<CStateService>::GetInstance()->GetCurrent();
         FUN_141a8a990(spState, x, y);
     }
     else
@@ -3756,7 +3725,7 @@ void FUN_141a8a010(float x, float y)
 // @0x141a8a730
 void FUN_141a8a730()
 {
-    UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+    UIPopUpMenu* pMenu = (UIPopUpMenu*)((class UIDialog*)FUN_140c30140(0x4e39));
     if (pMenu != 0)
         pMenu->FUN_141a80770();
 }
@@ -3764,7 +3733,7 @@ void FUN_141a8a730()
 // @0x141a8a760
 int FUN_141a8a760()
 {
-    UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+    UIPopUpMenu* pMenu = (UIPopUpMenu*)((class UIDialog*)FUN_140c30140(0x4e39));
     if (pMenu != 0)
         return pMenu->FUN_141a80880() == 0;
     return false;
@@ -3824,12 +3793,12 @@ void FUN_141a8a990(CSceneStateBase* pState, float x, float y)
 // MS2-FUNCTIONAL: FUN_141a7e870's target is a common base of PCBase and CPet (passed as PCBase here)
 bool FUN_141a8ab90(GameObject* pObject, float x, float y)
 {
-    if (FUN_1422b9dc0(FUN_1408e57f0()) != 0x620000c)
+    if (((class GFxSceneService*)(class Unk_PpScene*)(FUN_1408e57f0()))->GetSceneId() != 0x620000c)
         return false;
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMe == 0)
         return false;
-    UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+    UIPopUpMenu* pMenu = (UIPopUpMenu*)((class UIDialog*)FUN_140c30140(0x4e39));
     if (pMenu == 0)
         return false;
     PortraitPC* pPortrait = efd::DynamicCast<PortraitPC>(pObject);
@@ -3848,25 +3817,25 @@ bool FUN_141a8ab90(GameObject* pObject, float x, float y)
         if (pMe->FUN_141676a10() == pPet)
         {
             Unk_PopupMenuInfo info(x, y, 1, 0xc00, 0, CString(""), 0);
-            info.m_infoA.m_00 = FUN_141656ad0(pMe);
+            info.m_infoA.m_00 = ((class PC*)(class PCBase*)(pMe))->FUN_141656ad0();
             info.m_infoA.m_08 = FUN_141656a80(pMe);
             info.m_infoA.m_10 = pMe->vfunc_77();
             info.m_infoA.m_18 = pPet->GetPetId();
-            info.m_infoA.m_20 = FUN_1416769f0(pMe);
+            info.m_infoA.m_20 = ((class PCBase*)(class PCBase*)(pMe))->FUN_1416769f0();
             pMenu->FUN_141a7e870(info, static_cast<PCBase*>(static_cast<GameObject*>(pPet)), 0xf);
             return true;
         }
         else
         {
-            PCBase* pOwner = static_cast<Unk_PpWorld*>(FUN_1403ed2d0())->FUN_141bd1290(pPet->GetOwnerId());
+            PCBase* pOwner = static_cast<PCBase*>(static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(pPet->GetOwnerId())));
             if (pOwner == 0)
                 return false;
             Unk_PopupMenuInfo info(x, y, 1, 0x440, 0, CString(""), 0);
-            info.m_infoA.m_00 = FUN_141656ad0(pOwner);
+            info.m_infoA.m_00 = ((class PC*)(class PCBase*)(pOwner))->FUN_141656ad0();
             info.m_infoA.m_08 = FUN_141656a80(pOwner);
             info.m_infoA.m_10 = pOwner->vfunc_77();
             info.m_infoA.m_18 = pPet->GetPetId();
-            info.m_infoA.m_20 = FUN_1416769f0(pOwner);
+            info.m_infoA.m_20 = ((class PCBase*)(class PCBase*)(pOwner))->FUN_1416769f0();
             pMenu->FUN_141a7e870(info, static_cast<PCBase*>(static_cast<GameObject*>(pPet)), 0xf);
             return true;
         }
@@ -3877,12 +3846,12 @@ bool FUN_141a8ab90(GameObject* pObject, float x, float y)
 // @0x141a8b020
 void FUN_141a8b020(int nBannerId, float x, float y)
 {
-    if (FUN_1422b9dc0(FUN_1408e57f0()) != 0x620000c)
+    if (((class GFxSceneService*)(class Unk_PpScene*)(FUN_1408e57f0()))->GetSceneId() != 0x620000c)
         return;
-    UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+    UIPopUpMenu* pMenu = (UIPopUpMenu*)((class UIDialog*)FUN_140c30140(0x4e39));
     if (pMenu != 0)
     {
-        MS2Ptr<CUgcRegistBanner> spBanner = FUN_14052d220()->FUN_141887ce0(nBannerId);
+        MS2Ptr<CUgcRegistBanner> spBanner = ((class CUgcManager*)FUN_14052d220())->FUN_141887ce0(nBannerId);
         if (spBanner == 0)
             return;
         Unk_PopupMenuInfo info(x, y, 2, 0x40, 0, CString(""), 0);
@@ -3893,9 +3862,9 @@ void FUN_141a8b020(int nBannerId, float x, float y)
 // @0x141a8b190
 bool FUN_141a8b190(MS2Ptr<CInteractObjectData> spData, float x, float y)
 {
-    if (FUN_1422b9dc0(FUN_1408e57f0()) != 0x620000c)
+    if (((class GFxSceneService*)(class Unk_PpScene*)(FUN_1408e57f0()))->GetSceneId() != 0x620000c)
         return false;
-    UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+    UIPopUpMenu* pMenu = (UIPopUpMenu*)((class UIDialog*)FUN_140c30140(0x4e39));
     if (pMenu != 0 && DAT_143ab0248 == 3 && static_cast<Unk_PpInteract*>(spData.operator->())->FUN_141a8e590() == 1)
     {
         Unk_PopupMenuInfo info;
@@ -3906,17 +3875,17 @@ bool FUN_141a8b190(MS2Ptr<CInteractObjectData> spData, float x, float y)
         info.m_c = 0;
         int nPosterId = spData->m_guild.m_nHousePosterId;
         info.m_infoB.m_08 = nPosterId;
-        info.m_infoB.m_10 = reinterpret_cast<Unk_PmGuild*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404d2220(nPosterId);
-        info.m_infoB.m_18 = reinterpret_cast<Unk_PmGuild*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404d2330(nPosterId);
-        info.m_infoB.m_20 = reinterpret_cast<Unk_PmGuild*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404d2400(nPosterId);
+        info.m_infoB.m_10 = TSingleton<CGuildManager>::GetInstance()->FUN_1404d2220(nPosterId);
+        info.m_infoB.m_18 = TSingleton<CGuildManager>::GetInstance()->FUN_1404d2330(nPosterId);
+        info.m_infoB.m_20 = TSingleton<CGuildManager>::GetInstance()->FUN_1404d2400(nPosterId);
         info.m_infoB.m_28 = 0;
-        info.m_infoB.m_00 = reinterpret_cast<Unk_PmGuild*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccbd0();
+        info.m_infoB.m_00 = TSingleton<CGuildManager>::GetInstance()->FUN_1404ccbd0();
         {
-            MS2Ptr<CGuildMember> spMember = static_cast<Unk_PpGuild*>(reinterpret_cast<Unk_PmGuild*>(TSingleton<CGuildManager>::GetInstance()))->FUN_1413b6200(info.m_infoB.m_18);
+            MS2Ptr<CGuildMember> spMember = TSingleton<CGuildManager>::GetInstance()->FUN_1413b6200(info.m_infoB.m_18);
             if (spMember.get() != 0)
                 info.m_infoB.m_28 = spMember->data.f00;   // the member's account id
         }
-        MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pMe != 0 && FUN_141656a80(pMe) != info.m_infoB.m_18)
         {
             pMenu->FUN_141a80670(info);
@@ -3929,7 +3898,7 @@ bool FUN_141a8b190(MS2Ptr<CInteractObjectData> spData, float x, float y)
 // @0x141a8b460
 bool FUN_141a8b460(Unk_GoPickHit* pHit, float x, float y)
 {
-    Unk_PpTagPtr spList = static_cast<Unk_PpWorld*>(FUN_1403ed2d0())->FUN_141bd0420(0xc7f9dd65);
+    Unk_WsC_TagPtr spList = WorldService::GetInstance()->FUN_141bd0420(0xc7f9dd65);
     if (FUN_1409f2130(&spList, 0))
         return false;
     for (POSITION pos = spList->GetHeadPosition(); pos != 0; spList->GetNext(pos))
@@ -3941,7 +3910,7 @@ bool FUN_141a8b460(Unk_GoPickHit* pHit, float x, float y)
         FUN_1413fb630(spEntity, meshes);
         for (unsigned __int64 i = 0; i < meshes.size(); i++)
         {
-            if ((unsigned __int64)FUN_140a17cb0(pHit) == meshes.at(i))
+            if ((unsigned __int64)((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject()) == meshes.at(i))
             {
                 int nBannerId = 0;
                 FUN_1408a2020(reinterpret_cast<Unk_PpEntityRef*>(&spEntity)->FUN_1408a9280(), 0x819a96c0, &nBannerId);
@@ -3956,7 +3925,7 @@ bool FUN_141a8b460(Unk_GoPickHit* pHit, float x, float y)
 // @0x141a8b670
 bool FUN_141a8b670(Unk_GoPickHit* pHit, float x, float y)
 {
-    Unk_PpTagPtr spList = static_cast<Unk_PpWorld*>(FUN_1403ed2d0())->FUN_141bd0420(0x72f49865);
+    Unk_WsC_TagPtr spList = WorldService::GetInstance()->FUN_141bd0420(0x72f49865);
     if (FUN_1409f2130(&spList, 0))
         return false;
     for (POSITION pos = spList->GetHeadPosition(); pos != 0; spList->GetNext(pos))
@@ -3968,7 +3937,7 @@ bool FUN_141a8b670(Unk_GoPickHit* pHit, float x, float y)
         FUN_1413fb630(spEntity, meshes);
         for (unsigned __int64 i = 0; i < meshes.size(); i++)
         {
-            if ((unsigned __int64)FUN_140a17cb0(pHit) == meshes.at(i))
+            if ((unsigned __int64)((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject()) == meshes.at(i))
             {
                 int nRowId = 0;
                 FUN_1408a2020(reinterpret_cast<Unk_PpEntityRef*>(&spEntity)->FUN_1408a9280(), 0xd460e9bc, &nRowId);
@@ -3986,10 +3955,10 @@ bool FUN_141a8b670(Unk_GoPickHit* pHit, float x, float y)
 // @0x141a8b910
 bool FUN_141a8b910()
 {
-    Unk_PdWorld* pWorld = FUN_1403ed2d0();
+    WorldService* pWorld = WorldService::GetInstance();
     if (pWorld == 0)
         return true;
-    MyPC* pMe = pWorld->FUN_141bd0cc0();
+    MyPC* pMe = static_cast<MyPC*>(pWorld->FUN_141bd0cc0());
     if (pMe == 0)
         return true;
     switch (pMe->FUN_14166c930()) {

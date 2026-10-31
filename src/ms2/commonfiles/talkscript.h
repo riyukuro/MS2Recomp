@@ -36,10 +36,10 @@ public:
     T* operator->() const { return p; }
 private:
     void AddRef() const { if(p) AddRefImpl(0); }
-    static void AddRefObject(T* value) { reinterpret_cast<Unk_ScriptRef*>(value)->FUN_14015b020(); }
+    static void AddRefObject(T* value) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(value)); }
     void AddRefImpl(void*) const { AddRefObject(p); }
     void Release() { if(p) { ReleaseImpl(0); p=0; } }
-    void ReleaseImpl(void*) { if(reinterpret_cast<Unk_ScriptRef*>(p)->FUN_140159bc0()==0) { AddRefObject(p); reinterpret_cast<Unk_ScriptRef*>(p)->FUN_140159ba0(); } }
+    void ReleaseImpl(void*) { if(CPtred::ReleasePtred(reinterpret_cast<CPtred*>(p))==0) { AddRefObject(p); CPtred::DeletePtred(reinterpret_cast<CPtred*>(p)); } }
     void* pad_00; T* p;
 };
 

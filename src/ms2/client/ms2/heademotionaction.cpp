@@ -12,20 +12,24 @@
 #include <string.h>
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // The +0xd88 target of a PC (CPtred-derived; see clonepc.cpp).
 class Unk_PCD88 : public CPtred {};
 
 // The PC methods used here (their units define the real classes).
 
-// The entity manager (singleton FUN_1403ed2d0): finds a PC by object id.
+// The entity manager (WorldService): finds a PC by object id.
 class Unk_EntityMgr
 {
 public:
     PC* FUN_141bd1290(int nId);                 // 0x141bd1290
 };
-Unk_EntityMgr* FUN_1403ed2d0();                 // 0x1403ed2d0
-void FUN_140a34f00(Unk_PCD88* pPCD88);          // 0x140a34f00
+class CBoneRotateManager   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140a34f00();
+};
 
 #include "ms2/placeholder/ms2ptr_impl.h"
 
@@ -101,8 +105,8 @@ void CHeadEmotionAction::vfunc_6(double f)
 {
     if (vfunc_4())
     {
-        PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(m_n18);
+        PC* pPC = reinterpret_cast<Unk_EntityMgr*>(WorldService::GetInstance())->FUN_141bd1290(m_n18);
         if (pPC != 0)
-            FUN_140a34f00(pPC->FUN_14165c2d0().operator->());
+            ((class CBoneRotateManager*)(class Unk_PCD88*)(pPC->FUN_14165c2d0().operator->()))->FUN_140a34f00();
     }
 }

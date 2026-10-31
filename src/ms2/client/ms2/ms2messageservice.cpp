@@ -13,8 +13,8 @@
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit callees ----
-void* FUN_140166440();                                                  // the game logger
-void FUN_1401859c0(void* pLog, int nCategory, int nLevel, const wchar_t* pszMessage);
+class CLogString* GetLogString();   // C3: was FUN_140166440
+void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
 
 // Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
 #ifndef MS2_HOOK_DLL
@@ -27,7 +27,7 @@ MS2MessageService::MS2MessageService()
 // @0x140d96710
 MS2MessageService::~MS2MessageService()
 {
-    FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"~MS2MessageService()\n");
+    Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xc, 0x13, L"~MS2MessageService()\n");
     if (m_pMessageList != NULL)
     {
         EE_DELETE m_pMessageList;

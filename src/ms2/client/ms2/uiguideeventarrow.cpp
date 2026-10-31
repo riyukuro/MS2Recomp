@@ -24,6 +24,12 @@
 #include "ms2/client/ms2/uimessagebox.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/citem.h"
 static CString s_guideSound("system_guide_tooltip");
 static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static CString s_skill("skill");
@@ -161,10 +167,9 @@ extern Vector3 DAT_143b01a60;                               // the zero point
 typedef Scaleform::GFx::Value GfxValue;
 void* FUN_1403ed2b0();                                              // UI manager
 void* FUN_1403ed2d0();                                              // world service
-struct Unk_GeaUiMgrView                                             // UI manager members (this=rcx, hidden return=rdx)
+struct Unk_GeaUiMgrView : public CUIService                                             // UI manager members (this=rcx, hidden return=rdx)
 {
     MS2Ptr<UIObject> FUN_141adcea0(int nId);                        // UI by type id
-    MS2Ptr<UIObject> FUN_141adcf50(const CString& strName);         // UI by name
 };
 int FUN_141274f80();
 float FUN_141adbe70(void*);                                         // UI scale
@@ -189,8 +194,7 @@ struct Unk_GuideFiles { int FUN_1403974b0(TiXmlDocument&,const char*,int,bool,bo
 Unk_GuideFiles* FUN_140166420();
 struct Unk_GuideLog { void FUN_14015eb90(int,int,const wchar_t*,const CString&); };
 Unk_GuideLog* FUN_140166440();
-class Unk_GuideText { public: void FUN_1416fb340(CStringW&); void FUN_1416fb380(CStringW&); };
-Unk_GuideText* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 class Unk_GuideTable { public: CStringW FUN_14142d760(int,int); int FUN_14142e090(int,int); };
 Unk_GuideTable* FUN_1409331f0();
 void* FUN_1409a8b10();
@@ -204,12 +208,11 @@ class Unk_GuideCamera { public: bool FUN_140af0700(const Vector3&,Vector3&); };
 Unk_GuideCamera* FUN_1409478c0();
 
 // A display object seen through its accessors (the exe's inline/COMDAT members, bound by their FUN_ names).
-class Unk_GuideDO {
+class Unk_GuideDO : public AScript {
 public:
     float FUN_1422c10a0(); float FUN_1422c1110(); float FUN_1422c1180();   // x, y, z
     MS2Ptr<ASDisplayObject> FUN_1413b19d0(const CString&);                    // child by name
     MS2Ptr<ASDisplayObject> FUN_1422e32b0(int);                               // child by index
-    GfxValue FUN_1413127f0(const char*,CString,CString);
 };
 class Unk_GuideValue { public: bool FUN_1409b4d40() const; void FUN_1409c1770(const char*,GfxValue*) const; };
 static Unk_GuideDO* GuideDO(ASDisplayObject* p) { return reinterpret_cast<Unk_GuideDO*>(p); }
@@ -233,10 +236,8 @@ public:
     MS2Ptr<ASButtonBar> FUN_14199aad0();                             // tab strip
     int FUN_14199ab20(CString);                               // tab index by name
 };
-class Unk_GuideItem { public: bool FUN_140525f10(); bool FUN_140525f60(); void* FUN_140527840(); bool FUN_140528980(); };
-class Unk_GuideItemInfo { public: int FUN_14053c5c0(); int FUN_14053c600(); };
-class Unk_GuideInvMgr { public: void FUN_140a60880(int,ATL::CAtlArray<MS2Ptr<CItem> >&); };
-extern Unk_GuideInvMgr DAT_143ab2a90;
+class Unk_GuideItem : public CItem { public: bool FUN_140525f10(); bool FUN_140525f60(); void* FUN_140527840();};
+extern Unk_Inventory DAT_143ab2a90;
 Unk_GuideInventory* FUN_1405344f0(int);
 class Unk_GuideMarker : public CPtred { public: MS2Ptr<ASMovieClip> m_18; };
 class Unk_GuideMinimap : public UISwfEntity { public: MS2Ptr<Unk_GuideMarker> FUN_141a3b510(MS2Ptr<CPtred>); };
@@ -721,9 +722,9 @@ int UIGuideEventArrowDialog::FUN_14195f600(MS2Ptr<CItem> item, int kind)
     if (kind == 2)
         return item->FUN_140525f10() != 0 && item->FUN_140525f60() == 0;
     else if (kind == 3)
-        return reinterpret_cast<Unk_GuideItemInfo*>(reinterpret_cast<Unk_GuideItem*>(item.operator->())->FUN_140527840())->FUN_14053c5c0() == m_param;
+        return reinterpret_cast<CItemData*>(reinterpret_cast<Unk_GuideItem*>(item.operator->())->FUN_140527840())->FUN_14053c5c0() == m_param;
     else if (kind == 4)
-        return reinterpret_cast<Unk_GuideItemInfo*>(reinterpret_cast<Unk_GuideItem*>(item.operator->())->FUN_140527840())->FUN_14053c600() == m_param;
+        return reinterpret_cast<CItemData*>(reinterpret_cast<Unk_GuideItem*>(item.operator->())->FUN_140527840())->FUN_14053c600() == m_param;
     else if (kind == 5)
         return item->FUN_1405276c0() == m_param;
     return 0;

@@ -11,6 +11,7 @@
 #include <NiRenderTargetGroup.h>
 #include <NiRenderedTexture.h>
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // Unrecovered callees (real types unknown).
 unsigned char FUN_1412642d0(void* step);
@@ -36,7 +37,6 @@ void FUN_1409a5770(void* obj, float* value, int n);
 extern char DAT_143ae5320;
 extern int DAT_1439f823c;
 struct Unk_WFApp { void FUN_141473020(int a); };
-Unk_WFApp* FUN_14086d260();
 struct Unk_WFRect {
     Unk_WFRect(int a, int b, int c, int d);     // 0x140a5a400
     int a, b, c, d;
@@ -197,7 +197,7 @@ bool FUN_1416bafb0(void* a, void* step)
         if (FUN_1412642d0(s) == 1) {
             FUN_1416a0fb0(((PostProcessEffect*)s)->m_70, 0xf);
             s_fade = 0.0f;
-            FUN_14086d260()->FUN_141473020(0);
+            reinterpret_cast<Unk_WFApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473020(0);
         }
     }
     s_fade = s_fade * s_fade;

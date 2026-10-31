@@ -25,6 +25,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/fittingdollpc.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140166420 : public CFileSystem { };
@@ -39,8 +40,6 @@ void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>* pOut, const
 unsigned char FUN_1401d1320(CCacheData*);                                // the file changed since it was loaded
 int FUN_14081d9e0(unsigned nTier);                                       // the tier id is used
 unsigned FUN_14081da20(CSkillTierOptionManager::TierId nTier);                                       // the tier's skill group id
-unsigned short FUN_141662980(PC* pOwner, CSkillTierOptionManager::TierId nTier);                     // the owner's level of a tier
-int FUN_141654700(PC* pOwner);                                           // the owner's job
 struct Unk_RegMarker {};
 
 typedef MS2Ptr<CSkillTierOption> CSkillTierOptionPtr;
@@ -101,7 +100,7 @@ int CSkillTierOptionManager::Update()
         CSkillTierOptionManager::TierId nTier = (CSkillTierOptionManager::TierId)FUN_14080c5a0(i);
         if (nTier == 0)
             continue;
-        unsigned short nLevel = FUN_141662980(m_pOwner, nTier);
+        unsigned short nLevel = reinterpret_cast<PC*>(m_pOwner)->FUN_141662980(nTier);
         int bTierChanged = 0;
         if (Unk_LockGuard guard = m_lock) { __assume(0); } else
         {
@@ -115,7 +114,7 @@ int CSkillTierOptionManager::Update()
             continue;
         bChanged = 1;
         ATL::CAtlArray<unsigned int> aSkills;
-        FUN_14080c370(FUN_14081da20(nTier), (eJobCode)FUN_141654700(m_pOwner), &aSkills);
+        FUN_14080c370(FUN_14081da20(nTier), (eJobCode)reinterpret_cast<PC*>(m_pOwner)->FUN_141654700(), &aSkills);
         for (unsigned j = 0; j < aSkills.GetCount(); j++)
         {
             if (Unk_LockGuard guard = m_lock) { __assume(0); } else

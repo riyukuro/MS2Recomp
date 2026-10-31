@@ -68,8 +68,6 @@ public:
 // ---- unrecovered neighbours -------------------------------------------------------------------------------------------------
 extern char DAT_143a4b228;
 extern Unk_PtrArray* DAT_143d6eab8;     // per-frame render object list
-void* FUN_1427e4d90(NiDX9MeshMaterialBinding* binding);
-void FUN_141d4d520(void* shader, Unk_PtrArray* list);
 
 // MS2Renderer::ms_RTTI (parent NiDX9Renderer::ms_RTTI 0x143d6eb58). Its dynamic initializer is the exe's .text$di
 // 0x1400d3cd0, so it runs from this unit's .CRT$XCU slot.
@@ -92,11 +90,11 @@ void MS2Renderer::Do_RenderMesh(NiMesh* pkMesh)
         return;
     NiDX9MeshMaterialBindingPtr spBinding(0);
     NiD3DShaderInterface* pkShader = GetShaderAndVertexDecl(pkMesh, spBinding);
-    if (pkShader == 0 || spBinding == 0 || FUN_1427e4d90((NiDX9MeshMaterialBinding*)spBinding) == 0)
+    if (pkShader == 0 || spBinding == 0 || ((void*)((class NiDX9MeshMaterialBinding*)(class NiDX9MeshMaterialBinding*)((NiDX9MeshMaterialBinding*)spBinding))->GetD3DDeclaration()) == 0)
         return;
     DAT_143d6eab8->RemoveAll();
     DAT_143d6eab8->Add(pkMesh);
-    FUN_141d4d520(pkShader, DAT_143d6eab8);
+    ((class NiShader*)(void*)(pkShader))->RenderMeshes((class NiVisibleArray*)(DAT_143d6eab8));
 }
 
 // @0x140d9d4c0

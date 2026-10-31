@@ -21,15 +21,10 @@
 #include <atlcoll.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // Main system (commonfiles singleton 0x14086d260): resource root path and the current time in seconds.
-class Unk_MainSystem
-{
-public:
-    CString FUN_1414736e0();
-    double FUN_141473280();
-};
-Unk_MainSystem* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 
 // Resource manager (singleton 0x140a0afd0): texture load by path.
 class Unk_ResourceMgr
@@ -104,7 +99,7 @@ bool PostShimmerRenderStep::vfunc_15(unsigned int a, void* b)
     if (!PostProcessEffect::vfunc_15(a, 0) || m_70 == 0)
         return false;
     CString strPath;
-    strPath.Format("%s/Image/ScreenMask/shimmer.tga", (const char*)FUN_14086d260()->FUN_1414736e0());
+    strPath.Format("%s/Image/ScreenMask/shimmer.tga", (const char*)FUN_14086d260()->GetDataPath());
     s_shimmerTexture = FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_14016a5c0((const char*)strPath, 0)), 5);
     NiViewRenderClick* pkClick = (NiViewRenderClick*)FUN_140c8f690(FUN_1416b4990(this, "PostShimmer", 0, this,
         FUN_140c8f680(&m_80), 0, 0, 0, "PostShimmer", s_shimmerTexture.Get(), 0, 0));
@@ -265,7 +260,7 @@ void PostShimmerEffect::vfunc_1()
     FUN_1409a8b20()->FUN_1416a3920(0x12, true);
     float fBlend = 0.0f;
     CString strPath;
-    strPath.Format("%s/Image/ScreenMask/%s", (const char*)FUN_14086d260()->FUN_1414736e0(), (const char*)m_strTexture);
+    strPath.Format("%s/Image/ScreenMask/%s", (const char*)FUN_14086d260()->GetDataPath(), (const char*)m_strTexture);
     FUN_140c8f490(FUN_140a0afd0()->FUN_141552f90(CString((const char*)strPath), 5));
     FUN_1409a5770(DAT_143ae5438, &fBlend, 1);
     efd::Point2 kMove(0.0f, 0.0f);
@@ -301,7 +296,7 @@ bool PostShimmerEffect::vfunc_6(bool b)
     if (!b)
     {
         CString strPath;
-        strPath.Format("%s/Image/ScreenMask/%s", (const char*)FUN_14086d260()->FUN_1414736e0(), (const char*)m_strTexture);
+        strPath.Format("%s/Image/ScreenMask/%s", (const char*)FUN_14086d260()->GetDataPath(), (const char*)m_strTexture);
         FUN_140c8f490(FUN_140a0afd0()->FUN_141552f90(CString((const char*)strPath), 5));
         vfunc_7(m_nState, m_fAlpha);
     }

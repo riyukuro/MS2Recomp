@@ -114,8 +114,13 @@ struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 extern Unk_EntityAppFramework DAT_143b059e8;
 extern __int64 DAT_143ab2898;                                       // wallet: meso
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
+#include "ms2/client/ms2/mypc.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 
-class Unk_HiSvc : public efd::ISystemService
+template <int N> struct Unk_CMISTree;                              // the visitor id tree (a std::set<__int64>)
+class CubeMapInformationService : public efd::ISystemService   // C3: member view (the real header brings dynamic initializers)
 {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
@@ -131,24 +136,24 @@ public:
     int FUN_1410c33f0();
     int FUN_1410c3470();
     int FUN_1410c34b0();
-    __int64 FUN_1410d5730();                                        // meso balance
-    __int64 FUN_1410d5780();                                        // merat balance
-    void FUN_1410d5930(std::set<__int64>& ids);                     // the visitors
+    unsigned __int64 FUN_1410d5730();                                      // meso balance
+    unsigned __int64 FUN_1410d5780();                                      // merat balance
+    void FUN_1410d5930(Unk_CMISTree<0x11e>* ids);                   // the visitors
 };
-Unk_HiSvc* FUN_1401cd040(Unk_EntityAppFramework* framework);
-Unk_HiSvc* FUN_1409670e0();
-
-// The local player.
-class Unk_HiPc
+class Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);   // the cube service from the framework
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-in
 {
 public:
-    void FUN_14152a040();
-    void FUN_14152f3c0();
+    static Unk_AkoHouseSvc* GetInstance();                              // the cube service singleton
+};
+
+// The local player.
+class Unk_HiPc : public MyPC
+{
+public:
     void FUN_14152feb0(int nMode, int nFlag);
-    void FUN_141530200();
     void FUN_1415283c0(int n);
     void FUN_1415286a0();
-    int FUN_1416595d0();
     __int64 FUN_141662830();                                        // time of the last bank use
     __int64 FUN_141662870();                                        // time of the last doctor use
 };
@@ -166,7 +171,6 @@ class Unk_HiWorld
 public:
     Unk_HiMapPtr FUN_141bd30a0();                                   // current map data
 };
-Unk_HiWorld* FUN_1403ed2d0();
 Unk_HiPc* FUN_141bd0cc0(Unk_HiWorld*);
 PCBase* FUN_141bd1640(Unk_HiWorld*, __int64 nId);
 
@@ -192,7 +196,6 @@ public:
     void FUN_141adc530(int nId);                                    // show
     void FUN_141adc750(int nId);                                    // toggle
 };
-Unk_HiUiMgr* FUN_1403ed2b0();
 
 class UISystemMenuDialog : public UIObject
 {
@@ -215,7 +218,7 @@ __int64 FUN_140930240();
 __int64 FUN_140930ae0();
 unsigned int FUN_14092f640();
 bool FUN_141902580(bool bMessage);
-__int64 FUN_140869440();
+__int64 GetServerTime();
 void FUN_141275260(int nId, int a, int b);
 void FUN_140710590(COutPacket& packet);
 CString FUN_14016a600(const wchar_t* psz, int n);
@@ -300,7 +303,7 @@ int UIHomeInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("OnVisitorsBook", szMethod) == 0)
     {
-        FUN_1403ed2b0()->FUN_141adc750(0x4ed9);
+        reinterpret_cast<Unk_HiUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4ed9);
         return 1;
     }
     else if (_stricmp("OnHomeLeave", szMethod) == 0)
@@ -379,10 +382,10 @@ void UIHomeInfoDialog::FUN_1412c5690()
 {
     if (FUN_1418fd280() == 0)
         return;
-    Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
     if (pPc == 0)
         return;
-    Unk_HiMapPtr spMap = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_HiMapPtr spMap = reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spMap.FUN_140965240(0) != 0)
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
@@ -457,8 +460,8 @@ void UIHomeInfoDialog::FUN_1412c6070()
     {
         if (MS2Ptr<ASTextField> spText = spPanel->FUN_1409b4620("m_constructScore"))
         {
-            int nMax = FUN_1409670e0()->FUN_1410c3430();
-            int nCur = FUN_1409670e0()->FUN_1410c33f0();
+            int nMax = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3430();
+            int nCur = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c33f0();
             spText->FUN_1422c4cd0(FUN_140811740(0x25, nCur, nMax));
         }
     }
@@ -470,7 +473,7 @@ void UIHomeInfoDialog::FUN_1412c6220()
 {
     if (vfunc_55())
         return;
-    efd::SmartPointer<Unk_HiSvc> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService((CubeMapInformationService*)FUN_1401cd040(&DAT_143b059e8));
     if (spService == 0)
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
@@ -499,7 +502,7 @@ void UIHomeInfoDialog::FUN_1412c66c0()
 {
     if (vfunc_55())
         return;
-    efd::SmartPointer<Unk_HiSvc> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService((CubeMapInformationService*)FUN_1401cd040(&DAT_143b059e8));
     if (spService == 0)
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
@@ -507,7 +510,7 @@ void UIHomeInfoDialog::FUN_1412c66c0()
         if (MS2Ptr<Unk_HiConv> spConv = spPanel->FUN_140accfb0<Unk_HiConv>("m_homeConvenientPanel"))
         {
             std::set<__int64> ids;
-            spService->FUN_1410d5930(ids);
+            spService->FUN_1410d5930((Unk_CMISTree<0x11e>*)&ids);
             if (MS2Ptr<Unk_HiList> spList = spConv->FUN_140bc7280("m_scrollingList"))
             {
                 spList->FUN_1422dd1d0();
@@ -522,7 +525,7 @@ void UIHomeInfoDialog::FUN_1412c66c0()
                     for (std::set<__int64>::iterator it = ids.begin(); it != ids.end(); ++it)
                     {
                         __int64 nCharId = *it;
-                        PCBase* pPlayer = FUN_141bd1640(FUN_1403ed2d0(), nCharId);
+                        PCBase* pPlayer = FUN_141bd1640(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()), nCharId);
                         if (pPlayer != 0)
                         {
                             ASObj obj(2);
@@ -546,18 +549,18 @@ void UIHomeInfoDialog::FUN_1412c6b50()
         return;
     if (!FUN_141902580(false))
         return;
-    if (!FUN_1409670e0()->FUN_1410c3600(2))
+    if (!((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(2))
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
         if (MS2Ptr<ASTextField> spArea = spPanel->FUN_1409b4620("m_extensionArea"))
         {
-            int nArea = FUN_1409670e0()->FUN_1410c3470();
+            int nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470();
             spArea->FUN_1422c4cd0(FUN_14062b4f0(L"s_home_info_title_area", nArea));
         }
         if (MS2Ptr<ASTextField> spHeight = spPanel->FUN_1409b4620("m_extensionHeight"))
         {
-            int nHeight = FUN_1409670e0()->FUN_1410c34b0();
+            int nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0();
             spHeight->FUN_1422c4cd0(FUN_14062b4f0(L"s_home_info_title_height", nHeight));
         }
     }
@@ -571,7 +574,7 @@ void UIHomeInfoDialog::FUN_1412c6e70(const CStringW& strItemName, const CStringW
         return;
     if (!FUN_141902580(false))
         return;
-    if (!FUN_1409670e0()->FUN_1410c3600(2))
+    if (!((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(2))
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
@@ -586,7 +589,7 @@ void UIHomeInfoDialog::FUN_1412c6e70(const CStringW& strItemName, const CStringW
 // @0x1412c7090
 CStringW UIHomeInfoDialog::FUN_1412c7090()
 {
-    CStringW strNotice = FUN_1409670e0()->FUN_1410c3260();
+    CStringW strNotice = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3260();
     if (!strNotice.IsEmpty())
         return strNotice;
     return GetStringCommon(0x574);
@@ -596,16 +599,16 @@ CStringW UIHomeInfoDialog::FUN_1412c7090()
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 CStringW UIHomeInfoDialog::FUN_1412c7140()
 {
-    CStringW strAddress = FUN_1409670e0()->FUN_1410c31d0();
-    Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    CStringW strAddress = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0();
+    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
     if (pPc == 0)
         return strAddress;
     if (FUN_141527ed0(pPc))
     {
-        int nA = FUN_1409670e0()->FUN_1410c3140();
-        int nB = FUN_1409670e0()->FUN_1410c3100();
-        int nC = FUN_1409670e0()->FUN_1410c3000();
-        CStringW strName = FUN_1409670e0()->FUN_1410c31d0();
+        int nA = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3140();
+        int nB = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3100();
+        int nC = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3000();
+        CStringW strName = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0();
         return FUN_1409796e0(nA, nB, nC, strName);
     }
     return strAddress;
@@ -614,13 +617,13 @@ CStringW UIHomeInfoDialog::FUN_1412c7140()
 // @0x1412c72d0
 int UIHomeInfoDialog::FUN_1412c72d0()
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
     if (pPc == 0)
         return 0;
     if (FUN_1418fd2f0() != 0)
     {
         int nCraft = pPc->FUN_1416595d0();
-        int nMode = FUN_1409670e0()->FUN_1410c3650();
+        int nMode = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3650();
         ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDialog)
             pDialog->Invoke("setMyHome", FUN_1418fd280(), nCraft, nMode);
@@ -671,13 +674,13 @@ void UIHomeInfoDialog::OnTogglePanel()
 // @0x1412c76e0
 void UIHomeInfoDialog::OnNoticeModify()
 {
-    FUN_1403ed2b0()->FUN_141adc530(0x4f79);
+    reinterpret_cast<Unk_HiUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f79);
 }
 
 // @0x1412c7710
 void UIHomeInfoDialog::OnConstruct()
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
     if (pPc == 0)
         return;
     if (pPc->FUN_1416595d0() == 0)
@@ -689,7 +692,7 @@ void UIHomeInfoDialog::OnConstruct()
 // @0x1412c7770
 void UIHomeInfoDialog::OnBank()
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
     if (pPc == 0)
         return;
     if (FUN_1412c81d0() > 0)
@@ -700,7 +703,7 @@ void UIHomeInfoDialog::OnBank()
 // @0x1412c77c0
 void UIHomeInfoDialog::OnDoctor()
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
     if (pPc == 0)
         return;
     if (FUN_1412c8280() > 0)
@@ -735,11 +738,11 @@ void UIHomeInfoDialog::SendRequestCubeMode58(CStringW strName)
 // @0x1412c7aa0
 bool UIHomeInfoDialog::FUN_1412c7aa0(int nResult, const CMsgBoxData& data)
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
     if (pPc == 0)
         return false;
     if (nResult == 0)
-        pPc->FUN_14152a040();
+        pPc->SendRequestMoveFieldMode3();
     return true;
 }
 
@@ -751,7 +754,7 @@ bool UIHomeInfoDialog::FUN_1412c7af0(int nSlot, const CMsgBoxData& data)
     {
     case 0:
     {
-        unsigned int nCount = FUN_1409670e0()->FUN_1410ce310();
+        unsigned int nCount = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410ce310();
         if (nCount > 0)
         {
             CStringW strMsg = GetStringCommon(0xbb1);
@@ -788,11 +791,11 @@ bool UIHomeInfoDialog::FUN_1412c7af0(int nSlot, const CMsgBoxData& data)
 // @0x1412c7ef0
 bool UIHomeInfoDialog::FUN_1412c7ef0(int nResult, const CMsgBoxData& data)
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
     if (pPc == 0)
         return false;
     if (nResult == 0)
-        pPc->FUN_14152a040();
+        pPc->SendRequestMoveFieldMode3();
     return true;
 }
 
@@ -803,7 +806,7 @@ bool UIHomeInfoDialog::SendRequestCubeMode31(int nResult, const CMsgBoxData& dat
     {
         if (FUN_14036d570(FUN_140166410(), 0xd4))
         {
-            Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+            Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
             if (pPc != 0)
                 pPc->FUN_14152f3c0();
         }
@@ -847,12 +850,12 @@ bool UIHomeInfoDialog::FUN_1412c7ff0(int nResult, const CMsgBoxData& data)
 // @0x1412c81d0
 unsigned int UIHomeInfoDialog::FUN_1412c81d0()
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
     if (pPc == 0)
         return 0;
     if (pPc->FUN_141662830() == 0)
         return 0;
-    __int64 nNow = FUN_140869440();
+    __int64 nNow = GetServerTime();
     int nLimit = *FUN_1401d7c10(&FUN_1401d3200()->m_bank) / 1000;
     int nElapsed = (int)(nNow - pPc->FUN_141662830());
     if (nElapsed > nLimit)
@@ -863,12 +866,12 @@ unsigned int UIHomeInfoDialog::FUN_1412c81d0()
 // @0x1412c8280
 unsigned int UIHomeInfoDialog::FUN_1412c8280()
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
     if (pPc == 0)
         return 0;
     if (pPc->FUN_141662870() == 0)
         return 0;
-    __int64 nNow = FUN_140869440();
+    __int64 nNow = GetServerTime();
     int nLimit = *FUN_1401d7c10(&FUN_1401d3200()->m_doctor) / 1000;
     int nElapsed = (int)(nNow - pPc->FUN_141662870());
     if (nElapsed > nLimit)
@@ -879,7 +882,7 @@ unsigned int UIHomeInfoDialog::FUN_1412c8280()
 // @0x1412c8470
 UISystemMenuDialog* FUN_1412c8470()
 {
-    Unk_HiUiMgr* pMgr = FUN_1403ed2b0();
+    Unk_HiUiMgr* pMgr = reinterpret_cast<Unk_HiUiMgr*>(TSingleton<CUIService>::GetInstance());
     if (pMgr == 0)
         return 0;
     MS2Ptr<UIObject> spMenu = pMgr->FUN_141adcea0(FUN_1412c8960());

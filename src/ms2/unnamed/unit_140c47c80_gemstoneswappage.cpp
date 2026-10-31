@@ -48,6 +48,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <map>
 
 // The header statics of the original TU (the same set as the other pages of the family).
@@ -60,9 +61,11 @@ class Unk_ItemEquipData : public CItemData {};   // CItem::FUN_140527840's recor
 class Unk_GsWorld;
 class Unk_GsPlayer;
 class Unk_GsInventory;
-Unk_GsWorld* FUN_1403ed2d0();
-Unk_GsPlayer* FUN_141bd0cc0(Unk_GsWorld*);
-Unk_GsInventory* FUN_1416561a0(Unk_GsPlayer*);
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_PCEquipSet* FUN_1416561a0();
+};
 void FUN_1411e1ce0(Unk_GsInventory*, CAtlList<MS2Ptr<CEquipItem>>&, int);
 // The player's inventory (global 0x143ab2a90).
 class Unk_GsBag {
@@ -95,7 +98,6 @@ CStringW FUN_1401d0160(const wchar_t*, const CStringW&);     // ATL::operator+(c
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW text);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140710590(COutPacket&);
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                 // the value is an object
 void FUN_1422bcce0(Scaleform::GFx::Value* pv, bool b);
 void FUN_1422bcc70(Scaleform::GFx::Value* pv, Scaleform::GFx::Value v);
 
@@ -186,7 +188,7 @@ inline MS2Ptr<Unk_SocketPageBag> FUN_140c4b8a0(int nMovieId, const Scaleform::GF
 inline MS2Ptr<Unk_SocketPageBag> Unk_GsClip::FUN_140c4bc60(const CString& strName)
 {
     Scaleform::GFx::Value v = FUN_1422baa20(strName);
-    if (FUN_1409b4d40(v))
+    if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
         return FUN_140c4b8a0(m_nMovieId, v);
     return MS2Ptr<Unk_SocketPageBag>(0);
 }
@@ -602,11 +604,11 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c4a9a0(CAtlArray<MS2Ptr<CItem>>& o
 {
     DAT_143ab2a90.FUN_140a60880(0, out);
     DAT_143ab2a90.FUN_140a60880(1, out);
-    Unk_GsPlayer* player = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_GsPlayer* player = ((class Unk_GsPlayer*)((class WorldService*)(class Unk_GsWorld*)(reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (player == 0)
         return;
     CAtlList<MS2Ptr<CEquipItem>> equipped(10);
-    Unk_GsInventory* inventory = FUN_1416561a0(player);
+    Unk_GsInventory* inventory = ((class Unk_GsInventory*)((class PC*)(class Unk_GsPlayer*)(player))->FUN_1416561a0());
     FUN_1411e1ce0(inventory, equipped, 0);
     FUN_1411e1ce0(inventory, equipped, 1);
     for (POSITION pos = equipped.GetHeadPosition(); pos != 0; equipped.GetNext(pos)) {

@@ -14,6 +14,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/notifysystem.h"
 #include <stdlib.h>
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -21,19 +23,12 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
 class ASDialog : public ASDisplayObjectContainer { public: virtual void vfunc_2(int, int, int); };   // vfunc_2: place the movie
-class Unk_TpClip : public ASMovieClip { public: void FUN_1422c0ec0(int nY); };
-class Unk_TpComp : public ASUIComponent { public: void FUN_1422c7cd0(const Scaleform::GFx::Value& v); };   // set the tooltip
-class Unk_TpFeatures { public: bool FUN_14036d570(int nFeature); };
-class Unk_TpNotices
-{
-public:
-    void FUN_140da4e40(CStringW strName, Delegate<void(NotifyObject*)> handler);
-    void FUN_140da4eb0(CStringW strName, Delegate<void(NotifyObject*)> handler);
-};
+class Unk_TpClip : public ASMovieClip { };
+class Unk_TpComp : public ASUIComponent { };   // set the tooltip
 
-Unk_TpFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 bool FUN_1406a5930();                                               // star point is enabled
-Unk_TpNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 CStringW FUN_141900120(int nCurrency, bool bIcon, bool bNewline);   // the amount text of a token kind
 CStringW FUN_1418fe870(int nCurrency, int* pnVSpace, unsigned nItemId);   // the "<img>" source of a token kind
 CStringW FUN_140275590(const wchar_t* szFormat, const CStringW& a1, const int& a2);
@@ -88,7 +83,7 @@ void UITokenPocketDialog::OnLoadComplete()
     int nWhiteY = nBlackY + 0x37;
     static_cast<Unk_TpClip*>(spBgWhite.get())->FUN_1422c0ec0(nWhiteY);
     static_cast<Unk_TpClip*>(spBgBlack.get())->FUN_1422c0ec0(nBlackY);
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UITokenPocketDialog::FUN_141352530));
+    FUN_140939a10()->RegisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UITokenPocketDialog::FUN_141352530));
     FUN_141352560();
 }
 
@@ -105,7 +100,7 @@ void UITokenPocketDialog::vfunc_26()
     m_1e0 = 0;
     m_1f0 = 0;
     m_200 = 0;
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UITokenPocketDialog::FUN_141352530));
+    FUN_140939a10()->UnregisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UITokenPocketDialog::FUN_141352530));
 }
 
 // @0x1413524b0

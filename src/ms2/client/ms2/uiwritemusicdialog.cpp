@@ -100,6 +100,7 @@
 
 #define MS2_PTR_MOVE_CONVERT
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/gfxmanager.h"
 
 #include "uiwritemusicdialog.h"
 
@@ -135,6 +136,10 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/instrumentmanager.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cwebbrowserservice.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -153,17 +158,13 @@ typedef std::multimap<unsigned int, unsigned int> Unk_WmTrack;              // t
 typedef std::multimap<unsigned int, std::pair<int, int> > Unk_WmEvents;     // tick -> (note, length)
 
 // The instrument manager (singleton, ?\instrumentmanager.cpp).
-class Unk_WmInstrumentMgr
+class Unk_WmInstrumentMgr : public CInstrumentManager
 {
 public:
     unsigned FUN_140d08660(int nChannel, int nProgram, int nPercussion, Unk_WmTrack* pTrack, Unk_WmEvents* pEvents,
                            unsigned nTime, unsigned nNow, const CString& strMml, bool bFirst);   // parse one tab
-    bool FUN_140d099c0(const CString& strMml, int nCategory, int nOffset, int* pnLength);   // preview the score
-    void FUN_140d09bc0();                                                   // stop the preview
     void FUN_140d09c10(Unk_WmScore* pScore);                                // send the composed score
     void FUN_140d09c80(unsigned __int64 nItemUid);                          // request a score's text
-    void FUN_140d09cf0(unsigned nFlags);                                    // add mode flags
-    void FUN_140d09d40(unsigned nFlags);                                    // remove mode flags
 };
 Unk_WmInstrumentMgr* FUN_140c8dac0();
 
@@ -210,8 +211,7 @@ extern int DAT_143ab2834;
 bool FUN_14026d4d0(const Unk_WmOwner* pOwner, int nServer, __int64 nCharacterId);
 
 // The player inventory (global at 0x143ab2a90): item lookup by uid.
-class Unk_WmInventory { public: MS2Ptr<CItem> FUN_140a5d680(__int64 nItemUid); };
-extern Unk_WmInventory DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 #ifdef __clang__
 // Bind the exe's operator+(const char*, const CString&); clang otherwise emits an unavailable CopyChars DLL import.
 CString FUN_140298360(const char* szLeft, const CString& strRight);
@@ -241,28 +241,18 @@ public:
     void FUN_141adc5d0(int nUiType);                                        // close it
     Unk_WmUIRef FUN_141adcea0(int nUiType);                                 // the dialog
 };
-Unk_WmUiSvc* FUN_1403ed2b0();
 
 class Unk_WmBrowser { public: void FUN_141b794e0(CString* pstrOut, const char* szUrl); };
-Unk_WmBrowser* FUN_140cc18a0();
 void FUN_1418fe1c0(const CString& strUrl);                                  // open the web page
 
-class Unk_WmStrMgr
-{
-public:
-    void FUN_1422b0ea0(const CStringW& str);                                // copy to the clipboard
-    CStringW FUN_1422b0570(const CString& strKey);                          // "$key" -> text
-};
-Unk_WmStrMgr* FUN_14025e7a0();
 CommonString* FUN_14025e7d0();
 CInstrumentDataTable* FUN_14052d1d0();                                      // the instrument table singleton
-CItemDataTable* FUN_140281980();
 
 unsigned FUN_140869420();                                                   // the client clock (ms)
 bool FUN_140a467d0(const MS2Ptr<AScript>* p);                               // the AS object is released
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW GetStringCommon(int nId);                                            // string table text by id
-CStringW FUN_1409eec40(int nId);                                            // system message text
+CStringW BlockFormat(int nId);                                              // system message text
 void FUN_1412751f0(const CStringW& str, int a, int b);                      // notice
 void FUN_1412761e0(MS2Ptr<AScript> spScript, int bEnable);                  // enable the movie input
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);       // message box
@@ -315,7 +305,7 @@ class TiXmlText
 public:
     TiXmlText(const char* szText);                                          // 0x1408723d0
     ~TiXmlText();                                                           // 0x140872500
-    void FUN_14087a320(bool bCData);                                        // SetCDATA
+    void SetCDATA(bool bCData);                                             // SetCDATA
 private:
     void* m_pad[0x58 / sizeof(void*)];
 };
@@ -450,7 +440,7 @@ void UIWriteMusicDialog::OnLoadComplete()
         FUN_140cff840(FUN_1422dbb40(), "m_drumInfoText", 0);
         FUN_140ff1b10(0);
     }
-    FUN_140c8dac0()->FUN_140d09cf0(1);
+    FUN_140c8dac0()->AddFlags(1);
 }
 
 // @0x140fee700
@@ -484,13 +474,13 @@ void UIWriteMusicDialog::vfunc_67()
     if (pCartoon != 0 && pCartoon->vfunc_55() == 0)
     {
         if (pCartoon->GetBookId() == *TSingleton<Client::Constants>::GetInstance()->WriteMusicStoryBookID.Get())
-            FUN_1403ed2b0()->FUN_141adc5d0(0x4e87);
+            reinterpret_cast<Unk_WmUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e87);
     }
     m_nPage = 0;
     m_notes.clear();
     m_pages.clear();
     if (m_30.get())
-        FUN_140c8dac0()->FUN_140d09d40(1);
+        FUN_140c8dac0()->RemoveFlags(1);
 }
 
 // @0x140fee900
@@ -518,7 +508,7 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onClickHelpWebPage", szMethod) == 0)
     {
         CString strUrl;
-        FUN_140cc18a0()->FUN_141b794e0(&strUrl, *TSingleton<Client::Constants>::GetInstance()->WriteMusicDetailWebPage.Get());
+        reinterpret_cast<Unk_WmBrowser*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b794e0(&strUrl, *TSingleton<Client::Constants>::GetInstance()->WriteMusicDetailWebPage.Get());
         FUN_1418fe1c0(strUrl);
         return 1;
     }
@@ -807,7 +797,7 @@ void UIWriteMusicDialog::FUN_140ff0090(int nResult)
     {
         if (m_30.get())
             FUN_1412761e0(m_30, 1);
-        FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, CStringW(L""));
+        FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
     }
 }
 
@@ -820,7 +810,7 @@ void UIWriteMusicDialog::FUN_140ff0260(unsigned __int64 nItemUid, const CString&
     m_nMode = 2;
     m_strText = strMml;
     if (vfunc_55() != 0)
-        FUN_1403ed2b0()->FUN_141adc530(0x4eed);
+        reinterpret_cast<Unk_WmUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4eed);
     else
         FUN_140ff41a0();
 }
@@ -917,7 +907,7 @@ void UIWriteMusicDialog::FUN_140ff03b0(ASData* pArgs)
         MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(static_cast<CItem*>(m_spItem)->FUN_140527840()));
         if (spData)
         {
-            MS2Ptr<ItemMusicScore> spScore = FUN_140281980()->GetMusicScore(spData->FUN_14053c510());
+            MS2Ptr<ItemMusicScore> spScore = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(spData->FUN_14053c510());
             if (spScore)
                 nMax = spScore->noteLengthMax;
         }
@@ -997,7 +987,7 @@ void UIWriteMusicDialog::FUN_140ff12d0(ASData* pArgs)
     }
     int nOffset = (int)DoubleSecondsToMs(pArgs->FUN_1422b8ca0());
     int nLength = 0;
-    bool bOk = FUN_140c8dac0()->FUN_140d099c0(m_strPlayMml, nCategory, nOffset, &nLength);
+    bool bOk = FUN_140c8dac0()->PreviewScore(m_strPlayMml, nCategory, nOffset, &nLength);
     if (bOk)
     {
         FUN_140ff35c0(nOffset, nLength);
@@ -1020,7 +1010,7 @@ void UIWriteMusicDialog::FUN_140ff12d0(ASData* pArgs)
 // @0x140ff1a20
 void UIWriteMusicDialog::FUN_140ff1a20()
 {
-    FUN_140c8dac0()->FUN_140d09bc0();
+    FUN_140c8dac0()->StopPreview();
     FUN_140ff3540();
     if (m_30.get())
         m_30->Invoke("stopPlayMusic");
@@ -1030,7 +1020,7 @@ void UIWriteMusicDialog::FUN_140ff1a20()
 // @0x140ff1aa0
 void UIWriteMusicDialog::FUN_140ff1aa0()
 {
-    FUN_140c8dac0()->FUN_140d09bc0();
+    FUN_140c8dac0()->StopPreview();
     FUN_140ff35a0();
     if (m_30.get())
         m_30->Invoke("pausePlayMusic");
@@ -1134,7 +1124,7 @@ void UIWriteMusicDialog::FUN_140ff21a0(ASData* pArgs)
     if (m_bPlaying)
     {
         int nLength = 0;
-        bool bOk = FUN_140c8dac0()->FUN_140d099c0(m_strPlayMml, nCategory, nOffset, &nLength);
+        bool bOk = FUN_140c8dac0()->PreviewScore(m_strPlayMml, nCategory, nOffset, &nLength);
         if (bOk)
         {
             FUN_140ff35c0(nOffset, nLength);
@@ -1292,7 +1282,7 @@ void UIWriteMusicDialog::FUN_140ff2cf0(const CStringW& strPath)
                     strText.Append(strTab);
                     strText.Append("\n");
                     TiXmlText text(strText);
-                    text.FUN_14087a320(1);
+                    text.SetCDATA(1);
                     if (!bMelody)
                         FUN_14086f920(&element, "index", i);
                     FUN_14086e000(&element, &text);
@@ -1495,7 +1485,7 @@ int UIWriteMusicDialog::FUN_140ff40b0()
 {
     if (!m_spItem || static_cast<CItem*>(m_spItem)->FUN_140527840() == 0)
         return 0;
-    MS2Ptr<ItemMusicScore> spScore = FUN_140281980()->GetMusicScore(static_cast<CItem*>(m_spItem)->FUN_1405276c0());
+    MS2Ptr<ItemMusicScore> spScore = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(static_cast<CItem*>(m_spItem)->FUN_1405276c0());
     if (spScore == 0)
         return 0;
     return spScore->noteLengthMax;
@@ -1751,9 +1741,9 @@ inline MS2Ptr<ASDataProvider> FUN_140ff6b60(int nMovieId, Scaleform::GFx::Value&
 // @0x140ff7030
 inline UICartoonDialog* FUN_140ff7030(int nUiType)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_WmUiSvc*>(TSingleton<CUIService>::GetInstance()))
     {
-        Unk_WmUIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nUiType);
+        Unk_WmUIRef ref = reinterpret_cast<Unk_WmUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiType);
         if (ref.FUN_1403e8a70())
             return dynamic_cast<UICartoonDialog*>(ref.FUN_1403ed9e0());
     }

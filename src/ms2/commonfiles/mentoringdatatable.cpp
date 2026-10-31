@@ -20,8 +20,6 @@ public:
     Unk_140165cf0* FUN_14086e8d0(const char* pszName);              // first child element (by name)
     Unk_140165cf0* FUN_14086e7e0(const char* pszName);              // next sibling element (by name)
 };
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int& rOut);
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned int& rOut);
@@ -57,7 +55,7 @@ bool MentoringDataTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "MentoringConfig.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

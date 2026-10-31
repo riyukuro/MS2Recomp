@@ -28,6 +28,8 @@
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/client/ms2/uimasterydialog.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/uiservice.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -64,18 +66,26 @@ public:
     __int64 FUN_1410d50c0();                                    // the housing point maximum
     unsigned int FUN_1410d5550(int nCategory);                  // installed interiors of a cube category
 };
-Unk_UhpHome* FUN_1409670e0();
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoHouseSvc* GetInstance();
+};
 
-class Unk_UhpOptions { public: bool FUN_14036d570(int nFeature); };      // the content switches
-Unk_UhpOptions* FUN_140166410();
+      // the content switches
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_UhpBlockFlags { public: int FUN_1402c4c90(int nFlag); };       // blocked-action flag set
 struct Unk_UhpConfig { char m_pad[8]; Unk_UhpBlockFlags m_flags; };
-Unk_UhpConfig* FUN_14025e7b0();                                 // global client config
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
 class Unk_UhpWorld;
 class Unk_UhpPc;
-Unk_UhpWorld* FUN_1403ed2d0();
-Unk_UhpPc* FUN_141bd0cc0(Unk_UhpWorld*);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 __int64 FUN_141656ad0(Unk_UhpPc* pPc);                          // the character id
 int FUN_1416595d0(Unk_UhpPc* pPc);
 int FUN_141659690(Unk_UhpPc* pPc);
@@ -89,17 +99,19 @@ public:
     void FUN_141adc5d0(int nId);                                // open (toggle)
     void FUN_141adc530(int nId);                                // close
 };
-Unk_UhpUIService* FUN_1403ed2b0();
 
 class Unk_UhpItemEvents;
-Unk_UhpItemEvents* FUN_140a6a840();
-void FUN_1419cae20(Unk_UhpItemEvents*, UIItemEventListener*);   // add a listener
-void FUN_1419caeb0(Unk_UhpItemEvents*, UIItemEventListener*);   // remove it
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419cae20(class UIItemEventListener*);
+    void FUN_1419caeb0(class UIItemEventListener*);
+};
 
-CMasteryInteriorTable* FUN_140933200();
-UGCCubeCategoryTable* FUN_1409eed80();
+class Unk_QuestTable* FUN_140933200();   // C3: was FUN_140933200
 CStringTable* GetStringTable();
-CGuideManager* FUN_1409331e0();
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 int FUN_1418fd280();
 bool FUN_1409301c0();
 void FUN_140710590(COutPacket& pkt);
@@ -113,13 +125,8 @@ extern unsigned short DAT_143ab291c;                            // the housing g
 extern __int64 DAT_143ab2930;                                   // the housing exp of the player
 
 // The UI dialog of a UI type (null when the UI service is not up).
-// UIMasteryDialog::FUN_140eafdb0 homes a second argument the shared header does not declare (an overload there would
+// UIMasteryDialog::SetMainTab homes a second argument the shared header does not declare (an overload there would
 // make that unit's MS2_REPLACE_METHOD ambiguous): call it through a view.
-class Unk_UhpMasteryDialog
-{
-public:
-    void FUN_140eafdb0(int nMainTab, int nSubTab);              // 0x140eafdb0 UIMasteryDialog: open on a tab
-};
 
 #ifdef __clang__
 // Bind the exe's CStringW + const wchar_t* (0x14061ad70); clang otherwise emits an unavailable MFC CopyChars import.
@@ -132,9 +139,9 @@ CStringW FUN_14061ad70(const CStringW& left, const wchar_t* right);
 // @0x140faf160
 template <class T> T* GetUIDialog(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_UhpUIService*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_UhpUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -149,7 +156,7 @@ UIUGCHousingPointDialog::UIUGCHousingPointDialog()
 // @0x140fadb80
 UIUGCHousingPointDialog::~UIUGCHousingPointDialog()
 {
-    FUN_1419caeb0(FUN_140a6a840(), this);
+    ((class Unk_ItemEventSystem*)(class Unk_UhpItemEvents*)(((class Unk_UhpItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(this);
 }
 
 // @0x140fadc30
@@ -164,7 +171,7 @@ int UIUGCHousingPointDialog::vfunc_il1()
 {
     if (vfunc_55())
         return 0;
-    Unk_UhpPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     if (FUN_141659690(pPc))
@@ -187,7 +194,7 @@ MS2_REPLACE_METHOD(0x140FADD00, UIUGCHousingPointDialog, vfunc_52, 313, 0xB52E1E
 void UIUGCHousingPointDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_1419caeb0(FUN_140a6a840(), this);
+    ((class Unk_ItemEventSystem*)(class Unk_UhpItemEvents*)(((class Unk_UhpItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(this);
 }
 MS2_REPLACE_METHOD(0x140FADE40, UIUGCHousingPointDialog, vfunc_67, 77, 0x26482748);
 
@@ -200,7 +207,7 @@ void UIUGCHousingPointDialog::OnLoadComplete()
     RefreshInfo();
     vfunc_84();
     RefreshList();
-    FUN_1419cae20(FUN_140a6a840(), this);
+    ((class Unk_ItemEventSystem*)(class Unk_UhpItemEvents*)(((class Unk_UhpItemEvents*)FUN_140a6a840())))->FUN_1419cae20(this);
 }
 MS2_REPLACE_METHOD(0x140FADEA0, UIUGCHousingPointDialog, OnLoadComplete, 177, 0x59E8950A);
 
@@ -222,13 +229,13 @@ int UIUGCHousingPointDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         OnRewardItem();
         return 1;
     } else if (_stricmp("OnOpenLeisureGroup", szMethod) == 0) {
-        if (FUN_1403ed2b0()->FUN_141adc940(0x4f1e)) {
+        if (reinterpret_cast<Unk_UhpUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4f1e)) {
             UIMasteryDialog* pDialog = GetUIDialog<UIMasteryDialog>(0x4f1e);
             if (pDialog != 0)
-                reinterpret_cast<Unk_UhpMasteryDialog*>(pDialog)->FUN_140eafdb0(2, 8);
-            FUN_1403ed2b0()->FUN_141adc530(0x4f1e);
+                reinterpret_cast<UIMasteryDialog*>(pDialog)->SetMainTab(2, 8);
+            reinterpret_cast<Unk_UhpUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f1e);
         } else {
-            FUN_1403ed2b0()->FUN_141adc5d0(0x4f1e);
+            reinterpret_cast<Unk_UhpUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f1e);
         }
         return 1;
     }
@@ -263,9 +270,9 @@ void UIUGCHousingPointDialog::RefreshInfo()
     bool bReceive = CanReceiveReward();
     unsigned short nGrade = DAT_143ab291c;
     unsigned short nNext = nGrade + 1;
-    __int64 nPoint = FUN_1409670e0()->FUN_1410d4fa0();
-    __int64 nMaxPoint = FUN_1409670e0()->FUN_1410d50c0();
-    bool bMaster = FUN_140933200()->FUN_140ebb020() < nNext ? true : false;
+    __int64 nPoint = ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d4fa0();
+    __int64 nMaxPoint = ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d50c0();
+    bool bMaster = ((class CMasteryInteriorTable*)FUN_140933200())->FUN_140ebb020() < nNext ? true : false;
     ASObj obj(2);
     obj.FUN_1409c48f0("interiorLevel", nGrade);
     obj.FUN_1407cbb20("interiorTitle", FormatStringId(0x6fe, nGrade));
@@ -274,38 +281,38 @@ void UIUGCHousingPointDialog::RefreshInfo()
     obj.FUN_1409c1180("interiorMaxPoint", nMaxPoint);
     obj.FUN_1407cbbe0("interiorMaster", bMaster);
     obj.FUN_1407cbbe0("receiveItem", bReceive);
-    MS2Ptr<MasteryInteriorInfo> spNext = FUN_140933200()->GetMastery(nNext);
+    MS2Ptr<MasteryInteriorInfo> spNext = ((class CMasteryInteriorTable*)FUN_140933200())->GetMastery(nNext);
     if (spNext.get() != 0)
         obj.FUN_1409c0d20("interiorMaxExp", spNext->m_nValue);
-    MS2Ptr<InteriorPointReward> spReward = FUN_140933200()->GetPointReward(nPoint);
+    MS2Ptr<InteriorPointReward> spReward = ((class CMasteryInteriorTable*)FUN_140933200())->GetPointReward(nPoint);
     if (spReward.get() != 0) {
         obj.FUN_1407cbb20(s_strIconPath, FUN_14016a730(spReward->m_strIcon, 0));
         obj.FUN_1407cbb20(s_strItemDesc, GetStringCommonByKey(FUN_14016a730(spReward->m_strKey, 0)));
     }
     dialog->FUN_140acd1f0("buildInteriorInfo", obj);
     if (bReceive)
-        FUN_1409331e0()->AddTrigger(static_cast<CGuideManager::TriggerType>(0x1b), 1, 0);
+        ((class CGuideManager*)FUN_1409331e0())->AddTrigger(static_cast<CGuideManager::TriggerType>(0x1b), 1, 0);
 }
 MS2_REPLACE_METHOD(0x140FAE1D0, UIUGCHousingPointDialog, RefreshInfo, 1011, 0x634D59D7);
 
 // @0x140fae5d0
 void UIUGCHousingPointDialog::RefreshList()
 {
-    Unk_UhpPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (dialog == 0)
         return;
     ASArray list(2);
-    UGCCubeCategoryTable::InteriorMap& interiors = FUN_1409eed80()->GetBonusInteriors();
+    UGCCubeCategoryTable::InteriorMap& interiors = TSingleton<UGCCubeCategoryTable>::GetInstance()->GetBonusInteriors();
     for (POSITION pos = interiors.GetStartPosition(); pos != 0; interiors.GetNext(pos)) {
         ECubeCategory nCategory = interiors.GetKeyAt(pos);
         UGCCubeCategoryTable::InteriorPtr spInterior = interiors.GetValueAt(pos);
         CStringW strPoint;
         strPoint.Format(L"+%d", spInterior->m_nBonusPoint);
         unsigned int nMax;
-        unsigned int nCount = FUN_1409670e0()->FUN_1410d5550(nCategory);
+        unsigned int nCount = ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d5550(nCategory);
         nMax = spInterior->m_nBonusCount;
         CStringW strCount;
         strCount.Format(L"%d/%d", nCount, nMax);
@@ -325,7 +332,7 @@ MS2_REPLACE_METHOD(0x140FAE5D0, UIUGCHousingPointDialog, RefreshList, 1026, 0x64
 // @0x140fae9e0
 void UIUGCHousingPointDialog::vfunc_84()
 {
-    Unk_UhpPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -339,13 +346,13 @@ void UIUGCHousingPointDialog::vfunc_84()
     int nInstallLimit = 0;
     bool bShrink = true;
     bool bExtend = true;
-    if (!FUN_140166410()->FUN_14036d570(0xe4))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe4))
         bShrink = false;
-    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(99) != 0)
+    if (((struct Unk_UhpConfig*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(99) != 0)
         bShrink = false;
-    FUN_1409670e0()->FUN_1410d27c0(FUN_141656ad0(pPc), 1, &nNpcCount, &nNpcLimit);
-    FUN_1409670e0()->FUN_1410d27c0(FUN_141656ad0(pPc), 2, &nPortalCount, &nPortalLimit);
-    FUN_1409670e0()->FUN_1410d27c0(FUN_141656ad0(pPc), 4, &nInstallCount, &nInstallLimit);
+    ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(FUN_141656ad0(pPc), 1, &nNpcCount, &nNpcLimit);
+    ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(FUN_141656ad0(pPc), 2, &nPortalCount, &nPortalLimit);
+    ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(FUN_141656ad0(pPc), 4, &nInstallCount, &nInstallLimit);
     CStringW strPlace;
     strPlace.Append(Unk_UhpConcat(FormatStringId(0x701, nNpcCount, nNpcLimit), L"\n"));
     strPlace.Append(Unk_UhpConcat(FormatStringId(0x702, nPortalCount, nPortalLimit), L"\n"));
@@ -353,9 +360,9 @@ void UIUGCHousingPointDialog::vfunc_84()
     ASObj obj(2);
     obj.FUN_1407cbb20("place", strPlace);
     int nArea;
-    obj.FUN_1407cbb20("extensionArea", FUN_14028dfa0(CStringW(L"s_home_info_area"), nArea = FUN_1409670e0()->FUN_1410c3470()));
+    obj.FUN_1407cbb20("extensionArea", FUN_14028dfa0(CStringW(L"s_home_info_area"), nArea = ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470()));
     int nHeight;
-    obj.FUN_1407cbb20("extensionHeight", FUN_14028dfa0(CStringW(L"s_home_info_height"), nHeight = FUN_1409670e0()->FUN_1410c34b0()));
+    obj.FUN_1407cbb20("extensionHeight", FUN_14028dfa0(CStringW(L"s_home_info_height"), nHeight = ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0()));
     obj.FUN_1407cbbe0("shrinkEnable", bShrink);
     obj.FUN_1407cbbe0("extensionEnable", bExtend);
     dialog->FUN_140acd1f0("buildInteriorExtension", obj);
@@ -369,7 +376,7 @@ void UIUGCHousingPointDialog::OnRewardItem()
         COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
         pkt.Encode1(0x28);
         FUN_140710590(pkt);
-        FUN_1409331e0()->AddTrigger(static_cast<CGuideManager::TriggerType>(0x1b), 2, 0);
+        ((class CGuideManager*)FUN_1409331e0())->AddTrigger(static_cast<CGuideManager::TriggerType>(0x1b), 2, 0);
     }
 }
 MS2_REPLACE_METHOD(0x140FAEFE0, UIUGCHousingPointDialog, OnRewardItem, 114, 0xD32C7259);
@@ -377,7 +384,7 @@ MS2_REPLACE_METHOD(0x140FAEFE0, UIUGCHousingPointDialog, OnRewardItem, 114, 0xD3
 // @0x140faf060
 bool UIUGCHousingPointDialog::IsInMyHome()
 {
-    Unk_UhpPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
     return FUN_1416595d0(pPc) ? true : false;
@@ -389,10 +396,10 @@ bool UIUGCHousingPointDialog::CanReceiveReward()
 {
     if (FUN_1409301c0())
         return false;
-    if (FUN_1409670e0()->FUN_1410c35c0())
+    if (((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c35c0())
         return false;
-    __int64 nPoint = FUN_1409670e0()->FUN_1410d4fa0();
-    unsigned int nBox = FUN_140933200()->GetDropBox(nPoint);
+    __int64 nPoint = ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d4fa0();
+    unsigned int nBox = ((class CMasteryInteriorTable*)FUN_140933200())->GetDropBox(nPoint);
     if (nBox > 0)
         return true;
     return false;

@@ -31,6 +31,8 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/commonfiles/featuremanager.h"
 
 // The key-input controller singleton of this unit.
 static UICommon::CMyPCKeyInputController s_keyInputController;
@@ -81,25 +83,17 @@ public:
     Scaleform::GFx::Value FUN_140bd2cb0(const char* szMethod, ASArray& arr);   // Invoke(name, array)
 };
 Unk_HlAS* FUN_1409ee290(MS2Ptr<AScript>* p);
-bool FUN_140a467d0(const MS2Ptr<AScript>*);                 // has the AS object been released
 void FUN_140614800(Scaleform::GFx::Value* v);               // ~Value
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 CStringW FUN_1402a5170(const wchar_t* szFormat, const CString& a1);    // "{0}" formatter
 CStringW GetStringCommonByKey(const CStringW& str);
 
-class Unk_HlNotices
-{
-public:
-    void FUN_140da4e40(CStringW name, Delegate<void(NotifyObject*)> cb);
-    void FUN_140da4eb0(CStringW name, Delegate<void(NotifyObject*)> cb);
-};
-Unk_HlNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
-class Unk_HlOpt { public: bool FUN_14036e560(); };
-Unk_HlOpt* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 class Unk_HlItemSys { public: void FUN_1419cae20(void* pListener); void FUN_1419caeb0(void* pListener); };
-Unk_HlItemSys* FUN_140a6a840();
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 
 P FUN_1403ed2d0();
 // reference-counted stat-point record at player+0x1120 (copy, release)
@@ -215,7 +209,7 @@ public:
     int m_nUiId;                                            // +0x68
 };
 struct Unk_HlMenuRef { void* m_unk_00; Unk_HlMenu* m_p; };
-CGameMenuTable* FUN_140c1d2f0();
+class Unk_GpDb* FUN_140c1d2f0();   // C3: was FUN_140c1d2f0
 void FUN_140cf7470(P pDb, Unk_HlMenuRef* pOut, CString strName);
 P FUN_140c1cd90(Unk_HlMenuRef* p);
 Unk_HlMenu* FUN_140c1cda0(Unk_HlMenuRef* p);
@@ -226,13 +220,16 @@ P FUN_1403ed2b0();
 int FUN_141adc940(P pUi, int nId);
 void FUN_141adc750(P pUi, int nId);
 UIDialog* FUN_1405344f0(int nId);
-void FUN_141999d40(UIDialog* p, int n);
+class UIInventoryDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141999d40(int);
+};
 void FUN_140d1bd60(Unk_HlH item, int n);
 void FUN_141adcea0(P pUi, Unk_HlH* pOut, int nId);
 char FUN_140534e80(Unk_HlH* p);
 P FUN_1403ed9e0(Unk_HlH* p);
 void FUN_1403e5630(Unk_HlH* p);
-void FUN_140f69c10(P pDlg, int* pArg);
 P FUN_140c24650();
 int FUN_140c25190();
 
@@ -251,10 +248,17 @@ void FUN_1401bf970(void* pRec, P pItemInfo);
 void FUN_1401b50d0(void* pRec);
 char FUN_1402ffd90(void* pRec);
 P FUN_1401b52a0(void* pRec);
-P FUN_140527840(P p);
-P FUN_1405279c0(P p);
-bool FUN_14053d840(P p);
-bool FUN_140621340(P p);
+class CItemData   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14053c620();
+    bool FUN_14053d840();
+};
+class CItemSocket   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_140621340();
+};
 
 // the player
 int FUN_141654730(P);                                      // job code
@@ -265,11 +269,19 @@ P FUN_1401c0db0();
 unsigned FUN_14067a8d0(P, unsigned short);
 P FUN_1416546d0(P);
 unsigned FUN_140639b40(P, int);
-P FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 unsigned* FUN_1401d7c10(void* p);
 P FUN_1409a8b10();
-P FUN_140b123b0(P);
-void FUN_140bc1730(P);
+class Unk_PetClientSettings   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_PetOptFlags* FUN_140b123b0();
+};
+class UIBottomCenterAlignManager   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140bc1730();
+};
 unsigned FUN_140caa1a0(P);
 
 // lists, arrays, item records
@@ -282,7 +294,6 @@ P FUN_140a69ee0(void*, unsigned __int64);
 unsigned __int64 FUN_140720ca0(void*);
 P FUN_1405a8ed0(void*);
 void FUN_14034ed30(void*);
-void FUN_1401855a0(void*, int);
 P FUN_1408e5180(void*);
 void FUN_1408e4ea0(void*);
 void FUN_140885680(void*, P*);
@@ -292,8 +303,6 @@ void FUN_140884f30(void*, P);
 void FUN_140884ed0(void*, int);
 void FUN_1405b2540(void*);
 char FUN_140534e50(Unk_HlH*);
-int FUN_140529070(P);
-__int64 FUN_140526a50(P);
 P FUN_14034ef20(void*);
 int FUN_141654700(P);
 void FUN_14152e2f0(P, Unk_HlH*, P);                     // spItem by value: rcx-built copy (0x1402034d0), the callee releases it
@@ -311,39 +320,41 @@ struct Unk_HlEntry
 int FUN_1408e48b0(void*);
 P FUN_1408e3700(void*);
 unsigned int FUN_1408e3520(void*);
-int FUN_1408d1f60(void*, int, int);
-void FUN_14086a880(void*, int);
+class Unk_CommandArgs   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1408d1f60(unsigned int, int);
+};
+void AddMinutes(class CMsTime&, int);   // C3: was FUN_14086a880
 P FUN_140869440();
 void FUN_140720b80(void*, Unk_HlH*);
 void FUN_1406c47a0(void*, P);
 int FUN_140691130(P);
 int FUN_140690370(P);
-P FUN_14062c280();
+class CItemGemStoneUpgradeTable* FUN_14062c280();   // C3: was FUN_14062c280
 P FUN_1405b2650(void*);
 char FUN_1405b2610(void*, void*);                         // MS2Ptr == (null ptr argument)
 void FUN_1405b1a60(P, void*, int);
-int FUN_14058df90(P, P);
+class CItemEnchantLimitTable   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14058df90(class CItem*);
+};
 char FUN_140545da0(void*, int);
-int FUN_14053c620(P);
-__int64 FUN_140528ae0(P);
-unsigned FUN_140527710(P);
-int FUN_1405276c0(P);
-int FUN_140527030(P);
-int FUN_140526fc0(P);
-int FUN_140526bd0(P);
-int FUN_1405258b0(P);
 int FUN_140408410(void*, int*);
 P FUN_14034f780();
 char FUN_14034eee0(void*, const wchar_t*);
 char FUN_14034eeb0(void*);
 void FUN_14034e360(P, void*, int);
-__int64 FUN_140282020(void*);
+class CMsTime   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 Get() const;
+};
 unsigned __int64 FUN_140186270(void*);
 int* FUN_140184510(void*, unsigned __int64);
 
 P FUN_14015b020(P p);
-int FUN_140159bc0(P p);
-void FUN_140159ba0(P p);
 void FUN_140159b70(unsigned nHr);
 
 // ---- tiny in-unit helpers ---------------------------------------------------------------------------------------------
@@ -382,10 +393,10 @@ void FUN_140c25e00(Unk_HlRef* p)
 // @0x140c25ec0
 void FUN_140c25ec0(Unk_HlRef* p, void*)
 {
-    if (FUN_140159bc0(p->m_p) == 0)
+    if (CPtred::ReleasePtred((class CPtred*)(p->m_p)) == 0)
     {
         FUN_140c25e30(p->m_p);
-        FUN_140159ba0(p->m_p);
+        CPtred::DeletePtred((class CPtred*)(p->m_p));
     }
 }
 
@@ -547,14 +558,14 @@ UIHighlightGameMenu::UIHighlightGameMenu()
     if (FUN_140166410()->FUN_14036e560())
         m_actions.SetAt("enchantscroll", &UIHighlightGameMenu::FUN_140c237a0);
     m_actions.SetAt("gemstone", &UIHighlightGameMenu::FUN_140c23f10);
-    FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyGameStart"),
+    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyGameStart"),
         Delegate<void(NotifyObject*)>(this, &UIHighlightGameMenu::FUN_140c24470));
 }
 
 // @0x140c22550
 UIHighlightGameMenu::~UIHighlightGameMenu()
 {
-    FUN_140939a10()->FUN_140da4eb0(CStringW(L"NotifyGameStart"),
+    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyGameStart"),
         Delegate<void(NotifyObject*)>(this, &UIHighlightGameMenu::FUN_140c24470));
 }
 
@@ -574,7 +585,7 @@ void UIHighlightGameMenu::vfunc_67()
 void UIHighlightGameMenu::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_HlItemSys*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_140c22f50();
 }
 
@@ -603,7 +614,7 @@ int UIHighlightGameMenu::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             UIDialog* pInv = FUN_1405344f0(0x4e2d);
             if (pInv != 0)
             {
-                FUN_141999d40(pInv, 0);
+                ((class UIInventoryDialog*)(class UIDialog*)(pInv))->FUN_141999d40(0);
                 if (pInv->FUN_141924630() == 0)
                     pInv->FUN_141924680();
             }
@@ -616,13 +627,13 @@ int UIHighlightGameMenu::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         if (pDlg != 0)
         {
             int nArg = 1;
-            FUN_140f69c10(pDlg, &nArg);
+            ((class UIItemSocketSystemDialog*)(void*)(pDlg))->FUN_140f69c10(*(int const*)(&nArg));
         }
         return 1;
     }
     else
     {
-        MS2Ptr<CGameMenuDef> spMenu = FUN_140c1d2f0()->FindByName(CString(szMethod));
+        MS2Ptr<CGameMenuDef> spMenu = ((class CGameMenuTable*)FUN_140c1d2f0())->FindByName(CString(szMethod));
         if (spMenu.get() != 0)
         {
             if (spMenu->m_nUiId == 0x4e2d)
@@ -631,7 +642,7 @@ int UIHighlightGameMenu::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                 {
                     UIDialog* pInv = FUN_1405344f0(0x4e2d);
                     if (pInv != 0)
-                        FUN_141999d40(pInv, 0);
+                        ((class UIInventoryDialog*)(class UIDialog*)(pInv))->FUN_141999d40(0);
                 }
             }
             if (!spMenu->m_onClick.IsNull())
@@ -671,7 +682,7 @@ void UIHighlightGameMenu::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
 void UIHighlightGameMenu::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_HlItemSys*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
 }
 
 // @0x140c22d00
@@ -679,7 +690,7 @@ void UIHighlightGameMenu::vfunc_5(void* pItem, int nCount)
 {
     if (FUN_140ba28d0(&m_30, 0) != 0) {} else
     {
-        if (nCount == 0 || pItem == 0 || !FUN_14053d840(FUN_140527840(pItem))) {} else
+        if (nCount == 0 || pItem == 0 || !((class CItemData*)(void*)(((void*)((class CItem*)(void*)(pItem))->FUN_140527840())))->FUN_14053d840()) {} else
             m_bitsGem.FUN_140c260a0(0, true);
     }
 }
@@ -689,7 +700,7 @@ void UIHighlightGameMenu::vfunc_2(void* pItem)
 {
     if (FUN_140ba28d0(&m_30, 0) != 0) {} else
     {
-        if (pItem == 0 || !FUN_14053d840(FUN_140527840(pItem))) {} else
+        if (pItem == 0 || !((class CItemData*)(void*)(((void*)((class CItem*)(void*)(pItem))->FUN_140527840())))->FUN_14053d840()) {} else
             m_bitsGem.FUN_140c260a0(0, true);
     }
 }
@@ -701,9 +712,9 @@ void UIHighlightGameMenu::vfunc_21(void* pItem)
     {
         if (m_bitsSocket.FUN_140c25f10(0).FUN_140c24ac0() == true) {} else
         {
-            if (pItem == 0 || FUN_1405279c0(pItem) == 0) {} else
+            if (pItem == 0 || ((void*)((class CItem*)(void*)(pItem))->FUN_1405279c0()) == 0) {} else
             {
-                if (!FUN_140621340(FUN_1405279c0(pItem))) {} else
+                if (!((class CItemSocket*)(void*)(((void*)((class CItem*)(void*)(pItem))->FUN_1405279c0())))->FUN_140621340()) {} else
                     m_bitsGem.FUN_140c260a0(0, true);
             }
         }
@@ -717,9 +728,9 @@ void UIHighlightGameMenu::vfunc_22(void* pItem)
     {
         if (!m_bitsSocket.FUN_140c25f10(0).FUN_140c24ac0()) {} else
         {
-            if (pItem == 0 || FUN_1405279c0(pItem) == 0) {} else
+            if (pItem == 0 || ((void*)((class CItem*)(void*)(pItem))->FUN_1405279c0()) == 0) {} else
             {
-                if (!FUN_140621340(FUN_1405279c0(pItem))) {} else
+                if (!((class CItemSocket*)(void*)(((void*)((class CItem*)(void*)(pItem))->FUN_1405279c0())))->FUN_140621340()) {} else
                     m_bitsGem.FUN_140c260a0(0, true);
             }
         }
@@ -729,15 +740,15 @@ void UIHighlightGameMenu::vfunc_22(void* pItem)
 // @0x140c22f50
 void UIHighlightGameMenu::FUN_140c22f50()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     Unk_HlPc* pPc = (Unk_HlPc*)FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == 0)
         return;
-    if (pPc->vfunc_78() < *FUN_1401d7c10((char*)FUN_1401d3200() + 0xe558))
+    if (pPc->vfunc_78() < *FUN_1401d7c10((char*)((void*)FUN_1401d3200()) + 0xe558))
         return;
     ASArray names(2);
-    if (*((unsigned char*)FUN_140b123b0(FUN_1409a8b10()) + 0x15) == 0)
+    if (*((unsigned char*)((void*)((class Unk_PetClientSettings*)(void*)(FUN_1409a8b10()))->FUN_140b123b0()) + 0x15) == 0)
     {
         for (POSITION pos = m_actions.GetStartPosition(); pos != 0; m_actions.GetNext(pos))
         {
@@ -752,7 +763,7 @@ void UIHighlightGameMenu::FUN_140c22f50()
         m_nCount = nCount;
         m_bActive = m_nCount != 0;
         if (FUN_140c24ef0() != 0)
-            FUN_140bc1730(FUN_140c24ef0());
+            ((class UIBottomCenterAlignManager*)(void*)(FUN_140c24ef0()))->FUN_140bc1730();
     }
     FUN_1409ee290(&m_30)->FUN_140bd2cb0("setMenu", names);
 }
@@ -767,12 +778,12 @@ int UIHighlightGameMenu::FUN_140c231b0()
     DAT_143ab2a90.FUN_140a60880(0, bag);
     char limit[16];
     FUN_1406c47a0(limit, FUN_140869440());
-    FUN_14086a880(limit, 0xfffffff6);
+    AddMinutes(*(class CMsTime*)(limit), 0xfffffff6);
     for (unsigned __int64 i = 0; i < FUN_140720ca0(&bag); ++i)
     {
         Unk_HlH item;
         FUN_1402034d0(&item, FUN_140a69ee0(&bag, i));
-        if (FUN_140528ae0(FUN_1401c0180(&item)) < FUN_140282020(limit))
+        if (((class CItem*)(void*)(FUN_1401c0180(&item)))->FUN_140528ae0() < ((class CMsTime*)(void*)(limit))->Get())
         {
             FUN_1401bfde0(&item);
             continue;
@@ -783,7 +794,7 @@ int UIHighlightGameMenu::FUN_140c231b0()
             continue;
         }
         char rec[16];
-        FUN_1401bf970(rec, FUN_140527840(FUN_1401c0180(&item)));
+        FUN_1401bf970(rec, ((void*)((class CItem*)(void*)(FUN_1401c0180(&item)))->FUN_140527840()));
         if (FUN_1402ffd90(rec) != 0)
         {
             FUN_1401b50d0(rec);
@@ -807,8 +818,8 @@ int UIHighlightGameMenu::FUN_140c231b0()
             FUN_1401bfde0(&item);
             return true;
         }
-        int nNew = FUN_140529070(FUN_1401c0180(&item));
-        int nOld = FUN_140529070(FUN_1401c0180(&worn));
+        int nNew = ((class CItem*)(void*)(FUN_1401c0180(&item)))->FUN_140529070();
+        int nOld = ((class CItem*)(void*)(FUN_1401c0180(&worn)))->FUN_140529070();
         if (nOld < nNew)
         {
             FUN_1401bfde0(&worn);
@@ -888,9 +899,9 @@ int UIHighlightGameMenu::FUN_140c237a0()
     m_nScrollItem = 0;
     m_nTargetItem = 0;
     ATL::CAtlArray<unsigned int> ids;
-    FUN_1401855a0(&ids, 0x1d90b9a);
-    FUN_1401855a0(&ids, 0x1d90b9b);
-    FUN_1401855a0(&ids, 0x1d90b9c);
+    ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(void*)(&ids))->Add(0x1d90b9a);
+    ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(void*)(&ids))->Add(0x1d90b9b);
+    ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(void*)(&ids))->Add(0x1d90b9c);
     Unk_HlH scroll;
     FUN_140203510(&scroll, 0);
     for (unsigned __int64 i = 0; i < FUN_140186270(&ids); ++i)
@@ -910,14 +921,14 @@ int UIHighlightGameMenu::FUN_140c237a0()
         return false;
     }
     char rec[16];
-    FUN_1401bf970(rec, FUN_140527840(FUN_1401c0180(&scroll)));
+    FUN_1401bf970(rec, ((void*)((class CItem*)(void*)(FUN_1401c0180(&scroll)))->FUN_140527840()));
     if (FUN_1402ffd90(rec) != 0 || FUN_14034eee0((char*)FUN_1401b52a0(rec) + 0x290, L"EnchantScroll") != 0)
     {
         FUN_1401b50d0(rec);
         FUN_1401bfde0(&scroll);
         return false;
     }
-    int nKind = FUN_1408d1f60((char*)FUN_1401b52a0(rec) + 0x2b0, 0, 0);
+    int nKind = ((class Unk_CommandArgs*)(void*)((char*)FUN_1401b52a0(rec) + 0x2b0))->FUN_1408d1f60(0, 0);
     char ench[16];
     FUN_14034e360(FUN_14034f780(), ench, nKind);
     if (FUN_14034eeb0(ench) != 0)
@@ -948,34 +959,34 @@ int UIHighlightGameMenu::FUN_140c237a0()
         Unk_HlH it;
         char h148[16];
         FUN_1402034d0(&it, FUN_140a69ee0(&items, j));
-        FUN_1401bf970(h148, FUN_140527840(FUN_1401c0180(&it)));
+        FUN_1401bf970(h148, ((void*)((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_140527840()));
         if (FUN_1402ffd90(h148) != 0)
         {
             HL_END_IT();
             continue;
         }
-        if (FUN_140527710(FUN_1401c0180(&it)) < 0x32 || FUN_140526bd0(FUN_1401c0180(&it)) != 3)
+        if (((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_140527710() < 0x32 || ((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_140526bd0() != 3)
         {
             HL_END_IT();
             continue;
         }
-        int nId = FUN_14053c620(FUN_1401b52a0(h148));
+        int nId = ((class CItemData*)(void*)(FUN_1401b52a0(h148)))->FUN_14053c620();
         if (FUN_140408410((char*)FUN_14034ef20(ench) + 0x38, &nId) == -1)
         {
             HL_END_IT();
             continue;
         }
         P pId = FUN_14052cd70(&it);
-        if (FUN_14058df90(FUN_1409eece0(), pId) == 0)
+        if (((class CItemEnchantLimitTable*)(void*)(FUN_1409eece0()))->FUN_14058df90((class CItem*)(pId)) == 0)
         {
             HL_END_IT();
             continue;
         }
-        if (FUN_140526fc0(FUN_1401c0180(&it)) < *(int*)((char*)FUN_14034ef20(ench) + 0x1c)
-            && FUN_140527030(FUN_1401c0180(&it)) == 0)
+        if (((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_140526fc0() < *(int*)((char*)FUN_14034ef20(ench) + 0x1c)
+            && ((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_140527030() == 0)
         {
-            m_nScrollItem = FUN_140526a50(FUN_1401c0180(&scroll));
-            m_nTargetItem = FUN_140526a50(FUN_1401c0180(&it));
+            m_nScrollItem = ((class CItem*)(void*)(FUN_1401c0180(&scroll)))->FUN_140526a50();
+            m_nTargetItem = ((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_140526a50();
             HL_END_IT();
             FUN_1408850d0(list);
             FUN_14034ed30(ench);
@@ -1029,9 +1040,9 @@ int UIHighlightGameMenu::FUN_140c23f10()
             }
             Unk_HlH it;
             FUN_1411dc7a0(FUN_1405a8ed0(h), &it);
-            if (FUN_1405279c0(FUN_1401c0180(&it)) != 0 && FUN_140621340(FUN_1405279c0(FUN_1401c0180(&it))) != 0)
+            if (((void*)((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_1405279c0()) != 0 && ((class CItemSocket*)(void*)(((void*)((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_1405279c0())))->FUN_140621340() != 0)
             {
-                nMask |= FUN_1405258b0(FUN_1401c0180(&it)) == 0 ? 7 : 8;
+                nMask |= ((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_1405258b0() == 0 ? 7 : 8;
                 FUN_1401bfde0(&it);
                 FUN_1405a85f0(h);
                 if (nMask < 0xf)
@@ -1049,12 +1060,12 @@ int UIHighlightGameMenu::FUN_140c23f10()
             {
                 Unk_HlH g;
                 FUN_1402034d0(&g, FUN_140a69ee0(&gems, k));
-                if (FUN_1401c0050(&g, 0) == 0 && FUN_140527840(FUN_1401c0180(&g)) != 0
-                    && FUN_14053d840(FUN_140527840(FUN_1401c0180(&g))) != 0)
+                if (FUN_1401c0050(&g, 0) == 0 && ((void*)((class CItem*)(void*)(FUN_1401c0180(&g)))->FUN_140527840()) != 0
+                    && ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(FUN_1401c0180(&g)))->FUN_140527840())))->FUN_14053d840() != 0)
                 {
-                    int nId = FUN_1405276c0(FUN_1401c0180(&g));
+                    int nId = ((class CItem*)(void*)(FUN_1401c0180(&g)))->FUN_1405276c0();
                     char rec[16];
-                    FUN_1405b1a60(FUN_14062c280(), rec, nId);
+                    FUN_1405b1a60(((void*)FUN_14062c280()), rec, nId);
                     if (FUN_1405b2610(rec, 0) == 0 && (*(unsigned*)((char*)FUN_1405b2650(rec) + 0x28) & nMask) != 0)
                     {
                         m_bitsSocket.FUN_140c260a0(0, true);

@@ -20,7 +20,6 @@ static Unk_1401cd100 s_pointer2(NULL);
 static Unk_1402a9d70 s_unk1402a9d702(17, 0.75f, 0.25f, 2.25f, 10);
 
 void* FUN_1422bb8b0(int nMovieId);                                     // the movie of a UI layer
-void FUN_14256e3e0(void* pMovie, Scaleform::GFx::Value* pValue);       // movie->CreateArray
 CStringW FUN_14082f000(int nStat);                                     // stat display text
 CStringW GetStringCommon(int nId);                                       // string table text
 CStringW FUN_1409e9bc0(int nId, const int& a, const int& b);           // formatted string-table text
@@ -31,12 +30,12 @@ ASStat::ASStat(int nType) : ASObj(nType)
     void* pMovie = FUN_1422bb8b0(m_nMovieId);
     if (pMovie != 0)
     {
-        FUN_14256e3e0(pMovie, &m_title);
-        FUN_14256e3e0(pMovie, &m_hidden);
-        FUN_14256e3e0(pMovie, &m_random);
-        FUN_14256e3e0(pMovie, &m_special);
-        FUN_14256e3e0(pMovie, &m_compare);
-        FUN_14256e3e0(pMovie, &m_essential);
+        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&m_title);
+        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&m_hidden);
+        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&m_random);
+        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&m_special);
+        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&m_compare);
+        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&m_essential);
     }
     FUN_1409adbe0("title", m_title);
     FUN_1409adbe0("hidden", m_hidden);

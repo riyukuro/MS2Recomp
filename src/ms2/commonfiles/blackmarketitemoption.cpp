@@ -119,8 +119,6 @@ public:
     Unk_140165cf0* FUN_140168650(const char* pszName);              // NextSiblingElement
 };
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
 void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
@@ -143,7 +141,6 @@ int FUN_14081d260(const CStringA& strName);                         // special o
 CStringW FUN_140630e10(int nId);                                    // special option text
 CStringW FUN_14082f000(int nId);                                    // stat text
 unsigned FUN_140630d00(Unk_ItemEnchantData* pEnchant);
-CFeatureManager* FUN_140166410();
 void FUN_140159b70(long hr);                                        // AtlThrow
 
 // The singletons the price helpers talk to (0x143aac4c8 / 0x143aac4d0, the locale one is TSingleton<CLocaleLanguage>).
@@ -404,7 +401,7 @@ unsigned int LoadItemNames()
         names = Unk_BmNewTag(0);
         s_mapItemNames.SetAt(nLanguage, names);
         TiXmlDocument doc;
-        if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
+        if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
             return 0;
         Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
         if (pRoot == 0)
@@ -1056,7 +1053,7 @@ void CBlackMarketTable::Load()
 {
     Clear();
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, *FUN_1401d1140(), 0, true, false))
+    if (GetFileSystem()->FUN_1403974b0(&doc, *FUN_1401d1140(), 0, true, false))
     {
         Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
         if (pRoot != 0)
@@ -1185,7 +1182,7 @@ void CBlackMarketTable::ReadTabs(Unk_140165cf0* pElem, TabList* pOut, TabMap* pB
             {
                 tab->m_strName = strName;
                 CStringW strFeature = FUN_1401bf530(pTab, "feature", CStringW(L""));
-                if (!FUN_140166410()->FUN_14036d4b0(strFeature))
+                if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d4b0(strFeature))
                     continue;
                 tab->m_strCategory = FUN_14015f710(pTab, "category", CString(""));
                 FUN_1408731e0(pTab, "priority", tab->m_nPriority);

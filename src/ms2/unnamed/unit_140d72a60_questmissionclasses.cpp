@@ -19,6 +19,12 @@
 #include "ms2/client/ms2/questmanager_2.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 
+// the singleton classes whose TSingleton<T>::s_instance this unit uses (only the pointer)
+class CFieldMissionTable;
+
+// return types of the getters this unit calls
+class CMentoringManager;
+
 // ---- unit-local views of exe objects ----
 
 // A group reward row (only the fields the field mission reads).
@@ -65,7 +71,7 @@ class Unk_QmGameEventMgr {
 public:
     Unk_QmGameEventRef FUN_14047ca40(const Unk_GmEvtKey& key);
 };
-Unk_QmGameEventMgr* FUN_1401c0d90();
+void* FUN_1401c0d90();
 
 class Unk_MentorSchedule { public: int FUN_140424f20(int id); };
 class Unk_MentorScheduleHolder { public: Unk_MentorSchedule* FUN_14041d160(); };
@@ -78,7 +84,6 @@ CStringW FUN_1405c2690(CStringW, const CStringW&);
 CStringW FUN_140c160b0(CStringW, const __int64*);
 void FUN_1412751b0(const CStringW&, int);
 void FUN_1412751f0(const CStringW&, int, int);
-void* FUN_140c70240();
 int FUN_140b71580(void*);
 
 // ---- CQuest base virtuals ----
@@ -203,7 +208,7 @@ void CEventMission::Complete(CInPacket& packet)
 {
     CQuest::Complete(packet);
     if (m_78 == 2) {
-        Unk_QmGameEventRef ref = FUN_1401c0d90()->FUN_14047ca40(DAT_143ab2fc0);
+        Unk_QmGameEventRef ref = reinterpret_cast<Unk_QmGameEventMgr*>(FUN_1401c0d90())->FUN_14047ca40(DAT_143ab2fc0);
         if (ref.IsNull()) return;
         int n = ref.Get()->FUN_1403fd5a0(FUN_140bfc580());
         if (n == -1) return;
@@ -246,7 +251,7 @@ int CMentoringMission::FUN_1407447c0()
 {
     if (CQuestCommon::FUN_1407447c0()) return 1;
     if (reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->FUN_140424f20(FUN_140bfc580()) == 0) return 1;
-    if (FUN_140b71580(FUN_140c70240()) != 2) return 1;
+    if (FUN_140b71580(TSingleton<CMentoringManager>::GetInstance()) != 2) return 1;
     return 0;
 }
 
@@ -278,8 +283,7 @@ void CWeddingMission::ShowRewards(int reward)
 Unk_QmGroupReward* Unk_QmGroupRewardPtr::get() const { return m_p; }
 
 // @0x140d738f0
-extern void* DAT_143aaec48;
-Unk_QmGroupTable* FUN_140d738f0() { return static_cast<Unk_QmGroupTable*>(DAT_143aaec48); }
+Unk_QmGroupTable* FUN_140d738f0() { return reinterpret_cast<Unk_QmGroupTable*>(TSingleton<CFieldMissionTable>::s_instance); }
 
 // ---- quest types ----
 

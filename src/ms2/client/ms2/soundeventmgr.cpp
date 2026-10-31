@@ -169,7 +169,6 @@
 int FUN_140873ad0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);      // string attribute
 class Unk_GameClock : public CMainSystem { public: float FUN_141473210(); };
 CLogString* GetLogString();                                        // the logger
-WorldService* FUN_1403ed2d0();
 void FUN_1401d3700(CString& str);
 int FUN_140718170(const CString& str);                              // parses an int
 float FUN_140718450(const CString& str);                            // parses a float
@@ -186,13 +185,10 @@ public:
     Unk_SmSession* FUN_1411b1f30();
 };
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
-void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
-const Vector3& FUN_140947900(void* pNode);                  // world translate
 void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
 bool FUN_14028d470(float a, float b);                               // nearly equal
 void FUN_140194470(void* pDst, const Vector3& vSrc);        // NiPoint3 assignment
 // Effect manager (singleton 0x1403ed280): scene root.
-CEffectService* FUN_1403ed280();
 // Sound property / voice pitch table.
 // The 2-int pitch record (pitch, FMOD pitch units) of a voice event.
 struct Unk_SoundPitch
@@ -365,7 +361,7 @@ bool CSoundEventEffectParam::vfunc_7(Unk_EffectTarget* pTarget)
         return true;
     if (CEffectParam::vfunc_7(pTarget))
         return true;
-    if (m_bSkipMusicConcert && FUN_1403ed2d0()->FUN_141bcb150())
+    if (m_bSkipMusicConcert && WorldService::GetInstance()->FUN_141bcb150())
         return true;
     return false;
 }
@@ -472,7 +468,7 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
     MS2Ptr<CSoundEvent> spSound;
     FMOD::EventGroup* pGroup = 0;
     const CString& strGroup = pSound->FUN_141776260();
-    NiNode* pOwner = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, FUN_1409849b0(&pTarget->m_spObject)));
+    NiNode* pOwner = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(FUN_1409849b0(&pTarget->m_spObject))))));
     if (!strGroup.IsEmpty())
     {
         pGroup = TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177d6e0(strGroup, 0);
@@ -524,8 +520,7 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
             FUN_14015eb90(GetLogString(), 1, 0x13, L"sound event - attachToNode = true 인데, RootNode가 NULL입니다.[{0}]", strEvent);
             return false;
         }
-        pParent = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI,
-            pOwner->GetObjectByName((const char*)pSound->FUN_141776280())));
+        pParent = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(pOwner->GetObjectByName((const char*)pSound->FUN_141776280()))))));
         if (pParent == 0)
             pParent = pOwner;
         if (pSound->m_bApplyNodeTransform || pParent == 0)
@@ -542,7 +537,7 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
     }
     else
     {
-        pParent = FUN_1403ed280()->FUN_1411a6b10();
+        pParent = TSingleton<CEffectService>::GetInstance()->FUN_1411a6b10();
         if (pSound->m_bApplyNodeTransform)
         {
             if (pOwner == 0)
@@ -550,8 +545,7 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
                 FUN_14015eb90(GetLogString(), 1, 0x13, L"sound event - applyNodeTransform = true 인데, RootNode가 NULL입니다.[{0}]", strEvent);
                 return false;
             }
-            NiNode* pNode = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI,
-                pOwner->GetObjectByName((const char*)pSound->FUN_141776280())));
+            NiNode* pNode = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(pOwner->GetObjectByName((const char*)pSound->FUN_141776280()))))));
             if (pNode != 0)
             {
                 static_cast<NiAVObject*>(FUN_1409475f0(&spRoot))->SetLocalTransform(pNode->GetWorldTransform() * kXform);
@@ -589,7 +583,7 @@ bool CSoundEventEffect::vfunc_9()
         if (!FUN_14119f3c0() && m_dStartTime <= dNow)
             vfunc_4();
         if (FUN_14119f3c0() && m_spSound.get() != 0)
-            m_spSound->FUN_14177a990(FUN_140947900(FUN_1409475f0(&m_spRoot)));
+            m_spSound->FUN_14177a990(reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->GetWorldTranslate()));
         if (m_bStopRequested && m_dStopTime <= dNow)
         {
             FUN_14015eb90(GetLogString(), 1, 0x13, L"sound event - doNotStop이 True 이며, Stop 메시지 이후 10초 경과[{0}]",
@@ -609,7 +603,7 @@ void CSoundEventEffect::vfunc_4()
         if (GetLogString() != 0)
             Unk_SoundLog(GetLogString(), 0xc, 0x12f, L"Start SoundID {0} volume {1} {2}", m_spSound->GetName(),
                          m_fVolume, FUN_1411a8ae0(m_unk_18));
-        m_spSound->FUN_14177a990(FUN_140947900(FUN_1409475f0(&m_spRoot)));
+        m_spSound->FUN_14177a990(reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->GetWorldTranslate()));
         m_spSound->FUN_14177acf0(m_fVolume);
         if (!m_spSound->FUN_14177a8d0())
             m_b2d = true;
@@ -669,7 +663,7 @@ void CSoundEventEffect::vfunc_7()
 // @0x1417776b0
 int CSoundEventEffect::vfunc_8(void* p)
 {
-    FUN_140194470(p, FUN_140947900(FUN_1409475f0(&m_spRoot)));
+    FUN_140194470(p, reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->GetWorldTranslate()));
     return 1;
 }
 
@@ -1153,7 +1147,7 @@ void CSoundEventMgr::FUN_14177bf20()
         }
     }
     if (*reinterpret_cast<Unk_SmApp*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70() == 0)
-        FUN_1403ed2d0()->FUN_141bc7b80(1);
+        WorldService::GetInstance()->FUN_141bc7b80(1);
     if (0 < m_histReverb.GetPos())
     {
         ReverbData kReverb;

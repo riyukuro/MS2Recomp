@@ -19,9 +19,14 @@
 
 #include "hook/ms2hook.h"
 
-Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);    // FirstChildElement of a document
-Unk_140165cf0* FUN_140165cf0(Unk_140165cf0* pElem, const char* pszName);   // FirstChildElement
-Unk_140165cf0* FUN_140168650(Unk_140165cf0* pElem, const char* pszName);   // NextSiblingElement
+class Unk_XmlNode   // C3: member view for the former FUN_ stand-ins
+{
+public:
+    Unk_XmlNode* FirstChild(const char* pszName);       // 0x140165cf0 FirstChildElement
+    Unk_XmlNode* NextSibling(const char* pszName);      // 0x140168650 NextSiblingElement
+};
+int XmlGetAttr(class TiXmlElement* pElem, const char* pszName, int& nOut);           // 0x1408731e0
+int XmlGetAttr(class TiXmlElement* pElem, const char* pszName, CString& strOut);     // 0x1408733e0
 
 // The exe has this instance's call operator here (0x1422e7080): slot 2 without a null check.
 template <>
@@ -149,26 +154,26 @@ void UIAlignWidgetManager::FUN_1422e6960()
         TiXmlDocument doc;
         if (ms_kXmlLoader(doc))
         {
-            Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+            Unk_XmlNode* pRoot = ((Unk_XmlNode*)&doc)->FirstChild("ms2");
             if (pRoot == NULL)
                 return;
-            for (Unk_140165cf0* pWidget = FUN_140165cf0(pRoot, "widget"); pWidget != NULL;
-                 pWidget = FUN_140168650(pWidget, "widget"))
+            for (Unk_XmlNode* pWidget = pRoot->FirstChild("widget"); pWidget != NULL;
+                 pWidget = pWidget->NextSibling("widget"))
             {
                 int nOffsetX = 0;
-                FUN_1408731e0(pWidget, "offsetX", nOffsetX);
+                XmlGetAttr((TiXmlElement*)pWidget, "offsetX", nOffsetX);
                 int nOffsetY = 0;
-                FUN_1408731e0(pWidget, "offsetY", nOffsetY);
+                XmlGetAttr((TiXmlElement*)pWidget, "offsetY", nOffsetY);
                 int nAlignType;
-                FUN_1408731e0(pWidget, "alignType", nAlignType);
+                XmlGetAttr((TiXmlElement*)pWidget, "alignType", nAlignType);
                 MS2Ptr<UIAlignWidget> spWidget(new UIAlignWidget);
                 spWidget->SetAlignType(nAlignType);
                 spWidget->FUN_1422e6550(nOffsetX, nOffsetY);
-                for (Unk_140165cf0* pEntity = FUN_140165cf0(pWidget, "entity"); pEntity != NULL;
-                     pEntity = FUN_140168650(pEntity, "entity"))
+                for (Unk_XmlNode* pEntity = pWidget->FirstChild("entity"); pEntity != NULL;
+                     pEntity = pEntity->NextSibling("entity"))
                 {
                     CString strName;
-                    FUN_1408733e0(pEntity, "name", strName);
+                    XmlGetAttr((TiXmlElement*)pEntity, "name", strName);
                     if (strName.IsEmpty())
                         continue;
                     spWidget->FUN_1422e6640(strName);

@@ -39,29 +39,46 @@ extern __int64 DAT_143ab28e0;
 __int64 FUN_140930240();                                // the merat
 
 struct Unk_G9Holder { void* m_p0; void* m_p8; };
-void* FUN_1404d3180(void* pHolder);
-bool FUN_1404c6160(void* pGuildPvp);
 struct Unk_G9Rec { void* m_p[6]; unsigned __int64 m_nExpire; };
-Unk_G9Rec* FUN_141523c50(Unk_G9Player* pPlayer);        // the player's real estate record
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_MyPCComp1618* FUN_141523c50();
+};
 bool FUN_1406c4d20(const Unk_GcTime& a, const Unk_GcTime& b);
 int FUN_141654700(Unk_G9Player* pPlayer);               // the job code
 int FUN_141654730(Unk_G9Player* pPlayer);               // the sub job code
 void* FUN_1416769f0(Unk_G9Player* pPlayer);             // the summoned pet
-int FUN_1413b6160(Unk_G9Holder* pHolder);                       // joined a guild
 void FUN_140178570(Unk_140165cf0* pElem, const char* pszName, CAtlArray<int>& arr);
-void* FUN_140938b90(unsigned nUIId);                    // the menu bar
+class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 int FUN_141938a00(void* pMenu, CStringA strMenu);
 void* FUN_1419c16a0(void* pDialog);
 void* FUN_140faf160(unsigned nUIId);                    // the mastery dialog
-int FUN_140eb5040(void* pDialog);
-int FUN_140eb5150(void* pDialog);
+class UIMasteryDialog   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140eb5040();
+    int FUN_140eb5150();
+};
 void* FUN_140d0c040(unsigned nUIId);                    // the play instrument dialog
-int FUN_14100c890(void* pDialog);
-bool FUN_14100d8c0(void* pDialog);
-int FUN_14166c930(Unk_G9Player* pPlayer);               // the action state
-int FUN_14166cc80(Unk_G9Player* pPlayer);               // the instrument id
-void* FUN_140ef0b20();                                  // the cube holder dialog
-int FUN_1410b5bc0(void* pDialog);
+class UIPlayInstrumentDialog   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14100c890();
+    bool FUN_14100d8c0();
+};
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14166c930();
+    int FUN_14166cc80();
+};
+class UGCCubePalette* GetUGCCubePalette();   // C3: was FUN_140ef0b20
+class CubeHolderManager   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1410b5bc0();
+};
 void* FUN_141530930();                                  // the stat window
 // the stat window's value handle, returned by value (dtor 0x140c24a50, accessor 0x140c24af0)
 class Unk_StatRef { public: ~Unk_StatRef(); void* FUN_140c24af0(); private: void* m_p0; void* m_p1; };
@@ -69,8 +86,16 @@ class Unk_StatWnd { public: Unk_StatRef FUN_140c25130(); };
 unsigned FUN_140caa1a0(void* pRef);
 void* FUN_140b72e80(unsigned nUIId);                    // the mentoring pane
 bool FUN_1401647e0(const CStringA& strA, const CStringA& strB) throw();   // operator!= (true when the names differ)
-__int64 FUN_140d59970(void* pMarket);                   // the expiry of the ugc product
-int FUN_141924630(void* pDialog);                       // is floating
+class CMeratMarketMan   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_140d59970();
+};
+class UIDialog   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141924630();
+};
 
 // The tab of the mentoring pane (only the name getter) and the dialog of a name (only the busy flag).
 class Unk_G9Named
@@ -156,15 +181,31 @@ bool FUN_140e605c0(Unk_G9Iter* pIt);                    // IsNull
 Unk_G9Named* FUN_140e60630(Unk_G9Iter* pIt);            // operator->
 
 void* FUN_141386950(const CStringA& strDialog);         // the dialog of a name
-bool FUN_1422bfca0(void* pInner);
-bool FUN_1422ce0e0(void* pInner);
-void* FUN_140c300a0(unsigned nDialogId);
+class ASDisplayObject   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_1422bfca0();
+};
+class ASButton   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_1422ce0e0();
+};
+class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
 struct Unk_G9Span { int m_n[7]; int m_nDays; };
-Unk_G9Span* FUN_1413a52a0(const __int64* pTime);         // _localtime64 into the guide's tm
-int FUN_1410c3650(Unk_G9Home* pHome);
-void* FUN_140931510();                                  // the dungeon room manager
-int FUN_140d9f880(void* pMgr, int nDungeonId);
-bool FUN_1413b57d0(void* pDialog);
+struct tm* FUN_1413a52a0(__int64 const*);   // C3: was FUN_1413a52a0
+class CubeMapInformationService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1410c3650();
+};
+class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
+class CMyCharacter   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned int FUN_140d9f880(unsigned long);
+};
+bool Unk_GcNoPoint(char*);   // C3: was FUN_1413b57d0
 
 
 // @0x1413acea0
@@ -261,7 +302,7 @@ CStringW CGuideConditionGuildPvpPeriod::GetTypeName()
 // @0x1413ad460
 int CGuideConditionGuildPvpPeriod::vfunc_3()
 {
-    return FUN_1413a55a0(FUN_1404c6160(FUN_1404d3180(&reinterpret_cast<Unk_G9Holder*>(TSingleton<CGuildManager>::GetInstance())->m_p8)) ? 1 : 0);
+    return FUN_1413a55a0(((class Unk_GuildSeason*)(void*)(((void*)((class CGuildInfo*)(void*)(&reinterpret_cast<Unk_G9Holder*>(TSingleton<CGuildManager>::GetInstance())->m_p8))->FUN_1404d3180())))->FUN_1404c6160() ? 1 : 0);
 }
 
 // @0x1413ad4c0
@@ -282,7 +323,7 @@ int CGuideConditionRealEstateExpireDays::vfunc_3()
     Unk_G9Player* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPlayer)
         return 0;
-    Unk_G9Rec* pRec = FUN_141523c50(pPlayer);
+    Unk_G9Rec* pRec = ((struct Unk_G9Rec*)((class MyPC*)(class Unk_G9Player*)(pPlayer))->FUN_141523c50());
     if (!pRec)
         return 0;
     Unk_GcTime now(FUN_140869440());
@@ -311,7 +352,7 @@ int CGuideConditionUgcProductExpireDays::vfunc_3()
 {
     if (!FUN_140939a00())
         return 0;
-    __int64 nExpire = FUN_140d59970(FUN_140939a00());
+    __int64 nExpire = ((class CMeratMarketMan*)(void*)(FUN_140939a00()))->FUN_140d59970();
     if (!nExpire)
         return 0;
     Unk_GcTime now(FUN_140869440());
@@ -460,7 +501,7 @@ CStringW CGuideConditionJoinGuild::GetTypeName()
 // @0x1413ade20
 int CGuideConditionJoinGuild::vfunc_3()
 {
-    return FUN_1413a55a0(FUN_1413b6160(reinterpret_cast<Unk_G9Holder*>(TSingleton<CGuildManager>::GetInstance())));
+    return FUN_1413a55a0(((class CGuildManager*)(struct Unk_G9Holder*)(reinterpret_cast<Unk_G9Holder*>(TSingleton<CGuildManager>::GetInstance())))->FUN_1413b6160());
 }
 
 // @0x1413ade50
@@ -485,7 +526,7 @@ void CGuideConditionMenuExpand::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413adf50
 int CGuideConditionMenuExpand::vfunc_3()
 {
-    void* pMenu = FUN_140938b90(0x4e28);
+    void* pMenu = ((void*)FUN_140938b90(0x4e28));
     if (pMenu != 0)
     {
         int nExpanded = FUN_141938a00(pMenu, m_strMenuName);
@@ -540,7 +581,7 @@ int CGuideConditionMasteryMainTabIndex::vfunc_3()
 {
     void* pDlg = FUN_140faf160(0x4f1e);
     if (pDlg)
-        return FUN_1413a5600(FUN_140eb5040(pDlg) == m_n20);
+        return FUN_1413a5600(((class UIMasteryDialog*)(void*)(pDlg))->FUN_140eb5040() == m_n20);
     return 0;
 }
 
@@ -561,7 +602,7 @@ int CGuideConditionMasterySubTabIndex::vfunc_3()
 {
     void* pDlg = FUN_140faf160(0x4f1e);
     if (pDlg)
-        return FUN_1413a5600(FUN_140eb5150(pDlg) == m_n20);
+        return FUN_1413a5600(((class UIMasteryDialog*)(void*)(pDlg))->FUN_140eb5150() == m_n20);
     return 0;
 }
 
@@ -582,7 +623,7 @@ int CGuideConditionPlayInstrumentTabIndex::vfunc_3()
 {
     void* pDlg = FUN_140d0c040(0x4eec);
     if (pDlg)
-        return FUN_1413a5600(FUN_14100c890(pDlg) == m_n20);
+        return FUN_1413a5600(((class UIPlayInstrumentDialog*)(void*)(pDlg))->FUN_14100c890() == m_n20);
     return 0;
 }
 
@@ -603,7 +644,7 @@ int CGuideConditionPlayInstrumentHasSelectItem::vfunc_3()
 {
     void* pDlg = FUN_140d0c040(0x4eec);
     if (pDlg)
-        return FUN_1413a5600(FUN_14100d8c0(pDlg));
+        return FUN_1413a5600(((class UIPlayInstrumentDialog*)(void*)(pDlg))->FUN_14100d8c0());
     return 0;
 }
 
@@ -625,9 +666,9 @@ int CGuideConditionPlayingInstrument::vfunc_3()
     Unk_G9Player* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPlayer)
         return 0;
-    if (FUN_14166c930(pPlayer) != 0x2f)
+    if (((class PCBase*)(class Unk_G9Player*)(pPlayer))->FUN_14166c930() != 0x2f)
         return FUN_1413a55a0(0);
-    return FUN_1413a5600(FUN_14166cc80(pPlayer) == 0x7f);
+    return FUN_1413a5600(((class PCBase*)(class Unk_G9Player*)(pPlayer))->FUN_14166cc80() == 0x7f);
 }
 
 // @0x1413ae730
@@ -645,9 +686,9 @@ CStringW CGuideConditionCubeHolderSelectItem::GetTypeName()
 // @0x1413ae7e0
 int CGuideConditionCubeHolderSelectItem::vfunc_3()
 {
-    if (!FUN_140ef0b20())
+    if (!((void*)GetUGCCubePalette()))
         return 0;
-    return FUN_1413a5600(FUN_1410b5bc0(FUN_140ef0b20()) == m_n20);
+    return FUN_1413a5600(((class CubeHolderManager*)(void*)(((void*)GetUGCCubePalette())))->FUN_1410b5bc0() == m_n20);
 }
 
 // @0x1413ae840
@@ -695,7 +736,7 @@ int CGuideConditionMentoringPage::vfunc_3()
     void* pPane = FUN_140b72e80(0x4f4b);
     if (pPane)
     {
-        if (FUN_141924630(pPane) == 0)
+        if (((class UIDialog*)(void*)(pPane))->FUN_141924630() == 0)
             return 0;
         Unk_G9Iter it = static_cast<Unk_G9Pane*>(pPane)->FUN_140e5e890();
         if (FUN_140e605c0(&it))
@@ -754,14 +795,14 @@ int CGuideConditionButtonSelected::vfunc_3()
                     Unk_G9Leaf leaf = root.FUN_140d03230()->FUN_140acce30(m_children[i]);
                     if (leaf.FUN_140bb6090(0))
                         return 0;
-                    if (!FUN_1422bfca0(leaf.FUN_140acd9e0()))
+                    if (!((class ASDisplayObject*)(void*)(leaf.FUN_140acd9e0()))->FUN_1422bfca0())
                         return 0;
-                    return FUN_1422ce0e0(leaf.FUN_140acd9e0());
+                    return ((class ASButton*)(void*)(leaf.FUN_140acd9e0()))->FUN_1422ce0e0();
                 } else {
                     root.FUN_1413b40b0(root.FUN_140d03230()->FUN_1413b19d0(m_children[i]));
                     if (root.FUN_140d03130(0))
                         return 0;
-                    if (!FUN_1422bfca0(root.FUN_140d03230()))
+                    if (!((class ASDisplayObject*)(void*)(root.FUN_140d03230()))->FUN_1422bfca0())
                         return 0;
                 }
             }
@@ -815,12 +856,12 @@ int CGuideConditionContract::vfunc_3()
     Unk_G9Player* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPlayer)
         return 0;
-    Unk_G9Rec* pRec = FUN_141523c50(pPlayer);
+    Unk_G9Rec* pRec = ((struct Unk_G9Rec*)((class MyPC*)(class Unk_G9Player*)(pPlayer))->FUN_141523c50());
     if (!pRec)
         return 0;
     void* pDlg = 0;
     if (m_nDialogId != 0)
-        pDlg = FUN_140c300a0(m_nDialogId);
+        pDlg = ((void*)FUN_140c300a0(m_nDialogId));
     if (!pDlg)
         pDlg = FUN_141386950(m_strDialog);
     if (!pDlg)
@@ -828,10 +869,10 @@ int CGuideConditionContract::vfunc_3()
     Unk_G9Val val = static_cast<Unk_G9TreeDlg*>(pDlg)->FUN_1413b1a90(m_strChild);
     if (val.FUN_140d03130(0))
         return 0;
-    if (!FUN_1422bfca0(val.FUN_140d03230()))
+    if (!((class ASDisplayObject*)(void*)(val.FUN_140d03230()))->FUN_1422bfca0())
         return 0;
     const __int64& nLeft = pRec->m_nExpire - FUN_140869440();
-    Unk_G9Span* pInfo = FUN_1413a52a0(&nLeft);
+    Unk_G9Span* pInfo = ((struct Unk_G9Span*)FUN_1413a52a0(&nLeft));
     if (pInfo && pInfo->m_nDays <= 7)
         return 1;
     return 0;
@@ -875,7 +916,7 @@ CGuideConditionHomeMode::CGuideConditionHomeMode()
 // @0x1413af830
 int CGuideConditionHomeMode::vfunc_3()
 {
-    return FUN_1413a5600(FUN_1410c3650(FUN_1409670e0()) == m_nMode);
+    return FUN_1413a5600(((class CubeMapInformationService*)(class Unk_G9Home*)(FUN_1409670e0()))->FUN_1410c3650() == m_nMode);
 }
 
 // @0x1413af880
@@ -920,7 +961,7 @@ void CGuideConditionEnterDungeon::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413afab0
 int CGuideConditionEnterDungeon::vfunc_3()
 {
-    int nState = FUN_140d9f880(FUN_140931510(), m_n20);
+    int nState = ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->FUN_140d9f880(m_n20);
     return FUN_1413a5600(nState == 0 || nState == 1);
 }
 
@@ -959,7 +1000,7 @@ int CGuideConditionChatEmoticon::vfunc_3()
 {
     void* pDlg = FUN_1413b1b20(0x4f80);
     if (pDlg)
-        return FUN_1413a5600(FUN_1413b57d0(pDlg));
+        return FUN_1413a5600(Unk_GcNoPoint((char*)(pDlg)));
     return 0;
 }
 

@@ -6,7 +6,10 @@
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uinpcpreviewdialog.cpp"    // assumed
 
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uinpcpreviewdialog.h"
 
@@ -38,6 +41,10 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/questdatatable.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // ---- dynamic initializers of the header statics of this TU ------------------------------------------------------------
 // The same header statics (a name table, the "skill" / "stun" labels, a condition object) are instantiated twice; the
@@ -59,24 +66,6 @@ static Unk_1402a9d70 s_condition3(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-// The list control of the movie (the AS list with clear / append / refresh).
-class Unk_NpList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dcca0(int nIndex);                     // select an index (-1 = none)
-    void FUN_1422dd1d0();                               // clear
-    void FUN_1422dd230(const ASObj& row);               // append an object row
-    void FUN_1422dd2a0(const CString& str);             // append a text row
-    void FUN_1422dd310(const CStringW& str);            // append a text row
-};
-
 // The button bar (tab strip) of the movie.
 class Unk_NpTab : public AScript
 {
@@ -85,18 +74,15 @@ public:
 };
 
 // The world: the actors of an object id, the preview npc spawn / removal and the npc tree.
-class Unk_NpWorld
+class Unk_NpWorld : public WorldService
 {
 public:
     PCBase* FUN_141bd1320(int nId);                     // the actor of an object id
     PCBase* FUN_141bd0cc0();                            // the local player
     int FUN_141bd0dd0(efd::Point3* pPos, efd::Point3* pDir);    // a spawn position in front of the camera
-    int FUN_141bbb1e0(GameObject* pObj, int nA, unsigned nB);   // add an actor to the field
-    void FUN_141bbb7f0(GameObject* pObj, int nA);       // remove an actor from the field
     ATL::CRBMap<unsigned int, efd::SmartPointer<CNpc> >* FUN_141bd36d0();   // the npc tree
     void FUN_141bd2db0(ATL::CAtlList<efd::SmartPointer<GameObject> >* pOut, int (*pFilter)(GameObject*));   // collect the actors
 };
-Unk_NpWorld* FUN_1403ed2d0();
 int FUN_141274aa0(GameObject* pObj);                    // the actor filter of the collection above
 CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>& spObj);
 
@@ -133,17 +119,14 @@ CStringW GetStringCommon(int nKey);
 CString FUN_14016a5c0(const char* psz, int nCodePage);          // narrows a string
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
-class Unk_NpQuestTable { public: std::vector<unsigned>* FUN_14074e0f0(int nNpcId); };
-Unk_NpQuestTable* FUN_1407476c0();
+QuestDataTable* FUN_1407476c0();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 unsigned* FUN_1416e1dd0(std::vector<unsigned>* pVec);           // begin
 unsigned* FUN_1416e1e70(std::vector<unsigned>* pVec);           // end
-CFieldMetaTable* FUN_140700390();
-class Unk_NpTextFilter { public: void FUN_1416fb380(CStringW& strText); void FUN_1416fb340(CStringW& strText); };
-Unk_NpTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 class Unk_NpPathCfg;
 CString FUN_14071ae20(const CString& str);              // the path of a data file
-class Unk_NpXml { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* szPath, int nA, bool bB, bool bC); };
+class Unk_NpXml : public CFileSystem { };
 Unk_NpXml* FUN_140166420();
 CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW strDefault);   // string attribute with default
 class Unk_NpPhys { public: int FUN_14168a310(const efd::Point3& ptFrom, efd::Point3& ptHit, void* pInfo, float fLen, efd::Point3* pNormal, int nMask); };
@@ -245,7 +228,7 @@ void UINpcPreviewDialog::vfunc_15()
         return;
     if (m_nActorOid == 0)
         return;
-    PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1320(m_nActorOid);
+    PCBase* pActor = reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nActorOid);
     if (pActor == 0)
         return;
     std::vector<CString> names;
@@ -253,7 +236,7 @@ void UINpcPreviewDialog::vfunc_15()
     if (names.size() == 0)
         return;
     m_bPending = 0;
-    if (MS2Ptr<Unk_NpList> spList = FUN_140c02900("m_list")) {
+    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_list")) {
         spList->FUN_1422dd1d0();
         for (std::vector<CString>::iterator it = names.begin(); it != names.end(); ++it) {
             Unk_NpRow row;
@@ -289,7 +272,7 @@ int UINpcPreviewDialog::FUN_141a6e7e0(CStringW strFilter)
             found.SetAt(nId, strName);
         }
     }
-    MS2Ptr<Unk_NpList> spList = FUN_140c02900("m_npcList");
+    MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_npcList");
     if (spList.IsNull() == 0) {
         spList->FUN_1422dcca0(-1);
         spList->FUN_1422dd1d0();
@@ -333,7 +316,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
 {
     m_rows.RemoveAll();
     m_nNpcId = nNpcId;
-    MS2Ptr<Unk_NpList> spList = FUN_140c02900("m_list");
+    MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_list");
     if (spList.IsNull())
         return 0;
     MS2Ptr<CNpcData> spData = FUN_1406cd330(nNpcId);
@@ -412,7 +395,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
                 }
             }
         }
-        MS2Ptr<Unk_NpList> spList2 = FUN_140c02900("m_list");
+        MS2Ptr<ASScrollingList> spList2 = FUN_140c02900("m_list");
         if (spList2.IsNull() == 0) {
             spList2->FUN_1422dd1d0();
             for (size_t i = 0; i < m_rows.GetCount(); i++)
@@ -444,7 +427,7 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
     CStringW strOut;
     if (row.m_kind == 1) {
         Unk_FieldIdList ids(10);
-        FUN_140700390()->FUN_1406fb520(m_nNpcId, ids);
+        TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb520(m_nNpcId, ids);
         for (POSITION pos = ids.GetHeadPosition(); pos != 0; ) {
             unsigned int nId = ids.GetNext(pos);
             spOut->FUN_1422c5ab0(GetStringTable()->FUN_141811980(3, nId));
@@ -532,7 +515,7 @@ int UINpcPreviewDialog::FUN_141a70b90(int nRow)
         if (spTalk.get() == 0)
             return 0;
         ATL::CAtlList<efd::SmartPointer<GameObject> > npcs(10);
-        FUN_1403ed2d0()->FUN_141bd2db0(&npcs, FUN_141274aa0);
+        reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd2db0(&npcs, FUN_141274aa0);
         for (POSITION pos = npcs.GetHeadPosition(); pos != 0; ) {
             efd::SmartPointer<GameObject> spObj = npcs.GetNext(pos);
             CNpc* pNpc = FUN_141a71850(spObj);
@@ -548,7 +531,7 @@ void UINpcPreviewDialog::FUN_141a71050(int nRow)
 {
     if (nRow < 0 || nRow >= (int)m_rows.GetCount())
         return;
-    PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1320(m_nActorOid);
+    PCBase* pActor = reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nActorOid);
     if (pActor == 0)
         return;
     Unk_NpRow row = m_rows.GetAt(nRow);
@@ -570,7 +553,7 @@ int UINpcPreviewDialog::FUN_141a711b0()
 efd::SmartPointer<CNpc> UINpcPreviewDialog::FUN_141a71280()
 {
     efd::SmartPointer<CNpc> spNone(0);
-    ATL::CRBMap<unsigned int, efd::SmartPointer<CNpc> >* pNpcs = FUN_1403ed2d0()->FUN_141bd36d0();
+    ATL::CRBMap<unsigned int, efd::SmartPointer<CNpc> >* pNpcs = reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd36d0();
     for (POSITION pos = pNpcs->GetHeadPosition(); pos != 0; pNpcs->GetNext(pos)) {
         efd::SmartPointer<CNpc> spNpc = pNpcs->GetValueAt(pos);
         if (spNpc->FUN_141092fa0() == m_nNpcId)
@@ -584,11 +567,11 @@ void UINpcPreviewDialog::FUN_141a713a0()
 {
     efd::Point3 kPos;
     efd::Point3 kDir;
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0) {
         kPos = pPlayer->vfunc_18();
         kDir = pPlayer->vfunc_20();
-    } else if (FUN_1403ed2d0()->FUN_141bd0dd0(&kPos, &kDir) == 0) {
+    } else if (reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd0dd0(&kPos, &kDir) == 0) {
         return;
     }
     efd::SmartPointer<CNpc> spNpc = EE_NEW CNpc;
@@ -608,7 +591,7 @@ void UINpcPreviewDialog::FUN_141a713a0()
         spNpc->FUN_141670700(i, 100);
     }
     spNpc->vfunc_59(1, 0, 0, 0);
-    if (FUN_1403ed2d0()->FUN_141bbb1e0(spNpc, 0, 1) == 0)
+    if (reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bbb1e0(spNpc, 0, 1) == 0)
         return;
     m_nActorOid = spNpc->FUN_14123c580();
 }
@@ -616,9 +599,9 @@ void UINpcPreviewDialog::FUN_141a713a0()
 // @0x141a717c0
 void UINpcPreviewDialog::FUN_141a717c0()
 {
-    efd::SmartPointer<PCBase> spActor(FUN_1403ed2d0()->FUN_141bd1320(m_nActorOid));
+    efd::SmartPointer<PCBase> spActor(reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nActorOid));
     if (spActor) {
-        FUN_1403ed2d0()->FUN_141bbb7f0(spActor, 0);
+        reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bbb7f0(spActor, 0);
         m_nActorOid = 0;
     }
 }

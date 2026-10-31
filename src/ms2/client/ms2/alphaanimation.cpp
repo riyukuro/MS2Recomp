@@ -68,8 +68,6 @@ static egf::EntityID s_nullEntityId(0ull);
 // ---- unit-local views of exe objects ----
 
 class Unk_GameClock;
-double FUN_141473280(Unk_GameClock*);           // current time (ServiceManager::GetTime(0xe001001b))
-double FUN_141473260(Unk_GameClock*);           // frame delta
 
 struct Unk_EntityAppFramework                   // the framework
 {
@@ -117,7 +115,11 @@ public:
     virtual void s36(); virtual void s37(); virtual void s38();
     virtual void vfunc_39();                    // 0x138
 };
-void* FUN_1403ed2d0();                          // game context
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 Unk_ActorSlots* FUN_141bd0fa0(void* pContext, egf::EntityID id);
 
 unsigned FUN_1408a2010();                       // property type id of bool
@@ -259,7 +261,7 @@ void FUN_14098ab60(NiAVObject* pkObject, ATL::CAtlArray<Unk_AlphaKey>& keys, con
         fTotal = fTotal + kKey.fDelta;
     }
 
-    float fNow = (float)FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()));
+    float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     CAlphaAnimation* pAnim = EE_NEW CAlphaAnimation(pkObject, fNow + fTotal);
     if (idOwner != s_nullEntityId)
         pAnim->m_idOwner = idOwner;
@@ -296,13 +298,13 @@ void FUN_14098ab60(NiAVObject* pkObject, ATL::CAtlArray<Unk_AlphaKey>& keys, con
 // @0x14098b110
 bool CAlphaAnimation::vfunc_2()
 {
-    float fNow = (float)FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()));
+    float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     if (fNow > m_fEndTime)
     {
 
         if (m_idOwner != s_nullEntityId)
         {
-            Unk_ActorSlots* pActor = FUN_141bd0fa0(FUN_1403ed2d0(), m_idOwner);
+            Unk_ActorSlots* pActor = FUN_141bd0fa0(((void*)WorldService::GetInstance()), m_idOwner);
             if (pActor)
                 pActor->vfunc_39();
         }
@@ -324,7 +326,7 @@ CAlphaAnimation::CAlphaAnimation(NiAVObject* pkTarget, float fEndTime)
 CAlphaAnimation::~CAlphaAnimation()
 {
     if (m_spTarget && reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()))
-        m_spTarget->Update((float)FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())), true);
+        m_spTarget->Update((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
 
     if (m_spController)
     {
@@ -588,7 +590,7 @@ CEntityShower::CEntityShower(egf::EntityID idEntity, NiAVObject* pkNode, float f
 
     if (pkNode != 0)
     {
-        float fNow = (float)FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()));
+        float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
         m_fEndTime = fNow + fDuration;
         m_fAlpha = fFrom;
         m_pInterpolator = new TLinearInterpolator<float>(fDuration, fFrom, fTo);
@@ -624,7 +626,7 @@ CEntityShower::~CEntityShower()
 // @0x14098bc60
 bool CEntityShower::vfunc_2()
 {
-    float fNow = (float)FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()));
+    float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     if (fNow > m_fEndTime)
     {
         efd::SmartPointer<egf::Entity> spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity));
@@ -633,7 +635,7 @@ bool CEntityShower::vfunc_2()
             efd::SmartPointer<Unk_HwService> spService(FUN_14098c5b0(&DAT_143b059e8));
             if (spService)
             {
-                m_fAlpha = m_pInterpolator->Get((float)FUN_141473260(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())));
+                m_fAlpha = m_pInterpolator->Get((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetDeltaTime());
                 FUN_14098b3e0(m_spNode, m_fAlpha, 0);
                 spService->FUN_1413d6e60(spEntity, true);
                 Unk_InstanceTracker* pTracker = spService->FUN_1413d66b0(spEntity);
@@ -648,7 +650,7 @@ bool CEntityShower::vfunc_2()
     }
     else if (m_pInterpolator)
     {
-        m_fAlpha = m_pInterpolator->Get((float)FUN_141473260(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())));
+        m_fAlpha = m_pInterpolator->Get((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetDeltaTime());
         FUN_14098b3e0(m_spNode, m_fAlpha, 0);
     }
     return true;
@@ -671,13 +673,13 @@ CEntityHider::CEntityHider(egf::EntityID idEntity, NiAVObject* pkNode, float fFr
 // @0x14098bf90
 bool CEntityHider::vfunc_2()
 {
-    float fNow = (float)FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()));
+    float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     if (fNow > m_fEndTime)
     {
         efd::SmartPointer<egf::Entity> spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity));
         if (spEntity)
         {
-            m_fAlpha = m_pInterpolator->Get((float)FUN_141473260(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())));
+            m_fAlpha = m_pInterpolator->Get((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetDeltaTime());
             FUN_14098b3e0(m_spNode, m_fAlpha, 0);
             bool bFalse = false;
             FUN_14098c6e0((Unk_CachedEntity*)spEntity.operator->(), 0xa0b6b179, bFalse);
@@ -686,7 +688,7 @@ bool CEntityHider::vfunc_2()
     }
     else if (m_pInterpolator)
     {
-        m_fAlpha = m_pInterpolator->Get((float)FUN_141473260(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())));
+        m_fAlpha = m_pInterpolator->Get((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetDeltaTime());
         FUN_14098b3e0(m_spNode, m_fAlpha, 0);
     }
     return true;

@@ -110,11 +110,7 @@ class Unk_NuUiMgr { public: Unk_NuUiRef FUN_141adcea0(int nId); };
 UIObject* FUN_1403ed9e0(Unk_NuUiRef& ref);
 UICastingBar* FUN_140ac2270(int nId);
 
-void* FUN_14165f100(PCBase* p);
-void FUN_14165f170(PCBase* p);
 class Unk_NuBuffMgr { public: Vector3 FUN_141683290(); };
-Unk_NuBuffMgr* FUN_14166d240(PCBase* p);
-bool FUN_1416749c0(PCBase* p);
 // vtable-slot view: slot 22 takes the point by value (the exe copies 12 bytes into an arg slot)
 class Unk_NuSlots
 {
@@ -190,8 +186,8 @@ void StateNurturing::vfunc_4(StateData* pData)
     m_pOwner->FUN_14166dd20(FUN_140ac13a0(), 1.0f, false, false);
     PCBase* pPC = FUN_1417b8370();
     MyPC* pRider = FUN_1417b84b0();
-    if (pPC && FUN_14165f100(pPC))
-        FUN_14165f170(pPC);
+    if (pPC && ((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())))
+        reinterpret_cast<PC*>(pPC)->SendRequestCube();
     if (pRider)
     {
         UICastingBar* pBar = FUN_140ac2270(0x4e72);
@@ -310,9 +306,9 @@ void StateNurturing::vfunc_8(double fTime)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC)
     {
-        Unk_NuBuffMgr* pBuff = FUN_14166d240(pPC);
+        Unk_NuBuffMgr* pBuff = ((Unk_NuBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
         reinterpret_cast<Unk_NuSlots*>(pPC)->vfunc_22(pBuff->FUN_141683290());
-        if (FUN_1416749c0(m_pOwner))
+        if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
             pPC->vfunc_59(2, 0, 0, 0);
     }
 }

@@ -51,17 +51,25 @@ extern const float g_142f5c218;
 // The input state (FUN_14025e7c0).
 CInputKeyHandler* FUN_14025e7c0();
 
+class Unk_PCMove   // C3: member view (real class not in this TU)
+{
+public:
+    bool FUN_141682fe0(int);
+};
 class Unk_BuffContainer
 {
 public:
-    bool FUN_141682fe0(int nBuffId);
 };
 
 // A field actor (FUN_1409ffd30 casts an object to it).
+class PCBase   // C3: member view (real class not in this TU)
+{
+public:
+    void* FUN_14166d240();
+};
 class Unk_RpgActor : public Unk_CameraTargetEntity
 {
 public:
-    Unk_BuffContainer* FUN_14166d240();             // +0x6d8
 };
 Unk_RpgActor* FUN_1409ffd30(Unk_CameraTargetEntity* p);
 
@@ -71,7 +79,11 @@ class Unk_GameContext
 public:
     Unk_CameraTargetEntity* FUN_141bd1050(__int64 nObjectId);
 };
-Unk_GameContext* FUN_1403ed2d0();
+class WorldService   // C3: static member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
@@ -117,10 +129,14 @@ public:
     void* m_p;
 };
 // The cursor (FUN_140aadf80).
+class CWindowService   // C3: member view (real class not in this TU)
+{
+public:
+    int GetCursorClientPos(float*, float*);
+};
 class Unk_Cursor
 {
 public:
-    void FUN_141b90e30(float* pfX, float* pfY);
 };
 Unk_Cursor* FUN_140aadf80();
 
@@ -153,9 +169,9 @@ void CRPGCameraMode::vfunc_9()
     Unk_RpgActor* pActor = FUN_1409ffd30(pTarget);
     if (pActor)
     {
-        if (pActor->FUN_14166d240()->FUN_141682fe0(300008))
+        if (((Unk_PCMove*)(Unk_BuffContainer*)(((Unk_BuffContainer*)((PCBase*)(Unk_RpgActor*)(pActor))->FUN_14166d240())))->FUN_141682fe0(300008))
             ptMove.x = 1.0f;
-        else if (pActor->FUN_14166d240()->FUN_141682fe0(300009))
+        else if (((Unk_PCMove*)(Unk_BuffContainer*)(((Unk_BuffContainer*)((PCBase*)(Unk_RpgActor*)(pActor))->FUN_14166d240())))->FUN_141682fe0(300009))
             ptMove.x = -1.0f;
     }
     if (FUN_14025e7c0()->FUN_14116daa0(1, true, 0))
@@ -336,11 +352,11 @@ void CRPGCameraMode::vfunc_30()
 {
     float fX;
     float fY;
-    FUN_140aadf80()->FUN_141b90e30(&fX, &fY);
+    ((CWindowService*)(Unk_Cursor*)(FUN_140aadf80()))->GetCursorClientPos(&fX, &fY);
     Unk_PickListPtr pList = Unk_CameraManager::FUN_1409478c0()->FUN_140af0850(fX, fY, true, true, false, NULL);
     if (!pList.FUN_140a16c00())
         return;
-    Unk_GameContext* pContext = FUN_1403ed2d0();
+    Unk_GameContext* pContext = ((class Unk_GameContext*)WorldService::GetInstance());
     for (unsigned int i = 0; i < pList.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17ea0(); ++i)
     {
         Unk_PickEntry* pEntry = pList.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17d70(i);

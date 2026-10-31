@@ -18,9 +18,9 @@ int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);     //
 bool FUN_14028f710(Unk_140165cf0* pElem);                                     // the element is enabled (feature/locale)
 
 // The table log (CLogString) and its fmt wrappers, instantiated in other units.
-void* FUN_140166440();
-unsigned __int64 FUN_1401859c0(void* pLogger, int nLevel, int nCategory, const wchar_t* pszText);
-void FUN_140177a80(void* pLogger, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& arg0);
+class CLogString* GetLogString();
+void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*);
+template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 void FUN_1403d7960(void* pLogger, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& arg0,
                    const unsigned& arg1);
 
@@ -45,7 +45,7 @@ bool SetItemInfo::Load(Unk_140165cf0* pNode)
             return false;
         if (!AddOptionPart(spPart))
         {
-            FUN_140177a80(FUN_140166440(), 1, 0x13,
+            Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13,
                           L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4PartCount is Duplicated, optionID={0}",
                           m_nId);
             return false;
@@ -53,7 +53,7 @@ bool SetItemInfo::Load(Unk_140165cf0* pNode)
     }
     if (m_nId == 0)
     {
-        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"\xac12\xc774 0 \xc785\xb2c8\xb2e4.Set ItemData SetID is NULL");
+        Unk_AdditionalLog(GetLogString(), 1, 0x13, L"\xac12\xc774 0 \xc785\xb2c8\xb2e4.Set ItemData SetID is NULL");
         return false;
     }
     return true;
@@ -117,7 +117,7 @@ int SetItemInfo::AddOptionPart(MS2Ptr<SetItemOptionPart> spPart)
     if (spPart->GetCount() < 1)
     {
         unsigned nCount = spPart->GetCount();
-        FUN_1403d7960(FUN_140166440(), 1, 0x13,
+        FUN_1403d7960(GetLogString(), 1, 0x13,
                       L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[<ms2> {0}] PartCount Error!, optionID = {1}, PartCount = {2}",
                       m_nId, nCount);
         return 0;

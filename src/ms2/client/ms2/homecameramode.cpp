@@ -12,6 +12,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/camera.h"
 
 // ---- unit-local placeholders ----
 
@@ -53,14 +54,13 @@ public:
     Unk_CameraOption* m_p;
 };
 
-// The game context (FUN_1403ed2d0).
+// A view of the world service.
 class Unk_GameContext : public WorldService
 {
 public:
     Unk_LocalPlayer* FUN_141bd0cc0();
     Unk_CameraOptionPtr FUN_141bd30a0();            // copy of +0x298
 };
-Unk_GameContext* FUN_1403ed2d0();
 
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
@@ -76,7 +76,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-Unk_ClientConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The scene camera (FUN_1413f9890()->FUN_140af7da0()->FUN_140af7df0()) and its frustum.
 struct Unk_Frustum
@@ -117,7 +117,11 @@ float FUN_1409f2310(float f);                       // sin
 float FUN_141b6fdb0(float t, int nType);            // easing
 bool FUN_14028d470(float a, float b);               // a == b (within epsilon)
 extern "C" float (__cdecl* __imp_tanf)(float);      // the exe calls tanf through its import
-float FUN_140b02b90(float f);                       // acos with the argument clamped to [-1, 1]
+class CCapRotationController   // C3: member view for the former free stand-ins
+{
+public:
+    static float SafeAcos(float);
+};
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -144,7 +148,7 @@ CHomeCameraMode::CHomeCameraMode(Unk_CameraOwner* pOwner, MS2Ptr<CCameraMode> pP
       m_100(g_143b01a60),
       m_10c(g_143a08cf8)
 {
-    m_9c = FUN_1403ed2d0()->FUN_141bd4120();
+    m_9c = static_cast<Unk_GameContext*>(WorldService::GetInstance())->FUN_141bd4120();
 }
 
 // @0x140b64e40
@@ -157,18 +161,18 @@ MS2_REPLACE_DTOR(0x140B64E40, CHomeCameraMode, 39, 0xE439C4F8);
 void CHomeCameraMode::vfunc_6(int n)
 {
     CCameraMode::vfunc_6(n);
-    m_100 = static_cast<Unk_CameraManagerData*>(Unk_CameraManager::FUN_1409478c0())->m_c8;
-    m_10c = static_cast<Unk_CameraManagerData*>(Unk_CameraManager::FUN_1409478c0())->m_d4;
-    m_4c = FUN_140b02b90(m_100.z);
+    m_100 = static_cast<Unk_CameraManagerData*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance()))->m_c8;
+    m_10c = static_cast<Unk_CameraManagerData*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance()))->m_d4;
+    m_4c = CCapRotationController::SafeAcos(m_100.z);
     if (m_b4 == 0)
     {
-        m_50 = Unk_CameraManager::FUN_1409478c0()->FUN_140b67d10();
+        m_50 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140b67d10();
         m_b0 = 0;
         m_b8 = 0.0f;
     }
     if (n == 0)
     {
-        Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+        Unk_CameraTargetEntity* pTarget = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60();
         if (pTarget)
         {
             m_88 = pTarget->vfunc_17();
@@ -186,9 +190,9 @@ void CHomeCameraMode::vfunc_6(int n)
         m_c4.m_pos = FUN_1409f2540();
         m_c4.m_rot = FUN_140af8260();
         m_dc = m_c4;
-        m_f4 = FUN_1401d3200()->m_1b30.FUN_1402bac70();
-        m_f8 = FUN_1401d3200()->m_1a80.FUN_1402bac70();
-        m_fc = FUN_1401d3200()->m_1ad8.FUN_1402bac70();
+        m_f4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
+        m_f8 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
+        m_fc = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
     }
     m_b4 = 0;
     FUN_140b66570();
@@ -204,19 +208,19 @@ void CHomeCameraMode::vfunc_7()
     else
         g_143abb090 = 0.0f;
     Unk_CameraSetting setting;
-    setting.m_0 = Unk_CameraManager::FUN_1409478c0()->FUN_140ad4b40();
-    setting.m_4 = Unk_CameraManager::FUN_1409478c0()->FUN_140af7f00();
-    setting.m_8 = Unk_CameraManager::FUN_1409478c0()->FUN_140af7ea0();
-    setting.m_c = Unk_CameraManager::FUN_1409478c0()->FUN_140a17e10();
-    setting.m_18 = Unk_CameraManager::FUN_1409478c0()->FUN_140af8290();
-    static_cast<Unk_CameraManagerData*>(Unk_CameraManager::FUN_1409478c0())->m_e0 = setting;
+    setting.m_0 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140ad4b40();
+    setting.m_4 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7f00();
+    setting.m_8 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7ea0();
+    setting.m_c = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a17e10();
+    setting.m_18 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af8290();
+    static_cast<Unk_CameraManagerData*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance()))->m_e0 = setting;
 }
 MS2_REPLACE_METHOD(0x140B651D0, CHomeCameraMode, vfunc_7, 222, 0x3F1915D8);
 
 // @0x140b652c0
 void CHomeCameraMode::vfunc_10()
 {
-    Unk_CameraManager::FUN_1409478c0()->FUN_140aeaf40(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60(), 1);
+    reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60(), 1);
 }
 MS2_REPLACE_METHOD(0x140B652C0, CHomeCameraMode, vfunc_10, 59, 0x3AEC2CB0);
 
@@ -226,7 +230,7 @@ void CHomeCameraMode::vfunc_8(double fTime)
     int nLoop = 100;
     for (int i = 0; i < nLoop; ++i)
     {
-        Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+        Unk_CameraTargetEntity* pTarget = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60();
         if (!pTarget)
             break;
         m_88 = pTarget->vfunc_17();
@@ -284,7 +288,7 @@ void CHomeCameraMode::vfunc_8(double fTime)
             FUN_140b66570();
         }
 
-        Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+        Vector3 ptMove = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d00();
         if (ptMove.FUN_140552700(g_143b01a60))
         {
             Vector3 ptInput = ptMove;
@@ -321,7 +325,7 @@ void CHomeCameraMode::vfunc_8(double fTime)
                     FUN_140b66570();
                 }
             }
-            Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(g_143b01a60);
+            reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d90(g_143b01a60);
         }
         vfunc_37(fTime);
         m_setting.m_c = m_c4.m_pos;
@@ -336,23 +340,23 @@ MS2_REPLACE_METHOD(0x140B65310, CHomeCameraMode, vfunc_8, 2901, 0xFFFC5422);
 void CHomeCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
-    Unk_LocalPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_LocalPlayer* pPlayer = static_cast<Unk_GameContext*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer && pPlayer->FUN_14166d240()->FUN_141682fe0(300008))
         ptMove.x = 1.0f;
     else if (pPlayer && pPlayer->FUN_14166d240()->FUN_141682fe0(300009))
         ptMove.x = -1.0f;
-    Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(ptMove);
+    reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d90(ptMove);
 }
 MS2_REPLACE_METHOD(0x140B65E70, CHomeCameraMode, vfunc_9, 208, 0x69A99AEA);
 
 // @0x140b65f50
 void CHomeCameraMode::vfunc_33()
 {
-    Unk_CameraOptionPtr spOption = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_CameraOptionPtr spOption = static_cast<Unk_GameContext*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spOption.FUN_1409657a0())
     {
         float fRotation = spOption.FUN_140885340()->m_154;
-        if (Unk_CameraManager::FUN_1409478c0()->FUN_140af01d0())
+        if (reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af01d0())
         {
             vfunc_31();
             vfunc_16(m_a8);
@@ -362,7 +366,7 @@ void CHomeCameraMode::vfunc_33()
         else
         {
             vfunc_16(spOption.FUN_140885340()->m_23c);
-            vfunc_11(FUN_1403ed2d0()->FUN_141bcfc50());
+            vfunc_11(static_cast<Unk_GameContext*>(WorldService::GetInstance())->FUN_141bcfc50());
             vfunc_12(fRotation);
         }
         vfunc_10();
@@ -373,7 +377,7 @@ MS2_REPLACE_METHOD(0x140B65F50, CHomeCameraMode, vfunc_33, 334, 0x0FD2BF9A);
 // @0x140b660b0
 void CHomeCameraMode::vfunc_11(float f)
 {
-    if (Unk_CameraManager::FUN_1409478c0()->FUN_140af01d0())
+    if (reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af01d0())
         f = m_a4;
     m_setting.m_0 = f;
     m_pOwner->FUN_140947940(f);
@@ -383,7 +387,7 @@ MS2_REPLACE_METHOD(0x140B660B0, CHomeCameraMode, vfunc_11, 92, 0xC0A00B6B);
 // @0x140b66120
 void CHomeCameraMode::vfunc_16(float f)
 {
-    m_54 = Unk_CameraManager::FUN_1409478c0()->FUN_140af01d0() ? m_a8 : f;
+    m_54 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af01d0() ? m_a8 : f;
     if (-1.0f != m_5c)
         m_98 = FUN_140a17940(m_98, m_58, m_54 + m_9c);
 }
@@ -392,14 +396,14 @@ MS2_REPLACE_METHOD(0x140B66120, CHomeCameraMode, vfunc_16, 172, 0x273C523C);
 // @0x140b661e0
 void CHomeCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
 {
-    Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+    Unk_CameraTargetEntity* pTarget = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60();
     if (pTarget && n)
     {
         m_c0 = 0;
         m_50 = m_54;
         if (m_ac && g_143abb090 != 0.0f)
             m_50 = g_143abb090;
-        m_9c = FUN_1403ed2d0()->FUN_141bd4120();
+        m_9c = static_cast<Unk_GameContext*>(WorldService::GetInstance())->FUN_141bd4120();
         m_88 = pTarget->vfunc_17();
         m_88.z += vfunc_27();
         float fAngle = FUN_140b66b10(m_58, m_50, m_54, m_4c * 180.0f / 3.14159265f, 90.0f);

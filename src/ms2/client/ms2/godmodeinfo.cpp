@@ -23,7 +23,11 @@
 // The "debug layer enabled" flag (written by the debug key handler).
 extern int DAT_143ae0fb4;                                   // 0x143ae0fb4
 // Is `nKey` (a VK code) currently held in the input state of `pInput`?
-bool FUN_1416830b0(void* pInput, int nKey);                 // 0x1416830b0
+class Unk_PCMove   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_1416830b0(int);
+};
 // Clamps the mode index to the table range.
 int FUN_140ad02c0(int nValue, int nMin);                    // 0x140ad02c0
 
@@ -89,9 +93,9 @@ void CGodModeInfo::FUN_141374dd0(void* pInput)
     if (DAT_143ae0fb4 != 0 && (bool)m_spTooltip.get())
     {
         int nValue = m_n18;
-        if (FUN_1416830b0(pInput, 0x7d))
+        if (((class Unk_PCMove*)(void*)(pInput))->FUN_1416830b0(0x7d))
             nValue--;
-        if (FUN_1416830b0(pInput, 0x78))
+        if (((class Unk_PCMove*)(void*)(pInput))->FUN_1416830b0(0x78))
             nValue++;
         if (nValue != m_n18)
         {

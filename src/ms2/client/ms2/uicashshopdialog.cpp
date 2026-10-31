@@ -165,6 +165,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/ccashmarketman.h"
+#include "ms2/client/ms2/usercommandcli.h"
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
@@ -279,18 +280,14 @@ class Unk_CashAdMgr { public: int FUN_14096b540(int nType, ATL::CAtlArray<MS2Ptr
 
 CStringTable* GetStringTable();                                        // FUN_1401a9d70
 
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
-class Unk_CashFnArgs                                                // the <function> parameter list of an item
+class Unk_CashFnArgs : public Unk_CommandArgs                                                // the <function> parameter list of an item
 {
-public:
-    unsigned FUN_1408d2380();
-    CStringW FUN_1408d21c0(int nIndex, CStringW strDefault);
 };
 
-class Unk_CashWorld { public: void FUN_141bd9990(const CString& strUrl); };
+class Unk_CashWorld : public WorldService { };
 class Unk_CashPlayer;
-Unk_CashPlayer* FUN_141bd0cc0(Unk_CashWorld* pWorld);
 
 class Unk_CashUiMgr { public: void FUN_141adc530(int uiId); };
 UIMarketBillDialog* FUN_140b09580(int uiId);                        // the open dialog of a UI id
@@ -305,21 +302,20 @@ extern __int64 DAT_143ab2840;
 extern CString DAT_143ab2a40;
 extern char DAT_143ab2943;
 
-unsigned char* FUN_14025e7b0();                                     // the option block (+8: the lock flags)
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 int FUN_1402c4c90(unsigned char* pFlags, int nBit);
 void FUN_141275260(int nStringId, int a, int b);                    // a notice
 int FUN_1407181d0(const CString& str);                              // text to number
 int FUN_1407181a0(const CStringW& str);
 int FUN_140718200(const CStringW& str);
 void FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);   // pRetVal = v
-void FUN_140bf2260(Scaleform::GFx::Value& v);                       // clear a value
 void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<ASMovieClip>* pOut);   // bind a child of the root
 void FUN_140b05680(const CString& strMovie);                        // close the shop movie of the manager
 void FUN_140b055c0(const CString& strMovie, int nCategory);         // open the inventory movie
-bool FUN_141900a90(UICashShopDialog* pDialog);
-bool FUN_1418ffe80(int nFlags, int nBit);                           // test a flag
-void FUN_1418ffef0(int* pnFlags, int nBit);                         // clear a flag
-void FUN_1418ffec0(int* pnFlags, int nBit);                         // set a flag
+bool FUN_141900a90(class UIDialog*);   // C3: was FUN_141900a90
+bool FUN_1418ffe80(unsigned int, unsigned int);   // C3: was FUN_1418ffe80
+void FUN_1418ffef0(unsigned int*, unsigned int);   // C3: was FUN_1418ffef0
+void FUN_1418ffec0(unsigned int*, unsigned int);   // C3: was FUN_1418ffec0
 void FUN_14151f200();
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* szSeparators);   // split
 void FUN_1418fe1c0(const CString& strUrl);                          // open a link
@@ -466,7 +462,7 @@ CString UICashShopDialog::GetTypeName()
 // @0x1410336b0
 int UICashShopDialog::vfunc_73()
 {
-    if (FUN_1402c4c90(FUN_14025e7b0() + 8, 0x15) != 0) {
+    if (FUN_1402c4c90(((unsigned char*)FUN_14025e7b0()) + 8, 0x15) != 0) {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
     }
@@ -487,7 +483,7 @@ bool UICashShopDialog::vfunc_75()
 {
     if (!UIDialog::vfunc_75())
         return false;
-    return FUN_140166410()->FUN_14036d570(0xc2);
+    return ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc2);
 }
 
 // @0x1410337e0
@@ -498,7 +494,7 @@ void UICashShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     MS2Ptr<Unk_CashProduct> spProduct = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06750(nProductId);
     if (!spProduct)
         return;
-    ASTooltip tip(FUN_141bd0cc0(reinterpret_cast<Unk_CashWorld*>(WorldService::GetInstance())), 0x20, 2);
+    ASTooltip tip(((class Unk_CashPlayer*)((class WorldService*)(class Unk_CashWorld*)(reinterpret_cast<Unk_CashWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()), 0x20, 2);
     if (tip.FUN_1409e1770(spProduct->m_nItemId, spProduct->m_nRank) != 0)
         FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
 }
@@ -506,7 +502,7 @@ void UICashShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 // @0x141033930
 int UICashShopDialog::vfunc_65()
 {
-    if (FUN_141900a90(this) == 0)
+    if (FUN_141900a90((class UIDialog*)(this)) == 0)
         return 0;
     return UIDialog::vfunc_65();
 }
@@ -543,16 +539,16 @@ void UICashShopDialog::vfunc_15()
     if (vfunc_55() != 0 || !m_30)
         return;
     if (FUN_1418ffe80(m_nDirty, 1)) {
-        FUN_1418ffef0(&m_nDirty, 1);
+        FUN_1418ffef0((unsigned int*)(&m_nDirty), 1);
         FUN_1410360c0();
     }
     if (FUN_1418ffe80(m_nDirty, 4)) {
-        FUN_1418ffef0(&m_nDirty, 4);
+        FUN_1418ffef0((unsigned int*)(&m_nDirty), 4);
         FUN_141036ca0();
     }
     if (FUN_1418ffe80(m_nDirty, 2)) {
         if (MS2Ptr<Unk_CashBag> spBag = FUN_140ba4b70("m_inven")) {
-            FUN_1418ffef0(&m_nDirty, 2);
+            FUN_1418ffef0((unsigned int*)(&m_nDirty), 2);
             FUN_140b05680(GetTypeName());
             FUN_140b055c0(GetTypeName(), m_nCategory);
             spBag->FUN_1407cba60("bagId", GetTypeName());
@@ -755,7 +751,7 @@ void UICashShopDialog::FUN_141034ef0(int n, CInPacket& rPacket)
         POSITION pos = m_basket.Find(nProductId);
         if (pos != 0) {
             m_basket.RemoveAt(pos);
-            FUN_1418ffec0(&m_nDirty, 4);
+            FUN_1418ffec0((unsigned int*)(&m_nDirty), 4);
         }
     }
     if (m_waiting.GetCount() > 0) {
@@ -768,13 +764,13 @@ void UICashShopDialog::FUN_141034ef0(int n, CInPacket& rPacket)
 // @0x141035050
 void UICashShopDialog::FUN_141035050()
 {
-    FUN_1418ffec0(&m_nDirty, 1);
+    FUN_1418ffec0((unsigned int*)(&m_nDirty), 1);
 }
 
 // @0x141035080
 void UICashShopDialog::FUN_141035080(int nCategory)
 {
-    FUN_1418ffec0(&m_nDirty, 2);
+    FUN_1418ffec0((unsigned int*)(&m_nDirty), 2);
     m_nCategory = nCategory;
     FUN_141035e40();
 }
@@ -931,7 +927,7 @@ void UICashShopDialog::FUN_1410360c0()
         return;
     spList->Invoke("resetRenderer");
     ASObj header(2);
-    FUN_140bf2260(header.FUN_1422bb870());
+    ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value&>(header.FUN_1422bb870()))->SetNull();
     spList->FUN_1422dd230(header);
     Unk_CashPageMap pages(10);
     for (size_t nPage = 1; nPage <= 3; nPage++) {
@@ -989,7 +985,7 @@ void UICashShopDialog::FUN_1410360c0()
         }
         for (size_t j = nAdded; j < nCapacity; j++) {
             ASObj filler(2);
-            FUN_140bf2260(filler.FUN_1422bb870());
+            ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value&>(filler.FUN_1422bb870()))->SetNull();
             spList->FUN_1422dd230(filler);
         }
     }
@@ -1236,7 +1232,7 @@ bool UICashShopDialog::FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const
         return false;
     if (spParam == 0)
         return false;
-    if (FUN_140166410()->FUN_14036d570(0x111) == true && (unsigned char)DAT_143ab2943 != 7) {
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x111) == true && (unsigned char)DAT_143ab2943 != 7) {
         FUN_140d73bc0(0xd56, 0, 0, CStringW(L""));
         return false;
     }
@@ -1325,7 +1321,7 @@ bool UICashShopDialog::FUN_141039540(Scaleform::GFx::Value* pRetVal, ASData& rDa
     MS2Ptr<Unk_CashProduct> spProduct = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06750(spCashBill->FUN_14103d2b0());
     if (spProduct == 0)
         return false;
-    ASTooltip tip(FUN_141bd0cc0(reinterpret_cast<Unk_CashWorld*>(WorldService::GetInstance())), 0x20, 2);
+    ASTooltip tip(((class Unk_CashPlayer*)((class WorldService*)(class Unk_CashWorld*)(reinterpret_cast<Unk_CashWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()), 0x20, 2);
     if (tip.FUN_1409e1770(spProduct->m_nItemId, spProduct->m_nRank) != 0)
         FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
     return true;
@@ -1364,7 +1360,7 @@ bool UICashShopDialog::FUN_141039bf0(int nButton, const CMsgBoxData& rData)
         return false;
     }
     m_basket.AddTail(nProductId);
-    FUN_1418ffec0(&m_nDirty, 4);
+    FUN_1418ffec0((unsigned int*)(&m_nDirty), 4);
     return true;
 }
 

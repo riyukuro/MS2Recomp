@@ -13,6 +13,7 @@ class LoginBgBgmTable : public TSingleton<LoginBgBgmTable>, public CValidData<Lo
 public:
     LoginBgBgmTable();                                      // 0x140a71f90
     virtual ~LoginBgBgmTable();
+    bool Load();                                            // 0x140a72170
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_10[0x30 - 0x10];

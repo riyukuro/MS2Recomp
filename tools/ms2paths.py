@@ -160,8 +160,10 @@ VC9 = "vc9"
 VC11 = "vc11"
 # the same cl as vc9, compiling the unit as C (/TC), for the CRI objs the exe built from C sources; tools/msvc9c/cl
 VC9C = "vc9c"
+# the same cl as vc9 with the vc11 options, for the Video add-on code the exe links from VS2008 objs; tools/msvc9v/cl
+VC9V = "vc9v"
 # the `// MS2-TOOLSET:` toolsets and their cl versions
-UNIT_TOOLSETS = {VC9: "15.00.30729", VC9C: "15.00.30729", VC11: "17.00.61030"}
+UNIT_TOOLSETS = {VC9: "15.00.30729", VC9C: "15.00.30729", VC9V: "15.00.30729", VC11: "17.00.61030"}
 
 
 def find_cl_toolset(toolset=None, env=None):

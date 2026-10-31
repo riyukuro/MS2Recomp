@@ -23,7 +23,7 @@ struct Unk_GEFactoryRegistry {
 };
 GameEvent* FUN_14041cb50();   // ReturnUser factory (next unit)
 int FUN_140718200(CStringW* text);
-Unk_GEOut* FUN_14070f9a0(Unk_GEOut* out, int value);
+COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
 Unk_GEReader* FUN_14070f480(Unk_GEReader* in, int* value);
 
 struct Unk_GESub { char m_pad; };
@@ -138,7 +138,7 @@ void GameEventCharacterCountRestricted::vfunc_2()
 void GameEventCharacterCountRestricted::vfunc_3(Unk_GEOut* out)
 {
     GameEvent::vfunc_3(out);
-    FUN_14070f9a0(out, m_limit);
+    FUN_14070f9a0(*(COutputStream *)out, m_limit);
 }
 
 // @0x14041c750

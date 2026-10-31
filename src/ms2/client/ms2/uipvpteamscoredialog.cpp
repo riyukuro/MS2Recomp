@@ -15,17 +15,20 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/pvpmanager.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, int, int); };
 
 struct Unk_PvPTeamScoreService;                                 // the game-mode service (0x140f97ef0)
-Unk_PvPTeamScoreService* FUN_140f97ef0();
-void FUN_141346600(Unk_PvPTeamScoreService* pService, int* pFirst, int* pSecond);   // 0x141346600 the two scores
+class Unk_PtMgr   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141346600(int*, int*);
+};
 
-bool FUN_140a467d0(const MS2Ptr<AScript>*);                     // has the AS object been released
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, void* pUnused);
+int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 void* FUN_1403ed2b0();                                          // the UI service
 int FUN_141adc750(void* pUI, int nUiId);                        // open a UI by id
 
@@ -64,7 +67,7 @@ int UIPvPTeamScoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, 0) != 0)
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, 0) != 0)
         return 1;
     if (_stricmp("OnShowResult", szMethod) == 0) {
         FUN_141adc750(FUN_1403ed2b0(), 0x4ed2);
@@ -90,11 +93,11 @@ void UIPvPTeamScoreDialog::vfunc_43()
 // @0x141346960
 void FUN_141346960(UIPvPTeamScoreDialog* pDialog)
 {
-    if (FUN_140a467d0(&((Unk_ScoreDialogAS*)pDialog)->m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&((Unk_ScoreDialogAS*)pDialog)->m_30))->IsNull())
         return;
     int nFirst = 0;
     int nSecond = 0;
-    FUN_141346600(FUN_140f97ef0(), &nFirst, &nSecond);
+    ((class Unk_PtMgr*)(struct Unk_PvPTeamScoreService*)(reinterpret_cast<Unk_PvPTeamScoreService*>(TSingleton<CPVPManager>::GetInstance())))->FUN_141346600(&nFirst, &nSecond);
     ((Unk_ScoreDialogAS*)pDialog)->m_30->FUN_1409ba0d0("updateScore", nFirst, nSecond);
 }
 MS2_REPLACE(0x141346960, FUN_141346960, 139, 0xF8C6A11B);

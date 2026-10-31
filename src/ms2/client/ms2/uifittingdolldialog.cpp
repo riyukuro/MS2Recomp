@@ -30,6 +30,10 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/uidialogeventdispatcher.h"
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
@@ -56,7 +60,6 @@ public:
     PC* FUN_141bd0cc0();                                    // the local player
     void* FUN_141bd1530(__int64 nId);                       // the actor of an id
 };
-Unk_FdWorld* FUN_1403ed2d0();
 
 class Unk_FdUiMgr
 {
@@ -64,7 +67,6 @@ public:
     int FUN_141adc940(int nUiId);                           // the UI object is registered
     void FUN_141adc530(int nUiId);                          // open the UI object
 };
-Unk_FdUiMgr* FUN_1403ed2b0();
 
 // The item / dialog event registries.
 class Unk_FdItemEvents;
@@ -72,7 +74,6 @@ Unk_FdItemEvents* FUN_140a6a840();
 void FUN_1419cae20(Unk_FdItemEvents*, UIItemEventListener*);
 void FUN_1419caeb0(Unk_FdItemEvents*, UIItemEventListener*);
 class Unk_FdDlgEvents;
-Unk_FdDlgEvents* FUN_14140ea40();
 void FUN_141928050(Unk_FdDlgEvents*, UIDialogEventListener*);
 void FUN_1419280e0(Unk_FdDlgEvents*, UIDialogEventListener*);
 
@@ -96,8 +97,7 @@ public:
 };
 
 // The player's inventory (global 0x143ab2a90) and the item behind a drag source.
-class Unk_FdInventoryItems { public: MS2Ptr<CItem> FUN_140a5d680(__int64 nItemUid); };
-extern Unk_FdInventoryItems DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 void* FUN_140a50b50(void* pSlot);                           // the item slot behind a drag source
 __int64 FUN_141405a10(void* pItemSlot);                     // its item uid
 
@@ -151,7 +151,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 void FUN_140710590(COutPacket& packet);                     // send the packet
 CStringTable* GetStringTable();
-CString FUN_14021c050(int nSlotType);                       // slot type -> slot name
+CString Name_14021c050(int nSlotType);                      // slot type -> slot name
 
 extern __int64 DAT_143af25f0;                               // the id of the doll shown
 extern int DAT_143af25f8;                                   // set after a fitting doll's equipment changed
@@ -196,7 +196,7 @@ CString UIFittingDollDialog::GetTypeName()
 // @0x141933390
 void UIFittingDollDialog::SendFittingDoll()
 {
-    PC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPlayer = reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::FittingDoll), 0);
@@ -215,7 +215,7 @@ int UIFittingDollDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_141928050(FUN_14140ea40(), static_cast<UIDialogEventListener*>(this));
+    FUN_141928050(reinterpret_cast<Unk_FdDlgEvents*>(TSingleton<UIDialogEventDispatcher>::GetInstance()), static_cast<UIDialogEventListener*>(this));
     return 1;
 }
 
@@ -225,7 +225,7 @@ void UIFittingDollDialog::vfunc_67()
     DAT_143af25f0 = 0;
     FUN_14121e760(GetTypeName());
     FUN_1419caeb0(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
-    FUN_1419280e0(FUN_14140ea40(), static_cast<UIDialogEventListener*>(this));
+    FUN_1419280e0(reinterpret_cast<Unk_FdDlgEvents*>(TSingleton<UIDialogEventDispatcher>::GetInstance()), static_cast<UIDialogEventListener*>(this));
     UIDialog::vfunc_67();
 }
 
@@ -246,7 +246,7 @@ void UIFittingDollDialog::vfunc_dl_3(void* pSlot)
         {
             ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
             if (pDlg != 0)
-                pDlg->Invoke("onDragStart", FUN_14021c050(spItem->FUN_140526c30()));
+                pDlg->Invoke("onDragStart", Name_14021c050(spItem->FUN_140526c30()));
         }
     }
 }
@@ -291,9 +291,9 @@ void UIFittingDollDialog::OnLoadComplete()
     FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
     FUN_141933b00();
     FUN_141934070();
-    if (FUN_1403ed2b0()->FUN_141adc940(0x4e2d) != 0)
+    if (reinterpret_cast<Unk_FdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e2d) != 0)
     {
-        FUN_1403ed2b0()->FUN_141adc530(0x4e2d);
+        reinterpret_cast<Unk_FdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e2d);
     }
     else
     {
@@ -310,7 +310,7 @@ int UIFittingDollDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     if (_stricmp("OnTransform", szMethod) == 0)
     {
-        PC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        PC* pPlayer = reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
         int nResult = FUN_141934430();
@@ -344,7 +344,7 @@ void UIFittingDollDialog::vfunc_33(int nClassId, int n)
 // @0x141933b00
 void UIFittingDollDialog::FUN_141933b00()
 {
-    FittingDollPC* pDoll = FUN_140884db0(FUN_1403ed2d0()->FUN_141bd1530(DAT_143af25f0));
+    FittingDollPC* pDoll = FUN_140884db0(reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0));
     if (pDoll == 0)
         return;
     int nItemId = FUN_140967160(pDoll);
@@ -381,10 +381,10 @@ void UIFittingDollDialog::FUN_141933b00()
 // MS2-FUNCTIONAL: the exe passes the equip flag through an int 1/0 temp read back as a byte
 void UIFittingDollDialog::FUN_141934070()
 {
-    PC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pMe = reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return;
-    FittingDollPC* pDoll = FUN_140884db0(FUN_1403ed2d0()->FUN_141bd1530(DAT_143af25f0));
+    FittingDollPC* pDoll = FUN_140884db0(reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0));
     if (pDoll == 0)
         return;
     int bOwner = 0;
@@ -412,7 +412,7 @@ void UIFittingDollDialog::FUN_141934340()
 {
     if (m_nTransforming == 0)
         return;
-    PC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pMe = reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return;
     if (FUN_14166c930(pMe) == 0x22)
@@ -427,10 +427,10 @@ void UIFittingDollDialog::FUN_141934340()
 // @0x141934430
 int UIFittingDollDialog::FUN_141934430()
 {
-    FittingDollPC* pDoll = FUN_140884db0(FUN_1403ed2d0()->FUN_141bd1530(DAT_143af25f0));
+    FittingDollPC* pDoll = FUN_140884db0(reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0));
     if (pDoll == 0)
         return 0xd;
-    PC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pMe = reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return 0xd;
     Unk_FdPlotMgr* pMgr = FUN_1401cd040(&DAT_143b059e8);

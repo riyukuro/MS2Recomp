@@ -35,6 +35,10 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
 
+// return types of the getters this unit calls
+class EntityWorldManager;
+class Unk_AnimSvc;
+
 // ---- unit-local placeholders (names invented) --------------------------------------------------------------------------
 class EntityWorldManager;
 struct Unk_NHEntIter { void* m_a; void* m_b; };                            // iterator over the world's entities (16 bytes)
@@ -95,7 +99,7 @@ ecr::RenderSurface* FUN_140af7da0(ecr::RenderService* p);
 bool FUN_140998dc0(const NiFixedString& s, const char* psz);
 void* FUN_14200aae0(ecr::CameraService* pService, ecr::RenderSurface* pTarget);
 void* FUN_142008b80(void* p);
-void* FUN_1410a68d0();
+Unk_AnimSvc* FUN_1410a68d0();
 void* FUN_140999440(void* a, unsigned __int64 id);
 void* FUN_1411d14b0(Unk_ServiceManager* m);
 void* FUN_1411ab8a0(Unk_ServiceManager* m);
@@ -108,7 +112,6 @@ void* FUN_140d86bf0(Unk_ServiceManager* m);
 // ---- more unit-local placeholders / externs ------------------------------------------------------------------------------
 class Unk_NHEntMgr;                                                      // entity iteration source (FUN_1409670f0)
 class Unk_NHEntAccess;                                                   // property accessor (see fieldpropertycli.cpp)
-Unk_NHEntMgr* FUN_1409670f0();
 void FUN_1411ce4c0(Unk_NHEntMgr* p, Unk_NHEntIter* it);
 bool FUN_1411ce510(Unk_NHEntMgr* p, Unk_NHEntIter* it, egf::Entity** ppOut);
 egf::Entity* FUN_1411cf440(Unk_NHEntMgr* p, unsigned __int64 id);
@@ -371,9 +374,9 @@ NiNode* FUN_1413f9f90()
 {
     egf::Entity* pEntity = 0;
     Unk_NHEntIter kIter;
-    FUN_1411ce4c0(FUN_1409670f0(), &kIter);
+    FUN_1411ce4c0(reinterpret_cast<Unk_NHEntMgr*>(TSingleton<EntityWorldManager>::GetInstance()), &kIter);
     NiAVObject* pkScene;
-    while (FUN_1411ce510(FUN_1409670f0(), &kIter, &pEntity)) {
+    while (FUN_1411ce510(reinterpret_cast<Unk_NHEntMgr*>(TSingleton<EntityWorldManager>::GetInstance()), &kIter, &pEntity)) {
         pkScene = FUN_1413f98b0()->GetSceneGraphFromEntity(pEntity);
         if (pkScene != 0) {
             if (FUN_142087f40(pkScene->GetName(), "Scene Root"))
@@ -394,7 +397,7 @@ MS2_REPLACE(0x1413FA030, FUN_1413fa030, 47, 0x82637247);
 // @0x1413fa070
 NiNode* FUN_1413fa070(unsigned __int64 id)
 {
-    egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), id);
+    egf::Entity* pEntity = FUN_1411cf440(reinterpret_cast<Unk_NHEntMgr*>(TSingleton<EntityWorldManager>::GetInstance()), id);
     if (pEntity != 0) {
         return static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, FUN_1413f98b0()->GetSceneGraphFromEntity(pEntity)));
     } else {

@@ -21,6 +21,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
 #include <string.h>
 
 static CString s_strResultSound = "System_HideNSeek_Result_01";
@@ -38,13 +39,9 @@ public:
 };
 class Unk_HsPC : public PC
 {
-public:
-    MS2Ptr<Unk_HsInfo> FUN_141664200();                     // the player's record
 };
 
 
-class Unk_HsItemNames { public: CStringW FUN_141811980(int nTable, int nItemId); };
-Unk_HsItemNames* FUN_1401a9d70();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringW FUN_140b99450(CStringW strFormat, const CStringW& strArg, const int& nCount);
 WorldService* FUN_1403ed2d0();
@@ -212,7 +209,7 @@ void UIHideAndSeekResultDialog::FUN_140c1eec0(AScript objMine, MS2Ptr<Unk_HsInfo
     int nCount = m_nCount;
     CString strIcon = FUN_140c1f300(nItemId, nCount);
     const CString& rIcon = strIcon;
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nItemId);
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
     const CStringW& rName = strName;
     CStringW strText = FUN_140b99450(CStringW(L"s_hideandseek_winner_reward"), rName, nCount);
     const CStringW& rText = strText;

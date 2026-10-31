@@ -18,10 +18,14 @@ class Unk_PostProcessSvc
 public:
     void FUN_1416a3920(int nId, bool bOn);
 };
-Unk_PostProcessSvc* FUN_1409a8b20();
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);     // TinyXML float attribute
-void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);         // validated global shader constant
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 extern NiFixedString DAT_143ae5350;                                             // saturation constant name
 
 // @0x1414876d0
@@ -34,8 +38,8 @@ MonochromeEffectParam::MonochromeEffectParam()
 void MonochromeEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CPostEffectParam::vfunc_1(pNode);
-    FUN_140873360(pNode, "saturationMin", m_fSaturationMin);
-    FUN_140873360(pNode, "saturationMax", m_fSaturationMax);
+    XmlGetAttr((class TiXmlElement*)(pNode), "saturationMin", m_fSaturationMin);
+    XmlGetAttr((class TiXmlElement*)(pNode), "saturationMax", m_fSaturationMax);
 }
 MS2_REPLACE_METHOD(0x141487730, MonochromeEffectParam, vfunc_1, 92, 0x51D8D943);
 
@@ -54,7 +58,7 @@ MonochromeEffect::MonochromeEffect(int nId, const CPostEffectParam* pParam)
 void MonochromeEffect::vfunc_1()
 {
     CScreenEffectBase::vfunc_1();
-    FUN_1409a8b20()->FUN_1416a3920(7, true);
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(7, true);
 }
 MS2_REPLACE_METHOD(0x141487840, MonochromeEffect, vfunc_1, 45, 0x17925F21);
 
@@ -62,7 +66,7 @@ MS2_REPLACE_METHOD(0x141487840, MonochromeEffect, vfunc_1, 45, 0x17925F21);
 void MonochromeEffect::vfunc_4()
 {
     CScreenEffectBase::vfunc_4();
-    FUN_1409a8b20()->FUN_1416a3920(7, false);
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(7, false);
 }
 MS2_REPLACE_METHOD(0x141487880, MonochromeEffect, vfunc_4, 45, 0x7CD6796C);
 
@@ -77,7 +81,7 @@ void MonochromeEffect::vfunc_7(int nState, float fAlpha)
         break;
     }
     float fSaturation = (m_fSaturationMax - m_fSaturationMin) * fT + m_fSaturationMin;
-    FUN_1409a5770(DAT_143ae5350, &fSaturation, 1);
+    FUN_1409a5770(*(class NiFixedString*)&(DAT_143ae5350), &fSaturation, 1);
 }
 MS2_REPLACE_METHOD(0x1414878c0, MonochromeEffect, vfunc_7, 138, 0xD83FE52B);
 

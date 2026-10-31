@@ -75,6 +75,8 @@
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/ridee.h"
 
 // The unit includes the statics six more times (without the pointer object), then the class-info and skill/stun.
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -141,18 +143,10 @@ PCBase* FUN_140974230(PCBase* p);           // as PC (0x6200003)
 PCBase* FUN_141468360(PCBase* p);           // as Ridee (0x6200045)
 PCBase* FUN_140ddc910(PCBase* p);           // 0x6200064
 PCBase* FUN_140ac06f0(PCBase* p);           // 0x6200081
-int FUN_14166c930(PCBase* p);               // current state id of the actor
-void FUN_14166d8b0(PCBase* p, float f);
 void FUN_1410a77e0(PCBase* p, float f);
-void FUN_141678160(PCBase* p, efd::Point3 kPos);
-void FUN_1416781a0(PCBase* p, int n);
-void FUN_141671990(PCBase* p, float f);
 void FUN_141678290(PCBase* p, egf::EntityID kId, efd::Point3 kPos);
 egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);             // the entity's id (+0x40)
 egf::Entity* FUN_1408a9280(const egf::EntityPtr& sp);           // folded copy of SmartPointer<Entity>::operator Entity*
-void FUN_141678300(PCBase* p, int n);
-Unk_SMField690* FUN_141675eb0(PCBase* p);
-void* FUN_14166d220(PCBase* p);             // +0x150
 void* FUN_141240f20(void* p);               // +0x18
 class Unk_SMHitReport
 {
@@ -262,7 +256,7 @@ void CStateManager::FUN_1417daaa0(double fTime)
             if (m_pOwner->vfunc_18() != m_pos)
             {
                 int bFound = 0;
-                egf::EntityID kId = static_cast<Unk_SMHitReport*>(FUN_141240f20(FUN_14166d220(m_pOwner)))->FUN_140cfaf70();
+                egf::EntityID kId = static_cast<Unk_SMHitReport*>(FUN_141240f20(((void*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))))->FUN_140cfaf70();
                 egf::Entity* pEntity = FUN_1409670f0()->FUN_1411cf440(kId);
                 if (pEntity != 0)
                 {
@@ -404,15 +398,15 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
     if (pActor != 0)
     {
         pActor->vfunc_22(pReq->m_vel3c);
-        FUN_141678160(pActor, pReq->m_pos48);
-        FUN_1416781a0(pActor, pReq->m_n54);
-        FUN_141671990(pActor, 1.0f);
+        reinterpret_cast<PCBase*>(pActor)->FUN_141678160(pReq->m_pos48);
+        reinterpret_cast<PCBase*>(pActor)->FUN_1416781a0(pReq->m_n54);
+        reinterpret_cast<PCBase*>(pActor)->FUN_141671990(1.0f);
         int bApply = 0;
-        if (FUN_14166c930(pActor) != 0x10 && pReq->m_nState != 0x10 && pReq->m_nState != 4)
+        if (reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() != 0x10 && pReq->m_nState != 0x10 && pReq->m_nState != 4)
         {
             bApply = 1;
         }
-        else if (FUN_14166c930(pActor) == 0x10)
+        else if (reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() == 0x10)
         {
             MS2Ptr<Unk_PCBaseComp_b18> spComp = pActor->vfunc_103();
             if (spComp.get() != 0)
@@ -437,7 +431,7 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
         pActor->vfunc_22(pReq->m_vel3c);
         pActor->vfunc_19(pReq->m_pos20);
         pActor->vfunc_21(pReq->m_dir2c);
-        FUN_14166d8b0(pActor, pReq->m_f58);
+        reinterpret_cast<PCBase*>(pActor)->FUN_14166d8b0(pReq->m_f58);
         FUN_1410a77e0(pActor, pReq->m_fA4);
         pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
     }
@@ -446,8 +440,8 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
         FUN_1417dbd00(pActor, pReq);
         pActor->vfunc_22(pReq->m_vel3c);
         pActor->vfunc_21(pReq->m_dir2c);
-        FUN_14166d8b0(pActor, pReq->m_f58);
-        if (FUN_14166c930(pActor) != 0x10 && pReq->m_nState != 0x10)
+        reinterpret_cast<PCBase*>(pActor)->FUN_14166d8b0(pReq->m_f58);
+        if (reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() != 0x10 && pReq->m_nState != 0x10)
         {
             int nForce = 0;
             if (GetCur() == pReq->m_nState)
@@ -466,7 +460,7 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
         pActor->vfunc_22(pReq->m_vel3c);
         pActor->vfunc_19(pReq->m_pos20);
         pActor->vfunc_21(pReq->m_dir2c);
-        FUN_14166d8b0(pActor, pReq->m_f58);
+        reinterpret_cast<PCBase*>(pActor)->FUN_14166d8b0(pReq->m_f58);
         FUN_1410a77e0(pActor, pReq->m_fA4);
         pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
     }
@@ -475,7 +469,7 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
         FUN_1417dbd00(pActor, pReq);
         pActor->vfunc_22(pReq->m_vel3c);
         pActor->vfunc_21(pReq->m_dir2c);
-        FUN_14166d8b0(pActor, pReq->m_f58);
+        reinterpret_cast<PCBase*>(pActor)->FUN_14166d8b0(pReq->m_f58);
         pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
     }
 }
@@ -497,7 +491,7 @@ void CStateManager::FUN_1417dbd00(PCBase* pActor, Unk_StateArg22* pReq)
         fLimit = 400.0f;
     if (FUN_14029d220(fDz) > fLimit)
         bSnap = true;
-    if (pReq->m_nState == 0x1e && FUN_14166c930(pActor) != 0x1e)
+    if (pReq->m_nState == 0x1e && reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() != 0x1e)
         bSnap = true;
     if (bSnap)
         pActor->vfunc_19(pReq->m_pos20);
@@ -609,14 +603,14 @@ MS2Ptr<Unk_StateArg22> CStateManager::FUN_1417dc230(float* pDelta)
 void CStateManager::FUN_1417dc4c0(Unk_StateArg22* pReq)
 {
     PCBase* pActor = FUN_140974230(m_pOwner);
-    bool bPushed = FUN_141675eb0(pActor)->m_pos18 != efd::Point3::ZERO;
+    bool bPushed = ((Unk_SMField690*)(reinterpret_cast<PCBase*>(pActor)->FUN_141675eb0()))->m_pos18 != efd::Point3::ZERO;
     if (!bPushed)
     {
         if (FUN_1417dc070(GetCur()) == 1)
         {
             FUN_1417dbd00(pActor, pReq);
             pActor->vfunc_21(pReq->m_dir2c);
-            FUN_14166d8b0(pActor, pReq->m_f58);
+            reinterpret_cast<PCBase*>(pActor)->FUN_14166d8b0(pReq->m_f58);
         }
     }
     if (!pReq->m_str88.IsEmpty())
@@ -631,7 +625,7 @@ void CStateManager::FUN_1417dc4c0(Unk_StateArg22* pReq)
         }
     }
     if (pReq->m_nA0 != 0x7fffffff)
-        FUN_141678300(pActor, pReq->m_nA0);
+        reinterpret_cast<PCBase*>(pActor)->FUN_141678300(pReq->m_nA0);
     if (!m_pState->vfunc_32())
         return;
     if (pReq->m_nState == 0xd || pReq->m_nState == 0x12)
@@ -664,14 +658,11 @@ MS2Ptr<StateData> CStateManager::FUN_1417dc9a0(int nState)
 // ---- StateMoveSkill ----
 
 class Unk_SMBlk180 { public: int m_pad[2]; float m_n8; };   // +8 move speed (exe movss xmm1, [rax+8])
-Unk_SMBlk180* FUN_141671920(PCBase* p);
 void FUN_141671960(PCBase* p, float fSpeed);   // PCBase::FUN_141671960
-long long FUN_141670a00(PCBase* p, int n);
 class Unk_SMSkills : public CSkillSystem { };
 Unk_SMSkills* FUN_141523bc0(MyPC* p);
 CKeyTable* FUN_1409331f0();
 class Unk_SMSession { public: char m_pad; };
-int FUN_141adbb00(Unk_SMSession* p);
 class Unk_SMSkillTable { public: MS2Ptr<Unk_SMSkillRec> FUN_1407ee2f0(int nSkill, short nLevel); };
 
 // @0x1417df080
@@ -698,7 +689,7 @@ void StateMoveSkill::vfunc_4(StateData* pData)
 void StateMoveSkill::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    Unk_SMBlk180* pBlk = FUN_141671920(m_pOwner);
+    Unk_SMBlk180* pBlk = ((Unk_SMBlk180*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_141671920()));
     FUN_141671960(m_pOwner, pBlk->m_n8);
     m_tick.FUN_140268840();
     m_spData = 0;
@@ -776,7 +767,7 @@ int StateMoveSkill::vfunc_37()
 {
     if (m_spData.get() != 0)
     {
-        if (FUN_141adbb00(reinterpret_cast<Unk_SMSession*>(TSingleton<CUIService>::GetInstance())) == 0)
+        if (reinterpret_cast<CUIService*>(reinterpret_cast<Unk_SMSession*>(TSingleton<CUIService>::GetInstance()))->FUN_141adbb00() == 0)
             return FUN_1409331f0()->FUN_14142c300(m_spData->m_nSkill) == 0;
     }
     return 1;
@@ -804,7 +795,7 @@ bool StateMoveSkill::FUN_1417df6a0()
         return true;
     if (m_tick.FUN_140268870(1000))
     {
-        if (FUN_141670a00(m_pOwner, 10) < FUN_1417df430())
+        if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670a00(10) < FUN_1417df430())
         {
             FUN_1417df370();
             return false;
@@ -825,8 +816,6 @@ bool StateMoveSkill::FUN_1417df6a0()
 // ---- StateNone ----
 
 PCBase* FUN_1417dfaa0(PCBase* p);           // as 0x620004f (defined below)
-void FUN_14166ca20(PCBase* p, int n);
-void FUN_14166ca80(PCBase* p, int n);
 CPet* FUN_1409ffc60(PCBase* p);
 
 // @0x1417df8b0
@@ -842,7 +831,7 @@ void StateNone::vfunc_4(StateData* pData)
     bool bPC = FUN_1417b8370() != 0;
     bool b4f = FUN_1417dfaa0(m_pOwner) != 0;
     if (!bPC || b4f)
-        FUN_14166ca20(m_pOwner, 4);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ca20(4);
 }
 
 // @0x1417df9b0
@@ -857,7 +846,7 @@ void StateNone::vfunc_5(int n)
         CPet* pHost = reinterpret_cast<CPet*>(FUN_1417b83a0());
         if (pHost != 0)
             nValue = pHost->FUN_140b10150();
-        FUN_14166ca80(m_pOwner, 4);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ca80(4);
     }
 }
 
@@ -885,7 +874,6 @@ int StateNone::vfunc_1()
 
 // ---- StatePush ----
 
-void FUN_14166dda0(PCBase* p, int n);
 
 // @0x1417dfb60
 StatePush::StatePush(PCBase* pOwner) : State(pOwner)
@@ -902,7 +890,7 @@ StatePush::~StatePush()
 void StatePush::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    FUN_14166dda0(m_pOwner, 0x29);
+    reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x29);
 }
 
 // @0x1417dfc60
@@ -927,9 +915,6 @@ public:
     alignas(8) char m_pad[0x20];
 };
 bool FUN_141b6fa90(const egf::EntityID& kKey, const Unk_SMAnimStr& kName);
-void FUN_14166dd20(PCBase* p, Unk_AnimName* pName, float fSpeed, bool bA, bool bB);
-void FUN_14166dd20(PCBase* p, const Unk_SMAnimStr& kName, float fSpeed, bool bA, bool bB);
-bool FUN_14166de90(PCBase* p, int nAnim, unsigned nSeq);
 
 // NPC table row data (the regen / spawn flags).
 class Unk_SMNpcData : public CPtred
@@ -1004,7 +989,7 @@ void StateRegen::vfunc_4(StateData* pData)
     }
     else
     {
-        FUN_14166ca20(m_pOwner, 9);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ca20(9);
         Unk_Random kRandom(m_pOwner->FUN_14123c580());
         int nDelay = kRandom.FUN_1407684c0() % 300 + 100;
         m_timer.FUN_140868750(nDelay);
@@ -1031,7 +1016,7 @@ void StateRegen::vfunc_4(StateData* pData)
 void StateRegen::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    FUN_14166ca80(m_pOwner, 9);
+    reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ca80(9);
     CPet* pHost = reinterpret_cast<CPet*>(FUN_1417b83a0());
     if (pHost != 0)
     {
@@ -1057,9 +1042,9 @@ void StateRegen::vfunc_9(double fTime)
         {
             {
                 Unk_SMAnimStr kName(m_nVariantB != 0 ? "Regen_B" : "Regen_A");
-                FUN_14166dd20(m_pOwner, kName, 1.0f, true, false);
+                static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(static_cast<const Unk_SMAnimStr&>(kName)), 1.0f, true, false);
             }
-            FUN_14166ca80(m_pOwner, 9);
+            reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ca80(9);
             NiTransform kXform;
             kXform.m_Rotate.MakeIdentity();
             kXform.m_fScale = 1.0f;
@@ -1089,9 +1074,9 @@ void StateRegen::vfunc_9(double fTime)
         {
             {
                 Unk_SMAnimStr kName("Regen_A");
-                FUN_14166dd20(m_pOwner, kName, 1.0f, true, false);
+                static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(static_cast<const Unk_SMAnimStr&>(kName)), 1.0f, true, false);
             }
-            FUN_14166ca80(m_pOwner, 9);
+            reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ca80(9);
         }
         m_nStarted = 1;
     }
@@ -1101,7 +1086,7 @@ void StateRegen::vfunc_9(double fTime)
 void StateRegen::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
-    if (FUN_14166de90(m_pOwner, 0x2c, eSequenceID))
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x2c, eSequenceID))
         m_pOwner->vfunc_59(1, 0, 0, 0);
 }
 
@@ -1144,13 +1129,6 @@ public:
     MS2Ptr<Unk_SMRideA> FUN_141707750();
 };
 Unk_SMRider* FUN_1416764a0(PCBase* p);
-void FUN_141705ac0(Unk_SMRider* p, double fTime);
-int FUN_14166cc80(PCBase* p);
-int FUN_141676b70(PCBase* p);
-float FUN_1416713c0(PCBase* p);
-void FUN_141657c80(PCBase* p, bool b);
-void FUN_14165f170(PCBase* p);
-void FUN_14166f8f0(PCBase* p, int n, int b);
 
 // @0x1417e05b0
 StateRide::StateRide(PCBase* pOwner) : State(pOwner)
@@ -1169,12 +1147,12 @@ void StateRide::vfunc_4(StateData* pData)
     State::vfunc_4(pData);
     PCBase* pPC = FUN_140974230(m_pOwner);
     if (pPC != 0)
-        FUN_141657c80(pPC, false);
+        reinterpret_cast<PC*>(pPC)->FUN_141657c80(false);
     MyPC* pMy = FUN_1417b84b0();
     if (pMy != 0)
-        FUN_14165f170(pMy);
+        reinterpret_cast<PC*>(pMy)->SendRequestCube();
     m_pOwner->FUN_14123cb20(false);
-    FUN_14166f8f0(m_pOwner, 0, 0);
+    reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166f8f0(0, 0);
 }
 
 // @0x1417e06d0
@@ -1192,7 +1170,7 @@ void StateRide::vfunc_8(double fTime)
         return;
     if (m_pOwner->vfunc_63() == 0)
         return;
-    FUN_141705ac0(pRider, fTime);
+    reinterpret_cast<Ridee*>(pRider)->FUN_141705ac0(fTime);
 }
 
 // @0x1417e0780
@@ -1208,59 +1186,59 @@ void StateRide::vfunc_9(double fTime)
     MS2Ptr<Unk_SMRideAnim> spAnim = spRide->FUN_140784970();
     if (spAnim == 0)
         return;
-    if (FUN_14166c930(pRider) == 2 || FUN_14166c930(pRider) == 0x1b)
+    if (reinterpret_cast<PCBase*>(pRider)->FUN_14166c930() == 2 || reinterpret_cast<PCBase*>(pRider)->FUN_14166c930() == 0x1b)
     {
-        if (FUN_14166cc80(pRider) == 0x17 || FUN_14166cc80(pRider) == 0x85)
+        if (reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0x17 || reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0x85)
         {
             Unk_SMAnimStr kName(spAnim->m_str50);
-            FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(static_cast<const Unk_SMAnimStr&>(kName)), reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
         else
         {
             Unk_SMAnimStr kName(spAnim->m_str38);
-            FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(static_cast<const Unk_SMAnimStr&>(kName)), reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
     }
-    else if (FUN_14166c930(pRider) == 6)
+    else if (reinterpret_cast<PCBase*>(pRider)->FUN_14166c930() == 6)
     {
-        if (FUN_14166cc80(pRider) == 0x27)
+        if (reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0x27)
         {
             Unk_SMAnimStr kName(spAnim->m_str58);
-            FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(static_cast<const Unk_SMAnimStr&>(kName)), reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
         else
         {
             Unk_SMAnimStr kName(spAnim->m_str40);
-            FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(static_cast<const Unk_SMAnimStr&>(kName)), reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
     }
-    else if (FUN_14166c930(pRider) == 4)
+    else if (reinterpret_cast<PCBase*>(pRider)->FUN_14166c930() == 4)
     {
         Unk_SMAnimStr kName(spAnim->m_str30);
-        FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+        static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(static_cast<const Unk_SMAnimStr&>(kName)), reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
     }
-    else if (FUN_14166c930(pRider) == 1)
+    else if (reinterpret_cast<PCBase*>(pRider)->FUN_14166c930() == 1)
     {
-        if (FUN_14166cc80(pRider) == 0xc || FUN_14166cc80(pRider) == 0x87)
+        if (reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0xc || reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0x87)
         {
             Unk_SMAnimStr kName(spAnim->m_str48);
-            FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(static_cast<const Unk_SMAnimStr&>(kName)), reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
         else
         {
             Unk_SMAnimStr kName(spAnim->m_str30);
-            FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(static_cast<const Unk_SMAnimStr&>(kName)), reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
     }
-    else if (FUN_141676b70(pRider))
+    else if (reinterpret_cast<PCBase*>(pRider)->FUN_141676b70())
     {
         Unk_SMAnimStr kName(spAnim->m_str48);
-        FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+        static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(static_cast<const Unk_SMAnimStr&>(kName)), reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
     }
     else
     {
         Unk_SMAnimStr kName(spAnim->m_str28);
-        FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+        static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(static_cast<const Unk_SMAnimStr&>(kName)), reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
     }
 }
 
@@ -1281,16 +1259,10 @@ public:
     efd::Point3 FUN_141683290();                // pointer direction
 };
 struct Unk_SMExtent { float m_fWidth; float m_fHeight; };
-Unk_SMKeys* FUN_14166d240(PCBase* p);
 Unk_SMExtent* FUN_141671390(PCBase* p, Unk_SMExtent* pOut);
 bool FUN_1412410c0(void* pCollider, const efd::Point3* pPos, float fHalfHeight);
 bool FUN_140552700(const efd::Point3& kA, const efd::Point3& kB);    // efd::Point3::operator!=
-bool FUN_1416749c0(PCBase* p);
 void FUN_141240730(void* p);
-void* FUN_14165f100(PCBase* p);
-void FUN_14166e0a0(PCBase* p);
-egf::Entity* FUN_141659af0(PCBase* p, int n);
-egf::Entity* FUN_141659b80(PCBase* p, int n, unsigned nProp, float fRange);
 void FUN_1409618c0(egf::Entity* pEntity, unsigned nProp, const efd::Point3* pValue);
 void FUN_1408a20a0(egf::Entity* pEntity, unsigned nProp, bool* pOut);
 void FUN_141658fc0(PCBase* p, egf::EntityID kId);      // PC::FUN_141658fc0(const EntityID&); callers pass a copy
@@ -1300,7 +1272,6 @@ int FUN_14168a450(void* pSvc, const NiPoint3* pPos, float* pGround, float fZ);
 float FUN_1409f25a0(float f);
 float FUN_1409f2310(float f);
 bool FUN_14028d470(float a, float b);
-float FUN_140a00ef0(const NiPlane* plane, const NiPoint3& pt);   // NiPlane distance
 
 // @0x1417e0d30
 StateRope::StateRope(PCBase* pOwner) : State(pOwner)
@@ -1322,21 +1293,21 @@ StateRope::~StateRope()
 void StateRope::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    FUN_141240730(FUN_14166d220(m_pOwner));
+    FUN_141240730(((void*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220())));
     m_n10 = 0x38;
     m_timerA0.FUN_1408687f0();
     m_timerD8.FUN_1408687f0();
     m_time110.FUN_140868750(100);
-    m_timer68.FUN_140868750((int)(200.0f / FUN_1416713c0(m_pOwner)));
+    m_timer68.FUN_140868750((int)(200.0f / reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416713c0()));
     m_pos48 = m_pOwner->vfunc_18();
     m_pos54 = efd::Point3::ZERO;
     m_pRope = 0;
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
-        m_pRope = FUN_141659af0(pPC, 3);
+        m_pRope = reinterpret_cast<PC*>(pPC)->FUN_141659af0(3);
     MyPC* pMy = FUN_1417b84b0();
-    if (pMy != 0 && FUN_14165f100(pMy) != 0)
-        FUN_14165f170(pMy);
+    if (pMy != 0 && ((void*)(reinterpret_cast<PC*>(pMy)->FUN_14165f100())) != 0)
+        reinterpret_cast<PC*>(pMy)->SendRequestCube();
     if (m_pRope != 0)
     {
         NiPoint3 kPos = m_pOwner->vfunc_18();
@@ -1346,7 +1317,7 @@ void StateRope::vfunc_4(StateData* pData)
         NiPoint3 kOrigin(static_cast<const efd::Point3&>(m_pOwner->vfunc_18()));
         NiPoint3 kFacing(m_pOwner->FUN_14123cc20());
         NiPlane kPlane(kFacing, kOrigin);
-        if (FUN_140a00ef0(&kPlane, m_pos54) >= 0.0f)
+        if (static_cast<const NiPlane*>(&kPlane)->Distance(m_pos54) >= 0.0f)
         {
             m_fAngle = GameObject::FUN_14123ce70(m_pOwner->FUN_14123cc20());
         }
@@ -1373,7 +1344,7 @@ void StateRope::vfunc_5(int n)
     {
         FUN_141658fc0(FUN_1417b8370(), *FUN_1408b76f0(m_pRope));
     }
-    FUN_14166d8b0(m_pOwner, m_pOwner->vfunc_20().z);
+    reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d8b0(m_pOwner->vfunc_20().z);
 }
 
 // @0x1417e1400
@@ -1397,7 +1368,7 @@ void StateRope::vfunc_3(double fTime)
         efd::Point3 kTarget = m_pos48 + kDelta;
         Unk_SMExtent kExtent;
         FUN_141671390(m_pOwner, &kExtent);
-        if (!FUN_1412410c0(FUN_14166d220(m_pOwner), &kTarget, kExtent.m_fHeight * 0.5f))
+        if (!FUN_1412410c0(((void*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220())), &kTarget, kExtent.m_fHeight * 0.5f))
             m_pOwner->vfunc_19(kTarget);
         m_pOwner->vfunc_21(efd::Point3(0.0f, 0.0f, -((m_fAngle * 180.0f) / 3.1415927f)));
         if (m_timer68.FUN_140868c00() != 0)
@@ -1435,7 +1406,7 @@ void StateRope::vfunc_3(double fTime)
                 m_timerA0.FUN_1408687f0();
             }
         }
-        if (m_n10 == 0x36 && !FUN_1416749c0(m_pOwner) && m_timerA0.FUN_140868ba0() == 0)
+        if (m_n10 == 0x36 && !reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0() && m_timerA0.FUN_140868ba0() == 0)
             m_n10 = 0x33;
     }
     FUN_1417e20d0(FUN_1417e1e60(), kInput.x);
@@ -1445,7 +1416,7 @@ void StateRope::vfunc_3(double fTime)
 void StateRope::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
-    Unk_SMKeys* pKeys = FUN_14166d240(m_pOwner);
+    Unk_SMKeys* pKeys = ((Unk_SMKeys*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     efd::Point3 kInput = efd::Point3::ZERO;
     if (m_time110.FUN_140868c00() != 0)
     {
@@ -1479,11 +1450,11 @@ void StateRope::vfunc_9(double fTime)
     State::vfunc_9(fTime);
     switch (m_n10)
     {
-    case 0x33: FUN_14166dda0(m_pOwner, 0x24); break;
-    case 0x34: FUN_14166dda0(m_pOwner, 0x22); break;
-    case 0x35: FUN_14166dda0(m_pOwner, 0x23); break;
-    case 0x37: FUN_14166dda0(m_pOwner, 0x25); break;
-    case 0x38: FUN_14166dda0(m_pOwner, 0x26); break;
+    case 0x33: reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x24); break;
+    case 0x34: reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x22); break;
+    case 0x35: reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x23); break;
+    case 0x37: reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x25); break;
+    case 0x38: reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x26); break;
     }
 }
 
@@ -1491,7 +1462,7 @@ void StateRope::vfunc_9(double fTime)
 void StateRope::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceID, const NiFixedString& kTextKey,
     const NiTextKeyMatch* pkMatchObject, NiControllerSequence* pkSeq, float fEventTime)
 {
-    if (FUN_14166de90(m_pOwner, 0x22, eSequenceID) || FUN_14166de90(m_pOwner, 0x23, eSequenceID))
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x22, eSequenceID) || reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x23, eSequenceID))
     {
         if (FUN_140998dc0(kTextKey, "begin"))
             FUN_1417e23c0();
@@ -1502,17 +1473,17 @@ void StateRope::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceID
 void StateRope::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
-    if (FUN_14166de90(m_pOwner, 0x22, eSequenceID))
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x22, eSequenceID))
     {
         m_n10 = 0x36;
-        FUN_14166e0a0(m_pOwner);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166e0a0();
     }
-    else if (FUN_14166de90(m_pOwner, 0x23, eSequenceID))
+    else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x23, eSequenceID))
     {
         m_n10 = 0x36;
-        FUN_14166e0a0(m_pOwner);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166e0a0();
     }
-    else if (FUN_14166de90(m_pOwner, 0x25, eSequenceID) || FUN_14166de90(m_pOwner, 0x26, eSequenceID))
+    else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x25, eSequenceID) || reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x26, eSequenceID))
     {
         m_n10 = 0x33;
     }
@@ -1550,7 +1521,7 @@ float StateRope::FUN_1417e1e60()
     else if (m_n10 == 0x34)
     {
         fStep = 150.0f * m_timerA0.FUN_140868b20();
-        egf::Entity* pNext = FUN_141659b80(pPC, 1, 0xc13e30c8, 150.0f);
+        egf::Entity* pNext = reinterpret_cast<PC*>(pPC)->FUN_141659b80(1, 0xc13e30c8, 150.0f);
         if (pNext == 0)
         {
             if (kPos.z + fStep > m_pos54.z + 50.0f)
@@ -1567,7 +1538,7 @@ float StateRope::FUN_1417e1e60()
     else if (m_n10 == 0x35)
     {
         fStep = 150.0f * m_timerA0.FUN_140868b20();
-        egf::Entity* pNext = FUN_141659b80(pPC, 2, 0xc13e30c8, 90.0f);
+        egf::Entity* pNext = reinterpret_cast<PC*>(pPC)->FUN_141659b80(2, 0xc13e30c8, 90.0f);
         if (pNext == 0)
         {
             if (kPos.z - fStep < m_pos54.z)
@@ -1613,7 +1584,7 @@ void StateRope::FUN_1417e20d0(float fDz, float fAngle)
     {
         Unk_SMExtent kExtent;
         FUN_141671390(m_pOwner, &kExtent);
-        if (!FUN_1412410c0(FUN_14166d220(m_pOwner), &kTarget, kExtent.m_fHeight * 0.5f))
+        if (!FUN_1412410c0(((void*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220())), &kTarget, kExtent.m_fHeight * 0.5f))
             m_pOwner->vfunc_19(static_cast<efd::Point3&>(kTarget));
     }
 }
@@ -1621,7 +1592,7 @@ void StateRope::FUN_1417e20d0(float fDz, float fAngle)
 // @0x1417e23c0
 void StateRope::FUN_1417e23c0()
 {
-    m_timerA0.FUN_140868750((int)(400.0f / FUN_1416713c0(m_pOwner)));
+    m_timerA0.FUN_140868750((int)(400.0f / reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416713c0()));
 }
 
 // @0x1417e2450

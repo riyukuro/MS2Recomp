@@ -111,15 +111,23 @@ void FUN_14097f9b0(Unk_CtiTexPtr* p, void* pRaw);
 void* FUN_14097fbf0(Unk_CtiTexPtr* p);                          // handle -> texture
 void* FUN_140a5ac70(void* p);
 Unk_CtiTexture* FUN_140a5acb0(Unk_CtiTexPtr* p);
-void* FUN_14098d8d0(void* pRTTI, void* pObject);
+class NiObject   // C3: member view for the former free stand-ins
+{
+public:
+    static class NiObject* DynamicCast(class NiRTTI const*, class NiObject const*);
+};
 extern char DAT_143afa930[];
 extern char DAT_1439fb040[];
 void* FUN_140876480(void* out, int cat);
 void* FUN_14208a860(unsigned __int64 size, unsigned cat);
-void* FUN_14184d8c0(void* pTex, unsigned w, unsigned h);
+class NiPixelData* ConvertToRGBA32(class NiPixelData*, unsigned int, unsigned int);   // C3: was FUN_14184d8c0
 void FUN_14184dad0(void* pSampler, Unk_CtiUV kUV, Unk_CtiPixel* pOut, bool b);
-unsigned FUN_140d9d2a0(void* pPix);
-char* FUN_140d9d2c0(void* pPix, int a, int b);
+class NiPixelData   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned int GetPixelStride() const;
+    unsigned char* GetPixels(unsigned int, unsigned int);
+};
 Unk_CtiUV FUN_140a0a4c0(float fU, float fV);
 void* FUN_141d33320(void* pPix, Unk_CtiFmtPrefs& kPrefs, bool b);
 void FUN_140a34190(void* pDst, const void* pSrc, int nBytes);
@@ -172,13 +180,13 @@ void* FUN_1411660b0(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
 void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCustomizedTexInfo* pB)
 {
     CCustomizedTexInfo* pResult = EE_NEW CCustomizedTexInfo;
-    Unk_CtiTexture* pBaseA = (Unk_CtiTexture*)FUN_14098d8d0(DAT_143afa930, FUN_14097fbf0(&pA->m_spBase));
+    Unk_CtiTexture* pBaseA = (Unk_CtiTexture*)((void*)NiObject::DynamicCast((class NiRTTI const*)(DAT_143afa930), (class NiObject const*)(FUN_14097fbf0(&pA->m_spBase))));
     if (pBaseA == 0)
         return pResult;
 
-    Unk_CtiTexture* pDecalA = (Unk_CtiTexture*)FUN_14098d8d0(DAT_143afa930, FUN_14097fbf0(&pA->m_spDecal));
-    Unk_CtiTexture* pBaseB = (Unk_CtiTexture*)FUN_14098d8d0(DAT_143afa930, FUN_14097fbf0(&pB->m_spBase));
-    Unk_CtiTexture* pDecalB = (Unk_CtiTexture*)FUN_14098d8d0(DAT_143afa930, FUN_14097fbf0(&pB->m_spDecal));
+    Unk_CtiTexture* pDecalA = (Unk_CtiTexture*)((void*)NiObject::DynamicCast((class NiRTTI const*)(DAT_143afa930), (class NiObject const*)(FUN_14097fbf0(&pA->m_spDecal))));
+    Unk_CtiTexture* pBaseB = (Unk_CtiTexture*)((void*)NiObject::DynamicCast((class NiRTTI const*)(DAT_143afa930), (class NiObject const*)(FUN_14097fbf0(&pB->m_spBase))));
+    Unk_CtiTexture* pDecalB = (Unk_CtiTexture*)((void*)NiObject::DynamicCast((class NiRTTI const*)(DAT_143afa930), (class NiObject const*)(FUN_14097fbf0(&pB->m_spDecal))));
     unsigned nWidth = FUN_140a5acb0(&pA->m_spBase)->vfunc_18();
     unsigned nHeight = FUN_140a5acb0(&pA->m_spBase)->vfunc_19();
     if (FUN_141167270(pBaseA) == 0)
@@ -197,14 +205,14 @@ void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
     if (pDecalB && FUN_141167270(pDecalB) == 0)
         pDecalB->vfunc_20();
 
-    Unk_CtiPixPtr hBaseA(pBaseA ? FUN_14184d8c0(FUN_141167270(pBaseA), nWidth, nHeight) : 0);
-    Unk_CtiPixPtr hDecalA(pDecalA ? FUN_14184d8c0(FUN_141167270(pDecalA), nWidth, nHeight) : 0);
-    Unk_CtiPixPtr hBaseB(pBaseB ? FUN_14184d8c0(FUN_141167270(pBaseB), nWidth, nHeight) : 0);
-    Unk_CtiPixPtr hDecalB(pDecalB ? FUN_14184d8c0(FUN_141167270(pDecalB), nWidth, nHeight) : 0);
+    Unk_CtiPixPtr hBaseA(pBaseA ? ((void*)ConvertToRGBA32((class NiPixelData*)(FUN_141167270(pBaseA)), nWidth, nHeight)) : 0);
+    Unk_CtiPixPtr hDecalA(pDecalA ? ((void*)ConvertToRGBA32((class NiPixelData*)(FUN_141167270(pDecalA)), nWidth, nHeight)) : 0);
+    Unk_CtiPixPtr hBaseB(pBaseB ? ((void*)ConvertToRGBA32((class NiPixelData*)(FUN_141167270(pBaseB)), nWidth, nHeight)) : 0);
+    Unk_CtiPixPtr hDecalB(pDecalB ? ((void*)ConvertToRGBA32((class NiPixelData*)(FUN_141167270(pDecalB)), nWidth, nHeight)) : 0);
 
     Unk_CtiPixelData* pPix = EE_NEW Unk_CtiPixelData(nWidth, nHeight, *(const Unk_CtiPixFmt*)DAT_1439fb040, 1, 1);
-    unsigned nStride = FUN_140d9d2a0(pPix);
-    char* pDst = FUN_140d9d2c0(pPix, 0, 0);
+    unsigned nStride = ((class NiPixelData*)(void*)(pPix))->GetPixelStride();
+    char* pDst = ((char*)((class NiPixelData*)(void*)(pPix))->GetPixels(0, 0));
     for (unsigned y = 0; y < nHeight; ++y)
     {
         for (unsigned x = 0; x < nWidth; ++x)

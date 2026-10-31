@@ -20,7 +20,6 @@
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-WorldService* FUN_1403ed2d0();
 
 void Unk_140657820();                                   // invalid call of an empty Delegate (shared)
 
@@ -150,7 +149,7 @@ __int64 ItemScrollSlot::FUN_140d428f0()
 // @0x140d42940 (ITooltip::vfunc_0)
 int ItemScrollSlot::vfunc_0(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ASTooltip tip(pPlayer, 0x20, 2);
@@ -166,7 +165,7 @@ int ItemScrollSlot::vfunc_0(void* p)
 // @0x140d42a60
 int ItemScrollSlot::vfunc_8(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ASSlot slot(2);

@@ -19,7 +19,7 @@
 
 // ---- out-of-unit callees ----
 __int64 GetServerTime();                                // the server time
-Unk_CMesoMarketConfig* FUN_1401d3200();                 // the config singleton
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 __int64* FUN_1402c05b0(void* pConstBlock);              // the <constants> record
 unsigned* FUN_1402056b0(void* pField);                  // a config field
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text of a key
@@ -36,11 +36,15 @@ CStringW FUN_140275590(const wchar_t* pszFormat, const CStringW& strA, const int
 void FUN_141b70f90(const CMsTime& kTime, const CStringW& kFormat, CStringW& kOut);
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
 void FUN_140710590(COutPacket&);                        // send
-void* FUN_140166410();
-bool FUN_14036d570(void* pOwner, int nId);
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
-CUIService* FUN_1403ed2b0();
+class CUIService;
 
 // The penalty (block) record a result code asks for.
 struct Unk_MesoBlockRef;
@@ -57,7 +61,7 @@ class Unk_MesoBlockMgr
 public:
     Unk_MesoBlockRef FUN_140a2f620(int nKind);
 };
-Unk_MesoBlockMgr* FUN_140a6a830();
+class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void* FUN_1401cb3d0(Unk_MesoBlockRef* pRef);
 void FUN_140a2ff20(Unk_MesoBlockRef* pRef, int nKind, __int64 n);
 
@@ -136,7 +140,7 @@ void CMesoMarketProductCli::FUN_140d6dab0(ASObj& row)
 // @0x140d6db30
 void CMesoMarketProductCli::FUN_140d6db30(ASObj& row)
 {
-    __int64 nBase = *FUN_1402c05b0((char*)FUN_1401d3200() + 0x6018);
+    __int64 nBase = *FUN_1402c05b0((char*)((class Unk_CMesoMarketConfig*)FUN_1401d3200()) + 0x6018);
     __int64 nUnit = m_n28;
     if (m_n20 > nBase)
         nUnit = nUnit / (m_n20 / nBase);
@@ -144,8 +148,8 @@ void CMesoMarketProductCli::FUN_140d6db30(ASObj& row)
     row.FUN_1407cbb20("marketSN", FUN_140719a80(m_n18));
     row.FUN_1407cbb20("sellMeso", FUN_1409404f0(m_n20));
     row.FUN_1407cbb20("buyMerat", FUN_1408f71a0(CStringW(L"s_mesoMarket_listItem_buyMerat"), FUN_1409404f0(m_n28),
-                                                FUN_140d6e230(*FUN_1402056b0((char*)FUN_1401d3200() + 0x6140))));
-    if (!FUN_14036d570(FUN_140166410(), 0xf4))
+                                                FUN_140d6e230(*FUN_1402056b0((char*)((class Unk_CMesoMarketConfig*)FUN_1401d3200()) + 0x6140))));
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xf4))
     {
         row.FUN_1407cbb20("sellMesoText", FUN_1405c2690(CStringW(L"s_mesoMarket_listItem_sellMesoText"), FUN_1412757d0(m_n20)));
         row.FUN_1407cbb20("buyMeratPerUnit", FUN_1408f71a0(CStringW(L"s_mesoMarket_listItem_unitPrice"), strBase, FUN_1409404f0(nUnit)));
@@ -466,10 +470,10 @@ void CMesoMarketMan::FUN_140d6f130(int nCode)
         MESO_NOTICE(L"s_mesoMarket_error_hasNotMeso");
         break;
     case 6:
-        FUN_1403ed2b0()->FUN_141add1f0();
+        TSingleton<CUIService>::GetInstance()->FUN_141add1f0();
         break;
     case 7:
-        FUN_1403ed2b0()->FUN_141add390();
+        TSingleton<CUIService>::GetInstance()->FUN_141add390();
         break;
     case 8:
         MESO_NOTICE(L"s_mesoMarket_error_maxCountOwnProduct");
@@ -509,7 +513,7 @@ void CMesoMarketMan::FUN_140d6f130(int nCode)
     case 0x13:
     {
         int nKind = (nCode == 0x13) ? 0x27 : 0x28;
-        Unk_MesoBlockRef block = FUN_140a6a830()->FUN_140a2f620(nKind);
+        Unk_MesoBlockRef block = ((class Unk_MesoBlockMgr*)FUN_140a6a830())->FUN_140a2f620(nKind);
         if (FUN_1401cb3d0(&block) != 0)
             FUN_140a2ff20(&block, nKind, 0);
     }

@@ -10,10 +10,13 @@
 typedef unsigned long long u64;
 
 // ---- out-of-unit callees ----
-void* FUN_1413f9810();   void* FUN_1403ed2d0();   void FUN_141bd7d10(void* p);
-void FUN_14016ad80(void* dst, void* src);
+void* FUN_1413f9810();class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141bd7d10();
+    static class WorldService* GetInstance();
+};
 void FUN_14015b310(void* p, u64 sz);
-void* FUN_141142f20(void* p);
 void FUN_14114e860(void* list, void* it);   void* FUN_1411524b0(void* list, void* it);
 bool FUN_140a16b10(void* a, void* b);   void* FUN_140a16d80(void* it);   void FUN_140a17010(void* it);   void FUN_1411cb170(void* dst, void* v);
 
@@ -100,7 +103,7 @@ efd::AsyncResult MS2EntityLoaderService::OnTick()
 {
     if (m_bLoading) {
         if (!FUN_1414b4620((char*)FUN_1413f9810())) {
-            FUN_141bd7d10(FUN_1403ed2d0());
+            ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd7d10();
             m_bLoading = false;
         }
     }
@@ -153,7 +156,7 @@ void* FUN_1414b42d0(void* a, void* b, void* c) { FUN_1414b4350(a, b, c); return 
 // @0x1414b4310
 void* FUN_1414b4310(void* a, void* b, void* c) { FUN_1414b42d0(a, b, c); return a; }
 // @0x1414b4350
-void* FUN_1414b4350(void* a, void* b, void* c) { *(void**)a = b; FUN_14016ad80(a, c); return a; }
+void* FUN_1414b4350(void* a, void* b, void* c) { *(void**)a = b; ((std::_Iterator_base0*)(void*)(a))->_Adopt((void const*)(c)); return a; }
 // @0x1414b4390
 bool FUN_1414b4390(long long* a, long long* b) { return *a == *b; }
 // @0x1414b43d0
@@ -254,4 +257,4 @@ void* FUN_1414b49f0(void* tree, void* out, void* key)
 // @0x1414b4a50
 void* FUN_1414b4a50(void* p) { return FUN_1414b42b0(p); }
 // @0x1414b4a70
-void* FUN_1414b4a70(void* p) { return *(void**)((char*)FUN_141142f20(p) + 8); }
+void* FUN_1414b4a70(void* p) { return *(void**)((char*)((void*)&((std::_Tree_comp_alloc<std::_Tset_traits<egf::EntityID, std::less<egf::EntityID>, efd::CustomAllocator<egf::EntityID>, 0>>*)(void*)(p))->_Get_data()) + 8); }

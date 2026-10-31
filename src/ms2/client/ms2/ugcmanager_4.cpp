@@ -362,7 +362,7 @@ public:
 };
 
 // The item containers: the bag and the cube fallback inventory (unit_14092f420.cpp / uicommon.cpp).
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 #include "ms2/placeholder/uiugceventdispatcher.h"
 
@@ -3685,7 +3685,7 @@ void CUgcManager::FUN_14188e5b0(CInPacket& packet, int nType)
     if (nType == 0xe)
         spItem = DAT_143ab2e20.FUN_1408fbf90(itemUid);
     else
-        spItem = DAT_143ab2a90.FUN_140a5d680(itemUid);
+        spItem = g_143ab2a90.FUN_140a5d680(itemUid);
     if (spItem == 0)
         return;
     spItem->FUN_140528300(&look);
@@ -3714,7 +3714,7 @@ void CUgcManager::FUN_14188e930(CInPacket& packet)
     PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != pWearer)
         return;
-    CItem* pItem = DAT_143ab2a90.FUN_140a5d680(itemUid).get();
+    CItem* pItem = g_143ab2a90.FUN_140a5d680(itemUid).get();
     if (pItem == 0)
         return;
     pItem->FUN_140528300(&look);
@@ -3966,7 +3966,7 @@ void CUgcManager::FUN_14188ff10(CInPacket& packet)
         if (bOk == 0)
             throw Exception(1);
         __int64 itemUid = packet.ReadInt64();
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(itemUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(itemUid);
         if (spItem == 0)
             throw Exception(2);
         if (m_spUpload == 0)

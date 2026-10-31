@@ -50,6 +50,16 @@ static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 #include "ms2/gfxui/uiswfentity.h"
 #include "ms2/client/ms2/uiservice.h"
 
+// return types of the getters this unit calls
+class CEffectService;
+class CGameOption;
+class CItemDataTable;
+class CameraMgr;
+class CommonString;
+class Unk_InventoryStateManager;
+class Unk_SlotLapenTable;
+struct Unk_MdState;
+
 // ---- unit-local stand-ins -------------------------------------------------------------------------------------------
 class Unk_ChatLog;
 class Unk_ChatWindow {                                  // the chat UI singleton: the chat log panel is at +0x48
@@ -58,7 +68,7 @@ public:
     Unk_ChatLog* m_log;
 };
 MS2_CHECK_OFFSET(Unk_ChatWindow, m_log, 0x48);
-Unk_ChatWindow* FUN_141482e80();
+struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 void FUN_141a24890(Unk_ChatLog*, const CStringW&, int, int, int);
 void FUN_141a24cb0(Unk_ChatLog*, const CStringW&, int, int, int, int);
 void FUN_141a247c0(Unk_ChatLog*, const CStringW&, int);
@@ -84,17 +94,17 @@ UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
 
 class Unk_PlayerActor { public: char m_pad_00[8]; };
 class Unk_PlayerRef;
-WorldService* FUN_1403ed2d0();
-void* FUN_1403ed280();
-void* FUN_141bd0cc0(void*);
 int FUN_141adcbb0(void*, int (*pred)(MS2Ptr<UIDialog>));
-void FUN_141adcd40(void*);
 void FUN_14151f460(int);
 void FUN_141a8a730();
 int FUN_141a8a760();
 UIMessageBox* FUN_14151f890();
 void* FUN_140967100();
-int FUN_141b21220(void*);
+class UITalkManager   // C3: member view for the former free stand-ins
+{
+public:
+    int GetTalking();
+};
 int FUN_1416595d0(void*);
 int FUN_141659690(void*);
 CStringW GetStringCommon(int nId);
@@ -103,16 +113,28 @@ UISystemText* FUN_141278110(int nId);
 UITopLayerNotify* FUN_1412781b0(int nId);
 void FUN_1412751b0(const CStringW&, int);
 void FUN_1412751f0(const CStringW&, int, int);
-void* FUN_140a3ab70(int);
+class UIMessengerBrowser* FUN_140a3ab70(int);   // C3: was FUN_140a3ab70
 class UICommunityDialog;
 UICommunityDialog* FUN_140ae5990(int);
 class Unk_GuideInventory;
 Unk_GuideInventory* FUN_1405344f0(int);
-void* FUN_140a3aad0(int);
-void FUN_141a23c20(void*);
+class UIGroupMessengerBrowser* FUN_140a3aad0(int);   // C3: was FUN_140a3aad0
+class UIMessengerBrowser   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141a23c20();
+};
 void FUN_1418d6410(UICommunityDialog*);
-void FUN_141999e20(Unk_GuideInventory*);
-void FUN_1419524e0(void*);
+class UIInventoryDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141999e20();
+};
+class UIGroupMessengerBrowser   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419524e0();
+};
 
 // @0x141274d10
 int FUN_141274d10(MS2Ptr<UIDialog> pDlg)
@@ -151,7 +173,7 @@ void FUN_141274f50()
 {
     FUN_14151f460(0);
     FUN_141a8a730();
-    FUN_141adcd40(reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance()));
+    ((class CUIService*)(void*)(reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance())))->FUN_141adcd40();
 }
 MS2_REPLACE(0x141274f50, FUN_141274f50, 34, 0x61491953);
 
@@ -186,7 +208,7 @@ MS2_REPLACE(0x141274ff0, FUN_141274ff0, 97, 0x12D8B30D);
 // @0x141275060
 int FUN_141275060()
 {
-    return FUN_141b21220(FUN_140967100());
+    return ((class UITalkManager*)(void*)(FUN_140967100()))->GetTalking();
 }
 MS2_REPLACE(0x141275060, FUN_141275060, 22, 0x80B1C3A0);
 
@@ -195,7 +217,7 @@ int FUN_141275080()
 {
     if (FUN_141275060() != 0)
         return 0;
-    void* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pActor = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0();
     if (pActor != 0) {
         if (FUN_1416595d0(pActor) != 0 && FUN_141659690(pActor) == 0)
             return 0;
@@ -208,24 +230,24 @@ int FUN_141275080()
 // @0x1412750f0
 void FUN_1412750f0(const CStringW& str, int a, int b, int c)
 {
-    if (FUN_141482e80()->m_log != 0)
-        FUN_141a24890(FUN_141482e80()->m_log, str, a, b, c);
+    if (reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log != 0)
+        FUN_141a24890(reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log, str, a, b, c);
 }
 MS2_REPLACE(0x1412750f0, FUN_1412750f0, 77, 0x2112E627);
 
 // @0x141275150
 void FUN_141275150(const CStringW& str, int a, int b, int c, int d)
 {
-    if (FUN_141482e80()->m_log != 0)
-        FUN_141a24cb0(FUN_141482e80()->m_log, str, a, b, c, d);
+    if (reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log != 0)
+        FUN_141a24cb0(reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log, str, a, b, c, d);
 }
 MS2_REPLACE(0x141275150, FUN_141275150, 85, 0xA770C8C1);
 
 // @0x1412751b0
 void FUN_1412751b0(const CStringW& str, int nType)
 {
-    if (FUN_141482e80()->m_log != 0)
-        FUN_141a247c0(FUN_141482e80()->m_log, str, nType);
+    if (reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log != 0)
+        FUN_141a247c0(reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log, str, nType);
 }
 MS2_REPLACE(0x1412751b0, FUN_1412751b0, 54, 0x5701C5EE);
 
@@ -304,24 +326,23 @@ MS2_REPLACE(0x141275460, FUN_141275460, 152, 0xFB7641A0);
 // @0x141275500
 void FUN_141275500()
 {
-    void* pDlg = FUN_140a3ab70(0x4e61);
+    void* pDlg = ((void*)FUN_140a3ab70(0x4e61));
     if (pDlg != 0)
-        FUN_141a23c20(pDlg);
+        ((class UIMessengerBrowser*)(void*)(pDlg))->FUN_141a23c20();
     UICommunityDialog* pCommunity = FUN_140ae5990(0x4e4d);
     if (pCommunity != 0)
         FUN_1418d6410(pCommunity);
     Unk_GuideInventory* pGuide = FUN_1405344f0(0x4e2d);
     if (pGuide != 0)
-        FUN_141999e20(pGuide);
-    void* pOther = FUN_140a3aad0(0x4e93);
+        ((class UIInventoryDialog*)(class Unk_GuideInventory*)(pGuide))->FUN_141999e20();
+    void* pOther = ((void*)FUN_140a3aad0(0x4e93));
     if (pOther != 0)
-        FUN_1419524e0(pOther);
+        ((class UIGroupMessengerBrowser*)(void*)(pOther))->FUN_1419524e0();
 }
 MS2_REPLACE(0x141275500, FUN_141275500, 141, 0xF32E1E3E);
 
 // ---- unit-local stand-ins (constants table, inventory view, ASWindow) ---------------------------------------------
 // A Common::Constants value slot: Object header (0x50 bytes, the "is set" flag at +8), then the value.
-void FUN_1402b7560(void*, const char*);
 template<class T> struct alignas(8) Unk_McValue {
     char m_pad_00[8];
     bool m_bSet;                                        // +0x08
@@ -330,7 +351,7 @@ template<class T> struct alignas(8) Unk_McValue {
     T* FUN_1412788b0()                                  // checked access
     {
         if (!m_bSet)
-            FUN_1402b7560(this, "constants is not set");
+            ((Common::Constants::Object*)(void*)(this))->Error("constants is not set");
         return &m_value;
     }
 };
@@ -352,11 +373,10 @@ MS2_CHECK_OFFSET(Unk_ClientConsts, m_b408, 0xb408);
 // clientconstants.h declares FUN_1401d3200 as Common::Constants*; this unit uses its own view of the block
 #define UNK_CLIENT_CONSTS() reinterpret_cast<Unk_ClientConsts*>(FUN_1401d3200())
 unsigned* FUN_140a81910(Unk_McValue<unsigned>* pSlot);
-unsigned FUN_14056d500(unsigned* pValue);
-size_t FUN_14059d0e0(ATL::CAtlArray<int>* pArray);
+unsigned int Unk_ColorValue(struct Unk_ConstColor const&);   // C3: was FUN_14056d500
 
 class CItem;
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 extern __int64 DAT_143ab2820;
 extern __int64 DAT_143ab2828;
@@ -366,7 +386,6 @@ CStringW FUN_140719a00(__int64);
 CStringW FUN_1405c2690(CStringW, const CStringW&);
 __int64 FUN_140718320(const CStringW&);
 void FUN_1405569f0(void*, int);
-void* FUN_140281980();
 
 unsigned FUN_1412780f0(Unk_McValue<unsigned>* pSlot);
 CString FUN_1412756c0(__int64 a, __int64 b);
@@ -464,7 +483,7 @@ int FUN_141275a10(CItem* pItem)
 {
     if (pItem == 0)
         return 0;
-    int nKind = DAT_143ab2a90.FUN_140a65770(pItem);
+    int nKind = g_143ab2a90.FUN_140a65770(pItem);
     if (nKind == 2 || nKind == 3 || nKind == 5 || nKind == 6 || nKind == 10) {
         return 2;
     } else if (nKind == 1 || nKind == 9) {
@@ -484,7 +503,7 @@ int FUN_141275aa0(int nCode)
     size_t nIndex;
     ATL::CAtlArray<int>* pColors = UNK_CLIENT_CONSTS()->m_colorTable.FUN_1412788b0();
     nIndex = (size_t)(__int64)nCode / 100;
-    if (FUN_14059d0e0(pColors) <= nIndex)
+    if (((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)(void*)(pColors))->GetCount() <= nIndex)
         return 0xffffff;
     return (*pColors)[nIndex];
 }
@@ -493,21 +512,21 @@ MS2_REPLACE(0x141275aa0, FUN_141275aa0, 139, 0x50397E44);
 // @0x141275b40
 unsigned FUN_141275b40()
 {
-    return FUN_14056d500(FUN_140a81910(&UNK_CLIENT_CONSTS()->m_b270));
+    return Unk_ColorValue(*(struct Unk_ConstColor const*)(FUN_140a81910(&UNK_CLIENT_CONSTS()->m_b270)));
 }
 MS2_REPLACE(0x141275b40, FUN_141275b40, 36, 0x353EE636);
 
 // @0x141275b70
 unsigned FUN_141275b70()
 {
-    return FUN_14056d500(FUN_140a81910(&UNK_CLIENT_CONSTS()->m_b2c8));
+    return Unk_ColorValue(*(struct Unk_ConstColor const*)(FUN_140a81910(&UNK_CLIENT_CONSTS()->m_b2c8)));
 }
 MS2_REPLACE(0x141275b70, FUN_141275b70, 36, 0x92818E0E);
 
 // @0x141275ba0
 unsigned FUN_141275ba0()
 {
-    return FUN_14056d500(FUN_140a81910(&UNK_CLIENT_CONSTS()->m_b320));
+    return Unk_ColorValue(*(struct Unk_ConstColor const*)(FUN_140a81910(&UNK_CLIENT_CONSTS()->m_b320)));
 }
 MS2_REPLACE(0x141275ba0, FUN_141275ba0, 36, 0xB9F8727F);
 
@@ -521,7 +540,7 @@ MS2_REPLACE(0x141275bd0, FUN_141275bd0, 33, 0x3752B9CB);
 // @0x141275c00
 void FUN_141275c00(int nValue)
 {
-    FUN_1405569f0(FUN_140281980(), nValue);
+    FUN_1405569f0(TSingleton<CItemDataTable>::GetInstance(), nValue);
 }
 MS2_REPLACE(0x141275c00, FUN_141275c00, 30, 0x3CCFEEBB);
 
@@ -533,7 +552,6 @@ public:
     void FUN_1422c00f0(float x, float y);               // set the position
 };
 struct Unk_AlignOffset { float x, y; };
-Unk_AlignOffset* FUN_1419265c0(UISwfEntity* pDlg);      // dialog position (x, y)
 
 // Places two dialogs side by side: when they do not fit next to each other, the left one is moved to make room.
 // @0x141275c30
@@ -545,7 +563,7 @@ void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_AlignOffset offL
     if (winLeft.IsNull())
         return;
     float fLeftWidth = 436.0f;
-    Unk_AlignOffset* pPos = FUN_1419265c0(pLeft);
+    Unk_AlignOffset* pPos = ((struct Unk_AlignOffset*)((class UIDialog*)(class UISwfEntity*)(pLeft))->FUN_1419265c0());
     float fX = pPos->x;
     float fY = pPos->y;
     if (MS2Ptr<ASMovieClip> panel = winLeft->FUN_1409b4560("m_panel"))
@@ -576,8 +594,6 @@ MS2_REPLACE(0x141275c30, FUN_141275c30, 1201, 0xE804638C);
 CStringA FUN_1401d4330(const wchar_t* pszWide, int nCodePage);
 int FUN_1411a5a60(void* pMgr, const CString& str, const CString& strArg);
 int FUN_141276180(const CString& str, const CString& strArg);
-void FUN_1422c6640(ASDisplayObjectContainer*, bool);
-void FUN_1422deb40(ASDisplayObjectContainer*, bool);
 
 // @0x1412760f0
 int FUN_1412760f0(const CStringW& str, const CString& strArg)
@@ -593,7 +609,7 @@ int FUN_141276180(const CString& str, const CString& strArg)
 {
     if (str.IsEmpty())
         return 0;
-    return FUN_1411a5a60(FUN_1403ed280(), str, strArg) != 0;
+    return FUN_1411a5a60(TSingleton<CEffectService>::GetInstance(), str, strArg) != 0;
 }
 MS2_REPLACE(0x141276180, FUN_141276180, 90, 0x95D6641F);
 
@@ -603,16 +619,21 @@ void FUN_1412761e0(MS2Ptr<AScript> pScript, int bShow)
     if (pScript.get() != 0) {
         MS2Ptr<ASDisplayObjectContainer> pContainer(dynamic_cast<ASDisplayObjectContainer*>((AScript*)pScript));
         if (pContainer) {
-            FUN_1422c6640(pContainer.get(), bShow ? true : false);
-            FUN_1422deb40(pContainer.get(), bShow ? true : false);
+            ((class ASDisplayObjectContainer*)(class ASDisplayObjectContainer*)(pContainer.get()))->FUN_1422c6640(bShow ? true : false);
+            ((class ASInteractiveObject*)(class ASDisplayObjectContainer*)(pContainer.get()))->FUN_1422deb40(bShow ? true : false);
         }
     }
 }
 MS2_REPLACE(0x1412761e0, FUN_1412761e0, 223, 0xBC6F98B8);
 
 // ---- camera-scaled offset ---------------------------------------------------------------------------------------------
-struct Unk_Point2 { float m_x, m_y; };
+struct Unk_Point2 { float m_x, m_y; public:
+    float FUN_140affe70() const;   // C3: was free FUN_140affe70
+};
 class Unk_Vec2Pair;
+// the class's own unit defines s_instance / GetInstance out of line (explicit specializations): only declared here, so
+// this obj does not instantiate a second copy (LNK2005 in the full-exe link)
+template<> class TSingleton<CameraMgr> { public: static CameraMgr* s_instance; static CameraMgr* GetInstance(); };
 class Unk_Vec2 {
 public:
     float m_x, m_y;
@@ -623,13 +644,15 @@ class Unk_Vec2Pair {
 public:
     float m_x, m_y;
 };
-void* FUN_1409478c0();
-int FUN_140a18070(void*);
+class CameraMgr   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140a18070();
+};
 // CameraMgr::FUN_140a17e10 returns a Vector3 (12 bytes) by value. The type has a user ctor (never called here), so it
 // is returned through a hidden pointer and is not a /GS buffer.
 struct Unk_HlpVec3 { float m_x, m_y, m_z; Unk_HlpVec3(const Unk_HlpVec3& o); };
 struct Unk_HlpCamera { Unk_HlpVec3 FUN_140a17e10(); };
-float FUN_140affe70(Unk_Vec2Pair*);
 float FUN_141032df0(void*);
 float FUN_141032e60(void*);
 const float& FUN_1409ffe80(const float&, const float&);
@@ -649,22 +672,22 @@ float FUN_1412762d0(const Unk_Point2* pPos)
     float fT;
     float fBase;
     float fZoom;
-    if (FUN_140a18070(FUN_1409478c0()) == 0)
+    if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a18070() == 0)
         return 0.0f;
-    Unk_HlpVec3 vOrigin = ((Unk_HlpCamera*)FUN_1409478c0())->FUN_140a17e10();
+    Unk_HlpVec3 vOrigin = ((Unk_HlpCamera*)TSingleton<CameraMgr>::GetInstance())->FUN_140a17e10();
     Unk_Vec2 vFromBuf, vToBuf;
     Unk_Vec2Pair vDelta;
-    fLength = FUN_140affe70(vToBuf.FUN_140a0a600(vOrigin.m_x, vOrigin.m_y)->FUN_140a4e500(&vDelta, vFromBuf.FUN_140a0a600(pPos->m_x, pPos->m_y)));
+    fLength = ((struct Unk_Point2*)(class Unk_Vec2Pair*)(vToBuf.FUN_140a0a600(vOrigin.m_x, vOrigin.m_y)->FUN_140a4e500(&vDelta, vFromBuf.FUN_140a0a600(pPos->m_x, pPos->m_y))))->FUN_140affe70();
     fBase = -40.0f;
     fRange = 70.0f;
-    fZoomRaw = FUN_141032df0(FUN_1409478c0());
+    fZoomRaw = FUN_141032df0(TSingleton<CameraMgr>::GetInstance());
     if (fLength <= fZoomRaw)
         fRatio = 1.0f;
     else
         fRatio = fZoomRaw / fLength;
     fZoom = fRatio;
     fMaxAngle = 90.0f;
-    fAngle = FUN_141032e60(FUN_1409478c0());
+    fAngle = FUN_141032e60(TSingleton<CameraMgr>::GetInstance());
     fZero = 0.0f;
     fT = FUN_140805fc0(fZero, FUN_1409ffe80(fAngle, fMaxAngle));
     return FUN_14028aed0((fBase + (fRange * fT) / 90.0f) * fZoom);
@@ -675,19 +698,26 @@ struct Unk_Info140e09150 {
     __int64 m_pad_00;
     float m_fValue;
 };
-void* FUN_1409a8b10();
-Unk_Info140e09150* FUN_140e09150(void*);
+class Unk_ChaosSettings   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_ChaosOpt* FUN_140e09150();
+};
 
 // @0x141276460
 float FUN_141276460()
 {
-    return FUN_140e09150(FUN_1409a8b10())->m_fValue;
+    return ((struct Unk_Info140e09150*)((class Unk_ChaosSettings*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_140e09150())->m_fValue;
 }
 MS2_REPLACE(0x141276460, FUN_141276460, 27, 0x15D9A2BD);
 
 // ---- screen scale -----------------------------------------------------------------------------------------------------
-int FUN_1422b9dc0(void*);
-int FUN_1422b9e00(void*);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSceneId();
+    int GetSubSceneId();
+};
 void* FUN_1408e57f0();
 bool FUN_14028d470(float, float);
 
@@ -696,9 +726,9 @@ float FUN_141276490(float fWidth, float fHeight);
 // @0x141276490
 float FUN_141276490(float fWidth, float fHeight)
 {
-    if (FUN_1422b9dc0(FUN_1408e57f0()) == 0x6200018)
+    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId() == 0x6200018)
         return 1.0f;
-    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
+    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
         fHeight = 1.0f;
     const Unk_ScaleMap::CPair* pPair = s_scaleCache.Lookup(Unk_ScreenKey(fWidth, fHeight));
     if (pPair != 0)
@@ -744,7 +774,11 @@ public:
     void* m_00; void* m_08;
 };
 void FUN_1422e0b80(Unk_ConsoleView*, const CString&);
-void FUN_1422e4720(Unk_ConsoleView*);
+class ASTextArea   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1422e4720();
+};
 void FUN_1422e1430(Unk_ConsoleView*, const CStringW&);
 CStringW FUN_14183e930(const CStringW&, int nColor);
 CStringW FUN_14061ad70(const CStringW&, const wchar_t*);
@@ -766,7 +800,7 @@ void FUN_141276790(Unk_ConsoleRef console)
 {
     Unk_ConsoleView* pView = console.FUN_140c270b0();
     pView->vfunc_24(true);
-    FUN_1422e4720(console.FUN_140c270b0());
+    ((class ASTextArea*)(class Unk_ConsoleView*)(console.FUN_140c270b0()))->FUN_1422e4720();
 }
 MS2_REPLACE(0x141276790, FUN_141276790, 88, 0x0E6E447B);
 
@@ -815,13 +849,13 @@ public:
     void* m_00; void* m_08;
 };
 class Unk_TextFilterMgr { public: Unk_TextFilterPtr FUN_140229a50(); };
-Unk_TextFilterMgr* FUN_14025e7d0();
+class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
 // @0x141276a30
 int FUN_141276a30(const CStringW& str, CStringW& strOut)
 {
     {
-        Unk_TextFilterPtr filter = FUN_14025e7d0()->FUN_140229a50();
+        Unk_TextFilterPtr filter = reinterpret_cast<Unk_TextFilterMgr*>(((class Unk_TextFilterMgr*)FUN_14025e7d0()))->FUN_140229a50();
         if (filter.FUN_14025cea0() != 0) {
             if (FUN_140225210(filter.FUN_14025cf10(), str, strOut, 1) != 0)
                 return 0;
@@ -835,7 +869,7 @@ MS2_REPLACE(0x141276a30, FUN_141276a30, 139, 0x026130D4);
 int FUN_141276ad0(const CStringW& strName, int* pnResult, unsigned nMask)
 {
     if ((nMask & 4) != 0) {
-        PCBase* pPlayer = static_cast<PCBase*>(FUN_141bd0cc0(FUN_1403ed2d0()));
+        PCBase* pPlayer = static_cast<PCBase*>(((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer != 0) {
             if (strName.CompareNoCase(pPlayer->vfunc_77()) == 0) {
                 *pnResult = 4;
@@ -844,7 +878,7 @@ int FUN_141276ad0(const CStringW& strName, int* pnResult, unsigned nMask)
         }
     }
     if ((nMask & 2) != 0) {
-        Unk_TextFilterPtr filter = FUN_14025e7d0()->FUN_140229a50();
+        Unk_TextFilterPtr filter = reinterpret_cast<Unk_TextFilterMgr*>(((class Unk_TextFilterMgr*)FUN_14025e7d0()))->FUN_140229a50();
         if (filter.FUN_14025cea0() != 0) {
             CStringW strOut;
             if (FUN_140225210(filter.FUN_14025cf10(), strName, strOut, 0) != 0) {
@@ -862,7 +896,7 @@ MS2_REPLACE(0x141276ad0, FUN_141276ad0, 413, 0x0BBFEC7E);
 int FUN_141276c80(const CStringW& strName, bool bCheckSelf, CStringW& strOut)
 {
     if (bCheckSelf) {
-        PCBase* pPlayer = static_cast<PCBase*>(FUN_141bd0cc0(FUN_1403ed2d0()));
+        PCBase* pPlayer = static_cast<PCBase*>(((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer != 0) {
             if (strName.CompareNoCase(pPlayer->vfunc_77()) == 0) {
                 strOut = GetStringCommon(0);
@@ -871,7 +905,7 @@ int FUN_141276c80(const CStringW& strName, bool bCheckSelf, CStringW& strOut)
         }
     }
     {
-        Unk_TextFilterPtr filter = FUN_14025e7d0()->FUN_140229a50();
+        Unk_TextFilterPtr filter = reinterpret_cast<Unk_TextFilterMgr*>(((class Unk_TextFilterMgr*)FUN_14025e7d0()))->FUN_140229a50();
         if (filter.FUN_14025cea0() != 0) {
             int nResult = FUN_140225210(filter.FUN_14025cf10(), strName, strOut, 0);
             return nResult;
@@ -884,7 +918,7 @@ MS2_REPLACE(0x141276c80, FUN_141276c80, 378, 0xC17F18AE);
 // @0x141276e00
 int FUN_141276e00(const CStringW& strName, CStringW& strOut)
 {
-    PCBase* pPlayer = static_cast<PCBase*>(FUN_141bd0cc0(FUN_1403ed2d0()));
+    PCBase* pPlayer = static_cast<PCBase*>(((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0) {
         bool bSame = strName.CompareNoCase(pPlayer->vfunc_77()) == 0;
         if (bSame) {
@@ -893,7 +927,7 @@ int FUN_141276e00(const CStringW& strName, CStringW& strOut)
         }
     }
     {
-        Unk_TextFilterPtr filter = FUN_14025e7d0()->FUN_140229a50();
+        Unk_TextFilterPtr filter = reinterpret_cast<Unk_TextFilterMgr*>(((class Unk_TextFilterMgr*)FUN_14025e7d0()))->FUN_140229a50();
         if (filter.FUN_14025cea0() != 0) {
             int nResult = FUN_140225210(filter.FUN_14025cf10(), strName, strOut, 0);
             if (nResult != 0)
@@ -922,7 +956,7 @@ public:
     void* m_00; void* m_08;
 };
 class Unk_PenaltyMgr { public: Unk_PenaltyPtr FUN_140a2f620(int nKind); };
-Unk_PenaltyMgr* FUN_140a6a830();
+class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 CStringW FUN_140a2fcd0(__int64 nBegin, __int64 nEnd);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 void FUN_140710590(COutPacket&);
@@ -950,7 +984,7 @@ int FUN_141276f80(Unk_CommandChat* pChat)
         }
     }
     {
-        Unk_PenaltyPtr penalty = FUN_140a6a830()->FUN_140a2f620(2);
+        Unk_PenaltyPtr penalty = reinterpret_cast<Unk_PenaltyMgr*>(((class Unk_PenaltyMgr*)FUN_140a6a830()))->FUN_140a2f620(2);
         if (penalty.FUN_1401cb3d0() != 0) {
             if (penalty.FUN_1401cb410()->m_nKind == 2) {
                 FUN_1412751b0(GetStringCommon(0x433), 0x14);
@@ -963,7 +997,7 @@ int FUN_141276f80(Unk_CommandChat* pChat)
         }
     }
     if (DAT_143ab2914 < 0x32) {
-        int nRestricted = reinterpret_cast<Unk_ChatWorldView*>(FUN_1403ed2d0())->FUN_141bd30a0().FUN_140885340()->FUN_140375660(0x100);
+        int nRestricted = reinterpret_cast<Unk_ChatWorldView*>(WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->FUN_140375660(0x100);
         if (nRestricted != 0) {
             FUN_1412751b0(GetStringCommonByKey(L"s_field_limit_content_chat"), 0x14);
             return 0;
@@ -1089,7 +1123,7 @@ public:
     void* m_00; void* m_08;
 };
 class Unk_LapenMgr { public: Unk_LapenPtr FUN_1405b56a0(int nItemId); };
-Unk_LapenMgr* FUN_1409c4b30();
+class Unk_SlotLapenTable* FUN_1409c4b30();   // C3: was FUN_1409c4b30
 
 CStringW FUN_141277be0(Unk_IconItemPtr item);
 CStringW FUN_141277b90(const CStringW& str);
@@ -1137,7 +1171,7 @@ MS2_REPLACE(0x141277b90, FUN_141277b90, 59, 0x41F5801C);
 // @0x141277be0
 CStringW FUN_141277be0(Unk_IconItemPtr item)
 {
-    Unk_LapenPtr lapen = FUN_1409c4b30()->FUN_1405b56a0(item.FUN_1401b52a0()->FUN_14053c510());
+    Unk_LapenPtr lapen = reinterpret_cast<Unk_LapenMgr*>(((class Unk_LapenMgr*)FUN_1409c4b30()))->FUN_1405b56a0(item.FUN_1401b52a0()->FUN_14053c510());
     if (lapen.FUN_140c6a370() != 0) {
         switch (lapen.FUN_1405b70e0()->m_nColor)
         {
@@ -1214,7 +1248,7 @@ MS2_REPLACE(0x141277f60, FUN_141277f60, 367, 0xF155C2F4);
 // @0x1412780f0
 unsigned FUN_1412780f0(Unk_McValue<unsigned>* pSlot)
 {
-    return FUN_14056d500(FUN_140a81910(pSlot));
+    return Unk_ColorValue(*(struct Unk_ConstColor const*)(FUN_140a81910(pSlot)));
 }
 MS2_REPLACE(0x1412780f0, FUN_1412780f0, 32, 0x2D2EB095);
 

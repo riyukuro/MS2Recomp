@@ -5,6 +5,7 @@ look-alike order	client/ms2/instrumentmanager.cpp: std::allocator: name-order fa
 look-alike order	client/ms2/soundproperty.cpp: std::_Tree: name-order family disagrees with the evidence families
 look-alike order	client/ms2/soundproperty.cpp: std::_Tree_comp_alloc: name-order family disagrees with the evidence families
 look-alike order	client/ms2/soundproperty.cpp: std::allocator: name-order family disagrees with the evidence families
+look-alike order	client/ms2/uiitemoptioncreatedialog.cpp: std::_Func_impl_no_alloc: name-order family disagrees with the evidence families
 look-alike order	client/ms2/worldservice_6.cpp: ATL::CAtlMap: name-order family disagrees with the evidence families
 look-alike order	commonfiles/setiteminfo_2.cpp: std::allocator: name-order family disagrees with the evidence families
 look-alike order	unnamed/unit_14045b740_gameeventvaluecontainercomdat.cpp: MS2Ptr: name-order family disagrees with the evidence families
@@ -523,6 +524,7 @@ pin already attributed	scaleform/gfx/sfr_gfx_07h.cpp: MS2-PIN ?FUN_14261fd80@GFx
 pin already attributed	scaleform/render/sfr_render_01.cpp: MS2-PIN ??_G?$RefCountBase@VTextureManagerLocks@Render@Scaleform@@$0EL@@Scaleform@@UEAAPEAXI@Z 0x142579a00: already attributed (tag), ignored
 pin already attributed	scaleform/render/sfr_render_02c.cpp: MS2-PIN ??_G?$RefCountBase@VFilterSet@Render@Scaleform@@$01@Scaleform@@UEAAPEAXI@Z 0x1425e7aa0: already attributed (tag), ignored
 pin already attributed	scaleform/render/sfr_render_02c.cpp: MS2-PIN ??_G?$RefCountBaseStatImpl@VRefCountImpl@Scaleform@@$01@Scaleform@@UEAAPEAXI@Z 0x1425e7aa0: already attributed (tag), ignored
+pin already attributed	scaleform/render/sfr_render_04h.cpp: MS2-PIN ?ExecuteHW@?$DICommand_SourceRectImpl@UDICommand_ApplyFilter@Render@Scaleform@@@Render@Scaleform@@UEBAXAEAUDICommandContext@23@@Z 0x142671f40: already attributed (tag), ignored
 pin already attributed	scaleform/render/sfr_render_05x.cpp: MS2-PIN ?SmoothNoise@PerlinGenerator@Render@Scaleform@@AEAAMHH@Z 0x142678210: already attributed (tag), ignored
 pin already attributed	scaleform/video/sfr_video_01.cpp: MS2-PIN ??0LocationInfo@URLBuilder@GFx@Scaleform@@QEAA@W4FileUse@123@AEBVString@3@1@Z 0x140004290: already attributed (tag), ignored
 pin already attributed	scaleform/video/sfr_video_01.cpp: MS2-PIN ??4?$Ptr@VVideoImage@Video@GFx@Scaleform@@@Scaleform@@QEAAAEBV01@PEAVVideoImage@Video@GFx@1@@Z 0x140003a70: already attributed (tag), ignored
@@ -1381,6 +1383,7 @@ pin names no function	client/ms2/uiblackmarketpage.cpp: MS2-PIN ?OnInit@?$Delega
 pin names no function	client/ms2/uiblackmarketpage.cpp: MS2-PIN ?OnInit@?$DelegateImpl@U?$pair@PEAVBlackMarketPageItemSearch@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uiblueprintmarketdialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIBlueprintMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uiblueprintmarketdialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIBlueprintMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
+pin names no function	client/ms2/uicashattenddialog.cpp: MS2-PIN ??$FUN_140e159f0@VUnk_CadGiftList@@@AScript@@QEAA?AV?$MS2Ptr@VUnk_CadGiftList@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z: no such function in the obj
 pin names no function	client/ms2/uichatballoon.cpp: MS2-PIN ??0Unk_CbInfoPtr@@QEAA@AEBVUnk_CbNpcDataPtr@@@Z: no such function in the obj
 pin names no function	client/ms2/uichatballoon.cpp: MS2-PIN ??0Unk_CbItemPtr@@QEAA@H@Z: no such function in the obj
 pin names no function	client/ms2/uichatballoon.cpp: MS2-PIN ??0Unk_CbPtr@@QEAA@H@Z: no such function in the obj
@@ -1408,6 +1411,7 @@ pin names no function	client/ms2/uientereventfielddialog.cpp: MS2-PIN ?GetTypeNa
 pin names no function	client/ms2/uientereventfielddialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIEnterEventFieldDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uifishingbookdialog.cpp: MS2-PIN ??BUnk_FbListRef@@QEAAPEAVUnk_FbCtl@@XZ: no such function in the obj
 pin names no function	client/ms2/uifishingbookdialog.cpp: MS2-PIN ??BUnk_FbTextRef@@QEAAPEAVASTextField@@XZ: no such function in the obj
+pin names no function	client/ms2/uigamerankingdialog.cpp: MS2-PIN ??0?$MS2Ptr@VUnk_RankList@@@@QEAA@H@Z: no such function in the obj
 pin names no function	client/ms2/uigamerankingdialog.cpp: MS2-PIN ?get@?$MS2Ptr@VUnk_RankInput@@@@QEBAPEAVUnk_RankInput@@XZ: no such function in the obj
 pin names no function	client/ms2/uiguilddialog.cpp: MS2-PIN ??$FUN_14028dfa0@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@HV12@V12@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBV01@1AEBH11@Z: no such function in the obj
 pin names no function	client/ms2/uiguilddialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj

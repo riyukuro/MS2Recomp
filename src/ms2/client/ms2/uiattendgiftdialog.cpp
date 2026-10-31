@@ -40,6 +40,9 @@
 #include "ms2/placeholder/cmycharacter.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/itempreview.h"
+#include "ms2/placeholder/cadbannermanagercli.h"
 
 static CString s_marketSort[]={"None","Buy","PriceLow","PriceHigh","Create","ChartOrder","BuyTotal","EnumEnd"};
 static CString s_shopSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
@@ -59,7 +62,7 @@ class Unk_140933220 { public:
     void FUN_140da5430(int,Delegate<void(GameEventVariable*)>);
     void FUN_140da5490(int,Delegate<void(GameEventVariable*)>);
 };
-Unk_140933220* FUN_140933220();
+class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 class Unk_14070f480 { public:
     virtual ~Unk_14070f480();
     virtual unsigned char vfunc_1();
@@ -162,7 +165,7 @@ class Unk_AttendUIMgr { public:
     virtual void p40();virtual void p41();virtual void p42();
     virtual void vfunc_43(int,int,int);
 };
-Unk_AttendUIMgr* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 class CMsgBoxData { public: bool FUN_141a04aa0() const; __int64 FUN_141a02f10(int,__int64) const; };
 class Unk_AttendMsgBox { public:
     void FUN_141a01800(int);
@@ -182,17 +185,14 @@ CStringW FUN_140b8e910(const Unk_AttendDate&);
 CStringW FUN_14083bab0(const Unk_AttendDate&,CStringW);
 CStringW FUN_1408f71a0(CStringW,const CStringW&,const CStringW&);
 CStringW FUN_1405c2690(CStringW,const CStringW&);
-class Unk_1401a9d70 { public: CStringW FUN_141811980(int,int); };
-Unk_1401a9d70* FUN_1401a9d70();
-WorldService* FUN_1403ed2d0();
 class Unk_AttendCtl { public: bool FUN_14116dcb0(int,int,int); };
-Unk_AttendCtl* FUN_14025e7c0();
-class Unk_AttendCursor { public: int FUN_140d40670(); void FUN_140d40120(MS2Ptr<CItem>,int); };
-Unk_AttendCursor* FUN_1409bb9e0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+class Unk_AttendCursor : public ItemPreviewMgr { public: void FUN_140d40120(MS2Ptr<CItem>,int); };
+class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
 MS2Ptr<CItem> FUN_140ebc360(int,int);
 void FUN_140cfee80(const Scaleform::GFx::Value&,CString,CStringW);
 void FUN_140cff840(const Scaleform::GFx::Value&,CString,int);
-unsigned FUN_140bd09c0(void*);
+int FUN_140bd09c0(void*);   // C3: was FUN_140bd09c0
 void* FUN_140bd09d0(unsigned);
 void FUN_1418fe220(const CString&);
 void FUN_1418fe1c0(const CString&);
@@ -204,7 +204,6 @@ class Unk_14016e5a0 { public:
 };
 MS2_CHECK_OFFSET(Unk_14016e5a0,link,0x38);
 class Unk_1409fb930 { public: MS2Ptr<Unk_14016e5a0> FUN_14096b3e0(int); };
-Unk_1409fb930* FUN_1409fb930();
 CString FUN_14016a600(const wchar_t*,int);
 CStringW FUN_14016a730(const char*,int);
 CString FUN_141029ca0(const CString&);
@@ -223,15 +222,15 @@ UIAttendGiftDialog::UIAttendGiftDialog() : m_eventId(0)
     FUN_141924170(1);
     m_80=0;
     FUN_140bccd50()->FUN_140da5180(0xa4,Delegate<void(CInPacket&)>(this,&UIAttendGiftDialog::FUN_14102ebb0));
-    FUN_140933220()->FUN_140da5430(0x69,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d650));
-    FUN_140933220()->FUN_140da5430(0x66,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d610));
+    ((class Unk_140933220*)FUN_140933220())->FUN_140da5430(0x69,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d650));
+    ((class Unk_140933220*)FUN_140933220())->FUN_140da5430(0x66,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d610));
 }
 // @0x14102b7f0
 UIAttendGiftDialog::~UIAttendGiftDialog()
 {
     FUN_140bccd50()->FUN_140da51e0(0xa4,Delegate<void(CInPacket&)>(this,&UIAttendGiftDialog::FUN_14102ebb0));
-    FUN_140933220()->FUN_140da5490(0x69,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d650));
-    FUN_140933220()->FUN_140da5490(0x66,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d610));
+    ((class Unk_140933220*)FUN_140933220())->FUN_140da5490(0x69,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d650));
+    ((class Unk_140933220*)FUN_140933220())->FUN_140da5490(0x66,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d610));
 }
 // @0x14102bab0
 CString UIAttendGiftDialog::GetTypeName() { return "AttendGiftDialog"; }
@@ -443,7 +442,7 @@ void UIAttendGiftDialog::OnLoadComplete()
         COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(2); FUN_140710590(packet);
     }
     FUN_14102d690();
-    FUN_140d86260()->vfunc_43(2,0,1000);
+    ((class Unk_AttendUIMgr*)FUN_140d86260())->vfunc_43(2,0,1000);
 }
 MS2_REPLACE_METHOD(0x14102BB00, UIAttendGiftDialog, OnLoadComplete, 2719, 0xE93CB0C4);
 // @0x14102cdc0
@@ -564,7 +563,7 @@ void UIAttendGiftDialog::FUN_14102da40()
                     MS2Ptr<CItem> item(new CItem);
                     Unk_AttendItem* it3=&reward->m_item;
                     if(item->FUN_14052b130(id,it3->vfunc_1(),0)) {
-                        ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(),8,2);
+                        ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(),8,2);
                         if(tip.FUN_1409e0d40(item.get())) {
                             tip.FUN_1409c6dc0(1);
                             slot.FUN_1409adbe0("tooltip",tip.FUN_1422bb870());
@@ -580,7 +579,7 @@ void UIAttendGiftDialog::FUN_14102da40()
     CStringW strPeriod;
     if(m_selected->FUN_140ce3960()==2 && !FUN_140931510()->FUN_140d9f530(m_selected->FUN_1402e1d00())) {
         int nItemId=m_selected->FUN_140ce3980();
-        strPeriod=FUN_1405c2690(L"s_attend_gift_item_require",FUN_1401a9d70()->FUN_141811980(1,nItemId));
+        strPeriod=FUN_1405c2690(L"s_attend_gift_item_require",TSingleton<CStringTable>::GetInstance()->FUN_141811980(1,nItemId));
     } else {
         strPeriod=FUN_1408f71a0(L"s_attendGift_event_period",FUN_14083bab0(m_selected->FUN_140ce3aa0(),L"/"),FUN_14083bab0(m_selected->FUN_140ce3ae0(),L"/"));
     }
@@ -641,7 +640,7 @@ MS2_REPLACE_METHOD(0x14102ED90, UIAttendGiftDialog, FUN_14102ed90, 734, 0x1FFE8C
 void UIAttendGiftDialog::FUN_14102f180(ASData& data)
 {
     if(m_30==0) return;
-    if(!FUN_14025e7c0()->FUN_14116dcb0(0x49406,0,0)) return;
+    if(!((class Unk_AttendCtl*)FUN_14025e7c0())->FUN_14116dcb0(0x49406,0,0)) return;
     Scaleform::GFx::Value args=data.FUN_1422b9260();
     ASSlot slot(args,FUN_1422db730());
     if(slot.FUN_1422ba9a0()) return;
@@ -649,7 +648,7 @@ void UIAttendGiftDialog::FUN_14102f180(ASData& data)
     int b=slot.FUN_1409c37f0();
     MS2Ptr<CItem> item=FUN_140ebc360(a,b);
     if(item==0) return;
-    if(FUN_1409bb9e0()->FUN_140d40670()) FUN_1409bb9e0()->FUN_140d40120(item,0);
+    if(((class Unk_AttendCursor*)FUN_1409bb9e0())->IsHudOn()) ((class Unk_AttendCursor*)FUN_1409bb9e0())->FUN_140d40120(item,0);
 }
 MS2_REPLACE_METHOD(0x14102F180, UIAttendGiftDialog, FUN_14102f180, 435, 0xBEDCF0BE);
 // @0x141030e20
@@ -674,7 +673,7 @@ MS2_REPLACE_METHOD(0x141030FE0, UIBannerAdvertisingDialog, vfunc_43, 170, 0xA0A5
 void UIBannerAdvertisingDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    MS2Ptr<Unk_14016e5a0> data=FUN_1409fb930()->FUN_14096b3e0(5);
+    MS2Ptr<Unk_14016e5a0> data=reinterpret_cast<Unk_1409fb930*>(TSingleton<CAdBannerManagerCli>::GetInstance())->FUN_14096b3e0(5);
     if(data.get()) FUN_141031320(data->image,data->link);
 }
 MS2_REPLACE_METHOD(0x141031090, UIBannerAdvertisingDialog, OnLoadInit, 138, 0x442960D7);

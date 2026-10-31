@@ -25,8 +25,6 @@
 #include "ms2/commonfiles/filesystem.h"
 
 // The table file loader helpers.
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 CString FUN_14016a5c0(const char* psz, int n);
 
@@ -126,7 +124,7 @@ bool CRankingArenaDataTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "pvpRankingDuelMode.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

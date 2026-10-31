@@ -25,6 +25,9 @@
 // The statics of the unit's .text$di (the name tables of the shop tabs, the pointer handle and the shared id map).
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uichatballoon_ptr.h"
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/cquestnavigator.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/camera.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
 
 using namespace QuestNavigation;
@@ -45,28 +48,21 @@ public:
     Vector3 FUN_141447c80();                            // its position
 };
 class Unk_SSGNamedObj : public CLiftableObject {};
-class Unk_SSGWorld
+class Unk_SSGWorld : public WorldService
 {
 public:
-    int FUN_141bd3060();                                        // current channel's map id
     MS2Ptr<CPortal> FUN_141bc2800(int nId);                     // a field object by id
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);   // find one by name
     Unk_SSGNpc* FUN_141bd1320(int nId);
     MS2Ptr<Unk_SSGNamedObj> FUN_141bc5a20(CString strName);     // a named field object
     MyPC* FUN_141bd0cc0();                                      // the local player actor
 };
-Unk_SSGWorld* FUN_1403ed2d0();
-class Unk_QgNavi
+class Unk_QgNavi : public CQuestNavigator
 {
-public:
-    TraceResult* FUN_140c9ac60();                               // the current trace
-    TraceContext* FUN_140c9adf0();                              // the current trace context
-    bool FUN_140c9af60();                                        // nonzero: the player's arrow is shown
 };
 extern Unk_QgNavi* DAT_143abf7e8;                              // the quest navigator
 Unk_QgNavi* FUN_140e7c990() { return DAT_143abf7e8; }           // 0x140e7c990
 class Unk_QgCamera { public: bool FUN_140af0700(const Vector3& ptWorld, Vector3& rptScreen); };
-Unk_QgCamera* FUN_1409478c0();
 class Unk_QgUIScale;
 Unk_QgUIScale* FUN_14025e7a0();
 float FUN_1422afec0(Unk_QgUIScale* pScale, int nMovie);
@@ -141,7 +137,7 @@ void NavigationEntity::vfunc_4(const TraceResult* pResult)
     if (m_18 == 0)
         return;
     Vector3 pt;
-    if (FUN_1409478c0()->FUN_140af0700(vfunc_7(), pt))
+    if (reinterpret_cast<Unk_QgCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(vfunc_7(), pt))
     {
         pt.FUN_140ad0c10(FUN_1422afec0(FUN_14025e7a0(), FUN_141277f40()));
         pt.y += vfunc_8();
@@ -216,7 +212,7 @@ void PcHudNavigationEntity::vfunc_4(const TraceResult* pResult)
 // @0x140e78c40
 Vector3 PcHudNavigationEntity::vfunc_7()
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pPC)
         return DAT_143b01a60;
     NiPoint3 pt = pPC->vfunc_18();
@@ -258,13 +254,13 @@ int NpcNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_40 == 0)
         return 0;
-    if (pResult->m_40->m_18 != FUN_1403ed2d0()->FUN_141bd3060())
+    if (pResult->m_40->m_18 != reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd3060())
         return 0;
     if (pResult->m_40->m_20.find(m_34) == pResult->m_40->m_20.end())
         return 0;
     if (pResult->m_1c == 2)
         return 0;
-    Unk_SSGNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_30);
+    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_30);
     if (!pNpc)
         return 0;
     if (pNpc->FUN_14166ce30())
@@ -277,7 +273,7 @@ int NpcNavigationEntity::vfunc_6(const TraceContext* pContext)
 {
     if (pContext->m_20.find(m_34) == pContext->m_20.end())
         return 0;
-    Unk_SSGNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_30);
+    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_30);
     if (!pNpc)
         return 0;
     if (pNpc->FUN_14166ce30())
@@ -288,7 +284,7 @@ int NpcNavigationEntity::vfunc_6(const TraceContext* pContext)
 // @0x140e79010
 Vector3 NpcNavigationEntity::vfunc_7()
 {
-    Unk_SSGNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_30);
+    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_30);
     if (pNpc)
     {
         NiAVObject* pNode = pNpc->FUN_141675150("Eff_UI");
@@ -334,11 +330,11 @@ int InteractNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_40 == 0)
         return 0;
-    if (pResult->m_40->m_18 != FUN_1403ed2d0()->FUN_141bd3060())
+    if (pResult->m_40->m_18 != reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd3060())
         return 0;
     if (pResult->m_40->m_30.find(m_30) == pResult->m_40->m_30.end())
         return 0;
-    MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(m_38);
+    MS2Ptr<CInteractObject> spObj = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_38);
     if (spObj.IsNull())
         return 0;
     if (spObj->vfunc_7() == 0)
@@ -351,7 +347,7 @@ int InteractNavigationEntity::vfunc_6(const TraceContext* pContext)
 {
     if (pContext->m_30.find(m_30) == pContext->m_30.end())
         return 0;
-    MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(m_38);
+    MS2Ptr<CInteractObject> spObj = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_38);
     if (spObj.IsNull())
         return 0;
     if (spObj->vfunc_7() == 0)
@@ -362,7 +358,7 @@ int InteractNavigationEntity::vfunc_6(const TraceContext* pContext)
 // @0x140e79590
 Vector3 InteractNavigationEntity::vfunc_7()
 {
-    MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(m_38);
+    MS2Ptr<CInteractObject> spObj = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_38);
     if (spObj.get() != 0)
     {
         Vector3 pt = spObj->GetPos();
@@ -400,11 +396,11 @@ int LiftableNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_40 == 0)
         return 0;
-    if (pResult->m_40->m_18 != FUN_1403ed2d0()->FUN_141bd3060())
+    if (pResult->m_40->m_18 != reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd3060())
         return 0;
     if (pResult->m_40->m_40.find(m_30) == pResult->m_40->m_40.end())
         return 0;
-    MS2Ptr<Unk_SSGNamedObj> spObj = FUN_1403ed2d0()->FUN_141bc5a20(m_38);
+    MS2Ptr<Unk_SSGNamedObj> spObj = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc5a20(m_38);
     if (spObj.IsNull())
         return 0;
     if (!spObj->FUN_141447ae0() == false)
@@ -417,7 +413,7 @@ int LiftableNavigationEntity::vfunc_6(const TraceContext* pContext)
 {
     if (pContext->m_40.find(m_30) == pContext->m_40.end())
         return 0;
-    MS2Ptr<Unk_SSGNamedObj> spObj = FUN_1403ed2d0()->FUN_141bc5a20(m_38);
+    MS2Ptr<Unk_SSGNamedObj> spObj = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc5a20(m_38);
     if (spObj.IsNull())
         return 0;
     if (!spObj->FUN_141447ae0() == false)
@@ -428,7 +424,7 @@ int LiftableNavigationEntity::vfunc_6(const TraceContext* pContext)
 // @0x140e79b20
 Vector3 LiftableNavigationEntity::vfunc_7()
 {
-    MS2Ptr<Unk_SSGNamedObj> spObj = FUN_1403ed2d0()->FUN_141bc5a20(m_38);
+    MS2Ptr<Unk_SSGNamedObj> spObj = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc5a20(m_38);
     if (spObj.IsNull())
         return DAT_143b01a60;
     Vector3 pt = spObj->FUN_141447c80();
@@ -465,7 +461,7 @@ int PortalNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_1c != 4)
         return 0;
-    MS2Ptr<CPortal> spPortal = FUN_1403ed2d0()->FUN_141bc2800(m_30);
+    MS2Ptr<CPortal> spPortal = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc2800(m_30);
     if (spPortal.IsNull())
         return 0;
     if (spPortal->FUN_14169d2f0().FUN_140552700(reinterpret_cast<const Vector3&>(pResult->m_20)))   // efd::Point3 !=
@@ -478,7 +474,7 @@ int PortalNavigationEntity::vfunc_5(const TraceResult* pResult)
 // @0x140e79e50
 Vector3 PortalNavigationEntity::vfunc_7()
 {
-    MS2Ptr<CPortal> spPortal = FUN_1403ed2d0()->FUN_141bc2800(m_30);
+    MS2Ptr<CPortal> spPortal = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc2800(m_30);
     if (spPortal.get() != 0)
     {
         Vector3 pt = spPortal->FUN_14169d2f0();
@@ -556,8 +552,8 @@ void UIQuestNavigation::vfunc_15()
     UISwfEntity::vfunc_15();
     if (m_30.IsNull())
         return;
-    TraceResult* pResult = FUN_140e7c990()->FUN_140c9ac60();
-    TraceContext* pContext = FUN_140e7c990()->FUN_140c9adf0();
+    TraceResult* pResult = FUN_140e7c990()->Result();
+    TraceContext* pContext = FUN_140e7c990()->Context();
     for (POSITION pos = m_entities.GetStartPosition(); pos != 0; m_entities.GetNext(pos))
     {
         MS2Ptr<NavigationEntity> spEntity = m_entities.GetValueAt(pos);

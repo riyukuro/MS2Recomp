@@ -18,6 +18,8 @@
 #include <NiFloatExtraData.h>
 #include <NiZBufferProperty.h>
 #include <NiPropertyState.h>
+#include <NiPSMeshParticleSystem.h>
+#include "ms2/client/ms2/material/ms2materials.h"
 
 // ---- out-of-unit callees (the same ones ?\ms2renderlistprocessor.cpp uses) ----
 // The post-processing service: the mode of every scene root.
@@ -27,23 +29,25 @@ public:
     char m_pad0[0x68];
     std::map<NiNodePtr, int> m_kRootModes;                  // +0x68
 };
-Unk_OgPostProcessSvc* FUN_1409a8b20();
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 // A material-table entry; only its state word (+0x540) is read here.
-struct Unk_OgMaterialTable;                                 // DAT_143d69198 (MS2StandardMaterial RTTI)
 struct Unk_OgMaterialEntry
 {
     char m_pad[0x540];
     unsigned m_nState;
     bool IsActive() const { return m_nState - 1 <= 2; }
 };
-extern Unk_OgMaterialTable DAT_143d69198;
-Unk_OgMaterialEntry* FUN_140a17af0(Unk_OgMaterialTable* pTable, const NiMaterial* pMaterial);   // table lookup, NULL-safe
-int FUN_140ef4dd0(Unk_OgMaterialEntry* pEntry);             // colour-shift mode refresh
-extern const NiRTTI DAT_143afbfd0;
-extern const NiRTTI DAT_143afa620;                          // NiFloatExtraData::ms_RTTI
+class Unk_CubeKind   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140ef4dd0();
+};
 extern NiFixedString DAT_143ae5130;                         // colour-shift float extra data
 extern NiFixedString DAT_143ae5138;                         // colour-shift float extra data
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);    // dynamic cast through an NiRTTI
 NiNode* FUN_141d15010(NiAVObject* pkObject);                // topmost ancestor of the object
 
 // @0x1414d2460
@@ -56,25 +60,25 @@ void MS2OuterGlowMaterialSwapProcessor::PreRenderProcessList(const NiVisibleArra
     for (unsigned int ui = 0; ui < uiCount; ui++)
     {
         NiRenderObject* pkObject = &pkInput->GetAt(ui);
-        Unk_OgMaterialEntry* pkEntry = FUN_140a17af0(&DAT_143d69198, pkObject->GetActiveMaterial());
+        Unk_OgMaterialEntry* pkEntry = ((struct Unk_OgMaterialEntry*)NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, pkObject->GetActiveMaterial()));
         if (pkEntry != 0 && pkEntry->IsActive())
         {
             kGlow.Add(*pkObject);
             continue;
         }
-        if (FUN_14098d8d0(&DAT_143afbfd0, pkObject) != 0)
+        if (NiObject::DynamicCast(&NiPSMeshParticleSystem::ms_RTTI, (class NiObject const*)(pkObject)) != 0)
         {
             kRest.Add(*pkObject);
             continue;
         }
-        Unk_OgMaterialEntry* pkEntry2 = FUN_140a17af0(&DAT_143d69198, pkObject->GetActiveMaterial());
+        Unk_OgMaterialEntry* pkEntry2 = ((struct Unk_OgMaterialEntry*)NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, pkObject->GetActiveMaterial()));
         if (pkEntry2 != 0 && !pkEntry2->IsActive())
         {
             kRest.Add(*pkObject);
             continue;
         }
-        std::map<NiNodePtr, int>::const_iterator it = FUN_1409a8b20()->m_kRootModes.find(FUN_141d15010(pkObject));
-        if (it == FUN_1409a8b20()->m_kRootModes.end())
+        std::map<NiNodePtr, int>::const_iterator it = ((class Unk_OgPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.find(FUN_141d15010(pkObject));
+        if (it == ((class Unk_OgPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.end())
         {
             kRest.Add(*pkObject);
             continue;
@@ -84,12 +88,12 @@ void MS2OuterGlowMaterialSwapProcessor::PreRenderProcessList(const NiVisibleArra
         {
             if (iMode == 4)
             {
-                if (FUN_14098d8d0(&DAT_143afa620, pkObject->GetExtraData(DAT_143ae5130)) == 0)
+                if (NiObject::DynamicCast(&NiFloatExtraData::ms_RTTI, (class NiObject const*)(pkObject->GetExtraData(DAT_143ae5130))) == 0)
                     pkObject->AddExtraData(DAT_143ae5130, NiNew NiFloatExtraData(0.3f));
-                if (FUN_14098d8d0(&DAT_143afa620, pkObject->GetExtraData(DAT_143ae5138)) == 0)
+                if (NiObject::DynamicCast(&NiFloatExtraData::ms_RTTI, (class NiObject const*)(pkObject->GetExtraData(DAT_143ae5138))) == 0)
                     pkObject->AddExtraData(DAT_143ae5138, NiNew NiFloatExtraData(0.7f));
-                Unk_OgMaterialEntry* pkEntry3 = FUN_140a17af0(&DAT_143d69198, pkObject->GetActiveMaterial());
-                if (pkEntry3 != 0 && FUN_140ef4dd0(pkEntry3) == 2)
+                Unk_OgMaterialEntry* pkEntry3 = ((struct Unk_OgMaterialEntry*)NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, pkObject->GetActiveMaterial()));
+                if (pkEntry3 != 0 && ((class Unk_CubeKind*)(struct Unk_OgMaterialEntry*)(pkEntry3))->FUN_140ef4dd0() == 2)
                     iMode = 5;
             }
             kGlow.Add(*pkObject);

@@ -17,17 +17,27 @@ typedef unsigned __int64 u64;
 // ---- out-of-unit callees ----
 // The actor's physics body (FUN_14166d220) and what the movement checks ask of it.
 class Unk_MotionBody;
-Unk_MotionBody* FUN_14166d220(PCBase* p);
-int FUN_141240780(Unk_MotionBody* p);                               // body is blocked (a)
-int FUN_141240db0(Unk_MotionBody* p);                               // body is blocked (b)
+class GameObjectController   // C3: member view for the former free stand-ins
+{
+public:
+    int IsJumping();
+    int IsLift();
+};
 // The motion record and the actor's skill state.
-float FUN_141759b60(Unk_MotionData* pData, double fTime);           // speed for this tick
-Unk_MotionTilt* FUN_141759830(Unk_MotionData* pData);
-float FUN_141759d20(Unk_MotionData* pData, double fTime, float fLimit);
-int FUN_1416719c0(PCBase* p);
+class CSkillRecord   // C3: member view for the former free stand-ins
+{
+public:
+    class SkillMotionData* FUN_141759830();
+    float FUN_141759b60(double);
+    float FUN_141759d20(double, float);
+};
 PCBase* FUN_140974230(PCBase* p);                                   // owning pc of the target
 void* FUN_1416561a0(PCBase* p);                                     // skill component
-float FUN_1411e0f50(void* pSkill, float fSpeed);                    // speed after skill bonuses
+class CEquipment   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1411e0f50(float);
+};
 bool FUN_14028d470(float a, float b);                               // nearly equal
 int FUN_14028d260(float f);                                         // float -> fixed
 Vector3 FUN_14123cc80(Vector3 kDir);                // facing direction -> move direction
@@ -40,7 +50,7 @@ struct Unk_MoveActor
 int FUN_1416725c0(PCBase* p, Vector3 kDir, float fSpeed, float fMax, float fZero);  // move is blocked
 float FUN_141b71550(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd);   // bezier length
 Vector3 FUN_141b71390(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd, float t);   // bezier point
-void* FUN_140166440();                                              // the logger
+class CLogString* GetLogString();   // C3: was FUN_140166440
 int FUN_141489940(PCBase* p);
 void FUN_1414894f0(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
                    const float* pA, const float* pB, const float* pC, const float* pD);
@@ -105,17 +115,17 @@ int CMotionController::vfunc_4()
 // @0x141488080
 bool CMotionController::vfunc_5(double fTime)
 {
-    m_fSpeed = FUN_141759b60(m_pData, fTime);
-    if (FUN_1416719c0(m_pTarget) != 0)
+    m_fSpeed = ((class CSkillRecord*)(struct Unk_MotionData*)(m_pData))->FUN_141759b60(fTime);
+    if (((class PCBase*)(class PCBase*)(m_pTarget))->FUN_1416719c0() != 0)
     {
         PCBase* pPc = FUN_140974230(m_pTarget);
         if (pPc != 0)
-            m_fSpeed = FUN_1411e0f50(FUN_1416561a0(pPc), m_fSpeed);
+            m_fSpeed = ((class CEquipment*)(void*)(FUN_1416561a0(pPc)))->FUN_1411e0f50(m_fSpeed);
     }
     Vector3 kDir;
     float fTiltSpeed = 0;
     float fTiltAngle = 0;
-    Unk_MotionTilt* pTilt = FUN_141759830(m_pData);
+    Unk_MotionTilt* pTilt = ((struct Unk_MotionTilt*)((class CSkillRecord*)(struct Unk_MotionData*)(m_pData))->FUN_141759830());
     if (pTilt != 0)
     {
         fTiltSpeed = pTilt->m_fSpeed;
@@ -201,7 +211,7 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     float fAngle = 0;
     float fCtrlHeight = 100.0f;
     float fCtrlWeight = 0.5f;
-    Unk_MotionTilt* pTilt = FUN_141759830(m_pData);
+    Unk_MotionTilt* pTilt = ((struct Unk_MotionTilt*)((class CSkillRecord*)(struct Unk_MotionData*)(m_pData))->FUN_141759830());
     if (pTilt != 0)
     {
         fSpeed = pTilt->m_fSpeed;
@@ -249,14 +259,14 @@ bool CArcMotionController::vfunc_5(double fTime)
     CMotionController::vfunc_5(fTime);
     m_dElapsed += fTime;
     Vector3 kUnused;
-    m_fSpeed = FUN_141759d20(m_pData, fTime, m_fSpeedLimit);
+    m_fSpeed = ((class CSkillRecord*)(struct Unk_MotionData*)(m_pData))->FUN_141759d20(fTime, m_fSpeedLimit);
     float fT = (float)m_dElapsed / (float)m_dDuration;
     if (fT < 0.0f)
         fT = 0.0f;
     if (1.0f < fT)
         fT = 1.0f;
     Vector3 kPos = FUN_141b71390(m_kStartPos, m_kCtrlPos, m_kEndPos, fT);
-    FUN_1414894f0(FUN_140166440(), 0xc, 0x13, L"{0} {1} {2} {3}", &fT, &kPos.x, &kPos.y, &kPos.z);
+    FUN_1414894f0(((void*)GetLogString()), 0xc, 0x13, L"{0} {1} {2} {3}", &fT, &kPos.x, &kPos.y, &kPos.z);
     m_kDir = kPos.FUN_140965c40(m_kMove);
     m_kHeading = m_kDir;
     m_kDir.FUN_140968990();
@@ -294,8 +304,8 @@ bool CLinearMotionController::vfunc_5(double fTime)
     {
         nProbe = nProbe + FUN_14028d260(m_pData->m_fDistance);
     }
-    int bBlocked = (m_pTarget->vfunc_99(nProbe) != 0 || FUN_141240780(FUN_14166d220(m_pTarget)) != 0
-        || FUN_141240db0(FUN_14166d220(m_pTarget)) != 0) ? 1 : 0;
+    int bBlocked = (m_pTarget->vfunc_99(nProbe) != 0 || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->FUN_14166d220())))->IsJumping() != 0
+        || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->FUN_14166d220())))->IsLift() != 0) ? 1 : 0;
     if (bBlocked)
         return false;
     if (FUN_14028d470(m_fSpeed, 0))
@@ -373,8 +383,8 @@ bool CMoveMotionController::vfunc_5(double fTime)
         return false;
     CMotionController::vfunc_5(fTime);
     m_kMove = DAT_143b01a60;
-    bool bBlocked = (m_pTarget->vfunc_99(0) != 0 || FUN_141240780(FUN_14166d220(m_pTarget)) != 0
-        || FUN_141240db0(FUN_14166d220(m_pTarget)) != 0) ? true : false;
+    bool bBlocked = (m_pTarget->vfunc_99(0) != 0 || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->FUN_14166d220())))->IsJumping() != 0
+        || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->FUN_14166d220())))->IsLift() != 0) ? true : false;
     if (bBlocked)
         return false;
     if (FUN_14028d470(m_fSpeed, 0))

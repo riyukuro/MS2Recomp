@@ -58,6 +58,7 @@ template <> inline void MS2Ptr<PreminmMarketSaleEventContext>::ReleaseImpl(void*
     }
 }
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/luautil.h"
 
 // Unrecovered helpers.
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -71,7 +72,7 @@ struct Unk_MeratDefaultIcon { char m_pad[0xc0]; CStringA m_strIcon; };
 Unk_MeratDefaultIcon* FUN_1401d31f0();
 void FUN_1407ce380(CShopEventManager* pManager, CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> >& arr,
                    const int& nCurrency);                                   // the sale events of a currency
-bool FUN_1407cde30(PreminmMarketSaleEventContext* pContext, unsigned nId, int nCurrency);  // the event covers the id
+bool FUN_1407cde30(PreminmMarketSaleEventContext *, int, int);  // C3: the definition's signature
 int FUN_1407ce100(PreminmMarketSaleEventContext* pContext, int nPrice);    // the discounted price
 bool FUN_1406a5840();
 __int64 FUN_1406a61c0(__int64 nPrice, unsigned nRate);
@@ -81,20 +82,18 @@ bool FUN_1406a4fe0(int nId);
 bool FUN_1406a5010(int nId);
 int FUN_140718170(const CString& strValue);                                 // a number or an enum name
 HRESULT FUN_140299dc0(ATL::CAtlFile* pFile, const void* pData, DWORD nSize, DWORD* pWritten);  // writes the data
-CFeatureManager* FUN_140166410();                                           // the CFeatureManager singleton
 int FUN_140427050(Unk_GameEventLockedValue<0x38>* pValue);                 // the star shop npc
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
-unsigned FUN_1402227e0(int nJob, int n);                                    // job -> job flag
+int FUN_1402227e0(int, int);  // C3: the definition's signature
 bool FUN_140633d50(MS2Ptr<CItem> spItem);                                   // the item can be traded
 // CItemDataTable::GetMusicScore / CUGCDesignTable::GetData are not in the link set; reached by VA.
 CItemDataTable* FUN_140281980();
 __int64 FUN_1406a6d50(Common::Constants::Value<int>& value);
 
 // The UGC sell fees per server (FUN_1401c0db0()).
-class Unk_MeratPriceTable
+class Unk_MeratPriceTable : public CLua
 {
 public:
-    __int64 FUN_140674bb0(int nItemId, const CString& strServer);
     void FUN_140674d70(const CString& strServer, __int64* pMin, __int64* pMax);
 };
 Unk_MeratPriceTable* FUN_1401c0db0();
@@ -170,7 +169,7 @@ MS2_CHECK_OFFSET(Unk_MeratHomeLayout, m_designersDoc, 0x140);
 
 typedef CRBMap<Unk_MeratProductKey, MS2Ptr<CMeratMarketProduct> > Unk_MeratProductMap;
 
-// The common log (FUN_140166440()).
+// The common log (GetLogString()).
 class Unk_MeratLog : public CLogString
 {
 public:
@@ -180,7 +179,7 @@ public:
         FUN_1406535b0(a, b, flags, format, fmt::ArgList(fmt::internal::make_type(value), values));
     }
 };
-Unk_MeratLog* FUN_140166440();
+class CLogString* GetLogString();
 
 // ---- statics (.text$di in this order) -----------------------------------------------------------------------------
 
@@ -1596,7 +1595,7 @@ int CMeratMarketPremium::LoadXml(const CStringA& strPath)
                 }
                 else
                 {
-                    FUN_140166440()->Log(0, 0, 0x2d, L"CMeratMarket::Read - error item id ({0})", nItemId);
+                    static_cast<Unk_MeratLog*>(GetLogString())->Log(0, 0, 0x2d, L"CMeratMarket::Read - error item id ({0})", nItemId);
                     continue;
                 }
             }
@@ -2346,7 +2345,7 @@ int FUN_1406a50b0(Unk_MeratProductMap& map)
             continue;
         if (spProduct->m_ugc.FUN_140896310())
             continue;
-        if (FUN_140166410()->FUN_14036e510())
+        if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036e510())
         {
             if (spProduct->m_ugc.m_n28 == 2 || spProduct->m_ugc.m_n28 == 1)
                 ++nCount;
@@ -2372,9 +2371,9 @@ MS2_REPLACE(0x1406A5210, FUN_1406a5210, 31, 0x68635521);
 // @0x1406a5240
 __int64 FUN_1406a5240(int nItemId)
 {
-    CString strServer = FUN_140166410()->FUN_14036d8e0();
+    CString strServer = TSingleton<CFeatureManager>::GetInstance()->FUN_14036d8e0();
     const CString& rServer = strServer;
-    __int64 nFee = FUN_1401c0db0()->FUN_140674bb0(nItemId, rServer);
+    __int64 nFee = FUN_1401c0db0()->CalcMarketRegisterFee(nItemId, rServer);
     return nFee;
 }
 MS2_REPLACE(0x1406A5240, FUN_1406a5240, 104, 0x2A6490A4);
@@ -2448,7 +2447,7 @@ void FUN_1406a5480(MS2Ptr<CItemData> spItem, __int64* pMin, __int64* pMax)
     }
     else if (spItem->FUN_14053cd10())
     {
-        const CString& strServer = FUN_140166410()->FUN_14036d8e0();
+        const CString& strServer = TSingleton<CFeatureManager>::GetInstance()->FUN_14036d8e0();
         __int64 nServerMin = 0;
         __int64 nServerMax = 0;
         FUN_1401c0db0()->FUN_140674d70(strServer, &nServerMin, &nServerMax);
@@ -2465,28 +2464,28 @@ MS2_REPLACE(0x1406A5480, FUN_1406a5480, 604, 0x8AF4D4F1);
 // @0x1406a56f0
 bool FUN_1406a56f0()
 {
-    return FUN_140166410()->FUN_14036d570(0x49);
+    return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x49);
 }
 MS2_REPLACE(0x1406A56F0, FUN_1406a56f0, 27, 0xD7E69A76);
 
 // @0x1406a5720
 bool FUN_1406a5720()
 {
-    return FUN_140166410()->FUN_14036d650();
+    return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d650();
 }
 MS2_REPLACE(0x1406A5720, FUN_1406a5720, 22, 0xCF0C1D8A);
 
 // @0x1406a5740
 bool FUN_1406a5740()
 {
-    return FUN_140166410()->FUN_14036d690(0x44);
+    return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d690(0x44);
 }
 MS2_REPLACE(0x1406A5740, FUN_1406a5740, 27, 0xEECC0297);
 
 // @0x1406a5770
 bool FUN_1406a5770()
 {
-    return FUN_140166410()->FUN_14036d570(0x45);
+    return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x45);
 }
 MS2_REPLACE(0x1406A5770, FUN_1406a5770, 27, 0x1C72616A);
 
@@ -2513,7 +2512,7 @@ bool FUN_1406a5800()
 {
     if (FUN_1406a57d0() == true || !FUN_1406a5770())
         return false;
-    return FUN_140166410()->FUN_14036d570(0x46);
+    return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x46);
 }
 MS2_REPLACE(0x1406A5800, FUN_1406a5800, 56, 0xE77E0C92);
 
@@ -2522,14 +2521,14 @@ bool FUN_1406a5840()
 {
     if (FUN_1406a57a0() == true || !FUN_1406a5770())
         return false;
-    return FUN_140166410()->FUN_14036d570(0x47);
+    return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x47);
 }
 MS2_REPLACE(0x1406A5840, FUN_1406a5840, 56, 0x6AF70C30);
 
 // @0x1406a5880
 bool FUN_1406a5880()
 {
-    return FUN_140166410()->FUN_14036d570(0x48);
+    return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x48);
 }
 MS2_REPLACE(0x1406A5880, FUN_1406a5880, 27, 0x125998D9);
 
@@ -2538,7 +2537,7 @@ bool FUN_1406a58b0()
 {
     if (!FUN_1406a5880())
         return false;
-    return FUN_140166410()->FUN_14036d570(0xec);
+    return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xec);
 }
 MS2_REPLACE(0x1406A58B0, FUN_1406a58b0, 43, 0x19A075F1);
 
@@ -2547,7 +2546,7 @@ bool FUN_1406a58f0()
 {
     if (!FUN_1406a5880())
         return false;
-    return FUN_140166410()->FUN_14036d570(0xa9);
+    return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xa9);
 }
 MS2_REPLACE(0x1406A58F0, FUN_1406a58f0, 43, 0x5B820E5A);
 
@@ -2582,7 +2581,7 @@ bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner)
         return false;
     if (spItem->FUN_140526010())
     {
-        if (!FUN_140166410()->FUN_14036d570(0xec))
+        if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xec))
             return false;
         Unk_MeratItemUgc* pUgc = reinterpret_cast<Unk_MeratItemUgc*>(spItem->FUN_1405278d0());
         if (pUgc == NULL)
@@ -2610,7 +2609,7 @@ bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner)
             return false;
         return true;
     }
-    if (FUN_140166410()->FUN_14036d570(0xa9) && spItem->FUN_140525790())
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xa9) && spItem->FUN_140525790())
     {
         Unk_MeratMusicScore* pScore = reinterpret_cast<Unk_MeratMusicScore*>(spItem->FUN_140527990());
         if (pScore != NULL)
@@ -2646,9 +2645,9 @@ bool FUN_1406a6030(MS2Ptr<CItemData> spItem)
     if (spItem->FUN_14053d6f0())
         return true;
     if (spItem->FUN_14053d900())
-        return FUN_140166410()->FUN_14036d570(0xec);
+        return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xec);
     if (spItem->FUN_14053cd10())
-        return FUN_140166410()->FUN_14036d570(0xa9);
+        return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xa9);
     return false;
 }
 MS2_REPLACE(0x1406A6030, FUN_1406a6030, 265, 0x74B7DAFD);

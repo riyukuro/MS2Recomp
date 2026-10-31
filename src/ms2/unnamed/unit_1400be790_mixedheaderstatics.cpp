@@ -149,9 +149,9 @@ Unk_Be790TreeA DAT_143ab3288(10);
 extern Unk_Be790TreeA DAT_143ab3288;
 #endif
 #ifndef MS2_HOOK_DLL   // s_arr3058: the exe's object at 0x143ab3058, which other units reach as DAT_143ab3058 (the hook DLL binds it)
-ATL::CAtlArray<Unk_PtrB*> DAT_143ab3058;
+ATL::CAtlArray<unsigned int> DAT_143ab3058;
 #else
-extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3058;
+extern ATL::CAtlArray<unsigned int> DAT_143ab3058;
 #endif
 #ifndef MS2_HOOK_DLL   // s_arr3078: the exe's object at 0x143ab3078, which other units reach as DAT_143ab3078 (the hook DLL binds it)
 ATL::CAtlArray<Unk_PtrB*> DAT_143ab3078;

@@ -17,6 +17,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -59,7 +60,6 @@ class Unk_RpWorld
 public:
     void* FUN_141bd36d0();                              // npc tree
 };
-Unk_RpWorld* FUN_1403ed2d0();
 void* FUN_1406d6e90();
 void FUN_140a7cbe0(void* p);
 void* FUN_140a7b840(void* pMap);
@@ -146,7 +146,7 @@ void FUN_141346e00(UIRangePreviewDialog* pDialog, ASData* pArgs)
 void UIRangePreviewDialog::OnClickNpcExtentReload()
 {
     FUN_140a7cbe0(FUN_1406d6e90());
-    void* pMap = FUN_1403ed2d0()->FUN_141bd36d0();
+    void* pMap = reinterpret_cast<Unk_RpWorld*>(WorldService::GetInstance())->FUN_141bd36d0();
     for (void* pos = FUN_140a7b840(pMap); pos != 0; FUN_141347090(pMap, &pos))
     {
         PCBase* pNpc = FUN_140a7b650(FUN_1413470e0(pMap, pos));

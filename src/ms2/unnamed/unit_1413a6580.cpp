@@ -17,6 +17,11 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
+
+// return types of the getters this unit calls
+class CUIService;
+class Unk_SoundSink;
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -26,11 +31,9 @@ class Unk_GcPortal : public CPtred
 };
 
 // The world manager (FUN_1403ed2d0).
-class Unk_GcWorld
+class Unk_GcWorld : public WorldService
 {
 public:
-    int FUN_141bc2f40();                                    // any field object of type 6?
-    void* FUN_141bd0cc0();                                  // the local player
     void FUN_141bc2c90(Vector3 pt, ATL::CAtlArray<MS2Ptr<Unk_GcPortal> >& arrOut);   // portals containing pt, nearest first (AddRef'd)
 };
 Unk_GcWorld* FUN_1403ed2d0();
@@ -48,15 +51,14 @@ public:
 };
 
             // CUIService
-CUIService* FUN_1403ed2b0();
 class Unk_GcKeyboard { public: unsigned char FUN_14116d950(int nKey, bool a, int b); };
-Unk_GcKeyboard* FUN_14025e7c0();
+void* FUN_14025e7c0();
 class Unk_GcKeyBinds
 {
 public:
     int FUN_14142c830(int nKey, int* pOut);                 // the key's alternate, 0 = none
 };
-Unk_GcKeyBinds* FUN_1409331f0();
+Unk_SoundSink* FUN_1409331f0();
 int FUN_14142c940(Unk_GcKeyBinds* pBinds, __int64 nAction, int nPriority);   // the key bound to the action, 0 = none
 void* FUN_1408e57f0();
 int FUN_1422b9e00(void* p);
@@ -101,7 +103,7 @@ int CGuideConditionInput::vfunc_3()
 {
     if (FUN_1422b9e00(FUN_1408e57f0()) == 0x6200031)
         return 0;
-    int nHeld = (FUN_14025e7c0()->FUN_14116d950(m_n20, false, 0) && FUN_1403ed2b0()->FUN_141adbb00() == 0) ? 1 : 0;
+    int nHeld = (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(m_n20, false, 0) && TSingleton<CUIService>::GetInstance()->FUN_141adbb00() == 0) ? 1 : 0;
     if (m_nTick == 0)
         return FUN_1413a55a0(nHeld);
     if (nHeld == 0)
@@ -152,31 +154,31 @@ int CGuideConditionActionInput::vfunc_3()
 {
     int nKey = 0;
     int nAltKey0, nAltKey1, nAltKey2;
-    nKey = FUN_14142c940(FUN_1409331f0(), m_n20, 0);
+    nKey = FUN_14142c940(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()), m_n20, 0);
     if (nKey != 0)
     {
-        if (FUN_14025e7c0()->FUN_14116d950(nKey, false, 0))
+        if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
             return FUN_1413a55a0(1);
         nAltKey0 = 0;
-        if (FUN_1409331f0()->FUN_14142c830(nKey, &nAltKey0) != 0 && FUN_14025e7c0()->FUN_14116d950(nAltKey0, false, 0))
+        if (reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())->FUN_14142c830(nKey, &nAltKey0) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey0, false, 0))
             return FUN_1413a55a0(1);
     }
-    nKey = FUN_14142c940(FUN_1409331f0(), m_n20, 1);
+    nKey = FUN_14142c940(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()), m_n20, 1);
     if (nKey != 0)
     {
-        if (FUN_14025e7c0()->FUN_14116d950(nKey, false, 0))
+        if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
             return FUN_1413a55a0(1);
         nAltKey1 = 0;
-        if (FUN_1409331f0()->FUN_14142c830(nKey, &nAltKey1) != 0 && FUN_14025e7c0()->FUN_14116d950(nAltKey1, false, 0))
+        if (reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())->FUN_14142c830(nKey, &nAltKey1) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey1, false, 0))
             return FUN_1413a55a0(1);
     }
-    nKey = FUN_14142c940(FUN_1409331f0(), m_n20, 2);
+    nKey = FUN_14142c940(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()), m_n20, 2);
     if (nKey != 0)
     {
-        if (FUN_14025e7c0()->FUN_14116d950(nKey, false, 0))
+        if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
             return FUN_1413a55a0(1);
         nAltKey2 = 0;
-        if (FUN_1409331f0()->FUN_14142c830(nKey, &nAltKey2) != 0 && FUN_14025e7c0()->FUN_14116d950(nAltKey2, false, 0))
+        if (reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())->FUN_14142c830(nKey, &nAltKey2) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey2, false, 0))
             return FUN_1413a55a0(1);
     }
     return FUN_1413a55a0(0);

@@ -17,7 +17,7 @@ extern "C" float (__cdecl* __imp_cosf)(float);                      // the exe c
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-CPhysXHelper* FUN_1409f7ca0();                          // TSingleton<CPhysXHelper>::GetInstance
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 float FUN_14028d380(float fValue);                      // PhysX units -> game units (x100), commonutil.cpp
 float FUN_14028d3a0(float fValue);                      // game units -> PhysX units (x0.01), commonutil.cpp
 float FUN_14029d220(float fValue);                      // fabsf, commonutil.cpp
@@ -56,7 +56,7 @@ GameObjectController::~GameObjectController()
 {
     if (m_pController == 0)
         return;
-    FUN_1409f7ca0()->FUN_14168a540(0);
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
     NxActor* pActor = m_pController->getActor();
     if (pActor != 0)
     {
@@ -69,7 +69,7 @@ GameObjectController::~GameObjectController()
         m_spActorData = 0;
     }
     m_pManager->releaseController(*m_pController);
-    FUN_1409f7ca0()->FUN_14168a570();
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
 }
 
 // @0x14123f5b0
@@ -77,7 +77,7 @@ GameObjectController::~GameObjectController()
 void GameObjectController::FUN_14123f5b0(PCBase* pOwner, egf::Entity* pEntity, efd::Point3 kPos, float fHeight, float fRadius)
 {
     m_pOwner = pOwner;
-    m_pManager = static_cast<NxControllerManager*>(FUN_1409f7ca0()->FUN_14168a750());
+    m_pManager = static_cast<NxControllerManager*>(((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a750());
 
     NxVec3 kNxPos;
     efdPhysX::PhysXTypes::Point3ToNxVec3(kPos, kNxPos);
@@ -106,8 +106,8 @@ void GameObjectController::FUN_14123f5b0(PCBase* pOwner, egf::Entity* pEntity, e
     m_groupsMask.bits2 = m_nGroups;
     m_groupsMask.bits3 = m_nGroups;
 
-    FUN_1409f7ca0()->FUN_14168a540(0);
-    m_pController = static_cast<NxCapsuleController*>(m_pManager->createController(FUN_1409f7ca0()->FUN_14168a1c0(), kDesc));
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+    m_pController = static_cast<NxCapsuleController*>(m_pManager->createController(((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0(), kDesc));
     if (m_pController != 0)
     {
         m_pController->setInteraction(NXIF_INTERACTION_USE_FILTER);
@@ -118,14 +118,14 @@ void GameObjectController::FUN_14123f5b0(PCBase* pOwner, egf::Entity* pEntity, e
         pActor->setName(FUN_140390ea0(pOwner->vfunc_77(), 0));
         FUN_14123fa70(pActor);
     }
-    FUN_1409f7ca0()->FUN_14168a570();
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
 }
 MS2_REPLACE_METHOD(0x14123F5B0, GameObjectController, FUN_14123f5b0, 1205, 0x5F88E8D4);
 
 // @0x14123fa70
 void GameObjectController::FUN_14123fa70(NxActor* pActor)
 {
-    FUN_1409f7ca0()->FUN_14168a540(0);
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
     NxShape* pShape = pActor->getShapes()[0];
     NxScene& kScene = pActor->getScene();
     NxMaterial* pMaterial = kScene.getMaterialFromIndex(pShape->getMaterial());
@@ -136,14 +136,14 @@ void GameObjectController::FUN_14123fa70(NxActor* pActor)
         kScene.releaseMaterial(*m_pMaterial);
     m_pMaterial = kScene.createMaterial(kDesc);
     pShape->setMaterial(m_pMaterial->getMaterialIndex());
-    FUN_1409f7ca0()->FUN_14168a570();
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
 }
 MS2_REPLACE_METHOD(0x14123FA70, GameObjectController, FUN_14123fa70, 363, 0xF2C614DB);
 
 // @0x14123fbf0
 void GameObjectController::FUN_14123fbf0(NxCollisionGroup nGroup)
 {
-    FUN_1409f7ca0()->FUN_14168a540(0);
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
     NxActor* pActor = m_pController->getActor();
     if (pActor != 0)
     {
@@ -158,7 +158,7 @@ void GameObjectController::FUN_14123fbf0(NxCollisionGroup nGroup)
             pShape->setGroupsMask(kMask);
         }
     }
-    FUN_1409f7ca0()->FUN_14168a570();
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
 }
 MS2_REPLACE_METHOD(0x14123FBF0, GameObjectController, FUN_14123fbf0, 300, 0xAC5D3404);
 
@@ -173,9 +173,9 @@ MS2_REPLACE_METHOD(0x14123FD30, GameObjectController, FUN_14123fd30, 86, 0x541B5
 // @0x14123fd90
 efd::Point3 GameObjectController::FUN_14123fd90()
 {
-    FUN_1409f7ca0()->FUN_14168a540(0);
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
     NxExtendedVec3 kPos = m_pController->getPosition();
-    FUN_1409f7ca0()->FUN_14168a570();
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
     efd::Point3 kResult;
     kResult.x = FUN_14028d380((float)kPos.x);
     kResult.y = FUN_14028d380((float)kPos.y);
@@ -195,9 +195,9 @@ void GameObjectController::FUN_14123fe70(efd::Point3 kPos)
     kNxPos.z = FUN_14028d3a0(kPos.z);
     if (!kNxPos.isFinite())
         return;
-    FUN_1409f7ca0()->FUN_14168a540(0);
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
     m_pController->setPosition(kNxPos);
-    FUN_1409f7ca0()->FUN_14168a570();
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
 }
 MS2_REPLACE_METHOD(0x14123FE70, GameObjectController, FUN_14123fe70, 216, 0xC522256A);
 
@@ -223,10 +223,10 @@ void GameObjectController::FUN_14123ff80(efd::Point3 kDisp, unsigned int nExclud
         efdPhysX::PhysXTypes::Point3ToNxVec3(kDisp, kNxDisp);
         m_hitReport.ClearHit();
 
-        FUN_1409f7ca0()->FUN_14168a540(0);
+        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
         m_pController->move(kNxDisp, nGroups, 0.000001f, m_nCollisionFlags, 1.0f, &m_groupsMask);
         m_pManager->updateControllers();
-        FUN_1409f7ca0()->FUN_14168a570();
+        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
 
         if (m_nCollisionFlags == NXCC_COLLISION_UP)
             m_nIgnoreGroups = 0x10;
@@ -248,7 +248,7 @@ void GameObjectController::FUN_14123ff80(efd::Point3 kDisp, unsigned int nExclud
             }
             if (m_nIgnoreGroups != 0 && m_hitReport.GetOtherController() == 0)
             {
-                FUN_1409f7ca0()->FUN_14168a540(0);
+                ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
                 NxExtendedVec3 kPos = m_pController->getPosition();
                 float fHeight = m_pController->getHeight();
                 float fRadius = m_pController->getRadius();
@@ -260,7 +260,7 @@ void GameObjectController::FUN_14123ff80(efd::Point3 kDisp, unsigned int nExclud
                 kCapsule.p1.z += fHeight * 0.5f;
                 kCapsule.radius = fRadius;
                 m_pController->setCollision(false);
-                NxScene* pScene = FUN_1409f7ca0()->FUN_14168a1c0();
+                NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
                 bool bOverlap = pScene->checkOverlapCapsule(kCapsule, NX_ALL_SHAPES, 0xffffffff, 0);
                 m_pController->setCollision(true);
                 if (bOverlap)
@@ -273,7 +273,7 @@ void GameObjectController::FUN_14123ff80(efd::Point3 kDisp, unsigned int nExclud
                 {
                     m_nIgnoreGroups = 0;
                 }
-                FUN_1409f7ca0()->FUN_14168a570();
+                ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
             }
             if (m_nIgnoreGroups == 0 && bOnController == 0)
             {
@@ -298,10 +298,10 @@ void GameObjectController::FUN_141240520(float fRadius, float fHeight)
     float fCapsuleHeight = fHeight - 2.0f * fRadius;
     if (fCapsuleHeight <= 0.0f)
         fCapsuleHeight = 10.0f;
-    FUN_1409f7ca0()->FUN_14168a540(0);
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
     m_pController->setHeight(FUN_14028d3a0(fCapsuleHeight));
     m_pController->setRadius(FUN_14028d3a0(fRadius));
-    FUN_1409f7ca0()->FUN_14168a570();
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
     m_fCenterOffset = -(fCapsuleHeight * 0.5f + fRadius);
 }
 MS2_REPLACE_METHOD(0x141240520, GameObjectController, FUN_141240520, 232, 0xF9BE8165);
@@ -394,7 +394,7 @@ float GameObjectController::FUN_141240c40(bool bDefault)
 {
     if (!bDefault)
     {
-        NxScene* pScene = FUN_1409f7ca0()->FUN_14168a1c0();
+        NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
         if (pScene != 0)
         {
             NxVec3 kGravity;
@@ -455,9 +455,9 @@ MS2_REPLACE_METHOD(0x141240DF0, GameObjectController, FUN_141240df0, 108, 0x644F
 // @0x141240e70
 NxActor* GameObjectController::FUN_141240e70()
 {
-    FUN_1409f7ca0()->FUN_14168a540(0);
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
     NxActor* pActor = m_pController->getActor();
-    FUN_1409f7ca0()->FUN_14168a570();
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
     return pActor;
 }
 MS2_REPLACE_METHOD(0x141240E70, GameObjectController, FUN_141240e70, 76, 0x80148672);
@@ -509,9 +509,9 @@ float GameObjectController::FUN_141241000()
 {
     if (m_pController != 0)
     {
-        FUN_1409f7ca0()->FUN_14168a540(0);
+        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
         float fRadius = m_pController->getRadius();
-        FUN_1409f7ca0()->FUN_14168a570();
+        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
         return fRadius;
     }
     return 0;
@@ -537,7 +537,7 @@ MS2_REPLACE_METHOD(0x141241090, GameObjectController, FUN_141241090, 35, 0xD028E
 // @0x1412410c0
 bool GameObjectController::FUN_1412410c0(efd::Point3 kPos, float fOffset)
 {
-    FUN_1409f7ca0()->FUN_14168a540(0);
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
     NxVec3 kNxPos;
     kNxPos.x = FUN_14028d3a0(kPos.x);
     kNxPos.y = FUN_14028d3a0(kPos.y);
@@ -551,9 +551,9 @@ bool GameObjectController::FUN_1412410c0(efd::Point3 kPos, float fOffset)
     kCapsule.p0.z -= fHeight * 0.5f;
     kCapsule.p1.z += fHeight * 0.5f;
     kCapsule.radius = fRadius;
-    NxScene* pScene = FUN_1409f7ca0()->FUN_14168a1c0();
+    NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
     bool bOverlap = pScene->checkOverlapCapsule(kCapsule, NX_ALL_SHAPES, 0x389, 0);
-    FUN_1409f7ca0()->FUN_14168a570();
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
     return bOverlap;
 }
 MS2_REPLACE_METHOD(0x1412410C0, GameObjectController, FUN_1412410c0, 485, 0x0E4FEF0B);

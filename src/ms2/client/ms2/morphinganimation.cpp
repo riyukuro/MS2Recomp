@@ -42,9 +42,9 @@ class Unk_ModelCache
 public:
     Unk_ModelEntry* FUN_140999440(const Unk_ModelKey& key);   // lookup, NULL when not cached
 };
-CMainSystem* FUN_14086d260();                           // the main system
+class CMainSystem;
+template<> CMainSystem* TSingleton<CMainSystem>::GetInstance();
 Unk_ModelCache* FUN_141b6f910();                        // the model cache singleton
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);   // dynamic cast (NULL-safe)
 // RTTI of the render object class (0x143afa7d0; name assumed from its uses).
 extern const NiRTTI Unk_RenderObjectRTTI;
 
@@ -128,7 +128,7 @@ void CMorphingAnimation::FUN_141487c50(float fWeight)
     if (pNode != NULL) {
         NiTimeController* pTimeCtrl = pNode->GetControllers();
         while (pTimeCtrl != NULL) {
-            pCtrl = (NiInterpController*)FUN_14098d8d0(&NiMorphWeightsController::ms_RTTI, pTimeCtrl);
+            pCtrl = (NiInterpController*)NiObject::DynamicCast(&NiMorphWeightsController::ms_RTTI, (class NiObject const*)(pTimeCtrl));
             if (pCtrl != NULL) {
                 nCount = pCtrl->GetInterpolatorCount();
                 break;
@@ -138,7 +138,7 @@ void CMorphingAnimation::FUN_141487c50(float fWeight)
     }
     if (pCtrl != NULL) {
         for (unsigned short us = 0; us < nCount; us++)
-            pCtrl->UpdateValue(FUN_14086d260()->GetLastGameTimeDelta(), fWeight, us);
+            pCtrl->UpdateValue(TSingleton<CMainSystem>::GetInstance()->GetLastGameTimeDelta(), fWeight, us);
     }
 }
 MS2_REPLACE_METHOD(0x141487c50, CMorphingAnimation, FUN_141487c50, 295, 0x516868E3);
@@ -158,7 +158,7 @@ NiAVObject* CMorphingAnimation::FUN_141487d80(const CString& strNodeName)
             NiFixedString kName((const char*)strNodeName);
             pObject = pRoot->GetObjectByName(kName);
         }
-        return (NiAVObject*)FUN_14098d8d0(&Unk_RenderObjectRTTI, pObject);
+        return (NiAVObject*)NiObject::DynamicCast(&Unk_RenderObjectRTTI, (class NiObject const*)(pObject));
     }
     return NULL;
 }

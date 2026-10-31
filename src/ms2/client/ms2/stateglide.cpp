@@ -24,19 +24,16 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/additionalclilist.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/gameobjectcontroller.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-void FUN_14165f170(PCBase* p);                             // 0x14165f170
 void* FUN_1403ed280();                                     // effect manager
-int FUN_1411a49c0(void* pEffectMgr, Unk_EffectQuery* pQuery);
-void FUN_1411a6060(void* pEffectMgr, int nId);
 class Unk_PCBaseBody;
 class Unk_GlideBody { public: void FUN_141240730(); };     // the actor body (+0x150)
-void FUN_141240700(Unk_PCBaseBody* pBody, efd::Point3 kVel);               // 0x141240700
 class Unk_PCBaseBodyDummy;
 class Unk_GlideHit { public: void FUN_140cfaf30(); };
-Unk_GlideHit* FUN_141240f20(Unk_PCBaseBody* pBody);
 
 // The owner's vtable up to slot 68, which takes the move by value (the exe passes a pointer to a copy).
 class Unk_GlOwnerSlots
@@ -111,7 +108,7 @@ StateGlide::~StateGlide()
 {
     if (m_nEffect != 0)
     {
-        FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+        reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
 }
@@ -148,7 +145,7 @@ void StateGlide::vfunc_4(StateData* pData)
             pPC->vfunc_59(1, 0, 0, 0);
             return;
         }
-        FUN_14165f170(pPC);
+        reinterpret_cast<PC*>(pPC)->SendRequestCube();
         ((CPushControl*)pPC->FUN_141675eb0())->FUN_1413fcf90();
     }
     m_nAnim = 99;
@@ -157,7 +154,7 @@ void StateGlide::vfunc_4(StateData* pData)
     query.m_nObject = 0;
     query.SetActor(m_pOwner->FUN_14123c580());
     query.m_bFlag31 = true;
-    m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
+    m_nEffect = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     m_pOwner->vfunc_47(false);
     m_pOwner->FUN_141670330((float)m_spRow->m_nSpeedMul);
     m_pOwner->FUN_141670360((float)m_spRow->m_nSpeedMul);
@@ -170,7 +167,7 @@ void StateGlide::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     if (m_pOwner->FUN_14166d220() != 0)
-        FUN_141240f20(m_pOwner->FUN_14166d220())->FUN_140cfaf30();
+        ((Unk_GlideHit*)(reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->FUN_141240f20()))->FUN_140cfaf30();
     if (m_spRow == 0)
         return;
     FUN_1417c9880((float)fTime);
@@ -203,11 +200,11 @@ void StateGlide::vfunc_5(int n)
     m_pOwner->FUN_141670330(0);
     m_pOwner->FUN_141670360(0);
     m_pOwner->vfunc_47(true);
-    FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+    reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
     m_nAnim = 99;
     if (m_nEffect != 0)
     {
-        FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+        reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
     m_spRow.AssignRaw(0);
@@ -245,13 +242,13 @@ void StateGlide::vfunc_9(double fTime)
         {
             if (m_nEffect != 0)
             {
-                FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+                reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
                 Unk_EffectQuery query;
                 query.m_strName = m_spRow->m_strEffectA;
                 query.m_nObject = 0;
                 query.SetActor(m_pOwner->FUN_14123c580());
                 query.m_bFlag31 = true;
-                m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
+                m_nEffect = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
             }
             efd::utf8string strAnim(m_spRow->m_strAnimA);
             m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
@@ -260,13 +257,13 @@ void StateGlide::vfunc_9(double fTime)
         {
             if (m_nEffect != 0)
             {
-                FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+                reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
                 Unk_EffectQuery query;
                 query.m_strName = m_spRow->m_strEffectB;
                 query.m_nObject = 0;
                 query.SetActor(m_pOwner->FUN_14123c580());
                 query.m_bFlag31 = true;
-                m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
+                m_nEffect = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
             }
             efd::utf8string strAnim(m_spRow->m_strAnimB);
             m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
@@ -317,7 +314,7 @@ void StateGlide::FUN_1417c9880(float fTime)
     m_fTime += fTime;
     efd::Point3 kMove = (FUN_1417c9c00() + FUN_1417c9ee0()) * fTime;
     m_pOwner->FUN_141671960(FUN_1417c9b70());
-    FUN_141240700(m_pOwner->FUN_14166d220(), FUN_1417c9ee0());
+    reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->SetKVelocity(FUN_1417c9ee0());
     reinterpret_cast<Unk_GlOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0x10, 1);
 }
 

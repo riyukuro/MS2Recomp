@@ -105,13 +105,11 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);          // the item data of an it
 CItemOptionTable* FUN_140166430();                      // the option table singleton
 CString FUN_14016a5c0(const char* psz, int n);
 CLogString* GetLogString();                            // the log
-void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
-void FUN_140177a80(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nArg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
+template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 // The log's two-argument call (FMT_VARIADIC instantiation outside this unit).
 void FUN_1401e0850(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CString& first,
                    const unsigned& second);
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028f5d0(Unk_140165cf0* pParent, const char* pszChild, std::vector<Unk_140165cf0*>& arrOut);
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int& nOut);
@@ -790,10 +788,10 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
     }
     pOut->push_back(StringFormat(L"pickCount {0}", nPickCount));
     if (GetLogString() != 0)
-        FUN_140177a80(GetLogString(), 0xb, 0x13, L"pickCount {0}", nPickCount);
+        Unk_AdditionalLog<unsigned>(GetLogString(), 0xb, 0x13, L"pickCount {0}", nPickCount);
     pOut->push_back(StringFormat(L"TotalCount {0}", nTotal));
     if (GetLogString() != 0)
-        FUN_140177a80(GetLogString(), 0xb, 0x13, L"TotalCount {0}", nTotal);
+        Unk_AdditionalLog<unsigned>(GetLogString(), 0xb, 0x13, L"TotalCount {0}", nTotal);
     for (auto& kCount : mapCounts)
     {
         unsigned nSum = 0;
@@ -875,12 +873,12 @@ bool CItemOptionTable::LoadItemOptionConstant()
 {
     CString strPath = FUN_14071a5b0("Table", "ItemOptionConstant.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     CLockCriticalSection lock;
@@ -912,12 +910,12 @@ bool CItemOptionTable::LoadItemOptionRandom()
 {
     CString strPath = FUN_14071a5b0("Table", "ItemOptionRandom.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     CLockCriticalSection lock;
@@ -945,12 +943,12 @@ bool CItemOptionTable::LoadItemOptionVariation()
 {
     CString strPath = FUN_14071a5b0("Table", "itemOptionVariation.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pElem : pRoot->FUN_140165cf0("option"))

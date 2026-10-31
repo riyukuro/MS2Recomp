@@ -66,7 +66,7 @@ public:
     void FUN_140da5180(int nOp, Delegate<void(CInPacket&)> handler);
     void FUN_140da51e0(int nOp, Delegate<void(CInPacket&)> handler);
 };
-Unk_McPackets* FUN_140bccd50();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 NotifySystem* FUN_140939a10();
 UIMainPlayerInfo* FUN_140931900(int nUiId);
 __int64 GetServerTime();                        // server time
@@ -109,13 +109,13 @@ CMyCharacter::~CMyCharacter()
 // @0x140d9f040
 void CMyCharacter::FUN_140d9f040()
 {
-    FUN_140bccd50()->FUN_140da5180(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::FUN_140d9f200));
+    ((class Unk_McPackets*)FUN_140bccd50())->FUN_140da5180(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::FUN_140d9f200));
 }
 
 // @0x140d9f0c0
 void CMyCharacter::FUN_140d9f0c0()
 {
-    FUN_140bccd50()->FUN_140da51e0(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::FUN_140d9f200));
+    ((class Unk_McPackets*)FUN_140bccd50())->FUN_140da51e0(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::FUN_140d9f200));
 }
 
 // @0x140d9f140

@@ -20,7 +20,7 @@ CString FUN_140bc6280(const char*,const char*,const char*,const int&,const char*
 void FUN_140cff840(const Scaleform::GFx::Value&,CString,int);
 extern void* g_timerPlayer;
 class Unk_TimerPlayer {public:static void* Get(){return g_timerPlayer;}};
-unsigned int FUN_141472bc0();
+int FUN_141472bc0();   // C3: was FUN_141472bc0
 // The leaf was recovered first, before implementing this base.
 // @0x140edea60
 UITimerBase::UITimerBase():m_start(0),m_duration(0),m_offset(0){}

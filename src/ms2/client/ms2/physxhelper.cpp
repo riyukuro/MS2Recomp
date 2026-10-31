@@ -104,21 +104,33 @@ private:
 };
 Unk_PhysXApp* FUN_14168ab00(efd::ServiceManager* pServices);
 Unk_PhysWorldSvc* FUN_14168ab40(efd::ServiceManager* pServices);
-void FUN_140d86210(char* pLock);
-void FUN_140d852c0(char* pLock);
 
-efd::ServiceManager* FUN_140af8310(char* pManager);
+class Unk_GameContext   // C3: member view for the former free stand-ins
+{
+public:
+    class efd::ServiceManager* FUN_140af8310();
+};
 NxUserAllocator* FUN_141489fd0(Unk_PhysXApp* pApp);
-Unk_PhysXLockOwner* FUN_1414a5890();
 egfPhysX::SceneService* FUN_1411d14f0(efd::ServiceManager* pServices);
-NxScene* FUN_141503cc0(egfPhysX::SceneService* pService, int nScene);
+class MS2SceneService   // C3: member view for the former free stand-ins
+{
+public:
+    class NxScene* GetCachedNxScene(int) const;
+};
 ecrPhysX::PropService* FUN_14120a240(efd::ServiceManager* pServices);
-Unk_PhysXSceneHandle* FUN_141293c40(ecrPhysX::PropService* pService, const efd::utf8string& kName);
 efd::utf8string FUN_1414d7990(const efd::utf8string& kName);
 CPhysXHelper* FUN_1409f7ca0();
 Unk_PhysRpgActor* FUN_1409ffd30(Unk_PhysGameObj* p);
-Unk_PhysBody* FUN_14166d220(Unk_PhysRpgActor* pActor);
-NxActor* FUN_141240e70(Unk_PhysBody* p);
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_PCBaseBody* FUN_14166d220();
+};
+class GameObjectController   // C3: member view for the former free stand-ins
+{
+public:
+    class NxActor* FUN_141240e70();
+};
 int FUN_1409a8f90(const float* pf);
 bool FUN_14028d470(float f, float g);
 float FUN_14028d3a0(float f);
@@ -127,8 +139,13 @@ void FUN_1408a20a0(egf::Entity*, unsigned, bool*);
 extern char DAT_143b059e8;
 efd::ISystemService* FUN_1401cd040(char*);
 NxActor* FUN_1410c5420(efd::ISystemService*, egf::EntityID);
-void* FUN_1403ed2d0();
-void FUN_141bc8e00(void*);
+class WorldService   // C3: static member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+public:
+    void FUN_141bc8e00();   // C3: was free FUN_141bc8e00
+};
 extern int DAT_143ae2b30;
 extern const Vector3 g_143b01a60;
 extern const Vector3 g_143a08cf8;
@@ -145,10 +162,10 @@ CPhysXHelper* TSingleton<CPhysXHelper>::s_instance = 0;
 // @0x141689180
 CPhysXHelper::CPhysXHelper()
 {
-    efd::ServiceManager* pServices = FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager);
+    efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
     Unk_PhysXApp* pApp = FUN_14168ab00(pServices);
     m_pControllerMgr = NxCreateControllerManager(FUN_141489fd0(pApp));
-    m_pLock = FUN_1414a5890();
+    m_pLock = ((class Unk_PhysXLockOwner*)efdPhysX::PhysXSDKManager::GetManager());
     for (int i = 0; i < 2; i++)
         m_apScene[i] = 0;
 }
@@ -223,15 +240,15 @@ NxActor* CPhysXHelper::FUN_1416897d0(void* pObj)
     NxActor* pActor = 0;
     if (DAT_143ae2b30 == 0)
     {
-        Unk_PhysWorldSvc* pWorld = FUN_14168ab40(FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager));
+        Unk_PhysWorldSvc* pWorld = FUN_14168ab40(((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310());
         Unk_PhysRpgActor* pRpg = FUN_1409ffd30(pWorld->FUN_141bd0f50(pObj));
         if (pRpg != 0)
-            pActor = FUN_141240e70(FUN_14166d220(pRpg));
+            pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->FUN_14166d220())))->FUN_141240e70();
     }
     else
     {
         static CLockCriticalSection s_lock;     // 0x143ae3968
-        Unk_PhysWorldSvc* pWorld = FUN_14168ab40(FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager));
+        Unk_PhysWorldSvc* pWorld = FUN_14168ab40(((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310());
         if (Unk_LockGuard guard = s_lock)
         {
         }
@@ -239,7 +256,7 @@ NxActor* CPhysXHelper::FUN_1416897d0(void* pObj)
         {
             Unk_PhysRpgActor* pRpg = FUN_1409ffd30(pWorld->FUN_141bd0f50(pObj));
             if (pRpg != 0)
-                pActor = FUN_141240e70(FUN_14166d220(pRpg));
+                pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->FUN_14166d220())))->FUN_141240e70();
         }
     }
     return pActor;
@@ -266,7 +283,7 @@ bool CPhysXHelper::FUN_141689a10(egf::Entity* pEntity)
     FUN_1408a20a0(pEntity, 0x38141815, &bCube);
     if (bCube)
         return true;
-    efd::ServiceManager* pServices = FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager);
+    efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
     ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
     if (pProps != 0)
         return pProps->GetNumProps(pEntity->GetEntityID()) > 0 ? true : false;
@@ -275,7 +292,7 @@ bool CPhysXHelper::FUN_141689a10(egf::Entity* pEntity)
 // @0x141689ac0
 void CPhysXHelper::FUN_141689ac0(Unk_PhysPropPtr pProp)
 {
-    efd::ServiceManager* pServices = FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager);
+    efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
     ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
     if (pProps != 0)
     {
@@ -364,7 +381,7 @@ void CPhysXHelper::FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, co
     }
     else
     {
-        efd::ServiceManager* pServices = FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager);
+        efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
         ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
         if (pProps != 0)
         {
@@ -395,14 +412,14 @@ void CPhysXHelper::FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, co
         }
     }
     if (bRefresh != 0)
-        FUN_141bc8e00(FUN_1403ed2d0());
+        ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bc8e00();
 }
 // @0x14168a1c0
 NxScene* CPhysXHelper::FUN_14168a1c0()
 {
-    efd::ServiceManager* pServices = FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager);
+    efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
     egfPhysX::SceneService* pScenes = FUN_1411d14f0(pServices);
-    return FUN_141503cc0(pScenes, 0);
+    return ((class MS2SceneService*)(class egfPhysX::SceneService*)(pScenes))->GetCachedNxScene(0);
 }
 // @0x14168a210
 float CPhysXHelper::FUN_14168a210()
@@ -482,16 +499,16 @@ void CPhysXHelper::FUN_14168a570()
 // @0x14168a5a0
 void CPhysXHelper::FUN_14168a5a0()
 {
-    efd::ServiceManager* pServices = FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager);
+    efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
     ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
     if (pProps != 0)
     {
         efd::utf8string kName("PhysXDefaultSceneName");
         kName = FUN_1414d7990(kName);
-        m_apScene[0] = FUN_141293c40(pProps, kName);
+        m_apScene[0] = ((class Unk_PhysXSceneHandle*)((ecrPhysX::PropService*)(void*)(pProps))->GetScene(kName));
         kName = "PhysXItemSceneName";
         kName = FUN_1414d7990(kName);
-        m_apScene[1] = FUN_141293c40(pProps, kName);
+        m_apScene[1] = ((class Unk_PhysXSceneHandle*)((ecrPhysX::PropService*)(void*)(pProps))->GetScene(kName));
     }
 }
 // @0x14168a710
@@ -617,9 +634,9 @@ bool ClosestHitReport::FUN_14168b120(NxActor* pA, NxActor* pB)
     return false;
 }
 // @0x14168b240
-void Unk_PhysXLockOwner::FUN_14168b240() { FUN_140d86210(m_lock); }
+void Unk_PhysXLockOwner::FUN_14168b240() { ((efd::CriticalSection*)(char*)(m_lock))->Unlock(); }
 // @0x14168b270
-void Unk_PhysXLockOwner::FUN_14168b270() { FUN_140d852c0(m_lock); }
+void Unk_PhysXLockOwner::FUN_14168b270() { ((efd::CriticalSection*)(char*)(m_lock))->Lock(); }
 // @0x14168b3a0
 bool ClosestHitReport::onHit(const NxRaycastHit& kHit)
 {

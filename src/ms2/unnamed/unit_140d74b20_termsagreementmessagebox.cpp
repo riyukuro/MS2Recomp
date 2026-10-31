@@ -69,7 +69,6 @@ CReservedWordTable* FUN_1403b4750();
 CStringW GetStringCommon(int nId);
 CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* sep);
-size_t FUN_14015a000(ATL::CAtlArray<CStringW>& arr);
 CStringW& FUN_140159a00(ATL::CAtlArray<CStringW>& arr, size_t i);
 void FUN_140d73c60(Unk_MsgBoxPtr box);
 
@@ -111,7 +110,7 @@ int FUN_140d74e80(CStringW& tag)
         return 0;
     ATL::CAtlArray<CStringW> parts;
     FUN_14025a680(tag, parts, L",");
-    if (FUN_14015a000(parts) < 2)
+    if (((ATL::CAtlArray<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraits<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>, class ATL::CElementTraits<class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>>>&>(parts))->GetCount() < 2)
         return 0;
     if (g_1439f5a0c != 8)
         FUN_140d74e50(g_1439f5a0c);
@@ -125,7 +124,7 @@ int FUN_140d74f70(CStringW& tag)
         return 0;
     ATL::CAtlArray<CStringW> parts;
     FUN_14025a680(tag, parts, L",");
-    if (FUN_14015a000(parts) < 3)
+    if (((ATL::CAtlArray<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraits<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>, class ATL::CElementTraits<class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>>>&>(parts))->GetCount() < 3)
         return 0;
     return FUN_140159a00(parts, 2).Find(L"true", 0) != -1;
 }

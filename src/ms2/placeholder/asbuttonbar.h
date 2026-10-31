@@ -56,8 +56,5 @@ public:
     void FUN_1422e4210(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);               // remove "clikIndexChange"
     void FUN_1422e4270(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onMenu, void* pUser);    // add "listIndexChange"
     void FUN_1422e42f0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onMenu);                 // remove "listIndexChange"
-
-private:
-    MS2Ptr<ASDataProvider> FUN_1422de460(const CString& strName);       // a child as an ASDataProvider (ascorelist.cpp COMDAT)
 };
 MS2_CHECK_SIZE(ASButtonBar, 0x88);

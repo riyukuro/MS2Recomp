@@ -24,7 +24,7 @@ extern "C" long long __cdecl llabs(long long);
 
 extern int DAT_143ab5b00;
 extern int DAT_143ab2884;
-unsigned FUN_140869420();
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 float FUN_14028d280(unsigned);
 CStringW FUN_140719a00(__int64);
 CStringW FUN_1407197a0(float);
@@ -245,7 +245,7 @@ void CBattleRecordGroup::FUN_140a03350() { if(active) return; FUN_140a03380(); }
 MS2_REPLACE_METHOD(0x140a03350, CBattleRecordGroup, FUN_140a03350, 37, 0x9642D72B);
 // @0x140a03380
 void CBattleRecordGroup::FUN_140a03380() {
-    FUN_140a03920(); active=1; start=FUN_140869420();
+    FUN_140a03920(); active=1; start=GetTickCountMs2();
     for(POSITION pos=records.GetStartPosition();pos;records.GetNext(pos)) { Ptr record=records.GetValueAt(pos); if(record==0) continue; record->FUN_140a031a0(); }
 }
 MS2_REPLACE_METHOD(0x140a03380, CBattleRecordGroup, FUN_140a03380, 210, 0x7DD15DA7);
@@ -353,8 +353,8 @@ CStringW CBattleRecordManager::FUN_140a04260(int group,__int64 id,int type) {
     switch(type) {
     case 0: return FUN_140719a00(record->FUN_140a03140(0));
     case 1: return FUN_140719a00(record->FUN_140a03140(7));
-    case 2: { __int64 damage=record->FUN_140a03140(0); float duration=FUN_14028d280(FUN_140869420()-groups[group]->FUN_140a03600()); __int64 rate=(damage==0 || duration==0.0f) ? 0.0f : (float)damage/duration; return FUN_140719a00(rate); }
-    case 3: { __int64 damage=record->FUN_140a03140(7); float duration=FUN_14028d280(FUN_140869420()-groups[group]->FUN_140a03600()); __int64 rate=(damage==0 || duration==0.0f) ? 0.0f : (float)damage/duration; return FUN_140719a00(rate); }
+    case 2: { __int64 damage=record->FUN_140a03140(0); float duration=FUN_14028d280(GetTickCountMs2()-groups[group]->FUN_140a03600()); __int64 rate=(damage==0 || duration==0.0f) ? 0.0f : (float)damage/duration; return FUN_140719a00(rate); }
+    case 3: { __int64 damage=record->FUN_140a03140(7); float duration=FUN_14028d280(GetTickCountMs2()-groups[group]->FUN_140a03600()); __int64 rate=(damage==0 || duration==0.0f) ? 0.0f : (float)damage/duration; return FUN_140719a00(rate); }
     case 4: { __int64 total=record->FUN_140a03140(2); __int64 hits=record->FUN_140a03140(3); float rate=total!=0 ? (100.0f/(float)total)*(float)hits : 0.0f; return FUN_1407197a0(rate); }
     case 5: { __int64 hits=record->FUN_140a03140(3); __int64 crit=record->FUN_140a03140(4); float rate=hits!=0 ? (100.0f/(float)hits)*(float)crit : 0.0f; return FUN_1407197a0(rate); }
     case 6: return FUN_140719a00(record->FUN_140a03140(1));
@@ -375,7 +375,7 @@ CStringW CBattleRecordManager::FUN_140a04830(int group,__int64 id,int type) {
 }
 MS2_REPLACE_METHOD(0x140a04830, CBattleRecordManager, FUN_140a04830, 666, 0x5FE78C60);
 // @0x140a04b00
-CStringW CBattleRecordManager::FUN_140a04b00(int group) { CStringW text; unsigned elapsed=0; elapsed=FUN_140869420()-groups[group]->FUN_140a03600(); FUN_141b70810(elapsed,text); return text; }
+CStringW CBattleRecordManager::FUN_140a04b00(int group) { CStringW text; unsigned elapsed=0; elapsed=GetTickCountMs2()-groups[group]->FUN_140a03600(); FUN_141b70810(elapsed,text); return text; }
 MS2_REPLACE_METHOD(0x140a04b00, CBattleRecordManager, FUN_140a04b00, 171, 0xE1199823);
 // @0x140a04bc0
 CStringW CBattleRecordManager::FUN_140a04bc0(int type) {

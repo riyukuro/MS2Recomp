@@ -42,7 +42,11 @@ struct Unk_TradeOptions
     bool m_bRefuseTrade;
 };
 class Unk_TradeConfig;
-Unk_TradeOptions* FUN_140ae6540(Unk_TradeConfig*);
+class Unk_BuddyOptions   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_BuddySettings& GetSettings();
+};
 
 // The trade window (UI id 0x4e83): +0x1a0 is the partner's name.
 class Unk_TradeDialog : public UIDialog
@@ -82,7 +86,7 @@ public:
     virtual void vfunc_17(CItem* pItem);                // 0x88
     virtual void vfunc_18(CItem* pItem);                // 0x90
 };
-Unk_TradeInventory* FUN_140a6a840();
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 
 class Unk_TradeWorld
 {
@@ -91,7 +95,7 @@ public:
 };
 
    // the player's account/character name (PCBase member: this=rcx, hidden return=rdx)
-CBlockManager* FUN_140a6a830();
+class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 CStringW FUN_1401ca400(const BlockPtr& record, int action);
 Unk_MessageBoxPtr FUN_14151f820();
 Unk_MessageBoxPtr FUN_140d73d20(int, CStringW, void*, CStringW);
@@ -391,13 +395,13 @@ void CTradeManagerEx::FUN_14185bec0(CInPacket& packet)
 {
     CStringW strName = packet.ReadUnicodeString();
     __int64 uid = packet.ReadInt64();
-    if (FUN_140ae6540(reinterpret_cast<Unk_TradeConfig*>(TSingleton<CGameOption>::GetInstance()))->m_bRefuseTrade != 0)
+    if (((struct Unk_TradeOptions*)&((class Unk_BuddyOptions*)(class Unk_TradeConfig*)(reinterpret_cast<Unk_TradeConfig*>(TSingleton<CGameOption>::GetInstance())))->GetSettings())->m_bRefuseTrade != 0)
     {
         TSingleton<CTradeManagerEx>::GetInstance()->FUN_14185b8e0(uid, 0);
         return;
     }
     {
-        BlockPtr blocked = FUN_140a6a830()->FindBlockedAction(0x20);
+        BlockPtr blocked = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(0x20);
         if (blocked.get() != 0)
         {
             TSingleton<CTradeManagerEx>::GetInstance()->FUN_14185b8e0(uid, 0);
@@ -588,7 +592,7 @@ void CTradeManagerEx::FUN_14185d020(CInPacket& packet)
     spItem->FUN_140526b70(nCount);
     if (bMine)
     {
-        FUN_140a6a840()->vfunc_17(spItem);
+        ((class Unk_TradeInventory*)FUN_140a6a840())->vfunc_17(spItem);
         DAT_143ab2e80.FUN_14185b2a0(spItem);
     }
     pDlg->FUN_141b27de0(bMine, nSlot, spItem);
@@ -608,7 +612,7 @@ void CTradeManagerEx::FUN_14185d380(CInPacket& packet)
         MS2Ptr<CItem> spItem = DAT_143ab2e80.FUN_14185b4a0(uid);
         if (!spItem)
             return;
-        FUN_140a6a840()->vfunc_18(spItem);
+        ((class Unk_TradeInventory*)FUN_140a6a840())->vfunc_18(spItem);
         DAT_143ab2e80.FUN_14185b3d0(uid);
     }
     pDlg->FUN_141b27fa0(bMine, nSlot);

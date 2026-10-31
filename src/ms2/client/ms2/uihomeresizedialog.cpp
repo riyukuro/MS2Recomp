@@ -19,6 +19,9 @@
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/cubemapinformationservice_3.h"
+#include "ms2/client/ms2/worldservice.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -27,16 +30,14 @@ MS2_EMIT_CRT_MEMMOVE_S();
 class ASDialog : public ASDisplayObject {};
 
 // The ugc home state of the player (the cube service): the current area and height step.
-class Unk_HrHomeSvc
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-in
 {
 public:
-    int FUN_1410c3470();                              // the area step
-    int FUN_1410c34b0();                              // the height step
+    static Unk_AkoHouseSvc* GetInstance();                              // the cube service singleton
 };
-Unk_HrHomeSvc* FUN_1409670e0();
 
-class Unk_HrOptions { public: bool FUN_14036d570(int nFeature); };      // the content switches
-Unk_HrOptions* FUN_140166410();
+      // the content switches
+CFeatureManager* FUN_140166410();
 class Unk_HrBlockFlags { public: int FUN_1402c4c90(int nFlag); };       // blocked-action flag set
 struct Unk_HrConfig { char m_pad[8]; Unk_HrBlockFlags m_flags; };
 Unk_HrConfig* FUN_14025e7b0();                                  // global client config
@@ -47,7 +48,6 @@ CMasteryInteriorTable* FUN_140933200();
 
 class Unk_HrWorld;
 class Unk_HrPc;
-Unk_HrWorld* FUN_1403ed2d0();
 Unk_HrPc* FUN_141bd0cc0(Unk_HrWorld*);
 
 int FUN_1418dd100();
@@ -134,7 +134,7 @@ void UIHomeResizeDialog::OnShrinkArea()
         FUN_141275260(0x2f7, 1, 1);
     } else {
         if (FUN_140166410()->FUN_14036d570(0xe4)) {
-            int nArea = FUN_1409670e0()->FUN_1410c3470();
+            int nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470();
             MS2Ptr<ExtendAreaInfo> spPrev = FUN_140933200()->GetPreviousArea(nArea);
             if (spPrev == 0) {
                 CStringW strKey(L"s_ugcmap_cant_shrink_area_level_anymore");
@@ -159,7 +159,7 @@ void UIHomeResizeDialog::OnShrinkHeight()
         FUN_141275260(0x2f7, 1, 1);
     } else {
         if (FUN_140166410()->FUN_14036d570(0xe4)) {
-            int nHeight = FUN_1409670e0()->FUN_1410c34b0();
+            int nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0();
             MS2Ptr<ExtendHeightInfo> spPrev = FUN_140933200()->GetPreviousHeight(nHeight);
             if (spPrev == 0) {
                 CStringW strKey(L"s_ugcmap_cant_shrink_height_level_anymore");
@@ -180,7 +180,7 @@ void UIHomeResizeDialog::OnShrinkHeight()
 // @0x140c2c640
 void UIHomeResizeDialog::OnExtensionArea()
 {
-    int nArea = FUN_1409670e0()->FUN_1410c3470();
+    int nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470();
     MS2Ptr<ExtendAreaInfo> spNext = FUN_140933200()->GetNextArea(nArea);
     if (spNext == 0) {
         FUN_141275260(0xcaa, 1, 1);
@@ -202,7 +202,7 @@ void UIHomeResizeDialog::OnExtensionArea()
 // @0x140c2cac0
 void UIHomeResizeDialog::OnExtensionHeight()
 {
-    int nHeight = FUN_1409670e0()->FUN_1410c34b0();
+    int nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0();
     MS2Ptr<ExtendHeightInfo> spNext = FUN_140933200()->GetNextHeight(nHeight);
     if (spNext == 0) {
         FUN_141275260(0xcab, 1, 1);
@@ -265,7 +265,7 @@ bool UIHomeResizeDialog::SendRequestCubeMode44(int nResult, const CMsgBoxData& d
 // @0x140c2cf50
 void UIHomeResizeDialog::vfunc_84()
 {
-    Unk_HrPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HrPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HrWorld*>(WorldService::GetInstance()));
     if (pPc == 0)
         return;
     ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -279,9 +279,9 @@ void UIHomeResizeDialog::vfunc_84()
         bShrink = false;
     ASObj obj(2);
     int nArea;
-    obj.FUN_1407cbb20("extensionArea", FUN_14062b4f0(CStringW(L"s_home_info_area"), &(nArea = FUN_1409670e0()->FUN_1410c3470())));
+    obj.FUN_1407cbb20("extensionArea", FUN_14062b4f0(CStringW(L"s_home_info_area"), &(nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470())));
     int nHeight;
-    obj.FUN_1407cbb20("extensionHeight", FUN_14062b4f0(CStringW(L"s_home_info_height"), &(nHeight = FUN_1409670e0()->FUN_1410c34b0())));
+    obj.FUN_1407cbb20("extensionHeight", FUN_14062b4f0(CStringW(L"s_home_info_height"), &(nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0())));
     obj.FUN_1407cbbe0("shrinkEnable", bShrink);
     obj.FUN_1407cbbe0("extensionEnable", bExtend);
     dialog->FUN_140acd1f0("buildInteriorExtension", obj);

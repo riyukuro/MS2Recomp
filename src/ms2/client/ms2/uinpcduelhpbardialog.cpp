@@ -14,6 +14,9 @@
 #include "ms2/ms2recover.h"
 #include "ms2/ms2format.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local declarations (names describe uses, not original class names) ----
 
@@ -90,7 +93,6 @@ struct Unk_NdBuffSource { void FUN_1409725f0(Unk_NdBuffList* pList); };
 Unk_NdBuffSource* FUN_1416749a0(Unk_NdActor* pActor);
 
 class Unk_NdWorld;
-Unk_NdWorld* FUN_1403ed2d0();
 Unk_NdActor* FUN_141bd0cc0(Unk_NdWorld* pWorld);                // the local player
 Unk_NdActor* FUN_141bd1320(Unk_NdWorld* pWorld, int nObjectId);
 unsigned int FUN_140869420();                                   // tick count (ms)
@@ -99,8 +101,6 @@ Unk_NdJobCode FUN_141654730(Unk_NdActor* pPc);                  // job id (an en
 __int64 FUN_141656a80(Unk_NdActor* pPc);                        // account id
 bool FUN_140930110(int nBuffId);
 int FUN_14123c580(Unk_NdActor* pActor);                         // object id
-class Unk_NdStrings { public: CStringW FUN_141811980(int nCategory, int nId); };
-Unk_NdStrings* FUN_1401a9d70();
 CStringW FUN_1401aa6a0(int nId);
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
 CString FUN_141028be0(__int64 nAccountId, const CString& strPath, int nSize, CString strDefault);
@@ -121,7 +121,6 @@ MS2Ptr<ASEffectManager> FUN_140e6cd80(int nMovieId, CString strClass, __int64 a1
 class Unk_NdScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_140cb6990(const char* szMethod, __int64 a1, __int64 a2);              // "setHpBarLeft"
     Scaleform::GFx::Value FUN_140e6cfe0(const char* szMethod, __int64 a1, __int64 a2, int a3);      // "setHpBarRight"
 };
 void FUN_1422bcdd0(Scaleform::GFx::Value* pValue, __int64 n);
@@ -203,7 +202,7 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
 {
     if (m_nObjectId == 0)
         return;
-    Unk_NdActor* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_NdActor* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance()));
     if (pPc != 0) {
         FUN_140cfee80(FUN_1422dbc00(), "m_leftName", pPc->vfunc_77());
         Unk_NdJobCode nJob = FUN_141654730(pPc);
@@ -213,10 +212,10 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
         ((Unk_NdScript*)m_30.operator->())->Invoke("setLeftProfile", strProfile);
         FUN_140e6c900();
     }
-    Unk_NdActor* pNpc = FUN_141bd1320(FUN_1403ed2d0(), m_nObjectId);
+    Unk_NdActor* pNpc = FUN_141bd1320(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance()), m_nObjectId);
     if (pNpc != 0) {
         CStringW strName = FUN_1408f71a0(L"s_npc_duelhpbar_dialog_right_name", FUN_1401aa6a0(pNpc->FUN_141092fa0()),
-            FUN_1401a9d70()->FUN_141811980(0x11, FUN_1406cd310(pNpc->FUN_141093270().operator->())));
+            TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, FUN_1406cd310(pNpc->FUN_141093270().operator->())));
         FUN_140cff1b0(FUN_1422dbc00(), "m_rightName", strName);
         FUN_140cfee80(FUN_1422dbc00(), "m_rightLevel", FUN_140719dc0(L"{0}", pNpc->vfunc_78()));
         CString strProfile(pNpc->FUN_141093270()->m_90);
@@ -307,12 +306,12 @@ void UINpcDuelHPBarDialog::FUN_140e6c900()
 {
     if (m_30 == 0)
         return;
-    Unk_NdActor* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_NdActor* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance()));
     if (pPc == 0)
         return;
     __int64 nHp = pPc->FUN_141670a00(4);
     __int64 nMaxHp = pPc->FUN_141670a30(4);
-    ((Unk_NdScript*)m_30.operator->())->FUN_140cb6990("setHpBarLeft", nHp, nMaxHp);
+    ((Unk_NdScript*)m_30.operator->())->Invoke("setHpBarLeft", nHp, nMaxHp);
 }
 
 // @0x140e6c9c0
@@ -322,7 +321,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c9c0()
         return;
     if (m_nBarCount == 0)
         return;
-    Unk_NdActor* pNpc = FUN_141bd1320(FUN_1403ed2d0(), m_nObjectId);
+    Unk_NdActor* pNpc = FUN_141bd1320(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance()), m_nObjectId);
     if (pNpc == 0)
         return;
     const __int64& nHp = pNpc->FUN_141670a00(4);

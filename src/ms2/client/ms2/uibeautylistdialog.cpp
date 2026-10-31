@@ -13,6 +13,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -32,7 +33,6 @@ public:
 Unk_BlGlobals* FUN_1401d3200();
 
 class Unk_BlWorld { };
-Unk_BlWorld* FUN_1403ed2d0();
 void* FUN_141bd0cc0(Unk_BlWorld* pWorld);                       // the local player
 int FUN_141bd3060(Unk_BlWorld* pWorld);                         // the current map id
 bool FUN_1418fe060();
@@ -118,10 +118,10 @@ int UIBeautyListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         nType = 3;
     if (nType != 0)
     {
-        void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+        void* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance()));
         if (pPlayer == 0)
             return 0;
-        int bSalon = FUN_140f006b0(FUN_141bd3060(FUN_1403ed2d0()));
+        int bSalon = FUN_140f006b0(FUN_141bd3060(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance())));
         int bFlag = FUN_1418fe060();
         if (bFlag == 0 && bSalon == 0)
         {

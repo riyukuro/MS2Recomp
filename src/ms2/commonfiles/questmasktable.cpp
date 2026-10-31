@@ -43,6 +43,7 @@
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 
 class Unk_140165cf0                         // game TinyXML element
 {
@@ -53,7 +54,7 @@ public:
 
 // Unrecovered helpers.
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 bool FUN_14028f710(Unk_140165cf0* pElem);                                   // the node is an element
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int* pOut);
@@ -65,7 +66,6 @@ void FUN_140177de0(const CStringA& str, ATL::CAtlArray<int>* pOut, const char* p
 struct Unk_QmRange { int a, b, c, d; Unk_QmRange(); };
 unsigned FUN_141092fa0(void* pObject);                                      // the key of an npc object
 class Unk_QmWorld;
-Unk_QmWorld* FUN_1403ed2d0();                                               // the world (map manager)
 unsigned FUN_141bd3060(void* pMapManager);                                  // the current field id
 int FUN_140869420();                                                        // the clock tick (the random seed)
 
@@ -230,7 +230,7 @@ int CQuestMaskTable::HasNpcMask(void* pNpc)
 int CQuestMaskTable::HasNpcMaskHere(int nKey)
 {
     {
-        Unk_QmMaskPtr spMask = GetNpcMask(FUN_141bd3060(FUN_1403ed2d0()), nKey);
+        Unk_QmMaskPtr spMask = GetNpcMask(FUN_141bd3060(reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())), nKey);
         if (spMask.get() != 0)
             return 1;
     }
@@ -245,7 +245,7 @@ int CQuestMaskTable::HasPortalMask(Unk_QmPortal* pPortal)
     if (pPortal->m_mask.FUN_140266970())
         return 1;
     {
-        Unk_QmMaskPtr spMask = GetPortalMask(FUN_141bd3060(FUN_1403ed2d0()), pPortal->m_nKey);
+        Unk_QmMaskPtr spMask = GetPortalMask(FUN_141bd3060(reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())), pPortal->m_nKey);
         if (spMask.get() != 0)
             return 1;
     }
@@ -255,7 +255,7 @@ int CQuestMaskTable::HasPortalMask(Unk_QmPortal* pPortal)
 // @0x140764e00
 int CQuestMaskTable::CheckNpcHere(int nKey)
 {
-    return CheckNpc(FUN_141bd3060(FUN_1403ed2d0()), nKey);
+    return CheckNpc(FUN_141bd3060(reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())), nKey);
 }
 
 // @0x140764e40
@@ -290,7 +290,7 @@ int CQuestMaskTable::CheckPortal(Unk_QmPortal* pPortal)
             return 1;
     }
     {
-        Unk_QmMaskPtr spMask = GetPortalMask(FUN_141bd3060(FUN_1403ed2d0()), pPortal->m_nKey);
+        Unk_QmMaskPtr spMask = GetPortalMask(FUN_141bd3060(reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())), pPortal->m_nKey);
         if (spMask.get() != 0)
         {
             if ((&((Unk_QmPlayerState*)FUN_140764020())->m_checker)->IsSatisfied(spMask.operator->()) != 0)
@@ -310,7 +310,7 @@ int CQuestMaskTable::LoadFile(CStringA strFile, Unk_QmFieldMap& rMap)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(CLogString::GetInstance(), 1, 0x13, MS2_QM_XML_ERR, strPath);
+        Unk_AchieveLog<CString>(CLogString::GetInstance(), 1, 0x13, MS2_QM_XML_ERR, strPath);
         return 0;
     }
     for (Unk_140165cf0* pField = pRoot->FUN_140165cf0("field"); pField != 0; pField = pField->FUN_140168650("field"))
@@ -830,7 +830,7 @@ Unk_QuestRewardCalc::Unk_QuestRewardCalc()
     m_guildNpcLevel = 0;
     m_value = 0;
     m_bonus = 0;
-    Unk_QmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_QmPlayer* pPlayer = reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
         m_level = pPlayer->vfunc_78();
     m_guildNpcLevel = TSingleton<CGuildManager>::GetInstance()->FUN_1404d2990(6);
@@ -1044,7 +1044,7 @@ MS2_REPLACE(0x140762fc0, FUN_140762fc0, 529, 0x18535EF7);
 // an in-progress quest whose conditions are all met counts as completable.
 void FUN_140763210(int nQuestId, int nState, CStringW& strDesc, CStringW& strFormat)
 {
-    Unk_QmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_QmPlayer* pPlayer = reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);

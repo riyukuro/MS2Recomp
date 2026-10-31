@@ -29,9 +29,9 @@
 // MS2-PIN: ??$forward@AEAPEAU?$_Tree_node@U?$pair@$$CBVEntityID@egf@@UUnk_CameraSetting@@@std@@PEAX@std@@@std@@YAAEAPEAU?$_Tree_node@U?$pair@$$CBVEntityID@egf@@UUnk_CameraSetting@@@std@@PEAX@0@AEAPEAU10@@Z 0x140af59e0 ; prop
 // MS2-PIN: ??$forward@AEAUUnk_CameraSetup@@@std@@YAAEAUUnk_CameraSetup@@AEAU1@@Z 0x140af5a30 ; unique
 // MS2-PIN: ??$forward@AEBUUnk_CameraSetting@@@std@@YAAEBUUnk_CameraSetting@@AEBU1@@Z 0x140af5a40 ; prop
-// MS2-PIN: ??$forward@AEBVEntityID@egf@@@std@@YAAEBVEntityID@egf@@AEBV12@@Z 0x140af5a50 ; prop
+// MS2-PIN: ??$forward@AEAVEntityID@egf@@@std@@YAAEAVEntityID@egf@@AEAV12@@Z 0x140af5a50 ; prop
 // MS2-PIN: ??$forward@UUnk_CameraSetup@@@std@@YA$$QEAUUnk_CameraSetup@@AEAU1@@Z 0x140af5ab0 ; unique
-// MS2-PIN: ??$make_pair@AEBVEntityID@egf@@AEBUUnk_CameraSetting@@@std@@YA?AU?$pair@VEntityID@egf@@UUnk_CameraSetting@@@0@AEBVEntityID@egf@@AEBUUnk_CameraSetting@@@Z 0x140af5b20 ; unique
+// MS2-PIN: ??$make_pair@AEAVEntityID@egf@@AEBUUnk_CameraSetting@@@std@@YA?AU?$pair@VEntityID@egf@@UUnk_CameraSetting@@@0@AEAVEntityID@egf@@AEBUUnk_CameraSetting@@@Z 0x140af5b20 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCCameraMode@@@@QEAA@PEAVCCameraMode@@@Z 0x140af5d30 ; unique
 // MS2-PIN: ??8?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKV?$vector@UUnk_CameraSetup@@V?$allocator@UUnk_CameraSetup@@@std@@@std@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x140af7270 ; prop
 // MS2-PIN: ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKV?$vector@UUnk_CameraSetup@@V?$allocator@UUnk_CameraSetup@@@std@@@std@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x140af7370 ; prop
@@ -46,7 +46,7 @@
 // MS2-PIN: ?GetAnimType@NiTimeController@@QEBA?AW4AnimType@1@XZ 0x140af7db0
 // MS2-PIN: ?GetEndKeyTime@NiTimeController@@QEBAMXZ 0x140af7f50
 // MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@UUnk_CameraSetting@@@std@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBVEntityID@egf@@UUnk_CameraSetting@@@std@@PEAX@2@_K@Z 0x140afc650
-// MS2-PIN: ??$?0VEntityID@egf@@UUnk_CameraSetting@@$0A@@?$pair@VEntityID@egf@@UUnk_CameraSetting@@@std@@QEAA@AEBVEntityID@egf@@AEBUUnk_CameraSetting@@@Z 0x140af26b0
+// MS2-PIN: ??$?0AEAVEntityID@egf@@AEBUUnk_CameraSetting@@$0A@@?$pair@VEntityID@egf@@UUnk_CameraSetting@@@std@@QEAA@AEAVEntityID@egf@@AEBUUnk_CameraSetting@@@Z 0x140af26b0
 // MS2-PIN: ??$?0AEBU?$less@VEntityID@egf@@@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@VEntityID@egf@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@UUnk_CameraSetting@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@UUnk_CameraSetting@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@VEntityID@egf@@@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x140af27a0
 // MS2-PIN: ?push_back@?$vector@UUnk_CameraSetup@@V?$allocator@UUnk_CameraSetup@@@std@@@std@@QEAAXAEBUUnk_CameraSetup@@@Z 0x140afd3c0
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@VEntityID@egf@@UUnk_CameraSetting@@U?$less@VEntityID@egf@@@std@@V?$allocator@U?$pair@$$CBVEntityID@egf@@UUnk_CameraSetting@@@std@@@5@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBVEntityID@egf@@UUnk_CameraSetting@@@std@@PEAX@2@XZ 0x140afa080
@@ -149,7 +149,6 @@ class Unk_CameraPickObject
 public:
     GameObject* FUN_140a38a00();                                        // the npc (or null)
 };
-Unk_CameraPickObject* FUN_141bd1050(Unk_GameContext* pContext, void* pMesh);
 // The pick record holder (ecr::PickService::PickRecord, reference counted by FUN_140a17eb0).
 class Unk_GoPickHit;
 class Unk_GoPickVec
@@ -158,7 +157,6 @@ public:
     unsigned int FUN_140a17ea0();                                       // size
     Unk_GoPickHit* FUN_140a17d70(unsigned int nIndex);
 };
-void* FUN_140a17cb0(Unk_GoPickHit* pHit);                               // the picked mesh
 Unk_GoPickVec* FUN_140a17e00(ecr::PickService::PickRecord* pRecord);    // the hits
 void FUN_140a17eb0(ecr::PickService::PickRecord* pRecord);              // add a reference
 class Unk_GoPickListPtr
@@ -204,24 +202,29 @@ template <class T> T* Unk_CameraDialog(int nId)
     return 0;
 }
 class Unk_CameraInput;
-Unk_CameraInput* FUN_14025e7c0();
-bool FUN_14116d720(Unk_CameraInput* pInput);                            // npc control mode
-bool FUN_14116d7a0(Unk_CameraInput* pInput, int nState);
-bool FUN_14116d950(Unk_CameraInput* pInput, int nKey, bool b, int n);   // key down
-bool FUN_14116d9c0(Unk_CameraInput* pInput, int nKey, bool b, int n);   // key pressed this frame
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+class CInputKeyHandler   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14116d7a0(unsigned int);
+    bool FUN_14116d950(int, bool, int);
+    bool FUN_14116d9c0(int, bool, int);
+    bool IsDebugMode();
+};
 void FUN_1412751b0(const CStringW& strMsg, int nType);                  // system chat notice
 class Unk_CameraHousing : public CubeMapInformationService
 {
 };
-Unk_CameraHousing* FUN_1409670e0();
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoHouseSvc* GetInstance();
+};
 extern int DAT_143ab0248;                                               // client country (0..3)
 extern int DAT_143ab2914;                                               // client build / region level
 class Unk_CameraCursor;
-Unk_CameraCursor* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 void FUN_141b90e30(Unk_CameraCursor* pCursor, float* pX, float* pY);    // cursor window position
-int FUN_141bd3e00(Unk_GameContext* pContext);
-unsigned int FUN_141bd3060(Unk_GameContext* pContext);                  // current map id
-float FUN_141bcfc50(Unk_GameContext* pContext);
 // The rpg object of a camera target (FUN_1409ffd30 casts a target to it).
 class Unk_CameraActor : public PCBase
 {
@@ -231,20 +234,17 @@ Unk_CameraActor* FUN_14099eef0(Unk_CameraTargetEntity* pTarget);       // the rp
 ecr::RenderService* FUN_1413f9890();                                    // the render service
 ecr::CameraService* FUN_1413f9910();                                    // the camera service
 class Unk_SceneApp;
-int FUN_1417e2610(Unk_SceneApp* pApp);                                  // current scene state id
 class Unk_UIManager;
 Unk_UIManager* FUN_1408e57f0();
 void FUN_1422ba250(Unk_UIManager* pUI);
 class Unk_140ad4b90;
-Unk_140ad4b90* FUN_140ad4b90();
+class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
 void FUN_1418631a0(Unk_140ad4b90* p);
 bool FUN_141863100(Unk_140ad4b90* p, int nMapId, const Vector3& ptPos);   // the point is in the map's area
-Unk_CameraTargetEntity* FUN_141bd1200(Unk_GameContext* pContext, int nId);   // an npc by object id
-Unk_CameraTargetEntity* FUN_141bd0cc0(Unk_GameContext* pContext);       // the local player
 void FUN_141bdb5a0(Unk_GameContext* pContext, int bOn);
 void FUN_141bd9e60(Unk_GameContext* pContext, float f1, float f2, float fTime, int nTargetId);
 void FUN_141bda050(Unk_GameContext* pContext, float f, int nTargetId);
-unsigned int FUN_140869420();                                           // tick count in ms
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n); // set a global shader constant
 extern NiFixedString DAT_143ae5380;                                     // camera shader constant name
 // The camera options of the client settings (FUN_1409a8b10).
@@ -279,23 +279,34 @@ struct Unk_CameraConsts
     Unk_CameraConstValue m_kCameraSpeed2;                               // +0x1ad8
     Unk_CameraConstValue m_kCameraSpeed3;                               // +0x1b30
 };
-Unk_CameraConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 egf::Entity* FUN_1408a9090(const void* sp);                             // the entity of a smart pointer
 float FUN_1409f25a0(float f);                                           // cos
 float FUN_1409f2310(float f);                                           // sin
 Unk_CameraSetting* FUN_140947880(CCameraMode* p);                       // &p->m_setting
-int FUN_1422b9dc0(Unk_UIManager* pUI);                                  // current ui scene id
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSceneId();
+};
 class Unk_1409a8b20;
-Unk_1409a8b20* FUN_1409a8b20();
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 class Unk_Clock;
-double FUN_141473280(Unk_Clock* pClock);                                // seconds
 void FUN_140a0b2a0(NiAVObject* pNode);                                  // detach the node from its parent
 class Unk_CameraPostEffect
 {
 public:
     void FUN_1411780e0(float f1, float f2);
 };
-Unk_CameraPostEffect* FUN_1416aad00(Unk_1409a8b20* p);
+class PostProcessingService   // C3: member view for the former free stand-ins
+{
+public:
+    class CDepthOfFieldManager* GetDoF();
+};
 // A camera path row (as read by CameraMgr::FUN_140aefb20; the trigger camera path data).
 struct Unk_CameraPathRow
 {
@@ -318,14 +329,12 @@ struct Unk_CamPoint3
     float x, y, z;
 };
 CString FUN_140298360(const char* psz, const CString& str);              // ATL operator+(const char*, const CString&) (another obj)
-CEffectService* FUN_1403ed280();                                        // the effect manager
 class Unk_CamNifCache
 {
 public:
     NiAVObjectPtr FUN_141551ea0(CString strPath, int n1, int n2, int n3, int n4);   // load (cached) nif
 };
-Unk_CamNifCache* FUN_140a0afd0();                                       // the nif cache
-egf::Entity* FUN_14123c410(Unk_CameraTargetEntity* pTarget);            // the target's entity
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 NiNode* FUN_141b6efc0(egf::Entity* pEntity);                            // the entity's scene root
 // A NiNode that follows only some parts of its parent's transform (0x138 bytes; unrecovered class).
 class Unk_SeparateNode : public NiNode
@@ -335,7 +344,7 @@ public:
     char m_pad_node[0x138 - sizeof(NiNode)];
 };
 MS2_CHECK_SIZE(Unk_SeparateNode, 0x138);
-// Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
+// Depth-first walker over a scene graph (0x30 bytes; unrecovered class).
 class Unk_SceneWalker
 {
 public:
@@ -343,9 +352,9 @@ public:
     ~Unk_SceneWalker();                                                 // 0x14098cf00
     NiAVObject* Next(bool bDescend);                                    // 0x14098e0d0
 private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
+    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
-MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
+MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 extern unsigned int DAT_143af62d4;                                      // client area width
 extern unsigned int DAT_143af62d8;                                      // client area height
 
@@ -817,7 +826,7 @@ void CameraMgr::FUN_140ae9ed0(egf::Entity* pEntity, const Vector3* pLook, const 
     if (m_spMode.IsNull())
     {
         CTargetCameraMode* pMode = new CTargetCameraMode((Unk_CameraOwner*)m_pCamera, MS2Ptr<CCameraMode>(0));
-        pMode->FUN_14183cc80(FUN_141bd3e00(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())));
+        pMode->FUN_14183cc80(((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bd3e00());
         m_spMode.AssignRaw(pMode);
         m_spTargetMode.AssignRaw(pMode);
     }
@@ -858,7 +867,7 @@ void CameraMgr::FUN_140aea4c0(float fTime)
     {
         FUN_140aed750(m_nPendingMode, 1);
         m_nPendingMode = 0;
-        FUN_1418631a0(FUN_140ad4b90());
+        FUN_1418631a0(((class Unk_140ad4b90*)FUN_140ad4b90()));
     }
     FUN_140aea7f0();
     m_spMode->vfunc_8(fTime);
@@ -866,9 +875,9 @@ void CameraMgr::FUN_140aea4c0(float fTime)
     float fValue = m_spMode.get() ? m_spMode->vfunc_19() : 0;
     FUN_1409a5770(DAT_143ae5380, &fValue, 1);
     ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
-    if ((FUN_1417e2610(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())) == 0x620000c || FUN_1417e2610(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())) == 0x620000d ||
-            FUN_1417e2610(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())) == 0x6200018) &&
-        m_1ac && FUN_140869420() - m_1d0 > 1000)
+    if ((((class CStateService*)(class Unk_SceneApp*)(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())))->FUN_1417e2610() == 0x620000c || ((class CStateService*)(class Unk_SceneApp*)(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())))->FUN_1417e2610() == 0x620000d ||
+            ((class CStateService*)(class Unk_SceneApp*)(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())))->FUN_1417e2610() == 0x6200018) &&
+        m_1ac && GetTickCountMs2() - m_1d0 > 1000)
     {
         FUN_1422ba250(FUN_1408e57f0());
         m_1ac = 0;
@@ -944,16 +953,16 @@ BOOL CameraMgr::FUN_140aeb070()
     ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
     if (pSurface && m_pCamera)
     {
-        float fValue = FUN_141bcfc50(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance()));
+        float fValue = ((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bcfc50();
         FUN_140ad4ff0(fValue);
         FUN_1413f9910()->SetActiveCamera(m_pCamera->FUN_140af7fd0(), pSurface->GetWindowRef());
         ecr::CameraData* pData = FUN_1413f9910()->GetActiveCamera(pSurface);
         if (pData)
             pSurface->SetCamera(pData->GetCamera());
-        if (FUN_1417e2610(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())) != 0x6200009)
+        if (((class CStateService*)(class Unk_SceneApp*)(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())))->FUN_1417e2610() != 0x6200009)
         {
             FUN_140af9c10(1);
-            FUN_140af9930(FUN_140869420());
+            FUN_140af9930(GetTickCountMs2());
         }
         return TRUE;
     }
@@ -1078,10 +1087,10 @@ void CameraMgr::FUN_140aeb1a0()
 {
     if (m_spMode.get())
         m_spMode->vfunc_30();
-    if (FUN_14116d720(FUN_14025e7c0()))
+    if (((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->IsDebugMode())
     {
         float fX, fY;
-        FUN_141b90e30(FUN_140aadf80(), &fX, &fY);
+        FUN_141b90e30(((class Unk_CameraCursor*)FUN_140aadf80()), &fX, &fY);
         Unk_GoPickListPtr spPick = FUN_140af0850(fX, fY, true, true, false, 0);
         if (!spPick.FUN_140a16c00())
             return;
@@ -1090,7 +1099,7 @@ void CameraMgr::FUN_140aeb1a0()
         for (unsigned int i = 0; i < FUN_140a17e00(spPick.FUN_140a16c30())->FUN_140a17ea0(); ++i)
         {
             Unk_GoPickHit* pHit = FUN_140a17e00(spPick.FUN_140a16c30())->FUN_140a17d70(i);
-            Unk_CameraPickObject* pObject = FUN_141bd1050(pContext, FUN_140a17cb0(pHit));
+            Unk_CameraPickObject* pObject = ((class Unk_CameraPickObject*)((class WorldService*)(class Unk_GameContext*)(pContext))->FUN_141bd1050(((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject())));
             pNpc = pObject->FUN_140a38a00();
             if (pNpc)
                 break;
@@ -1201,7 +1210,7 @@ void CameraMgr::FUN_140aecbb0(int nId, int nTargetId, bool bEnter)
                     FUN_140aed1e0(setup);
                     if (bHasTarget)
                     {
-                        Unk_CameraTargetEntity* pNpc = FUN_141bd1200(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance()), nTargetId);
+                        Unk_CameraTargetEntity* pNpc = ((class Unk_CameraTargetEntity*)((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bd1200(nTargetId));
                         if (pNpc)
                         {
                             FUN_140aeaf40(pNpc, 1);
@@ -1216,7 +1225,7 @@ void CameraMgr::FUN_140aecbb0(int nId, int nTargetId, bool bEnter)
                     m_27c = false;
                     FUN_140aeb920();
                     FUN_140aed260();
-                    FUN_140aeaf40(FUN_141bd0cc0(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())), 1);
+                    FUN_140aeaf40(((class Unk_CameraTargetEntity*)((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bd0cc0()), 1);
                     FUN_141bdb5a0(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance()), 0);
                     if (pTarget)
                         pTarget->FUN_14183cc80(0);
@@ -1256,7 +1265,7 @@ void CameraMgr::FUN_140aece50()
             }
             else if (setup.m_28 == 3)
             {
-                if (FUN_141863100(FUN_140ad4b90(), setup.m_34, pTarget->vfunc_18()))
+                if (FUN_141863100(((class Unk_140ad4b90*)FUN_140ad4b90()), setup.m_34, pTarget->vfunc_18()))
                     bHit = true;
             }
             if (bHit)
@@ -1276,7 +1285,7 @@ MS2_REPLACE_METHOD(0x140AECE50, CameraMgr, FUN_140aece50, 587, 0x127E1FEB);
 // @0x140aefa70
 void CameraMgr::FUN_140aefa70()
 {
-    if (FUN_1422b9dc0(FUN_1408e57f0()) == 0x620000c && FUN_140af7e30() == 2 && m_spMode.get())
+    if (((class GFxSceneService*)(class Unk_UIManager*)(FUN_1408e57f0()))->GetSceneId() == 0x620000c && FUN_140af7e30() == 2 && m_spMode.get())
     {
         m_240 = !m_240;
         m_spMode->vfunc_33();
@@ -1475,7 +1484,7 @@ MS2_REPLACE_METHOD(0x140AF0170, CameraMgr, FUN_140af0170, 88, 0x7E78B2A1);
 // @0x140af01d0
 int CameraMgr::FUN_140af01d0()
 {
-    if (FUN_1422b9dc0(FUN_1408e57f0()) != 0x620000c)
+    if (((class GFxSceneService*)(class Unk_UIManager*)(FUN_1408e57f0()))->GetSceneId() != 0x620000c)
         return 0;
     return m_240;
 }
@@ -1631,7 +1640,7 @@ void CameraMgr::FUN_140af0b70(int bOn, float f1, float f2)
         {
             m_1b4 = 1;
             m_1b8 = 0;
-            Unk_CameraPostEffect* pEffect = FUN_1416aad00(FUN_1409a8b20());
+            Unk_CameraPostEffect* pEffect = ((class Unk_CameraPostEffect*)((class PostProcessingService*)(class Unk_1409a8b20*)(((class Unk_1409a8b20*)Unk_AeFeatureMgr::FUN_1409a8b20())))->GetDoF());
             if (pEffect)
                 pEffect->FUN_1411780e0(f1, f2);
         }
@@ -1724,7 +1733,7 @@ MS2_REPLACE_METHOD(0x140AF1A90, CameraMgr, FUN_140af1a90, 833, 0xCA1747D0);
 // @0x140af1de0
 void CameraMgr::FUN_140af1de0()
 {
-    double fTime = FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance()));
+    double fTime = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     Vector3 ptLook = FUN_140a17e10();
     Vector3 ptUp = FUN_140af8290();
     if (!m_effect.m_effects.empty())
@@ -1746,7 +1755,8 @@ MS2_REPLACE_METHOD(0x140AF1DE0, CameraMgr, FUN_140af1de0, 384, 0xD74FB37A);
 // @0x140aeb540
 void CameraMgr::FUN_140aeb540(const egf::EntityID& id, const Unk_CameraSetting& setting)
 {
-    m_savedSettings.insert(std::make_pair(id, setting));
+    // non-const id: the exe's pair ctor is pair(U1&&, U2&&) with std::forward<EntityID&> 0x140af5a50
+    m_savedSettings.insert(std::make_pair(const_cast<egf::EntityID&>(id), setting));
 }
 MS2_REPLACE_METHOD(0x140AEB540, CameraMgr, FUN_140aeb540, 72, 0x5A5304A2);
 
@@ -1772,7 +1782,7 @@ void CameraMgr::FUN_140aeb950(CLocalTargetCameraMode* pMode)
             {
                 m_setups.clear();
                 m_290.clear();
-                LoadMapLocalTargetCamera(FUN_141bd3060(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())));
+                LoadMapLocalTargetCamera(((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bd3060());
             }
             DWORD nId = pMode->FUN_140af7e10();
             std::vector<Unk_CameraSetup>& setups = m_setups[nId];
@@ -1866,7 +1876,7 @@ void CameraMgr::FUN_140aec4c0()
     {
         FUN_140aeb920();
         FUN_140aed260();
-        LoadMapCamera(FUN_141bd3060(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())));
+        LoadMapCamera(((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bd3060());
         egf::EntityID id = egf::EntityIDFactory::GetNextID();
         egf::EntityPtr spEntity = TSingleton<EntityWorldManager>::GetInstance()->FactoryEntity((const char*)FUN_140af80c0(), id, true);
         if (FUN_1408a9090(&spEntity) != 0)
@@ -1885,9 +1895,9 @@ void CameraMgr::FUN_140aec4c0()
             TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0(FUN_1408a9090(&spEntity), 0);
         }
         float fSpeed = (float)FUN_1409a8b10()->FUN_140af7de0()->m_4 / 100.0f;
-        float f1 = FUN_1401d3200()->m_kCameraSpeed1.FUN_140298f40() * fSpeed;
-        float f2 = FUN_1401d3200()->m_kCameraSpeed2.FUN_140298f40() * fSpeed;
-        float f3 = FUN_1401d3200()->m_kCameraSpeed3.FUN_140298f40() * fSpeed;
+        float f1 = ((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed1.FUN_140298f40() * fSpeed;
+        float f2 = ((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed2.FUN_140298f40() * fSpeed;
+        float f3 = ((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed3.FUN_140298f40() * fSpeed;
         FUN_140aeb880(f1, f2, f3);
     }
 }
@@ -1947,7 +1957,7 @@ void CameraMgr::FUN_140aea7f0()
     if (m_spMode.IsNull())
         return;
     int nState = 0xb;
-    if (FUN_14116d7a0(FUN_14025e7c0(), nState))
+    if (((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->FUN_14116d7a0(nState))
         return;
     m_spMode->vfunc_9();
     bool bAllowed = true;
@@ -1955,7 +1965,7 @@ void CameraMgr::FUN_140aea7f0()
         bAllowed = DAT_143ab2914 >= 52;
     if (bAllowed)
     {
-        if (FUN_14116d9c0(FUN_14025e7c0(), 0x3e, true, 0) && FUN_14116d950(FUN_14025e7c0(), 0x1d, true, 0))
+        if (((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->FUN_14116d9c0(0x3e, true, 0) && ((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->FUN_14116d950(0x1d, true, 0))
         {
             Unk_CameraSetting setting;
             setting.m_0 = FUN_140ad4b40();
@@ -1972,7 +1982,7 @@ void CameraMgr::FUN_140aea7f0()
             else
             {
                 { CStringW strMsg(L"Target Camera Mode"); FUN_1412751b0(strMsg, 0x14); }
-                if (FUN_1409670e0()->FUN_1410d2f10() != 0)
+                if (((class Unk_CameraHousing*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d2f10() != 0)
                     FUN_140aed750(0x11, 1);
                 else
                     FUN_140aed750(2, 1);
@@ -1980,13 +1990,13 @@ void CameraMgr::FUN_140aea7f0()
             s_bStudioCamera ^= 1;
             return;
         }
-        if (FUN_14116d9c0(FUN_14025e7c0(), 0x3f, true, 0) && FUN_14116d950(FUN_14025e7c0(), 0x2a, true, 0))
+        if (((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->FUN_14116d9c0(0x3f, true, 0) && ((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->FUN_14116d950(0x2a, true, 0))
         {
             FUN_140af0c10();
             { CStringW strMsg(L"Read Camera value [./data/xml/table/TestCamerValue.xml]"); FUN_1412751b0(strMsg, 0x14); }
             return;
         }
-        if (FUN_14116d9c0(FUN_14025e7c0(), 0x40, true, 0) && FUN_14116d950(FUN_14025e7c0(), 0x1d, true, 0))
+        if (((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->FUN_14116d9c0(0x40, true, 0) && ((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->FUN_14116d950(0x1d, true, 0))
         {
             int nMode = 2;
             if (++s_nDebugMode == 7)
@@ -2215,7 +2225,7 @@ void CameraMgr::FUN_140aed750(int nMode, int bKeep)
             {
                 m_1b4 = 0;
                 m_1b8 = 0;
-                Unk_CameraPostEffect* pPostEffect = FUN_1416aad00(FUN_1409a8b20());
+                Unk_CameraPostEffect* pPostEffect = ((class Unk_CameraPostEffect*)((class PostProcessingService*)(class Unk_1409a8b20*)(((class Unk_1409a8b20*)Unk_AeFeatureMgr::FUN_1409a8b20())))->GetDoF());
                 if (pPostEffect)
                     pPostEffect->FUN_1411780e0(m_spMode->FUN_140af7ef0(), m_spMode->FUN_140af7e90());
             }
@@ -2240,8 +2250,8 @@ void CameraMgr::FUN_140af0e40(const CCameraMoveEffectParam* pParam)
     NiNodePtr spParent = 0;
     if (bAttach && !FUN_140a38d60())
         return;
-    NiNode* pTargetRoot = FUN_141b6efc0(FUN_14123c410(FUN_140a38d60()));
-    m_effect.m_spScene = FUN_140a0afd0()->FUN_141551ea0(FUN_140298360("./Data/Resource/Model/Camera/", pParam->m_strFilePath), 0, 5, 0, 0);
+    NiNode* pTargetRoot = FUN_141b6efc0(((class GameObject*)(class Unk_CameraTargetEntity*)(FUN_140a38d60()))->FUN_14123c410());
+    m_effect.m_spScene = ((class Unk_CamNifCache*)FUN_140a0afd0())->FUN_141551ea0(FUN_140298360("./Data/Resource/Model/Camera/", pParam->m_strFilePath), 0, 5, 0, 0);
     if (m_effect.m_spScene != 0)
     {
         spCam = static_cast<NiNode*>(m_effect.m_spScene->GetObjectByName("Camera01"));
@@ -2287,7 +2297,7 @@ void CameraMgr::FUN_140af0e40(const CCameraMoveEffectParam* pParam)
     }
     else
     {
-        spParent = FUN_1403ed280()->FUN_1411a6b10();
+        spParent = TSingleton<CEffectService>::GetInstance()->FUN_1411a6b10();
         NiAVObject* pNode = 0;
         if (pTargetRoot)
             pNode = NiDynamicCast(NiNode, pTargetRoot->GetObjectByName((const char*)pParam->m_strParentNode));
@@ -2302,7 +2312,7 @@ void CameraMgr::FUN_140af0e40(const CCameraMoveEffectParam* pParam)
     m_effect.m_28 = bAttach;
     spRoot->AttachChild(spCam, false);
     spParent->AttachChild(m_effect.m_spCameraNode, true);
-    m_effect.m_fFOV = FUN_141bcfc50(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance()));
+    m_effect.m_fFOV = ((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bcfc50();
     Unk_SceneWalker kWalker(spCam);
     NiAVObject* pObj;
     while ((pObj = kWalker.Next(true)) != 0)
@@ -2336,7 +2346,7 @@ void CameraMgr::FUN_140af0e40(const CCameraMoveEffectParam* pParam)
     }
     if (m_effect.m_spCameraNode)
     {
-        m_effect.m_fStart = FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())) + pParam->m_fStartDelay;
+        m_effect.m_fStart = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280() + pParam->m_fStartDelay;
         NiTimeController* pTime = spCam->GetControllers();
         while (pTime)
         {
@@ -2360,11 +2370,11 @@ void CameraMgr::FUN_140af1f70()
         {
             m_spMode->vfunc_11(m_effect.m_fFOV);
             FUN_140af1a90();
-            FUN_140aeaf40(FUN_141bd0cc0(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())), 1);
+            FUN_140aeaf40(((class Unk_CameraTargetEntity*)((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bd0cc0()), 1);
         }
         else
         {
-            double dNow = FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance()));
+            double dNow = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
             if (dNow < m_effect.m_fStart)
                 return;
             double dTime = dNow - m_effect.m_fStart;
@@ -2420,11 +2430,11 @@ MS2_REPLACE_METHOD(0x140AF1F70, CameraMgr, FUN_140af1f70, 1388, 0x45606797);
 // Plays a camera path nif: its "Camera01" drives the camera directly (no effect root).
 void CameraMgr::FUN_140aefb20(const Unk_CameraPathRow* pRow)
 {
-    m_effect.m_spScene = FUN_140a0afd0()->FUN_141551ea0(FUN_140298360("./Data/Resource/Model/Camera/", pRow->m_strFile), 0, 5, 0, 0);
+    m_effect.m_spScene = ((class Unk_CamNifCache*)FUN_140a0afd0())->FUN_141551ea0(FUN_140298360("./Data/Resource/Model/Camera/", pRow->m_strFile), 0, 5, 0, 0);
     if (m_effect.m_spScene)
     {
         m_effect.m_spCameraNode = static_cast<NiNode*>(m_effect.m_spScene->GetObjectByName("Camera01"));
-        m_effect.m_fFOV = FUN_141bcfc50(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance()));
+        m_effect.m_fFOV = ((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bcfc50();
         Unk_SceneWalker kWalker(m_effect.m_spCameraNode);
         NiAVObject* pObj;
         while ((pObj = kWalker.Next(true)) != 0)

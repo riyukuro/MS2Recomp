@@ -59,6 +59,9 @@ static CString s_strSortTypeNamesPre[] = {"None", "Buy", "Like", "PriceLow", "Pr
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // The key-input controller singleton of this unit.
 static UICommon::CMyPCKeyInputController s_keyInputController;
@@ -158,23 +161,15 @@ public:
 };
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned long long n);
 
-class Unk_GpNotices
-{
-public:
-    void FUN_140da4e40(CStringW name, Delegate<void(NotifyObject*)> cb);
-    void FUN_140da4eb0(CStringW name, Delegate<void(NotifyObject*)> cb);
-};
-Unk_GpNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 class Unk_GpKeys { public: CStringW FUN_14142d760(int nBind, int n); };
 Unk_GpKeys* FUN_1409331f0();
 class Unk_GpStr { public: CStringW FUN_1422b0570(const CString& strKey); };
 Unk_GpStr* FUN_14025e7a0();
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument into the message
-class Unk_GpOpt { public: bool FUN_14036d570(int nOption); };
-Unk_GpOpt* FUN_140166410();
+CFeatureManager* FUN_140166410();
 class Unk_GpUi { public: void FUN_141adc750(int nUiId); };
-Unk_GpUi* FUN_1403ed2b0();
 class Unk_14025e7c0 { public: bool FUN_14116d9c0(int nKey, int a, int b); bool FUN_14116dd30(int nKey, int a, int b); };
 Unk_14025e7c0* FUN_14025e7c0();
 bool FUN_140a467d0(const MS2Ptr<AScript>*);             // has the AS object been released
@@ -197,14 +192,14 @@ UIGamePadMenuDialog::UIGamePadMenuDialog()
     m_nMoveMs = 0x32;
     m_80 = 0;
     m_5c = 1;
-    FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyCompleteMyPC"),
+    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyCompleteMyPC"),
         Delegate<void(NotifyObject*)>(this, &UIGamePadMenuDialog::FUN_140c1bfe0));
 }
 
 // @0x140c1ad10
 UIGamePadMenuDialog::~UIGamePadMenuDialog()
 {
-    FUN_140939a10()->FUN_140da4eb0(CStringW(L"NotifyCompleteMyPC"),
+    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyCompleteMyPC"),
         Delegate<void(NotifyObject*)>(this, &UIGamePadMenuDialog::FUN_140c1bfe0));
 }
 
@@ -265,7 +260,7 @@ int UIGamePadMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             if (spMenu->m_tail.FUN_14098d930() == false)
                 spMenu->m_tail.FUN_14098d150();
             else if (spMenu->m_nUiId != 0)
-                FUN_1403ed2b0()->FUN_141adc750(spMenu->m_nUiId);
+                reinterpret_cast<Unk_GpUi*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(spMenu->m_nUiId);
             vfunc_67();
             return 1;
         }

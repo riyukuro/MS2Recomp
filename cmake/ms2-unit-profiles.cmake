@@ -98,7 +98,24 @@ set(MS2_TOOLSET_vc11_OPTIONS
     "/D_ALLOW_RUNTIME_LIBRARY_MISMATCH"
     "/D_USE_ANSI_CPP"
 )
-set(MS2_UNIT_TOOLSETS vc9 vc9c vc11)
+# vc9v: the vc9 cl with the vc11 options, for the parts of the Video add-on that the exe links from VS2008 objs
+# (tools/msvc9v/cl adds src/ to the include path and forces in compat.h). The source must be C++03.
+# Listed out (tools/ms2flags.py reads the quoted items); keep it equal to the vc11 list.
+set(MS2_TOOLSET_vc9v_OPTIONS
+    "/O2"
+    "/Gy"
+    "/GF"
+    "/Zl"
+    "/Z7"
+    "/GR-"
+    "/EHs-c-"
+    "/bigobj"
+    "/TP"
+    "/D_ALLOW_MSC_VER_MISMATCH"
+    "/D_ALLOW_RUNTIME_LIBRARY_MISMATCH"
+    "/D_USE_ANSI_CPP"
+)
+set(MS2_UNIT_TOOLSETS vc9 vc9c vc9v vc11)
 
 # Apply the profiles to the sources of `srcvar` that declare one. Options only under real MSVC (clang-cl never
 # byte-matches and keeps the project's codegen); definitions for both compilers so the code is the same.

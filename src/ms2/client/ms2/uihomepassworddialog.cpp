@@ -15,6 +15,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 
 static UICommon::CMyPCKeyInputController s_keyInputController;
 
@@ -38,10 +39,9 @@ private:
 MS2_CHECK_SIZE(Unk_HpActorPtr, 0x10);
 class Unk_HpMovie { public: Scaleform::GFx::Value FUN_140e0a8c0(const char* szMethod, CStringW strText, int nState); };
 
-Unk_HpWorld* FUN_1403ed2d0();
 Unk_HpActor* FUN_141bd0cc0(Unk_HpWorld* pWorld);
 Unk_HpActor* FUN_141523c50(Unk_HpActor* pActor);
-__int64 FUN_140869440();                                        // server time
+__int64 GetServerTime();                                        // server time
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1409e90c0(int nStringId, const int& nYear, const int& nMonth, const int& nDay, const int& nHour,
                        const int& nMinute);
@@ -95,14 +95,14 @@ void UIHomePasswordDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (m_30.IsNull() != 0)
         return;
-    Unk_HpActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HpActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance()));
     if (pActor != 0)
     {
         Unk_HpActorPtr ref(FUN_141523c50(pActor));
         if (ref.FUN_140fa9d30() != 0)
         {
             __int64 nExpire = ref.FUN_14050dee0()->m_38;
-            unsigned nState = FUN_140869440() < nExpire;
+            unsigned nState = GetServerTime() < nExpire;
             CMsTime time(nExpire);
             if (nState != 0)
             {
@@ -154,14 +154,14 @@ int UIHomePasswordDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     }
     else if (_stricmp("OnStop", szMethod) == 0)
     {
-        Unk_HpActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+        Unk_HpActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance()));
         if (pActor != 0)
         {
             Unk_HpActorPtr ref(FUN_141523c50(pActor));
             if (ref.FUN_140fa9d30() != 0)
             {
                 __int64 nExpire = ref.FUN_14050dee0()->m_38;
-                unsigned nState = FUN_140869440() < nExpire;
+                unsigned nState = GetServerTime() < nExpire;
                 CMsTime time(nExpire);
                 if (nState != 0)
                     FUN_140d73aa0(FUN_1409e90c0(0xb06, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute()), 1, this, L"onStop");
@@ -210,7 +210,7 @@ void UIHomePasswordDialog::FUN_1412c9680(CString strPassword)
 // @0x1412c96d0
 void UIHomePasswordDialog::SendRequestCube(int nMode, CStringW strPassword, int nUnused)
 {
-    Unk_HpActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HpActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance()));
     if (pActor != 0)
     {
         Unk_HpActorPtr ref(FUN_141523c50(pActor));

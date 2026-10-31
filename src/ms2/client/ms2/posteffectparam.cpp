@@ -12,17 +12,19 @@
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
 void FUN_1408730a0(void* pNode, const char* pszName, bool& bOut);
 void FUN_140873360(void* pNode, const char* pszName, float& fOut);
-const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 
 // Game clock (commonfiles singleton 0x14086d260, mainsystem.cpp 0x141473280: current time in seconds).
-CMainSystem* FUN_14086d260();
 
 bool FUN_14028d470(float a, float b);                   // nearly equal
 float FUN_140a17940(float f, float fMin, float fMax);   // clamp
 float FUN_141b6fe40(float t, int nInterpolator);        // 1 linear, 2 log, 3 exp
 
 // Post-process effect manager (?\applyeffect.cpp, singleton 0x1409a8b00).
-ApplyEffect* FUN_1409a8b00();
 
 // The concrete screen effects (own units; only the constructors are used here).
 #include "monochromeeffectparam.h"
@@ -55,7 +57,7 @@ void CPostEffectParam::vfunc_1(Unk_140165cf0* pNode)
     FUN_140873360(pNode, "fadeStartDuration", m_fFadeStartDuration);
     FUN_140873360(pNode, "fadeEndDuration", m_fFadeEndDuration);
     FUN_140873360(pNode, "holdDuration", m_fHoldDuration);
-    if (const char* pszStart = FUN_14086f4b0(pNode, "fadeStartInterpolator"))
+    if (const char* pszStart = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("fadeStartInterpolator"))
     {
         CString str(pszStart);
         str.MakeLower();
@@ -66,7 +68,7 @@ void CPostEffectParam::vfunc_1(Unk_140165cf0* pNode)
         else if (str == "exp")
             m_nFadeStartInterpolator = 3;
     }
-    if (const char* pszEnd = FUN_14086f4b0(pNode, "fadeEndInterpolator"))
+    if (const char* pszEnd = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("fadeEndInterpolator"))
     {
         CString str(pszEnd);
         str.MakeLower();
@@ -129,7 +131,7 @@ bool CPostEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     {
         const CPostEffectParam* pMono = static_cast<const CPostEffectParam*>(pParam);
         MonochromeEffect* pEffect = new MonochromeEffect(m_nId, pMono);
-        if (!FUN_1409a8b00()->FUN_1409a4020(m_nId, pEffect))
+        if (!TSingleton<ApplyEffect>::GetInstance()->FUN_1409a4020(m_nId, pEffect))
             return false;
         break;
     }
@@ -137,7 +139,7 @@ bool CPostEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     {
         const CPostEffectParam* pRadial = static_cast<const CPostEffectParam*>(pParam);
         RadialBlurEffect* pEffect = new RadialBlurEffect(m_nId, pRadial);
-        if (!FUN_1409a8b00()->FUN_1409a4020(m_nId, pEffect))
+        if (!TSingleton<ApplyEffect>::GetInstance()->FUN_1409a4020(m_nId, pEffect))
             return false;
         break;
     }
@@ -145,7 +147,7 @@ bool CPostEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     {
         const CPostEffectParam* pMask = static_cast<const CPostEffectParam*>(pParam);
         ScreenMaskingEffect* pEffect = new ScreenMaskingEffect(m_nId, pMask);
-        if (!FUN_1409a8b00()->FUN_1409a4020(m_nId, pEffect))
+        if (!TSingleton<ApplyEffect>::GetInstance()->FUN_1409a4020(m_nId, pEffect))
             return false;
         break;
     }
@@ -153,7 +155,7 @@ bool CPostEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     {
         const CPostEffectParam* pBlur = static_cast<const CPostEffectParam*>(pParam);
         GaussianBlurEffect* pEffect = new GaussianBlurEffect(m_nId, pBlur);
-        if (!FUN_1409a8b00()->FUN_1409a4020(m_nId, pEffect))
+        if (!TSingleton<ApplyEffect>::GetInstance()->FUN_1409a4020(m_nId, pEffect))
             return false;
         break;
     }
@@ -161,7 +163,7 @@ bool CPostEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     {
         const CPostEffectParam* pShimmer = static_cast<const CPostEffectParam*>(pParam);
         PostShimmerEffect* pEffect = new PostShimmerEffect(m_nId, pShimmer);
-        if (!FUN_1409a8b00()->FUN_1409a4020(m_nId, pEffect))
+        if (!TSingleton<ApplyEffect>::GetInstance()->FUN_1409a4020(m_nId, pEffect))
             return false;
         break;
     }
@@ -176,7 +178,7 @@ MS2_REPLACE_METHOD(0x140dbcfd0, CPostEffect, vfunc_3, 1064, 0xD45CB6D4);
 void CPostEffect::vfunc_4()
 {
     CEffect::vfunc_4();
-    FUN_1409a8b00()->FUN_1409a3ee0(m_nType, m_nId);
+    TSingleton<ApplyEffect>::GetInstance()->FUN_1409a3ee0(m_nType, m_nId);
 }
 MS2_REPLACE_METHOD(0x140dbd400, CPostEffect, vfunc_4, 54, 0x9A0ECA22);
 
@@ -184,7 +186,7 @@ MS2_REPLACE_METHOD(0x140dbd400, CPostEffect, vfunc_4, 54, 0x9A0ECA22);
 void CPostEffect::vfunc_5()
 {
     CEffect::vfunc_5();
-    FUN_1409a8b00()->FUN_1409a3f80(m_nType, m_nId);
+    TSingleton<ApplyEffect>::GetInstance()->FUN_1409a3f80(m_nType, m_nId);
 }
 MS2_REPLACE_METHOD(0x140dbd440, CPostEffect, vfunc_5, 54, 0x59BBACAF);
 
@@ -246,7 +248,7 @@ CScreenEffectBase::~CScreenEffectBase()
 // @0x140dbd680
 void CScreenEffectBase::vfunc_1()
 {
-    m_dStartTime = FUN_14086d260()->FUN_141473280();
+    m_dStartTime = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
     m_bStopped = 0;
     m_bStarted = 1;
     if (m_bUseFade && !FUN_14028d470(m_fFadeStart, 0))
@@ -262,7 +264,7 @@ bool CScreenEffectBase::vfunc_2()
         return true;
     if (!m_bStopped)
     {
-        float fElapsed = (float)(FUN_14086d260()->FUN_141473280() - m_dStartTime);
+        float fElapsed = (float)(TSingleton<CMainSystem>::GetInstance()->FUN_141473280() - m_dStartTime);
         bool bHold = false;
         if (fElapsed >= m_fDuration)
         {
@@ -326,7 +328,7 @@ void CScreenEffectBase::vfunc_3()
             m_fFadeStart = 0;
             m_fHold = 0;
             m_fDuration = m_fFadeEnd;
-            m_dStartTime = FUN_14086d260()->FUN_141473280();
+            m_dStartTime = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
             m_bLoop = 0;
             m_bEnding = 1;
             return;

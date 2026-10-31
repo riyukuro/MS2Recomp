@@ -111,17 +111,19 @@ public:
 class Unk_RainContext
 {
 public:
-    Unk_RainActor* FUN_141bd0cc0();                                 // the local player
 };
 
 class Unk_Clock;
-double FUN_141473280(Unk_Clock* pClock);                            // seconds
 
 // The cube terrain: the height of a column (INT_MIN when empty).
+class Unk_CubeDisplayLookup   // C3: member view (real class not in this TU)
+{
+public:
+    int FUN_1410b24b0(unsigned int, unsigned int);
+};
 class Unk_CubeWorld
 {
 public:
-    int FUN_1410b24b0(int nX, int nY);
 };
 class Unk_CubeService;
 Unk_CubeService* FUN_1410b27c0();
@@ -159,11 +161,8 @@ public:
 class Unk_RainScene
 {
 public:
-    unsigned int FUN_141ffaa20(Unk_RainNodeList& kList, bool bA, bool bB);
-    void FUN_142003af0(unsigned int nHandle);
 };
 Unk_RainScene* FUN_1413f98b0();
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);    // dynamic cast (NULL-safe)
 
 #define AsPoint(kPoint) reinterpret_cast<const efd::Point3&>(kPoint)
 
@@ -214,7 +213,7 @@ static void FillColumns(const Vector3& kPos, ATL::CAtlArray<Unk_Int3>& arrCube)
         {
             int x = kCell.x + dx;
             int y = kCell.y + dy;
-            int z = pWorld->FUN_1410b24b0(x, y);
+            int z = ((Unk_CubeDisplayLookup*)(Unk_CubeWorld*)(pWorld))->FUN_1410b24b0(x, y);
             if (z == INT_MIN)
                 continue;
             arrCube.Add(Unk_Int3(x, y, z + 1));
@@ -264,7 +263,7 @@ RainDropOnCubeEmitter::RainDropOnCubeEmitter(const NiFixedString& kName, NiAVObj
 {
     m_fCooldown = fLifeSpan;
     Vector3 kPos = g_143b01a60;
-    Unk_RainActor* pActor = reinterpret_cast<Unk_RainContext*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_RainActor* pActor = ((Unk_RainActor*)((WorldService*)(Unk_RainContext*)(reinterpret_cast<Unk_RainContext*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor)
         kPos = pActor->GetPosition();
     m_nCenterKey = FUN_1408a13d0(kPos);
@@ -272,7 +271,7 @@ RainDropOnCubeEmitter::RainDropOnCubeEmitter(const NiFixedString& kName, NiAVObj
     ATL::CAtlArray<Unk_Int3> arrCube;
     FillColumns(kPos, arrCube);
     ShuffleColumns(arrCube);
-    double dNow = FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance()));
+    double dNow = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     for (unsigned int i = 0; i < arrCube.GetCount(); i++)
     {
         const Unk_Int3& kCube = static_cast<const ATL::CAtlArray<Unk_Int3>&>(arrCube)[i];
@@ -292,7 +291,7 @@ void RainDropOnCubeEmitter::MarkDirty()
 // @0x1416eca00
 void RainDropOnCubeEmitter::Refresh()
 {
-    Unk_RainActor* pActor = reinterpret_cast<Unk_RainContext*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_RainActor* pActor = ((Unk_RainActor*)((WorldService*)(Unk_RainContext*)(reinterpret_cast<Unk_RainContext*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (!pActor)
         return;
 
@@ -312,7 +311,7 @@ void RainDropOnCubeEmitter::Refresh()
     ATL::CAtlArray<Unk_Int3> arrCube;
     FillColumns(kPos, arrCube);
     ShuffleColumns(arrCube);
-    double dNow = FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance()));
+    double dNow = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     ATL::CAtlArray<unsigned int> arrKey;
     for (unsigned int i = 0; i < arrCube.GetCount(); i++)
     {
@@ -339,7 +338,7 @@ bool RainDropOnCubeEmitter::ComputeVolumeInitialPositionAndVelocity(NiQuatTransf
         return false;
 
     Unk_RainDrop& kDrop = m_lstDrops.front();
-    double dNow = FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance()));
+    double dNow = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     if (kDrop.GetTime() > dNow)
         return false;
 
@@ -375,7 +374,7 @@ RainDropSystem::~RainDropSystem()
     {
         Unk_RainScene* pScene = FUN_1413f98b0();
         if (pScene)
-            pScene->FUN_142003af0(m_nHandle);
+            ((ecr::SceneGraphService*)(Unk_RainScene*)(pScene))->RemoveSceneGraph(m_nHandle);
     }
 }
 
@@ -404,10 +403,10 @@ void RainDropSystem::Create()
 
     Unk_RainNodeList kList;
     {
-        Unk_RainAVPtr spObject(FUN_14098d8d0(&NiObject::ms_RTTI, static_cast<NiNode*>(FUN_1409475d0(&m_spNode))));
+        Unk_RainAVPtr spObject(NiObject::DynamicCast(&NiObject::ms_RTTI, (class NiObject const*)(static_cast<NiNode*>(FUN_1409475d0(&m_spNode)))));
         kList.FUN_1411b83f0(spObject);
     }
-    m_nHandle = FUN_1413f98b0()->FUN_141ffaa20(kList, true, true);
+    m_nHandle = ((ecr::SceneGraphService*)(Unk_RainScene*)(FUN_1413f98b0()))->AddSceneGraph(*(efd::vector<efd::SmartPointer<NiObject>> const*)(Unk_RainNodeList*)&(kList), true, true);
 
     SetupProperties();
     NiFixedString kEmitterName("RainDropOnCubeEmitter");
@@ -474,7 +473,7 @@ void RainDropSystem::SetupProperties()
 void RainDropSystem::SelectTexture()
 {
     const float fPeriod = 1.0f;
-    float fTime = (float)FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance()));
+    float fTime = (float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     float fRatio = Fmod(fTime, fPeriod);
     unsigned int nIndex = (unsigned int)((float)m_arrTexture.GetCount() * fRatio / fPeriod);
     NiTexturingProperty* pTexturing = (NiTexturingProperty*)m_spSystem->GetProperty(NiProperty::TEXTURING);

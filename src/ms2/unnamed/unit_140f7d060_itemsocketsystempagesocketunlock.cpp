@@ -50,6 +50,10 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/worldservice.h"
+
+// return types of the getters this unit calls
+class Unk_InventoryListener;
 
 // The header statics of the original TU (the same set as the other pages of the family).
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -65,7 +69,6 @@ class Unk_ItemEquipData : public CItemData {};   // CItem::FUN_140527840's recor
 class Unk_TrWorld;
 class Unk_TrPlayer;
 class Unk_TrInventory;
-Unk_TrWorld* FUN_1403ed2d0();
 Unk_TrPlayer* FUN_141bd0cc0(Unk_TrWorld*);
 Unk_TrInventory* FUN_1416561a0(Unk_TrPlayer*);
 void FUN_1411e1ce0(Unk_TrInventory*, CAtlList<MS2Ptr<CEquipItem>>&, int);
@@ -89,7 +92,7 @@ int FUN_1422dccd0(Unk_SocketPageBag* bag);
 void FUN_1422dcca0(Unk_SocketPageBag* bag, int index);
 NotifyContext::BindData* FUN_1422c8e90(const CString& name);
 class Unk_TrDebug;
-Unk_TrDebug* FUN_14025e7c0();
+void* FUN_14025e7c0();
 bool FUN_14116d720(Unk_TrDebug*);
 void FUN_1422ce240(Unk_SocketPageButton*, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, int);
 void FUN_1422dce60(Unk_SocketPageBag*, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, int);
@@ -123,7 +126,7 @@ public:
     void FUN_1419cae20(UIItemEventListener* listener);      // register (once)
     void FUN_1419caeb0(UIItemEventListener* listener);      // unregister
 };
-Unk_ItemEventSystem* FUN_140a6a840();
+Unk_InventoryListener* FUN_140a6a840();
 
 // The ingredient control of the page: the multi select list (RTTI ASMultiSelectTileCacheList over ASItemBag).
 class ASItemBag : public Unk_SocketPageBag {};
@@ -278,7 +281,7 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
     m_actionButton = reinterpret_cast<Unk_TrFindButton*>(m_root.operator->())->FUN_140acce30("m_btnAction");
     if (m_actionButton.get() != 0)
         FUN_1422ce240(m_actionButton.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82d00), 0);
-    bool isDebug = FUN_14116d720(FUN_14025e7c0());
+    bool isDebug = FUN_14116d720(reinterpret_cast<Unk_TrDebug*>(FUN_14025e7c0()));
     int debug = isDebug ? 1 : 0;
     m_debugButton = reinterpret_cast<Unk_TrFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnAction");
     if (m_debugButton.get() != 0) {
@@ -313,7 +316,7 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
     }
     m_root->Invoke("initData", data.FUN_1422bb870());
     m_state = 0;
-    FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    reinterpret_cast<Unk_ItemEventSystem*>(FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_140f6dbe0(m_sourceControl);
     FUN_140f6dbe0(m_ingredientControl);
 }
@@ -393,7 +396,7 @@ void ItemSocketSystemPageSocketUnlock::vfunc_3(void* p, bool bFlag)
 // @0x140f7e8d0
 void ItemSocketSystemPageSocketUnlock::FUN_140f7e8d0()
 {
-    Unk_TrPlayer* player = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_TrPlayer* player = FUN_141bd0cc0(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance()));
     if (player == 0)
         return;
     m_sourceItems.RemoveAll();
@@ -436,7 +439,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7ec20()
 {
     if (m_selected == 0 || m_selected->FUN_1405279c0() == 0)
         return;
-    Unk_TrPlayer* player = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_TrPlayer* player = FUN_141bd0cc0(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance()));
     if (player == 0)
         return;
     m_ingredientEquips.RemoveAll();
@@ -585,7 +588,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7fa20(MS2Ptr<CItem> item)
     CItemSocket* itemSocket = item->FUN_1405279c0();
     if (itemSocket == 0 || itemSocket->GetMaxSlot() == 0)
         return;
-    Unk_TrPlayer* player = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_TrPlayer* player = FUN_141bd0cc0(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance()));
     if (player == 0)
         return;
     CItemSocketSystemUtil::EnableSocketUnlockFunction func;
@@ -668,7 +671,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80160()
     unsigned rate = 0;
     unsigned bonus = 0;
     int flag = data->FUN_14053de40();
-    Unk_TrPlayer* player = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_TrPlayer* player = FUN_141bd0cc0(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance()));
     if (player != 0)
         bonus = (unsigned)(FUN_1411e1110(FUN_1416561a0(player), 0xb3) * 10000.0f);
     int sale = FUN_140627ac0(flag, &rate, bonus);
@@ -762,7 +765,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80f30()
     m_actionButton = 0;
     m_debugButton = 0;
     m_debugFillButton = 0;
-    FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    reinterpret_cast<Unk_ItemEventSystem*>(FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     m_state = 0;
 }
 
@@ -790,7 +793,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81100(ASObj& data)
     MS2Ptr<SaleParam> sale(new SaleParam);
     if (sale.get() != 0) {
         unsigned bonus = 0;
-        Unk_TrPlayer* player = FUN_141bd0cc0(FUN_1403ed2d0());
+        Unk_TrPlayer* player = FUN_141bd0cc0(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance()));
         if (player != 0)
             bonus = (unsigned)(FUN_1411e1110(FUN_1416561a0(player), 0xb3) * 10000.0f);
         sale->enabled = FUN_140627ac0(flag, reinterpret_cast<unsigned*>(&sale->rate), bonus);
@@ -954,7 +957,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f826b0(CInPacket*)
     MS2Ptr<SaleParam> sale(new SaleParam);
     if (sale.get() != 0) {
         unsigned bonus = 0;
-        Unk_TrPlayer* player = FUN_141bd0cc0(FUN_1403ed2d0());
+        Unk_TrPlayer* player = FUN_141bd0cc0(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance()));
         if (player != 0)
             bonus = (unsigned)(FUN_1411e1110(FUN_1416561a0(player), 0xb3) * 10000.0f);
         int flag = m_selected->FUN_140527840()->FUN_14053de40();

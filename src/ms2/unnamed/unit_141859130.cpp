@@ -12,11 +12,13 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
 
-class Unk_XmlNode { public: };
+class Unk_XmlNode { public: public:
+    class Unk_XmlNode* FirstChild(char const*);   // C3: was free FUN_140165cf0
+public:
+    class Unk_XmlNode* NextSibling(char const*);   // C3: was free FUN_140168650
+};
 
 CString FUN_14016a5c0(const char* psz, int n);
-Unk_XmlNode* FUN_140165cf0(void* pNode, const char* pszName);       // first child
-Unk_XmlNode* FUN_140168650(Unk_XmlNode* pNode, const char* pszName);   // next sibling
 const char* FUN_14086f4b0(Unk_XmlNode* pNode, const char* pszName); // attribute text
 
 #pragma function(memcmp, memset)
@@ -63,13 +65,13 @@ int Unk_XBlockNameMap::LoadXBlock(CString strXBlock)
     TiXmlDocument doc;
     if (!doc.FUN_140870fc0(FUN_14016a5c0((const char*)strPath, 0), 0))
         return 0;
-    Unk_XmlNode* pGame = FUN_140165cf0(&doc, "game");
+    Unk_XmlNode* pGame = ((class Unk_XmlNode*)(void*)(&doc))->FirstChild("game");
     if (pGame == 0)
         return 0;
-    Unk_XmlNode* pEntity = FUN_140165cf0(pGame, "entitySet");
+    Unk_XmlNode* pEntity = ((class Unk_XmlNode*)(void*)(pGame))->FirstChild("entitySet");
     if (pEntity == 0)
         return 0;
-    for (pEntity = FUN_140165cf0(pEntity, "entity"); pEntity != 0; pEntity = FUN_140168650(pEntity, "entity")) {
+    for (pEntity = ((class Unk_XmlNode*)(void*)(pEntity))->FirstChild("entity"); pEntity != 0; pEntity = ((class Unk_XmlNode*)(class Unk_XmlNode*)(pEntity))->NextSibling("entity")) {
         const char* pszId = FUN_14086f4b0(pEntity, "id");
         if (pszId == 0)
             continue;

@@ -38,7 +38,7 @@
 
 // ---- out-of-unit callees (names are exe addresses) ----------------------------------------------------------------
 extern char DAT_143b059e8;                                      // service lookup cell
-HardwareInstancingService* FUN_14098c5b0(char* pCell);
+class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 void FUN_1413d78e0(HardwareInstancingService* pSvc, egf::Entity* pEntity);   // refresh the entity's instancing
 bool FUN_14028d470(float a, float b);                           // nearly equal
 NiNode* FUN_1413fa070(egf::EntityID id);                     // entity id -> scene root
@@ -83,11 +83,8 @@ struct Unk_CmWalker
     ~Unk_CmWalker();                                  // 0x14098cf00
     NiAVObject* FUN_14098e0d0(bool bDescend);
 };
-NiObject* FUN_14098d8d0(const void* pRTTI, NiObject* pObject);    // dynamic cast through an NiRTTI
 extern char DAT_143afa7d0;                                         // NiRTTI of the mesh type
 extern char DAT_143d69198;                                         // material table
-void* FUN_140a17cd0(void* pMesh);                                  // the mesh's active material
-void* FUN_140a17af0(void* pTable, void* pMaterial);                // table lookup
 int* FUN_140876480(int* pOut, int nCat);                          // memory category helper
 
 // ---- motion value classes (header-inline in the exe, COMDATs of this obj) ----------------------------------------------
@@ -175,9 +172,9 @@ Unk_CmFade::Unk_CmFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, b
             Unk_CmWalker walker(spRoot);
             while (NiAVObject* pObject = walker.FUN_14098e0d0(true))
             {
-                NiObject* pMesh = FUN_14098d8d0(&DAT_143afa7d0, pObject);
+                NiObject* pMesh = NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa7d0), (class NiObject const*)(pObject));
                 void* pMat;
-                if (pMesh != 0 && (pMat = FUN_140a17cd0(pMesh)) != 0 && FUN_140a17af0(&DAT_143d69198, pMat) != 0)
+                if (pMesh != 0 && (pMat = ((void*)((class NiRenderObject*)(void*)(pMesh))->GetActiveMaterial())) != 0 && ((void*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), (class NiMaterial const*)(pMat))) != 0)
                 {
                     int nCat;
                     int* pCat = FUN_140876480(&nCat, 0);
@@ -297,7 +294,7 @@ MS2_REPLACE_METHOD(0x14115B500, CCubeMotionManager, FUN_14115b500, 51, 0x29320C8
 void CCubeMotionManager::Update()
 {
     ATL::CAtlList<egf::EntityID> finished(10);
-    efd::SmartPointer<HardwareInstancingService> spInstancing(FUN_14098c5b0(&DAT_143b059e8));
+    efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
 
     // rotations
     for (POSITION pos1 = m_rotate.GetHeadPosition(); pos1 != 0; m_rotate.GetNext(pos1))

@@ -186,6 +186,8 @@
 // Status: see progress/status.tsv. Callees that are not recovered yet are declared below ("unit-local views");
 // their names are Ghidra's (FUN_<va>) unless evident.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiinventorydialog.cpp"
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uiinventorydialog.h"
 #include "uiinvitegroupdialog.h"
@@ -309,7 +311,6 @@ class Unk_InvWorld { public: MyPC* FUN_141bd0cc0(); };
 int FUN_141658f30(MyPC* pPc);                                       // a bank privilege (pc bang)
 int FUN_141662de0(MyPC* pPc);                                       // a bank privilege (vip)
 __int64 FUN_141662830(MyPC* pPc);                                   // the last bank call time
-void FUN_14166cc40(PCBase* pPc, int nPose);
 
 // The item event source and the status listeners' registry.
 class Unk_InvItemEvents
@@ -377,8 +378,6 @@ UIDialog* FUN_140d27300(int nUiId);
 UIDialog* FUN_140d27760(int nUiId);
 UIDialog* FUN_140de48d0(int nUiId);                                 // UIStoreDialog
 UIItemGetOptionDialog* FUN_140cbe260(int nUiId);
-class Unk_InvTradeManager;
-int FUN_14185d8b0(Unk_InvTradeManager* p);
 
 // The UI service.
 class Unk_InvUIService : public CUIService
@@ -708,15 +707,15 @@ void UIInventoryDialog::vfunc_26(int nItemId)
     if (strModel == "Idle_A" && pPc->FUN_141527120() != 0)
     {
         if (spData->FUN_14053c620() == 0xd)
-            FUN_14166cc40(pPc, 0x4c);
+            pPc->FUN_14166cc40(0x4c);
         else if (spData->FUN_14053c620() == 0x10)
-            FUN_14166cc40(pPc, 0x51);
+            pPc->FUN_14166cc40(0x51);
         else if (spData->FUN_14053c620() == 0x12)
-            FUN_14166cc40(pPc, 0x52);
+            pPc->FUN_14166cc40(0x52);
         else if (spData->FUN_14053c620() == 0x11)
-            FUN_14166cc40(pPc, 0x53);
+            pPc->FUN_14166cc40(0x53);
         else if (spData->FUN_14053d110())
-            FUN_14166cc40(pPc, 0x4e);
+            pPc->FUN_14166cc40(0x4e);
     }
 }
 #ifndef MS2_STANDALONE
@@ -1560,7 +1559,7 @@ MS2_REPLACE_METHOD(0x14199BED0, UIInventoryDialog, FUN_14199bed0, 232, 0);
 // @0x14199bfc0
 int UIInventoryDialog::FUN_14199bfc0()
 {
-    if (FUN_14185d8b0(reinterpret_cast<Unk_InvTradeManager*>(TSingleton<CTradeManagerEx>::GetInstance())) == 0)
+    if (TSingleton<CTradeManagerEx>::GetInstance()->FUN_14185d8b0() == 0)
         return 0;
     MyPC* pPc = reinterpret_cast<Unk_InvWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc != 0 && pPc->FUN_14166ce30() == 0)
@@ -1924,21 +1923,12 @@ private:
 };
 MS2_CHECK_SIZE(Unk_InvGuildRef, 0x10);
 
-// "m_userList": the user list. Slot 24 (+0xc0) redraws it.
-class Unk_InvUserList : public ASTileList
-{
-public:
-    INV_V(16) INV_V(17) INV_V(18) INV_V(19) INV_V(20) INV_V(21) INV_V(22) INV_V(23)
-    virtual void vfunc_24(bool bRefresh);                           // 24 (+0xc0) (bool: the exe passes dl)
-    void FUN_1422dd000(int nRows);                                  // the visible row count
-    unsigned FUN_1422dd150();                                       // the entry count
-};
 // exe 0x140c02900: the list getter 0x140bc7280.
-template <> MS2Ptr<Unk_InvUserList> UISwfEntity::GetChild<Unk_InvUserList>(const CString& strName)
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName)
 {
     if (m_30 == 0)
-        return MS2Ptr<Unk_InvUserList>(0);
-    return m_30->FUN_140bc7280<Unk_InvUserList>(strName);
+        return MS2Ptr<ASScrollingList>(0);
+    return m_30->FUN_140bc7280<ASScrollingList>(strName);
 }
 
 // The group chat windows (UIGroupMessengerBrowser at +0x50 of the chat UI).
@@ -2146,7 +2136,7 @@ void UIInviteGroupDialog::FUN_1419a0240()
     FUN_1419a06d0(entries);
     FUN_1419a07d0(entries);
     FUN_1419a08f0(entries);
-    if (MS2Ptr<Unk_InvUserList> spList = GetChild<Unk_InvUserList>("m_userList"))
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_userList"))
     {
         spList->FUN_1422dd1d0();
         for (POSITION pos = entries.GetHeadPosition(); pos != 0; entries.GetNext(pos))
@@ -2288,7 +2278,6 @@ CStringW FUN_140298ea0(CStringW strKey);                            // a localiz
 void FUN_1412751b0(const CStringW& strText, int nType);             // a notice
 CItemBreakManager* FUN_1409c4b20();                                 // TSingleton<CItemBreakManager>::GetInstance
 UIInventoryDialog* FUN_1405344f0(int nUiId);                        // the inventory window
-int FUN_1405352d0(UIItemBreakBase* pDialog);                        // breaking (m_188)
 void FUN_140c3fe30(UIInventoryDialog* pInventory, int nTab);        // select a tab of the inventory
    // the rarity names
 class Unk_IbAnalytics;
@@ -2690,7 +2679,7 @@ MS2_REPLACE_METHOD(0x1419A2D70, UIItemBreakDialog, vfunc_73, 85, 0);
 // @0x1419a2dd0
 int UIItemBreakDialog::vfunc_86()
 {
-    if (FUN_1405352d0(this) != 0)
+    if (FUN_1405352d0() != 0)
         return 0;
     else
         return FUN_1419a1660();
@@ -3007,7 +2996,7 @@ MS2_REPLACE_METHOD(0x1419A4F70, UIItemBreakDonationDialog, vfunc_73, 85, 0);
 // @0x1419a4fd0
 int UIItemBreakDonationDialog::vfunc_86()
 {
-    if (FUN_1405352d0(this) != 0)
+    if (static_cast<UIItemBreakDialog*>(static_cast<UIItemBreakBase*>(this))->FUN_1405352d0() != 0)   // the exe shares UIItemBreakDialog's helper
         return 0;
     else
         return FUN_1419a1660();

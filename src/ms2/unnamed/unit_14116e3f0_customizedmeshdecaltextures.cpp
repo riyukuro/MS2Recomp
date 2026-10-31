@@ -46,19 +46,19 @@ public:
     static CCustomizedTextureManager* CreateInstance() { return GetInstance() != 0 ? GetInstance() : new CCustomizedTextureManager; }
 };
 MS2_CHECK_SIZE(CCustomizedTextureManager, 0x8);
-CCustomizedTexInfo* FUN_1411660b0(CCustomizedTextureManager* pManager, CCustomizedTexInfo* pInfoA, CCustomizedTexInfo* pInfoB);
+void* FUN_1411660b0(class CCustomizedTextureManager*, class CCustomizedTexInfo*, class CCustomizedTexInfo*);   // C3: was FUN_1411660b0
 
 // ---- exe callees and data -------------------------------------------------------------------------------------------------
 
-CNifLoadingService* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 void FUN_1410479a0(NiObjectNET* pObject, const NiFixedString& kKey, const NiColor& kColor);   // set colour extra data
-extern const NiFixedString DAT_143ae50c8;                   // customised texture extra data keys
-extern const NiFixedString DAT_143ae50d0;
-extern const NiFixedString DAT_143ae50d8;
-extern const NiFixedString DAT_143ae50f8;
-extern const NiFixedString DAT_143ae5100;
-extern const NiFixedString DAT_143ae5108;
-extern const NiFixedString DAT_143ae5110;
+extern NiFixedString DAT_143ae50c8;                   // customised texture extra data keys
+extern NiFixedString DAT_143ae50d0;
+extern NiFixedString DAT_143ae50d8;
+extern NiFixedString DAT_143ae50f8;
+extern NiFixedString DAT_143ae5100;
+extern NiFixedString DAT_143ae5108;
+extern NiFixedString DAT_143ae5110;
 
 void FUN_14116f480(NiObjectNET* pObject, const NiFixedString& kKey, unsigned int uiSize, const float* pfValues);
 
@@ -77,13 +77,13 @@ bool FUN_14116e3f0(NiMesh* pMesh, float fA, float fB, float fC, float fD, int bT
     pMesh->AttachProperty(pTexturing);
     float afParams[4] = { fA, fB, fC, fD };
     FUN_14116f480(pMesh, DAT_143ae50f8, 4, afParams);
-    NiTexturePtr spDecal = FUN_140a0afd0()->GetTexture(strTexture, 5);
+    NiTexturePtr spDecal = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(strTexture, 5);
     NiTexturingProperty::ShaderMap* pMap = NiNew NiTexturingProperty::ShaderMap(spDecal, 0,
         NiTexturingProperty::CLAMP_S_CLAMP_T, NiTexturingProperty::FILTER_TRILERP, 1);
     pTexturing->SetShaderMap(1, pMap);
     if (bTint)
     {
-        NiTexturePtr spTint = FUN_140a0afd0()->GetTexture(strTexture, 5);
+        NiTexturePtr spTint = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(strTexture, 5);
         pMap = NiNew NiTexturingProperty::ShaderMap(spTint, 0,
             NiTexturingProperty::CLAMP_S_CLAMP_T, NiTexturingProperty::FILTER_TRILERP, 2);
         pTexturing->SetShaderMap(2, pMap);
@@ -142,7 +142,7 @@ bool FUN_14116e7f0(NiAVObject* pMesh)
 
     if (CCustomizedTextureManager::GetInstance() == 0)
         CCustomizedTextureManager::CreateInstance();
-    efd::SmartPointer<CCustomizedTexInfo> spComposed = FUN_1411660b0(CCustomizedTextureManager::GetInstance(), spInfoA, spInfoB);
+    efd::SmartPointer<CCustomizedTexInfo> spComposed = ((class CCustomizedTexInfo*)FUN_1411660b0(CCustomizedTextureManager::GetInstance(), spInfoA, spInfoB));
 
     NiSourceTexture* pBase = NiDynamicCast(NiSourceTexture, pTexturing->GetBaseTexture());
     if (pBase != 0)

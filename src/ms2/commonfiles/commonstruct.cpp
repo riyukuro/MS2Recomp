@@ -20,8 +20,8 @@ static CString s_commonSortNames[]={"None","Buy","Like","PriceLow","PriceHigh","
 template<> fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>::MakeValue(const wchar_t*);
 
 __int64 GetServerTime();
-COutputStream& FUN_14070fa20(COutputStream&,__int64);
-COutputStream& FUN_14070f9a0(COutputStream&,int);
+COutputStream & FUN_14070fa20(COutputStream &, unsigned __int64);  // C3: the definition's signature
+COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
 COutputStream& FUN_14070fa60(COutputStream&,float);
 COutputStream& FUN_14070f820(COutputStream&,bool);
 CInputStream& FUN_14070f500(CInputStream&,__int64&);
@@ -39,7 +39,7 @@ public:
         FUN_1406535b0(a,b,flags,format,fmt::ArgList());
     }
 };
-Unk_CommonLog* FUN_140166440();
+class CLogString* GetLogString();
 
 // @0x14026ced0
 BillBoardInfo::BillBoardInfo() { Clear(); }
@@ -168,7 +168,7 @@ void PacketLogQueue::Add(int type,int loopback) {
 MS2_REPLACE_METHOD(0x14026DD80, PacketLogQueue, Add, 166, 0xA0B2824F);
 // @0x14026de30
 void PacketLogQueue::PrintPacketLogs() {
-    FUN_140166440()->Log(0,0,12,L"* {0}",L"PacketLogQueue::PrintPacketLogs");
+    static_cast<Unk_CommonLog*>(GetLogString())->Log(0,0,12,L"* {0}",L"PacketLogQueue::PrintPacketLogs");
     CStringW text(L"[\r\n");
     for(unsigned i=0;i<m_entries.GetCount();++i) {
         Unk_CommonPacketLogEntry& entry=m_entries[i];
@@ -176,7 +176,7 @@ void PacketLogQueue::PrintPacketLogs() {
     }
     text+=L"]";
     const wchar_t* raw=text;
-    FUN_140166440()->Log(0,0,12,raw);
+    static_cast<Unk_CommonLog*>(GetLogString())->Log(0,0,12,raw);
 }
 MS2_REPLACE_METHOD(0x14026DE30, PacketLogQueue, PrintPacketLogs, 312, 0xD695911F);
 // @0x14026df70

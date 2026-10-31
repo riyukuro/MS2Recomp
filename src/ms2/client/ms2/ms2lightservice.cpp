@@ -48,17 +48,14 @@
 using namespace egf;
 
 // ---- out-of-unit callees ----
-WorldService* FUN_1403ed2d0();                                          // the world service (global)
 egf::EntityManager* FUN_1409670f0();                                    // the world's entity manager
 egf::Entity* FUN_1411cf440(egf::EntityManager* mgr, const egf::EntityID* id);   // entity lookup by id
-void FUN_1413eb6d0(egf::IPropertyCallback* pCallback);                  // registers a light property callback
-COptimizer* FUN_1409f7c90();                                            // the optimizer (singleton)
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 int FUN_140ae1c10();                                                    // the current graphics quality level
 class Unk_QualityTable;
-int FUN_141376880(Unk_QualityTable* pTable, int nFeature);              // the level a feature needs (5: light shadows)
 
 // The effect service; told about every light the batch creates.
-CEffectService* FUN_1403ed280();
+class CEffectService;
 
 // The graphics options: whether the "dim lights" option is on, and the post processing step that applies it.
 class Unk_LightVideoOptions
@@ -81,7 +78,11 @@ class Unk_LightPostProcess
 public:
     Unk_LightRenderStep* FUN_1416a3a90(int nStep);
 };
-Unk_LightPostProcess* FUN_1409a8b20();
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 
 // ---- static initializers (.text$di, in this order) ----
 // Light entities added while a world loads (SetLightAddedCallback(QueueLight)); CreateQueuedLights empties it.
@@ -183,7 +184,7 @@ efd::SyncResult MS2LightService::OnPreInit(efd::IDependencyRegistrar* pDependenc
 {
     efd::SyncResult result = ecr::LightService::OnPreInit(pDependencyRegistrar);
     if (result == efd::SyncResult_Success)
-        FUN_1413eb6d0(static_cast<egf::IPropertyCallback*>(this));
+        egf::PlaceableModel::AddCallback(static_cast<egf::IPropertyCallback*>(this));
     return result;
 }
 MS2_REPLACE_METHOD(0x1414BFE10, MS2LightService, OnPreInit, 94, 0x4C922F5B);
@@ -191,7 +192,7 @@ MS2_REPLACE_METHOD(0x1414BFE10, MS2LightService, OnPreInit, 94, 0x4C922F5B);
 // @0x1414bfe80
 efd::AsyncResult MS2LightService::OnInit()
 {
-    FUN_1403ed2d0()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
+    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
     return ecr::LightService::OnInit();
 }
 MS2_REPLACE_METHOD(0x1414BFE80, MS2LightService, OnInit, 77, 0x9166F0A9);
@@ -371,7 +372,7 @@ void MS2LightService::UpdateLightShadow(egf::Entity* pEntity)
     if (!pEntity->GetModel()->ContainsModel(kFlatModelID_StandardModelLibrary_ShadowGenerator))
         return;
 
-    int nNeeded = FUN_141376880(reinterpret_cast<Unk_QualityTable*>(TSingleton<CGraphicOptionTable>::GetInstance()), 5);
+    int nNeeded = ((class CGraphicOptionTable*)(class Unk_QualityTable*)(reinterpret_cast<Unk_QualityTable*>(TSingleton<CGraphicOptionTable>::GetInstance())))->GetShadowOption(5);
     bool bShadows = FUN_140ae1c10() >= nNeeded;
     std::map<egf::EntityID, bool>::iterator it = m_lightShadow.find(pEntity->GetEntityID());
     bool bKnown = it != m_lightShadow.end();
@@ -434,7 +435,7 @@ void MS2LightService::HandleEntityEnterWorld(const egf::EntityChangeMessage* pMe
 
     Unk_LightVideoOptions* pVideo = reinterpret_cast<Unk_LightOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0();
     bool bDimmed = pVideo->FUN_14125e0b0();
-    Unk_LightRenderStep* pStep = FUN_1409a8b20()->FUN_1416a3a90(3);
+    Unk_LightRenderStep* pStep = ((class Unk_LightPostProcess*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3a90(3);
     if (pStep)
         bDimmed = bDimmed & pStep->FUN_1409a8f00();
     else
@@ -464,7 +465,7 @@ MS2_REPLACE_METHOD(0x1414C0AF0, MS2LightService, HandleEntityExitWorld, 185, 0xB
 // @0x1414c0bb0
 void MS2LightService::RemoveRenderedEntity(egf::Entity* pEntity, NiAVObject* pAVObject)
 {
-    if (!FUN_1409f7c90()->IsModelCullingOn())
+    if (!((class COptimizer*)FUN_1409f7c90())->IsModelCullingOn())
         return;
     NiNode* pNode = NiDynamicCast(NiNode, pAVObject);
     if (!pNode || !pEntity)
@@ -568,7 +569,7 @@ bool MS2LightService::CreateQueuedLights()
             m_spSceneGraphService->ForEachEntitySceneGraph(kFunctor);
         }
 
-        FUN_1403ed280()->FUN_1411a74a0(entityID, pEntity);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a74a0(entityID, pEntity);
         UpdateShadowCaster(pLight, pEntity);
     }
     s_queuedLights.clear();

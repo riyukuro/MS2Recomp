@@ -92,7 +92,6 @@ struct Unk_RsPngReader : public efd::MemObject
     char m_pad[0xe0];
 };
 NiImageConverter* FUN_141d6f370();                                           // current image converter
-NiDevImageConverter* FUN_140a5af40(char* pRtti, NiImageConverter* pkConverter);   // checked cast to NiDevImageConverter
 extern char DAT_143afa940;                                                   // RTTI descriptor of NiDevImageConverter
 extern void (*DAT_143afb020)(NiAVObject*);                                   // scene-object post-collect hook
 extern void (*DAT_143afbb98)();                                              // hook slots set by FUN_1414f07b0/07d0
@@ -105,7 +104,6 @@ extern void (*DAT_143d6eb50)(bool);
 extern int DAT_143afa750;                                                    // last renderer creation failure code
 extern int DAT_143af7d58;                                                    // "keep window hidden" switch
 NiRenderer* GetNiRenderer();                                                 // the current NiRenderer
-NiDX9Renderer* FUN_140d89bc0();                                              // the DX9 renderer, or 0
 const char* FUN_1427cf790(const NiDX9Renderer* pRenderer);                   // NiDX9Renderer::GetDriverName: the adapter's driver dll ("%s" of D3DADAPTER_IDENTIFIER9::Driver)
 
 // Debug log (console) of the game.
@@ -118,7 +116,6 @@ public:
     void FUN_1401ce2f0(const char* pszFormat, unsigned int a, unsigned int b, const char* c);
     void FUN_1401ce2f0(const char* pszFormat, const char* a);
 };
-void FUN_1401ce3d0(Unk_RsDebugLog* pLog, TFunctor<void, EmptyParam> kFunctor);   // registers a dump command
 
 // Last renderer creation failure code.
 // @0x1414f0480
@@ -149,7 +146,6 @@ inline bool Unk_RsGetShaderSource(NiString& kNifPath, NiString& kNodeName)
     return NiGetStudioShaderContext().GetCurrentNifPath(kNifPath, kNodeName);
 }
 // Effect manager: remembers the last executed effect / map effect names.
-CEffectService* FUN_1403ed280();
 
 // ---- game singletons used while creating the renderer ----
 // Video options (the stored resolution and flags).
@@ -195,7 +191,7 @@ public:
     bool m_bHidden;                // +0xd0
 };
 MS2_CHECK_OFFSET(Unk_RsApp, m_bHidden, 0xd0);
-Unk_RsApp* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 // GPU information.
 class Unk_RsGpuInfo
 {
@@ -203,8 +199,8 @@ public:
     CStringW FUN_141245ab0();                       // adapter description
     void FUN_141375390(CStringW kName);
 };
-Unk_RsGpuInfo* FUN_141245b20();
-COptimizer* FUN_1409f7c90();
+class Unk_GoDeviceInfo* FUN_141245b20();   // C3: was FUN_141245b20
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 int FUN_141b91ab0();
 // UI front end: slot 23 shows a message dialog.
 class Unk_RsUI
@@ -218,7 +214,7 @@ public:
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22();
     virtual void ShowCloseNotice(int nStringId, const char* pszArg);           // MS2: slot 23
 };
-Unk_RsUI* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 void FUN_141b6fcf0(const CStringW& kText, const CStringW& kTitle, int nFlags);   // message box + quit prompt
 
 // ---- engine-adjacent pieces (MS2 additions) ----
@@ -285,7 +281,6 @@ public:
     virtual void SetFadeValue(float fValue);       // MS2: slot 41
 };
 extern char DAT_143afbfb8;                                  // RTTI descriptor of Unk_RsFadeObject
-Unk_RsFadeObject* FUN_14098d8d0(char* pRtti, NiAVObject* pObject);
 void FUN_141d2c900(NiAVObject* pObject, bool bFlag);
 class Unk_RsWorldService
 {
@@ -372,7 +367,7 @@ efd::SyncResult MS2RenderService::OnPreInit(efd::IDependencyRegistrar* pDependen
 {
     efd::SyncResult result = ecr::RenderService::OnPreInit(pDependencyRegistrar);
     if (result == efd::SyncResult_Success) {
-        NiDevImageConverter* pConverter = FUN_140a5af40(&DAT_143afa940, FUN_141d6f370());
+        NiDevImageConverter* pConverter = ((class NiDevImageConverter*)NiImageConverter::DynamicCast((class NiRTTI const*)(&DAT_143afa940), (class NiImageConverter const*)(FUN_141d6f370())));
         if (pConverter != 0) {
             pConverter->AddReader(reinterpret_cast<NiImageReader*>(new (FUN_140876480(0).m_hint) Unk_RsPngReader()));
         }
@@ -381,7 +376,7 @@ efd::SyncResult MS2RenderService::OnPreInit(efd::IDependencyRegistrar* pDependen
     DAT_143afb020 = Unk_RsCollectFade;
     Unk_RsSetHookA(Unk_RsLockHook);
     Unk_RsSetHookB(Unk_RsUnlockHook);
-    FUN_1401ce3d0(reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance()), TFunctor<void, EmptyParam>(this, &MS2RenderService::LogState));
+    ((class CCrashManager*)(class Unk_RsDebugLog*)(reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())))->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &MS2RenderService::LogState));
     return result;
 }
 
@@ -577,7 +572,7 @@ static unsigned int Unk_RsShaderError(const char* pcMsg, NiShaderError eErr, boo
     if (Unk_RsGetShaderSource(kNifPath, kNodeName)) {
         text = StringFormat("Shader Error\260\241 \271\337\273\375\307\337\275\300\264\317\264\331.\n\nNif path : \n{0}\n\nNode name : {1}\n\n{2}\n\n\264\375\307\301 \306\304\300\317\300\273 \273\375\274\272\307\317\275\303\260\332\275\300\264\317\261\356?", (const char*)kNifPath, (const char*)kNodeName, pcMsg);
     } else {
-        text = FUN_140741200("Shader Error\260\241 \271\337\273\375\307\337\275\300\264\317\264\331.\n\n\270\266\301\366\270\267 \275\307\307\340\265\310 \300\314\306\345\306\256\n{0}\n\n\270\266\301\366\270\267 \275\307\307\340\265\310 \270\312 \300\314\306\345\306\256\n{1}\n\n.\264\375\307\301 \306\304\300\317\300\273 \273\375\274\272\307\317\275\303\260\332\275\300\264\317\261\356?", FUN_1403ed280()->FUN_1411aad50(), FUN_1403ed280()->FUN_1411aaeb0());
+        text = FUN_140741200("Shader Error\260\241 \271\337\273\375\307\337\275\300\264\317\264\331.\n\n\270\266\301\366\270\267 \275\307\307\340\265\310 \300\314\306\345\306\256\n{0}\n\n\270\266\301\366\270\267 \275\307\307\340\265\310 \270\312 \300\314\306\345\306\256\n{1}\n\n.\264\375\307\301 \306\304\300\317\300\273 \273\375\274\272\307\317\275\303\260\332\275\300\264\317\261\356?", TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->FUN_1411aad50(), TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->FUN_1411aaeb0());
     }
     Unk_RsLog3(GetLogString(), 1, 0x133, L"Code:{0:X} bRecoverable:{1} {2}", eErr, bRecoverable, pcMsg);
     if (MessageBoxA(0, text, "Shader error", 4) == 6) {
@@ -631,17 +626,17 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
     settings.m_uiScreenWidth = width;
     settings.m_uiScreenHeight = height;
     if (settings.m_bVSync) {
-        FUN_1409f7c90()->FUN_14161c3f0();
+        ((class COptimizer*)FUN_1409f7c90())->FUN_14161c3f0();
     }
-    if (FUN_140aadf80()->IsWindowHidden()) {
+    if (((class Unk_RsApp*)FUN_140aadf80())->IsWindowHidden()) {
         settings.m_bFullscreen = false;
     }
     if (m_parentHandle != 0 && settings.m_uiScreenHeight != 0 && settings.m_uiScreenWidth != 0) {
         WINDOWINFO windowInfo;
         windowInfo.cbSize = sizeof(windowInfo);
         GetWindowInfo(m_parentHandle, &windowInfo);
-        FUN_140aadf80()->FUN_141b91290(bFullscreen, settings.m_uiScreenWidth, settings.m_uiScreenHeight);
-        if (bFullscreen && (FUN_140aadf80(), DAT_143af7d58 == 0)) {
+        ((class Unk_RsApp*)FUN_140aadf80())->FUN_141b91290(bFullscreen, settings.m_uiScreenWidth, settings.m_uiScreenHeight);
+        if (bFullscreen && (((class Unk_RsApp*)FUN_140aadf80()), DAT_143af7d58 == 0)) {
             ShowWindow(m_parentHandle, SW_SHOWMAXIMIZED);
         }
     }
@@ -656,7 +651,7 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
                 Unk_RsSetFailure(0x11);
                 return false;
             }
-            NiDX9Renderer* pActive = FUN_140d89bc0();
+            NiDX9Renderer* pActive = NiDX9Renderer::GetRenderer();
             if ((pActive->GetFlags() & 0x20) == 0) {
                 Unk_RsSetFailure(0x12);
                 return false;
@@ -675,7 +670,7 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
             DAT_143d6eb50 = Unk_RsDeviceLostHook;
             DAT_143d6eb38 = Unk_RsNoopHook;
             DAT_143d6eb40 = Unk_RsResetHook;
-            FUN_140aadf80()->FUN_141b91290(bFullscreen, settings.m_uiScreenWidth, settings.m_uiScreenHeight);
+            ((class Unk_RsApp*)FUN_140aadf80())->FUN_141b91290(bFullscreen, settings.m_uiScreenWidth, settings.m_uiScreenHeight);
         }
     }
     return m_spRenderer != 0;
@@ -719,14 +714,14 @@ efd::AsyncResult MS2RenderService::OnInit()
             }
             adapterName = FUN_14016a730(name.c_str(), 0);
         }
-        FUN_141245b20()->FUN_141375390(adapterName);
+        ((class Unk_RsGpuInfo*)FUN_141245b20())->FUN_141375390(adapterName);
     }
     int fullscreenMode = reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_141243f50(0);
     bool bFullscreenFlag = fullscreenMode != 0 ? false : reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->GetMode() == 0;
     bool bBorderless = fullscreenMode != 0 ? true : reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->GetMode() == 2;
     int width = fullscreenMode != 0 ? GetSystemMetrics(SM_CXSCREEN) : reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8ab0();
     int height = fullscreenMode != 0 ? GetSystemMetrics(SM_CYSCREEN) : reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8aa0();
-    FUN_140aadf80()->FUN_1412642e0(bBorderless);
+    ((class Unk_RsApp*)FUN_140aadf80())->FUN_1412642e0(bBorderless);
     if (bBorderless) {
         bFullscreenFlag = true;
     }
@@ -734,11 +729,11 @@ efd::AsyncResult MS2RenderService::OnInit()
         int mode = reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1412438f0();
         reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_14125e1f0(mode, 1);
     }
-    bool bBasicDriver = FUN_141245b20()->FUN_141245ab0() == L"Microsoft Basic Display Driver";
+    bool bBasicDriver = ((class Unk_RsGpuInfo*)FUN_141245b20())->FUN_141245ab0() == L"Microsoft Basic Display Driver";
     if (bBasicDriver) {
-        FUN_140d86260()->ShowCloseNotice(0x397, "");
+        ((class Unk_RsUI*)FUN_140d86260())->ShowCloseNotice(0x397, "");
         CStringW message;
-        message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(), (LPCWSTR)GetStringCommon(0x8d5));
+        message.Format(L"%s\n%s", (LPCWSTR)((class Unk_RsGpuInfo*)FUN_141245b20())->FUN_141245ab0(), (LPCWSTR)GetStringCommon(0x8d5));
         CStringA caption = FUN_14028dc80(0x8d4);
         CStringA text = FUN_14016a600(message, 0);
         NiMessageBox(text, caption, 0);
@@ -748,9 +743,9 @@ efd::AsyncResult MS2RenderService::OnInit()
         width = 0x400;
         height = 0x300;
         if (!CreateRendererSized(bFullscreenFlag, width, height)) {
-            FUN_140d86260()->ShowCloseNotice(0x397, "");
+            ((class Unk_RsUI*)FUN_140d86260())->ShowCloseNotice(0x397, "");
             CStringW message;
-            message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(),
+            message.Format(L"%s\n%s", (LPCWSTR)((class Unk_RsGpuInfo*)FUN_141245b20())->FUN_141245ab0(),
                            (LPCWSTR)GetStringCommon(Unk_RsGetFailure() + 0x8d6));
             NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
             return efd::AsyncResult_Failure;
@@ -759,10 +754,10 @@ efd::AsyncResult MS2RenderService::OnInit()
     if (!reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_14125e820(width, height)) {
         width = 0x400;
         height = 0x300;
-        if (!FUN_140aadf80()->FUN_141b91010(bFullscreenFlag, 0x400, 0x300)) {
-            FUN_140d86260()->ShowCloseNotice(0x397, "");
+        if (!((class Unk_RsApp*)FUN_140aadf80())->FUN_141b91010(bFullscreenFlag, 0x400, 0x300)) {
+            ((class Unk_RsUI*)FUN_140d86260())->ShowCloseNotice(0x397, "");
             CStringW message;
-            message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(),
+            message.Format(L"%s\n%s", (LPCWSTR)((class Unk_RsGpuInfo*)FUN_141245b20())->FUN_141245ab0(),
                            (LPCWSTR)GetStringCommon(Unk_RsGetFailure() + 0x8d6));
             NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
             return efd::AsyncResult_Failure;
@@ -773,7 +768,7 @@ efd::AsyncResult MS2RenderService::OnInit()
         reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_14125eb00(width, height);
         reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1412432d0();
     }
-    FUN_140aadf80();
+    ((class Unk_RsApp*)FUN_140aadf80());
     if (DAT_143af7d58 == 0) {
         ShowWindow(m_parentHandle, SW_SHOWNORMAL);
     }
@@ -851,7 +846,7 @@ static void Unk_RsResetHook(Unk_RsRendererSize* pRenderer)
 static void Unk_RsDriverErrorHook()
 {
     if (!s_driverErrorShown) {
-        FUN_140d86260()->ShowCloseNotice(0x398, "");
+        ((class Unk_RsUI*)FUN_140d86260())->ShowCloseNotice(0x398, "");
         s_driverErrorShown = true;
         CStringW message = StringFormat(L"D3DERR_DRIVERINTERNALERROR\n{0}", GetStringCommon(0xb20));
         FUN_141b6fcf0(message, GetStringCommon(0x8d4), 0);
@@ -923,7 +918,7 @@ static void Unk_RsCollectFade(NiAVObject* pRoot)
     NiTListIterator pos = found.GetHeadPos();
     while (pos != 0) {
         NiAVObject* pObject = found.GetNext(pos);
-        Unk_RsFadeObject* pFade = FUN_14098d8d0(&DAT_143afbfb8, pObject);
+        Unk_RsFadeObject* pFade = ((class Unk_RsFadeObject*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afbfb8), (class NiObject const*)(pObject)));
         if (pFade != 0) {
             pFade->SetFadeValue(-FLT_MAX);
         }

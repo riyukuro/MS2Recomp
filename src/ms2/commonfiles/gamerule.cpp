@@ -305,7 +305,6 @@ struct Unk_GameRuleLock {
 MS2_CHECK_SIZE(Unk_GameRuleLock, 8);
 
 // Out-of-unit callees.
-CFeatureManager* FUN_140166410();                       // the CFeatureManager singleton
 bool FUN_14036e510(void* features);                     // the URL cache feature flag of CFeatureManager
 extern void* DAT_143aaeb00;                             // the pet table singleton (FUN_140353610 is its method)
 void FUN_140353610(void* p, unsigned short value);
@@ -409,7 +408,7 @@ CGameRule::CGameRule()
       m_bc0(0), m_c00(0), m_c10(0), m_c14(0), m_c60(false), m_d10(false),
       m_e98(0), m_ef8(0)
 {
-    if (FUN_14036e510(FUN_140166410()))
+    if (FUN_14036e510(TSingleton<CFeatureManager>::GetInstance()))
         m_a98 = 1;
     else
         m_a98 = 0;
@@ -2621,7 +2620,7 @@ MS2_REPLACE_METHOD(0x14047E740, CGameRule, FUN_14047e740, 74, 0xFC3499D6);
 // @0x14047e790
 bool CGameRule::FUN_14047e790()
 {
-    if (FUN_140166410()->FUN_14036d8e0() != "CN")
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d8e0() != "CN")
         return true;
     Unk_GameRuleLock lock(m_968, 1);
     return m_998;

@@ -34,7 +34,7 @@ float FUN_141b6fdb0(float t, int nType);            // easing
 bool FUN_14028d470(float a, float b);               // a == b (within epsilon)
 int LoadTestCamerValue();                           // reloads the camera xml (returns 0 on failure)
 float FUN_140ae8910(CString key);                   // float value of the camera xml key
-unsigned int FUN_140869420();                       // tick count
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 inline float FUN_140a4e660(float fY, float fX);
 
@@ -466,7 +466,7 @@ MS2_REPLACE_METHOD(0x140a4e240, CTargetLookCenterCameraMode, FUN_140a4e240, 286,
 // @0x140a4e370
 bool CTargetLookCenterCameraMode::FUN_140a4e370()
 {
-    unsigned int now = FUN_140869420();
+    unsigned int now = GetTickCountMs2();
     if (now < m_130 + m_134)
         return true;
     return false;
@@ -476,7 +476,7 @@ MS2_REPLACE_METHOD(0x140a4e370, CTargetLookCenterCameraMode, FUN_140a4e370, 57, 
 // @0x140a4e3b0
 void CTargetLookCenterCameraMode::FUN_140a4e3b0()
 {
-    m_130 = FUN_140869420();
+    m_130 = GetTickCountMs2();
 }
 MS2_REPLACE_METHOD(0x140a4e3b0, CTargetLookCenterCameraMode, FUN_140a4e3b0, 30, 0x110E1B17);
 

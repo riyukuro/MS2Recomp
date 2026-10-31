@@ -27,6 +27,8 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // ---- unrecovered helpers -----------------------------------------------------------------------------------------
 
@@ -53,16 +55,11 @@ private:
 };
 MS2_CHECK_SIZE(Unk_StringArgFormatter, 0x10);
 
-class Unk_ChatTextFilter
-{
-public:
-    void FUN_1416fb300(CStringW& str);
-};
-Unk_ChatTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
-class Unk_XmlFiles { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_XmlFiles : public CFileSystem { };
 Unk_XmlFiles* FUN_140166420();
 CString FUN_14071ae20(const CString& strFile);                          // path below the Table folder
 CStringW FUN_14016a730(const char* psz, int nCodePage);                 // widens a narrow string

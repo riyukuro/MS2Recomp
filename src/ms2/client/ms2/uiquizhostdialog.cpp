@@ -24,10 +24,6 @@
 // The SWF dialog object handed around by the UI library (the exe's dynamic_cast targets).
 class ASDialog : public ASDisplayObject
 {
-public:
-    Scaleform::GFx::Value FUN_1409ba030(const char* szMethod, int nValue);      // invoke an AS method with an int
-    Scaleform::GFx::Value FUN_1422bb330(const char* szMethod);                  // invoke an AS method
-    Scaleform::GFx::Value FUN_140bfe360(const char* szMethod, bool bValue);     // invoke an AS method with a bool
 };
 
 // The free functions below reach the dialog's protected AS pointer (UISwfEntity::m_30 at +0x30) through this view.
@@ -108,7 +104,7 @@ void FUN_140e7df20(UIQuizHostDialog* pDialog, int nRound)
     pDialog->m_nRound = nRound;
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)((Unk_QhDialogAS*)pDialog)->m_30);
     if (pDlg != 0)
-        pDlg->FUN_1409ba030("SetRound", nRound);
+        pDlg->Invoke("SetRound", nRound);
 }
 
 // @0x140e7dfb0
@@ -116,7 +112,7 @@ void FUN_140e7dfb0(UIQuizHostDialog* pDialog)
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)((Unk_QhDialogAS*)pDialog)->m_30);
     if (pDlg != 0)
-        pDlg->FUN_1422bb330("ClearInput");
+        pDlg->Invoke("ClearInput");
 }
 
 // @0x140e7e030
@@ -124,7 +120,7 @@ void FUN_140e7e030(UIQuizHostDialog* pDialog, bool bEnable)
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)((Unk_QhDialogAS*)pDialog)->m_30);
     if (pDlg != 0)
-        pDlg->FUN_140bfe360("EnableSubmit", bEnable);
+        pDlg->Invoke("EnableSubmit", bEnable);
 }
 
 // @0x140e7e0b0

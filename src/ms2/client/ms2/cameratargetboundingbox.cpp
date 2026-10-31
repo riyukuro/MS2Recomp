@@ -25,7 +25,7 @@ void FUN_140add1a0(Unk_CtbBounds3* pSelf, float x0, float y0, float z0, float x1
 void FUN_140adca00(Unk_CtbMat33* pSelf);                                            // identity
 void FUN_140add040(Unk_CtbMat33* pSelf, float fAngle);                              // rotation about z
 void FUN_140adc690(Unk_CtbObb* pOut, const Unk_CtbBounds3* pBounds, const Unk_CtbMat34* pPose);   // NxBox from bounds + pose
-bool FUN_140adc610(const Unk_CtbObb* pObb, const Unk_CtbVec3& pt);                 // point inside the box
+bool NxBoxContainsPoint(class NxBox const&, class NxVec3 const&);   // C3: was FUN_140adc610
 void FUN_140adcdd0(const Unk_CtbMat33* pMat, const Unk_CtbVec3& vec, Unk_CtbVec3* pOut);   // pOut = mat * vec
 
 // @0x140afef30
@@ -79,7 +79,7 @@ MS2_REPLACE_METHOD(0x140AFF0F0, CCameraTargetBoundingBox, InitFromEntity, 560, 0
 // @0x140aff330
 int CCameraTargetBoundingBox::Contains(Vector3 pt)
 {
-    return FUN_140adc610(&m_obb, Unk_CtbVec3(pt.x, pt.y, pt.z)) != 0;
+    return NxBoxContainsPoint(*(class NxBox const*)(&m_obb), *(class NxVec3 const*)&(const Unk_CtbVec3&)Unk_CtbVec3(pt.x, pt.y, pt.z)) != 0;
 }
 MS2_REPLACE_METHOD(0x140AFF330, CCameraTargetBoundingBox, Contains, 104, 0xFF706066);
 

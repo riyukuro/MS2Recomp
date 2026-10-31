@@ -25,20 +25,17 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/gameobjectcontroller.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-void FUN_14165e2a0(PCBase* p, void* pStr, int nKey);       // 0x14165e2a0 the player's animation name of a key
-void FUN_14165f170(PCBase* p);                             // 0x14165f170
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // 0x140b7f6a0 sequence id of the model
 void* FUN_141b6f910();                                     // 0x141b6f910 the animation service
 void* FUN_1403ed280();                                     // effect manager
 void* FUN_1403ed2d0();                                     // player manager
 int FUN_141bd1a10(void* pPlayer, GameObject* pObject);
-int FUN_1411a49c0(void* pEffectMgr, Unk_EffectQuery* pQuery);
-void FUN_1411a6060(void* pEffectMgr, int nId);
 class Unk_PCBaseBody;
-void FUN_141240700(Unk_PCBaseBody* pBody, efd::Point3 kVel);               // 0x141240700
 
 // The owner's vtable up to slot 68, which takes the move by value (the exe passes a pointer to a copy).
 class Unk_SwOwnerSlots
@@ -58,12 +55,9 @@ public:
     virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
 };
 class Unk_SwimHitReport { public: void FUN_140cfaf30(); };   // the actor body's controller hit report
-Unk_SwimHitReport* FUN_141240f20(Unk_PCBaseBody* pBody);
 
 class Unk_SwimApp;
-int FUN_141473390(Unk_SwimApp* p);                         // 0x141473390 the current service tick id
 bool FUN_1415337c0(int nLast, int nNow, int nMillis);      // 0x1415337c0 enough time passed since the last request
-int FUN_1416764d0(MyPC* p);                                // 0x1416764d0 is riding
 Ridee* FUN_141468360(PCBase* p);                           // 0x141468360 the ridee the actor sits on
 
 // The config constants singleton: the swim speed at +0x56a8 is not read here; only the buff view below is.
@@ -95,11 +89,11 @@ StateSwim::~StateSwim()
 void StateSwim::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    m_nMode = FUN_141473390(reinterpret_cast<Unk_SwimApp*>(TSingleton<CMainSystem>::GetInstance()));
+    m_nMode = reinterpret_cast<CMainSystem*>(reinterpret_cast<Unk_SwimApp*>(TSingleton<CMainSystem>::GetInstance()))->FUN_141473390();
     FUN_1417fb440();
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
-        FUN_14165f170(pPC);
+        reinterpret_cast<PC*>(pPC)->SendRequestCube();
     if (m_pOwner->GetClassID() == 0x6200045)
         PCBase::FUN_141677f40(m_pOwner);
     Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
@@ -175,7 +169,7 @@ void StateSwim::vfunc_3(double fTime)
     efd::Point3 kDir = m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
     efd::Point3 kVel = kDir * m_pOwner->vfunc_95();
     efd::Point3 kMove = kVel * (float)fTime;
-    FUN_141240700(m_pOwner->FUN_14166d220(), kVel);
+    reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->SetKVelocity(kVel);
     reinterpret_cast<Unk_SwOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
 }
 
@@ -194,7 +188,7 @@ void StateSwim::vfunc_8(double fTime)
         {
             if (m_pOwner->vfunc_99(0) != 0)
             {
-                FUN_141240f20(m_pOwner->FUN_14166d220())->FUN_140cfaf30();
+                ((Unk_SwimHitReport*)(reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->FUN_141240f20()))->FUN_140cfaf30();
                 m_pOwner->vfunc_59(1, 0, 0, 0);
                 return;
             }
@@ -250,7 +244,7 @@ void StateSwim::vfunc_9(double fTime)
         efd::utf8string strAnim;
         PCBase* pPC = FUN_1417b8370();
         if (pPC != 0)
-            FUN_14165e2a0(pPC, &strAnim, 0x31);
+            reinterpret_cast<PC*>(pPC)->FUN_14165e2a0(*reinterpret_cast<efd::utf8string*>(static_cast<void*>(&strAnim)), 0x31);
         if (strAnim.empty())
         {
             if (!m_pOwner->FUN_14166de90(0x31, nSeq))
@@ -281,8 +275,8 @@ int StateSwim::vfunc_22(MS2Ptr<Unk_StateArg22> p)
     if (p == 0)
         return 0;
     MyPC* pPC = FUN_1417b84b0();
-    int nNow = FUN_141473390(reinterpret_cast<Unk_SwimApp*>(TSingleton<CMainSystem>::GetInstance()));
-    if (pPC != 0 && FUN_1416764d0(pPC) != 0 && FUN_1415337c0(m_nMode, nNow, 1000))
+    int nNow = reinterpret_cast<CMainSystem*>(reinterpret_cast<Unk_SwimApp*>(TSingleton<CMainSystem>::GetInstance()))->FUN_141473390();
+    if (pPC != 0 && reinterpret_cast<PCBase*>(pPC)->FUN_1416764d0() != 0 && FUN_1415337c0(m_nMode, nNow, 1000))
     {
         m_nMode = nNow;
         return 1;
@@ -320,7 +314,7 @@ void StateSwim::FUN_1417fb400()
 {
     if (m_nEffect != 0)
     {
-        FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+        reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
 }
@@ -336,7 +330,7 @@ void StateSwim::FUN_1417fb440()
         query.m_strName = static_cast<PC*>(pPC)->FUN_14165e010(0x31);
         query.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), m_pOwner);
         query.SetActor(pPC->FUN_14123c580());
-        m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
+        m_nEffect = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     }
 }
 

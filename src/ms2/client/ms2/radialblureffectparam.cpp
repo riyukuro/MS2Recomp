@@ -18,7 +18,11 @@ class Unk_PostProcessSvc
 public:
     void FUN_1416a3920(int nId, bool bOn);
 };
-Unk_PostProcessSvc* FUN_1409a8b20();
+class Unk_AeFeatureMgr   // C3: static member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 
 int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);     // TinyXML float attribute
 void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);         // validated global shader constant
@@ -51,7 +55,7 @@ RadialBlurEffect::RadialBlurEffect(int nId, const CPostEffectParam* pParam)
 void RadialBlurEffect::vfunc_1()
 {
     CScreenEffectBase::vfunc_1();
-    FUN_1409a8b20()->FUN_1416a3920(9, true);
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(9, true);
 }
 MS2_REPLACE_METHOD(0x1416ec280, RadialBlurEffect, vfunc_1, 45, 0x57C7625C);
 
@@ -59,7 +63,7 @@ MS2_REPLACE_METHOD(0x1416ec280, RadialBlurEffect, vfunc_1, 45, 0x57C7625C);
 void RadialBlurEffect::vfunc_4()
 {
     CScreenEffectBase::vfunc_4();
-    FUN_1409a8b20()->FUN_1416a3920(9, false);
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(9, false);
 }
 MS2_REPLACE_METHOD(0x1416ec2c0, RadialBlurEffect, vfunc_4, 45, 0x829D7CCC);
 

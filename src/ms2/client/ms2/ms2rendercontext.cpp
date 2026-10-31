@@ -29,8 +29,8 @@ public:
     Unk_RenderTarget* FUN_1409a8ac0();
 };
 class Unk_RenderLog;
-Unk_RenderLog* FUN_140166440();
-void FUN_1401859c0(Unk_RenderLog* pLog, int nCategory, int nLevel, const wchar_t* pszMessage);
+class CLogString* GetLogString();   // C3: was FUN_140166440
+void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
 Ni2DBuffer* GetScreenshotBuffer(int nTarget);            // back buffer of the default render target group
 NiDX9Renderer* FUN_140d89bc0();                          // the DX9 renderer, or 0 when the renderer is not a DX9 one
 extern NiRenderer* GetNiRenderer();                      // NiRenderer::GetRenderer()
@@ -115,8 +115,8 @@ int MS2RenderContext::CreateRecodeSurface()
     }
     m_pInfoMemory = new Unk_SharedMemory("MS2SurfaceInfo", 0x444);
     if (!m_pInfoMemory->IsValid()) {
-        if (FUN_140166440() != 0) {
-            FUN_1401859c0(FUN_140166440(), 0xb, 0x15, L"MS2RenderContext::CreateRecodeSurface CSharedMemory false");
+        if (((class Unk_RenderLog*)GetLogString()) != 0) {
+            Unk_AdditionalLog((class CLogString*)(((class Unk_RenderLog*)GetLogString())), 0xb, 0x15, L"MS2RenderContext::CreateRecodeSurface CSharedMemory false");
         }
         return 0;
     }
@@ -155,8 +155,8 @@ int MS2RenderContext::CreateRecodeSurface()
                 m_pCopySurface = 0;
             }
             if (pDevice->CreateOffscreenPlainSurface(nWidth, nHeight, D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM, &m_pCopySurface, 0) != 0) {
-                if (FUN_140166440() != 0) {
-                    FUN_1401859c0(FUN_140166440(), 0xb, 0x15, L"MS2RenderContext::CreateRecodeSurface copySurface false");
+                if (((class Unk_RenderLog*)GetLogString()) != 0) {
+                    Unk_AdditionalLog((class CLogString*)(((class Unk_RenderLog*)GetLogString())), 0xb, 0x15, L"MS2RenderContext::CreateRecodeSurface copySurface false");
                 }
                 return 0;
             }
@@ -165,8 +165,8 @@ int MS2RenderContext::CreateRecodeSurface()
             }
             m_pFrameMemory = new Unk_SharedMemory(pInfo->m_szFrameName, pInfo->m_nFrameSize << 1);
             if (!m_pFrameMemory->IsValid()) {
-                if (FUN_140166440() != 0) {
-                    FUN_1401859c0(FUN_140166440(), 0xb, 0x15, L"MS2RenderContext::CreateRecodeSurface CSharedMemory false 2");
+                if (((class Unk_RenderLog*)GetLogString()) != 0) {
+                    Unk_AdditionalLog((class CLogString*)(((class Unk_RenderLog*)GetLogString())), 0xb, 0x15, L"MS2RenderContext::CreateRecodeSurface CSharedMemory false 2");
                 }
                 return 0;
             }

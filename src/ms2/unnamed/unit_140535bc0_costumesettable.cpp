@@ -30,6 +30,14 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 
+// the singleton classes whose TSingleton<T>::s_instance this unit uses (only the pointer)
+class CostumeSetTable;
+
+// return types of the getters this unit calls
+class CFileSystem;
+class CLogString;
+class Unk_LaunchOptions;
+
 // Header statics of this unit: the slot-type -> Transparency constant map (filled by the first CostumeSetTable),
 // constructed before the sort names.
 static CostumeSlotMap s_mapSlotType(17, 0.75f, 0.25f, 2.25f, 10);
@@ -38,8 +46,8 @@ static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "Price
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
 class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
+CFileSystem* GetFileSystem();
+CLogString* GetLogString();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* psz, int n);                           // undecorated class name
@@ -50,7 +58,7 @@ int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
 void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);   // split into strings
 int FUN_1405451c0(const CString& str);                                   // text -> number
 CString FUN_1405451e0(unsigned n);                                       // number -> text
-void* FUN_1406aeee0();
+Unk_LaunchOptions* FUN_1406aeee0();
 bool FUN_1406af060(void* p);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 extern unsigned FUN_14054b400(ItemModelData*);
@@ -152,12 +160,12 @@ int CostumeSetTable::LoadXml()
     m_cache.AssignRaw(new CCacheData);
     m_cache.get()->FUN_1401d1160(CString(strPath));
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pSet = pRoot->FUN_140165cf0("costumeSet"); pSet != 0; pSet = pSet->FUN_140168650("costumeSet"))
@@ -204,12 +212,12 @@ int CostumeSetTable::LoadXml()
                     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
                     if (item == 0)
                     {
-                        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+                        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
                         return 0;
                     }
                     if (FUN_14054b400(item->FUN_14053eba0()) != nKey)
                     {
-                        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+                        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
                         return 0;
                     }
                 }

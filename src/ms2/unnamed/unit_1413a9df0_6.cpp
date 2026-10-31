@@ -169,26 +169,29 @@ void* FUN_1413b1c60(const CStringA& strName)
 }
 
 // ---- the XML attribute readers --------------------------------------------------------------------------------------------------
-int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int& nOut);
-int FUN_140873890(Unk_140165cf0* pElem, const char* pszName, int& nOut);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CStringA& strOut);
-int FUN_1408730a0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Vector3& ptOut);
-void FUN_1413747d0(Unk_GcOptInt* pOpt);                     // reset to unset
-void FUN_1413b5850(Unk_GcOptVec3* pOpt);
-void FUN_1413b5860(Unk_GcOptBool* pOpt);
+void FUN_1413747d0(unsigned char*);   // C3: was FUN_1413747d0
+void Unk_GcClear0(char*);   // C3: was FUN_1413b5850
+void Unk_GcClear1(char*);   // C3: was FUN_1413b5860
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);
-size_t FUN_140186260(ATL::CAtlArray<int>& arr);
 int* FUN_1401844d0(ATL::CAtlArray<int>& arr, size_t i);
-void FUN_1405c6380(void* pOut, int a, int b);
+class Unk_MergeRange   // C3: member view for the former free stand-ins
+{
+public:
+    void Set(int, int);
+};
 int FUN_14138a170(const CStringA& str);
 
 // @0x1413b1d00
 int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut)
 {
-    FUN_1413747d0(&oOut);
+    FUN_1413747d0((unsigned char*)(&oOut));
     int n;
-    int nResult = FUN_1408731e0(pElem, pszName, n);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, n);
     if (nResult == 0)
         oOut = n;
     return nResult;
@@ -203,9 +206,9 @@ int FUN_1413b1d60(Unk_140165cf0* pElem, const char* pszName, void* pOut)
     {
         ATL::CAtlArray<int> arr;
         FUN_140177de0(str, arr, "-");
-        if (FUN_140186260(arr) != 2)
+        if (((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)&static_cast<class ATL::CAtlArray<int, class ATL::CElementTraits<int>>&>(arr))->GetCount() != 2)
             return 2;
-        FUN_1405c6380(pOut, *FUN_1401844d0(arr, 0), *FUN_1401844d0(arr, 1));
+        ((class Unk_MergeRange*)(void*)(pOut))->Set(*FUN_1401844d0(arr, 0), *FUN_1401844d0(arr, 1));
     }
     return nResult;
 }
@@ -213,7 +216,7 @@ int FUN_1413b1d60(Unk_140165cf0* pElem, const char* pszName, void* pOut)
 // @0x1413b1e70
 int FUN_1413b1e70(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptVec3& oOut)
 {
-    FUN_1413b5850(&oOut);
+    Unk_GcClear0((char*)(&oOut));
     Vector3 pt;
     int nResult = FUN_140874670(pElem, pszName, pt);
     if (nResult == 0)
@@ -224,9 +227,9 @@ int FUN_1413b1e70(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptVec3& oOut
 // @0x1413b1ed0
 int FUN_1413b1ed0(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptBool& oOut)
 {
-    FUN_1413b5860(&oOut);
+    Unk_GcClear1((char*)(&oOut));
     bool b;
-    int nResult = FUN_1408730a0(pElem, pszName, b);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, b);
     if (nResult == 0)
         oOut = b;
     return nResult;
@@ -242,7 +245,7 @@ int FUN_1413b1f30(Unk_140165cf0* pElem, const char* pszName, int& nOut)
         return 2;
     }
     int n = 0;
-    int nResult = FUN_140873890(pElem, pszName, n);
+    int nResult = XmlQuery((class TiXmlElement*)(pElem), pszName, n);
     if (nResult != 0)
         return nResult;
     nOut = n;
@@ -273,8 +276,8 @@ void Unk_GcOptScratch()
 {
     Unk_GcOptInt oInt;
     Unk_GcOptBool oBool;
-    FUN_1413747d0(&oInt);
-    FUN_1413b5860(&oBool);
+    FUN_1413747d0((unsigned char*)(&oInt));
+    Unk_GcClear1((char*)(&oBool));
 }
 
 // @0x1413b2880

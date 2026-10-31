@@ -17,9 +17,17 @@
 
 #pragma function(strcmp)     // the exe calls the CRT strcmp (0x14280f2b8)
 
-void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const char* const& rArg);
+template<class T> void Unk_FileLog(CLogString* log, int level, int category, const wchar_t* format, const T& value);   // filesystem.cpp
 CLogString* GetLogString();
-Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);    // FirstChildElement of a document
+class Unk_XmlNode   // C3: member view for the former FUN_ stand-ins
+{
+public:
+    Unk_XmlNode* FirstChild(const char* pszName);       // 0x140165cf0 FirstChildElement
+    Unk_XmlNode* NextSibling(const char* pszName);      // 0x140168650 NextSiblingElement
+};
+CString Unk_ReadString(Unk_XmlNode* pNode, const char* pszName, CString strDefault);  // 0x14015f710 (achievedata.cpp)
+int XmlGetAttr(class TiXmlElement* pElem, const char* pszName, CString& strOut);      // 0x1408733e0
+int XmlGetAttr(class TiXmlElement* pElem, const char* pszName, CStringW& strOut);     // 0x140873420
 
 // @0x1422eb480
 NiGFxLocalizeManager::NiGFxLocalizeManager()
@@ -47,7 +55,7 @@ bool NiGFxLocalizeManager::FUN_1422eb570(Scaleform::GFx::Loader* pLoader, const 
     ConfigParser parser(szPath);
     if (!parser.IsValid())
     {
-        FUN_1403a1280(GetLogString(), 2, 0x1a, L"Unable to load font config:{0}", szPath);
+        Unk_FileLog(GetLogString(), 2, 0x1a, L"Unable to load font config:{0}", szPath);
         return false;
     }
 
@@ -151,19 +159,19 @@ MS2_REPLACE_METHOD(0x1422EBBF0, NiGFxLocalizeManager, FUN_1422ebbf0, 126, 0x0CD8
 // @0x1422ebc80
 void NiGFxLocalizeManager::FUN_1422ebc80(TiXmlDocument* pDoc, CString strAttrName)
 {
-    Unk_140165cf0* pRoot = FUN_140165cf0(pDoc, "ms2");
+    Unk_XmlNode* pRoot = ((Unk_XmlNode*)pDoc)->FirstChild("ms2");
     if (pRoot == 0)
         return;
 
     CString strKey;
     CStringW strText;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_XmlNode* pNode = pRoot->FirstChild("key"); pNode != 0; pNode = pNode->NextSibling("key"))
     {
-        CString strLocale = FUN_14015f710(pNode, "locale", "");
+        CString strLocale = Unk_ReadString(pNode, "locale", "");
         if (!strLocale.IsEmpty() && strLocale.CompareNoCase(ms_strLocale) != 0)
             continue;
-        FUN_1408733e0(pNode, "id", strKey);
-        if (FUN_140873420(pNode, strAttrName, strText) == 1)
+        XmlGetAttr((TiXmlElement*)pNode, "id", strKey);
+        if (XmlGetAttr((TiXmlElement*)pNode, strAttrName, strText) == 1)
         {
             strText = strKey;
         }

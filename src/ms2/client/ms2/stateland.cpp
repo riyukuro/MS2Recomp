@@ -88,8 +88,6 @@ class Unk_LandSound { public: void FUN_141377420(PCBase* pOwner, CString strKey)
 
 // Cube craft selection of the owner (gates the "cube landing" animation).
 class Unk_LandCube : public Unk_PCCubeCraft { };
-Unk_LandCube* FUN_141659700(PCBase* p);
-int FUN_1416595d0(PCBase* p);
 
 CString FUN_1409a2360(const char* psz, int n);                              // text conversion
 
@@ -171,7 +169,7 @@ void StateLand::vfunc_9(double fTime)
         if (m_n10 == 0x86)
         {
             PCBase* pPC = FUN_1417b8370();
-            if (pPC != 0 && FUN_1416595d0(pPC) != 0 && FUN_141659700(pPC)->FUN_1410aa010())
+            if (pPC != 0 && reinterpret_cast<PC*>(pPC)->FUN_1416595d0() != 0 && ((Unk_LandCube*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft()))->FUN_1410aa010())
             {
                 strAnim = pPC->vfunc_123(0x3c);
             }

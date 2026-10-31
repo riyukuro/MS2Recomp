@@ -8,7 +8,7 @@
 #include "mesomarketproduct.h"
 
 // The game's config singleton (FUN_1401d3200; Unk_RsConfig in regionskillobject.cpp); class in the header.
-Unk_CMesoMarketConfig* FUN_1401d3200();             // the config singleton
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 __int64* FUN_1402c05b0(void* pConstBlock);          // 0x1402c05b0: the <constants> record at block+0x50
 
 #include "ms2/ms2recover.h"
@@ -35,7 +35,7 @@ MS2_REPLACE_METHOD(0x1406AEBC0, CMesoMarketProduct, GetValue18, 15, 0xBBB219C9);
 // @0x1406aebe0
 __int64 CMesoMarketProduct::GetUnitPrice()
 {
-    return m_n28 / (m_n20 / *FUN_1402c05b0(reinterpret_cast<char*>(FUN_1401d3200()) + 0x6018));
+    return m_n28 / (m_n20 / *FUN_1402c05b0(reinterpret_cast<char*>(((class Unk_CMesoMarketConfig*)FUN_1401d3200())) + 0x6018));
 }
 MS2_REPLACE_METHOD(0x1406AEBE0, CMesoMarketProduct, GetUnitPrice, 81, 0x0EF75E33);
 

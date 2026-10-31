@@ -17,7 +17,7 @@ class ASObj;
 class CClubMember;
 class CMsgBoxData;
 class Unk_ClubClip;
-class Unk_ClubList;
+class ASScrollingList;
 
 class UIClubDialog : public UIDialog
 {
@@ -47,7 +47,7 @@ public:
 
     // Unrecovered child-binding helpers of the swf entity base (this is the original UISwfEntity subobject).
     MS2Ptr<Unk_ClubClip> FUN_140ba7930(const CString& strName);     // bind a movie clip child
-    MS2Ptr<Unk_ClubList> FUN_140c02900(const CString& strName);     // bind a list child
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);     // bind a list child
     __int64 FUN_141904a70() { return m_nClubId; }                   // 0x141904a70 (inline, uicommon.cpp)
 
 private:

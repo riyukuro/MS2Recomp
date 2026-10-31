@@ -170,13 +170,10 @@
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 bool FUN_14028d470(float a, float b);                               // nearly equal
 bool FUN_14028d530(const Vector3& a, const Vector3& b);   // the two end points coincide
-CMainSystem* FUN_14086d260();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
-void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
 const Vector3& FUN_140947900(void* pNode);                  // world translate
 const Unk_NiMatrix3& FUN_1409478e0(void* pNode);                    // world rotate
 void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
-bool FUN_14098dad0(void* pNode);                                    // node is app-culled
 class Unk_1403ed280 { public: void* FUN_1411a6b10(); };             // the effect manager: scene root
 Unk_1403ed280* FUN_1403ed280();
 void FUN_140a01250(Vector3 kEuler, Vector3* pkOut1, Vector3* pkOut2);   // axes of an euler rotation
@@ -296,7 +293,7 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         return false;
     m_spParam.AssignRaw(const_cast<CBeamEffectParam*>(static_cast<const CBeamEffectParam*>(pParam)));
     m_pPoints = reinterpret_cast<const Unk_BeamTarget*>(pTarget)->m_pPoints;
-    FUN_1409f76f0(&m_spTarget, FUN_14098d8d0(&NiNode::ms_RTTI, FUN_1409849b0(const_cast<void**>(&reinterpret_cast<const Unk_BeamTarget*>(pTarget)->m_hNode))));
+    FUN_1409f76f0(&m_spTarget, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(FUN_1409849b0(const_cast<void**>(&reinterpret_cast<const Unk_BeamTarget*>(pTarget)->m_hNode))))));
     if (m_spTarget.FUN_1409f77a0(0) || m_pPoints == 0)
         return false;
 
@@ -373,7 +370,7 @@ bool CBeamEffect::vfunc_9()
 {
     if (!CEffect::vfunc_9())
         return false;
-    if ((FUN_1409475d0(&m_spRoot) ? true : false) && FUN_14098dad0(FUN_1409475f0(&m_spRoot)))
+    if ((FUN_1409475d0(&m_spRoot) ? true : false) && ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spRoot)))->GetAppCulled())
         return true;
     UpdateMesh();
     return true;
@@ -392,7 +389,7 @@ void CBeamEffect::vfunc_4()
         static_cast<NiNode*>(FUN_1403ed280()->FUN_1411a6b10())->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateEffects();
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateProperties();
-        FUN_141d16040(FUN_1409475f0(&m_spRoot), (float)FUN_14086d260()->FUN_141473280(), true);
+        FUN_141d16040(FUN_1409475f0(&m_spRoot), (float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
         m_b2e = true;
     }
 }

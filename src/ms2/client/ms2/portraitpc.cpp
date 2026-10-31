@@ -51,18 +51,20 @@ class Unk_MyPCEquip : public PCGemEquip {};
 class Unk_PtItemList
 {
 public:
-    void FUN_1408f3a80();                                   // 0x1408f3a80 removes every element
-    unsigned __int64 FUN_140720ca0();                       // 0x140720ca0 element count
     MS2Ptr<CEquipItem>& FUN_140c3c720(unsigned __int64 n);  // 0x140c3c720 element n
 };
 
 // The entity manager (singleton FUN_1403ed2d0).
+class WorldService   // C3: member view (real class not in this TU)
+{
+public:
+    int FUN_141bbb1e0(GameObject*, int, unsigned int);
+    void* FUN_141bd0cc0();
+    void* FUN_141bd3620();
+};
 class Unk_PtWorld
 {
 public:
-    PortraitPC* FUN_141bd3620();                            // 0x141bd3620 the existing portrait PC (null if none)
-    PC* FUN_141bd0cc0();                                    // 0x141bd0cc0 the player's own PC
-    int FUN_141bbb1e0(PortraitPC* pObj, int n, int b);      // 0x141bbb1e0 registers the object, returns success
 };
 Unk_PtWorld* FUN_1403ed2d0();
 
@@ -70,11 +72,15 @@ Unk_PtWorld* FUN_1403ed2d0();
 NotifySystem* FUN_140939a10();
 
 // The item event hub (singleton FUN_140a6a840).
+class Unk_ItemEventSystem   // C3: member view (real class not in this TU)
+{
+public:
+    void FUN_1419cae20(UIItemEventListener*);
+    void FUN_1419caeb0(UIItemEventListener*);
+};
 class Unk_PtItemEvents
 {
 public:
-    void FUN_1419cae20(UIItemEventListener* pListener);     // 0x1419cae20 register (once)
-    void FUN_1419caeb0(UIItemEventListener* pListener);     // 0x1419caeb0 unregister
 };
 Unk_PtItemEvents* FUN_140a6a840();
 
@@ -91,12 +97,14 @@ extern char DAT_143acdb20;                                  // set while the ava
 extern Vector3 DAT_143b01a60;                              // the zero point
 
 void FUN_1411e1b80(Unk_PCEquipSet* pEquipSet, ATL::CAtlList<MS2Ptr<CEquipItem> >& kOut);   // the worn items
-void FUN_1411e3de0(Unk_PCEquipSet* pEquipSet, int n);       // clears the equip set
+class CEquipment   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1411e3de0(int);
+};
 void FUN_1411e3600(Unk_PCEquipSet* pEquipSet, MS2Ptr<CEquipItem> spEquip);   // adds a worn item (callee-destroyed arg)
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);          // 0x140ccac60 a copy of the item
-int FUN_141658e60(PC* pPC);
 Unk_PtVec3 FUN_14169a860();
-unsigned char FUN_141658f10(PC* pPC);
 unsigned __int64 FUN_141662e90(PC* pPC);
 
 // ---- class info and header statics (the exe runs them in this order) ----
@@ -116,7 +124,7 @@ PortraitPC* FUN_141699a20(PC* pSource)
 {
     if ((unsigned char)DAT_143acdb20 != 0)
         return 0;
-    PortraitPC* pPortrait = FUN_1403ed2d0()->FUN_141bd3620();
+    PortraitPC* pPortrait = ((PortraitPC*)((WorldService*)(Unk_PtWorld*)(FUN_1403ed2d0()))->FUN_141bd3620());
     if (pPortrait != 0)
         return pPortrait;
     pPortrait = new (efd::MemHint(efd::MemHint::NONE)) PortraitPC(pSource);
@@ -128,14 +136,14 @@ PortraitPC* FUN_141699a20(PC* pSource)
     static_cast<PC*>(pPortrait)->vfunc_21(kDir);
     pPortrait->vfunc_131((short)pSource->vfunc_78());
     pPortrait->vfunc_76(CStringW(L""));
-    pPortrait->FUN_141658e40(FUN_141658e60(pSource));
+    pPortrait->FUN_141658e40(((class PC*)(class PC*)(pSource))->FUN_141658e60());
     pPortrait->vfunc_59(1, 0, 0, 0);
     pPortrait->FUN_14166cce0(4);
     pPortrait->FUN_1416591e0(0, pSource->FUN_141659220(0));
     pPortrait->FUN_1416591e0(1, pSource->FUN_141659220(1));
-    pPortrait->FUN_141658ed0(FUN_141658f10(pSource));
+    pPortrait->FUN_141658ed0(((class PC*)(class PC*)(pSource))->FUN_141658f10());
     pPortrait->FUN_141662d60(FUN_141662e90(pSource));
-    if (FUN_1403ed2d0()->FUN_141bbb1e0(pPortrait, 0, 1) != 0)
+    if (((WorldService*)(Unk_PtWorld*)(FUN_1403ed2d0()))->FUN_141bbb1e0((GameObject*)(PortraitPC*)(pPortrait), 0, 1) != 0)
         return pPortrait;
     return 0;
 }
@@ -143,7 +151,7 @@ PortraitPC* FUN_141699a20(PC* pSource)
 // @0x141699d60
 void PortraitPC::vfunc_149()
 {
-    reinterpret_cast<Unk_PtItemList&>(m_kListD48).FUN_1408f3a80();
+    ((ATL::CAtlArray<MS2Ptr<CItem>, ATL::CElementTraits<MS2Ptr<CItem>>>*)(Unk_PtItemList*)&(reinterpret_cast<Unk_PtItemList&>(m_kListD48)))->RemoveAll();
     if (m_pSourcePC != 0)
     {
         ATL::CAtlList<MS2Ptr<CEquipItem> > kEquips(10);
@@ -190,7 +198,7 @@ void PortraitPC::vfunc_33(int nClass, int n)
 // @0x14169a040
 void PortraitPC::vfunc_14()
 {
-    FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((Unk_ItemEventSystem*)(Unk_PtItemEvents*)(FUN_140a6a840()))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     FUN_140939a10()->UnregisterNotify(L"NotifyChangeActiveMyCodiTab", Delegate<void(NotifyObject*)>(this, &PortraitPC::FUN_14169a710));
 }
 
@@ -208,13 +216,13 @@ int PortraitPC::vfunc_10()
     PC::vfunc_10();
     vfunc_149();
     vfunc_109(0);
-    PC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pMyPC = ((PC*)((WorldService*)(Unk_PtWorld*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
     if (pMyPC != 0 && m_pSourcePC != 0)
     {
         if (m_pSourcePC->FUN_14123c580() == pMyPC->FUN_14123c580())
         {
             FUN_140939a10()->RegisterNotify(L"NotifyChangeActiveMyCodiTab", Delegate<void(NotifyObject*)>(this, &PortraitPC::FUN_14169a710));
-            FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+            ((Unk_ItemEventSystem*)(Unk_PtItemEvents*)(FUN_140a6a840()))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
         }
     }
     return 1;
@@ -223,15 +231,15 @@ int PortraitPC::vfunc_10()
 // @0x14169a3d0
 void PortraitPC::vfunc_143()
 {
-    FUN_1411e3de0(&m_kEquipDE0, 1);
-    for (unsigned __int64 i = 0; i < reinterpret_cast<Unk_PtItemList&>(m_kListD48).FUN_140720ca0(); i++)
+    ((class CEquipment*)(struct Unk_PCEquipSet*)(&m_kEquipDE0))->FUN_1411e3de0(1);
+    for (unsigned __int64 i = 0; i < ((ATL::CAtlArray<MS2Ptr<CItem>, ATL::CElementTraits<MS2Ptr<CItem>>>*)(Unk_PtItemList*)&(reinterpret_cast<Unk_PtItemList&>(m_kListD48)))->GetCount(); i++)
     {
         MS2Ptr<CEquipItem> spEquip = reinterpret_cast<Unk_PtItemList&>(m_kListD48).FUN_140c3c720(i);
         if (spEquip.get() != 0)
             FUN_1411e3600(&m_kEquipDE0, MS2Ptr<CEquipItem>(spEquip));
     }
     vfunc_139();
-    reinterpret_cast<Unk_PtItemList&>(m_kListD48).FUN_1408f3a80();
+    ((ATL::CAtlArray<MS2Ptr<CItem>, ATL::CElementTraits<MS2Ptr<CItem>>>*)(Unk_PtItemList*)&(reinterpret_cast<Unk_PtItemList&>(m_kListD48)))->RemoveAll();
     FUN_141653f00();
 }
 
@@ -310,7 +318,7 @@ void PortraitPC::vfunc_31(void*)
 // @0x14169a860
 Unk_PtVec3 FUN_14169a860()
 {
-    PC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pMyPC = ((PC*)((WorldService*)(Unk_PtWorld*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
     if (pMyPC != 0)
     {
         efd::Point3 kLook(0.0f, -1.0f, 0.0f);

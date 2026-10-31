@@ -55,6 +55,7 @@
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VTriggerStateCli@@@@V?$CElementTraits@V?$MS2Ptr@VTriggerStateCli@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VTriggerStateCli@@@@_K@Z 0x141b322b0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uitriggereditordialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/gfxmanager.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 
 // The .text$di range runs two header_statics_a.h-style groups (sort-type names, "skill", "stun", condition) with
@@ -99,6 +100,7 @@ static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiupperhuddialog.h"
 
 class PCBase;
 typedef Delegate<bool(int, const CMsgBoxData&)> Unk_TeBoxDelegate;
@@ -106,16 +108,6 @@ typedef Delegate<bool(int, const CMsgBoxData&)> Unk_TeBoxDelegate;
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDelegate;
 
 // Unit-local views of unrecovered callees.
-class Unk_TeWebBrowser
-{
-public:
-    void FUN_14135ec00(const CString& strUrl, bool bOnce);              // open the url
-};
-class Unk_TeMovieMgr
-{
-public:
-    int FUN_1422af2d0(int nLayer);                                      // is the layer busy
-};
 // The cube map service (class id 0x06100017, CubeMapInformationService; only the lookups used here).
 class Unk_TeCubeService : public efd::ISystemService
 {
@@ -126,13 +118,17 @@ public:
 };
 struct Unk_TeFramework { efd::ServiceManagerPtr manager; };
 extern Unk_TeFramework DAT_143b059e8;
-Unk_TeCubeService* FUN_1401cd040(Unk_TeFramework* pFramework);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 class Unk_TeWorld
 {
 public:
     PCBase* FUN_141bd0cc0();                                            // the local player
 };
-Unk_TeWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 __int64 FUN_141656ad0(PCBase* pPlayer);                                 // the character id
 // AScript invoke helpers that are not in ascript.h (one COMDAT per argument list).
 class Unk_TeScript : public AScript
@@ -158,8 +154,7 @@ public:
 };
 
 extern int g_bAppActive;                                                // 0x143af7d40
-Unk_TeWebBrowser* FUN_140c43790(int nUiType);
-Unk_TeMovieMgr* FUN_14025e7a0();
+class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
 CStringTable* GetStringTable();
 CStringW GetStringCommon(int nStringId);                                  // common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // common string by key
@@ -171,18 +166,15 @@ void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);                          // show 
 CString FUN_141b6e500(const CString& strDir, const char* pszFilter, const CString& strDefault);   // open-file dialog
 CString FUN_141b6e880(const CString& strDir, const char* pszFilter, const CString& strDefault);   // save-file dialog
 void FUN_1401d3700(CString& strPath);                                   // normalize a path
-unsigned int FUN_140869420();                                           // millisecond clock
-CStringW FUN_1408767c0(const char* pszUtf8);                            // utf-8 -> wide
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
+CStringW XmlWide(const char* pszUtf8);                                  // utf-8 -> wide
 CString FUN_140390ea0(const wchar_t* psz, int nUnk);                    // wide -> narrow
 CStringW FUN_140719960(const wchar_t* psz);                             // a message box argument as text
 void FUN_140710590(COutPacket& packet);                                 // send the packet
-bool FUN_140a467d0(const MS2Ptr<AScript>* pAS);                         // has the movie object been released
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text field
 int FUN_1408a03c0(Unk_Int3 pos);                                        // the cube key of a position
 int FUN_140768010(int nRange, int nMin);                                // random position
 void* FUN_1422bb8b0(int nMovieId);                                      // the GFx movie of a movie id
-void FUN_14256e3e0(void* pMovie, Scaleform::GFx::Value* pOut);          // Movie::CreateArray
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 MS2Ptr<CMsgBoxData> FUN_141b30060(CStringW strText, int nType, Unk_TeBoxDelegate cb, const wchar_t* pszTag);
@@ -238,7 +230,7 @@ int UITriggerEditorDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     }
     else if (_stricmp("OnHelp", szMethod) == 0)
     {
-        Unk_TeWebBrowser* pBrowser = FUN_140c43790(0x4e6a);
+        UIWebBrowserBase* pBrowser = ((class UIWebBrowserBase*)FUN_140c43790(0x4e6a));
         if (pBrowser == 0)
             return 0;
         pBrowser->FUN_14135ec00(*TSingleton<Client::Constants>::GetInstance()->TriggerEditorHelpURL.Get(), true);
@@ -299,9 +291,9 @@ MS2_REPLACE_METHOD(0x141B2A1E0, UITriggerEditorDialog, vfunc_28, 2043, 0x281D403
 void UITriggerEditorDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    efd::SmartPointer<Unk_TeCubeService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     Cube* pCube = spService->FUN_1410b8b00(m_nCubeId);
     if (pCube != 0)
         FUN_140cfee80(FUN_1422dbb40(), "m_computerName", StringFormat(L"{0} ({1})", GetStringTable()->FUN_141811980(1, pCube->FUN_1408b4f20()), m_nCubeId));
@@ -403,7 +395,7 @@ int UITriggerEditorDialog::vfunc_13()
     }
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (vfunc_55() != 0 || FUN_140a467d0(&m_30))
+    if (vfunc_55() != 0 || ((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
     if (m_bFolded != 0 && g_bAppActive == 0)
     {
@@ -424,7 +416,7 @@ MS2_REPLACE_METHOD(0x141B2B3D0, UITriggerEditorDialog, vfunc_13, 550, 0xD257927B
 // @0x141b2b600
 void UITriggerEditorDialog::FUN_141b2b600()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     if (FUN_14025e7a0()->FUN_1422af2d0(m_28) == 0)
     {
@@ -440,7 +432,7 @@ MS2_REPLACE_METHOD(0x141B2B600, UITriggerEditorDialog, FUN_141b2b600, 203, 0xC7D
 // @0x141b2b6e0
 void UITriggerEditorDialog::FUN_141b2b6e0()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     if (m_bFolded != 0 && (bool)m_30.get())
     {
@@ -471,7 +463,7 @@ MS2_REPLACE_METHOD(0x141B2B7E0, UITriggerEditorDialog, FUN_141b2b7e0, 322, 0x659
 // @0x141b2b930
 void UITriggerEditorDialog::FUN_141b2b930()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     FUN_141b2d870();
     m_30->Invoke("invalidateInstallObject");
@@ -541,7 +533,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
 {
     Scaleform::GFx::Value name;
     state.GetMember("stateName", &name);
-    CStringW strName = FUN_1408767c0(name.GetString());
+    CStringW strName = XmlWide(name.GetString());
     TriggerCli::StatePtr spState = m_spTrigger->GetState(strName);
     if (spState.IsNull())
         return;
@@ -558,7 +550,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         {
             Scaleform::GFx::Value v;
             vNames.GetElement(i, &v);
-            CStringW str = FUN_1408767c0(v.GetString());
+            CStringW str = XmlWide(v.GetString());
             names.Add(str);
         }
         ATL::CAtlArray<CStringW> args1;
@@ -568,7 +560,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         {
             Scaleform::GFx::Value v;
             vArgs1.GetElement(i, &v);
-            CStringW str = FUN_1408767c0(v.GetString());
+            CStringW str = XmlWide(v.GetString());
             args1.Add(str);
         }
         ATL::CAtlArray<CStringW> args2;
@@ -578,7 +570,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         {
             Scaleform::GFx::Value v;
             vArgs2.GetElement(i, &v);
-            CStringW str = FUN_1408767c0(v.GetString());
+            CStringW str = XmlWide(v.GetString());
             args2.Add(str);
         }
         for (size_t i = 0; i < names.GetCount(); i++)
@@ -603,13 +595,13 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         strPrefix.Format("Cond%d_", i);
         Scaleform::GFx::Value vCond;
         state.GetMember(FUN_14038f6d0(strPrefix, "Condition"), &vCond);
-        CStringW strCond = FUN_1408767c0(vCond.GetString());
+        CStringW strCond = XmlWide(vCond.GetString());
         Scaleform::GFx::Value vCondArg1;
         state.GetMember(FUN_14038f6d0(strPrefix, "ConditionArg1"), &vCondArg1);
-        CStringW strCondArg1 = FUN_1408767c0(vCondArg1.GetString());
+        CStringW strCondArg1 = XmlWide(vCondArg1.GetString());
         Scaleform::GFx::Value vCondArg2;
         state.GetMember(FUN_14038f6d0(strPrefix, "ConditionArg2"), &vCondArg2);
-        CStringW strCondArg2 = FUN_1408767c0(vCondArg2.GetString());
+        CStringW strCondArg2 = XmlWide(vCondArg2.GetString());
         ATL::CAtlArray<CStringW> condArgs;
         condArgs.Add(strCondArg1);
         condArgs.Add(strCondArg2);
@@ -620,7 +612,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         {
             Scaleform::GFx::Value v;
             vNames.GetElement(j, &v);
-            CStringW str = FUN_1408767c0(v.GetString());
+            CStringW str = XmlWide(v.GetString());
             names.Add(str);
         }
         ATL::CAtlArray<CStringW> args1;
@@ -630,7 +622,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         {
             Scaleform::GFx::Value v;
             vArgs1.GetElement(j, &v);
-            CStringW str = FUN_1408767c0(v.GetString());
+            CStringW str = XmlWide(v.GetString());
             args1.Add(str);
         }
         ATL::CAtlArray<CStringW> args2;
@@ -640,7 +632,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         {
             Scaleform::GFx::Value v;
             vArgs2.GetElement(j, &v);
-            CStringW str = FUN_1408767c0(v.GetString());
+            CStringW str = XmlWide(v.GetString());
             args2.Add(str);
         }
         ATL::CAtlArray<MS2Ptr<TriggerActionCli> > actions;
@@ -661,7 +653,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         spCond->SetArgs(condArgs);
         Scaleform::GFx::Value vNext;
         state.GetMember(FUN_14038f6d0(strPrefix, "Next"), &vNext);
-        CStringW strNext = FUN_1408767c0(vNext.GetString());
+        CStringW strNext = XmlWide(vNext.GetString());
         TriggerCli::StatePtr spNext = m_spTrigger->GetState(strNext);
         if (spNext.get() != 0)
         {
@@ -699,16 +691,16 @@ MS2_REPLACE_METHOD(0x141B2D0D0, UITriggerEditorDialog, SaveTriggerFile, 618, 0x6
 // @0x141b2d340
 void UITriggerEditorDialog::SendTriggerMode13()
 {
-    if ((unsigned int)(FUN_140869420() - m_nLastSend) < 1100)
+    if ((unsigned int)(GetTickCountMs2() - m_nLastSend) < 1100)
         return;
-    m_nLastSend = FUN_140869420();
+    m_nLastSend = GetTickCountMs2();
     TiXmlDocument doc;
     m_spTrigger->SaveDocument(&doc);
     TiXmlPrinter printer;
     printer.SetStreamPrinting();
     if (!doc.Accept(&printer))
         return;
-    CStringW strXml = FUN_1408767c0(printer.CStr());
+    CStringW strXml = XmlWide(printer.CStr());
     if (strXml.GetAllocLength() >= 10000)
     {
         FUN_140d73bc0(0xaf4, 0, 0, L"");
@@ -751,13 +743,13 @@ MS2_REPLACE_METHOD(0x141B2D570, UITriggerEditorDialog, FUN_141b2d570, 747, 0xC7E
 // @0x141b2d870
 void UITriggerEditorDialog::FUN_141b2d870()
 {
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = ((class Unk_TeWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (m_30 == 0)
         return;
     std::vector<Cube*> cubes;
-    efd::SmartPointer<Unk_TeCubeService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     spService->FUN_1410b9e90(FUN_141656ad0(pPlayer), cubes);
     if (!cubes.empty())
         std::sort(cubes.begin(), cubes.end(), FUN_141b2fa20);
@@ -800,9 +792,9 @@ void UITriggerEditorDialog::FUN_141b2dd80()
 {
     if (m_spTrigger.IsNull())
         return;
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    efd::SmartPointer<Unk_TeCubeService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     m_30->Invoke("removeAllState");
     ATL::CAtlArray<TriggerCli::StatePtr>& states = m_spTrigger->GetStates();
     for (size_t i = 0; i < states.GetCount(); i++)
@@ -815,11 +807,11 @@ void UITriggerEditorDialog::FUN_141b2dd80()
         if (pMovie == 0)
             return;
         Scaleform::GFx::Value enterNames;
-        FUN_14256e3e0(pMovie, &enterNames);
+        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&enterNames);
         Scaleform::GFx::Value enterArgs1;
-        FUN_14256e3e0(pMovie, &enterArgs1);
+        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&enterArgs1);
         Scaleform::GFx::Value enterArgs2;
-        FUN_14256e3e0(pMovie, &enterArgs2);
+        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&enterArgs2);
         for (size_t j = 0; j < states[i]->GetOnEnterCount(); j++)
         {
             MS2Ptr<TriggerActionCli> spAction = states[i]->GetOnEnter((int)j);
@@ -842,17 +834,17 @@ void UITriggerEditorDialog::FUN_141b2dd80()
         for (size_t j = 0; j < states[i]->GetTransitionCount(); j++)
         {
             Scaleform::GFx::Value cond;
-            FUN_14256e3e0(pMovie, &cond);
+            ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&cond);
             Scaleform::GFx::Value condArgs1;
-            FUN_14256e3e0(pMovie, &condArgs1);
+            ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&condArgs1);
             Scaleform::GFx::Value condArgs2;
-            FUN_14256e3e0(pMovie, &condArgs2);
+            ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&condArgs2);
             Scaleform::GFx::Value actNames;
-            FUN_14256e3e0(pMovie, &actNames);
+            ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&actNames);
             Scaleform::GFx::Value actArgs1;
-            FUN_14256e3e0(pMovie, &actArgs1);
+            ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&actArgs1);
             Scaleform::GFx::Value actArgs2;
-            FUN_14256e3e0(pMovie, &actArgs2);
+            ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&actArgs2);
             MS2Ptr<TriggerTransitionCli> spTrans = states[i]->GetTransition((int)j);
             if (spTrans->m_spCond == 0)
                 continue;
@@ -912,7 +904,7 @@ MS2_REPLACE_METHOD(0x141B2DD80, UITriggerEditorDialog, FUN_141b2dd80, 5046, 0xB0
 // @0x141b2f140
 void UITriggerEditorDialog::FUN_141b2f140(const std::vector<Message>& messages)
 {
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = ((class Unk_TeWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (m_30 == 0)
@@ -1035,7 +1027,7 @@ inline void ASObj::FUN_141b2ffc0(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x141b30060

@@ -80,6 +80,11 @@
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/fishingmanager.h"
+#include "ms2/client/ms2/gameobject.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/buddymanager.h"
+#include "ms2/client/ms2/camera.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -144,26 +149,22 @@ struct Unk_MmFieldInfo : public CPtred                              // the curre
     MS2Ptr<Unk_MmMinimapInfo> m_minimap;                            // +0x160
     int FUN_1403754d0();                                            // the pk mode
 };
-class Unk_MmWorld                                                   // the world service (FUN_1403ed2d0)
+class Unk_MmWorld : public WorldService                                                   // the world service (FUN_1403ed2d0)
 {
 public:
     class MyPC* FUN_141bd0cc0();                                    // the local player
-    int FUN_141bd3060();                                            // the current map id
     MS2Ptr<CProxyGameObject> FUN_141bc9be0(int nId);                // a proxy by object id
-    int FUN_141bc80c0(int nChannel);                                // change the channel
     Unk_MmEntityList FUN_141bd0420(unsigned nModel);                // the entities of a model
     MS2Ptr<Unk_MmFieldInfo> FUN_141bd30a0();                        // the current field settings
     MS2Ptr<CProxyGameObject> FUN_141bc9c60(unsigned __int64 nUid);  // a proxy by character uid
     class Unk_MmActor* FUN_141bd1320(int nId);                      // the actor of an object id
     PC* FUN_141bd1530(unsigned __int64 nCharId);                    // a player by character id
     void FUN_141bc5f10(ATL::CAtlArray<MS2Ptr<CInteractObject> >& objects);   // the interact objects
-    int FUN_141bd98f0();                                            // the channel group
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);  // an interact object by name
     ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject> >& FUN_141bc9fb0();   // the proxy objects by object id
 };
-Unk_MmWorld* FUN_1403ed2d0();
 
-CQuestManager* FUN_140764020();                                    // TSingleton<CQuestManager>::GetInstance
+void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                         // the npc table row
 
 class Unk_MmFieldMeta                                               // CFieldMetaTable (FUN_140700390)
@@ -172,20 +173,18 @@ public:
     void FUN_1406fb900(int nMapId, int nNpcId, ATL::CAtlList<unsigned int>& out);   // the portal npcs of a map
     int FUN_1406fba40(int nId, int nNpcId);
 };
-Unk_MmFieldMeta* FUN_140700390();
 
 class Unk_MmNpcTable                                                // NpcDataTableCli (FUN_1406d6e90)
 {
 public:
     MS2Ptr<NpcDataCli> FUN_140a7cab0(int nNpcId);
 };
-Unk_MmNpcTable* FUN_1406d6e90();
+class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 
 CStringTable* GetStringTable();                                      // the string table
 CStringW FUN_1401aa6a0(int nNpcId);                                 // the npc name
 CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a1, const CStringW& a2, const CStringW& a3);
 CStringW FUN_14183e930(const CStringW& strText, int nColor);        // a coloured text
-int FUN_140a7c970(NpcDataCli* pNpc);                                // the npc's colour
 class Unk_MmConfig { public: int FUN_140a7d630(); };                // the colour option block
 class Unk_MmConfigValue { public: unsigned* FUN_1401d7c10(); };    // Value<unsigned int>::Get
 class Unk_MmGameConfig                                              // Client::Constants (only the members read here)
@@ -196,7 +195,7 @@ public:
     char m_pad_ae71[0xda48 - 0xae71];
     Unk_MmConfigValue m_minimapCell;                                // +0xda48 MinimapScaleSkipSplitPixel
 };
-Unk_MmGameConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 CString FUN_14192ebf0(int nKind);                                   // the minimap icon of an npc function
 CStringW FUN_14052bd00(int nStringId, const CStringW& str);
 CStringW FUN_140a22c00(int nStrId, const CStringW& strArg1, const unsigned short& nArg2);
@@ -210,17 +209,16 @@ CStringW FUN_1409796e0(int a, int b, int c, CStringW s);           // the home l
 CString FUN_141082150(MS2Ptr<class CQuestData> spQuest, const CString& sEpic, const CString& sWorld, const CString& sRepeat, const CString& sEvent);
 MS2Ptr<class CQuestData> FUN_14074bc40(int nQuestId);
 void FUN_140710590(COutPacket& packet);
-CInputKeyHandler* FUN_14025e7c0();                                  // TSingleton<CInputKeyHandler>::GetInstance
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_MmUIManager { public: int FUN_1422af2d0(int nLayer); };  // the ui layer manager
 Unk_MmUIManager* FUN_14025e7a0();
 class Unk_MmBossTip { public: void FUN_141b99dc0(int nNpcId, ASObj& tip); };
-Unk_MmBossTip* FUN_140cb17d0();
-CFeatureManager* FUN_140166410();
+class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CStringW FUN_14016a730(const char* psz, int nLength);              // narrow -> wide
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // a common string
 int FUN_140408410(const ATL::CAtlArray<int>& arr, const int& n);    // the index of a value or -1
 extern ATL::CAtlArray<int> DAT_143ab3078;                           // the taxi stops the player has found
-CTaxiManager* FUN_1409f24a0();                                      // TSingleton<CTaxiManager>::GetInstance
 int FUN_141b71c00(unsigned short nValue);                           // the taxi tier of a level
 void FUN_141276180(const CString& strSound, const CString& strArg); // play a ui sound
 int FUN_1418fd2f0();                                                // the minimap is suppressed (uicommon)
@@ -234,12 +232,9 @@ public:
     void FUN_1419308c0(UIEntityEventListener* pListener);           // register
     void FUN_141930950(UIEntityEventListener* pListener);           // unregister
 };
-Unk_MmEntityEvents* FUN_140c607b0();
+class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
 UIQuestEventDispatcher* FUN_140bfc4b0();
-UIUGCEventDispatcher* FUN_140bc09f0();
-UIStatusEventDispatcher* FUN_140aa6d40();
-UIBuddyEventDispatcher* FUN_140a4a7b0();
-UIServerEventDispatcher* FUN_140933230();
+class Unk_Hud* FUN_140933230();   // C3: was FUN_140933230
 class ASDialog : public ASUIComponent {};                             // the dialog root clip (UIDialog::m_90)
 
 // The quest payload pointer (Unk_PayloadPtr<CQuest>).
@@ -254,7 +249,6 @@ class CQuest : public CPtred, public Unk_MmQuestData {};          // the interfa
 CString FUN_1401d2b10(const CString& a, const CString& b);         // a + b (exe operator+; clang would import MFC CopyChars)
 
 // The UI dialogs reached from the markers.
-CUIService* FUN_1403ed2b0();
 class UIBossRewardPreviewDialog : public UIDialog { public: int FUN_140f25ad0(int nNpcId); };
 class UIDungeonRoomDialog : public UIDialog { public: bool FUN_1412b8f00(int nId); };
 UIDungeonRoomDialog* FUN_140961550(int nUiId);
@@ -262,9 +256,9 @@ UIDungeonRoomDialog* FUN_140961550(int nUiId);
 // The open dialog of a ui id (COMDAT per T in this unit).
 template <class T> T* Unk_MmFindDialog(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -438,7 +432,7 @@ int UIMinimapEntity::FUN_141a316d0(const int& nField, bool& bSpecial, CString& s
 {
     unsigned int nNpcId = 0;
     Unk_QmNpcQuestState guide;
-    FUN_140764020()->FUN_1416d1800(nField, &guide);
+    ((class CQuestManager*)FUN_140764020())->FUN_1416d1800(nField, &guide);
     CString strQuestIcon;
     CString strQuestLayer;
     if (FUN_141a31c80(&guide, strQuestIcon, strQuestLayer) && !bSpecial) {
@@ -450,11 +444,11 @@ int UIMinimapEntity::FUN_141a316d0(const int& nField, bool& bSpecial, CString& s
     if (nNpcId > 0)
         return nNpcId;
     ATL::CAtlList<unsigned int> npcs(10);
-    FUN_140700390()->FUN_1406fb900(FUN_1403ed2d0()->FUN_141bd3060(), nField, npcs);
+    ((class Unk_MmFieldMeta*)TSingleton<CFieldMetaTable>::GetInstance())->FUN_1406fb900(((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060(), nField, npcs);
     for (POSITION pos = npcs.GetHeadPosition(); pos != 0; npcs.GetNext(pos)) {
         int nId = npcs.GetAt(pos);
-        if (FUN_140700390()->FUN_1406fba40(nId, nField)) {
-            MS2Ptr<NpcDataCli> spNpc = FUN_1406d6e90()->FUN_140a7cab0(nId);
+        if (((class Unk_MmFieldMeta*)TSingleton<CFieldMetaTable>::GetInstance())->FUN_1406fba40(nId, nField)) {
+            MS2Ptr<NpcDataCli> spNpc = ((class Unk_MmNpcTable*)FUN_1406d6e90())->FUN_140a7cab0(nId);
             if (spNpc == 0)
                 continue;
             if (FUN_141a32640(spNpc) && nNpcId == 0) {
@@ -475,7 +469,7 @@ CStringW UIMinimapEntity::FUN_141a319f0(NpcDataCli* pNpc, const CStringW& strAli
 {
     CStringW strFunction = GetStringTable()->FUN_141811980(10, pNpc->GetId());
     if (!strFunction.IsEmpty()) {
-        int nColor = pNpc->GetFriendly() > 0 ? FUN_1401d3200()->m_colors.FUN_140a7d630() : FUN_140a7c970(pNpc);
+        int nColor = pNpc->GetFriendly() > 0 ? ((class Unk_MmGameConfig*)FUN_1401d3200())->m_colors.FUN_140a7d630() : ((class NpcDataCli*)(class NpcDataCli*)(pNpc))->GetClassConstant();
         CStringW strColored = FUN_14183e930(strFunction, nColor);
         CStringW strKey = bMultiRow ? L"s_minimap_tooltip_function_npc" : L"s_minimap_tooltip_function_npc_1row";
         const CStringW& strFormat = strKey;
@@ -495,7 +489,7 @@ bool UIMinimapEntity::FUN_141a31c80(const Unk_QmNpcQuestState* pGuide, CString& 
         int nQuestId = pGuide->m_questId;
         switch (nState) {
         case 1:
-            spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
+            spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
             if (static_cast<bool>(spQuest.get()) && spQuest->vfunc_1()) {
                 strIcon = s_strQuestComplete;
                 bSuffix = true;
@@ -560,7 +554,7 @@ MS2_REPLACE_METHOD(0x141a32260, UIMinimapEntity, FUN_141a32260, 190, 0x14DE07A2)
 void UIMinimapEntity::SendSetDebugMode()
 {
     vfunc_3();
-    if (FUN_14025e7c0()->IsDebugMode() && m_position != efd::Point3::ZERO) {
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode() && m_position != efd::Point3::ZERO) {
         COutPacket packet(static_cast<int>(SendOp::SetDebugMode), 0);
         packet.Encode1(2);
         packet.WriteVector3Short(reinterpret_cast<const Vector3&>(m_position));
@@ -586,7 +580,7 @@ void UIMinimapEntity::GetText(CStringW& strText, ASObj& data)
     if (m_type == 3) {
         strText = m_text;
     } else if (m_type == 4) {
-        MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPC)
             strText = FUN_14052bd00(0x70f, pPC->FUN_1415281c0());
     } else if (m_type == 6) {
@@ -700,7 +694,7 @@ MS2Ptr<CProxyGameObject> UIMinimapEntityProxy::FUN_141a32da0()
 {
     if (m_id == 0)
         return MS2Ptr<CProxyGameObject>(0);
-    return FUN_1403ed2d0()->FUN_141bc9be0(m_id);
+    return ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bc9be0(m_id);
 }
 MS2_REPLACE_METHOD(0x141a32da0, UIMinimapEntityProxy, FUN_141a32da0, 111, 0x93351C5B);
 
@@ -717,7 +711,7 @@ MS2_REPLACE_METHOD(0x141a32e20, UIMinimapEntityProxy, GetText, 155, 0xDD25025D);
 // @0x141a32ed0
 void UIMinimapEntityProxy::vfunc_3()
 {
-    if (!FUN_140166410()->FUN_14036d570(0x1a))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x1a))
         return;
     MS2Ptr<CProxyGameObject> spProxy = FUN_141a32da0();
     if (spProxy.get() != 0) {
@@ -726,17 +720,17 @@ void UIMinimapEntityProxy::vfunc_3()
         if (spPortal->m_nType == 8) {
             UIDungeonRoomDialog* pDialog = FUN_140961550(0x4ebd);
             if (pDialog) {
-                FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4ebd);
+                TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4ebd);
                 if (pDialog->FUN_1412b8f00(spPortal->m_nId))
-                    FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ebd);
+                    TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4ebd);
             }
         }
     } else if (spProxy->FUN_1416c2090()) {
         UIBossRewardPreviewDialog* pDialog = Unk_MmFindDialog<UIBossRewardPreviewDialog>(0x4efb);
         if (pDialog) {
-            FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4efb);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4efb);
             if (pDialog->FUN_140f25ad0(spProxy->FUN_1416c2350()))
-                FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4efb);
+                TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4efb);
         }
     }
     }
@@ -787,7 +781,7 @@ void UIMinimapEntityProxy::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& s
                     }
                     data.FUN_1409c0d20("npcID", spNpc->GetId());
                     data.FUN_1407cbb20("bossFrameName", strFrame);
-                    FUN_140cb17d0()->FUN_141b99dc0(spNpc->GetId(), data);
+                    ((class Unk_MmBossTip*)FUN_140cb17d0())->FUN_141b99dc0(spNpc->GetId(), data);
                 } else {
                     strText = FUN_141a319f0(spNpc, s_strCenter, true);
                 }
@@ -840,7 +834,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33850(MS2Ptr<CPortal> spPortal, CString
 {
     if (spPortal == 0)
         return;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     CStringW strLabel;
@@ -891,7 +885,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
 {
     if (spPortal == 0)
         return;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     const int& nField = spPortal->FUN_14169d280();
@@ -899,13 +893,13 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
     bool bQuest = m_flag;
     CStringW strLabel;
     ATL::CAtlList<unsigned int> quests(10);
-    FUN_140764020()->FUN_1416d16c0(nField, quests);
+    ((class CQuestManager*)FUN_140764020())->FUN_1416d16c0(nField, quests);
     ATL::CAtlList<unsigned int> npcs(10);
-    FUN_140700390()->FUN_1406fb900(FUN_1403ed2d0()->FUN_141bd3060(), nField, npcs);
+    ((class Unk_MmFieldMeta*)TSingleton<CFieldMetaTable>::GetInstance())->FUN_1406fb900(((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060(), nField, npcs);
     ATL::CAtlList<unsigned int> visible(10);
     for (POSITION pos = npcs.GetHeadPosition(); pos != 0; npcs.GetNext(pos)) {
         unsigned int nId = npcs.GetAt(pos);
-        if (FUN_140700390()->FUN_1406fba40(nId, nField)) {
+        if (((class Unk_MmFieldMeta*)TSingleton<CFieldMetaTable>::GetInstance())->FUN_1406fba40(nId, nField)) {
             MS2Ptr<CNpcData> spNpc = FUN_1406cd330(nId);
             if (spNpc.get() != 0 && FUN_141a32640(static_cast<CNpcData*>(spNpc)))
                 visible.AddTail(nId);
@@ -914,10 +908,10 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
     if (bQuest) {
         Unk_QmNpcQuestState guide;
         guide.m_wantText = 1;
-        FUN_140764020()->FUN_1416d12d0(nSelected, &guide, 0);
+        ((class CQuestManager*)FUN_140764020())->FUN_1416d12d0(nSelected, &guide, 0);
         strLabel = guide.m_text;
     } else {
-        MS2Ptr<NpcDataCli> spNpc = FUN_1406d6e90()->FUN_140a7cab0(nSelected);
+        MS2Ptr<NpcDataCli> spNpc = ((class Unk_MmNpcTable*)FUN_1406d6e90())->FUN_140a7cab0(nSelected);
         if (spNpc.get() != 0) {
             bool bMultiRow = false;
             CStringW strAlign = visible.GetCount() > 1 ? s_strLeft : s_strCenter;
@@ -933,7 +927,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
             if (bInclude) {
                 Unk_QmNpcQuestState guide;
                 guide.m_wantText = 1;
-                FUN_140764020()->FUN_1416d12d0(nId, &guide, 0);
+                ((class CQuestManager*)FUN_140764020())->FUN_1416d12d0(nId, &guide, 0);
                 strLabel.Append(guide.m_text);
             }
         }
@@ -945,7 +939,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
             if (!bQuest)
                 bInclude = nId != nSelected;
             if (bInclude) {
-                MS2Ptr<NpcDataCli> spNpc = FUN_1406d6e90()->FUN_140a7cab0(nId);
+                MS2Ptr<NpcDataCli> spNpc = ((class Unk_MmNpcTable*)FUN_1406d6e90())->FUN_140a7cab0(nId);
                 if (spNpc == 0)
                     continue;
                 strLabel.Append(FUN_141a319f0(static_cast<NpcDataCli*>(spNpc), s_strLeft, false));
@@ -998,12 +992,12 @@ UIMinimapEntityTaxi::UIMinimapEntityTaxi(const efd::Point3& kPos)
 // @0x141a34890
 void UIMinimapEntityTaxi::FUN_141a34890(const efd::Point3& kPos)
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
-    int nField = FUN_1403ed2d0()->FUN_141bd3060();
+    int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
     m_state = FUN_140408410(DAT_143ab3078, nField) >= 0 ? "enabled" : "disabled";
-    if (FUN_1409f24a0()->FUN_14085f730(nField)) {
+    if (TSingleton<CTaxiManager>::GetInstance()->FUN_14085f730(nField)) {
         if (pPC->FUN_140967010()->FUN_14050da30() == 0)
             return;
         m_state = "enabled";
@@ -1149,12 +1143,12 @@ void UIMinimapDialog::OnLoadComplete()
     FUN_141923680(1);
     FUN_141a3c150();
     FUN_141a3ced0();
-    FUN_140c607b0()->FUN_1419308c0(this);
+    ((class Unk_MmEntityEvents*)FUN_140c607b0())->FUN_1419308c0(this);
     FUN_140bfc4b0()->FUN_141aa87c0(this);
-    FUN_140bc09f0()->FUN_141b38be0(this);
-    FUN_140aa6d40()->FUN_141b0cd00(this);
-    FUN_140a4a7b0()->FUN_1418d9450(this);
-    FUN_140933230()->AddListener(this);
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(this);
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(this);
+    TSingleton<UIBuddyEventDispatcher>::GetInstance()->FUN_1418d9450(this);
+    ((class UIServerEventDispatcher*)FUN_140933230())->AddListener(this);
     if (UIObject* pWindow = FUN_140ce8310(0x4f00))
         pWindow->FUN_1422dc450();
     if (UIObject* pWindow = FUN_140ce8270(0x4f01))
@@ -1175,12 +1169,12 @@ MS2_REPLACE_METHOD(0x141a35bf0, UIMinimapDialog, OnLoadComplete, 992, 0x16529FDF
 void UIMinimapDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_140aa6d40()->FUN_141b0cd90(this);
-    FUN_140c607b0()->FUN_141930950(this);
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(this);
+    ((class Unk_MmEntityEvents*)FUN_140c607b0())->FUN_141930950(this);
     FUN_140bfc4b0()->FUN_141aa8850(this);
-    FUN_140bc09f0()->FUN_141b38c70(this);
-    FUN_140a4a7b0()->FUN_1418d94e0(this);
-    FUN_140933230()->RemoveListener(this);
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(this);
+    TSingleton<UIBuddyEventDispatcher>::GetInstance()->FUN_1418d94e0(this);
+    ((class UIServerEventDispatcher*)FUN_140933230())->RemoveListener(this);
     vfunc_63(0);
     m_forceMinimize = false;
     m_fullmap = false;
@@ -1246,7 +1240,7 @@ void UIMinimapDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
     if (m_timer46c.FUN_140268870(1000)) {
-        const std::pair<unsigned, __int64>& target = FUN_140764020()->FUN_1416d1e90();
+        const std::pair<unsigned, __int64>& target = ((class CQuestManager*)FUN_140764020())->FUN_1416d1e90();
         m_468 = target.first;
         m_460 = target.second;
     }
@@ -1256,7 +1250,7 @@ MS2_REPLACE_METHOD(0x141a36650, UIMinimapDialog, vfunc_72, 119, 0xABF169B7);
 // The community dialog (COMDAT 0x141a46630).
 template <class T> T* Unk_MmGetDialog()
 {
-    CUIService* pService = FUN_1403ed2b0();
+    CUIService* pService = TSingleton<CUIService>::GetInstance();
     if (pService == 0)
         return 0;
     MS2Ptr<UIObject> obj = pService->FUN_141adcea0(T::GetUIClassID());
@@ -1267,9 +1261,8 @@ template <class T> T* Unk_MmGetDialog()
 
 int FUN_1418fcee0();                                                // OnReport (uicommon)
 CStringW FUN_140b99450(CStringW strKey, const CStringW& a1, const unsigned& a2);   // a formatted string table text
-class Unk_MmFishing { public: CStringW FUN_140cdc000(unsigned nFieldId); };     // the fishing spot text of a field
-Unk_MmFishing* FUN_140953f20();
-bool FUN_1409b0350(Scaleform::GFx::Value* pValue);                  // the value is undefined
+     // the fishing spot text of a field
+CFishingManager* FUN_140953f20();
 
 // @0x141a366d0
 int UIMinimapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
@@ -1291,15 +1284,15 @@ int UIMinimapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         }
         return 1;
     } else if (_stricmp("OnWorldMap", szMethod) == 0) {
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4e42);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4e42);
         return 1;
     } else if (_stricmp("OnMorePlayers", szMethod) == 0) {
-        if (FUN_1403ed2b0()->FUN_141adc940((eUIClassID)0x4e4d)) {
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e4d)) {
             UICommunityDialog* pDialog = Unk_MmGetDialog<UICommunityDialog>();
             if (pDialog != 0)
                 pDialog->FUN_1418d6930(0);
         }
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4e4d);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4e4d);
         return 1;
     } else if (_stricmp("OnCheckIcon", szMethod) == 0) {
         ASData data;
@@ -1315,7 +1308,7 @@ int UIMinimapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             int nChannel = data.FUN_1422b8a10();
-            if (!FUN_1403ed2d0()->FUN_141bc80c0(nChannel))
+            if (!((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bc80c0(nChannel))
                 FUN_141a44ed0();
         }
         return 1;
@@ -1347,7 +1340,7 @@ int UIMinimapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             Scaleform::GFx::Value value = data.FUN_1422b9260();
-            if (!FUN_1409b0350(&value)) {
+            if (!((Scaleform::GFx::Value*)(void*)(&value))->IsNull()) {
                 ASMovieClip clip(value, 2);
                 if (static_cast<MinimapViewport*>(m_viewport) != 0)
                     m_viewport->FUN_141485770(clip.FUN_1422c1340());
@@ -1395,10 +1388,10 @@ int UIMinimapDialog::vfunc_13()
         return 0;
     if (m_1fa && DAT_143af7d40 == 0) {
         FUN_141a3abd0();
-    } else if (FUN_14025e7c0()->FUN_14116dd30(0x49407, 0, 0)) {
+    } else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x49407, 0, 0)) {
         if (!FUN_14025e7a0()->FUN_1422af2d0(m_28))
             FUN_141a3aca0();
-    } else if (FUN_14025e7c0()->FUN_14116ddb0(0x49407, 0, 0)) {
+    } else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116ddb0(0x49407, 0, 0)) {
         FUN_141a3abd0();
     }
     return 0;
@@ -1441,7 +1434,7 @@ void UIMinimapDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     if (strTarget == "m_fieldname") {
         ASTooltip tooltip(1, 2);
         {
-            int nField = FUN_1403ed2d0()->FUN_141bd3060();
+            int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
             MS2Ptr<CFieldDataCli> spData = CFieldDataCli::Find(nField);
             if (!spData)
                 return;
@@ -1463,22 +1456,27 @@ void UIMinimapDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 MS2_REPLACE_METHOD(0x141a37150, UIMinimapDialog, vfunc_49, 662, 0x279A0D2F);
 
 // The settings xml readers / writers (UIDialog's "transform" section).
-void FUN_1408743d0(void* pCfg, const char* szGroup, const char* szName, bool b, bool bCreate);
-void FUN_140874440(void* pCfg, const char* szGroup, const char* szName, int n, bool bCreate);
-void FUN_1408744b0(void* pCfg, const char* szGroup, const char* szName, float f, bool bCreate);
-void FUN_140874130(void* pCfg, const char* szGroup, const char* szName, bool* pb);
-void FUN_1408741a0(void* pCfg, const char* szGroup, const char* szName, int* pn);
-void FUN_140874210(void* pCfg, const char* szGroup, const char* szName, float* pf);
-void* FUN_140165cf0(void* pCfg, const char* szName);                // the child element
+void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, bool, bool);   // C3: was FUN_1408743d0
+void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, int, bool);   // C3: was FUN_140874440
+void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, float, bool);   // C3: was FUN_1408744b0
+int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, bool&);   // C3: was FUN_140874130
+int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, int&);   // C3: was FUN_1408741a0
+int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, float&);   // C3: was FUN_140874210
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 float FUN_141276490(float fWidth, float fHeight);                   // UI scale
 struct Unk_MmScaleInfo { __int64 m_pad_00; float m_fValue; };
 void* FUN_1409a8b10();
-Unk_MmScaleInfo* FUN_140e09150(void* p);
+class Unk_ChaosSettings   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_ChaosOpt* FUN_140e09150();
+};
 extern unsigned DAT_143af62d4;                                      // client area width
 extern unsigned DAT_143af62d8;                                      // client area height
-double FUN_140f17ed0(const Scaleform::GFx::Value& v);               // Value::GetNumber
-int FUN_1409c1750(const Scaleform::GFx::Value& v);                  // the value as an int
-bool FUN_1409c1720(const Scaleform::GFx::Value& v);                 // the value as a bool
 
 // @0x141a37480
 int UIMinimapDialog::vfunc_53(void* pCfg)
@@ -1498,28 +1496,28 @@ int UIMinimapDialog::vfunc_53(void* pCfg)
         Scaleform::GFx::Value saveData = m_30->Invoke("getSaveData");
         AScript save(saveData, 2);
         if (!save.FUN_1422ba9a0()) {
-            x = static_cast<float>(FUN_140f17ed0(save.FUN_1422baa20("x")));
-            y = static_cast<float>(FUN_140f17ed0(save.FUN_1422baa20("y")));
-            nWidth = FUN_1409c1750(save.FUN_1422baa20("width"));
-            nHeight = FUN_1409c1750(save.FUN_1422baa20("height"));
-            nMapAlpha = FUN_1409c1750(save.FUN_1422baa20("mapAlpha"));
-            nBgAlpha = FUN_1409c1750(save.FUN_1422baa20("bgAlpha"));
-            fScale = static_cast<float>(FUN_140f17ed0(save.FUN_1422baa20("scale")));
-            bFullmap = FUN_1409c1720(save.FUN_1422baa20("fullmap"));
-            bMinimize = FUN_1409c1720(save.FUN_1422baa20("minimize"));
+            x = static_cast<float>(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("x")))->GetNumber());
+            y = static_cast<float>(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("y")))->GetNumber());
+            nWidth = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("width")))->GetInt();
+            nHeight = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("height")))->GetInt();
+            nMapAlpha = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("mapAlpha")))->GetInt();
+            nBgAlpha = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("bgAlpha")))->GetInt();
+            fScale = static_cast<float>(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("scale")))->GetNumber());
+            bFullmap = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("fullmap")))->GetBool();
+            bMinimize = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("minimize")))->GetBool();
         }
-        FUN_1408744b0(pCfg, "transform", "x", x, 1);
-        FUN_1408744b0(pCfg, "transform", "y", y, 1);
-        float fRatio = FUN_141276490(static_cast<float>(DAT_143af62d4), FUN_140e09150(FUN_1409a8b10())->m_fValue);
-        FUN_1408744b0(pCfg, "transform", "rateX", x / (static_cast<float>(DAT_143af62d4) * fRatio), 1);
-        FUN_1408744b0(pCfg, "transform", "rateY", y / (static_cast<float>(DAT_143af62d8) * fRatio), 1);
-        FUN_140874440(pCfg, "transform", "width", nWidth, 1);
-        FUN_140874440(pCfg, "transform", "height", nHeight, 1);
-        FUN_1408744b0(pCfg, "transform", s_strScale, fScale, 1);
-        FUN_140874440(pCfg, "transform", s_strBgAlpha, nBgAlpha, 1);
-        FUN_140874440(pCfg, "transform", s_strMapAlpha, nMapAlpha, 1);
-        FUN_1408743d0(pCfg, "transform", s_strFullmap, bFullmap, 1);
-        FUN_1408743d0(pCfg, "transform", s_strMinimize, bMinimize, 1);
+        XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "x", x, 1);
+        XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "y", y, 1);
+        float fRatio = FUN_141276490(static_cast<float>(DAT_143af62d4), ((struct Unk_MmScaleInfo*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150())->m_fValue);
+        XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "rateX", x / (static_cast<float>(DAT_143af62d4) * fRatio), 1);
+        XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "rateY", y / (static_cast<float>(DAT_143af62d8) * fRatio), 1);
+        XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "width", nWidth, 1);
+        XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "height", nHeight, 1);
+        XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", s_strScale, fScale, 1);
+        XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", s_strBgAlpha, nBgAlpha, 1);
+        XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", s_strMapAlpha, nMapAlpha, 1);
+        XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", s_strFullmap, bFullmap, 1);
+        XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", s_strMinimize, bMinimize, 1);
         if (static_cast<bool>(m_alignment.get()) && static_cast<bool>(m_90.get())) {
             float fLeft = static_cast<float>(m_90->FUN_1422c1500());
             float fTop = static_cast<float>(m_90->FUN_1422c1530());
@@ -1530,7 +1528,7 @@ int UIMinimapDialog::vfunc_53(void* pCfg)
             MS2Ptr<TShowAttr> spAttr = m_showAttrs.GetValueAt(pos);
             if (spAttr == 0)
                 continue;
-            FUN_140874440(pCfg, s_strIconCheck, m_showAttrs.GetKeyAt(pos), spAttr->m_state, 1);
+            XmlSetChildAttr((class TiXmlElement*)(pCfg), s_strIconCheck, m_showAttrs.GetKeyAt(pos), spAttr->m_state, 1);
         }
     }
     return 1;
@@ -1542,25 +1540,25 @@ int UIMinimapDialog::vfunc_54(void* pCfg)
 {
     if (!UIDialog::vfunc_54(pCfg))
         return 0;
-    FUN_140874130(pCfg, "transform", s_strFullmap, &m_fullmap);
-    FUN_1408741a0(pCfg, "transform", s_strMinimize, &m_6c);
+    XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", s_strFullmap, *(bool*)(&m_fullmap));
+    XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", s_strMinimize, *(int*)(&m_6c));
     float fScale = 1.0f;
     int nBgAlpha = 30;
     int nMapAlpha = 100;
     int nWidth = 0;
     int nHeight = 0;
-    FUN_140874210(pCfg, "transform", s_strScale, &fScale);
-    FUN_1408741a0(pCfg, "transform", "width", &nWidth);
-    FUN_1408741a0(pCfg, "transform", "height", &nHeight);
-    FUN_1408741a0(pCfg, "transform", s_strBgAlpha, &nBgAlpha);
-    FUN_1408741a0(pCfg, "transform", s_strMapAlpha, &nMapAlpha);
+    XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", s_strScale, *(float*)(&fScale));
+    XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", "width", *(int*)(&nWidth));
+    XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", "height", *(int*)(&nHeight));
+    XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", s_strBgAlpha, *(int*)(&nBgAlpha));
+    XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", s_strMapAlpha, *(int*)(&nMapAlpha));
     m_data.AssignRaw(new AScript(2));
     static_cast<ASObj*>(m_data.operator->())->FUN_1407cb9c0("width", nWidth);
     static_cast<ASObj*>(m_data.operator->())->FUN_1407cb9c0("height", nHeight);
     static_cast<ASObj*>(m_data.operator->())->FUN_1407cb9c0("mapAlpha", nMapAlpha);
     static_cast<ASObj*>(m_data.operator->())->FUN_1407cb9c0("bgAlpha", nBgAlpha);
     static_cast<ASObj*>(m_data.operator->())->FUN_1409c4a30("scale", fScale);
-    void* pSection = FUN_140165cf0(pCfg, s_strIconCheck);
+    void* pSection = ((void*)((class Unk_XmlNode*)(void*)(pCfg))->FirstChild(s_strIconCheck));
     if (pSection != 0) {
         for (POSITION pos = m_showAttrs.GetStartPosition(); pos != 0; m_showAttrs.GetNext(pos)) {
             ShowAttrMap::CPair* pPair = m_showAttrs.GetAt(pos);
@@ -1569,7 +1567,7 @@ int UIMinimapDialog::vfunc_54(void* pCfg)
             MS2Ptr<TShowAttr> spAttr = pPair->m_value;
             if (spAttr == 0)
                 continue;
-            FUN_1408741a0(pCfg, s_strIconCheck, pPair->m_key, &spAttr->m_state);
+            XmlGetChildAttr((class TiXmlElement*)(pCfg), s_strIconCheck, pPair->m_key, *(int*)(&spAttr->m_state));
         }
     }
     if (static_cast<bool>(m_alignment.get()) && static_cast<bool>(m_90.get())) {
@@ -1658,7 +1656,7 @@ void UIMinimapDialog::vfunc_buddy_10(__int64 nId, int n)
         return;
     int nField = spBuddy->FUN_1401cc3e0();
     if (static_cast<unsigned int>(nField) > 0) {
-        int nCurrent = FUN_1403ed2d0()->FUN_141bd3060();
+        int nCurrent = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
         if (nCurrent == nField) {
             EntityPtr spEntity(0);
             if (m_buddies.Lookup(nId, spEntity))
@@ -1825,7 +1823,6 @@ void UIMinimapDialog::vfunc_o178_5(void* p)
 MS2_REPLACE_METHOD_VIA(0x141a390c0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_5, 294, 0x33501AE3);
 
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);   // the child clip of a value
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                 // the value is an object
 
 // @0x141a391f0
 void UIMinimapDialog::FUN_141a391f0(MS2Ptr<CInteractObject> spObject)
@@ -1847,7 +1844,7 @@ void UIMinimapDialog::FUN_141a391f0(MS2Ptr<CInteractObject> spObject)
                     ASObj data(2);
                     spEntity->FUN_141a31270(data, m_viewport);
                     Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spEntity->m_clip->FUN_1422bb870(), data.FUN_1422bb870());
-                    if (!FUN_1409b4d40(value))
+                    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(value))->IsObject())
                         return;
                     spEntity->m_clip = FUN_1409b40c0(m_28, value);
                 }
@@ -1922,20 +1919,19 @@ void UIMinimapDialog::FUN_141a39e40()
 MS2_REPLACE_METHOD(0x141a39e40, UIMinimapDialog, FUN_141a39e40, 19, 0x7CB65D04);
 
 extern Vector3 DAT_143b01a60;                               // the zero point
-CBuddyManager* FUN_14097a780();                                    // TSingleton<CBuddyManager>::GetInstance
 void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Vector3* pOut);   // reads a point property
 
 // @0x141a39e60
 void UIMinimapDialog::FUN_141a39e60()
 {
-    int nField = FUN_1403ed2d0()->FUN_141bd3060();
-    if (!FUN_1409f24a0()->FUN_14085f730(nField))
+    int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
+    if (!TSingleton<CTaxiManager>::GetInstance()->FUN_14085f730(nField))
         return;
     bool bDisabled = false;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0 || pPC->FUN_140967010()->FUN_14050da30() == 0)
         bDisabled = true;
-    Unk_MmEntityList list = FUN_1403ed2d0()->FUN_141bd0420(0x85359406);
+    Unk_MmEntityList list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
     if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
         efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(list.FUN_1409f2190()->GetHeadPosition());
         if (spObject) {
@@ -1965,7 +1961,7 @@ void UIMinimapDialog::FUN_141a3a200()
     if (spTaxi == 0)
         return;
     bool bBest = false;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC != 0)
         bBest = FUN_141b71c00((unsigned short)pPC->vfunc_78()) == 1;
     spTaxi->m_text = bBest ? GetStringCommonByKey(L"s_word_besttaxistation") : GetStringCommonByKey(L"s_word_taxistation");
@@ -1975,7 +1971,7 @@ void UIMinimapDialog::FUN_141a3a200()
     data.FUN_1407cbb20(s_strName, spTaxi->m_text);
     data.FUN_1407cba60(s_strMcName, spTaxi->m_icon);
     Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spTaxi->m_clip->FUN_1422bb870(), data.FUN_1422bb870());
-    if (FUN_1409b4d40(value))
+    if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(value))->IsObject())
         spTaxi->m_clip = FUN_1409b40c0(m_28, value);
 }
 
@@ -2055,7 +2051,7 @@ void UIMinimapDialog::FUN_141a3a9a0(bool bRemove)
         bool bShouldRemove = bRemove;
         if (!bRemove) {
             bShouldRemove = true;
-            MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+            MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
             if (pPC != 0) {
                 efd::Point3 kPos = efd::Point3::ZERO;
                 if (pPC->FUN_141528020(kPos)) {
@@ -2131,14 +2127,18 @@ struct Unk_MmQuestIconOptions                                       // the quest
     bool m_world;                                                   // +0x21
     bool m_repeat;                                                  // +0x22
 };
-Unk_MmQuestIconOptions* FUN_140c9b8b0(void* pOptions);
+class Unk_QnState   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_QnTracking* FUN_140c9b8b0();
+};
 
 // @0x141a3add0
 void UIMinimapDialog::FUN_141a3add0()
 {
     if (m_maxPanel == 0)
         return;
-    Unk_MmQuestIconOptions* pOptions = FUN_140c9b8b0(FUN_1409a8b10());
+    Unk_MmQuestIconOptions* pOptions = ((struct Unk_MmQuestIconOptions*)((class Unk_QnState*)(void*)(FUN_1409a8b10()))->FUN_140c9b8b0());
     if (pOptions == 0)
         return;
     ASArray icons(2);
@@ -2227,7 +2227,7 @@ void UIMinimapDialog::FUN_141a3b6f0()
     if (m_showAttrs.IsEmpty()) {
         m_showAttrs.SetAt(s_strLayerShop, new TShowAttr(1, 0, L"$s_minimap_shop"));
         m_showAttrs.SetAt(s_strLayerFriendly, new TShowAttr(0, 1, L"$s_minimap_friendly_npc"));
-        if (FUN_140166410()->FUN_14036d570(0x8d))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8d))
             m_showAttrs.SetAt(s_strLayerTamingPet, new TShowAttr(1, 2, L"$s_minimap_taming_pet"));
         m_showAttrs.SetAt(s_strLayerPortal, new TShowAttr(1, 3, L"$s_minimap_portal"));
         m_showAttrs.SetAt(s_strLayerBuddy, new TShowAttr(1, 4, L"$s_minimap_buddy"));
@@ -2338,7 +2338,7 @@ void UIMinimapDialog::FUN_141a42600(MS2Ptr<CInteractObject> spObject, EntityPtr 
 void UIMinimapDialog::FUN_141a42550()
 {
     ATL::CAtlArray<MS2Ptr<CInteractObject> > objects;
-    FUN_1403ed2d0()->FUN_141bc5f10(objects);
+    ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bc5f10(objects);
     for (size_t i = 0; i < objects.GetCount(); ++i)
         FUN_141a391f0(objects[i]);
 }
@@ -2354,7 +2354,7 @@ void UIMinimapDialog::FUN_141a42800()
         return;
     CStringW strGroup;
     if (DAT_143ab0248 != 2)
-        strGroup = GetStringTable()->FUN_141811980(0x17, FUN_1403ed2d0()->FUN_141bd98f0());
+        strGroup = GetStringTable()->FUN_141811980(0x17, ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd98f0());
     m_channel = FUN_14092f640();
     int nSelected = 0;
     ASArray channels(2);
@@ -2380,12 +2380,12 @@ void UIMinimapDialog::FUN_141a42bb0()
     double dPanelY = 0.0;
     if (!m_maxPanel->FUN_1422c2510(&dPanelX, &dPanelY))
         return;
-    float fScale = FUN_141adbe70(FUN_1403ed2b0());
+    float fScale = FUN_141adbe70(TSingleton<CUIService>::GetInstance());
     dPanelX /= fScale;
     dPanelY /= fScale;
     m_212 = false;
     ATL::CAtlMap<unsigned __int64, int> occupied;
-    int nCell = *FUN_1401d3200()->m_minimapCell.FUN_1401d7c10();
+    int nCell = *((class Unk_MmGameConfig*)FUN_1401d3200())->m_minimapCell.FUN_1401d7c10();
     ATL::CAtlArray<EntityPtr> entities;
     FUN_141a42fe0(entities);
     for (size_t i = 0; i < entities.GetCount(); ++i) {
@@ -2430,7 +2430,7 @@ void UIMinimapDialog::FUN_141a42fe0(ATL::CAtlArray<EntityPtr>& entities)
         CString strKey = m_named.GetKeyAt(pos);
         EntityPtr spEntity = m_named.GetValueAt(pos);
         if (static_cast<bool>(static_cast<UIMinimapEntity*>(spEntity)) && spEntity->m_64) {
-            MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc66b0(strKey);
+            MS2Ptr<CInteractObject> spObject = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bc66b0(strKey);
             if (spObject == 0)
                 continue;
             if (spObject->FUN_1413b5600() != 1)
@@ -2446,7 +2446,7 @@ void UIMinimapDialog::FUN_141a42a70()
 {
     if (m_30 == 0)
         return;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     bool bVisible = true;
@@ -2516,7 +2516,7 @@ void UIMinimapDialog::FUN_141a455e0(const int& nField, const unsigned __int64& n
 MS2_REPLACE_METHOD(0x141a455e0, UIMinimapDialog, FUN_141a455e0, 206, 0xFF96F73D);
 
 class Unk_MmInput;                                                  // the input manager
-Unk_MmInput* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 int FUN_141b90e30(Unk_MmInput* pInput, float& x, float& y);         // the mouse position on the minimap
 
 // @0x141a456c0
@@ -2524,7 +2524,7 @@ void UIMinimapDialog::FUN_141a456c0(const Scaleform::GFx::FunctionHandler::Param
 {
     float x = 0;
     float y = 0;
-    if (FUN_141b90e30(FUN_140aadf80(), x, y))
+    if (FUN_141b90e30(((class Unk_MmInput*)FUN_140aadf80()), x, y))
         SendMinimapPing(0, x, y);
 }
 MS2_REPLACE_METHOD(0x141a456c0, UIMinimapDialog, FUN_141a456c0, 88, 0x1BA9816C);
@@ -2534,7 +2534,7 @@ void UIMinimapDialog::FUN_141a45720(const Scaleform::GFx::FunctionHandler::Param
 {
     float x = 0;
     float y = 0;
-    if (FUN_141b90e30(FUN_140aadf80(), x, y))
+    if (FUN_141b90e30(((class Unk_MmInput*)FUN_140aadf80()), x, y))
         SendMinimapPing(1, x, y);
 }
 MS2_REPLACE_METHOD(0x141a45720, UIMinimapDialog, FUN_141a45720, 91, 0xCE3BFD94);
@@ -2572,7 +2572,7 @@ bool UIMinimapDialog::FUN_141a45c70(const CString& strIcon)
 // @0x141a45ce0
 bool UIMinimapDialog::FUN_141a45ce0()
 {
-    bool bAllow = FUN_1403ed2d0()->FUN_141bd30a0()->m_allowPing;
+    bool bAllow = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd30a0()->m_allowPing;
     if (bAllow)
         return true;
     return false;
@@ -2596,7 +2596,7 @@ void FUN_14020af60(COutPacket* pPacket, const Vector3* pPt);    // writes the th
 // @0x141a45020
 void UIMinimapDialog::SendMinimapPing(int nKind, float x, float y)
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (m_30 == 0)
@@ -2605,7 +2605,7 @@ void UIMinimapDialog::SendMinimapPing(int nKind, float x, float y)
         return;
     NiPoint3 kPos(efd::Point3::ZERO);
     Scaleform::GFx::Value contains = m_30->Invoke("mouseContains");
-    if (contains.IsBool() && FUN_1409c1720(contains) && FUN_141a451b0(true, x, y, kPos)) {
+    if (contains.IsBool() && ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(contains))->GetBool() && FUN_141a451b0(true, x, y, kPos)) {
         COutPacket packet(static_cast<int>(SendOp::MinimapPing), 0);
         packet.Encode8(pPC->FUN_141656a80());
         packet.Encode1((unsigned char)nKind);
@@ -2642,7 +2642,7 @@ void UIMinimapDialog::FUN_141a45790(float x, float y, unsigned __int64 nId)
 {
     UIPopUpMenu* pMenu = Unk_MmGetDialog<UIPopUpMenu>();
     if (pMenu != 0) {
-        ProxyPtr spProxy = FUN_1403ed2d0()->FUN_141bc9c60(nId);
+        ProxyPtr spProxy = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bc9c60(nId);
         if (static_cast<CProxyGameObject*>(spProxy) != 0) {
             Unk_PopupMenuInfo info(x, y, 3, 0x3f3fe, 1, CString(""), 0);
             pMenu->FUN_141a7eb60(info, spProxy, 9);
@@ -2651,10 +2651,8 @@ void UIMinimapDialog::FUN_141a45790(float x, float y, unsigned __int64 nId)
 }
 MS2_REPLACE_METHOD(0x141a45790, UIMinimapDialog, FUN_141a45790, 310, 0x37E80969);
 
-class Unk_MmActor                                                   // a field actor
+class Unk_MmActor : public GameObject                                                   // a field actor
 {
-public:
-    int FUN_14123c660();                                            // hidden
 };
 
 // @0x141a45b70
@@ -2663,7 +2661,7 @@ bool UIMinimapDialog::FUN_141a45b70(ProxyPtr spProxy)
     if (spProxy == 0)
         return false;
     if (spProxy->FUN_1416c2b70()) {
-        Unk_MmActor* pActor = FUN_1403ed2d0()->FUN_141bd1320(spProxy->m_proxyId);
+        Unk_MmActor* pActor = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd1320(spProxy->m_proxyId);
         if (pActor != 0)
             return pActor->FUN_14123c660() == 0;
     }
@@ -2673,7 +2671,7 @@ bool UIMinimapDialog::FUN_141a45b70(ProxyPtr spProxy)
 // @0x141a45d50
 CStringW UIMinimapDialog::FUN_141a45d50(const unsigned __int64& nId)
 {
-    PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1530(nId);
+    PCBase* pActor = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd1530(nId);
     if (pActor)
         return pActor->vfunc_77();
     for (POSITION pos = m_proxies.GetHeadPosition(); pos; m_proxies.GetNext(pos)) {
@@ -2686,11 +2684,8 @@ CStringW UIMinimapDialog::FUN_141a45d50(const unsigned __int64& nId)
 MS2_REPLACE_METHOD(0x141a45d50, UIMinimapDialog, FUN_141a45d50, 364, 0x1CEEB35C);
 
 class Unk_MmCamera;                                                 // the field camera
-Unk_MmCamera* FUN_1409478c0();
-int FUN_140a18070(Unk_MmCamera* pCamera);                           // the camera is ready
-bool FUN_140af0520(Unk_MmCamera* pCamera, const NiPoint2& kCursor, NiPoint3& kOrigin, NiPoint3& kDir);   // the pick ray
 class Unk_MmSpatial;                                                // the field's collision space
-Unk_MmSpatial* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 int FUN_14168a230(Unk_MmSpatial* pSpatial, NiPoint3 kOrigin, NiPoint3& kHit, NiPoint3 kDir, float fRange, int nMask);   // ray cast
 
 // @0x141a451b0
@@ -2700,24 +2695,24 @@ bool UIMinimapDialog::FUN_141a451b0(bool bLocal, float x, float y, NiPoint3& kOu
         if (m_30 == 0)
             return false;
         Scaleform::GFx::Value local = m_30->Invoke("getLocal");
-        if (FUN_1409b4d40(local)) {
+        if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(local))->IsObject()) {
             Scaleform::GFx::Value valueX;
             Scaleform::GFx::Value valueY;
             if (local.GetMember("x", &valueX))
-                kOut.x = static_cast<float>(FUN_140f17ed0(valueX));
+                kOut.x = static_cast<float>(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(valueX))->GetNumber());
             if (local.GetMember("y", &valueY))
-                kOut.y = static_cast<float>(FUN_140f17ed0(valueY));
+                kOut.y = static_cast<float>(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(valueY))->GetNumber());
             return true;
         }
     } else {
         NiPoint2 kCursor(x, y);
-        if (FUN_141b90e30(FUN_140aadf80(), kCursor.x, kCursor.y)) {
-            if (FUN_140a18070(FUN_1409478c0())) {
+        if (FUN_141b90e30(((class Unk_MmInput*)FUN_140aadf80()), kCursor.x, kCursor.y)) {
+            if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070()) {
                 NiPoint3 kOrigin(efd::Point3::ZERO);
                 NiPoint3 kDir(efd::Point3::ZERO);
-                if (FUN_140af0520(FUN_1409478c0(), kCursor, kOrigin, kDir)) {
+                if (((class CameraMgr*)(class Unk_MmCamera*)(reinterpret_cast<Unk_MmCamera*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140af0520(kCursor, kOrigin, kDir)) {
                     NiPoint3 kHit(efd::Point3::ZERO);
-                    if (FUN_14168a230(FUN_1409f7ca0(), NiPoint3(kOrigin), kHit, NiPoint3(kDir), 10000.0f, 0x201)) {
+                    if (FUN_14168a230(((class Unk_MmSpatial*)FUN_1409f7ca0()), NiPoint3(kOrigin), kHit, NiPoint3(kDir), 10000.0f, 0x201)) {
                         m_viewport->FUN_141486410(kHit, kOut);
                         return true;
                     }
@@ -2755,12 +2750,12 @@ MS2_REPLACE_METHOD(0x141a45920, UIMinimapDialog, FUN_141a45920, 425, 0x27EB4910)
 void UIMinimapDialog::FUN_141a3ced0()
 {
     FUN_141a3f570();
-    int nField = FUN_1403ed2d0()->FUN_141bd3060();
+    int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
     MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nField);
     if (static_cast<bool>(spField.get())) {
         if (static_cast<bool>(spField->m_spMinimap.get())) {
             Scaleform::GFx::Value value = m_30->FUN_140e6b140("createFieldEntity", 0, spField->m_spMinimap->m_strImageName);
-            if (FUN_1409b4d40(value))
+            if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(value))->IsObject())
                 m_clip228 = FUN_1409b40c0(m_28, value);
         }
     }
@@ -2770,7 +2765,7 @@ MS2_REPLACE_METHOD(0x141a3ced0, UIMinimapDialog, FUN_141a3ced0, 426, 0x8DA94486)
 // @0x141a3dbb0
 void UIMinimapDialog::FUN_141a3dbb0()
 {
-    Unk_MmEntityList list = FUN_1403ed2d0()->FUN_141bd0420(0x85359406);
+    Unk_MmEntityList list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
     if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
         efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(list.FUN_1409f2190()->GetHeadPosition());
         if (spObject) {
@@ -2787,7 +2782,7 @@ MS2_REPLACE_METHOD(0x141a3dbb0, UIMinimapDialog, FUN_141a3dbb0, 475, 0x65BF49F1)
 // @0x141a3dda0
 void UIMinimapDialog::FUN_141a3dda0()
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC != 0) {
         efd::Point3 kPos = efd::Point3::ZERO;
         if (pPC->FUN_141528020(kPos)) {
@@ -2823,8 +2818,8 @@ void UIMinimapDialog::FUN_141a3e2d0(Unk_BuddyPtr<CBuddy> spBuddy)
 void UIMinimapDialog::FUN_141a3ed50()
 {
     ATL::CAtlArray<Unk_BuddyPtr<CBuddy> > buddies;
-    FUN_14097a780()->FUN_140ae4df0(buddies);
-    int nCurrent = FUN_1403ed2d0()->FUN_141bd3060();
+    TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4df0(buddies);
+    int nCurrent = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
     size_t nCount = buddies.GetCount();
     for (size_t i = 0; i < nCount; ++i) {
         Unk_BuddyPtr<CBuddy> spBuddy = buddies[i];
@@ -2850,7 +2845,7 @@ CStringW GetStringCommon(int nStringId);                               // a comm
 // @0x141a3df40
 void UIMinimapDialog::FUN_141a3df40()
 {
-    Unk_MmEntityList list = FUN_1403ed2d0()->FUN_141bd0420(0x62f7a42c);
+    Unk_MmEntityList list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x62f7a42c);
     if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
         for (POSITION pos = list.FUN_1409f2190()->GetHeadPosition(); pos != 0; list.FUN_1409f2190()->GetNext(pos)) {
             efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(pos);
@@ -2906,14 +2901,14 @@ void UIMinimapDialog::FUN_141a3e4e0(efd::SmartPointer<egf::Entity> spEntity)
 // @0x141a3ef80
 void UIMinimapDialog::FUN_141a3ef80()
 {
-    Unk_MmEntityList first = FUN_1403ed2d0()->FUN_141bd0420(0x74b363a7);
+    Unk_MmEntityList first = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x74b363a7);
     if (static_cast<bool>(first.FUN_1409f2170()) && !first.FUN_1409f2190()->IsEmpty()) {
         for (POSITION pos = first.FUN_1409f2190()->GetHeadPosition(); pos != 0; first.FUN_1409f2190()->GetNext(pos)) {
             efd::SmartPointer<egf::Entity> spObject = first.FUN_1409f2190()->GetAt(pos);
             FUN_141a3e4e0(spObject);
         }
     }
-    Unk_MmEntityList second = FUN_1403ed2d0()->FUN_141bd0420(0x4714f9ea);
+    Unk_MmEntityList second = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x4714f9ea);
     if (static_cast<bool>(second.FUN_1409f2170()) && !second.FUN_1409f2190()->IsEmpty()) {
         for (POSITION pos = second.FUN_1409f2190()->GetHeadPosition(); pos != 0; second.FUN_1409f2190()->GetNext(pos)) {
             efd::SmartPointer<egf::Entity> spObject = second.FUN_1409f2190()->GetAt(pos);
@@ -2928,7 +2923,7 @@ void FUN_1401d3700(CString& str);                                    // normalis
 // @0x141a3f1c0
 void UIMinimapDialog::FUN_141a3f1c0()
 {
-    Unk_MmEntityList list = FUN_1403ed2d0()->FUN_141bd0420(0x6fb4d420);
+    Unk_MmEntityList list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x6fb4d420);
     if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
         int nId = 0;
         for (POSITION pos = list.FUN_1409f2190()->GetHeadPosition(); pos != 0; list.FUN_1409f2190()->GetNext(pos)) {
@@ -2963,9 +2958,9 @@ void UIMinimapDialog::FUN_141a3ea10()
     if (m_30 == 0)
         return;
     FUN_141a3fb10();
-    int nField = FUN_1403ed2d0()->FUN_141bd3060();
+    int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
     ATL::CAtlArray<ProxyPtr> portals;
-    ATL::CAtlMap<unsigned int, ProxyPtr>& proxies = FUN_1403ed2d0()->FUN_141bc9fb0();
+    ATL::CAtlMap<unsigned int, ProxyPtr>& proxies = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bc9fb0();
     for (POSITION pos = proxies.GetStartPosition(); pos != 0; proxies.GetNext(pos)) {
         ProxyPtr spProxy = proxies.GetValueAt(pos);
         if (spProxy.get()) {
@@ -2988,7 +2983,7 @@ void UIMinimapDialog::FUN_141a3ea10()
     size_t nCount = portals.GetCount();
     for (size_t i = 0; i < nCount; ++i)
         FUN_141a3d080(portals[i]);
-    if (FUN_1409f24a0()->FUN_14085f6e0(nField))
+    if (TSingleton<CTaxiManager>::GetInstance()->FUN_14085f6e0(nField))
         FUN_141a3dbb0();
     FUN_141a3df40();
     FUN_141a3dda0();
@@ -3041,7 +3036,7 @@ void UIMinimapDialog::FUN_141a402b0(EntityPtr spEntity)
 {
     if (spEntity == 0 || spEntity->m_clip == 0)
         return;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (m_viewport == 0)
@@ -3096,7 +3091,7 @@ void UIMinimapDialog::FUN_141a407c0(ProxyPtr spProxy, EntityPtr spEntity)
             ASObj data(2);
             spEntity->FUN_141a31270(data, m_viewport);
             Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spClip->FUN_1422bb870(), data.FUN_1422bb870());
-            if (!FUN_1409b4d40(value))
+            if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(value))->IsObject())
                 return;
             spClip = FUN_1409b40c0(m_28, value);
             spClip->vfunc_4(spEntity->m_visible);
@@ -3141,7 +3136,7 @@ void UIMinimapDialog::FUN_141a40d90(ProxyPtr spProxy, EntityPtr spEntity)
             data.FUN_1407cbbe0(s_strShowGuide, spEntity->m_showGuide);
             data.FUN_1407cbb20(s_strGuideName, spEntity->m_guideName);
             Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spEntity->m_clip->FUN_1422bb870(), data.FUN_1422bb870());
-            if (FUN_1409b4d40(value))
+            if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(value))->IsObject())
                 spEntity->m_clip = FUN_1409b40c0(m_28, value);
         }
     }
@@ -3182,15 +3177,15 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
         data.FUN_1407cba60(s_strFrame, spEntity->m_state);
         data.FUN_1407cba60(s_strLayer, spEntity->m_layer);
         Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spEntity->m_clip->FUN_1422bb870(), data.FUN_1422bb870());
-        if (!FUN_1409b4d40(value))
+        if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(value))->IsObject())
             return;
         spEntity->m_clip = FUN_1409b40c0(m_28, value);
         spClip = spEntity->m_clip;
     }
     bool bVisible = true;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC != 0) {
-        int nPkMode = FUN_1403ed2d0()->FUN_141bd30a0()->FUN_1403754d0();
+        int nPkMode = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd30a0()->FUN_1403754d0();
         if (nPkMode != 0) {
             bVisible = pPC != 0 ? pPC->FUN_1415278d0(reinterpret_cast<void*>(spProxy->FUN_1416c22f0())) == 1 : false;
         } else {
@@ -3198,7 +3193,7 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
             if (spPvP.get() != 0) {
                 if (spPvP->FUN_1407435d0() || spPvP->FUN_1407436d0()) {
                     __int64 nCharId = spProxy->FUN_1416c22f0();
-                    PC* pOther = FUN_1403ed2d0()->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    PC* pOther = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd1530(spProxy->FUN_1416c22f0());
                     if (pOther != 0) {
                         bVisible = false;
                         int nRank = FUN_140f97ef0()->FUN_1413437e0(nCharId);
@@ -3218,7 +3213,7 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
                         }
                     }
                 } else if (spPvP->FUN_140743610()) {
-                    PC* pOther = FUN_1403ed2d0()->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    PC* pOther = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd1530(spProxy->FUN_1416c22f0());
                     if (pOther != 0) {
                         bVisible = reinterpret_cast<Unk_MmPvPPlayer*>(pOther)->FUN_140967420()->GetPoint() == reinterpret_cast<Unk_MmPvPPlayer*>(pPC)->FUN_140967420()->GetPoint();
                         if (bVisible) {
@@ -3227,11 +3222,11 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
                         }
                     }
                 } else if (spPvP->FUN_140743590() || spPvP->FUN_140743690()) {
-                    PC* pOther = FUN_1403ed2d0()->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    PC* pOther = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd1530(spProxy->FUN_1416c22f0());
                     if (pOther != 0)
                         bVisible = pOther->FUN_141674bc0() == 0;
                 } else if (spPvP->FUN_140743550()) {
-                    PC* pOther = FUN_1403ed2d0()->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    PC* pOther = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd1530(spProxy->FUN_1416c22f0());
                     if (pOther != 0) {
                         bVisible = pOther->vfunc_116() == pPC->vfunc_116() ? true : pOther->FUN_141674bc0() == 0;
                     }
@@ -3257,7 +3252,7 @@ void UIMinimapDialog::FUN_141a432a0(ProxyPtr spProxy, EntityPtr spEntity)
 {
     if (spProxy == 0 || spEntity == 0)
         return;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     __int64 nId = spProxy->FUN_1416c22f0();
@@ -3333,7 +3328,7 @@ void UIMinimapDialog::FUN_141a43680(ProxyPtr spProxy, EntityPtr spEntity)
 
 class Unk_MmPortalPos { public: efd::Point3 FUN_14169d2f0(); };    // CPortal: the entity position
 extern char DAT_143b059e8;                                          // the entity app framework
-HardwareInstancingService* FUN_14098c5b0(char* pFramework);
+class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 
 // @0x141a43b80
 void UIMinimapDialog::FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool bInit)
@@ -3343,7 +3338,7 @@ void UIMinimapDialog::FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool b
     MS2Ptr<CPortal> spPortal = spProxy->m_portal;
     if (spPortal == 0)
         return;
-    efd::SmartPointer<HardwareInstancingService> spService(FUN_14098c5b0(&DAT_143b059e8));
+    efd::SmartPointer<HardwareInstancingService> spService(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     if (static_cast<bool>(spService)) {
         if (spService->FUN_1413d7d90(spPortal->m_idEntity) != 0)
             return;
@@ -3368,13 +3363,13 @@ void UIMinimapDialog::FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool b
             return;
     }
     if (bInit) {
-        int nField = FUN_1403ed2d0()->FUN_141bd3060();
+        int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
         if (nDest == nField)
             return;
         spEntity->FUN_141a323e0(spPortal);
         spEntity->m_position = reinterpret_cast<Unk_MmPortalPos*>(spPortal.operator->())->FUN_14169d2f0();
     }
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (!bHousing) {
@@ -3426,7 +3421,7 @@ void UIMinimapDialog::FUN_141a44380(MS2Ptr<CInteractObject> spObject, EntityPtr 
 // @0x141a44850
 bool UIMinimapDialog::FUN_141a44850(EntityPtr spEntity, const int& nField, bool b)
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return false;
     CString strIcon;
@@ -3472,14 +3467,14 @@ bool UIMinimapDialog::FUN_141a44850(EntityPtr spEntity, const int& nField, bool 
 // @0x141a44c00
 bool UIMinimapDialog::FUN_141a44c00(EntityPtr spEntity, const int& nField, bool b1, const CString& strIcon, const CString& strLayer, bool b2, bool b3)
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return false;
     CStringW strText;
     bool bVisible = false;
     if (b1) {
         Unk_QmNpcQuestState guide;
-        FUN_140764020()->FUN_1416d12d0(nField, &guide, 0);
+        ((class CQuestManager*)FUN_140764020())->FUN_1416d12d0(nField, &guide, 0);
         bVisible = b2;
         strText = FUN_141a45ed0(reinterpret_cast<const int&>(guide.m_questId), guide.m_state);
     } else {
@@ -3503,9 +3498,17 @@ bool UIMinimapDialog::FUN_141a44c00(EntityPtr spEntity, const int& nField, bool 
 }
 
 class Unk_MmHome;
-Unk_MmHome* FUN_1409670e0();                                        // the home service
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoHouseSvc* GetInstance();
+};
 void FUN_1410c3330(Unk_MmHome* pHome, CStringW& strOut);            // the home name
-__int64 FUN_1410c3180(Unk_MmHome* pHome);                           // the home owner's account id
+class CubeMapInformationService   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_1410c3180();
+};
 extern __int64 DAT_143ab2820;                                       // the own account id
 
 // @0x141a3c150
@@ -3514,14 +3517,14 @@ void UIMinimapDialog::FUN_141a3c150()
     if (m_30 == 0)
         return;
     bool bForceMinimize = true;
-    MS2Ptr<Unk_MmFieldInfo> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<Unk_MmFieldInfo> spField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd30a0();
     if (static_cast<bool>(spField.get()) && static_cast<bool>(spField->m_minimap.get()))
         bForceMinimize = spField->m_64 != 0 || spField->m_minimap->m_image.IsEmpty();
     m_forceMinimize = bForceMinimize;
     CStringW strName;
-    FUN_1410c3330(FUN_1409670e0(), strName);
+    FUN_1410c3330(((class Unk_MmHome*)Unk_AkoHouseSvc::GetInstance()), strName);
     bool bReport = false;
-    __int64 nOwner = FUN_1410c3180(FUN_1409670e0());
+    __int64 nOwner = ((class CubeMapInformationService*)(class Unk_MmHome*)(((class Unk_MmHome*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c3180();
     if (nOwner != 0 && nOwner != DAT_143ab2820)
         bReport = true;
     m_maxPanel = FUN_140ede180("m_maxpanel");
@@ -3547,11 +3550,11 @@ void UIMinimapDialog::FUN_141a3c150()
             int nMapAlpha = 100;
             int nWidth = 0;
             int nHeight = 0;
-            nWidth = FUN_1409c1750(spData->FUN_1422baa20("width"));
-            nHeight = FUN_1409c1750(spData->FUN_1422baa20("height"));
-            nMapAlpha = FUN_1409c1750(spData->FUN_1422baa20("mapAlpha"));
-            nBgAlpha = FUN_1409c1750(spData->FUN_1422baa20("bgAlpha"));
-            fScale = static_cast<float>(FUN_140f17ed0(spData->FUN_1422baa20("scale")));
+            nWidth = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->FUN_1422baa20("width")))->GetInt();
+            nHeight = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->FUN_1422baa20("height")))->GetInt();
+            nMapAlpha = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->FUN_1422baa20("mapAlpha")))->GetInt();
+            nBgAlpha = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->FUN_1422baa20("bgAlpha")))->GetInt();
+            fScale = static_cast<float>(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->FUN_1422baa20("scale")))->GetNumber());
         }
         ASArray showEntities(2);
         for (POSITION pos = m_showAttrs.GetStartPosition(); pos != 0; m_showAttrs.GetNext(pos)) {
@@ -3581,7 +3584,7 @@ void UIMinimapDialog::FUN_141a3c150()
         static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("selectedchannel", nSelected);
         CStringW strGroup;
         if (DAT_143ab0248 != 2)
-            strGroup = GetStringTable()->FUN_141811980(0x17, FUN_1403ed2d0()->FUN_141bd98f0());
+            strGroup = GetStringTable()->FUN_141811980(0x17, ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd98f0());
         static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("channelprefix", GetStringCommonByKey(L"s_word_ch"));
         static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("channelgroup", strGroup);
         static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("mapAlphaPrefix", GetStringCommonByKey(L"s_word_minimap_alpha"));
@@ -3656,7 +3659,7 @@ bool UIMinimapDialog::FUN_141a3e7d0(EntityPtr spEntity)
     ASObj data(2);
     spEntity->FUN_141a31270(data, m_viewport);
     Scaleform::GFx::Value value = m_30->Invoke("createEntity", data);
-    if (FUN_1409b4d40(value)) {
+    if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(value))->IsObject()) {
         spEntity->m_clip = FUN_1409b40c0(m_28, value);
         if (static_cast<ASMovieClip*>(spEntity->m_clip) != 0)
             return true;
@@ -3668,7 +3671,7 @@ bool UIMinimapDialog::FUN_141a3e7d0(EntityPtr spEntity)
 void UIMinimapDialog::FUN_141a3eed0()
 {
     ATL::CAtlArray<MS2Ptr<CInteractObject> > objects;
-    FUN_1403ed2d0()->FUN_141bc5f10(objects);
+    ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bc5f10(objects);
     for (size_t i = 0; i < objects.GetCount(); ++i)
         FUN_141a39770(objects[i]);
 }
@@ -3783,14 +3786,13 @@ void UIMinimapDialog::FUN_141a47190(PingMap& map)
     }
 }
 
-void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 
 // @0x141a472c0
 void ASObj::FUN_141a472c0(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x141a3f9f0

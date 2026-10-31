@@ -41,6 +41,10 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 static CString s_strSortTypeNamesBuy[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/paybackmanagerclient.h"
+#include "ms2/client/ms2/buddymanager.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/uiservice.h"
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_strJobCode = "jobCode";
 static CString s_strSortValue = "sortValue";
@@ -115,22 +119,22 @@ struct Unk_MbBlockRef
 };
 MS2_CHECK_SIZE(Unk_MbBlockRef, 0x10);
 class Unk_MbStateMgr { public: Unk_MbBlockRef FUN_140a2f620(int nKind); };
-Unk_MbStateMgr* FUN_140a6a830();
+class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void* FUN_1401cb3d0(Unk_MbBlockRef* pRef);
 void FUN_140a2ff20(Unk_MbBlockRef* pRef, int nKind, __int64 n);
 
 class Unk_MbUiMgr { public: void FUN_141adc5d0(int uiId); };
-Unk_MbUiMgr* FUN_1403ed2b0();
 class Unk_MbKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
-Unk_MbKeys* FUN_14025e7c0();
-class Unk_MbFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_MbFeatures* FUN_140166410();
-class Unk_MbBlockList { public: unsigned FUN_140ae5240(const CStringW& strName); };
-Unk_MbBlockList* FUN_14097a780();
-class Unk_MbBillMgr { public: void FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam); };
-Unk_MbBillMgr* FUN_1409c1740();
-void* FUN_1403ed2d0();
-void* FUN_141bd0cc0(void* pWorld);                              // the local player
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+CBuddyManager* FUN_14097a780();
+class Unk_MeratButtonHelper* FUN_1409c1740();   // C3: was FUN_1409c1740
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 const float& FUN_140805fc0(const float& a, const float& b);     // max
@@ -275,7 +279,7 @@ bool Delegate<bool(Scaleform::GFx::Value*, ASData&, MS2Ptr<TMarketBillDataParam>
 // @0x140eab940
 void TMarketBillDataParam::FUN_140eab940(bool b)
 {
-    m_b2c = FUN_140166410()->FUN_14036d570(0x45) && b;
+    m_b2c = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x45) && b;
 }
 
 // @0x140eab9a0
@@ -368,7 +372,7 @@ int UIMarketBillDialog::vfunc_13()
         return 1;
     if (FUN_140ba28d0(&m_30, 0))
         return 0;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0))
+    if (((class Unk_MbKeys*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0))
     {
         m_30->Invoke("onTabKey");
         return 1;
@@ -400,7 +404,7 @@ int UIMarketBillDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         else
         {
             {
-                Unk_MbBlockRef block = FUN_140a6a830()->FUN_140a2f620(0x26);
+                Unk_MbBlockRef block = ((class Unk_MbStateMgr*)FUN_140a6a830())->FUN_140a2f620(0x26);
                 if (FUN_1401cb3d0(&block))
                 {
                     FUN_140a2ff20(&block, 0x26, 0);
@@ -749,7 +753,7 @@ void UIMarketBillDialog::FUN_140ea8df0()
         objData.FUN_1407cbb20("noticeKey", strNotice);
         objData.FUN_1407cbb20("noticeGiftKey", strNoticeGift);
         objData.FUN_1407cbbe0("gift", m_spParam->m_b2c);
-        FUN_1409c1740()->FUN_140a8b490(m_spParam);
+        ((class PaybackManagerClient*)FUN_1409c1740())->FUN_140a8b490(m_spParam);
         if (!m_spParam->m_str70.IsEmpty())
             objData.FUN_1407cbb20("additionalInfoDescText", m_spParam->m_str70);
     }
@@ -897,7 +901,7 @@ void UIMarketBillDialog::FUN_140ea9fc0()
         return;
     if (!m_spParam->m_dgCancel.IsNull())
         m_spParam->m_dgCancel(m_spParam);
-    FUN_1403ed2b0()->FUN_141adc5d0(vfunc_48());
+    reinterpret_cast<Unk_MbUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(vfunc_48());
 }
 
 // "onClickBuy".
@@ -913,7 +917,7 @@ void UIMarketBillDialog::FUN_140eaa0b0(const char* szMethod)
             m_spParam->m_dgBuy(m_spParam, m_mapPrice);
     }
     if (bClose)
-        FUN_1403ed2b0()->FUN_141adc5d0(vfunc_48());
+        reinterpret_cast<Unk_MbUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(vfunc_48());
 }
 
 // "onClickGiftOk".
@@ -928,7 +932,7 @@ void UIMarketBillDialog::FUN_140eaa1e0(const char* szMethod, ASData* pData)
         FUN_140d73bc0(0xa6d, 0, 0, L"");
         return;
     }
-    MyPC* pPlayer = static_cast<MyPC*>(FUN_141bd0cc0(FUN_1403ed2d0()));
+    MyPC* pPlayer = static_cast<MyPC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer)
     {
         bool bSelf = strName.CompareNoCase(pPlayer->vfunc_77()) == 0;
@@ -954,7 +958,7 @@ void UIMarketBillDialog::FUN_140eaa1e0(const char* szMethod, ASData* pData)
             m_spParam->m_dgGift(m_spParam, m_mapPrice, strName, strMessage);
     }
     if (bClose)
-        FUN_1403ed2b0()->FUN_141adc5d0(vfunc_48());
+        reinterpret_cast<Unk_MbUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(vfunc_48());
 }
 
 // "onUpdateTotalPrice": a bill row changed its numbers.
@@ -1059,7 +1063,7 @@ CString UIMarketBillDialog::FUN_140eaac50(int nMode)
 bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
 {
     *pbClose = true;
-    if (FUN_140166410()->FUN_14036d570(0xec))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xec))
     {
         int nBlueprint = 0x16;
         if (FUN_140ea9c30(nBlueprint))
@@ -1069,7 +1073,7 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
             return true;
         }
     }
-    MyPC* pPlayer = static_cast<MyPC*>(FUN_141bd0cc0(FUN_1403ed2d0()));
+    MyPC* pPlayer = static_cast<MyPC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (!pPlayer)
         return false;
     if (pPlayer->FUN_141527e00() != 0)
@@ -1115,7 +1119,7 @@ bool UIMarketBillDialog::FUN_140eab330(bool* pbClose, const CStringW& strName, c
 {
     CStringW strText;
     int nBlueprint = 0x16;
-    if (FUN_140ea9c30(nBlueprint) && FUN_140166410()->FUN_14036d570(0xec))
+    if (FUN_140ea9c30(nBlueprint) && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xec))
         strText = FUN_1405c2690(L"s_meratmarket_gift_ask_confirm_blueprint", strName);
     else if (m_spParam->m_nDialogId == 0x4ec1)
         strText = FUN_1405c2690(L"s_meratmarket_gift_ask_confirm", strName);

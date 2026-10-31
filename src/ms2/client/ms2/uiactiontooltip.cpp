@@ -27,8 +27,7 @@ MS2Ptr<AScript>& MS2Ptr<AScript>::operator=<ASGameEntity>(const MS2Ptr<ASGameEnt
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
 
 // The client's world service and the local player (worldservice.h spells the player as void*).
-WorldService* FUN_1403ed2d0();
-Unk_ActionKeyManager* FUN_140a7b810(MyPC* pPlayer);                    // MyPC's action key table
+struct Unk_MiActionState* Unk_PlayerActionState(struct Unk_MiPlayer*);   // C3: was FUN_140a7b810
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz) throw();           // case-insensitive equal
 bool FUN_14034eee0(const CStringW& str, const wchar_t* psz) throw();           // operator!=
 
@@ -36,7 +35,11 @@ bool FUN_14034eee0(const CStringW& str, const wchar_t* psz) throw();           /
 class Unk_AtUIMgr { public: int FUN_141adc940(int nUiId); };           // the ui is open
 Unk_AtUIMgr* FUN_1403ed2b0();
 void* FUN_140967100();
-int FUN_141b21220(void* pTalkManager);                                 // a dialogue is open
+class UITalkManager   // C3: member view for the former free stand-ins
+{
+public:
+    int GetTalking();
+};
 
 // The sound/guide manager (FUN_140a94350): slot 7 plays a sound, slot 8 stops it.
 class Unk_AtSound
@@ -52,8 +55,8 @@ Unk_AtSound* FUN_140a94350();
 class Unk_AtHintTable { public: CStringW FUN_14142d760(int nId, int nFlag); };
 Unk_AtHintTable* FUN_1409331f0();
 void* FUN_1409a8b10();
-const unsigned char* FUN_140a58500(void* p);
-unsigned int FUN_141277f40();                                          // next UI layer
+struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
+int FUN_141277f40();   // C3: was FUN_141277f40
 
 // The client constants singleton: two values at +0xc768 / +0xc7c0 give the screen origin.
 class Unk_AtConst { public: int FUN_14025a620(); void* m_unknown; };
@@ -66,13 +69,17 @@ public:
     Unk_AtConst m_c7c0;
 };
 MS2_CHECK_OFFSET(Unk_AtConstants, m_c7c0, 0xc7c0);
-Unk_AtConstants* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The target point accessors (a "valid" flag then the point, see Unk_AkoTarget).
 bool FUN_1413b58d0(Unk_AkoTarget* p);                                  // has a point
-bool FUN_1413b5870(Unk_AkoTarget* p);                                  // has no point
+bool Unk_GcVec3IsNull(struct Unk_GcOptVec3 const*);   // C3: was FUN_1413b5870
 Vector3* FUN_1413b4140(Unk_AkoTarget* p);
-Vector3* FUN_1413b4180(Unk_AkoTarget* p);
+struct Unk_GcOptVec3   // C3: member view for the former free stand-ins
+{
+public:
+    struct Vector3& GetValue();
+};
 void FUN_140d00fb0(Vector3 ptWorld, efd::Point2* pScreen);        // project a world point to the screen
 float FUN_1408f2120(const float& v, float fLo, float fHi);             // clamp
 
@@ -163,10 +170,10 @@ void UIActionTooltip::vfunc_41(const Scaleform::GFx::Value& root)
 // @0x1418b1900
 ActionKeyObject* UIActionTooltip::FUN_1418b1900()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    return FUN_140a7b810(pPlayer)->FUN_140953550();
+    return ((class Unk_ActionKeyManager*)Unk_PlayerActionState((struct Unk_MiPlayer*)(pPlayer)))->FUN_140953550();
 }
 
 // @0x1418b1950
@@ -183,7 +190,7 @@ int UIActionTooltip::FUN_1418b1950()
 // @0x1418b1990
 CStringW UIActionTooltip::FUN_1418b1990()
 {
-    int nFlag = *FUN_140a58500(FUN_1409a8b10()) ? 2 : 0;
+    int nFlag = *((unsigned char const*)FUN_140a58500((class Unk_GpSettings*)(FUN_1409a8b10()))) ? 2 : 0;
     int nId = FUN_1418b1950();
     return FUN_1409331f0()->FUN_14142d760(nId, nFlag);
 }
@@ -238,10 +245,10 @@ void UIActionTooltip::FUN_1418b1ef0()
     MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>(m_30.get()));
     if (spEntity.get() != 0)
     {
-        if (FUN_1413b5870(&m_kTarget))
+        if (Unk_GcVec3IsNull((struct Unk_GcOptVec3 const*)(&m_kTarget)))
         {
-            int nX = FUN_1401d3200()->m_c768.FUN_14025a620();
-            int nY = FUN_1401d3200()->m_c7c0.FUN_14025a620();
+            int nX = ((class Unk_AtConstants*)FUN_1401d3200())->m_c768.FUN_14025a620();
+            int nY = ((class Unk_AtConstants*)FUN_1401d3200())->m_c7c0.FUN_14025a620();
             int nCenterX = (int)((float)spEntity->FUN_1422c1500() * 0.5f + (float)nX);
             int nCenterY = (int)((float)spEntity->FUN_1422c1530() * 0.5f + (float)nY);
             spEntity->FUN_1422bffe0(nCenterX, nCenterY);
@@ -249,7 +256,7 @@ void UIActionTooltip::FUN_1418b1ef0()
         else
         {
             efd::Point2 kScreen;
-            FUN_140d00fb0(*FUN_1413b4180(&m_kTarget), &kScreen);
+            FUN_140d00fb0(*((struct Vector3*)&((struct Unk_GcOptVec3*)(struct Unk_AkoTarget*)(&m_kTarget))->GetValue()), &kScreen);
             int nWidth = spEntity->FUN_1422c1500();
             float fX = FUN_1408f2120(kScreen.x, 0, (float)(nWidth - spEntity->FUN_1422c1340()));
             int nHeight = spEntity->FUN_1422c1530();
@@ -262,23 +269,23 @@ void UIActionTooltip::FUN_1418b1ef0()
 // @0x1418b2140
 int UIActionTooltip::FUN_1418b2140()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 1;
-    if (FUN_140a7b810(pPlayer)->IsEnabled() == 0)
+    if (((class Unk_ActionKeyManager*)Unk_PlayerActionState((struct Unk_MiPlayer*)(pPlayer)))->IsEnabled() == 0)
         return 1;
     switch (FUN_1418b23a0())
     {
     case 0x14:
     case 0x16:
-        return FUN_141b21220(FUN_140967100());
+        return ((class UITalkManager*)(void*)(FUN_140967100()))->GetTalking();
     case 0x10:
         return FUN_1403ed2b0()->FUN_141adc940(0x4e56) == 0;
     case 4:
     case 0x11:
     case 0x12:
     {
-        MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pMyPC == 0)
             return 1;
         return pMyPC->FUN_14166c930() == 0x19;
@@ -289,14 +296,14 @@ int UIActionTooltip::FUN_1418b2140()
         return FUN_1403ed2b0()->FUN_141adc940(0x4ebd) == 0;
     case 0x1a:
     {
-        MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pMyPC == 0)
             return 1;
         return pMyPC->FUN_14166c930() == 0x3d;
     }
     case 0x1c:
     {
-        MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pMyPC == 0)
             return 1;
         return pMyPC->FUN_14166c930() == 0x3e;
@@ -308,10 +315,10 @@ int UIActionTooltip::FUN_1418b2140()
 // @0x1418b23a0
 int UIActionTooltip::FUN_1418b23a0()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0x1e;
-    return FUN_140a7b810(pPlayer)->GetCur();
+    return ((class Unk_ActionKeyManager*)Unk_PlayerActionState((struct Unk_MiPlayer*)(pPlayer)))->GetCur();
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

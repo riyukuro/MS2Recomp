@@ -48,12 +48,9 @@ errno_t FUN_140dcefa0(void* const dst, rsize_t const dstSize, void const* const 
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
-class Unk_140166420 : public CFileSystem { };
       // the content switches
-CFeatureManager* FUN_140166410();
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14016a5c0(const char* psz, int n);
 bool FUN_14028f710(Unk_140165cf0*);                                       // the element is usable
 void FUN_1406363a0(Unk_140165cf0*, const char*, Unk_CcJob&);
@@ -85,7 +82,7 @@ CSkillCompactControlTable::~CSkillCompactControlTable()
 // @0x140dca800
 int CSkillCompactControlTable::Load()
 {
-    if (!FUN_140166410()->FUN_14036d570(0x10))
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x10))
         return 1;
     if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
@@ -96,16 +93,16 @@ int CSkillCompactControlTable::Load()
     CString strPath;
     strPath.Format("./data/xml/table/SkillCompactControl.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
     }
     s_cache.FUN_1401d1160(strPath);
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pJob = pRoot->FUN_140165cf0("job"); pJob != 0; pJob = pJob->FUN_140168650("job"))

@@ -6,6 +6,7 @@
 // The unit name and directory are assumed (the GFx UI library 0x1422b0000-0x142304000 has no __FILE__ strings). The
 // class is declared in src/ms2/placeholder/asdropdownmenu.h. The rows of the "dataProvider" array are AS objects
 // (ASDataProvider::FUN_1422df140 = requestItemAt); the lookups skip rows that are not valid values.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "ms2/placeholder/asdropdownmenu.h"
@@ -14,7 +15,6 @@
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ASCallback;
 
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);            // the value is set (not undefined / null)
 CStringW XmlWide(const char* sz);                         // a UTF-8 text as a wide string
 
 // @0x1422df570
@@ -66,7 +66,7 @@ void ASDropdownMenu::FUN_1422df720(const Scaleform::GFx::Value& v)
 // @0x1422df770
 MS2Ptr<ASDataProvider> ASDropdownMenu::FUN_1422df770()
 {
-    return FUN_1422de460("dataProvider");
+    return FUN_1422de460<ASDataProvider>("dataProvider");
 }
 MS2_REPLACE_METHOD(0x1422DF770, ASDropdownMenu, FUN_1422df770, 102, 0xE0511B08);
 
@@ -214,7 +214,7 @@ void ASDropdownMenu::FUN_1422e0040(const CString& strField, int nValue)
     if (spProvider.get()) {
         for (unsigned __int64 i = 0; i < FUN_1422dfb90(); ++i) {
             AScript row = spProvider->FUN_1422df140((unsigned)i);
-            if (FUN_1409b4d40(row.FUN_1422bb870())) {
+            if (row.FUN_1422bb870().IsObject()) {
                 Scaleform::GFx::Value v = row.FUN_1422baa20(strField);
                 if (v.IsString() && nValue == v.GetInt()) {
                     FUN_1422df690((int)i);
@@ -233,7 +233,7 @@ void ASDropdownMenu::FUN_1422e01a0(const CString& strField, unsigned nValue)
     if (spProvider.get()) {
         for (unsigned __int64 i = 0; i < FUN_1422dfb90(); ++i) {
             AScript row = spProvider->FUN_1422df140((unsigned)i);
-            if (FUN_1409b4d40(row.FUN_1422bb870())) {
+            if (row.FUN_1422bb870().IsObject()) {
                 Scaleform::GFx::Value v = row.FUN_1422baa20(strField);
                 if (v.IsString() && nValue == v.GetUInt()) {
                     FUN_1422df690((int)i);
@@ -252,7 +252,7 @@ void ASDropdownMenu::FUN_1422e0300(const CString& strField, const CStringW& strV
     if (spProvider.get()) {
         for (unsigned __int64 i = 0; i < FUN_1422dfb90(); ++i) {
             AScript row = spProvider->FUN_1422df140((unsigned)i);
-            if (FUN_1409b4d40(row.FUN_1422bb870())) {
+            if (row.FUN_1422bb870().IsObject()) {
                 Scaleform::GFx::Value v = row.FUN_1422baa20(strField);
                 if (v.IsString()) {
                     if (strValue == XmlWide(v.GetString())) {
@@ -288,7 +288,7 @@ void ASDropdownMenu::FUN_1422e0580(const CStringW& strLabel)
     if (spProvider.get()) {
         for (unsigned __int64 i = 0; i < FUN_1422dfb90(); ++i) {
             AScript row = spProvider->FUN_1422df140((unsigned)i);
-            if (FUN_1409b4d40(row.FUN_1422bb870())) {
+            if (row.FUN_1422bb870().IsObject()) {
                 Scaleform::GFx::Value v = row.FUN_1422baa20("label");
                 if (v.IsString()) {
                     if (strLabel == XmlWide(v.GetString())) {

@@ -14,6 +14,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/weddingpackage.h"     // WeddingRewardItem
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/weddingtable.h"
 
 // ---- handles: a smart reference whose destructor is the exe function REL ----
 template <void (*REL)(void*)>
@@ -75,15 +77,12 @@ public:
     Unk_SlotMap m_slots;                        // +0x20
 };
 
-class Unk_HallTable
+class Unk_HallTable : public WeddingTable
 {
 public:
     RHall FUN_140908b80(int nHallId);
-    int FUN_140909130(int nHallId, int nSlot);
-    __int64 FUN_140909220(int nHallId, int nSlot);
     int FUN_140908d50(int nHallId, int nSlotId, unsigned char bPrivate);
 };
-Unk_HallTable* FUN_1409023c0();
 
 class Unk_RListCtl : public CPtred
 {
@@ -99,7 +98,6 @@ public:
     void FUN_1422dd230(const ASObj& obj);       // add an item
     void FUN_1422dcca0(int nIndex);             // select
 };
-class Unk_StrTable { public: CStringW FUN_141811980(int nTable, int nIndex); };
 
 // ---- exe callees ----
 void* FUN_1409eed90();                                                      // the singleton of the own character
@@ -124,7 +122,6 @@ int FUN_140906e40(Unk_SlotRec* p, unsigned char bFlag);
 unsigned char FUN_140bcc0c0(RList* p, int n);                               // handle is null
 Unk_RListCtl* FUN_140bcc3f0(RList* p);
 unsigned char FUN_140ba28d0(MS2Ptr<AScript>* p, int n);
-Unk_StrTable* FUN_1401a9d70();
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 void FUN_1412751f0(const CStringW& strText, int a, int b);                  // notice
 CStringW FUN_1409404f0(__int64 n);                                          // number to text
@@ -185,7 +182,7 @@ bool UIWeddingHallReservationPageSelect::vfunc_1()
 {
     if (!UIWeddingHallReservationPage::vfunc_1())
         return false;
-    RHall hall = FUN_1409023c0()->FUN_140908b80(FUN_140fe2d20(m_pDialog));
+    RHall hall = reinterpret_cast<Unk_HallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908b80(FUN_140fe2d20(m_pDialog));
     if (FUN_140901fa0(&hall, 0))
         return false;
     RList list = reinterpret_cast<Unk_WhGetChild*>(m_pScript.operator->())->FUN_140bc7280(CString("m_list"));
@@ -195,7 +192,7 @@ bool UIWeddingHallReservationPageSelect::vfunc_1()
     if (FUN_140fdca80(m_pDialog) == 1)
     {
         Unk_WeddingTicketView* pTicket = FUN_141b87160(FUN_1409eed90());
-        nPackageSlot = FUN_1409023c0()->FUN_140909130(pTicket->m_nHallId, pTicket->m_nSlot);
+        nPackageSlot = reinterpret_cast<Unk_HallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909130(pTicket->m_nHallId, pTicket->m_nSlot);
     }
     FUN_140bcc3f0(&list)->FUN_1422dd1d0();
     unsigned char bFlag = 0;
@@ -215,7 +212,7 @@ bool UIWeddingHallReservationPageSelect::vfunc_1()
             bEnabled = nPackageSlot <= FUN_1409020e0(&slot)->m_nGrade;
         ASObj row(2);
         row.FUN_1407cb9c0("id", FUN_1409020e0(&slot)->m_nId);
-        row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141811980(3, FUN_140906e40(FUN_1409020e0(&slot), bFlag)));
+        row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, FUN_140906e40(FUN_1409020e0(&slot), bFlag)));
         row.FUN_1407cbbe0("enabled", bEnabled);
         FUN_140bcc3f0(&list)->FUN_1422dd230(row);
         if (m_nSelectedSlot == 0)
@@ -335,7 +332,7 @@ void FUN_140fe4fb0(UIWeddingHallReservationPageSelect* pPage, int nSlotId)
     if (FUN_140ba28d0(&pPage->m_pScript, 0))
         return;
     int nHallId = FUN_140fe2d20(pPage->m_pDialog);
-    RHall hall = FUN_1409023c0()->FUN_140908b80(nHallId);
+    RHall hall = reinterpret_cast<Unk_HallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908b80(nHallId);
     if (FUN_140901fa0(&hall, 0))
         return;
     RSlot slot = FUN_1409020f0(&hall)->FUN_140907110(nSlotId);
@@ -347,7 +344,7 @@ void FUN_140fe4fb0(UIWeddingHallReservationPageSelect* pPage, int nSlotId)
     if (pTarget != 0)
         bFlag = FUN_140900f30(pTarget);
     ASObj data(2);
-    data.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(3, FUN_1409023c0()->FUN_140908d50(FUN_1409020f0(&hall)->m_nId, FUN_1409020e0(&slot)->m_nId, bFlag)));
+    data.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, reinterpret_cast<Unk_HallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908d50(FUN_1409020f0(&hall)->m_nId, FUN_1409020e0(&slot)->m_nId, bFlag)));
     data.FUN_1407cba60("video", CString(FUN_1409020e0(&slot)->m_strVideo));
     data.FUN_1407cbb20("desc", GetStringCommonByKey(FUN_1409020e0(&slot)->m_strDesc));
     data.FUN_1407cb9c0("grade", FUN_1409020e0(&slot)->m_nGrade);
@@ -370,13 +367,13 @@ __int64 FUN_140fe5520(UIWeddingHallReservationPageSelect* pPage, int nHallId, in
 {
     if (FUN_140fdca80(pPage->m_pDialog) == 0)
     {
-        return FUN_1409023c0()->FUN_140909220(nHallId, nSlot);
+        return reinterpret_cast<Unk_HallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909220(nHallId, nSlot);
     }
     else
     {
         Unk_WeddingTicketView* pTicket = FUN_141b87160(FUN_1409eed90());
-        __int64 nOld = FUN_1409023c0()->FUN_140909220(pTicket->m_nHallId, pTicket->m_nSlot);
-        __int64 nNew = FUN_1409023c0()->FUN_140909220(nHallId, nSlot);
+        __int64 nOld = reinterpret_cast<Unk_HallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909220(pTicket->m_nHallId, pTicket->m_nSlot);
+        __int64 nNew = reinterpret_cast<Unk_HallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909220(nHallId, nSlot);
         return nNew - nOld;
     }
 }

@@ -18,7 +18,7 @@
 
 // Game TinyXML element and its float attribute helper (commonfiles\tinyxmlhelper.cpp).
 class Unk_140165cf0;
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 
 // Game log (commonfiles singleton 0x140166440).
 class Unk_GameLog
@@ -26,10 +26,9 @@ class Unk_GameLog
 public:
     void FUN_14015eb90(int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
 };
-Unk_GameLog* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
-CMainSystem* FUN_14086d260();
 
 // The camera shake of the camera service (camera.cpp): constructed here, started through the camera manager.
 class CVibrateCameraEffect
@@ -59,7 +58,7 @@ public:
 Unk_CameraManager* FUN_1409478c0();
 
 // Feature switches (commonfiles\featuremanager.cpp) and game options (gamepad vibration flag).
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 struct Unk_PadOption
 {
     char m_unk_00[2];
@@ -84,7 +83,7 @@ public:
     char m_pad_0000[0x90a0];
     Unk_VibrateScale m_90a0;
 };
-Unk_ClientConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // @0x141b72630
 CVibrateEffectParam::CVibrateEffectParam()
@@ -96,10 +95,10 @@ CVibrateEffectParam::CVibrateEffectParam()
 void CVibrateEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    FUN_140873360(pNode, "freq", m_fFreq);
-    FUN_140873360(pNode, "amp", m_fAmp);
-    FUN_140873360(pNode, "damping", m_fDamping);
-    FUN_140873360(pNode, "dampingTime", m_fDampingTime);
+    XmlGetAttr((class TiXmlElement*)(pNode), "freq", m_fFreq);
+    XmlGetAttr((class TiXmlElement*)(pNode), "amp", m_fAmp);
+    XmlGetAttr((class TiXmlElement*)(pNode), "damping", m_fDamping);
+    XmlGetAttr((class TiXmlElement*)(pNode), "dampingTime", m_fDampingTime);
 }
 MS2_REPLACE_METHOD(0x141b72690, CVibrateEffectParam, vfunc_1, 150, 0xDF38CF1B);
 
@@ -110,7 +109,7 @@ bool CVibrateEffectParam::vfunc_2()
         return false;
     if (m_fDuration <= m_fDampingTime)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13,
+        ((class Unk_GameLog*)GetLogString())->FUN_14015eb90(1, 0x13,
             L"Damping 시작 시간이 이펙트 종료 시간보다 큽니다[VibrateEffect - DampingStartTime] [{0}]", m_str20);
         return false;
     }
@@ -152,7 +151,7 @@ CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectPara
     if (pParam != NULL)
     {
         CVibrateEffect* pEffect = new (efd::MemHint(efd::MemHint::NONE)) CVibrateEffect;
-        pEffect->m_dStartTime = FUN_14086d260()->FUN_141473280() + pParam->m_fStartDelay;
+        pEffect->m_dStartTime = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280() + pParam->m_fStartDelay;
         pEffect->m_fDuration = pParam->m_fDuration;
         pEffect->m_b2c = pParam->m_b30;
         if (FUN_1409478c0()->FUN_140a18070())
@@ -162,10 +161,10 @@ CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectPara
                 pEffect->m_dStartTime + pParam->m_fDampingTime, 1);
             FUN_1409478c0()->FUN_140af0de0(FUN_1417f5820(pCamera));
         }
-        if (FUN_140166410()->FUN_14036d570(0xc3))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
         {
             if (reinterpret_cast<Unk_GameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bVibration && 0.0f < pEffect->m_fDuration)
-                FUN_140a58540()->FUN_140d8b3e0(pEffect->m_fDuration * FUN_1401d3200()->m_90a0.FUN_140298f40());
+                FUN_140a58540()->FUN_140d8b3e0(pEffect->m_fDuration * ((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0.FUN_140298f40());
         }
         return pEffect;
     }
@@ -186,10 +185,10 @@ bool CVibrateEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarg
             pVibrate->m_fFreq, pVibrate->m_fAmp, pVibrate->m_fDamping, m_dStartTime + pVibrate->m_fDampingTime, 1);
         FUN_1409478c0()->FUN_140af0de0(FUN_1417f5820(pCamera));
     }
-    if (FUN_140166410()->FUN_14036d570(0xc3))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
     {
         if (reinterpret_cast<Unk_GameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bVibration && 0.0f < m_fDuration)
-            FUN_140a58540()->FUN_140d8b3e0(m_fDuration * FUN_1401d3200()->m_90a0.FUN_140298f40());
+            FUN_140a58540()->FUN_140d8b3e0(m_fDuration * ((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0.FUN_140298f40());
     }
     return true;
 }
@@ -198,7 +197,7 @@ MS2_REPLACE_METHOD(0x141b72bd0, CVibrateEffect, vfunc_3, 552, 0xB9466C18);
 // @0x141b72e00
 bool CVibrateEffect::vfunc_9()
 {
-    double dNow = FUN_14086d260()->FUN_141473280();
+    double dNow = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
     return dNow < m_dStartTime + m_fDuration;
 }
 MS2_REPLACE_METHOD(0x141b72e00, CVibrateEffect, vfunc_9, 95, 0xF224C3B9);

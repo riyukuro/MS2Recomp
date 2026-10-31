@@ -31,6 +31,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 typedef UICharacterCreateSelectDialog::TJobData Unk_CsJobData;
 
@@ -41,7 +42,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 // The TinyXML document loader of the file system singleton (as in datatable_impl.h).
-class Unk_CsLoader { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_CsLoader : public CFileSystem { };
 Unk_CsLoader* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pElem);                               // the row is for this client's region
@@ -53,13 +54,10 @@ int FUN_1406516b0();                                                    // curre
 unsigned FUN_140768010(unsigned nCount, unsigned nBase);                // random index
 bool FUN_141900c80(int nButton, const CMsgBoxData& box);
 CStringTable* GetStringTable();
-CSoundEventMgr* FUN_140d13c40();
-CEffectService* FUN_1403ed280();
 extern NiPoint3 DAT_143b01a60;                                          // the zero point
 MS2Ptr<CMsgBoxData> FUN_140d74500(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 WorldService* FUN_1403ed2d0();
-CStateService* FUN_140aa6d30();
 
 // The hud object the character picker tells about the job (slot 14).
 class Unk_CsHud
@@ -470,11 +468,11 @@ void UICharacterCreateSelectDialog::FUN_140f2ffb0(int nJobCode)
         return;
     if (spJob.operator->()->GetCharacterBGM() != 0)
     {
-        FUN_140d13c40()->FUN_14177c100(spJob.operator->()->GetCharacterBGM(), 0.0f, 0x80, 0);
+        TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177c100(spJob.operator->()->GetCharacterBGM(), 0.0f, 0x80, 0);
         m_nBgm = 1;
     }
     if (spJob.operator->()->m_characterVoice.GetLength() > 0)
-        FUN_1403ed280()->FUN_1411a4f40(CString(spJob.operator->()->m_characterVoice), DAT_143b01a60);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(spJob.operator->()->m_characterVoice), DAT_143b01a60);
     FUN_140a94350()->vfunc_14(nJobCode);
 }
 MS2_REPLACE_METHOD(0x140F2FFB0, UICharacterCreateSelectDialog, FUN_140f2ffb0, 340, 0x1693AEC9);
@@ -516,7 +514,7 @@ MS2_REPLACE_METHOD(0x140F301D0, UICharacterCreateSelectDialog, FUN_140f301d0, 86
 // @0x140f30370
 inline CSceneStateMulti* FUN_140f30370()
 {
-    CSceneStateMulti* pScene = static_cast<CSceneStateMulti*>(FUN_140aa6d30()->GetCurrent().operator CSceneStateBase*());
+    CSceneStateMulti* pScene = static_cast<CSceneStateMulti*>(TSingleton<CStateService>::GetInstance()->GetCurrent().operator CSceneStateBase*());
     return pScene;
 }
 

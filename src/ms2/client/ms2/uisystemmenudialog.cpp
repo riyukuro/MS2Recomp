@@ -35,6 +35,13 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/networkservice.h"
+#include "ms2/client/ms2/mypc.h"
+#include "ms2/placeholder/asbutton.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -54,11 +61,8 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> SmClickDe
 typedef Delegate<bool(int, const CMsgBoxData&)> SmBoxDelegate;
 
 // The exit button.
-class Unk_140acd6e0 : public ASDisplayObject
+class Unk_140acd6e0 : public ASButton
 {
-public:
-    void FUN_1422ce240(const SmClickDelegate& onClick, void* pUserData);   // click callback
-    void FUN_1422cdfb0(const CStringW& strLabel);                           // the button text
 };
 
 // The scene movie: the "buildChannelList" invoke shape (array, int, string).
@@ -73,20 +77,10 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);                // set 
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* sz);    // set a string value
 
 // The world service, the local player and the current field.
-class Unk_SmWorld
+class Unk_SmWorld : public WorldService
 {
 public:
-    void* FUN_141bd0cc0();                                  // the local player (a MyPC)
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                  // the current field data
-    int FUN_141bd98f0();                                    // the class index of the local player
-    int FUN_141bc80c0(int nChannel);                        // the channel is the current one
-};
-Unk_SmWorld* FUN_1403ed2d0();
-class Unk_SmPc
-{
-public:
-    int FUN_14152e950();                                    // the nonzero id of the build the player is in
-    void FUN_14152a040();                                   // leave without saving
 };
 
 // The cube service (the home rules).
@@ -117,7 +111,6 @@ private:
 };
 MS2_CHECK_SIZE(Unk_SmDgRef, 0x10);
 class Unk_SmDgTable { public: Unk_SmDgRef FUN_1403206b0(int nId); };
-Unk_SmDgTable* FUN_14031c2a0();
 extern int DAT_143ab2884;                                   // the dungeon room id
 extern int DAT_143ab0248;                                   // client country
 
@@ -132,12 +125,8 @@ MS2_CHECK_OFFSET(Unk_SmConsts, m_cfe0, 0xcfe0);
 Unk_SmConsts* FUN_1401d3200();
 int* FUN_1402056b0(Unk_SmSlot* pSlot);
 
-class Unk_SmStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_SmStrings* FUN_1401a9d70();
 class Unk_SmUiMgr { public: void FUN_141adc530(int nUiId); };
-Unk_SmUiMgr* FUN_1403ed2b0();
-class Unk_SmNetwork { public: void FUN_141538820(); };
-Unk_SmNetwork* FUN_140714f90();
+CNetworkService* FUN_140714f90();
 
 UIServerEventDispatcher* FUN_140933230();
 void FUN_141274f50();
@@ -149,7 +138,7 @@ bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
 void FUN_14151f200();
 void FUN_140dffb50(IMessageListener* pListener);                        // the leave request of a field
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_1409eec40(int nStringId);
+CStringW BlockFormat(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
@@ -200,7 +189,7 @@ void UISystemMenuDialog::OnLoadInit()
     UIObject::OnLoadInit();
     m_188 = FUN_140bb4b10("m_exitRoom");
     {
-        MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+        MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
         if (spField.get() != 0)
         {
             if (spField->FUN_1403751b0())
@@ -296,7 +285,7 @@ int UISystemMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         if (channel.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             int nChannel = channel.FUN_1422b8a10();
-            if (FUN_1403ed2d0()->FUN_141bc80c0(nChannel) == 0)
+            if (reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bc80c0(nChannel) == 0)
                 FUN_141b14630();
         }
         return 1;
@@ -344,7 +333,7 @@ void UISystemMenuDialog::Notify()
     }
     else
     {
-        strName = FUN_1401a9d70()->FUN_141811980(0x17, FUN_1403ed2d0()->FUN_141bd98f0());
+        strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x17, reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd98f0());
     }
     if (!strName.IsEmpty())
     {
@@ -358,7 +347,7 @@ void UISystemMenuDialog::Notify()
 // @0x141b13880
 void UISystemMenuDialog::FUN_141b13880(const Scaleform::GFx::FunctionHandler::Params&)
 {
-    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spField == 0)
         return;
     if (spField->m_nFieldID == 0x3a2c94b)
@@ -386,12 +375,12 @@ void UISystemMenuDialog::FUN_141b13b00(const Scaleform::GFx::FunctionHandler::Pa
 // @0x141b13b30
 void UISystemMenuDialog::FUN_141b13b30()
 {
-    Unk_SmPc* pPc = static_cast<Unk_SmPc*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pPc = static_cast<MyPC*>(reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (FUN_1409670e0()->FUN_1410c3600(2))
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1409eec40(0x877), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, BlockFormat(0x877), 0, CStringW(L""));
         spBox->FUN_141a01800(1);
         spBox->FUN_141a027c0(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
@@ -408,7 +397,7 @@ void UISystemMenuDialog::FUN_141b13b30()
         }
         else
         {
-            pPc->FUN_14152a040();
+            pPc->SendRequestMoveFieldMode3();
         }
     }
     else if (FUN_1409670e0()->FUN_1410c3600(3))
@@ -423,12 +412,12 @@ void UISystemMenuDialog::FUN_141b13b30()
         }
         else
         {
-            pPc->FUN_14152a040();
+            pPc->SendRequestMoveFieldMode3();
         }
     }
     else if (pPc->FUN_14152e950())
     {
-        CStringW strText = FUN_14052bd00(0x876, FUN_1401a9d70()->FUN_141811980(3, pPc->FUN_14152e950()));
+        CStringW strText = FUN_14052bd00(0x876, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, pPc->FUN_14152e950()));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
@@ -439,7 +428,7 @@ void UISystemMenuDialog::FUN_141b13b30()
     }
     else
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1409eec40(0x877), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, BlockFormat(0x877), 0, CStringW(L""));
         spBox->FUN_141a01800(1);
         spBox->FUN_141a027c0(SmBoxDelegate([](int nResult, const CMsgBoxData&) -> bool
         {
@@ -465,11 +454,11 @@ void UISystemMenuDialog::FUN_141b144f0(bool b)
 // @0x141b14510
 bool UISystemMenuDialog::FUN_141b14510(int nResult, const CMsgBoxData&)
 {
-    Unk_SmPc* pPc = static_cast<Unk_SmPc*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pPc = static_cast<MyPC*>(reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
     if (nResult == 0)
-        pPc->FUN_14152a040();
+        pPc->SendRequestMoveFieldMode3();
     return true;
 }
 
@@ -479,7 +468,7 @@ void UISystemMenuDialog::FUN_141b14560(int nPage)
 {
     UIGameOptionDialog* pDialog = FUN_140a02e60(0x4ef3);
     pDialog->FUN_141b15670(nPage);
-    FUN_1403ed2b0()->FUN_141adc530(0x4ef3);
+    reinterpret_cast<Unk_SmUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ef3);
     vfunc_67();
 }
 
@@ -550,7 +539,7 @@ CStringW UISystemMenuDialog::FUN_141b149d0(int nMapType)
         int nRoom = DAT_143ab2884;
         if (nRoom != 0)
         {
-            Unk_SmDgRef spRoom = FUN_14031c2a0()->FUN_1403206b0(nRoom);
+            Unk_SmDgRef spRoom = reinterpret_cast<Unk_SmDgTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(nRoom);
             if (spRoom.FUN_14031c160() != 0 && spRoom.FUN_1403347d0()->m_140 > 0)
                 return FUN_1405c2690(CStringW(L"s_room_exit_msg_default_revival_limit_dungeon"), FUN_140cd7d20());
         }

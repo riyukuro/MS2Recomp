@@ -10,6 +10,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/client/ms2/uiservice.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -34,9 +36,7 @@ public:
     void FUN_141adc530(int nId);   // show
     void FUN_141adc5d0(int nId);   // hide
 };
-Unk_PsUiMgr* FUN_1403ed2b0();
-class Unk_PsCamera { public: void FUN_140947980(int nMode); int FUN_140af7e30(); };
-Unk_PsCamera* FUN_1409478c0();
+CameraMgr* FUN_1409478c0();
 CStringW FUN_141850100_2(int a, int b);   // the exe call site leaves the third argument (r9) unset
 
 // @0x140e75ea0
@@ -120,12 +120,12 @@ void UIPhotoStudioMenuDialog::FUN_140e76270(bool bFreeCamera)
     if (m_bFreeCamera)
     {
         FUN_1409478c0()->FUN_140947980(6);
-        FUN_1403ed2b0()->FUN_141adc530(0x4f3e);
+        reinterpret_cast<Unk_PsUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f3e);
     }
     else
     {
         FUN_1409478c0()->FUN_140947980(2);
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4f3e);
+        reinterpret_cast<Unk_PsUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f3e);
     }
 }
 

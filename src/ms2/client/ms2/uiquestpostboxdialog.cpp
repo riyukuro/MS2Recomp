@@ -6,7 +6,10 @@
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiquestpostboxdialog.cpp"    // assumed
 
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uiquestpostboxdialog.h"
 
@@ -23,21 +26,6 @@
 #include "hook/ms2hook.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
-
-// The list control of the movie (the AS list with clear / append).
-class Unk_PostBoxList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                               // clear
-    void FUN_1422dd230(const ASObj& row);               // append a row
-};
 
 // A CQuest as handed to the listener: the CQuestCommon base sits at +0x18 (after CPtred).
 struct Unk_PbQuestView { void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_vftable_common; };
@@ -128,7 +116,7 @@ MS2_REPLACE_METHOD(0x140E7F540, UIQuestPostBoxDialog, vfunc_28, 268, 0x60E4B318)
 // @0x140e7f660
 void UIQuestPostBoxDialog::FUN_140e7f660()
 {
-    if (MS2Ptr<Unk_PostBoxList> list = FUN_140c02900("m_list")) {
+    if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_list")) {
         list->FUN_1422dd1d0();
         ATL::CAtlArray<unsigned> quests;
         FUN_140764020()->FUN_1416d0920(quests);

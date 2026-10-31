@@ -98,39 +98,74 @@ void* FUN_1409475d0(void* sp);   void* FUN_1409475f0(void* sp);   bool FUN_1409f
 bool FUN_1409edd90(void* sp, int n);   bool FUN_1409a7f70(void* sp, void* p);   void* FUN_14098d0f0(void* sp);
 void* FUN_1405a8e70(void* sp);   void* FUN_14098d8d0(void* rtti, void* obj);
 // the owner wrapper (character / mannequin entity)
-void* FUN_1411dc7a0(void* owner, void* out);   void* FUN_1411dc7f0(void* owner);   void* FUN_1411dc8c0(void* owner);
-void FUN_1411dce60(void* owner, void* rec);   void FUN_1411dd280(void* owner);   void FUN_1411ddf10(void* owner, void* model);
-void* FUN_1411de2e0(void* guard, void* model);   void FUN_140b02860(void* guard);
-void* FUN_1403ed2d0();   void* FUN_141bd1180(void* mgr, unsigned id);   void* FUN_141bd0cc0(void* mgr);
-void* FUN_1403ed280();   unsigned FUN_1411a49c0(void* mgr, void* rec);   void FUN_1411a6060(void* mgr, int h);
+void* FUN_1411dc7a0(void* owner, void* out);void FUN_1411dce60(void* owner, void* rec);void* FUN_1411de2e0(void* guard, void* model);   void FUN_140b02860(void* guard);
+void* FUN_1403ed2d0();class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_WsC_GameObj* FUN_141bd1180(int);
+};
+   void* FUN_141bd0cc0(void* mgr);
+void* FUN_1403ed280();class CEffectService   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned int FUN_1411a49c0(class Unk_EffectTarget&);
+public:
+    void FUN_1411a6060(unsigned int);   // C3: was free FUN_1411a6060
+};
 void* FUN_141b6f910();   void* FUN_140999440(void* svc, void* id);   void* FUN_14123c460(void* ent, void* out);
 void* FUN_140999440(void* svc, const egf::EntityID& kId);
 struct Unk_EmModelLoader { efd::utf8string FUN_141206030(const egf::EntityID& kId); };
 unsigned FUN_14123c580(void* ent);
-void* FUN_1416561a0(void* p);   void FUN_1411e9fa0(void* p, unsigned a, const CString& s, unsigned b, unsigned c);
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_PCEquipSet* FUN_1416561a0();
+};
+   void FUN_1411e9fa0(void* p, unsigned a, const CString& s, unsigned b, unsigned c);
 void FUN_1411ea430(void* p, MS2Ptr<Unk_EquipModelOwner> sp);   void FUN_1411ea500(void* p, MS2Ptr<Unk_EquipModelOwner> sp);   void* FUN_141655c90(void* p, void* out, unsigned id);
 unsigned FUN_141658e60(void* ent);
 // the id holder returned by FUN_1411dc7a0 and its accessors
 void FUN_1401bfde0(void* p);   void FUN_1401bf970(void* out, void* p);   char FUN_1401b5240(void* p, int n);
 char FUN_1401b50d0(void* p);   void* FUN_1401b52a0(void* p);   void* FUN_140203c60(void* p);   void* FUN_140203510(void* out, int n);
 void* FUN_1401c0180(void* p);   bool FUN_1401c0050(void* p, int n);
-void* FUN_14052cd70(void* p);   void* FUN_140527840(void* p);   void* FUN_140527870(void* p);
-unsigned FUN_140526b10(void* p);   unsigned __int64 FUN_140526ad0(void* p);   int FUN_140526c30(void* p);   int FUN_140527a20(void* p);
-unsigned FUN_1405258b0(void* p);   unsigned FUN_140527270(void* p);   unsigned FUN_140526fc0(void* p);
-bool FUN_14053d2b0(void* p);   bool FUN_14053d510(void* p);   bool FUN_14053cfd0(void* p);   char FUN_14053cf90(void* p);
-bool FUN_14053ce80(void* p);   unsigned FUN_14053c620(void* p);   bool FUN_14053e370(void* p);   void* FUN_14053ec70(void* p);
-bool FUN_1405471b0(void* p);   bool FUN_14059a350(void* p);
+unsigned FUN_140526b10(void* p);   unsigned __int64 FUN_140526ad0(void* p);class CItemData   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14053c620();
+    bool FUN_14053ce80();
+    bool FUN_14053cfd0();
+    bool FUN_14053d2b0();
+    bool FUN_14053d2f0();
+    bool FUN_14053d510();
+    bool FUN_14053e370();
+};
+   char FUN_14053cf90(void* p);
+   void* FUN_14053ec70(void* p);
+class ItemModelHead   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_1405471b0();
+};
+class CItemExtraData   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14059a350();
+};
 void FUN_140529f60(void* o, CString* out, unsigned a, unsigned b, unsigned c, int d);   void FUN_140529eb0(void* o, CString* out);
-bool FUN_14053d2f0(void* p);
 void* FUN_14099eef0(void* p);   void* FUN_140a53610(void* p);   void* FUN_140a535c0(void* p);
 void* FUN_1412041d0(void* p);   void* FUN_141204220(void* p);   void* FUN_1409a8b10();   void* FUN_140c77560(void* p);
-int FUN_1405451a0(void* p);    int FUN_1405451c0(const CString& s);
+class ModelGroup   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1405451a0() const;
+};
+    int FUN_1405451c0(const CString& s);
 // strings / names
 void* FUN_1409989e0(void* out, const char* psz);   void FUN_140984450(void* out, const char* psz);   void FUN_1409845a0(void* fs);
 void* FUN_1409a8b90(void* obj);   const char* FUN_142087e50(void* name);   bool FUN_140998dc0(void* name, const char* psz);
 bool FUN_1401c0090(CString* a, CString* b);   void FUN_1401d3700(CString* s);
 char FUN_140184310(CString* a, void* psz);
-void* FUN_1405eb3a0(void* list);   void* FUN_1405eb3b0(void* list, void* pos);
+   void* FUN_1405eb3b0(void* list, void* pos);
 void* FUN_14016a5c0(void* out, const char* psz, int n);   void* FUN_140298360(void* out, const char* psz, void* s);
 // scene objects
 // Breadth-first walk over an object's subtree (0x30 bytes, like Unk_NodeWalker in uichaoslightdialog.h).
@@ -143,15 +178,17 @@ public:
 private:
     void* m_a[6];
 };
-void FUN_140a0b300(void* obj, bool b);   void* FUN_140a0b000(void* obj);
-void FUN_140aacb60(void* obj, void* xf);   void FUN_140aacaa0(void* obj, const void* xf);
-void* FUN_1411a3f30(void* p);   void FUN_1411a3e30(void* p);   void FUN_1411a4080(void* p);
+   void* FUN_140a0b000(void* obj);
+void FUN_140aacb60(void* obj, void* xf);void* FUN_1411a3f30(void* p);   void FUN_1411a3e30(void* p);   void FUN_1411a4080(void* p);
 bool FUN_1409991a0(void* svc, const egf::EntityID& kId, void** pOut);   void* FUN_140998e80(void* p);   void* FUN_140998e90(void* p);
-void* FUN_1409f7900(void* p);   unsigned FUN_1409a1a00(void* p);   const efd::utf8string& FUN_1409a1a90();   struct Unk_EmAssetData { efd::utf8string FUN_1409a1940(unsigned n) const; };
+void* FUN_1409f7900(void* p);   struct Unk_EmAssetData { efd::utf8string FUN_1409a1940(unsigned n) const; };
 
-void* FUN_1409478e0(void* node);   void FUN_140a35c30(void* dst, void* src);
-void FUN_140a35bd0(void* dst, void* src);   void* FUN_140a33de0(void* a, void* out, void* b);   void* FUN_140a33f90(void* obj);
-void* FUN_140965c40(void* a, void* out, void* b);   void FUN_140968990(void* pt);
+   void FUN_140a35c30(void* dst, void* src);
+void FUN_140a35bd0(void* dst, void* src);   void* FUN_140a33de0(void* a, void* out, void* b);void* FUN_140965c40(void* a, void* out, void* b);class Vector3   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_140968990();
+};
 void* FUN_140194470(void* dst, const void* src);
 void* FUN_141d18b90(void* node, void* fs);   void* FUN_14208a860(unsigned cb, unsigned n);   void* FUN_140876480(void* out, int n);
 void* FUN_141068d50p(void* a, const char* psz);
@@ -359,8 +396,8 @@ CEquipModel::CEquipModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p
     m_pos6c = *(NiPoint3*)&DAT_143b01a60;
     FUN_1409fabf0(&m_unk_f0, 0);
     if (FUN_1405a8e70(&m_spOwner) ? true : false) {
-        if (FUN_1411dc7f0(OWNER(this)) != 0)
-            m_b110 = FUN_14053e370(FUN_1411dc7f0(OWNER(this)));
+        if (((void*)((class CEquipItem*)(void*)(OWNER(this)))->FUN_1411dc7f0()) != 0)
+            m_b110 = ((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(OWNER(this)))->FUN_1411dc7f0())))->FUN_14053e370();
     }
 }
 
@@ -380,7 +417,7 @@ void CEquipModel::vfunc_5()
     FUN_1412034e0(this);
     FUN_141203db0(this);
     MS2Ptr<CEquipModel> spKeep(this);    // keeps the model alive while the owner drops it
-    FUN_1411ddf10(OWNER(this), this);
+    ((class CEquipItem*)(void*)(OWNER(this)))->FUN_1411ddf10((class CEquipModel*)(this));
     FUN_140d37c50(&m_spOwner, 0);
     FUN_1409fabf0(&m_unk_f0, 0);
 }
@@ -399,10 +436,10 @@ void CEquipModel::vfunc_17()
 void FUN_1411ffee0(CEquipModel* self, double fTime)
 {
     if (self->m_b110 != 0) {
-        void* p = FUN_140527870(EQUIP(self->m_spOwner)->GetItem().operator->());
+        void* p = ((void*)((class CItem*)(void*)(EQUIP(self->m_spOwner)->GetItem().operator->()))->FUN_140527870());
         if (p == 0)
             return;
-        if (FUN_14059a350(p))
+        if (((class CItemExtraData*)(void*)(p))->FUN_14059a350())
             self->vfunc_11();
     }
 }
@@ -478,7 +515,7 @@ void CEquipModel::vfunc_27(const char* psz)
 {
     void* p = FUN_1412018c0(this);
     if (p != 0)
-        FUN_140aacaa0(p, psz);
+        ((class NiAVObject*)(void*)(p))->SetLocalFromWorldTransform(*(class NiTransform const*)(psz));
 }
 
 // @0x1412001d0
@@ -567,7 +604,7 @@ void* FUN_141200820(CEquipModel* self)
 // @0x141200850
 void* FUN_141200850(CEquipModel* self)
 {
-    return FUN_141bd1180(FUN_1403ed2d0(), ((CEquipItem*)OWNER(self))->GetItem()->FUN_140526b10());
+    return ((void*)((class WorldService*)(void*)(FUN_1403ed2d0()))->FUN_141bd1180(((CEquipItem*)OWNER(self))->GetItem()->FUN_140526b10()));
 }
 
 // @0x1412008e0
@@ -593,7 +630,7 @@ void* FUN_1412009d0(CEquipModel* self)
     CItem* p = self->FUN_141200940().get();
     if (p == 0)
         return 0;
-    return FUN_140527840(p);
+    return ((void*)((class CItem*)(void*)(p))->FUN_140527840());
 }
 
 // @0x141200a40
@@ -674,14 +711,14 @@ void FUN_141200ca0(CEquipModel* self)
     else
         self->vfunc_12();
     if (FUN_1405a8e70(&self->m_spOwner) ? true : false) {
-        if (FUN_1411dc7f0(OWNER(self)) != 0) {
-            if (FUN_1405471b0(FUN_14053ec70(FUN_1411dc7f0(OWNER(self))))) {
+        if (((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc7f0()) != 0) {
+            if (((class ItemModelHead*)(void*)(FUN_14053ec70(((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc7f0()))))->FUN_1405471b0()) {
                 FUN_1411dce60(OWNER(self), &s_strWillUpdatePos);
-                FUN_1411dd280(OWNER(self));
+                ((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dd280();
             }
             void* pEnt = FUN_141200820(self);
             if (pEnt != 0) {
-                FUN_1411ea430(FUN_1416561a0(pEnt), self->m_spOwner);
+                FUN_1411ea430(((void*)((class PC*)(void*)(pEnt))->FUN_1416561a0()), self->m_spOwner);
                 FUN_141202bd0(self);
             }
         }
@@ -709,10 +746,10 @@ void FUN_141200e30(CEquipModel* self, int bClear)
     void* pEnt = FUN_141200820(self);
     if (pEnt != 0) {
         MS2Ptr<CItem> spItem = EQUIP(self->m_spOwner)->GetItem();
-        if (FUN_14052cd70(&spItem) != 0)
-            FUN_1411e9fa0(FUN_1416561a0(pEnt), FUN_140527a20(spItem.operator->()), self->FUN_1412029d0(),
-                          FUN_1405258b0(spItem.operator->()), FUN_14053d2b0(FUN_140527840(spItem.operator->())));
-        FUN_1411ea500(FUN_1416561a0(pEnt), self->m_spOwner);
+        if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0)
+            FUN_1411e9fa0(((void*)((class PC*)(void*)(pEnt))->FUN_1416561a0()), ((class CItem*)(void*)(spItem.operator->()))->FUN_140527a20(), self->FUN_1412029d0(),
+                          ((class CItem*)(void*)(spItem.operator->()))->FUN_1405258b0(), ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
+        FUN_1411ea500(((void*)((class PC*)(void*)(pEnt))->FUN_1416561a0()), self->m_spOwner);
     }
     if (bClear != 0)
         self->m_unk_f8.clear();
@@ -736,11 +773,11 @@ void FUN_141201180(CEquipModel* self, const CString& kName)
             kMesh = FUN_142087e50(FUN_1409a8b90(pMesh));
             FUN_1401d3700(&kMesh);
             if (FUN_1401c0090(&kMesh, &kKey)) {
-                FUN_140a0b300(pMesh, true);
+                ((class NiAVObject*)(void*)(pMesh))->SetAppCulled(true);
             } else {
                 kMesh = kMesh.Mid(0, kKey.GetLength());
                 if (FUN_1401c0090(&kMesh, &kKey))
-                    FUN_140a0b300(pMesh, true);
+                    ((class NiAVObject*)(void*)(pMesh))->SetAppCulled(true);
             }
         }
     }
@@ -753,11 +790,11 @@ void FUN_141201180(CEquipModel* self, const CString& kName)
         kMesh = FUN_142087e50(FUN_1409a8b90(pMesh));
         FUN_1401d3700(&kMesh);
         if (FUN_1401c0090(&kMesh, &kKey)) {
-            FUN_140a0b300(pMesh, true);
+            ((class NiAVObject*)(void*)(pMesh))->SetAppCulled(true);
         } else {
             kMesh = kMesh.Mid(0, kKey.GetLength());
             if (FUN_1401c0090(&kMesh, &kKey))
-                FUN_140a0b300(pMesh, true);
+                ((class NiAVObject*)(void*)(pMesh))->SetAppCulled(true);
         }
     }
 }
@@ -772,8 +809,8 @@ void FUN_1412014f0(CEquipModel* self, void* pPt)
     Unk_PartInfo* pInfo = (Unk_PartInfo*)self->m_unk_20;
     if (pInfo == 0)
         return;
-    if (pInfo->m_n24 != 0 && FUN_14053cfd0(FUN_1411dc7f0(spOwn.operator->())) != 0) {
-        Unk_EntityPoints* p = (Unk_EntityPoints*)FUN_140527870(EQUIP(spOwn)->GetItem().operator->());
+    if (pInfo->m_n24 != 0 && ((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(spOwn.operator->()))->FUN_1411dc7f0())))->FUN_14053cfd0() != 0) {
+        Unk_EntityPoints* p = (Unk_EntityPoints*)((void*)((class CItem*)(void*)(EQUIP(spOwn)->GetItem().operator->()))->FUN_140527870());
         if (p != 0)
             FUN_140194470(p->m_aPos + pInfo->m_nSlot, pPt);
     }
@@ -789,8 +826,8 @@ void FUN_141201620(CEquipModel* self, void* pPt)
     Unk_PartInfo* pInfo = (Unk_PartInfo*)self->m_unk_20;
     if (pInfo == 0)
         return;
-    if (pInfo->m_n24 != 0 && FUN_14053cfd0(FUN_1411dc7f0(spOwn.operator->())) != 0) {
-        Unk_EntityPoints* p = (Unk_EntityPoints*)FUN_140527870(EQUIP(spOwn)->GetItem().operator->());
+    if (pInfo->m_n24 != 0 && ((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(spOwn.operator->()))->FUN_1411dc7f0())))->FUN_14053cfd0() != 0) {
+        Unk_EntityPoints* p = (Unk_EntityPoints*)((void*)((class CItem*)(void*)(EQUIP(spOwn)->GetItem().operator->()))->FUN_140527870());
         if (p != 0)
             FUN_140194470(p->m_aPos78 + pInfo->m_nSlot, pPt);
     }
@@ -924,7 +961,7 @@ void FUN_1412021a0(CEquipModel* self, NiTransform* pOut)
 {
     void* p = FUN_1412018c0(self);
     if (p != 0)
-        FUN_140a35c30(pOut, FUN_140a33f90(p));
+        FUN_140a35c30(pOut, ((void*)&((class NiAVObject*)(void*)(p))->GetLocalTransform()));
 }
 
 // @0x1412021f0
@@ -932,7 +969,7 @@ void FUN_1412021f0(CEquipModel* self, NiTransform* pOut)
 {
     void* p = FUN_1412018c0(self);
     if (p != 0)
-        FUN_140a35c30(pOut, FUN_1409478e0(p));
+        FUN_140a35c30(pOut, ((void*)&((class NiAVObject*)(void*)(p))->GetWorldTransform()));
 }
 
 // @0x141202240
@@ -954,7 +991,7 @@ void FUN_141202280(CEquipModel* self, NiTransform* pOut)
     if (pNode == 0)
         return;
     const CString& kPart = self->FUN_1412029d0();
-    void* pos = FUN_1405eb3a0(&s_meshSuffixes);
+    void* pos = ((void*)((ATL::CAtlList<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&s_meshSuffixes))->GetHeadPosition());
     while (pos != 0) {
         CString kFull;
         kFull.Format("%s%s", (const char*)kPart, (const char*)*(CString*)FUN_1405eb3b0(&s_meshSuffixes, &pos));
@@ -963,7 +1000,7 @@ void FUN_141202280(CEquipModel* self, NiTransform* pOut)
             continue;
         if (FUN_14098d8d0(&DAT_143afbbb0, FUN_1409849b0(&sp)) == 0)
             continue;
-        FUN_140a35c30(pOut, FUN_140a33f90(FUN_14098d0f0(&sp)));
+        FUN_140a35c30(pOut, ((void*)&((class NiAVObject*)(void*)(FUN_14098d0f0(&sp)))->GetLocalTransform()));
         return;
     }
 }
@@ -981,7 +1018,7 @@ void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, float* pEuler, float* pSca
 {
     alignas(8) char kId[32];
     unsigned nId = FUN_140526b10(FUN_1401c0180(FUN_1411dc7a0(OWNER(self), kId)));
-    void* pEnt = FUN_141bd1180(FUN_1403ed2d0(), nId);
+    void* pEnt = ((void*)((class WorldService*)(void*)(FUN_1403ed2d0()))->FUN_141bd1180(nId));
     FUN_1401bfde0(kId);
     if (pEnt == 0)
         return;
@@ -1007,20 +1044,20 @@ void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, float* pEuler, float* pSca
         return;
     NiTransform kXf;
     if (pRot == 0)
-        FUN_140a35c30(&kXf, FUN_140a33f90(pRoot));
+        FUN_140a35c30(&kXf, ((void*)&((class NiAVObject*)(void*)(pRoot))->GetLocalTransform()));
     else
         FUN_140a35c30(&kXf, pRot);
     FUN_140194470(pTrans, &kXf.m_Translate);
     alignas(8) char kWorld[0x34];
-    memcpy(kWorld, FUN_1409478e0(pAttach), 0x34);
+    memcpy(kWorld, ((void*)&((class NiAVObject*)(void*)(pAttach))->GetWorldTransform()), 0x34);
     if (FUN_140a0b000(pRoot) != 0)
-        FUN_140a35c30(kWorld, FUN_1409478e0(FUN_140a0b000(pRoot)));
+        FUN_140a35c30(kWorld, ((void*)&((class NiAVObject*)(void*)(FUN_140a0b000(pRoot)))->GetWorldTransform()));
     alignas(8) char kTmp[0x38];
-    FUN_140a35bd0(&kXf, FUN_140a33de0(kWorld, kTmp, FUN_140a33f90(pRoot)));
+    FUN_140a35bd0(&kXf, FUN_140a33de0(kWorld, kTmp, ((void*)&((class NiAVObject*)(void*)(pRoot))->GetLocalTransform())));
     FUN_140194470(pPos, &kXf.m_Translate);
     alignas(8) char kDelta[16], kLen[20];
     FUN_140194470(pLocal, FUN_140965c40(pPos, kDelta, kLen));
-    FUN_140968990(pLocal);
+    ((class Vector3*)(void*)(pLocal))->FUN_140968990();
     kXf.m_Rotate.ToEulerAnglesXYZ(pEuler[0], pEuler[1], pEuler[2]);
     pEuler[0] = (pEuler[0] * 180.0f) / 3.1415927f;
     pEuler[1] = (pEuler[1] * 180.0f) / 3.1415927f;
@@ -1039,11 +1076,11 @@ int FUN_141202940(CEquipModel* self)
 {
     CItem* p = self->FUN_141200940().get();
     if (p != 0) {
-        if (FUN_14053d510(FUN_140527840(p)) != 0) {
-            return FUN_140526c30(p);
+        if (((class CItemData*)(void*)(((void*)((class CItem*)(void*)(p))->FUN_140527840())))->FUN_14053d510() != 0) {
+            return ((class CItem*)(void*)(p))->FUN_140526c30();
         }
     }
-    return FUN_1405451a0(self->m_unk_18);
+    return ((class ModelGroup*)(void*)(self->m_unk_18))->FUN_1405451a0();
 }
 
 // The part's name; the left/right counterpart is swapped in for the second hand's weapon.
@@ -1052,9 +1089,9 @@ CString CEquipModel::FUN_1412029d0()
 {
     CItem* p = FUN_141200940().get();
     if (p != 0) {
-        if (FUN_14053d510(FUN_140527840(p)) != 0) {
+        if (((class CItemData*)(void*)(((void*)((class CItem*)(void*)(p))->FUN_140527840())))->FUN_14053d510() != 0) {
             CString kName(((Unk_PartInfo*)m_unk_20)->m_strName);
-            if (FUN_140526c30(p) == 4) {
+            if (((class CItem*)(void*)(p))->FUN_140526c30() == 4) {
                 int nL = kName.Replace("_L_", "_R_");
                 int nS = kName.Replace(" L ", " R ");
                 if (nL + nS == 0) {
@@ -1084,7 +1121,7 @@ void FUN_141202bd0(CEquipModel* self)
     void* pEnt = FUN_141200820(self);
     if (pEnt == 0)
         return;
-    Unk_EquipTpl* pTpl = (Unk_EquipTpl*)FUN_1411dc7f0(OWNER(self));
+    Unk_EquipTpl* pTpl = (Unk_EquipTpl*)((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc7f0());
     if (pTpl == 0)
         return;
     if (((Unk_EmEntity*)pEnt)->vfunc_65() != 0) {
@@ -1113,7 +1150,7 @@ void FUN_141202dc0(CEquipModel* self, int nSlot)
 {
     int nHandle = 0;
     if (self->m_map78.Lookup(reinterpret_cast<Unk_EquipEffectSlot&>(nSlot), nHandle)) {
-        FUN_1411a6060(FUN_1403ed280(), nHandle);
+        ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a6060(nHandle);
         self->m_map78.RemoveKey(reinterpret_cast<Unk_EquipEffectSlot&>(nSlot));
     }
 }
@@ -1161,7 +1198,7 @@ void FUN_141202ea0(CEquipModel* self, CString* pName)
         FUN_1401bfde0(kId);
         return;
     }
-    int nType = FUN_140526c30(FUN_1401c0180(kId));
+    int nType = ((class CItem*)(void*)(FUN_1401c0180(kId)))->FUN_140526c30();
     if (nType != 4 && nType != 5) {
         CString kPre;
         FUN_14016a5c0(&kPre, *pName, 0);
@@ -1217,7 +1254,7 @@ void FUN_1412034e0(CEquipModel* self)
 {
     for (POSITION pos = self->m_map78.GetStartPosition(); pos != 0; self->m_map78.GetNext(pos)) {
         int nHandle = self->m_map78.GetValueAt(pos);
-        FUN_1411a6060(FUN_1403ed280(), nHandle);
+        ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a6060(nHandle);
     }
     self->m_map78.RemoveAll();
 }
@@ -1257,7 +1294,7 @@ void FUN_141203660(CEquipModel* self, int nSlot, CString kName, void* pNode)
     FUN_1409fabf0(&kReq.m_spNode, pNode);
     kReq.m_nObject = ((Unk_EmEntity*)pEnt)->vfunc_58();
     kReq.SetActor(FUN_14123c580(pEnt));
-    unsigned nHandle = FUN_1411a49c0(FUN_1403ed280(), &kReq);
+    unsigned nHandle = ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a49c0(*(class Unk_EffectTarget*)(&kReq));
     if (nHandle > 0)
         self->m_map78.SetAt((Unk_EquipEffectSlot&)nSlot, nHandle);
     self->m_b111 = 0;
@@ -1277,36 +1314,36 @@ CString CEquipModel::FUN_141203830()
         FUN_1401bfde0(kId);
         return kEmpty;
     }
-    Unk_EquipTpl* pTpl = (Unk_EquipTpl*)FUN_1411dc7f0(OWNER(self));
+    Unk_EquipTpl* pTpl = (Unk_EquipTpl*)((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc7f0());
     if (pTpl == 0) {
         CString kEmpty("");
         FUN_1401bfde0(kId);
         return kEmpty;
     }
-    if (!FUN_14053d2f0(pTpl)) {
+    if (!((class CItemData*)(void*)(pTpl))->FUN_14053d2f0()) {
         CString kEmpty("");
         FUN_1401bfde0(kId);
         return kEmpty;
     }
     if (FUN_14053cf90(pTpl) != 0) {
-        void* pParent = FUN_1411dc8c0(OWNER(self));
+        void* pParent = ((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc8c0());
         if (pParent != 0) {
             alignas(8) char spPart[16];
-            FUN_141655c90(pParent, spPart, FUN_140527a20(FUN_1401c0180(kId)));
+            FUN_141655c90(pParent, spPart, ((class CItem*)(void*)(FUN_1401c0180(kId)))->FUN_140527a20());
             if (FUN_1405a8e70(spPart) != 0) {
                 alignas(8) char kId2[16];
                 FUN_1411dc7a0(FUN_1405a8ed0(spPart), kId2);
-                char* pTpl2 = (char*)FUN_1411dc7f0(FUN_1405a8ed0(spPart));
-                if (FUN_1401c0050(kId2, 0) != 0 || pTpl2 == 0 || !FUN_14053d2f0(pTpl2)) {
+                char* pTpl2 = (char*)((void*)((class CEquipItem*)(void*)(FUN_1405a8ed0(spPart)))->FUN_1411dc7f0());
+                if (FUN_1401c0050(kId2, 0) != 0 || pTpl2 == 0 || !((class CItemData*)(void*)(pTpl2))->FUN_14053d2f0()) {
                     FUN_1401bfde0(kId2);
                     FUN_1405a85f0(spPart);
                     FUN_1401bfde0(kId);
                     return CString("");
                 }
                 if (pTpl->m_nLevel >= 100) {
-                    unsigned nA = FUN_140527270(FUN_1401c0180(kId2));
-                    unsigned nB = FUN_140526fc0(FUN_1401c0180(kId2));
-                    unsigned nC = FUN_14053c620(pTpl);
+                    unsigned nA = ((class CItem*)(void*)(FUN_1401c0180(kId2)))->FUN_140527270();
+                    unsigned nB = ((class CItem*)(void*)(FUN_1401c0180(kId2)))->FUN_140526fc0();
+                    unsigned nC = ((class CItemData*)(void*)(pTpl))->FUN_14053c620();
                     CString kOut;
                     FUN_140529f60(FUN_1401c0180(kId2), &kOut, nC, nB, nA, pTpl->m_nLevel);
                     FUN_1401bfde0(kId2);
@@ -1341,7 +1378,7 @@ bool FUN_141203cf0(CEquipModel* self, void* pEnt)
         {
             MS2Ptr<CItemData> spData((CItemData*)FUN_1412009d0(self));
             if (spData.get() != 0)
-                return FUN_14053ce80(spData.operator->()) ? true : false;
+                return ((class CItemData*)(void*)(spData.operator->()))->FUN_14053ce80() ? true : false;
         }
         return false;
     }
@@ -1376,9 +1413,9 @@ void FUN_141203e60(CEquipModel* self)
     void* pEnt = FUN_141200820(self);
     if (pEnt != 0) {
         MS2Ptr<CItem> spItem = EQUIP(self->m_spOwner)->GetItem();
-        if (FUN_14052cd70(&spItem) != 0)
-            FUN_1411e9fa0(FUN_1416561a0(pEnt), FUN_140527a20(spItem.operator->()), self->FUN_1412029d0(),
-                          FUN_1405258b0(spItem.operator->()), FUN_14053d2b0(FUN_140527840(spItem.operator->())));
+        if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0)
+            FUN_1411e9fa0(((void*)((class PC*)(void*)(pEnt))->FUN_1416561a0()), ((class CItem*)(void*)(spItem.operator->()))->FUN_140527a20(), self->FUN_1412029d0(),
+                          ((class CItem*)(void*)(spItem.operator->()))->FUN_1405258b0(), ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
     }
 }
 
@@ -1433,15 +1470,15 @@ efd::utf8string Unk_EmModelLoader::FUN_141206030(const egf::EntityID& kId)
 {
     void* pEntry;
     if (!FUN_1409991a0(this, kId, &pEntry))
-        return FUN_1409a1a90();
+        return efd::utf8string::NullString();
     void* pAssetData = FUN_140998e80((char*)pEntry + 0x10);
     if (!pAssetData)
-        return FUN_1409a1a90();
+        return efd::utf8string::NullString();
     if (!FUN_140998e90((char*)pEntry + 8))
-        return FUN_1409a1a90();
-    unsigned nSeq = FUN_1409a1a00(FUN_1409f7900((char*)pEntry + 8));
+        return efd::utf8string::NullString();
+    unsigned nSeq = ((class NiActorManager*)(void*)(FUN_1409f7900((char*)pEntry + 8)))->GetTargetAnimation();
     if (nSeq == NiActorManager::INVALID_SEQUENCE_ID)
-        return FUN_1409a1a90();
+        return efd::utf8string::NullString();
     else
         return ((Unk_EmAssetData*)pAssetData)->FUN_1409a1940(nSeq);
 }

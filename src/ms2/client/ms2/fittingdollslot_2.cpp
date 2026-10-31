@@ -68,15 +68,18 @@ public:
 };
 struct Unk_FdFramework { void* m_pad; };
 extern Unk_FdFramework DAT_143b059e8;
-Unk_FdCubeSvc* FUN_1401cd040(Unk_FdFramework* pFramework);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
 // The feature switches (FUN_140166410).
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 FittingDollPC* FUN_140884db0(PCBase* pObject);               // the object as a fitting doll (class 0x6200046) or 0
-__int64 FUN_141656ad0(PCBase* pPlayer);                     // the account of the player
 void* FUN_140a50b50(DragSlot* pSlot);                       // the item slot behind a drag source
-__int64 FUN_141405a10(void* pItemSlot);                     // its item uid
+class InvenSlot   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 GetItemUid();
+};
 void FUN_141405a60(void* pItemSlot, CItem* pItem, int nSlot);   // put the item into the slot
 int FUN_141275a10(CItem* pItem);                            // the item's lock kind
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                   // item link / popup for the item
@@ -86,7 +89,6 @@ CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // string table
 void FUN_140d73bc0(int nStringId, int nType, void* p, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-bool FUN_1409b0350(Scaleform::GFx::Value* pValue);
 void FUN_140710590(COutPacket& packet);                     // send the packet
 void FUN_14121b840(int nResult);                            // the notice of a doll item result (fittingdollslot#1)
 
@@ -141,7 +143,7 @@ int FittingDollSlot::vfunc_18(void* p)
     void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
             FUN_141405a60(pItemSlot, spItem.get(), m_nSlot);
     }
@@ -211,13 +213,13 @@ int FittingDollSlot::vfunc_8(void* p)
     CItem* pItem = vfunc_25().get();
     if (pItem == 0)
         return 0;
-    Unk_FdCubeSvc* pSvc = FUN_1401cd040(&DAT_143b059e8);
+    Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
     egf::EntityID kId;
     Unk_FdCube* pCube = pSvc->FUN_1410b8c90(pDoll->FUN_14123c460(kId));
     if (pCube == 0)
         return 0;
     __int64 nOwner = pSvc->FUN_1410c8030(pCube->m_n50, pCube->m_n54);
-    __int64 nLocalOwner = FUN_141656ad0(pLocal);
+    __int64 nLocalOwner = ((class PC*)(class PCBase*)(pLocal))->FUN_141656ad0();
     ASSlot slot(2);
     if (slot.FUN_1409c41f0(pItem, pPlayer, m_nSlot, 0x49) == 0)
         return 0;
@@ -267,7 +269,7 @@ MS2Ptr<CItem> FittingDollSlot::vfunc_25()
 // @0x14121dc90
 void FittingDollSlot::vfunc_9()
 {
-    if (FUN_1409b0350(&m_value18) == 0)
+    if (((Scaleform::GFx::Value*)(void*)(&m_value18))->IsNull() == 0)
     {
         ASObj obj(m_value18, 2);
         if (obj.FUN_1422ba9a0() == 0)
@@ -300,16 +302,16 @@ int FittingDollSlot::FUN_14121ddc0()
     FittingDollPC* pDoll = FUN_14121dd50();
     if (pDoll == 0)
         return 0;
-    Unk_FdCubeSvc* pSvc = FUN_1401cd040(&DAT_143b059e8);
+    Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
     Unk_FdCube* pCube = pSvc->FUN_1410b8c90(pDoll->FUN_14123c460());
     if (pCube == 0)
         return 0;
-    if (pSvc->FUN_1410c8030(pCube->m_n50, pCube->m_n54) != FUN_141656ad0(pLocal))
+    if (pSvc->FUN_1410c8030(pCube->m_n50, pCube->m_n54) != ((class PC*)(class PCBase*)(pLocal))->FUN_141656ad0())
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
     if (!spItem)
         return 0;
-    if (FUN_140166410()->FUN_14036d570(0xd4))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd4))
     {
         CStringW strName;
         int nReason;

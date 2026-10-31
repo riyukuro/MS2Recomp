@@ -20,15 +20,12 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/bigdatalogsystem.h"
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
 class ASDialog : public ASDisplayObject
 {
-public:
-    float FUN_1422c10a0();                                  // x, returned in xmm0
-    float FUN_1422c1110();                                  // y
-    void FUN_1422c00f0(float x, float y);                   // set the position
 };
 
 // The inventory dialog (UI id 0x4e2d).
@@ -79,9 +76,7 @@ public:
 extern Unk_LdLockMgr* DAT_143aaf308;
 inline Unk_LdLockMgr* FUN_140535310() { return DAT_143aaf308; }
 
-// The sound event sink (FUN_140d8ee90).
-class Unk_LdSound { public: void FUN_140a1f970(const CString& strEvent, const CString& strArg); };
-Unk_LdSound* FUN_140d8ee90();
+// The sound event sink (TSingleton<CBigDataLogSystem>::GetInstance).
 
 // The item event registry (FUN_140a6a840).
 class Unk_LdItemEvents;
@@ -173,7 +168,7 @@ void UIItemLockDialog::OnLoadInit()
     UIObject::OnLoadInit();
     CString strArg("item_lock");
     CString strEvent("dialog_open");
-    FUN_140d8ee90()->FUN_140a1f970(strEvent, strArg);
+    TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(strEvent, strArg);
 }
 
 // @0x140f570b0
@@ -214,7 +209,7 @@ void UIItemLockDialog::vfunc_67()
     FUN_140535310()->FUN_140612780();
     CString strArg("item_lock");
     CString strEvent("dialog_close");
-    FUN_140d8ee90()->FUN_140a1f970(strEvent, strArg);
+    TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(strEvent, strArg);
 }
 
 // @0x140f572c0

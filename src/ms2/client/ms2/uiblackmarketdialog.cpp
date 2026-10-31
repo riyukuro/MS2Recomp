@@ -25,6 +25,11 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/cblackmarketman.h"
+#include "ms2/placeholder/cmesomarketman.h"
+#include "ms2/client/ms2/pcbase.h"
+#include "ms2/client/ms2/worldservice.h"
 
 static CString s_strStun = "stun";
 static Unk_1402a9d70 s_cond(17, 0.75f, 0.25f, 2.25f, 10);
@@ -39,24 +44,18 @@ public:
     void FUN_1422ce240(const ParamsDelegate& cb, void* pUser);
 };
 CBlackMarketTable* FUN_1401c0d80();
-class Unk_NetSend1 { public: void FUN_140a20940(); };
-class Unk_NetSend2 { public: void FUN_140d6e400(); };
-Unk_NetSend1* FUN_140f17d40();
-Unk_NetSend2* FUN_140f17d50();
 void FUN_141b1feb0(void* p);
 void* FUN_140967100();
 class Unk_BanFlags { public: int FUN_1402c4c90(int n); };
 class Unk_14025e7b0 { public: char m_pad[8]; Unk_BanFlags m_8; };
 Unk_14025e7b0* FUN_14025e7b0();
-class Unk_LocalPlayer { public: int FUN_14166ce30(); };
+class Unk_LocalPlayer : public PCBase { };
 class Unk_WorldSvc { public: Unk_LocalPlayer* FUN_141bd0cc0(); };
-Unk_WorldSvc* FUN_1403ed2d0();
 CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 void FUN_141275260(int nId, int a, int b);
 bool FUN_140ba28d0(const MS2Ptr<AScript>* p, int n);
-class Unk_Features { public: bool FUN_14036d570(int n); };
-Unk_Features* FUN_140166410();
+CFeatureManager* FUN_140166410();
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
 class Unk_MesoCfg { public: int FUN_140f20b90(); };
 class Unk_Cfg6198 { public: CString FUN_1409f6f30(); };
@@ -121,8 +120,8 @@ int UIBlackMarketDialog::vfunc_65()
     FUN_1401c0d80()->Load();
     if (UIDialog::vfunc_65())
     {
-        FUN_140f17d40()->FUN_140a20940();
-        FUN_140f17d50()->FUN_140d6e400();
+        TSingleton<CBlackMarketMan>::GetInstance()->SendBlackMarketMode1();
+        TSingleton<CMesoMarketMan>::GetInstance()->SendMesoMarket();
         return 1;
     }
     return 0;
@@ -154,7 +153,7 @@ int UIBlackMarketDialog::vfunc_73()
         FUN_141275260(0x2f7, 1, 1);
         return 0;
     }
-    Unk_LocalPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_LocalPlayer* pPlayer = reinterpret_cast<Unk_WorldSvc*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer && pPlayer->FUN_14166ce30() != 0)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_blackmarket_error_not_useable_by_dead");
@@ -168,7 +167,7 @@ int UIBlackMarketDialog::vfunc_73()
 void UIBlackMarketDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    Unk_LocalPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_LocalPlayer* pPlayer = reinterpret_cast<Unk_WorldSvc*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer && pPlayer->FUN_14166ce30() != 0 && m_68 == 0)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_blackmarket_error_not_useable_by_dead");
@@ -297,7 +296,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
     if (strMethod.CompareNoCase("getRegisterItemTooltip") == 0)
     {
         __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
-        ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x80, 2);
+        ASTooltip tip(reinterpret_cast<Unk_WorldSvc*>(WorldService::GetInstance())->FUN_141bd0cc0(), 0x80, 2);
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (spItem.get())
         {

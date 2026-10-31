@@ -26,12 +26,10 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-class Unk_RwLoader : public CFileSystem { };
-Unk_RwLoader* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 void FUN_1406a6d70(void* pLog, int a, int b, int c, const wchar_t* pszFormat, const unsigned& nArg);
-class Unk_RwLog { public: void FUN_1402804e0(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
+class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pNode);                               // the row is for this client's region
 int FUN_1408733a0(Unk_140165cf0* pElem, const char* pszName, double* pOut);
@@ -224,12 +222,12 @@ bool RewardContentsTable::ReadMesoTable(const CStringA& strFile)
 {
     CString strPath = FUN_14071a5b0("Table", strFile);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("table"); pNode != 0; pNode = pNode->FUN_140168650("table"))
@@ -241,7 +239,7 @@ bool RewardContentsTable::ReadMesoTable(const CStringA& strFile)
         std::vector<__int64>& values = m_mesoTables[nId];
         if (!values.empty())
         {
-            FUN_1406a6d70(FUN_140166440(), 0, 0, 0x13, L"RewardContentsTable::ReadMesoTable DuplicateID:{0}", nId);
+            FUN_1406a6d70(GetLogString(), 0, 0, 0x13, L"RewardContentsTable::ReadMesoTable DuplicateID:{0}", nId);
             continue;
         }
         for (Unk_140165cf0* pChild = pNode->FUN_140165cf0("v"); pChild != 0; pChild = pChild->FUN_140168650("v"))
@@ -267,7 +265,7 @@ bool RewardContentsTable::ReadMesoTable(const CStringA& strFile)
             }
             if (nLevel > 99 || nMeso == 0)
             {
-                static_cast<Unk_RwLog*>(FUN_140166440())->FUN_1402804e0(0, 0, 0x13, L"Invalid RewardContentsTable::ReadMesoTable");
+                reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x13, L"Invalid RewardContentsTable::ReadMesoTable");
                 return false;
             }
             values[nLevel] = nMeso;
@@ -282,12 +280,12 @@ bool RewardContentsTable::ReadItemTable()
 {
     CString strPath = FUN_14071a5b0("Table", "RewardContentItemTable.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("table"); pNode != 0; pNode = pNode->FUN_140168650("table"))
@@ -308,12 +306,12 @@ bool RewardContentsTable::ReadContents()
 {
     CString strPath = FUN_14071a5b0("Table", "RewardContent.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("v"); pNode != 0; pNode = pNode->FUN_140168650("v"))

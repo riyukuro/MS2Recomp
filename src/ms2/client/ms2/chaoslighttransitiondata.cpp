@@ -51,7 +51,11 @@ public:
     Unk_140165cf0* FUN_140165cf0(const char* pszName);                  // FirstChildElement(name)
     Unk_140165cf0* FUN_140168650(const char* pszName);                  // NextSiblingElement(name)
 };
-const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
 int FUN_1408730a0(Unk_140165cf0* pNode, const char* pszName, bool& bOut);
 int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int* pnOut);
@@ -60,7 +64,6 @@ CString FUN_140188f50(const char* psz, int n);                          // null-
 void FUN_14185f0b0(TransitionData* pData, Unk_140165cf0* pNode, float* pfTime);    // type / duration / start time
 void FUN_141b6ed40(const CString& str, Vector3* pVec3);                 // parse "x,y,z"
 
-const NiMaterial* FUN_140a17cd0(NiMesh* pMesh);                         // the mesh's active material
 // Out-of-line colour constructor (0x140a56db0), shared with other units' views.
 struct Unk_Colc : NiColor { Unk_Colc(float r, float g, float b); };
 
@@ -75,9 +78,11 @@ struct ChaosPixelRef
 struct Unk_MaterialTable;                                               // DAT_143d69198
 struct Unk_MaterialEntry;
 extern Unk_MaterialTable DAT_143d69198;
-Unk_MaterialEntry* FUN_140a17af0(Unk_MaterialTable* pTable, const NiMaterial* pMaterial);   // table lookup, NULL-safe
-int FUN_140ef4dd0(Unk_MaterialEntry* pEntry);                           // the entry's material kind (1..3: chaos kinds)
-WorldService* FUN_1403ed2d0();
+class Unk_CubeKind   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140ef4dd0();
+};
 
 extern NiFixedString DAT_143ae5158;                                     // "ChaosFresnelBoost"
 extern NiFixedString DAT_143ae5160;                                     // "ChaosFresnelExponent"
@@ -111,7 +116,7 @@ void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
     FUN_1408730a0(pNode, "blink", m_bBlink);
     FUN_1408731e0(pNode, "blinkBoostStart", &m_nBlinkBoostStart);
     FUN_1408731e0(pNode, "layer", &m_nLayer);
-    const char* pszRgb = FUN_14086f4b0(pNode, "rgb");
+    const char* pszRgb = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("rgb");
     if (pszRgb != 0)
     {
         Vector3 kRgb;
@@ -135,7 +140,7 @@ void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
     {
         NiPointer<ChaosLightTransitionData> spData(new (efd::MemHint(efd::MemHint::NONE)) ChaosLightTransitionData);
         FUN_14185f0b0(spData.operator->(), pKey, &fTime);
-        CString strLoop = FUN_140188f50(FUN_14086f4b0(pNode, "loop"), 0);
+        CString strLoop = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("loop"), 0);
         if (strLoop.CompareNoCase("true") == 0 && m_nLoopIndex == -1)
             m_nLoopIndex = (int)m_arrData.GetCount();
         spData.operator->()->m_fFresnelBoost = pPrev->m_fFresnelBoost;
@@ -147,7 +152,7 @@ void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
         FUN_140873360(pKey, "fresnelBoost", spData.operator->()->m_fFresnelBoost);
         FUN_140873360(pKey, "fresnelExponent", spData.operator->()->m_fFresnelExponent);
         FUN_140873360(pKey, "dimmer", spData.operator->()->m_fDimmer);
-        const char* pszKeyRgb = FUN_14086f4b0(pKey, "rgb");
+        const char* pszKeyRgb = ((class TiXmlElement*)(class Unk_140165cf0*)(pKey))->Attribute("rgb");
         if (pszKeyRgb != 0)
         {
             Vector3 kRgb;
@@ -174,12 +179,12 @@ CEffectPtr ChaosLightEffectParam::vfunc_6()
 // The chaos material (by kind: 1 normal, 2 skin, 3 hair) that matches the mesh's current material, or null.
 NiMaterial* FUN_141046540(NiMesh* pMesh)
 {
-    Unk_MaterialEntry* pEntry = FUN_140a17af0(&DAT_143d69198, FUN_140a17cd0(pMesh));
+    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), ((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial()));
     if (pEntry == 0)
         return 0;
     int anKinds[3] = { 1, 2, 3 };
     NiFixedString akNames[3] = { DAT_143ae5240, DAT_143ae5248, DAT_143ae5250 };
-    int nKind = FUN_140ef4dd0(pEntry);
+    int nKind = ((class Unk_CubeKind*)(struct Unk_MaterialEntry*)(pEntry))->FUN_140ef4dd0();
     for (unsigned int i = 0; i < 3; i++)
     {
         if (nKind != anKinds[i])
@@ -235,7 +240,7 @@ ChaosLightEffectLayer::ChaosLightEffectLayer(NiMesh* pMesh, void* pTexture, cons
     }
     else
     {
-        m_pMaterial = const_cast<NiMaterial*>(FUN_140a17cd0(pMesh));
+        m_pMaterial = const_cast<NiMaterial*>(((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial());
         m_param.m_fBlue = 0.0f;
         m_param.m_fGreen = 0.0f;
         m_param.m_fRed = 0.0f;
@@ -249,7 +254,7 @@ ChaosLightEffectLayer::ChaosLightEffectLayer(NiMesh* pMesh, void* pTexture, cons
             NiTexturingProperty::Map* pMap = static_cast<NiTexturingProperty*>(pProp)->GetGlowMap();
             if (pMap != 0)
             {
-                ChaosLightEffectLayerManager* pManager = FUN_1403ed2d0()->GetChaosLightEffectLayerManager();
+                ChaosLightEffectLayerManager* pManager = WorldService::GetInstance()->GetChaosLightEffectLayerManager();
                 if (((__int64)pManager->FUN_1410469c0()) != (__int64)pMap->GetTexture())
                     m_spTexture.Assign(pMap->GetTexture());
             }

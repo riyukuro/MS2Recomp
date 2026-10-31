@@ -220,7 +220,6 @@ CStringW FUN_1409404f0(__int64 n);                                      // numbe
 int FUN_1407181d0(const CString& str);
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
-CReservedWordTable* FUN_1403b4750();
 
 void FUN_140710590(COutPacket& pkt);                                    // send
 
@@ -1357,7 +1356,7 @@ void TabContentsPetRemakeOption::FUN_140b973b0(ASData* pData)
     if (nMax == 0)
     {
         CStringW strNotice = FUN_140298ea0(CStringW(L"s_pet_remake_notice_disable_lock_item_option"));
-        FUN_1403b4750()->FUN_1416fb300(strNotice);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strNotice);
         FUN_140d73aa0(strNotice, 0, 0, CStringW(L""));
     }
     else if (nMax <= nLocked)

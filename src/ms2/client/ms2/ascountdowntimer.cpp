@@ -8,7 +8,7 @@
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit callees ----
-unsigned FUN_140869420();                                           // millisecond clock
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CString FUN_140513200(const char* szFormat, const unsigned int& n); // "{0}" substitution
 int FUN_141276180(const CString& strSound, const CString& strArg);  // play a sound
 void FUN_140cffde0(const Scaleform::GFx::Value& root, CString strName, int nValue);  // set an int member of a clip
@@ -65,7 +65,7 @@ MS2_REPLACE_METHOD(0x1409B2970, ASCountDownTimer, SetType, 25, 0x7F044B87);
 void ASCountDownTimer::SetRemain(unsigned n)
 {
     m_nRemain = n;
-    m_nDeadline = FUN_140869420() + m_nRemain * 1000;
+    m_nDeadline = GetTickCountMs2() + m_nRemain * 1000;
     Update();
 }
 MS2_REPLACE_METHOD(0x1409B2990, ASCountDownTimer, SetRemain, 76, 0x82742935);
@@ -107,7 +107,7 @@ void ASCountDownTimer::Tick()
 {
     if (m_nRemain == 0)
         return;
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = GetTickCountMs2();
     if (m_nDeadline <= nNow)
     {
         m_nRemain = 0;

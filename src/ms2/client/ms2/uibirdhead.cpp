@@ -9,13 +9,13 @@
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/camera.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
 extern Vector3 DAT_143b01a60;                               // the zero point
 extern int DAT_143ae0fc0;                                           // debug switch: UI always shown
 int FUN_141277f40();                                                // next UI layer
 class Unk_WorldToScreen { public: bool FUN_140af0700(const Vector3& world, Vector3& out); };
-Unk_WorldToScreen* FUN_1409478c0();                                 // camera service
 class Unk_UIScale;
 Unk_UIScale* FUN_14025e7a0();                                       // ui scale service
 float FUN_1422afec0(Unk_UIScale* pScale, int nLayer);               // scale of a layer
@@ -175,7 +175,7 @@ MS2_REPLACE_METHOD(0x1418CEE20, UIBirdHead, vfunc_28, 67, 0xFC04CE34);
 void UIBirdHead::FUN_1418cee70()
 {
     Vector3 screen;
-    if (FUN_1409478c0()->FUN_140af0700(m_6c, screen))
+    if (reinterpret_cast<Unk_WorldToScreen*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(m_6c, screen))
     {
         MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
         if (pEntity.get())

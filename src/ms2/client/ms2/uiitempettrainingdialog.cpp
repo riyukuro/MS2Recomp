@@ -27,6 +27,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/exptable.h"
 
 // The own static (the binding tag of the transfer message box), then the sort type names of the header statics.
 static CStringW s_strTrainingBindPet(L"trainingBindPet");
@@ -37,11 +38,10 @@ static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "Price
 // The exe's delegate types take the slot by reference (RTTI names them so); ItemScrollSlot's setters are bound by name.
 typedef Delegate<void(ItemScrollSlot&)> PtRemoveFn;
 typedef Delegate<void(ItemScrollSlot&, DragSlot*)> PtDropFn;
-void FUN_140d428a0(ItemScrollSlot* pSlot, MS2Ptr<CItem> spItem);   // ItemScrollSlot::SetItem
 void FUN_140d42bc0(ItemScrollSlot* pSlot, PtRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
 void FUN_140d42b70(ItemScrollSlot* pSlot, PtDropFn fn);        // ItemScrollSlot::SetDropFn
 
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 class Unk_PtPackets
 {
@@ -49,16 +49,16 @@ public:
     void FUN_140da5180(int nPacket, Delegate<void(CInPacket&)> fn);     // register a packet handler
     void FUN_140da51e0(int nPacket, Delegate<void(CInPacket&)> fn);     // unregister it
 };
-Unk_PtPackets* FUN_140bccd50();
-class Unk_PtGameRule { public: __int64 FUN_140353930(unsigned short nLevel, int nRank, unsigned short nKind); };   // exp of a level
-Unk_PtGameRule* FUN_1404a1bb0();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+   // exp of a level
+void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
 class Unk_PtValue { public: unsigned* FUN_1401d7c10(); };
 class Unk_PtConfig { public: unsigned char m_pad[0x84c0]; Unk_PtValue m_petMaxLevel; };
-Unk_PtConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_PtAttr { public: unsigned FUN_14054c530(const CStringW& strKey, const int& nDefault); };
 #define PT_ATTR(p) reinterpret_cast<Unk_PtAttr*>(reinterpret_cast<char*>((p)) + 0x320)
 class Unk_PtPetRowTable { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nPetId); };
-Unk_PtPetRowTable* FUN_14052d210();
+class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 class Unk_PetRow : public CPtred { public: int m_n18; };
 
 class CMsgBoxData : public CPtred
@@ -70,7 +70,6 @@ public:
     void FUN_141a01700(int nA, int nB, int nC);
 };
 
-WorldService* FUN_1403ed2d0();
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1409404f0(__int64 n);
@@ -86,7 +85,11 @@ ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);
 void FUN_140d42630(const CString& strName);
 MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);
-__int64 FUN_141405a10(MS2DragSlot* pSlot);
+class InvenSlot   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 GetItemUid();
+};
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);        // the string table formatter
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 
@@ -96,13 +99,13 @@ UIItemPetTrainingDialog::UIItemPetTrainingDialog()
 {
     FUN_141924170(1);
     m_164 = 1;
-    FUN_140bccd50()->FUN_140da5180(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetTrainingDialog::FUN_140e57cb0));
+    ((class Unk_PtPackets*)FUN_140bccd50())->FUN_140da5180(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetTrainingDialog::FUN_140e57cb0));
 }
 
 // @0x140e57030
 UIItemPetTrainingDialog::~UIItemPetTrainingDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetTrainingDialog::FUN_140e57cb0));
+    ((class Unk_PtPackets*)FUN_140bccd50())->FUN_140da51e0(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetTrainingDialog::FUN_140e57cb0));
 }
 
 // @0x140e57150
@@ -123,7 +126,7 @@ void UIItemPetTrainingDialog::OnLoadComplete()
         FUN_140d42bc0(pSlot, PtRemoveFn(this, &UIItemPetTrainingDialog::FUN_140e58280));
         FUN_140d42b70(pSlot, PtDropFn(this, &UIItemPetTrainingDialog::FUN_140e58300));
     }
-    m_spBox = DAT_143ab2a90.FUN_140a5d680(m_nOwner);
+    m_spBox = g_143ab2a90.FUN_140a5d680(m_nOwner);
     if (m_spBox == 0)
         return;
     if (m_spBox->FUN_140527840() == 0)
@@ -149,7 +152,7 @@ int UIItemPetTrainingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         return 1;
     if (_stricmp(szMethod, "onClickConfirm") == 0)
     {
-        PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPC == 0)
             return 0;
         if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->FUN_140635100() != 0)
@@ -220,7 +223,7 @@ void UIItemPetTrainingDialog::FUN_140e57d60()
     if (m_spBox == 0 || m_spPet == 0)
         return;
     __int64 nUid = m_spPet->FUN_140526a50();
-    DAT_143ab2a90.FUN_140a63880(m_spBox.get(), FUN_1406c6bd0(L"{0}", nUid));
+    g_143ab2a90.FUN_140a63880(m_spBox.get(), FUN_1406c6bd0(L"{0}", nUid));
 }
 
 // @0x140e57e50
@@ -243,13 +246,13 @@ int UIItemPetTrainingDialog::FUN_140e57ed0(MS2Ptr<CItem> spPet, int bMessage)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_training_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    if ((unsigned)spPet->FUN_140528c20() == *FUN_1401d3200()->m_petMaxLevel.FUN_1401d7c10())
+    if ((unsigned)spPet->FUN_140528c20() == *((class Unk_PtConfig*)FUN_1401d3200())->m_petMaxLevel.FUN_1401d7c10())
     {
         if (bMessage != 0)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_training_dialog_max_level"), 1, 0);
         return 0;
     }
-    MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->FUN_14053dc60());
+    MS2Ptr<Unk_PetRow> spRow = ((class Unk_PtPetRowTable*)FUN_14052d210())->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->FUN_14053dc60());
     if (spRow == 0)
     {
         if (bMessage != 0)
@@ -287,33 +290,33 @@ void UIItemPetTrainingDialog::FUN_140e58300(ItemScrollSlot& slot, DragSlot* pDra
     MS2DragSlot* pSrc = FUN_140a50b50(pDrag);
     if (pSrc != 0)
     {
-        MS2Ptr<CItem> spPet = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pSrc));
+        MS2Ptr<CItem> spPet = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
         if (FUN_140e57ed0(spPet, 1) == 0)
             return;
-        MS2Ptr<CItem> spBox = DAT_143ab2a90.FUN_140a5d680(m_nOwner);
+        MS2Ptr<CItem> spBox = g_143ab2a90.FUN_140a5d680(m_nOwner);
         if (spBox == 0 || spBox->FUN_140527840() == 0)
             return;
         {
-            FUN_140d428a0(&slot, spPet);
+            ((class ItemScrollSlot*)(class ItemScrollSlot*)(&slot))->SetItem(spPet);
             slot.vfunc_10();
             m_spPet = spPet;
             unsigned short nLevel = spPet->FUN_140528c20();
-            __int64 nNeed = FUN_1404a1bb0()->FUN_140353930(nLevel, spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
+            __int64 nNeed = ((class CExpTable*)FUN_1404a1bb0())->GetPetExp(nLevel, spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
             __int64 nCur = spPet->FUN_140528b90() + m_nOffsetExp;
             unsigned short nUp = 0;
             while (nNeed <= nCur)
             {
                 nCur = nCur - nNeed;
                 ++nUp;
-                nNeed = FUN_1404a1bb0()->FUN_140353930(nLevel + nUp, spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
+                nNeed = ((class CExpTable*)FUN_1404a1bb0())->GetPetExp(nLevel + nUp, spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
             }
             nLevel += nUp;
-            nNeed = FUN_1404a1bb0()->FUN_140353930(nLevel, spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
-            if (nLevel >= *FUN_1401d3200()->m_petMaxLevel.FUN_1401d7c10())
+            nNeed = ((class CExpTable*)FUN_1404a1bb0())->GetPetExp(nLevel, spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
+            if (nLevel >= *((class Unk_PtConfig*)FUN_1401d3200())->m_petMaxLevel.FUN_1401d7c10())
             {
-                nLevel = (unsigned short)*FUN_1401d3200()->m_petMaxLevel.FUN_1401d7c10();
-                nCur = FUN_1404a1bb0()->FUN_140353930((unsigned short)(nLevel - 1), spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
-                nNeed = FUN_1404a1bb0()->FUN_140353930((unsigned short)(nLevel - 1), spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
+                nLevel = (unsigned short)*((class Unk_PtConfig*)FUN_1401d3200())->m_petMaxLevel.FUN_1401d7c10();
+                nCur = ((class CExpTable*)FUN_1404a1bb0())->GetPetExp((unsigned short)(nLevel - 1), spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
+                nNeed = ((class CExpTable*)FUN_1404a1bb0())->GetPetExp((unsigned short)(nLevel - 1), spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
             }
             CStringW strName = spPet->FUN_140528160();
             CStringW strExp = FUN_14028dfa0(CStringW(L"s_pet_training_dialog_pet_exp"), nLevel, FUN_1409404f0(nCur), FUN_1409404f0(nNeed));

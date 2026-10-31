@@ -65,9 +65,12 @@ CStringW GetStringCommon(int nStringId);                  // a string table text
 CString FUN_1405451e0(int nType);                       // the name of an equip slot type
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for the item
 void* FUN_140a50b50(DragSlot* pSlot);                   // the item slot behind a drag source
-__int64 FUN_141405a10(void* pItemSlot);                 // its item uid
+class InvenSlot   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 GetItemUid();
+};
 int FUN_141421230(MS2Ptr<CItem> spFrom, MS2Ptr<CItem> spTo, MS2Ptr<PCInfo> spPC);   // may the worn items be swapped
-bool FUN_1409b0350(Scaleform::GFx::Value* pValue);
 void FUN_1401fb9a0(unsigned char* payload, COutputStream& stream);
 void FUN_140710590(COutPacket& packet);                 // send the packet
 
@@ -153,7 +156,7 @@ int EquipSlot::vfunc_18(void* p)
     void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
         {
             if (FUN_14120d2e0(spItem.get()) != 0)
@@ -274,7 +277,7 @@ LAB_gray_done:
 // @0x14120cd40
 void EquipSlot::vfunc_9()
 {
-    if (FUN_1409b0350(&m_value18) == 0)
+    if (((Scaleform::GFx::Value*)(void*)(&m_value18))->IsNull() == 0)
     {
         ASObj obj(m_value18, 2);
         if (obj.FUN_1422ba9a0() == 0)

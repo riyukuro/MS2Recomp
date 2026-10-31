@@ -38,8 +38,7 @@ int FUN_141661aa0(MyPC* p);
 unsigned int FUN_141662de0(MyPC* p);                            // vip
 
 // the ids of the cash call items the player may use
-class Unk_CcIdList { public: unsigned __int64 FUN_140186270(); int* FUN_140184510(unsigned __int64 n); };
-extern Unk_CcIdList DAT_143ab3058;
+extern ATL::CAtlArray<unsigned int> DAT_143ab3058;
 class Unk_CcConfig { public: unsigned char FUN_14036d570(int nId); unsigned char FUN_14036e5b0(); };
 Unk_CcConfig* FUN_140166410();
 CGameRule* FUN_1401c0d90();
@@ -85,9 +84,9 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
     if (pPC->FUN_14166c930() == 0x25 || pPC->FUN_14166c930() == 0x2a)
         return 0;
     bool bOwned = false;
-    for (unsigned i = 0; i < DAT_143ab3058.FUN_140186270(); i++)
+    for (unsigned i = 0; i < DAT_143ab3058.GetCount(); i++)
     {
-        if (nCallType == *DAT_143ab3058.FUN_140184510(i))
+        if (nCallType == DAT_143ab3058[i])
         {
             bOwned = true;
             break;

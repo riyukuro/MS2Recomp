@@ -22,6 +22,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of exe types ----------------------------------------------------------------------------------
 
@@ -58,8 +59,7 @@ private:
 };
 unsigned char FUN_140ef4cb0(Unk_HoServicePtr* pService, int n);
 
-class Unk_ChWorld { public: bool FUN_141bcb1a0(); };
-Unk_ChWorld* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 bool FUN_140a467d0(const MS2Ptr<AScript>*);                     // has the AS object been released
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, void* pUnused);

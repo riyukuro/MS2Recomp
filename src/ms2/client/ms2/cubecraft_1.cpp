@@ -115,11 +115,11 @@ class Unk_CubeResourceService {
 public:
     NiPointer<NiAVObject> FUN_141551ea0(CString, int, int, int, int);
 };
-Unk_CubeResourceService* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 void FUN_140a0b300(NiAVObject*, bool);
 MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_1410280d0(int, CString);
-void* FUN_14052d220();
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 class Unk_GuideDownloadId {
 public:
     Unk_GuideDownloadId() {}
@@ -134,7 +134,6 @@ void FUN_14098c6e0(egf::Entity*, unsigned, const bool&);
 
 void FUN_140ddbf50(void*, PCBase*);
 void FUN_1408b3810(CubeItemInfo*);
-int FUN_1408b38c0(CubeItemInfo*, CubeItemInfo*);
 void FUN_1410a7800(NiAVObject*, float, float, float);
 
 class CGodModeInfo : public CPtred
@@ -154,8 +153,12 @@ struct Unk_RayHit { char m_pad[0x48]; float m_fHeight; char m_pad_4c[0x1c]; };  
 MS2_CHECK_SIZE(Unk_RayHit, 0x68);
 void FUN_140ad4440(Unk_RayHit*);
 class CPhysXHelper;
-CPhysXHelper* FUN_1409f7ca0();
-int FUN_14168a310(CPhysXHelper*, NiPoint3*, Vector3*, Unk_RayHit*, float, Vector3*, int);
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class CPhysXHelper   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14168a310(struct Vector3 const&, struct Vector3&, struct Unk_RayCastInfo*, float, struct Vector3*, int);
+};
 Vector3 FUN_1408a1430(const NiPoint3&);
 
 class Unk_CubeGridSvc : public CubeMapInformationService {
@@ -163,7 +166,7 @@ public:
     int FUN_1410ba5f0(const Vector3& kPos, const NiPoint3& kRef);
     int FUN_1410cdd80(NiPoint3 kPos, NiPoint3 kDir, float fRange, efd::Point3 kDown);
 };
-Unk_CubeGridSvc* FUN_1401cd040(void*);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 class Unk_AnimSvc { public: char m_pad[8]; };
 void FUN_140a51340(CEffectDummy* pDummy, const NiPoint3& v);   // CEffectDummy::SetTranslate, seen taking the converted point
 void FUN_1409a1fc0(Unk_AnimSvc*, const egf::EntityID&, const efd::utf8string*, float, bool bForce);   // Unk_AnimSvc::FUN_1409a1fc0 (5th arg on the stack)
@@ -179,15 +182,23 @@ CStringW FUN_1402758a0(const wchar_t*, const CStringW&, const int&);
 CString FUN_140536a50(const char*, const CString&);
 class StateFishingFloat { char m_pad[0x40]; };
 void* FUN_14025e7c0();                       // singleton pointers: 64-bit, not int
-bool FUN_14116d720(void*);
+class CInputKeyHandler   // C3: member view for the former free stand-ins
+{
+public:
+    bool IsDebugMode();
+};
 void* FUN_140953f20();
 int FUN_140cdb110(void*, efd::Point3);
 class Unk_GuidePlayer : public AvatarPC
 {
 };
-Unk_GuidePlayer* FUN_1405a7e30(PCBase*);
-void* FUN_1409f7c90();
-int FUN_140ddcc90(void*);
+class ClonePC* FUN_1405a7e30(class PC*);   // C3: was FUN_1405a7e30
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_FsOptimizer   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140ddcc90();
+};
 void FUN_141568d80(NiNode*);
 struct Unk_FishCatch { char m_pad_00[0x18]; int m_nCount; int m_nFishId; int m_nSize; };
 
@@ -211,7 +222,6 @@ AdditionalCliList* FUN_1416749a0(PCBase*);
 class Unk_GemItem : public CPtred { public: char m_pad[0x40]; };
 class CGemFishing : public Unk_GemItem { public: int GetDataId(); };
 struct Unk_CcInvView { MS2Ptr<Unk_GemItem> FUN_141270740(int nTab); };   // member (this=rcx, hidden return=rdx)
-Unk_CcInvView* FUN_14165f460(PCBase*);
 Unk_GemItem* FUN_140ddcc50(MS2Ptr<Unk_GemItem>&);
 
 class Unk_MagicTarget : public CPtred { public: char m_pad[0x40]; };
@@ -249,7 +259,7 @@ void FUN_1409f7320(efd::Matrix3*);
 float FUN_14123ce70(const efd::Point3&);
 extern long long DAT_143acf618;
 void* FUN_1409982c0(void*);
-void* FUN_1413f9850();
+class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
 void* FUN_1401cd190(void*);
 // The reference-counted service interfaces the lookups below call through (slots 1/2 AddRef/Release, 5 the typed
 // query, 14 the service by id).
@@ -315,8 +325,6 @@ public:
 struct Unk_NullableFloat { bool m_bSet; float m_fValue; };
 bool FUN_1410a82b0(Unk_NullableFloat*);
 const float* FUN_1410a71d0(Unk_NullableFloat*);
-Unk_NullableFloat* FUN_141bd9c00(Unk_GuideWorld*);
-int FUN_141bd19d0(Unk_GuideWorld*, int);
 void FUN_141bc5b30(Unk_GuideWorld*, efd::SmartPointer<CGuideObject>);
 
 class Unk_GuideHost
@@ -337,7 +345,6 @@ class Unk_GuideCamera : public CameraMgr
 public:
     CGuideObject* FUN_140a38d60();
 };
-int FUN_140af0210(Unk_GuideCamera*);
 
 
 class Unk_GuideEffectMgr
@@ -364,15 +371,13 @@ struct Unk_GuideConfig
     char m_pad_420[0x468 - 0x420];
     CString m_astrFishing[0x16];                                // +0x468
 };
-Unk_GuideConfig* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 class Unk_CubeSelection : public Unk_PCCubeCraft
 {
 public:
     efd::Point3* FUN_1410aa520(efd::Point3*);
 };
-int FUN_141659610(PCBase*);
-Unk_CubeSelection* FUN_141659700(PCBase*);
 int FUN_14166c930(PCBase*);
 // The owner's state machine (slot 8 advances it, slot 22 compares a record).
 class Unk_CcStateMgr
@@ -395,9 +400,7 @@ void FUN_141678160(PCBase*, efd::Point3);
 void* FUN_141670990(PCBase*, int, int);
 void FUN_141670540(PCBase*, int, int, void*);
 void FUN_1416623d0(PCBase*, efd::SmartPointer<CGuideObject>, int);
-int FUN_1416627d0(PCBase*, int);
 void FUN_14166d2d0(PCBase*, efd::Point3, int);
-CSkillMagicControlGuide* FUN_141662610(PCBase*);
 void FUN_141683a90(void*);
 void FUN_141682f60(void*, PCBase*);
 void FUN_14123c5a0(int);
@@ -577,8 +580,8 @@ void CGuideObject::vfunc_53(float f)
 CConstructionGuideObject::CConstructionGuideObject()
     : m_spGuide(0), m_nDc8(0), m_spModel(0), m_spLiftNode(0), m_spGod(0), m_spBirdHead(0)
 {
-    CString strPath(FUN_1401d31f0()->m_strGuideModel);
-    m_spModel = NiDynamicCast(NiNode, (NiAVObject*)FUN_140a0afd0()->FUN_141551ea0(strPath, 0, 5, 0, 0));
+    CString strPath(((struct Unk_GuideConfig*)FUN_1401d31f0())->m_strGuideModel);
+    m_spModel = NiDynamicCast(NiNode, (NiAVObject*)((class Unk_CubeResourceService*)FUN_140a0afd0())->FUN_141551ea0(strPath, 0, 5, 0, 0));
     FUN_141682f60(&m_unk_6d8, this);
     m_spStateMgr.AssignRaw(new CStateManager(this));
     m_spStateMgr->FUN_1417daeb0(0x24, new StateFloat(this));
@@ -657,18 +660,18 @@ void CConstructionGuideObject::FUN_1410a2440()
     PCBase* pOwner = FUN_1410a1310();
     if (pOwner == 0)
         return;
-    if (FUN_141659610(pOwner) == 0)
+    if (((class PC*)(class PCBase*)(pOwner))->FUN_141659610() == 0)
     {
         FUN_1410a29c0();
         return;
     }
-    Unk_CubeSelection* pSel = FUN_141659700(pOwner);
+    Unk_CubeSelection* pSel = ((class Unk_CubeSelection*)((class PC*)(class PCBase*)(pOwner))->GetCubeCraft());
     if (pSel == 0)
         return;
     if (m_spLiftNode == (NiNode*)0)
         return;
     CubeItemInfo* pInfo = pSel->FUN_1410ad670();
-    if (m_spGuide.IsNull() || !FUN_1408b38c0(m_spItem.operator->(), pInfo))
+    if (m_spGuide.IsNull() || !((class CubeItemInfo*)(m_spItem.operator->()))->FUN_1408b38c0((class CubeItemInfo const*)(pInfo)))
     {
         FUN_1410a29c0();
         m_spItem->FUN_1408b3700(pInfo);
@@ -700,7 +703,7 @@ void CConstructionGuideObject::FUN_1410a2440()
         FUN_140ad4440(&kInfo);
         NiPoint3 kPos = vfunc_18();
         kPos.z = kPos.z - 200.0f;
-        if (FUN_14168a310(FUN_1409f7ca0(), &kPos, &kHit, &kInfo, 0.0f, 0, 0) != 0)
+        if (((class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a310(*(struct Vector3 const*)(&kPos), *(struct Vector3*)(&kHit), (struct Unk_RayCastInfo*)(&kInfo), 0.0f, 0, 0) != 0)
         {
             FUN_1410a7800(m_spModel.operator->(), 0.0f, 0.0f, -(kInfo.m_fHeight + 100.0f));
             m_spModel->UpdateProperties();
@@ -774,7 +777,7 @@ int CConstructionGuideObject::FUN_1410a2a60(void* pCube)
             {
                 Unk_GuideDownloadId kId;
                 FUN_1401cd100(&kId, 0);
-                FUN_1418845a0(FUN_14052d220(), pSel->FUN_1410ad670(), kId);
+                FUN_1418845a0(((void*)FUN_14052d220()), pSel->FUN_1410ad670(), kId);
             }
             m_spGuide->vfunc_15(m_spItem.get());
         }
@@ -798,7 +801,7 @@ void CConstructionGuideObject::FUN_1410a3190()
     PCBase* pOwner = FUN_1410a1310();
     if (pOwner == 0)
         return;
-    Unk_CubeSelection* pSel = FUN_141659700(pOwner);
+    Unk_CubeSelection* pSel = ((class Unk_CubeSelection*)((class PC*)(class PCBase*)(pOwner))->GetCubeCraft());
     if (pSel == 0)
         return;
     NiPoint3 kA;
@@ -823,7 +826,7 @@ void CConstructionGuideObject::FUN_1410a3190()
     {
         NiPoint3 kSel = *pSel->FUN_1410aa520(&kSel);
         Vector3 kLocal = FUN_1408a1430(kSel);
-        Unk_CubeGridSvc* pGrid = FUN_1401cd040(&DAT_143b059e8);
+        Unk_CubeGridSvc* pGrid = ((class Unk_CubeGridSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
         int nCell = pGrid->FUN_1410ba5f0(kLocal, kA);
         kB.z = pGrid->FUN_1410ba440(nCell);
     }
@@ -850,7 +853,7 @@ void CConstructionGuideObject::vfunc_128()
     if (pOwner != 0)
     {
         NoticeMessage kReq;
-        kReq.m_strName = FUN_1401d31f0()->m_strLiftEffect;
+        kReq.m_strName = ((struct Unk_GuideConfig*)FUN_1401d31f0())->m_strLiftEffect;
         kReq.m_nObject = 7;
         kReq.SetActor(pOwner->FUN_14123c580());
         reinterpret_cast<Unk_GuideEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
@@ -875,7 +878,7 @@ int CConstructionGuideObject::vfunc_11()
 {
     GameObject::vfunc_11();
     NoticeMessage kReq;
-    kReq.m_strName = FUN_1401d31f0()->m_strLiftEffect;
+    kReq.m_strName = ((struct Unk_GuideConfig*)FUN_1401d31f0())->m_strLiftEffect;
     kReq.m_nObject = 7;
     kReq.SetActor(FUN_14123c580());
     reinterpret_cast<Unk_GuideEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
@@ -927,7 +930,7 @@ void CConstructionGuideObject::vfunc_67(efd::Point3* pDir, efd::Point3* pSide)
         pOwner->vfunc_67(pDir, pSide);
     if (m_unk_c00 == 0x11)
     {
-        if (FUN_140af0210(reinterpret_cast<Unk_GuideCamera*>(TSingleton<CameraMgr>::GetInstance())) != 0)
+        if (((class CameraMgr*)(class Unk_GuideCamera*)(reinterpret_cast<Unk_GuideCamera*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140af0210() != 0)
         {
             *pSide = NiPoint3(-1.0f, 0.0f, 0.0f);
             *pDir = NiPoint3(0.0f, 1.0f, 0.0f);
@@ -947,7 +950,7 @@ bool CConstructionGuideObject::vfunc_68(void* a, double t, int b, unsigned c, in
     bool bResult = PCBase::vfunc_68(&kMove, t, b, 0, 1);
     if (!(*(efd::Point3*)a == efd::Point3::ZERO) && m_bLocal)
     {
-        Unk_CubeGridSvc* pGrid = FUN_1401cd040(&DAT_143b059e8);
+        Unk_CubeGridSvc* pGrid = ((class Unk_CubeGridSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
         efd::Point3 kDown = DAT_143ab2398;
         NiPoint3 kDir = vfunc_20();
         NiPoint3 kPos = vfunc_18();
@@ -1051,10 +1054,10 @@ int CFishingGuideObject::vfunc_124(int nOwnerId, efd::Point3 kPos, efd::Point3 k
     PCBase* pPlayer = FUN_1410a1310();
     if (pPlayer != 0)
     {
-        int nRod = FUN_1416627d0(pOwner, 1);
+        int nRod = ((class PC*)(class PCBase*)(pOwner))->FUN_1416627d0(1);
         if (0 < nRod && nRod < 0x16)
         {
-            CString strModel = FUN_140536a50("urn:gamebryo-animation:{0}", FUN_1401d31f0()->m_astrFishing[nRod]);
+            CString strModel = FUN_140536a50("urn:gamebryo-animation:{0}", ((struct Unk_GuideConfig*)FUN_1401d31f0())->m_astrFishing[nRod]);
             FUN_14123bb80(strModel);
             if (efd::ClassInfo::IsKindOf(pPlayer ? pPlayer->GetClassDesc() : NULL, 0x6200044))
                 m_unk_d0 = 1;
@@ -1062,7 +1065,7 @@ int CFishingGuideObject::vfunc_124(int nOwnerId, efd::Point3 kPos, efd::Point3 k
     }
     if (efd::ClassInfo::IsKindOf(pPlayer ? pPlayer->GetClassDesc() : NULL, 0x6200004))
     {
-        if (FUN_14116d720(FUN_14025e7c0()))
+        if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsDebugMode())
         {
             m_spBirdHead = new UIBirdHead();
             m_spBirdHead->FUN_1418ce8c0(SP(kPos));
@@ -1117,16 +1120,16 @@ int CFishingGuideObject::vfunc_11()
     GameObject::vfunc_11();
     FUN_1410a5690();
     PCBase* pOwner = FUN_1410a1310();
-    Unk_GuidePlayer* pPlayer = FUN_1405a7e30(pOwner);
+    Unk_GuidePlayer* pPlayer = ((class Unk_GuidePlayer*)FUN_1405a7e30((class PC*)(pOwner)));
     NoticeMessage kReq;
-    kReq.m_strName = FUN_1401d31f0()->m_strFishEffectA;
+    kReq.m_strName = ((struct Unk_GuideConfig*)FUN_1401d31f0())->m_strFishEffectA;
     kReq.m_nObject = 0;
     kReq.m_p28 = &m_line;
     kReq.SetActor(FUN_14123c580());
     if (pPlayer != 0)
         kReq.SetActor(pOwner->FUN_14123c580());
     m_nEffectA = reinterpret_cast<Unk_GuideEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
-    if (FUN_140ddcc90(FUN_1409f7c90()) == 0 && m_unk_40 != 0)
+    if (((class Unk_FsOptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_140ddcc90() == 0 && m_unk_40 != 0)
         reinterpret_cast<Unk_GuideEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(m_nEffectA, 0);
     bool bShow = false;
     FUN_14098c6e0(FUN_14123c410(), 0xa0b6b179, bShow);
@@ -1140,7 +1143,7 @@ int CFishingGuideObject::vfunc_10()
 {
     if (PCBase::vfunc_10() == 0)
         return 0;
-    Unk_GuidePlayer* pPlayer = FUN_1405a7e30(FUN_1410a1310());
+    Unk_GuidePlayer* pPlayer = ((class Unk_GuidePlayer*)FUN_1405a7e30((class PC*)(FUN_1410a1310())));
     if (pPlayer != 0)
     {
         NiPointer<NiNode> spRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
@@ -1157,7 +1160,7 @@ void CFishingGuideObject::FUN_1410a4cb0()
     if (FUN_14123c410() != 0)
     {
         bool bShow = true;
-        if (FUN_140ddcc90(FUN_1409f7c90()) == 0 && m_unk_40 != 0)
+        if (((class Unk_FsOptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_140ddcc90() == 0 && m_unk_40 != 0)
             bShow = false;
         FUN_14098c6e0(FUN_14123c410(), 0xa0b6b179, bShow);
         m_nShown = 1;
@@ -1207,7 +1210,7 @@ void CFishingGuideObject::vfunc_24(int)
     if (pOwner != 0 && (m_unk_b0 == 0 || m_unk_40 != pOwner->vfunc_25()))
     {
         m_unk_40 = pOwner->vfunc_25();
-        if (FUN_140ddcc90(FUN_1409f7c90()) == 0)
+        if (((class Unk_FsOptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_140ddcc90() == 0)
         {
             Unk_AnimSvc* pSvc = FUN_1410a68f0(reinterpret_cast<Unk_CcSvcCell*>(&DAT_143b059e8)); (void)pSvc;
             if (m_unk_40 == 0)
@@ -1261,11 +1264,11 @@ void CFishingGuideObject::vfunc_53(float f)
           if (m_nEffectB == 0)
           {
             NoticeMessage kReq;
-            kReq.m_strName = FUN_1401d31f0()->m_strFishEffectB;
+            kReq.m_strName = ((struct Unk_GuideConfig*)FUN_1401d31f0())->m_strFishEffectB;
             kReq.m_nObject = 0;
             kReq.SetActor(FUN_14123c580());
             m_nEffectB = reinterpret_cast<Unk_GuideEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
-            if (FUN_140ddcc90(FUN_1409f7c90()) == 0 && m_unk_40 != 0)
+            if (((class Unk_FsOptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_140ddcc90() == 0 && m_unk_40 != 0)
                 reinterpret_cast<Unk_GuideEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(m_nEffectB, 0);
           }
         }
@@ -1282,7 +1285,7 @@ void CFishingGuideObject::vfunc_53(float f)
 // @0x1410a5690
 void CFishingGuideObject::FUN_1410a5690()
 {
-    if (FUN_140ddcc90(FUN_1409f7c90()) == 0 && m_unk_40 != 0)
+    if (((class Unk_FsOptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_140ddcc90() == 0 && m_unk_40 != 0)
         return;
     m_line.RemoveAll();
     PCBase* pOwner = FUN_1410a1310();
@@ -1313,7 +1316,7 @@ void CFishingGuideObject::FUN_1410a59f0()
     PCBase* pOwner = FUN_1410a1310();
     if (pOwner != 0)
     {
-        MS2Ptr<Unk_GemItem> spItem = FUN_14165f460(pOwner)->FUN_141270740(8);
+        MS2Ptr<Unk_GemItem> spItem = ((struct Unk_CcInvView*)((class PC*)(class PCBase*)(pOwner))->FUN_14165f460())->FUN_141270740(8);
         if (spItem.get() != 0)
         {
             MS2Ptr<CGemFishing> spGem(dynamic_cast<CGemFishing*>(FUN_140ddcc50(spItem)));
@@ -1403,7 +1406,7 @@ void CSkillMagicControlGuide::vfunc_127()
     PCBase* pOwner = FUN_1410a1310();
     if (pOwner != 0)
     {
-        CSkillMagicControlGuide* pRec = FUN_141662610(pOwner);
+        CSkillMagicControlGuide* pRec = ((class PC*)(class PCBase*)(pOwner))->FUN_141662610();
         if (pRec != 0)
             pRec->FUN_1410a6520();
         FUN_1416623d0(pOwner, efd::SmartPointer<CGuideObject>(this), 2);
@@ -1435,7 +1438,7 @@ void CSkillMagicControlGuide::vfunc_128()
     PCBase* pOwner = FUN_1410a1310();
     if (pOwner != 0)
     {
-        CSkillMagicControlGuide* pCur = FUN_141662610(pOwner);
+        CSkillMagicControlGuide* pCur = ((class PC*)(class PCBase*)(pOwner))->FUN_141662610();
         if (pCur != 0 && pCur->FUN_1410a67f0() == FUN_1410a67f0())
             FUN_1410a6520();
     }
@@ -1483,10 +1486,10 @@ void CSkillMagicControlGuide::vfunc_24(int)
 // @0x1410a65f0
 int CSkillMagicControlGuide::FUN_1410a65f0(int nSkill)
 {
-    Unk_NullableFloat* pRange = FUN_141bd9c00(reinterpret_cast<Unk_GuideWorld*>(WorldService::GetInstance()));
+    Unk_NullableFloat* pRange = ((struct Unk_NullableFloat*)((class WorldService*)(class Unk_GuideWorld*)(reinterpret_cast<Unk_GuideWorld*>(WorldService::GetInstance())))->FUN_141bd9c00());
     if (FUN_1410a82b0(pRange))
         return 0;
-    int nState = FUN_141bd19d0(reinterpret_cast<Unk_GuideWorld*>(WorldService::GetInstance()), nSkill);
+    int nState = ((class WorldService*)(class Unk_GuideWorld*)(reinterpret_cast<Unk_GuideWorld*>(WorldService::GetInstance())))->FUN_141bd19d0(nSkill);
     if (nState == 1)
         return 0;
     PCBase* pLocal = reinterpret_cast<Unk_GuideWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
@@ -1549,7 +1552,7 @@ void* FUN_1410a6880(Unk_CcSvcIf* pSvc)
 // @0x1410a68d0
 Unk_AnimSvc* FUN_1410a68d0()
 {
-    return (Unk_AnimSvc*)FUN_1409982c0(FUN_1413f9850());
+    return (Unk_AnimSvc*)FUN_1409982c0(((void*)FUN_1413f9850()));
 }
 
 // @0x1410a68f0
@@ -1688,8 +1691,6 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // MS2-FUNCTIONAL: type-erased spelling of the MS2Ptr<T> member functions
 
 struct Unk_SPtr { void* m_pad_00; void* m_p; };
-void FUN_14015b020(void*);                                       // AddRefPtred
-int FUN_140159bc0(void*);                                        // ReleasePtred
 void FUN_140159ba0(void*);                                       // DeletePtred
 void FUN_1410a7db0(void*);
 void FUN_1410a7df0(void*);
@@ -1787,9 +1788,9 @@ void FUN_1410a7cb0(Unk_SPtr* p) { if (p->m_p != 0) FUN_1410a7e90(p, 0); }
 // @0x1410a7d10
 void FUN_1410a7d10(Unk_SPtr* p) { if (p->m_p != 0) FUN_1410a7ef0(p, 0); }
 // @0x1410a7db0
-void FUN_1410a7db0(void* p) { FUN_14015b020(p); }
+void FUN_1410a7db0(void* p) { CPtred::AddRefPtred((class CPtred*)(p)); }
 // @0x1410a7df0
-void FUN_1410a7df0(void* p) { FUN_14015b020(p); }
+void FUN_1410a7df0(void* p) { CPtred::AddRefPtred((class CPtred*)(p)); }
 // @0x1410a7e90
 void FUN_1410a7e90(Unk_SPtr* p, void*) { FUN_1410a7db0(p->m_p); }
 // @0x1410a7ef0
@@ -1815,7 +1816,7 @@ void FUN_1410a8050(Unk_SPtr* p)
 // @0x1410a8170
 void FUN_1410a8170(Unk_SPtr* p, void*)
 {
-    if (FUN_140159bc0(p->m_p) == 0)
+    if (CPtred::ReleasePtred((class CPtred*)(p->m_p)) == 0)
     {
         FUN_1410a7db0(p->m_p);
         FUN_140159ba0(p->m_p);
@@ -1824,7 +1825,7 @@ void FUN_1410a8170(Unk_SPtr* p, void*)
 // @0x1410a8210
 void FUN_1410a8210(Unk_SPtr* p, void*)
 {
-    if (FUN_140159bc0(p->m_p) == 0)
+    if (CPtred::ReleasePtred((class CPtred*)(p->m_p)) == 0)
     {
         FUN_1410a7df0(p->m_p);
         FUN_140159ba0(p->m_p);

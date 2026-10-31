@@ -8,9 +8,11 @@
 #include <d3dx9math.h>
 
 // ---- out-of-unit callees (bound to the exe by name) ----
-void* FUN_140994450();                              // NiRenderer::GetRenderer()
-void* FUN_14098d8d0(void* rtti, void* obj);         // NiDynamicCast helper (null-checked IsKindOf)
-void FUN_140d9dab0(NiDX9RenderState* pkState, bool bEnable);
+class Unk_DevCaps   // C3: member view for the former free stand-ins
+{
+public:
+    void SetEnabled(bool);
+};
 NiPoint3* FUN_140194470(NiPoint3* pkDst, const NiPoint3* pkSrc);   // NiPoint3 copy (a different COMDAT than NiPoint3::operator=)
 extern char DAT_143d6eb58;                          // MS2Renderer::ms_RTTI
 
@@ -39,7 +41,7 @@ void CMirrored3DRenderView::SetCameraData(const NiRect<float>& kViewport)
 {
     Ni3DRenderView::SetCameraData(kViewport);
 
-    NiDX9Renderer* pkRenderer = (NiDX9Renderer*)FUN_14098d8d0(&DAT_143d6eb58, FUN_140994450());
+    NiDX9Renderer* pkRenderer = (NiDX9Renderer*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143d6eb58), (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
     if (pkRenderer != NULL)
     {
         D3DXMATRIX kView(pkRenderer->GetD3DView());
@@ -77,7 +79,7 @@ void CMirrored3DRenderView::SetCameraData(const NiRect<float>& kViewport)
         pkDevice->SetClipPlane(0, kClip);
 
         NiDX9RenderState* pkState = NiDX9Renderer::GetRenderer()->GetRenderState();
-        FUN_140d9dab0(pkState, true);
+        ((class Unk_DevCaps*)(class NiDX9RenderState*)(pkState))->SetEnabled(true);
         pkState->SetRenderState(D3DRS_CLIPPLANEENABLE, 1);
     }
 }

@@ -25,7 +25,6 @@ void FUN_1409989e0(void* pOut, const char* psz);           // 0x1409989e0 efd::u
 void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
 bool FUN_140184310(const CString& str, const char* psz);   // 0x140184310 the model name equals the text
 bool FUN_1401c0090(const CString& a, const CString& b);    // 0x1401c0090 the model name equals the text
-void FUN_141653f00(PCBase* pPc);                           // 0x141653f00
 
 // The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
 struct Unk_WsString
@@ -130,7 +129,7 @@ void StateWaitingSelect::vfunc_2(int n)
     case 0x54:
         m_n10 = n;
         pPC->FUN_14166ce70(1);
-        FUN_141653f00(pPC);
+        reinterpret_cast<PC*>(pPC)->FUN_141653f00();
         {
             MS2Ptr<Unk_WsEquipRec> spEquip = reinterpret_cast<Unk_WsEquipOwner*>(pPC)->FUN_14165c520();
             if (spEquip.get() != 0)
@@ -147,7 +146,7 @@ void StateWaitingSelect::vfunc_2(int n)
     case 0x55:
         m_n10 = n;
         pPC->FUN_14166ce70(1);
-        FUN_141653f00(pPC);
+        reinterpret_cast<PC*>(pPC)->FUN_141653f00();
         pPC->FUN_14166dda0(1);
         break;
     case 0x51:

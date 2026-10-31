@@ -23,6 +23,11 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/pcbase.h"
+#include "ms2/placeholder/pcgemequip.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/buddymanager.h"
+#include "ms2/client/ms2/uiservice.h"
 #include <algorithm>
 #include <errno.h>
 #include <string.h>
@@ -30,7 +35,7 @@ static CString s_winSound = "BattleField_Win";
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
 enum Unk_ClosingJob { Unk_ClosingJob_None };
-class Unk_ClosingThing { public: void FUN_141270610(); };
+class Unk_ClosingThing : public PCGemEquip { };
 struct Unk_ClosingVector
 {
     Unk_ClosingVector();
@@ -165,7 +170,7 @@ private:
     void* m_a8; void* m_b0; void* m_b8; void* m_c0; void* m_c8; void* m_d0; void* m_d8; void* m_e0; void* m_e8;
 };
 MS2_CHECK_SIZE(UIAvatarPC, 0xf0);
-class Unk_ClosingSelf { public: __int64 FUN_141656a80(); };
+class Unk_ClosingSelf : public PCBase { };
 // The PC: the name getter is vtable slot 77 (+0x268).
 class Unk_ClosingPlayer
 {
@@ -173,16 +178,13 @@ public:
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23(); virtual void vfunc_24(); virtual void vfunc_25(); virtual void vfunc_26(); virtual void vfunc_27(); virtual void vfunc_28(); virtual void vfunc_29(); virtual void vfunc_30(); virtual void vfunc_31(); virtual void vfunc_32(); virtual void vfunc_33(); virtual void vfunc_34(); virtual void vfunc_35(); virtual void vfunc_36(); virtual void vfunc_37(); virtual void vfunc_38(); virtual void vfunc_39(); virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44(); virtual void vfunc_45(); virtual void vfunc_46(); virtual void vfunc_47(); virtual void vfunc_48(); virtual void vfunc_49(); virtual void vfunc_50(); virtual void vfunc_51(); virtual void vfunc_52(); virtual void vfunc_53(); virtual void vfunc_54(); virtual void vfunc_55(); virtual void vfunc_56(); virtual void vfunc_57(); virtual void vfunc_58(); virtual void vfunc_59(); virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63(); virtual void vfunc_64(); virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67(); virtual void vfunc_68(); virtual void vfunc_69(); virtual void vfunc_70(); virtual void vfunc_71(); virtual void vfunc_72(); virtual void vfunc_73(); virtual void vfunc_74(); virtual void vfunc_75(); virtual void vfunc_76();
     virtual CStringW vfunc_77();
 };
-class Unk_ClosingWorld
+class Unk_ClosingWorld : public WorldService
 {
 public:
     Unk_ClosingPlayer* FUN_141bd1530(__int64);
     Unk_ClosingSelf* FUN_141bd0cc0();
-    int FUN_141bd3060();
 };
-Unk_ClosingWorld* FUN_1403ed2d0();
 class Unk_ClosingUIMgr { public: void FUN_141adc530(int); };
-Unk_ClosingUIMgr* FUN_1403ed2b0();
 class Unk_ClosingButton : public ASDisplayObject { public: void FUN_1422c1fe0(unsigned); };
 class Unk_ClosingClip : public ASUIComponent
 {
@@ -206,7 +208,6 @@ public:
     virtual void vfunc_10(int n);
 };
 Unk_140a94350* FUN_140a94350();
-CBuddyManager* FUN_14097a780();
 void FUN_140cfee80(const Scaleform::GFx::Value&, CString, CStringW);
 void FUN_140cffca0(const Scaleform::GFx::Value&, CString, CString);
 CStringW GetStringCommonByKey(const CStringW&);
@@ -243,8 +244,8 @@ void UIDungeonClosingPhotoDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     m_1b4 = 0;
-    if (FUN_1403ed2d0()->FUN_141bd3060() == m_1bc)
-        FUN_1403ed2b0()->FUN_141adc530(0x4ef9);
+    if (reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd3060() == m_1bc)
+        reinterpret_cast<Unk_ClosingUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ef9);
     m_1bc = 0;
 }
 
@@ -253,7 +254,7 @@ void UIDungeonClosingPhotoDialog::vfunc_72()
 {
     if (m_1b0 != 0 && m_1b0 < FUN_140869420()) {
         m_1b0 = 0;
-        if (FUN_1403ed2d0()->FUN_141bd3060() == m_1bc)
+        if (reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd3060() == m_1bc)
             FUN_141924680();
     } else {
         if (m_1b4 == 0)
@@ -422,7 +423,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
             }
         }
         if (m_entries.size() < 10) {
-            Unk_ClosingPlayer* player = FUN_1403ed2d0()->FUN_141bd1530(uid);
+            Unk_ClosingPlayer* player = reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd1530(uid);
             if (player == 0)
                 continue;
             UIAvatarPC* av = new UIAvatarPC(player, false);
@@ -441,7 +442,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
             m_entries.push_back(entry);
         }
     }
-    m_1bc = FUN_1403ed2d0()->FUN_141bd3060();
+    m_1bc = reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd3060();
     unsigned flag = 0;
     if (res == 1) {
         Unk_RewardOtherDialog* dlg = FUN_140e01890(0x4e4c);
@@ -596,9 +597,9 @@ void UIDungeonClosingPhotoDialog::FUN_140e102b0(Unk_ClosingEntry* e)
 {
     if (MS2Ptr<ASMovieClip> info = e->m_clip->FUN_1409b4560("m_characterInfo")) {
         if (MS2Ptr<Unk_ClosingButton> btn = info->FUN_140acce30<Unk_ClosingButton>("m_addFriend")) {
-            Unk_ClosingSelf* self = FUN_1403ed2d0()->FUN_141bd0cc0();
+            Unk_ClosingSelf* self = reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
             bool isSelf = self ? self->FUN_141656a80() == e->m_uid : false;
-            bool buddy = FUN_14097a780()->FUN_140ae4d70(e->m_uid);
+            bool buddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4d70(e->m_uid);
             bool show = !isSelf && !buddy;
             btn->vfunc_4(show);
             btn->FUN_1422c1fe0(show);
@@ -618,9 +619,9 @@ void UIDungeonClosingPhotoDialog::FUN_140e104d0(int slot)
     if (!valid)
         return;
     Unk_ClosingEntry* e = &m_entries[idx];
-    if (FUN_1403ed2d0()->FUN_141bd0cc0()->FUN_141656a80() == e->m_uid)
+    if (reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd0cc0()->FUN_141656a80() == e->m_uid)
         return;
-    if (FUN_14097a780()->FUN_140ae4d70(e->m_uid) == 1)
+    if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4d70(e->m_uid) == 1)
         return;
     {
         UIAvatarPC* av = e->m_avatar.get();
@@ -639,7 +640,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e104d0(int slot)
         req.protocol = 2;
         req.name = actor->vfunc_77();
         req.memo = GetStringCommon(0x60a);
-        FUN_14097a780()->FUN_140ae4820(req);
+        TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4820(req);
     }
 }
 
@@ -648,7 +649,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e10800(int result, CStringW name)
 {
     if (result == 0)
         return;
-    CBuddyManager::Ptr buddy = FUN_14097a780()->FUN_140ae4950(name);
+    CBuddyManager::Ptr buddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4950(name);
     if (buddy.get()) {
         if (buddy->FUN_1401cc5d0() == 1) {
             FUN_140961010(0x61a, 1, 1, name);

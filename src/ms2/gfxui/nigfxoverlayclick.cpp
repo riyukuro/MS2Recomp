@@ -15,7 +15,6 @@
 #include "hook/ms2hook.h"
 
 float FUN_1416fa2f0();                                              // the current time in seconds
-void FUN_1422adf90(GFxManager* pManager);                           // renders the GFx UI movies
 
 // @0x142303440
 NiGFxOverlayClick::NiGFxOverlayClick()
@@ -56,7 +55,7 @@ void NiGFxOverlayClick::PerformRendering(unsigned int uiFrameID)
     if (FUN_14025e7a0() != NULL)
     {
         float fStart = FUN_1416fa2f0();
-        FUN_1422adf90(FUN_14025e7a0());
+        FUN_14025e7a0()->Render();
         m_fUIRenderTime = FUN_1416fa2f0() - fStart;
     }
 }

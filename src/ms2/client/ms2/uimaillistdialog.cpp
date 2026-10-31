@@ -14,7 +14,10 @@
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimaillistdialog.cpp"    // assumed
 
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uimaillistdialog.h"
 
@@ -53,6 +56,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/weddingmanager.h"   // C3: TSingleton<> needs the class
 
 // ---- statics of the unit's headers (two copies of the merat market sort names / key controller block) ----
 
@@ -83,22 +87,6 @@ class Unk_MlButton : public ASDisplayObject { public: void FUN_1422c1fe0(unsigne
 class Unk_MlCheckBox : public ASDisplayObject { public: void FUN_1422ce090(int bSelected); };
 // "m_tab".
 class Unk_MlTab : public ASDisplayObject { public: int FUN_1422e3210(); };
-
-// The mail list control of the movie (the AS list with clear / append / select).
-class Unk_MlList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dcca0(int nIndex);                                 // select a row (-1: none)
-    void FUN_1422dd1d0();                                           // clear
-    void FUN_1422dd230(const ASObj& row);                           // append a row
-};
 
 class Unk_PopupMenuInfo
 {
@@ -170,7 +158,6 @@ class PCBase;
 // The wedding manager (WeddingManager, placeholder/weddingmanager.h) as this unit calls it: ReadTicketMail with the
 // mail pointer type of CUserMail.
 class Unk_MlWedding { public: void FUN_141b873c0(Unk_MailPtr<CMailInfo> spMail, AScript* pOut); };
-Unk_MlWedding* FUN_1409eed90();                                     // TSingleton<WeddingManager>::GetInstance
 
 // ---- UIMailSendDialog's views ----
 
@@ -179,7 +166,7 @@ class Unk_MsInput : public ASTextInput
 {
 };
 // "m_buddys": the buddy name dropdown (an AS component like m_list: slot 24 refreshes it).
-class Unk_MsCombo : public Unk_MlList
+class Unk_MsCombo : public ASScrollingList
 {
 public:
     void FUN_1422dfc10();                                           // remove every entry
@@ -196,7 +183,6 @@ struct Unk_MailSendInfo
 // CommonString as the send dialog calls it: the ban word checker.
 CommonString* FUN_14025e7d0();                                     // TSingleton<CommonString>::GetInstance
 CInputKeyHandler* FUN_14025e7c0();                                  // TSingleton<CInputKeyHandler>::GetInstance
-UIStatusEventDispatcher* FUN_140aa6d40();                           // TSingleton<UIStatusEventDispatcher>::GetInstance
 int FUN_1418fccc0(int nMsg, unsigned __int64 wParam, unsigned __int64 lParam, CStringW* pStr);   // the key edits the text
 CStringW FUN_1413fa9b0(const CStringW& str);                        // lower case
 CStringW XmlWide(const char* psz);                            // UTF-8 -> wide
@@ -218,7 +204,6 @@ int FUN_1419eadd0(CMailInfo* pMail)
 }
 
 // The text translator of the system mails (sender / title keys -> text).
-CReservedWordTable* FUN_1403b4750();
 CStringW FUN_1419e95d0(CMailInfo* pMail, int bTooltip);             // the "days left" text of a row
 
 // @0x1419ea470: Unk_MailPtr<CMailInfo>::IsNull (usermail.h)
@@ -523,14 +508,14 @@ void UIMailListDialog::FUN_1419e5a10(__int64 nMailId)
                 int nKind = spMail->FUN_140690370();
                 if (nKind >= 100 && nKind < 0x71)
                 {
-                    FUN_1403b4750()->FUN_1416fb300(strSender);
-                    FUN_1403b4750()->FUN_1416fb300(strTitle);
-                    FUN_1403b4750()->FUN_1416fb300(strContent);
+                    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strSender);
+                    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strTitle);
+                    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strContent);
                 }
                 if (nKind == 0x70)
                 {
                     ASObj wedding(2);
-                    FUN_1409eed90()->FUN_141b873c0(CUserMail::MailPtr(spMail), &wedding);
+                    reinterpret_cast<Unk_MlWedding*>(TSingleton<WeddingManager>::GetInstance())->FUN_141b873c0(CUserMail::MailPtr(spMail), &wedding);
                     info.FUN_1409eb270("wedding", wedding);
                 }
                 info.FUN_1407cbb20("sender", CStringW(strSender));
@@ -1226,7 +1211,7 @@ void UIMailListDialog::FUN_1419e5190()
 {
     __int64 nOpen = FUN_1419e6c30();
     int nSelect = -1;
-    if (MS2Ptr<Unk_MlList> spList = FUN_140c02900("m_list"))
+    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_list"))
     {
         spList->FUN_1422dd1d0();
         ATL::CAtlList<CUserMail::MailPtr> mails(10);
@@ -1250,8 +1235,8 @@ void UIMailListDialog::FUN_1419e5190()
             int nKind = pMail->FUN_140690370();
             if (nKind >= 100 && nKind < 0x71)
             {
-                FUN_1403b4750()->FUN_1416fb300(strSender);
-                FUN_1403b4750()->FUN_1416fb300(strTitle);
+                TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strSender);
+                TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strTitle);
             }
             ASObj row(2);
             row.FUN_1407cbb20("mailSN", FUN_141b71910(pMail->FUN_140690350()));
@@ -1404,7 +1389,7 @@ int UIMailSendDialog::vfunc_65()
     }
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     return 1;
 }
 MS2_REPLACE_METHOD(0x1419ec300, UIMailSendDialog, vfunc_65, 189, 0xCD1EEC7C); // UIMailSendDialog::vfunc_65
@@ -1414,7 +1399,7 @@ void UIMailSendDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     m_spReply = 0;
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
 }
 MS2_REPLACE_METHOD(0x1419ec3d0, UIMailSendDialog, vfunc_67, 98, 0xFA732006); // UIMailSendDialog::vfunc_67
 

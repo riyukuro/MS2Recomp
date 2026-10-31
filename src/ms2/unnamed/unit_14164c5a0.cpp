@@ -27,7 +27,11 @@ void FUN_14164c370(Unk_IntVec*, int*);            // vector<int>::push_back
 unsigned __int64 FUN_14164c550(Unk_IntVec*);      // vector<int>::size
 int* FUN_14164b420(Unk_IntVec*, __int64);         // vector<int>::operator[]
 int* FUN_1416393a0(Unk_IntVec*, __int64);         // vector<int>::operator[] (second instance)
-void FUN_14164c0a0(int* axisMap, int* v3);        // reorder/flip a 3-int vertex by axis map
+class cCoordinateMapping   // C3: member view for the former free stand-ins
+{
+public:
+    void applyTo(long*) const;
+};
 int FUN_140291d90(float);                         // float -> int
 
 struct Unk_MeshVec3 { float x, y, z; Unk_MeshVec3(); };   // ctor 0x140a003a0
@@ -35,7 +39,11 @@ struct Unk_MeshAux { int i0, i1, i2, i3, i4, i5, i6; };
 void FUN_140adbea0(Unk_MeshAux*, float);   // ctor of the aux part
 struct Unk_MeshXform { int i0, i1, i2, i3, i4, i5, i6, i7, i8, j0, j1, j2, j3, j4, j5, j6; ~Unk_MeshXform(); };   // aux part at j0   // dtor 0x140adbb80
 void FUN_141639400(Unk_MeshXform*, float);
-void FUN_140adcef0(Unk_MeshXform*, const void* src, Unk_MeshVec3* out);
+class NxMat34   // C3: member view for the former free stand-ins
+{
+public:
+    void multiply(class NxVec3 const&, class NxVec3&) const;
+};
 
 struct Unk_MeshDesc {
     int nVerts;
@@ -132,7 +140,7 @@ cPhysXTriangleMeshWrapper::cPhysXTriangleMeshWrapper(Unk_MeshSource* src, int* a
     for (i = 0; i != d.nVerts; ++i) {
         const char* cur = p;
         Unk_MeshVec3 v;
-            FUN_140adcef0(&xf, cur, &v);
+            ((class NxMat34*)(struct Unk_MeshXform*)(&xf))->multiply(*(class NxVec3 const*)(cur), *(class NxVec3*)(&v));
         int a = FUN_140291d90(v.x);
         FUN_14164c370(&verts, &a);
         int b = FUN_140291d90(v.y);
@@ -142,7 +150,7 @@ cPhysXTriangleMeshWrapper::cPhysXTriangleMeshWrapper(Unk_MeshSource* src, int* a
         p += d.vStride;
     }
     for (i = 0; i != d.nVerts; ++i)
-        FUN_14164c0a0(axisMap, FUN_1416393a0(&verts, (__int64)(i * 3)));
+        ((class cCoordinateMapping*)(int*)(axisMap))->applyTo((long*)(FUN_1416393a0(&verts, (__int64)(i * 3))));
     FUN_14164c450(&tris, (unsigned)(d.nTris * 3));
     p = d.tris;
     if ((d.flags & 2) != 0) {

@@ -33,6 +33,8 @@
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/client/ms2/uitalkcinematic.h"
 #include "ms2/commonfiles/commonstringtable.h"
+#include "ms2/commonfiles/maid.h"
+#include "ms2/client/ms2/worldservice.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -154,31 +156,23 @@ struct Unk_MaidInfoRef
 
 class Unk_MaidDescTable { public: Unk_MaidDescRef FUN_14067f780(int nMsgId); };
 class Unk_MaidInfoTable { public: Unk_MaidInfoRef FUN_14067f180(int nMsgId); };
-class Unk_MaidExpTable { public: int FUN_14067ed30(int nLevel); };    // the experience of one affinity level
-Unk_MaidDescTable* FUN_1409eed10();
-Unk_MaidInfoTable* FUN_1409eed20();
-Unk_MaidExpTable* FUN_14067e910();
+    // the experience of one affinity level
 
 // The maid npc (CNpc): the maid record and the name / title texts.
-class Unk_MaidNpcView
+class Unk_MaidNpcView : public CNpc
 {
 public:
     Unk_MaidRef FUN_141093800();                                // the maid record
-    CStringW FUN_141093310();                                   // the display name
-    CStringW FUN_141093980();                                   // the title
 };
 
-class Unk_MaidWorld
+class Unk_MaidWorld : public WorldService
 {
 public:
-    void* FUN_141bd0cc0();                                      // the local player
     PCBase* FUN_141bd1320(int nActorId);                        // an actor by object id
 };
-Unk_MaidWorld* FUN_1403ed2d0();
-CInputKeyHandler* FUN_14025e7c0();                              // the key handler singleton
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
     // resolve a background path
-CReservedWordTable* FUN_1403b4750();
 
 // The game constants (0xa118: the maxChars1 limits, 0xa1c8: the maxChars2 limits). View only.
 struct Unk_MaidLimitBox { unsigned char m[0xb0]; };
@@ -189,7 +183,7 @@ public:
     Unk_MaidLimitBox m_maxChars1;                               // +0xa118
     Unk_MaidLimitBox m_maxChars2;                               // +0xa1c8
 };
-Unk_MaidConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int* FUN_1402056b0(Unk_MaidLimitBox* pBox);
 
 // The unit-local view of the profile edit buffer: the 13 texts.
@@ -269,7 +263,7 @@ int UIMaidDialog::vfunc_13()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0))
+        if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0))
         {
             pDialog->Invoke("onTabKey");
             return 1;
@@ -404,23 +398,23 @@ int UIMaidDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
 // @0x1412d7aa0
 void UIMaidDialog::FUN_1412d7aa0()
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (m_30.IsNull())
         return;
     if (m_nMaidId == 0)
         return;
-    CNpc* pNpc = static_cast<CNpc*>(FUN_1403ed2d0()->FUN_141bd1320(m_nMaidId));
+    CNpc* pNpc = static_cast<CNpc*>(reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nMaidId));
     if (pNpc == 0)
         return;
     Unk_MaidRef spMaid = reinterpret_cast<Unk_MaidNpcView*>(pNpc)->FUN_141093800();
     if (spMaid.FUN_140d51d60())
         return;
-    Unk_MaidDescRef spDesc = FUN_1409eed10()->FUN_14067f780(spMaid.FUN_14067e8c0()->m_nMsgId);
+    Unk_MaidDescRef spDesc = reinterpret_cast<Unk_MaidDescTable*>(TSingleton<CMaidDescTable>::GetInstance())->FUN_14067f780(spMaid.FUN_14067e8c0()->m_nMsgId);
     if (spDesc.FUN_1409edcf0())
         return;
-    Unk_MaidInfoRef spInfo = FUN_1409eed20()->FUN_14067f180(spMaid.FUN_14067e8c0()->m_nMsgId);
+    Unk_MaidInfoRef spInfo = reinterpret_cast<Unk_MaidInfoTable*>(TSingleton<CMaidInfoTable>::GetInstance())->FUN_14067f180(spMaid.FUN_14067e8c0()->m_nMsgId);
     if (spInfo.FUN_1409edd20())
         return;
 
@@ -441,7 +435,7 @@ void UIMaidDialog::FUN_1412d7aa0()
     obj.FUN_1407cbb20("salary", FUN_140656190(L"{0} {1}", GetStringCommon(0x793), FUN_140763e10(spInfo.FUN_1406810e0()->m_nSalary)));
     obj.FUN_1407cbb20("endDate", FUN_1412da590());
 
-    int nMaxExp = FUN_1404eb7e0(1, FUN_14067e910()->FUN_14067ed30(spMaid.FUN_14067e8c0()->m_nLevel));
+    int nMaxExp = FUN_1404eb7e0(1, TSingleton<CMaidExpTable>::GetInstance()->GetExp(spMaid.FUN_14067e8c0()->m_nLevel));
     int nGauge = spMaid.FUN_14067e8c0()->m_nExp * 100 / nMaxExp;
     CStringW strLevel = FUN_1408116a0(0x79a, spMaid.FUN_14067e8c0()->m_nLevel);
     if (spMaid.FUN_14067e8c0()->FUN_14067dca0() != 0)
@@ -454,10 +448,10 @@ void UIMaidDialog::FUN_1412d7aa0()
     obj.FUN_1407cb9c0("affinityGauge", nGauge);
     obj.FUN_1407cb9c0("mood", spMaid.FUN_14067e8c0()->m_nMood);
     CStringW strBackground(spDesc.FUN_1406810d0()->m_strBackground);
-    FUN_1403b4750()->FUN_1416fb340(strBackground);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strBackground);
     obj.FUN_1407cbb20("background", CStringW(strBackground));
     unsigned nEditable = spMaid.FUN_14067e8c0()->FUN_1409eeda0().IsEmpty();
-    if (FUN_14025e7c0()->IsDebugMode())
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode())
         nEditable = 1;
     obj.FUN_1407cb9c0("editable", nEditable);
     if (spMaid.FUN_14067e8c0()->FUN_1409eeda0().IsEmpty())
@@ -488,10 +482,10 @@ void UIMaidDialog::FUN_1412d7aa0()
         obj.FUN_1407cbb20("ownername", CStringW(spMaid.FUN_14067e8c0()->m_strOwnerName));
         obj.FUN_1407cbb20("belongto", CStringW(spMaid.FUN_14067e8c0()->m_strBelongTo));
     }
-    obj.FUN_1407cb9c0("maxChars1", *FUN_1402056b0(&FUN_1401d3200()->m_maxChars1));
-    obj.FUN_1407cb9c0("maxChars2", *FUN_1402056b0(&FUN_1401d3200()->m_maxChars2));
+    obj.FUN_1407cb9c0("maxChars1", *FUN_1402056b0(&((class Unk_MaidConsts*)FUN_1401d3200())->m_maxChars1));
+    obj.FUN_1407cb9c0("maxChars2", *FUN_1402056b0(&((class Unk_MaidConsts*)FUN_1401d3200())->m_maxChars2));
     m_30->Invoke("setData", obj);
-    if (FUN_14025e7c0()->IsDebugMode())
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode())
         m_30->Invoke("showDebugBtn", 1);           // an int, not a bool: the movie gets the Number 1
 }
 
@@ -609,29 +603,29 @@ void UIMaidDialog::FUN_1412d9640(int nMaidId, unsigned __int64 nMaidUid)
 // @0x1412d9680
 void UIMaidDialog::FUN_1412d9680()
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (m_30.IsNull())
         return;
     if (m_nMaidId == 0)
         return;
-    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(FUN_1403ed2d0()->FUN_141bd1320(m_nMaidId));
+    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nMaidId));
     if (pView == 0)
         return;
     Unk_MaidRef spMaid = pView->FUN_141093800();
     if (spMaid.FUN_140d51d60())
         return;
-    Unk_MaidDescRef spDesc = FUN_1409eed10()->FUN_14067f780(spMaid.FUN_14067e8c0()->m_nMsgId);
+    Unk_MaidDescRef spDesc = reinterpret_cast<Unk_MaidDescTable*>(TSingleton<CMaidDescTable>::GetInstance())->FUN_14067f780(spMaid.FUN_14067e8c0()->m_nMsgId);
     if (spDesc.FUN_1409edcf0())
         return;
-    Unk_MaidInfoRef spInfo = FUN_1409eed20()->FUN_14067f180(spMaid.FUN_14067e8c0()->m_nMsgId);
+    Unk_MaidInfoRef spInfo = reinterpret_cast<Unk_MaidInfoTable*>(TSingleton<CMaidInfoTable>::GetInstance())->FUN_14067f180(spMaid.FUN_14067e8c0()->m_nMsgId);
     if (spInfo.FUN_1409edd20())
         return;
 
     ASObj obj(2);
     obj.FUN_1407cbb20("endDate", FUN_1412da590());
-    int nMaxExp = FUN_1404eb7e0(1, FUN_14067e910()->FUN_14067ed30(spMaid.FUN_14067e8c0()->m_nLevel));
+    int nMaxExp = FUN_1404eb7e0(1, TSingleton<CMaidExpTable>::GetInstance()->GetExp(spMaid.FUN_14067e8c0()->m_nLevel));
     int nGauge = spMaid.FUN_14067e8c0()->m_nExp * 100 / nMaxExp;
     CStringW strLevel = FUN_1408116a0(0x79a, spMaid.FUN_14067e8c0()->m_nLevel);
     if (spMaid.FUN_14067e8c0()->FUN_14067dca0() != 0)
@@ -649,23 +643,23 @@ void UIMaidDialog::FUN_1412d9680()
 // @0x1412d9b90
 void UIMaidDialog::FUN_1412d9b90()
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (m_30.IsNull())
         return;
     if (m_nMaidId == 0)
         return;
-    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(FUN_1403ed2d0()->FUN_141bd1320(m_nMaidId));
+    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nMaidId));
     if (pView == 0)
         return;
     Unk_MaidRef spMaid = pView->FUN_141093800();
     if (spMaid.FUN_140d51d60())
         return;
-    Unk_MaidDescRef spDesc = FUN_1409eed10()->FUN_14067f780(spMaid.FUN_14067e8c0()->m_nMsgId);
+    Unk_MaidDescRef spDesc = reinterpret_cast<Unk_MaidDescTable*>(TSingleton<CMaidDescTable>::GetInstance())->FUN_14067f780(spMaid.FUN_14067e8c0()->m_nMsgId);
     if (spDesc.FUN_1409edcf0())
         return;
-    Unk_MaidInfoRef spInfo = FUN_1409eed20()->FUN_14067f180(spMaid.FUN_14067e8c0()->m_nMsgId);
+    Unk_MaidInfoRef spInfo = reinterpret_cast<Unk_MaidInfoTable*>(TSingleton<CMaidInfoTable>::GetInstance())->FUN_14067f180(spMaid.FUN_14067e8c0()->m_nMsgId);
     if (spInfo.FUN_1409edd20())
         return;
 
@@ -707,12 +701,12 @@ void UIMaidDialog::FUN_1412d9b90()
 CStringW UIMaidDialog::FUN_1412da590()
 {
     CStringW strText(L"");
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return strText;
     if (m_nMaidId == 0)
         return strText;
-    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(FUN_1403ed2d0()->FUN_141bd1320(m_nMaidId));
+    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nMaidId));
     if (pView == 0)
         return strText;
     Unk_MaidRef spMaid = pView->FUN_141093800();

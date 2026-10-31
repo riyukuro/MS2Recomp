@@ -168,8 +168,6 @@ public:
 };
 
 // ---- out-of-unit callees ----
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                         // the value is an object
-bool FUN_1407cce10(const Scaleform::GFx::Value* p);                         // the value is a display object
 
 MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
 MS2Ptr<Unk_140acd6e0> FUN_140acc910(int nMovieId, const Scaleform::GFx::Value& v);
@@ -179,19 +177,14 @@ MS2Ptr<ASTextField> FUN_1409b41a0(int nMovieId, const Scaleform::GFx::Value& v);
 
 void FUN_1422cdfb0(Unk_140acd6e0* p, const CStringW& str);
 void FUN_1422e4a50(Unk_WcTitle* p, const CStringW& str);
-void FUN_1422c50e0(ASTextField* p, unsigned int n);
 void FUN_1422c1fe0(ASMovieClip* p, unsigned int n);
 void FUN_1422c6380(Scaleform::GFx::Value& v, int n);
 void FUN_1422c63f0(Scaleform::GFx::Value& v, int n);
 void FUN_1422ce090(Unk_GpCheck* p, int n);
 unsigned char FUN_1422ce0e0(Unk_GpCheck* p);
-void FUN_1422c0e20(ASMovieClip* p, int n);
-void FUN_1422c0ec0(ASMovieClip* p, int n);
 int FUN_1422c1340(ASMovieClip* p);
-double FUN_1422c5970(ASTextField* p);
 
 
-void FUN_1422e55c0(Unk_AasImage* p, bool b);
 void FUN_1422e5530(Unk_AasImage* p, Unk_AasSourcePtr sp);   // by value: the exe callee destroys sp
 CStringW FUN_1422e5b80(CStringW str);
 void FUN_1422e5060(Unk_TextFieldEx* p, const Scaleform::GFx::Value& v, unsigned n);
@@ -210,7 +203,7 @@ UIWebBrowser* FUN_140c43790(int nUiId);
 // @0x140cff310
 void FUN_140cff310(const Scaleform::GFx::Value& root, CString strClip, CString strName, CStringW strText)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASDisplayObjectContainer> spClip = node.FUN_140d01d80(strClip);
@@ -224,7 +217,7 @@ void FUN_140cff310(const Scaleform::GFx::Value& root, CString strClip, CString s
 // @0x140cff4e0
 void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW strText)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<Unk_140acd6e0> spChild = node.FUN_140d01c90(strName);
@@ -236,7 +229,7 @@ void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW 
 // @0x140cff610
 void FUN_140cff610(const Scaleform::GFx::Value& root, CString strName, CStringW strText)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<Unk_WcTitle> spChild = node.FUN_140d01dd0(strName);
@@ -248,19 +241,19 @@ void FUN_140cff610(const Scaleform::GFx::Value& root, CString strName, CStringW 
 // @0x140cff740
 void FUN_140cff740(const Scaleform::GFx::Value& root, CString strName, unsigned int n)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASTextField> spChild = node.FUN_140d01e20(strName);
     if (spChild == 0)
         return;
-    FUN_1422c50e0(spChild.operator->(), n);
+    ((class ASTextField*)(class ASTextField*)(spChild.operator->()))->FUN_1422c50e0(n);
 }
 
 // @0x140cff840
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
@@ -272,7 +265,7 @@ void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisi
 // @0x140cff950
 void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, unsigned int n)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
@@ -284,7 +277,7 @@ void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, unsigned 
 // @0x140cffa50
 void FUN_140cffa50(const Scaleform::GFx::Value& root, CString strName, CString strLabel)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
@@ -296,7 +289,7 @@ void FUN_140cffa50(const Scaleform::GFx::Value& root, CString strName, CString s
 // @0x140cffb90
 void FUN_140cffb90(const Scaleform::GFx::Value& root, CString strName, int nFrame)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
@@ -308,7 +301,7 @@ void FUN_140cffb90(const Scaleform::GFx::Value& root, CString strName, int nFram
 // @0x140cffca0
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strLabel)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
@@ -320,7 +313,7 @@ void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString s
 // @0x140cffde0
 void FUN_140cffde0(const Scaleform::GFx::Value& root, CString strName, int nFrame)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
@@ -334,7 +327,7 @@ void FUN_140d00050(const Scaleform::GFx::Value* pRoot, CString strLabel);
 // @0x140cffef0
 void FUN_140cffef0(const Scaleform::GFx::Value& root, CString strName, CString strLabel)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
@@ -346,7 +339,7 @@ void FUN_140cffef0(const Scaleform::GFx::Value& root, CString strName, CString s
 // @0x140d00050
 void FUN_140d00050(const Scaleform::GFx::Value* pRoot, CString strLabel)
 {
-    if (!FUN_1407cce10(pRoot))
+    if (!((Scaleform::GFx::Value*)(void*)(pRoot))->IsDisplayObject())
         return;
     ASMovieClip clip(*pRoot, 2);
     if (static_cast<Unk_NamedClip&>(clip).FUN_1422ba8c0().IsEmpty())
@@ -358,7 +351,7 @@ void FUN_140d00050(const Scaleform::GFx::Value* pRoot, CString strLabel)
     for (int i = 0; i < nCount; i++)
     {
         Scaleform::GFx::Value child = clip.FUN_1422c6aa0(i);
-        if (!FUN_1407cce10(&child))
+        if (!((Scaleform::GFx::Value*)(void*)(&child))->IsDisplayObject())
             continue;
         FUN_140d00050(&child, CString(strLabel));
     }
@@ -375,7 +368,7 @@ void FUN_140d00270(const Scaleform::GFx::Value& root, CString strName, Unk_SlotS
 // @0x140d00360
 void FUN_140d00360(const Scaleform::GFx::Value& root, CString strName, unsigned a, unsigned b, unsigned c)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
@@ -389,7 +382,7 @@ void FUN_140d00360(const Scaleform::GFx::Value& root, CString strName, unsigned 
 // @0x140d004f0
 void FUN_140d004f0(const Scaleform::GFx::Value& root, CString strName, ASSlot* pSlot)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
@@ -401,7 +394,7 @@ void FUN_140d004f0(const Scaleform::GFx::Value& root, CString strName, ASSlot* p
 // @0x140d00640
 void FUN_140d00640(const Scaleform::GFx::Value& root, CString strName, int nId)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, nId);
     MS2Ptr<ASDisplayObject> spChild = node.FUN_140d01d30(strName);
@@ -413,7 +406,7 @@ void FUN_140d00640(const Scaleform::GFx::Value& root, CString strName, int nId)
 // @0x140d00750
 void FUN_140d00750(const Scaleform::GFx::Value& root, CString strName, int nId)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, nId);
     MS2Ptr<ASDisplayObject> spChild = node.FUN_140d01d30(strName);
@@ -425,7 +418,7 @@ void FUN_140d00750(const Scaleform::GFx::Value& root, CString strName, int nId)
 // @0x140d00860
 void FUN_140d00860(const Scaleform::GFx::Value& root, CString strName, int n)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<Unk_GpCheck> spChild = node.FUN_140d01ce0(strName);
@@ -437,7 +430,7 @@ void FUN_140d00860(const Scaleform::GFx::Value& root, CString strName, int n)
 // @0x140d00960
 void FUN_140d00960(const Scaleform::GFx::Value& root, CString strName, unsigned int* pOut)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<Unk_GpCheck> spChild = node.FUN_140d01ce0(strName);
@@ -449,7 +442,7 @@ void FUN_140d00960(const Scaleform::GFx::Value& root, CString strName, unsigned 
 // @0x140d00a70
 void FUN_140d00a70(const Scaleform::GFx::Value& target, const Scaleform::GFx::Value& anchor, int nGap)
 {
-    if (!FUN_1409b4d40(target) || !FUN_1409b4d40(anchor))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(target))->IsObject() || !((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(anchor))->IsObject())
         return;
     Unk_Disp a(target, 2);
     Unk_Disp b(anchor, 2);
@@ -462,31 +455,31 @@ void FUN_140d00a70(const Scaleform::GFx::Value& target, const Scaleform::GFx::Va
 // @0x140d00b80
 void FUN_140d00b80(const Scaleform::GFx::Value& root, CString strName, int n)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
     if (spClip == 0)
         return;
-    FUN_1422c0e20(spClip.operator->(), n);
+    ((class ASDisplayObject*)(class ASMovieClip*)(spClip.operator->()))->FUN_1422c0e20(n);
 }
 
 // @0x140d00c80
 void FUN_140d00c80(const Scaleform::GFx::Value& root, CString strName, int n)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
     if (spClip == 0)
         return;
-    FUN_1422c0ec0(spClip.operator->(), n);
+    ((class ASDisplayObject*)(class ASMovieClip*)(spClip.operator->()))->FUN_1422c0ec0(n);
 }
 
 // @0x140d00d80
 int FUN_140d00d80(const Scaleform::GFx::Value& root, CString strName)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return 0;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
@@ -498,13 +491,13 @@ int FUN_140d00d80(const Scaleform::GFx::Value& root, CString strName)
 // @0x140d00e90
 int FUN_140d00e90(const Scaleform::GFx::Value& root, CString strName)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return 0;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASTextField> spChild = node.FUN_140d01e20(strName);
     if (spChild == 0)
         return 0;
-    return (unsigned int)(__int64)FUN_1422c5970(spChild.operator->());
+    return (unsigned int)(__int64)((class ASTextField*)(class ASTextField*)(spChild.operator->()))->FUN_1422c5970();
 }
 
 // @0x140d00fb0
@@ -574,7 +567,7 @@ void FUN_140d011c0(Unk_AasImagePtr spImage, CStringW strUrl, bool bFlag)
 {
     if (spImage == 0)
         return;
-    FUN_1422e55c0(spImage.operator->(), bFlag);
+    ((class ASLoader*)(class Unk_AasImage*)(spImage.operator->()))->UnloadAndStop(bFlag);
     FUN_1422e5530(spImage.operator->(), Unk_AasSourcePtr(new Unk_AasSource(FUN_1422e5b80(CStringW(strUrl)), 2)));
 }
 
@@ -601,7 +594,7 @@ void FUN_140d013b0(const Scaleform::GFx::Value& target, int nMovieId)
 // @0x140d01420
 void FUN_140d01420(const Scaleform::GFx::Value& root, CString strName, int nMovieId)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
@@ -624,7 +617,7 @@ void FUN_140d01780(const Scaleform::GFx::Value& target, bool bDisable);
 // @0x140d01670
 void FUN_140d01670(const Scaleform::GFx::Value& root, CString strName, bool bDisable)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
@@ -719,7 +712,7 @@ MS2Ptr<ASTextField> Unk_Finder::FUN_140d01e20(const CString& strName)
         if (!spCont->FUN_1422ba9f0("getChildByName"))                                                              \
             return MS2Ptr<T>(0);                                                                                   \
         Scaleform::GFx::Value child = spCont->FUN_1422c6b00(strName);                                              \
-        if (FUN_1409b4d40(child))                                                                                  \
+        if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(child))->IsObject())                                                                                  \
             return CREATE(m_nMovieId, child);                                                                      \
         if (!spCont->FUN_1422ba9f0("numChildren"))                                                                 \
             return MS2Ptr<T>(0);                                                                                   \
@@ -727,7 +720,7 @@ MS2Ptr<ASTextField> Unk_Finder::FUN_140d01e20(const CString& strName)
         for (int i = 0; i < nCount; i++)                                                                           \
         {                                                                                                          \
             Scaleform::GFx::Value sub = spCont->FUN_1422c6aa0(i);                                                  \
-            if (!FUN_1409b4d40(sub))                                                                               \
+            if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(sub))->IsObject())                                                                               \
                 continue;                                                                                          \
             MS2Ptr<T> sp = NAME(sub, strName);                                                                     \
             if (sp.get() != 0)                                                                                     \

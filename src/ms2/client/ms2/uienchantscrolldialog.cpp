@@ -30,6 +30,10 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/client/ms2/uiservice.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -65,18 +69,13 @@ AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
 
 class Unk_EsUiMgr { public: int FUN_141adc890(int uiId); void FUN_141adc530(int uiId); };
-Unk_EsUiMgr* FUN_1403ed2b0();
 
-class Unk_EsStrings { public: CStringW FUN_141813150(int nId); CStringW FUN_141811980(int nTable, int nId); };
-Unk_EsStrings* FUN_1401a9d70();
 class Unk_EsIngTable { public: CStringW FUN_140556a40(int nId); };
-Unk_EsIngTable* FUN_140281980();
-class Unk_EsTextFilter { public: void FUN_1416fb340(CStringW& strText); };
-Unk_EsTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 class Unk_EsInvDialog { public: void FUN_141999e00(); };
 Unk_EsInvDialog* FUN_1405344f0(int uiId);
 
-CStringW FUN_14082f090(unsigned nKey);                                              // option name template
+CStringW GetStatValueText(unsigned nKey);                                           // option name template
 __int64 FUN_140632990(__int64 nBase, float fExtra);                                 // the option value
 CStringW FUN_14183e9c0(CStringW strText, int nRank);                                // rank-coloured text
 CStringW FUN_140632a60(int nId, const CStringW& strA, const CStringW& strB);
@@ -239,10 +238,10 @@ void UIEnchantScrollDialog::FUN_140f3b920(CInPacket& packet)
         m_nRandomMax = packet.ReadInt32();
     }
     m_nFailRate /= 100;
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4ee0))
+    if (reinterpret_cast<Unk_EsUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ee0))
         FUN_140f3cb10();
     else
-        FUN_1403ed2b0()->FUN_141adc530(0x4ee0);
+        reinterpret_cast<Unk_EsUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ee0);
 }
 
 // @0x140f3bd10
@@ -275,8 +274,8 @@ void UIEnchantScrollDialog::FUN_140f3bd10(CInPacket& packet)
             data.FUN_1407cbb20("resultItemName", FUN_140f3d320(spItem->FUN_140526fc0(), spItem, 0, 1));
             break;
         case 3: {
-            CStringW strRank = FUN_140281980()->FUN_140556a40(spItem->FUN_140526bd0());
-            CStringW strName = FUN_1409eadb0(0xb6e, strRank, FUN_140f3e390(), FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0()));
+            CStringW strRank = reinterpret_cast<Unk_EsIngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140556a40(spItem->FUN_140526bd0());
+            CStringW strName = FUN_1409eadb0(0xb6e, strRank, FUN_140f3e390(), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()));
             data.FUN_1407cbb20("resultItemName", strName);
             FUN_140f3db20(spItem, data, packet);
             break;
@@ -341,12 +340,12 @@ void UIEnchantScrollDialog::FUN_140f3cb10()
             strLevel = StringFormat(L"{0}~{1}", m_nLevelMin, m_nLevelMax);
         for (size_t i = 0; i < m_ranks.GetCount(); i++) {
             unsigned nRank = m_ranks[i];
-            CStringW strRank = FUN_14183e9c0(FUN_1401a9d70()->FUN_141813150(nRank), nRank);
+            CStringW strRank = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141813150(nRank), nRank);
             strRanks.AppendFormat(L"%s, ", (LPCWSTR)strRank);
         }
         strRanks.TrimRight(L", ");
         for (size_t i = 0; i < m_equipTypes.GetCount(); i++)
-            strTypes.AppendFormat(L"%s, ", (LPCWSTR)FUN_1401a9d70()->FUN_141811980(8, m_equipTypes[i]));
+            strTypes.AppendFormat(L"%s, ", (LPCWSTR)TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, m_equipTypes[i]));
         strTypes.TrimRight(L", ");
         ASObj data(2);
         data.FUN_1407cbb20("itemGUID", FUN_141b71910(0));
@@ -381,8 +380,8 @@ void UIEnchantScrollDialog::FUN_140f3d210()
 // @0x140f3d320
 CStringW UIEnchantScrollDialog::FUN_140f3d320(int nLevel, MS2Ptr<CItem> spItem, int bStable, int bRandom)
 {
-    CStringW strRank = FUN_140281980()->FUN_140556a40(spItem->FUN_140526bd0());
-    CStringW strName = FUN_14028dee0(0xb6e, strRank, nLevel, FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0()));
+    CStringW strRank = reinterpret_cast<Unk_EsIngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140556a40(spItem->FUN_140526bd0());
+    CStringW strName = FUN_14028dee0(0xb6e, strRank, nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()));
     if (bStable)
         strName += FUN_1401d0160(L" ", GetStringCommon(0xb6f));
     else if (bRandom)
@@ -416,7 +415,7 @@ void UIEnchantScrollDialog::FUN_140f3d5b0(MS2Ptr<CItem> spItem, ASObj& rData, CI
             __int64 nAfter = FUN_140632990(nBase, fExtra + fRate);
             CStringW strBefore = StringFormat(L"{0}", nBefore);
             CStringW strAfter = StringFormat(L"{0}", nAfter);
-            CStringW strName = FUN_14082f090(nKey);
+            CStringW strName = GetStatValueText(nKey);
             strName.Replace(L"{0}", L"");
             obj.FUN_1407cbb20("statName", strName);
             obj.FUN_1407cbb20("prevStat", strBefore);
@@ -472,7 +471,7 @@ void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CI
                 __int64 nAfterHigh = FUN_140632990(nBase, fExtra + fRateHigh);
                 CStringW strBefore = StringFormat(L"{0}", nBefore);
                 CStringW strAfter = StringFormat(L"{0}~{1}", nAfterLow, nAfterHigh);
-                CStringW strName = FUN_14082f090(nKey);
+                CStringW strName = GetStatValueText(nKey);
                 strName.Replace(L"{0}", L"");
                 obj.FUN_1407cbb20("statName", strName);
                 obj.FUN_1407cbb20("prevStat", strBefore);

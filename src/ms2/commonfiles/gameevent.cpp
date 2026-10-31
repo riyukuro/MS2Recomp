@@ -71,6 +71,9 @@
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/logstring.h"
+class CShutdownEventBillboard;
+class CShutdownEventUGCBanner;
 
 // The packet stand-ins of the GameEvent slots are the COutputStream / the CInPacket (its CInputStream base at +8).
 #define MS2_GE_OUT(out) (*reinterpret_cast<COutputStream*>(out))
@@ -88,8 +91,7 @@ struct Unk_GEFactoryRegistry {
     char m_pad;
 };
 // Stream operators of CMsTime (packet.cpp).
-Unk_GEOut* FUN_14070fb70(Unk_GEOut* out, const CMsTime* date);
-Unk_GEReader* FUN_14070f6b0(Unk_GEReader* in, CMsTime* date);
+class COutputStream& FUN_14070fb70(class COutputStream&, struct Unk_OSNumber const&);   // C3: was FUN_14070fb70
 // ... of CStringW.
 Unk_GEOut* FUN_14070fae0(Unk_GEOut* out, const CStringW* str);
 Unk_GEReader* FUN_14070f5f0(Unk_GEReader* in, CStringW* str);
@@ -106,61 +108,90 @@ void FUN_140274fc0(const CStringW& text, ATL::CAtlArray<unsigned>& ids, const wc
 void FUN_1402928e0(const CStringW& text, ATL::CAtlArray<float>& values, const wchar_t* delims);
 void FUN_1401d9a30(const CStringW& text, ATL::CAtlArray<int>& values, const wchar_t* delims);
 bool FUN_14081dcd0(int nSaType);                                        // the SA value is a percent
-CGameRule* FUN_1401c0d90();                                             // TSingleton<CGameRule>::GetInstance
-Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);                      // the document's first child element
-Unk_140165cf0* FUN_140345b40(Unk_140165cf0* pNode);                     // first child element
-Unk_140165cf0* FUN_1403f0510(Unk_140165cf0* pNode);                     // next sibling element
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+Unk_140165cf0 * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);  // the document's first element by name
-int FUN_140421810(GameEventUserValueNameTable* table, CStringW name);   // the id of the name
 int FUN_1401d9a00(CStringW& text);                                      // a token as int
 // The dungeon open period value (gameeventvalue.cpp): registers / removes a dungeon tag's open period.
 bool FUN_140427690(Unk_GameEventLockedValue<0x78>* pValue, CStringW strTag, __int64 beginTime, __int64 endTime);
 void FUN_140427780(Unk_GameEventLockedValue<0x78>* pValue, CStringW strTag);
 // The guild rate values (gameeventvalue.cpp): set / get the event rate.
-void FUN_1404234a0(Unk_GameEventLockedValue<0x38>* pValue, int rate);
-void FUN_1404235b0(Unk_GameEventLockedValue<0x38>* pValue, int rate);
+class CGameEventValueGuildSkillSale   // C3: member view for the former free stand-ins
+{
+public:
+    void SetRate(int);
+};
+class CGameEventValueGuildPersonalSkillSale   // C3: member view for the former free stand-ins
+{
+public:
+    void SetRate(int);
+};
 void FUN_1404236c0(Unk_GameEventLockedValue<0x38>* pValue, int rate);
 unsigned FUN_140423670(Unk_GameEventLockedValue<0x38>* pValue);
-void FUN_1404237d0(Unk_GameEventLockedValue<0x38>* pValue, int rate);
-void FUN_1404238e0(Unk_GameEventLockedValue<0x38>* pValue, int rate);
+class CGameEventValueGuildFund   // C3: member view for the former free stand-ins
+{
+public:
+    void SetRate(int);
+};
+class CGameEventValueGuildCoin   // C3: member view for the former free stand-ins
+{
+public:
+    void SetRate(int);
+};
 // ... the mastery reward / reduce and merat market tab values.
 void FUN_140423b10(Unk_GameEventLockedValue<0x40>* pValue, int eventId, int rate, const CStringW& str);
-void FUN_140423da0(Unk_GameEventLockedValue<0x40>* pValue, int eventId);
+class CGameEventValueMasteryReward   // C3: member view for the former free stand-ins
+{
+public:
+    void Remove(unsigned long);
+};
 void FUN_140424040(Unk_GameEventLockedValue<0x38>* pValue, const CStringW& tab);
-void FUN_140424130(Unk_GameEventIntValue* pValue, int rate);
+class CGameEventValueMasteryReduce   // C3: member view for the former free stand-ins
+{
+public:
+    void SetRate(int);
+};
 void FUN_1404249f0(Unk_GameEventLockedValue<0x80>* pValue, ATL::CAtlArray<unsigned>& items);
-void FUN_140424ae0(Unk_GameEventLockedValue<0x80>* pValue);
+class CGameEventValueSaleItemsRestricted   // C3: member view for the former free stand-ins
+{
+public:
+    void Clear();
+};
 // The table attribute readers with a default (adventureleveltablehelper.cpp).
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);
 unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);
 bool FUN_1404246b0(Unk_GameEventLockedValue<0x40>* pValue, MS2Ptr<ItemBoxEventContext> spBox);
 void FUN_1404247e0(Unk_GameEventLockedValue<0x40>* pValue, MS2Ptr<ItemBoxEventContext> spBox);
 // The shut down interact objects (shutdownevent): add / remove one (field id, object id).
-void FUN_1407d0420(CShutdownEventInteractObject* pValue, unsigned nFieldId, int nObjectId);
-void FUN_1407d04c0(CShutdownEventInteractObject* pValue, unsigned nFieldId, int nObjectId);
 // The shut down function items (shutdownevent): add / remove one item id.
-void FUN_1407d0c30(CShutdownEventFunctionItem* pValue, unsigned nItemId);
-void FUN_1407d0cb0(CShutdownEventFunctionItem* pValue, unsigned nItemId);
 void FUN_14025a680(CStringW& src, ATL::CAtlArray<CStringW>& out, const wchar_t* pszSep);   // split (commonstringtable.cpp)
 // The dungeon helper bonus value: set / reset the rate.
-void FUN_140424c80(Unk_GameEventLockedValue<0x38>* pValue, unsigned rate);
-void FUN_140424cd0(Unk_GameEventLockedValue<0x38>* pValue, unsigned rate);
+class CGameEventValueDungeonHelperBonus   // C3: member view for the former free stand-ins
+{
+public:
+    void Add(int);
+    void Sub(int);
+};
 // The battle pet spawn values: add / remove the event's spawn list (type 0 / type 1).
 void FUN_1404255b0(Unk_GameEventLockedValue<0x140>* pValue, int nEventId, const CStringW& str);
 void FUN_140425f40(Unk_GameEventLockedValue<0x140>* pValue, int nEventId, const CStringW& str);
 void FUN_140426380(Unk_GameEventLockedValue<0x140>* pValue, int nEventId, const CStringW& str);
 void FUN_1404266f0(Unk_GameEventLockedValue<0x140>* pValue, int nEventId, const CStringW& str);
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int& rOut);   // int attribute (tinyxmlhelper.cpp)
-int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int& rOut);
-int FUN_140873600(Unk_140165cf0* pElem, const char* pszName, CMsTime& rOut);  // time attribute
-void FUN_1407d1c30(Unk_GameEventLockedValue<0x40>* pValue, int nEventId);       // shutdowneventvalue.cpp: add the id
-void FUN_1407d1ca0(Unk_GameEventLockedValue<0x40>* pValue, int nEventId);       // ... remove it
-void FUN_1407d1d90(Unk_GameEventLockedValue<0x40>* pValue, int nEventId);
-void FUN_1407d1e00(Unk_GameEventLockedValue<0x40>* pValue, int nEventId);
-void FUN_140428810(Unk_GameEventIntValue* pValue, int nValue);                    // gameeventvalue.cpp
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
+bool FUN_1407d1c30(CShutdownEventBillboard *, unsigned int);  // C3: the definition's signature
+void FUN_1407d1ca0(CShutdownEventBillboard *, unsigned int);  // C3: the definition's signature
+bool FUN_1407d1d90(CShutdownEventUGCBanner *, unsigned int);  // C3: the definition's signature
+void FUN_1407d1e00(CShutdownEventUGCBanner *, unsigned int);  // C3: the definition's signature
+class CGameEventValuePublicTest   // C3: member view for the former free stand-ins
+{
+public:
+    void SetValue(int);
+};
 void FUN_1404283e0(Unk_GameEventLockedValue<0x40>* pValue, MS2Ptr<BurningLevelupContext> spContext);
 void FUN_1404284a0(Unk_GameEventLockedValue<0x40>* pValue, MS2Ptr<BurningLevelupContext> spContext);
-int FUN_1408731a0(Unk_140165cf0* pElem, const char* pszName, unsigned short& rOut);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& rOut);
 int FUN_1407181a0(const CStringW& str);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -169,14 +200,20 @@ CString FUN_1401d4330(const wchar_t* pszWide, int nCodePage);                   
 CMsTime FUN_140718950(const CString& str);                                          // a date string
 __int64 GetServerTime();                                                            // server time
 void FUN_140428980(Unk_GameEventLockedValue<0x78>* pValue, int nEventId, MS2Ptr<FestivalContext> spContext);
-void FUN_1404289f0(Unk_GameEventLockedValue<0x78>* pValue, int nEventId);
+class CGameEventValueFestival   // C3: member view for the former free stand-ins
+{
+public:
+    void Remove(unsigned int);
+};
 void FUN_140428780(Unk_GameEventLockedValue<0x40>* pValue, MS2Ptr<CoupleDanceContext> spContext);
 void FUN_140428b10(Unk_GameEventLockedValue<0x40>* pValue, MS2Ptr<FieldEffectContext> spContext);
-void FUN_140428bf0(Unk_GameEventLockedValue<0x78>* pValue, int nId, int nRate);
-void FUN_140428c60(Unk_GameEventLockedValue<0x78>* pValue, int nId);
+class CGameEventValueExchangeScrollSale   // C3: member view for the former free stand-ins
+{
+public:
+    void Remove(unsigned long);
+    void Set(unsigned long, int);
+};
 void FUN_14025a680(const CStringW& text, ATL::CAtlArray<CStringW>& tokens, const wchar_t* delims);
-WorldService* FUN_1403ed2d0();
-CEffectService* FUN_1403ed280();
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);                        // case-insensitive equal
 // The item trade restriction value (gameeventvalue.cpp; the names are RTTI).
 class CGameEventValueItemTradeRestriction {
@@ -187,11 +224,12 @@ public:
         void FUN_1404290b0(Unk_ItemTradeRestrictionType eType, int nItemId, unsigned short nLimit);   // add a rule
         char m_pad_18[0x1b0];
     };
+public:
+    void Remove(unsigned int);   // C3: was free FUN_1404293a0
 };
 MS2_CHECK_SIZE(CGameEventValueItemTradeRestriction::RestrictionData, 0x1c8);
 void FUN_140429330(Unk_GameEventLockedValue<0x60>* pValue, int nEventId,
                    const MS2Ptr<CGameEventValueItemTradeRestriction::RestrictionData>& spData);
-void FUN_1404293a0(Unk_GameEventLockedValue<0x60>* pValue, int nEventId);
 void FUN_140429770(Unk_GameEventLockedValue<0x40>* pValue, MS2Ptr<CollectItemGroupContext> spContext);
 void FUN_140429830(Unk_GameEventLockedValue<0x40>* pValue, MS2Ptr<CollectItemGroupContext> spContext);
 bool FUN_140429a30(Unk_GameEventLockedValue<0x40>* pValue, MS2Ptr<ArcadeOpenContext> spContext);
@@ -199,15 +237,31 @@ void FUN_140429b80(Unk_GameEventLockedValue<0x40>* pValue, MS2Ptr<ArcadeOpenCont
 void FUN_140429d00(Unk_GameEventLockedValue<0x40>* pValue, MS2Ptr<BingoContext> spContext);
 void FUN_140429d90(Unk_GameEventLockedValue<0x40>* pValue, MS2Ptr<BingoContext> spContext);
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
-void FUN_140426ff0(Unk_GameEventLockedValue<0x38>* pValue, int nRate);   // the star shop value
+class CGameEventValueStarShop   // C3: member view for the former free stand-ins
+{
+public:
+    void SetValue(int);
+};
 int CompareRpsReward(const void* a, const void* b); // qsort order of the rps rewards (gameeventcontext.cpp)
 // The npc shop values (gameeventvalue.cpp): set / reset the event's entry.
-void FUN_1404270e0(Unk_GameEventLockedValue<0x78>* pValue, int nEventId, int nValue);
-void FUN_140427150(Unk_GameEventLockedValue<0x78>* pValue, int nEventId);
+class CGameEventValueNpcShopTalk   // C3: member view for the former free stand-ins
+{
+public:
+    void Remove(unsigned int);
+    void Set(unsigned int, unsigned int);
+};
 void FUN_1404272b0(Unk_GameEventLockedValue<0x78>* pValue, int nEventId, MS2Ptr<CNpcShopGivePointContextBase> spContext);
-void FUN_140427330(Unk_GameEventLockedValue<0x78>* pValue, int nEventId);
-void FUN_1404274c0(Unk_GameEventLockedValue<0x78>* pValue, int nEventId, int nValue);
-void FUN_140427530(Unk_GameEventLockedValue<0x78>* pValue, int nEventId);
+class CGameEventValueNpcShopGivePoint   // C3: member view for the former free stand-ins
+{
+public:
+    void Remove(unsigned int);
+};
+class CGameEventValueNpcShopResetPriceSale   // C3: member view for the former free stand-ins
+{
+public:
+    void Remove(unsigned int);
+    void Set(unsigned int, unsigned int);
+};
 unsigned __int64 FUN_140718370(CStringW* text);                         // unsigned __int64
 CStringW FUN_140718600(const CStringW& value);                         // copy
 // The UGC cube palette (ugccubepalette.cpp): the show-item box.
@@ -216,15 +270,13 @@ unsigned FUN_140df2130(CStringW strName, unsigned nArg);
 void FUN_140df1f40(unsigned nBox, unsigned nItemId);
 void FUN_140df2210(unsigned nBox);
 // The feature switches (featuremanager): whether feature `nId` is on.
-CFeatureManager* FUN_140166410();
-// The common log (FUN_140166440()).
-class Unk_CommonLog
+// The common log (GetLogString()).
+class Unk_CommonLog : public CLogString
 {
 public:
     void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
-    void FUN_1406530d0(int level, int category, const wchar_t* format, const fmt::ArgList& args);   // CLogString
 };
-Unk_CommonLog* FUN_140166440();
+class CLogString* GetLogString();
 Unk_NpcEventTag FUN_14021bc30(const CStringA& name);    // commonenum.cpp
 
 // The event factories (registered by name below each class).
@@ -529,21 +581,21 @@ void GameEventSaleChat::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BB700, GameEventSaleChat, vfunc_4, 124, 0x5A130818);
 
 // @0x1403bb790
-void GameEventSaleChat::OnStart() { FUN_1401c0d90()->FUN_140477020(m_id, m_d0, m_d4, m_d8); }
+void GameEventSaleChat::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_140477020(m_id, m_d0, m_d4, m_d8); }
 MS2_REPLACE_METHOD(0x1403BB790, GameEventSaleChat, OnStart, 74, 0xA2845D21);
 
 // @0x1403bb7e0
-void GameEventSaleChat::vfunc_6() { FUN_1401c0d90()->FUN_1404770e0(m_id); }
+void GameEventSaleChat::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_1404770e0(m_id); }
 MS2_REPLACE_METHOD(0x1403BB7E0, GameEventSaleChat, vfunc_6, 35, 0x24F80A7E);
 
 // @0x1403bb810
-__int64 FUN_1403bb810() { return FUN_1401c0d90()->FUN_140477180(); }
+__int64 FUN_1403bb810() { return ((class CGameRule*)FUN_1401c0d90())->FUN_140477180(); }
 MS2_REPLACE(0x1403BB810, FUN_1403bb810, 22, 0x5F8463DB);
 // @0x1403bb830
-__int64 FUN_1403bb830() { return FUN_1401c0d90()->FUN_140477210(); }
+__int64 FUN_1403bb830() { return ((class CGameRule*)FUN_1401c0d90())->FUN_140477210(); }
 MS2_REPLACE(0x1403BB830, FUN_1403bb830, 22, 0x75EBD94B);
 // @0x1403bb850
-__int64 FUN_1403bb850() { return FUN_1401c0d90()->FUN_1404772a0(); }
+__int64 FUN_1403bb850() { return ((class CGameRule*)FUN_1401c0d90())->FUN_1404772a0(); }
 MS2_REPLACE(0x1403BB850, FUN_1403bb850, 22, 0xB3D82860);
 // @0x1403bb870
 unsigned FUN_1403bb870() { return *FUN_1401d3200()->MeratConsumeSuperChat.Get(); }
@@ -624,16 +676,16 @@ void GameEventSAHotTime::OnStart()
     spContext->m_18 = m_d0;
     spContext->m_28 = m_e0;
     spContext->m_30 = m_e8;
-    FUN_1401c0d90()->FUN_140477360(FUN_1402e1d00(), spContext);
-    FUN_1401c0d90()->FUN_14047d820(FUN_1402e1d00(), m_80);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_140477360(FUN_1402e1d00(), spContext);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047d820(FUN_1402e1d00(), m_80);
 }
 MS2_REPLACE_METHOD(0x1403BBF30, GameEventSAHotTime, OnStart, 392, 0x94BE1A07);
 
 // @0x1403bc0c0
 void GameEventSAHotTime::vfunc_6()
 {
-    FUN_1401c0d90()->FUN_140477420(FUN_1402e1d00());
-    FUN_1401c0d90()->FUN_14047d900(FUN_1402e1d00());
+    ((class CGameRule*)FUN_1401c0d90())->FUN_140477420(FUN_1402e1d00());
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047d900(FUN_1402e1d00());
 }
 MS2_REPLACE_METHOD(0x1403BC0C0, GameEventSAHotTime, vfunc_6, 80, 0xE280C0AD);
 
@@ -702,7 +754,7 @@ MS2_REPLACE_METHOD(0x1403BC430, GameEventSaleBeautyShop, vfunc_4, 172, 0x5BC6B53
 void GameEventSaleBeautyShop::OnStart()
 {
     BOOL bOn = m_d8 ? FALSE : TRUE;
-    FUN_1401c0d90()->FUN_140476b40(m_d0, m_d4, bOn);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_140476b40(m_d0, m_d4, bOn);
 }
 MS2_REPLACE_METHOD(0x1403BC4F0, GameEventSaleBeautyShop, OnStart, 95, 0x590385D4);
 
@@ -710,7 +762,7 @@ MS2_REPLACE_METHOD(0x1403BC4F0, GameEventSaleBeautyShop, OnStart, 95, 0x590385D4
 void GameEventSaleBeautyShop::vfunc_6()
 {
     BOOL bOn = m_d8 ? FALSE : TRUE;
-    FUN_1401c0d90()->FUN_140476be0(m_d0, bOn);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_140476be0(m_d0, bOn);
 }
 MS2_REPLACE_METHOD(0x1403BC560, GameEventSaleBeautyShop, vfunc_6, 83, 0x3BB39145);
 
@@ -763,12 +815,12 @@ void GameEventUserCondition::OnStart()
 {
     if (m_d0 == 0)
         return;
-    FUN_1401c0d90()->FUN_140477f20(m_d0, m_d8);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_140477f20(m_d0, m_d8);
 }
 MS2_REPLACE_METHOD(0x1403BC870, GameEventUserCondition, OnStart, 119, 0xA883B333);
 
 // @0x1403bc8f0
-void GameEventUserCondition::vfunc_6() { FUN_1401c0d90()->FUN_140477fb0(m_d0); }
+void GameEventUserCondition::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_140477fb0(m_d0); }
 MS2_REPLACE_METHOD(0x1403BC8F0, GameEventUserCondition, vfunc_6, 38, 0x6A98F778);
 
 // ---- GameEventMesoRevival -------------------------------------------------------------------------------------------
@@ -814,12 +866,12 @@ void GameEventMesoRevival::OnStart()
 {
     MS2Ptr<MesoRevivalEventContext> spContext(new MesoRevivalEventContext);
     spContext->m_18 = m_d0;
-    FUN_1401c0d90()->FUN_140477bd0(FUN_1402e1d00(), spContext);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_140477bd0(FUN_1402e1d00(), spContext);
 }
 MS2_REPLACE_METHOD(0x1403BCB20, GameEventMesoRevival, OnStart, 233, 0x23BFF202);
 
 // @0x1403bcc10
-void GameEventMesoRevival::vfunc_6() { FUN_1401c0d90()->FUN_140477c90(FUN_1402e1d00()); }
+void GameEventMesoRevival::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_140477c90(FUN_1402e1d00()); }
 MS2_REPLACE_METHOD(0x1403BCC10, GameEventMesoRevival, vfunc_6, 47, 0xB874E1D4);
 
 // ---- GameEventItemBuff ----------------------------------------------------------------------------------------------
@@ -851,7 +903,7 @@ void GameEventItemBuff::vfunc_2()
         return;
     CStringW strType;
     FUN_140873420(pRoot, "type", strType);
-    m_d0 = FUN_140421810(TSingleton<GameEventUserValueNameTable>::GetInstance(), strType);
+    m_d0 = ((class GameEventUserValueNameTable*)(class GameEventUserValueNameTable*)(TSingleton<GameEventUserValueNameTable>::GetInstance()))->GetId(strType);
 }
 
 // @0x1403bce90
@@ -871,11 +923,11 @@ void GameEventItemBuff::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BCEE0, GameEventItemBuff, vfunc_4, 79, 0x4F54C1BA);
 
 // @0x1403bcf40
-void GameEventItemBuff::OnStart() { FUN_1401c0d90()->FUN_14047a8c0(m_d0); }
+void GameEventItemBuff::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047a8c0(m_d0); }
 MS2_REPLACE_METHOD(0x1403BCF40, GameEventItemBuff, OnStart, 38, 0xD20048DD);
 
 // @0x1403bcf70
-void GameEventItemBuff::vfunc_6() { FUN_1401c0d90()->FUN_14047a8c0(0); }
+void GameEventItemBuff::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047a8c0(0); }
 MS2_REPLACE_METHOD(0x1403BCF70, GameEventItemBuff, vfunc_6, 29, 0x534100EE);
 
 // ---- GameEventDungeonBonusReward ------------------------------------------------------------------------------------
@@ -906,7 +958,7 @@ void GameEventDungeonBonusReward::vfunc_2()
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
         return;
-    Unk_140165cf0* pElem = FUN_140345b40(pRoot);
+    Unk_140165cf0* pElem = FUN_140345b40((TiXmlDocument *)pRoot);
     if ((m_d0.get() ? true : false) && pElem)
         m_d0->Load(pElem);
 }
@@ -929,11 +981,11 @@ void GameEventDungeonBonusReward::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BD270, GameEventDungeonBonusReward, vfunc_4, 62, 0xCEC9B3E2);
 
 // @0x1403bd2c0
-void GameEventDungeonBonusReward::OnStart() { FUN_1401c0d90()->FUN_14047a900(m_d0); }
+void GameEventDungeonBonusReward::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047a900(m_d0); }
 MS2_REPLACE_METHOD(0x1403BD2C0, GameEventDungeonBonusReward, OnStart, 91, 0xA725C0A7);
 
 // @0x1403bd330
-void GameEventDungeonBonusReward::vfunc_6() { FUN_1401c0d90()->FUN_14047aa00(m_d0); }
+void GameEventDungeonBonusReward::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047aa00(m_d0); }
 MS2_REPLACE_METHOD(0x1403BD330, GameEventDungeonBonusReward, vfunc_6, 91, 0x977962AF);
 
 // ---- GameEventFreeAirTaxi -------------------------------------------------------------------------------------------
@@ -967,11 +1019,11 @@ void GameEventFreeAirTaxi::vfunc_4(Unk_GEIn* in) { GameEvent::vfunc_4(in); }
 MS2_REPLACE_METHOD(0x1403BD4F0, GameEventFreeAirTaxi, vfunc_4, 34, 0x52D23EA6);
 
 // @0x1403bd520
-void GameEventFreeAirTaxi::OnStart() { FUN_1401c0d90()->FUN_140477dc0(FUN_1402e1d00()); }
+void GameEventFreeAirTaxi::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_140477dc0(FUN_1402e1d00()); }
 MS2_REPLACE_METHOD(0x1403BD520, GameEventFreeAirTaxi, OnStart, 47, 0xE1812CAC);
 
 // @0x1403bd560
-void GameEventFreeAirTaxi::vfunc_6() { FUN_1401c0d90()->FUN_140477e30(FUN_1402e1d00()); }
+void GameEventFreeAirTaxi::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_140477e30(FUN_1402e1d00()); }
 MS2_REPLACE_METHOD(0x1403BD560, GameEventFreeAirTaxi, vfunc_6, 47, 0x59FF38BC);
 
 // ---- GameEventOntime ------------------------------------------------------------------------------------------------
@@ -1045,13 +1097,13 @@ void GameEventOntime::OnStart()
 {
     if (m_d0.get()) {
         m_d0->m_1c = true;
-        FUN_1401c0d90()->FUN_140478170(FUN_1402e1d00(), m_d0);
+        ((class CGameRule*)FUN_1401c0d90())->FUN_140478170(FUN_1402e1d00(), m_d0);
     }
 }
 MS2_REPLACE_METHOD(0x1403BDC50, GameEventOntime, OnStart, 158, 0x302A88DF);
 
 // @0x1403bdd00
-void GameEventOntime::vfunc_6() { FUN_1401c0d90()->FUN_1404781f0(FUN_1402e1d00()); }
+void GameEventOntime::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_1404781f0(FUN_1402e1d00()); }
 MS2_REPLACE_METHOD(0x1403BDD00, GameEventOntime, vfunc_6, 47, 0xB82BE608);
 
 // ---- GameEventSaleEnchant -------------------------------------------------------------------------------------------
@@ -1093,11 +1145,11 @@ void GameEventSaleEnchant::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BDEE0, GameEventSaleEnchant, vfunc_4, 79, 0x936AB3EA);
 
 // @0x1403bdf40
-void GameEventSaleEnchant::OnStart() { FUN_1401c0d90()->FUN_140478a80(m_id, m_d0); }
+void GameEventSaleEnchant::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_140478a80(m_id, m_d0); }
 MS2_REPLACE_METHOD(0x1403BDF40, GameEventSaleEnchant, OnStart, 47, 0x97CFC059);
 
 // @0x1403bdf80
-void GameEventSaleEnchant::vfunc_6() { FUN_1401c0d90()->FUN_140478af0(m_id); }
+void GameEventSaleEnchant::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_140478af0(m_id); }
 MS2_REPLACE_METHOD(0x1403BDF80, GameEventSaleEnchant, vfunc_6, 35, 0x8326983A);
 
 // ---- GameEventQuestTag ----------------------------------------------------------------------------------------------
@@ -1165,12 +1217,12 @@ void GameEventQuestTag::OnStart()
     spContext->m_endTime = m_38.Get();
     if (m_d8 != 0)
         spContext->m_newCharacterTime = m_28.Get();
-    FUN_1401c0d90()->FUN_140478fd0(m_d0, spContext);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_140478fd0(m_d0, spContext);
 }
 MS2_REPLACE_METHOD(0x1403BE3F0, GameEventQuestTag, OnStart, 458, 0x480EB6B1);
 
 // @0x1403be5c0
-void GameEventQuestTag::vfunc_6() { FUN_1401c0d90()->FUN_140479070(m_d0); }
+void GameEventQuestTag::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_140479070(m_d0); }
 MS2_REPLACE_METHOD(0x1403BE5C0, GameEventQuestTag, vfunc_6, 92, 0xF48635F9);
 
 // ---- GameEventBlackMarketFeeDiscount --------------------------------------------------------------------------------
@@ -1200,8 +1252,8 @@ void GameEventBlackMarketFeeDiscount::vfunc_3(Unk_GEOut* out)
 {
     GameEvent::vfunc_3(out);
     out->WriteInt(m_d0);
-    FUN_14070fb70(out, &m_28);
-    FUN_14070fb70(out, &m_38);
+    ((class Unk_GEOut*)&FUN_14070fb70(*(class COutputStream*)(out), *(struct Unk_OSNumber const*)(&m_28)));
+    ((class Unk_GEOut*)&FUN_14070fb70(*(class COutputStream*)(out), *(struct Unk_OSNumber const*)(&m_38)));
 }
 MS2_REPLACE_METHOD(0x1403BE780, GameEventBlackMarketFeeDiscount, vfunc_3, 105, 0x940F1D10);
 
@@ -1210,8 +1262,8 @@ void GameEventBlackMarketFeeDiscount::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
     m_d0 = MS2_GE_R(in)->ReadInt();
-    FUN_14070f6b0(MS2_GE_R(in), &m_28);
-    FUN_14070f6b0(MS2_GE_R(in), &m_38);
+    ((class Unk_GEReader*)&((class Unk_OSInput*)(class Unk_GEReader*)(MS2_GE_R(in)))->Read13(*(struct Unk_OSNumber*)(&m_28)));
+    ((class Unk_GEReader*)&((class Unk_OSInput*)(class Unk_GEReader*)(MS2_GE_R(in)))->Read13(*(struct Unk_OSNumber*)(&m_38)));
 }
 MS2_REPLACE_METHOD(0x1403BE7F0, GameEventBlackMarketFeeDiscount, vfunc_4, 131, 0x2643A841);
 
@@ -1220,14 +1272,14 @@ void GameEventBlackMarketFeeDiscount::OnStart()
 {
     static Unk_GameEventIntRange s_range(0, 10000);
     if (s_range.IsInRange(m_d0))
-        FUN_1401c0d90()->FUN_140479510(m_d0, m_28.Get(), m_38.Get());
+        ((class CGameRule*)FUN_1401c0d90())->FUN_140479510(m_d0, m_28.Get(), m_38.Get());
     else
         MS2_ASSERT_AT(MS2_LINE(841), FALSE);
 }
 MS2_REPLACE_METHOD(0x1403BE880, GameEventBlackMarketFeeDiscount, OnStart, 261, 0x9867204A);
 
 // @0x1403be990
-void GameEventBlackMarketFeeDiscount::vfunc_6() { FUN_1401c0d90()->FUN_140479510(-1, 0, 0); }
+void GameEventBlackMarketFeeDiscount::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_140479510(-1, 0, 0); }
 MS2_REPLACE_METHOD(0x1403BE990, GameEventBlackMarketFeeDiscount, vfunc_6, 38, 0x03263CEE);
 
 // ---- GameEventUGCMapSaleCoupon --------------------------------------------------------------------------------------
@@ -1269,11 +1321,11 @@ void GameEventUGCMapSaleCoupon::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BEB60, GameEventUGCMapSaleCoupon, vfunc_4, 79, 0x922BFEA6);
 
 // @0x1403bebc0
-void GameEventUGCMapSaleCoupon::OnStart() { FUN_1401c0d90()->FUN_140479600(m_d0); }
+void GameEventUGCMapSaleCoupon::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_140479600(m_d0); }
 MS2_REPLACE_METHOD(0x1403BEBC0, GameEventUGCMapSaleCoupon, OnStart, 38, 0x0BEE936B);
 
 // @0x1403bebf0
-void GameEventUGCMapSaleCoupon::vfunc_6() { FUN_1401c0d90()->FUN_140479600(0); }
+void GameEventUGCMapSaleCoupon::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_140479600(0); }
 MS2_REPLACE_METHOD(0x1403BEBF0, GameEventUGCMapSaleCoupon, vfunc_6, 29, 0xB67F6FA5);
 
 // ---- GameEventPremiumMarketSale -------------------------------------------------------------------------------------
@@ -1439,11 +1491,11 @@ void GameEventEventFieldPopup::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BF630, GameEventEventFieldPopup, vfunc_4, 79, 0xBAF21AA1);
 
 // @0x1403bf690
-void GameEventEventFieldPopup::OnStart() { FUN_1401c0d90()->FUN_1404795c0(m_d0); }
+void GameEventEventFieldPopup::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_1404795c0(m_d0); }
 MS2_REPLACE_METHOD(0x1403BF690, GameEventEventFieldPopup, OnStart, 38, 0x672A21AB);
 
 // @0x1403bf6c0
-void GameEventEventFieldPopup::vfunc_6() { FUN_1401c0d90()->FUN_1404795c0(0); }
+void GameEventEventFieldPopup::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_1404795c0(0); }
 MS2_REPLACE_METHOD(0x1403BF6C0, GameEventEventFieldPopup, vfunc_6, 29, 0xB5DD45F9);
 
 // ---- GameEventSaleAutoFishing ---------------------------------------------------------------------------------------
@@ -1493,16 +1545,16 @@ MS2_REPLACE_METHOD(0x1403BF8D0, GameEventSaleAutoFishing, vfunc_4, 179, 0x96AC65
 // @0x1403bf990
 void GameEventSaleAutoFishing::OnStart()
 {
-    FUN_1401c0d90()->FUN_1404798e0(m_d0);
-    FUN_1401c0d90()->FUN_140479920(m_d8);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_1404798e0(m_d0);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_140479920(m_d8);
 }
 MS2_REPLACE_METHOD(0x1403BF990, GameEventSaleAutoFishing, OnStart, 116, 0x7E5DA331);
 
 // @0x1403bfa10
 void GameEventSaleAutoFishing::vfunc_6()
 {
-    FUN_1401c0d90()->FUN_1404798e0(0);
-    FUN_1401c0d90()->FUN_140479920(L"");
+    ((class CGameRule*)FUN_1401c0d90())->FUN_1404798e0(0);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_140479920(L"");
 }
 MS2_REPLACE_METHOD(0x1403BFA10, GameEventSaleAutoFishing, vfunc_6, 100, 0x95274BB3);
 // ---- GameEventSaleAutoPlayInstrument --------------------------------------------------------------------------------
@@ -1552,16 +1604,16 @@ MS2_REPLACE_METHOD(0x1403BFC60, GameEventSaleAutoPlayInstrument, vfunc_4, 179, 0
 // @0x1403bfd20
 void GameEventSaleAutoPlayInstrument::OnStart()
 {
-    FUN_1401c0d90()->FUN_140479a00(m_d0);
-    FUN_1401c0d90()->FUN_140479a40(m_d8);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_140479a00(m_d0);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_140479a40(m_d8);
 }
 MS2_REPLACE_METHOD(0x1403BFD20, GameEventSaleAutoPlayInstrument, OnStart, 116, 0x1960A1F7);
 
 // @0x1403bfda0
 void GameEventSaleAutoPlayInstrument::vfunc_6()
 {
-    FUN_1401c0d90()->FUN_140479a00(0);
-    FUN_1401c0d90()->FUN_140479a40(L"");
+    ((class CGameRule*)FUN_1401c0d90())->FUN_140479a00(0);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_140479a40(L"");
 }
 MS2_REPLACE_METHOD(0x1403BFDA0, GameEventSaleAutoPlayInstrument, vfunc_6, 100, 0x484B5738);
 
@@ -1629,11 +1681,11 @@ void GameEventDungeonRoomShutdown::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C0090, GameEventDungeonRoomShutdown, vfunc_2, 255, 0x59566783);
 
 // @0x1403c01a0
-void GameEventDungeonRoomShutdown::OnStart() { FUN_1401c0d90()->FUN_140479c80(m_d0); }
+void GameEventDungeonRoomShutdown::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_140479c80(m_d0); }
 MS2_REPLACE_METHOD(0x1403C01A0, GameEventDungeonRoomShutdown, OnStart, 91, 0xA67C7DA7);
 
 // @0x1403c0210
-void GameEventDungeonRoomShutdown::vfunc_6() { FUN_1401c0d90()->FUN_140479c80(0); }
+void GameEventDungeonRoomShutdown::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_140479c80(0); }
 MS2_REPLACE_METHOD(0x1403C0210, GameEventDungeonRoomShutdown, vfunc_6, 79, 0x6FA85DE5);
 
 // @0x1403c0270
@@ -1667,8 +1719,8 @@ void GameEventDungeonOpenPeriod::vfunc_3(Unk_GEOut* out)
 {
     GameEvent::vfunc_3(out);
     FUN_14070fae0(out, &m_d0);
-    FUN_14070fb70(out, &m_28);
-    FUN_14070fb70(out, &m_38);
+    ((class Unk_GEOut*)&FUN_14070fb70(*(class COutputStream*)(out), *(struct Unk_OSNumber const*)(&m_28)));
+    ((class Unk_GEOut*)&FUN_14070fb70(*(class COutputStream*)(out), *(struct Unk_OSNumber const*)(&m_38)));
 }
 MS2_REPLACE_METHOD(0x1403C03F0, GameEventDungeonOpenPeriod, vfunc_3, 102, 0x3A3BD060);
 
@@ -1677,8 +1729,8 @@ void GameEventDungeonOpenPeriod::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
     FUN_14070f5f0(MS2_GE_R(in), &m_d0);
-    FUN_14070f6b0(MS2_GE_R(in), &m_28);
-    FUN_14070f6b0(MS2_GE_R(in), &m_38);
+    ((class Unk_GEReader*)&((class Unk_OSInput*)(class Unk_GEReader*)(MS2_GE_R(in)))->Read13(*(struct Unk_OSNumber*)(&m_28)));
+    ((class Unk_GEReader*)&((class Unk_OSInput*)(class Unk_GEReader*)(MS2_GE_R(in)))->Read13(*(struct Unk_OSNumber*)(&m_38)));
 }
 MS2_REPLACE_METHOD(0x1403C0460, GameEventDungeonOpenPeriod, vfunc_4, 114, 0x92CEB667);
 
@@ -1689,7 +1741,7 @@ void GameEventDungeonOpenPeriod::OnStart()
         return;
     if (!FUN_140427690(TSingleton<CGameEventValueManager>::GetInstance()->GetDungeonOpenPeriod(), m_d0, m_28.Get(), m_38.Get()))
     {
-        FUN_140166440()->Log(0, 0, 0x5f, L"GameEventDungeonOpenPeriod TagID Duplicated");
+        static_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x5f, L"GameEventDungeonOpenPeriod TagID Duplicated");
         m_d0.Empty();
     }
 }
@@ -1732,7 +1784,7 @@ void GameEventFieldShutdown::vfunc_2()
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
         return;
-    for (Unk_140165cf0* pNode = FUN_140345b40(pRoot); pNode; pNode = FUN_1403f0510(pNode))
+    for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class Unk_140165cf0*)(class Unk_140165cf0*)(pNode))->NextSiblingElement())
     {
         unsigned nId = 0;
         FUN_140873220(pNode, "id", nId);
@@ -1743,11 +1795,11 @@ void GameEventFieldShutdown::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C07B0, GameEventFieldShutdown, vfunc_2, 280, 0x89FDD054);
 
 // @0x1403c08d0
-void GameEventFieldShutdown::OnStart() { FUN_1401c0d90()->FUN_14047a360(m_d0); }
+void GameEventFieldShutdown::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047a360(m_d0); }
 MS2_REPLACE_METHOD(0x1403C08D0, GameEventFieldShutdown, OnStart, 91, 0x94D3BD97);
 
 // @0x1403c0940
-void GameEventFieldShutdown::vfunc_6() { FUN_1401c0d90()->FUN_14047a3d0(); }
+void GameEventFieldShutdown::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047a3d0(); }
 MS2_REPLACE_METHOD(0x1403C0940, GameEventFieldShutdown, vfunc_6, 27, 0x2DB313CE);
 
 // @0x1403c0970
@@ -1781,7 +1833,7 @@ void GameEventDungeonExtraReward::vfunc_2()
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
         return;
-    for (Unk_140165cf0* pNode = FUN_140345b40(pRoot); pNode; pNode = FUN_1403f0510(pNode))
+    for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class Unk_140165cf0*)(class Unk_140165cf0*)(pNode))->NextSiblingElement())
     {
         MS2Ptr<DungeonExtraRewardCountCtx> spCount(new DungeonExtraRewardCountCtx);
         spCount->m_18 = FUN_1402e1d00();
@@ -1814,8 +1866,8 @@ void GameEventDungeonExtraReward::OnStart()
 {
     for (POSITION pos = m_d0.GetStartPosition(); pos; m_d0.GetNext(pos))
     {
-        if (!FUN_1401c0d90()->FUN_14047a420(m_d0.GetKeyAt(pos), m_d0.GetValueAt(pos)))
-            FUN_140166440()->Log(0, 0, 0x2c, StringFormat(L"GameEventDungeonExtraReward::OnStart Duplicate DungeonID",
+        if (!((class CGameRule*)FUN_1401c0d90())->FUN_14047a420(m_d0.GetKeyAt(pos), m_d0.GetValueAt(pos)))
+            static_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x2c, StringFormat(L"GameEventDungeonExtraReward::OnStart Duplicate DungeonID",
                                                          m_d0.GetKeyAt(pos)));
     }
 }
@@ -1828,7 +1880,7 @@ void GameEventDungeonExtraReward::vfunc_6()
     {
         MS2Ptr<DungeonExtraRewardCountCtx> spCount = m_d0.GetValueAt(pos);
         if (spCount.get())
-            FUN_1401c0d90()->FUN_14047a4e0(m_d0.GetKeyAt(pos), spCount->m_18);
+            ((class CGameRule*)FUN_1401c0d90())->FUN_14047a4e0(m_d0.GetKeyAt(pos), spCount->m_18);
     }
 }
 MS2_REPLACE_METHOD(0x1403C0EA0, GameEventDungeonExtraReward, vfunc_6, 225, 0x1D2A0759);
@@ -1906,11 +1958,11 @@ void GameEventSaleRemake::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C12C0, GameEventSaleRemake, vfunc_4, 127, 0x74CFAF45);
 
 // @0x1403c1350
-void GameEventSaleRemake::OnStart() { FUN_1401c0d90()->FUN_140478bd0(m_id, m_d4, m_d0); }
+void GameEventSaleRemake::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_140478bd0(m_id, m_d4, m_d0); }
 MS2_REPLACE_METHOD(0x1403C1350, GameEventSaleRemake, OnStart, 59, 0xCCEA410C);
 
 // @0x1403c13a0
-void GameEventSaleRemake::vfunc_6() { FUN_1401c0d90()->FUN_140478c50(m_id, m_d4); }
+void GameEventSaleRemake::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_140478c50(m_id, m_d4); }
 MS2_REPLACE_METHOD(0x1403C13A0, GameEventSaleRemake, vfunc_6, 47, 0xAB4281F4);
 
 // ---- GameEventSaleGemStoneUpgrade -----------------------------------------------------------------------------------
@@ -1932,11 +1984,11 @@ GameEventSaleGemStoneUpgrade::GameEventSaleGemStoneUpgrade()
 }
 
 // @0x1403c14f0
-void GameEventSaleGemStoneUpgrade::OnStart() { FUN_1401c0d90()->FUN_140478e80(m_id, m_d0); }
+void GameEventSaleGemStoneUpgrade::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_140478e80(m_id, m_d0); }
 MS2_REPLACE_METHOD(0x1403C14F0, GameEventSaleGemStoneUpgrade, OnStart, 47, 0x689EA1F8);
 
 // @0x1403c1530
-void GameEventSaleGemStoneUpgrade::vfunc_6() { FUN_1401c0d90()->FUN_140478ef0(m_id); }
+void GameEventSaleGemStoneUpgrade::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_140478ef0(m_id); }
 MS2_REPLACE_METHOD(0x1403C1530, GameEventSaleGemStoneUpgrade, vfunc_6, 35, 0xC8B8A187);
 
 // ---- GameEventSaleSkillUpgrade --------------------------------------------------------------------------------------
@@ -2008,9 +2060,9 @@ void GameEventSaleSkillUpgrade::OnStart()
         spContext->m_18 = skillIds[i];
         spContext->m_1c = levels[i];
         spContext->m_20 = rates[i];
-        FUN_1401c0d90()->FUN_14047b540(spContext);
+        ((class CGameRule*)FUN_1401c0d90())->FUN_14047b540(spContext);
     }
-    FUN_1401c0d90()->FUN_14047b6d0(m_e8);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047b6d0(m_e8);
 }
 MS2_REPLACE_METHOD(0x1403C1A30, GameEventSaleSkillUpgrade, OnStart, 789, 0xD857AE3F);
 
@@ -2020,7 +2072,7 @@ void GameEventSaleSkillUpgrade::vfunc_6()
     ATL::CAtlArray<unsigned> skillIds;
     XmlSplit(m_d0, skillIds, ",");
     for (size_t i = 0; i < skillIds.GetCount(); ++i)
-        FUN_1401c0d90()->FUN_14047b5c0(skillIds[i]);
+        ((class CGameRule*)FUN_1401c0d90())->FUN_14047b5c0(skillIds[i]);
 }
 MS2_REPLACE_METHOD(0x1403C1D50, GameEventSaleSkillUpgrade, vfunc_6, 158, 0x81180E3D);
 
@@ -2052,12 +2104,12 @@ void GameEventNpcEventDrop::vfunc_2()
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
         return;
-    Unk_140165cf0* pNode = FUN_140345b40(pRoot);
+    Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot);
     if (!pNode)
         return;
     MS2Ptr<NpcEventDropEventContext> spContext(new NpcEventDropEventContext);
-    FUN_1408731a0(pNode, "minLevel", spContext->m_minLevel);
-    FUN_1408731a0(pNode, "maxLevel", spContext->m_maxLevel);
+    XmlGetAttr((class TiXmlElement*)(pNode), "minLevel", spContext->m_minLevel);
+    XmlGetAttr((class TiXmlElement*)(pNode), "maxLevel", spContext->m_maxLevel);
     FUN_140873220(pNode, "fieldId", spContext->m_fieldId);
     XmlValue(pNode, "npcRank", spContext->m_npcRank);
     XmlTokenList(pNode, "customNpcId", spContext->m_customNpcIds);
@@ -2072,12 +2124,12 @@ MS2_REPLACE_METHOD(0x1403C1F30, GameEventNpcEventDrop, vfunc_2, 598, 0xB54C8D81)
 void GameEventNpcEventDrop::OnStart()
 {
     if (m_d0.get())
-        FUN_1401c0d90()->FUN_14047a6a0(FUN_1402e1d00(), m_d0);
+        ((class CGameRule*)FUN_1401c0d90())->FUN_14047a6a0(FUN_1402e1d00(), m_d0);
 }
 MS2_REPLACE_METHOD(0x1403C2190, GameEventNpcEventDrop, OnStart, 135, 0x8347BC99);
 
 // @0x1403c2220
-void GameEventNpcEventDrop::vfunc_6() { FUN_1401c0d90()->FUN_14047a730(FUN_1402e1d00()); }
+void GameEventNpcEventDrop::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047a730(FUN_1402e1d00()); }
 MS2_REPLACE_METHOD(0x1403C2220, GameEventNpcEventDrop, vfunc_6, 47, 0x0ADD96DA);
 
 // ---- GameEventBlueMarble --------------------------------------------------------------------------------------------
@@ -2154,11 +2206,11 @@ void GameEventBlueMarble::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C27C0, GameEventBlueMarble, vfunc_4, 745, 0x0AF8B17F);
 
 // @0x1403c2ab0
-void GameEventBlueMarble::OnStart() { FUN_1401c0d90()->FUN_14047b8f0(m_d0); }
+void GameEventBlueMarble::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047b8f0(m_d0); }
 MS2_REPLACE_METHOD(0x1403C2AB0, GameEventBlueMarble, OnStart, 91, 0x52567E0A);
 
 // @0x1403c2b20
-void GameEventBlueMarble::vfunc_6() { FUN_1401c0d90()->FUN_14047b8f0(0); }
+void GameEventBlueMarble::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047b8f0(0); }
 MS2_REPLACE_METHOD(0x1403C2B20, GameEventBlueMarble, vfunc_6, 79, 0xD37814B8);
 
 // ---- GameEventSaleUGCDesign -----------------------------------------------------------------------------------------
@@ -2180,11 +2232,11 @@ GameEventSaleUGCDesign::GameEventSaleUGCDesign()
 }
 
 // @0x1403c2c90
-void GameEventSaleUGCDesign::OnStart() { FUN_1401c0d90()->FUN_14047b9d0(m_id, m_d0); }
+void GameEventSaleUGCDesign::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047b9d0(m_id, m_d0); }
 MS2_REPLACE_METHOD(0x1403C2C90, GameEventSaleUGCDesign, OnStart, 47, 0x432176DC);
 
 // @0x1403c2cd0
-void GameEventSaleUGCDesign::vfunc_6() { FUN_1401c0d90()->FUN_14047ba40(m_id); }
+void GameEventSaleUGCDesign::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047ba40(m_id); }
 MS2_REPLACE_METHOD(0x1403C2CD0, GameEventSaleUGCDesign, vfunc_6, 35, 0xC878D363);
 
 // ---- GameEventMeratMarketNotice -------------------------------------------------------------------------------------
@@ -2248,11 +2300,11 @@ void GameEventDungeonEnterTimeLimit::vfunc_2() { FUN_1403c31c0(m_68); }
 MS2_REPLACE_METHOD(0x1403C3080, GameEventDungeonEnterTimeLimit, vfunc_2, 36, 0xE1C0510D);
 
 // @0x1403c30b0
-void GameEventDungeonEnterTimeLimit::OnStart() { FUN_1401c0d90()->FUN_140479f30(m_d0); }
+void GameEventDungeonEnterTimeLimit::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_140479f30(m_d0); }
 MS2_REPLACE_METHOD(0x1403C30B0, GameEventDungeonEnterTimeLimit, OnStart, 51, 0x03061B7D);
 
 // @0x1403c30f0
-void GameEventDungeonEnterTimeLimit::vfunc_6() { FUN_1401c0d90()->FUN_14047a0a0(FUN_1402e1d00()); }
+void GameEventDungeonEnterTimeLimit::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047a0a0(FUN_1402e1d00()); }
 MS2_REPLACE_METHOD(0x1403C30F0, GameEventDungeonEnterTimeLimit, vfunc_6, 47, 0x22EB50E5);
 
 // @0x1403c3130
@@ -2281,7 +2333,7 @@ void GameEventDungeonEnterTimeLimit::FUN_1403c31c0(const CStringW& strXml)
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
         return;
-    for (Unk_140165cf0* pNode = FUN_140345b40(pRoot); pNode; pNode = FUN_1403f0510(pNode))
+    for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class Unk_140165cf0*)(class Unk_140165cf0*)(pNode))->NextSiblingElement())
     {
         MS2Ptr<EventTimeLimitDungeonContext> spContext(new EventTimeLimitDungeonContext);
         spContext->m_eventId = FUN_1402e1d00();
@@ -2340,11 +2392,11 @@ void GameEventSaleHousing::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C3520, GameEventSaleHousing, vfunc_2, 715, 0x9E5EB17E);
 
 // @0x1403c3800
-void GameEventSaleHousing::OnStart() { FUN_1401c0d90()->FUN_14047be80(m_id, m_d0); }
+void GameEventSaleHousing::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047be80(m_id, m_d0); }
 MS2_REPLACE_METHOD(0x1403C3800, GameEventSaleHousing, OnStart, 59, 0x0D886633);
 
 // @0x1403c3850
-void GameEventSaleHousing::vfunc_6() { FUN_1401c0d90()->FUN_14047bfc0(m_id); }
+void GameEventSaleHousing::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047bfc0(m_id); }
 MS2_REPLACE_METHOD(0x1403C3850, GameEventSaleHousing, vfunc_6, 35, 0x1CF60104);
 
 // @0x1403c3880
@@ -2406,11 +2458,11 @@ void GameEventEpicRestart::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C3CF0, GameEventEpicRestart, vfunc_2, 131, 0xE21A7CD6);
 
 // @0x1403c3d80
-void GameEventEpicRestart::OnStart() { FUN_1401c0d90()->FUN_14047c020(FUN_1402e1d00(), m_38.Get(), m_d0, m_e0, m_d8); }
+void GameEventEpicRestart::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047c020(FUN_1402e1d00(), m_38.Get(), m_d0, m_e0, m_d8); }
 MS2_REPLACE_METHOD(0x1403C3D80, GameEventEpicRestart, OnStart, 155, 0xDC91DCFD);
 
 // @0x1403c3e30
-void GameEventEpicRestart::vfunc_6() { FUN_1401c0d90()->FUN_14047c1e0(); }
+void GameEventEpicRestart::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047c1e0(); }
 MS2_REPLACE_METHOD(0x1403C3E30, GameEventEpicRestart, vfunc_6, 27, 0x4FC9645D);
 
 // @0x1403c3e60
@@ -2462,11 +2514,11 @@ void GameEventLevelUpPackage::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C4210, GameEventLevelUpPackage, vfunc_2, 72, 0x151E7A50);
 
 // @0x1403c4260
-void GameEventLevelUpPackage::OnStart() { FUN_1401c0d90()->FUN_14047c740(m_d0, m_d8); }
+void GameEventLevelUpPackage::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047c740(m_d0, m_d8); }
 MS2_REPLACE_METHOD(0x1403C4260, GameEventLevelUpPackage, OnStart, 62, 0x4F7D051A);
 
 // @0x1403c42b0
-void GameEventLevelUpPackage::vfunc_6() { FUN_1401c0d90()->FUN_14047c7c0(); }
+void GameEventLevelUpPackage::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047c7c0(); }
 MS2_REPLACE_METHOD(0x1403C42B0, GameEventLevelUpPackage, vfunc_6, 27, 0x1F6EC9DB);
 
 // @0x1403c42e0
@@ -2580,9 +2632,9 @@ void GameEventStampEvent::vfunc_2()
         {
             MS2Ptr<StampEventContext::Stamp> spStamp(new StampEventContext::Stamp);
             FUN_140873220(pStamp, "quest", spStamp->m_id);
-            FUN_1408731e0(pStamp, "special", spStamp->m_bStamped);
-            FUN_1408731e0(pStamp, "x", spStamp->m_20);
-            FUN_1408731e0(pStamp, "y", spStamp->m_24);
+            XmlGetAttr((class TiXmlElement*)(pStamp), "special", spStamp->m_bStamped);
+            XmlGetAttr((class TiXmlElement*)(pStamp), "x", spStamp->m_20);
+            XmlGetAttr((class TiXmlElement*)(pStamp), "y", spStamp->m_24);
             spContext->m_stamps.Add(spStamp);
         }
     }
@@ -2593,8 +2645,8 @@ void GameEventStampEvent::vfunc_2()
              pReward = pReward->FUN_140168650("reward"))
         {
             MS2Ptr<StampEventContext::Reward> spReward(new StampEventContext::Reward);
-            FUN_1408731e0(pReward, "special", spReward->m_bReceived);
-            FUN_1408731e0(pReward, "count", spReward->m_count);
+            XmlGetAttr((class TiXmlElement*)(pReward), "special", spReward->m_bReceived);
+            XmlGetAttr((class TiXmlElement*)(pReward), "count", spReward->m_count);
             CStringW strItem1;
             CStringW strItem2;
             FUN_140873420(pReward, "item01", strItem1);
@@ -2613,13 +2665,13 @@ void GameEventStampEvent::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C47C0, GameEventStampEvent, vfunc_2, 1758, 0x516243D8);
 
 // @0x1403c4eb0
-void GameEventStampEvent::OnStart() { FUN_1401c0d90()->FUN_14047c8e0(m_d8); }
+void GameEventStampEvent::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047c8e0(m_d8); }
 MS2_REPLACE_METHOD(0x1403C4EB0, GameEventStampEvent, OnStart, 91, 0x1128F1EB);
 
 // @0x1403c4f20
 void GameEventStampEvent::vfunc_6()
 {
-    FUN_1401c0d90()->FUN_14047c990(m_d8);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047c990(m_d8);
     TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4f33);
 }
 MS2_REPLACE_METHOD(0x1403C4F20, GameEventStampEvent, vfunc_6, 109, 0xDCD117E1);
@@ -2691,11 +2743,11 @@ void GameEventTimeRunEvent::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C52F0, GameEventTimeRunEvent, vfunc_2, 391, 0x7BB32E72);
 
 // @0x1403c5480
-void GameEventTimeRunEvent::OnStart() { FUN_1401c0d90()->FUN_14047d650(m_d0); }
+void GameEventTimeRunEvent::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047d650(m_d0); }
 MS2_REPLACE_METHOD(0x1403C5480, GameEventTimeRunEvent, OnStart, 91, 0xE2C6979A);
 
 // @0x1403c54f0
-void GameEventTimeRunEvent::vfunc_6() { FUN_1401c0d90()->FUN_14047d650(0); }
+void GameEventTimeRunEvent::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047d650(0); }
 MS2_REPLACE_METHOD(0x1403C54F0, GameEventTimeRunEvent, vfunc_6, 79, 0x0C44DF80);
 
 // @0x1403c5550
@@ -2731,7 +2783,7 @@ int GameEventTimeRunEvent::FUN_1403c5670(MS2Ptr<TimeRunEventContext> spContext)
         MS2Ptr<TimeRunEventContext::QuestContext> spQuest(new TimeRunEventContext::QuestContext);
         FUN_140873220(pQuest, "questID", spQuest->m_questId);
         FUN_140873220(pQuest, "distance", spQuest->m_1c);
-        FUN_1408731e0(pQuest, "openingDay", spQuest->m_20);
+        XmlGetAttr((class TiXmlElement*)(pQuest), "openingDay", spQuest->m_20);
         spContext->m_quests.SetAt(spQuest->m_questId, spQuest);
         spContext->m_1c += spQuest->m_1c;
     }
@@ -2752,7 +2804,7 @@ int GameEventTimeRunEvent::FUN_1403c58e0(MS2Ptr<TimeRunEventContext> spContext)
     {
         MS2Ptr<ItemEntity> spItem(new ItemEntity);
         int nDistance = 0;
-        FUN_1408731e0(pReward, "distance", nDistance);
+        XmlGetAttr((class TiXmlElement*)(pReward), "distance", nDistance);
         spItem->vfunc_2(pReward);
         spContext->m_rewards.SetAt(nDistance, spItem);
     }
@@ -2853,12 +2905,12 @@ void GameEventMassiveConstructionEvent::OnStart()
     for (unsigned i = 0; i < m_d0.GetCount(); i++)
     {
         unsigned id = m_d0[i];
-        FUN_1401c0d90()->FUN_14047dba0(id, m_f0);
+        ((class CGameRule*)FUN_1401c0d90())->FUN_14047dba0(id, m_f0);
     }
     for (unsigned i = 0; i < m_f8.GetCount(); i++)
     {
         unsigned __int64 id = m_f8[i];
-        FUN_1401c0d90()->FUN_14047df50(id);
+        ((class CGameRule*)FUN_1401c0d90())->FUN_14047df50(id);
     }
 }
 MS2_REPLACE_METHOD(0x1403C5FE0, GameEventMassiveConstructionEvent, OnStart, 237, 0x4814B149);
@@ -2866,8 +2918,8 @@ MS2_REPLACE_METHOD(0x1403C5FE0, GameEventMassiveConstructionEvent, OnStart, 237,
 // @0x1403c60e0
 void GameEventMassiveConstructionEvent::vfunc_6()
 {
-    FUN_1401c0d90()->FUN_14047dd60();
-    FUN_1401c0d90()->FUN_14047e0e0();
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047dd60();
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047e0e0();
 }
 MS2_REPLACE_METHOD(0x1403C60E0, GameEventMassiveConstructionEvent, vfunc_6, 40, 0xDC8EBBD4);
 
@@ -2900,7 +2952,7 @@ void GameEventEnchantRate::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C6230, GameEventEnchantRate, vfunc_2, 226, 0x01175DDE);
 
 // @0x1403c6320
-void GameEventEnchantRate::OnStart() { FUN_1401c0d90()->FUN_14047e530(m_pContext); }
+void GameEventEnchantRate::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047e530(m_pContext); }
 MS2_REPLACE_METHOD(0x1403C6320, GameEventEnchantRate, OnStart, 91, 0x69FE65A3);
 
 // @0x1403c6390
@@ -2909,7 +2961,7 @@ void GameEventEnchantRate::vfunc_6()
     // the original asserts on its member names (m_gameEventID is m_id)
     (void)((!!(m_pContext->m_nEventId == m_id)) ||
            (_wassert(L"m_pContext->m_nEventId == m_gameEventID", _CRT_WIDE(MS2_THIS_FILE), MS2_LINE(2384)), 0));
-    FUN_1401c0d90()->FUN_14047e630(m_pContext->m_nEventId);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047e630(m_pContext->m_nEventId);
 }
 MS2_REPLACE_METHOD(0x1403C6390, GameEventEnchantRate, vfunc_6, 119, 0x542B45BA);
 
@@ -2961,11 +3013,11 @@ void GameEventRankDuel::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C66F0, GameEventRankDuel, vfunc_2, 101, 0x3F1E221E);
 
 // @0x1403c6760
-void GameEventRankDuel::OnStart() { FUN_1401c0d90()->FUN_14047e740(true); }
+void GameEventRankDuel::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047e740(true); }
 MS2_REPLACE_METHOD(0x1403C6760, GameEventRankDuel, OnStart, 29, 0xCD62C311);
 
 // @0x1403c6790
-void GameEventRankDuel::vfunc_6() { FUN_1401c0d90()->FUN_14047e740(false); }
+void GameEventRankDuel::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047e740(false); }
 MS2_REPLACE_METHOD(0x1403C6790, GameEventRankDuel, vfunc_6, 29, 0x2805BD5A);
 
 // @0x1403c67c0
@@ -3013,14 +3065,14 @@ MS2_REPLACE_METHOD(0x1403C69C0, GameEventGuildChampionship, vfunc_2, 71, 0x83221
 // @0x1403c6a10
 void GameEventGuildChampionship::OnStart()
 {
-    if (!FUN_140166410()->FUN_14036d570(0x110))
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x110))
         return;
-    FUN_1401c0d90()->FUN_14047e830(true);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047e830(true);
 }
 MS2_REPLACE_METHOD(0x1403C6A10, GameEventGuildChampionship, OnStart, 56, 0x274DE2BB);
 
 // @0x1403c6a50
-void GameEventGuildChampionship::vfunc_6() { FUN_1401c0d90()->FUN_14047e830(false); }
+void GameEventGuildChampionship::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047e830(false); }
 MS2_REPLACE_METHOD(0x1403C6A50, GameEventGuildChampionship, vfunc_6, 29, 0x2BB70B0E);
 
 // ---- GameEventQuestAdditionalReward ---------------------------------------------------------------------------------
@@ -3054,11 +3106,11 @@ void GameEventQuestAdditionalReward::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C6C10, GameEventQuestAdditionalReward, vfunc_2, 117, 0xF78122DB);
 
 // @0x1403c6c90
-void GameEventQuestAdditionalReward::OnStart() { FUN_1401c0d90()->FUN_14047e8e0(m_d0, m_d4, m_d8); }
+void GameEventQuestAdditionalReward::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047e8e0(m_d0, m_d4, m_d8); }
 MS2_REPLACE_METHOD(0x1403C6C90, GameEventQuestAdditionalReward, OnStart, 114, 0x99961A1D);
 
 // @0x1403c6d10
-void GameEventQuestAdditionalReward::vfunc_6() { FUN_1401c0d90()->FUN_14047e980(m_d0, m_d4); }
+void GameEventQuestAdditionalReward::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047e980(m_d0, m_d4); }
 MS2_REPLACE_METHOD(0x1403C6D10, GameEventQuestAdditionalReward, vfunc_6, 50, 0xF99DD3D4);
 
 // @0x1403c6d50
@@ -3104,11 +3156,11 @@ void GameEventGuildSkillSale::vfunc_2() { m_d0 = FUN_1407181a0(&m_68); }
 MS2_REPLACE_METHOD(0x1403C6FA0, GameEventGuildSkillSale, vfunc_2, 42, 0x02B16B0B);
 
 // @0x1403c6fd0
-void GameEventGuildSkillSale::OnStart() { FUN_1404234a0(TSingleton<CGameEventValueManager>::GetInstance()->GuildSkillSale(), m_d0); }
+void GameEventGuildSkillSale::OnStart() { ((class CGameEventValueGuildSkillSale*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GuildSkillSale()))->SetRate(m_d0); }
 MS2_REPLACE_METHOD(0x1403C6FD0, GameEventGuildSkillSale, OnStart, 46, 0x396ECFED);
 
 // @0x1403c7010
-void GameEventGuildSkillSale::vfunc_6() { FUN_1404234a0(TSingleton<CGameEventValueManager>::GetInstance()->GuildSkillSale(), 0); }
+void GameEventGuildSkillSale::vfunc_6() { ((class CGameEventValueGuildSkillSale*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GuildSkillSale()))->SetRate(0); }
 MS2_REPLACE_METHOD(0x1403C7010, GameEventGuildSkillSale, vfunc_6, 37, 0xA05B3701);
 
 // @0x1403c7040
@@ -3150,11 +3202,11 @@ void GameEventGuildPersonalSkillSale::vfunc_2() { m_d0 = FUN_1407181a0(&m_68); }
 MS2_REPLACE_METHOD(0x1403C7210, GameEventGuildPersonalSkillSale, vfunc_2, 42, 0xE4F2E4E1);
 
 // @0x1403c7240
-void GameEventGuildPersonalSkillSale::OnStart() { FUN_1404235b0(TSingleton<CGameEventValueManager>::GetInstance()->GuildPersonalSkillSale(), m_d0); }
+void GameEventGuildPersonalSkillSale::OnStart() { ((class CGameEventValueGuildPersonalSkillSale*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GuildPersonalSkillSale()))->SetRate(m_d0); }
 MS2_REPLACE_METHOD(0x1403C7240, GameEventGuildPersonalSkillSale, OnStart, 46, 0xB5FD3289);
 
 // @0x1403c7280
-void GameEventGuildPersonalSkillSale::vfunc_6() { FUN_1404235b0(TSingleton<CGameEventValueManager>::GetInstance()->GuildPersonalSkillSale(), 0); }
+void GameEventGuildPersonalSkillSale::vfunc_6() { ((class CGameEventValueGuildPersonalSkillSale*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GuildPersonalSkillSale()))->SetRate(0); }
 MS2_REPLACE_METHOD(0x1403C7280, GameEventGuildPersonalSkillSale, vfunc_6, 37, 0x74E6D016);
 
 // @0x1403c72b0
@@ -3250,11 +3302,11 @@ void GameEventGuildFund::vfunc_2() { m_d0 = FUN_1407181a0(&m_68); }
 MS2_REPLACE_METHOD(0x1403C7760, GameEventGuildFund, vfunc_2, 42, 0x82DACA1A);
 
 // @0x1403c7790
-void GameEventGuildFund::OnStart() { FUN_1404237d0(TSingleton<CGameEventValueManager>::GetInstance()->GuildFund(), m_d0); }
+void GameEventGuildFund::OnStart() { ((class CGameEventValueGuildFund*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GuildFund()))->SetRate(m_d0); }
 MS2_REPLACE_METHOD(0x1403C7790, GameEventGuildFund, OnStart, 46, 0x48EF6819);
 
 // @0x1403c77d0
-void GameEventGuildFund::vfunc_6() { FUN_1404237d0(TSingleton<CGameEventValueManager>::GetInstance()->GuildFund(), 0); }
+void GameEventGuildFund::vfunc_6() { ((class CGameEventValueGuildFund*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GuildFund()))->SetRate(0); }
 MS2_REPLACE_METHOD(0x1403C77D0, GameEventGuildFund, vfunc_6, 37, 0x6FB11BD3);
 
 // @0x1403c7800
@@ -3296,11 +3348,11 @@ void GameEventGuildCoin::vfunc_2() { m_d0 = FUN_1407181a0(&m_68); }
 MS2_REPLACE_METHOD(0x1403C79D0, GameEventGuildCoin, vfunc_2, 42, 0x0E909E99);
 
 // @0x1403c7a00
-void GameEventGuildCoin::OnStart() { FUN_1404238e0(TSingleton<CGameEventValueManager>::GetInstance()->GuildCoin(), m_d0); }
+void GameEventGuildCoin::OnStart() { ((class CGameEventValueGuildCoin*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GuildCoin()))->SetRate(m_d0); }
 MS2_REPLACE_METHOD(0x1403C7A00, GameEventGuildCoin, OnStart, 46, 0x16A44E78);
 
 // @0x1403c7a40
-void GameEventGuildCoin::vfunc_6() { FUN_1404238e0(TSingleton<CGameEventValueManager>::GetInstance()->GuildCoin(), 0); }
+void GameEventGuildCoin::vfunc_6() { ((class CGameEventValueGuildCoin*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GuildCoin()))->SetRate(0); }
 MS2_REPLACE_METHOD(0x1403C7A40, GameEventGuildCoin, vfunc_6, 37, 0xD8029974);
 
 // @0x1403c7a70
@@ -3356,7 +3408,7 @@ void GameEventMasteryReward::OnStart()
 MS2_REPLACE_METHOD(0x1403C7CA0, GameEventMasteryReward, OnStart, 95, 0xCEFD2DB8);
 
 // @0x1403c7d10
-void GameEventMasteryReward::vfunc_6() { FUN_140423da0(TSingleton<CGameEventValueManager>::GetInstance()->MasteryReward(), m_id); }
+void GameEventMasteryReward::vfunc_6() { ((class CGameEventValueMasteryReward*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->MasteryReward()))->Remove(m_id); }
 MS2_REPLACE_METHOD(0x1403C7D10, GameEventMasteryReward, vfunc_6, 43, 0x57F16CC7);
 
 // @0x1403c7d50
@@ -3496,11 +3548,11 @@ void GameEventMasteryReduce::vfunc_2() { m_d0 = FUN_140718200(&m_68); }
 MS2_REPLACE_METHOD(0x1403C8510, GameEventMasteryReduce, vfunc_2, 42, 0xD5B9BC39);
 
 // @0x1403c8540
-void GameEventMasteryReduce::OnStart() { FUN_140424130(TSingleton<CGameEventValueManager>::GetInstance()->MasteryReduce(), m_d0); }
+void GameEventMasteryReduce::OnStart() { ((class CGameEventValueMasteryReduce*)(struct Unk_GameEventIntValue*)(TSingleton<CGameEventValueManager>::GetInstance()->MasteryReduce()))->SetRate(m_d0); }
 MS2_REPLACE_METHOD(0x1403C8540, GameEventMasteryReduce, OnStart, 46, 0x889011F9);
 
 // @0x1403c8580
-void GameEventMasteryReduce::vfunc_6() { FUN_140424130(TSingleton<CGameEventValueManager>::GetInstance()->MasteryReduce(), 0); }
+void GameEventMasteryReduce::vfunc_6() { ((class CGameEventValueMasteryReduce*)(struct Unk_GameEventIntValue*)(TSingleton<CGameEventValueManager>::GetInstance()->MasteryReduce()))->SetRate(0); }
 MS2_REPLACE_METHOD(0x1403C8580, GameEventMasteryReduce, vfunc_6, 37, 0x3AE96BBF);
 
 // @0x1403c85b0
@@ -3558,11 +3610,11 @@ void GameEventUGCMapContractSale::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C8800, GameEventUGCMapContractSale, vfunc_4, 79, 0x3CEA8454);
 
 // @0x1403c8860
-void GameEventUGCMapContractSale::OnStart() { FUN_1401c0d90()->FUN_140479640(m_id, m_d0); }
+void GameEventUGCMapContractSale::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_140479640(m_id, m_d0); }
 MS2_REPLACE_METHOD(0x1403C8860, GameEventUGCMapContractSale, OnStart, 47, 0x1E1D85C1);
 
 // @0x1403c88a0
-void GameEventUGCMapContractSale::vfunc_6() { FUN_1401c0d90()->FUN_1404796b0(m_id); }
+void GameEventUGCMapContractSale::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_1404796b0(m_id); }
 MS2_REPLACE_METHOD(0x1403C88A0, GameEventUGCMapContractSale, vfunc_6, 35, 0x88C86AFF);
 
 // ---- GameEventUGCMapExtensionSale -----------------------------------------------------------------------------------
@@ -3604,11 +3656,11 @@ void GameEventUGCMapExtensionSale::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C8A70, GameEventUGCMapExtensionSale, vfunc_4, 79, 0x4C71D44A);
 
 // @0x1403c8ad0
-void GameEventUGCMapExtensionSale::OnStart() { FUN_1401c0d90()->FUN_140479790(m_id, m_d0); }
+void GameEventUGCMapExtensionSale::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_140479790(m_id, m_d0); }
 MS2_REPLACE_METHOD(0x1403C8AD0, GameEventUGCMapExtensionSale, OnStart, 47, 0x7ABE58BB);
 
 // @0x1403c8b10
-void GameEventUGCMapExtensionSale::vfunc_6() { FUN_1401c0d90()->FUN_140479800(m_id); }
+void GameEventUGCMapExtensionSale::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_140479800(m_id); }
 MS2_REPLACE_METHOD(0x1403C8B10, GameEventUGCMapExtensionSale, vfunc_6, 35, 0xB5927B20);
 
 // ---- GameEventConstructShowItem -------------------------------------------------------------------------------------
@@ -3733,11 +3785,11 @@ void GameEventTransferItemBound::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C9350, GameEventTransferItemBound, vfunc_4, 78, 0x7AF36612);
 
 // @0x1403c93b0
-void GameEventTransferItemBound::OnStart() { FUN_1401c0d90()->SetTransferItemBound(m_d0); }
+void GameEventTransferItemBound::OnStart() { ((class CGameRule*)FUN_1401c0d90())->SetTransferItemBound(m_d0); }
 MS2_REPLACE_METHOD(0x1403C93B0, GameEventTransferItemBound, OnStart, 39, 0x1D75E411);
 
 // @0x1403c93e0
-void GameEventTransferItemBound::vfunc_6() { FUN_1401c0d90()->SetTransferItemBound(!m_d0); }
+void GameEventTransferItemBound::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->SetTransferItemBound(!m_d0); }
 MS2_REPLACE_METHOD(0x1403C93E0, GameEventTransferItemBound, vfunc_6, 60, 0xFF7D7960);
 
 // ---- GameEventSaleItemsRestricted -----------------------------------------------------------------------------------
@@ -3793,7 +3845,7 @@ void GameEventSaleItemsRestricted::OnStart()
 MS2_REPLACE_METHOD(0x1403C9690, GameEventSaleItemsRestricted, OnStart, 87, 0xA29CA15B);
 
 // @0x1403c96f0
-void GameEventSaleItemsRestricted::vfunc_6() { FUN_140424ae0(TSingleton<CGameEventValueManager>::GetInstance()->SaleItemsRestricted()); }
+void GameEventSaleItemsRestricted::vfunc_6() { ((class CGameEventValueSaleItemsRestricted*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->SaleItemsRestricted()))->Clear(); }
 MS2_REPLACE_METHOD(0x1403C96F0, GameEventSaleItemsRestricted, vfunc_6, 35, 0xE41DF6E7);
 
 // ---- GameEventUgcMapCommendationGM ----------------------------------------------------------------------------------
@@ -3847,11 +3899,11 @@ void GameEventUgcMapCommendationGM::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C9980, GameEventUgcMapCommendationGM, vfunc_4, 225, 0x40094F89);
 
 // @0x1403c9a70
-void GameEventUgcMapCommendationGM::OnStart() { FUN_1401c0d90()->FUN_1404784b0(m_d0, m_d8, m_e0); }
+void GameEventUgcMapCommendationGM::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_1404784b0(m_d0, m_d8, m_e0); }
 MS2_REPLACE_METHOD(0x1403C9A70, GameEventUgcMapCommendationGM, OnStart, 115, 0x22E4A6EC);
 
 // @0x1403c9af0
-void GameEventUgcMapCommendationGM::vfunc_6() { FUN_1401c0d90()->FUN_140478640(m_d0); }
+void GameEventUgcMapCommendationGM::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_140478640(m_d0); }
 MS2_REPLACE_METHOD(0x1403C9AF0, GameEventUgcMapCommendationGM, vfunc_6, 38, 0x26132507);
 
 // ---- GameEventDeleteUrlCache ----------------------------------------------------------------------------------------
@@ -3894,11 +3946,11 @@ void GameEventDeleteUrlCache::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C9CD0, GameEventDeleteUrlCache, vfunc_4, 82, 0xC85C5644);
 
 // @0x1403c9d30
-void GameEventDeleteUrlCache::OnStart() { FUN_1401c0d90()->FUN_140478a40(m_d0); }
+void GameEventDeleteUrlCache::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_140478a40(m_d0); }
 MS2_REPLACE_METHOD(0x1403C9D30, GameEventDeleteUrlCache, OnStart, 38, 0x9737F55E);
 
 // @0x1403c9d60
-void GameEventDeleteUrlCache::vfunc_6() { FUN_1401c0d90()->FUN_140478a40(0); }
+void GameEventDeleteUrlCache::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_140478a40(0); }
 MS2_REPLACE_METHOD(0x1403C9D60, GameEventDeleteUrlCache, vfunc_6, 29, 0x9173CFD7);
 
 // ---- GameEventPetMastery --------------------------------------------------------------------------------------------
@@ -3961,16 +4013,16 @@ MS2_REPLACE_METHOD(0x1403CA0D0, GameEventPetMastery, vfunc_4, 124, 0xD0D78123);
 // @0x1403ca160
 void GameEventPetMastery::OnStart()
 {
-    FUN_1401c0d90()->FUN_14047ef70(m_id, m_d0);
-    FUN_1401c0d90()->FUN_14047f180(m_id, m_d4);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047ef70(m_id, m_d0);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047f180(m_id, m_d4);
 }
 MS2_REPLACE_METHOD(0x1403CA160, GameEventPetMastery, OnStart, 80, 0xC297F8CB);
 
 // @0x1403ca1c0
 void GameEventPetMastery::vfunc_6()
 {
-    FUN_1401c0d90()->FUN_14047efe0(m_id);
-    FUN_1401c0d90()->FUN_14047f1f0(m_id);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047efe0(m_id);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047f1f0(m_id);
 }
 MS2_REPLACE_METHOD(0x1403CA1C0, GameEventPetMastery, vfunc_6, 56, 0x17A2B462);
 
@@ -4013,11 +4065,11 @@ void GameEventPetBattleExp::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CA3A0, GameEventPetBattleExp, vfunc_4, 79, 0x6B14DA29);
 
 // @0x1403ca400
-void GameEventPetBattleExp::OnStart() { FUN_1401c0d90()->FUN_14047f390(m_id, m_d0); }
+void GameEventPetBattleExp::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047f390(m_id, m_d0); }
 MS2_REPLACE_METHOD(0x1403CA400, GameEventPetBattleExp, OnStart, 47, 0x87E55C7F);
 
 // @0x1403ca440
-void GameEventPetBattleExp::vfunc_6() { FUN_1401c0d90()->FUN_14047f400(m_id); }
+void GameEventPetBattleExp::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047f400(m_id); }
 MS2_REPLACE_METHOD(0x1403CA440, GameEventPetBattleExp, vfunc_6, 35, 0xD43D95A8);
 
 // ---- GameEventPetComposeSale ----------------------------------------------------------------------------------------
@@ -4059,11 +4111,11 @@ void GameEventPetComposeSale::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CA610, GameEventPetComposeSale, vfunc_4, 79, 0x47594ED6);
 
 // @0x1403ca670
-void GameEventPetComposeSale::OnStart() { FUN_1401c0d90()->FUN_14047f590(m_id, m_d0); }
+void GameEventPetComposeSale::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047f590(m_id, m_d0); }
 MS2_REPLACE_METHOD(0x1403CA670, GameEventPetComposeSale, OnStart, 47, 0x7AD9EAA4);
 
 // @0x1403ca6b0
-void GameEventPetComposeSale::vfunc_6() { FUN_1401c0d90()->FUN_14047f600(m_id); }
+void GameEventPetComposeSale::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047f600(m_id); }
 MS2_REPLACE_METHOD(0x1403CA6B0, GameEventPetComposeSale, vfunc_6, 35, 0x448E3F17);
 
 // ---- GameEventItemBox -----------------------------------------------------------------------------------------------
@@ -4227,7 +4279,7 @@ MS2_REPLACE_METHOD(0x1403CAF60, GameEventShutdownInteractObjectId, vfunc_4, 241,
 void GameEventShutdownInteractObjectId::OnStart()
 {
     for (std::set<std::pair<unsigned, int> >::iterator it = m_d0.begin(), itEnd = m_d0.end(); it != itEnd; ++it)
-        FUN_1407d0420(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownInteractObjectId(), (*it).first, (*it).second);
+        ((class CShutdownEventInteractObject*)(class CShutdownEventInteractObject*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownInteractObjectId()))->FUN_1407d0420((*it).first, (*it).second);
 }
 MS2_REPLACE_METHOD(0x1403CB060, GameEventShutdownInteractObjectId, OnStart, 165, 0x329092AB);
 
@@ -4235,7 +4287,7 @@ MS2_REPLACE_METHOD(0x1403CB060, GameEventShutdownInteractObjectId, OnStart, 165,
 void GameEventShutdownInteractObjectId::vfunc_6()
 {
     for (std::set<std::pair<unsigned, int> >::iterator it = m_d0.begin(), itEnd = m_d0.end(); it != itEnd; ++it)
-        FUN_1407d04c0(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownInteractObjectId(), (*it).first, (*it).second);
+        ((class CShutdownEventInteractObject*)(class CShutdownEventInteractObject*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownInteractObjectId()))->FUN_1407d04c0((*it).first, (*it).second);
 }
 MS2_REPLACE_METHOD(0x1403CB110, GameEventShutdownInteractObjectId, vfunc_6, 165, 0xD1095170);
 
@@ -4304,7 +4356,7 @@ MS2_REPLACE_METHOD(0x1403CB4E0, GameEventShutdownFunctionItem, vfunc_4, 190, 0x9
 void GameEventShutdownFunctionItem::OnStart()
 {
     for (std::set<unsigned>::iterator it = m_d0.begin(), itEnd = m_d0.end(); it != itEnd; ++it)
-        FUN_1407d0c30(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownFunctionItem(), *it);
+        ((class CShutdownEventFunctionItem*)(class CShutdownEventFunctionItem*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownFunctionItem()))->FUN_1407d0c30(*it);
 }
 MS2_REPLACE_METHOD(0x1403CB5B0, GameEventShutdownFunctionItem, OnStart, 141, 0x94440A91);
 
@@ -4312,7 +4364,7 @@ MS2_REPLACE_METHOD(0x1403CB5B0, GameEventShutdownFunctionItem, OnStart, 141, 0x9
 void GameEventShutdownFunctionItem::vfunc_6()
 {
     for (std::set<unsigned>::iterator it = m_d0.begin(), itEnd = m_d0.end(); it != itEnd; ++it)
-        FUN_1407d0cb0(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownFunctionItem(), *it);
+        ((class CShutdownEventFunctionItem*)(class CShutdownEventFunctionItem*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownFunctionItem()))->FUN_1407d0cb0(*it);
 }
 MS2_REPLACE_METHOD(0x1403CB650, GameEventShutdownFunctionItem, vfunc_6, 141, 0x8AF4E104);
 
@@ -4444,8 +4496,8 @@ struct Unk_ShutdownUGCUploadInfo
     std::set<Unk_UGCUploadType> m_ids;          // +0x00
     BOOL m_bFlag;                               // +0x10
 };
-void FUN_1407d1ef0(Unk_GameEventLockedValue<0x40>* pValue, int nEventId, const Unk_ShutdownUGCUploadInfo& info);
-void FUN_1407d1f70(Unk_GameEventLockedValue<0x40>* pValue, int nEventId);
+bool FUN_1407d1ef0(class CShutdownEventUGCUpload*, unsigned int, struct Unk_ShutdownUGCUploadInfo const&);   // C3: was FUN_1407d1ef0
+void FUN_1407d1f70(class CShutdownEventUGCUpload*, unsigned int);   // C3: was FUN_1407d1f70
 
 // @0x1403cbdb0
 void GameEventShutdownUGCUpload::OnStart()
@@ -4454,12 +4506,12 @@ void GameEventShutdownUGCUpload::OnStart()
     info.m_bFlag = m_f0;
     for (size_t i = 0; i < m_d0.GetCount(); i++)
         info.m_ids.insert((Unk_UGCUploadType)m_d0[i]);
-    FUN_1407d1ef0(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownUGCUpload(), FUN_1402e1d00(), info);
+    FUN_1407d1ef0((class CShutdownEventUGCUpload*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownUGCUpload()), FUN_1402e1d00(), info);
 }
 MS2_REPLACE_METHOD(0x1403CBDB0, GameEventShutdownUGCUpload, OnStart, 208, 0x414A87F9);
 
 // @0x1403cbe90
-void GameEventShutdownUGCUpload::vfunc_6() { FUN_1407d1f70(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownUGCUpload(), FUN_1402e1d00()); }
+void GameEventShutdownUGCUpload::vfunc_6() { FUN_1407d1f70((class CShutdownEventUGCUpload*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownUGCUpload()), FUN_1402e1d00()); }
 MS2_REPLACE_METHOD(0x1403CBE90, GameEventShutdownUGCUpload, vfunc_6, 55, 0xC4914FA2);
 
 // ---- GameEventFindDungeonHelperBonus --------------------------------------------------------------------------------
@@ -4485,11 +4537,11 @@ void GameEventFindDungeonHelperBonus::vfunc_2() { m_d0 = FUN_140718200(&m_68); }
 MS2_REPLACE_METHOD(0x1403CBFF0, GameEventFindDungeonHelperBonus, vfunc_2, 42, 0xE118841E);
 
 // @0x1403cc020
-void GameEventFindDungeonHelperBonus::OnStart() { FUN_140424c80(TSingleton<CGameEventValueManager>::GetInstance()->FindDungeonHelperBonus(), m_d0); }
+void GameEventFindDungeonHelperBonus::OnStart() { ((class CGameEventValueDungeonHelperBonus*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->FindDungeonHelperBonus()))->Add(m_d0); }
 MS2_REPLACE_METHOD(0x1403CC020, GameEventFindDungeonHelperBonus, OnStart, 46, 0x48CD8444);
 
 // @0x1403cc060
-void GameEventFindDungeonHelperBonus::vfunc_6() { FUN_140424cd0(TSingleton<CGameEventValueManager>::GetInstance()->FindDungeonHelperBonus(), m_d0); }
+void GameEventFindDungeonHelperBonus::vfunc_6() { ((class CGameEventValueDungeonHelperBonus*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->FindDungeonHelperBonus()))->Sub(m_d0); }
 MS2_REPLACE_METHOD(0x1403CC060, GameEventFindDungeonHelperBonus, vfunc_6, 46, 0x8E27CDF4);
 
 // @0x1403cc0a0
@@ -4533,13 +4585,13 @@ MS2_REPLACE_METHOD(0x1403CC240, GameEventGuildVsGameOpen, vfunc_2, 6, 0xA9AF6E37
 // @0x1403cc250
 void GameEventGuildVsGameOpen::OnStart()
 {
-    FUN_1401c0d90()->FUN_14047ec80(true);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047ec80(true);
     TSingleton<CGuildManager>::GetInstance()->FUN_1413bd4c0();
 }
 MS2_REPLACE_METHOD(0x1403CC250, GameEventGuildVsGameOpen, OnStart, 42, 0xA6426729);
 
 // @0x1403cc280
-void GameEventGuildVsGameOpen::vfunc_6() { FUN_1401c0d90()->FUN_14047ec80(false); }
+void GameEventGuildVsGameOpen::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047ec80(false); }
 MS2_REPLACE_METHOD(0x1403CC280, GameEventGuildVsGameOpen, vfunc_6, 29, 0xCD21E29A);
 
 // ---- GameEventChatFiltering -----------------------------------------------------------------------------------------
@@ -4715,11 +4767,11 @@ void GameEventGallery::vfunc_2()
 MS2_REPLACE_METHOD(0x1403CCC30, GameEventGallery, vfunc_2, 664, 0x6895C365);
 
 // @0x1403cced0
-void GameEventGallery::OnStart() { FUN_1401c0d90()->FUN_14047cef0(m_d0); }
+void GameEventGallery::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047cef0(m_d0); }
 MS2_REPLACE_METHOD(0x1403CCED0, GameEventGallery, OnStart, 91, 0x8F4A3CE5);
 
 // @0x1403ccf40
-void GameEventGallery::vfunc_6() { FUN_1401c0d90()->FUN_14047cef0(MS2Ptr<GalleryContext>(0)); }
+void GameEventGallery::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047cef0(MS2Ptr<GalleryContext>(0)); }
 MS2_REPLACE_METHOD(0x1403CCF40, GameEventGallery, vfunc_6, 79, 0x6AAB184B);
 
 // @0x1403ccfa0
@@ -4859,13 +4911,13 @@ void GameEventIgnoreConstructionLockEvent::OnStart()
     for (unsigned i = 0; i < m_d0.GetCount(); i++)
     {
         unsigned __int64 id = m_d0[i];
-        FUN_1401c0d90()->FUN_14047e230(id);
+        ((class CGameRule*)FUN_1401c0d90())->FUN_14047e230(id);
     }
 }
 MS2_REPLACE_METHOD(0x1403CD8C0, GameEventIgnoreConstructionLockEvent, OnStart, 121, 0x7F51EA0E);
 
 // @0x1403cd940
-void GameEventIgnoreConstructionLockEvent::vfunc_6() { FUN_1401c0d90()->FUN_14047e300(); }
+void GameEventIgnoreConstructionLockEvent::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047e300(); }
 MS2_REPLACE_METHOD(0x1403CD940, GameEventIgnoreConstructionLockEvent, vfunc_6, 27, 0xB6FF65BC);
 
 // ---- GameEventStarShop ----------------------------------------------------------------------------------------------
@@ -4907,11 +4959,11 @@ void GameEventStarShop::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CDB10, GameEventStarShop, vfunc_4, 79, 0x004B9E41);
 
 // @0x1403cdb70
-void GameEventStarShop::OnStart() { FUN_140426ff0(TSingleton<CGameEventValueManager>::GetInstance()->GetStarShop(), m_d0); }
+void GameEventStarShop::OnStart() { ((class CGameEventValueStarShop*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetStarShop()))->SetValue(m_d0); }
 MS2_REPLACE_METHOD(0x1403CDB70, GameEventStarShop, OnStart, 46, 0x6D33F816);
 
 // @0x1403cdbb0
-void GameEventStarShop::vfunc_6() { FUN_140426ff0(TSingleton<CGameEventValueManager>::GetInstance()->GetStarShop(), 0); }
+void GameEventStarShop::vfunc_6() { ((class CGameEventValueStarShop*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetStarShop()))->SetValue(0); }
 MS2_REPLACE_METHOD(0x1403CDBB0, GameEventStarShop, vfunc_6, 37, 0x64449FE9);
 
 // ---- GameEventSnowman -----------------------------------------------------------------------------------------------
@@ -4955,11 +5007,11 @@ void GameEventSnowman::vfunc_2()
 MS2_REPLACE_METHOD(0x1403CDD50, GameEventSnowman, vfunc_2, 434, 0xBF2FA666);
 
 // @0x1403cdf10
-void GameEventSnowman::OnStart() { FUN_1401c0d90()->FUN_14047cfe0(m_d0); }
+void GameEventSnowman::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047cfe0(m_d0); }
 MS2_REPLACE_METHOD(0x1403CDF10, GameEventSnowman, OnStart, 91, 0xFFE10E1E);
 
 // @0x1403cdf80
-void GameEventSnowman::vfunc_6() { FUN_1401c0d90()->FUN_14047cfe0(MS2Ptr<SnowmanContext>(0)); }
+void GameEventSnowman::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047cfe0(MS2Ptr<SnowmanContext>(0)); }
 MS2_REPLACE_METHOD(0x1403CDF80, GameEventSnowman, vfunc_6, 79, 0xB759FB8F);
 
 // @0x1403cdfe0
@@ -5020,9 +5072,9 @@ bool GameEventSnowman::ReadSnowmanData(MS2Ptr<SnowmanContext> pContext)
             MS2_ASSERT_AT(MS2_LINE(4162), "xelCondition" && 0);
             return false;
         }
-        FUN_1408731e0(xelCondition, "snowflakeCount", snowman->m_18);
-        FUN_1408731e0(xelCondition, "dailyMaxCount", snowman->m_1c);
-        FUN_1408731e0(xelCondition, "accumMaxCount", snowman->m_20);
+        XmlGetAttr((class TiXmlElement*)(xelCondition), "snowflakeCount", snowman->m_18);
+        XmlGetAttr((class TiXmlElement*)(xelCondition), "dailyMaxCount", snowman->m_1c);
+        XmlGetAttr((class TiXmlElement*)(xelCondition), "accumMaxCount", snowman->m_20);
         if (!ReadRewardData(xel->FUN_140165cf0("rewardItems"), snowman->m_items))
         {
             MS2_ASSERT_AT(MS2_LINE(4168), "ReadRewardData(xel->FirstChildElement(\"rewardItems\"), snowman->dailyCompelteRewards)" && 0);
@@ -5094,11 +5146,11 @@ void GameEventRps::vfunc_2()
 MS2_REPLACE_METHOD(0x1403CE900, GameEventRps, vfunc_2, 396, 0x7CD51416);
 
 // @0x1403ceaa0
-void GameEventRps::OnStart() { FUN_1401c0d90()->FUN_14047d0d0(m_d0); }
+void GameEventRps::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047d0d0(m_d0); }
 MS2_REPLACE_METHOD(0x1403CEAA0, GameEventRps, OnStart, 91, 0x36634EAA);
 
 // @0x1403ceb10
-void GameEventRps::vfunc_6() { FUN_1401c0d90()->FUN_14047d0d0(MS2Ptr<RpsContext>(0)); }
+void GameEventRps::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047d0d0(MS2Ptr<RpsContext>(0)); }
 MS2_REPLACE_METHOD(0x1403CEB10, GameEventRps, vfunc_6, 79, 0x1511C25C);
 
 // @0x1403ceb70
@@ -5140,7 +5192,7 @@ bool GameEventRps::ReadRpsData(MS2Ptr<RpsContext> pContext)
         MS2_ASSERT_AT(MS2_LINE(4240), 0);
         return false;
     }
-    Unk_140165cf0* xel = FUN_140345b40(root);
+    Unk_140165cf0* xel = FUN_140345b40((TiXmlDocument *)root);
     if (xel == NULL)
     {
         MS2_ASSERT_AT(MS2_LINE(4247), 0);
@@ -5159,7 +5211,7 @@ bool GameEventRps::ReadRpsData(MS2Ptr<RpsContext> pContext)
     for (Unk_140165cf0* xelReward = xel->FUN_140165cf0("rewardData"); xelReward; xelReward = xelReward->FUN_140168650("rewardData"))
     {
         MS2Ptr<RpsContext::RewardData> reward(new RpsContext::RewardData);
-        FUN_1408731e0(xelReward, "condPlayCount", reward->m_count);
+        XmlGetAttr((class TiXmlElement*)(xelReward), "condPlayCount", reward->m_count);
         Unk_140165cf0* xelItems = xelReward->FUN_140165cf0("items");
         if (xelItems == NULL)
         {
@@ -5206,11 +5258,11 @@ void GameEventNpcShopTalk::vfunc_2()
 MS2_REPLACE_METHOD(0x1403CF240, GameEventNpcShopTalk, vfunc_2, 70, 0x401550DF);
 
 // @0x1403cf290
-void GameEventNpcShopTalk::OnStart() { FUN_1404270e0(TSingleton<CGameEventValueManager>::GetInstance()->GetNpcShopTalk(), m_d0, m_d4); }
+void GameEventNpcShopTalk::OnStart() { ((class CGameEventValueNpcShopTalk*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetNpcShopTalk()))->Set(m_d0, m_d4); }
 MS2_REPLACE_METHOD(0x1403CF290, GameEventNpcShopTalk, OnStart, 58, 0x21F3548C);
 
 // @0x1403cf2d0
-void GameEventNpcShopTalk::vfunc_6() { FUN_140427150(TSingleton<CGameEventValueManager>::GetInstance()->GetNpcShopTalk(), m_d0); }
+void GameEventNpcShopTalk::vfunc_6() { ((class CGameEventValueNpcShopTalk*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetNpcShopTalk()))->Remove(m_d0); }
 MS2_REPLACE_METHOD(0x1403CF2D0, GameEventNpcShopTalk, vfunc_6, 46, 0x674DA7E5);
 
 // @0x1403cf310
@@ -5268,7 +5320,7 @@ void GameEventNpcShopGivePoint::OnStart()
 MS2_REPLACE_METHOD(0x1403CF5B0, GameEventNpcShopGivePoint, OnStart, 163, 0x6FC2B2E4);
 
 // @0x1403cf660
-void GameEventNpcShopGivePoint::vfunc_6() { FUN_140427330(TSingleton<CGameEventValueManager>::GetInstance()->GetNpcShopGivePoint(), m_d0); }
+void GameEventNpcShopGivePoint::vfunc_6() { ((class CGameEventValueNpcShopGivePoint*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetNpcShopGivePoint()))->Remove(m_d0); }
 MS2_REPLACE_METHOD(0x1403CF660, GameEventNpcShopGivePoint, vfunc_6, 46, 0x357C9667);
 
 // @0x1403cf6a0
@@ -5336,11 +5388,11 @@ void GameEventNpcShopResetPriceSale::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CFA00, GameEventNpcShopResetPriceSale, vfunc_4, 124, 0xF0C4ABC0);
 
 // @0x1403cfa90
-void GameEventNpcShopResetPriceSale::OnStart() { FUN_1404274c0(TSingleton<CGameEventValueManager>::GetInstance()->GetNpcShopResetPriceSale(), m_d0, m_d4); }
+void GameEventNpcShopResetPriceSale::OnStart() { ((class CGameEventValueNpcShopResetPriceSale*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetNpcShopResetPriceSale()))->Set(m_d0, m_d4); }
 MS2_REPLACE_METHOD(0x1403CFA90, GameEventNpcShopResetPriceSale, OnStart, 58, 0xCCE9A4AF);
 
 // @0x1403cfad0
-void GameEventNpcShopResetPriceSale::vfunc_6() { FUN_140427530(TSingleton<CGameEventValueManager>::GetInstance()->GetNpcShopResetPriceSale(), m_d0); }
+void GameEventNpcShopResetPriceSale::vfunc_6() { ((class CGameEventValueNpcShopResetPriceSale*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetNpcShopResetPriceSale()))->Remove(m_d0); }
 MS2_REPLACE_METHOD(0x1403CFAD0, GameEventNpcShopResetPriceSale, vfunc_6, 46, 0x3D6B5191);
 
 // ---- GameEventReactor -----------------------------------------------------------------------------------------------
@@ -5382,11 +5434,11 @@ void GameEventReactor::vfunc_2()
 MS2_REPLACE_METHOD(0x1403CFC50, GameEventReactor, vfunc_2, 374, 0x54D82440);
 
 // @0x1403cfdd0
-void GameEventReactor::OnStart() { FUN_1401c0d90()->FUN_14047d1c0(m_d0); }
+void GameEventReactor::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047d1c0(m_d0); }
 MS2_REPLACE_METHOD(0x1403CFDD0, GameEventReactor, OnStart, 91, 0x57C06D3C);
 
 // @0x1403cfe40
-void GameEventReactor::vfunc_6() { FUN_1401c0d90()->FUN_14047d1c0(MS2Ptr<ReactorContext>(0)); }
+void GameEventReactor::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047d1c0(MS2Ptr<ReactorContext>(0)); }
 MS2_REPLACE_METHOD(0x1403CFE40, GameEventReactor, vfunc_6, 79, 0x0AE46477);
 
 // @0x1403cfea0
@@ -5449,7 +5501,7 @@ void GameEventCustomTriggerString::vfunc_2()
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return;
-    for (Unk_140165cf0* pNode = FUN_140345b40(pRoot); pNode; pNode = FUN_1403f0510(pNode))
+    for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class Unk_140165cf0*)(class Unk_140165cf0*)(pNode))->NextSiblingElement())
     {
         CStringW strId;
         CStringW strName;
@@ -5529,7 +5581,7 @@ void GameEventTreeWatering::OnStart()
 {
     if (m_d0 == 0)
         return;
-    FUN_1401c0d90()->FUN_14047d2b0(m_d0);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047d2b0(m_d0);
 }
 MS2_REPLACE_METHOD(0x1403D06A0, GameEventTreeWatering, OnStart, 121, 0x04F4AC3E);
 
@@ -5538,7 +5590,7 @@ void GameEventTreeWatering::vfunc_6()
 {
     if (m_d0 == 0)
         return;
-    FUN_1401c0d90()->FUN_14047d2b0(MS2Ptr<TreeWateringContext>(0));
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047d2b0(MS2Ptr<TreeWateringContext>(0));
 }
 MS2_REPLACE_METHOD(0x1403D0720, GameEventTreeWatering, vfunc_6, 109, 0x524ACF6C);
 
@@ -5581,9 +5633,9 @@ bool GameEventTreeWatering::ReadTreeWateringData(MS2Ptr<TreeWateringContext> pCo
             for (Unk_140165cf0* pStep = pTreeStep->FUN_140165cf0("step"); pStep; pStep = pStep->FUN_140168650("step"))
             {
                 MS2Ptr<TreeWatering_TreeStep> spStep(new TreeWatering_TreeStep);
-                FUN_1408731e0(pStep, "step", spStep->m_step);
-                FUN_140873600(pStep, "begin", spStep->m_beginTime);
-                FUN_140873600(pStep, "end", spStep->m_endTime);
+                XmlGetAttr((class TiXmlElement*)(pStep), "step", spStep->m_step);
+                XmlGetAttr((class TiXmlElement*)(pStep), "begin", spStep->m_beginTime);
+                XmlGetAttr((class TiXmlElement*)(pStep), "end", spStep->m_endTime);
                 pContext->m_steps.SetAt(spStep->m_step, spStep);
             }
         }
@@ -5593,8 +5645,8 @@ bool GameEventTreeWatering::ReadTreeWateringData(MS2Ptr<TreeWateringContext> pCo
             for (Unk_140165cf0* pTime = pEmotionDay->FUN_140165cf0("time"); pTime; pTime = pTime->FUN_140168650("time"))
             {
                 MS2Ptr<TreeWatering_EmotionDay> spDay(new TreeWatering_EmotionDay);
-                FUN_140873600(pTime, "begin", spDay->m_beginTime);
-                FUN_140873600(pTime, "end", spDay->m_endTime);
+                XmlGetAttr((class TiXmlElement*)(pTime), "begin", spDay->m_beginTime);
+                XmlGetAttr((class TiXmlElement*)(pTime), "end", spDay->m_endTime);
                 pContext->m_emotionDays.Add(spDay);
             }
         }
@@ -5609,17 +5661,17 @@ bool GameEventTreeWatering::ReadTreeWateringData(MS2Ptr<TreeWateringContext> pCo
         Unk_140165cf0* pWatering = pRoot->FUN_140165cf0("watering_reward");
         if (pWatering)
         {
-            FUN_1408731e0(pWatering, "MaxRewardCountDaily", pContext->m_nDailyLimit);
+            XmlGetAttr((class TiXmlElement*)(pWatering), "MaxRewardCountDaily", pContext->m_nDailyLimit);
             FUN_140873220(pWatering, "itemID", pContext->m_8c);
-            FUN_1408731e0(pWatering, "grade", pContext->m_90);
+            XmlGetAttr((class TiXmlElement*)(pWatering), "grade", pContext->m_90);
             FUN_140873220(pWatering, "count", pContext->m_94);
         }
         Unk_140165cf0* pEmotion = pRoot->FUN_140165cf0("emotion_reward");
         if (pEmotion)
         {
-            FUN_1408731e0(pEmotion, "MaxRewardCountDaily", pContext->m_nBonusLimit);
+            XmlGetAttr((class TiXmlElement*)(pEmotion), "MaxRewardCountDaily", pContext->m_nBonusLimit);
             FUN_140873220(pEmotion, "itemID", pContext->m_9c);
-            FUN_1408731e0(pEmotion, "grade", pContext->m_a0);
+            XmlGetAttr((class TiXmlElement*)(pEmotion), "grade", pContext->m_a0);
             FUN_140873220(pEmotion, "count", pContext->m_a4);
         }
     }
@@ -5646,7 +5698,7 @@ bool GameEventTreeWatering::ReadTreeWateringData(MS2Ptr<TreeWateringContext> pCo
             for (Unk_140165cf0* pStep = pTreeResource->FUN_140165cf0("step"); pStep; pStep = pStep->FUN_140168650("step"))
             {
                 MS2Ptr<TreeWatering_TreeResource> spResource(new TreeWatering_TreeResource);
-                FUN_1408731e0(pStep, "step", spResource->m_id);
+                XmlGetAttr((class TiXmlElement*)(pStep), "step", spResource->m_id);
                 FUN_1408733e0(pStep, "nif_id", spResource->m_20);
                 pContext->m_resources.SetAt(spResource->m_id, spResource);
             }
@@ -5679,11 +5731,11 @@ void GameEventShutdownBillboard::vfunc_2() {}
 MS2_REPLACE_METHOD(0x1403D1350, GameEventShutdownBillboard, vfunc_2, 6, 0xA9AF6E37);
 
 // @0x1403d1360
-void GameEventShutdownBillboard::OnStart() { FUN_1407d1c30(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownBillboard(), m_id); }
+void GameEventShutdownBillboard::OnStart() { FUN_1407d1c30((CShutdownEventBillboard *)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownBillboard()), m_id); }
 MS2_REPLACE_METHOD(0x1403D1360, GameEventShutdownBillboard, OnStart, 43, 0xBFBF27ED);
 
 // @0x1403d13a0
-void GameEventShutdownBillboard::vfunc_6() { FUN_1407d1ca0(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownBillboard(), m_id); }
+void GameEventShutdownBillboard::vfunc_6() { FUN_1407d1ca0((CShutdownEventBillboard *)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownBillboard()), m_id); }
 MS2_REPLACE_METHOD(0x1403D13A0, GameEventShutdownBillboard, vfunc_6, 43, 0xF627A47D);
 
 // ---- GameEventShutdownUGCBanner -------------------------------------------------------------------------------------
@@ -5709,11 +5761,11 @@ void GameEventShutdownUGCBanner::vfunc_2() {}
 MS2_REPLACE_METHOD(0x1403D14F0, GameEventShutdownUGCBanner, vfunc_2, 6, 0xA9AF6E37);
 
 // @0x1403d1500
-void GameEventShutdownUGCBanner::OnStart() { FUN_1407d1d90(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownUGCBanner(), m_id); }
+void GameEventShutdownUGCBanner::OnStart() { FUN_1407d1d90((CShutdownEventUGCBanner *)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownUGCBanner()), m_id); }
 MS2_REPLACE_METHOD(0x1403D1500, GameEventShutdownUGCBanner, OnStart, 43, 0x166029F4);
 
 // @0x1403d1540
-void GameEventShutdownUGCBanner::vfunc_6() { FUN_1407d1e00(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownUGCBanner(), m_id); }
+void GameEventShutdownUGCBanner::vfunc_6() { FUN_1407d1e00((CShutdownEventUGCBanner *)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownUGCBanner()), m_id); }
 MS2_REPLACE_METHOD(0x1403D1540, GameEventShutdownUGCBanner, vfunc_6, 43, 0x2C142084);
 
 // ---- GameEventPublicTest --------------------------------------------------------------------------------------------
@@ -5740,7 +5792,7 @@ void GameEventPublicTest::vfunc_2() {}
 MS2_REPLACE_METHOD(0x1403D16A0, GameEventPublicTest, vfunc_2, 6, 0xA9AF6E37);
 
 // @0x1403d16b0
-void GameEventPublicTest::OnStart() { FUN_140428810(TSingleton<CGameEventValueManager>::GetInstance()->GetPublicTest(), 1); }
+void GameEventPublicTest::OnStart() { ((class CGameEventValuePublicTest*)(struct Unk_GameEventIntValue*)(TSingleton<CGameEventValueManager>::GetInstance()->GetPublicTest()))->SetValue(1); }
 MS2_REPLACE_METHOD(0x1403D16B0, GameEventPublicTest, OnStart, 40, 0xC09BDAC0);
 
 // @0x1403d16e0
@@ -5786,11 +5838,11 @@ void GameEventAdventureLevelBonusExpRate::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403D1890, GameEventAdventureLevelBonusExpRate, vfunc_4, 79, 0x36F47E14);
 
 // @0x1403d18f0
-void GameEventAdventureLevelBonusExpRate::OnStart() { FUN_1401c0d90()->FUN_140476930(m_id, m_d0); }
+void GameEventAdventureLevelBonusExpRate::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_140476930(m_id, m_d0); }
 MS2_REPLACE_METHOD(0x1403D18F0, GameEventAdventureLevelBonusExpRate, OnStart, 47, 0x54120E91);
 
 // @0x1403d1930
-void GameEventAdventureLevelBonusExpRate::vfunc_6() { FUN_1401c0d90()->FUN_1404769a0(m_id); }
+void GameEventAdventureLevelBonusExpRate::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_1404769a0(m_id); }
 MS2_REPLACE_METHOD(0x1403D1930, GameEventAdventureLevelBonusExpRate, vfunc_6, 35, 0xA8BB55AA);
 
 // ---- GameEventBurningLevelup ------------------------------------------------------------------------------------------
@@ -5837,11 +5889,11 @@ void GameEventBurningLevelup::vfunc_2()
         Unk_140165cf0* pRoot = FUN_140345b40(&doc);
         if (pRoot == NULL)
             return;
-        Unk_140165cf0* pNode = FUN_140345b40(pRoot);
+        Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot);
         if (pNode == NULL)
             return;
-        FUN_1408731a0(pNode, "beginLevel", m_d0->m_beginLevel);
-        FUN_1408731a0(pNode, "endLevel", m_d0->m_endLevel);
+        XmlGetAttr((class TiXmlElement*)(pNode), "beginLevel", m_d0->m_beginLevel);
+        XmlGetAttr((class TiXmlElement*)(pNode), "endLevel", m_d0->m_endLevel);
         FUN_140873220(pNode, "burningBonus", m_d0->m_burningBonus);
         FUN_140873220(pNode, "additionalEffectId", m_d0->m_additionalEffectId);
         FUN_140873420(pNode, "setCharacterPopupStringKey", m_d0->m_setCharacterPopupStringKey);
@@ -5849,7 +5901,7 @@ void GameEventBurningLevelup::vfunc_2()
             FUN_1401bf530(pNode, "setCharacterPopupBottomStringKey", CStringW(L""));
         FUN_140873420(pNode, "descPopupStringKey", m_d0->m_descPopupStringKey);
         FUN_140873420(pNode, "rewardUiTitleStringKey", m_d0->m_rewardUiTitleStringKey);
-        FUN_1408731a0(pNode, "equipNametagSymbolID", m_d0->m_equipNametagSymbolId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "equipNametagSymbolID", m_d0->m_equipNametagSymbolId);
     }
     {
         TiXmlDocument doc;
@@ -5858,7 +5910,7 @@ void GameEventBurningLevelup::vfunc_2()
         Unk_140165cf0* pRoot = FUN_140345b40(&doc);
         if (pRoot == NULL)
             return;
-        Unk_140165cf0* pNode = FUN_140345b40(pRoot);
+        Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot);
         if (pNode == NULL)
             return;
         for (pNode = pRoot->FUN_140165cf0("v"); pNode; pNode = pNode->FUN_140168650("v"))
@@ -5898,7 +5950,7 @@ void GameEventBurningLevelup::vfunc_2()
         MS2Ptr<CItemData> spItemData = FUN_14053f870(spItem->vfunc_o18_0());
         if (spItemData == 0)
         {
-            Unk_BurningLevelupLog(FUN_140166440(), 1, 0x13,
+            Unk_BurningLevelupLog(static_cast<Unk_CommonLog*>(GetLogString()), 1, 0x13,
                                   L"Item 정보를 읽을 수 없습니다.burning levelup event({0}) invalid itemID {1}",
                                   m_d0->m_eventId, spItem->vfunc_o18_0());
             MS2_ASSERT_AT(MS2_LINE(5164), 0);
@@ -5906,7 +5958,7 @@ void GameEventBurningLevelup::vfunc_2()
         }
         if (!spItemData->FUN_14053dfd0(L"LevelPotion"))
         {
-            Unk_BurningLevelupLog(FUN_140166440(), 1, 0x13,
+            Unk_BurningLevelupLog(static_cast<Unk_CommonLog*>(GetLogString()), 1, 0x13,
                                   L"Item 정보를 읽을 수 없습니다.burning levelup event({0}) itemID {1} NOT LEVEL POTION",
                                   m_d0->m_eventId, spItem->vfunc_o18_0());
             MS2_ASSERT_AT(MS2_LINE(5170), 0);
@@ -5914,7 +5966,7 @@ void GameEventBurningLevelup::vfunc_2()
         }
         if (!spItemData->FUN_14053d7c0())
         {
-            Unk_BurningLevelupLog(FUN_140166440(), 1, 0x13,
+            Unk_BurningLevelupLog(static_cast<Unk_CommonLog*>(GetLogString()), 1, 0x13,
                                   L"Item 정보를 읽을 수 없습니다.burning levelup event({0}) itemID {1} NOT BIND CHARACTER",
                                   m_d0->m_eventId, spItem->vfunc_o18_0());
             MS2_ASSERT_AT(MS2_LINE(5176), 0);
@@ -5923,7 +5975,7 @@ void GameEventBurningLevelup::vfunc_2()
         unsigned short nTargetLevel = (unsigned short)spItemData->function.xml.GetInt(L"targetLevel", 0);
         if (nTargetLevel == 0)
         {
-            Unk_BurningLevelupLog(FUN_140166440(), 1, 0x13,
+            Unk_BurningLevelupLog(static_cast<Unk_CommonLog*>(GetLogString()), 1, 0x13,
                                   L"Item 정보를 읽을 수 없습니다.burning levelup event({0}) itemID {1} invalid target level",
                                   m_d0->m_eventId, spItem->vfunc_o18_0());
             MS2_ASSERT_AT(MS2_LINE(5183), 0);
@@ -6016,7 +6068,7 @@ void GameEventFestival::OnStart() { FUN_140428980(TSingleton<CGameEventValueMana
 MS2_REPLACE_METHOD(0x1403D2E00, GameEventFestival, OnStart, 119, 0x77406360);
 
 // @0x1403d2e80
-void GameEventFestival::vfunc_6() { FUN_1404289f0(TSingleton<CGameEventValueManager>::GetInstance()->GetFestival(), FUN_1402e1d00()); }
+void GameEventFestival::vfunc_6() { ((class CGameEventValueFestival*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetFestival()))->Remove(FUN_1402e1d00()); }
 MS2_REPLACE_METHOD(0x1403D2E80, GameEventFestival, vfunc_6, 55, 0x2B580719);
 
 // @0x1403d2ec0
@@ -6169,8 +6221,8 @@ void GameEventFieldEffect::OnStart()
     FUN_140428b10(TSingleton<CGameEventValueManager>::GetInstance()->GetFieldEffect(), m_d0);
     if (m_d0.get())
     {
-        if (m_d0->HasField(FUN_1403ed2d0()->FUN_141bd3060()))
-            FUN_1403ed280()->FUN_1411a7e00(FUN_1401d4330(m_d0->m_effect, 0));
+        if (m_d0->HasField(WorldService::GetInstance()->FUN_141bd3060()))
+            TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->FUN_1411a7e00(FUN_1401d4330(m_d0->m_effect, 0));
     }
 }
 MS2_REPLACE_METHOD(0x1403D37F0, GameEventFieldEffect, OnStart, 284, 0xD060D530);
@@ -6179,7 +6231,7 @@ MS2_REPLACE_METHOD(0x1403D37F0, GameEventFieldEffect, OnStart, 284, 0xD060D530);
 void GameEventFieldEffect::vfunc_6()
 {
     FUN_140428b10(TSingleton<CGameEventValueManager>::GetInstance()->GetFieldEffect(), MS2Ptr<FieldEffectContext>(0));
-    FUN_1403ed280()->FUN_1411a7e00("");
+    TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->FUN_1411a7e00("");
 }
 MS2_REPLACE_METHOD(0x1403D3920, GameEventFieldEffect, vfunc_6, 136, 0x45F894E8);
 
@@ -6226,7 +6278,7 @@ MS2_REPLACE_METHOD(0x1403D3C00, GameEventExchangeScrollSale, vfunc_2, 77, 0x926C
 void GameEventExchangeScrollSale::OnStart()
 {
     for (size_t i = 0; i < m_d0.GetCount(); i++)
-        FUN_140428bf0(TSingleton<CGameEventValueManager>::GetInstance()->GetExchangeScrollSale(), m_d0[i], m_f0);
+        ((class CGameEventValueExchangeScrollSale*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetExchangeScrollSale()))->Set(m_d0[i], m_f0);
 }
 MS2_REPLACE_METHOD(0x1403D3C60, GameEventExchangeScrollSale, OnStart, 135, 0x130BABE3);
 
@@ -6234,7 +6286,7 @@ MS2_REPLACE_METHOD(0x1403D3C60, GameEventExchangeScrollSale, OnStart, 135, 0x130
 void GameEventExchangeScrollSale::vfunc_6()
 {
     for (size_t i = 0; i < m_d0.GetCount(); i++)
-        FUN_140428c60(TSingleton<CGameEventValueManager>::GetInstance()->GetExchangeScrollSale(), m_d0[i]);
+        ((class CGameEventValueExchangeScrollSale*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetExchangeScrollSale()))->Remove(m_d0[i]);
 }
 MS2_REPLACE_METHOD(0x1403D3CF0, GameEventExchangeScrollSale, vfunc_6, 123, 0x3116DF5F);
 
@@ -6322,7 +6374,7 @@ MS2_REPLACE_METHOD(0x1403D4120, GameEventItemTradeRestriction, OnStart, 843, 0x9
 // @0x1403d4480
 void GameEventItemTradeRestriction::vfunc_6()
 {
-    FUN_1404293a0(TSingleton<CGameEventValueManager>::GetInstance()->GetItemTradeRestriction(), FUN_1402e1d00());
+    ((class CGameEventValueItemTradeRestriction*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetItemTradeRestriction()))->Remove(FUN_1402e1d00());
 }
 MS2_REPLACE_METHOD(0x1403D4480, GameEventItemTradeRestriction, vfunc_6, 55, 0x1BAE2831);
 
@@ -6531,11 +6583,11 @@ void GameEventSalePetCrystal::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403D5280, GameEventSalePetCrystal, vfunc_4, 79, 0xB32A48BB);
 
 // @0x1403d52e0
-void GameEventSalePetCrystal::OnStart() { FUN_1401c0d90()->FUN_14047f7a0(m_id, m_d0); }
+void GameEventSalePetCrystal::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047f7a0(m_id, m_d0); }
 MS2_REPLACE_METHOD(0x1403D52E0, GameEventSalePetCrystal, OnStart, 47, 0xCFD5DC47);
 
 // @0x1403d5320
-void GameEventSalePetCrystal::vfunc_6() { FUN_1401c0d90()->FUN_14047f810(m_id); }
+void GameEventSalePetCrystal::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047f810(m_id); }
 MS2_REPLACE_METHOD(0x1403D5320, GameEventSalePetCrystal, vfunc_6, 35, 0x327FD4C0);
 
 // ---- GameEventArcadeOpen --------------------------------------------------------------------------------------------
@@ -6573,8 +6625,8 @@ void GameEventArcadeOpen::vfunc_2()
     if (pInfo == NULL)
         return;
     m_d0->m_eventId = FUN_1402e1d00();
-    FUN_1408731e0(pInfo, "arcadeId", m_d0->m_arcadeId);
-    FUN_1408731e0(pInfo, "rewardCountPerDay", m_d0->m_rewardCountPerDay);
+    XmlGetAttr((class TiXmlElement*)(pInfo), "arcadeId", m_d0->m_arcadeId);
+    XmlGetAttr((class TiXmlElement*)(pInfo), "rewardCountPerDay", m_d0->m_rewardCountPerDay);
     for (Unk_140165cf0* pReward = pRoot->FUN_140165cf0("reward"); pReward; pReward = pReward->FUN_140168650("reward"))
     {
         ItemEntity item;
@@ -6762,7 +6814,7 @@ void GameEventLongTermAttendGift::vfunc_2()
              pReward = pReward->FUN_140168650("reward"))
         {
             MS2Ptr<LongTermAttendGiftContext::Reward> spReward(new LongTermAttendGiftContext::Reward);
-            FUN_1408731e0(pReward, "count", spReward->m_count);
+            XmlGetAttr((class TiXmlElement*)(pReward), "count", spReward->m_count);
             CStringW strItem01;
             CStringW strItem02;
             FUN_140873420(pReward, "item01", strItem01);
@@ -6782,11 +6834,11 @@ void GameEventLongTermAttendGift::vfunc_2()
 MS2_REPLACE_METHOD(0x1403D6190, GameEventLongTermAttendGift, vfunc_2, 1514, 0x3DBC74BB);
 
 // @0x1403d6780
-void GameEventLongTermAttendGift::OnStart() { FUN_1401c0d90()->FUN_14047cd30(m_d8); }
+void GameEventLongTermAttendGift::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047cd30(m_d8); }
 MS2_REPLACE_METHOD(0x1403D6780, GameEventLongTermAttendGift, OnStart, 91, 0xDE8151D3);
 
 // @0x1403d67f0
-void GameEventLongTermAttendGift::vfunc_6() { FUN_1401c0d90()->FUN_14047cdd0(m_d8); }
+void GameEventLongTermAttendGift::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047cdd0(m_d8); }
 MS2_REPLACE_METHOD(0x1403D67F0, GameEventLongTermAttendGift, vfunc_6, 91, 0x3DC7D238);
 
 // @0x1403d6860
@@ -6823,11 +6875,11 @@ MS2_REPLACE_METHOD(0x1403D69E0, GameEventSaleLapenshardUpgradeRGB, GetTypeName, 
 GameEventSaleLapenshardUpgradeRGB::GameEventSaleLapenshardUpgradeRGB() {}
 
 // @0x1403d6a70
-void GameEventSaleLapenshardUpgradeRGB::OnStart() { FUN_1401c0d90()->FUN_14047f8f0(m_id, m_d0); }
+void GameEventSaleLapenshardUpgradeRGB::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047f8f0(m_id, m_d0); }
 MS2_REPLACE_METHOD(0x1403D6A70, GameEventSaleLapenshardUpgradeRGB, OnStart, 47, 0x1B157730);
 
 // @0x1403d6ab0
-void GameEventSaleLapenshardUpgradeRGB::vfunc_6() { FUN_1401c0d90()->FUN_14047f960(m_id); }
+void GameEventSaleLapenshardUpgradeRGB::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047f960(m_id); }
 MS2_REPLACE_METHOD(0x1403D6AB0, GameEventSaleLapenshardUpgradeRGB, vfunc_6, 35, 0x51CC3C66);
 
 // ---- GameEventGuildEventFund ----------------------------------------------------------------------------------------

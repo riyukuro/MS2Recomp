@@ -18,6 +18,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/triggerservice.h"
 
 // The header statics of the including TU: the sort type names and the skill / stun marks.
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -40,13 +41,7 @@ class ASDialog : public ASDisplayObjectContainer { public: virtual void vfunc_2(
 class Unk_HsInfo : public CPtred { public: bool FUN_14050a4d0(); };   // +0x19 dead
 
 // The trigger service: the camera steps.
-class Unk_WagTrigger
-{
-public:
-    void FUN_1418631f0(int nObject, int bStart);
-    bool FUN_1418637a0(const unsigned& rModel, std::vector<int>& rIds);
-};
-Unk_WagTrigger* FUN_140ad4b90();
+CTriggerService* FUN_140ad4b90();
 static const unsigned s_nCameraModel = 0x65338ec3;           // the FlatModel the camera triggers show (0x142e91444)
 
 WorldService* FUN_1403ed2d0();

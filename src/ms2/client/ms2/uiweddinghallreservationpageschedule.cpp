@@ -14,10 +14,11 @@
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/weddingtable.h"
 
 // ---- exe callees ----
 void* FUN_1409eed90();                                                      // the singleton of the own character
-__int64 FUN_140869440();                                                    // the current time source
+__int64 GetServerTime();                                                    // the current time source
 void FUN_140fdc030(UIDialog* pDialog);
 void FUN_140fdbf70(UIDialog* pDialog);
 void FUN_140fdc130(UIDialog* pDialog, __int64 nTime);                       // tells the dialog the chosen time
@@ -45,7 +46,6 @@ Unk_SchedTarget* FUN_140d295d0(void* pCharacter);
 
 // The hall table: is the hour taken?
 class Unk_SchedHallTable { public: bool FUN_140909870(unsigned nType, const CMsTime& time); };
-Unk_SchedHallTable* FUN_1409023c0();
 
 // The public/private radio group (a view of ASButtonGroup, asbuttongroup.h) and the prev/next buttons (AS wrappers
 // of the page movie).
@@ -231,7 +231,7 @@ void UIWeddingHallReservationPageSchedule::vfunc_7()
 {
     m_bPrivate = false;
     m_nTime = 0;
-    m_date = FUN_140869440();
+    m_date = GetServerTime();
     AddHours(m_date, 4);
     TruncateToDay(m_date);
 }
@@ -277,7 +277,7 @@ void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
     int nTo = 0x18;
     if (pTarget->m_nKind == 1)
     {
-        CMsTime tStart(FUN_140869440());
+        CMsTime tStart(GetServerTime());
         CMsTime tEnd(FUN_140d295d0(FUN_1409eed90())->m_nTime);
         AddHours(tStart, 4);
         AddDays(tEnd, 7);
@@ -288,8 +288,8 @@ void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
     }
     else if (pTarget->m_nKind == 2)
     {
-        CMsTime tStart(FUN_140869440());
-        CMsTime tEnd(FUN_140869440());
+        CMsTime tStart(GetServerTime());
+        CMsTime tEnd(GetServerTime());
         AddHours(tStart, 4);
         AddDays(tEnd, 7);
         if (!FUN_14086ab70(CMsTime(tStart), CMsTime(pPage->m_date), 0))
@@ -302,7 +302,7 @@ void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
     {
         CMsTime tHour(pPage->m_date);
         AddHours(tHour, i);
-        if (FUN_1409023c0()->FUN_140909870(DAT_143ab2830, tHour) == 1)
+        if (reinterpret_cast<Unk_SchedHallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909870(DAT_143ab2830, tHour) == 1)
             pPage->m_pScript->Invoke("setDisabledTime", i);
     }
     if (MS2Ptr<Unk_SchedButton> spPrev = pPage->m_pScript->FUN_140acce30<Unk_SchedButton>("m_prev"))

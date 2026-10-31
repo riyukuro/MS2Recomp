@@ -10,12 +10,13 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/gameobject.h"
+#include "ms2/placeholder/cpet.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_TamingClip : public ASMovieClip
 {
-public:
-    void FUN_1422c0e20(int nWidth);
 };
 class Unk_TamingEntity : public ASGameEntity
 {
@@ -35,28 +36,32 @@ struct Unk_TamingCfg
     char m_pad_0320[0x8468 - 0x2c8 - sizeof(Unk_TamingCfgFloat)];
     Unk_TamingCfgInt64 m_8468;
 };
-Unk_TamingCfg* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_TamingUIScale;
-Unk_TamingUIScale* FUN_14025e7a0();                                         // ui scale service
-float FUN_1422afec0(Unk_TamingUIScale* pScale, int nLayer);                 // scale of a layer
-NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
-float FUN_1412762d0(const NiPoint3& pt);
-class Unk_TamingTamed { public: int FUN_140b109f0(); int FUN_140b11000(); };
-class Unk_TamingActor : public PCBase
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14166ce30();
-    float FUN_141670390();
+    float FUN_1422afec0(int);
+};
+NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
+float FUN_1412762d0(const NiPoint3& pt);
+class Unk_TamingTamed : public CPet { };
+class Unk_TamingActor : public PCBase
+{
 };
 Unk_TamingTamed* FUN_1409ffc60(PCBase* pActor);
-class Unk_TamingPlayer { public: int FUN_14123c580(); };
+class Unk_TamingPlayer : public GameObject { };
 class Unk_TamingWorld;
-Unk_TamingWorld* FUN_1403ed2d0();
-Unk_TamingPlayer* FUN_141bd0cc0(Unk_TamingWorld*);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 bool FUN_140930110(int nActorId);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 class Unk_TamingUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
-Unk_TamingUIMgr* FUN_1403ed2b0();
 void FUN_1422bcdd0(Scaleform::GFx::Value*, __int64);
 void FUN_1422bccb0(Scaleform::GFx::Value*, int);
 
@@ -68,8 +73,8 @@ UITamingBar::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int n
     m_b0 = 1;
     m_b4 = 0;
     m_b8 = 0;
-    m_54 = FUN_1401d3200()->m_2c8.FUN_1402bac70();
-    m_a8 = FUN_1401d3200()->m_8468.FUN_140ba77c0();
+    m_54 = ((struct Unk_TamingCfg*)FUN_1401d3200())->m_2c8.FUN_1402bac70();
+    m_a8 = ((struct Unk_TamingCfg*)FUN_1401d3200())->m_8468.FUN_140ba77c0();
     FUN_140e97e00();
 }
 
@@ -90,7 +95,7 @@ void UITamingBar::Entity::vfunc_4()
 {
     UIHudEntity::Entity::vfunc_4();
     m_a0 = 0;
-    m_a8 = FUN_1401d3200()->m_8468.FUN_140ba77c0();
+    m_a8 = ((struct Unk_TamingCfg*)FUN_1401d3200())->m_8468.FUN_140ba77c0();
     m_b0 = 1;
     m_b4 = 0;
     m_b8 = 0;
@@ -124,7 +129,7 @@ void UITamingBar::Entity::vfunc_6(NiPoint3* pPos)
                 ((Unk_TamingClip*)bar.operator->())->FUN_1422c0e20((int)(fRate * (float)m_a0));
                 m_b8 = 0;
             }
-            FUN_140ad0c10(pPos, FUN_1422afec0(FUN_14025e7a0(), m_18));
+            FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_TamingUIScale*)(((class Unk_TamingUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
             pPos->y = pPos->y + vfunc_9();
             pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
             ((Unk_TamingEntity*)m_38.operator->())->FUN_1422c00f0(pPos->x, pPos->y);
@@ -153,10 +158,10 @@ int UITamingBar::Entity::vfunc_8(int n)
     Unk_TamingTamed* pTamed = FUN_1409ffc60(pActor);
     if (pTamed != 0)
     {
-        Unk_TamingPlayer* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+        Unk_TamingPlayer* pPlayer = ((class Unk_TamingPlayer*)((class WorldService*)(class Unk_TamingWorld*)(((class Unk_TamingWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPlayer != 0)
         {
-            if (pPlayer->FUN_14123c580() != pTamed->FUN_140b109f0())
+            if (pPlayer->FUN_14123c580() != pTamed->GetKind())
                 return 1;
         }
     }
@@ -212,7 +217,7 @@ void UITamingBar::Entity::FUN_140e97e00()
 {
     Unk_TamingTamed* pTamed = FUN_1409ffc60(FUN_140f49330());
     if (pTamed != 0)
-        m_b0 = pTamed->FUN_140b11000();
+        m_b0 = pTamed->GetGradeFx();
 }
 
 // @0x140e97e50
@@ -338,9 +343,9 @@ UITamingBar::Entity* UITamingBar::FUN_140e98220(int nActorId)
 // @0x140e98660
 UITamingBar* FUN_140e98660(int nUiId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_TamingUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_TamingUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (p.get())
             return dynamic_cast<UITamingBar*>((UIObject*)p);
     }

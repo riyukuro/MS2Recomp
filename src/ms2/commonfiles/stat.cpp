@@ -45,19 +45,17 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14071ae20(const CString& strFile);                          // the string table directory
 int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
 void FUN_1408732e0(Unk_140165cf0*, const char*, __int64&);
 void FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 void FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
-const char* FUN_14016d7d0(const void* pTypeDescriptor);                 // the decorated name of a type
 CString FUN_14016a5c0(const char* pszName, int);                        // its readable form
 extern const char CStat_RTTI_Type_Descriptor[];                         // 0x143a65c80
 extern CStringA DAT_143aacc88;                                          // the empty name
@@ -82,12 +80,12 @@ public:
     T* get() const { return p; }
 private:
     void AddRef() const { if (p) AddRefImpl(0); }
-    __declspec(noinline) static void AddRefObject(T* value) { reinterpret_cast<Unk_EnchantRef*>(value)->FUN_14015b020(); }
+    __declspec(noinline) static void AddRefObject(T* value) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(value)); }
     void AddRefImpl(void*) const { AddRefObject(p); }
     void Release() { if (p) { ReleaseImpl(0); p = 0; } }
     void ReleaseImpl(void*) {
-        if (reinterpret_cast<Unk_EnchantRef*>(p)->FUN_140159bc0() == 0) {
-            AddRefObject(p); reinterpret_cast<Unk_EnchantRef*>(p)->FUN_140159ba0();
+        if (CPtred::ReleasePtred(reinterpret_cast<CPtred*>(p)) == 0) {
+            AddRefObject(p); CPtred::DeletePtred(reinterpret_cast<CPtred*>(p));
         }
     }
     void* pad; T* p;
@@ -142,7 +140,7 @@ int LoadStatNames(std::map<int, CStringW>& rNames)
 {
     CString strPath = FUN_14071ae20("stringStatName.xml");
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return 0;
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
@@ -168,7 +166,7 @@ int LoadStatDefinitions()
     LoadStatNames(names);
     CString strPath = FUN_14071a5b0("Table", "statStringTable.xml");
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return 0;
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
@@ -211,7 +209,7 @@ int LoadUserStats(int nJob)
     strFile.Format("userStat%d.xml", nJob);
     CString strPath = FUN_14071a5b0("Table/Server", strFile);
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return 0;
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
@@ -343,7 +341,7 @@ void CheckValid()
     if (!s_valid)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(FUN_14016d7d0(CStat_RTTI_Type_Descriptor), 0));
+        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(((const type_info*)(const void*)CStat_RTTI_Type_Descriptor)->name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

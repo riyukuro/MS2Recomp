@@ -134,6 +134,7 @@
 #include "ms2/commonfiles/skilloverlapcompare.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
 #include <atlcoll.h>
 #include <cmath>
 #include <set>
@@ -190,7 +191,6 @@ int FUN_1409e1b80(ASTooltip* p, int nId, int n);            // the learned skill
 CStringTable* GetStringTable();
 char FUN_1403b3c40(const CStringW& str, const wchar_t* szText);
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);
-SkillDataTable* FUN_1401958b0();                            // the skill table
 void FUN_140710590(COutPacket& packet);                     // send
 
 // @0x140bebfb0
@@ -406,7 +406,7 @@ void UICoupleActionDialog::FUN_140becef0()
     std::map<unsigned int, Unk_Emotion> unused;
     for (size_t i = 0; i < list.GetCount(); i++) {
         unsigned int nId = list[i]->m_id;
-        SkillData* pSkill = FUN_1401958b0()->GetSkillData(nId);
+        SkillData* pSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nId);
         if (pSkill == 0) continue;
         if (pSkill->GetMainType() != 0xf) continue;
         m_180.insert(std::make_pair(nId, list[i]));
@@ -474,7 +474,7 @@ void UICoupleActionDialog::FUN_140bed2d0()
         int nId = spEmotion->m_id;
         int nNew = spEmotion->m_isNew;
         bool bFavorite = spEmotion->m_favorite;
-        SkillData* pSkill = FUN_1401958b0()->GetSkillData(nId);
+        SkillData* pSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nId);
         if (pSkill == 0)
             continue;
         if (m_1a1 != 0 && !bFavorite)
@@ -534,7 +534,7 @@ void UICoupleActionDialog::FUN_140bed8a0()
         int nId = spEmotion->m_id;
         int nNew = spEmotion->m_isNew;
         bool bFavorite = spEmotion->m_favorite;
-        SkillData* pSkill = FUN_1401958b0()->GetSkillData(nId);
+        SkillData* pSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nId);
         if (pSkill == 0)
             continue;
         if (m_1a1 != 0 && !bFavorite)

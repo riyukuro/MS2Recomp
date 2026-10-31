@@ -9,6 +9,7 @@
 #include "networkservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiloadingprogress.h"
 #include <efd/Helpers.h>
 #include <NiColor.h>
 
@@ -24,7 +25,6 @@ CStringW FUN_14062b4f0(CStringW, const int&);
 CStringW FUN_140298ea0(CStringW);
 CStringW FUN_1408116a0(int, const int&);
 void* FUN_141540270(int);
-void FUN_1419e0050(void*, const CStringW&);
 void FUN_141b6fcf0(const CStringW&, const CStringW&, int);
 extern void (*DAT_143b03490)(short, unsigned char, const char*);
 extern unsigned char DAT_1430c3b20;
@@ -87,7 +87,7 @@ void CSceneStateMove::OnUpdate(double fTime)
                 CStringW text = FUN_14062b4f0(CStringW(L"s_reconnect_to_server"), m_nRetry);
                 void* loading = FUN_141540270(0x3ed);
                 if (loading)
-                    FUN_1419e0050(loading, text);
+                    reinterpret_cast<UILoadingProgress*>(loading)->FUN_1419e0050(text);
             }
         }
     }
@@ -100,7 +100,7 @@ void CSceneStateMove::OnUpdate(double fTime)
                 CStringW text = FUN_140298ea0(CStringW(L"s_reconnect_to_server_fail"));
                 void* loading = FUN_141540270(0x3ed);
                 if (loading)
-                    FUN_1419e0050(loading, text);
+                    reinterpret_cast<UILoadingProgress*>(loading)->FUN_1419e0050(text);
                 m_bFailed = 1;
                 m_nRetry = 0;
                 m_bConnecting = 0;

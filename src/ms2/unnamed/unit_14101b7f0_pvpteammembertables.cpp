@@ -24,6 +24,7 @@
 #include "ms2/placeholder/mypc.h"
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -32,7 +33,6 @@ class Unk_PvpWorld                                                  // the world
 public:
     PCBase* FUN_141bd1530(unsigned __int64 nCharId);                // a player by character id
 };
-Unk_PvpWorld* FUN_1403ed2d0();
 
 // The player's PvP info proxy (PC method 0x140967420): operator-> 0x140965970, release 0x140964aa0.
 class Unk_PvInfoPtr
@@ -115,7 +115,7 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
     else if (nMessage == 0x6d)
     {
         __int64 nCharId = packet.ReadInt64();
-        PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
+        PCBase* pPlayer = reinterpret_cast<Unk_PvpWorld*>(WorldService::GetInstance())->FUN_141bd1530(nCharId);
         if (pPlayer != 0)
         {
             Unk_PvInfoPtr info = ((Unk_PvActor*)pPlayer)->FUN_140967420();
@@ -233,7 +233,7 @@ void Unk_PvpEntryBlock::FUN_14101c220(int nTeam, __int64 nCharId, int nWin, int 
     {
         CStringW strName(L"Unknown");
         int nJob = 0;
-        PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
+        PCBase* pPlayer = reinterpret_cast<Unk_PvpWorld*>(WorldService::GetInstance())->FUN_141bd1530(nCharId);
         if (pPlayer != 0)
         {
             strName = pPlayer->vfunc_77();

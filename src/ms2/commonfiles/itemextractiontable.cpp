@@ -21,10 +21,8 @@
 
 // ---- unrecovered helpers (the tinyxml wrappers the other table units share) ----
 
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 
 // @0x140596fb0
@@ -49,12 +47,12 @@ void CItemExtractionTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "itemExtraction.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
@@ -65,7 +63,7 @@ void CItemExtractionTable::Load()
         FUN_140873220(pNode, "ResultItemID", spInfo->m_nResultItemId);
         if (spInfo->m_nScrollCount < 1)
         {
-            FUN_14015eb90(GetLogString(), 2, 0x13, L"값이 0 입니다.[<ms2> {0}][ScrollCount]", strPath);
+            Unk_AchieveLog<CString>(GetLogString(), 2, 0x13, L"값이 0 입니다.[<ms2> {0}][ScrollCount]", strPath);
             continue;
         }
         m_map.SetAt(spInfo->m_nTargetItemId, spInfo);

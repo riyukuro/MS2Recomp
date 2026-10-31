@@ -24,6 +24,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cserverstring.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -52,12 +54,10 @@ Unk_140bccd50* FUN_140bccd50();
 
 // The ui service: dialog lookup by id.
 class Unk_UiService { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-Unk_UiService* FUN_1403ed2b0();
 
 // A string translator (singleton chain 0x140a87680 -> 0x140a87690).
-class Unk_140a87690 { public: CStringW FUN_14087ede0(const CStringW& str); };
+class Unk_140a87690 : public CServerStringGroup { };
 class Unk_140a87680 { public: Unk_140a87690* FUN_140a87690(); };
-Unk_140a87680* FUN_140a87680();
 
 // The movie root as a display object container (m_90 of UIDialog): children are added/removed by value.
 class ASDialog : public ASDisplayObjectContainer {};
@@ -110,7 +110,7 @@ void FieldGameScoreBoardCli::FUN_140f9c3a0(CInPacket& packet)
 {
     m_nMode = (&packet.m_stream)->ReadByte();
     CStringW strTitle = (&packet.m_stream)->ReadString();
-    strTitle = FUN_140a87680()->FUN_140a87690()->FUN_14087ede0(strTitle);
+    strTitle = reinterpret_cast<Unk_140a87680*>(TSingleton<CServerString>::GetInstance())->FUN_140a87690()->GetString(strTitle);
     int nCur = (&packet.m_stream)->ReadInt();
     int nMax = (&packet.m_stream)->ReadInt();
     FUN_140f9c610(strTitle, nCur, nMax);
@@ -144,8 +144,8 @@ MS2_REPLACE_METHOD(0x140F9C5B0, FieldGameScoreBoardCli, FUN_140f9c5b0, 89, 0x402
 // @0x140f9d8a0
 UIDarkStreamScoreDialog* FUN_140f9d8a0(int nId)
 {
-    if (FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+    if (reinterpret_cast<Unk_UiService*>(TSingleton<CUIService>::GetInstance())) {
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_UiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<UIDarkStreamScoreDialog*>((UIObject*)p);
     }
@@ -155,8 +155,8 @@ UIDarkStreamScoreDialog* FUN_140f9d8a0(int nId)
 // @0x140f9d940
 UIShadowExpeditionBossBar* FUN_140f9d940(int nId)
 {
-    if (FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+    if (reinterpret_cast<Unk_UiService*>(TSingleton<CUIService>::GetInstance())) {
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_UiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<UIShadowExpeditionBossBar*>((UIObject*)p);
     }

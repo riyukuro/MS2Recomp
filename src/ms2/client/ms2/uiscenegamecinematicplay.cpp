@@ -8,6 +8,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local placeholders (unrecovered helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -15,7 +16,6 @@ class Unk_ScpWorld;                         // the cinematic presentation the sc
 class Unk_ScpSceneCtl;                      // the UI scene controller (FUN_1403ed2b0)
 class Unk_ScpSceneMgr;                      // the UI scene manager (FUN_1408e57f0)
 
-Unk_ScpWorld* FUN_1403ed2d0();
 Unk_ScpSceneCtl* FUN_1403ed2b0();
 Unk_ScpSceneMgr* FUN_1408e57f0();
 void FUN_141bd3c00(Unk_ScpWorld* pWorld, bool bOn);           // start/stop the cinematic world
@@ -54,7 +54,7 @@ bool UISceneGameCinematicPlay::vfunc_47()
 void UISceneGameCinematicPlay::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
-    FUN_141bd3c00(FUN_1403ed2d0(), false);
+    FUN_141bd3c00(reinterpret_cast<Unk_ScpWorld*>(WorldService::GetInstance()), false);
     FUN_141ad9e50(FUN_1403ed2b0(), m_6c);
     FUN_141ada6f0(FUN_1403ed2b0(), m_6c);
     FUN_1422e7950();
@@ -64,7 +64,7 @@ void UISceneGameCinematicPlay::vfunc_48(int n)
 void UISceneGameCinematicPlay::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
-    FUN_141bd3c00(FUN_1403ed2d0(), true);
+    FUN_141bd3c00(reinterpret_cast<Unk_ScpWorld*>(WorldService::GetInstance()), true);
     FUN_141ada610(FUN_1403ed2b0(), m_6c);
     FUN_141adad20(FUN_1403ed2b0(), m_6c);
     FUN_1422e7950();

@@ -36,7 +36,6 @@ class Unk_MmPlayer : public PC
 {
 };
 class Unk_MmWorld { };
-Unk_MmPlayer* FUN_141bd0cc0(Unk_MmWorld* pWorld);
 
 // A cost entry of a mastery step: +0x1c kind (0 = item, else an item class), +0x20 count.
 class Unk_MmCost : public CPtred
@@ -84,7 +83,7 @@ class Unk_MmTable : public CMasteryTable
 public:
     MS2Ptr<Unk_MmRow> FUN_14066aa00(int nStep);             // the row of a step
 };
-Unk_MmTable* FUN_1409670c0();
+class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
 
 // The learned steps (global 0x143ab31a0), the inventory (0x143ab2a90) and the meso (0x143ab2898).
 class Unk_MmLearned { public: void* FUN_140167ca0(int nStep); };
@@ -105,7 +104,7 @@ public:
     char m_pad[0x10];
     Unk_MmQuests m_10;
 };
-Unk_MmQuestMgr* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 
 CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& str, int nA, int nB);
@@ -132,18 +131,18 @@ int CMasteryManager::FUN_140b6d0e0()
 // @0x140b6d140
 int CMasteryManager::FUN_140b6d140(int nType)
 {
-    Unk_MmPlayer* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance()));
+    Unk_MmPlayer* pPlayer = ((class Unk_MmPlayer*)((class WorldService*)(class Unk_MmWorld*)(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     unsigned int nExp = pPlayer->FUN_141662750(nType);
-    int nMax = FUN_1409670c0()->MaxGrade(nType);
+    int nMax = ((class Unk_MmTable*)FUN_1409670c0())->MaxGrade(nType);
     int nCount = 0;
     for (int nLevel = 1; nLevel <= nMax; nLevel++)
     {
-        unsigned int nNeed = FUN_1409670c0()->Value(nType, nLevel);
+        unsigned int nNeed = ((class Unk_MmTable*)FUN_1409670c0())->Value(nType, nLevel);
         if (nExp < nNeed)
             break;
-        int nStep = FUN_1409670c0()->MakeID(nType, nLevel);
+        int nStep = ((class Unk_MmTable*)FUN_1409670c0())->MakeID(nType, nLevel);
         if (DAT_143ab31a0.FUN_140167ca0(nStep) != 0)
             continue;
         if (FUN_140b6d250(nType, nLevel) == 0)
@@ -156,26 +155,26 @@ int CMasteryManager::FUN_140b6d140(int nType)
 // @0x140b6d250
 int CMasteryManager::FUN_140b6d250(int nType, int nLevel)
 {
-    Unk_MmPlayer* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance()));
+    Unk_MmPlayer* pPlayer = ((class Unk_MmPlayer*)((class WorldService*)(class Unk_MmWorld*)(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    int nStep = FUN_1409670c0()->MakeID(nType, nLevel);
+    int nStep = ((class Unk_MmTable*)FUN_1409670c0())->MakeID(nType, nLevel);
     Unk_MmItemArray rewards;
-    FUN_1409670c0()->Rewards(nStep, pPlayer->FUN_141654700(), rewards);
+    ((class Unk_MmTable*)FUN_1409670c0())->Rewards(nStep, pPlayer->FUN_141654700(), rewards);
     return rewards.GetCount() != 0 ? 1 : 0;
 }
 
 // @0x140b6d330
 int CMasteryManager::FUN_140b6d330(int nStep)
 {
-    MS2Ptr<Unk_MmRow> spRow = FUN_1409670c0()->FUN_14066aa00(nStep);
+    MS2Ptr<Unk_MmRow> spRow = ((class Unk_MmTable*)FUN_1409670c0())->FUN_14066aa00(nStep);
     if (!spRow)
         return 0;
     if (spRow->m_ids.FUN_140186270() == 0)
         return 1;
     for (size_t i = 0; i < spRow->m_ids.FUN_140186270(); i++)
     {
-        if (FUN_140764020()->m_10.FUN_140745630(*spRow->m_ids.FUN_140184510(i)) != 0)
+        if (((class Unk_MmQuestMgr*)FUN_140764020())->m_10.FUN_140745630(*spRow->m_ids.FUN_140184510(i)) != 0)
             return 1;
     }
     return 0;
@@ -184,10 +183,10 @@ int CMasteryManager::FUN_140b6d330(int nStep)
 // @0x140b6d470
 Unk_MasteryResult CMasteryManager::FUN_140b6d470(int nStep)
 {
-    Unk_MmPlayer* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance()));
+    Unk_MmPlayer* pPlayer = ((class Unk_MmPlayer*)((class WorldService*)(class Unk_MmWorld*)(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return (Unk_MasteryResult)5;
-    MS2Ptr<Unk_MmRow> spRow = FUN_1409670c0()->FUN_14066aa00(nStep);
+    MS2Ptr<Unk_MmRow> spRow = ((class Unk_MmTable*)FUN_1409670c0())->FUN_14066aa00(nStep);
     if (spRow.get() != 0)
     {
         int nType = spRow->m_nType;

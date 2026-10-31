@@ -46,39 +46,37 @@
 class MyPC;
 MyPC* FUN_14161e580(const TPtr<PC>& spPC);                       // QueryInterface 0x6200004
 class Unk_OptWorld;
-int FUN_141bca2e0(Unk_OptWorld* pWorld);                            // the world is ready
-PCBase* FUN_141bd0cc0(Unk_OptWorld* pWorld);                        // the local player
 PCBase* FUN_141bd1530(Unk_OptWorld* pWorld, unsigned __int64 nUid);
-PCBase* FUN_141bd1180(Unk_OptWorld* pWorld, unsigned nId);
 class Unk_OptObjMap;                                                // the world's actor table
-Unk_OptObjMap* FUN_141bd36b0(Unk_OptWorld* pWorld);
-POSITION FUN_140c20a10(Unk_OptObjMap* pMap);                        // GetHeadPosition
 TPtr<PC>& FUN_140c20a80(Unk_OptObjMap* pMap, POSITION pos);          // GetValueAt
 void FUN_140c20a30(Unk_OptObjMap* pMap, POSITION* pPos);            // GetNext
 PC* FUN_140aac420(const TPtr<PC>& spRef);                           // the actor
 PC* FUN_140aac440(const TPtr<PC>& spRef);                           // operator->
 void* FUN_1409613d0(PCBase* pActor);
-GameObject* FUN_1416764a0(PCBase* pActor);                          // the ridee
-GameObject* FUN_141676a10(PCBase* pActor);
-GameObject* FUN_1416625e0(PCBase* pActor);
-bool FUN_141527280(PCBase* pActor);
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_141527280();
+};
 class CGuildManager;
-int FUN_1413bcbc0(CGuildManager* pGuild, std::map<unsigned __int64, PCBase*>& out);   // CGuildManager::FUN_1413bcbc0
 bool FUN_14028d470(float a, float b);
 struct Unk_OptConstVal { int m_n; };
 class Unk_OptOptions { public: unsigned char m_pad_0[0x36d8]; Unk_OptConstVal m_frameLimit; };
-Unk_OptOptions* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int* FUN_1402056b0(Unk_OptConstVal* pSlot);
-CMainSystem* FUN_14086d260();
-unsigned FUN_140869420();                                           // millisecond clock
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class Unk_OptOsInfo : public COSInfo { };
-bool FUN_14070ee20(Unk_OptOsInfo* pInfo);                           // 64-bit OS
-void* FUN_140a0afd0();                                              // memory pressure manager
-void FUN_141554ce0(void* pMgr, double fTime);
-void FUN_141554d20(void* pMgr);
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class CNifLoadingService   // C3: member view for the former free stand-ins
+{
+public:
+    void LowerLifetime(double);
+    void ResetLifetime();
+};
 class Unk_OptGPU { public: void FUN_1413758b0(); void FUN_141375a80(); CStringW FUN_141245ab0(); };
 Unk_OptGPU* FUN_141245b20();
-CCrashManager* FUN_140a44830();
+class CrashManagerCli;
+template<> CrashManagerCli* TSingleton<CrashManagerCli>::GetInstance();
 void* FUN_14151e7e0();
 void* FUN_1414a56c0();
 int FUN_1422e9e50(void* pAllocator);
@@ -86,10 +84,15 @@ CString FUN_14016a600(const wchar_t* pszText, int nCodePage);
 CString FUN_1412755b0();
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);
 bool FUN_140870fc0(TiXmlDocument* pDoc, const char* pszFile, int nEncoding);
-void* FUN_14081b310(TiXmlDocument* pDoc);                           // RootElement
-void* FUN_140165cf0(void* pParent, const char* pszName);            // FirstChildElement
-int FUN_1408731e0(void* pElement, const char* pszAttr, int& nValue);
-void* FUN_1409a8b10();
+class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+class CGameOption;
+template<> CGameOption* TSingleton<CGameOption>::GetInstance();
 struct Unk_OptSettings { unsigned char m_pad_0[0x10]; unsigned char m_bOptimize; };
 Unk_OptSettings* FUN_140c77560(void* pSettings);
 CLogString* GetLogString();
@@ -140,7 +143,7 @@ COptimizer::~COptimizer()
 // @0x14161baf0
 void COptimizer::FUN_14161baf0()
 {
-    m_nStartTick = FUN_140869420();
+    m_nStartTick = GetTickCountMs2();
     MEMORYSTATUSEX status;
     status.dwLength = sizeof(MEMORYSTATUSEX);
     GlobalMemoryStatusEx(&status);
@@ -150,25 +153,25 @@ void COptimizer::FUN_14161baf0()
 // @0x14161bb60
 void COptimizer::FUN_14161bb60()
 {
-    float fDelta = (float)FUN_14086d260()->GetDeltaTime();
+    float fDelta = (float)TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetDeltaTime();
     m_fMemoryTime += fDelta;
     if (5.0f < m_fMemoryTime)
     {
         m_fMemoryTime = 0;
-        if (!FUN_14070ee20(reinterpret_cast<Unk_OptOsInfo*>(TSingleton<COSInfo>::GetInstance())))
+        if (!((class COSInfo*)(class Unk_OptOsInfo*)(reinterpret_cast<Unk_OptOsInfo*>(TSingleton<COSInfo>::GetInstance())))->Is64Bit())
         {
             unsigned __int64 nUsage = FUN_14161bdc0();
             if (0x599 < nUsage)
             {
-                FUN_141554ce0(FUN_140a0afd0(), 120.0);
+                ((class CNifLoadingService*)(void*)(((void*)FUN_140a0afd0())))->LowerLifetime(120.0);
             }
             else if (nUsage < 0x564)
             {
-                FUN_141554d20(FUN_140a0afd0());
+                ((class CNifLoadingService*)(void*)(((void*)FUN_140a0afd0())))->ResetLifetime();
             }
         }
     }
-    if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0 && FUN_141bca2e0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())) != 0)
+    if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0 && ((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bca2e0() != 0)
     {
         if ((preloadMode & 8) == 0)
         {
@@ -233,26 +236,26 @@ unsigned __int64 COptimizer::FUN_14161be50() const
 void COptimizer::FUN_14161bee0()
 {
     CString strText;
-    FUN_140a44830()->FUN_1401ce2b0("\n--- COptimizer Log ---");
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- COptimizer Log ---");
     strText.Format("OS : %s", (const char*)reinterpret_cast<Unk_OptOsInfo*>(TSingleton<COSInfo>::GetInstance())->GetFullName());
-    FUN_140a44830()->FUN_1401ce270(strText);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
     unsigned __int64 nMemory = FUN_141245b10();
-    FUN_140a44830()->FUN_1401ce2f0("GlobalMemory : %d(MB)", nMemory);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GlobalMemory : %d(MB)", nMemory);
     nMemory = FUN_14161bdc0();
-    FUN_140a44830()->FUN_1401ce2f0("Pagefile : %d(MB)", nMemory);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Pagefile : %d(MB)", nMemory);
     DWORD dwLength = 0x80;
     HKEY hKey;
     BYTE szCpu[128];
     RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Hardware\\Description\\System\\CentralProcessor\\0", 0, KEY_QUERY_VALUE, &hKey);
     RegQueryValueExA(hKey, "ProcessorNameString", 0, 0, szCpu, &dwLength);
     strText.Format("CPU : %s", szCpu);
-    FUN_140a44830()->FUN_1401ce270(strText);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
     if (FUN_14151e7e0() != 0)
     {
         strText.Format("GPU : %s", (const char*)FUN_14016a600((const wchar_t*)FUN_141245b20()->FUN_141245ab0(), 0));
-        FUN_140a44830()->FUN_1401ce270(strText);
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
     }
-    FUN_140a44830()->FUN_1401ce2f0("GFXSysAlloc : %d(MB)", FUN_1422e9e50(FUN_1414a56c0()) / 0x100000);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFXSysAlloc : %d(MB)", FUN_1422e9e50(FUN_1414a56c0()) / 0x100000);
     const char* pszMultiScene;
     if (DAT_143ae2b30 != 0)
     {
@@ -262,7 +265,7 @@ void COptimizer::FUN_14161bee0()
     {
         pszMultiScene = "FALSE";
     }
-    FUN_140a44830()->FUN_1401ce2f0("bUseMultiSceneUpdate %s", pszMultiScene);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("bUseMultiSceneUpdate %s", pszMultiScene);
     const char* pszRemoveExtra;
     if (DAT_143ae2b34 != 0)
     {
@@ -272,7 +275,7 @@ void COptimizer::FUN_14161bee0()
     {
         pszRemoveExtra = "FALSE";
     }
-    FUN_140a44830()->FUN_1401ce2f0("bUseRemoveExtraData %s", pszRemoveExtra);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("bUseRemoveExtraData %s", pszRemoveExtra);
     const char* pszExceptRender;
     if (DAT_143ae2b38 != 0)
     {
@@ -282,7 +285,7 @@ void COptimizer::FUN_14161bee0()
     {
         pszExceptRender = "FALSE";
     }
-    FUN_140a44830()->FUN_1401ce2f0("bUseExceptRender %s", pszExceptRender);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("bUseExceptRender %s", pszExceptRender);
     const char* pszIndoor;
     if (DAT_143ae2b3c != 0)
     {
@@ -292,7 +295,7 @@ void COptimizer::FUN_14161bee0()
     {
         pszIndoor = "FALSE";
     }
-    FUN_140a44830()->FUN_1401ce2f0("bUseIndoorInstancing %s", pszIndoor);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("bUseIndoorInstancing %s", pszIndoor);
     const char* pszProgressive;
     if (DAT_143ae2b40 != 0)
     {
@@ -302,7 +305,7 @@ void COptimizer::FUN_14161bee0()
     {
         pszProgressive = "FALSE";
     }
-    FUN_140a44830()->FUN_1401ce2f0("bUseProgressiveLoading %s", pszProgressive);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("bUseProgressiveLoading %s", pszProgressive);
     const char* pszRemoveShadow;
     if (DAT_143ae2b44 != 0)
     {
@@ -312,7 +315,7 @@ void COptimizer::FUN_14161bee0()
     {
         pszRemoveShadow = "FALSE";
     }
-    FUN_140a44830()->FUN_1401ce2f0("bRemoveShadowEntity %s", pszRemoveShadow);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("bRemoveShadowEntity %s", pszRemoveShadow);
     const char* pszKfm;
     if (DAT_143ae2b48 != 0)
     {
@@ -322,14 +325,14 @@ void COptimizer::FUN_14161bee0()
     {
         pszKfm = "FALSE";
     }
-    FUN_140a44830()->FUN_1401ce2f0("bMS2KFM %s", pszKfm);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("bMS2KFM %s", pszKfm);
     FUN_141245b20()->FUN_141375a80();
 }
 
 // @0x14161c360
 float COptimizer::FUN_14161c360()
 {
-    m_fFrameLimit = (float)*FUN_1402056b0(&FUN_1401d3200()->m_frameLimit);
+    m_fFrameLimit = (float)*FUN_1402056b0(&((class Unk_OptOptions*)FUN_1401d3200())->m_frameLimit);
     if (FUN_14028d470(m_fFrameLimit, 0))
     {
         m_nFrameDelay = 0;
@@ -375,36 +378,36 @@ void COptimizer::LoadOptimization()
         }
         if (bLoaded)
         {
-            void* pRoot = FUN_14081b310(&doc);
+            void* pRoot = ((void*)DocRootElement(&doc));
             if (pRoot != 0)
             {
-                void* pMultiScene = FUN_140165cf0(pRoot, "multiSceneUpdate");
-                if (pMultiScene != 0) FUN_1408731e0(pMultiScene, "value", DAT_143ae2b30);
-                void* pRemoveExtra = FUN_140165cf0(pRoot, "removeExtraData");
-                if (pRemoveExtra != 0) FUN_1408731e0(pRemoveExtra, "value", DAT_143ae2b34);
-                void* pExceptRender = FUN_140165cf0(pRoot, "exceptItemRender");
-                if (pExceptRender != 0) FUN_1408731e0(pExceptRender, "value", DAT_143ae2b38);
-                void* pIndoor = FUN_140165cf0(pRoot, "IndoorInstancing");
-                if (pIndoor != 0) FUN_1408731e0(pIndoor, "value", DAT_143ae2b3c);
-                void* pProgressive = FUN_140165cf0(pRoot, "ProgressiveLoading");
-                if (pProgressive != 0) FUN_1408731e0(pProgressive, "value", DAT_143ae2b40);
-                void* pRemoveShadow = FUN_140165cf0(pRoot, "RemoveShadowEntity");
-                if (pRemoveShadow != 0) FUN_1408731e0(pRemoveShadow, "value", DAT_143ae2b44);
-                void* pKfm = FUN_140165cf0(pRoot, "MS2KFM");
-                if (pKfm != 0) FUN_1408731e0(pKfm, "value", DAT_143ae2b48);
-                void* pPiece = FUN_140165cf0(pRoot, "Piece");
-                if (pPiece != 0) FUN_1408731e0(pPiece, "value", DAT_143ae2b4c);
-                void* pMeshSkin = FUN_140165cf0(pRoot, "MeshMergeSkin");
-                if (pMeshSkin != 0) FUN_1408731e0(pMeshSkin, "value", DAT_143ae2b50);
-                void* pMeshItem = FUN_140165cf0(pRoot, "MeshMergeItem");
-                if (pMeshItem != 0) FUN_1408731e0(pMeshItem, "value", DAT_143ae2b54);
-                void* pDebug = FUN_140165cf0(pRoot, "DebugLevel");
-                if (pDebug != 0) FUN_1408731e0(pDebug, "value", DAT_143ae2b58);
+                void* pMultiScene = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("multiSceneUpdate"));
+                if (pMultiScene != 0) XmlGetAttr((class TiXmlElement*)(pMultiScene), "value", DAT_143ae2b30);
+                void* pRemoveExtra = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("removeExtraData"));
+                if (pRemoveExtra != 0) XmlGetAttr((class TiXmlElement*)(pRemoveExtra), "value", DAT_143ae2b34);
+                void* pExceptRender = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("exceptItemRender"));
+                if (pExceptRender != 0) XmlGetAttr((class TiXmlElement*)(pExceptRender), "value", DAT_143ae2b38);
+                void* pIndoor = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("IndoorInstancing"));
+                if (pIndoor != 0) XmlGetAttr((class TiXmlElement*)(pIndoor), "value", DAT_143ae2b3c);
+                void* pProgressive = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("ProgressiveLoading"));
+                if (pProgressive != 0) XmlGetAttr((class TiXmlElement*)(pProgressive), "value", DAT_143ae2b40);
+                void* pRemoveShadow = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("RemoveShadowEntity"));
+                if (pRemoveShadow != 0) XmlGetAttr((class TiXmlElement*)(pRemoveShadow), "value", DAT_143ae2b44);
+                void* pKfm = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("MS2KFM"));
+                if (pKfm != 0) XmlGetAttr((class TiXmlElement*)(pKfm), "value", DAT_143ae2b48);
+                void* pPiece = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("Piece"));
+                if (pPiece != 0) XmlGetAttr((class TiXmlElement*)(pPiece), "value", DAT_143ae2b4c);
+                void* pMeshSkin = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("MeshMergeSkin"));
+                if (pMeshSkin != 0) XmlGetAttr((class TiXmlElement*)(pMeshSkin), "value", DAT_143ae2b50);
+                void* pMeshItem = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("MeshMergeItem"));
+                if (pMeshItem != 0) XmlGetAttr((class TiXmlElement*)(pMeshItem), "value", DAT_143ae2b54);
+                void* pDebug = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("DebugLevel"));
+                if (pDebug != 0) XmlGetAttr((class TiXmlElement*)(pDebug), "value", DAT_143ae2b58);
             }
         }
         else
         {
-            int nEnabled = FUN_140c77560(FUN_1409a8b10())->m_bOptimize;
+            int nEnabled = FUN_140c77560(TSingleton<CGameOption>::GetInstance())->m_bOptimize;
             DAT_143ae2b30 = nEnabled;
             DAT_143ae2b34 = nEnabled;
             DAT_143ae2b38 = nEnabled;
@@ -426,7 +429,7 @@ void COptimizer::FUN_14161c8c0()
 {
     if (m_nFirstLoadTick == 0)
     {
-        m_nFirstLoadTick = FUN_140869420();
+        m_nFirstLoadTick = GetTickCountMs2();
         if (GetLogString() != 0)
         {
             unsigned long nElapsed = m_nFirstLoadTick - m_nStartTick;
@@ -453,7 +456,7 @@ void COptimizer::FUN_14161c990()
     {
         return;
     }
-    m_samples.push_back(FUN_14086d260()->GetFps());
+    m_samples.push_back(TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetFps());
     if (m_samples.size() < m_nSampleCount)
     {
         return;
@@ -530,7 +533,7 @@ void COptimizer::FUN_14161cd60(unsigned __int64 nId)
 {
     if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0 && preloadMode != 0 && preloadMode != 1)
     {
-        if (FUN_141bca2e0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())) != 0)
+        if (((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bca2e0() != 0)
         {
             m_players.insert(nId);
         }
@@ -553,9 +556,9 @@ int COptimizer::FUN_14161ce60(unsigned nId)
 {
     if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0 && preloadMode != 0)
     {
-        if (FUN_141bca2e0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())) != 0)
+        if (((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bca2e0() != 0)
         {
-            PCBase* pPC = FUN_141bd1180(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()), nId);
+            PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bd1180(nId));
             if (pPC != 0)
             {
                 return pPC->vfunc_25();
@@ -573,7 +576,7 @@ void COptimizer::FUN_14161cee0(int nSuppressed)
     {
         if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0)
         {
-            if (FUN_141bca2e0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())) != 0)
+            if (((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bca2e0() != 0)
             {
                 FUN_14161db10(preloadMode);
             }
@@ -648,13 +651,13 @@ void COptimizer::FUN_14161d130(bool bForce)
 {
     if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0)
     {
-        if (FUN_141bca2e0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())) != 0)
+        if (((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bca2e0() != 0)
         {
             std::map<unsigned __int64, PCBase*> preferred;
-            PCBase* pLocal = FUN_141bd0cc0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()));
+            PCBase* pLocal = ((class PCBase*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
             if (pLocal != 0)
             {
-                if ((preloadMode & 2) != 0 && FUN_141527280(pLocal))
+                if ((preloadMode & 2) != 0 && ((class MyPC*)(class PCBase*)(pLocal))->FUN_141527280())
                 {
                     int nCount = TSingleton<CPartyManager>::GetInstance()->FUN_14162af00();
                     for (int i = 0; i < nCount; i = i + 1)
@@ -670,7 +673,7 @@ void COptimizer::FUN_14161d130(bool bForce)
                 }
                 if ((preloadMode & 4) != 0)
                 {
-                    FUN_1413bcbc0(TSingleton<CGuildManager>::GetInstance(), preferred);
+                    ((class CGuildManager*)(class CGuildManager*)(TSingleton<CGuildManager>::GetInstance()))->FUN_1413bcbc0(preferred);
                 }
             }
             std::map<unsigned __int64, Entry> selected;
@@ -691,8 +694,8 @@ void COptimizer::FUN_14161d130(bool bForce)
             if ((preloadMode & 8) != 0)
             {
                 std::list<Entry> candidates;
-                Unk_OptObjMap* pMap = FUN_141bd36b0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()));
-                for (POSITION pos = FUN_140c20a10(pMap); pos != 0; FUN_140c20a30(pMap, &pos))
+                Unk_OptObjMap* pMap = ((class Unk_OptObjMap*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bd36b0());
+                for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetHeadPosition(); pos != 0; FUN_140c20a30(pMap, &pos))
                 {
                     TPtr<PC>& spRef = FUN_140c20a80(pMap, pos);
                     if (FUN_140aac420(spRef) != 0)
@@ -772,10 +775,10 @@ void COptimizer::FUN_14161db10(int nFlags)
 {
     if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0)
     {
-        if (FUN_141bca2e0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())) != 0)
+        if (((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bca2e0() != 0)
         {
-            Unk_OptObjMap* pMap = FUN_141bd36b0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()));
-            for (POSITION pos = FUN_140c20a10(pMap); pos != 0; FUN_140c20a30(pMap, &pos))
+            Unk_OptObjMap* pMap = ((class Unk_OptObjMap*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bd36b0());
+            for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetHeadPosition(); pos != 0; FUN_140c20a30(pMap, &pos))
             {
                 TPtr<PC> spActor(FUN_140c20a80(pMap, pos));
                 FUN_14161dbe0(spActor.get(), nFlags);
@@ -810,17 +813,17 @@ void COptimizer::FUN_14161dbe0(PCBase* pPC, int nFlags)
             return;
         }
         pPC->vfunc_24(nFlags);
-        GameObject* pRidee = FUN_1416764a0(pPC);
+        GameObject* pRidee = ((class GameObject*)((class PCBase*)(class PCBase*)(pPC))->FUN_1416764a0());
         if (pRidee != 0)
         {
             pRidee->vfunc_24(nFlags);
         }
-        GameObject* pWorldObject = FUN_141676a10(pPC);
+        GameObject* pWorldObject = ((class GameObject*)((class PCBase*)(class PCBase*)(pPC))->FUN_141676a10());
         if (pWorldObject != 0)
         {
             pWorldObject->vfunc_24(nFlags);
         }
-        GameObject* pAttached = FUN_1416625e0(pPC);
+        GameObject* pAttached = ((class GameObject*)((class PC*)(class PCBase*)(pPC))->FUN_1416625e0());
         if (pAttached != 0)
         {
             pAttached->vfunc_24(nFlags);
@@ -836,7 +839,7 @@ void COptimizer::FUN_14161dd30(int nFlags, int nLimit)
     m_fUpdateTime = 0;
     if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0)
     {
-        if (FUN_141bca2e0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())) != 0)
+        if (((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bca2e0() != 0)
         {
             if ((preloadMode & 8) != 0 && nLimit != 0)
             {

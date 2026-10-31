@@ -13,7 +13,6 @@
 #include "hook/ms2hook.h"
 
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);                                  // the bind data of a name (null if none)
-bool FUN_1422f1f80(const Scaleform::GFx::Value& a, const Scaleform::GFx::Value& b);              // the two AS values are equal
 
 // @0x142301060
 NotifyBinding::NotifyBinding(Unk_NotifyContext* pContext)
@@ -47,7 +46,7 @@ void NotifyBinding::DeleteBindingImpl(const Params& params)
     NotifyContext::BindData* pData = FUN_1422c8e90(szName);
     if (pData != NULL)
     {
-        if (params.pArgs[2].IsNull() || FUN_1422f1f80(vData, pData->FUN_1422c8d40()))
+        if (params.pArgs[2].IsNull() || vData == pData->FUN_1422c8d40())
         {
             Scaleform::GFx::Value vNull;
             vNull.SetNull();

@@ -21,7 +21,7 @@
 #include "ms2/placeholder/uiitemeventlistener.h"
 #undef vfunc_23
 
-class Unk_StatList;
+class ASScrollingList;
 
 class UIStatControlDialog : public UIDialog, public UIStatusEventListener, public UIItemEventListener
 {
@@ -53,8 +53,8 @@ public:
     virtual void vfunc_22(void* pItem);                                 // o180 22 0x14134f070
     virtual void vfunc_il23(void* pItem);                               // o180 23 0x14134f0e0
 
-    MS2Ptr<Unk_StatList> FUN_140c02900(const CString& strName);         // bind a list child of the movie
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);         // bind a list child of the movie
     void FUN_14134f150();                                               // refill the stat list
-    void FUN_14134f790(MS2Ptr<Unk_StatList> list, int nStat, int bFloat);   // append the row of one stat
+    void FUN_14134f790(MS2Ptr<ASScrollingList> list, int nStat, int bFloat);   // append the row of one stat
 };
 MS2_CHECK_SIZE(UIStatControlDialog, 0x188);

@@ -43,6 +43,8 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/jobtable.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
 
 // ---- header statics (dynamic initializers 0x1400e1660..0x1400e17d0; the same group as uiskillbookautodistributedialog.cpp) ----
 #ifndef MS2_HOOK_DLL
@@ -62,7 +64,11 @@ typedef Delegate<bool(int, const CMsgBoxData&)> ScBoxDelegate;
 
 // The local player and the world (FUN_1403ed2d0 -> FUN_141bd0cc0).
 class Unk_ScWorld { public: MyPC* FUN_141bd0cc0(); };
-Unk_ScWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // The learned skills of the player: slot 2 is "the skill is learned".
 class Unk_ScLearned : public CPtred { public: int FUN_140637e00(); };
@@ -75,10 +81,9 @@ public:
     MS2Ptr<Unk_ScLearned> FUN_1406394d0(int nSkillId);              // the learned record of a skill
 };
 class Unk_ScPc : public MyPC { public: Unk_ScSkillBook* FUN_1416546d0(); };
-int FUN_141654700(MyPC* pPc);                                       // the player's job
 int FUN_141654730(MyPC* pPc);                                       // the player's sub job
-class Unk_ScJobTable { public: int FUN_140644b80(int nJobCode); };  // the job level
-Unk_ScJobTable* FUN_1401d7a50();
+  // the job level
+JobTable* FUN_1401d7a50();
 
 // A skill row of the skill table (the icon path at +0x48). View only.
 class Unk_ScSkillRow
@@ -96,7 +101,6 @@ struct Unk_ScSkillRef
     void* m_0; void* m_8;
 };
 class Unk_ScSkillTable { public: Unk_ScSkillRef FUN_1407ee1d0(int nSkillId); };
-Unk_ScSkillTable* FUN_1401958b0();
 
 // The key bindings.
 class Unk_ScKeys
@@ -163,8 +167,8 @@ struct Unk_ScReqValue
 };
 MS2_CHECK_SIZE(Unk_ScReqValue, 0x20);                               // ctor 0x1401ba840: strings at +0 / +8 / +0x10
 
-IClientPlatform* FUN_140d86260();
-CStringW FUN_1409eec40(int nStringId);
+void* FUN_140d86260();   // C3: was FUN_140d86260
+CStringW BlockFormat(int nStringId);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
 CStringW GetStringCommon(int nId);
@@ -231,7 +235,7 @@ int UISkillCompactControlDialog::vfunc_65()
 void UISkillCompactControlDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
         pPlayer->FUN_141523bc0()->FUN_141767df0(0);
     FUN_140fa1400();
@@ -259,7 +263,7 @@ int UISkillCompactControlDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             FUN_140fa2180(CStringW(m_cur.m_strTab));
         }
         m_cur.Clear();
-        MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer != 0)
             pPlayer->FUN_141523bc0()->FUN_141767df0(0);
     }
@@ -351,13 +355,13 @@ int UISkillCompactControlDialog::vfunc_13()
             {
                 if (nKey < 0x91)
                 {
-                    FUN_140d73aa0(FUN_1409eec40(0x855), 0, static_cast<IMessageListener*>(this), CStringW(L""));
+                    FUN_140d73aa0(BlockFormat(0x855), 0, static_cast<IMessageListener*>(this), CStringW(L""));
                     return 0;
                 }
             }
             else if (0x91 < nKey)
             {
-                FUN_140d73aa0(FUN_1409eec40(0x854), 0, static_cast<IMessageListener*>(this), CStringW(L""));
+                FUN_140d73aa0(BlockFormat(0x854), 0, static_cast<IMessageListener*>(this), CStringW(L""));
                 return 0;
             }
             if (FUN_1409331f0()->FUN_14142cc40(nKey) != 0)
@@ -394,7 +398,7 @@ int UISkillCompactControlDialog::vfunc_13()
                             FUN_140fa2180(CStringW(m_cur.m_strTab));
                             m_cur.Clear();
                         }
-                        MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+                        MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
                         if (pPlayer != 0)
                             pPlayer->FUN_141523bc0()->FUN_141767df0(0);
                     }
@@ -469,7 +473,7 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
         m_prev.m_nKey = nKey;
         m_prev.m_strTab = m_strTab;
         FUN_140fa23f0(nKey, 0);
-        MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer != 0)
             pPlayer->FUN_141523bc0()->FUN_141767df0(1);
     }
@@ -478,7 +482,7 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
         if (m_cur.m_nState == 0)
         {
             m_cur.Clear();
-            MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+            MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
             if (pPlayer != 0)
                 pPlayer->FUN_141523bc0()->FUN_141767df0(0);
         }
@@ -556,7 +560,7 @@ int UISkillCompactControlDialog::vfunc_48()
 void UISkillCompactControlDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     CString strName = pArgs->FUN_1422b8d30();
@@ -626,14 +630,14 @@ void UISkillCompactControlDialog::vfunc_80(void* pRequest)
         if (val.m_code == 0)
             FUN_140fa0a20(CStringW(val.m_strText));
         else
-            FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, CStringW(L""));
+            FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
     }
     else if (req.FUN_1401bab90(CString("AddTab"), &val) == 1)
     {
         if (val.m_code == 0)
             FUN_140fa0fa0(CStringW(val.m_strText));
         else
-            FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, CStringW(L""));
+            FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
     }
 }
 
@@ -664,7 +668,7 @@ bool UISkillCompactControlDialog::FUN_140fa0820(int nResult, const CMsgBoxData& 
         Unk_ScRequest req(0x4ef6);
         req.FUN_1401bac80(CString("renameTab"), CStringW(strText), 0);
         req.FUN_1401badc0(1);
-        if (FUN_140d86260()->vfunc_37(&req) == 1)
+        if (((class IClientPlatform*)FUN_140d86260())->vfunc_37(&req) == 1)
             return FUN_140fa0a20(CStringW(strText));
     }
     return 1;
@@ -709,7 +713,7 @@ bool UISkillCompactControlDialog::FUN_140fa0d80(int nResult, const CMsgBoxData& 
         Unk_ScRequest req(0x4ef6);
         req.FUN_1401bac80(CString("AddTab"), CStringW(strText), 0);
         req.FUN_1401badc0(1);
-        if (FUN_140d86260()->vfunc_37(&req) == 1)
+        if (((class IClientPlatform*)FUN_140d86260())->vfunc_37(&req) == 1)
             return FUN_140fa0fa0(CStringW(strText));
     }
     return 1;
@@ -761,7 +765,7 @@ void UISkillCompactControlDialog::SendSkillMacroMode1()
 // @0x140fa1400
 void UISkillCompactControlDialog::FUN_140fa1400()
 {
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
         pPlayer->FUN_141523bc0()->FUN_141767d90(&m_lstConfig);
 }
@@ -776,10 +780,10 @@ static __declspec(noinline) bool Unk_CcSkillListIsNull(const Unk_CcSkillListPtr&
 // @0x140fa1460
 void UISkillCompactControlDialog::FUN_140fa1460(ATL::CAtlList<unsigned>* pList)
 {
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    Unk_CcSkillListPtr spSkills = CSkillCompactControlTable::GetJobSkills((Unk_CcJob)FUN_141654700(pPlayer));
+    Unk_CcSkillListPtr spSkills = CSkillCompactControlTable::GetJobSkills((Unk_CcJob)((class PC*)(class MyPC*)(pPlayer))->FUN_141654700());
     if (Unk_CcSkillListIsNull(spSkills))
         return;
     std::set<unsigned> setLearned;
@@ -812,16 +816,16 @@ void UISkillCompactControlDialog::FUN_140fa16f0(CStringW strTab)
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return;
-        Unk_CcSkillListPtr spSkills = CSkillCompactControlTable::GetJobSkills((Unk_CcJob)FUN_141654700(pPlayer));
+        Unk_CcSkillListPtr spSkills = CSkillCompactControlTable::GetJobSkills((Unk_CcJob)((class PC*)(class MyPC*)(pPlayer))->FUN_141654700());
         if (FUN_140fa3060(spSkills))
             return;
         ASArray arrSkills(2);
         std::set<unsigned> setLearned;
         std::set<unsigned> setOther;
-        int nJobLevel = FUN_1401d7a50()->FUN_140644b80(FUN_141654730(pPlayer));
+        int nJobLevel = FUN_1401d7a50()->GetJobRank(FUN_141654730(pPlayer));
         for (POSITION pos = spSkills->GetHeadPosition(); pos != 0; spSkills->GetNext(pos))
         {
             Unk_CcSkillPtr spSkill = spSkills->GetAt(pos);
@@ -839,7 +843,7 @@ void UISkillCompactControlDialog::FUN_140fa16f0(CStringW strTab)
         for (std::set<unsigned>::iterator it = setLearned.begin(); it != setLearned.end(); ++it)
         {
             unsigned nSkillId = *it;
-            Unk_ScSkillRow* pRow = FUN_1401958b0()->FUN_1407ee1d0(nSkillId).FUN_14063ed10();
+            Unk_ScSkillRow* pRow = reinterpret_cast<Unk_ScSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId).FUN_14063ed10();
             if (pRow == 0)
                 continue;
             int bSelected = spConfig->m_skills.find(nSkillId) != spConfig->m_skills.end();
@@ -853,7 +857,7 @@ void UISkillCompactControlDialog::FUN_140fa16f0(CStringW strTab)
         for (std::set<unsigned>::iterator it = setOther.begin(); it != setOther.end(); ++it)
         {
             unsigned nSkillId = *it;
-            Unk_ScSkillRow* pRow = FUN_1401958b0()->FUN_1407ee1d0(nSkillId).FUN_14063ed10();
+            Unk_ScSkillRow* pRow = reinterpret_cast<Unk_ScSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId).FUN_14063ed10();
             if (pRow == 0)
                 continue;
             int bSelected = spConfig->m_skills.find(nSkillId) != spConfig->m_skills.end();

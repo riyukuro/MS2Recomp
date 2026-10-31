@@ -107,15 +107,13 @@ public:
     PushMap m_pushes;                                           // +0x10 id -> push
 };
 MS2_CHECK_OFFSET(Unk_SsPushMgr, m_pushes, 0x10);
-Unk_SsPushMgr* FUN_140cea070();                                 // TSingleton<CSmartPushManager>::GetInstance
+class Unk_SingletonObj* FUN_140cea070();   // C3: was FUN_140cea070
 
 // The local player's buffs (PCBase +0x748).
 class Unk_PCBaseBuffs { public: int FUN_1409701d0(int nKind); };
 
-WorldService* FUN_1403ed2d0();                                  // the world service singleton
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 InvenSlot* FUN_140a50b50(DragSlot* p);                          // the inventory slot behind a drag source
-SkillDataTableCli* FUN_1401958b0();                             // TSingleton<SkillDataTableCli>::GetInstance
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW GetStringCommon(int nStringId);                          // string table text by id
@@ -130,11 +128,11 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                 // show it
 void FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);    // pRetVal = v
 
 // CMsgBoxData::SetValue<T> (COMDATs of ?\smartpush.cpp): a named GFx value of the box.
-void FUN_140dd6030(CMsgBoxData* pBox, const char* szName, int n);
-void FUN_140dd6110(CMsgBoxData* pBox, const char* szName, unsigned n);
-void FUN_140dd61f0(CMsgBoxData* pBox, const char* szName, CStringW str);
-void FUN_140dd62f0(CMsgBoxData* pBox, const char* szName, __int64 n);
-void FUN_140dd63d0(CMsgBoxData* pBox, const char* szName, bool b);
+void Unk_SetBoxInt(CMsgBoxData* pBox, const char* szName, int n);
+void Unk_SetBoxUInt(CMsgBoxData* pBox, const char* szName, unsigned n);
+void Unk_SetBoxString(CMsgBoxData* pBox, const char* szName, CStringW str);
+void Unk_SetBoxInt64(CMsgBoxData* pBox, const char* szName, __int64 n);
+void Unk_SetBoxBool(CMsgBoxData* pBox, const char* szName, bool b);
 
 // The script value setters of the Invoke helpers.
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
@@ -276,7 +274,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                     else
                     {
                         // extend the auto fishing: the price packages of the push
-                        MS2SvrPtr<CSmartPushAutoFishing> spPush = FUN_140cea070()->FUN_FindPush<CSmartPushAutoFishing>();
+                        MS2SvrPtr<CSmartPushAutoFishing> spPush = ((class Unk_SsPushMgr*)FUN_140cea070())->FUN_FindPush<CSmartPushAutoFishing>();
                         if (!spPush || !spPush->m_data)
                             return 1;
                         CStringW strText = FUN_140938ae0(CStringW(L"s_msg_autofishing_extend_showcurrentduration_desc"),
@@ -297,14 +295,14 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                             {
                                 CSmartPushTable::PackagePtr pkg =
                                     CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479970(), i);
-                                FUN_140dd6110(spBox.operator->(), FUN_1402bb1c0("autoActionMinute{0}", i), pkg->m_nDuration);
-                                FUN_140dd62f0(spBox.operator->(), FUN_1402bb1c0("autoActionMerat{0}", i), pkg->m_nMerat);
-                                FUN_140dd62f0(spBox.operator->(), FUN_1402bb1c0("autoActionMeso{0}", i), pkg->m_nMeso);
+                                Unk_SetBoxUInt(spBox.operator->(), FUN_1402bb1c0("autoActionMinute{0}", i), pkg->m_nDuration);
+                                Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMerat{0}", i), pkg->m_nMerat);
+                                Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMeso{0}", i), pkg->m_nMeso);
                             }
-                            FUN_140dd63d0(spBox.operator->(), "firstUseRedMerat", FUN_140811640(1));
-                            FUN_140dd61f0(spBox.operator->(), "actionName", GetStringCommonByKey(L"s_auto_action_fishing"));
-                            FUN_140dd6110(spBox.operator->(), "saleRate", CGameRule::GetInstance()->FUN_140479900());
-                            FUN_140dd6030(spBox.operator->(), "packageCount", nCount);
+                            Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", FUN_140811640(1));
+                            Unk_SetBoxString(spBox.operator->(), "actionName", GetStringCommonByKey(L"s_auto_action_fishing"));
+                            Unk_SetBoxUInt(spBox.operator->(), "saleRate", CGameRule::GetInstance()->FUN_140479900());
+                            Unk_SetBoxInt(spBox.operator->(), "packageCount", nCount);
                             FUN_140d73c60(spBox);
                         }
                     }
@@ -328,7 +326,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                 {
                     // extend the auto instrument play: the price packages of the push
                     MS2SvrPtr<CSmartPushAutoPlayInstrument> spPush =
-                        FUN_140cea070()->FUN_FindPush<CSmartPushAutoPlayInstrument>();
+                        ((class Unk_SsPushMgr*)FUN_140cea070())->FUN_FindPush<CSmartPushAutoPlayInstrument>();
                     if (!spPush || !spPush->m_data)
                         return 1;
                     CStringW strText = FUN_140938ae0(CStringW(L"s_msg_auto_play_instrument_extend_showcurrentduration_desc"),
@@ -349,14 +347,14 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                         {
                             CSmartPushTable::PackagePtr pkg =
                                 CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479a90(), i);
-                            FUN_140dd6110(spBox.operator->(), FUN_1402bb1c0("autoActionMinute{0}", i), pkg->m_nDuration);
-                            FUN_140dd62f0(spBox.operator->(), FUN_1402bb1c0("autoActionMerat{0}", i), pkg->m_nMerat);
-                            FUN_140dd62f0(spBox.operator->(), FUN_1402bb1c0("autoActionMeso{0}", i), pkg->m_nMeso);
+                            Unk_SetBoxUInt(spBox.operator->(), FUN_1402bb1c0("autoActionMinute{0}", i), pkg->m_nDuration);
+                            Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMerat{0}", i), pkg->m_nMerat);
+                            Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMeso{0}", i), pkg->m_nMeso);
                         }
-                        FUN_140dd63d0(spBox.operator->(), "firstUseRedMerat", FUN_140811640(4));
-                        FUN_140dd61f0(spBox.operator->(), "actionName", GetStringCommonByKey(L"s_auto_action_play_instrument"));
-                        FUN_140dd6110(spBox.operator->(), "saleRate", CGameRule::GetInstance()->FUN_140479a20());
-                        FUN_140dd6030(spBox.operator->(), "packageCount", nCount);
+                        Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", FUN_140811640(4));
+                        Unk_SetBoxString(spBox.operator->(), "actionName", GetStringCommonByKey(L"s_auto_action_play_instrument"));
+                        Unk_SetBoxUInt(spBox.operator->(), "saleRate", CGameRule::GetInstance()->FUN_140479a20());
+                        Unk_SetBoxInt(spBox.operator->(), "packageCount", nCount);
                         FUN_140d73c60(spBox);
                     }
                 }
@@ -401,7 +399,7 @@ MS2_REPLACE_METHOD(0x140FA5BA0, UISystemShopDialog, SetMode, 25, 0x11D24FAE);
 // @0x140fa5bc0
 void UISystemShopDialog::FUN_140fa5bc0()
 {
-    PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (m_nMode != 4)
@@ -410,7 +408,7 @@ void UISystemShopDialog::FUN_140fa5bc0()
     {
         MS2Ptr<CItem> spBait(0);
         if (CFishingManager::GetInstance()->GetBaitId() != 0)
-            spBait = DAT_143ab2a90.FUN_140a5e2e0(CFishingManager::GetInstance()->GetBaitId());
+            spBait = g_143ab2a90.FUN_140a5e2e0(CFishingManager::GetInstance()->GetBaitId());
         FUN_140d42630(GetTypeName());
         FUN_140d42540(GetTypeName(), 0, spBait);
         if (ItemScrollSlot* pSlot = FUN_140d42c30(FUN_1422c8e90(GetTypeName())))
@@ -442,7 +440,7 @@ bool UISystemShopDialog::FUN_140fa62d0(int nButton, const CMsgBoxData& box)
 {
     if (nButton != 0)
         return true;
-    PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return true;
     if (reinterpret_cast<Unk_PCBaseBuffs*>(pPc->FUN_1416749a0())->FUN_1409701d0(1) == 0)
@@ -452,7 +450,7 @@ bool UISystemShopDialog::FUN_140fa62d0(int nButton, const CMsgBoxData& box)
     bool bAuto = strResult.Tokenize(L",", nPos).CompareNoCase(L"true") == 0;
     int nPackage = _wtoi(strResult.Tokenize(L",", nPos)) - 1;
     CFishingManager::GetInstance()->FUN_140cdbdf0(*Client::Constants::GetInstance()->extendAutoFishMaxCount.Get());
-    MS2SvrPtr<CSmartPushAutoFishing> spPush = FUN_140cea070()->FUN_FindPush<CSmartPushAutoFishing>();
+    MS2SvrPtr<CSmartPushAutoFishing> spPush = ((class Unk_SsPushMgr*)FUN_140cea070())->FUN_FindPush<CSmartPushAutoFishing>();
     if (spPush.get())
         spPush->m_n1c = nPackage;
     return true;
@@ -472,7 +470,7 @@ MS2_REPLACE_METHOD(0x140FA64A0, UISystemShopDialog, FUN_140fa64a0, 51, 0x229A1FD
 // @0x140fa64e0
 void UISystemShopDialog::FUN_140fa64e0()
 {
-    PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (m_nMode != 5)
@@ -500,7 +498,7 @@ bool UISystemShopDialog::FUN_140fa67a0(int nButton, const CMsgBoxData& box)
 {
     if (nButton != 0)
         return true;
-    PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return true;
     int nPos = 0;
@@ -510,7 +508,7 @@ bool UISystemShopDialog::FUN_140fa67a0(int nButton, const CMsgBoxData& box)
     if (CInstrumentManager::GetInstance()->CanPlayEnsemble() == 0)
         return true;
     CInstrumentManager::GetInstance()->SetVolume(*Client::Constants::GetInstance()->extendAutoPlayInstrumentMaxCount.Get());
-    MS2SvrPtr<CSmartPushAutoPlayInstrument> spPush = FUN_140cea070()->FUN_FindPush<CSmartPushAutoPlayInstrument>();
+    MS2SvrPtr<CSmartPushAutoPlayInstrument> spPush = ((class Unk_SsPushMgr*)FUN_140cea070())->FUN_FindPush<CSmartPushAutoPlayInstrument>();
     if (spPush.get())
         spPush->m_n1c = nPackage;
     return true;
@@ -533,7 +531,7 @@ void UISystemShopDialog::FUN_140fa69b0(NotifyObject* pNotify)
     NotifyChangeBuff* pBuff = dynamic_cast<NotifyChangeBuff*>(pNotify);
     if (pBuff != 0)
     {
-        MS2Ptr<AdditionalLevelData> spLevel = FUN_1401958b0()->FUN_140aafef0(pBuff->m_nId, 1);
+        MS2Ptr<AdditionalLevelData> spLevel = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pBuff->m_nId, 1);
         if (spLevel == 0)
             return;
         if (pBuff->m_nId == (unsigned)CFishingManager::GetInstance()->FUN_140cdbe80())
@@ -569,7 +567,7 @@ void UISystemShopDialog::FUN_140fa6ae0(ItemScrollSlot& slot, DragSlot* pDrag)
     InvenSlot* pSrc = FUN_140a50b50(pDrag);
     if (pSrc != 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(pSrc->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(pSrc->GetItemUid());
         if (spItem == 0)
             return;
         if (!spItem->FUN_1405277e0(100))

@@ -16,7 +16,7 @@
 #include "ms2/client/ms2/nifeffectparam.h"                  // CNifLoadingService
 #include "hook/ms2hook.h"
 
-CNifLoadingService* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
 // @0x141753e30
 efd::SmartPointer<NiMeshScreenElements> FUN_141753e30(const CString& strTexture, float fSize, const char* szDetail)
@@ -32,11 +32,11 @@ efd::SmartPointer<NiMeshScreenElements> FUN_141753e30(const CString& strTexture,
     pTexturing->SetBaseFilterMode(NiTexturingProperty::FILTER_NEAREST);
     pTexturing->SetApplyMode(NiTexturingProperty::APPLY_REPLACE);
     pTexturing->SetBaseClampMode(NiTexturingProperty::CLAMP_S_CLAMP_T);
-    efd::SmartPointer<NiTexture> spTexture = FUN_140a0afd0()->GetTexture((const char*)strTexture, 5);
+    efd::SmartPointer<NiTexture> spTexture = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture((const char*)strTexture, 5);
     pTexturing->SetBaseTexture(spTexture);
     if (szDetail != 0)
     {
-        efd::SmartPointer<NiTexture> spDetail = FUN_140a0afd0()->GetTexture(szDetail, 5);
+        efd::SmartPointer<NiTexture> spDetail = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(szDetail, 5);
         NiTexturingProperty::Map* pDetail = NiNew NiTexturingProperty::Map;
         pDetail->SetTexture(spDetail);
         pTexturing->SetDetailMap(pDetail);

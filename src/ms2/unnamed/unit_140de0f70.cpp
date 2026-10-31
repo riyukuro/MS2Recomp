@@ -9,8 +9,6 @@
 #include <atlcoll.h>
 #include "ms2/client/ms2/store.h"
 
-extern void FUN_140a6c360(void*);
-extern void FUN_1408f3a80(void*);
 extern void FUN_1408f3d90(void*, __int64, int);
 extern unsigned FUN_140720ca0(void*);
 extern void* FUN_140a69ee0(void*, __int64);
@@ -47,8 +45,8 @@ void CStore::Clear()
         m_type = 0;
         m_ready = 0;
         m_received = 0;
-        FUN_140a6c360(&m_items);
-        FUN_1408f3a80(&m_slots);
+        ((ATL::CRBTree<unsigned __int64, MS2Ptr<CItem>, ATL::CElementTraits<unsigned __int64>, ATL::CElementTraits<MS2Ptr<CItem>>>*)(void*)(&m_items))->RemoveAll();
+        ((ATL::CAtlArray<MS2Ptr<CItem>, ATL::CElementTraits<MS2Ptr<CItem>>>*)(void*)(&m_slots))->RemoveAll();
         FUN_1408f3d90(&m_slots, m_capacity, -1);
         int count = FUN_140720ca0(&m_slots);
         for (int i = 0; i < count; ++i) {

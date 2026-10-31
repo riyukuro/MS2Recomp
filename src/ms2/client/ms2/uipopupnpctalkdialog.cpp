@@ -24,6 +24,8 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/ckeytable.h"
 #include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <stdlib.h>
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -56,12 +58,9 @@ public:
     CStringW m_strText;                                         // +0x18
 };
 class Unk_PnWorld { public: void* FUN_141bd0cc0(); };
-Unk_PnWorld* FUN_1403ed2d0();
 unsigned FUN_141bd3060(Unk_PnWorld* pWorld);                    // the map id
-QuestDataTable* FUN_1407476c0();
 CFeatureManager* FUN_140166410();
 class Unk_PnUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nType); };
-Unk_PnUIMgr* FUN_1403ed2b0();
 CQuestManager* FUN_140764020();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 Unk_PnScriptPtr FUN_1408564b0(int nQuestId, int n);
@@ -70,12 +69,8 @@ UIQuestEventDispatcher* FUN_140bfc4b0();
 CStringW FUN_1401aa6a0(int nId);                                // npc name
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
 CKeyTable* FUN_1409331f0();
-CReservedWordTable* FUN_1403b4750();
 class Unk_PnButton : public ASDisplayObject { public: void FUN_1422cdfb0(const CStringW& strText); };
-class Unk_PnRoot : public AScript { public:
-    Scaleform::GFx::Value FUN_1409b46e0(const char* szMethod, CString strArg);
-    Scaleform::GFx::Value FUN_140acd130(const char* szMethod, CStringW strArg);
-};
+class Unk_PnRoot : public AScript {};
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 class Unk_PnActor { public: void vfunc_4(int, int, int); };
 UIFameContentsNotify* FUN_140e77d80(int nType);
@@ -246,7 +241,7 @@ int UIPopupNpcTalkDialog::vfunc_13()
 void UIPopupNpcTalkDialog::FUN_140e770a0(NotifyObject*)
 {
     ATL::CAtlArray<unsigned> quests;
-    FUN_1407476c0()->FUN_14074d360(FUN_141bd3060(FUN_1403ed2d0()), quests);
+    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d360(FUN_141bd3060(reinterpret_cast<Unk_PnWorld*>(WorldService::GetInstance())), quests);
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
         unsigned nQuest = quests[i];
@@ -300,17 +295,17 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
     int nDone = FUN_140764020()->FUN_1407456d0(m_184);
     CCinematicContent* pCin = dynamic_cast<CCinematicContent*>((CScriptContent*)m_188.FUN_14085a610()->m_contents.FUN_14078f350(m_180).FUN_140e78000());
     if (pCin != 0)
-        static_cast<Unk_PnRoot*>(FUN_1409ee290(&m_30))->FUN_1409b46e0("setPortrait", pCin->m_speakerIllust);
+        static_cast<Unk_PnRoot*>(FUN_1409ee290(&m_30))->Invoke("setPortrait", pCin->m_speakerIllust);
     CStringW strNpc;
     if (nDone != 0)
         strNpc = FUN_1401aa6a0(spQuest->m_2ec);
     else
         strNpc = FUN_1401aa6a0(spQuest->m_2e8);
-    static_cast<Unk_PnRoot*>(FUN_1409ee290(&m_30))->FUN_140acd130("setNpc", strNpc);
+    static_cast<Unk_PnRoot*>(FUN_1409ee290(&m_30))->Invoke("setNpc", strNpc);
     if (MS2Ptr<ASTextField> spScript = FUN_140bb4cf0("m_script"))
     {
         CStringW strText = m_188.FUN_14085a610()->m_contents.FUN_14078f350(m_180).FUN_14078f3d0()->m_strText;
-        FUN_1403b4750()->FUN_1416fb300(strText);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strText);
         spScript->FUN_1422c4f00(strText);
     }
     BOOL bLast = m_180 == (int)(m_188.FUN_14085a610()->m_contents.FUN_14078fae0() - 1);
@@ -347,7 +342,7 @@ int UIPopupNpcTalkDialog::FUN_140e77b80(int nQuest)
     MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuest);
     if (spQuest.IsNull())
         return 0;
-    unsigned nMap = FUN_141bd3060(FUN_1403ed2d0());
+    unsigned nMap = FUN_141bd3060(reinterpret_cast<Unk_PnWorld*>(WorldService::GetInstance()));
     if (FUN_140408410(&spQuest->m_fields, &nMap) == -1)
         return 0;
     return 1;
@@ -356,9 +351,9 @@ int UIPopupNpcTalkDialog::FUN_140e77b80(int nQuest)
 // @0x140e77d80
 UIFameContentsNotify* FUN_140e77d80(int nType)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_PnUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> ui = FUN_1403ed2b0()->FUN_141adcea0(nType);
+        MS2Ptr<UIObject> ui = reinterpret_cast<Unk_PnUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nType);
         if (ui.get())
             return dynamic_cast<UIFameContentsNotify*>((UIObject*)ui);
     }

@@ -27,7 +27,7 @@ int FUN_14020b020(const CString&,unsigned char*);
 int FUN_14020ac20(const CStringW&);
 int FUN_14020b170(const CStringW&,unsigned char*);
 int FUN_14020b410(float,unsigned char*);
-int FUN_14020aec0(const void*,int,unsigned char*);
+int FUN_14020aec0(void const *, unsigned int, unsigned char *);  // C3: the definition's signature
 struct Unk_StreamTest { unsigned char byte; int number; CStringW text; };
 // @0x140838d50
 std::string CByteBuffer::ToHex() const {

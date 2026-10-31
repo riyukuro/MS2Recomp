@@ -41,8 +41,12 @@ MS2Ptr<Unk_BmMsgBox> FUN_140d73d20(int flags, CStringW msg, u64 cb, CStringW b);
 MS2Ptr<Unk_BmMsgBox> FUN_140d73e40(int a, int id, int b, CStringW s);
 void FUN_140d73c60(MS2Ptr<Unk_BmMsgBox> box);                                       // show (by value)
 void FUN_141a015d0(void* dialog, const CStringW& text);
-void* FUN_140166410();
-bool FUN_14036e4c0(void* p);
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036e4c0();
+};
 CStringW Name_140217ff0(int id);
 void FUN_140165320(void* dst, const CStringW& s);
 void FUN_142c9ef00();
@@ -198,7 +202,7 @@ void FUN_140a2ff20(const BlockPtr& rec, int action, u64 cb)
     }
         break;
     case 5:
-        if (FUN_14036e4c0(FUN_140166410())) {
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e4c0()) {
             MS2Ptr<Unk_BmMsgBox> h = FUN_140d73e40(1, 0x440, 0, CStringW(s_externalBlock));
             if (h) {
                 FUN_140a30b80((char*)h.operator->(), 1);

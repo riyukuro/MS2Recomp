@@ -37,8 +37,13 @@ static CString s_sortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh",
 // ---- unit-local placeholders and externals ----
 
 class WorldService;
-WorldService* FUN_1403ed2d0();
-int FUN_141bbb1e0(WorldService* pWorld, GameObject* pObject, int bFullInit, unsigned nCameraArg);   // register an object
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141bbb1e0(class GameObject*, int, unsigned int);
+public:
+    static class WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
+};
 void FUN_141bbb7f0(WorldService* pWorld, GameObject* pObject, int bImmediate);                    // unregister an object
 
 NiAVObject* FUN_141b6efc0(void* pEntity);                           // the scene root of an entity
@@ -53,12 +58,14 @@ Unk_PxEntMgr* FUN_1409670f0();
 struct Unk_PxEntIter { void* m_pNode; };   // one node pointer: the exe reserves 8 bytes for it
 void FUN_1411ce5a0(Unk_PxEntMgr* pMgr, Unk_PxEntIter* pIter);
 bool FUN_1411ce5f0(Unk_PxEntMgr* pMgr, Unk_PxEntIter* pIter, egf::Entity** ppOut);
-egf::Entity* FUN_1411cf440(Unk_PxEntMgr* pMgr, const egf::EntityID& id);
-egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
+class EntityWorldManager   // C3: member view for the former free stand-ins
+{
+public:
+    class egf::Entity* FUN_1411cf440(class egf::EntityID const&);
+};
 void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Vector3* pOut);   // reads a point property
 void FUN_140961880(egf::Entity* pEntity, unsigned nProperty, float* pOut);
 int FUN_140998250(egf::Entity* pEntity, unsigned nProperty, efd::AssetID* pOut);   // 0 = read
-const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
 
 class Unk_PxServiceMgr;
 struct Unk_PxApp
@@ -66,7 +73,11 @@ struct Unk_PxApp
     void* m_pad_00;
     efd::SmartPointer<Unk_PxServiceMgr> m_spServiceManager;         // +0x08
 };
-Unk_PxServiceMgr* FUN_140af8310(efd::SmartPointer<Unk_PxServiceMgr>* pSmart);    // operator->
+class Unk_GameContext   // C3: member view for the former free stand-ins
+{
+public:
+    class efd::ServiceManager* FUN_140af8310();
+};
 void* FUN_140998330(Unk_PxServiceMgr* pMgr);                        // a system service (NULL when absent)
 
 // the proxy manager: the proxies by entity id
@@ -192,7 +203,7 @@ efd::SmartPointer<CProxyObject> Unk_ProxyMgr::FUN_1416c31c0(efd::AssetID asset, 
 {
     efd::SmartPointer<CProxyObject> spProxy(EE_NEW CProxyObject());
     if (spProxy->FUN_1416c2e70(asset, kPos, kRot, fRadius) != 0
-        && FUN_141bbb1e0(FUN_1403ed2d0(), spProxy, 0, 1) != 0)
+        && ((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FUN_141bbb1e0(spProxy, 0, 1) != 0)
         return spProxy;
     return efd::SmartPointer<CProxyObject>(0);
 }
@@ -204,7 +215,7 @@ void Unk_ProxyMgr::FUN_1416c33c0(int bEnable)
     FUN_1416c3670();
     if (bEnable != 0)
     {
-        void* pService = FUN_140998330(FUN_140af8310(&reinterpret_cast<Unk_PxApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager));
+        void* pService = FUN_140998330(((class Unk_PxServiceMgr*)((class Unk_GameContext*)(void*)(&reinterpret_cast<Unk_PxApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager))->FUN_140af8310()));
         if (pService == 0)
             return;
         Unk_PxEntIter iter;
@@ -212,7 +223,7 @@ void Unk_ProxyMgr::FUN_1416c33c0(int bEnable)
         egf::Entity* pEntity;
         while (FUN_1411ce5f0(FUN_1409670f0(), &iter, &pEntity))
         {
-            egf::FlatModel* pModel = FUN_1408a9bd0(pEntity);
+            egf::FlatModel* pModel = ((class egf::FlatModel*)((egf::Entity*)(class egf::Entity*)(pEntity))->GetModel());
             if (!pModel->ContainsModel(0xbd4f8e8e) && !pModel->ContainsModel(0x48ccc02d) && pModel->ContainsModel(0x9eca2f69))
             {
                 efd::Point3 kPos;
@@ -226,7 +237,7 @@ void Unk_ProxyMgr::FUN_1416c33c0(int bEnable)
                 {
                     efd::SmartPointer<CProxyObject> spProxy = FUN_1416c31c0(asset, kPos, kRot, fRadius);
                     if (spProxy)
-                        m_proxies.SetAt(*FUN_1408b76f0(pEntity), spProxy);
+                        m_proxies.SetAt(*((class egf::EntityID const*)&((egf::Entity*)(class egf::Entity*)(pEntity))->GetEntityID()), spProxy);
                 }
             }
         }
@@ -239,7 +250,7 @@ void Unk_ProxyMgr::FUN_1416c3670()
     for (POSITION pos = m_proxies.GetHeadPosition(); pos != 0; m_proxies.GetNext(pos))
     {
         efd::SmartPointer<GameObject> spProxy(m_proxies.GetValueAt(pos));
-        FUN_141bbb7f0(FUN_1403ed2d0(), spProxy, 0);
+        FUN_141bbb7f0(WorldService::GetInstance(), spProxy, 0);
     }
     m_proxies.RemoveAll();
 }
@@ -261,9 +272,9 @@ efd::SmartPointer<egf::Entity> Unk_ProxyMgr::FUN_1416c37e0(efd::SmartPointer<egf
     for (POSITION pos = m_proxies.GetHeadPosition(); pos != 0; m_proxies.GetNext(pos))
     {
         CProxyObject* pProxy = m_proxies.GetValueAt(pos);
-        if (pProxy->FUN_14123c460() == *FUN_1408b76f0(spEntity))
+        if (pProxy->FUN_14123c460() == *((class egf::EntityID const*)&((egf::Entity*)(class egf::Entity*)(spEntity))->GetEntityID()))
         {
-            efd::SmartPointer<egf::Entity> spFound(FUN_1411cf440(FUN_1409670f0(), m_proxies.GetKeyAt(pos)));
+            efd::SmartPointer<egf::Entity> spFound(((class EntityWorldManager*)(class Unk_PxEntMgr*)(FUN_1409670f0()))->FUN_1411cf440(m_proxies.GetKeyAt(pos)));
             return spFound;
         }
     }

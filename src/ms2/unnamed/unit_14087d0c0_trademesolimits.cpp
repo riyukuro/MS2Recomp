@@ -11,26 +11,26 @@
 struct Unk_TradeConst { char m_pad[0x6000]; };
 struct Unk_TradeValI64 { char m_pad[0x60]; };
 struct Unk_TradeValInt { char m_pad[0x60]; };
-Unk_TradeConst* FUN_1401d3200();                        // the constants singleton
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 __int64 FUN_1402bac90(Unk_TradeValI64* pValue);         // Value<__int64>::Read
-int FUN_14025a620(Unk_TradeValInt* pValue);             // Value<int>::Read
+int FUN_14025a620(class Unk_ConstVal*);   // C3: was FUN_14025a620
 
 // @0x14087d0c0
 __int64 FUN_14087d0c0()
 {
-    return FUN_1402bac90((Unk_TradeValI64*)((char*)FUN_1401d3200() + 0x5f00));
+    return FUN_1402bac90((Unk_TradeValI64*)((char*)((struct Unk_TradeConst*)FUN_1401d3200()) + 0x5f00));
 }
 
 // @0x14087d0f0
 __int64 FUN_14087d0f0()
 {
-    return FUN_1402bac90((Unk_TradeValI64*)((char*)FUN_1401d3200() + 0x5f60));
+    return FUN_1402bac90((Unk_TradeValI64*)((char*)((struct Unk_TradeConst*)FUN_1401d3200()) + 0x5f60));
 }
 
 // @0x14087d120
 int FUN_14087d120()
 {
-    return FUN_14025a620((Unk_TradeValInt*)((char*)FUN_1401d3200() + 0x5fc0));
+    return FUN_14025a620((class Unk_ConstVal*)((Unk_TradeValInt*)((char*)((struct Unk_TradeConst*)FUN_1401d3200()) + 0x5fc0)));
 }
 
 // @0x14087d150

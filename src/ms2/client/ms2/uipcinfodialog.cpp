@@ -60,6 +60,7 @@ static CString s_strSetData = "setData";
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/asuicomponent.h"
+#include "ms2/placeholder/aslabel.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
@@ -74,6 +75,9 @@ static CString s_strSetData = "setData";
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiupperhuddialog.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -83,16 +87,12 @@ template <> MS2Ptr<Unk_PCArg125>::MS2Ptr(const MS2Ptr<Unk_PCArg125>& o);
 template <> MS2Ptr<Unk_PCArg125>::~MS2Ptr();
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
 template <> MS2Ptr<ASUIComponent> UISwfEntity::GetChild<ASUIComponent>(const CString& strName);
+template <> MS2Ptr<ASLabel> UISwfEntity::GetChild<ASLabel>(const CString& strName);
 
 // The component calls shared by the button / label / combo / clip wrappers of the children (ASUIComponent and ASMovieClip
 // in the exe; the placeholder headers do not carry them yet).
-class Unk_PciComp
+class Unk_PciComp : public ASButton
 {
-public:
-    void FUN_1422c1fe0(int bEnable);                            // enable / disable
-    int FUN_1422c2030();                                        // enabled
-    void FUN_1422c2d10(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> onTooltip, void* pUserData);
-    void FUN_1422cdf50(const CString& strTooltip);              // the tooltip id
 };
 void FUN_1409b4bc0(Scaleform::GFx::Value* pDst, Scaleform::GFx::Value& src);     // Value::operator=
 void FUN_140cfee80(const Scaleform::GFx::Value& obj, CString strMember, CStringW strText);   // set a child's text
@@ -106,14 +106,7 @@ public:
     Scaleform::GFx::Value FUN_140e0a8c0(const char* szMethod, CStringW a1, int a2);   // Invoke(method, string, int)
 };
 
-// The label / combo box wrappers (ASLabel, ASComboBox in the exe) of the dialog's children.
-class Unk_PciLabel : public ASUIComponent
-{
-public:
-    void FUN_1422e4a50(const CStringW& strText);                // set the text
-    void FUN_1422e4a00(const CString& strText);                 // set the text (narrow)
-    void FUN_1422c7cd0(const Scaleform::GFx::Value& tooltip);   // set the tooltip
-};
+// The combo box wrapper (ASComboBox in the exe) of the dialog's children.
 class Unk_PciCombo : public ASUIComponent
 {
 public:
@@ -156,7 +149,6 @@ class Unk_PciMovieEntity : public UIDialog
 {
 public:
     MS2Ptr<ASButton> FUN_140bb4b10(const CString& strName);        // GetChild<ASButton>
-    MS2Ptr<Unk_PciLabel> FUN_140e6d820(const CString& strName);    // GetChild<ASLabel>
     MS2Ptr<Unk_PciCombo> FUN_140c28560(const CString& strName);    // GetChild<ASComboBox>
 };
 
@@ -166,11 +158,9 @@ public:
     void FUN_140da5180(int nOp, Delegate<void(CInPacket&)> handler);    // add a packet handler
     void FUN_140da51e0(int nOp, Delegate<void(CInPacket&)> handler);    // remove
 };
-Unk_PciPackets* FUN_140bccd50();
-UIUGCEventDispatcher* FUN_140bc09f0();
-CFeatureManager* FUN_140166410();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_PciUIMgr { public: void FUN_141adc530(int nId); };
-Unk_PciUIMgr* FUN_1403ed2b0();
 
 class Unk_PciMyPC : public PC { public: MS2Ptr<CStatPointManager> FUN_140c25130(); };
 class Unk_PciFieldInfo : public CPtred
@@ -184,11 +174,11 @@ class Unk_PciWorld
 public:
     MS2Ptr<Unk_PciFieldInfo> FUN_141bd30a0();                   // the current field data
 };
-Unk_PciWorld* FUN_1403ed2d0();
-Unk_PciMyPC* FUN_141bd0cc0(Unk_PciWorld* pWorld);               // the player's pc
-void* FUN_1416749a0(PC* pPC);                                   // the pc's shield component
-__int64 FUN_1409708a0(void* pShield);                           // its value
-PCGemEquip* FUN_14165f460(PC* pPC);
+class AdditionalCliList   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_1409708a0();
+};
 NiColor FUN_141b6dea0(unsigned int nColor);                     // a colour value as NiColor
 
 class Unk_PciCfgU16 { public: unsigned short FUN_140ba4b30(); };
@@ -200,11 +190,10 @@ struct Unk_PciConstants
     char m_pad_9299[0xae10 - 0x9299];
     Unk_PciCfgFloat m_ae10;                                     // +0xae10 the doubled ring divisor
 };
-Unk_PciConstants* FUN_1401d3200();
-CLua* FUN_1401c0db0();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 
-class Unk_PciWebBrowser { public: void FUN_14135ec00(const CString& strUrl, bool b); };
-Unk_PciWebBrowser* FUN_140c43790(int nId);
+UIWebBrowserBase* FUN_140c43790(int nId);
 
 class Unk_PciAltStrings { public: CStringW FUN_1422b0570(const CString& strKey); };
 Unk_PciAltStrings* FUN_14025e7a0();
@@ -244,8 +233,8 @@ CString FUN_141028be0(__int64 nCharacterId, const CString& strKey, int nKind, CS
 const CStringA& FUN_14082efb0(int nStat);
 int FUN_140bd09c0(void* pUserData);
 void* FUN_140bb9630(int n);
-__int64 FUN_140869440();
-int FUN_14086b900(__int64 nThen, __int64 nNow);
+__int64 GetServerTime();
+int GetDayNumberDifference(__int64 nThen, __int64 nNow);
 CStringW FUN_140b8e850(const CMsTime& kTime);
 void AddDays(CMsTime& kTime, long nDays);
 void FUN_1408377d0(ATL::CAtlArray<int>& ids);
@@ -255,13 +244,12 @@ void FUN_14126e2f0(const CString& strName, MS2Ptr<PCInfo> spPC);
 void FUN_14126e3f0(const CString& strName);
 AvatarPC* FUN_140a535c0(GameObject* pObj);
 void FUN_1418bee30(ASObj* pObj, int n);
-CItemData* FUN_140527840(CItem* pItem);
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);
 
-extern CString DAT_143af7be0;   // news page url (feature 0x5c)
+extern CString g_strMaviewURL;  // news page url (feature 0x5c)
 inline CString FUN_1413391a0()
 {
-    return DAT_143af7be0;
+    return g_strMaviewURL;
 }
 int FUN_141337900(const void* p1, const void* p2);
 
@@ -281,13 +269,13 @@ UIPCInfoDialog::UIPCInfoDialog()
     FUN_141924170(1);
     FUN_1422dc3b0(1);
     // the handler is the UIDialog packet slot (79), whose real parameter is CInPacket& (the vcall thunk 0x141339078)
-    FUN_140bccd50()->FUN_140da5180(0x78, Delegate<void(CInPacket&)>(this, (void (UIPCInfoDialog::*)(CInPacket&))&UIPCInfoDialog::vfunc_79));
+    ((class Unk_PciPackets*)FUN_140bccd50())->FUN_140da5180(0x78, Delegate<void(CInPacket&)>(this, (void (UIPCInfoDialog::*)(CInPacket&))&UIPCInfoDialog::vfunc_79));
 }
 
 // @0x14132bea0
 UIPCInfoDialog::~UIPCInfoDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0x78, Delegate<void(CInPacket&)>(this, (void (UIPCInfoDialog::*)(CInPacket&))&UIPCInfoDialog::vfunc_79));
+    ((class Unk_PciPackets*)FUN_140bccd50())->FUN_140da51e0(0x78, Delegate<void(CInPacket&)>(this, (void (UIPCInfoDialog::*)(CInPacket&))&UIPCInfoDialog::vfunc_79));
 }
 
 // @0x14132c030
@@ -413,7 +401,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
             spCopy->FUN_140526b30(pAvatar->vfunc_25());
             pAvatarPC->vfunc_127(spCopy.get(), 0);
         }
-        MS2Ptr<CItemData> spData(FUN_140527840(spItem.operator->()));
+        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()));
         if (spData == 0)
             continue;
         if (spItem->FUN_1405258b0() != 0)
@@ -443,7 +431,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
         }
     }
     Unk_PciRange range;
-    float fDivisor = *FUN_1401d3200()->m_ae10.FUN_140298f40();
+    float fDivisor = *((struct Unk_PciConstants*)FUN_1401d3200())->m_ae10.FUN_140298f40();
     switch (nRings)
     {
     case 0:
@@ -462,7 +450,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
         unsigned int nHighMax = nRightMax > nLeftMax ? nRightMax : nLeftMax;
         int nAddMin = 0;
         int nAddMax = 0;
-        FUN_1401c0db0()->CalcOHItemAdditionalLevel(nLow, nHigh, nLowMax, nHighMax, &nAddMin, &nAddMax);
+        ((class CLua*)FUN_1401c0db0())->CalcOHItemAdditionalLevel(nLow, nHigh, nLowMax, nHighMax, &nAddMin, &nAddMax);
         nAttackMin += nAddMin;
         nAttackMax += nAddMax;
         break;
@@ -485,7 +473,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
         if (pAvatarPC != 0)
         {
             MS2Ptr<CItem> spCopy = spItem->FUN_140524250();
-            FUN_14165f460(pAvatarPC)->FUN_141270bf0(spCopy);
+            ((class PCGemEquip*)((class PC*)(class PC*)(pAvatarPC))->FUN_14165f460())->FUN_141270bf0(spCopy);
         }
     }
     if (spInfo->m_508)
@@ -526,7 +514,7 @@ MS2_REPLACE_METHOD(0x14132D500, UIPCInfoDialog, vfunc_65, 37, 0x1E0CAD2E);
 // @0x14132d530
 void UIPCInfoDialog::vfunc_67()
 {
-    FUN_140bc09f0()->FUN_141b38c70(this);
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(this);
     FUN_14120d8e0(m_strEquipBag);
     FUN_14126e3f0(m_strGemBag);
     m_spInfo = 0;
@@ -565,7 +553,7 @@ void UIPCInfoDialog::vfunc_79(void* pPacket)
         FUN_14132c330(&pack);
         if (vfunc_55() == 1)
         {
-            FUN_1403ed2b0()->FUN_141adc530(vfunc_48());
+            reinterpret_cast<Unk_PciUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(vfunc_48());
         }
         else if (FUN_1422dc430() == 1)
         {
@@ -608,12 +596,12 @@ int UIPCInfoDialog::vfunc_46()
         return 0;
     if (MS2Ptr<ASButton> spNews = m_30->FUN_140acce30<ASButton>("m_myNews"))
     {
-        if (!FUN_140166410()->FUN_14036d570(0x3b))
+        if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3b))
             spNews->vfunc_3(0);
     }
     if (MS2Ptr<ASUIComponent> spWedding = m_30->FUN_140accfb0<ASUIComponent>("m_wedding"))
     {
-        if (!FUN_140166410()->FUN_14036d570(0x104))
+        if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x104))
             spWedding->vfunc_3(0);
     }
     return 1;
@@ -628,7 +616,7 @@ void UIPCInfoDialog::OnLoadComplete()
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
     if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
         pAvatar->FUN_1418bd1d0()->FUN_1410885b0(true);
-    bool bCodi = FUN_140166410()->FUN_14036d570(0x8e);
+    bool bCodi = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8e);
     if (((PCInfo*)m_spInfo != 0 ? true : false) && m_spInfo->FUN_140dba1c0() == 0)
         bCodi = m_spInfo->m_508;
     if (m_30.get() != 0)
@@ -650,12 +638,12 @@ void UIPCInfoDialog::OnLoadComplete()
     vfunc_86();
     vfunc_88(m_nTab);
     vfunc_98(FUN_141336c90());
-    FUN_140bc09f0()->FUN_141b38be0(this);
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(this);
     m_spMyNews = ((Unk_PciMovieEntity*)this)->FUN_140bb4b10("m_myNews");
     m_spMyNews->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::FUN_14132ed50), 0);
     if (MS2Ptr<ASButton> spScreenshot = ((Unk_PciMovieEntity*)this)->FUN_140bb4b10("m_screenshot"))
     {
-        if (((PCInfo*)m_spInfo != 0 ? true : false) && m_spInfo->FUN_140dba1c0() != 0 && FUN_140166410()->FUN_14036d570(0xf7))
+        if (((PCInfo*)m_spInfo != 0 ? true : false) && m_spInfo->FUN_140dba1c0() != 0 && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xf7))
         {
             ((Unk_PciComp*)spScreenshot.operator->())->FUN_1422c1fe0(1);
             spScreenshot->vfunc_3(1);
@@ -771,11 +759,11 @@ void UIPCInfoDialog::FUN_14132ed50(const Scaleform::GFx::FunctionHandler::Params
 {
     if (m_spInfo == 0)
         return;
-    Unk_PciWebBrowser* pBrowser = FUN_140c43790(0x4e6a);
+    UIWebBrowserBase* pBrowser = FUN_140c43790(0x4e6a);
     if (pBrowser == 0)
         return;
     CString strUrl;
-    if (FUN_140166410()->FUN_14036d570(0x5c) == true)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5c) == true)
         strUrl = FUN_1413391a0();
     else
         strUrl = StringFormat("maview:/Main/SearchNews?c={0}", reinterpret_cast<const unsigned __int64&>(m_spInfo->m_30));   // formatted unsigned
@@ -796,7 +784,7 @@ MS2_REPLACE_METHOD(0x14132EE90, UIPCInfoDialog, FUN_14132ee90, 56, 0x8AAF4EEA);
 // @0x14132eed0
 void UIPCInfoDialog::FUN_14132eed0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    Unk_PciMyPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     int nStat = FUN_140bd09c0(params.pUserData);
@@ -813,13 +801,13 @@ MS2_REPLACE_METHOD(0x14132EED0, UIPCInfoDialog, FUN_14132eed0, 324, 0xD7BCCED3);
 // @0x14132f020
 void UIPCInfoDialog::FUN_14132f020(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    Unk_PciMyPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     CStringW strText;
-    if (FUN_140166410()->FUN_14036d570(0xbd))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbd))
     {
-        if ((unsigned short)pPC->vfunc_78() >= FUN_1401d3200()->m_9298.FUN_140ba4b30())
+        if ((unsigned short)pPC->vfunc_78() >= ((struct Unk_PciConstants*)FUN_1401d3200())->m_9298.FUN_140ba4b30())
         {
             strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason_with_adventure_level"),
                                     (unsigned int)pPC->FUN_140c25130()->GetTotal(),
@@ -847,7 +835,7 @@ MS2_REPLACE_METHOD(0x14132F020, UIPCInfoDialog, FUN_14132f020, 1446, 0x42E4BD98)
 // @0x14132f5d0
 void UIPCInfoDialog::FUN_14132f5d0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    Unk_PciMyPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     if (m_spInfo == 0)
@@ -864,7 +852,7 @@ void UIPCInfoDialog::FUN_14132f5d0(const Scaleform::GFx::FunctionHandler::Params
             break;
         case 2:
         {
-            int nDays = FUN_14086b900(m_spInfo->m_nGuildEmblem, FUN_140869440());
+            int nDays = GetDayNumberDifference(m_spInfo->m_nGuildEmblem, GetServerTime());
             strText = FUN_14028dfa0(CStringW(L"s_wedding_state_marriage"), strPartner, nDays);
             break;
         }
@@ -943,7 +931,7 @@ void UIPCInfoDialog::vfunc_86()
 {
     if (m_spInfo == 0)
         return;
-    if (MS2Ptr<Unk_PciLabel> spItemLevel = ((Unk_PciMovieEntity*)this)->FUN_140e6d820("m_itemLevelInfo"))
+    if (MS2Ptr<ASLabel> spItemLevel = GetChild<ASLabel>("m_itemLevelInfo"))
     {
         unsigned int nBase = m_spInfo->m_3cc - m_spInfo->m_3d0;
         CStringW strDetail = StringFormat(L"{0} + ({1})", nBase, (unsigned int)m_spInfo->m_3d0);
@@ -952,14 +940,14 @@ void UIPCInfoDialog::vfunc_86()
         FUN_140cfee80((*spItemLevel).FUN_1422bb890(), "value", strValue);
         spItemLevel->Invoke("changeTooltipText", FUN_14025e7a0()->FUN_1422b0570("$s_tooltip_myinfo_stat_itemLevel_ohAdditional"));
     }
-    if (MS2Ptr<Unk_PciLabel> spAttack = ((Unk_PciMovieEntity*)this)->FUN_140e6d820("m_attackInfo"))
+    if (MS2Ptr<ASLabel> spAttack = GetChild<ASLabel>("m_attackInfo"))
     {
         CStringW strDetail(L"");
         __int64 nScore = FUN_141334890();
         CStringW strValue = StringFormat(L"{0}", nScore);
         FUN_140cfee80((*spAttack).FUN_1422bb890(), "detail", strDetail);
         FUN_140cfee80((*spAttack).FUN_1422bb890(), "value", strValue);
-        if (FUN_140166410()->FUN_14036d570(0xdf))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdf))
         {
             FUN_140cff1b0((*spAttack).FUN_1422bb890(), "textField", FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_label_attackScore"));
             ASTooltip tooltip(2);
@@ -971,14 +959,14 @@ void UIPCInfoDialog::vfunc_86()
             spAttack->FUN_1422c7cd0(tooltip.FUN_1422bb890());
         }
     }
-    if (MS2Ptr<Unk_PciLabel> spDefense = ((Unk_PciMovieEntity*)this)->FUN_140e6d820("m_defenseInfo"))
+    if (MS2Ptr<ASLabel> spDefense = GetChild<ASLabel>("m_defenseInfo"))
     {
         CStringW strDetail(L"");
         __int64 nScore = FUN_141335290();
         CStringW strValue = StringFormat(L"{0}", nScore);
         FUN_140cfee80((*spDefense).FUN_1422bb890(), "detail", strDetail);
         FUN_140cfee80((*spDefense).FUN_1422bb890(), "value", strValue);
-        if (FUN_140166410()->FUN_14036d570(0xdf))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdf))
         {
             FUN_140cff1b0((*spDefense).FUN_1422bb890(), "textField", FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_label_defenseScore"));
             ASTooltip tooltip(2);
@@ -1063,7 +1051,7 @@ void UIPCInfoDialog::vfunc_87()
     unsigned int nUsed = 0;
     if (m_spInfo->m_3c0 != 0)
     {
-        Unk_PciMyPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+        Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC == 0)
             return;
         nRemaining = pPC->FUN_140c25130()->GetRemaining();
@@ -1087,7 +1075,7 @@ void UIPCInfoDialog::vfunc_87()
             if (m_spInfo->m_3c0 != 0)
             {
                 unsigned int nColor = 0xffffff;
-                Unk_PciMyPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+                Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
                 if (pPC != 0)
                 {
                     unsigned int nPoints = pPC->FUN_140c25130()->GetStatPoints((CStatPointManager::Unk_StatKey)nStat);
@@ -1217,7 +1205,7 @@ void UIPCInfoDialog::vfunc_94(const unsigned int& nJob)
         strFrame.Format("_%d", nJob);
         spImage->vfunc_13(strFrame);
     }
-    if (MS2Ptr<Unk_PciLabel> spJob = ((Unk_PciMovieEntity*)this)->FUN_140e6d820("m_job"))
+    if (MS2Ptr<ASLabel> spJob = GetChild<ASLabel>("m_job"))
         spJob->FUN_1422e4a50(GetStringTable()->FUN_141811980(6, nJob));
 }
 MS2_REPLACE_METHOD(0x141333180, UIPCInfoDialog, vfunc_94, 437, 0x6E3D79C9);
@@ -1225,7 +1213,7 @@ MS2_REPLACE_METHOD(0x141333180, UIPCInfoDialog, vfunc_94, 437, 0x6E3D79C9);
 // @0x141333340
 void UIPCInfoDialog::vfunc_95(const unsigned short& nLevel)
 {
-    if (MS2Ptr<Unk_PciLabel> spLevel = ((Unk_PciMovieEntity*)this)->FUN_140e6d820("m_level"))
+    if (MS2Ptr<ASLabel> spLevel = GetChild<ASLabel>("m_level"))
     {
         CString strLevel;
         strLevel.Format("%d", nLevel);
@@ -1276,7 +1264,7 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
         }
         else
         {
-            if ((unsigned int)nTitle > 0 && FUN_1403ed2d0() != 0)
+            if ((unsigned int)nTitle > 0 && reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance()) != 0)
             {
                 spTitle->FUN_1422dfce0(FUN_141b72150(nTitle, m_spInfo->m_3c4));
                 spTitle->FUN_1422df690(0);
@@ -1352,7 +1340,7 @@ void UIPCInfoDialog::vfunc_101(const CStringW& strAddress)
 {
     if (m_spInfo == 0)
         return;
-    if (MS2Ptr<Unk_PciLabel> spAddress = ((Unk_PciMovieEntity*)this)->FUN_140e6d820("m_address"))
+    if (MS2Ptr<ASLabel> spAddress = GetChild<ASLabel>("m_address"))
     {
         ((Unk_PciComp*)spAddress.operator->())->FUN_1422c1fe0(!strAddress.IsEmpty());
         if (m_spInfo->FUN_140dba1c0() != 0)
@@ -1368,7 +1356,7 @@ void UIPCInfoDialog::vfunc_102(int nPoint, int nRank)
 {
     if (m_spInfo == 0)
         return;
-    if (MS2Ptr<Unk_PciLabel> spInterior = ((Unk_PciMovieEntity*)this)->FUN_140e6d820("m_interior_point"))
+    if (MS2Ptr<ASLabel> spInterior = GetChild<ASLabel>("m_interior_point"))
     {
         ((Unk_PciComp*)spInterior.operator->())->FUN_1422c1fe0(1);
         spInterior->FUN_1422e4a50(FUN_140811740(0x25, nRank, nPoint));
@@ -1381,7 +1369,7 @@ void UIPCInfoDialog::vfunc_103(const CStringW& strGuild, const CStringW& strRank
 {
     if (m_spInfo == 0)
         return;
-    if (MS2Ptr<Unk_PciLabel> spGuild = ((Unk_PciMovieEntity*)this)->FUN_140e6d820("m_guild"))
+    if (MS2Ptr<ASLabel> spGuild = GetChild<ASLabel>("m_guild"))
     {
         CStringW strText;
         if (strGuild.IsEmpty())
@@ -1411,7 +1399,7 @@ MS2_REPLACE_METHOD(0x141334320, UIPCInfoDialog, vfunc_104, 96, 0x50CEEB1F);
 // @0x141334390
 void UIPCInfoDialog::vfunc_105(const int& nLevel)
 {
-    MS2Ptr<Unk_PciLabel> spLevel = ((Unk_PciMovieEntity*)this)->FUN_140e6d820("m_adventureLevel");
+    MS2Ptr<ASLabel> spLevel = GetChild<ASLabel>("m_adventureLevel");
     if (spLevel.get() != 0)
     {
         CString strLevel;
@@ -1471,7 +1459,7 @@ __int64 UIPCInfoDialog::FUN_141334890()
 {
     if (m_spInfo == 0)
         return 0;
-    if (FUN_140166410()->FUN_14036d570(0xdf))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdf))
     {
         float fA = 0, fB = 0, fC = 0;
         Unk_OffenseScore score;
@@ -1507,10 +1495,10 @@ __int64 UIPCInfoDialog::FUN_141334890()
         score.m_b0 = (__int64)FUN_141335940(0x1e, &fA, &fB, &fC);
         score.m_b8 = FUN_141335d20(0xb1, true, &fA, &fB, &fC);
         score.m_bc = FUN_141335d20(0xb2, true, &fA, &fB, &fC);
-        return (int)FUN_1401c0db0()->CalePcOffenseScore(&score);
+        return (int)((class CLua*)FUN_1401c0db0())->CalePcOffenseScore(&score);
     }
     int nFieldLevel = 0;
-    MS2Ptr<Unk_PciFieldInfo> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<Unk_PciFieldInfo> spField = reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spField.get() != 0)
         nFieldLevel = spField->m_4c;
     __int64 nMeanAttack = FUN_141335780();
@@ -1519,7 +1507,7 @@ __int64 UIPCInfoDialog::FUN_141334890()
     float fA1, fB1, fC1;
     __int64 nCritical = (__int64)FUN_141335d20(0xcb, false, &fA1, &fB1, &fC1);
     __int64 nPierce = m_spInfo->m_aStats2[0x12];
-    float fCritRate = FUN_1401c0db0()->FUN_140674a70(nPierce, 0, nCritical);
+    float fCritRate = ((class CLua*)FUN_1401c0db0())->FUN_140674a70(nPierce, 0, nCritical);
     __int64 nDex = m_spInfo->m_aStats2[3];
     __int64 nLuk = m_spInfo->m_aStats2[0x11];
     __int64 nBase = 0x32;
@@ -1527,8 +1515,8 @@ __int64 UIPCInfoDialog::FUN_141334890()
     __int64 nAccuracy = (__int64)FUN_141335d20(0xca, false, &fA2, &fB2, &fC2);
     float fA3, fB3, fC3;
     __int64 nCritDamage = (__int64)FUN_141335d20(0xcd, false, &fA3, &fB3, &fC3);
-    float fDamage = FUN_1401c0db0()->FUN_1406747a0(m_spInfo->m_1c, nDex, nLuk, nBase, nAccuracy, nCritDamage);
-    __int64 nScore = FUN_1401c0db0()->CalcPcDamage(nMeanAttack, nAttackMin, nAttackMax, fCritRate, fDamage);
+    float fDamage = ((class CLua*)FUN_1401c0db0())->FUN_1406747a0(m_spInfo->m_1c, nDex, nLuk, nBase, nAccuracy, nCritDamage);
+    __int64 nScore = ((class CLua*)FUN_1401c0db0())->CalcPcDamage(nMeanAttack, nAttackMin, nAttackMax, fCritRate, fDamage);
     return nScore;
 }
 MS2_REPLACE_METHOD(0x141334890, UIPCInfoDialog, FUN_141334890, 2554, 0xA471D6B9);
@@ -1538,7 +1526,7 @@ __int64 UIPCInfoDialog::FUN_141335290()
 {
     if (m_spInfo == 0)
         return 0;
-    if (FUN_140166410()->FUN_14036d570(0xdf))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdf))
     {
         float fA = 0, fB = 0, fC = 0;
         Unk_DefenseScore score;
@@ -1563,7 +1551,7 @@ __int64 UIPCInfoDialog::FUN_141335290()
         score.m_64 = FUN_141335d20(0x24, true, &fA, &fB, &fC);
         score.m_68 = (__int64)FUN_141335940(5, &fA, &fB, &fC);
         score.m_70 = (__int64)FUN_141335d20(0x37, false, &fA, &fB, &fC);
-        return (int)FUN_1401c0db0()->CalePcDefenseScore(&score);
+        return (int)((class CLua*)FUN_1401c0db0())->CalePcDefenseScore(&score);
     }
     return m_spInfo->m_aStats2[0x14];
 }
@@ -1627,10 +1615,10 @@ float UIPCInfoDialog::FUN_141335940(int nStat, float* pfBase, float* pfBonus, fl
         float fA, fB, fC;
         __int64 nCritical = (__int64)FUN_141335d20(0xcb, false, &fA, &fB, &fC);
         float fZero = 0.0f;
-        *pfBase = FUN_1401c0db0()->FUN_140674a70((__int64)*pfBase, fZero, 0) * 100.0f;
+        *pfBase = ((class CLua*)FUN_1401c0db0())->FUN_140674a70((__int64)*pfBase, fZero, 0) * 100.0f;
         *pfBonus = *pfBonus + (float)nCritical;
         *pfBonus = *pfBonus * 0.1f;
-        *pfTotal = FUN_1401c0db0()->FUN_140674a70((__int64)*pfTotal, fZero, nCritical) * 100.0f;
+        *pfTotal = ((class CLua*)FUN_1401c0db0())->FUN_140674a70((__int64)*pfTotal, fZero, nCritical) * 100.0f;
     }
     else if (nStat == 0x11)
     {
@@ -1783,9 +1771,9 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_1413369a0(unsigned int nContainer, int
     if (m_spInfo == 0)
         return row.FUN_1422bb870();
     __int64 nShield = 0;
-    Unk_PciMyPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC != 0)
-        nShield = FUN_1409708a0(FUN_1416749a0(pPC));
+        nShield = ((class AdditionalCliList*)(void*)(((void*)((class PCBase*)(class PC*)(pPC))->FUN_1416749a0())))->FUN_1409708a0();
     CStringW strName = GetStringCommonByKey(L"s_pc_info_name_shield");
     CStringW strDetail;
     strDetail.Format(L"-");
@@ -1969,7 +1957,7 @@ CStringW FUN_14132ba90(const int& nLayer)
     case 1:
         return FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_skin");
     case 2:
-        if (FUN_140166410()->FUN_14036d570(0x8e))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8e))
             return FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_codi");
         break;
     }

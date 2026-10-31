@@ -38,12 +38,11 @@
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
 class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CStringA&);
 CStringA FUN_14071ae20(const CStringA& strFile);                         // the full path of a table file
 CString FUN_14016a5c0(const char* psz, int n);
-bool FUN_14028f710(Unk_140165cf0*);                                       // the element is usable
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 const char* FUN_14086f4b0(Unk_140165cf0*, const char* pszName);           // attribute text
 CStringW FUN_1401bf530(Unk_140165cf0*, const char* pszName, CStringW strDefault);   // string attribute with default
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);
@@ -59,7 +58,7 @@ struct Unk_AddressRow
     ~Unk_AddressRow();    // 0x14050de70
     void* m_data[24];     // 0xc0, like cubemapinformationservice_3's Unk_CMISSalable
 };
-int FUN_1408a0d30(int nType, Unk_AddressRow* pRow, int nId);
+int FUN_1408a0d30(int, struct Unk_UGCGroup&, int);   // C3: was FUN_1408a0d30
 
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
 Unk_SocketNew FUN_1401b7b90(Unk_SocketNew* pOut, int n);                  // new-tag construct
@@ -129,17 +128,17 @@ int CAddressTable::LoadTable()
 {
     CStringA strPath = FUN_14071ae20("addressName.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("address"); pNode != 0; pNode = pNode->FUN_140168650("address"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         Unk_AddressPtr data(new CAddressData);
         data->m_nMapCode = atoi(FUN_14086f4b0(pNode, "mapcode"));
@@ -199,7 +198,7 @@ CStringW CAddressTable::GetText(int nId)
 CStringW CAddressTable::GetTextChecked(int nId, int nType, int nUnused)
 {
     Unk_AddressRow row;
-    if (FUN_1408a0d30(nType, &row, nId) == 0)
+    if (FUN_1408a0d30(nType, *(struct Unk_UGCGroup*)(&row), nId) == 0)
         return CStringW(L"");
     CStringW strText = GetText(nId);
     return strText;

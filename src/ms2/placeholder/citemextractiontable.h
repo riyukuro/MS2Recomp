@@ -16,6 +16,7 @@ class CItemExtractionTable : public CCacheData,
 public:
     CItemExtractionTable();                                 // 0x140597010
     virtual ~CItemExtractionTable();
+    void Load();                                            // 0x140597150
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_38[0x80 - 0x38];

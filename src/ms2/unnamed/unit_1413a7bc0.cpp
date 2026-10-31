@@ -30,13 +30,17 @@ class Unk_GcWorld
 public:
     Unk_GcPC* FUN_141bd0cc0();                              // the local player
 };
-Unk_GcWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
             // CUIService
 CUIService* FUN_1403ed2b0();
 CInputKeyHandler* FUN_14025e7c0();
-unsigned FUN_140869420();                                   // millisecond clock
-CQuestManager* FUN_140764020();
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
+void* FUN_140764020();   // C3: was FUN_140764020
 
 #ifndef MS2_HOOK_DLL
 static ClassObjectRegistrar s_regQuestComplete(L"CGuideConditionQuestComplete", CGuideConditionQuestComplete::CreateObject);     // .text$di 0x1400f40a0
@@ -69,8 +73,8 @@ CGuideConditionNext::CGuideConditionNext()
 int CGuideConditionNext::vfunc_3()
 {
     if (m_nStart == 0)
-        m_nStart = FUN_140869420();
-    if (FUN_140869420() - m_nStart >= (unsigned)m_n20)
+        m_nStart = GetTickCountMs2();
+    if (GetTickCountMs2() - m_nStart >= (unsigned)m_n20)
         return 1;
     if (FUN_1403ed2b0()->FUN_141adbb00() != 0)
         return 0;
@@ -106,7 +110,7 @@ MS2_REPLACE_METHOD(0x1413A7DD0, CGuideConditionQuestSatisfied, GetTypeName, 61, 
 // @0x1413a7e20
 int CGuideConditionQuestSatisfied::vfunc_3()
 {
-    return FUN_1413a55a0(FUN_140764020()->FUN_1407456d0(m_n20));
+    return FUN_1413a55a0(((class CQuestManager*)FUN_140764020())->FUN_1407456d0(m_n20));
 }
 MS2_REPLACE_METHOD(0x1413A7E20, CGuideConditionQuestSatisfied, vfunc_3, 51, 0x97F87638);
 
@@ -136,7 +140,7 @@ MS2_REPLACE_METHOD(0x1413A7F10, CGuideConditionQuestComplete, vfunc_2, 46, 0xBB5
 // @0x1413a7f50
 int CGuideConditionQuestComplete::vfunc_3()
 {
-    return FUN_1413a55a0(FUN_140764020()->FUN_140745590(m_n20));
+    return FUN_1413a55a0(((class CQuestManager*)FUN_140764020())->FUN_140745590(m_n20));
 }
 MS2_REPLACE_METHOD(0x1413A7F50, CGuideConditionQuestComplete, vfunc_3, 51, 0x8AC757D6);
 
@@ -175,7 +179,7 @@ MS2_REPLACE_METHOD(0x1413A8070, CGuideConditionQuestProgress, vfunc_2, 46, 0xA95
 // @0x1413a80b0
 int CGuideConditionQuestProgress::vfunc_3()
 {
-    return FUN_1413a55a0(FUN_140764020()->FUN_140745630(m_n20));
+    return FUN_1413a55a0(((class CQuestManager*)FUN_140764020())->FUN_140745630(m_n20));
 }
 MS2_REPLACE_METHOD(0x1413A80B0, CGuideConditionQuestProgress, vfunc_3, 51, 0x6667D788);
 
@@ -214,7 +218,7 @@ MS2_REPLACE_METHOD(0x1413A81D0, CGuideConditionDead, vfunc_2, 46, 0xBB3AB92C);
 // @0x1413a8210
 int CGuideConditionDead::vfunc_3()
 {
-    Unk_GcPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_GcPC* pPC = ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     return FUN_1413a55a0(pPC->FUN_14166ce30());
@@ -246,7 +250,7 @@ MS2_REPLACE_METHOD(0x1413A82D0, CGuideConditionConstructMode, GetTypeName, 61, 0
 // @0x1413a8320
 int CGuideConditionConstructMode::vfunc_3()
 {
-    Unk_GcPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_GcPC* pPC = ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     return FUN_1413a55a0(pPC->FUN_141659610());

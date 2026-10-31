@@ -45,7 +45,6 @@ static CString s_strSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh
 
 // ---- unit-local views of callees emitted in other units ----
 
-CFeatureManager* FUN_140166410();                                   // the feature manager singleton
 extern int DAT_143ab2830;                                           // WorldId
 extern unsigned __int64 DAT_143ab2828;                              // CharacterSn
 std::string CaptureRegionJpg(int iX, int iY, int iWidth, int iHeight);   // 0x141851040 (textureutil.cpp)
@@ -198,9 +197,9 @@ unsigned CImageHttpClient::SendTemporaryKey()
 // @0x140511c10
 bool CImageHttpClient::CanSend()
 {
-    if (!FUN_140166410()->FUN_14036e5b0())
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036e5b0())
         return false;
-    if (!FUN_140166410()->FUN_14036d570(0xf7))
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xf7))
         return false;
     if (m_timer.FUN_140268870(3000) == 0)
         return false;

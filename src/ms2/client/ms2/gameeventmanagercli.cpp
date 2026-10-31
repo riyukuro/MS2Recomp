@@ -41,9 +41,6 @@ static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 
-NotifySystem* FUN_140939a10();                                  // TSingleton<NotifySystem>::GetInstance
-CFeatureManager* FUN_140166410();                               // TSingleton<CFeatureManager>::GetInstance
-CMeratMarketMan* FUN_140939a00();                               // TSingleton<CMeratMarketMan>::GetInstance
 UIGameMenuDialog* FUN_140938b90(int nUiId);                     // the dialog lookups of other units (same template)
 UIMentoringDialog* FUN_140b72e80(int nUiId);
 UIPaybackDialog* FUN_140a8c5f0(int nUiId);
@@ -51,13 +48,10 @@ UIAttendGiftDialog* FUN_140c053e0(int nUiId);
 UICashAttendDialog* FUN_140ce8130(int nUiId);
 int Parse_14021b830(const CStringA& value);                     // a game menu entry id by name (commonenum.cpp)
 int FUN_140718200(const CStringW& str);                         // _wtoi
-bool FUN_14028f710(Unk_140165cf0* pElem);                       // the element is enabled for this build
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-class Unk_GmFiles : public CFileSystem { };
-Unk_GmFiles* FUN_140166420();                                   // CFileSystem
-class Unk_GmLog;
-Unk_GmLog* FUN_140166440();                                     // CLogString
-void FUN_14015eb90(Unk_GmLog* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& arg);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 
 // @0x140ceaa70
 GameEventManagerCli::GameEventManagerCli()
@@ -158,7 +152,7 @@ void GameEventManagerCli::Packet1(CInPacket& packet)
         {
             gameEvent->vfunc_4(reinterpret_cast<Unk_GEIn*>(&packet));
             if (Add(gameEvent))
-                FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyGameEventChanged(gameEvent->GetID(), strName, 0)));
+                NotifySystem::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyGameEventChanged(gameEvent->GetID(), strName, 0)));
         }
         else
         {
@@ -179,7 +173,7 @@ void GameEventManagerCli::Packet2(CInPacket& packet)
         if (gameEvent.get())
         {
             Remove(gameEvent);
-            FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyGameEventChanged(nId, gameEvent->GetName(), 1)));
+            NotifySystem::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyGameEventChanged(nId, gameEvent->GetName(), 1)));
         }
     }
 }
@@ -196,7 +190,7 @@ void GameEventManagerCli::Packet3(CInPacket& packet)
         {
             gameEvent->vfunc_4(reinterpret_cast<Unk_GEIn*>(&packet));
             Update(gameEvent);
-            FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyGameEventChanged(gameEvent->GetID(), strName, 2)));
+            NotifySystem::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyGameEventChanged(gameEvent->GetID(), strName, 2)));
         }
         else
         {
@@ -299,7 +293,7 @@ void CGameMenuItem::Load(Unk_140165cf0* pElem)
         m_nFilterEventId = FUN_140718200(m_strFilterValue);
     for (Unk_140165cf0* pChild = pElem->FUN_140165cf0("child"); pChild != 0; pChild = pChild->FUN_140168650("child"))
     {
-        if (!FUN_14028f710(pChild))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
         {
             MS2Ptr<CGameMenuItem> spChild(new CGameMenuItem());
@@ -460,7 +454,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_nUiId = 0x4efa;
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    if (FUN_140166410()->FUN_14036d570(27))
+    if (CFeatureManager::GetInstance()->FUN_14036d570(27))
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 6;
@@ -541,7 +535,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193d5e0);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    if (FUN_140166410()->FUN_14036d570(59) == true)
+    if (CFeatureManager::GetInstance()->FUN_14036d570(59) == true)
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 14;
@@ -561,7 +555,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_nKeyBind = 400016;
         pDef->m_nUiId = 0x4ec1;
         pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193b630);
-        pDef->m_hasNew.Bind(FUN_140939a00(), reinterpret_cast<int (CMeratMarketMan::*)()>(&CMeratMarketMan::FUN_140d5b6b0));
+        pDef->m_hasNew.Bind(CMeratMarketMan::GetInstance(), reinterpret_cast<int (CMeratMarketMan::*)()>(&CMeratMarketMan::FUN_140d5b6b0));
         m_defs.SetAt(pDef->m_nId, pDef);
     }
     {
@@ -638,7 +632,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193b750);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    if (FUN_140166410()->FUN_14036d570(74) == true)
+    if (CFeatureManager::GetInstance()->FUN_14036d570(74) == true)
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 23;
@@ -772,7 +766,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_isEnabled.Bind(pLevelUpPackage, &UILevelUpPackageDialog::FUN_140ea4b70);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    if (FUN_140166410()->FUN_14036d570(92) == true)
+    if (CFeatureManager::GetInstance()->FUN_14036d570(92) == true)
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 36;
@@ -803,7 +797,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193c630);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    if (FUN_140166410()->FUN_14036d570(140) == true)
+    if (CFeatureManager::GetInstance()->FUN_14036d570(140) == true)
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 39;
@@ -925,13 +919,13 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_strName = "adventure_level";
         pDef->m_strLabel = "$s_gamemenu_popup_adventure_level";
         pDef->m_strTooltip = L"s_tooltip_gamemenu_adventure_level";
-        if (FUN_140166410()->FUN_14036d570(251))
+        if (CFeatureManager::GetInstance()->FUN_14036d570(251))
             pDef->m_nUiId = 0x4f67;
         else
             pDef->m_nUiId = 0x4f87;
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    if (FUN_140166410()->FUN_14036d570(199))
+    if (CFeatureManager::GetInstance()->FUN_14036d570(199))
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 52;
@@ -962,7 +956,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_isEnabled.Bind(pChangeJob, &UIChangeJobDialog::FUN_140bd88e0);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    if (FUN_140166410()->FUN_14036d570(211))
+    if (CFeatureManager::GetInstance()->FUN_14036d570(211))
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 55;
@@ -1125,24 +1119,24 @@ int CGameMenuTable::LoadXml()
 {
     CString strPath = FUN_14071a5b0("Table", "gameMenu.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pSet = pRoot->FUN_140165cf0("menuSet"); pSet != 0; pSet = pSet->FUN_140168650("menuSet"))
     {
-        if (!FUN_14028f710(pSet))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pSet)))
             continue;
         {
             EGameMenuSet eSet = GAMEMENU_SET_GAME;
             XmlEnumName<EGameMenuSet, ParseGameMenuSet>(pSet, "type", eSet);
             for (Unk_140165cf0* pMenu = pSet->FUN_140165cf0("menu"); pMenu != 0; pMenu = pMenu->FUN_140168650("menu"))
             {
-                if (!FUN_14028f710(pMenu))
+                if (!FUN_14028f710((struct Unk_XmlElement*)(pMenu)))
                     continue;
                 {
                     MS2Ptr<CGameMenuItem> spItem(new CGameMenuItem());

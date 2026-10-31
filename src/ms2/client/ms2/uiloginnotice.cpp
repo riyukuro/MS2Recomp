@@ -9,13 +9,13 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
 
 class Unk_LoginNoticeManager
 {
 public:
     void FUN_141adc530(int id);
 };
-Unk_LoginNoticeManager* FUN_1403ed2b0();
 
 // @0x140ea60c0
 UILoginNotice::UILoginNotice()
@@ -71,7 +71,7 @@ MS2_REPLACE_METHOD(0x140EA64E0, UILoginNotice, SendNoticeDialog, 75, 0x259671C9)
 // @0x140ea6540
 void UILoginNotice::FUN_140ea6540(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_1403ed2b0()->FUN_141adc530(0x4eea);
+    reinterpret_cast<Unk_LoginNoticeManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4eea);
     vfunc_67();
 }
 MS2_REPLACE_METHOD(0x140EA6540, UILoginNotice, FUN_140ea6540, 56, 0xEDADAC40);

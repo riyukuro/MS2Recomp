@@ -198,7 +198,6 @@ public:
 void FUN_140710590(COutPacket& packet);
 extern unsigned char DAT_143ab2856;
 int FUN_141472bc0();
-CMainSystem* FUN_14086d260();
 class Unk_StPlayback { public: bool FUN_1406af100(); };     // replay / spectator mode
 Unk_StPlayback* FUN_1406aeee0();
 class Unk_StTraffic { public: unsigned FUN_14087d2f0(PCBase* pOwner); };
@@ -330,7 +329,6 @@ public:
     void FUN_141240730();
     GameObjectControllerHitReport* FUN_141240f20();
 };
-Unk_StBody* FUN_14166d220(PCBase* pOwner);
 float FUN_14059d930(float f);                                         // fabs
 float FUN_141240c40(bool b);                                          // the move speed (xmm0)
 
@@ -343,7 +341,6 @@ public:
     bool FUN_141683100(int nBuff);
     bool FUN_141682fe0(int nBuff);
 };
-Unk_StBuff* FUN_14166d240(PCBase* pOwner);
 
 // The animation service.
 class Unk_StAnimSvc { public: unsigned FUN_140b7f6a0(const egf::EntityID& kId); };
@@ -382,15 +379,6 @@ public:
     virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
 };
 struct Unk_StSpeedCfg { float m_f0; float m_f4; float m_f8; };
-Unk_StSpeedCfg* FUN_141671920(PCBase* pOwner);
-void FUN_141670d80(PCBase* pOwner, float f);
-float FUN_1416713c0(PCBase* pOwner);
-int FUN_141671a30(PCBase* pOwner);
-int FUN_141675ed0(PCBase* pOwner);
-bool FUN_14166de90(PCBase* pOwner, int nKind, unsigned nSeq);
-void FUN_14166dda0(PCBase* pOwner, int nKind);
-void FUN_14166f8f0(PCBase* pOwner, int n, int b);
-void FUN_14166d430(PCBase* pOwner, efd::Point3 kNormal, int a, int b);
 PCBase* FUN_140974230(PCBase* pOwner);                  // as PC
 PCBase* FUN_1409ffc60(PCBase* pOwner);                  // as npc
 PCBase* FUN_14096e110(PCBase* pOwner);                  // mount
@@ -400,7 +388,6 @@ PCBase* FUN_141094f60(PCBase* pNpc);
 PCBase* FUN_1409613d0(PCBase* p);
 class Unk_UtilHolder;
 Unk_UtilHolder* FUN_141468360(PCBase* pOwner);          // as Ridee holder
-PCBase* FUN_141706540(Unk_UtilHolder* pHolder);         // the Ridee's rider
 class Unk_UtilHolderRef
 {
 public:
@@ -420,7 +407,6 @@ egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
 int FUN_14028d260(float f);                             // round to ms
 egf::Entity* FUN_1408a9090(const void* pspEntity);      // SmartPointer<Entity> get
 float FUN_14028d3a0(float fDeg);
-CameraMgr* FUN_1409478c0();
 class Unk_StSound { public: void FUN_141377420(PCBase* pOwner, CString strKey); };
 int FUN_140718170(const CStringA& str);
 
@@ -537,7 +523,7 @@ void StateLocalController::vfunc_0()
     COutPacket packet(static_cast<int>(SendOp::UserSync), 0);
     packet.WriteUInt8(DAT_143ab2856);
     packet.WriteInt32(FUN_141472bc0());
-    packet.WriteInt32(FUN_14086d260()->GetElapsedTime());
+    packet.WriteInt32(TSingleton<CMainSystem>::GetInstance()->GetElapsedTime());
     packet.WriteUInt8((unsigned char)static_cast<View*>(this)->m_records.GetCount());
     for (POSITION pos = static_cast<View*>(this)->m_records.GetHeadPosition(); pos;
         static_cast<View*>(this)->m_records.GetNext(pos)) {
@@ -593,7 +579,7 @@ void StateRideeController::vfunc_0()
     COutPacket packet(static_cast<int>(SendOp::RideSync), 0);
     packet.WriteUInt8(DAT_143ab2856);
     packet.WriteInt32(FUN_141472bc0());
-    packet.WriteInt32(FUN_14086d260()->GetElapsedTime());
+    packet.WriteInt32(TSingleton<CMainSystem>::GetInstance()->GetElapsedTime());
     packet.WriteUInt8((unsigned char)static_cast<View*>(static_cast<StateLocalController*>(this))->m_records.GetCount());
     for (POSITION pos = static_cast<View*>(static_cast<StateLocalController*>(this))->m_records.GetHeadPosition(); pos;
         static_cast<View*>(static_cast<StateLocalController*>(this))->m_records.GetNext(pos)) {
@@ -650,7 +636,7 @@ void State::vfunc_4(StateData* pData)
     if (PCBase* pMount = FUN_1417b8480()) {
         pMount->vfunc_95();
     } else {
-        Unk_StSpeedCfg* pCfg = FUN_141671920(m_pOwner);
+        Unk_StSpeedCfg* pCfg = ((Unk_StSpeedCfg*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_141671920()));
         vfunc_10(m_pOwner->vfunc_95(), pCfg->m_f8, pCfg->m_f4, 1.0f, 0);
     }
     FUN_1417b9310();
@@ -695,7 +681,7 @@ MS2_REPLACE_METHOD(0x1417b8070, State, vfunc_9, 12, 0x49415BA5);
 // @0x1417b8090
 void State::vfunc_10(float a, float b, float c, float d, int e)
 {
-    FUN_141670d80(m_pOwner, d);
+    reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670d80(d);
 }
 MS2_REPLACE_METHOD(0x1417b8090, State, vfunc_10, 52, 0xE0D1BA4D);
 
@@ -873,7 +859,7 @@ MyPC* State::FUN_1417b84b0()
     if (m_pOwner->GetClassID() == 0x6200045) {
         Unk_UtilHolderRef kHolder(FUN_141468360(m_pOwner));
         if (kHolder.FUN_140965790())
-            return FUN_14096e160(FUN_141706540(kHolder.FUN_140975bc0()));
+            return FUN_14096e160(reinterpret_cast<Ridee*>(kHolder.FUN_140975bc0())->GetRider());
     }
     return FUN_14096e160(m_pOwner);
 }
@@ -1098,7 +1084,7 @@ void StateClimb::vfunc_4(StateData* pData)
                 m_n10 = 0x61;
         }
     }
-    FUN_14166d220(m_pOwner)->FUN_141240730();
+    ((Unk_StBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
 }
 MS2_REPLACE_METHOD(0x1417bc180, StateClimb, vfunc_4, 429, 0x2DF306D0);
 
@@ -1106,7 +1092,7 @@ MS2_REPLACE_METHOD(0x1417bc180, StateClimb, vfunc_4, 429, 0x2DF306D0);
 void StateClimb::vfunc_5(int n)
 {
     StateMoveSkill::vfunc_5(n);
-    FUN_14166d220(m_pOwner)->FUN_141240730();
+    ((Unk_StBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
     m_pOwner->FUN_14123cb20(true);
 }
 MS2_REPLACE_METHOD(0x1417bc340, StateClimb, vfunc_5, 70, 0xFD7CFEDA);
@@ -1122,8 +1108,8 @@ void StateClimb::vfunc_3(double fTime)
     FUN_1417bda60();
     if (FUN_1417bd6c0())
         m_pOwner->vfunc_59(1, 0, 0, 0);
-    if (FUN_14166d220(m_pOwner))
-        FUN_14166d220(m_pOwner)->FUN_141240f20()->FUN_140cfaf30();
+    if (((Unk_StBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220())))
+        ((Unk_StBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240f20()->FUN_140cfaf30();
 }
 MS2_REPLACE_METHOD(0x1417bc390, StateClimb, vfunc_3, 203, 0x491A3090);
 
@@ -1131,7 +1117,7 @@ MS2_REPLACE_METHOD(0x1417bc390, StateClimb, vfunc_3, 203, 0x491A3090);
 void StateClimb::vfunc_8(double fTime)
 {
     StateMoveSkill::vfunc_8(fTime);
-    Unk_StBuff* pBuff = FUN_14166d240(m_pOwner);
+    Unk_StBuff* pBuff = ((Unk_StBuff*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     efd::Point3 kVel = efd::Point3::ZERO;
     if (m_timerHit.FUN_140868c00())
         kVel = pBuff->FUN_141683290();
@@ -1155,37 +1141,37 @@ void StateClimb::vfunc_9(double fTime)
     State::vfunc_9(fTime);
     switch (m_n10) {
     case 0x56:
-        FUN_14166dda0(m_pOwner, 0x11);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x11);
         m_bAltSide = false;
         m_bAltUp = false;
         break;
     case 0x57:
     case 0x58:
     case 0x59:
-        FUN_14166dda0(m_pOwner, m_bAltUp ? 0x12 : 0x15);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(m_bAltUp ? 0x12 : 0x15);
         break;
     case 0x5a:
     case 0x5b:
     case 0x5c:
-        FUN_14166dda0(m_pOwner, m_bAltSide ? 0x14 : 0x17);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(m_bAltSide ? 0x14 : 0x17);
         break;
     case 0x5d:
-        FUN_14166dda0(m_pOwner, 0x13);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x13);
         break;
     case 0x5e:
-        FUN_14166dda0(m_pOwner, 0x16);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x16);
         break;
     case 0x5f:
-        FUN_14166dda0(m_pOwner, 0x18);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x18);
         break;
     case 0x60:
-        FUN_14166dda0(m_pOwner, 0x19);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x19);
         break;
     case 0x61:
-        FUN_14166dda0(m_pOwner, 0x1b);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x1b);
         break;
     case 0x62:
-        FUN_14166dda0(m_pOwner, 0x1a);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x1a);
         break;
     }
 }
@@ -1195,9 +1181,9 @@ MS2_REPLACE_METHOD(0x1417bc6e0, StateClimb, vfunc_9, 377, 0xF83D6876);
 void StateClimb::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceID, const NiFixedString& kTextKey,
     const NiTextKeyMatch* pkMatchObject, NiControllerSequence* pkSeq, float fEventTime)
 {
-    if (FUN_14166de90(m_pOwner, 0x18, eSequenceID) && kTextKey == "upLanding") {
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x18, eSequenceID) && kTextKey == "upLanding") {
         efd::Point3 kFacing = m_pOwner->FUN_14123cc20();
-        float fNow = FUN_14086d260()->GetLastGameTimeDelta();
+        float fNow = TSingleton<CMainSystem>::GetInstance()->GetLastGameTimeDelta();
         reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kFacing * 0.02f, fNow, 0, 0, 1);
     }
 }
@@ -1207,24 +1193,24 @@ MS2_REPLACE_METHOD(0x1417bc8a0, StateClimb, TextKeyEvent, 265, 0x6FB5E754);
 void StateClimb::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
-    if (FUN_14166de90(m_pOwner, 0x12, eSequenceID) || FUN_14166de90(m_pOwner, 0x15, eSequenceID)) {
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x12, eSequenceID) || reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x15, eSequenceID)) {
         if (m_pOwner->FUN_14123c360().y != 0.0f)
             m_pOwner->FUN_14166e0a0();
         m_bAltUp = !m_bAltUp;
-    } else if (FUN_14166de90(m_pOwner, 0x14, eSequenceID) || FUN_14166de90(m_pOwner, 0x17, eSequenceID)) {
+    } else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x14, eSequenceID) || reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x17, eSequenceID)) {
         if (m_pOwner->FUN_14123c360().y != 0.0f)
             m_pOwner->FUN_14166e0a0();
         m_bAltSide = !m_bAltSide;
-    } else if (FUN_14166de90(m_pOwner, 0x13, eSequenceID) || FUN_14166de90(m_pOwner, 0x16, eSequenceID)) {
+    } else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x13, eSequenceID) || reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x16, eSequenceID)) {
         if (m_pOwner->FUN_14123c360().x != 0.0f)
             m_pOwner->FUN_14166e0a0();
-    } else if (FUN_14166de90(m_pOwner, 0x18, eSequenceID)) {
+    } else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x18, eSequenceID)) {
         FUN_1417beb40();
-    } else if (FUN_14166de90(m_pOwner, 0x19, eSequenceID)) {
+    } else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x19, eSequenceID)) {
         m_n10 = 0x56;
-    } else if (FUN_14166de90(m_pOwner, 0x1b, eSequenceID)) {
+    } else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x1b, eSequenceID)) {
         m_n10 = 0x56;
-    } else if (FUN_14166de90(m_pOwner, 0x1a, eSequenceID)) {
+    } else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x1a, eSequenceID)) {
         m_pOwner->vfunc_59(1, 0, 0, 0);
     }
 }
@@ -1306,7 +1292,7 @@ int StateClimb::FUN_1417bd310(efd::Point3 kPos)
     kInfo.m_maxDist = 50.0f;
     kInfo.m_groups = FUN_1417bc010();
     if (FUN_1409f7ca0()->CastRay(&kInfo, 0)) {
-        FUN_14166d430(m_pOwner, -kInfo.m_hitNormal, 1, 0);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d430(-kInfo.m_hitNormal, 1, 0);
         return 1;
     }
     return 0;
@@ -1355,7 +1341,7 @@ int StateClimb::FUN_1417bd6c0()
     kDown.m_maxDist = 50.0f;
     kDown.m_groups = FUN_1417bc010();
     if (FUN_1409f7ca0()->CastRay(&kDown, 0) && kDown.m_hitEntity != 0) {
-        if (kDown.m_hitEntity->GetEntityID() != FUN_14166d220(m_pOwner)->FUN_141240f20()->GetEntityID()) {
+        if (kDown.m_hitEntity->GetEntityID() != ((Unk_StBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240f20()->GetEntityID()) {
             MS2Ptr<Unk_RideeFieldObj> spObj = FUN_1403ed2d0()->FUN_141bc4f10(kDown.m_hitEntity);
             if (spObj.get()) {
                 efd::Point3 kNormal = spObj->FUN_140ae0150();
@@ -1370,7 +1356,7 @@ int StateClimb::FUN_1417bd6c0()
     kUp.m_maxDist = 50.0f;
     kUp.m_groups = FUN_1417bc010();
     if (FUN_1409f7ca0()->CastRay(&kUp, 0) && kUp.m_hitEntity != 0) {
-        if (kUp.m_hitEntity->GetEntityID() != FUN_14166d220(m_pOwner)->FUN_141240f20()->GetEntityID()) {
+        if (kUp.m_hitEntity->GetEntityID() != ((Unk_StBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240f20()->GetEntityID()) {
             MS2Ptr<Unk_RideeFieldObj> spObj = FUN_1403ed2d0()->FUN_141bc4f10(kUp.m_hitEntity);
             if (spObj.get()) {
                 efd::Point3 kNormal = spObj->FUN_140ae0150();
@@ -1427,7 +1413,7 @@ int StateClimb::FUN_1417bda60()
         return 1;
     }
     if (FUN_1417bd310(MS2_ST_POINT(m_pOwner->vfunc_18())) == 0) {
-        FUN_14166d220(m_pOwner)->FUN_141240730();
+        ((Unk_StBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
         m_pOwner->vfunc_59(5, 0, 0, 0);
         return 0;
     }
@@ -1633,7 +1619,7 @@ void StateClimb::FUN_1417beb40()
     kTarget.z = kTarget.z - fDist;
     if (FUN_1417b84b0()) {
         static float s_fShake = FUN_1401d3200()->m_climbOverShake.FUN_1402bac70();
-        FUN_1409478c0()->FUN_140aeb880(s_fShake, s_fShake / 60.0f, s_fShake / 3.0f);
+        TSingleton<CameraMgr>::GetInstance()->FUN_140aeb880(s_fShake, s_fShake / 60.0f, s_fShake / 3.0f);
     }
     m_pOwner->vfunc_19(kTarget);
     m_pOwner->vfunc_59(1, 0, 0, 0);
@@ -1689,7 +1675,7 @@ void StateCrawl::vfunc_4(StateData* pData)
     State::vfunc_4(pData);
     m_n10 = 0x1c;
     m_bCrawling = false;
-    FUN_14166f8f0(m_pOwner, 0, 1);
+    reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166f8f0(0, 1);
 }
 MS2_REPLACE_METHOD(0x1417befc0, StateCrawl, vfunc_4, 77, 0xA66A8311);
 
@@ -1698,7 +1684,7 @@ void StateCrawl::vfunc_5(int n)
 {
     State::vfunc_5(n);
     m_n10 = 0x1c;
-    Unk_StSpeedCfg* pCfg = FUN_141671920(m_pOwner);
+    Unk_StSpeedCfg* pCfg = ((Unk_StSpeedCfg*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_141671920()));
     m_pOwner->FUN_141671960(pCfg->m_f8);
 }
 MS2_REPLACE_METHOD(0x1417bf020, StateCrawl, vfunc_5, 87, 0xF66CD8AD);
@@ -1715,7 +1701,7 @@ void StateCrawl::vfunc_3(double fTime)
             MS2_ST_POINT(m_pOwner->FUN_14123c360()));
         float fSpeed = m_bCrawling ? m_pOwner->vfunc_95() : 0.0001f;
         kMove = kDir * fSpeed * (float)fTime;
-        FUN_14166d220(m_pOwner)->FUN_141240700(kDir * fSpeed);
+        ((Unk_StBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240700(kDir * fSpeed);
     }
     reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
 }
@@ -1728,7 +1714,7 @@ void StateCrawl::vfunc_8(double fTime)
     MyPC* pMyPC = FUN_1417b84b0();
     if (pMyPC == 0)
         return;
-    Unk_StBuff* pBuff = FUN_14166d240(m_pOwner);
+    Unk_StBuff* pBuff = ((Unk_StBuff*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     efd::Point3 kVel = pBuff->FUN_141683900();
     reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(kVel);
     if (!pBuff->FUN_141682fe0(0x493e5))
@@ -1744,7 +1730,7 @@ MS2_REPLACE_METHOD(0x1417bf2a0, StateCrawl, vfunc_8, 321, 0x977C4340);
 void StateCrawl::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    int bFalling = FUN_141675ed0(m_pOwner);
+    int bFalling = reinterpret_cast<PCBase*>(m_pOwner)->FUN_141675ed0();
     static int s_nFallDelay = FUN_14028d260(sqrt(3.0f / FUN_14059d930(FUN_141240c40(true))));
     if (bFalling) {
         m_pOwner->vfunc_59(0x1b, 0, 0, 0);
@@ -1754,8 +1740,8 @@ void StateCrawl::vfunc_9(double fTime)
         switch (m_n10) {
         case 0x1b: {
             unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
-            if (!FUN_14166de90(m_pOwner, 0x20, nSeq))
-                FUN_14166dda0(m_pOwner, 0x20);
+            if (!reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x20, nSeq))
+                reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x20);
             break;
         }
         case 0x1c: {
@@ -1770,7 +1756,7 @@ void StateCrawl::vfunc_9(double fTime)
                 else
                     m_pOwner->FUN_141671960(0.84f);
                 efd::utf8string strName((const char*)strAnim);
-                m_pOwner->FUN_14166dd20(strName, FUN_1416713c0(m_pOwner), false, false);
+                m_pOwner->FUN_14166dd20(strName, reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416713c0(), false, false);
             }
         } break;
         }
@@ -1781,7 +1767,7 @@ void StateCrawl::vfunc_9(double fTime)
 void StateCrawl::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceID, const NiFixedString& kTextKey,
     const NiTextKeyMatch* pkMatchObject, NiControllerSequence* pkSeq, float fEventTime)
 {
-    if (FUN_14166de90(m_pOwner, 0x21, eSequenceID)) {
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x21, eSequenceID)) {
         if (kTextKey == "begin_crawling")
             m_bCrawling = true;
         else if (kTextKey == "end_crawling")
@@ -1833,7 +1819,7 @@ void StateDash::vfunc_4(StateData* pData)
     m_posLast = m_pOwner->vfunc_18();
     m_dir = m_pOwner->FUN_14123cc20();
     m_pOwner->FUN_141671960(20.0f);
-    FUN_14166d220(m_pOwner)->FUN_141240730();
+    ((Unk_StBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
     m_tick.FUN_140268840();
     Unk_ExpTarget kEffect;
     kEffect.m_strName = FUN_1401d31f0()->m_strDashEffect;
@@ -1847,7 +1833,7 @@ MS2_REPLACE_METHOD(0x1417bf9f0, StateDash, vfunc_4, 366, 0x5300BC55);
 void StateDash::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    Unk_StSpeedCfg* pCfg = FUN_141671920(m_pOwner);
+    Unk_StSpeedCfg* pCfg = ((Unk_StSpeedCfg*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_141671920()));
     m_pOwner->FUN_141671960(pCfg->m_f8);
 }
 MS2_REPLACE_METHOD(0x1417bfb70, StateDash, vfunc_5, 75, 0x2CDCDE57);
@@ -1866,7 +1852,7 @@ void StateDash::vfunc_3(double fTime)
         m_posLast = m_pOwner->vfunc_18();
         if (fStep < 2.0f) {
             m_pOwner->vfunc_59(1, 0, 0, 0);
-        } else if (FUN_141671a30(m_pOwner)) {
+        } else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_141671a30()) {
             m_n10 = 0x1f;
         } else if (600.0f <= m_fDist) {
             m_n10 = 0x1e;
@@ -1874,7 +1860,7 @@ void StateDash::vfunc_3(double fTime)
         break;
     }
     case 0x1e:
-        if (FUN_141671a30(m_pOwner)) {
+        if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_141671a30()) {
             m_n10 = 0x1f;
         } else {
             efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
@@ -1902,15 +1888,15 @@ void StateDash::vfunc_9(double fTime)
     unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
     switch (m_n10) {
     case 0x1f:
-        if (!FUN_14166de90(m_pOwner, 7, nSeq)) {
-            FUN_14166dda0(m_pOwner, 7);
+        if (!reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(7, nSeq)) {
+            reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(7);
             m_pOwner->vfunc_93(true);
             reinterpret_cast<Unk_StSound*>(TSingleton<CGroundEffectDataManager>::GetInstance())->FUN_141377420(m_pOwner, CString("land"));
         }
         break;
     case 0x1d:
-        if (!FUN_14166de90(m_pOwner, 6, nSeq))
-            FUN_14166dda0(m_pOwner, 6);
+        if (!reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(6, nSeq))
+            reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(6);
         break;
     }
 }
@@ -1928,10 +1914,10 @@ MS2_REPLACE_METHOD(0x1417c02e0, StateDash, vfunc_8, 46, 0x24D4758A);
 void StateDash::AnimActivated(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
-    if (FUN_14166de90(m_pOwner, 7, eSequenceID)) {
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(7, eSequenceID)) {
         float fStop = pkManager->GetNextEventTime(NiActorManager::TEXT_KEY_EVENT, eSequenceID, "stop");
         if (fStop != NiActorManager::INVALID_TIME) {
-            fStop -= (float)FUN_14086d260()->FUN_141473280();
+            fStop -= (float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
             m_timerStop.FUN_140868750((int)(fStop * 1000.0f));
         }
     }
@@ -1942,7 +1928,7 @@ MS2_REPLACE_METHOD(0x1417c0320, StateDash, AnimActivated, 217, 0xAA13EA93);
 void StateDash::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
-    if (FUN_14166de90(m_pOwner, 7, eSequenceID))
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(7, eSequenceID))
         m_pOwner->vfunc_59(1, 0, 0, 0);
 }
 MS2_REPLACE_METHOD(0x1417c0400, StateDash, EndOfSequence, 106, 0x0E50E152);
@@ -1955,8 +1941,8 @@ void StateDash::vfunc_6()
         return;
     m_n10 = 0x20;
     unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
-    if (!FUN_14166de90(m_pOwner, 0x35, nSeq))
-        FUN_14166dda0(m_pOwner, 0x35);
+    if (!reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x35, nSeq))
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x35);
 }
 MS2_REPLACE_METHOD(0x1417c0470, StateDash, vfunc_6, 148, 0xB6201BF7);
 

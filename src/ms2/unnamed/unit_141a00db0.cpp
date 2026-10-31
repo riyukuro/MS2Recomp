@@ -14,7 +14,7 @@
 
 // Free functions of other units.
 CStringW GetStringCommon(int nStringId);                              // a common string by id
-unsigned int FUN_140869420();                                       // now (ms)
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CString FUN_141a06ff0(int nSound);                                  // the sound event name (uimessageboxdata.cpp)
 void FUN_141415600(const CString& strName);                         // drops an item slot bind id
 CStringW FUN_140a228f0(int nId, const int& n, const CStringW& str); // a string by id formatted with two arguments
@@ -209,7 +209,7 @@ void CMsgBoxData::FUN_141a01ca0(int nSec, int nShowFormat, const CStringW& strFo
 {
     m_nFlags |= 4;
     m_timer.m_nSec = nSec;
-    m_timer.m_nMs = FUN_140869420();
+    m_timer.m_nMs = GetTickCountMs2();
     m_timer.m_nShowFormat = nShowFormat;
     m_timer.m_strFormat = strFormat;
 }

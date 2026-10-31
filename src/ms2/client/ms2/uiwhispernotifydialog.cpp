@@ -110,14 +110,12 @@ public:
 };
 Unk_WhisperSenderPtr FUN_1406cd330(int nId);
 
-CReservedWordTable* FUN_1403b4750();
 
-UIUGCEventDispatcher* FUN_140bc09f0();
 
 CString FUN_141028a90(CString strId, int bDefault);             // the local file of a downloaded image
 CString FUN_1410280d0(int nKind, CString strName);
 CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CString strUrl);
-CUgcManager* FUN_14052d220();
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 MS2Ptr<CItemData> FUN_14053f870(int itemId);
 CStringW FUN_1401aa6a0(int nId);                                // the character's name
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);  // string table text with one argument
@@ -125,7 +123,7 @@ CStringW FUN_140292b10(int nStringId, const int& nHour, const int& nMinute, cons
 CStringW FUN_140719a80(unsigned __int64 nUid);                  // the item guid text
 CStringW FUN_1416e5900(int nItemId, bool bBold);                // the item name text
 void FUN_1412751b0(const CStringW& strText, int nKind);         // shows the text as a notice
-int FUN_140869420();                                            // the server time in seconds
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CString FUN_140513200(const char* szFormat, const int& nArg);
 
 // The item manager: its data source (at +0x10) hands out item data records by id.
@@ -142,7 +140,7 @@ struct Unk_WhisperItemMgr
     unsigned char m_pad[0x10];
     Unk_WhisperItemSource m_source;
 };
-Unk_WhisperItemMgr* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* psz);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
@@ -197,7 +195,7 @@ int UIWhisperNotifyDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_140bc09f0()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
     return 1;
 }
 
@@ -206,7 +204,7 @@ void UIWhisperNotifyDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     m_whisperTimes.RemoveAll();
-    FUN_140bc09f0()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
 }
 
 // @0x141b519d0
@@ -276,7 +274,7 @@ void UIWhisperNotifyDialog::FUN_141b51e30(unsigned __int64 nId, const CStringW& 
     CString strId = FUN_141b52ac0(nId);
     CString strImage = FUN_141028be0(nId, strName, 1, CString(""));
     static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_141b52b40("addWhisper", strId, strImage, CStringW(strMsg));
-    m_whisperTimes.SetAt(nId, FUN_140869420());
+    m_whisperTimes.SetAt(nId, GetTickCountMs2());
 }
 
 // @0x141b52030
@@ -311,7 +309,7 @@ void UIWhisperNotifyDialog::FUN_141b52210(MS2Ptr<CItem> spItem, const CStringW& 
         {
             if (spItem->FUN_1405278d0() != 0)
             {
-                if (FUN_14052d220()->FUN_1418841f0(&reinterpret_cast<Unk_WhisperItemUgc*>(spItem->FUN_1405278d0())->m_look, MS2Ptr<CItem>(0), 0) != 0)
+                if (((class CUgcManager*)FUN_14052d220())->FUN_1418841f0(&reinterpret_cast<Unk_WhisperItemUgc*>(spItem->FUN_1405278d0())->m_look, MS2Ptr<CItem>(0), 0) != 0)
                     strName = "";
             }
         }
@@ -335,14 +333,14 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
     if (FUN_141b52a60(pInfo->m_nId) != 0)
         return;
     CStringW strText = FUN_14052bd00(0x5eb, FUN_1401aa6a0(pInfo->m_nId));
-    FUN_1403b4750()->FUN_1416fb340(strText);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
     Unk_WhisperSenderPtr sender = FUN_1406cd330(pInfo->m_nId);
     if (sender.FUN_14035e9b0())
         return;
     CStringW strExtra(L"");
     if (nMode == 1 && nItemId != 0)
     {
-        MS2Ptr<CItemData> spData = (&FUN_140764020()->m_source)->vfunc_3(nItemId);
+        MS2Ptr<CItemData> spData = (&((struct Unk_WhisperItemMgr*)FUN_140764020())->m_source)->vfunc_3(nItemId);
         if (spData.get() != 0)
         {
             CStringW strName = FUN_1416e5900(nItemId, true);
@@ -353,7 +351,7 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
         strText += strExtra;
     static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_141b52b40("addSystemWhisper", FUN_140513200("{0}", pInfo->m_nId),
                                                                       sender.FUN_14035eb90()->m_strImage, CStringW(strText));
-    m_systemTimes.SetAt(pInfo->m_nId, FUN_140869420());
+    m_systemTimes.SetAt(pInfo->m_nId, GetTickCountMs2());
     // CMsTime, not CTime: the exe formats the hour/minute in the server time zone (ctor 0x1406c47a0,
     // GetMinute 0x1406c4f80, GetHour 0x1406c4f10).
     CMsTime time((__time64_t)pInfo->m_nTime);
@@ -362,7 +360,7 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
     CStringW strLog = FUN_140292b10(0x5ec, nHour, nMinute, FUN_1401aa6a0(pInfo->m_nId));
     if (nMode == 1)
         strLog += strExtra;
-    FUN_1403b4750()->FUN_1416fb340(strLog);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strLog);
     FUN_1412751b0(strLog, 0x14);
 }
 
@@ -372,7 +370,7 @@ int UIWhisperNotifyDialog::FUN_141b529f0(unsigned __int64 nId)
     int nTime = 0;
     if (!m_whisperTimes.Lookup(nId, nTime))
         return 0;
-    if ((unsigned)(FUN_140869420() - nTime) > m_nCooldown)
+    if ((unsigned)(GetTickCountMs2() - nTime) > m_nCooldown)
         return 0;
     return 1;
 }
@@ -383,7 +381,7 @@ int UIWhisperNotifyDialog::FUN_141b52a60(int nId)
     int nTime = 0;
     if (!m_systemTimes.Lookup(nId, nTime))
         return 0;
-    if ((unsigned)(FUN_140869420() - nTime) > 60000)
+    if ((unsigned)(GetTickCountMs2() - nTime) > 60000)
         return 0;
     return 1;
 }

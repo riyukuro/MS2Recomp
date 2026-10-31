@@ -48,6 +48,10 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uimessenger.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/partymanager.h"
+#include "ms2/client/ms2/uiservice.h"
 #include <utility>
 
 // ---- unit-local declarations (names describe uses, not original class names) ----
@@ -64,13 +68,11 @@ class Unk_PsdProxy : public CPtred
 {
 };
 
-class Unk_PsdWorld
+class Unk_PsdWorld : public WorldService
 {
 public:
-    void* FUN_141bd0cc0();                                              // the local player
     MS2Ptr<Unk_PsdProxy> FUN_141bc9c60(__int64 nChar);       // the proxy of a character
 };
-Unk_PsdWorld* FUN_1403ed2d0();
 
 // The UI manager (open / close a dialog by UI id).
 class Unk_PsdUIManager
@@ -79,7 +81,6 @@ public:
     void FUN_141adc530(int nUiId);                                      // open
     void FUN_141adc5d0(int nUiId);                                      // close
 };
-Unk_PsdUIManager* FUN_1403ed2b0();
 
 // The popup menu on a character (UI id 0x4e39) and its parameter block.
 // The popup-menu request (0x80 bytes; the members are opaque here, no array: /GS).
@@ -107,16 +108,11 @@ public:
 Unk_PsdMenu* FUN_140c30140(int nUiId);
 
 // The chat window: the input line takes the whisper target.
-class Unk_PsdChatInput
-{
-public:
-    void FUN_141a252a0(const CStringW& strName);
-};
 class Unk_PsdChatWindow
 {
 public:
     unsigned char m_pad_0[0x48];
-    Unk_PsdChatInput* m_48;
+    UIMessengerBrowser* m_48;
 };
 Unk_PsdChatWindow* FUN_141482e80();
 
@@ -177,7 +173,6 @@ public:
 };
 Unk_PsdDialogMgr* FUN_140b632f0();
 
-CPartyManager* FUN_1409670d0();
 int FUN_140695080(CMatchPartyRecruit* pRecruit);                         // recruitId == 0
 __int64 FUN_141656a80(PCBase* pPlayer);                                  // character id
 bool FUN_141527280(PCBase* pPlayer);                                     // in a party
@@ -397,7 +392,7 @@ void UIPartySearchDialog::OnLoadComplete()
     m_30->Invoke("initData");
     ASObj root(2);
     ASArray sorts(2);
-    CMatchPartyRecruit* pRecruit = &FUN_1409670d0()->FUN_141631ce0();
+    CMatchPartyRecruit* pRecruit = &TSingleton<CPartyManager>::GetInstance()->FUN_141631ce0();
     FUN_140f8f3b0(&root, pRecruit);
     int nIndex = 0;
     FUN_140f8ef30(&sorts, m_180->kind, &nIndex);
@@ -413,7 +408,7 @@ void UIPartySearchDialog::vfunc_26()
     UIDialog::vfunc_26();
     m_17c = 0;
     FUN_140f8ded0();
-    FUN_1403ed2b0()->FUN_141adc5d0(0x4edb);
+    reinterpret_cast<Unk_PsdUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4edb);
 }
 
 // @0x140f8c9c0
@@ -428,7 +423,7 @@ void UIPartySearchDialog::vfunc_15()
             return;
         if (m_180.get())
         {
-            FUN_1409670d0()->SendMatchPartyMode2(*m_180);
+            TSingleton<CPartyManager>::GetInstance()->SendMatchPartyMode2(*m_180);
             m_17c = FUN_140869420();
             m_178 = 0;
         }
@@ -472,12 +467,12 @@ int UIPartySearchDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             ATL::CAtlArray<CStringW> parts;
             FUN_14028cb70(strTag, parts, L",", 2);
             __int64 nId = FUN_140718370(parts[1]);
-            MS2Ptr<CMatchPartyRecruit> recruit = FUN_1409670d0()->FUN_141631d40(nId);
+            MS2Ptr<CMatchPartyRecruit> recruit = TSingleton<CPartyManager>::GetInstance()->FUN_141631d40(nId);
             if (recruit.get())
             {
                 if (FUN_140695080(recruit.operator->()) == 0)
                 {
-                    FUN_1409670d0()->FUN_14162bcc0(MS2Ptr<CMatchPartyRecruit>(recruit));
+                    TSingleton<CPartyManager>::GetInstance()->FUN_14162bcc0(MS2Ptr<CMatchPartyRecruit>(recruit));
                 }
             }
         }
@@ -595,7 +590,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             CStringW strName = data.FUN_1422b8f40();
             if (!strName.IsEmpty())
             {
-                PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+                PCBase* pPlayer = static_cast<PCBase*>(reinterpret_cast<Unk_PsdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
                 if (pPlayer != 0)
                 {
                     if (strName == pPlayer->vfunc_77())
@@ -603,12 +598,12 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         FUN_140f8ff40(0xb38, 1, 1);
                         return 1;
                     }
-                    if (FUN_141527280(pPlayer) && !FUN_1409670d0()->FUN_14162ab60())
+                    if (FUN_141527280(pPlayer) && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
                     {
                         FUN_140f8ff40(0xb39, 1, 1);
                         return 1;
                     }
-                    FUN_1409670d0()->SendPartyMode1(CStringW(strName));
+                    TSingleton<CPartyManager>::GetInstance()->SendPartyMode1(CStringW(strName));
                 }
             }
         }
@@ -622,10 +617,10 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             __int64 nId = FUN_140718350(data.FUN_1422b8d30());
             if (nId == 0)
                 return 1;
-            MS2Ptr<CMatchPartyRecruit> recruit = FUN_1409670d0()->FUN_141631d40(nId);
+            MS2Ptr<CMatchPartyRecruit> recruit = TSingleton<CPartyManager>::GetInstance()->FUN_141631d40(nId);
             if (recruit.get())
             {
-                PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+                PCBase* pPlayer = static_cast<PCBase*>(reinterpret_cast<Unk_PsdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
                 if (pPlayer != 0)
                 {
                     if (recruit->created == FUN_141656a80(pPlayer))
@@ -638,14 +633,14 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         FUN_140d73bc0(0xb36, 0, 0, CStringW(L""));
                         return 1;
                     }
-                    if (FUN_140695080(&FUN_1409670d0()->FUN_141631ce0()) == 0)
+                    if (FUN_140695080(&TSingleton<CPartyManager>::GetInstance()->FUN_141631ce0()) == 0)
                     {
                         CStringW strAsk = FUN_1406c6bd0(L"askPartyJoinByAlreadyMemberSearch,{0}", nId);
                         FUN_140d73bc0(0xb31, 1, static_cast<IMessageListener*>(this), CStringW(strAsk));
                         return 1;
                     }
                 }
-                FUN_1409670d0()->FUN_14162bcc0(MS2Ptr<CMatchPartyRecruit>(recruit));
+                TSingleton<CPartyManager>::GetInstance()->FUN_14162bcc0(MS2Ptr<CMatchPartyRecruit>(recruit));
             }
         }
         return 1;
@@ -658,7 +653,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             CStringW strName = data.FUN_1422b8f40();
             if (!strName.IsEmpty())
             {
-                PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+                PCBase* pPlayer = static_cast<PCBase*>(reinterpret_cast<Unk_PsdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
                 if (pPlayer != 0)
                 {
                     if (pPlayer->vfunc_77() == strName)
@@ -683,7 +678,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             __int64 nId = FUN_140718350(data.FUN_1422b8d30());
             if (nId == 0)
                 return 1;
-            MS2Ptr<CMatchPartyRecruit> recruit = FUN_1409670d0()->FUN_141631d40(nId);
+            MS2Ptr<CMatchPartyRecruit> recruit = TSingleton<CPartyManager>::GetInstance()->FUN_141631d40(nId);
             if (recruit.get())
             {
                 unsigned __int64 nChar = recruit->created;
@@ -744,7 +739,7 @@ int UIPartySearchDialog::FUN_140f8e340(int nStart, int nCount)
 {
     if (nStart < 0 || nCount == 0)
         return 1;
-    ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit>>& arr = FUN_1409670d0()->FUN_141631d20();
+    ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit>>& arr = TSingleton<CPartyManager>::GetInstance()->FUN_141631d20();
     return FUN_140f8e220(nStart, nCount, arr);
 }
 
@@ -824,7 +819,7 @@ void UIPartySearchDialog::FUN_140f8e670()
 // @0x140f8e790
 void UIPartySearchDialog::FUN_140f8e790(float x, float y, unsigned __int64 nAccount, __int64 nChar, CStringW* pName, int nFlag)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = reinterpret_cast<Unk_PsdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
         if (FUN_141656a80(static_cast<PCBase*>(pPlayer)) == nChar)
@@ -841,7 +836,7 @@ void UIPartySearchDialog::FUN_140f8e790(float x, float y, unsigned __int64 nAcco
             Unk_PsdMenu* pMenu = FUN_140c30140(0x4e39);
             if (pMenu != 0)
             {
-                MS2Ptr<Unk_PsdProxy> ref = FUN_1403ed2d0()->FUN_141bc9c60(nChar);
+                MS2Ptr<Unk_PsdProxy> ref = reinterpret_cast<Unk_PsdWorld*>(WorldService::GetInstance())->FUN_141bc9c60(nChar);
                 if (ref.get() != 0)
                 {
                     Unk_PopupMenuInfo info(x, y, 3, nFlag, 1, CString("partySearchSlot"), 0);
@@ -860,37 +855,37 @@ void UIPartySearchDialog::FUN_140f8e790(float x, float y, unsigned __int64 nAcco
 // @0x140f8eab0
 void UIPartySearchDialog::OnClickRegisterMemeberSearch()
 {
-    PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPlayer = static_cast<PCBase*>(reinterpret_cast<Unk_PsdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    if (FUN_141527280(pPlayer) && !FUN_1409670d0()->FUN_14162ab60())
+    if (FUN_141527280(pPlayer) && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
     {
         FUN_140d73bc0(0xb3a, 0, 0, L"");
         return;
     }
-    if (FUN_1409670d0()->FUN_141631cc0() != 0)
+    if (TSingleton<CPartyManager>::GetInstance()->FUN_141631cc0() != 0)
         FUN_140d73bc0(0xb3d, 0, 0, L"");
-    else if (FUN_1409670d0()->FUN_14162af00() >= 10)
+    else if (TSingleton<CPartyManager>::GetInstance()->FUN_14162af00() >= 10)
         FUN_140d73aa0(FUN_1408116a0(0xb3b, 10), 0, 0, L"");
     else
-        FUN_1403ed2b0()->FUN_141adc530(0x4edb);
+        reinterpret_cast<Unk_PsdUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4edb);
 }
 
 // @0x140f8ec40
 void UIPartySearchDialog::OnClickRegisterMemeberSearchModify()
 {
-    PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPlayer = static_cast<PCBase*>(reinterpret_cast<Unk_PsdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    if (FUN_141527280(pPlayer) && !FUN_1409670d0()->FUN_14162ab60())
+    if (FUN_141527280(pPlayer) && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
     {
         FUN_140d73bc0(0xb3e, 0, 0, L"");
         return;
     }
-    if (FUN_140695080(&FUN_1409670d0()->FUN_141631ce0()) != 0)
+    if (FUN_140695080(&TSingleton<CPartyManager>::GetInstance()->FUN_141631ce0()) != 0)
         FUN_140d73bc0(0xb3f, 0, 0, L"");
     else
-        FUN_1403ed2b0()->FUN_141adc530(0x4edb);
+        reinterpret_cast<Unk_PsdUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4edb);
 }
 
 // @0x140f8ed40
@@ -908,7 +903,7 @@ void UIPartySearchDialog::FUN_140f8edb0()
 {
     if (!m_30)
         return;
-    CMatchPartyRecruit* pRecruit = &FUN_1409670d0()->FUN_141631ce0();
+    CMatchPartyRecruit* pRecruit = &TSingleton<CPartyManager>::GetInstance()->FUN_141631ce0();
     FUN_140f8ee50(pRecruit);
 }
 

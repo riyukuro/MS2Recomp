@@ -86,7 +86,7 @@ void FUN_140d73aa0(CStringW,int,__int64,CStringW);
 class UICommunityDialog : public UIDialog { public: int FUN_1418d6960(); void FUN_1418d6430(int); };
 class UICommunityQueryDialog : public UIDialog {};
 class Unk_BuddyPopup : public UIDialog { public: void FUN_141937e70(int); };
-Unk_BuddyPopup* FUN_140938b90(int);
+class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 UICommunityDialog* FUN_140ae5990(int);
 UICommunityQueryDialog* FUN_140ae5a30(int);
 // @0x140ae2e90
@@ -182,7 +182,7 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
     }
     case 20: SendBuddyMode20(); break;
     }
-    Unk_BuddyPopup* popup=FUN_140938b90(0x4e28); if(popup && !popup->vfunc_55()) popup->FUN_141937e70(response.protocol);
+    Unk_BuddyPopup* popup=((class Unk_BuddyPopup*)FUN_140938b90(0x4e28)); if(popup && !popup->vfunc_55()) popup->FUN_141937e70(response.protocol);
 }
 
 // @0x140ae4820

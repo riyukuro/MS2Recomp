@@ -28,7 +28,7 @@ struct Unk_FogState
     void FUN_1409a9bc0(const Unk_Colc& color);      // 0x1409a9bc0
     void FUN_1409a9b40(float fValue);               // 0x1409a9b40
 };
-Unk_FogState* FUN_1409a8a80();                      // the global fog block
+class NiFogProperty* GetNiFogProperty();   // C3: was FUN_1409a8a80
 
 // The renderer's state block (MS2Renderer +0xba8).
 struct Unk_RenderState { void FUN_1409a9bf0(float fMaxFog); };
@@ -38,10 +38,13 @@ struct Unk_FogRenderer { Unk_RenderState* FUN_1409a8d60(); };               // 0
 struct Unk_ViewFrustum { char m_pad_00[0x10]; float m_fNear; float m_fFar; };
 struct Unk_FogCamera { Unk_ViewFrustum* FUN_1409a8de0(); };                // 0x1409a8de0 returns this + 0x128
 struct Unk_FogView { Unk_FogCamera* FUN_1409a8a60(); };                    // 0x1409a8a60 returns the camera at +0x38
-Unk_FogView* FUN_1413f9a70();
-void* FUN_140994450();                                                      // the current NiRenderer
-void* FUN_14098d8d0(const void* pRtti, void* pObject);                      // dynamic cast through an NiRTTI (NULL-safe)
-extern char DAT_143d6eb58;                                                  // MS2Renderer's RTTI
+class Ni3DRenderView* FUN_1413f9a70();   // C3: was FUN_1413f9a70
+class NiRenderer   // C3: member view for the former free stand-ins
+{
+public:
+    static class NiRenderer* GetRenderer();
+};
+class NiDX9Renderer { public: static const NiRTTI ms_RTTI; };      // C3: was extern char DAT_143d6eb58
 extern char DAT_143b059e8;                                                  // the entity app framework
 ecr::SceneGraphService* FUN_1409a5700(void* pFramework);                    // the scene graph service
 
@@ -160,7 +163,7 @@ void UILightDialog::FUN_141448ec0(ASData* pData)
     float fR = pData->FUN_1422b8c10();
     float fG = pData->FUN_1422b8c10();
     float fB = pData->FUN_1422b8c10();
-    Unk_FogState* pFog = FUN_1409a8a80();
+    Unk_FogState* pFog = ((struct Unk_FogState*)GetNiFogProperty());
     pFog->FUN_1409a9bc0(Unk_Colc(fR / 255.0f, fG / 255.0f, fB / 255.0f));
     ecr::SceneGraphService* pService = FUN_1409a5700(&DAT_143b059e8);
     if (pService != 0) {
@@ -178,16 +181,16 @@ void UILightDialog::FUN_141448fd0(ASData* pData)
     float fDensity = 1.0f;
     float fNear = 0.0f;
     float fFar = 0.0f;
-    Unk_FogView* pView = FUN_1413f9a70();
+    Unk_FogView* pView = ((struct Unk_FogView*)FUN_1413f9a70());
     Unk_ViewFrustum* pFrustum = pView->FUN_1409a8a60()->FUN_1409a8de0();
     fNear = pFrustum->m_fNear;
     fFar = pFrustum->m_fFar;
     fFogValue = (fFar - fSlider1) / (fFar - fNear);
     float fRange = (fFar - fNear) * fFogValue;
     fDensity = fRange / (fRange + (fSlider2 - fFar));
-    Unk_FogRenderer* pRenderer = (Unk_FogRenderer*)FUN_14098d8d0(&DAT_143d6eb58, FUN_140994450());
+    Unk_FogRenderer* pRenderer = (Unk_FogRenderer*)((void*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
     pRenderer->FUN_1409a8d60()->FUN_1409a9bf0(fDensity);
-    Unk_FogState* pFog = FUN_1409a8a80();
+    Unk_FogState* pFog = ((struct Unk_FogState*)GetNiFogProperty());
     pFog->FUN_1409a9b40(fFogValue);
     ecr::SceneGraphService* pService = FUN_1409a5700(&DAT_143b059e8);
     if (pService != 0) {
@@ -199,7 +202,7 @@ void UILightDialog::FUN_141448fd0(ASData* pData)
 // @0x141449190
 void UILightDialog::FUN_141449190(bool bEnable)
 {
-    Unk_FogState* pFog = FUN_1409a8a80();
+    Unk_FogState* pFog = ((struct Unk_FogState*)GetNiFogProperty());
     pFog->FUN_1409a9b90(bEnable);
     ecr::SceneGraphService* pService = FUN_1409a5700(&DAT_143b059e8);
     if (pService != 0) {

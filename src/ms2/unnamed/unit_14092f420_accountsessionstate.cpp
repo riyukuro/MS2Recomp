@@ -85,6 +85,7 @@
 #include "ms2/commonfiles/usermail.h"
 #include "ms2/commonfiles/itemgift.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cguidemanager.h"
 
 #include <map>
 #include <set>
@@ -109,7 +110,11 @@ public:
     virtual void vfunc_140();
     virtual unsigned vfunc_141();
 };
-Unk_MyPc* FUN_141bd0cc0(Unk_ObjTable* pTable);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+};
 
 // A learned skill: its record and flags (the skill book hands out MS2Ptr<Unk_SkillObj>).
 class Unk_SkillRec { public: char m_pad_00[0xa8]; int m_pad_a8; unsigned char m_pad_ac; bool m_bBlocked; };
@@ -130,14 +135,18 @@ Unk_SkillBook* FUN_1416546d0(Unk_MyPc* pPc);
 unsigned FUN_141525480(Unk_MyPc* pPc, int nSkillId, unsigned char nFlag);
 
 // The "slot in use" restrictions (0x143ab3330).
-class Unk_Restrictions { public: int FUN_14138c900(int nKind); };
+class Unk_Restrictions : public CGuideManager { };
 // The sound/effect sink (0x143ab3328).
 class Unk_SoundSink { public: void FUN_14142f470(int nId, int nParam); };
 // Three more one-method singletons.
 class Unk_Hud { public: virtual void vfunc_0(); virtual void vfunc_1(); };
 Unk_Hud* FUN_140933230();
 class Unk_BonusBar { };
-void FUN_140da55a0(Unk_BonusBar* pBar, unsigned nId, void* pObj);
+class GameEventUserValueManager   // C3: member view for the former free stand-ins
+{
+public:
+    void Dispatch(unsigned int, class GameEventVariable*);
+};
 class Unk_ItemSlotTable { public: int FUN_14087a930(CString strName); };
 class Unk_QuestTable { };
 void FUN_140663010(Unk_QuestTable* pTable, unsigned nId, unsigned nValue, ATL::CAtlArray<MS2Ptr<ItemEntity> >& result);
@@ -215,16 +224,17 @@ static CString s_143ab3490[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/commonfiles/dungeonroom.h"
 
+// return types of the getters this unit calls
+class Unk_EmoNpcTable;
+
 // ---- more unit-local stand-ins ----------------------------------------------------------------------------------------
 
 typedef std::vector<std::pair<int, __int64> > Unk_PayList;           // (currency kind, amount) pairs
 
 class Unk_SkillRow : public CPtred { public: unsigned char FUN_1407e9de0(); };
 class Unk_SkillTable { public: MS2Ptr<Unk_SkillRow> FUN_1407ee1d0(int nSkillId); };
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-bool FUN_14053e460(CItemData* pData);
-int FUN_140526100(CItem* pItem);
 void FUN_141275260(int nStringId, int nA, int nB);
 
 class Unk_MapRec : public CPtred { public: char m_pad_18[4]; int m_nKind; };
@@ -232,14 +242,11 @@ class Unk_MapTable { public: MS2Ptr<Unk_MapRec> FUN_1403206b0(int nMapId); };
 
 class Unk_PartyRef : public CPtred { };
 class Unk_PartyHolder { public: MS2Ptr<Unk_PartyRef> FUN_141768380(); };
-Unk_PartyHolder* FUN_141523bc0(Unk_MyPc* pPc);
 class Unk_FieldRef : public CPtred { };
-unsigned FUN_14166ce30(Unk_MyPc* pPc);
 int FUN_141654700(Unk_MyPc* pPc);
 unsigned FUN_1403bb210(int nKind, int nMode);
 int IsNotRecentDayChange(__int64 nTime);
 bool FUN_14086ab70(CMsTime tmOld, CMsTime tmNew, int nBaseHour);
-bool FUN_1406c5200();
 __int64 GetServerTime();
 
 class Unk_NoticeSub { public: virtual void vfunc_0(); virtual unsigned char vfunc_1(); };
@@ -267,7 +274,7 @@ public:
 class Unk_IdList { public: int FUN_140408410(const int& nId); };
 class Unk_QuickSlots { };
 int FUN_14035a870(Unk_QuickSlots* pSlots, int nSlot, unsigned nValue);
-Unk_QuickSlots* FUN_140764010();
+Unk_EmoNpcTable* FUN_140764010();
 CMyCharacter* FUN_140931510();
 void FUN_140935a90(std::vector<std::pair<int, __int64> >* pVec, std::pair<int, __int64>&& value);
 extern Unk_Restrictions* DAT_143ab3330;
@@ -327,7 +334,7 @@ unsigned FUN_14092f4e0(int nSkillId)
 {
     if (g_143ab2a90.FUN_140a62d30(nSkillId) != 0)
         return 1;
-    Unk_MyPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)((class WorldService*)(class Unk_MailSession*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
     if (pPc != 0)
     {
         Unk_SkillBook* pBook = FUN_1416546d0(pPc);
@@ -363,17 +370,17 @@ bool FUN_14092f660()
 // @0x14092f690
 int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nKind)
 {
-    if (FUN_1409331e0()->FUN_14138c900(10))
+    if (FUN_1409331e0()->IsRestricted(10))
     {
         FUN_141275260(0x888, 1, 1);
         return 0;
     }
-    if (FUN_1409331e0()->FUN_14138c900(11) && nKind != 8)
+    if (FUN_1409331e0()->IsRestricted(11) && nKind != 8)
     {
         FUN_141275260(0x888, 1, 1);
         return 0;
     }
-    if (FUN_1409331e0()->FUN_14138c900(12) && nKind != 9)
+    if (FUN_1409331e0()->IsRestricted(12) && nKind != 9)
     {
         FUN_141275260(0x888, 1, 1);
         return 0;
@@ -388,12 +395,12 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
             FUN_141275260(0x9a7, 1, 1);
             return 0;
         }
-        if (FUN_140166410()->FUN_14036d570(0xd3))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd3))
         {
             Unk_Inventory::ItemPtr spItem = g_143ab2a90.FUN_140a5e2e0(nItemId);
             if (spItem.get() != 0)
             {
-                if (FUN_140526100(spItem) != 0)
+                if (((class CItem*)(class CItem*)(spItem))->FUN_140526100() != 0)
                     return 0;
             }
         }
@@ -408,7 +415,7 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
             spData = FUN_14053f870(nItemId);
         if (spData == 0)
             return 0;
-        if (!FUN_14053e460(spData.get()))
+        if (!((class CItemData*)(class CItemData*)(spData.get()))->FUN_14053e460())
             return 0;
     }
     FUN_141276180(s_143ab2ed8, "");
@@ -445,12 +452,12 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
             FUN_141275260(0x9a7, 1, 1);
             return 0;
         }
-        if (FUN_140166410()->FUN_14036d570(0xd3))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd3))
         {
             Unk_Inventory::ItemPtr spItem = g_143ab2a90.FUN_140a5e2e0(nItemId);
             if (spItem.get() != 0)
             {
-                if (FUN_140526100(spItem) != 0)
+                if (((class CItem*)(class CItem*)(spItem))->FUN_140526100() != 0)
                     return 0;
             }
         }
@@ -465,11 +472,11 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
             spData = FUN_14053f870(nItemId);
         if (spData == 0)
             return 0;
-        if (!FUN_14053e460(spData.get()))
+        if (!((class CItemData*)(class CItemData*)(spData.get()))->FUN_14053e460())
             return 0;
     }
-    if (FUN_1409331e0()->FUN_14138c900(10) != 0 || FUN_1409331e0()->FUN_14138c900(11) != 0 ||
-        FUN_1409331e0()->FUN_14138c900(12) != 0)
+    if (FUN_1409331e0()->IsRestricted(10) != 0 || FUN_1409331e0()->IsRestricted(11) != 0 ||
+        FUN_1409331e0()->IsRestricted(12) != 0)
     {
         FUN_141275260(0x888, 1, 1);
         return 0;
@@ -494,7 +501,7 @@ int SendKeyTableMode5(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, in
 {
     if (nSkillId == 0 && nItemUid == 0 && nItemId == 0)
         return 0;
-    if (FUN_1409331e0()->FUN_14138c900(10) != 0)
+    if (FUN_1409331e0()->IsRestricted(10) != 0)
     {
         FUN_141275260(0x888, 1, 1);
         return 0;
@@ -876,10 +883,10 @@ unsigned char FUN_140930d20(__int64 nId)
 // @0x140930d70
 bool FUN_140930d70()
 {
-    Unk_MyPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)((class WorldService*)(class Unk_MailSession*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
-    bool bResult = FUN_141523bc0(pPc)->FUN_141768380().get() != 0;
+    bool bResult = ((class Unk_PartyHolder*)((class MyPC*)(class Unk_MyPc*)(pPc))->FUN_141523bc0())->FUN_141768380().get() != 0;
     return bResult;
 }
 
@@ -888,7 +895,7 @@ int FUN_140931890(ATL::CAtlArray<unsigned>* pArray, unsigned short* pValue);
 // @0x140930e10
 int FUN_140930e10()
 {
-    Unk_MyPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)((class WorldService*)(class Unk_MailSession*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     int nCount = 0;
@@ -908,7 +915,7 @@ int FUN_140930e10()
 // @0x140930f20
 void FUN_140930f20()
 {
-    if (!FUN_1406c5200())
+    if (!CMsTime::IsTimeZoneSet())
         return;
     if (DAT_143ab2988 == 0)
         DAT_143ab2988 = GetServerTime();
@@ -945,7 +952,7 @@ void FUN_140930fe0(Unk_Notice* pNotice)
             spTarget = DAT_143ab3010.FUN_14041f850(pNotice);
         if (spTarget.get() != 0)
         {
-            FUN_140da55a0(FUN_140933220(), spTarget->FUN_14041f250(), spTarget.get());
+            ((class GameEventUserValueManager*)(class Unk_BonusBar*)(FUN_140933220()))->Dispatch(spTarget->FUN_14041f250(), (class GameEventVariable*)(spTarget.get()));
         }
         break;
     }
@@ -963,7 +970,7 @@ unsigned FUN_140931210(Unk_SlotKey nKey)
 // @0x140931250
 int FUN_140931250(Unk_SlotKey nKey)
 {
-    return FUN_14035a870(FUN_140764010(), nKey, FUN_140931210(nKey));
+    return FUN_14035a870(reinterpret_cast<Unk_QuickSlots*>(FUN_140764010()), nKey, FUN_140931210(nKey));
 }
 
 // @0x140931290
@@ -986,10 +993,10 @@ bool FUN_1409312f0()
         return false;
     if (FUN_140930b10())
         return false;
-    Unk_MyPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)((class WorldService*)(class Unk_MailSession*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
-    if (FUN_14166ce30(pPc))
+    if (((class PCBase*)(class Unk_MyPc*)(pPc))->FUN_14166ce30())
         return false;
     MS2Ptr<Unk_FieldRef> spField = FUN_1403ed2d0()->FUN_141bd30a0();
     if (spField.IsNull())
@@ -1000,7 +1007,7 @@ bool FUN_1409312f0()
 // @0x1409313b0
 unsigned FUN_1409313b0()
 {
-    Unk_MyPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)((class WorldService*)(class Unk_MailSession*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0xffffffff;
     unsigned short nLevel = (unsigned short)pPc->vfunc_78();
@@ -1228,7 +1235,6 @@ void FUN_14063e780(Unk_TailRefBox* pBox);
 void FUN_140195700(Unk_TailRefBox* pBox);
 void FUN_140932b60(Unk_TailAlmVal* pVal);
 Unk_TailIter* FUN_140932640(Unk_TailIter* pIt, void* pNode, const void* pCont);
-void FUN_14016ad80(void* pIt, void* pCont);
 void FUN_140932a20(Unk_TailAlmTree* pTree);
 void FUN_140932a50(Unk_TailSet* pTree);
 Unk_TailIter* FUN_140932f10(Unk_TailIter* pIt);
@@ -1249,36 +1255,30 @@ void FUN_140933420(Unk_TailTreeA* pTree, Unk_TailNodeA* pNode);
 void FUN_140933480(Unk_TailTreeB* pTree, Unk_TailNodeB* pNode);
 void FUN_1409330a0(Unk_TailTreeA* pTree, Unk_TailNodeA* pNode);
 void FUN_140933140(Unk_TailTreeB* pTree, Unk_TailNodeB* pNode);
-void FUN_140159e70(void* pBlocks);
 void FUN_140934c70(Unk_TailBoxPtr* pBox);
 void FUN_140934cd0(Unk_TailBoxPtr* pBox, void* pTag);
 void FUN_1409334e0(CPtred* p);
-void FUN_14015b020(CPtred* p);
 struct Unk_TailTreeVal { void* m_pHead; size_t m_nSize; };
 struct Unk_TailVecVal { Unk_TailPair* m_pFirst; Unk_TailPair* m_pLast; Unk_TailPair* m_pEnd; };
 Unk_TailVecVal* FUN_1409347d0(Unk_TailVecVal* pVal);
 Unk_TailTreeA* FUN_140932460(Unk_TailTreeA* pTree, size_t nBlock);
 Unk_TailTreeB* FUN_1409324c0(Unk_TailTreeB* pTree, size_t nBlock);
 Unk_TailSetNode*& FUN_140931e10(Unk_TailAlc* pAlc, Unk_TailSetNode* pNode);
-Unk_TailAlc* FUN_140934820(Unk_TailSet* pTree);
 Unk_TailSetVal* FUN_140932110(Unk_TailSetVal* pVal);
 void FUN_1409322c0(Unk_TailAlc* pAlc, Unk_TailSetVal* pVal);
 void FUN_140933a50(Unk_TailSet* pTree, Unk_TailSetNode* pNode);
 void FUN_1409339b0(Unk_TailAlmTree* pTree, Unk_TailAlmNode* pNode);
-Unk_TailAlc* FUN_1409347f0(Unk_TailAlmTree* pTree);
 Unk_TailAlmNode*& FUN_140931d80(Unk_TailAlc* pAlc, Unk_TailAlmNode* pNode);
 void FUN_1409322a0(Unk_TailAlc* pAlc, Unk_TailAlmVal* pVal);
 void* FUN_140786280(size_t n);
 Unk_TailIter* FUN_140935690(Unk_TailSet* pTree, Unk_TailIter* pRet) noexcept;
 Unk_TailIter* FUN_140935280(Unk_TailSet* pTree, Unk_TailIter* pRet);
 Unk_TailIter* FUN_140935890(Unk_TailSet* pTree, Unk_TailIter* pRet, Unk_TailIter itFirst, Unk_TailIter itLast);
-void* FUN_1409346e0(Unk_TailSet* pTree);
 void* FUN_140932130(void* pVal);
 Unk_TailSetNode* FUN_1409340a0(void* pVal, void* pWhere);
 void* FUN_140197cb0(size_t n);
 void* FUN_14015f9d0(void* pBytes);
 void FUN_14015fc80(void* p, size_t nBytes);
-unsigned __int64 FUN_140935ac0(std::vector<Unk_TailPair>* pVec);
 Unk_TailPair** FUN_140934be0(std::vector<Unk_TailPair>* pVec);
 void FUN_140935120();
 void* FUN_1409347e0(void* pThis);
@@ -1425,7 +1425,7 @@ Unk_TailIter* FUN_1409326c0(Unk_TailIter* pThis, void* pNode, const void* pCont)
 Unk_TailIter* FUN_140932740(Unk_TailIter* pThis, void* pNode, void* pCont)
 {
     pThis->m_pNode = pNode;
-    FUN_14016ad80(pThis, pCont);
+    ((std::_Iterator_base0*)(void*)(pThis))->_Adopt((void const*)(pCont));
     return pThis;
 }
 
@@ -1577,7 +1577,7 @@ void FUN_140933320(Unk_TailTreeA* pThis)
     if (!FUN_140933240(pThis, pThis->m_pRoot))
         FUN_140933420(pThis, pThis->m_pRoot);
     pThis->m_nCount = 0;
-    FUN_140159e70(pThis->m_pBlocks);
+    ((ATL::CAtlPlex*)(void*)(pThis->m_pBlocks))->FreeDataChain();
     pThis->m_pBlocks = 0;
     pThis->m_pFree = 0;
     pThis->m_pRoot = pThis->m_pNil;
@@ -1589,7 +1589,7 @@ void FUN_1409333a0(Unk_TailTreeB* pThis)
     if (!FUN_140933280(pThis, pThis->m_pRoot))
         FUN_140933480(pThis, pThis->m_pRoot);
     pThis->m_nCount = 0;
-    FUN_140159e70(pThis->m_pBlocks);
+    ((ATL::CAtlPlex*)(void*)(pThis->m_pBlocks))->FreeDataChain();
     pThis->m_pBlocks = 0;
     pThis->m_pFree = 0;
     pThis->m_pRoot = pThis->m_pNil;
@@ -1622,7 +1622,7 @@ void FUN_1409339b0(Unk_TailAlmTree* pThis, Unk_TailAlmNode* pRoot)
     {
         FUN_1409339b0(pThis, pNode->m_pRight);
         pNode = pNode->m_pLeft;
-        Unk_TailAlc* pAlc = FUN_1409347f0(pThis);
+        Unk_TailAlc* pAlc = ((struct Unk_TailAlc*)&((std::_Tree_comp_alloc<std::_Tmap_traits<unsigned int, Unk_ALMissionState, std::less<unsigned int>, std::allocator<std::pair<unsigned int const, Unk_ALMissionState>>, 0>>*)(struct Unk_TailAlmTree*)(pThis))->_Getal());
         FUN_1409322a0(pAlc, FUN_140932100(&pRoot->m_val));
         FUN_140931d80(pAlc, pRoot);
     }
@@ -1635,7 +1635,7 @@ void FUN_140933a50(Unk_TailSet* pThis, Unk_TailSetNode* pRoot)
     {
         FUN_140933a50(pThis, pNode->m_pRight);
         pNode = pNode->m_pLeft;
-        Unk_TailAlc* pAlc = FUN_140934820(pThis);
+        Unk_TailAlc* pAlc = ((struct Unk_TailAlc*)&((std::_Tree_comp_alloc<std::_Tset_traits<Unk_TailSetVal, Unk_TailSetLess, std::allocator<Unk_TailSetVal>, 0>>*)(void*)(pThis))->_Getal());
         FUN_1409322c0(pAlc, FUN_140932110(&pRoot->m_val));
         FUN_140931e10(pAlc, pRoot);
     }
@@ -1644,7 +1644,7 @@ void FUN_140933a50(Unk_TailSet* pThis, Unk_TailSetNode* pRoot)
 // @0x140934680
 void FUN_140934680(Unk_TailSet* pThis, Unk_TailSetNode* pNode)
 {
-    FUN_140931e10(FUN_140934820(pThis), pNode);
+    FUN_140931e10(((struct Unk_TailAlc*)&((std::_Tree_comp_alloc<std::_Tset_traits<Unk_TailSetVal, Unk_TailSetLess, std::allocator<Unk_TailSetVal>, 0>>*)(void*)(pThis))->_Getal()), pNode);
 }
 
 // @0x140934730
@@ -1709,7 +1709,7 @@ void* FUN_140935170(Unk_TailAlc*, size_t n)
 // @0x1409351d0
 Unk_TailPair* FUN_1409351d0(std::vector<Unk_TailPair>* pThis, size_t n)
 {
-    if (!(FUN_140935ac0(pThis) > n))
+    if (!(((std::vector<std::pair<int, __int64>, std::allocator<std::pair<int, __int64>>>*)(void*)(pThis))->size() > n))
         FUN_140935120();
     return *FUN_140934be0(pThis) + n;
 }
@@ -1747,7 +1747,7 @@ bool FUN_1409355e0(std::vector<Unk_TailPair>* pThis)
 // @0x140935690
 Unk_TailIter* FUN_140935690(Unk_TailSet* pThis, Unk_TailIter* pRet) noexcept
 {
-    Unk_TailSetNode** pVal = (Unk_TailSetNode**)FUN_1409346e0(pThis);
+    Unk_TailSetNode** pVal = (Unk_TailSetNode**)((void*)&((std::_Tree_comp_alloc<std::_Tset_traits<Unk_TailSetVal, Unk_TailSetLess, std::allocator<Unk_TailSetVal>, 0>>*)(void*)(pThis))->_Get_data());
     FUN_1409326c0(pRet, *pVal, FUN_140932130(pVal));
     return pRet;
 }
@@ -1755,11 +1755,11 @@ Unk_TailIter* FUN_140935690(Unk_TailSet* pThis, Unk_TailIter* pRet) noexcept
 // @0x140935980
 Unk_TailIter* FUN_140935980(Unk_TailSet* pThis, Unk_TailIter* pRet, Unk_TailIter itWhere)
 {
-    void* pVal = FUN_1409346e0(pThis);
+    void* pVal = ((void*)&((std::_Tree_comp_alloc<std::_Tset_traits<Unk_TailSetVal, Unk_TailSetLess, std::allocator<Unk_TailSetVal>, 0>>*)(void*)(pThis))->_Get_data());
     Unk_TailIter itNext = itWhere;
     FUN_140932e60(&itNext);
     Unk_TailSetNode* pNode = FUN_1409340a0(pVal, itWhere.m_pNode);
-    Unk_TailAlc* pAlc = FUN_140934820(pThis);
+    Unk_TailAlc* pAlc = ((struct Unk_TailAlc*)&((std::_Tree_comp_alloc<std::_Tset_traits<Unk_TailSetVal, Unk_TailSetLess, std::allocator<Unk_TailSetVal>, 0>>*)(void*)(pThis))->_Getal());
     FUN_1409322c0(pAlc, FUN_140932110(&pNode->m_val));
     FUN_140931e10(pAlc, pNode);
     FUN_1409326c0(pRet, itNext.m_pNode, FUN_140932130(pVal));
@@ -1800,7 +1800,7 @@ Unk_TailTreeVal* FUN_140932830(Unk_TailTreeVal* pThis)
 // @0x1409334e0
 void FUN_1409334e0(CPtred* pPtr)
 {
-    FUN_14015b020(pPtr);
+    CPtred::AddRefPtred(pPtr);
 }
 
 // @0x140934710

@@ -16,7 +16,7 @@
 #include "ms2/client/ms2/uiskillpreviewdialog.h"      // IUIAvatarEventListener, Unk_SkillPreviewPtr
 
 class UIAvatarPet;
-class Unk_StatList;
+class ASScrollingList;
 class CMsgBoxData;
 
 // One part of the page (stat / skill / basic / inventory / preview). The slot numbers follow the exe vftable 0x142e19748.
@@ -58,7 +58,7 @@ public:
     virtual void vfunc_5(int nTab);                     //  5 0x140cbafa0
     virtual int vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs);   // 6 0x140cbafe0
 
-    void FUN_140cbb060(MS2Ptr<Unk_StatList> list);     // fill the scrolling list with the pet's skills
+    void FUN_140cbb060(MS2Ptr<ASScrollingList> list);     // fill the scrolling list with the pet's skills
     void OnAutoItemUse();                               // open the auto use option dialog
     void OnAutoItemPick();                               // open the auto pick option dialog
 };

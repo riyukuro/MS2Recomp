@@ -12,6 +12,8 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/questdatatable.h"
 #include <vector>
 #include <algorithm>
 
@@ -27,8 +29,7 @@ public:
     int FUN_14074e510(unsigned int);
     void FUN_14074cca0(ATL::CAtlArray<Unk_QuestDebugPtr<Unk_QuestDebugData>>&, int);
 };
-Unk_QuestDebugManager* FUN_140bfc4b0();
-Unk_QuestDebugManager* FUN_1407476c0();
+class UIQuestEventDispatcher* FUN_140bfc4b0();   // C3: was FUN_140bfc4b0
 class Unk_QuestDebugCheck { public: unsigned char FUN_1422ce0e0(); };
 class Unk_QuestDebugInput { public: CStringW FUN_1422e0b00(); };
 class Unk_QuestDebugText { public: void FUN_1422c4cd0(const CStringW&); };
@@ -92,7 +93,7 @@ CString FUN_140bc6280(const char*, const char*, const char*, const int&, const c
 class Unk_QuestDebugLocalizer { public: CStringW FUN_1422b0570(const CString&); };
 Unk_QuestDebugLocalizer* FUN_14025e7a0();
 class Unk_QuestDebugAccess { public: bool FUN_14116d9c0(int, int, int); };
-Unk_QuestDebugAccess* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class ASData : public CPtred
 {
 public:
@@ -264,8 +265,7 @@ unsigned __int64 FUN_140761ba0(unsigned int, int);
 unsigned __int64 FUN_140761cc0(unsigned int, int);
 void FUN_1416e5890(int, ATL::CAtlArray<CStringW>&);
 int FUN_1416e6100(int, int);
-class Unk_QuestDebugPlayer { public: void* FUN_141bd0cc0(); };
-Unk_QuestDebugPlayer* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 class Unk_QuestDebugState
 {
 public:
@@ -273,7 +273,7 @@ public:
     int FUN_140745590(unsigned int);
 };
 class Unk_QuestDebugGlobal { public: void* m_0; void* m_8; Unk_QuestDebugState state; };
-Unk_QuestDebugGlobal* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 CStringW FUN_1401ceea0(const wchar_t*, const int&);
 class Unk_QuestDebugTime
 {
@@ -315,7 +315,7 @@ CString FUN_14016a600(const wchar_t*, int);
 CStringW FUN_14016a730(const char*, int);
 void FUN_1412751b0(const CStringW&, int);
 CString FUN_14086c880(const char*, const int&, const int&, const int&);
-__int64 FUN_140869440();
+__int64 GetServerTime();
 class Unk_QuestDebugMap;
 CStringW FUN_141a97770(Unk_QuestDebugMap*);
 // Comparator's by-value intrusive pointers reproduce the original cleanup states.
@@ -340,12 +340,12 @@ UIQuestDebugDialog::UIQuestDebugDialog()
     m_refresh = 0;
     m_40 = 1;
     FUN_1422dc3b0(1);
-    FUN_140bfc4b0()->FUN_141aa87c0(this);
+    ((class Unk_QuestDebugManager*)FUN_140bfc4b0())->FUN_141aa87c0(this);
 }
 // @0x141a92fd0
 UIQuestDebugDialog::~UIQuestDebugDialog()
 {
-    FUN_140bfc4b0()->FUN_141aa8850(this);
+    ((class Unk_QuestDebugManager*)FUN_140bfc4b0())->FUN_141aa8850(this);
 }
 // @0x141a930a0
 CString UIQuestDebugDialog::GetTypeName() { return "QuestDebugDialog"; }
@@ -458,7 +458,7 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
             if (quest) {
                 CStringW list;
                 for (size_t i = 0; i < quest->required.GetCount(); ++i) {
-                    if (FUN_140764020()->state.FUN_140745590(quest->required[i]) == 0) {
+                    if (((class Unk_QuestDebugGlobal*)FUN_140764020())->state.FUN_140745590(quest->required[i]) == 0) {
                         if (list.GetLength() != 0) list += L",";
                         list += FUN_140292a70(L"{0}", quest->required[i]);
                     }
@@ -498,7 +498,7 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
             }
         }
     } else if (_stricmp("onExport", method) == 0) {
-        Unk_QuestDebugTime now(FUN_140869440());
+        Unk_QuestDebugTime now(GetServerTime());
         int second = now.GetSecond();
         int minute = now.GetMinute();
         int hour = now.GetHour();
@@ -518,7 +518,7 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
             CString state;
             if (quest->locked) state = "locking";
             else {
-                if (FUN_1407476c0()->FUN_14074e510(id)) state = "not acceptable";
+                if (reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074e510(id)) state = "not acceptable";
                 else state = "acceptable";
             }
             CString feature;
@@ -536,7 +536,7 @@ MS2_REPLACE_METHOD(0x141A93340, UIQuestDebugDialog, vfunc_28, 5937, 0x25607CCF);
 int UIQuestDebugDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13()) return 1;
-    if (FUN_14025e7c0()->FUN_14116d9c0(28, 0, 0)) {
+    if (((class Unk_QuestDebugAccess*)FUN_14025e7c0())->FUN_14116d9c0(28, 0, 0)) {
         if (m_30.get()) m_30->Invoke("onEnterKey");
         return 1;
     }
@@ -621,7 +621,7 @@ void UIQuestDebugDialog::FUN_141a95010()
     if (vfunc_55()) return;
     CStringW filter = FUN_141a966a0(1);
     ATL::CAtlArray<int> chapters;
-    FUN_1407476c0()->FUN_14074cf20(chapters);
+    reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cf20(chapters);
     if (Unk_QuestDebugPtr<Unk_QuestDebugList> list = FUN_140c02900("m_chapter")) {
         list->FUN_1422dd1d0();
         for (size_t i = 0; i < chapters.GetCount(); ++i) {
@@ -657,12 +657,12 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
     // The count formatter is a separate unrecovered COMDAT; its call and two array arguments are retained below.
     if (Unk_QuestDebugPtr<Unk_QuestDebugText> text = FUN_140bb4cf0("m_count")) {
         ATL::CAtlArray<Unk_QuestDebugPtr<Unk_QuestDebugData>> available, completed;
-        FUN_1407476c0()->FUN_14074cad0(available, 0);
-        FUN_1407476c0()->FUN_14074cad0(completed, 1);
-        FUN_1407476c0()->FUN_14074cad0(completed, 2);
-        FUN_1407476c0()->FUN_14074cad0(available, 6);
-        FUN_1407476c0()->FUN_14074cad0(available, 8);
-        FUN_1407476c0()->FUN_14074cad0(available, 9);
+        reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cad0(available, 0);
+        reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cad0(completed, 1);
+        reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cad0(completed, 2);
+        reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cad0(available, 6);
+        reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cad0(available, 8);
+        reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cad0(available, 9);
         CStringW format = FUN_14025e7a0()->FUN_1422b0570("$s_quest_debug_textfield_count");
         text->FUN_1422c4cd0(StringFormat(format, available.GetCount(), completed.GetCount()));
     }
@@ -675,15 +675,15 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
     std::vector<Unk_QuestDebugPtr<Unk_QuestDebugData>> quests;
     if (chapter) {
         ATL::CAtlArray<unsigned int> ids;
-        FUN_1407476c0()->FUN_14074cfd0(chapter, ids);
+        reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cfd0(chapter, ids);
         for (size_t i = 0; i < ids.GetCount(); ++i) {
             unsigned int id = ids[i];
             quests.push_back(FUN_14074bc40(id));
         }
     } else {
         ATL::CAtlArray<Unk_QuestDebugPtr<Unk_QuestDebugData>> all;
-        FUN_1407476c0()->FUN_14074cad0(all, 11);
-        FUN_1407476c0()->FUN_14074cca0(all, 0);
+        reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cad0(all, 11);
+        reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cca0(all, 0);
         for (size_t i = 0; i < all.GetCount(); ++i) {
             auto quest = all[i];
             unsigned int id = quest->FUN_14074b030();
@@ -693,8 +693,8 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
             if (!FUN_141a96960(id, name, idText, filter)) continue;
             if (progress || complete) {
                 int keep = 0;
-                if (progress) { if (FUN_140764020()->state.FUN_140745630(id)) keep = 1; }
-                if (complete) { if (FUN_140764020()->state.FUN_140745590(id)) keep = 1; }
+                if (progress) { if (((class Unk_QuestDebugGlobal*)FUN_140764020())->state.FUN_140745630(id)) keep = 1; }
+                if (complete) { if (((class Unk_QuestDebugGlobal*)FUN_140764020())->state.FUN_140745590(id)) keep = 1; }
                 if (!keep) continue;
             }
             if (autoStart && !quest->autoStart) continue;
@@ -758,7 +758,7 @@ MS2_REPLACE_METHOD(0x141A966A0, UIQuestDebugDialog, FUN_141a966a0, 452, 0x063564
 int UIQuestDebugDialog::FUN_141a96870(int chapter)
 {
     ATL::CAtlArray<unsigned int> ids;
-    FUN_1407476c0()->FUN_14074cfd0(chapter, ids);
+    reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cfd0(chapter, ids);
     for (size_t i = 0; i < ids.GetCount(); ++i) {
         auto quest = FUN_14074bc40(ids[i]);
         if (!quest->locked) return 0;

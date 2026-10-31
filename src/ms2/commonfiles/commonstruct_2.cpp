@@ -363,14 +363,14 @@ i64 FUN_14027c220(i64 p) { return p; }
 // @0x14027c230
 i64 FUN_14027c230(i64 p) { return p; }
 
-void FUN_140274c00(i64, i64);
+__int64 FUN_140274c00(__int64, __int64);   // C3: was FUN_140274c00
 // @0x14027c240
 i64 FUN_14027c240(i64 a, i64 b) { FUN_140274c00(a, FUN_14027c1f0(b)); return a; }
 // @0x14027c270
 i64 FUN_14027c270(i64* p) { return FUN_14027c1f0(*p); }
 
 // vector<Unk_IngRef>::insert(where, first, last)
-i64 FUN_140288a40(i64); void FUN_140279de0(i64, i64, i64, i64, Unk_StlTag); void FUN_140288770(i64, i64, i64);
+i64 FUN_140288a40(i64); void FUN_140279de0(i64, i64, i64, i64, Unk_StlTag);__int64 FUN_140288770(__int64, __int64, __int64);   // C3: was FUN_140288770
 // @0x14027c290
 i64 FUN_14027c290(i64 self, i64 out, i64 where, i64 first, i64 last)
 {
@@ -435,14 +435,13 @@ struct Unk_Rec48 {
     void* a; void* b; int n; float x, y, z; u64 id; void* c; int d; int e; void* f; void* g;
 };
 MS2_CHECK_SIZE(Unk_Rec48, 0x48);
-void FUN_140285f70(Unk_Rec48*, float, float, float, bool);
 void FUN_140286020(Unk_Rec48*, float, float, float, bool);
 // @0x14027c6b0
 Unk_Rec48* FUN_14027c6b0(Unk_Rec48* t, int n, float x, float y, float z, int e)
 {
     t->a = 0; t->b = 0; t->n = n; t->x = x; t->y = y; t->z = z;
     t->id = 0xFFFFFFFF; t->c = 0; t->d = 0; t->e = e; t->f = 0; t->g = 0;
-    FUN_140285f70(t, x, y, z, false);
+    ((ATL::CAtlMap<int, int, ATL::CElementTraits<int>, ATL::CElementTraits<int>>*)(struct Unk_Rec48*)(t))->SetOptimalLoad(x, y, z, false);
     return t;
 }
 // @0x14027c7a0

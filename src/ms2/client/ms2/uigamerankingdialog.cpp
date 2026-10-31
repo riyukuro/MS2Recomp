@@ -66,7 +66,10 @@
 // Status: see progress/status.tsv. Callees that are not recovered yet are declared below ("unit-local
 // placeholders") or in src/ms2/placeholder/; their names are Ghidra's (FUN_<va>) unless evident.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uigamerankingdialog.cpp"
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 #include "ms2/placeholder/mstime.h"
 #include "uigamerankingdialog.h"
 #include "ms2/placeholder/header_statics_a.h"
@@ -94,6 +97,7 @@
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/seasondatatable.h"
+#include "ms2/placeholder/ascript.h"
 
 static UICommon::CMyPCKeyInputController s_keyInputController;
 
@@ -110,15 +114,6 @@ public:
     virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool b);
-};
-// "m_items" / "m_mainCategory": the lists.
-class Unk_RankList : public Unk_RankCtl
-{
-public:
-    void FUN_1422dd1d0();                                   // clear
-    void FUN_1422dcca0(int n);
-    void FUN_1422e17f0(int n);
-    void FUN_1422dd230(const ASObj& row);                   // append a row
 };
 // "m_tab": the season tab strip.
 class Unk_RankTab : public Unk_RankCtl
@@ -161,7 +156,6 @@ class Unk_RankAS : public AScript
 {
 public:
     Scaleform::GFx::Value FUN_140e35c60(const char* szMethod, int n);                   // @0x140e35c60
-    Scaleform::GFx::Value FUN_1409ba0d0(const char* szMethod, int a1, int a2);
 };
 class Unk_RankMovie : public AScript
 {
@@ -809,7 +803,7 @@ void UIGameRankingDialog::FUN_140e305a0(Unk_RankCatPtr spCategory)
 // @0x140e31140
 void UIGameRankingDialog::FUN_140e31140()
 {
-    if (MS2Ptr<Unk_RankList> spList = FUN_140c02900("m_mainCategory"))
+    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_mainCategory"))
     {
         spList->FUN_1422dd1d0();
         ASObj root(2);
@@ -1161,7 +1155,7 @@ CStringW UIGameRankingDialog::FUN_140e33ae0(Unk_RankCatPtr spCategory, Unk_RankS
 // @0x140e33e20
 void UIGameRankingDialog::FUN_140e33e20()
 {
-    if (MS2Ptr<Unk_RankList> spList = FUN_140c02900("m_mainCategory"))
+    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_mainCategory"))
     {
         int nIndex = 0;
         for (POSITION pos = m_categories.GetHeadPosition(); pos != 0; m_categories.GetNext(pos), nIndex++)

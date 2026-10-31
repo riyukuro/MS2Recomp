@@ -20,7 +20,7 @@ class ASData;
 class ASObj;
 class CAchieve;
 class Unk_AcHero;
-class Unk_AcList;
+class ASScrollingList;
 
 class UIAchieveDialog : public UIDialog
 {
@@ -103,7 +103,7 @@ public:
 
     // movie children (ICF'd child lookups of the exe)
     MS2Ptr<Unk_AcHero> FUN_140ede180(const CString& strName);
-    MS2Ptr<Unk_AcList> FUN_140c02900(const CString& strName);
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);
 
 private:
     MS2_LAYOUT_FRIEND;

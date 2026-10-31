@@ -8,7 +8,10 @@
 // MS2-PIN: ??_GCGameOptionInputDefault@@UEAAPEAXI@Z 0x141254110
 // MS2-PIN: ??_GNotifyChangeGameOptionInput@@UEAAPEAXI@Z 0x141254150
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gameoptioninputdefault.cpp"    // assumed
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 #include "gameoptioninputdefault.h"
 #include <stdlib.h>
 #include "ms2/client/ms2/uigameoptiondialog.h"
@@ -36,25 +39,7 @@
 
 // ---- unit-local views of exe types ----
 
-// The key list control of an input tab ("m_keyList": clear / append rows, slot 24 refresh). The exe object is an
-// ASTileCacheList (RTTI .?AVASTileCacheList@@, vftable 0x143111728, base ASTileList, ctor 0x1422cf590, 0x88 bytes).
-class Unk_GiKeyList : public AScript
-{
-public:
-    Unk_GiKeyList(const Scaleform::GFx::Value& v, int nMovieId);        // 0x1422cf590
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                                               // clear
-    void FUN_1422dd230(const ASObj& row);                               // append a row
-private:
-    void* m_unrecovered_40[9];
-};
-MS2_CHECK_SIZE(Unk_GiKeyList, 0x88);
+MS2_CHECK_SIZE(ASScrollingList, 0x88);
 
 // A key code as a custom-formatted fmt argument (same name as guess\usercommandcli.cpp's).
 enum Unk_CommandKeyCode : int {};
@@ -90,16 +75,13 @@ public:
 
 UIMainPlayerInfo* FUN_140931900(int nUiId);
 UIGameOptionDialog* FUN_140a02e60(int nDialogId);
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 MS2InputService* FUN_140a58540();
 CStringTable* GetStringTable();
-NotifySystem* FUN_140939a10();
-bool FUN_1407cce10(const Scaleform::GFx::Value* v);                     // the value is an object
-double FUN_140f17ed0(const Scaleform::GFx::Value& v);                   // Value::GetNumber
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 void FUN_14151f200();                                                   // close the open message box
 void FUN_141901390(int nRelease, int nUiType);                          // block / release the player's keys for a UI
-void FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nPage, unsigned int nSlot);   // put a quick slot
+int FUN_14092f690(int, int, __int64, int, int);   // C3: was FUN_14092f690
 void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);       // notice box
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW tag);          // notice box by string id
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
@@ -170,12 +152,12 @@ MS2_REPLACE_METHOD(0x141250C80, CGameOptionInputDefault, vfunc_4, 49, 0x11C004CC
 // @0x141250cc0
 void CGameOptionInputDefault::FUN_141250cc0(int nCategory)
 {
-    MS2Ptr<Unk_GiKeyList> spList = GetOptionDialog()->GetTabChild<Unk_GiKeyList>("m_keyList", nCategory);
+    MS2Ptr<ASScrollingList> spList = GetOptionDialog()->GetTabChild<ASScrollingList>("m_keyList", nCategory);
     if (spList == 0)
         return;
-    double dScroll = FUN_140f17ed0(spList.operator Unk_GiKeyList*()->FUN_1422baa20("scrollPosition"));
-    int bGamePad = FUN_140166410()->FUN_14036d570(0xb5);
-    spList.operator Unk_GiKeyList*()->FUN_1422dd1d0();
+    double dScroll = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spList.operator ASScrollingList*()->FUN_1422baa20("scrollPosition")))->GetNumber();
+    int bGamePad = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5);
+    spList.operator ASScrollingList*()->FUN_1422dd1d0();
     TPtrValue<ATL::CAtlList<MS2Ptr<CKeySettingParam> > > spKeys = FUN_1409331f0()->FUN_141430710(m_nId);
     if (spKeys.get() != 0)
     {
@@ -205,11 +187,11 @@ void CGameOptionInputDefault::FUN_141250cc0(int nCategory)
             row.FUN_1407cbbe0("secondaryEnable", 0 != 1 && spKey->m_nSecondaryLocked == 0);
             row.FUN_1407cbbe0("thirdlyEnable", 0 != 1 && spKey->m_nThirdlyLocked == 0);
             row.FUN_1407cb9c0("isGamePad", bGamePad);
-            spList.operator Unk_GiKeyList*()->FUN_1422dd230(row);
+            spList.operator ASScrollingList*()->FUN_1422dd230(row);
         }
     }
-    static_cast<ASObj*>(static_cast<AScript*>(spList.operator Unk_GiKeyList*()))->FUN_140e06d60("scrollPosition", dScroll);
-    spList.operator Unk_GiKeyList*()->vfunc_24(true);
+    static_cast<ASObj*>(static_cast<AScript*>(spList.operator ASScrollingList*()))->FUN_140e06d60("scrollPosition", dScroll);
+    spList.operator ASScrollingList*()->vfunc_24(true);
     MS2Ptr<ASUIComponent> spTab = GetOptionDialog()->FUN_14124ff50(m_nType);
     if (static_cast<ASUIComponent*>(spTab) != 0)
         static_cast<AScript*>(spTab.operator->())->Invoke("refreshScrollBar");
@@ -427,7 +409,7 @@ void CGameOptionInputDefault::vfunc_12()
 {
     if (GetOptionDialog()->FUN_141254a00() != 0)
     {
-        if (FUN_140166410()->FUN_14036d570(0xb5) == true)
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == true)
         {
             if (FUN_141252c10() != 0)
             {
@@ -469,7 +451,7 @@ void CGameOptionInputDefault::FUN_141252200(int nPadKind)
     {
         FUN_141252970();
         BOOL bDefault = FALSE;
-        if (FUN_140166410()->FUN_14036d570(0xb5) == true)
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == true)
         {
             if (nPadKind == 2)
             {
@@ -866,14 +848,14 @@ void CGameOptionInputDefault::FUN_1412532f0(MS2Ptr<CGameOptionInputDefault> sp)
 {
     if (sp == 0 || sp.get()->GetActive() == 0)
         return;
-    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyChangeGameOptionInput(sp.get()->FUN_140a02e50())));
+    ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyChangeGameOptionInput(sp.get()->FUN_140a02e50())));
 }
 
 // @0x1412533f0
 void CGameOptionInputDefault::FUN_1412533f0()
 {
     for (int nOption = 9; nOption <= 13; nOption++)
-        FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyChangeGameOptionInput(nOption)));
+        ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyChangeGameOptionInput(nOption)));
 }
 MS2_REPLACE(0x1412533F0, CGameOptionInputDefault::FUN_1412533f0, 172, 0x3EB74F2D);
 
@@ -884,7 +866,7 @@ void ASObj::FUN_141253870(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x1412536b0
@@ -893,7 +875,7 @@ template <class T> MS2Ptr<T> UIGameOptionDialog::GetTabChild(CString strName, in
     if (!m_30)
         return MS2Ptr<T>(0);
     Scaleform::GFx::Value child = m_30->Invoke("getTabChild", strName, nIndex);
-    if (FUN_1407cce10(&child))
+    if (((Scaleform::GFx::Value*)(void*)(&child))->IsDisplayObject())
     {
         MS2Ptr<T> sp = Unk_ASCreate<T>(m_28, child);
         if (static_cast<T*>(sp) != 0)

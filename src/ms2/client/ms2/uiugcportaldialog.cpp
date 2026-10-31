@@ -141,9 +141,8 @@ public:
     std::set<int>* FUN_141b979b0();                             // +0x08 the remembered ids
 };
 Unk_UgcpMgr* FUN_140cb17d0();
-struct Unk_WsD_IdArray { int* m_data; unsigned __int64 m_count; unsigned __int64 m_cap; };   // ATL::CAtlArray<int>
-extern Unk_WsD_IdArray DAT_143ab3058;                           // ids already remembered
-int FUN_140408410(Unk_WsD_IdArray* arr, int* id);               // CAtlArray<int>::Find
+extern ATL::CAtlArray<unsigned int> DAT_143ab3058;              // ids already remembered
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);   // show a notice
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -366,7 +365,7 @@ void UIUGCPortalDialog::FUN_140fb1040()
             MS2Ptr<Unk_UgcpEntry> spEntry = *j;
             if (spEntry.operator->()->m_18 != 0)
                 continue;
-            if (FUN_140408410(&DAT_143ab3058, &spEntry.operator->()->m_34) == -1)
+            if (Unk_ArrayFind<unsigned int>(DAT_143ab3058, reinterpret_cast<const unsigned int&>(spEntry.operator->()->m_34)) == -1)
                 continue;
             ids.push_back(spEntry.operator->()->m_34);
         }
@@ -376,7 +375,7 @@ void UIUGCPortalDialog::FUN_140fb1040()
     for (std::set<int>::iterator k = remembered.begin(); k != kEnd; ++k)
     {
         int nId = *k;
-        if (FUN_140408410(&DAT_143ab3058, &nId) == -1)
+        if (Unk_ArrayFind<unsigned int>(DAT_143ab3058, reinterpret_cast<const unsigned int&>(nId)) == -1)
             continue;
         ids.push_back(nId);
     }

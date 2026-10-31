@@ -47,11 +47,14 @@ void FUN_1412751b0(const CStringW& strText, int nKind);
 CStringW FUN_1409404f0(__int64 nValue);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW BlockFormat(int nStringId);
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void FUN_1409304d0(__int64 nValue, int a, int b, int c);
 void FUN_140930af0(__int64 nValue);
-void* FUN_140aa6d40();
-void FUN_141b0ce20(void* pObject, int nKind, int nValue);
+class UIStatusEventDispatcher   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141b0ce20(int, int);
+};
 void FUN_140200e40(Unk_ReportData* pData);                          // the report struct's ctor
 
 UIRewardNotify* FUN_140938cd0(int nUiType);
@@ -64,7 +67,11 @@ void FUN_140c7ee40(UITencentUserReportDialog* pDialog, const Unk_ReportData* pDa
 class Unk_TcValueApi : public AdditionalCliList { };
 class Unk_TcObject { public: Unk_TcValueApi* FUN_1416749a0(); };
 class Unk_TcContext { public: Unk_TcObject* FUN_141bd0cc0(); };
-Unk_TcContext* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // ---- CClientPlatformTencent ----
 // @0x140c7cd70
@@ -136,7 +143,7 @@ int CClientPlatformTencent::vfunc_35(void*) { return 3; }
 // @0x140c7d040
 int CClientPlatformTencent::vfunc_36()
 {
-    Unk_TcObject* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_TcObject* pPlayer = ((class Unk_TcContext*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer) {
         return pPlayer->FUN_1416749a0()->FUN_140971260(0x2fac971);
     } else {
@@ -162,7 +169,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         __int64 nBalance = static_cast<CInPacket*>(a1)->ReadInt64();
         __int64 nDelta = static_cast<CInPacket*>(a1)->ReadInt64();
         FUN_1409304d0(nBalance, 0, 0, 0);
-        FUN_141b0ce20(FUN_140aa6d40(), 0xb, 0);
+        ((class UIStatusEventDispatcher*)(void*)(((void*)TSingleton<UIStatusEventDispatcher>::GetInstance())))->FUN_141b0ce20(0xb, 0);
         if (nDelta > 0) {
             UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
             if (pNotify != 0)
@@ -174,7 +181,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
             FUN_141276180("Merat_Use", "");
             CStringW strDelta = FUN_1409404f0(-nDelta);
             FUN_1412751b0(FUN_14052bd00(0x2d9, strDelta), 6);
-            if (FUN_140166410()->FUN_14036d570(0xba))
+            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xba))
                 FUN_1412751b0(BlockFormat(0x2db), 6);
         }
         break;
@@ -184,7 +191,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         __int64 nBalance = static_cast<CInPacket*>(a1)->ReadInt64();
         __int64 nDelta = static_cast<CInPacket*>(a1)->ReadInt64();
         FUN_140930af0(nBalance);
-        FUN_141b0ce20(FUN_140aa6d40(), 0xd, 0);
+        ((class UIStatusEventDispatcher*)(void*)(((void*)TSingleton<UIStatusEventDispatcher>::GetInstance())))->FUN_141b0ce20(0xd, 0);
         if (nDelta > 0) {
             UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
             if (pNotify != 0)
@@ -196,7 +203,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
             FUN_141276180("Merat_Use", "");
             CStringW strDelta = FUN_1409404f0(-nDelta);
             FUN_1412751b0(FUN_14052bd00(0x2da, strDelta), 6);
-            if (FUN_140166410()->FUN_14036d570(0xba))
+            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xba))
                 FUN_1412751b0(BlockFormat(0x2db), 6);
         }
         break;
@@ -206,11 +213,11 @@ void CClientPlatformTencent::vfunc_42(void* a1)
     {
         __int64 nMerat = static_cast<CInPacket*>(a1)->ReadInt64();
         FUN_1409304d0(nMerat, 0, 0, 0);
-        FUN_141b0ce20(FUN_140aa6d40(), 0xb, 0);
+        ((class UIStatusEventDispatcher*)(void*)(((void*)TSingleton<UIStatusEventDispatcher>::GetInstance())))->FUN_141b0ce20(0xb, 0);
         DAT_143ab2966 = static_cast<CInPacket*>(a1)->ReadUInt8() == 1 ? true : false;
         __int64 nBalance = static_cast<CInPacket*>(a1)->ReadInt64();
         FUN_140930af0(nBalance);
-        FUN_141b0ce20(FUN_140aa6d40(), 0xd, 0);
+        ((class UIStatusEventDispatcher*)(void*)(((void*)TSingleton<UIStatusEventDispatcher>::GetInstance())))->FUN_141b0ce20(0xd, 0);
         break;
     }
     case 4:

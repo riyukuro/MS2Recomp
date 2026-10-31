@@ -38,14 +38,25 @@ class Unk_PatchTableA;
 class Unk_PatchTableB;
 class Unk_PatchTableC;
 void LoadQuestDescription();
-void FUN_14093af30();
-void FUN_14067ee90(Unk_PatchTableA* p);
+class CAchieveUIData   // C3: member view for the former free stand-ins
+{
+public:
+    static void LoadAll();
+};
 void LoadSystemMailContent();
 void LoadTalkScripts();
-bool FUN_14087ea50(Unk_PatchTextFilter* p);                // reloads the word filter
+class CServerStringGroup   // C3: member view for the former free stand-ins
+{
+public:
+    bool Load();
+};
 bool FUN_141811960(Unk_PatchTableB* p);
-void* FUN_14025e7d0();
-void FUN_140259930(void* p);
+class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
+class CommonString   // C3: member view for the former free stand-ins
+{
+public:
+    void Reload();
+};
 CNetworkService* FUN_140714f90();
 
 // The text-filter owner (global DAT_143ab2080); the filter sits at +8.
@@ -274,13 +285,13 @@ MS2_EMIT_CRT_MEMMOVE_S();
 void COnlinePatchManagerCli::ReloadTables()
 {
     LoadQuestDescription();
-    FUN_14093af30();
-    FUN_14067ee90(reinterpret_cast<Unk_PatchTableA*>(TSingleton<CMaidInfoTable>::GetInstance()));
+    CAchieveUIData::LoadAll();
+    ((class CMaidInfoTable*)(class Unk_PatchTableA*)(reinterpret_cast<Unk_PatchTableA*>(TSingleton<CMaidInfoTable>::GetInstance())))->Load();
     LoadSystemMailContent();
     LoadTalkScripts();
-    FUN_14087ea50(FUN_140a87680()->FUN_140a87690());
+    ((class CServerStringGroup*)(class Unk_PatchTextFilter*)(FUN_140a87680()->FUN_140a87690()))->Load();
     FUN_141811960(reinterpret_cast<Unk_PatchTableB*>(TSingleton<CStringTable>::GetInstance()));
-    FUN_140259930(FUN_14025e7d0());
+    ((class CommonString*)(void*)(((void*)FUN_14025e7d0())))->Reload();
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9f910-0x142c9f930 .text$yd

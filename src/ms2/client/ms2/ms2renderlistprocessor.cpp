@@ -55,7 +55,11 @@ public:
     NiMaterialPtr m_aspMaterial[7];                         // +0x30
     std::map<NiNodePtr, int> m_kRootModes;                  // +0x68
 };
-Unk_RLPPostProcessSvc* FUN_1409a8b20();
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 // A material-table entry (see ms2materialswapprocessor.cpp); only its state word (+0x540) is read here. Its exe
 // accessor (0x1427542f0) lies in the statically linked runtime range that the hook DLL does not map, so it is inline.
 struct Unk_MaterialTable;                                   // DAT_143d69198 (MS2StandardMaterial RTTI)
@@ -66,8 +70,11 @@ struct Unk_MaterialEntry
     bool IsActive() const { return m_nState - 1 <= 2; }
 };
 extern Unk_MaterialTable DAT_143d69198;
-Unk_MaterialEntry* FUN_140a17af0(Unk_MaterialTable* pTable, const NiMaterial* pMaterial);   // table lookup, NULL-safe
-int FUN_140ef4dd0(Unk_MaterialEntry* pEntry);               // colour-shift mode refresh
+class Unk_CubeKind   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140ef4dd0();
+};
 extern const NiRTTI DAT_143d691a8;                          // OutlineMaterial::ms_RTTI
 extern const NiRTTI DAT_143ad1588;                          // EffectNode::ms_RTTI
 extern int DAT_143ae2b34;
@@ -82,16 +89,14 @@ extern NiFixedString DAT_143ae50b0;                         // alpha shell membe
 extern NiFixedString DAT_143ae51d0;                         // alpha depth-bias tag
 extern NiFixedString DAT_143ae52a8;                         // outline material name
 NiNode* FUN_141d15010(NiAVObject* pkObject);                // topmost ancestor of the object
-NiNode* FUN_140a0b000(NiAVObject* pkObject);                // parent of the object
 float FUN_141b71c50();                                      // depth bias of tagged alpha objects
 bool FUN_141568c20(NiRenderObject* pkObject);
 bool FUN_141568c90(NiRenderObject* pkObject);
-int FUN_141568e90(NiRenderObject* pkObject);                // outline allowed
-int FUN_1415690c0(NiRenderObject* pkObject);                // alpha depth bias tag
+unsigned int FUN_141568e90(class NiAVObject*);   // C3: was FUN_141568e90
+unsigned int FUN_1415690c0(class NiAVObject*);   // C3: was FUN_1415690c0
 bool FUN_14098dfc0(NiAVObject* pkObject);
 void FUN_1410479a0(NiObjectNET* pkObject, const NiFixedString& kName, const NiColor& kColor);   // set colour extra data
 CSkillCollisionManager* FUN_141469a90();
-WorldService* FUN_1403ed2d0();
 DecoEditService* BrushService();
 
 // ---- file-scope statics (.text$di) -------------------------------------------------------------------------------------
@@ -130,7 +135,7 @@ static CString s_strStun4("stun");
 MS2RenderListProcessor::MS2RenderListProcessor()
     : m_spMaterial(0)
 {
-    FUN_1409a8b20()->FUN_1416aa330();
+    ((class Unk_RLPPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa330();
     m_spMaterial = 0;
     m_ppkSortedAlpha = 0;
     m_pkAlphaObjects = 0;
@@ -234,7 +239,7 @@ void MS2RenderListProcessor::PreRenderProcessList(const NiVisibleArray* pkInput,
 
                     int bBias = 0;
                     if (DAT_143ae2b34)
-                        bBias = FUN_1415690c0(&kMesh);
+                        bBias = FUN_1415690c0((class NiAVObject*)(&kMesh));
                     else
                         bBias = kMesh.GetExtraData(DAT_143ae51d0) != 0;
                     if (bBias)
@@ -267,7 +272,7 @@ void MS2RenderListProcessor::PreRenderProcessList(const NiVisibleArray* pkInput,
 
         int bOutline = 1;
         if (DAT_143ae2b34)
-            bOutline = FUN_141568e90(&kMesh);
+            bOutline = FUN_141568e90((class NiAVObject*)(&kMesh));
         if (bOutline)
         {
             NiFloatExtraData* pkWidth = NiDynamicCast(NiFloatExtraData, kMesh.GetExtraData(DAT_143ae5120));
@@ -368,7 +373,7 @@ void MS2RenderListProcessor::PreRenderProcessList(const NiVisibleArray* pkInput,
     RenderAlphaList(uiDepthIndex, kShells, kWorldDir);
     if (FUN_141469a90())
         FUN_141469a90()->Tick();
-    FUN_1403ed2d0()->FUN_141bc12b0();
+    WorldService::GetInstance()->FUN_141bc12b0();
     BrushService()->ApplyBrush();
     m_kNoSortVisibleArray.RemoveAll();
     RestoreMaterials(kSaved);
@@ -499,14 +504,14 @@ MS2_REPLACE_METHOD(0x1414DD110, MS2RenderListProcessor, RenderGroups, 1101, 0x3C
 // @0x1414dd570
 void MS2RenderListProcessor::ApplyEffectMaterial(NiRenderObject* pkObject, MS2SavedMaterialMap& kSaved)
 {
-    Unk_MaterialEntry* pkEntry = FUN_140a17af0(&DAT_143d69198, pkObject->GetActiveMaterial());
+    Unk_MaterialEntry* pkEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), pkObject->GetActiveMaterial()));
     if (!pkEntry)
         return;
     if (!pkEntry->IsActive())
         return;
 
-    std::map<NiNodePtr, int>::const_iterator it = FUN_1409a8b20()->m_kRootModes.find(FUN_141d15010(pkObject));
-    if (it == FUN_1409a8b20()->m_kRootModes.end())
+    std::map<NiNodePtr, int>::const_iterator it = ((class Unk_RLPPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.find(FUN_141d15010(pkObject));
+    if (it == ((class Unk_RLPPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.end())
         return;
 
     int iMode = it->second;
@@ -518,13 +523,13 @@ void MS2RenderListProcessor::ApplyEffectMaterial(NiRenderObject* pkObject, MS2Sa
                 pkObject->AddExtraData(DAT_143ae5130, NiNew NiFloatExtraData(0.3f));
             if (!NiDynamicCast(NiFloatExtraData, pkObject->GetExtraData(DAT_143ae5138)))
                 pkObject->AddExtraData(DAT_143ae5138, NiNew NiFloatExtraData(0.7f));
-            if (FUN_140ef4dd0(pkEntry) == 2)
+            if (((class Unk_CubeKind*)(struct Unk_MaterialEntry*)(pkEntry))->FUN_140ef4dd0() == 2)
                 iMode = 5;
         }
         else
         {
             SaveMaterial(kSaved, pkObject);
-            pkObject->ApplyAndSetActiveMaterial(FUN_1409a8b20()->m_aspMaterial[iMode]);
+            pkObject->ApplyAndSetActiveMaterial(((class Unk_RLPPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_aspMaterial[iMode]);
         }
     }
 }
@@ -533,7 +538,7 @@ MS2_REPLACE_METHOD(0x1414DD570, MS2RenderListProcessor, ApplyEffectMaterial, 702
 // @0x1414dd840
 void MS2RenderListProcessor::RestoreMaterials(MS2SavedMaterialMap& kSaved)
 {
-    if (FUN_1409a8b20()->m_kRootModes.size() == 0)
+    if (((class Unk_RLPPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.size() == 0)
         return;
 
     NiTMapIterator pos = kSaved.GetFirstPos();
@@ -729,7 +734,7 @@ void MS2RenderViewRenderListProcessor::PreRenderProcessList(const NiVisibleArray
 
                     int bBias = 0;
                     if (DAT_143ae2b34)
-                        bBias = FUN_1415690c0(&kMesh);
+                        bBias = FUN_1415690c0((class NiAVObject*)(&kMesh));
                     else
                         bBias = kMesh.GetExtraData(DAT_143ae51d0) != 0;
                     if (bBias)
@@ -762,7 +767,7 @@ void MS2RenderViewRenderListProcessor::PreRenderProcessList(const NiVisibleArray
 
         int bOutline = 1;
         if (DAT_143ae2b34)
-            bOutline = FUN_141568e90(&kMesh);
+            bOutline = FUN_141568e90((class NiAVObject*)(&kMesh));
         if (bOutline)
         {
             NiFloatExtraData* pkWidth = NiDynamicCast(NiFloatExtraData, kMesh.GetExtraData(DAT_143ae5120));
@@ -926,7 +931,7 @@ static bool IsUnderEffectNode(NiAVObject* pkObject)
     {
         if (NiObject::IsKindOf(&DAT_143ad1588, pkObject))
             return true;
-        pkObject = FUN_140a0b000(pkObject);
+        pkObject = ((class NiAVObject*)(class NiAVObject*)(pkObject))->GetParent();
     }
     return false;
 }

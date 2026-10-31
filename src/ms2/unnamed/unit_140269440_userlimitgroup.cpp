@@ -29,7 +29,7 @@ struct Unk_PplRef
     Unk_UlgEntry* m_p;
 };
 MS2_CHECK_SIZE(Unk_PplRef, 0x10);
-bool FUN_14027ed60(Unk_PplRef* pRef, void* p);                  // pRef->m_p == p
+bool FUN_14027ed60(struct Unk_Ref16*, void*);   // C3: was FUN_14027ed60
 Unk_UlgEntry* FUN_14027f310(Unk_PplRef* pRef);                  // the object
 __int64 FUN_14027f270(Unk_PplRef* pRef);                        // the raw pointer
 
@@ -52,7 +52,7 @@ struct Unk_UlgBucket
     Unk_UlgList* m_p;
 };
 MS2_CHECK_SIZE(Unk_UlgBucket, 0x10);
-bool FUN_14027eca0(Unk_UlgBucket* pRef, void* p);               // pRef->m_p == p
+bool FUN_14027eca0(struct Unk_Ref16*, void*);   // C3: was FUN_14027eca0
 __int64 FUN_14027f260(Unk_UlgBucket* pRef);                     // the raw pointer
 Unk_UlgList* FUN_14027f2d0(Unk_UlgBucket* pRef);                // the object
 void FUN_140280740(Unk_UlgBucket* pDst, const MS2SvrNewTag& tag);   // assign a fresh bucket
@@ -106,7 +106,7 @@ void CUserLimitGroup::FUN_1402694f0(__int64 tNow)
         void* posCur = pos;
         FUN_140281ce0(&m_map, &pos);
         Unk_UlgBucket bucket(*FUN_140282210(&m_map, posCur));
-        if (FUN_14027eca0(&bucket, 0) != 0)
+        if (FUN_14027eca0((struct Unk_Ref16*)(&bucket), 0) != 0)
         {
             FUN_140285070(&m_map, posCur);
             continue;
@@ -117,7 +117,7 @@ void CUserLimitGroup::FUN_1402694f0(__int64 tNow)
             void* posInCur = posIn;
             FUN_140281af0(FUN_14027f2d0(&bucket), &posIn);
             Unk_PplRef ref(*FUN_140281540(FUN_14027f2d0(&bucket), posInCur));
-            if (FUN_14027ed60(&ref, 0) != 0)
+            if (FUN_14027ed60((struct Unk_Ref16*)(&ref), 0) != 0)
             {
                 FUN_140284f90(FUN_14027f2d0(&bucket), posInCur);
                 continue;
@@ -134,12 +134,12 @@ void CUserLimitGroup::FUN_1402694f0(__int64 tNow)
 // @0x1402696c0
 void CUserLimitGroup::FUN_1402696c0(Unk_PplRef ref)
 {
-    if (FUN_14027ed60(&ref, 0) != 0)
+    if (FUN_14027ed60((struct Unk_Ref16*)(&ref), 0) != 0)
         return;
     __int64 nKey = FUN_14027f310(&ref)->m_nKey;
     Unk_UlgBucket bucket(0);
     FUN_140283050(&m_map, nKey, &bucket);
-    if (FUN_14027eca0(&bucket, 0) != 0)
+    if (FUN_14027eca0((struct Unk_Ref16*)(&bucket), 0) != 0)
     {
         FUN_140280740(&bucket, MS2SvrNewTag(0));
         FUN_140285850(&m_map, nKey, &bucket);

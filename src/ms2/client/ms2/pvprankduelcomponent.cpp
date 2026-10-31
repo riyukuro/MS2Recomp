@@ -78,8 +78,12 @@ public:
     void FUN_140f94490();                                           // the own record changed
     void FUN_140f94840();                                           // the records changed
 };
-class Unk_RankUIService { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); int FUN_141adc940(int nId); void FUN_141adc530(int nId); };
-void* FUN_1403ed2d0();
+class Unk_RankUIService { public:    };
+class WorldService   // C3: static member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 void FUN_141276180(const CString& strName, const CString& strExtra);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW GetStringCommon(int nId);
@@ -89,16 +93,31 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_141275260(int nStringId, int nA, int nB);
 class Unk_RankClientState { public: };
 struct Unk_RankClientFlags { unsigned char m_0; unsigned char m_observer; };
-Unk_RankClientFlags* FUN_140c9b8b0(Unk_RankClientState* p);
+class Unk_QnState   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_QnTracking* FUN_140c9b8b0();
+};
 class Unk_RankLeaguePlayer { public: };
 int FUN_140791f50(Unk_RankLeaguePlayer* p, int n);
 class Unk_RankTable { public: };
 struct Unk_RankEntry { char m_pad[0x28]; int m_rating; };
-Unk_RankEntry* FUN_140769000(Unk_RankTable* pTable, int nRating);
+class CRankingArenaDataTable   // C3: member view for the former free stand-ins
+{
+public:
+    class RankingArenaData* GetGradeOfRating(int);
+};
 bool FUN_1407105c0(COutPacket* packet, int key, int delay);
 struct Unk_RankVec3 { float x, y, z; };
 extern Unk_RankVec3 DAT_143b01a60;                                  // the zero position
 // The local player actor (COM-style: AddRef slot 1, Release slot 2).
+class PCBase   // C3: member view (real class not in this TU)
+{
+public:
+    void FUN_14166cce0(unsigned int);
+    void FUN_14166cd70(unsigned int);
+    int FUN_14166ce30();
+};
 class Unk_RankActor
 {
 public:
@@ -108,9 +127,6 @@ public:
     virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
     virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21();
     virtual void SetPosition(Unk_RankVec3 pos);                     // 22
-    int FUN_14166ce30();                                            // the state (1: dead)
-    void FUN_14166cce0(int n);
-    void FUN_14166cd70(int n);
 };
 Unk_RankActor* FUN_141bd0cc0(void* pWorld);
 
@@ -129,7 +145,7 @@ template <class T> T* Unk_RankDialog(int nId)
 {
     if (reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = ((CUIService*)(Unk_RankUIService*)(reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())))->FUN_141adcea0((eUIClassID)(nId));
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -298,7 +314,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     {
         if (m_state != 0)
             return;
-        if (FUN_140c9b8b0(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance()))->m_observer)
+        if (((struct Unk_RankClientFlags*)((class Unk_QnState*)(class Unk_RankClientState*)(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance())))->FUN_140c9b8b0())->m_observer)
         {
             CStringW strText(GetStringCommonByKey(L"s_rank_duel_matching_complete_to_observe"));
             UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
@@ -317,8 +333,8 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x12)
     {
-        if (reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4f05))
-            reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f05);
+        if (((CUIService*)(Unk_RankUIService*)(reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())))->FUN_141adc940((eUIClassID)(0x4f05)))
+            ((CUIService*)(Unk_RankUIService*)(reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())))->OpenDialog((eUIClassID)(0x4f05));
         UIPvPRankDuelResultDialog* pDialog = Unk_RankDialog<UIPvPRankDuelResultDialog>(0x4f05);
         if (pDialog)
             pDialog->FUN_140f90b10(&packet);
@@ -326,17 +342,17 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     else if (nMessage == 0x13)
     {
         bool bFlag = packet.ReadBool();
-        Unk_RankActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+        Unk_RankActor* pActor = FUN_141bd0cc0(((void*)WorldService::GetInstance()));
         if (pActor == 0)
             return;
         if (bFlag)
         {
-            pActor->FUN_14166cd70(1);
+            ((PCBase*)(Unk_RankActor*)(pActor))->FUN_14166cd70(1);
         }
         else
         {
             pActor->SetPosition(DAT_143b01a60);
-            pActor->FUN_14166cce0(1);
+            ((PCBase*)(Unk_RankActor*)(pActor))->FUN_14166cce0(1);
         }
     }
     else if (nMessage == 0x1b)
@@ -429,10 +445,10 @@ void CPvpRankDuelComponent::RefreshLeague()
 // @0x140dbf160
 bool CPvpRankDuelComponent::RequestCancelMatch()
 {
-    Unk_RankComPtr<Unk_RankActor> spActor(FUN_141bd0cc0(FUN_1403ed2d0()));
+    Unk_RankComPtr<Unk_RankActor> spActor(FUN_141bd0cc0(((void*)WorldService::GetInstance())));
     if (spActor == 0)
         return false;
-    if (spActor->FUN_14166ce30() == 1)
+    if (((PCBase*)(spActor).operator->())->FUN_14166ce30() == 1)
     {
         FUN_141275260(0x279, 1, 1);
         return false;
@@ -452,7 +468,7 @@ Unk_RankTable* FUN_140dc19b0()
 // @0x140dbf260
 int CPvpRankDuelComponent::CurrentRating()
 {
-    Unk_RankEntry* pEntry = FUN_140769000(FUN_140dc19b0(), m_value20);
+    Unk_RankEntry* pEntry = ((struct Unk_RankEntry*)((class CRankingArenaDataTable*)(class Unk_RankTable*)(FUN_140dc19b0()))->GetGradeOfRating(m_value20));
     return pEntry->m_rating;
 }
 

@@ -49,6 +49,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/client/ms2/uiservice.h"
 #include <NiRect.h>
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -64,7 +66,6 @@ static CString s_strPCTakePhoto = "PC_take_photo";
 class ASDialog : public ASDisplayObject {};
 
 // The status-listener registry (singleton 0x140aa6d40).
-UIStatusEventDispatcher* FUN_140aa6d40();
 
 // The movie root of the dialog: Invoke of a method with an int and an AS array (inline COMDAT 0x141b36aa0 / 0x141b36b60).
 class Unk_UgcScript : public AScript
@@ -77,8 +78,6 @@ public:
 // A row of the file list: its members as text.
 class Unk_UgcImageData : public AScript
 {
-public:
-    CStringW FUN_1422bb2b0(const char* szName);                 // a member as text
 };
 
 class Unk_UiScale { public: float FUN_141adbe70(); };            // the UI scale of the UI manager
@@ -107,7 +106,7 @@ class Unk_BnStateMgr
 public:
     Unk_BnBlockRef FUN_140a2f620(int nKind);
 };
-Unk_BnStateMgr* FUN_140a6a830();
+class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void* FUN_1401cb3d0(Unk_BnBlockRef* pRef);
 void FUN_140a2ff20(Unk_BnBlockRef* pRef, int nKind, __int64 n);
 
@@ -115,10 +114,8 @@ class Unk_GalleryAS;
 void GallerySet(Scaleform::GFx::Value*, int);
 void GallerySet(Scaleform::GFx::Value*, const Unk_GalleryAS&);
 
-CUgcManager* FUN_14052d220();
-CUIService* FUN_1403ed2b0();
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 template <class T> T* UgcFindDialog(eUIClassID nId);
-bool FUN_140a467d0(const MS2Ptr<AScript>* pScript);             // the movie root is not loaded
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pScript, int n);      // the movie root is null
 void FUN_14151f200();
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);     // str == sz
@@ -139,8 +136,12 @@ CStringW FUN_141026920(int nKind);
 CStringW FUN_141028910(int nKind);
 Unk_UgcFileResult SaveUgcThumbnailImage(NiRect<unsigned int> kRect, int nTarget);
 __int64 GetServerTime();                                        // the server time
-int FUN_140869420();                                            // the tick count
-bool FUN_1406c5200();                                           // CMsTime::IsTimeZoneSet
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
+class CMsTime   // C3: member view for the former free stand-ins
+{
+public:
+    static bool IsTimeZoneSet();
+};
 Unk_DateParts* FUN_14088dfa0(Unk_DateParts* pOut, __int64 nTime, int nHourOffset);
 Unk_DateParts* FUN_14088dff0(Unk_DateParts* pOut, const Unk_DateParts* pIn, int nHourOffset);
 void FUN_14088e0f0(Unk_DateParts* pOut, const Unk_DateParts* pIn, int nHourOffset);
@@ -205,7 +206,7 @@ int UIUGCBannerDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     UIUGCEventDispatcher::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
     return 1;
 }
@@ -213,10 +214,10 @@ int UIUGCBannerDialog::vfunc_65()
 // @0x141b34410
 void UIUGCBannerDialog::vfunc_67()
 {
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIUGCEventDispatcher::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
     UIDialog::vfunc_67();
-    FUN_14052d220()->FUN_141880ec0(vfunc_48());
+    ((class CUgcManager*)FUN_14052d220())->FUN_141880ec0(vfunc_48());
     m_188 = 0;
     m_1f8.RemoveAll();
     m_228 = 0;
@@ -228,10 +229,10 @@ void UIUGCBannerDialog::vfunc_67()
 void UIUGCBannerDialog::vfunc_72()
 {
     bool bChanged;
-    int nTick = FUN_140869420();
+    int nTick = GetTickCountMs2();
     if (m_228 == 0)
         m_228 = nTick;
-    if ((unsigned int)(nTick - m_228) >= 500 && FUN_1406c5200())
+    if ((unsigned int)(nTick - m_228) >= 500 && CMsTime::IsTimeZoneSet())
     {
         Unk_DateParts now;
         FUN_14088dfa0(&now, GetServerTime(), 0);
@@ -243,12 +244,12 @@ void UIUGCBannerDialog::vfunc_72()
             bChanged = false;
             if (shifted.m_date == m_1c0.m_date)
                 bChanged = true;
-            if (FUN_14052d220() != 0)
+            if (((class CUgcManager*)FUN_14052d220()) != 0)
             {
-                if (FUN_14052d220()->IsReserveChanged())
+                if (((class CUgcManager*)FUN_14052d220())->IsReserveChanged())
                 {
                     bChanged = true;
-                    FUN_14052d220()->SetReserveChanged(false);
+                    ((class CUgcManager*)FUN_14052d220())->SetReserveChanged(false);
                 }
             }
             if (bChanged == true)
@@ -266,7 +267,7 @@ void UIUGCBannerDialog::vfunc_72()
 void UIUGCBannerDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spUpload == 0)
     {
         vfunc_67();
@@ -329,13 +330,13 @@ int UIUGCBannerDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (nResult == 0)
         {
             if (FUN_140d74e80(strTag) != 0)
-                FUN_14052d220()->FUN_141883400(reinterpret_cast<ATL::CRBMap<int, int>&>(m_1f8),
+                ((class CUgcManager*)FUN_14052d220())->FUN_141883400(reinterpret_cast<ATL::CRBMap<int, int>&>(m_1f8),
                                                reinterpret_cast<const Unk_BannerDay&>(m_1c0));
             else if (FUN_1403b3c40(strTag, L"noexist"))
             {
                 FUN_141b358d0();
                 FUN_141b364a0(-1);
-                MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+                MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
                 if (spUpload.get() ? true : false)
                 {
                     if (spUpload->m_spViewer.get() ? true : false)
@@ -442,7 +443,7 @@ int UIUGCBannerDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                 FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
                 return 1;
             }
-            FUN_14052d220()->FUN_141882a70(nIndex, 1);
+            ((class CUgcManager*)FUN_14052d220())->FUN_141882a70(nIndex, 1);
         }
         return 1;
     }
@@ -513,7 +514,7 @@ void UIUGCBannerDialog::FUN_141b35480(int nResult)
         FUN_140d73bc0(0x468, 0, 0, CStringW(L""));
     else
     {
-        CStringW strText = FUN_14052d220()->FUN_14187f210(nResult);
+        CStringW strText = ((class CUgcManager*)FUN_14052d220())->FUN_14187f210(nResult);
         if (!strText.IsEmpty())
             FUN_1412751f0(strText, 1, 1);
     }
@@ -527,7 +528,7 @@ int UIUGCBannerDialog::FUN_141b35540(MS2Ptr<CUgcPreReserve> spReserve)
         return 0x2a;
     if (spReserve->m_reserves.GetCount() != m_1f8.GetCount())
         return 0x2b;
-    MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spUpload == 0)
         return 0xd;
     if (spUpload->m_nKind != 3)
@@ -542,14 +543,14 @@ int UIUGCBannerDialog::FUN_141b35540(MS2Ptr<CUgcPreReserve> spReserve)
             reinterpret_cast<CUgcBannerPost*>(reinterpret_cast<char*>(pViewer) + 0x18)->m_reserves.SetAt(spBanner->GetKey(), spBanner);
     }
     m_1f8.RemoveAll();
-    FUN_14052d220()->FUN_141882020();
+    ((class CUgcManager*)FUN_14052d220())->FUN_141882020();
     return 0;
 }
 
 // @0x141b357e0
 int UIUGCBannerDialog::FUN_141b357e0()
 {
-    MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spUpload == 0)
         return 0;
     if (spUpload->m_nKind != 3)
@@ -564,23 +565,23 @@ int UIUGCBannerDialog::FUN_141b357e0()
 // @0x141b358d0
 void UIUGCBannerDialog::FUN_141b358d0()
 {
-    if (FUN_140a467d0(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
-    FUN_14052d220()->FUN_141889ce0(3);
+    ((class CUgcManager*)FUN_14052d220())->FUN_141889ce0(3);
     ASArray arr(2);
-    FUN_14052d220()->FUN_141889e20(0x10, 0, &arr);
-    int nCount = FUN_14052d220()->FUN_14188a480();
+    ((class CUgcManager*)FUN_14052d220())->FUN_141889e20(0x10, 0, &arr);
+    int nCount = ((class CUgcManager*)FUN_14052d220())->FUN_14188a480();
     ((Unk_UgcScript*)m_30.operator->())->FUN_141b36aa0("buildUGCFiles", nCount, arr);
 }
 
 // @0x141b359b0
 void UIUGCBannerDialog::FUN_141b359b0()
 {
-    if (FUN_140a467d0(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
     FUN_14088e0f0(&m_1c0, &m_190, m_1f4 * 0x18 + m_230);
     ASArray arr(2);
-    FUN_14052d220()->FUN_141888de0(m_188, reinterpret_cast<const Unk_BannerDay&>(m_1c0),
+    ((class CUgcManager*)FUN_14052d220())->FUN_141888de0(m_188, reinterpret_cast<const Unk_BannerDay&>(m_1c0),
                                    reinterpret_cast<ATL::CRBMap<int, int>&>(m_1f8), &arr);
     int nLow = m_230 < 0x18 ? 0 : 1;
     int nBit = m_230 < 0x18 ? 2 : 3;
@@ -605,7 +606,7 @@ void UIUGCBannerDialog::FUN_141b35b80()
 // @0x141b35cd0
 void UIUGCBannerDialog::OnOpenFolder()
 {
-    FUN_14052d220()->FUN_1418829b0(3);
+    ((class CUgcManager*)FUN_14052d220())->FUN_1418829b0(3);
 }
 
 // @0x141b35d00
@@ -616,12 +617,12 @@ int UIUGCBannerDialog::FUN_141b35d00(int nIndex)
         FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
         return 0;
     }
-    if (FUN_14052d220()->FUN_141881a40(nIndex) == 0)
+    if (((class CUgcManager*)FUN_14052d220())->FUN_141881a40(nIndex) == 0)
     {
         FUN_140d73bc0(0x2e2, 0, static_cast<IMessageListener*>(this), CStringW(L"noexist"));
         return 0;
     }
-    if (FUN_14052d220()->FUN_141881800(3, nIndex) == 0)
+    if (((class CUgcManager*)FUN_14052d220())->FUN_141881800(3, nIndex) == 0)
     {
         FUN_141275260(0x2e1, 1, 1);
         return 0;
@@ -633,7 +634,7 @@ int UIUGCBannerDialog::FUN_141b35d00(int nIndex)
 int UIUGCBannerDialog::FUN_141b35e10(int nIndex)
 {
     {
-        Unk_BnBlockRef block = FUN_140a6a830()->FUN_140a2f620(5);
+        Unk_BnBlockRef block = ((class Unk_BnStateMgr*)FUN_140a6a830())->FUN_140a2f620(5);
         if (FUN_1401cb3d0(&block) != 0)
         {
             FUN_140a2ff20(&block, 5, (__int64)static_cast<IMessageListener*>(this));
@@ -653,7 +654,7 @@ int UIUGCBannerDialog::FUN_141b35e10(int nIndex)
     __int64 nPrice = FUN_141b368b0();
     if (!FUN_1418ff110(FUN_141b36a60(), nPrice, true))
         return 0;
-    int nRes = FUN_14052d220()->FUN_141881890(nIndex);
+    int nRes = ((class CUgcManager*)FUN_14052d220())->FUN_141881890(nIndex);
     if (nRes == 0)
     {
         FUN_140d73bc0(0x2e2, 0, static_cast<IMessageListener*>(this), CStringW(L"noexist"));
@@ -666,7 +667,7 @@ int UIUGCBannerDialog::FUN_141b35e10(int nIndex)
 // @0x141b36080
 int UIUGCBannerDialog::OnNewDraw()
 {
-    if (FUN_14052d220()->FUN_141880fc0() == 0)
+    if (((class CUgcManager*)FUN_14052d220())->FUN_141880fc0() == 0)
         return 0;
     FUN_141b358d0();
     return 1;
@@ -675,7 +676,7 @@ int UIUGCBannerDialog::OnNewDraw()
 // @0x141b360c0
 int UIUGCBannerDialog::OnAddImage()
 {
-    int nResult = FUN_14052d220()->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
+    int nResult = ((class CUgcManager*)FUN_14052d220())->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
     if (nResult == 0)
         return 0;
     FUN_141b358d0();
@@ -688,11 +689,11 @@ int UIUGCBannerDialog::FUN_141b36140(int nIndex)
 {
     if (nIndex == -1)
         return 0;
-    if (FUN_140a467d0(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return 0;
     int nPos = nIndex << 2;
     ASArray arr(2);
-    FUN_14052d220()->FUN_141889e20(0x10, nPos, &arr);
+    ((class CUgcManager*)FUN_14052d220())->FUN_141889e20(0x10, nPos, &arr);
     ((Unk_UgcScript*)m_30.operator->())->FUN_141b36aa0("buildScrollPosition", nPos, arr);
     return 1;
 }
@@ -732,7 +733,7 @@ int UIUGCBannerDialog::FUN_141b362b0(int nOffset)
 // @0x141b363b0
 void UIUGCBannerDialog::FUN_141b363b0()
 {
-    MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spUpload == 0)
         return;
     if (spUpload->m_spFile == 0)
@@ -752,7 +753,7 @@ void UIUGCBannerDialog::FUN_141b364a0(int nIndex)
     }
     else
     {
-        MS2Ptr<CUploadFile> spFile = FUN_14052d220()->FUN_14188a4b0(nIndex);
+        MS2Ptr<CUploadFile> spFile = ((class CUgcManager*)FUN_14052d220())->FUN_14188a4b0(nIndex);
         if (spFile == 0)
             return;
         if (m_30.get() != 0)
@@ -931,7 +932,7 @@ int UIUGCCameraDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
             if (pDialog != 0)
             {
-                float fScale = ((Unk_UiScale*)FUN_1403ed2b0())->FUN_141adbe70();
+                float fScale = ((Unk_UiScale*)TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
                 m_18c = (int)(data.FUN_1422b8ca0() / fScale);
                 m_190 = (int)(data.FUN_1422b8ca0() / fScale);
                 m_194 = (int)(data.FUN_1422b8ca0() / fScale);
@@ -942,7 +943,7 @@ int UIUGCCameraDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     }
     else if (_stricmp("onProfile", szMethod) == 0)
-        FUN_14052d220()->FUN_14187fb30();
+        ((class CUgcManager*)FUN_14052d220())->FUN_14187fb30();
     return 0;
 }
 

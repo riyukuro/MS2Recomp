@@ -16,13 +16,15 @@
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/camera.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
 extern Vector3 DAT_143b01a60;                               // the zero point
-class Unk_BootyWorld { public: void* FUN_141bd0cc0(); };            // non-null while the local player is in the world
-Unk_BootyWorld* FUN_1403ed2d0();
+            // non-null while the local player is in the world
+WorldService* FUN_1403ed2d0();
 class Unk_WorldToScreen { public: bool FUN_140af0700(const Vector3& world, Vector3& out); };
-Unk_WorldToScreen* FUN_1409478c0();                                 // camera service
 class Unk_UIScale;
 Unk_UIScale* FUN_14025e7a0();                                       // ui scale service
 float FUN_1422afec0(Unk_UIScale* pScale, int nLayer);               // scale of a layer
@@ -61,7 +63,6 @@ MS2_CHECK_OFFSET(Unk_BootySkillAttr, m_nValueId, 0x34);
 MS2Ptr<Unk_BootyItem> FUN_14053f870(int nItemId);
 MS2Ptr<Unk_BootyEffect> FUN_140704ec0(int nEffectId);
 class Unk_BootySkillTable { public: MS2Ptr<Unk_BootySkillAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel); };
-Unk_BootySkillTable* FUN_1401958b0();
 // AS invoker on the popup's movie clip (instance of the AScript::Invoke template).
 class Unk_BootyMovie
 {
@@ -184,7 +185,7 @@ void UIBootyPopup::FUN_141031890()
     if (m_7c != 0)
     {
         Vector3 screen;
-        if (FUN_1409478c0()->FUN_140af0700(m_68, screen))
+        if (reinterpret_cast<Unk_WorldToScreen*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(m_68, screen))
         {
             MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
             if (pEntity.get())
@@ -224,7 +225,7 @@ void UIBootyPopup::FUN_141031a60(int bShow)
                     int nSkillId = spEffect->m_nSkillId;
                     unsigned short nSkillLevel = spEffect->m_nSkillLevel;
                     strDesc = GetStringTable()->FUN_141812290(nSkillId, nSkillLevel, CString("tooltipDescription"));
-                    MS2Ptr<Unk_BootySkillAttr> spAttr = FUN_1401958b0()->FUN_140aafef0(nSkillId, nSkillLevel);
+                    MS2Ptr<Unk_BootySkillAttr> spAttr = reinterpret_cast<Unk_BootySkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(nSkillId, nSkillLevel);
                     if (spAttr.get() != 0)
                     {
                         int nA = 0;

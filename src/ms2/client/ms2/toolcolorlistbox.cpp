@@ -13,8 +13,6 @@
 
 // ---- unit-local views of callees emitted in other units ----
 
-int FUN_140518af0(const CRect* pRect);                  // 0x140518af0 CRect::Height
-int FUN_140519850(const CRect* pRect);                  // 0x140519850 CRect::Width
 CRect* FUN_140517a60(CRect* pRect);                     // 0x140517a60 CRect::CRect()
 LPRECT FUN_14098a2a0(CRect* pRect);                     // 0x14098a2a0 CRect::operator LPRECT
 
@@ -256,11 +254,11 @@ void CToolColorListBox::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
             rcBlend.DeflateRect(nPad, nPad);
             CDC dcMem;
             dcMem.CreateCompatibleDC(pDC);
-            int nSrcH = FUN_140518af0(&rcBlend);
-            int nSrcW = FUN_140519850(&rcBlend);
+            int nSrcH = ((class CRect*)(class CRect const*)(&rcBlend))->Height();
+            int nSrcW = ((class CRect*)(class CRect const*)(&rcBlend))->Width();
             HDC hMem = dcMem;
-            int nH = FUN_140518af0(&rcBlend);
-            AlphaBlendRect(*pDC, rcBlend.left, rcBlend.top, FUN_140519850(&rcBlend), nH, hMem, rcBlend.left, rcBlend.top, nSrcW, nSrcH, 0x32);
+            int nH = ((class CRect*)(class CRect const*)(&rcBlend))->Height();
+            AlphaBlendRect(*pDC, rcBlend.left, rcBlend.top, ((class CRect*)(class CRect const*)(&rcBlend))->Width(), nH, hMem, rcBlend.left, rcBlend.top, nSrcW, nSrcH, 0x32);
             dcMem.DeleteDC();
         }
         if ((lpDrawItemStruct->itemAction & ODA_FOCUS) != 0 && (lpDrawItemStruct->itemState & ODS_FOCUS) != 0)
@@ -284,7 +282,7 @@ void CToolColorListBox::MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct)
         RECT rc;
         FUN_140517a60((CRect*)&rc);
         dc.DrawText("M", -1, &rc, DT_CALCRECT);
-        lpMeasureItemStruct->itemHeight = FUN_140518af0((CRect*)&rc) + 6;
+        lpMeasureItemStruct->itemHeight = ((class CRect*)(class CRect const*)((CRect*)&rc))->Height() + 6;
     }
     else
     {

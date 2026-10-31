@@ -20,17 +20,16 @@
 // The unit's statics: the shared header statics (a pointer handle sits between "stun" and the condition).
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uichatballoon_ptr.h"
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/camera.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_HudActor : public PCBase
 {
 public:
-    int FUN_14166c930();                                // action id
-    int FUN_14166c960();                                // action id while the model is not loaded
     Unk_HudActor* FUN_1416764a0();                      // ridden character
-    int FUN_141674bc0();
-    NiAVObject* FUN_141675150(const CStringA& strNode); // the named node of the actor
     float FUN_140f4a450();          // distance used by Entity::vfunc_8
 };
 class Unk_HudWorld
@@ -38,7 +37,6 @@ class Unk_HudWorld
 public:
     Unk_HudActor* FUN_141bd1200(int nActorId);          // actor by id
 };
-Unk_HudWorld* FUN_1403ed2d0();
 // 12-byte screen point with the out-of-line default ctor 0x1405522f0.
 struct Unk_HudPoint3 { Unk_HudPoint3(); float x, y, z; };
 class Unk_HudCamera
@@ -46,10 +44,8 @@ class Unk_HudCamera
 public:
     bool FUN_140af0700(const NiPoint3& ptWorld, Unk_HudPoint3& ptScreen);    // world -> screen; false when off screen
 };
-Unk_HudCamera* FUN_1409478c0();
 class Unk_HudSub { public: char m_pad[8]; };
 class Unk_HudFlags { public: char m_pad[8]; Unk_HudSub m_sub; };
-Unk_HudFlags* FUN_14086d260();
 void* FUN_140af8310(Unk_HudSub* p);
 bool FUN_14207c4d0(void* p);
 const NiPoint3* FUN_140947900(NiAVObject* pNode);       // world translation of the node
@@ -271,7 +267,7 @@ NiPoint3 UIHudEntity::Entity::vfunc_10()
 // @0x140f49330
 PCBase* UIHudEntity::Entity::FUN_140f49330()
 {
-    return (PCBase*)FUN_1403ed2d0()->FUN_141bd1200(m_1c);
+    return (PCBase*)reinterpret_cast<Unk_HudWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_1c);
 }
 
 // @0x140f49360
@@ -340,7 +336,7 @@ void UIHudEntity::FUN_140f49740()
     for (POSITION pos = m_a8.GetStartPosition(); pos != 0; m_a8.GetNext(pos))
     {
         const int& nActorId = m_a8.GetKeyAt(pos);
-        PCBase* pActor = (PCBase*)FUN_1403ed2d0()->FUN_141bd1200(nActorId);
+        PCBase* pActor = (PCBase*)reinterpret_cast<Unk_HudWorld*>(WorldService::GetInstance())->FUN_141bd1200(nActorId);
         if (pActor == 0)
             continue;
         lstActors.AddTail(pActor);
@@ -357,9 +353,9 @@ void UIHudEntity::FUN_140f49740()
 // @0x140f49890
 int UIHudEntity::FUN_140f49890(int nActorId)
 {
-    if (FUN_14207c4d0(FUN_140af8310(&FUN_14086d260()->m_sub)))
+    if (FUN_14207c4d0(FUN_140af8310(&reinterpret_cast<Unk_HudFlags*>(TSingleton<CMainSystem>::GetInstance())->m_sub)))
         return 1;
-    Unk_HudActor* pActor = FUN_1403ed2d0()->FUN_141bd1200(nActorId);
+    Unk_HudActor* pActor = reinterpret_cast<Unk_HudWorld*>(WorldService::GetInstance())->FUN_141bd1200(nActorId);
     if (pActor == 0)
         return 1;
     return 0;
@@ -385,7 +381,7 @@ void UIHudEntity::vfunc_15()
     for (POSITION pos = m_a8.GetStartPosition(); pos != 0; m_a8.GetNext(pos))
     {
         const int& nActorId = m_a8.GetKeyAt(pos);
-        Unk_HudActor* pActor = FUN_1403ed2d0()->FUN_141bd1200(nActorId);
+        Unk_HudActor* pActor = reinterpret_cast<Unk_HudWorld*>(WorldService::GetInstance())->FUN_141bd1200(nActorId);
         if (pActor == 0)
             continue;
         MS2Ptr<Entity>& spEntity = m_a8.GetValueAt(pos);
@@ -394,7 +390,7 @@ void UIHudEntity::vfunc_15()
         if (spEntity->FUN_140f48d40() == 0)
             continue;
         Unk_HudPoint3 ptScreen;
-        if (!FUN_1409478c0()->FUN_140af0700(spEntity->vfunc_10(), ptScreen))
+        if (!reinterpret_cast<Unk_HudCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(spEntity->vfunc_10(), ptScreen))
         {
             if (spEntity->FUN_140f48e60() == 0)
             {

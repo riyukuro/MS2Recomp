@@ -74,10 +74,11 @@
 #include <NiTexturingProperty.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
-class Unk_GameClock { public: double FUN_141473280(); };
-Unk_GameClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 WorldService* FUN_1403ed2d0();
 
 void* FUN_14098d8d0(const void* pRtti, void* pObject);                 // dynamic cast through an NiRTTI (NULL-safe)
@@ -158,7 +159,6 @@ public:
     char m_pad_00[0x48];
     Unk_EffectGroupMap m_mapGroups;                                     // +0x48
 };
-Unk_EffectMgr* FUN_1403ed280();
 
 // The statics the "apply" checkbox drives (0x143acd310 flag, 0x143acd330 the edited param).
 static ChaosLightEffectParam s_defaultParam;                            // @0x1400e4b90
@@ -451,7 +451,7 @@ void FUN_141041ea0(const ChaosLightEffectParam* pParam)
     s_defaultParam.FUN_141043a30(*pParam);
     if (!s_bApply)
         return;
-    Unk_EffectGroupMap* pMap = FUN_1403ed280()->FUN_141044430();
+    Unk_EffectGroupMap* pMap = reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_141044430();
     for (Unk_EffectGroupMap::iterator itGroup = pMap->begin(); itGroup != pMap->end(); ++itGroup)
     {
         Unk_EffectGroup* pGroup = itGroup->second;

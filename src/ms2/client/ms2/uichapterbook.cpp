@@ -17,11 +17,11 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 // ---- unit-local views of exe objects ----
 
-class Unk_CbTextFilter { public: void FUN_1416fb340(CStringW& str); };
-Unk_CbTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 
 // The client constants (singleton): the reward icons.
 class Unk_CbIcons

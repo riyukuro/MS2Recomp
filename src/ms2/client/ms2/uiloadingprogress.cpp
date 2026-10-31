@@ -15,10 +15,13 @@
 #include "ms2/client/ms2/fielddatacli.h"
 #include <NiRenderer.h>
 #include "ms2/client/ms2/postprocessing/outlinerenderstep.h"
+#include "ms2/placeholder/cloadingdescriptiontable.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/loadingimagetable.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
-class Unk_LpInput { public: void FUN_14116d760(bool b); };          // the input service: (un)lock the mouse for the loading screen
-Unk_LpInput* FUN_14025e7c0();
+          // the input service: (un)lock the mouse for the loading screen
+CInputKeyHandler* FUN_14025e7c0();
 void* FUN_1408e57f0();                                              // the scene manager
 int FUN_1422b9dc0(void* pSceneMgr);                                 // the current scene id
 void FUN_1422ba110(void* pSceneMgr);
@@ -26,16 +29,6 @@ class Unk_LpPlayer { public: virtual void vfunc_0(); };             // the local
 class Unk_LpConstants;
 Unk_LpConstants* FUN_1401d3200();                                   // the constants table
 unsigned int* FUN_1401d7c10(void* pEntry);                          // &constant (throws "constants is not set")
-class Unk_LpSingleton
-{
-public:
-    int FUN_140d44bd0(int nMap);
-    int FUN_140d44c50(int nMap, int n);
-    CString FUN_140d44e80(int nMap, int a);
-};
-Unk_LpSingleton* FUN_1414a5700();
-class Unk_LpGuide { public: CStringW FUN_14144e640(); };
-Unk_LpGuide* FUN_1414a56f0();
 CString FUN_141900b70();
 UICutSceneMovie* FUN_14138fd50(int nId);
 int FUN_14190f1d0(UICutSceneMovie* p, int n);
@@ -86,7 +79,7 @@ MS2_REPLACE_METHOD(0x1419DFA10, UILoadingProgress, GetTypeName, 61, 0xD91F5B27);
 void UILoadingProgress::FUN_1419dfa60(int nMap)
 {
     m_74 = nMap;
-    FUN_14025e7c0()->FUN_14116d760(1);
+    FUN_14025e7c0()->SetModifier1(1);
     int bShowGuide = 0;
     Unk_LpPlayer* pPlayer = reinterpret_cast<Unk_LpPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer != 0)
@@ -101,7 +94,7 @@ void UILoadingProgress::FUN_1419dfa60(int nMap)
             CString strPath = FUN_1419e0710();
             obj.FUN_1407cba60("filePath", strPath);
             obj.FUN_1407cba60("maskPath", FUN_1419e0650());
-            obj.FUN_1407cbb20("tip", FUN_1414a56f0()->FUN_14144e640());
+            obj.FUN_1407cbb20("tip", TSingleton<CLoadingDescriptionTable>::GetInstance()->GetRandomTip());
             obj.FUN_1407cb9c0("useFadeOut", FUN_1419e0600());
             obj.FUN_1407cb9c0("showGuide", bShowGuide);
             obj.FUN_1407cba60("showGuideType", FUN_141900b70());
@@ -115,7 +108,7 @@ void UILoadingProgress::FUN_1419dfa60(int nMap)
 // @0x1419dfd90
 void UILoadingProgress::FUN_1419dfd90()
 {
-    FUN_14025e7c0()->FUN_14116d760(0);
+    FUN_14025e7c0()->SetModifier1(0);
     m_70 = FUN_1419e04f0();
     MS2Ptr<ASMovieClip> pClip(dynamic_cast<ASMovieClip*>((AScript*)m_30));
     if (pClip.get())
@@ -125,7 +118,7 @@ void UILoadingProgress::FUN_1419dfd90()
 // @0x1419dfe70
 int UILoadingProgress::FUN_1419dfe70()
 {
-    if (FUN_1414a5700()->FUN_140d44bd0(FUN_1419e04f0()) == 0)
+    if (TSingleton<CLoadingImageTable>::GetInstance()->HasImage(FUN_1419e04f0()) == 0)
         return 0;
     UICutSceneMovie* pCut = FUN_14138fd50(0x4e7e);
     if (pCut != 0 && FUN_14190f1d0(pCut, FUN_1419e04b0()) != 0)
@@ -134,7 +127,7 @@ int UILoadingProgress::FUN_1419dfe70()
         return 1;
     int nMap = FUN_1419e04f0();
     int n = FUN_1419e04b0();
-    return FUN_1414a5700()->FUN_140d44c50(nMap, n) == 0;
+    return TSingleton<CLoadingImageTable>::GetInstance()->IsSameImages(nMap, n) == 0;
 }
 
 // @0x1419dff50
@@ -298,7 +291,7 @@ CString UILoadingProgress::FUN_1419e0710()
 {
     if (FUN_1419dfe70() == 0)
         return "";
-    return FUN_1414a5700()->FUN_140d44e80(FUN_1419e04f0(), 1);
+    return TSingleton<CLoadingImageTable>::GetInstance()->GetImageFile(FUN_1419e04f0(), 1);
 }
 
 // @0x1419e07a0

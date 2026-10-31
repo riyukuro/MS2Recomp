@@ -17,6 +17,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/additionalclilist.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -41,11 +42,7 @@ public:
     GameObjectControllerHitReport* FUN_141240f20();
     void FUN_141241070();                                                // start falling
 };
-Unk_GtBody* FUN_14166d220(PCBase* pOwner);
 class Unk_SSGWorld { public: PCBase* FUN_141bd1200(int nId); };          // the field's actor by id
-int FUN_1409709b0(void* pBuffs);                                         // 0x1409709b0 the actor's buffs forbid a grab
-void* FUN_14165f100(MyPC* pPC);                                          // 0x14165f100 the playing emotion
-void FUN_14165f170(MyPC* pPC);                                           // 0x14165f170 stop it
 void FUN_140ad0c10(efd::Point3* pAngles, float fScale);                    // 0x140ad0c10 scale the angles (radians -> degrees)
 
 // ---- StateDataGrabTarget ----
@@ -95,18 +92,18 @@ void StateGrabTarget::vfunc_4(StateData* pData)
     }
     else
     {
-        FUN_14166d220(m_pOwner)->FUN_141240730();
+        ((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
         m_pOwner->vfunc_31(false);
         MyPC* pPC = FUN_1417b84b0();
         if (pPC != 0)
         {
-            if (FUN_14165f100(pPC) != 0)
-                FUN_14165f170(pPC);
+            if (((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())) != 0)
+                reinterpret_cast<PC*>(pPC)->SendRequestCube();
         }
         m_kPos = m_pOwner->vfunc_18();
         m_kDir = m_pOwner->vfunc_20();
-        FUN_14166d220(m_pOwner)->FUN_141240f20()->FUN_140cfaf30();
-        FUN_14166d220(m_pOwner)->FUN_141241070();
+        ((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240f20()->FUN_140cfaf30();
+        ((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141241070();
     }
 }
 
@@ -114,7 +111,7 @@ void StateGrabTarget::vfunc_4(StateData* pData)
 void StateGrabTarget::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    FUN_14166d220(m_pOwner)->FUN_141240730();
+    ((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
     m_pOwner->vfunc_31(true);
     m_pOwner->vfunc_21(m_kDir);
 }
@@ -127,7 +124,7 @@ void StateGrabTarget::vfunc_3(double fTime)
         return;
     StateDataGrabTarget* pData = m_spGrab.get();
     PCBase* pGrabber = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd1200(pData->m_nTarget);
-    if (pGrabber == 0 || pGrabber->FUN_14166ce30() != 0 || FUN_1409709b0(pGrabber->FUN_1416749a0()) != 0)
+    if (pGrabber == 0 || pGrabber->FUN_14166ce30() != 0 || reinterpret_cast<AdditionalCliList*>(pGrabber->FUN_1416749a0())->FUN_1409709b0() != 0)
     {
         m_pOwner->vfunc_59(5, 0, 0, 0);
         return;

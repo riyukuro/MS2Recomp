@@ -233,7 +233,6 @@ struct Unk_FcSoundReqL
     struct { void *p0, *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8, *p9, *pa, *pb; } m_unk;   // +0x10
 };
 void FUN_1409fabf0(void* pSub, void* pAnchor);                      // construct the 0x68 block from an anchor
-void* FUN_14098d8d0(void* pCell, NiAVObject* pRoot);
 extern char DAT_143afa4d8;
 NiAVObject* FUN_141b6efc0(Unk_Entity* pEntity);
 
@@ -267,8 +266,11 @@ public:
     void FUN_140aeb420(int nEffect, Unk_FcCamFx* pParam);
 };
 void FUN_140947440(Unk_FcCamFx* p);                                 // construct
-void FUN_141839640(void* pDst, void* pSrc);
-void FUN_14183c3e0(void* pDst, void* pSrc);
+class CTarget2DCameraMode   // C3: member view for the former free stand-ins
+{
+public:
+    static bool FUN_141839640(struct Vector3&, struct Vector3&);
+};
 
 // Entity property access and ids (free functions: x64 has one calling convention).
 int FUN_1409618c0(Unk_Entity* pEntity, unsigned uPropId, Vector3* pOut);           // point property (0 = ok)
@@ -305,7 +307,7 @@ struct Unk_FcUseInfo
     int m_nCount;                                                   // +0x08
     int m_nPad0c;
 };
-void FUN_1401fc610(Unk_FcUseInfo* pInfo, COutPacket* pPacket);          // serialize
+void FUN_1401fc610(unsigned char*, class COutputStream&);   // C3: was FUN_1401fc610
 void FUN_140710590(COutPacket& packet);                             // send
 
 struct Unk_FcCellInt { char m_pad[0x58]; };
@@ -327,7 +329,7 @@ struct Unk_FcConstTable
 MS2_CHECK_OFFSET(Unk_FcConstTable, m_range, 0x13f8);
 MS2_CHECK_OFFSET(Unk_FcConstTable, m_eat, 0x93f8);
 MS2_CHECK_OFFSET(Unk_FcConstTable, m_near, 0xdfe0);
-Unk_FcConstTable* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // UI windows this unit opens (classes of other units; only what is called).
 class Unk_FcUIMgr
@@ -350,7 +352,6 @@ MS2_CHECK_OFFSET(UITriggerEditorDialog, m_strCubeId, 0x190);
 class UIHomePasswordDialog : public UIDialog { public: void FUN_1412c9680(CString str); };
 class UIHomeSummonDialog : public UIDialog { public: void SetName(CString str); };
 class UIObjectStoreDialog : public UIDialog { public: virtual void vfunc_84(CString* pId, int nItemId); };
-void FUN_141924680(UIDialog* pDialog);                              // show
 template <class T> T* Unk_FcDialog(int nId)
 {
     if (reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance()))
@@ -369,10 +370,19 @@ struct Unk_FcUIMsg
     ~Unk_FcUIMsg();                                                 // 0x140c30570
     void* m_apPad[10];                                              // 0x50 bytes (no char buffer: the exe frame has no GS cookie)
 };
-void FUN_1422b82b0(Unk_FcUIMsg* p, const char* psz);                // append an argument
+class ASData   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1422b82b0(char const*);
+};
 void* FUN_1408e57f0();
-UISwfEntity* FUN_1422b9e20(void* pMgr, int nEvent);                 // the entity registered for the event
-void FUN_1422b9fd0(void* pMgr, int nEvent);                         // unregister
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    class UISceneEntity* FUN_1422b9e20(int);
+public:
+    int FUN_1422b9fd0(int);   // C3: was free FUN_1422b9fd0
+};
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 #include "ms2/client/ms2/uiupperhuddialog.h"
 #include "ms2/placeholder/cstringtable.h"
@@ -381,7 +391,7 @@ void FUN_1422b9fd0(void* pMgr, int nEvent);                         // unregiste
 
 // Physics helper (singleton): the interaction-start call.
 class CPhysXHelper;
-CPhysXHelper* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 void FUN_141689ec0(CPhysXHelper* pHelper, Unk_Entity* pEntity, short nKind, int nArg, int bFlag);
 
 // Housing data service (singleton) and the cube service the objects talk to.
@@ -638,7 +648,7 @@ void CFunctionCubeObject::vfunc_8(CString str)
         COutPacket kPacket(static_cast<int>(SendOp::FunctionCube), 0);
         kPacket.WriteUInt8(5);
         kPacket.WriteInt32(1);
-        FUN_1401fc610(&kInfo, &kPacket);
+        FUN_1401fc610((unsigned char*)(&kInfo), *(class COutputStream*)(&kPacket));
         FUN_140710590(kPacket);
     }
 }
@@ -687,7 +697,7 @@ void CFunctionCubeObject::vfunc_11(int nState)
         Unk_FcSoundReqL kReq;
         kReq.m_strName = strSound;
         kReq.m_nType = 0;
-        FUN_1409fabf0(&kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
+        FUN_1409fabf0(&kReq.m_unk, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(m_ent.FUN_1408a9090())))));
         m_nSoundHandle = reinterpret_cast<Unk_FcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(reinterpret_cast<Unk_FcSoundReq*>(&kReq));
     }
 }
@@ -832,7 +842,7 @@ void CFunctionCubeObject::FUN_141227100(int nSound)
 {
     Vector3 vPos;
     FUN_1409618c0(m_ent.FUN_1408a9280(), 0xfd95ca52, &vPos);
-    float fRange = FUN_1401d3200()->m_range.FUN_1402bac70();
+    float fRange = ((struct Unk_FcConstTable*)FUN_1401d3200())->m_range.FUN_1402bac70();
     reinterpret_cast<Unk_FcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(nSound, m_n60, 1, vPos, fRange);
 }
 
@@ -984,7 +994,7 @@ void CFunctionCubeObject::FUN_141227950()
             kFx.m_f30 = kFx.m_f8;
             kFx.m_f34 = kFx.m_fC;
             kFx.m_f38 = kFx.m_f10;
-            FUN_141839640(kFx.m_unk3c, kFx.m_unk48);
+            CTarget2DCameraMode::FUN_141839640(*(struct Vector3*)(kFx.m_unk3c), *(struct Vector3*)(kFx.m_unk48));
             reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeb420(11, &kFx);
             break;
         }
@@ -1016,7 +1026,7 @@ void CFunctionCubeObject::FUN_141227950()
         kFx.m_f30 = kFx.m_f8;
         kFx.m_f34 = kFx.m_fC;
         kFx.m_f38 = kFx.m_f10;
-        FUN_14183c3e0(kFx.m_unk3c, kFx.m_unk48);
+        CTargetCameraMode::FUN_14183c3e0(*(struct Vector3*)(kFx.m_unk3c), *(struct Vector3*)(kFx.m_unk48));
         reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeb420(2, &kFx);
     }
 }
@@ -1031,9 +1041,9 @@ void CFunctionCubeObject::FUN_141227cd0()
     if (m_nState < 3)
     {
         if (m_spData->m_aAnim[m_nState] != 0)
-            FUN_141689ec0(FUN_1409f7ca0(), m_ent.FUN_1408a9090(), 9, 0, 1);
+            FUN_141689ec0(((class CPhysXHelper*)FUN_1409f7ca0()), m_ent.FUN_1408a9090(), 9, 0, 1);
         else
-            FUN_141689ec0(FUN_1409f7ca0(), m_ent.FUN_1408a9090(), 5, 0, 1);
+            FUN_141689ec0(((class CPhysXHelper*)FUN_1409f7ca0()), m_ent.FUN_1408a9090(), 5, 0, 1);
     }
 }
 
@@ -1071,7 +1081,7 @@ void CFunctionCubeObject::FUN_141228060()
     if (pDlg != 0)
     {
         pDlg->FUN_141b2b9a0(CString(m_strId), m_nArg);
-        FUN_141924680(pDlg);
+        ((class UIDialog*)(class UIDialog*)(pDlg))->FUN_141924680();
     }
 }
 
@@ -1087,22 +1097,22 @@ void CFunctionCubeObject::FUN_141228100()
     if (pDlg != 0)
     {
         pDlg->vfunc_84(&m_strId, FUN_141226cd0());
-        FUN_141924680(pDlg);
+        ((class UIDialog*)(class UIDialog*)(pDlg))->FUN_141924680();
     }
 }
 
 // @0x141228200
 void CFunctionCubeObject::FUN_141228200()
 {
-    UISwfEntity* pEntry = FUN_1422b9e20(FUN_1408e57f0(), 0x620001f);
+    UISwfEntity* pEntry = ((class UISwfEntity*)((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9e20(0x620001f));
     if (pEntry != 0)
     {
         Unk_FcUIMsg kMsg;
-        FUN_1422b82b0(&kMsg, "setCubeID");
-        FUN_1422b82b0(&kMsg, (const char*)m_strId);
+        ((class ASData*)(struct Unk_FcUIMsg*)(&kMsg))->FUN_1422b82b0("setCubeID");
+        ((class ASData*)(struct Unk_FcUIMsg*)(&kMsg))->FUN_1422b82b0((const char*)m_strId);
         pEntry->OnMessage(0, reinterpret_cast<UIMsg*>(&kMsg));
     }
-    FUN_1422b9fd0(FUN_1408e57f0(), 0x620001f);
+    ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001f);
 }
 
 // @0x1412282d0
@@ -1112,7 +1122,7 @@ void CFunctionCubeObject::FUN_1412282d0()
     if (pDlg != 0)
     {
         pDlg->FUN_1412c9680(CString(m_strId));
-        FUN_141924680(pDlg);
+        ((class UIDialog*)(class UIDialog*)(pDlg))->FUN_141924680();
     }
 }
 
@@ -1123,7 +1133,7 @@ void CFunctionCubeObject::FUN_141228340()
     if (pDlg != 0)
     {
         pDlg->SetName(CString(m_strId));
-        FUN_141924680(pDlg);
+        ((class UIDialog*)(class UIDialog*)(pDlg))->FUN_141924680();
     }
 }
 
@@ -1133,14 +1143,22 @@ void CFunctionCubeObject::FUN_141228340()
 class Unk_FcActor : public PCBase { };
 void* FUN_1403ed2d0();                                              // the world manager
 Unk_FcActor* FUN_141bd0cc0(void* pWorld);                           // the local player actor
-int FUN_1416764d0(Unk_FcActor* p);                                  // is riding
 int FUN_14166c930(Unk_FcActor* p);                                  // current state id
-__int64 FUN_141656ad0(Unk_FcActor* p);                              // account id
-unsigned FUN_141662750(Unk_FcActor* p, int nMastery);               // mastery level
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_PCEquipSet* FUN_1416561a0();
+    __int64 FUN_141656ad0();
+    unsigned int FUN_141662750(int);
+};
 void FUN_14152c280(Unk_FcActor* p, RideOffAction* pAction);         // queue a ride-off action
 void* FUN_1409670e0();                                              // the housing manager
 unsigned char FUN_1410c35c0(void* pHousing);                        // design mode
-__int64 FUN_1410c3180(void* pHousing);                              // owner account id
+class CubeMapInformationService   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_1410c3180();
+};
 void* FUN_1410b8b00(void* pHousing, int nObjectId);                 // placed object row
 
 // Housing item rows of the cube (16 / 24 byte smart pointers, destroyed by exe helpers).
@@ -1201,8 +1219,9 @@ CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_14086d060(int nStringId, const __int64* pnValue);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table lookup by key
 void FUN_1412751f0(const CStringW& str, int nA, int nB);            // floating notice
-void FUN_140e59ea0(UIObject* pDlg, CHomemadeCubeObject* pCube);
-class UIMasteryObjectMark : public UIDialog { public: char m_pad[8]; };
+class UIMasteryObjectMark : public UIDialog { public: char m_pad[8]; public:
+    void FUN_140e59ea0(class CFunctionCubeObject*);   // C3: was free FUN_140e59ea0
+};
 
 CFunctionCubeObject* FUN_141225470(int nKind);
 
@@ -1247,7 +1266,7 @@ void CHomemadeCubeObject::vfunc_4()
             Unk_FcSoundReqL kReq;
             kReq.m_strName = strSound;
             kReq.m_nType = 0;
-            FUN_1409fabf0(&kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
+            FUN_1409fabf0(&kReq.m_unk, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(m_ent.FUN_1408a9090())))));
             m_nSoundHandle2 = reinterpret_cast<Unk_FcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(reinterpret_cast<Unk_FcSoundReq*>(&kReq));
         }
     }
@@ -1263,7 +1282,7 @@ void CHomemadeCubeObject::vfunc_13()
 {
     UIMasteryObjectMark* pMark = Unk_FcDialog<UIMasteryObjectMark>(0x4f3a);
     if (pMark != 0)
-        FUN_140e59ea0(pMark, this);
+        ((class UIMasteryObjectMark*)(class UIObject*)(pMark))->FUN_140e59ea0((class CFunctionCubeObject*)(this));
 }
 
 // @0x141228680
@@ -1316,7 +1335,7 @@ void CHomemadeCubeObject::vfunc_8(CString str)
             {
                 FUN_1412751f0(GetStringCommonByKey(L"s_mastery_error_lack_meso"), 1, 1);
             }
-            else if (FUN_1416764d0(pActor) != 0)
+            else if (((class PCBase*)(class Unk_FcActor*)(pActor))->FUN_1416764d0() != 0)
             {
                 MS2Ptr<RideOffActionHomemade> spAct(new RideOffActionHomemade(0));
                 spAct->m_s28 = str;
@@ -1334,7 +1353,7 @@ void CHomemadeCubeObject::vfunc_8(CString str)
     }
     else if (m_nState == 2)
     {
-        if (FUN_1416764d0(pActor) != 0)
+        if (((class PCBase*)(class Unk_FcActor*)(pActor))->FUN_1416764d0() != 0)
         {
             MS2Ptr<RideOffActionHomemade> spAct(new RideOffActionHomemade(0));
             spAct->m_s28 = str;
@@ -1369,7 +1388,7 @@ void CHomemadeCubeObject::vfunc_11(int nState)
             Unk_FcSoundReqL kReq;
             kReq.m_strName = strSound;
             kReq.m_nType = 0;
-            FUN_1409fabf0(&kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
+            FUN_1409fabf0(&kReq.m_unk, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(m_ent.FUN_1408a9090())))));
             m_nSoundHandle2 = reinterpret_cast<Unk_FcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(reinterpret_cast<Unk_FcSoundReq*>(&kReq));
         }
     }
@@ -1418,7 +1437,7 @@ int CHomemadeCubeObject::FUN_141229080()
         return 0;
     if (FUN_140e5cc00() == 1)
     {
-        if (FUN_140e5cbf0() != FUN_141656ad0(pActor))
+        if (FUN_140e5cbf0() != ((class PC*)(class Unk_FcActor*)(pActor))->FUN_141656ad0())
             return 0;
     }
     return 1;
@@ -1434,7 +1453,7 @@ int CHomemadeCubeObject::FUN_141229120()
         return 0;
     if (m_nState == 1)
         return 0;
-    if (FUN_140e5cc00() == 1 && FUN_140e5cbf0() != FUN_141656ad0(pActor))
+    if (FUN_140e5cc00() == 1 && FUN_140e5cbf0() != ((class PC*)(class Unk_FcActor*)(pActor))->FUN_141656ad0())
         return 0;
     if (FUN_1410c35c0(FUN_1409670e0()) != 0)
     {
@@ -1699,7 +1718,7 @@ int CBreedingCubeObject::vfunc_17()
     if (pActor == 0)
         return 0;
     FunctionCubeData* pData = m_spData.operator->();
-    if ((unsigned)pData->m_n104 <= FUN_141662750(pActor, 5))
+    if ((unsigned)pData->m_n104 <= ((class PC*)(class Unk_FcActor*)(pActor))->FUN_141662750(5))
     {
         return 1;
     }
@@ -1793,7 +1812,7 @@ int CFarmingCubeObject::vfunc_17()
     if (pActor == 0)
         return 0;
     FunctionCubeData* pData = m_spData.operator->();
-    if ((unsigned)pData->m_n104 <= FUN_141662750(pActor, 6))
+    if ((unsigned)pData->m_n104 <= ((class PC*)(class Unk_FcActor*)(pActor))->FUN_141662750(6))
     {
         return 1;
     }
@@ -1803,15 +1822,26 @@ int CFarmingCubeObject::vfunc_17()
 // ---- Nurturing ----
 
 // Actor helpers and constants of other units.
-void FUN_141bbb7f0(void* pWorld, CubeSpawnObject* pObj, int nFlag);   // remove an object from the world
-void FUN_141bbb1e0(void* pWorld, CubeSpawnObject* pObj, int nA, int nB);   // add an object to the world
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141bbb1e0(class GameObject*, int, unsigned int);
+    void FUN_141bbb7f0(class GameObject*, int);
+};
 extern int DAT_1439f706c;                                           // object id counter
 int IsNotRecentDayChange(__int64 nTime);
-int FUN_14152ebd0(Unk_FcActor* p);
-void FUN_14152eb80(Unk_FcActor* p);
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14152ebd0();
+    int FUN_14152ed10(__int64);
+public:
+    void FUN_14152eb80();   // C3: was free FUN_14152eb80
+public:
+    void FUN_14152ee60(class CInPacket&);   // C3: was free FUN_14152ee60
+};
 unsigned FUN_14152eb20(Unk_FcActor* p);                             // times fed today
 unsigned FUN_14152eb50(Unk_FcActor* p);                             // times played today
-int FUN_14152ed10(Unk_FcActor* p, __int64 nItemUid);
 int FUN_140a5f780(void* pCell, int nId, int nArg);
 CStringW FUN_1401aa6a0(int nId);                                    // item / pet name
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
@@ -1822,7 +1852,11 @@ unsigned char FUN_1404793a0(void* pMgr, const CStringW& str);
 unsigned char FUN_140164830(const CStringW& a, const CStringW& b);
 unsigned* FUN_1401d7c10(Unk_FcCellInt* p);
 const CStringW& FUN_140a50020(Unk_FcCellStr* p);
-float* FUN_140298f40(Unk_FcCellFloat* p);
+class Unk_IntOptionEntry   // C3: member view for the former free stand-ins
+{
+public:
+    int& FUN_140298f40();
+};
 
 // @0x14122b0d0
 // MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
@@ -1846,7 +1880,7 @@ CNurturingCubeObject::~CNurturingCubeObject()
 {
     if (((CubeSpawnObject*)m_spPet) != 0)
     {
-        FUN_141bbb7f0(FUN_1403ed2d0(), (CubeSpawnObject*)m_spPet, 0);
+        ((class WorldService*)(void*)(FUN_1403ed2d0()))->FUN_141bbb7f0((class GameObject*)((CubeSpawnObject*)m_spPet), 0);
         m_spPet = 0;
     }
 }
@@ -1927,11 +1961,11 @@ void CNurturingCubeObject::vfunc_3()
     Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pActor != 0)
     {
-        if (FUN_14152ebd0(pActor) != 0)
-            FUN_14152eb80(pActor);
+        if (((class MyPC*)(class Unk_FcActor*)(pActor))->FUN_14152ebd0() != 0)
+            ((class MyPC*)(class Unk_FcActor*)(pActor))->FUN_14152eb80();
         NiPoint3 kActor = pActor->vfunc_18();
         float fDist = reinterpret_cast<Vector3&>(kActor).FUN_140965c40(FUN_141226d00()).FUN_140967ac0();
-        unsigned nNear = fDist < *FUN_140298f40(&FUN_1401d3200()->m_near);
+        unsigned nNear = fDist < *((float*)&((class Unk_IntOptionEntry*)(struct Unk_FcCellFloat*)(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_near))->FUN_140298f40());
         if ((unsigned)m_bNear != nNear)
         {
             m_bNear = nNear;
@@ -1981,7 +2015,7 @@ void CNurturingCubeObject::vfunc_8(CString str)
         return;
     if (FUN_14122bda0() != 0)
     {
-        if (FUN_1416764d0(pActor) != 0)
+        if (((class PCBase*)(class Unk_FcActor*)(pActor))->FUN_1416764d0() != 0)
         {
             MS2Ptr<RideOffActionNurturing> spAct(new RideOffActionNurturing(0));
             spAct->m_s28 = str;
@@ -2006,16 +2040,16 @@ int CNurturingCubeObject::FUN_14122bda0()
     Unk_FcItemRow* pRow = spSvc.FUN_1401cd1a0()->FUN_1410b8b00(FUN_14112e110());
     if (pRow == 0)
         return 0;
-    if (FUN_140164830(m_obj.m_strOwner, FUN_140a50020(&FUN_1401d3200()->m_owner)))
+    if (FUN_140164830(m_obj.m_strOwner, FUN_140a50020(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_owner)))
         return 0;
-    if (FUN_1404793a0(FUN_1401c0d90(), FUN_140a50020(&FUN_1401d3200()->m_owner)) == 0)
+    if (FUN_1404793a0(FUN_1401c0d90(), FUN_140a50020(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_owner)) == 0)
         return 0;
     if (FUN_14122c340() != 0)
     {
         m_bNotice = 0;
         return 1;
     }
-    else if (FUN_1410c3180(FUN_1409670e0()) == FUN_141656ad0(pActor))
+    else if (((class CubeMapInformationService*)(void*)(FUN_1409670e0()))->FUN_1410c3180() == ((class PC*)(class Unk_FcActor*)(pActor))->FUN_141656ad0())
     {
         if (m_nE0 >= m_nE8 && m_nLevel < m_nMaxLevel)
         {
@@ -2028,13 +2062,13 @@ int CNurturingCubeObject::FUN_14122bda0()
             FUN_14122c7b0(1);
             return 0;
         }
-        unsigned nEat = *FUN_1401d7c10(&FUN_1401d3200()->m_eat);
+        unsigned nEat = *FUN_1401d7c10(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_eat);
         if (nEat == 0)
         {
             m_bNotice = 0;
             return 1;
         }
-        if (FUN_14152eb20(pActor) < *FUN_1401d7c10(&FUN_1401d3200()->m_eat))
+        if (FUN_14152eb20(pActor) < *FUN_1401d7c10(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_eat))
         {
             m_bNotice = 0;
             return 1;
@@ -2043,12 +2077,12 @@ int CNurturingCubeObject::FUN_14122bda0()
     }
     else
     {
-        if (FUN_14152ed10(pActor, pRow->FUN_1408b4f50()) != 0)
+        if (((class MyPC*)(class Unk_FcActor*)(pActor))->FUN_14152ed10(pRow->FUN_1408b4f50()) != 0)
         {
             FUN_14122c7b0(4);
             return 0;
         }
-        if (FUN_14152eb50(pActor) < *FUN_1401d7c10(&FUN_1401d3200()->m_play))
+        if (FUN_14152eb50(pActor) < *FUN_1401d7c10(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_play))
         {
             m_bNotice = 0;
             return 1;
@@ -2064,7 +2098,7 @@ int CNurturingCubeObject::FUN_14122c340()
     Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pActor == 0)
         return 0;
-    if (FUN_1410c3180(FUN_1409670e0()) != FUN_141656ad0(pActor))
+    if (((class CubeMapInformationService*)(void*)(FUN_1409670e0()))->FUN_1410c3180() != ((class PC*)(class Unk_FcActor*)(pActor))->FUN_141656ad0())
         return 0;
     if (m_nLevel > m_nMaxLevel)
         return 1;
@@ -2092,9 +2126,9 @@ void CNurturingCubeObject::FUN_14122c460(int nMode)
         m_spPet->FUN_140a4f230((int)m_nE0, (int)m_nE8);
         if (nMode == 0)
         {
-            if (FUN_1410c3180(FUN_1409670e0()) == FUN_141656ad0(pActor))
+            if (((class CubeMapInformationService*)(void*)(FUN_1409670e0()))->FUN_1410c3180() == ((class PC*)(class Unk_FcActor*)(pActor))->FUN_141656ad0())
             {
-                int nEat = *FUN_1401d7c10(&FUN_1401d3200()->m_eat);
+                int nEat = *FUN_1401d7c10(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_eat);
                 if (nEat == 0)
                 {
                     CStringW str = FUN_1405c2690(CStringW(L"s_msg_nurturing_eat_success_nocount"), FUN_1401aa6a0(FUN_14122c410()));
@@ -2111,7 +2145,7 @@ void CNurturingCubeObject::FUN_14122c460(int nMode)
             {
                 int nDone = FUN_14152eb50(pActor);
                 CStringW str = FUN_140e9fe10(CStringW(L"s_msg_nurturing_play_success"), FUN_1401aa6a0(FUN_14122c410()), &nDone,
-                    (const int*)FUN_1401d7c10(&FUN_1401d3200()->m_play));
+                    (const int*)FUN_1401d7c10(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_play));
                 FUN_1412751f0(str, 1, 1);
             }
         }
@@ -2203,7 +2237,7 @@ void CNurturingCubeObject::FUN_14122cbc0(unsigned short nLevel, Unk_EntRef ent)
         DAT_1439f706c = DAT_1439f706c + 1;
         m_spPet->FUN_14123c5a0(nId);
         if (m_spPet->vfunc_124(nNpc, ent, (int)nGaugeA, (int)nGaugeB, m_obj.m_strOwner) != 0)
-            FUN_141bbb1e0(FUN_1403ed2d0(), ((CubeSpawnObject*)m_spPet), 0, 1);
+            ((class WorldService*)(void*)(FUN_1403ed2d0()))->FUN_141bbb1e0((class GameObject*)(((CubeSpawnObject*)m_spPet)), 0, 1);
     }
 }
 
@@ -2226,7 +2260,7 @@ void CNurturingCubeObject::FUN_14122ce80(unsigned short nLevel)
         {
             if (((CubeSpawnObject*)m_spPet) != 0)
             {
-                FUN_141bbb7f0(FUN_1403ed2d0(), ((CubeSpawnObject*)m_spPet), 0);
+                ((class WorldService*)(void*)(FUN_1403ed2d0()))->FUN_141bbb7f0((class GameObject*)(((CubeSpawnObject*)m_spPet)), 0);
                 m_spPet = 0;
             }
             m_spPet = new (efd::MemHint(efd::MemHint::NONE)) CubeSpawnObject;
@@ -2234,7 +2268,7 @@ void CNurturingCubeObject::FUN_14122ce80(unsigned short nLevel)
             DAT_1439f706c = DAT_1439f706c + 1;
             m_spPet->FUN_14123c5a0(nId);
             if (m_spPet->vfunc_124(nNpc, m_entPet, (int)nGaugeA, (int)nGaugeB, m_obj.m_strOwner) != 0)
-                FUN_141bbb1e0(FUN_1403ed2d0(), ((CubeSpawnObject*)m_spPet), 0, 1);
+                ((class WorldService*)(void*)(FUN_1403ed2d0()))->FUN_141bbb1e0((class GameObject*)(((CubeSpawnObject*)m_spPet)), 0, 1);
         }
     }
 }
@@ -2261,7 +2295,7 @@ int CNurturingCubeObject::FUN_14122d200()
         return 0;
     if (m_spPet == 0)
         return 0;
-    if (FUN_1410c3180(FUN_1409670e0()) == FUN_141656ad0(pActor))
+    if (((class CubeMapInformationService*)(void*)(FUN_1409670e0()))->FUN_1410c3180() == ((class PC*)(class Unk_FcActor*)(pActor))->FUN_141656ad0())
     {
         if (FUN_14122c340() != 0)
             return 0xa7;
@@ -2326,19 +2360,24 @@ void FUN_1411ab6e0(efd::IDependencyRegistrar* pRegistrar, unsigned n);
 // the entity change channel is efd::kCAT_LocalMessage, the IMessage.h static the exe keeps for this TU at 0x143ad4348
 
 // Entity, state and UI helpers used by the packet dispatcher.
-__int64 FUN_141656a80(Unk_FcActor* p);                              // entity id of the actor
 void FUN_1414737d0(Unk_Entity* pEntity);                            // remove the cube entity
 void FUN_1418fe220(const CString& str);                             // show a skill message
-bool FUN_14036d570(void* pLog, int nId);
-void* FUN_140166410();
-UIWebBrowserBase* FUN_140c43790(int nId);
-void FUN_14152ee60(Unk_FcActor* pActor, CInPacket* pPacket);
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
 struct Unk_FcCountMap { char m_pad[0x48]; };
 extern Unk_FcCountMap DAT_143ab3150;                                // item id -> count
 unsigned char FUN_140450290(Unk_FcCountMap* pMap, int nItemId, int* pnCount);
-void FUN_140458df0(Unk_FcCountMap* pMap, int nItemId, int nCount);
 void* FUN_140faf160(int nId);
-void FUN_140eb5260(void* pDialog, int nValue);
+class UIMasteryDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140eb5260(int);
+};
 unsigned char FUN_140ca6410(Unk_FcSp24* p);
 extern __int64 DAT_143ab2820;                                       // the local account id
 int FUN_141527920(Unk_FcActor* pActor, __int64 nId);
@@ -2346,11 +2385,13 @@ unsigned char FUN_1401c0090(const CString& strA, const CString& strB);
 
 // The local player's equip holder and the colliding tag areas (classes of other units; only what is called).
 struct Unk_FcEquipData { char m_pad_00[0x10c]; int m_n10c; };
-Unk_FcEquipData* FUN_140527840(CItem* pItem);                       // the item's data record
 class Unk_FcEquipSet : public CEquipment { };
-Unk_FcEquipSet* FUN_1416561a0(Unk_FcActor* pActor);
 int FUN_1409ff0d0(Unk_FcArea* pArea, CBoxCollision* pBox);         // does the box touch the area
-void FUN_1417591b0(Unk_FcTag* pTag);                                // the tag's owner reacts
+class SkillTargetRecord   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1417591b0();
+};
 
 // ---- the service ----
 
@@ -2516,7 +2557,7 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
         __int64 nOwner = pPacket->ReadInt64();
         CString strId = pPacket->ReadUnicodeStringA();
         int bFlag = pPacket->ReadUInt8() != 0;
-        bool bMine = FUN_141656a80(pActor) == nOwner;
+        bool bMine = ((class PCBase*)(class Unk_FcActor*)(pActor))->FUN_141656a80() == nOwner;
         MS2Ptr<CFunctionCubeObject> spCube;
         if (m_mapCubes.Lookup(strId, spCube))
         {
@@ -2554,18 +2595,18 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
                     }
                     else if (nValue == 1)
                     {
-                        if (!FUN_14036d570(FUN_140166410(), 0x3b))
+                        if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x3b))
                             break;
-                        UIWebBrowserBase* pUi = FUN_140c43790(0x4e6a);
+                        UIWebBrowserBase* pUi = ((class UIWebBrowserBase*)FUN_140c43790(0x4e6a));
                         if (pUi == 0)
                             break;
                         pUi->FUN_14135ec00(strA, true);
                     }
                     else if (nValue == 2)
                     {
-                        if (!FUN_14036d570(FUN_140166410(), 0x5c))
+                        if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x5c))
                             break;
-                        UIWebBrowserBase* pUi = FUN_140c43790(0x4e6a);
+                        UIWebBrowserBase* pUi = ((class UIWebBrowserBase*)FUN_140c43790(0x4e6a));
                         if (pUi == 0)
                             break;
                         pUi->FUN_14135ec00(strA, true);
@@ -2584,7 +2625,7 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
         CString strId = pPacket->ReadUnicodeStringA();
         __int64 nArg = pPacket->ReadInt64();
         int nCount = pPacket->ReadInt32();
-        if (FUN_141656a80(pActor) != nOwner)
+        if (((class PCBase*)(class Unk_FcActor*)(pActor))->FUN_141656a80() != nOwner)
             break;
         MS2Ptr<CFunctionCubeObject> spCube;
         if (m_mapCubes.Lookup(strId, spCube))
@@ -2602,13 +2643,13 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
                     int nItemId = FUN_1409658d0(&kInfo)->m_nItemId;
                     int nOld = 0;
                     FUN_140450290(&DAT_143ab3150, nItemId, &nOld);
-                    FUN_140458df0(&DAT_143ab3150, nItemId, nOld + nCount);
+                    ((ATL::CAtlMap<unsigned long, int, ATL::CElementTraits<unsigned long>, ATL::CElementTraits<int>>*)(struct Unk_FcCountMap*)(&DAT_143ab3150))->SetAt(nItemId, nOld + nCount);
                     Unk_FcMasteryPtr kItem = FUN_1409670c0()->FUN_14066aa00(nItemId);
                     if (kItem.FUN_140b6dda0() != 0)
                     {
                         void* pDlg = FUN_140faf160(0x4f1e);
                         if (pDlg != 0)
-                            FUN_140eb5260(pDlg, kItem.FUN_14066d9a0()->m_n1c);
+                            ((class UIMasteryDialog*)(void*)(pDlg))->FUN_140eb5260(kItem.FUN_14066d9a0()->m_n1c);
                     }
                 }
                 FUN_140ca62a0(&kInfo);
@@ -2624,7 +2665,7 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
         __int64 nOwner = pPacket->ReadInt64();
         CString strId = pPacket->ReadUnicodeStringA();
         __int64 nArg = pPacket->ReadInt64();
-        if (FUN_141656a80(pActor) != nOwner)
+        if (((class PCBase*)(class Unk_FcActor*)(pActor))->FUN_141656a80() != nOwner)
             break;
         MS2Ptr<CFunctionCubeObject> spCube;
         if (m_mapCubes.Lookup(strId, spCube))
@@ -2648,7 +2689,7 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
             break;
         __int64 nOwner = pPacket->ReadInt64();
         CString strId = pPacket->ReadUnicodeStringA();
-        if (FUN_141656a80(pActor) != nOwner)
+        if (((class PCBase*)(class Unk_FcActor*)(pActor))->FUN_141656a80() != nOwner)
             break;
         MS2Ptr<CFunctionCubeObject> spCube;
         if (m_mapCubes.Lookup(strId, spCube))
@@ -2656,7 +2697,7 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
             CNurturingCubeObject* pNurture = dynamic_cast<CNurturingCubeObject*>(spCube.get());
             if (pNurture != 0)
             {
-                FUN_14152ee60(pActor, pPacket);
+                ((class MyPC*)(class Unk_FcActor*)(pActor))->FUN_14152ee60(*(class CInPacket*)(pPacket));
                 if (nType == 0xb)
                     pNurture->FUN_14122c460(0);
                 else if (nType == 0xc)
@@ -2673,7 +2714,7 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
         __int64 nOwner = pPacket->ReadInt64();
         CString strId = pPacket->ReadUnicodeStringA();
         int nError = pPacket->ReadInt32();
-        if (FUN_141656a80(pActor) != nOwner)
+        if (((class PCBase*)(class Unk_FcActor*)(pActor))->FUN_141656a80() != nOwner)
             break;
         MS2Ptr<CFunctionCubeObject> spCube;
         if (m_mapCubes.Lookup(strId, spCube))
@@ -2881,9 +2922,9 @@ void CFunctionCubeService::FUN_141231730()
     int nEquipField = 0;
     if (!m_mapTags.IsEmpty())
     {
-        MS2Ptr<CEquipItem> spEquip = FUN_1416561a0(pActor)->FUN_1411e1860(5, 6, 0);
+        MS2Ptr<CEquipItem> spEquip = ((class Unk_FcEquipSet*)((class PC*)(class Unk_FcActor*)(pActor))->FUN_1416561a0())->FUN_1411e1860(5, 6, 0);
         if (spEquip.get() != 0)
-            nEquipField = FUN_140527840(spEquip->GetItem().operator->())->m_n10c;
+            nEquipField = ((struct Unk_FcEquipData*)((class CItem*)(spEquip->GetItem().operator->()))->FUN_140527840())->m_n10c;
     }
     for (POSITION pos = m_mapCubes.GetHeadPosition(); pos; m_mapCubes.GetNext(pos))
     {
@@ -2893,7 +2934,7 @@ void CFunctionCubeService::FUN_141231730()
             continue;
         if (pCube->FUN_140e5cc00() == 1)
         {
-            if (pCube->FUN_140e5cbf0() != FUN_141656ad0(pActor))
+            if (pCube->FUN_140e5cbf0() != ((class PC*)(class Unk_FcActor*)(pActor))->FUN_141656ad0())
                 continue;
         }
         int bFound = 0;
@@ -2908,7 +2949,7 @@ void CFunctionCubeService::FUN_141231730()
             {
                 spArea = spCur;
                 bFound = 1;
-                FUN_1417591b0(spTag);
+                ((class SkillTargetRecord*)(class Unk_FcTag*)(spTag))->FUN_1417591b0();
                 break;
             }
         }
@@ -2929,7 +2970,7 @@ void CFunctionCubeService::FUN_141231730()
             COutPacket kPacket(static_cast<int>(SendOp::FunctionCube), 0);
             kPacket.WriteUInt8(5);
             kPacket.WriteInt32(1);
-            FUN_1401fc610(&kInfo, &kPacket);
+            FUN_1401fc610((unsigned char*)(&kInfo), *(class COutputStream*)(&kPacket));
             FUN_140710590(kPacket);
         }
     }

@@ -24,7 +24,6 @@ public:
 
 // efd::Point3 and efd::Matrix3 helpers (all out of line in the exe).
 float FUN_140a00f20(const Unk_GVec3& kA, const Unk_GVec3& kB);   // efd::Point3::Dot
-float FUN_140968990(Unk_GVec3& kVec);                            // efd::Point3::Unitize (returns the old length)
 float FUN_140a38cd0(float fValue);                               // efd::Abs
 float FUN_140a0fda0(float fA, float fB);                         // the larger of the two floats
 void FUN_1409f72e0(Unk_MvMatrix3& kMatrix);                      // efd::Matrix3::Matrix3()
@@ -210,9 +209,9 @@ void MinimapViewport::FUN_141486a20(Unk_GVec3 kRot, Unk_GVec3& kAxisX, Unk_GVec3
         kMatrix.FUN_140a01190(0, kAxisY);
         kMatrix.FUN_140a01190(1, kAxisZ);
         kMatrix.FUN_140a01190(2, kAxisX);
-        FUN_140968990(kAxisY);
-        FUN_140968990(kAxisZ);
-        FUN_140968990(kAxisX);
+        ((struct Vector3*)&(kAxisY))->FUN_140968990();
+        ((struct Vector3*)&(kAxisZ))->FUN_140968990();
+        ((struct Vector3*)&(kAxisX))->FUN_140968990();
     }
     else
     {
@@ -226,9 +225,9 @@ void MinimapViewport::FUN_141486a20(Unk_GVec3 kRot, Unk_GVec3& kAxisX, Unk_GVec3
         // in rdx, so it is a member call; the view adds no data)
         ((Unk_MvPoint3&)kAxisZ).FUN_140194470(((Unk_MvPoint3&)kAxisZ).FUN_1409f7960());
         ((Unk_MvPoint3&)kAxisX).FUN_140194470(((Unk_MvPoint3&)kAxisX).FUN_1409f7960());
-        FUN_140968990(kAxisY);
-        FUN_140968990(kAxisZ);
-        FUN_140968990(kAxisX);
+        ((struct Vector3*)&(kAxisY))->FUN_140968990();
+        ((struct Vector3*)&(kAxisZ))->FUN_140968990();
+        ((struct Vector3*)&(kAxisX))->FUN_140968990();
     }
 }
 

@@ -42,7 +42,6 @@ static Unk_Handle1401cd100 s_dat_143abb130(0);                                  
 unsigned int FUN_1407181d0(const CString& s);                       // the font id of a font name
 CString FUN_140719210(long n);                                      // number text
 __int64 GetServerTime();                                            // the current server time
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                 // the value is set
 
 class Unk_DmgGFxUIManager
 {
@@ -165,13 +164,13 @@ void GFxMovieDamage::vfunc_4(void* pMovie, const char* szEvent, const Scaleform:
         if (_stricmp("loadInit", szName) == 0)
         {
             Scaleform::GFx::Value vRoot(pArgs[1]);
-            if (FUN_1409b4d40(vRoot))
+            if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(vRoot))->IsObject())
                 ((Unk_DmgSwfEntityManagerSlots*)FUN_140b632f0())->vfunc_7(szEvent, vRoot);
         }
         else if (_stricmp("loadComplete", szName) == 0)
         {
             Scaleform::GFx::Value vRoot(pArgs[1]);
-            if (FUN_1409b4d40(vRoot))
+            if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(vRoot))->IsObject())
                 ((Unk_DmgSwfEntityManagerSlots*)FUN_140b632f0())->vfunc_9(szEvent, vRoot, 0.0f);
             if (m_128.get())
             {

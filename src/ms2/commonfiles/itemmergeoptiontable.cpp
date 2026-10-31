@@ -89,10 +89,8 @@ static const CString s_mergeShopSortNames[] = {"None", "Buy", "Like", "PriceLow"
 #endif
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* psz, int n);
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
@@ -118,7 +116,7 @@ inline void Unk_MergeLog(CLogString* log, unsigned __int64 a, unsigned __int64 b
 // Option text helpers of the item tooltip (string table lookups and highlight).
 CStringTable* GetStringTable();                                        // FUN_1401a9d70
 class Unk_FeatureSet;
-Unk_FeatureSet* FUN_14025e7c0();
+void * FUN_14025e7c0(void);  // C3: the definition's signature
 bool FUN_14116d720(Unk_FeatureSet* p);                                  // the option ids are shown (debug)
 CStringW FUN_140631600(int nStat, BaseOption* pOption);                  // the text of a normal stat option
 CStringW FUN_140631830(int nStat, int nValue, Unk_ItemEquipData* pData);   // the text of a special stat option
@@ -315,7 +313,7 @@ bool CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
             if (nPrev >= nMax)
             {
                 (void)((!!(0)) || (_wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemmergeoptiontable.cpp", 0xcf), 0));
-                FUN_1403d7960(FUN_140166440(), 1, 0x13, L"ItemMergeError {0} {1}", nPrev, nMax);
+                FUN_1403d7960(GetLogString(), 1, 0x13, L"ItemMergeError {0} {1}", nPrev, nMax);
             }
             spStep->m_range.Set(nPrev + 1, nMax);
             aSteps.Add(spStep);
@@ -383,15 +381,15 @@ void CItemMergeOptionTable::LoadItemMergeOptionBase()
 {
     TiXmlDocument doc;
     CString strPath = FUN_14071a5b0("Table", "itemMergeOptionBase.xml");
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[{0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[{0}]", strPath);
         return;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
     std::vector<Unk_140165cf0*> nodes;
@@ -608,7 +606,7 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
         CStringW strLines;
         int nMergeId = spOption->FUN_1405cb380();
         CStringW strTag;
-        if (FUN_14116d720(FUN_14025e7c0()) && nMergeId != 0)
+        if (FUN_14116d720((Unk_FeatureSet *)(FUN_14025e7c0())) && nMergeId != 0)
             strTag = StringFormat(L"[{0}]", GetStringTable()->FUN_141811980(1, nMergeId));
         Unk_EnchantMap& rNormal = spOption->FUN_1405cb8a0(4);
         Unk_SocketSpecialMap& rSpecial = spOption->FUN_1405cb8d0(4);

@@ -20,22 +20,18 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/gameobjectcontroller.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-void FUN_141769440(int n);                                 // 0x141769440 (arg 7: the dash was cancelled)
 class Unk_PCBaseBody;
-void FUN_141240700(Unk_PCBaseBody* pBody, efd::Point3 kVel);               // 0x141240700
 bool FUN_14096ad40(const efd::utf8string& str);            // 0x14096ad40 the string is empty
-void FUN_14165e2a0(PCBase* p, efd::utf8string* pStr, int nKey);       // 0x14165e2a0 the player's animation name of a key
-void FUN_14165f170(PCBase* p);                             // 0x14165f170
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // 0x140b7f6a0 sequence id of the model
 void* FUN_141b6f910();                                     // 0x141b6f910 the animation service
 void* FUN_1403ed280();                                     // effect manager
 void* FUN_1403ed2d0();                                     // player manager
 int FUN_141bd1a10(void* pPlayer, GameObject* pObject);
-int FUN_1411a49c0(void* pEffectMgr, Unk_EffectQuery* pQuery);
-void FUN_1411a6060(void* pEffectMgr, int nId);
 
 // The config constants singleton: the dash speed at +0x56a8.
 class Unk_SwimScale { public: float* FUN_140298f40(); };
@@ -100,7 +96,7 @@ void StateSwimDash::vfunc_4(StateData* pData)
     FUN_1417fbec0();
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
-        FUN_14165f170(pPC);
+        reinterpret_cast<PC*>(pPC)->SendRequestCube();
 }
 
 // @0x1417fb6d0
@@ -118,7 +114,7 @@ void StateSwimDash::vfunc_3(double fTime)
     State::vfunc_3(fTime);
     if (FUN_1417df6a0() == 0)
     {
-        FUN_141769440(7);
+        CSkillSystem::FUN_141769440(7);
         return;
     }
     if (m_pOwner->vfunc_63() == 0)
@@ -127,7 +123,7 @@ void StateSwimDash::vfunc_3(double fTime)
     efd::Point3 kVel = kDir * m_pOwner->vfunc_95();
     efd::Point3 kMove = kVel * (float)fTime;
     m_pOwner->FUN_141671960(*FUN_1401d3200()->m_scale.FUN_140298f40());
-    FUN_141240700(m_pOwner->FUN_14166d220(), kVel);
+    reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->SetKVelocity(kVel);
     reinterpret_cast<Unk_SdOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
 }
 
@@ -176,7 +172,7 @@ void StateSwimDash::vfunc_9(double fTime)
     efd::utf8string strAnim;
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
-        FUN_14165e2a0(pPC, &strAnim, 0x32);
+        reinterpret_cast<PC*>(pPC)->FUN_14165e2a0(strAnim, 0x32);
     if (FUN_14096ad40(strAnim))
     {
         if (!m_pOwner->FUN_14166de90(0x32, nSeq))
@@ -217,7 +213,7 @@ void StateSwimDash::FUN_1417fbe80()
 {
     if (m_nEffect != 0)
     {
-        FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+        reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
 }
@@ -233,7 +229,7 @@ void StateSwimDash::FUN_1417fbec0()
         query.m_strName = static_cast<PC*>(pPC)->FUN_14165e010(0x32);
         query.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), m_pOwner);
         query.SetActor(pPC->FUN_14123c580());
-        m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
+        m_nEffect = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     }
 }
 

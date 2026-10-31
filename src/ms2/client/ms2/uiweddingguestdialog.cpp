@@ -21,7 +21,10 @@
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiweddingguestdialog.cpp"    // assumed
 
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uiweddingguestdialog.h"
 #include "uiweddinginvitationdialog.h"
@@ -72,27 +75,11 @@ public:
     void FUN_1422e31e0(unsigned int nIndex);                    // select a tab
 };
 
-// The guest list of a page.
-class Unk_GsList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                                       // clear
-    void FUN_1422dd230(const ASObj& row);                       // append a row
-    void FUN_1422dcca0(int nIndex);                             // select a row
-};
-
 // The page movie clip (looks up its list).
 class Unk_GsPageScript : public AScript
 {
 public:
-    MS2Ptr<Unk_GsList> FUN_140bc7280(const CString& strName);   // 0x140bc7280 list child lookup
+    MS2Ptr<ASScrollingList> FUN_140bc7280(const CString& strName);   // 0x140bc7280 list child lookup
 };
 
 class Unk_UiDock
@@ -502,7 +489,7 @@ bool UIWeddingGuestPageFriend::vfunc_1()
     CBuddyManager::GetInstance()->FUN_140ae4df0(buddies);
     if (buddies.GetCount() == 0)
         return true;
-    if (MS2Ptr<Unk_GsList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list"))
+    if (MS2Ptr<ASScrollingList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list"))
     {
         spList->FUN_1422dd1d0();
         for (size_t i = 0; i < buddies.GetCount(); i++)
@@ -589,7 +576,7 @@ bool UIWeddingGuestPageGuild::vfunc_1()
     CGuildManager::GetInstance()->FUN_1404d0420(&members);
     if (members.GetCount() == 0)
         return true;
-    if (MS2Ptr<Unk_GsList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list"))
+    if (MS2Ptr<ASScrollingList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list"))
     {
         spList->FUN_1422dd1d0();
         for (size_t i = 0; i < members.GetCount(); i++)
@@ -682,7 +669,7 @@ bool UIWeddingGuestPageStranger::vfunc_1()
 {
     if (!UIWeddingGuestPage::vfunc_1())
         return false;
-    if (MS2Ptr<Unk_GsList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list"))
+    if (MS2Ptr<ASScrollingList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list"))
     {
         spList->FUN_1422dd1d0();
         for (std::map<CStringW, GuestPtr>::iterator it = m_strangers.begin(); it != m_strangers.end(); ++it)

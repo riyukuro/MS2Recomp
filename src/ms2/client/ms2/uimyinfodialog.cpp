@@ -76,7 +76,11 @@ public:
     MyPC* FUN_141bd0cc0();                                      // the player
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field
 };
-Unk_MiWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 class Unk_MiUIMgr
 {
@@ -85,25 +89,24 @@ public:
     void FUN_141adc750(int nId);                                // open (toggle)
 };
 
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 // The notify centre (FUN_140939a10), the listener hubs.
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_MiItemEvents
 {
 public:
     void FUN_1419cae20(UIItemEventListener* p);                 // register
     void FUN_1419caeb0(UIItemEventListener* p);                 // unregister
 };
-Unk_MiItemEvents* FUN_140a6a840();
-UIStatusEventDispatcher* FUN_140aa6d40();
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 class Unk_MiEntityEvents
 {
 public:
     void FUN_1419308c0(UIEntityEventListener* p);
     void FUN_141930950(UIEntityEventListener* p);
 };
-Unk_MiEntityEvents* FUN_140c607b0();
+class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
 
 // The player actor (MyPC) members used here.
 class Unk_MiPc : public MyPC
@@ -117,8 +120,6 @@ void* FUN_1405a8ed0(void* pHandle);
 void FUN_1405a85f0(void* pHandle);
 void* FUN_1401c0180(void* pSp);
 void FUN_1401bfde0(void* pHandle);
-void* FUN_14052cd70(void* pHandle);
-void FUN_140526c10(void* pItem, int n);
 // The equipped-item handle of a slot and the item handle it holds (unit_1414210f0.cpp Unk_AvatarItemHandle).
 struct Unk_MiSlotHandle { void* m_p[2]; ~Unk_MiSlotHandle() { FUN_1405a85f0(this); } };
 struct Unk_MiItemHandle { void* m_p[2]; ~Unk_MiItemHandle() { FUN_1401bfde0(this); } };
@@ -145,7 +146,6 @@ void FUN_140d28f70(Unk_MiTitleRef* p);                          // dtor
 struct Unk_MiTitlePtr : Unk_MiTitleRef { ~Unk_MiTitlePtr() { FUN_140d28f70(this); } };
 // the worn title (Unk_PCEquipSet::GetTitle, 0x140d29440)
 class Unk_MiEquipSet { public: void FUN_140d29440(Unk_MiTitleRef* pOut); Unk_MiTitlePtr FUN_140d29440(); };
-Unk_MiTitleData* FUN_1411f7e30(Unk_MiTitleRef* p);              // get()
 
 // The movie children bound through the ASObj helpers.
 class Unk_MiScript : public AScript
@@ -155,7 +155,6 @@ class Unk_MiScript : public AScript
 void* FUN_140a50b50(void* pDragSource);
 CString FUN_140be2000(const char* szFormat, const char* a1, const char* a2, const int& a3, const char* a4);
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);
-bool FUN_140a467d0(const MS2Ptr<AScript>* pAS);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW BlockFormat(int nId);                                  // string table text by id
 CStringW FUN_14062b4f0(CStringW strKey, const int* pArg);       // formatted text
@@ -166,12 +165,15 @@ MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
 __int64 GetServerTime();                                        // the server time
-void FUN_14187fb30(void* p);                                    // open the profile helper
-void* FUN_14052d220();
+class CUgcManager   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_14187fb30();
+};
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 int FUN_14028d260(float f);
 int MinutesToSeconds(int n);
 int HoursToSeconds(int n);
-int FUN_14086d270(void* pSpan);
 
 // @0x143af4550 (the flag of the open animation)
 static int s_nUseOpenAnim = 0;
@@ -190,11 +192,10 @@ void FUN_140cff740(const Scaleform::GFx::Value& root, CString strName, unsigned 
 unsigned __int64 FUN_1409eecc0(ATL::CAtlArray<void*>* pArr);                 // count
 int* FUN_1409eec00(ATL::CAtlArray<void*>* pArr, __int64 nIndex);   // element
 struct Unk_MiConsts { char m_pad_00[0x9100]; unsigned m_aStatCap[1]; };   // the data table: the cap of each stat
-Unk_MiConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);               // a copy of the item
 void* FUN_1422c8e90(const CString& strName);                     // the bound data of a slot bag
 void* FUN_140c544d0(void* pBind);                                // its bag
-void FUN_1422cca90(void* pBag);                                  // refresh the slots
    // the tab bar
 class Unk_MiNtMgr
 {
@@ -202,11 +203,11 @@ public:
     CStringW FUN_1406c61a0(short nId, MyPC* pPlayer);            // icon path
     int FUN_1406c5d60(short nId);                                // owned
 };
-Unk_MiNtMgr* FUN_14131e120();
+class Unk_NtMgr* FUN_14131e120();   // C3: was FUN_14131e120
    // string of (id, symbol)
 class Unk_MiScore { public: int FUN_140267c10(); };              // the trophy points
 class Unk_MiTrophy { public: Unk_MiScore* FUN_140938ad0(); };
-Unk_MiTrophy* FUN_1406c7600();
+class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 unsigned __int64 FUN_140837770(int nId, unsigned nCount);
 void FUN_1418bee30(ASObj* pObj, int n);
 void FUN_1407cbbe0(ASObj* pObj, const char* szName, bool b);
@@ -257,7 +258,7 @@ int UIMyInfoDialog::vfunc_65()
 {
     if (UIPCInfoDialog::vfunc_65() == 0)
         return 0;
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     m_spInfo.AssignRaw(new PCInfo());
@@ -267,21 +268,21 @@ int UIMyInfoDialog::vfunc_65()
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
     if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
         pAvatar->FUN_1418bd1d0()->FUN_1410885b0(true);
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c1a0));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c1a0));
     return 1;
 }
 
 // @0x141a58630
 void UIMyInfoDialog::vfunc_67()
 {
-    FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    ((class Unk_MiItemEvents*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     TSingleton<UIDialogEventDispatcher>::GetInstance()->FUN_1419280e0(static_cast<UIDialogEventListener*>(this));
-    FUN_140c607b0()->FUN_141930950(static_cast<UIEntityEventListener*>(this));
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyChangeBuff"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5a640));
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c220));
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c220));
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyPcBang"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c2a0));
+    ((class Unk_MiEntityEvents*)FUN_140c607b0())->FUN_141930950(static_cast<UIEntityEventListener*>(this));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeBuff"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5a640));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c220));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c220));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyPcBang"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c2a0));
     m_spAvatar = 0;
     m_20c = 0;
     m_208 = 0;
@@ -330,13 +331,13 @@ void UIMyInfoDialog::OnLoadInit()
 void UIMyInfoDialog::OnLoadComplete()
 {
     UIPCInfoDialog::OnLoadComplete();
-    FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    ((class Unk_MiItemEvents*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     TSingleton<UIDialogEventDispatcher>::GetInstance()->FUN_141928050(static_cast<UIDialogEventListener*>(this));
-    FUN_140c607b0()->FUN_1419308c0(static_cast<UIEntityEventListener*>(this));
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyChangeBuff"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5a640));
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c220));
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyPcBang"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c2a0));
+    ((class Unk_MiEntityEvents*)FUN_140c607b0())->FUN_1419308c0(static_cast<UIEntityEventListener*>(this));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyChangeBuff"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5a640));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c220));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyPcBang"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c2a0));
     FUN_1419260d0("m_webGuideButton", 0);
     do
     {
@@ -346,7 +347,7 @@ void UIMyInfoDialog::OnLoadComplete()
     } while (0);
     if (m_280.get() != 0)
     {
-        if (FUN_140166410()->FUN_14036d570(0xe3))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe3))
         {
             m_280->vfunc_4(true);   // exe: call [rax+0x20] (slot 4, bool), not slot 3
             m_280->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMyInfoDialog::FUN_141a5d690), 0);
@@ -568,19 +569,19 @@ void UIMyInfoDialog::vfunc_il23(void* p)
             if (FUN_1405a8e70(&hOne) != 0)
             {
                 Unk_MiItemHandle hItem = static_cast<Unk_MiSlotEquip*>(FUN_1405a8ed0(&hOne))->FUN_1411dc7a0();
-                if (FUN_14052cd70(&hItem) != 0)
+                if (((void*)((MS2Ptr<CItem>*)(void*)(&hItem))->get()) != 0)
                 {
-                    FUN_140526c10(FUN_1401c0180(&hItem), 5);
-                    pPc->vfunc_127(static_cast<CItem*>(FUN_14052cd70(&hItem)), 0);
+                    ((class CItem*)(void*)(FUN_1401c0180(&hItem)))->FUN_140526c10(5);
+                    pPc->vfunc_127(static_cast<CItem*>(((void*)((MS2Ptr<CItem>*)(void*)(&hItem))->get())), 0);
                 }
             }
             if (FUN_1405a8e70(&hTwo) != 0)
             {
                 Unk_MiItemHandle hItem = static_cast<Unk_MiSlotEquip*>(FUN_1405a8ed0(&hTwo))->FUN_1411dc7a0();
-                if (FUN_14052cd70(&hItem) != 0)
+                if (((void*)((MS2Ptr<CItem>*)(void*)(&hItem))->get()) != 0)
                 {
-                    FUN_140526c10(FUN_1401c0180(&hItem), 4);
-                    pPc->vfunc_127(static_cast<CItem*>(FUN_14052cd70(&hItem)), 0);
+                    ((class CItem*)(void*)(FUN_1401c0180(&hItem)))->FUN_140526c10(4);
+                    pPc->vfunc_127(static_cast<CItem*>(((void*)((MS2Ptr<CItem>*)(void*)(&hItem))->get())), 0);
                 }
             }
         }
@@ -712,13 +713,13 @@ void UIMyInfoDialog::FUN_141a5a640(NotifyObject* pNotify)
 // @0x141a5a720
 void UIMyInfoDialog::OnChangeProfile()
 {
-    FUN_14187fb30(FUN_14052d220());
+    ((class CUgcManager*)(void*)(((void*)FUN_14052d220())))->FUN_14187fb30();
 }
 
 // @0x141a5a750
 void UIMyInfoDialog::OnChangeTodayMemo()
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, BlockFormat(0x301), static_cast<IMessageListener*>(this), L"changeTodayMemo");
@@ -777,7 +778,7 @@ void UIMyInfoDialog::FUN_141a5ab10(int bRefresh, int bStatLists, int bBag)
 {
     if ((m_spInfo == 0))
         return;
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     m_spInfo.AssignRaw(new PCInfo());
@@ -793,14 +794,14 @@ void UIMyInfoDialog::FUN_141a5ab10(int bRefresh, int bStatLists, int bBag)
 // @0x141a5ac90
 void UIMyInfoDialog::FUN_141a5ac90(unsigned short nLevel)
 {
-    if (FUN_140a467d0(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x27, nLevel); // string table 0x27: the symbol's name text
-    CStringW strIcon = FUN_14131e120()->FUN_1406c61a0(nLevel, pPc);       // ranked icon path
-    int bOwned = FUN_14131e120()->FUN_1406c5d60(nLevel) == 0;
+    CStringW strIcon = ((class Unk_MiNtMgr*)FUN_14131e120())->FUN_1406c61a0(nLevel, pPc);       // ranked icon path
+    int bOwned = ((class Unk_MiNtMgr*)FUN_14131e120())->FUN_1406c5d60(nLevel) == 0;
     // AS3 setSymbol(name, icon, enabled): the exe passes the name text first (r9) and the icon second
     static_cast<Unk_MiScript*>((AScript*)m_30)->Invoke("setSymbol", CStringW(strName), CStringW(strIcon), bOwned);
 }
@@ -809,7 +810,7 @@ void UIMyInfoDialog::FUN_141a5ac90(unsigned short nLevel)
 void UIMyInfoDialog::vfunc_84()
 {
     UIPCInfoDialog::vfunc_84();
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc != 0)
         FUN_141a5ac90(static_cast<Unk_MiPc*>(pPc)->FUN_141661e00());
 }
@@ -817,15 +818,15 @@ void UIMyInfoDialog::vfunc_84()
 // @0x141a5ae90
 void UIMyInfoDialog::vfunc_104(int nTrophy)
 {
-    if (FUN_140a467d0(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
-    m_30->Invoke("setTrophy", FUN_1406c7600()->FUN_140938ad0()->FUN_140267c10());
+    m_30->Invoke("setTrophy", ((class Unk_MiTrophy*)FUN_1406c7600())->FUN_140938ad0()->FUN_140267c10());
 }
 
 // @0x141a5af10
 void UIMyInfoDialog::vfunc_91(int nStat)
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (m_spInfo == 0)
@@ -846,7 +847,7 @@ void UIMyInfoDialog::vfunc_91(int nStat)
 // @0x141a5b080
 void UIMyInfoDialog::FUN_141a5b080(int nStat)
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (m_spInfo == 0)
@@ -862,7 +863,7 @@ void UIMyInfoDialog::FUN_141a5b080(int nStat)
     int nKey = *FUN_1409eec00(&aStats, nStat);
     unsigned nTotal = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->GetStatPoints(static_cast<CStatPointManager::Unk_StatKey>(nKey)) + m_250;
     unsigned nRemaining = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->GetRemaining();
-    if (nRemaining <= m_250 || FUN_1401d3200()->m_aStatCap[nKey] <= nTotal)
+    if (nRemaining <= m_250 || ((struct Unk_MiConsts*)FUN_1401d3200())->m_aStatCap[nKey] <= nTotal)
     {
         FUN_141a5cf30(nStat);
         return;
@@ -883,7 +884,7 @@ void UIMyInfoDialog::vfunc_92()
         return;
     if (vfunc_93() == 0)
         return;
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     m_250 = 0;
@@ -910,7 +911,7 @@ void UIMyInfoDialog::vfunc_90(int nTab)
 // @0x141a5b470
 int UIMyInfoDialog::vfunc_93()
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     if (pPc->vfunc_65() != 0)
@@ -918,7 +919,7 @@ int UIMyInfoDialog::vfunc_93()
         FUN_140d73aa0(GetStringCommonByKey(L"s_msg_skillbook_set_disable_battle"), 0, 0, CStringW(L""));
         return 0;
     }
-    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd30a0();
     if (spField == 0)
         return 0;
     if (spField->FUN_140375660(0x10) != 0)
@@ -940,7 +941,7 @@ void UIMyInfoDialog::FUN_141a5b6c0()
 {
     if (FUN_140ba28d0(&m_30, 0) != 0 || m_nTab != 3)
         return;
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     Unk_MiEquipSet* pEquip = reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0());
@@ -964,7 +965,7 @@ void UIMyInfoDialog::FUN_141a5b6c0()
             CTimeSpan kSpan = tEnd - tNow;
             int nDays = (int)kSpan.GetDays();
             int nHours = kSpan.GetHours();
-            int nMinutes = FUN_14086d270(&kSpan);
+            int nMinutes = ((ATL::CTimeSpan*)(void*)(&kSpan))->GetMinutes();
             int nSeconds = kSpan.GetSeconds();
             if (nDays > 0)
             {
@@ -1015,7 +1016,7 @@ void UIMyInfoDialog::FUN_141a5b6c0()
 // @0x141a5bed0
 void UIMyInfoDialog::FUN_141a5bed0()
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     Unk_MiEquipSet* pEquip = reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0());
@@ -1032,7 +1033,7 @@ void UIMyInfoDialog::FUN_141a5bed0()
         {
             void* pBag = FUN_140c544d0(FUN_1422c8e90(m_strEquipBag));
             if (pBag != 0)
-                FUN_1422cca90(pBag);
+                ((class DragSlotBag*)(void*)(pBag))->FUN_1422cca90();
         }
     }
 }
@@ -1042,14 +1043,14 @@ void UIMyInfoDialog::FUN_141a5c080()
 {
     if (FUN_140ba28d0(&m_30, 0) != 0 || (m_spAvatar == 0))
         return;
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
     if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
     {
         Unk_MiTitlePtr kTitle = reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0())->FUN_140d29440();
-        if (FUN_1411f7e30(&kTitle) != 0)
+        if (((class Unk_MiTitleData*)((MS2Ptr<CEquipmentSlotLayerInfo>*)(struct Unk_MiTitleRef*)(&kTitle))->get()) != 0)
             m_278 = FUN_140d290c0(&kTitle)->FUN_1411df810();
     }
 }
@@ -1075,7 +1076,7 @@ void UIMyInfoDialog::FUN_141a5c2a0(NotifyObject* pNotify)
 {
     if (m_spAvatar == 0 || m_spAvatar->vfunc_24() == 0)
         return;
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     AvatarPC* pAvatar = dynamic_cast<AvatarPC*>(m_spAvatar->vfunc_24());
@@ -1096,7 +1097,7 @@ void UIMyInfoDialog::FUN_141a5c410(int nTab, int nNewTab)
 {
     if (nNewTab != 3)
         return;
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     Unk_MiEquipSet* pEquip = reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0());
@@ -1141,7 +1142,7 @@ int UIMyInfoDialog::GetTab()
 // @0x141a5c7c0
 void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (m_spInfo == 0)
@@ -1177,7 +1178,7 @@ void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
             FUN_140cff740((*spRow).FUN_1422bb890(), "m_point", nColor);
             if (MS2Ptr<ASButton> spPlus = spRow->FUN_140acce30<ASButton>("m_plus"))
             {
-                if (nRemain == 0 || FUN_1401d3200()->m_aStatCap[nKey] <= nSpent + m_250)
+                if (nRemain == 0 || ((struct Unk_MiConsts*)FUN_1401d3200())->m_aStatCap[nKey] <= nSpent + m_250)
                     spPlus->FUN_1422c1fe0(0);
             }
         }
@@ -1201,7 +1202,7 @@ void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
 // @0x141a5cf30
 void UIMyInfoDialog::FUN_141a5cf30(int nStat)
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if ((unsigned)m_250 <= 0)
@@ -1286,7 +1287,7 @@ int UIMyInfoDialog::vfunc_o178_1(void* pAvatar)
 // @0x141a5d5d0
 void UIMyInfoDialog::FUN_141a5d5d0()
 {
-    if (FUN_140a467d0(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
     m_30->Invoke("loadRenderTarget");
 }
@@ -1294,7 +1295,7 @@ void UIMyInfoDialog::FUN_141a5d5d0()
 // @0x141a5d630
 void UIMyInfoDialog::FUN_141a5d630()
 {
-    if (FUN_140a467d0(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
     m_30->Invoke("unloadRenderTarget");
 }

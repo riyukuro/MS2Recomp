@@ -30,6 +30,8 @@
 // Two original TUs: the window (0x141947920-0x141950650) and the tray (0x141950770-), each with its own COMDAT copies
 // of the container glue.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uigroupmessenger.cpp"
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "uigroupmessenger.h"
@@ -70,6 +72,12 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/uiugceventdispatcher.h"
+#include "ms2/placeholder/cmycharacter.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/client/ms2/worldservice.h"
 
 using namespace GroupMessengerData;
 
@@ -108,18 +116,6 @@ public:
     GRM_V(16) GRM_V(17) GRM_V(18) GRM_V(19) GRM_V(20) GRM_V(21) GRM_V(22) GRM_V(23)
 #undef GRM_V
     virtual void vfunc_24(bool b);
-};
-// "m_textOutput" / "m_userList": the chat lines and the member list.
-class Unk_GrmList : public Unk_GrmControl
-{
-public:
-    void FUN_1422dd000(int nRows);                                  // the visible row count
-    void FUN_1422dd0d0(int nRows);                                  // the visible row count (chat lines)
-    int FUN_1422dd150();                                            // the entry count
-    void FUN_1422dd1d0();                                           // clear
-    void FUN_1422dd230(const ASObj& item);                          // append an entry
-    void FUN_1422e17a0();                                           // scroll to the end
-    void FUN_1422e17f0(int nPosition);                              // scroll to a position
 };
 // The member list is a plain CLIK scrolling list (MS2Ptr<ASScrollingList> ops), unlike the chat lines.
 struct Unk_GrmUserListView
@@ -177,39 +173,23 @@ Unk_GrmChatUI* FUN_141482e80();
 
 // The own player.
 class Unk_GrmWorld { public: PCBase* FUN_141bd0cc0(); };
-Unk_GrmWorld* FUN_1403ed2d0();
 
 // The key state.
-class Unk_GrmKeys
+class Unk_GrmKeys : public CInputKeyHandler
 {
 public:
-    bool FUN_14116d840();                                           // escape pressed
     bool FUN_14116d9c0(int nKey, int a, int b);
 };
-Unk_GrmKeys* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The notify manager.
-class Unk_GrmNotices
-{
-public:
-    void FUN_140da4e40(CStringW strName, Delegate<void(NotifyObject*)> cb);   // subscribe
-    void FUN_140da4eb0(CStringW strName, Delegate<void(NotifyObject*)> cb);   // unsubscribe
-};
-Unk_GrmNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 // The UGC event dispatcher (the typing notices).
-class Unk_GrmUgcEvents
-{
-public:
-    void FUN_141b38be0(UIUGCEventListener* pListener);
-    void FUN_141b38c70(UIUGCEventListener* pListener);
-};
-Unk_GrmUgcEvents* FUN_140bc09f0();
+UIUGCEventDispatcher* FUN_140bc09f0();
 
 // The per-user client state: the chat emoticon pack state.
-class Unk_GrmUser { public: MS2Ptr<CChatEmoticonCli> FUN_140d9f8f0(); };
-Unk_GrmUser* FUN_140931510();
-CChatEmoticonTable* FUN_1409eecd0();
+CMyCharacter* FUN_140931510();
 
 // The member popup menu (ui id 0x4e39).
 class Unk_PopupMenuInfo
@@ -240,7 +220,7 @@ class Unk_GrmMenu
 public:
     void FUN_141a7f890(const Unk_PopupMenuInfo& info, CGroupChatMember* pMember, const CStringW& strHistory, int nKind);
 };
-Unk_GrmMenu* FUN_140c30140(int nUiId);
+class Unk_PopupMenu* FUN_140c30140(int);   // C3: was FUN_140c30140
 
 // The group invite dialog (ui id 0x4e90).
 class UIInviteGroupDialog : public UIDialog
@@ -289,27 +269,34 @@ CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB);  // operator
 void FUN_140d73aa0(CStringW strText, int nA, int nB, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
-IClientPlatform* FUN_140d86260();
-unsigned int FUN_140869420();                                       // the client millisecond clock
+void* FUN_140d86260();   // C3: was FUN_140d86260
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_14151f200();                                               // the click sound
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);           // a system chat line
 void FUN_141276180(const CString& strSound, const CString& strExtra);      // plays a sound
 CString FUN_1412755f0();                                            // the UI settings directory
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
-void FUN_14086ddc0(TiXmlDocument* pDoc);                            // Clear
-void* FUN_14081b310(TiXmlDocument* pDoc);                           // RootElement
-void* FUN_14086e090(TiXmlDocument* pDoc, class TiXmlElement* pChild);   // LinkEndChild
+class TiXmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    void Clear();
+    class TiXmlNode* LinkEndChild(class TiXmlNode*);
+};
+class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
 bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szPath);        // SaveFile
-void* FUN_140165cf0(TiXmlDocument* pDoc, const char* szName);       // FirstChildElement
-void FUN_140873e30(void* pCfg, const char* szName, float f);
-void FUN_140873ca0(void* pCfg, const char* szName, int n);
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
+void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
+void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void FUN_1408740a0(void* pCfg, const char* szName, const CStringW& str);
-int FUN_140873360(void* pCfg, const char* szName, float* pf);
-int FUN_1408731e0(void* pCfg, const char* szName, int& n);
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_140873420(void* pCfg, const char* szName, CStringW& str);
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 void* FUN_1422bb8b0(int nMovieId);                                  // the movie of a UI layer
-void FUN_14256e3e0(void* pMovie, Scaleform::GFx::Value* pValue);   // movie->CreateArray
 
 class TiXmlElement
 {
@@ -351,7 +338,7 @@ MS2_REPLACE_METHOD(0x141947C60, UIGroupMessenger, GetTypeName, 61, 0xEA0A8AA4);
 int UIGroupMessenger::vfunc_65()
 {
     UIDialog::vfunc_65();
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChatEmoticonSelected",
+    FUN_140939a10()->RegisterNotify(L"NotifyChatEmoticonSelected",
                                    Delegate<void(NotifyObject*)>(this, &UIGroupMessenger::FUN_14194a6f0));
     return 1;
 }
@@ -360,7 +347,7 @@ int UIGroupMessenger::vfunc_65()
 void UIGroupMessenger::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyChatEmoticonSelected",
+    FUN_140939a10()->UnregisterNotify(L"NotifyChatEmoticonSelected",
                                    Delegate<void(NotifyObject*)>(this, &UIGroupMessenger::FUN_14194a6f0));
     FUN_140bc09f0()->FUN_141b38c70(this);
     m_inputHistory.RemoveAll();
@@ -397,7 +384,7 @@ void UIGroupMessenger::vfunc_63(int n)
     }
     else
     {
-        if (MS2Ptr<Unk_GrmList> spOutput = FUN_140c02900("m_textOutput"))
+        if (MS2Ptr<ASScrollingList> spOutput = FUN_140c02900("m_textOutput"))
         {
             unsigned nCount = FUN_141482e80()->m_pBrowser->FUN_141952b30(m_nGroupId);
             unsigned nRows;
@@ -424,9 +411,9 @@ int UIGroupMessenger::vfunc_4()
     if (!m_4c)
         return 1;
     TiXmlDocument doc;
-    if (!FUN_14081b310(&doc))
-        FUN_14086e090(&doc, new TiXmlElement(GetTypeName()));
-    void* pRoot = FUN_14081b310(&doc);
+    if (!((void*)DocRootElement(&doc)))
+        ((void*)((class TiXmlNode*)(class TiXmlDocument*)(&doc))->LinkEndChild((class TiXmlNode*)(new TiXmlElement(GetTypeName()))));
+    void* pRoot = ((void*)DocRootElement(&doc));
     if (!pRoot)
         return 0;
     vfunc_53(pRoot);
@@ -442,18 +429,18 @@ int UIGroupMessenger::vfunc_5()
         return 0;
     m_78 = 0;
     void* pNode;
-    void* pFirst = pNode = FUN_140165cf0(&m_e8, GetTypeName());
+    void* pFirst = pNode = ((void*)((class Unk_XmlNode*)(class TiXmlDocument*)(&m_e8))->FirstChild(GetTypeName()));
     if (pNode != 0)
     {
         m_78 = vfunc_54(pNode);
-        FUN_14086ddc0(&m_e8);
+        ((class TiXmlNode*)(class TiXmlDocument*)(&m_e8))->Clear();
     }
     else
     {
         TiXmlDocument doc;
         if (doc.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), FUN_14194b8a0()), 0))
         {
-            void* pLoaded = FUN_140165cf0(&doc, GetTypeName());
+            void* pLoaded = ((void*)((class Unk_XmlNode*)(class TiXmlDocument*)(&doc))->FirstChild(GetTypeName()));
             if (pLoaded == 0)
                 return 0;
             m_78 = vfunc_54(pLoaded);
@@ -470,16 +457,16 @@ int UIGroupMessenger::vfunc_53(void* pCfg)
     if (pDialog)
     {
         FUN_141926620(&m_nAlignType, &m_fOffsetX, &m_fOffsetY);
-        FUN_140873e30(pCfg, "offsetX", m_fOffsetX);
-        FUN_140873e30(pCfg, "offsetY", m_fOffsetY);
-        FUN_140873ca0(pCfg, "alignType", m_nAlignType);
-        FUN_140873ca0(pCfg, "scrollPosition", m_nScrollPosition);
-        FUN_140873ca0(pCfg, "width", pDialog->FUN_1422c1340());
-        FUN_140873ca0(pCfg, "height", pDialog->FUN_1422c13b0());
+        XmlSetAttr((class TiXmlElement*)(pCfg), "offsetX", m_fOffsetX);
+        XmlSetAttr((class TiXmlElement*)(pCfg), "offsetY", m_fOffsetY);
+        XmlSetAttr((class TiXmlElement*)(pCfg), "alignType", m_nAlignType);
+        XmlSetAttr((class TiXmlElement*)(pCfg), "scrollPosition", m_nScrollPosition);
+        XmlSetAttr((class TiXmlElement*)(pCfg), "width", pDialog->FUN_1422c1340());
+        XmlSetAttr((class TiXmlElement*)(pCfg), "height", pDialog->FUN_1422c13b0());
         FUN_1408740a0(pCfg, "name", m_strName);
-        FUN_140873ca0(pCfg, "alpha", m_nAlpha);
-        FUN_140873ca0(pCfg, "userlist", m_bUserList);
-        FUN_140873ca0(pCfg, "minimize", m_6c);
+        XmlSetAttr((class TiXmlElement*)(pCfg), "alpha", m_nAlpha);
+        XmlSetAttr((class TiXmlElement*)(pCfg), "userlist", m_bUserList);
+        XmlSetAttr((class TiXmlElement*)(pCfg), "minimize", m_6c);
     }
     return 1;
 }
@@ -493,16 +480,16 @@ int UIGroupMessenger::vfunc_54(void* pCfg)
     {
         int nWidth = 0;
         int nHeight = 0;
-        FUN_140873360(pCfg, "offsetX", &m_fOffsetX);
-        FUN_140873360(pCfg, "offsetY", &m_fOffsetY);
-        FUN_1408731e0(pCfg, "alignType", m_nAlignType);
-        FUN_1408731e0(pCfg, "scrollPosition", m_nScrollPosition);
-        FUN_1408731e0(pCfg, "width", nWidth);
-        FUN_1408731e0(pCfg, "height", nHeight);
+        XmlGetAttr((class TiXmlElement*)(pCfg), "offsetX", *(float*)(&m_fOffsetX));
+        XmlGetAttr((class TiXmlElement*)(pCfg), "offsetY", *(float*)(&m_fOffsetY));
+        XmlGetAttr((class TiXmlElement*)(pCfg), "alignType", m_nAlignType);
+        XmlGetAttr((class TiXmlElement*)(pCfg), "scrollPosition", m_nScrollPosition);
+        XmlGetAttr((class TiXmlElement*)(pCfg), "width", nWidth);
+        XmlGetAttr((class TiXmlElement*)(pCfg), "height", nHeight);
         FUN_140873420(pCfg, "name", m_strName);
-        FUN_1408731e0(pCfg, "alpha", m_nAlpha);
-        FUN_1408731e0(pCfg, "userlist", m_bUserList);
-        FUN_1408731e0(pCfg, "minimize", m_6c);
+        XmlGetAttr((class TiXmlElement*)(pCfg), "alpha", m_nAlpha);
+        XmlGetAttr((class TiXmlElement*)(pCfg), "userlist", m_bUserList);
+        XmlGetAttr((class TiXmlElement*)(pCfg), "minimize", m_6c);
         pDialog->FUN_1422c79e0(nWidth, nHeight);
     }
     return 1;
@@ -536,7 +523,7 @@ void UIGroupMessenger::OnLoadComplete()
             TalkLog log(logs[i]);
             FUN_14194d3d0(log.m_nKind, log.m_strMsg, log.m_strName, log.m_nA);
         }
-        if (MS2Ptr<Unk_GrmList> spOutput = FUN_140c02900("m_textOutput"))
+        if (MS2Ptr<ASScrollingList> spOutput = FUN_140c02900("m_textOutput"))
         {
             m_nScrollPosition = nScrollPosition;
             spOutput->FUN_1422e17f0(m_nScrollPosition);
@@ -569,9 +556,9 @@ int UIGroupMessenger::vfunc_13()
         return 1;
     if (!FUN_14194c6d0())
         return 0;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+    if (((class Unk_GrmKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
         return FUN_14194cbb0();
-    else if (FUN_14025e7c0()->FUN_14116d840())
+    else if (((class Unk_GrmKeys*)FUN_14025e7c0())->FUN_14116d840())
         return FUN_14194cd00();
     return 0;
 }
@@ -583,7 +570,7 @@ void UIGroupMessenger::vfunc_15()
     UISwfEntity::vfunc_15();
     if (m_nTypingTime != 0)
     {
-        if (m_nTypingTime + 10000 <= FUN_140869420())
+        if (m_nTypingTime + 10000 <= GetTickCountMs2())
         {
             FUN_14194d6f0();
             m_nTypingTime = 0;
@@ -614,7 +601,7 @@ int UIGroupMessenger::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     Unk_BlockList request(0x4e93, m_nGroupId);
                     request.Add("MessengerName", spName->FUN_1422c4da0(), 0);
                     request.SetEnabled(1);
-                    if (FUN_140d86260()->vfunc_37(&request) == 1)
+                    if (((class IClientPlatform*)FUN_140d86260())->vfunc_37(&request) == 1)
                     {
                         if (FUN_14194ce40(spName->FUN_1422c4da0()) == 1)
                             return 0;
@@ -645,7 +632,7 @@ int UIGroupMessenger::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 // @0x141949640
 void UIGroupMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_GrmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (FUN_141482e80()->m_pBrowser == 0)
@@ -873,10 +860,10 @@ void UIGroupMessenger::FUN_14194a6f0(NotifyObject* pNotify)
         FUN_14194ad60();
         return;
     }
-    ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(pSelected->m_nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(pSelected->m_nEmoticonId);
     if (!spEmo)
         return;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x2d2, 0);
@@ -897,7 +884,7 @@ void UIGroupMessenger::FUN_14194a930(std::list<MS2Ptr<ChatEmoticonData> >& emoti
 {
     if (emoticons.empty())
         return;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x4ad, 0);
@@ -911,7 +898,7 @@ void UIGroupMessenger::FUN_14194a930(std::list<MS2Ptr<ChatEmoticonData> >& emoti
         return;
     ASObj data(2);
     Scaleform::GFx::Value arr;
-    FUN_14256e3e0(pMovie, &arr);
+    ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&arr);
     const std::list<ChatEmoticonDataPtr>& rEmoticons = emoticons;
     std::list<ChatEmoticonDataPtr>::const_iterator itEnd = rEmoticons.end();
     for (std::list<ChatEmoticonDataPtr>::const_iterator it = rEmoticons.begin(); it != itEnd; ++it)
@@ -947,10 +934,10 @@ MS2_REPLACE_METHOD(0x14194AD60, UIGroupMessenger, FUN_14194ad60, 110, 0xF5CDBC08
 // @0x14194ade0
 int UIGroupMessenger::SendMessengerMode4(int nEmoticonId)
 {
-    ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!spEmo)
         return 0;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x4e8, 0);
@@ -970,7 +957,7 @@ MS2_REPLACE_METHOD(0x14194ADE0, UIGroupMessenger, SendMessengerMode4, 460, 0x5BD
 // @0x14194afc0
 void UIGroupMessenger::FUN_14194afc0(int nEmoticonId)
 {
-    ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!spEmo)
         return;
     CStringW strSize(L"");
@@ -985,10 +972,10 @@ MS2_REPLACE_METHOD(0x14194AFC0, UIGroupMessenger, FUN_14194afc0, 446, 0xADC3693B
 // @0x14194b190
 int UIGroupMessenger::FUN_14194b190(int nEmoticonId, bool bFavorite)
 {
-    ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!spEmo)
         return 0;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x518, 0);
@@ -1012,10 +999,10 @@ void UIGroupMessenger::vfunc_ugc_1(void* pId, CString strText)
         return;
     if (pId == 0)
         return;
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_GrmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    m_nTypingTime = FUN_140869420();
+    m_nTypingTime = GetTickCountMs2();
     m_typing.SetAt((unsigned __int64)pId, strText);
 }
 MS2_REPLACE_METHOD_VIA(0x14194B360, UIGroupMessenger, UIUGCEventListener, vfunc_ugc_1, 204, 0x3AB617C1);
@@ -1023,12 +1010,12 @@ MS2_REPLACE_METHOD_VIA(0x14194B360, UIGroupMessenger, UIUGCEventListener, vfunc_
 // @0x14194b440
 void UIGroupMessenger::FUN_14194b440(const CStringW& strName, float x, float y)
 {
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_GrmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (pPlayer->vfunc_77() != strName)
     {
-        Unk_GrmMenu* pMenu = FUN_140c30140(0x4e39);
+        Unk_GrmMenu* pMenu = ((class Unk_GrmMenu*)FUN_140c30140(0x4e39));
         if (pMenu != 0)
         {
             Unk_PopupMenuInfo info(x, y, 3, 0x635e, 0, "", 0);
@@ -1382,7 +1369,7 @@ MS2_REPLACE_METHOD(0x14194D100, UIGroupMessenger, FUN_14194d100, 701, 0x77104F6D
 // @0x14194d3d0
 void UIGroupMessenger::FUN_14194d3d0(int nKind, const CStringW& strName, const CStringW& strMsg, int bSystem)
 {
-    if (MS2Ptr<Unk_GrmList> spOutput = FUN_140c02900("m_textOutput"))
+    if (MS2Ptr<ASScrollingList> spOutput = FUN_140c02900("m_textOutput"))
     {
         bool bVisibleBg = FUN_14194da30(strMsg);
         CStringW strFrame = FUN_14194d8f0(strName, bSystem);
@@ -1419,7 +1406,7 @@ MS2_REPLACE_METHOD(0x14194D6F0, UIGroupMessenger, FUN_14194d6f0, 498, 0x612545BC
 // @0x14194d8f0
 CStringW UIGroupMessenger::FUN_14194d8f0(const CStringW& strName, int bSystem)
 {
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_GrmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (bSystem)
         return L"notify";
     if (pPlayer != 0 && pPlayer->vfunc_77() == strName)
@@ -1481,11 +1468,10 @@ class Unk_GrmRarityColors
 public:
     unsigned FUN_1405569f0(int nRarity);
 };
-Unk_GrmRarityColors* FUN_140281980();
 MS2Ptr<CMsgBoxData> FUN_14151f820();                                // the shown message box
-CStringW FUN_1409eec40(int nStringId);
-BlindManager* FUN_1409c1730();
-__int64 FUN_140869440();                                            // the server time (epoch seconds)
+CStringW BlockFormat(int nStringId);
+class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
+__int64 GetServerTime();                                            // the server time (epoch seconds)
 bool FUN_140d2c080(CStringW strText, ATL::CAtlList<CStringW>& links, CStringW strBegin, CStringW strEnd);
 __int64 FUN_140d2caf0(const CStringW& strLink);                     // an item link's uid
 CStringW FUN_14183e930(const CStringW& strText, int nColor);        // colours a text
@@ -1545,9 +1531,9 @@ int UIGroupMessengerBrowser::vfunc_53(void* pCfg)
     if (pDialog)
     {
         FUN_141926620(&m_nAlignType, &m_fOffsetX, &m_fOffsetY);
-        FUN_140873e30(pCfg, "offsetX", m_fOffsetX);
-        FUN_140873e30(pCfg, "offsetY", m_fOffsetY);
-        FUN_140873ca0(pCfg, "alignType", m_nAlignType);
+        XmlSetAttr((class TiXmlElement*)(pCfg), "offsetX", m_fOffsetX);
+        XmlSetAttr((class TiXmlElement*)(pCfg), "offsetY", m_fOffsetY);
+        XmlSetAttr((class TiXmlElement*)(pCfg), "alignType", m_nAlignType);
     }
     return 1;
 }
@@ -1559,9 +1545,9 @@ int UIGroupMessengerBrowser::vfunc_54(void* pCfg)
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog)
     {
-        FUN_140873360(pCfg, "offsetX", &m_fOffsetX);
-        FUN_140873360(pCfg, "offsetY", &m_fOffsetY);
-        FUN_1408731e0(pCfg, "alignType", m_nAlignType);
+        XmlGetAttr((class TiXmlElement*)(pCfg), "offsetX", *(float*)(&m_fOffsetX));
+        XmlGetAttr((class TiXmlElement*)(pCfg), "offsetY", *(float*)(&m_fOffsetY));
+        XmlGetAttr((class TiXmlElement*)(pCfg), "alignType", m_nAlignType);
     }
     return 1;
 }
@@ -1680,7 +1666,7 @@ void UIGroupMessengerBrowser::vfunc_80(void* pPacket)
         }
         else
         {
-            FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, L"");
+            FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, L"");
         }
     }
 }
@@ -1821,7 +1807,7 @@ MS2_REPLACE_METHOD(0x141951BF0, UIGroupMessengerBrowser, FUN_141951bf0, 79, 0xBE
 // @0x141951c50
 void UIGroupMessengerBrowser::FUN_141951c50(int nGroupId, const CStringW& strName, const CStringW& strMsg)
 {
-    if (FUN_1409c1730()->IsBlocked(0, strName))
+    if (((class BlindManager*)FUN_1409c1730())->IsBlocked(0, strName))
         return;
     m_pending.AddTail(TalkLog(nGroupId, strMsg, strName));
 }
@@ -2023,7 +2009,7 @@ MS2_REPLACE_METHOD(0x141952B30, UIGroupMessengerBrowser, FUN_141952b30, 161, 0x0
 // @0x141952be0
 int UIGroupMessengerBrowser::FUN_141952be0()
 {
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_GrmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ATL::CAtlList<unsigned> groups(10);
@@ -2195,7 +2181,7 @@ void UIGroupMessengerBrowser::FUN_141953810(int nGroupId, const CStringW& strNam
         if (spLog->m_lines.size() > 50)
             spLog->m_lines.erase(spLog->m_lines.begin());
         CStringW strLine;
-        CMsTime now(FUN_140869440());
+        CMsTime now(GetServerTime());
         int nHour = now.GetHour();
         int nMinute = now.GetMinute();
         int nSecond = now.GetSecond();
@@ -2220,7 +2206,7 @@ CStringW UIGroupMessengerBrowser::FUN_141953b10(const CStringW& strMsg)
         {
             MS2Ptr<CItem> spItem = FUN_141953df0(nUid);
             if (spItem.get())
-                nColor = FUN_140281980()->FUN_1405569f0(spItem->FUN_140526bd0());
+                nColor = reinterpret_cast<Unk_GrmRarityColors*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405569f0(spItem->FUN_140526bd0());
         }
         CStringW strColored = FUN_14183e930(strLink, nColor);
         strHtml.Replace(strLink, strColored);

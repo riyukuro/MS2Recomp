@@ -27,26 +27,37 @@ public:
 };
 
 // ---- unrecovered neighbours -----------------------------------------------------------------------------------------
-extern char DAT_143afa4d8;   extern char DAT_143afb348;   extern char DAT_143ae5190;   extern char DAT_143afa7d0;
-extern char DAT_143afd5c8;   extern int DAT_143ae2b34;    extern int DAT_1439fc854;
+extern char DAT_143ae5190;
+class NiLODNode { public: static const NiRTTI ms_RTTI; };          // C3: was extern char DAT_143afb348
+class NiRenderObject { public: static const NiRTTI ms_RTTI; };     // C3: was extern char DAT_143afa7d0
+extern int DAT_143ae2b34;    extern int DAT_1439fc854;
 void* FUN_1409478c0();                                  // singleton accessor
-bool FUN_140aed0b0(void* mgr);                          // feature enabled?
-void* FUN_140a0b000(NiAVObject* o);                     // parent / key of node
-void* FUN_14098d8d0(void* table, void* key);            // table lookup
-NiProperty* FUN_141d14f90(NiAVObject* o, int type);     // NiAVObject::GetProperty
-bool FUN_14098dab0(NiProperty* p);                      // property active?
-void* FUN_140994490(NiAVObject* o);                     // GetWorldBound
-float FUN_140a00ef0(const NiPlane* p, const NiPoint3* c);// plane distance to the bound centre
+class CameraMgr   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_140aed0b0();
+};
+class NiAlphaProperty   // C3: member view for the former free stand-ins
+{
+public:
+    bool GetAlphaBlending() const;
+};
 struct Unk_BoundView { NiPoint3 m_kCenter; float m_fRadius; };   // NiBound's layout (its members are protected)
-bool FUN_14109a9a0(void* table, NiAVObject* o);         // contained in set
 int FUN_14098daf0(NiAVObject* o);                       // child count
-void* FUN_14098db40(NiAVObject* o, int i);              // child at
-bool FUN_1411c9940(void* child);                        // child visible?
+class NiNode   // C3: member view for the former free stand-ins
+{
+public:
+    static const NiRTTI ms_RTTI;
+    class NiAVObject* GetAt(unsigned int) const;
+};
 int FUN_140ad02f0(int a, int b);                        // combine
-int FUN_141568f60(void* o);                             // lookup result id
-void* FUN_141d17b40(NiAVObject* o, void* key);          // NiObject::GetExtraData-style lookup
+unsigned int FUN_141568f60(class NiAVObject*);   // C3: was FUN_141568f60
 efd::MemHint FUN_140876480(int cat);                    // memory category hint (returned through a hidden slot)
-float FUN_14098daa0(NiProperty* p);                     // alpha test ref
+class NiMaterialProperty   // C3: member view for the former free stand-ins
+{
+public:
+    float GetAlpha() const;
+};
 bool FUN_14028d470(float a, float b);                   // approx equal                                   // material has alpha test?
 
 // @0x141753550
@@ -71,13 +82,13 @@ void ShadowCullingProcess::Process(NiAVObject* obj)
     unsigned i;
     int k;
     void* node;
-    if (FUN_140aed0b0(FUN_1409478c0()) && obj != 0) {
-        node = FUN_14098d8d0(&DAT_143afa4d8, FUN_140a0b000(obj));
+    if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed0b0() && obj != 0) {
+        node = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(((void*)((class NiAVObject*)(class NiAVObject*)(obj))->GetParent()))));
         while (node != 0) {
-            NiProperty* p = FUN_141d14f90((NiAVObject*)node, 0);
-            if (p != 0 && FUN_14098dab0(p) && !FUN_141753a00((NiAVObject*)node))
+            NiProperty* p = ((class NiAVObject*)(class NiAVObject*)((NiAVObject*)node))->GetProperty(0);
+            if (p != 0 && ((class NiAlphaProperty*)(class NiProperty*)(p))->GetAlphaBlending() && !FUN_141753a00((NiAVObject*)node))
                 return;
-            node = FUN_14098d8d0(&DAT_143afa4d8, FUN_140a0b000((NiAVObject*)node));
+            node = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(((void*)((class NiAVObject*)(class NiAVObject*)((NiAVObject*)node))->GetParent()))));
         }
     }
     if (!m_kPlanes.IsAnyPlaneActive()) {
@@ -87,19 +98,19 @@ void ShadowCullingProcess::Process(NiAVObject* obj)
     saved = m_kPlanes.GetActivePlaneState();
     for (i = 0; i < 6; ++i) {
         if (m_kPlanes.IsPlaneActive(i)) {
-            int r = FUN_141753c20((const NiBound*)FUN_140994490(obj), m_kPlanes.GetPlane(i));
+            int r = FUN_141753c20((const NiBound*)((void*)&((class NiAVObject*)(class NiAVObject*)(obj))->GetWorldBound()), m_kPlanes.GetPlane(i));
             if (r == 2) break;
             if (r == 1) m_kPlanes.DisablePlane(i);
         }
     }
     if (i == 6) {
-        NiProperty* p = FUN_141d14f90(obj, 0);
-        if (p == 0 || !FUN_14098dab0(p) || FUN_141753a00(obj)) {
-            if (FUN_14109a9a0(&DAT_143afb348, obj)) {
+        NiProperty* p = ((class NiAVObject*)(class NiAVObject*)(obj))->GetProperty(0);
+        if (p == 0 || !((class NiAlphaProperty*)(class NiProperty*)(p))->GetAlphaBlending() || FUN_141753a00(obj)) {
+            if (NiObject::IsExactKindOf((class NiRTTI const*)(&NiLODNode::ms_RTTI), (class NiObject const*)(obj))) {
                 NiAVObject* o2 = obj;
                 for (k = 0; k < FUN_14098daf0(o2); ++k) {
-                    void* c = FUN_14098db40(o2, k);
-                    if (c != 0 && !FUN_1411c9940(c)) break;
+                    void* c = ((void*)((class NiNode*)(class NiAVObject*)(o2))->GetAt(k));
+                    if (c != 0 && !((class NiAVObject*)(void*)(c))->IsNode()) break;
                 }
                 Unk_ShadowMgr* mgr = (Unk_ShadowMgr*)FUN_141753b80((char*)o2);
                 int v = mgr->vfunc_18(GetLODCamera(), o2);
@@ -111,11 +122,11 @@ void ShadowCullingProcess::Process(NiAVObject* obj)
                 obj->OnVisible(*this);
             }
         } else if (DAT_143ae2b34 != 0) {
-            void* x = FUN_14098d8d0(&DAT_143afa7d0, obj);
-            if (x != 0 && FUN_141568f60(x) != 0)
+            void* x = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiRenderObject::ms_RTTI), (class NiObject const*)(obj)));
+            if (x != 0 && FUN_141568f60((class NiAVObject*)(x)) != 0)
                 obj->OnVisible(*this);
         } else {
-            if (FUN_141d17b40(obj, &DAT_143ae5190) != 0)
+            if (((void*)((class NiObjectNET*)(class NiAVObject*)(obj))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae5190))) != 0)
                 obj->OnVisible(*this);
         }
     }
@@ -131,9 +142,9 @@ ShadowCullingProcess* FUN_141753990()
 // @0x141753a00
 bool FUN_141753a00(NiAVObject* o)
 {
-    NiProperty* p = FUN_141d14f90(o, 3);
+    NiProperty* p = ((class NiAVObject*)(class NiAVObject*)(o))->GetProperty(3);
     if (p != 0) {
-        if (FUN_14028d470(FUN_14098daa0(p), 1.0f)) return true;
+        if (FUN_14028d470(((class NiMaterialProperty*)(class NiProperty*)(p))->GetAlpha(), 1.0f)) return true;
     }
     return false;
 }
@@ -150,7 +161,7 @@ void* FUN_141753a90(void** p) { return *p; }
 void* FUN_141753b80(char* o) { return FUN_141753a90(&((Unk_141753b80*)o)->m_138); }
 
 // @0x141753bb0
-const NiRTTI* ShadowCullingProcess::GetRTTI() const { return (const NiRTTI*)&DAT_143afd5c8; }
+const NiRTTI* ShadowCullingProcess::GetRTTI() const { return (const NiRTTI*)&NiTerrainCullingProcess::ms_RTTI; }
 
 // @0x141753c10
 void FUN_141753c10(int v) { DAT_1439fc854 = v; }
@@ -158,7 +169,7 @@ void FUN_141753c10(int v) { DAT_1439fc854 = v; }
 // @0x141753c20
 int FUN_141753c20(const NiBound* b, const NiPlane& pl)
 {
-    float d = FUN_140a00ef0(&pl, &((const Unk_BoundView*)b)->m_kCenter);
+    float d = ((class NiPlane*)(class NiPlane const*)(&pl))->Distance(*(class NiPoint3 const*)(&((const Unk_BoundView*)b)->m_kCenter));
     if (d <= -*(const float*)((const char*)b + 0xc)) { return 2; }
     else if (d >= *(const float*)((const char*)b + 0xc)) { return 1; }
     else { return 0; }

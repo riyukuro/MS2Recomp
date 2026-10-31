@@ -104,10 +104,13 @@ struct Unk_CjNotice
 };
 Unk_CjNotice FUN_1408564b0(int nId, int nRate);
 class Unk_CjMsgSvc { public: void FUN_141b213f0(Unk_CjNotice kScript, int nValue, int nA, int nB); };
-Unk_CjMsgSvc* FUN_140967100();
+class Unk_AkoCutscene   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoCutscene* GetInstance();
+};
 
 // The local player: the world service hands out the actor; a few members used here.
-WorldService* FUN_1403ed2d0();
 int FUN_141654730(PCBase* pPC);                                 // the player's job code
 int FUN_141654700(PCBase* pPC);                                 // the player's job
 class Unk_CjQuestMgr : public CQuestManager { };
@@ -145,7 +148,7 @@ CString UIChangeJobDialog::GetTypeName()
 void UIChangeJobDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    PCBase* pPC = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     FUN_140bd8040(FUN_141654730(pPC));
@@ -193,7 +196,7 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
         ASObj skill(2);
         skill.FUN_1409c0d20("id", spData.FUN_1401d75d0()->m_skills1[i]);
         skill.FUN_1407cba60("icon", CString(spSkill.FUN_14063ed50()->m_strIcon));
-        ASTooltip tooltip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x10, 2);
+        ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
         if (tooltip.FUN_1409e1c50(spData.FUN_1401d75d0()->m_skills1[i], 1, 1) != 0)
             skill.FUN_1409adbe0("tooltip", tooltip.FUN_1422bb870());
         skills1.FUN_1422bc050(skill.FUN_1422bb870());
@@ -206,7 +209,7 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
         ASObj skill(2);
         skill.FUN_1409c0d20("id", spData.FUN_1401d75d0()->m_skills2[i]);
         skill.FUN_1407cba60("icon", CString(spSkill.FUN_14063ed50()->m_strIcon));
-        ASTooltip tooltip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x10, 2);
+        ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
         if (tooltip.FUN_1409e1c50(spData.FUN_1401d75d0()->m_skills2[i], 1, 1) != 0)
             skill.FUN_1409adbe0("tooltip", tooltip.FUN_1422bb870());
         skills2.FUN_1422bc050(skill.FUN_1422bb870());
@@ -219,7 +222,7 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
 // @0x140bd88e0
 int UIChangeJobDialog::FUN_140bd88e0()
 {
-    PCBase* pPC = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (CjTable()->FUN_1401d6ce0(FUN_141654700(pPC), FUN_141654730(pPC), (unsigned short)pPC->vfunc_78()) == 0)
@@ -240,7 +243,7 @@ void UIChangeJobDialog::FUN_140bd89d0(int nJobCode)
     Unk_CjNotice kNotice = FUN_1408564b0(spJob.FUN_14064d520()->FUN_14074b030(), 100);
     if (kNotice.FUN_14085a420())
         return;
-    FUN_140967100()->FUN_141b213f0(kNotice, spJob.FUN_14064d520()->m_n2e8, 4, 0);
+    ((class Unk_CjMsgSvc*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(kNotice, spJob.FUN_14064d520()->m_n2e8, 4, 0);
 }
 
 // @0x140bd8af0

@@ -8,6 +8,7 @@
 #endif
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\unknown_14147a2a0.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include <math.h>
 // The statically linked CRT math calls go through the exe's IAT.
 extern "C" float (__cdecl* __imp_cosf)(float);
@@ -23,12 +24,12 @@ extern "C" float (__cdecl* __imp_tanf)(float);
 Vector3 FUN_141192780(Vector3 kFrom, Vector3 kTo, bool bFlag);  // direction of the pair (flag 1)
 float FUN_141403f20(Vector3 kA, Vector3 kB);                // horizontal distance (z cleared on the copies)
 float FUN_140968970(float fValue);                                          // sqrtf wrapper
-CPhysXHelper* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 Vector3* FUN_14097faa0(Vector3* pDst, const Unk_NiPoint3& src);    // NiPoint3 assignment
 Vector3* FUN_14097fad0(Vector3* pDst, const Unk_NiPoint3* pSrc);    // NiPoint3 assignment
-extern float FUN_1407680d0(void* pRandom);                                  // random float in [0, 1)
+float FUN_1407680d0(class Unk_Random*);   // C3: was FUN_1407680d0
 void FUN_140e69330(float fAngle, float* pSin, float* pCos);                 // sin and cos of the angle
-extern Vector3 DAT_143a08cf8;                                       // the up axis
+#define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z)          // C3: was extern Vector3 DAT_143a08cf8
 
 // A 2D point and its NiPoint2 / efd::Point2 helpers.
 struct Unk_Pt2 { float x, y; };
@@ -93,7 +94,7 @@ bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, flo
     kInfo.m_dir = FUN_14147af10(kEnd.FUN_140965c40(kStart));
     kInfo.m_groups = 0x389;
     float fDist = FUN_141403f20(kStart, kEnd);
-    if (FUN_1409f7ca0()->CastRay(&kInfo, pMask))
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, pMask))
     {
         float fHit = FUN_140966ea0(Vector3(kStart), kInfo.m_hitPoint);
         if (fHit < fDist)
@@ -119,7 +120,7 @@ bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, flo
     {
         kInfo.m_dir = DAT_143a08cf8.FUN_1409f7960();
         kInfo.m_maxDist = fProbeLen;
-        if (FUN_1409f7ca0()->CastRay(&kInfo, pMask))
+        if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, pMask))
         {
             Unk_NiPoint3 kPoint(kInfo.m_hitPoint);
             kPoint.z = kPoint.z + 5.0f;
@@ -215,8 +216,8 @@ bool FUN_14147ad10(const Vector3& kOrigin, const Vector3& kDir, const Vector3& k
 // A random point of the disc of radius fRadius (uniform by area): angle from one draw, radius from the root of the next.
 void FUN_14147ae30(float fUnused0, float fUnused1, float fRadius, float* pX, float* pY, void* pRandom)
 {
-    float fAngle = FUN_1407680d0(pRandom) * 6.2831855f;
-    float fDist = fRadius * FUN_140968970(FUN_1407680d0(pRandom));
+    float fAngle = FUN_1407680d0((class Unk_Random*)(pRandom)) * 6.2831855f;
+    float fDist = fRadius * FUN_140968970(FUN_1407680d0((class Unk_Random*)(pRandom)));
     FUN_140e69330(fAngle, pY, pX);
     *pX = *pX * fDist;
     *pY = *pY * fDist;

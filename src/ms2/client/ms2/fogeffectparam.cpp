@@ -35,7 +35,6 @@ void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>& arr, const 
 bool FUN_14028d470(float a, float b);                                                   // nearly equal
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
-CMainSystem* FUN_14086d260();
 
 // Scene fog state (?\applyeffect.cpp manager, singleton 0x1409a8b00).
 ApplyEffect* FUN_1409a8b00();
@@ -101,7 +100,7 @@ CFogEffect* CFogEffect::FUN_141220be0(void* pUnused, const CFogEffectParam* pPar
     {
         CFogEffect* pEffect = new (efd::MemHint(efd::MemHint::NONE)) CFogEffect;
         FUN_1409a8b00()->GetFog(&pEffect->m_fNearFrom, &pEffect->m_fFarFrom, &pEffect->m_dwColorFrom);
-        pEffect->m_dStartTime = FUN_14086d260()->FUN_141473280() + pParam->m_fStartDelay;
+        pEffect->m_dStartTime = TSingleton<CMainSystem>::GetInstance()->FUN_141473280() + pParam->m_fStartDelay;
         pEffect->m_fDuration = pParam->m_fDuration;
         pEffect->m_b2c = pParam->m_b30;
         pEffect->m_fNear = pParam->m_fNear;
@@ -136,7 +135,7 @@ bool CFogEffect::vfunc_9()
     if (CEffect::vfunc_9())
     {
         FUN_141220f50();
-        FUN_141220f60(FUN_14086d260()->FUN_141473280());
+        FUN_141220f60(TSingleton<CMainSystem>::GetInstance()->FUN_141473280());
         return true;
     }
     return false;

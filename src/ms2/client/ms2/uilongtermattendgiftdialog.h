@@ -12,7 +12,7 @@ class CInPacket;
 class CMsgBoxData;
 class NotifyObject;
 class Unk_LtaEvent;
-class Unk_LtaList;
+class ASScrollingList;
 
 class UILongTermAttendGiftDialog : public UIDialog
 {
@@ -50,7 +50,7 @@ public:
     int FUN_140c6d570();                                                   // table int 0xa8e (this event)
     CStringW FUN_140c6d5c0();                                              // table string 0xa8c (claimed days)
 
-    MS2Ptr<Unk_LtaList> FUN_140c02900(const CString& strName);              // bind a list child
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);              // bind a list child
 
 private:
     MS2_LAYOUT_FRIEND;

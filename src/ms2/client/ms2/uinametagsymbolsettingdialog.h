@@ -16,7 +16,7 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/ascript.h"
 
-class Unk_NtList;
+class ASScrollingList;
 
 class UINameTagSymbolSettingDialog : public UIDialog
 {
@@ -31,6 +31,6 @@ public:
     virtual void vfunc_67();                                    // 67 0x14131da10 close
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x14131def0
 
-    MS2Ptr<Unk_NtList> FUN_140c02900(const CString& strName);   // bind a list child
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);   // bind a list child
 };
 MS2_CHECK_SIZE(UINameTagSymbolSettingDialog, 0x178);

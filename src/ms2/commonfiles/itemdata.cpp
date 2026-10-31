@@ -38,10 +38,8 @@
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
 void FUN_140873220(Unk_140165cf0*, const char*, int&);
@@ -97,6 +95,7 @@ bool CItemChangeBeautyTable::s_bInit;
 #include "ms2/placeholder/citemextradata.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
 #include "ms2/commonfiles/itemdatatable.h"
+class ItemGachaBoxTable;
 
 // Item table singleton (commonstruct_wa.h declares the free functions): the members this unit calls.
 class Unk_IngTable : public CItemDataTable
@@ -119,9 +118,9 @@ void* FUN_140302b10();
 float FUN_1404c1810(void* pThis, int a, int b);
 void* FUN_140166410();
 bool FUN_14036d570(void* pThis, int nId);
-void* FUN_14052d230();
+ItemGachaBoxTable * FUN_14052d230(void);  // C3: the definition's signature
 bool FUN_14059eec0(void* pThis, int nItemId);
-int FUN_1403ba790(int nId);
+int FUN_1403ba790(unsigned int);  // C3: the definition's signature
 
 // Option-table lookups started by CItemData::FUN_14053ed00.
 struct Unk_OptionData;
@@ -181,12 +180,12 @@ bool CItemChangeBeautyTable::Load()
     cache->FUN_1401d1160(CString(strPath));
     m_caches.Add(cache);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("beauty"); pNode != 0; pNode = pNode->FUN_140168650("beauty"))
@@ -366,7 +365,7 @@ bool CItemData::Load(Unk_140165cf0* pElem)
         if (model == 0) {
             int nModelId = FUN_14053ec50();
             int nItemId = FUN_14053c510();
-            FUN_1403d7960(FUN_140166440(), 2, 0x21, L"Not Found ItemID:{0} ItemModelID:{1}", nItemId, nModelId);
+            FUN_1403d7960(GetLogString(), 2, 0x21, L"Not Found ItemID:{0} ItemModelID:{1}", nItemId, nModelId);
         }
     }
     if (FUN_14036d570(FUN_140166410(), 0x2f) == 1 && FUN_140541580()) {

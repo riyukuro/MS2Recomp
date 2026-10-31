@@ -42,6 +42,8 @@ static Unk_AsTimer s_refreshTimer;                                              
 #include "ms2/client/ms2/skillslot.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/client/ms2/mypc.h"
+#include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                                       // @0x140116510
 static CString s_strNotThisPlace = "system_notice_error_warningNotThisPlace";              // @0x140116540
@@ -116,7 +118,7 @@ public:
 Unk_MpWnd* FUN_1422c8e90(const CString& strName);                      // the window of that name
 Unk_MpSlotBar* FUN_141763cb0(Unk_MpWnd* pWnd);
 Unk_MpSlotBox* FUN_140c544d0(Unk_MpWnd* pWnd);
-Unk_MpSlot* FUN_141761e60(Unk_MpWnd* pWnd);
+class SkillSlot* FUN_141761e60(class DragSlot*);   // C3: was FUN_141761e60
 void FUN_1417634a0(const CString& strName);                             // drop the slot bar
 void FUN_1417633f0(const CString& strName, int nCount);                 // create the slot bar
 
@@ -164,7 +166,7 @@ public:
     char m_pad_00[0x1a0];
     Unk_MpKeyPages m_1a0;                                               // +0x1a0 the pages
 };
-Unk_MpKeyTable* FUN_1409331f0();
+class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 
 // @0x1419f4760
 int Unk_MpKeyTable::FUN_1419f4760()
@@ -173,24 +175,24 @@ int Unk_MpKeyTable::FUN_1419f4760()
 }
 
 class Unk_MpKeyInput { public: bool FUN_14116dd30(int nKey, int a2, int a3); };
-Unk_MpKeyInput* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 struct Unk_MpCfgData { bool m_bExpand; bool m_bShowSkillName; };
 class Unk_MpCfg { public: Unk_MpCfgData* FUN_140a58500(); };
 class Unk_MpPad { public: int FUN_140d8ee40(); };
-Unk_MpPad* FUN_140a58540();
+class MS2InputService* FUN_140a58540();   // C3: was FUN_140a58540
 class Unk_MpTitles { public: bool FUN_140d9f5d0(int nIndex); CStringW FUN_140d9f600(int nIndex); };
-Unk_MpTitles* FUN_140931510();
-CGuideManager* FUN_1409331e0();
-CFeatureManager* FUN_140166410();
+class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_MpItemEvents
 {
 public:
     void FUN_1419cae20(UIItemEventListener* pListener);
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
-Unk_MpItemEvents* FUN_140a6a840();
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 
 // The mount of the player.
 struct Unk_AdvMountRow;
@@ -300,7 +302,7 @@ public:
     Unk_MpPhys* FUN_1401cd1a0();                                        // operator->
     void* m_p;
 };
-void* FUN_1401cd040(void* p);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 extern char DAT_143b059e8;
 
 // The actor state of the player.
@@ -316,22 +318,15 @@ class Unk_MpStateHolder { public: Unk_MpState FUN_140639bb0(); };
 class Unk_MpStat { public: bool FUN_140970d70(); float FUN_140970fb0(); };
 
 class AdditionalCustomCli;
-class Unk_MpPC : public PC
+class Unk_MpPC : public MyPC
 {
 public:
-    __int64 FUN_141670a00(int nStat);                                   // current value
-    __int64 FUN_141670a30(int nStat);                                   // max value
-    int FUN_141654730();                                                // job code
-    int FUN_1416764d0();                                                // riding
     Unk_AdvHolder* FUN_1416764a0();
     Unk_MpStat* FUN_1416749a0();
     int FUN_141661a80();
-    int FUN_141659690();
-    int FUN_141659610();
     Unk_MpSkillOwner* FUN_141523bc0();
     Unk_MpStateHolder* FUN_1416546d0();
     void FUN_14152c280(Unk_MpRideOff* pReq);
-    void FUN_14152f140(__int64 nId);
     Unk_MpRideeCtl* FUN_141530290();
 };
 class Unk_MpWorld : public WorldService { public: Unk_MpPC* FUN_141bd0cc0();};
@@ -344,7 +339,11 @@ public:
     __int64 m_28[10];
 };
 MS2_CHECK_SIZE(AdditionalCustomCli, 0x78);
-int FUN_14096c6f0(Unk_AsBuff* pBuff);                                   // valid
+class AdditionalCli   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14096c6f0();
+};
 
 // The achievement of a progress notice.
 class Unk_MpAchieveRow { public: char m_pad_00[0x50]; int m_50; };
@@ -378,9 +377,13 @@ public:
     int FUN_140525f10();
     int FUN_140526010();
 };
-int FUN_14053dc20(CItemData* pData);
+class CItemData   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14053dc20();
+    bool FUN_14053e460();
+};
 #define MP_ITEM(p) static_cast<CItem*>(p)
-bool FUN_14053e460(CItemData* pData);
 
 bool FUN_140841300(const CStringW& str, const char* sz);
 void FUN_14151f200();
@@ -388,7 +391,7 @@ bool FUN_140930d70();
 int FUN_1418dd0c0();
 int FUN_1418dd110();
 int FUN_141472bc0();
-void FUN_141b706a0(int nMs, int* pHour, int* pMin, int* pSec);
+void FUN_141b706a0(unsigned int, unsigned int*, unsigned int*, unsigned int*);   // C3: was FUN_141b706a0
 bool FUN_14028d470(float a, float b);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 CStringW FUN_140298ea0(CStringW strKey);
@@ -397,7 +400,6 @@ void FUN_141276180(const CString& a, const CString& b);
 CStringW FUN_14093b970(unsigned nId);
 CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int& nValue);
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a1);
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);
 extern unsigned int DAT_143af3960;                                      // pending refresh flags of the panel
 
 // The localized-string formatter (see partyvotecli.cpp): the (CStringW, float) instance is this unit's COMDAT.
@@ -429,8 +431,8 @@ inline ULongLong mp_make_type(Unk_MpArgType t0 = Unk_MpArgType(), Unk_MpArgType 
     }
 MP_WRAP(2)
 
-void FUN_140873ca0(void* pCfg, const char* szName, int n);              // save an int attribute
-void FUN_1408731e0(void* pCfg, const char* szName, int& n);             // load an int attribute
+void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 void FUN_1419f37f0(unsigned int nFlags);
 Unk_MpRideeCtl* FUN_1419f3810();
 
@@ -447,7 +449,7 @@ MS2Ptr<ASEffectManager> FUN_1419f3990(int nMovieId, const Scaleform::GFx::Value&
 MS2Ptr<ASEffectManager> Unk_MpScript::FUN_1419f3a40(const CString& strName)
 {
     Scaleform::GFx::Value v = FUN_1422baa20(strName);
-    if (FUN_1409b4d40(v))
+    if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
         return FUN_1419f3990(m_nMovieId, v);
     return MS2Ptr<ASEffectManager>(0);
 }
@@ -470,9 +472,9 @@ UIMainPlayerInfo::UIMainPlayerInfo()
 {
     FUN_1419f3740();
     m_80 = 1;
-    FUN_140939a10()->RegisterNotify(L"NotifyDebugState", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14b0));
-    FUN_140939a10()->RegisterNotify(L"NotifyShortkeyPage", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14e0));
-    FUN_140939a10()->RegisterNotify(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f1580));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyDebugState", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14b0));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyShortkeyPage", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14e0));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f1580));
 }
 
 // @0x1419ee5d0
@@ -483,10 +485,10 @@ UIMainPlayerInfo::~UIMainPlayerInfo()
     m_pending.RemoveAll();
     m_ridee = 0;
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
-    FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    FUN_140939a10()->UnregisterNotify(L"NotifyDebugState", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14b0));
-    FUN_140939a10()->UnregisterNotify(L"NotifyShortkeyPage", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14e0));
-    FUN_140939a10()->UnregisterNotify(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f1580));
+    ((class Unk_MpItemEvents*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyDebugState", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14b0));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyShortkeyPage", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14e0));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f1580));
 }
 
 // @0x1419eea30
@@ -514,16 +516,16 @@ int UIMainPlayerInfo::vfunc_oa0_1()
 // @0x1419eeb20
 int UIMainPlayerInfo::vfunc_53(void* pCfg)
 {
-    FUN_140873ca0(pCfg, "skillMinimize", m_bSkillMinimize);
-    FUN_140873ca0(pCfg, "commonMinimize", m_bCommonMinimize);
+    XmlSetAttr((class TiXmlElement*)(pCfg), "skillMinimize", m_bSkillMinimize);
+    XmlSetAttr((class TiXmlElement*)(pCfg), "commonMinimize", m_bCommonMinimize);
     return 1;
 }
 
 // @0x1419eeb80
 int UIMainPlayerInfo::vfunc_54(void* pCfg)
 {
-    FUN_1408731e0(pCfg, "skillMinimize", m_bSkillMinimize);
-    FUN_1408731e0(pCfg, "commonMinimize", m_bCommonMinimize);
+    XmlGetAttr((class TiXmlElement*)(pCfg), "skillMinimize", m_bSkillMinimize);
+    XmlGetAttr((class TiXmlElement*)(pCfg), "commonMinimize", m_bCommonMinimize);
     return 1;
 }
 
@@ -541,7 +543,7 @@ void UIMainPlayerInfo::vfunc_67()
     UIBuiltInDialog::vfunc_67();
     FUN_1417634a0(FUN_1419f31f0());
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
-    FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_MpItemEvents*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     m_effectManager = 0;
     m_playerInfo = 0;
     m_ridee = 0;
@@ -578,7 +580,7 @@ void UIMainPlayerInfo::OnLoadInit()
     }
     FUN_1419f13b0(!pPc->FUN_1416749a0()->FUN_140970d70() ? 1 : 0, 1);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
-    FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_MpItemEvents*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
 }
 
 // @0x1419ef110
@@ -599,7 +601,7 @@ void UIMainPlayerInfo::OnLoadComplete()
         dialog->Invoke("enabledExpansionSlotToggle", 1);
         dialog->FUN_1409ba0d0("expansionSlotActive", m_bSkillMinimize, m_bCommonMinimize);
     }
-    int nPage = FUN_1409331f0()->FUN_140a700b0() + 1;
+    int nPage = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_140a700b0() + 1;
     FUN_1419f24f0(nPage);
 }
 
@@ -631,9 +633,9 @@ int UIMainPlayerInfo::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             {
                 if (Unk_MpRideeCtl* pCtl = FUN_1419f3810())
                 {
-                    if (FUN_140166410()->FUN_14036d570(0xd4))
+                    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd4))
                     {
-                        Unk_MpPhysRef phys(FUN_1401cd040(&DAT_143b059e8));
+                        Unk_MpPhysRef phys(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
                         if (phys.FUN_140885310() != 0)
                         {
                             Unk_MpWeaponPtr weapon(phys.FUN_1401cd1a0()->FUN_1410b8ab0(pCtl->FUN_1410aa520()));
@@ -713,7 +715,7 @@ void UIMainPlayerInfo::vfunc_15()
             int nHour = 0;
             int nMin = 0;
             int nSec = 0;
-            FUN_141b706a0(nEnd - nNow, &nHour, &nMin, &nSec);
+            FUN_141b706a0(nEnd - nNow, (unsigned int*)(&nHour), (unsigned int*)(&nMin), (unsigned int*)(&nSec));
         }
     }
     if (s_refreshTimer.FUN_140268870(200) != 0)
@@ -730,7 +732,7 @@ int UIMainPlayerInfo::vfunc_13()
         return 0;
     if (pPc->FUN_141659610() != 0)
         return 0;
-    if (FUN_14025e7c0()->FUN_14116dd30(0x493e1, 0, 0) && reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bdb660(0) != 0)
+    if (((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x493e1, 0, 0) && reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bdb660(0) != 0)
     {
         FUN_1412751f0(BlockFormat(0x60), 1, 1);
         FUN_141276180(s_strNotThisPlace, "");
@@ -932,18 +934,18 @@ void UIMainPlayerInfo::vfunc_22(void* pItem)
 // @0x1419f09e0
 void UIMainPlayerInfo::vfunc_2(void* pItem)
 {
-    if (FUN_14053e460(MP_ITEM(pItem)->FUN_140527840()))
+    if (((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->FUN_140527840()))->FUN_14053e460())
         FUN_1419f2e10(MP_ITEM(pItem));
-    FUN_1409331f0()->FUN_14142f1c0(FUN_14053dc20(MP_ITEM(pItem)->FUN_140527840()), MP_ITEM(pItem)->FUN_1405276c0(), MP_ITEM(pItem)->FUN_140526a50());
+    ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142f1c0(((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->FUN_140527840()))->FUN_14053dc20(), MP_ITEM(pItem)->FUN_1405276c0(), MP_ITEM(pItem)->FUN_140526a50());
 }
 
 // @0x1419f0a80
 void UIMainPlayerInfo::vfunc_3(void* pItem, bool b)
 {
-    if (FUN_14053e460(MP_ITEM(pItem)->FUN_140527840()))
+    if (((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->FUN_140527840()))->FUN_14053e460())
     {
-        int nKey = FUN_1409331f0()->FUN_14142ca40(FUN_14053dc20(MP_ITEM(pItem)->FUN_140527840()), 0);
-        FUN_1409331f0()->FUN_1414294e0(nKey);
+        int nKey = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142ca40(((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->FUN_140527840()))->FUN_14053dc20(), 0);
+        ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_1414294e0(nKey);
         FUN_1419f2e10(MP_ITEM(pItem));
     }
 }
@@ -953,7 +955,7 @@ void UIMainPlayerInfo::vfunc_4(void* pItem, int n)
 {
     if (pItem == 0)
         return;
-    if (FUN_14053e460(MP_ITEM(pItem)->FUN_140527840()))
+    if (((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->FUN_140527840()))->FUN_14053e460())
         FUN_1419f2e10(MP_ITEM(pItem));
 }
 
@@ -967,7 +969,7 @@ void UIMainPlayerInfo::vfunc_33(int nClassId, int)
 // @0x1419f0bb0
 void UIMainPlayerInfo::FUN_1419f0bb0(Unk_MpAchieve* pAchieve)
 {
-    if (FUN_1409331e0()->IsRestricted(0x16) != 0)
+    if (((class CGuideManager*)FUN_1409331e0())->IsRestricted(0x16) != 0)
         return;
     if (pAchieve->FUN_14015a280() != 2)
         return;
@@ -1037,7 +1039,7 @@ void UIMainPlayerInfo::FUN_1419f1200(int nId, int nLevel)
         return;
     FUN_1419f1370(nId);
     MS2Ptr<Unk_AsBuff> spBuff(new AdditionalCustomCli(pPc, FUN_1419f3400(nId), nId, nLevel, 1));
-    if ((bool)spBuff.get() && FUN_14096c6f0(spBuff.operator->()))
+    if ((bool)spBuff.get() && ((class AdditionalCli*)(class Unk_AsBuff*)(spBuff.operator->()))->FUN_14096c6f0())
         FUN_1419f0fe0(spBuff);
     FUN_1419f37f0(5);
 }
@@ -1160,11 +1162,11 @@ void UIMainPlayerInfo::FUN_1419f19c0()
     Unk_MpSkillSetPtr spSet = pPc->FUN_141523bc0()->FUN_141768380();
     if (spSet.get() != 0)
     {
-        FUN_1409331f0()->FUN_14142e8c0(spSet);
+        ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142e8c0(spSet);
         if (spSet->m_20 == 0)
         {
             CString strName = Unk_SocketFormat("SkillSet{0}_{1}", spSet->m_18, spSet->m_1c);
-            FUN_1409331f0()->FUN_14142fc10(strName);
+            ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142fc10(strName);
         }
     }
 }
@@ -1176,7 +1178,7 @@ void UIMainPlayerInfo::FUN_1419f1c80()
     for (unsigned i = 0; i < nCount; i++)
     {
         int nKey = i + 500001;
-        if (FUN_14025e7c0()->FUN_14116dd30(nKey, 0, 0))
+        if (((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(nKey, 0, 0))
         {
             if (Unk_MpSlot* pSlot = FUN_1419f2930(i))
                 pSlot->FUN_14175f200();
@@ -1202,7 +1204,7 @@ void UIMainPlayerInfo::FUN_1419f1da0(int nSlot)
 {
     if (m_30 == 0)
         return;
-    int bShowKey = FUN_140a58540()->FUN_140d8ee40() == 2 ? 0 : 1;
+    int bShowKey = ((class Unk_MpPad*)FUN_140a58540())->FUN_140d8ee40() == 2 ? 0 : 1;
     MP_AS(m_30)->FUN_1409ba0d0("changeSkillSlot", nSlot, bShowKey);
     FUN_1419f1e60();
     FUN_1419f21b0();
@@ -1216,12 +1218,12 @@ void UIMainPlayerInfo::FUN_1419f1e60()
         return;
     if (reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bExpand)
     {
-        int nKey1 = FUN_1409331f0()->FUN_14142c940(800001, 2);
-        int nKey2 = FUN_1409331f0()->FUN_14142c940(800002, 2);
-        int nKey3 = FUN_1409331f0()->FUN_14142c940(800003, 2);
-        CStringW strKey1 = FUN_1409331f0()->FUN_141431820(nKey1).MakeUpper();
-        CStringW strKey2 = FUN_1409331f0()->FUN_141431820(nKey2).MakeUpper();
-        CStringW strKey3 = FUN_1409331f0()->FUN_141431820(nKey3).MakeUpper();
+        int nKey1 = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142c940(800001, 2);
+        int nKey2 = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142c940(800002, 2);
+        int nKey3 = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142c940(800003, 2);
+        CStringW strKey1 = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_141431820(nKey1).MakeUpper();
+        CStringW strKey2 = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_141431820(nKey2).MakeUpper();
+        CStringW strKey3 = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_141431820(nKey3).MakeUpper();
         ASObj obj(2);
         obj.FUN_1407cbb20("modifiedKey1", strKey1);
         obj.FUN_1407cbb20("modifiedKey2", strKey2);
@@ -1258,7 +1260,7 @@ void UIMainPlayerInfo::FUN_1419f22a0(int nKey, int bPress)
 {
     if (m_30.IsNull())
         return;
-    __int64 nSlotKey = FUN_1409331f0()->FUN_14142d190(nKey);
+    __int64 nSlotKey = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142d190(nKey);
     int nIndex = nSlotKey - 800001;
     int nFirst = nIndex * 8;
     ASObj obj(2);
@@ -1298,7 +1300,7 @@ void UIMainPlayerInfo::FUN_1419f2560(bool bForce)
         if (pSlot == 0)
             continue;
         Unk_MpSlotData data;
-        if (!FUN_1409331f0()->FUN_14142e030(nSlot, data))
+        if (!((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142e030(nSlot, data))
         {
             pSlot->vfunc_11();
             pSlot->vfunc_10();
@@ -1350,7 +1352,7 @@ Unk_MpSlot* UIMainPlayerInfo::FUN_1419f27e0(CItem* pItem)
         pSlot = pBar->FUN_141763710(pItem->FUN_1405276c0());
     if (pSlot == 0)
     {
-        int nSlot = FUN_1409331f0()->FUN_14142e090(FUN_14053dc20(pItem->FUN_140527840()), nUid);
+        int nSlot = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142e090(((class CItemData*)(class CItemData*)(pItem->FUN_140527840()))->FUN_14053dc20(), nUid);
         pSlot = FUN_1419f2930(nSlot);
     }
     return pSlot;
@@ -1360,7 +1362,7 @@ Unk_MpSlot* UIMainPlayerInfo::FUN_1419f27e0(CItem* pItem)
 Unk_MpSlot* UIMainPlayerInfo::FUN_1419f2930(int nIndex)
 {
     if (Unk_MpSlotBar* pBar = FUN_141763cb0(FUN_1422c8e90(FUN_1419f31f0())))
-        return FUN_141761e60(pBar->FUN_1422cd070(nIndex));
+        return ((class Unk_MpSlot*)FUN_141761e60((class DragSlot*)(pBar->FUN_1422cd070(nIndex))));
     return 0;
 }
 
@@ -1372,7 +1374,7 @@ int UIMainPlayerInfo::FUN_1419f29c0()
     {
         for (unsigned i = 0; i < 0x19; i++)
         {
-            Unk_MpSlot* pSlot = FUN_141761e60(pBar->FUN_1422cd070(s_order[i]));
+            Unk_MpSlot* pSlot = ((class Unk_MpSlot*)FUN_141761e60((class DragSlot*)(pBar->FUN_1422cd070(s_order[i]))));
             if (pSlot != 0 && pSlot->FUN_14175cb90() == 0)
                 return 0;
         }
@@ -1388,7 +1390,7 @@ void UIMainPlayerInfo::FUN_1419f2a90()
     {
         for (unsigned i = 0; i < 0x19; i++)
         {
-            Unk_MpSlot* pSlot = FUN_141761e60(pBar->FUN_1422cd070(s_order[i]));
+            Unk_MpSlot* pSlot = ((class Unk_MpSlot*)FUN_141761e60((class DragSlot*)(pBar->FUN_1422cd070(s_order[i]))));
             if (pSlot == 0)
                 continue;
             pSlot->vfunc_11();
@@ -1401,8 +1403,8 @@ int UIMainPlayerInfo::FUN_1419f2b60()
 {
     if (FUN_140930d70())
     {
-        bool bKey = FUN_14025e7c0()->FUN_14116dd30(0x49411, 0, 0) || FUN_14025e7c0()->FUN_14116dd30(0x4940e, 0, 0) ||
-                    FUN_14025e7c0()->FUN_14116dd30(0x4940f, 0, 0) || FUN_14025e7c0()->FUN_14116dd30(0x49410, 0, 0) ? true : false;
+        bool bKey = ((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x49411, 0, 0) || ((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x4940e, 0, 0) ||
+                    ((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x4940f, 0, 0) || ((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x49410, 0, 0) ? true : false;
         if (bKey)
         {
             FUN_1412751f0(FUN_140298ea0(CStringW(L"s_err_cannot_change_shortkey_page")), 1, 1);
@@ -1410,22 +1412,22 @@ int UIMainPlayerInfo::FUN_1419f2b60()
         }
         return 0;
     }
-    if (FUN_14025e7c0()->FUN_14116dd30(0x4940e, 0, 0))
+    if (((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x4940e, 0, 0))
     {
-        FUN_1409331f0()->FUN_141431ae0(0, true);
+        ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_141431ae0(0, true);
         return 1;
     }
-    else if (FUN_14025e7c0()->FUN_14116dd30(0x4940f, 0, 0))
+    else if (((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x4940f, 0, 0))
     {
-        FUN_1409331f0()->FUN_141431ae0(1, true);
+        ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_141431ae0(1, true);
         return 1;
     }
-    else if (FUN_14025e7c0()->FUN_14116dd30(0x49410, 0, 0))
+    else if (((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x49410, 0, 0))
     {
-        FUN_1409331f0()->FUN_141431ae0(2, true);
+        ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_141431ae0(2, true);
         return 1;
     }
-    else if (FUN_14025e7c0()->FUN_14116dd30(0x49411, 0, 0))
+    else if (((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x49411, 0, 0))
     {
         OnNextPage();
         return 1;
@@ -1441,7 +1443,7 @@ void UIMainPlayerInfo::FUN_1419f2d90(CItem* pItem)
     Unk_MpSlot* pSlot = FUN_1419f27e0(pItem);
     if (pSlot != 0)
     {
-        pSlot->FUN_14175cbb0(FUN_14053dc20(pItem->FUN_140527840()));
+        pSlot->FUN_14175cbb0(((class CItemData*)(class CItemData*)(pItem->FUN_140527840()))->FUN_14053dc20());
         pSlot->vfunc_10();
     }
     else
@@ -1546,8 +1548,8 @@ CStringW UIMainPlayerInfo::FUN_1419f3420()
     CStringW strName = pPc->vfunc_77();
     for (int i = 0; i < 7; i++)
     {
-        if (FUN_140931510()->FUN_140d9f5d0(i))
-            strName += FUN_1401e8510(L" {0}", FUN_140931510()->FUN_140d9f600(i));
+        if (((class Unk_MpTitles*)FUN_140931510())->FUN_140d9f5d0(i))
+            strName += FUN_1401e8510(L" {0}", ((class Unk_MpTitles*)FUN_140931510())->FUN_140d9f600(i));
     }
     return strName;
 }
@@ -1567,14 +1569,14 @@ bool UIMainPlayerInfo::OnPrevPage()
 {
     if (FUN_140930d70())
         return false;
-    int nPages = FUN_1409331f0()->FUN_1419f4760();
+    int nPages = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_1419f4760();
     if (nPages <= 0)
         return false;
-    int nCur = FUN_1409331f0()->FUN_140a700b0();
+    int nCur = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_140a700b0();
     int nPage = nCur - 1;
     if (nPage < 0)
         nPage = nPages + nPage;
-    FUN_1409331f0()->FUN_141431ae0(nPage, true);
+    ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_141431ae0(nPage, true);
     return true;
 }
 
@@ -1583,12 +1585,12 @@ bool UIMainPlayerInfo::OnNextPage()
 {
     if (FUN_140930d70())
         return false;
-    int nPages = FUN_1409331f0()->FUN_1419f4760();
+    int nPages = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_1419f4760();
     if (nPages <= 0)
         return false;
-    int nCur = FUN_1409331f0()->FUN_140a700b0();
+    int nCur = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_140a700b0();
     int nNext = (nCur + 1) % nPages;
-    FUN_1409331f0()->FUN_141431ae0(nNext, true);
+    ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_141431ae0(nNext, true);
     return true;
 }
 

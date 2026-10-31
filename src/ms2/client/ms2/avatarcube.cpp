@@ -61,7 +61,11 @@ class Unk_AttendAvatarMgr
 public:
     void* FUN_141bd1180(unsigned int nId);
 };
-Unk_AttendAvatarMgr* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(AvatarCube);
 
@@ -147,7 +151,7 @@ unsigned int FUN_1409f2cd0()
 {
     for (unsigned int nId = 0x410; nId < 0x41a; nId++)
     {
-        if (FUN_1403ed2d0()->FUN_141bd1180(nId) == 0)
+        if (((class Unk_AttendAvatarMgr*)WorldService::GetInstance())->FUN_141bd1180(nId) == 0)
             return nId;
     }
     return 0;

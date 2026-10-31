@@ -26,7 +26,7 @@ class CMsTime {
 public:
     CMsTime();                                                     // 0x1406c4730 (guilddef)
     CMsTime& operator=(const CMsTime&) throw();                     // 0x1406c4930 (nothrow: no EH state at its callers)
-    CMsTime& operator=(__time64_t);                                 // 0x1406c4970
+    CMsTime& operator=(__time64_t) throw();                         // 0x1406c4970
     CMsTime(__time64_t t);                                          // 0x1406c47a0
     CMsTime(int year,int month,int day,int hour,int minute,int second); // 0x1406c47d0
     CMsTime(const CMsTime&);                                        // 0x1406c4760

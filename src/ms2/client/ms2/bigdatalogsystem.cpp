@@ -28,11 +28,9 @@
                    // the frame timer: frame rate
 class Unk_BdMemory { public: unsigned __int64 FUN_14161bdc0(); };       // the memory monitor: bytes in use
               // the network service: latency
-unsigned FUN_140869420();                                               // millisecond clock
-CMainSystem* FUN_14086d260();
-Unk_BdMemory* FUN_1409f7c90();
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 CNetworkService* FUN_140714f90();
-float FUN_14096b1c0(float f);                                           // sqrtf
 void FUN_140710590(COutPacket& packet);                                 // send the packet
 
 // @0x140a1f250
@@ -94,7 +92,7 @@ bool CBigDataLogSystem::CSampleList::Calculate(float* pAverage, float* pMin, flo
         float fVariance = 0.0f;
         BD_FOR_EACH(const __int64& nValue, m_values)
             fVariance += ((float)nValue - *pAverage) * ((float)nValue - *pAverage);
-        *pDeviation = FUN_14096b1c0(fVariance);
+        *pDeviation = sqrt(fVariance);
         m_values.clear();
     }
     return true;
@@ -121,7 +119,7 @@ void CBigDataLogSystem::Reset()
         CSampleList* pList = &m_samples[i];
         pList->Clear();
     }
-    m_dwLastSendTick = FUN_140869420();
+    m_dwLastSendTick = GetTickCountMs2();
 }
 MS2_REPLACE_METHOD(0x140A1F780, CBigDataLogSystem, Reset, 93, 0x1A0C692B);
 
@@ -147,12 +145,12 @@ MS2_REPLACE_METHOD(0x140A1F830, CBigDataLogSystem, AddSample, 94, 0x7A9D9A53);
 // @0x140a1f8a0
 void CBigDataLogSystem::Update()
 {
-    unsigned nTick = FUN_140869420();
+    unsigned nTick = GetTickCountMs2();
     if (nTick > m_dwLastSendTick + 300000)
         SendStatistics();
-    float fFrameRate = FUN_14086d260()->GetFps();
+    float fFrameRate = TSingleton<CMainSystem>::GetInstance()->GetFps();
     AddSample(SAMPLE_FPS, (__int64)fFrameRate);
-    unsigned __int64 nMemory = FUN_1409f7c90()->FUN_14161bdc0();
+    unsigned __int64 nMemory = ((class Unk_BdMemory*)FUN_1409f7c90())->FUN_14161bdc0();
     AddSample(SAMPLE_MEMORY, (__int64)(float)nMemory);
     unsigned nLatency = FUN_140714f90()->FUN_141538f60();
     AddSample(SAMPLE_LATENCY, nLatency);

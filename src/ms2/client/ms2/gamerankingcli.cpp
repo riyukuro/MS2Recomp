@@ -40,10 +40,9 @@ extern int DAT_1439f4d94;                           // lifetime of a personal / 
 extern int DAT_1439f4d98;                           // lifetime of the other board answers (minutes)
 
          // the content switches
-CFeatureManager* FUN_140166410();
 class Unk_GrBanFlags { public: int FUN_1402c4c90(int nFlag); };             // blocked-action flag set
 struct Unk_GrConfig { char m_pad[8]; Unk_GrBanFlags m_8; };
-Unk_GrConfig* FUN_14025e7b0();                                              // global client config
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 void FUN_141b6de20();                                                       // thread start-up
 class Unk_UtilLogScope
 {
@@ -311,7 +310,7 @@ CGameRankingCli::~CGameRankingCli()
 // @0x140b2a9b0
 void CGameRankingCli::Update()
 {
-    if (!FUN_140166410()->FUN_14036d570(0x3f))
+    if (!CFeatureManager::GetInstance()->FUN_14036d570(0x3f))
         return;
     DeliverRows();
     DeliverPersonal();
@@ -349,7 +348,7 @@ MS2_REPLACE_METHOD(0x140b2ab00, CGameRankingCli, ClearPersonal, 92, 0xD92C87C2);
 // @0x140b2ab70
 void CGameRankingCli::OnPacket(CByteBuffer& packet)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x3f))
+    if (!CFeatureManager::GetInstance()->FUN_14036d570(0x3f))
         return;
     int nMode = packet.ReadUInt8();
     if (nMode == 0x1f) {
@@ -703,9 +702,9 @@ MS2_REPLACE_METHOD(0x140b2bbf0, CGameRankingCli, BuildMyRankKey, 822, 0xFEE617A6
 // @0x140b2bf30
 void CGameRankingCli::Request(const CGameRankingParam* pParam)
 {
-    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x32) == 1)
+    if (((struct Unk_GrConfig*)FUN_14025e7b0())->m_8.FUN_1402c4c90(0x32) == 1)
         return;
-    if (!FUN_140166410()->FUN_14036d570(0x3f))
+    if (!CFeatureManager::GetInstance()->FUN_14036d570(0x3f))
         return;
     MS2Ptr<CGameRankingParam> spParam = AddParam(pParam);
     if (spParam.get() != 0)

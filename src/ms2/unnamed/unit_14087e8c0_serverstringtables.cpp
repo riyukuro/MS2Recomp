@@ -14,11 +14,16 @@
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/filesystem.h"
 
+// return types of the getters this unit calls
+class CFileSystem;
+class CLogString;
+class CReservedWordTable;
+
 // Unrecovered helpers (the xml loader and logger the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
 class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
+CFileSystem* GetFileSystem();
+CLogString* GetLogString();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
 void FUN_14054c030(void*, int, int, const wchar_t*, const CStringA&, const CStringA&);   // logger with two arguments
 CStringA FUN_14071ae20(const CStringA& strFile);                        // the full path of a table file
@@ -29,7 +34,6 @@ CString FUN_14016a5c0(const char* psz, int nCodePage);                  // narro
 bool FUN_140841300(const CStringW& str, const char* psz);               // string equals
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // StringFormat with one argument
 
-CReservedWordTable* FUN_1403b4750();
 
 bool CServerStringGroup::s_bInit;
 
@@ -49,12 +53,12 @@ bool CServerStringGroup::Load()
 {
     CStringA strPath = FUN_14071ae20(m_strFile);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     m_mapFile.RemoveAll();
@@ -66,9 +70,9 @@ bool CServerStringGroup::Load()
         CStringW strId = FUN_1401bf530(pKey, "id", CStringW(L""));
         CStringW strName = FUN_1401bf530(pKey, "name", CStringW(L""));
         strName.Replace(L"\\n", L"\n");
-        FUN_1403b4750()->FUN_1416fb380(strName);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strName);
         if (m_mapFile.Lookup(strId) != 0)
-            FUN_14054c030(FUN_140166440(), 1, 0x13, L"중복된 키 값이 존재 합니다.[<ms2> {0}] {1}", strPath, FUN_1401d4330(strId, 0));
+            FUN_14054c030(GetLogString(), 1, 0x13, L"중복된 키 값이 존재 합니다.[<ms2> {0}] {1}", strPath, FUN_1401d4330(strId, 0));
         m_mapFile.SetAt(strId, strName);
     }
     SetInit(true);
@@ -92,12 +96,12 @@ CStringW CServerStringGroup::GetString(const CStringW& strKey)
         CStringW strText;
         if (m_mapRuntime.Lookup(strName, strText))
         {
-            FUN_1403b4750()->FUN_1416fb340(strText);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
             return strText;
         }
         if (m_mapFile.Lookup(strName, strText))
         {
-            FUN_1403b4750()->FUN_1416fb340(strText);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
             return strText;
         }
         return FUN_1401e8510(L"NO KEY : {0}", strKey);

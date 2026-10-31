@@ -18,6 +18,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/commonfiles/gameeventvalue.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 // The player actor (RTTI unknown): slot 77 returns the character name.
@@ -43,10 +46,9 @@ public:
     virtual CStringW GetName();     // 77 (+0x268)
 };
 class Unk_MentorWorldV { public: Unk_MentorActorV* FUN_141bd0cc0(); };
-Unk_MentorWorldV* FUN_1403ed2d0();
 // The event schedule (singleton chain 0x140302b00 -> 0x14041d160): start/end of the registration period.
 class Unk_MentorIdArray;
-class Unk_MentorSchedule { public: __int64 FUN_140424e60(); __int64 FUN_140424e20(); void FUN_140424ed0(Unk_MentorIdArray& ids); };
+class Unk_MentorSchedule : public CGameEventValueMentoring { public: void FUN_140424ed0(Unk_MentorIdArray& ids); };
 class Unk_MentorScheduleHolder { public: Unk_MentorSchedule* FUN_14041d160(); };
 Unk_MentorScheduleHolder* FUN_140302b00();
 
@@ -81,8 +83,7 @@ inline ULongLong wc_make_type(Unk_WcArgType t0 = Unk_WcArgType(), Unk_WcArgType 
 WC_WRAP(7)
 template CStringW FUN_14028dfa0<int, int, int, int, int, int, CStringW>(CStringW, const int&, const int&, const int&, const int&, const int&, const int&, const CStringW&);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
-class Unk_MentorChat { public: void FUN_1416fb340(CStringW& strText); };
-Unk_MentorChat* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
@@ -125,10 +126,10 @@ int UIMentoringMenteeRegisterPage::vfunc_5(const char* szMethod, const Scaleform
     if (UIMentoringPage::vfunc_5(szMethod, pArgs, nArgs)) return 1;
     if (_stricmp(szMethod, "onRegister") == 0)
     {
-        Unk_MentorActorV* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_MentorActorV* pActor = reinterpret_cast<Unk_MentorWorldV*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pActor == 0) return 1;
-        CMsTime tStart(FUN_140302b00()->FUN_14041d160()->FUN_140424e60());
-        CMsTime tEnd(FUN_140302b00()->FUN_14041d160()->FUN_140424e20());
+        CMsTime tStart(FUN_140302b00()->FUN_14041d160()->GetBeginTime());
+        CMsTime tEnd(FUN_140302b00()->FUN_14041d160()->GetEndTime());
         int nStartYear, nStartMonth, nStartDay, nEndYear, nEndMonth, nEndDay;
         nEndDay = tEnd.GetDay();
         nEndMonth = tEnd.GetMonth();

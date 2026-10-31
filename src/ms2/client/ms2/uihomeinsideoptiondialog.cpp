@@ -74,14 +74,19 @@ public:
 };
 
 // The selected row of each table (3 bytes), as the exe copies it out of the home setting.
-struct Unk_HioSetting
+struct Unk_CMISFlags3
 {
+    Unk_CMISFlags3();
     unsigned char m_nBg;
     unsigned char m_nLight;
     unsigned char m_nCamera;
 };
-class Unk_HioSettingSrc { public: void FUN_1410c34f0(Unk_HioSetting* pOut); };
-Unk_HioSettingSrc* FUN_1409670e0();
+class CubeMapInformationService { public: Unk_CMISFlags3 FUN_1410c34f0(); };   // C3: member view (the real header brings dynamic initializers)
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-in
+{
+public:
+    static Unk_AkoHouseSvc* GetInstance();                              // the cube service singleton
+};
 
 typedef Delegate<bool(int, const CMsgBoxData&)> HioAnswerDelegate;
 CStringW FUN_140298ea0(CStringW strKey);
@@ -112,8 +117,7 @@ CString UIHomeInsideOptionDialog::GetTypeName()
 void UIHomeInsideOptionDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_HioSetting setting;
-    FUN_1409670e0()->FUN_1410c34f0(&setting);
+    Unk_CMISFlags3 setting = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34f0();
     ATL::CRBMap<unsigned, MS2Ptr<UgcHomeBgData> >* pBgs = &UgcHomeOptionData::GetInstance()->m_mapBg;
     if (!pBgs->IsEmpty())
     {

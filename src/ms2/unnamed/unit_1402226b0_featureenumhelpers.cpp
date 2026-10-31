@@ -46,13 +46,20 @@ struct Unk_StateHandle
     bool FUN_1401b5240(void* pCmp) const;               // the record equals pCmp
     void* FUN_1401b52a0() const;                        // the record
 };
-void* FUN_140166410();                                  // the feature settings
-bool FUN_14036d570(void* pFeatures, int nFeature);      // the feature is switched on
-bool FUN_14053cf90(void* pRecord);
-bool FUN_14053d600(void* pRecord);
-bool FUN_14053d5c0(void* pRecord);
-bool FUN_14053d2f0(void* pRecord);                      // the record has work pending
-void FUN_1401b6710(Unk_LevelArray* p, size_t nCount, int nGrowBy);   // SetCount
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
+class CItemData   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14053cf90();
+    bool FUN_14053d2f0();
+    bool FUN_14053d5c0();
+    bool FUN_14053d600();
+};
 
 extern const int DAT_142cf60e0[12];                     // the level-limit ids
 
@@ -73,15 +80,15 @@ bool FUN_1402226b0(int nLevel)
 {
     switch (nLevel) {
     case 1:
-        return FUN_14036d570(FUN_140166410(), 0xe7);
+        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xe7);
     case 10: case 20: case 30: case 40: case 50: case 60: case 70: case 80:
         return true;
     case 90:
-        return FUN_14036d570(FUN_140166410(), 8);
+        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(8);
     case 100:
-        return FUN_14036d570(FUN_140166410(), 0x12);
+        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x12);
     case 110:
-        return FUN_14036d570(FUN_140166410(), 0x25);
+        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x25);
     }
     return false;
 }
@@ -203,13 +210,13 @@ unsigned FUN_140222ce0(Unk_StateHandle h)
 {
     if (h.FUN_1401b5240(0))
         return 0;
-    if (FUN_14053cf90(h.FUN_1401b52a0()))
+    if (((class CItemData*)(void*)(h.FUN_1401b52a0()))->FUN_14053cf90())
         return 8;
-    if (FUN_14053d2f0(h.FUN_1401b52a0()))
+    if (((class CItemData*)(void*)(h.FUN_1401b52a0()))->FUN_14053d2f0())
         return 1;
-    if (FUN_14053d600(h.FUN_1401b52a0()))
+    if (((class CItemData*)(void*)(h.FUN_1401b52a0()))->FUN_14053d600())
         return 2;
-    if (FUN_14053d5c0(h.FUN_1401b52a0()))
+    if (((class CItemData*)(void*)(h.FUN_1401b52a0()))->FUN_14053d5c0())
         return 4;
     return 0xf;
 }
@@ -221,15 +228,15 @@ bool FUN_140222e10(int n)
     switch (n) {
     case 1: case 3: case 4:
         return true;
-    case 5: return FUN_14036d570(FUN_140166410(), 0x67);
-    case 6: return FUN_14036d570(FUN_140166410(), 0x68);
-    case 2: return FUN_14036d570(FUN_140166410(), 0x66);
-    case 7: return FUN_14036d570(FUN_140166410(), 0x69);
-    case 8: return FUN_14036d570(FUN_140166410(), 0x6a);
-    case 9: return FUN_14036d570(FUN_140166410(), 0x9d);
-    case 10: return FUN_14036d570(FUN_140166410(), 0x6b);
-    case 11: return FUN_14036d570(FUN_140166410(), 0x6c);
-    case 12: return FUN_14036d570(FUN_140166410(), 0x6d);
+    case 5: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x67);
+    case 6: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x68);
+    case 2: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x66);
+    case 7: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x69);
+    case 8: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x6a);
+    case 9: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x9d);
+    case 10: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x6b);
+    case 11: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x6c);
+    case 12: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x6d);
     }
     return false;
 }
@@ -332,7 +339,7 @@ bool FUN_140223750(Unk_LevelArray* p)
 // @0x1402237c0
 void FUN_1402237c0(Unk_LevelArray* p)
 {
-    FUN_1401b6710(p, 0, -1);
+    ((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)(struct Unk_LevelArray*)(p))->SetCount(0, -1);
 }
 
 // @0x140223990

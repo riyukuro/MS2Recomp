@@ -14,6 +14,8 @@
 #include "ms2/client/ms2/uieventintroduce.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/cserverstring.h"
 #include <errno.h>
 #include <string.h>
 
@@ -29,16 +31,14 @@ public:
 };
 Unk_140a94350* FUN_140a94350();
 
-class Unk_140a87690 { public: CStringW FUN_14087ede0(const CStringW& str); };      // the text filter
+class Unk_140a87690 : public CServerStringGroup { };      // the text filter
 class Unk_140a87680 { public: Unk_140a87690* FUN_140a87690(); };
-Unk_140a87680* FUN_140a87680();
 
 class Unk_ExpUiScale { public: float FUN_1422afec0(int nUiId); };
 Unk_ExpUiScale* FUN_14025e7a0();
-struct Unk_JcInvoke4 { Scaleform::GFx::Value FUN_14190b490(const char* szMethod, unsigned nW, unsigned nH, float fScale); };
 
 int FUN_1412755a0();
-unsigned int FUN_140869420();                                       // the tick
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_141276180(const CString& strSound, const CString& strArg);  // play a sound
 CString FUN_140513200(const char* szFormat, const unsigned int& n); // "{0}" substitution
 void FUN_1412751b0(const CStringW& strText, int nKind);             // chat/system message
@@ -105,7 +105,7 @@ void UIMassiveEvent::vfunc_43()
     {
         spRoot->vfunc_2(5, 0, 0);
         float fScale = FUN_14025e7a0()->FUN_1422afec0(m_28);
-        reinterpret_cast<Unk_JcInvoke4*>(spRoot.operator->())->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8, fScale);
+        reinterpret_cast<AScript*>(spRoot.operator->())->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8, fScale);
         spRoot->vfunc_3(1);
     }
 }
@@ -136,7 +136,7 @@ void UIMassiveEvent::FUN_1419f5ab0()
 void UIMassiveEvent::FUN_1419f5ae0(int nSeconds)
 {
     m_nRemain = nSeconds;
-    m_nDeadline = FUN_140869420() + m_nRemain * 1000;
+    m_nDeadline = GetTickCountMs2() + m_nRemain * 1000;
     FUN_1419f5b30();
 }
 
@@ -173,7 +173,7 @@ void UIMassiveEvent::FUN_1419f5dd0()
 {
     if (m_nRemain == 0)
         return;
-    unsigned int nNow = FUN_140869420();
+    unsigned int nNow = GetTickCountMs2();
     if (m_nDeadline <= nNow)
     {
         m_nRemain = 0;
@@ -263,7 +263,7 @@ void UIMassiveEvent::FUN_1419f6180(CInPacket* pPacket)
 void UIMassiveEvent::FUN_1419f6240(CInPacket* pPacket)
 {
     CStringW strText = pPacket->ReadUnicodeString();
-    strText = FUN_140a87680()->FUN_140a87690()->FUN_14087ede0(strText);
+    strText = reinterpret_cast<Unk_140a87680*>(TSingleton<CServerString>::GetInstance())->FUN_140a87690()->GetString(strText);
     int nStep = pPacket->ReadInt32();
     int nDuration = pPacket->ReadInt32();
     int nType = pPacket->ReadInt32();
@@ -301,7 +301,7 @@ void UIMassiveEvent::FUN_1419f66a0(CInPacket* pPacket)
 {
     int nSubType = pPacket->ReadUInt8();
     CStringW strRaw = pPacket->ReadUnicodeString();
-    CStringW strText = FUN_140a87680()->FUN_140a87690()->FUN_14087ede0(strRaw);
+    CStringW strText = reinterpret_cast<Unk_140a87680*>(TSingleton<CServerString>::GetInstance())->FUN_140a87690()->GetString(strRaw);
     int nDuration = pPacket->ReadInt32();
     FUN_1419f6810(nSubType, strText, nDuration);
 }

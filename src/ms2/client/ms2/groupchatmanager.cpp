@@ -18,6 +18,7 @@
 #include "ms2/client/ms2/uigroupmessenger.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/uiugceventdispatcher.h"
+#include "worldservice.h"
 
 // ---------------------------------------------------------------------------------------------------------------
 // Unit-local views of exe objects used by the packet handlers.
@@ -37,7 +38,7 @@ public:
     MS2_LOG_WRAP(2)
     MS2_LOG_WRAP(3)
 };
-Unk_TimeLogger* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 
 
 // The local player object (vtable slot 77 returns the display name).
@@ -137,17 +138,15 @@ private:
 // The game context (FUN_1403ed2d0).
 class Unk_ChatGame {
 public:
-    Unk_ChatPlayer* FUN_141bd0cc0();
     Unk_CameraOptionPtr FUN_141bd30a0();             // copy of +0x298
 };
-Unk_ChatGame* FUN_1403ed2d0();
 // The chat window controller (+0x50 of the UI root FUN_141482e80).
 class Unk_ChatUI {
 public:
     void* m_pad_00[10];
     UIGroupMessengerBrowser* m_messenger;                  // +0x50
 };
-Unk_ChatUI* FUN_141482e80();
+struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 // Profile image notifier (slot 1 receives the character id and the picture name).
 class Unk_ChatPictureSink {
 public:
@@ -160,10 +159,15 @@ struct Unk_ChatSettings {
     unsigned char m_refuseInvite;
 };
 class Unk_ChatOptions;
-Unk_ChatSettings* FUN_140ae6540(Unk_ChatOptions*);
+class Unk_BuddyOptions   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_BuddySettings& GetSettings();
+};
 // Misc exe helpers.
 void FUN_1412751b0(const CStringW& text, int channel);
-CStringW FUN_14052bd00(int id, const CStringW& arg);
+CStringW FormatStringId(int nId, const fmt::ArgList& args);   // 0x14028dee0
+FMT_VARIADIC_W(CStringW, FormatStringId, int)
 CStringW GetStringCommon(int id);
 CString FUN_14016a600(const wchar_t* text, int codepage);
 CString FUN_141028be0(__int64 id, const CString& a, int b, CString c);
@@ -176,8 +180,7 @@ void* FUN_140534fc0(const Unk_MessageBoxPtr&);
 void* FUN_140534fe0(const Unk_MessageBoxPtr&);
 Unk_MessageBoxPtr FUN_14151f820();
 const CStringW& FUN_141a02ce0(void* messageBoxData);
-CBlockManager* FUN_140a6a830();
-bool FUN_14025cd60(const CStringW&, const CStringW&);
+class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -434,7 +437,7 @@ void CGroupChatManager::FUN_14137e1c0() {
 MS2_REPLACE_METHOD(0x14137E1C0, CGroupChatManager, FUN_14137e1c0, 577, 0x0018B9BA);
 // @0x14137e410
 CStringW CGroupChatManager::FUN_14137e410() {
-    Unk_ChatPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ChatPlayer* player = static_cast<Unk_ChatPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (player == 0)
         return CStringW(L"");
     return player->vfunc_77();
@@ -499,14 +502,14 @@ MS2_REPLACE_METHOD(0x14137E820, CGroupChatManager, FUN_14137e820, 110, 0x8ACB80F
 // @0x14137e8a0
 void CGroupChatManager::Create(CStringW name) {
     if (FUN_14137e820() >= 3) {
-        if (Unk_MessageBoxPtr box = FUN_140d73d20(0, FUN_14052bd00(0x818, FUN_14137e410()), 0, CStringW(L"")))
+        if (Unk_MessageBoxPtr box = FUN_140d73d20(0, FormatStringId<CStringW>(0x818, FUN_14137e410()), 0, CStringW(L"")))
             FUN_140d73c60(box);
         return;
     }
     int nLen = name.GetLength();
     if (nLen > 0x18) {
         MS2_ASSERT_AT(0x9a, FALSE);
-        FUN_140166440()->Log(1, 0x13, L"{0}. strTargetName={1}", "CGroupChatManager::Create", name);
+        ((class Unk_TimeLogger*)GetLogString())->Log(1, 0x13, L"{0}. strTargetName={1}", "CGroupChatManager::Create", name);
         return;
     }
     COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
@@ -531,7 +534,7 @@ void CGroupChatManager::Invite(unsigned oid, CStringW name) {
         CStringW text = GetStringCommon(0x814);
         Unk_MessageBoxPtr active = FUN_14151f820();
         if (FUN_140534fc0(active) != 0) {
-            if (FUN_14025cd60(FUN_141a02ce0(FUN_140534fe0(active)), text))
+            if (FUN_141a02ce0(FUN_140534fe0(active)) == text)
                 return;
         }
         Unk_MessageBoxPtr box = FUN_140d73d20(0, text, 0, text);
@@ -541,7 +544,7 @@ void CGroupChatManager::Invite(unsigned oid, CStringW name) {
     int len = name.GetLength();
     if (len >= 0x19) {
         MS2_ASSERT_AT(0xc9, FALSE);
-        FUN_140166440()->Log(1, 0x13, L"{0}. strTargetName={1}", "CGroupChatManager::Invite", name);
+        ((class Unk_TimeLogger*)GetLogString())->Log(1, 0x13, L"{0}. strTargetName={1}", "CGroupChatManager::Invite", name);
     } else {
         COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
         packet.WriteUInt8(2);
@@ -570,15 +573,15 @@ void CGroupChatManager::SendGroupChatMode10(unsigned oid, CStringW text) {
     if (nLen > 0x800)
         return;
     {
-        BlockPtr blocked = FUN_140a6a830()->FindBlockedAction(2);
+        BlockPtr blocked = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(2);
         if (blocked.get() != 0) {
             CStringW msg = FUN_1401ca400(blocked, 2);
-            if (FUN_141482e80()->m_messenger != 0)
-                FUN_141482e80()->m_messenger->FUN_141951bf0(oid, FUN_14137e410(), msg);
+            if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
+                ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_141951bf0(oid, FUN_14137e410(), msg);
             return;
         }
     }
-    int nRestricted = FUN_1403ed2d0()->FUN_141bd30a0().FUN_140885340()->FUN_140375660(0x100);
+    int nRestricted = ((class Unk_ChatGame*)WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->FUN_140375660(0x100);
     if (nRestricted != 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
@@ -624,8 +627,8 @@ void CGroupChatManager::FUN_14137f590(CInPacket* packet) {
     unsigned oid = packet->ReadInt32();
     CGroupChat* chat = FUN_14137e630(oid).get();
     if (chat != 0) {
-        if (FUN_141482e80()->m_messenger != 0)
-            FUN_141482e80()->m_messenger->FUN_1419515c0(oid);
+        if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
+            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_1419515c0(oid);
     }
 }
 MS2_REPLACE_METHOD(0x14137F590, CGroupChatManager, FUN_14137f590, 164, 0x1AA86B3B);
@@ -637,8 +640,8 @@ void CGroupChatManager::FUN_14137f640(CInPacket* packet) {
     Unk_ChatPtrChat chat = FUN_14137e630(oid);
     if (chat == 0)
         return;
-    if (FUN_141482e80()->m_messenger != 0)
-        FUN_141482e80()->m_messenger->FUN_141951720(oid, first, second);
+    if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
+        ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_141951720(oid, first, second);
 }
 MS2_REPLACE_METHOD(0x14137F640, CGroupChatManager, FUN_14137f640, 318, 0x765CA6E8);
 // @0x14137f790
@@ -646,14 +649,14 @@ void CGroupChatManager::FUN_14137f790(CInPacket* packet) {
     CStringW first = packet->ReadUnicodeString();
     CStringW second = packet->ReadUnicodeString();
     unsigned oid = packet->ReadInt32();
-    if (FUN_140ae6540(reinterpret_cast<Unk_ChatOptions*>(TSingleton<CGameOption>::GetInstance()))->m_refuseInvite) {
+    if (((struct Unk_ChatSettings*)&((class Unk_BuddyOptions*)(class Unk_ChatOptions*)(reinterpret_cast<Unk_ChatOptions*>(TSingleton<CGameOption>::GetInstance())))->GetSettings())->m_refuseInvite) {
         SendGroupChatMode4(oid, 1);
     } else {
         Unk_ChatPtrChat chat = FUN_14137e630(oid);
         if (chat == 0)
             return;
-        if (FUN_141482e80()->m_messenger != 0)
-            FUN_141482e80()->m_messenger->FUN_1419517b0(oid, first, second);
+        if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
+            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_1419517b0(oid, first, second);
     }
 }
 MS2_REPLACE_METHOD(0x14137F790, CGroupChatManager, FUN_14137f790, 367, 0xFB9CE439);
@@ -663,8 +666,8 @@ void CGroupChatManager::FUN_14137f910(CInPacket* packet) {
     CGroupChat* chat = FUN_14137e630(oid).get();
     if (chat != 0) {
         FUN_14137e5c0(oid);
-        if (FUN_141482e80()->m_messenger != 0)
-            FUN_141482e80()->m_messenger->FUN_1419519a0(oid);
+        if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
+            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_1419519a0(oid);
     }
 }
 MS2_REPLACE_METHOD(0x14137F910, CGroupChatManager, FUN_14137f910, 178, 0xF41BB1F8);
@@ -679,8 +682,8 @@ void CGroupChatManager::FUN_14137f9d0(CInPacket* packet) {
         return;
     if (chat->FUN_14137b680(member) == 0)
         return;
-    if (FUN_141482e80()->m_messenger != 0)
-        FUN_141482e80()->m_messenger->FUN_1419519e0(oid, name, member->m_proxy.FUN_1408f19e0());
+    if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
+        ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_1419519e0(oid, name, member->m_proxy.FUN_1408f19e0());
 }
 MS2_REPLACE_METHOD(0x14137F9D0, CGroupChatManager, FUN_14137f9d0, 576, 0xD23A1A70);
 // @0x14137fc20
@@ -694,8 +697,8 @@ void CGroupChatManager::FUN_14137fc20(CInPacket* packet) {
     CGroupChatMember* found = chat->FUN_14137ba10(name).get();
     if (found != 0) {
         chat->FUN_14137b7d0(name);
-        if (FUN_141482e80()->m_messenger != 0)
-            FUN_141482e80()->m_messenger->FUN_141951a70(oid, name, reason);
+        if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
+            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_141951a70(oid, name, reason);
     }
 }
 MS2_REPLACE_METHOD(0x14137FC20, CGroupChatManager, FUN_14137fc20, 532, 0x73201602);
@@ -709,8 +712,8 @@ void CGroupChatManager::FUN_14137fe40(CInPacket* packet) {
     Unk_ChatMemberPtr member = chat->FUN_14137ba10(name);
     if (member.get() != 0) {
         member->m_state = 1;
-        if (FUN_141482e80()->m_messenger != 0)
-            FUN_141482e80()->m_messenger->FUN_141951af0(oid, name);
+        if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
+            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_141951af0(oid, name);
     }
 }
 MS2_REPLACE_METHOD(0x14137FE40, CGroupChatManager, FUN_14137fe40, 372, 0xCEC78FAD);
@@ -724,8 +727,8 @@ void CGroupChatManager::FUN_14137ffc0(CInPacket* packet) {
     Unk_ChatMemberPtr member = chat->FUN_14137ba10(name);
     if (member.get() != 0) {
         member->m_state = 2;
-        if (FUN_141482e80()->m_messenger != 0)
-            FUN_141482e80()->m_messenger->FUN_141951b70(oid, name);
+        if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
+            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_141951b70(oid, name);
     }
 }
 MS2_REPLACE_METHOD(0x14137FFC0, CGroupChatManager, FUN_14137ffc0, 372, 0xE5740DDB);
@@ -739,8 +742,8 @@ void CGroupChatManager::FUN_141380140(CInPacket* packet) {
         return;
     CGroupChatMember* found = chat->FUN_14137ba10(first).get();
     if (found != 0) {
-        if (FUN_141482e80()->m_messenger != 0)
-            FUN_141482e80()->m_messenger->FUN_141951c50(oid, first, second);
+        if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
+            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_141951c50(oid, first, second);
     }
 }
 MS2_REPLACE_METHOD(0x141380140, CGroupChatManager, FUN_141380140, 469, 0x39B109A7);
@@ -755,8 +758,8 @@ void CGroupChatManager::FUN_141380320(CInPacket* packet) {
     if (found != 0) {
         CGroupChatMember* again = chat->FUN_14137ba10(name).get();
         if (again != 0) {
-            if (FUN_141482e80()->m_messenger != 0)
-                FUN_141482e80()->m_messenger->FUN_141951d80(oid, name, packet);
+            if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
+                ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_141951d80(oid, name, packet);
         }
     }
 }
@@ -788,11 +791,11 @@ void CGroupChatManager::FUN_141380900(CInPacket* packet) {
     if (code == 3) {
         FUN_140d73bc0(0x815, 0, 0, CStringW(L""));
     } else if (code == 10) {
-        FUN_140d73aa0(FUN_14052bd00(0x818, second), 0, 0, CStringW(L""));
+        FUN_140d73aa0(FormatStringId<CStringW>(0x818, second), 0, 0, CStringW(L""));
     } else if (code == 8) {
-        FUN_140d73aa0(FUN_14052bd00(0x819, second), 0, 0, CStringW(L""));
+        FUN_140d73aa0(FormatStringId<CStringW>(0x819, second), 0, 0, CStringW(L""));
     } else if (code == 0xd) {
-        FUN_140d73aa0(FUN_14052bd00(0x29, second), 0, 0, CStringW(L""));
+        FUN_140d73aa0(FormatStringId<CStringW>(0x29, second), 0, 0, CStringW(L""));
     }
 }
 MS2_REPLACE_METHOD(0x141380900, CGroupChatManager, FUN_141380900, 741, 0xFD651472);

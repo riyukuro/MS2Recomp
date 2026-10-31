@@ -30,7 +30,11 @@ bool FUN_140184310(const CString& str, const char* psz);                  // str
 class TiXmlElement { public: TiXmlElement(const char* pszName); private: void* m_pad[0x90 / sizeof(void*)]; };   // ctor 0x14086f2f0
 class TiXmlDeclaration { public: TiXmlDeclaration(const char* pszVersion, const char* pszEncoding, const char* pszStandalone);
     private: void* m_pad[0x68 / sizeof(void*)]; };                                                                // ctor 0x1408704d0
-void* FUN_14086e090(void* pParent, void* pChild);                         // InsertEndChild
+class TiXmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class TiXmlNode* LinkEndChild(class TiXmlNode*);
+};
 void FUN_140874050(void* pElem, const char* pszName, const CString& strValue);
 void FUN_140873ca0(void* pElem, const char* pszName, int nValue);
 void FUN_140873bc0(void* pElem, const char* pszName, bool bValue);
@@ -124,23 +128,23 @@ int CPCEffectDummy::Save(const char* pszPath)
     TiXmlDocument doc;
     void* pDecl = new TiXmlDeclaration("1.0", "utf-8", "");
     void* pRoot = new TiXmlElement("ms2");
-    FUN_14086e090(&doc, pDecl);
-    FUN_14086e090(&doc, pRoot);
+    ((void*)((class TiXmlNode*)(void*)(&doc))->LinkEndChild((class TiXmlNode*)(pDecl)));
+    ((void*)((class TiXmlNode*)(void*)(&doc))->LinkEndChild((class TiXmlNode*)(pRoot)));
     void* pGroup = new TiXmlElement("effectdummy");
-    FUN_14086e090(pRoot, pGroup);
+    ((void*)((class TiXmlNode*)(void*)(pRoot))->LinkEndChild((class TiXmlNode*)(pGroup)));
     void* pDummy = 0;
     for (std::map<int, std::vector<CEffectDummy> >::iterator it = m_dummies.begin(); it != m_dummies.end(); ++it)
     {
         for (std::vector<CEffectDummy>::iterator itRow = it->second.begin(); itRow != it->second.end(); ++itRow)
         {
             pDummy = new TiXmlElement("dummy");
-            FUN_14086e090(pGroup, pDummy);
+            ((void*)((class TiXmlNode*)(void*)(pGroup))->LinkEndChild((class TiXmlNode*)(pDummy)));
             FUN_140874050(pDummy, "name", itRow->GetName());
             FUN_140873ca0(pDummy, "gender", it->first);
             void* pAttach = new TiXmlElement("attachInfo");
-            FUN_14086e090(pDummy, pAttach);
+            ((void*)((class TiXmlNode*)(void*)(pDummy))->LinkEndChild((class TiXmlNode*)(pAttach)));
             void* pTransform = new TiXmlElement("transform");
-            FUN_14086e090(pDummy, pTransform);
+            ((void*)((class TiXmlNode*)(void*)(pDummy))->LinkEndChild((class TiXmlNode*)(pTransform)));
             FUN_140874050(pAttach, "parentNode", itRow->GetParentNode());
             FUN_140873bc0(pAttach, "applyWorldTransform", itRow->m_bApplyWorldTransform);
             FUN_140873bc0(pAttach, "applyLocalScale", itRow->m_bApplyLocalScale);

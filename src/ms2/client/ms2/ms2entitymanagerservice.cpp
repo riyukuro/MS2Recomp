@@ -129,7 +129,7 @@ static bool g_backgroundWarning=false;
 void FUN_140de8bd0(egf::Entity*,unsigned,efd::AssetID*);
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 extern Unk_EntityAppFramework DAT_143b059e8;
-HardwareInstancingService* FUN_14098c5b0(Unk_EntityAppFramework*);
+class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 
 // A using-declaration makes the SDK's protected dirty set public, so FUN_1414b91b0 reads it as a plain
 // member (entity+0x20) the way the exe does. This bridge is never instantiated.
@@ -164,7 +164,7 @@ MS2_CHECK_SIZE(egf::EntityFactoryRequest,0x80);
         egf::EntityPtr entity=TSingleton<EntityWorldManager>::GetInstance()->FactoryEntity(model,id,isMaster);
         if(initialProps)entity->ApplyProperties(initialProps);
         FUN_140de8bd0(entity.operator->(),0x770e5fc6,&asset);   // through operator-> (0x1408a9280)
-        efd::SmartPointer<HardwareInstancingService> instancing(FUN_14098c5b0(&DAT_143b059e8));
+        efd::SmartPointer<HardwareInstancingService> instancing(((class HardwareInstancingService*)FUN_14098c5b0(&DAT_143b059e8)));
         if(instancing)instancing->FUN_1413d7d10(id);
         if(addToWorld)((Unk_EntityWorldByValue*)TSingleton<EntityWorldManager>::GetInstance())->FUN_1411cf5a0(id,entity);
         AddEntity(entity,creationArgs);

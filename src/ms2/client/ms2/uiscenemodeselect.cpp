@@ -33,17 +33,24 @@ class Unk_SmPlayerState { public: int m_pad0; int m_pad4; int m_8; };   // FUN_1
 class Unk_SmLogin;                                      // FUN_14025e7c0
 
 Unk_SmUIMgr* FUN_1403ed2b0();
-Unk_SmWorld* FUN_1403ed2d0();
-Unk_SmHost* FUN_14025e7a0();
-Unk_SmLogin* FUN_14025e7c0();
-Unk_SmPlayerState* FUN_1409331f0();
-int FUN_141bcfbd0(Unk_SmWorld* pWorld);
-GFxMovie* FUN_1422b01a0(Unk_SmHost* pHost, int nType);
-const NiRTTI* FUN_14098db90(const NiRTTI* pRtti);       // NiRTTI::GetBaseRTTI
-CStringW FUN_141850100(int a, int b);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141bcfbd0();
+    static class WorldService* GetInstance();
+};
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    class GFxMovie* FUN_1422b01a0(int);
+};
+CStringW TakeScreenshotJpg(int a, int b);
 bool FUN_14116d9c0(Unk_SmLogin* p, int a, int b, int c);
 bool FUN_14116dd30(Unk_SmLogin* p, int a, int b, int c);
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UISceneModeSelect* pScene);
+int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 
 int FUN_140e85580(Unk_SmPlayerState* p);
 static int FUN_140e853c0();
@@ -113,7 +120,7 @@ int UISceneModeSelect::vfunc_13()
         return 1;
     if (FUN_140e853c0() != 0)
     {
-        FUN_141850100(1, 0);
+        TakeScreenshotJpg(1, 0);
         return 1;
     }
     return 0;
@@ -123,9 +130,9 @@ int UISceneModeSelect::vfunc_13()
 void UISceneModeSelect::OnLoadComplete()
 {
     UISwfEntity::OnLoadComplete();
-    if (FUN_141bcfbd0(FUN_1403ed2d0()) != 0)
+    if (((class WorldService*)(class Unk_SmWorld*)(((class Unk_SmWorld*)WorldService::GetInstance())))->FUN_141bcfbd0() != 0)
         vfunc_55();
-    GFxMovieBackground* pBg = FUN_140e85550(&GFxMovieBackground::ms_RTTI, FUN_1422b01a0(FUN_14025e7a0(), 4));
+    GFxMovieBackground* pBg = FUN_140e85550(&GFxMovieBackground::ms_RTTI, ((class GFxManager*)(class Unk_SmHost*)(((class Unk_SmHost*)FUN_14025e7a0())))->FUN_1422b01a0(4));
     if (pBg != 0)
     {
         if (pBg->IsLoaded() != 0)
@@ -146,7 +153,7 @@ int UISceneModeSelect::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 {
     if (UISceneEntity::vfunc_28(szMethod, pArgs, nArgs))
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, this))
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, (void*)(this)))
         return 1;
     return 0;
 }
@@ -154,9 +161,9 @@ int UISceneModeSelect::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 // @0x140e853c0
 static int FUN_140e853c0()
 {
-    if (FUN_140e85580(FUN_1409331f0()) == 0)
-        return FUN_14116d9c0(FUN_14025e7c0(), 0x75, 0, 0);
-    return FUN_14116dd30(FUN_14025e7c0(), 0x493ef, 0, 0);
+    if (FUN_140e85580(((class Unk_SmPlayerState*)FUN_1409331f0())) == 0)
+        return FUN_14116d9c0(((class Unk_SmLogin*)FUN_14025e7c0()), 0x75, 0, 0);
+    return FUN_14116dd30(((class Unk_SmLogin*)FUN_14025e7c0()), 0x493ef, 0, 0);
 }
 
 // @0x140e85420
@@ -179,7 +186,7 @@ static bool FUN_140e85590(GFxMovie* pObj, const NiRTTI* pRtti)
     {
         if (pCur == pRtti)
             return true;
-        pCur = FUN_14098db90(pCur);
+        pCur = ((class NiRTTI*)(class NiRTTI const*)(pCur))->GetBaseRTTI();
     }
     return false;
 }

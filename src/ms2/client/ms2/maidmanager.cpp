@@ -20,24 +20,35 @@ template<> Unk_PCBaseComp_a78* MS2Ptr<Unk_PCBaseComp_a78>::get() const;     // 0
 template<> Unk_PCBaseComp_a78* MS2Ptr<Unk_PCBaseComp_a78>::operator->() const;  // 0x1405a8f50
 #include "ms2/placeholder/ms2ptr_impl.h"
 
-class UIMaidDialog : public UIObject {};
+class UIMaidDialog : public UIObject {public:
+    void FUN_1412d9680();   // C3: was free FUN_1412d9680
+public:
+    void FUN_1412d9b90();   // C3: was free FUN_1412d9b90
+};
 
 // ---- out-of-unit callees ----
 void* FUN_14025e7c0();                                  // the client's text-hook object
 unsigned char FUN_14116d720(void* pHook);
 void FUN_140710590(COutPacket& packet);                 // send
-void* FUN_1403ed2b0();                                  // the UI service
+class CUIService;
+template<> CUIService* TSingleton<CUIService>::GetInstance();
 int FUN_141adc890(void* pService, int nUiId);           // is the dialog open
 struct Unk_MaidUIService { MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };   // the dialog's UI object
-void* FUN_1403ed2d0();                                  // the world of my character
-PCBase* FUN_141bd1320(void* pWorld, int nActorId);
-void FUN_1412d9680(UIMaidDialog* pDlg);
-void FUN_1412d9b90(UIMaidDialog* pDlg);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_WsC_GameObj* FUN_141bd1320(int);
+    static class WorldService* GetInstance();
+};
 void* FUN_140d51900(int nUiId);
-void FUN_1412e34c0(void* pDlg);
-void FUN_1412e3990(void* pDlg, int n);
+class UIManufactureDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1412e34c0();
+    void FUN_1412e3990(int);
+};
 void* FUN_140d519a0(int nUiId);
-void FUN_1412dc3c0(void* pDlg);
+void FUN_1412dc3c0(class UIManufactureStatus*);   // C3: was FUN_1412dc3c0
 
 // @0x14127e190
 CFieldMaidManager::CFieldMaidManager()
@@ -134,20 +145,20 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
             }
         }
         m_mapMaid.SetAt(spMaid->m_nId, spMaid);
-        if (FUN_141adc890(FUN_1403ed2b0(), 0x4e9d) != 0)
+        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4e9d) != 0)
         {
             UIMaidDialog* pDlg = GetMaidDialog(0x4e9d);
             if (pDlg != 0)
-                FUN_1412d9680(pDlg);
+                ((class UIMaidDialog*)(class UIMaidDialog*)(pDlg))->FUN_1412d9680();
         }
-        if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
+        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
         {
             void* pDlg = FUN_140d51900(0x4ec0);
             if (pDlg != 0)
             {
-                FUN_1412e34c0(pDlg);
+                ((class UIManufactureDialog*)(void*)(pDlg))->FUN_1412e34c0();
                 if (bNewer)
-                    FUN_1412e3990(pDlg, 0);
+                    ((class UIManufactureDialog*)(void*)(pDlg))->FUN_1412e3990(0);
             }
         }
     }
@@ -160,13 +171,13 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
     else if (cMode == 4)
     {
         int nActorId = pPacket->ReadInt32();
-        if (FUN_141adc890(FUN_1403ed2b0(), 0x4e9d) != 0)
+        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4e9d) != 0)
         {
             UIMaidDialog* pDlg = GetMaidDialog(0x4e9d);
             if (pDlg != 0)
-                FUN_1412d9b90(pDlg);
+                ((class UIMaidDialog*)(class UIMaidDialog*)(pDlg))->FUN_1412d9b90();
         }
-        PCBase* pPC = FUN_141bd1320(FUN_1403ed2d0(), nActorId);
+        PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1320(nActorId));
         if (pPC != 0)
         {
             MS2Ptr<Unk_PCBaseComp_a78> spComp = pPC->vfunc_82();
@@ -176,11 +187,11 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
     }
     if (cMode == 1 || cMode == 2 || cMode == 3)
     {
-        if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec9) != 0)
+        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec9) != 0)
         {
             void* pDlg = FUN_140d519a0(0x4ec9);
             if (pDlg != 0)
-                FUN_1412dc3c0(pDlg);
+                FUN_1412dc3c0((class UIManufactureStatus*)(pDlg));
         }
     }
 }
@@ -271,9 +282,9 @@ CUserMaidManager::MaidMap* CUserMaidManager::GetMaidMap()
 // @0x14127f000
 UIMaidDialog* CUserMaidManager::GetMaidDialog(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spUI = ((Unk_MaidUIService*)FUN_1403ed2b0())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = ((Unk_MaidUIService*)TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIMaidDialog*>((UIObject*)spUI);
     }

@@ -14,6 +14,7 @@
 #include "ms2/placeholder/mstime.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/weddingtable.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -47,9 +48,8 @@ struct Unk_WdWedding
 void* FUN_1409eed90();                                          // the singleton of the own character
 Unk_WdWedding* FUN_140d295d0(void* pSingleton);
 class Unk_WdRates { public: __int64 FUN_140908e60(int a, int b); };   // the base experience per day
-Unk_WdRates* FUN_1409023c0();
-__int64 FUN_140869440();                                        // server time
-int FUN_14086b900(__int64 nFrom, __int64 nTo);                  // whole days between
+__int64 GetServerTime();                                        // server time
+int GetDayNumberDifference(__int64 nFrom, __int64 nTo);         // whole days between
 CStringW FUN_140b8e850(const CMsTime& time);                    // the date text
 CStringW FUN_140c160b0(CStringW strKey, const __int64* pValue);
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& arg0, const CStringW& arg1);
@@ -90,8 +90,8 @@ void UIWeddingAffinityDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     Unk_WdWedding* pWedding = FUN_140d295d0(FUN_1409eed90());
-    __int64 nExp = FUN_1409023c0()->FUN_140908e60(1, 0);
-    int nDays = FUN_14086b900(pWedding->m_nMarriedTime, FUN_140869440());
+    __int64 nExp = reinterpret_cast<Unk_WdRates*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908e60(1, 0);
+    int nDays = GetDayNumberDifference(pWedding->m_nMarriedTime, GetServerTime());
     nExp = nExp * nDays;
     CStringW strHistory;
     strHistory += FUN_14028dfa0(CStringW(L"s_wedding_dialog_exp_1"), nExp, nDays);

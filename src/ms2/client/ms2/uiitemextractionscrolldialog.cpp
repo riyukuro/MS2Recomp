@@ -25,6 +25,8 @@
 #include "ms2/commonfiles/item.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/inventory.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
@@ -43,12 +45,10 @@ public:
 Unk_ExGameCtx* FUN_1403ed2d0();
 
 // The inventory's bag of items by uid.
-class Unk_ExInventory { public: MS2Ptr<CItem> FUN_140a5d680(__int64 nUid); };
-extern Unk_ExInventory DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 
 // The feature switches (FUN_140166410 returns the manager).
-class Unk_ExFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_ExFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 // A row of the item extraction table: the scroll item (+0x20) and the text argument (+0x18).
 class Unk_ExtractionRow : public CPtred

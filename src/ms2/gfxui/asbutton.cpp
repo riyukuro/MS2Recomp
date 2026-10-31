@@ -6,9 +6,11 @@
 // class is declared in src/ms2/placeholder/asbutton.h (shared; Ghidra's FUN_<va> names are kept there). Every accessor
 // reads or writes one member of the AS Button object ("autoRepeat", "isHtml", "label", "selected", "toggle", "valign")
 // or adds / removes an event listener ("buttonClick", "select").
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "ms2/placeholder/asbutton.h"
+#include "ms2/gfxui/astextfieldex.h"
 
 #include "hook/ms2hook.h"
 
@@ -16,7 +18,6 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ASCallbac
 
 CStringW FUN_14016a730(const char* sz, int nCodePage);         // a multi-byte text as a wide string (commonfiles/packet.h)
 CString FUN_1409a23d0(const char* sz, int nCodePage);          // a text as a CString (code page 0)
-CString FUN_1422e51c0(int nAlign);                             // the AS name of a vertical alignment ("top", ...)
 
 // @0x1422cdda0
 ASButton::ASButton()
@@ -108,7 +109,7 @@ MS2_REPLACE_METHOD(0x1422CE190, ASButton, FUN_1422ce190, 89, 0xC524C4EF);
 // @0x1422ce1f0
 void ASButton::FUN_1422ce1f0(int nMode)
 {
-    FUN_1407cba60("valign", FUN_1422e51c0(nMode));
+    FUN_1407cba60("valign", ASTextFieldEx::GetVerticalAlignName(nMode));
 }
 MS2_REPLACE_METHOD(0x1422CE1F0, ASButton, FUN_1422ce1f0, 69, 0xF7814A72);
 

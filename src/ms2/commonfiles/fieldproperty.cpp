@@ -11,13 +11,14 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/fieldproperty.h"
+class COutputStream;
 
 // ---- unrecovered neighbours: the packet writer / reader primitives ---------------------------------------------------
-void FUN_14070fa60(Unk_PktOut*, float);                 // write float
-void FUN_14070f820(Unk_PktOut*, unsigned char);         // write byte
-void FUN_14070f860(Unk_PktOut*, unsigned char);         // write byte (second flavour)
-void FUN_14070f9e0(Unk_PktOut*, __int64);               // write int64
-void FUN_14070f920(Unk_PktOut*, int);                   // write int
+COutputStream & FUN_14070fa60(COutputStream &, float);  // C3: the definition's signature
+COutputStream & FUN_14070f820(COutputStream &, bool);  // C3: the definition's signature
+COutputStream & FUN_14070f860(COutputStream &, unsigned char);  // C3: the definition's signature
+COutputStream & FUN_14070f9e0(COutputStream &, __int64);  // C3: the definition's signature
+COutputStream & FUN_14070f920(COutputStream &, int);  // C3: the definition's signature
 void FUN_1406c3700(Unk_Rgb3b*);                          // Unk_Rgb3b default init (zero)
 void FUN_14070fae0(Unk_PktOut*, CStringW*);             // write wide string
 void FUN_1406c38b0(Unk_PktOut*, Unk_Rgb3b*);            // write rgb
@@ -54,7 +55,7 @@ FieldPropertyGravity::FieldPropertyGravity(float fGravity) { m_fGravity = fGravi
 void FieldPropertyGravity::vfunc_1(Unk_PktOut* out)
 {
     FieldProperty::vfunc_1(out);
-    FUN_14070fa60(out, m_fGravity);
+    FUN_14070fa60(*(COutputStream *)out, m_fGravity);
 }
 
 // @0x1403809b0
@@ -77,8 +78,8 @@ FieldPropertyMusicConcert::FieldPropertyMusicConcert(__int64 a, int b) { m_i64 =
 void FieldPropertyMusicConcert::vfunc_1(Unk_PktOut* out)
 {
     FieldProperty::vfunc_1(out);
-    FUN_14070f9e0(out, m_i64);
-    FUN_14070f920(out, m_n);
+    FUN_14070f9e0(*(COutputStream *)out, m_i64);
+    FUN_14070f920(*(COutputStream *)out, m_n);
 }
 
 // @0x140380b20
@@ -181,13 +182,13 @@ FieldPropertySightRange::FieldPropertySightRange(float a, float b, float c, floa
 void FieldPropertySightRange::vfunc_1(Unk_PktOut* out)
 {
     FieldProperty::vfunc_1(out);
-    FUN_14070fa60(out, m_f18);
-    FUN_14070fa60(out, m_f1c);
-    FUN_14070fa60(out, m_f20);
-    FUN_14070fa60(out, m_f24);
-    FUN_14070f820(out, m_b28);
-    FUN_14070f860(out, m_b29);
-    FUN_14070f820(out, m_b2a);
+    FUN_14070fa60(*(COutputStream *)out, m_f18);
+    FUN_14070fa60(*(COutputStream *)out, m_f1c);
+    FUN_14070fa60(*(COutputStream *)out, m_f20);
+    FUN_14070fa60(*(COutputStream *)out, m_f24);
+    FUN_14070f820(*(COutputStream *)out, (bool&)m_b28);
+    FUN_14070f860(*(COutputStream *)out, m_b29);
+    FUN_14070f820(*(COutputStream *)out, (bool&)m_b2a);
 }
 
 // @0x1403811a0
@@ -263,8 +264,8 @@ void FieldPropertyAmbientLight::vfunc_1(Unk_PktOut* out)
 {
     FieldProperty::vfunc_1(out);
     FUN_1406c38b0(out, &m_color);
-    FUN_14070f820(out, m_bFlag);
-    FUN_14070fa60(out, m_fValue);
+    FUN_14070f820(*(COutputStream *)out, m_bFlag);
+    FUN_14070fa60(*(COutputStream *)out, m_fValue);
 }
 
 // @0x140381670
@@ -303,8 +304,8 @@ void FieldPropertyDirectionalLight::vfunc_1(Unk_PktOut* out)
     FieldProperty::vfunc_1(out);
     FUN_1406c38b0(out, &m_color1);
     FUN_1406c38b0(out, &m_color2);
-    FUN_14070f820(out, m_bFlag);
-    FUN_14070fa60(out, m_fValue);
+    FUN_14070f820(*(COutputStream *)out, m_bFlag);
+    FUN_14070fa60(*(COutputStream *)out, m_fValue);
 }
 
 // @0x1403818e0
@@ -336,7 +337,7 @@ FieldPropertyEnableLocalCamera::FieldPropertyEnableLocalCamera(bool b) { m_b = b
 void FieldPropertyEnableLocalCamera::vfunc_1(Unk_PktOut* out)
 {
     FieldProperty::vfunc_1(out);
-    FUN_14070f820(out, m_b);
+    FUN_14070f820(*(COutputStream *)out, m_b);
 }
 
 // @0x140381aa0
@@ -359,7 +360,7 @@ FieldPropertyPhotoStudio::FieldPropertyPhotoStudio(bool b) { m_b = b; }
 void FieldPropertyPhotoStudio::vfunc_1(Unk_PktOut* out)
 {
     FieldProperty::vfunc_1(out);
-    FUN_14070f820(out, m_b);
+    FUN_14070f820(*(COutputStream *)out, m_b);
 }
 
 // @0x140381be0

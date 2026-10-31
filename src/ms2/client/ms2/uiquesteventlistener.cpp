@@ -92,24 +92,16 @@ private:
 };
 int FUN_1422db730();
 
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_QgPackets {
 public:
     void FUN_140da5180(int nOp, Delegate<void(CInPacket&)> handler);
     void FUN_140da51e0(int nOp, Delegate<void(CInPacket&)> handler);
 };
-Unk_QgPackets* FUN_140bccd50();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 
 UIQuestEventDispatcher* FUN_140bfc4b0();
-CQuestManager* FUN_140764020();
-void FUN_1416cb8b0(CQuestManager* pMgr, ATL::CAtlArray<Unk_PayloadPtr<CQuest>>& out, int nState, int nType, int nChapter);
-void FUN_1416cbb20(CQuestManager* pMgr, std::vector<Unk_PayloadPtr<CQuest>>& out, int nState, int nType, int nChapter);
-void FUN_1416cf510(CQuestManager* pMgr, int nQuestId);                  // move to the field
-void FUN_1416cf630(CQuestManager* pMgr, int nQuestId);                  // move to the dungeon
-void FUN_1416cf750(CQuestManager* pMgr, int nQuestId);                  // re-entry
-void FUN_1416cf870(CQuestManager* pMgr, int nQuestId);                  // dispatch
-void FUN_1416cf980(CQuestManager* pMgr, int nQuestId, int bCancel);     // party find
-int FUN_1416d2600(CQuestManager* pMgr, int nQuestId, int n);
+void* FUN_140764020();   // C3: was FUN_140764020
 
 struct Unk_QgCfgInt { int* FUN_1402056b0(); void* m_unknown; };
 struct Unk_QgCfg {
@@ -119,7 +111,7 @@ struct Unk_QgCfg {
     Unk_QgCfgInt m_40d0;                                                    // max tracked quests (second)
 };
 MS2_CHECK_OFFSET(Unk_QgCfg, m_40d0, 0x40d0);
-Unk_QgCfg* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The map data kept behind the world service's counted pointer.
 struct Unk_McMapData
@@ -139,7 +131,6 @@ private:
     Unk_McMapData* m_p;
 };
 class Unk_QgWorld : public WorldService { public: Unk_McMapPtr FUN_141bd30a0(); };
-PCBase* FUN_141bd0cc0(Unk_QgWorld* pWorld);                                 // the local player
 
 namespace QuestNavigation {
 struct TraceResult {
@@ -206,13 +197,10 @@ private:
     void* m_0; Unk_RewardMission* m_p;
 };
 class Unk_RewardMissions { public: Unk_RewardMissionPtr FUN_140d9f4e0(); };
-Unk_RewardMissions* FUN_140931510();
+class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 
-QuestDataTable* FUN_1407476c0();
-CFieldMetaTable* FUN_140700390();
 class Unk_QgFieldPick { public: int FUN_140c915a0(ATL::CAtlArray<unsigned>& fields); };
-Unk_QgFieldPick* FUN_140c9b8e0();
-CReservedWordTable* FUN_1403b4750();
+class CQuestNavigationMap* FUN_140c9b8e0();   // C3: was FUN_140c9b8e0
 
 class UIQuestDialog : public UIDialog { public: void FocusQuest(int nQuestId); };
 UIQuestDialog* FUN_14131f1e0(int nUIType);                                  // GetDialog<UIQuestDialog>
@@ -241,17 +229,26 @@ CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a1, const CStrin
 void FUN_141275260(int nId, int a2, int a3);                                // system message
 __int64 GetServerTime();
 void* FUN_1408e57f0();
-int FUN_1422b9e00(void* p);
-bool FUN_14036d570(void* pFeatures, int nFeature);
-void* FUN_140166410();
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSubSceneId();
+};
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 int FUN_140408410(ATL::CAtlArray<unsigned>* pArr, const unsigned* pValue);      // index or -1
 int Unk_ClubBuffTypeOf(int n);
-void* FUN_1409670d0();
-bool FUN_14162ac00(void* pParty, int nDungeonId);
-bool FUN_1409c1720(const Scaleform::GFx::Value& v);
+class CPartyManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14162ac00(int);
+};
 void FUN_1422bce40(Scaleform::GFx::Value* pOut, const AScript& a);
 void FUN_1422bce70(Scaleform::GFx::Value* pOut, const char* sz);
-void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);
 extern __int64 DAT_143ab2828;                                               // the character id
 
 #ifndef MS2_HOOK_DLL
@@ -446,8 +443,8 @@ int UIQuestGuideDialog::vfunc_65()
     if (!UIDialog::vfunc_65())
         return 0;
     FUN_140bfc4b0()->FUN_141aa87c0(this);
-    FUN_140939a10()->RegisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIQuestGuideDialog::FUN_141aab760));
-    FUN_140bccd50()->FUN_140da5180(0x53, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab840));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIQuestGuideDialog::FUN_141aab760));
+    ((class Unk_QgPackets*)FUN_140bccd50())->FUN_140da5180(0x53, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab840));
     return 1;
 }
 MS2_REPLACE_METHOD(0x141aa9ae0, UIQuestGuideDialog, vfunc_65, 456, 0xAB811FEE);
@@ -461,8 +458,8 @@ void UIQuestGuideDialog::vfunc_67()
     }
     UIDialog::vfunc_67();
     FUN_140bfc4b0()->FUN_141aa8850(this);
-    FUN_140939a10()->UnregisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIQuestGuideDialog::FUN_141aab760));
-    FUN_140bccd50()->FUN_140da51e0(0x53, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab840));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIQuestGuideDialog::FUN_141aab760));
+    ((class Unk_QgPackets*)FUN_140bccd50())->FUN_140da51e0(0x53, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab840));
 }
 MS2_REPLACE_METHOD(0x141aa9cb0, UIQuestGuideDialog, vfunc_67, 602, 0x4D96E31B);
 
@@ -480,8 +477,8 @@ MS2_REPLACE_METHOD(0x141aa9f10, UIQuestGuideDialog, vfunc_43, 72, 0x2D9B0606);
 void UIQuestGuideDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    int nMax = *FUN_1401d3200()->m_4078.FUN_1402056b0();
-    int nMax2 = *FUN_1401d3200()->m_40d0.FUN_1402056b0();
+    int nMax = *((struct Unk_QgCfg*)FUN_1401d3200())->m_4078.FUN_1402056b0();
+    int nMax2 = *((struct Unk_QgCfg*)FUN_1401d3200())->m_40d0.FUN_1402056b0();
     m_30->FUN_1409ba0d0("setMaxEntity", nMax, nMax2);
     int nPage = 0;
     m_pageIndex.Lookup(DAT_143ab2828, nPage);
@@ -490,13 +487,13 @@ void UIQuestGuideDialog::OnLoadComplete()
     m_addQueue.RemoveAll();
     m_bRecommendDirty = 0;
     m_nRecommendQuest = 0;
-    if (FUN_14036d570(FUN_140166410(), 0x77)) {
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x77)) {
         m_navigation.AssignRaw(new AScript(m_30->FUN_1422baa20("updateNavigation"), 2));
         ASFunction fn(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIQuestGuideDialog::FUN_141aaf150), 0, FUN_1422db730());
         static_cast<ASObj*>(m_30.operator->())->FUN_1409adbe0("m_funcGetNavigation", Scaleform::GFx::Value(fn.FUN_1422bb870()));
     }
     FUN_141aaba00();
-    FUN_140bccd50()->FUN_140da5180(0x100, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab700));
+    ((class Unk_QgPackets*)FUN_140bccd50())->FUN_140da5180(0x100, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab700));
 }
 MS2_REPLACE_METHOD(0x141aa9f60, UIQuestGuideDialog, OnLoadComplete, 1044, 0x27888106);
 
@@ -504,7 +501,7 @@ MS2_REPLACE_METHOD(0x141aa9f60, UIQuestGuideDialog, OnLoadComplete, 1044, 0x2788
 void UIQuestGuideDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_140bccd50()->FUN_140da51e0(0x100, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab700));
+    ((class Unk_QgPackets*)FUN_140bccd50())->FUN_140da51e0(0x100, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab700));
     m_navigation = 0;
 }
 MS2_REPLACE_METHOD(0x141aaa380, UIQuestGuideDialog, vfunc_26, 189, 0x676C2762);
@@ -512,7 +509,7 @@ MS2_REPLACE_METHOD(0x141aaa380, UIQuestGuideDialog, vfunc_26, 189, 0x676C2762);
 // @0x141aaa450
 void UIQuestGuideDialog::vfunc_15()
 {
-    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
+    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
         return;
     if (!m_30)
         return;
@@ -550,7 +547,7 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     if (_stricmp(szMethod, "onClose") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
-            Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(data.FUN_1422b8a10());
+            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(data.FUN_1422b8a10());
             if (spQuest.get())
                 spQuest->RequestTrackingState(0);
         }
@@ -577,7 +574,7 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp(szMethod, "onEntityOverflow") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
-            Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(data.FUN_1422b8a10());
+            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(data.FUN_1422b8a10());
             if (spQuest.get()) {
                 spQuest->RequestTrackingState(0);
                 FUN_141275260(0x5f1, 1, 1);
@@ -588,9 +585,9 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             int nQuestId = data.FUN_1422b8b10();
-            Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
+            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
             if (!spQuest.get()) {
-                if (!FUN_140764020()->vfunc_1(nQuestId, 0))
+                if (!((class CQuestManager*)FUN_140764020())->vfunc_1(nQuestId, 0))
                     return 0;
             }
             else if (!spQuest->GetTrackingState()) {
@@ -603,15 +600,15 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp(szMethod, "onMoveField") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_1416cf510(FUN_140764020(), data.FUN_1422b8b10());
+            ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->SendQuestMode12(data.FUN_1422b8b10());
     }
     else if (_stricmp(szMethod, "onMoveDungeon") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_1416cf630(FUN_140764020(), data.FUN_1422b8b10());
+            ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->SendQuestMode13(data.FUN_1422b8b10());
     }
     else if (_stricmp(szMethod, "onLinkFieldMission") == 0) {
-        if (FUN_140931510()->FUN_140d9f4e0() == 0) {
+        if (((class Unk_RewardMissions*)FUN_140931510())->FUN_140d9f4e0() == 0) {
             if (Unk_140961730* pDialog = FUN_140961730(0x4e42))
                 pDialog->FUN_141b5c230();
         }
@@ -624,22 +621,22 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp(szMethod, "onMoveReEntry") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_1416cf750(FUN_140764020(), data.FUN_1422b8b10());
+            ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->SendQuestMode19(data.FUN_1422b8b10());
     }
     else if (_stricmp(szMethod, "onClickDispatch") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_1416cf870(FUN_140764020(), data.FUN_1422b8b10());
+            ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cf870(data.FUN_1422b8b10());
     }
     else if (_stricmp(szMethod, "onClickPartyFind") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_1416cf980(FUN_140764020(), data.FUN_1422b8b10(), 0);
+            ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cf980(data.FUN_1422b8b10(), 0);
     }
     else if (_stricmp(szMethod, "onClickPartyFindCancel") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_1416cf980(FUN_140764020(), data.FUN_1422b8b10(), 1);
+            ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cf980(data.FUN_1422b8b10(), 1);
     }
     return 0;
 }
@@ -759,7 +756,7 @@ MS2_REPLACE_METHOD_VIA(0x141aab570, UIQuestGuideDialog, UIQuestEventListener, vf
 // @0x141aab610
 void UIQuestGuideDialog::vfunc_o178_9(void* p)
 {
-    Unk_RewardMission* pMission = FUN_140931510()->FUN_140d9f4e0().get();
+    Unk_RewardMission* pMission = ((class Unk_RewardMissions*)FUN_140931510())->FUN_140d9f4e0().get();
     if (pMission)
         return;
     ASObj obj(2);
@@ -800,7 +797,7 @@ void UIQuestGuideDialog::FUN_141aab840(CInPacket& packet)
     switch (nMode) {
     case 2: case 3: case 7: case 8: case 9: case 0x1e: {
         ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
-        FUN_1416cb8b0(FUN_140764020(), quests, 1, 0xb, -1);
+        ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cb8b0(quests, 1, 0xb, -1);
         int nMapId = reinterpret_cast<Unk_QgWorld*>(WorldService::GetInstance())->FUN_141bd3060();
         for (size_t i = 0; i < quests.GetCount(); ++i) {
             Unk_PayloadPtr<CQuest> spQuest(quests[i]);
@@ -823,7 +820,7 @@ void UIQuestGuideDialog::FUN_141aaba00()
     m_30->Invoke("clearAll");
     FUN_141aabcb0();
     ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
-    FUN_1416cb8b0(FUN_140764020(), quests, 1, 0xb, -1);
+    ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cb8b0(quests, 1, 0xb, -1);
     ASArray list(2);
     for (size_t i = 0; i < quests.GetCount(); ++i) {
         Unk_PayloadPtr<CQuest> spQuest(quests[i]);
@@ -849,9 +846,9 @@ void UIQuestGuideDialog::FUN_141aabcb0()
 {
     if (!m_30)
         return;
-    Unk_RewardMissionPtr spMission = FUN_140931510()->FUN_140d9f4e0();
+    Unk_RewardMissionPtr spMission = ((class Unk_RewardMissions*)FUN_140931510())->FUN_140d9f4e0();
     if (spMission.get()) {
-        if (FUN_14036d570(FUN_140166410(), 0x71)) {
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x71)) {
             ASObj obj(2);
             if (FUN_141aae150(obj))
                 m_30->Invoke("addMission", obj, "dungeon");
@@ -891,7 +888,7 @@ MS2_REPLACE_METHOD(0x141aabe50, UIQuestGuideDialog, FUN_141aabe50, 817, 0xC4BB91
 // @0x141aac190
 int UIQuestGuideDialog::FUN_141aac190(int nQuestId)
 {
-    CQuest* pQuest = FUN_140764020()->vfunc_o10_3(nQuestId).get();
+    CQuest* pQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId).get();
     if (!pQuest)
         return 0;
     if (pQuest->IsRewarded())
@@ -973,7 +970,7 @@ void UIQuestGuideDialog::FUN_141aac9b0(ASObj& obj, CQuest* pQuest)
 {
     int bNavi = 0;
     int nTracing = 0;
-    if (FUN_14036d570(FUN_140166410(), 0x77)) {
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x77)) {
         bNavi = pQuest->GetFlag() != 0;
         nTracing = FUN_140e7c990()->FUN_140c9a490(pQuest->FUN_140bfc580());
     }
@@ -1004,7 +1001,7 @@ void UIQuestGuideDialog::FUN_141aaca80(ASObj& obj, CQuest* pQuest)
         Unk_BattleRoomPtr spRoom = reinterpret_cast<Unk_BattleRoomMgr*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(spData->m_30c.m_roomId);
         if (spRoom.FUN_140e36ca0())
             return;
-        buttons.FUN_1422bbf70(FUN_14162ac00(FUN_1409670d0(), Unk_ClubBuffTypeOf(spRoom->m_1c)) ? "partyFindCancel" : "partyFind");
+        buttons.FUN_1422bbf70(((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->FUN_14162ac00(Unk_ClubBuffTypeOf(spRoom->m_1c)) ? "partyFindCancel" : "partyFind");
     }
     obj.FUN_1409eb1d0("gotoButton", buttons);
 }
@@ -1016,7 +1013,7 @@ bool UIQuestGuideDialog::FUN_141aacd70()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (!pDialog)
         return false;
-    return FUN_1409c1720(pDialog->Invoke("canAdd"));
+    return pDialog->Invoke("canAdd").GetBool();
 }
 MS2_REPLACE_METHOD(0x141aacd70, UIQuestGuideDialog, FUN_141aacd70, 164, 0xF38DCC4F);
 
@@ -1075,7 +1072,7 @@ MS2_REPLACE_METHOD(0x141aacf40, UIQuestGuideDialog, FUN_141aacf40, 909, 0x310FE5
 unsigned UIQuestGuideDialog::FUN_141aad300(int nChapter)
 {
     ATL::CAtlArray<unsigned> quests;
-    FUN_1407476c0()->FUN_14074cfd0(nChapter, quests);
+    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cfd0(nChapter, quests);
     return (unsigned)quests.GetCount();
 }
 MS2_REPLACE_METHOD(0x141aad300, UIQuestGuideDialog, FUN_141aad300, 88, 0x5AE2D51B);
@@ -1092,7 +1089,7 @@ int UIQuestGuideDialog::FUN_141aad360(int nChapter, int nQuestId)
 {
     int nIndex = 0;
     std::vector<Unk_PayloadPtr<CQuest>> quests;
-    FUN_1416cbb20(FUN_140764020(), quests, 4, 0xb, nChapter);
+    ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cbb20(quests, 4, 0xb, nChapter);
     std::sort(quests.begin(), quests.end(), FUN_141aaf410);
     for (std::vector<Unk_PayloadPtr<CQuest>>::iterator it = quests.begin(); it != quests.end(); ++it) {
         ++nIndex;
@@ -1188,16 +1185,16 @@ bool UIQuestGuideDialog::FUN_141aaddb0(ASObj& obj)
         return false;
     unsigned nMapId = reinterpret_cast<Unk_QgWorld*>(WorldService::GetInstance())->FUN_141bd3060();
     unsigned nParent = 0;
-    if (FUN_140700390()->FUN_1406fc110(nMapId, &nParent))
+    if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(nMapId, &nParent))
         nMapId = nParent;
     ATL::CAtlArray<unsigned> quests;
-    FUN_1407476c0()->FUN_14074cbf0(nMapId, quests);
+    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cbf0(nMapId, quests);
     if (!quests.GetCount())
         return false;
     ASArray conditions(2);
     for (size_t i = 0; i < quests.GetCount(); ++i) {
         int nQuestId = quests[i];
-        Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
+        Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
         MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
         for (size_t j = 0; j < spData->m_conditions.GetCount(); ++j) {
             MS2Ptr<CConditionCommonData> spCond(spData->m_conditions[j]);
@@ -1221,7 +1218,7 @@ bool UIQuestGuideDialog::FUN_141aae150(ASObj& obj)
 {
     if (!m_30)
         return false;
-    Unk_RewardMissionPtr spMission = FUN_140931510()->FUN_140d9f4e0();
+    Unk_RewardMissionPtr spMission = ((class Unk_RewardMissions*)FUN_140931510())->FUN_140d9f4e0();
     if (spMission == 0)
         return false;
     Unk_BattleRoomPtr spRoom = spMission->FUN_140c9d070();
@@ -1280,16 +1277,16 @@ MS2_REPLACE_METHOD(0x141aae5a0, UIQuestGuideDialog, FUN_141aae5a0, 293, 0xF16BBB
 // @0x141aae6d0
 int UIQuestGuideDialog::FUN_141aae6d0()
 {
-    if (!FUN_14036d570(FUN_140166410(), 0xd0))
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xd0))
         return 0;
-    PCBase* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_QgWorld*>(WorldService::GetInstance()));
+    PCBase* pActor = ((class PCBase*)((class WorldService*)(class Unk_QgWorld*)(reinterpret_cast<Unk_QgWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (!pActor)
         return 0;
     ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
-    FUN_1416cb8b0(FUN_140764020(), quests, 1, 0, -1);
+    ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cb8b0(quests, 1, 0, -1);
     if (quests.GetCount())
         return 0;
-    FUN_1416cb8b0(FUN_140764020(), quests, 2, 0, -1);
+    ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cb8b0(quests, 2, 0, -1);
     if (!quests.GetCount())
         return 0;
     int nBest = 0;
@@ -1304,7 +1301,7 @@ int UIQuestGuideDialog::FUN_141aae6d0()
             nBest = quests[i]->FUN_140bfc580();
         }
     }
-    return FUN_1416d2600(FUN_140764020(), nBest, 1);
+    return ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416d2600(nBest, 1);
 }
 MS2_REPLACE_METHOD(0x141aae6d0, UIQuestGuideDialog, FUN_141aae6d0, 499, 0x25DB618B);
 
@@ -1314,7 +1311,7 @@ int UIQuestGuideDialog::FUN_141aae8d0(int nQuestId, ASObj& obj)
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
     if (!spData)
         return 0;
-    PCBase* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_QgWorld*>(WorldService::GetInstance()));
+    PCBase* pActor = ((class PCBase*)((class WorldService*)(class Unk_QgWorld*)(reinterpret_cast<Unk_QgWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (!pActor)
         return 0;
     obj.FUN_1409c0d20("id", nQuestId);
@@ -1322,7 +1319,7 @@ int UIQuestGuideDialog::FUN_141aae8d0(int nQuestId, ASObj& obj)
     obj.FUN_1407cb9c0("repeat", FUN_1407640c0(spData.operator->()) != 0);
     obj.FUN_1407cb9c0("satisfied", 0);
     obj.FUN_1407cb9c0("progress", 0);
-    obj.FUN_1409c0dc0("icon", FUN_140764020()->vfunc_1(nQuestId, 0) ? "able" : "init");
+    obj.FUN_1409c0dc0("icon", ((class CQuestManager*)FUN_140764020())->vfunc_1(nQuestId, 0) ? "able" : "init");
     obj.FUN_1407cbb20("title", FUN_1416e5210(nQuestId, CStringW(L"s_quest_name_with_level")));
     obj.FUN_1407cbb20("chapterName", FUN_141aacf40(nQuestId));
     obj.FUN_1407cb9c0("acceptedDate", 0);
@@ -1352,12 +1349,12 @@ CStringW UIQuestGuideDialog::FUN_141aaedd0(int nQuestId)
     if (!spData)
         return L"";
     ATL::CAtlArray<unsigned> fields;
-    FUN_140700390()->FUN_1406fb2a0(spData->m_2e8, fields);
+    TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb2a0(spData->m_2e8, fields);
     int nField = 0;
     if (fields.GetCount() == 1)
         nField = fields[0];
     else if (fields.GetCount() > 1)
-        nField = FUN_140c9b8e0()->FUN_140c915a0(fields);
+        nField = ((class Unk_QgFieldPick*)FUN_140c9b8e0())->FUN_140c915a0(fields);
     CStringW str;
     if (!nField)
         str = FUN_140938ae0(CStringW(L"s_quest_desc_beginable_invalid_field"), spData->m_2e8);
@@ -1365,7 +1362,7 @@ CStringW UIQuestGuideDialog::FUN_141aaedd0(int nQuestId)
         str = FUN_140938ae0(CStringW(L"s_quest_desc_beginable_current_field"), spData->m_2e8);
     else
         str = FUN_1409e9890(CStringW(L"s_quest_desc_beginable"), nField, spData->m_2e8);
-    FUN_1403b4750()->FUN_1416fb380(str);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(str);
     return str;
 }
 MS2_REPLACE_METHOD(0x141aaedd0, UIQuestGuideDialog, FUN_141aaedd0, 883, 0xB5583F38);
@@ -1380,7 +1377,7 @@ void UIQuestGuideDialog::FUN_141aaf150(const Scaleform::GFx::FunctionHandler::Pa
     ASData data;
     if (!data.FUN_1422b9620(params.pArgs, params.ArgCount))
         return;
-    PCBase* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_QgWorld*>(WorldService::GetInstance()));
+    PCBase* pActor = ((class PCBase*)((class WorldService*)(class Unk_QgWorld*)(reinterpret_cast<Unk_QgWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor == NULL)
         return;
     Unk_McMapPtr spMap = reinterpret_cast<Unk_QgWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
@@ -1430,7 +1427,7 @@ void ASObj::FUN_141aafcd0(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x141ab1ca0

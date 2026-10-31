@@ -35,6 +35,7 @@
 #include <ecr/SceneGraphService.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -74,15 +75,17 @@ extern NiFixedString DAT_143ae50a0;             // integer extra-data key (face 
 extern NiFixedString DAT_143ae50f0;             // colour extra-data key (ICMED tint)
 extern NiFixedString DAT_143ae51d8;             // the first face part name
 extern NiFixedString DAT_143ae5230;             // name of the alpha-blended material
-extern const NiRTTI DAT_143ad1588;              // EffectNode::ms_RTTI
 extern const efd::Color g_143a09660;          // white
 
 bool FUN_14098dfc0(NiAVObject* pkObject);                                               // 0x14098dfc0 flag 0x400 set
 bool FUN_1409943d0(NiAVObject* pkObject);                                               // 0x1409943d0 flag 0x20 set
-int FUN_1410444a0(NiAVObject* pEffectNode);                                             // 0x1410444a0 the effect node's mode
-void FUN_1410865e0(NiAVObject* pkObject, const NiFixedString& kKey, bool bRecursive);  // 0x1410865e0 add a marker
+class Unk_EffectNodeView   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1410444a0();
+};
+void FUN_1410865e0(class NiObjectNET*, class NiFixedString const&, bool);   // C3: was FUN_1410865e0
 void FUN_1410479a0(NiObjectNET* pkObject, const NiFixedString& kName, const NiColor& kColor);   // set colour extra data
-const NiMaterial* FUN_140a17cd0(NiMesh* pkMesh);                                         // 0x140a17cd0 active material
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                                         // the entity's scene graph
 ecr::SceneGraphService* FUN_1413f98b0();                                                 // the scene graph service
 efd::Color FUN_1413fa320(egf::Entity* pEntity);                                          // the entity's tint
@@ -131,7 +134,7 @@ void FUN_141567000(egf::Entity* pEntity, NiAVObject* pRoot, bool bShadow)
                 NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pObject);
                 if (pRender)
                 {
-                    FUN_1410865e0(pRender, "ICMED", true);
+                    FUN_1410865e0((class NiObjectNET*)(pRender), "ICMED", true);
                     FUN_1410479a0(pRender, DAT_143ae50f0, g_143a09660);
                 }
             }
@@ -257,7 +260,7 @@ void FUN_141567540(NiAVObject* pRoot, bool bShadow)
         NiNode* pNode = NiDynamicCast(NiNode, pObject);
         if (pNode)
         {
-            if (NiObject::DynamicCast(&DAT_143ad1588, pObject) && FUN_1410444a0(pObject) == 1)
+            if (NiObject::DynamicCast(&EffectNode::ms_RTTI, pObject) && ((class Unk_EffectNodeView*)(class NiAVObject*)(pObject))->FUN_1410444a0() == 1)
                 continue;
             kWalker.FUN_141044210(pNode);
         }
@@ -457,7 +460,7 @@ void FUN_1415682b0(NiAVObject* pRoot)
             }
         }
         else if (FUN_1409943d0(pObject))
-            FUN_1410865e0(pObject, DAT_143ae51c8, true);
+            FUN_1410865e0((class NiObjectNET*)(pObject), DAT_143ae51c8, true);
     }
 }
 MS2_REPLACE(0x1415682B0, FUN_1415682b0, 191, 0xB31DE793);
@@ -521,7 +524,7 @@ void FUN_141568650(NiAVObject* pRoot, CStringA strFrom, CStringA strTo)
             NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
             if (pMesh)
             {
-                const NiMaterial* pMaterial = FUN_140a17cd0(pMesh);
+                const NiMaterial* pMaterial = ((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial();
                 if (strFrom.IsEmpty() || (pMaterial && pMaterial->GetName() == (const char*)strFrom))
                     pMesh->ApplyAndSetActiveMaterial(NiMaterialLibrary::CreateMaterial((const char*)strTo));
                 continue;

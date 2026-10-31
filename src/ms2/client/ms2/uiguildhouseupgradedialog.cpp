@@ -32,6 +32,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/client/ms2/guildmanager.h"
 
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
@@ -71,15 +74,9 @@ public:
 };
 class Unk_GalleryAS : public AScript
 {
-public:
-    Scaleform::GFx::Value FUN_140acd130(const char* szMethod, CStringW str);
 };
 
-class Unk_1401a9d70 { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_1401a9d70* FUN_1401a9d70();
-CGuildManager* FUN_1403ed290();
 WorldService* FUN_1403ed2d0();
-CGuildXmlData* FUN_1404f4530();
 CStringW FUN_140763e10(int n);
 CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
 CStringW FUN_14062b4f0(CStringW key, const int& arg);
@@ -149,28 +146,28 @@ void UIGuildHouseUpgradeDialog::FUN_140e39da0()
         return;
     int nLevel = m_tab->FUN_1422e3210() + 1;
     int nTheme = m_themeList->FUN_1422dccd0() + 1;
-    Unk_PayloadPtr<GuildHouse> house = FUN_1404f4530()->FUN_1404d79b0(nLevel, nTheme);
+    Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d79b0(nLevel, nTheme);
     if (house == 0)
         return;
     MS2Ptr<ASTextField> spTitle = GetChild<ASTextField>("m_themeTitle");
     if (spTitle.get())
-        spTitle->FUN_1422c4cd0(FUN_1401a9d70()->FUN_141811980(0x36, house->f20));
+        spTitle->FUN_1422c4cd0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x36, house->f20));
     if (m_upgradeButton.get())
     {
         bool bEnable = true;
         CStringW strLabel(L"");
-        if (nLevel < FUN_1403ed290()->FUN_1404d1f90())
+        if (nLevel < TSingleton<CGuildManager>::GetInstance()->FUN_1404d1f90())
             bEnable = false;
-        if (nLevel == FUN_1403ed290()->FUN_1404d1f90() && nTheme == FUN_1403ed290()->FUN_1404d2030())
+        if (nLevel == TSingleton<CGuildManager>::GetInstance()->FUN_1404d1f90() && nTheme == TSingleton<CGuildManager>::GetInstance()->FUN_1404d2030())
             bEnable = false;
-        if (nLevel == FUN_1403ed290()->FUN_1404d1f90())
+        if (nLevel == TSingleton<CGuildManager>::GetInstance()->FUN_1404d1f90())
             strLabel = FUN_1405c2690(CStringW(L"s_guild_ui_house_change_theme"), FUN_140763e10(house->f30));
-        else if (nLevel > FUN_1403ed290()->FUN_1404d1f90())
+        else if (nLevel > TSingleton<CGuildManager>::GetInstance()->FUN_1404d1f90())
             strLabel = FUN_1405c2690(CStringW(L"s_guild_ui_house_upgrade_upgrade"), FUN_140763e10(house->f28));
         m_upgradeButton->vfunc_4(bEnable);
         m_upgradeButton->FUN_1422cdf20(true);
         m_upgradeButton->FUN_1422cdfb0(strLabel);
-        bool bOk = FUN_14028d780((char)FUN_1403ed290()->FUN_1404d01b0(FUN_1403ed2d0()->FUN_141bd0d30()));
+        bool bOk = FUN_14028d780((char)TSingleton<CGuildManager>::GetInstance()->FUN_1404d01b0(FUN_1403ed2d0()->FUN_141bd0d30()));
         if (!bOk)
             m_upgradeButton->FUN_1422c1fe0(0);
     }
@@ -186,15 +183,15 @@ void UIGuildHouseUpgradeDialog::FUN_140e39da0()
         while (i < facilities.size())
         {
             ASObj obj(2);
-            obj.FUN_1407cbb20("facility1", FUN_1401a9d70()->FUN_141811980(0x37, facilities[i]));
+            obj.FUN_1407cbb20("facility1", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x37, facilities[i]));
             if (i + 1 < facilities.size())
-                obj.FUN_1407cbb20("facility2", FUN_1401a9d70()->FUN_141811980(0x37, facilities[i + 1]));
+                obj.FUN_1407cbb20("facility2", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x37, facilities[i + 1]));
             arr.FUN_1422bc050(Scaleform::GFx::Value(obj.FUN_1422bb870()));
             i += 2;
         }
         m_30.operator->()->FUN_140bd2cb0("setHouseFacility", arr);
     }
-    static_cast<Unk_GalleryAS*>(m_30.operator->())->FUN_140acd130("setPreviewImage", CStringW(house->f60));
+    static_cast<Unk_GalleryAS*>(m_30.operator->())->Invoke("setPreviewImage", CStringW(house->f60));
 }
 
 // @0x140e3a6b0
@@ -204,7 +201,7 @@ bool UIGuildHouseUpgradeDialog::FUN_140e3a6b0(int nButton, const CMsgBoxData& da
     {
         int nLevel = data.FUN_141a02e50(0, 0);
         int nTheme = data.FUN_141a02e50(1, 0);
-        FUN_1403ed290()->FUN_1413ba820(nLevel, nTheme);
+        TSingleton<CGuildManager>::GetInstance()->FUN_1413ba820(nLevel, nTheme);
     }
     return true;
 }
@@ -215,7 +212,7 @@ bool UIGuildHouseUpgradeDialog::FUN_140e3a720(int nButton, const CMsgBoxData& da
     if (nButton == 0)
     {
         int nTheme = data.FUN_141a02e50(0, 0);
-        FUN_1403ed290()->FUN_1413babf0(nTheme);
+        TSingleton<CGuildManager>::GetInstance()->FUN_1413babf0(nTheme);
     }
     return true;
 }
@@ -225,12 +222,12 @@ void UIGuildHouseUpgradeDialog::FUN_140e3a770()
 {
     m_themes.clear();
     std::vector<std::pair<int, int> > list;
-    FUN_1404f4530()->FUN_1404d7a90(list);
+    TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7a90(list);
     for (size_t i = 0; i < list.size(); i++)
         m_themes[list[i].first].push_back(list[i].second);
     static_cast<Unk_GpAS*>(m_30.operator->())->FUN_140c1c8c0("setTab", m_themes.size());
-    m_tab->FUN_1422e31e0(FUN_1403ed290()->FUN_1404d1f90() - 1);
-    m_themeList->FUN_1422dcca0(FUN_1403ed290()->FUN_1404d2030() - 1);
+    m_tab->FUN_1422e31e0(TSingleton<CGuildManager>::GetInstance()->FUN_1404d1f90() - 1);
+    m_themeList->FUN_1422dcca0(TSingleton<CGuildManager>::GetInstance()->FUN_1404d2030() - 1);
 }
 
 // @0x140e3a910
@@ -247,7 +244,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3a910(const Scaleform::GFx::FunctionHand
     for (size_t i = 0; i < ids.size(); i++)
     {
         ASObj obj(2);
-        Unk_PayloadPtr<GuildHouse> house = FUN_1404f4530()->FUN_1404d79b0(nLevel, ids[i]);
+        Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d79b0(nLevel, ids[i]);
         if (house == 0)
             return;
         obj.FUN_1407cbb20("imgpath", CStringW(house->f58));
@@ -270,17 +267,17 @@ void UIGuildHouseUpgradeDialog::FUN_140e3abf0(const Scaleform::GFx::FunctionHand
         return;
     int nLevel = m_tab->FUN_1422e3210() + 1;
     int nTheme = m_themeList->FUN_1422dccd0() + 1;
-    int nGuildLevel = FUN_1403ed290()->FUN_1404d1f90();
+    int nGuildLevel = TSingleton<CGuildManager>::GetInstance()->FUN_1404d1f90();
     if (nLevel < nGuildLevel)
         return;
     {
         if (nLevel == nGuildLevel)
         {
-            Unk_PayloadPtr<GuildHouse> house = FUN_1404f4530()->FUN_1404d79b0(nLevel, nTheme);
+            Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d79b0(nLevel, nTheme);
             if (house == 0)
                 return;
             CStringW strText = FUN_1408f71a0(CStringW(L"s_guild_ui_skill_use_change_theme"), FUN_140763e10(house->f30),
-                                             FUN_1401a9d70()->FUN_141811980(0x36, house->f20));
+                                             TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x36, house->f20));
             MS2Ptr<CMsgBoxData> box = FUN_140d73f20(CStringW(strText), 1);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildHouseUpgradeDialog::FUN_140e3a720));
             box->FUN_140533ff0(nTheme);
@@ -288,11 +285,11 @@ void UIGuildHouseUpgradeDialog::FUN_140e3abf0(const Scaleform::GFx::FunctionHand
         }
         else if (nLevel > nGuildLevel)
         {
-            Unk_PayloadPtr<GuildHouse> house = FUN_1404f4530()->FUN_1404d79b0(nLevel, nTheme);
+            Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d79b0(nLevel, nTheme);
             if (house == 0)
                 return;
             CStringW strText = FUN_140d26d90(CStringW(L"s_guild_ui_house_use_upgrade"), FUN_140763e10(house->f28), &nLevel,
-                                             FUN_1401a9d70()->FUN_141811980(0x36, house->f20));
+                                             TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x36, house->f20));
             MS2Ptr<CMsgBoxData> box = FUN_140d73f20(CStringW(strText), 1);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildHouseUpgradeDialog::FUN_140e3a6b0));
             box->FUN_140533ff0(nLevel);

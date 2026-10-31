@@ -19,18 +19,19 @@
 #include "ms2/client/ms2/uimessagebox.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uidamagetext.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 class ASDialog : public ASDisplayObject { };
 
-class Unk_PoEffectSvc                                           // the effect manager
+class Unk_PoEffectSvc : public CEffectService                                           // the effect manager
 {
 public:
     unsigned FUN_1411a49c0(NoticeMessage& kRequest);            // start an effect
-    void FUN_1411a6060(unsigned nId);                           // stop it
 };
-Unk_PoEffectSvc* FUN_1403ed280();
 
 class Unk_PoMe : public PC                                      // the local player (MyPC)
 {
@@ -47,7 +48,6 @@ public:
     PC* FUN_141bd1530(__int64 nCharId);                         // a player by character id
     bool FUN_141bc6fb0(unsigned* pnHour, unsigned* pnMin, int* pnC, int* pnFlag) const;     // the match countdown
 };
-Unk_PoWorld* FUN_1403ed2d0();
 
 struct Unk_PoConfig
 {
@@ -56,11 +56,8 @@ struct Unk_PoConfig
 };
 Unk_PoConfig* FUN_1401d31f0();
 
-class Unk_PoCameraUI                                            // the spectator camera buttons (UI 0x4e32)
+class Unk_PoCameraUI : public UIDamageText                                            // the spectator camera buttons (UI 0x4e32)
 {
-public:
-    void FUN_1419139d0(bool bShow);
-    void FUN_1419139f0(__int64 nCharId);
 };
 Unk_PoCameraUI* FUN_140b624b0(int nUiId);
 
@@ -110,19 +107,19 @@ int UIPvPObserverDialog::vfunc_65()
 void UIPvPObserverDialog::vfunc_67()
 {
     if (m_1d0 != 0) {
-        FUN_1403ed280()->FUN_1411a6060(m_1d0);
+        reinterpret_cast<Unk_PoEffectSvc*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_1d0);
         m_1d0 = 0;
     }
     if (m_1d5 != false) {
         Unk_PoCameraUI* pCamera = FUN_140b624b0(0x4e32);
         if (pCamera != 0) {
-            pCamera->FUN_1419139d0(false);
+            pCamera->SetObserver(false);
             __int64 nNone = 0;
-            pCamera->FUN_1419139f0(nNone);
+            pCamera->SetObservedId(nNone);
         }
     }
     UIDialog::vfunc_67();
-    Unk_PoMe* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PoMe* pPC = reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     pPC->FUN_14152a960();
@@ -135,7 +132,7 @@ void UIPvPObserverDialog::vfunc_72()
     unsigned nHour = 0;
     unsigned nMin = 0;
     int nC = 0;
-    FUN_1403ed2d0()->FUN_141bc6fb0(&nHour, &nMin, &nC, &nFlag);
+    reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bc6fb0(&nHour, &nMin, &nC, &nFlag);
     if (nFlag != 0 && nHour == 0 && nMin == 0) {
         vfunc_67();
     }
@@ -148,7 +145,7 @@ void UIPvPObserverDialog::vfunc_72()
         }
         if (nHour == 0 && nMin == 0) {
             if (m_1d0 != 0) {
-                FUN_1403ed280()->FUN_1411a6060(m_1d0);
+                reinterpret_cast<Unk_PoEffectSvc*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_1d0);
                 m_1d0 = 0;
             }
         }
@@ -156,7 +153,7 @@ void UIPvPObserverDialog::vfunc_72()
             NoticeMessage kRequest;
             kRequest.m_strName = FUN_1401d31f0()->m_strCountdownEffect;
             kRequest.m_nObject = 0;
-            m_1d0 = FUN_1403ed280()->FUN_1411a49c0(kRequest);
+            m_1d0 = reinterpret_cast<Unk_PoEffectSvc*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(kRequest);
             m_1cc = 1;
         }
     }
@@ -181,7 +178,7 @@ void UIPvPObserverDialog::vfunc_79(void* pData)
 // @0x141a916d0
 int UIPvPObserverDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    Unk_PoMe* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PoMe* pMe = reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return 0;
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -193,12 +190,12 @@ int UIPvPObserverDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     }
     else if (_stricmp("onObserveLeft", szMethod) == 0) {
-        PC* pTarget = FUN_1403ed2d0()->FUN_141bd1530(m_178.m_nCharId);
+        PC* pTarget = reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_178.m_nCharId);
         if (pTarget != 0)
             pMe->FUN_14152a4a0(pTarget);
     }
     else if (_stricmp("onObserveRight", szMethod) == 0) {
-        PC* pTarget = FUN_1403ed2d0()->FUN_141bd1530(m_1a0.m_nCharId);
+        PC* pTarget = reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_1a0.m_nCharId);
         if (pTarget != 0)
             pMe->FUN_14152a4a0(pTarget);
     }
@@ -267,7 +264,7 @@ void UIPvPObserverDialog::FUN_141a91a30(const Unk_PvPObsInfo& info)
 // @0x141a91b40
 void UIPvPObserverDialog::FUN_141a91b40()
 {
-    Unk_PoMe* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PoMe* pMe = reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return;
     if (FUN_140a467d0(&m_30))
@@ -281,7 +278,7 @@ void UIPvPObserverDialog::FUN_141a91b40()
     CStringW strStatusA(L"");
     CStringW strStatusB(L"");
     bool bObservableA = false;
-    PC* pA = FUN_1403ed2d0()->FUN_141bd1530(m_178.m_nCharId);
+    PC* pA = reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_178.m_nCharId);
     if (pA != 0) {
         strNameA.Format(L"%s", (LPCWSTR)pA->vfunc_77());
         if (m_1d4 != false) {
@@ -296,7 +293,7 @@ void UIPvPObserverDialog::FUN_141a91b40()
     }
     __int64 nCharIdB = 0;
     bool bObservableB = false;
-    PC* pB = FUN_1403ed2d0()->FUN_141bd1530(m_1a0.m_nCharId);
+    PC* pB = reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_1a0.m_nCharId);
     if (pB != 0) {
         strNameB.Format(L"%s", (LPCWSTR)pB->vfunc_77());
         if (m_1d4 != false) {
@@ -334,9 +331,9 @@ void UIPvPObserverDialog::FUN_141a91b40()
     if (m_1d5 != false) {
         Unk_PoCameraUI* pCamera = FUN_140b624b0(0x4e32);
         if (pCamera != 0) {
-            pCamera->FUN_1419139d0(true);
+            pCamera->SetObserver(true);
             if (!bObservableA && !bObservableB)
-                pCamera->FUN_1419139f0(nCharIdB);
+                pCamera->SetObservedId(nCharIdB);
         }
     }
 }

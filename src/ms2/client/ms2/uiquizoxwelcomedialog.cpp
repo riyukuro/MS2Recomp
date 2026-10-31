@@ -20,8 +20,6 @@
 // The SWF dialog object handed around by the UI library (the exe's dynamic_cast targets).
 class ASDialog : public ASDisplayObject
 {
-public:
-    Scaleform::GFx::Value FUN_1409ba030(const char* szMethod, int nValue);     // invoke an AS method
 };
 
 void FUN_140710590(COutPacket& packet);                         // 0x140710590 send the packet
@@ -77,7 +75,7 @@ void FUN_140e7f110(UIQuizOXWelcomeDialog* pDialog, bool bHost)
     pDialog->m_bHost = bHost;
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)((Unk_QuizDialogAS*)pDialog)->m_30);
     if (pDlg != 0)
-        pDlg->FUN_1409ba030("SetHost", pDialog->m_bHost ? 1 : 0);
+        pDlg->Invoke("SetHost", pDialog->m_bHost ? 1 : 0);
 }
 
 // @0x140e7f1c0

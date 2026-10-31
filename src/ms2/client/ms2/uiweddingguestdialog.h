@@ -16,7 +16,7 @@ class UIWeddingGuestDialog;
 class UIWeddingInvitationDialog;
 class ASTextField;
 class Unk_GsTab;
-class Unk_GsList;
+class ASScrollingList;
 class Unk_GsPageScript;
 struct Unk_GsFound;
 class CBuddy;

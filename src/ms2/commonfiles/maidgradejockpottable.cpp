@@ -42,16 +42,13 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-class Unk_MaidLoader : public CFileSystem { };
-Unk_MaidLoader* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
 bool FUN_14028f710(Unk_140165cf0* pNode);                               // the row is for this client's region
 int FUN_1408733a0(Unk_140165cf0* pNode, const char* pszName, double& rOut);
 // The locale list test and the game rule block (the level limit slot at +0x5180).
-CFeatureManager* FUN_140166410();
 struct Unk_MaidLimitSlot { char m_pad[0x58]; };
 struct Unk_MaidRule
 {
@@ -89,12 +86,12 @@ int CMaidGradeJockpotTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table/Server", "MaidGradeInfo.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("Grade"); pNode != 0; pNode = pNode->FUN_140168650("Grade"))
@@ -196,12 +193,12 @@ int CMaidRecipeTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "MaidRecipe.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("recipe"); pNode != 0; pNode = pNode->FUN_140168650("recipe"))
@@ -210,7 +207,7 @@ int CMaidRecipeTable::Load()
             continue;
         CStringW strLocale;
         FUN_140873420(pNode, "locale", strLocale);
-        if (!FUN_140166410()->FUN_14036d750(strLocale))
+        if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d750(strLocale))
             continue;
         MS2Ptr<CMaidRecipe> spRecipe(new CMaidRecipe);
         FUN_1408731e0(pNode, "Id", spRecipe->id);
@@ -293,12 +290,12 @@ int CMaidRecipeGroupTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "MaidRecipeGroup.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("group"); pNode != 0; pNode = pNode->FUN_140168650("group"))
@@ -307,7 +304,7 @@ int CMaidRecipeGroupTable::Load()
             continue;
         CStringW strLocale;
         FUN_140873420(pNode, "locale", strLocale);
-        if (!FUN_140166410()->FUN_14036d750(strLocale))
+        if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d750(strLocale))
             continue;
         int nGroupId = 0;
         FUN_1408731e0(pNode, "GroupID", nGroupId);
@@ -321,7 +318,7 @@ int CMaidRecipeGroupTable::Load()
         FUN_140177e10(strLevels, levels, ",");
         if (recipeIds.GetCount() != levels.GetCount())
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[RecipeID count mismatch requirelevel count {0}]", strPath);
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[RecipeID count mismatch requirelevel count {0}]", strPath);
             return 0;
         }
         std::vector<TPtrValue<RecipeLevel> > sorted;

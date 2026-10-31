@@ -303,7 +303,7 @@ public:
     MS2Ptr<CBeautyShopItem> FUN_1406e4860(int nItemId, unsigned nGender);
     void AddShopItemGroup(MS2Ptr<CBeautyShopItemGroup> spGroup);  // 0x1406e4a70 (name from its log text)
     Unk_BeautyGroupRef GetShopItemGroup();                        // 0x1406e4b80
-    std::vector<MS2Ptr<CBeautyShopItemGroup> >* GetShopItemGroupList(std::vector<MS2Ptr<CBeautyShopItemGroup> >& out);  // 0x1406e4ce0
+    void GetShopItemGroupList(std::vector<MS2Ptr<CBeautyShopItemGroup> >& out);  // 0x1406e4ce0
 
     MS2Ptr<CBeautyShopItemGroups> m_spGroups;        // +0xa8
 };

@@ -15,7 +15,10 @@
 // File name assumed (the class name; the exe has no assert path for it).
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimaidrecipelistdialog.cpp"    // assumed
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 #include "ms2/placeholder/mstime.h"
 #include "uimaidrecipelistdialog.h"
 #include "ms2/placeholder/asdata.h"
@@ -35,6 +38,14 @@
 #include "ms2/client/ms2/uimessagebox.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/shopcategorytable.h"
+#include "ms2/commonfiles/maid.h"
+#include "ms2/commonfiles/maidgradejockpottable.h"
+#include "ms2/placeholder/cmanufacturemanager.h"
+#include "ms2/placeholder/cusermaidmanager.h"
 #include <atlcoll.h>
 #include <atltime.h>
 #include <shellapi.h>
@@ -67,7 +78,6 @@ public:
     int FUN_141adc890(int nUiId);                           // is it open
     void FUN_141adc530(int nUiId);                          // open it
 };
-Unk_MdUiMgr* FUN_1403ed2b0();
 UIObject* FUN_1403e8a70(Unk_MdUiRef* pRef);                 // the held object, 0 = none
 UIObject* FUN_1403ed9e0(Unk_MdUiRef* pRef);                 // the dialog
 
@@ -102,13 +112,6 @@ public:
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bInvalidate);               // 24 0x1422c80c0 validateNow
 };
-class Unk_MdList : public Unk_MdCtl
-{
-public:
-    void FUN_1422dd1d0();                                   // clear
-    void FUN_1422dcca0(int n);                              // select the row
-    void FUN_1422dd230(const ASObj& row);                   // append a row
-};
 class ASDialog : public ASDisplayObject {};
 
 // The tables of the maid recipes and the maid books.
@@ -130,7 +133,6 @@ struct Unk_MdBookInfo                                       // the book's maid: 
 };
 MS2_CHECK_OFFSET(Unk_MdBookInfo, m_strSpecialty, 0x10);     // exe 0x1412dad61: add rax, 0x10
 class Unk_MdBookInfos { public: Unk_MdPtr<Unk_MdBookInfo> FUN_14067f780(int nBookId); };
-Unk_MdBookInfos* FUN_1409eed10();
 struct Unk_MdRecipe : public CPtred                         // a manufacture recipe
 {
     char m_pad_18[0x38];
@@ -139,7 +141,6 @@ struct Unk_MdRecipe : public CPtred                         // a manufacture rec
     int m_58;                                               // the result amount
 };
 class Unk_MdRecipeTable { public: Unk_MdPtr<Unk_MdRecipe> FUN_1406855c0(int nRecipeId); };
-Unk_MdRecipeTable* FUN_1409eed30();
 class Unk_MdLevelInfo { public: int* FUN_1402056b0(); };    // the player's manufacture level
 struct Unk_MdLevels { char m_pad[0x5180]; Unk_MdLevelInfo m_5180; };   // FUN_1401d3200(): the constant slot at +0x5180
 MS2_CHECK_OFFSET(Unk_MdLevels, m_5180, 0x5180);
@@ -150,8 +151,6 @@ CStringW FUN_1408116a0(int nStringId, const int& nArg);
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& nArg);
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
-struct Unk_MdStrings { CStringW FUN_141811980(int, int); };
-Unk_MdStrings* FUN_1401a9d70();
 
 // Item records and the item bag (the key is the AS name of a bag the movie draws the icons from).
 class Unk_MdItemData : public CPtred
@@ -243,11 +242,11 @@ void UIMaidRecipeListDialog::FUN_1412dac40()
     Unk_MdPtr<Unk_MdRecipeArr> spBook = FUN_1412db940()->FUN_140685da0(m_178);
     if (spBook == 0)
         return;
-    Unk_MdPtr<Unk_MdBookInfo> spInfo = FUN_1409eed10()->FUN_14067f780(m_178);
+    Unk_MdPtr<Unk_MdBookInfo> spInfo = reinterpret_cast<Unk_MdBookInfos*>(TSingleton<CMaidDescTable>::GetInstance())->FUN_14067f780(m_178);
     if (!spInfo)
         return;
     FUN_140cfee80(FUN_1422dbc00(), CString("m_txtTitle"), FUN_14052bd00(0x7c7, spInfo->m_strSpecialty));
-    if (MS2Ptr<Unk_MdList> spList = FUN_140c02900<Unk_MdList>("m_scrollList"))
+    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900<ASScrollingList>("m_scrollList"))
     {
         spList->FUN_1422dd1d0();
         for (size_t i = 0; i < spBook->FUN_14068acc0(); i++)
@@ -255,12 +254,12 @@ void UIMaidRecipeListDialog::FUN_1412dac40()
             Unk_MdPtr<Unk_MdRecipeRef> spRef = (*spBook).FUN_140689a50(i);
             if (!spRef)
                 continue;
-            Unk_MdPtr<Unk_MdRecipe> spRecipe = FUN_1409eed30()->FUN_1406855c0(spRef->m_id);
+            Unk_MdPtr<Unk_MdRecipe> spRecipe = reinterpret_cast<Unk_MdRecipeTable*>(TSingleton<CMaidRecipeTable>::GetInstance())->FUN_1406855c0(spRef->m_id);
             if (spRecipe.get())
             {
                 ASObj row(2);
                 row.FUN_140e846b0("id", i + 1);
-                row.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, spRecipe->m_50));
+                row.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->m_50));
                 row.FUN_1407cb9c0("recipeID", spRef->m_id);
                 if (spRef->m_level > *reinterpret_cast<Unk_MdLevels*>(FUN_1401d3200())->m_5180.FUN_1402056b0())   // exe: add rax, 0x5180
                     row.FUN_1407cbb20("require", FUN_1408116a0(0x7ab, spRef->m_level));
@@ -365,7 +364,6 @@ struct Unk_MdMaidItem : public CPtred
     __int64 FUN_140694170();                                // the time it is ready
 };
 class Unk_MdMaidItems { public: int FUN_140d51370(__int64 nKey, MS2Ptr<Unk_MdMaidItem>& out); };
-Unk_MdMaidItems* FUN_1409eed40();
 class Unk_MdMaidList
 {
 public:
@@ -379,11 +377,10 @@ private:
 void* FUN_14127f9a0(Unk_MdMaidList* pList, Unk_MdMaidList::Node* pNode);
 void* FUN_1412807f0(Unk_MdMaidList* pList, void* pos);
 class Unk_MdMaidOwner;
-Unk_MdMaidOwner* FUN_1409eed60();
 Unk_MdMaidList* FUN_14127eff0(Unk_MdMaidOwner* pOwner);
 void FUN_140159b70(long hr);                                // AtlThrow
 unsigned FUN_140869420();                                   // millisecond clock
-__int64 FUN_140869440();                                    // the server time
+__int64 GetServerTime();                                    // the server time
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
 CStringW FUN_1412e1e50(ATL::CTimeSpan span, int bShort, int bSuffix);
@@ -401,7 +398,6 @@ struct Unk_MdNpcInfo                                        // a maid row: the n
 };
 MS2_CHECK_OFFSET(Unk_MdNpcInfo, m_8_, 0x8);                 // exe 0x1412dcbc7: mov edx, dword ptr [rax + 8]
 class Unk_MdNpcInfos { public: Unk_MdPtr<Unk_MdNpcInfo> FUN_14067f180(int nMaidKey); };
-Unk_MdNpcInfos* FUN_1409eed20();
 MS2Ptr<Unk_MdNpcData> FUN_1406cd330(int nNpcId);
 UIMaidRecipeListDialog* FUN_1412dd5a0(int nUiId);
 void* FUN_1422bb8b0(int nMovieId);                          // the movie of a UI layer
@@ -534,7 +530,7 @@ void UIManufactureStatus::vfunc_72()
     m_198 = FUN_140869420();
     int bWorking = 0;
     int nIndex = 0;
-    Unk_MdMaidList* pList = FUN_14127eff0(FUN_1409eed60());
+    Unk_MdMaidList* pList = FUN_14127eff0(reinterpret_cast<Unk_MdMaidOwner*>(TSingleton<CUserMaidManager>::GetInstance()));
     for (void* pos = pList->FUN_1412dd700(); pos != 0; pList->FUN_1412dd720(pos))
     {
         MS2Ptr<Unk_MdMaidRec> spRec = pList->FUN_1412dd780(pos);
@@ -545,13 +541,13 @@ void UIManufactureStatus::vfunc_72()
         int nPercent = 0;
         CStringW strRemain = L"";
         MS2Ptr<Unk_MdMaidItem> spItem(0);
-        if (FUN_1409eed40()->FUN_140d51370(spRec->m_20, spItem) != 0)
+        if (reinterpret_cast<Unk_MdMaidItems*>(TSingleton<CManufactureManager>::GetInstance())->FUN_140d51370(spRec->m_20, spItem) != 0)
         {
-            Unk_MdPtr<Unk_MdRecipe> spRecipe = FUN_1409eed30()->FUN_1406855c0(spItem->FUN_1409eedf0());
+            Unk_MdPtr<Unk_MdRecipe> spRecipe = reinterpret_cast<Unk_MdRecipeTable*>(TSingleton<CMaidRecipeTable>::GetInstance())->FUN_1406855c0(spItem->FUN_1409eedf0());
             if (spRecipe.get() != 0)
             {
                 CMsTime tReady(spItem->FUN_140694170());
-                CMsTime tNow(FUN_140869440());
+                CMsTime tNow(GetServerTime());
                 if (tReady > tNow)
                 {
                     ATL::CTimeSpan span = tReady - tNow;
@@ -604,8 +600,8 @@ int UIManufactureStatus::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                 if (pList != 0)
                 {
                     pList->FUN_1412db660(nBook, fX, fY);
-                    if (FUN_1403ed2b0()->FUN_141adc890(0x4ecb) == 0)
-                        FUN_1403ed2b0()->FUN_141adc530(0x4ecb);
+                    if (reinterpret_cast<Unk_MdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ecb) == 0)
+                        reinterpret_cast<Unk_MdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ecb);
                     else
                         pList->FUN_1412db6c0();
                 }
@@ -662,7 +658,7 @@ void UIManufactureStatus::FUN_1412dc480()
     FUN_14256e3e0(pMovie, &aRemain);
     int nIndex = 0;
     int nCount = 0;
-    Unk_MdMaidList* pList = FUN_14127eff0(FUN_1409eed60());
+    Unk_MdMaidList* pList = FUN_14127eff0(reinterpret_cast<Unk_MdMaidOwner*>(TSingleton<CUserMaidManager>::GetInstance()));
     for (void* pos = pList->FUN_1412dd700(); pos != 0; pList->FUN_1412dd720(pos))
     {
         MS2Ptr<Unk_MdMaidRec> spRec = pList->FUN_1412dd780(pos);
@@ -677,13 +673,13 @@ void UIManufactureStatus::FUN_1412dc480()
         int nPercent = 0;
         CStringW strRemain = L"";
         MS2Ptr<Unk_MdMaidItem> spItem(0);
-        if (FUN_1409eed40()->FUN_140d51370(spRec->m_20, spItem) != 0)
+        if (reinterpret_cast<Unk_MdMaidItems*>(TSingleton<CManufactureManager>::GetInstance())->FUN_140d51370(spRec->m_20, spItem) != 0)
         {
             nState = 2;
-            Unk_MdPtr<Unk_MdRecipe> spRecipe = FUN_1409eed30()->FUN_1406855c0(spItem->FUN_1409eedf0());
+            Unk_MdPtr<Unk_MdRecipe> spRecipe = reinterpret_cast<Unk_MdRecipeTable*>(TSingleton<CMaidRecipeTable>::GetInstance())->FUN_1406855c0(spItem->FUN_1409eedf0());
             if (spRecipe.get() != 0)
             {
-                strItemName = FUN_1401a9d70()->FUN_141811980(1, spRecipe->m_50);
+                strItemName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->m_50);
                 int nItemId = spRecipe->m_50;
                 int nRank = spRecipe->m_58;
                 int nAmount = spRecipe->m_54;
@@ -696,7 +692,7 @@ void UIManufactureStatus::FUN_1412dc480()
                     m_178.Add(strBind);
                 }
                 CMsTime tReady(spItem->FUN_140694170());
-                CMsTime tNow(FUN_140869440());
+                CMsTime tNow(GetServerTime());
                 if (tReady > tNow)
                 {
                     ATL::CTimeSpan span = tReady - tNow;
@@ -722,7 +718,7 @@ void UIManufactureStatus::FUN_1412dc480()
         }
         CStringW strPortrait = L"";
         CStringW strMaidName = L"";
-        Unk_MdPtr<Unk_MdNpcInfo> spMaid = FUN_1409eed20()->FUN_14067f180(spRec->m_34);
+        Unk_MdPtr<Unk_MdNpcInfo> spMaid = reinterpret_cast<Unk_MdNpcInfos*>(TSingleton<CMaidInfoTable>::GetInstance())->FUN_14067f180(spRec->m_34);
         if (spMaid.get() != 0)
         {
             {
@@ -781,9 +777,9 @@ int UIManufactureStatus::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 // @0x1412dd5a0
 UIMaidRecipeListDialog* FUN_1412dd5a0(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_MdUiMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        Unk_MdUiRef ref = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        Unk_MdUiRef ref = reinterpret_cast<Unk_MdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (FUN_1403e8a70(&ref))
             return dynamic_cast<UIMaidRecipeListDialog*>(FUN_1403ed9e0(&ref));
     }
@@ -792,12 +788,8 @@ UIMaidRecipeListDialog* FUN_1412dd5a0(int nUiId)
 
 // ---- UIMDEditDialog -------------------------------------------------------------------------------------------------
 
-class Unk_MdItemInfo
+class Unk_MdItemInfo : public CItemData
 {
-public:
-    CStringA FUN_14053fdd0();                               // the icon path
-    bool FUN_14053e130();                                   // a cash item
-    bool FUN_14053cf90();                                   // a skin item
 };
 class Unk_MdItemRef
 {
@@ -888,7 +880,7 @@ int FUN_14083d890(CStringW str);                     // show a notice
 
 // The AS controls the edit window binds.
 class Unk_MdText : public AScript { public: void FUN_1422c4cd0(const CStringW& str); };
-class Unk_MdShopList : public Unk_MdList {};
+class Unk_MdShopList : public ASScrollingList {};
 class Unk_MdShopPanel : public AScript {};
 MS2Ptr<ASObj> FUN_1409e7dc0(int nUiId, const Scaleform::GFx::Value& v);   // the AS object of a row/dialog by the value
 struct Unk_MdChildFinder { template <class T> MS2Ptr<T> FUN_1409b4620(const CString& strName); };   // text child of a panel (AScript member)
@@ -903,12 +895,8 @@ UIMDEditDialog* FUN_1412df350(UIMDEditDialog* p);
 int FUN_1412dfc20();
 
 // The merat table (CMeratMarketPremium) and the products as the edit tool reads them.
-CMeratMarketPremium* FUN_1406f2370();
 bool FUN_1406ab310(CAtlMap<int, MS2Ptr<CMeratMarketPremiumProduct> >* pMap, int nId, MS2Ptr<CMeratMarketPremiumProduct>& spOut);
-CAtlMap<int, MS2Ptr<CMeratMarketPremiumProduct> >* FUN_1406a3470(CMeratMarketPremium* p);
-CAtlArray<MS2Ptr<CMeratMarketPremiumProduct> >* FUN_1406a3490(CMeratMarketPremium* p);
 int FUN_1409e1770(ASTooltip* pTip, unsigned nItemId, int nGrade);
-void FUN_1409c69b0(ASTooltip* pTip, const CStringW& str);
 void FUN_1409c4990_(ASObj* p);
 
 
@@ -917,7 +905,6 @@ int FUN_1412dfe70(const CString& strMode, AScript* pTarget);
 int FUN_1412dfa90(AScript* pTarget);
 void FUN_1401d3700(CString* s);                             // lower-cases in place
 struct Unk_MdSingleton;
-Unk_MdSingleton* FUN_1406aa4b0();
 void FUN_1406a9940();
 void FUN_1407cb390(Unk_MdSingleton* p, int n);
 void FUN_141215500();
@@ -1137,7 +1124,7 @@ int FUN_1412df4f0(MS2Ptr<CMeratMarketPremiumProduct> spProduct, ASObj* pRow)
         if (item.FUN_140203c60() != 0)
         {
             pRow->FUN_1407cba60("iconPath", item.FUN_1401b52a0()->FUN_14053fdd0());
-            pRow->FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, nItemId));
+            pRow->FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
             pRow->FUN_1407cb9c0("disable", 0);
         }
     }
@@ -1152,7 +1139,7 @@ int FUN_1412df4f0(MS2Ptr<CMeratMarketPremiumProduct> spProduct, ASObj* pRow)
         ASTooltip tip(4, 2);
         if (FUN_1409e1770(&tip, nItemId, pProduct->m_nGrade) != 0)
         {
-            FUN_1409c69b0(&tip, GetStringCommon(0x758));
+            tip.FUN_1409c69b0(GetStringCommon(0x758));
             pRow->FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
         }
     }
@@ -1190,13 +1177,13 @@ int FUN_1412df8b0(ASObj* pRow, MS2Ptr<CMeratMarketPremiumProduct> spProduct, Unk
 // @0x1412dfbd0
 int FUN_1412dfbd0()
 {
-    if (FUN_1406aa4b0() == 0)
+    if (reinterpret_cast<Unk_MdSingleton*>(TSingleton<CShopCategoryTable>::GetInstance()) == 0)
         FUN_1406a9940();
     else
-        FUN_1407cb390(FUN_1406aa4b0(), 0);
-    if (FUN_1406f2370() == 0)
+        FUN_1407cb390(reinterpret_cast<Unk_MdSingleton*>(TSingleton<CShopCategoryTable>::GetInstance()), 0);
+    if (TSingleton<CMeratMarketPremium>::GetInstance() == 0)
         FUN_141215500();
-    FUN_1406a27b0(FUN_1406f2370());
+    FUN_1406a27b0(TSingleton<CMeratMarketPremium>::GetInstance());
     return 1;
 }
 
@@ -1285,7 +1272,7 @@ int FUN_1412dffb0(CString strPath, int nMode, AScript* pTarget)
             FUN_1412e1bd0(&entry, pItem);
             MS2Ptr<CMeratMarketPremiumProduct> spProduct(0);
             if (entry.m_sn > 0)
-                spProduct = FUN_1406f2370()->FindProduct(entry.m_sn);
+                spProduct = TSingleton<CMeratMarketPremium>::GetInstance()->FindProduct(entry.m_sn);
             ASObj row(2);
             FUN_1412df8b0(&row, spProduct, &entry);
             items.FUN_1422bc050(row.FUN_1422bb870());
@@ -1334,7 +1321,7 @@ void FUN_1409c1770(AScript* p, const char* szName, Scaleform::GFx::Value& out);
 class Unk_MdRowObj : public ASObj { };                                       // the element as an object
 // 0x1422df140 ASDataProvider::requestItemAt viewed through the array: this = the array (rcx), hidden return = rdx
 struct Unk_MdRowSource { Unk_MdRowObj FUN_1422df140(unsigned nIndex); };
-struct Unk_MdMemberText { CStringW FUN_1422bb2b0(const char* szName); }; // a member as text
+ // a member as text
 int FUN_1409c17e0(const Scaleform::GFx::Value& v);          // the value as int
 bool FUN_1409c1720(const Scaleform::GFx::Value& v);         // the value as bool
 int FUN_1409c1750(const Scaleform::GFx::Value& v);
@@ -1403,8 +1390,8 @@ bool FUN_1412e06f0(CString strPath, int nMode, AScript* pData, ATL::CAtlList<int
     {
         Unk_MdRowObj row = reinterpret_cast<Unk_MdRowSource*>(items.FUN_140be3d00())->FUN_1422df140(i);
         Unk_MdXmlElement item("item");
-        int nSn = FUN_1412df3b0(reinterpret_cast<Unk_MdMemberText*>(&row)->FUN_1422bb2b0("sn"));
-        FUN_1408740a0(&item, "sn", reinterpret_cast<Unk_MdMemberText*>(&row)->FUN_1422bb2b0("sn"));
+        int nSn = FUN_1412df3b0(reinterpret_cast<AScript*>(&row)->FUN_1422bb2b0("sn"));
+        FUN_1408740a0(&item, "sn", reinterpret_cast<AScript*>(&row)->FUN_1422bb2b0("sn"));
         FUN_140873dc0(&item, "index", FUN_1409c17e0(row.FUN_1422baa20("index")));
         FUN_140873bc0(&item, "visible", FUN_1409c1720(row.FUN_1422baa20("visible")));
         FUN_140873bc0(&item, "category", FUN_1409c1720(row.FUN_1422baa20("category")));
@@ -1422,8 +1409,8 @@ bool FUN_1412e06f0(CString strPath, int nMode, AScript* pData, ATL::CAtlList<int
         if (!FUN_1409b0390(vId))
             nStringId = FUN_1409c1750(row.FUN_1422baa20("stringId"));
         FUN_140873ca0(&category, "stringId", nStringId);
-        FUN_1408740a0(&category, "name", reinterpret_cast<Unk_MdMemberText*>(&row)->FUN_1422bb2b0("name"));
-        FUN_1408740a0(&category, "indexes", reinterpret_cast<Unk_MdMemberText*>(&row)->FUN_1422bb2b0("indexes"));
+        FUN_1408740a0(&category, "name", reinterpret_cast<AScript*>(&row)->FUN_1422bb2b0("name"));
+        FUN_1408740a0(&category, "indexes", reinterpret_cast<AScript*>(&row)->FUN_1422bb2b0("indexes"));
         FUN_140873dc0(&category, "colorIndex", FUN_1409c17e0(row.FUN_1422baa20("colorIndex")));
         FUN_14086e000(&root, &category);
     }
@@ -1483,7 +1470,7 @@ void UIMDEditDialog::FUN_1412dea90(const CStringW& strSearch)
         return;
     if (MS2Ptr<Unk_MdText> spName = reinterpret_cast<Unk_MdChildFinder*>(spPanel.get())->FUN_1409b4620<Unk_MdText>("m_name"))
         spName->FUN_1422c4cd0(m_180 == 2 ? L"\xce90\xc2dc\xc0f5" : L"\xba54\xb7ff\xc0f5");
-    ATL::CAtlArray<MS2Ptr<CMeratMarketPremiumProduct> >& rProducts = m_180 == 2 ? s_shop.m_products : *FUN_1406a3490(FUN_1406f2370());
+    ATL::CAtlArray<MS2Ptr<CMeratMarketPremiumProduct> >& rProducts = m_180 == 2 ? s_shop.m_products : *TSingleton<CMeratMarketPremium>::GetInstance()->GetProducts();
     spList->Invoke("resetRenderer");
     for (size_t i = 0; i < rProducts.GetCount(); i++)
     {
@@ -1499,11 +1486,11 @@ void UIMDEditDialog::FUN_1412dea90(const CStringW& strSearch)
             CStringW strLabel;
             CStringW strFormat = L"[%s] %s";
             if (item.FUN_1401b52a0()->FUN_14053e130())
-                strLabel.Format(strFormat, L"CASH", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, nItemId));
+                strLabel.Format(strFormat, L"CASH", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
             else if (item.FUN_1401b52a0()->FUN_14053cf90())
-                strLabel.Format(strFormat, L"SKIN", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, nItemId));
+                strLabel.Format(strFormat, L"SKIN", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
             else
-                strLabel.Format(strFormat, L"GAME", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, nItemId));
+                strLabel.Format(strFormat, L"GAME", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
             CStringW strCode = FUN_141b71990(nItemId);
             ASObj row(2);
             row.FUN_1407cbb20("field", strLabel);
@@ -1545,14 +1532,14 @@ int UIMDEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
             MS2Ptr<ASObj> spObj = FUN_1409e7dc0(m_28, vRow);
             if (spObj.get())
             {
-                int nSn = FUN_1412df3b0(reinterpret_cast<Unk_MdMemberText*>(spObj.operator->())->FUN_1422bb2b0("sn"));
+                int nSn = FUN_1412df3b0(reinterpret_cast<AScript*>(spObj.operator->())->FUN_1422bb2b0("sn"));
                 unsigned nItemId = FUN_141b71a10(reinterpret_cast<const Unk_SfValueView&>(static_cast<const Scaleform::GFx::Value&>(spObj->FUN_1422baa20("itemID"))).FUN_142576d50().ToCStr());
                 Unk_MdItemRef item = FUN_14053f870(nItemId);
                 if (item.FUN_140203c60() != 0)
                 {
                     spObj->FUN_1407cba60(s_strIconPath, item.FUN_1401b52a0()->FUN_14053fdd0());
-                    spObj->FUN_1407cbb20(s_strItemName, FUN_1401a9d70()->FUN_141811980(1, nItemId));
-                    CAtlMap<int, MS2Ptr<CMeratMarketPremiumProduct> >& rMap = m_180 == 2 ? s_shop.m_productMap : *FUN_1406a3470(FUN_1406f2370());
+                    spObj->FUN_1407cbb20(s_strItemName, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
+                    CAtlMap<int, MS2Ptr<CMeratMarketPremiumProduct> >& rMap = m_180 == 2 ? s_shop.m_productMap : *TSingleton<CMeratMarketPremium>::GetInstance()->GetProductMap();
                     MS2Ptr<CMeratMarketPremiumProduct> spProduct(0);
                     if (FUN_1406ab310(&rMap, nSn, spProduct))
                     {

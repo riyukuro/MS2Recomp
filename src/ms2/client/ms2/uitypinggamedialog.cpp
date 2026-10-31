@@ -55,10 +55,10 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-CUIService* FUN_1403ed2b0();                                        // the UI service
 CInputKeyHandler* FUN_14025e7c0();                                  // the input singleton
 WorldService* FUN_1403ed2d0();                                      // the world service
 unsigned FUN_141472bc0();                                           // the tick counter
@@ -81,9 +81,9 @@ static CString s_strSuccess = "System_TypingGame_Success_01";
 // The countdown dialog (UI id 0x4e95), nullptr when it is not open.
 UITriggerTimerDialog* FindTimerDialog(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UITriggerTimerDialog*>((UIObject*)p);
     }
@@ -336,7 +336,7 @@ void UITypingGameDialog::FUN_140ee6190(unsigned nLimitMs)
     FUN_1403ed2d0()->FUN_141bc6f60(FUN_141472bc0(), nLimitMs, 1);
     if (nLimitMs > 0)
     {
-        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4e95);
+        TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4e95);
         UITriggerTimerDialog* pTimer = FindTimerDialog(0x4e95);
         if (pTimer != 0)
         {
@@ -346,7 +346,7 @@ void UITypingGameDialog::FUN_140ee6190(unsigned nLimitMs)
     }
     else
     {
-        FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4e95);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e95);
     }
 }
 

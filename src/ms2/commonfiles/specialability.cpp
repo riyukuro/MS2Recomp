@@ -39,8 +39,6 @@ class Unk_140165cf0;     // game TinyXML element
 // Unrecovered helpers (the xml loader helpers the other table units use).
 Unk_140165cf0* FUN_140165cf0(Unk_140165cf0* pParent, const char* pszName);      // the first child element
 Unk_140165cf0* FUN_140168650(Unk_140165cf0* pElem, const char* pszName);        // the next sibling with the name
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CStringA FUN_14071a5b0(const CStringA& strDir, const CStringA& strFile);         // Table/<file>
 CStringA FUN_14071ae20(const CStringA& strFile);                                 // the localised string table path
 int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int& nOut);
@@ -172,7 +170,7 @@ int LoadSpecialAbilityStringTable()
     LoadStringSpecialAbilityName(mapNames);
     CStringA strPath = FUN_14071a5b0("Table", "specialAbilityStringTable.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = FUN_140165cf0(reinterpret_cast<Unk_140165cf0*>(&doc), "ms2");
     if (pRoot == 0)
@@ -200,7 +198,7 @@ int LoadStringSpecialAbilityName(std::map<int, CStringW>& mapNames)
 {
     CStringA strPath = FUN_14071ae20("stringSpecialAbilityName.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = FUN_140165cf0(reinterpret_cast<Unk_140165cf0*>(&doc), "ms2");
     if (pRoot == 0)

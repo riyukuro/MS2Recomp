@@ -25,13 +25,16 @@ public:
 };
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
-const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 int FUN_1408730a0(Unk_140165cf0* pNode, const char* pszName, bool& bOut);
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
 int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
-CMainSystem* FUN_14086d260();
 
 // Camera manager (singleton 0x1409478c0): camera-path playback.
 CameraMgr* FUN_1409478c0();
@@ -59,7 +62,7 @@ void CCameraMoveEffectParam::vfunc_1(Unk_140165cf0* pNode)
     Unk_140165cf0* pAttach = pNode->FUN_140165cf0("attachInfo");
     if (pAttach)
     {
-        const char* pszAttach = FUN_14086f4b0(pAttach, "attachToNode");
+        const char* pszAttach = ((class TiXmlElement*)(class Unk_140165cf0*)(pAttach))->Attribute("attachToNode");
         if (pszAttach)
         {
             m_bAttachToNode = _stricmp(pszAttach, "true") == 0;
@@ -131,7 +134,7 @@ MS2_REPLACE_METHOD(0x140afec50, CCameraMoveEffect, vfunc_3, 137, 0xF230EF3A);
 // @0x140afece0
 bool CCameraMoveEffect::vfunc_9()
 {
-    double dNow = FUN_14086d260()->FUN_141473280();
+    double dNow = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
     return dNow < m_dStartTime + m_fDuration;
 }
 MS2_REPLACE_METHOD(0x140afece0, CCameraMoveEffect, vfunc_9, 95, 0x14569701);

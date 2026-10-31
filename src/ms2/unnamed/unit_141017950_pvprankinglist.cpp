@@ -43,6 +43,7 @@
 #include "ms2/placeholder/mypc.h"
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -69,7 +70,6 @@ public:
     MyPC* FUN_141bd0cc0();                                          // the local player
     PCBase* FUN_141bd1530(unsigned __int64 nCharId);                // a player by character id
 };
-Unk_PvpWorld* FUN_1403ed2d0();
 
 // The player's PvP info proxy (PC method 0x140967420): operator-> 0x140965970, release 0x140964aa0.
 class Unk_PvInfoPtr
@@ -252,7 +252,7 @@ Unk_PvpTimerItem* Unk_PvpTimer::FUN_141017fb0(int nRank)
 // @0x141018010
 void Unk_PvpTimer::FUN_141018010()
 {
-    Unk_PvActor* pPC = (Unk_PvActor*)FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PvActor* pPC = (Unk_PvActor*)reinterpret_cast<Unk_PvpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (pPC->FUN_140967420().FUN_140965970()->m_nMode == 2)
@@ -286,7 +286,7 @@ void Unk_PvpTimer::FUN_141018260(unsigned __int64 nCharId, int nScore, int nKill
     else
     {
         CStringW strName(L"Unknown");
-        PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
+        PCBase* pPlayer = reinterpret_cast<Unk_PvpWorld*>(WorldService::GetInstance())->FUN_141bd1530(nCharId);
         if (pPlayer != 0)
             strName = pPlayer->vfunc_77();
         pItem = new Unk_PvpTimerItem(nCharId, strName, nScore, nKill, nDeath, n1c);
@@ -294,7 +294,7 @@ void Unk_PvpTimer::FUN_141018260(unsigned __int64 nCharId, int nScore, int nKill
     }
     for (size_t i = 0; i < m_items.size(); ++i)
     {
-        PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(m_items[i]->m_nCharId);
+        PCBase* pPlayer = reinterpret_cast<Unk_PvpWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_items[i]->m_nCharId);
         if (pPlayer != 0)
             m_items[i]->m_bOnline = true;
         else
@@ -316,7 +316,7 @@ void Unk_PvpTimer::FUN_141018540(unsigned __int64 nCharId, unsigned __int64 nDam
     else
     {
         CStringW strName(L"Unknown");
-        PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
+        PCBase* pPlayer = reinterpret_cast<Unk_PvpWorld*>(WorldService::GetInstance())->FUN_141bd1530(nCharId);
         if (pPlayer != 0)
             strName = pPlayer->vfunc_77();
         pItem = new Unk_PvpTimerItem(nCharId, strName, 0, 0, 0, 0);

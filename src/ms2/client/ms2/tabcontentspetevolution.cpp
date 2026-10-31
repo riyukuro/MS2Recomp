@@ -127,7 +127,6 @@ public:
 extern template class MS2Ptr<Unk_PetRow>;
 class Unk_PetRowTable { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nKey); };
 Unk_PetRowTable* FUN_14052d210();
-int FUN_14053dc60(Unk_ItemEquipData* pData);                            // key of the equip data
 
 // The bind state of an item.
 class Unk_PetBind { public: int FUN_140635100(); int FUN_140635120(); };
@@ -154,7 +153,7 @@ class Unk_PetPlayerMgr { public: Unk_PetPlayer* FUN_141bd0cc0(); };
 
 // Evolution point table: the points an (item class, rank) needs for the next rank.
 class Unk_PetTable { public: unsigned FUN_1403539d0(unsigned short nClass, int nRank); };
-Unk_PetTable* FUN_1404a1bb0();
+void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
 
 // Recipe table (evolution cost and the preview item's grade).
 class Unk_PetRecipe : public CLua
@@ -162,23 +161,27 @@ class Unk_PetRecipe : public CLua
 public:
     short FUN_1406795e0(int nRank, unsigned short nClass);              // the next grade (0 when there is none)
 };
-Unk_PetRecipe* FUN_1401c0db0();
+class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 
 // Feature flags (slot 0x67 turns the evolution off).
 class Unk_PetFlag { public: int FUN_1402c4c90(int nFlag); };
 class Unk_PetFlags { public: void* p0; Unk_PetFlag flags; };
-Unk_PetFlags* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
 // Client configuration: the pet class that may be evolved by points sits at +0x84c0.
 class Unk_PetUIntSlot { public: unsigned* FUN_1401d7c10(); };
 class Unk_PetConfig { public: unsigned char m_pad[0x84c0]; Unk_PetUIntSlot m_petClass; };
-Unk_PetConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 unsigned* FUN_1401d7c10(Unk_PetUIntSlot* pSlot);
 
 // Locale/build switches (debug buttons).
 class Unk_PetLocale;
-Unk_PetLocale* FUN_14025e7c0();
-bool FUN_14116d720(Unk_PetLocale*);
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+class CInputKeyHandler   // C3: member view for the former free stand-ins
+{
+public:
+    bool IsDebugMode();
+};
 
 // The item picked in the inventory dialog.
 class Unk_PetSelected { public: __int64 FUN_140c8b2e0(); };
@@ -190,29 +193,24 @@ Unk_PetInventoryDialog* FUN_1405344f0(int nWindowId);
 
 // CItem accessors the exe calls as free functions.
 unsigned FUN_140528bd0(CItem* pItem);                                   // evolution point
-unsigned short FUN_1405282d0(CItem* pItem);                             // item class
-unsigned short FUN_140528c20(CItem* pItem);                             // pet class
-Unk_PetItemInfo* FUN_1405278a0(CItem* pItem);
-Unk_PetBind* FUN_140527930(CItem* pItem);
                      // item name (CItem member: this=rcx, hidden return=rdx)
-__int64 FUN_140528e00(CItem* pItem);                                    // item price
-int FUN_140528c60(CItem* pItem);
-int FUN_140528ca0(CItem* pItem);                                        // item lock state
-int FUN_140525640(CItem* pItem);
 __int64 FUN_140528b40(CItem* pItem);
 void FUN_140528b00(CItem* pItem, __int64 n);
 short FUN_140528bf0(CItem* pItem);
 void FUN_140528bf0(CItem* pItem, short n);
-void FUN_14052b760(CItem* pItem, MS2Ptr<CItem> src);
 __int64 GetServerTime();                                                // server time
 
 // Message box (same entry points as inventory.cpp).
 class CMsgBoxData;
 extern template class MS2Ptr<CMsgBoxData>;                              // the message box type is defined in another unit
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
-void FUN_141a01600(CMsgBoxData*, __int64);
+class CMsgBoxData   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141a01600(__int64);
+    void FUN_141a01700(int, int, int);
+};
 void FUN_141a01ee0(CMsgBoxData*, MS2Ptr<CItem>, const CStringW&, int, int, int, int, int);
-void FUN_141a01700(CMsgBoxData*, int, int, int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 
 // Item bag registry (the section's bag ids).
@@ -241,7 +239,7 @@ CStringW FUN_1405c2690(CStringW fmt, const CStringW& arg);
 CString FUN_14038f6d0(const CString& a, const char* b);                 // a + b
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
-void FUN_141276f80(Unk_CommandChat* pCmd);
+int FUN_141276f80(struct Unk_CommandChat*);   // C3: was FUN_141276f80
 void FUN_140710590(COutPacket& pkt);                                    // send
 
 // The Value setters/getters the Invoke helpers use.
@@ -512,14 +510,14 @@ void PetEvolutionPetEnchant::vfunc_3()
     if (pet == 0)
         return;
     unsigned nPoint = FUN_140528bd0(pet);
-    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
-    unsigned short nPetClass = FUN_140528c20(pet);
-    bool bDebug = FUN_14116d720(FUN_14025e7c0());
+    unsigned nNeed = ((class Unk_PetTable*)FUN_1404a1bb0())->FUN_1403539d0(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
+    unsigned short nPetClass = ((class CItem*)(class CItem*)(pet))->FUN_140528c20();
+    bool bDebug = ((class CInputKeyHandler*)(class Unk_PetLocale*)(((class Unk_PetLocale*)FUN_14025e7c0())))->IsDebugMode();
     if (MS2Ptr<Unk_PetButton> submit = ench->FUN_140acce30<Unk_PetButton>("m_submit"))
     {
         ATL::CAtlArray<IdCount> selected;
         m_pOwner->FUN_140acaf20(selected);
-        if ((unsigned)nPetClass == *FUN_1401d7c10(&FUN_1401d3200()->m_petClass) && selected.GetCount() > 0)
+        if ((unsigned)nPetClass == *FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass) && selected.GetCount() > 0)
             submit->FUN_1422c1fe0(1);
         else if (nNeed > 0 && nPoint >= nNeed)
             submit->FUN_1422c1fe0(1);
@@ -609,8 +607,8 @@ void PetEvolutionPetEnchant::FUN_140ac8a00()
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
-    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
-    unsigned short nPetClass = FUN_140528c20(pet);
+    unsigned nNeed = ((class Unk_PetTable*)FUN_1404a1bb0())->FUN_1403539d0(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
+    unsigned short nPetClass = ((class CItem*)(class CItem*)(pet))->FUN_140528c20();
     ATL::CAtlArray<unsigned __int64> ids;
     ids.Add(m_pOwner->GetUidPet());
     FUN_140b77500(&m_strBag);
@@ -667,8 +665,8 @@ void PetEvolutionPetEnchant::FUN_140ac9140()
         if (!(item == 0))
         {
             __int64 nCost = 0;
-            if (FUN_140525640(item) != 0)
-                nCost = FUN_1401c0db0()->CalcPetEvolutionCost(item->FUN_140526bd0());
+            if (((class CItem*)(class CItem*)(item))->FUN_140525640() != 0)
+                nCost = ((class Unk_PetRecipe*)FUN_1401c0db0())->CalcPetEvolutionCost(item->FUN_140526bd0());
             nTotal += nCost;
         }
     }
@@ -690,7 +688,7 @@ void PetEvolutionPetEnchant::FUN_140ac9520()
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
-    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
+    unsigned nNeed = ((class Unk_PetTable*)FUN_1404a1bb0())->FUN_1403539d0(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
     int nState = m_pOwner->GetState();
     CStringW strResult = FUN_140938ae0(CStringW(L"s_pet_evolution_success"), nState);
     CStringW strMax = FUN_140298ea0(CStringW(L"s_pet_evolution_max"));
@@ -726,7 +724,7 @@ void PetEvolutionPetEnchant::FUN_140ac9a60()
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
-    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
+    unsigned nNeed = ((class Unk_PetTable*)FUN_1404a1bb0())->FUN_1403539d0(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
     int nState = m_pOwner->GetState();
     CStringW strPointUp = FUN_140938ae0(CStringW(L"s_pet_evolution_pointup_success"), nState);
     CStringW strEnable = FUN_140298ea0(CStringW(L"s_pet_evolution_enable_evolution"));
@@ -745,13 +743,13 @@ void PetEvolutionPetEnchant::FUN_140ac9e20(ASObj& obj)
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
-    Unk_PetItemInfo* info = FUN_1405278a0(pet);
+    Unk_PetItemInfo* info = ((class Unk_PetItemInfo*)((class CItem*)(class CItem*)(pet))->FUN_1405278a0());
     if (info == 0)
         return;
     ItemPtr preview(new CItem);
     int nNextRank = pet->FUN_140526bd0();
     nNextRank = nNextRank + 1;
-    short nGrade = FUN_1401c0db0()->FUN_1406795e0(nNextRank, FUN_1405282d0(pet));
+    short nGrade = ((class Unk_PetRecipe*)FUN_1401c0db0())->FUN_1406795e0(nNextRank, ((class CItem*)(class CItem*)(pet))->FUN_1405282d0());
     if (nGrade == 0)
         return;
     int nItemId = pet->FUN_1405276c0();
@@ -759,10 +757,10 @@ void PetEvolutionPetEnchant::FUN_140ac9e20(ASObj& obj)
         return;
     __int64 nUnk = FUN_140528b40(pet);
     FUN_140528b00(preview, nUnk);
-    FUN_14052b760(preview, ItemPtr(pet));
+    ((class CItem*)(class CItem*)(preview))->FUN_14052b760(ItemPtr(pet));
     FUN_140528bf0(preview, nGrade);
-    if (FUN_1405278a0(preview) != 0)
-        FUN_1405278a0(preview)->m_pet->FUN_1405cc480(info->m_pet);
+    if (((class Unk_PetItemInfo*)((class CItem*)(class CItem*)(preview))->FUN_1405278a0()) != 0)
+        ((class Unk_PetItemInfo*)((class CItem*)(class CItem*)(preview))->FUN_1405278a0())->m_pet->FUN_1405cc480(info->m_pet);
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
@@ -957,14 +955,14 @@ void TabContentsPetEvolution::OnPetEnchant(int bUsePoint)
     Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (player == 0)
         return;
-    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x67) != 0)
+    if (((class Unk_PetFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x67) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
     }
     else
     {
         unsigned nPoint = FUN_140528bd0(pet);
-        unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
+        unsigned nNeed = ((class Unk_PetTable*)FUN_1404a1bb0())->FUN_1403539d0(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
         SetState(0);
         if (nPoint >= nNeed)
         {
@@ -979,15 +977,15 @@ void TabContentsPetEvolution::OnPetEnchant(int bUsePoint)
                 return;
             if (bUsePoint == 0)
             {
-                if (FUN_140527930(pet)->FUN_140635100() != 0 && FUN_140527930(pet)->FUN_140635120() == 0)
+                if (((class Unk_PetBind*)((class CItem*)(class CItem*)(pet))->FUN_140527930())->FUN_140635100() != 0 && ((class Unk_PetBind*)((class CItem*)(class CItem*)(pet))->FUN_140527930())->FUN_140635120() == 0)
                 {
                     CStringW strMsg = FUN_1405c2690(L"s_msg_transfer_bind_pet_evolution", player->vfunc_77());
                     MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, strMsg, 0, s_evolutionBindPet);
                     if (box.get() != 0)
                     {
-                        FUN_141a01600(box.operator->(), pet->FUN_140526a50());
+                        ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a01600(pet->FUN_140526a50());
                         FUN_141a01ee0(box.operator->(), ItemPtr(pet), pet->FUN_140527b10(), 1, 0, -1, -1, 1);
-                        FUN_141a01700(box.operator->(), 0x477, 0x478, 0);
+                        ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a01700(0x477, 0x478, 0);
                         FUN_140d73c60(box);
                         return;
                     }
@@ -1015,7 +1013,7 @@ void TabContentsPetEvolution::FUN_140acb560(unsigned nPoint)
     if (pet == 0)
         return;
     unsigned nHave = FUN_140528bd0(pet);
-    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
+    unsigned nNeed = ((class Unk_PetTable*)FUN_1404a1bb0())->FUN_1403539d0(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
     if (nHave >= nNeed)
         return;
     SetState(nPoint);
@@ -1067,12 +1065,12 @@ void TabContentsPetEvolution::FUN_140acb850()
         ItemPtr item = g_143ab2a90.FUN_140a5d680(ids[i]);
         if (item == 0)
             continue;
-        MS2Ptr<Unk_PetRow> row = FUN_14052d210()->FUN_1407290f0(FUN_14053dc60(item->FUN_140527840()));
+        MS2Ptr<Unk_PetRow> row = FUN_14052d210()->FUN_1407290f0(((class CItemData*)(class Unk_ItemEquipData*)(item->FUN_140527840()))->FUN_14053dc60());
         if (row == 0)
             continue;
         if (row->m_nFlag == 0)
             continue;
-        if (FUN_140528c20(item) != *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
+        if (((class CItem*)(class CItem*)(item))->FUN_140528c20() != *FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass))
             continue;
         m_petCards.Add(item->FUN_140526a50());
     }
@@ -1086,7 +1084,7 @@ void TabContentsPetEvolution::FUN_140acba80()
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
     if (pet == 0)
         return;
-    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
+    unsigned nNeed = ((class Unk_PetTable*)FUN_1404a1bb0())->FUN_1403539d0(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
     if (nNeed == 0)
         return;
     ATL::CAtlArray<unsigned __int64> ids;
@@ -1101,7 +1099,7 @@ void TabContentsPetEvolution::FUN_140acba80()
             continue;
         if (m_uidPet == id)
             continue;
-        if (FUN_14053dc60(item->FUN_140527840()) != FUN_14053dc60(pet->FUN_140527840()))
+        if (((class CItemData*)(class Unk_ItemEquipData*)(item->FUN_140527840()))->FUN_14053dc60() != ((class CItemData*)(class Unk_ItemEquipData*)(pet->FUN_140527840()))->FUN_14053dc60())
             continue;
         if (item->FUN_140526bd0() != pet->FUN_140526bd0())
             continue;
@@ -1139,20 +1137,20 @@ void TabContentsPetEvolution::FUN_140acbe00(int nIndex)
     ItemPtr item = g_143ab2a90.FUN_140a5d680(id);
     if (item == 0)
         return;
-    __int64 nPrice = FUN_140528e00(item);
-    unsigned short nPetClass = FUN_140528c20(pet);
+    __int64 nPrice = ((class CItem*)(class CItem*)(item))->FUN_140528e00();
+    unsigned short nPetClass = ((class CItem*)(class CItem*)(pet))->FUN_140528c20();
     unsigned nPoint = FUN_140528bd0(pet);
-    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
+    unsigned nNeed = ((class Unk_PetTable*)FUN_1404a1bb0())->FUN_1403539d0(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
     unsigned nTotal = nPoint + FUN_140acb6f0();
-    if (FUN_140528c60(item) != 0)
+    if (((class CItem*)(class CItem*)(item))->FUN_140528c60() != 0)
     {
         FUN_1412752d0(L"s_err_cannot_evolution_petitem_hasitem", 1);
     }
-    else if (FUN_140528ca0(item) == 0 && nPrice > GetServerTime())
+    else if (((class CItem*)(class CItem*)(item))->FUN_140528ca0() == 0 && nPrice > GetServerTime())
     {
         FUN_1412752d0(L"s_itemlock_invalid_petevolution", 1);
     }
-    else if (FUN_140528ca0(item) == 1)
+    else if (((class CItem*)(class CItem*)(item))->FUN_140528ca0() == 1)
     {
         FUN_1412752d0(L"s_itemlock_invalid_petevolution", 1);
     }
@@ -1160,7 +1158,7 @@ void TabContentsPetEvolution::FUN_140acbe00(int nIndex)
     {
         FUN_1412752d0(L"s_err_cannot_evolution_consume", 1);
     }
-    else if (nPetClass == *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
+    else if (nPetClass == *FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass))
     {
         const unsigned nMax = 0xc;
         if (m_selected.GetCount() >= nMax)

@@ -17,7 +17,7 @@ public:
 };
 
 class Unk_ServiceHost;
-Unk_ServiceHost* FUN_1413f9850();                           // the game's service manager
+class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
 Unk_FrameTimeSource* FUN_1411d15f0(Unk_ServiceHost* pHost); // GetSystemServiceAs<Unk_FrameTimeSource>
 
 // @0x1414bc310
@@ -48,7 +48,7 @@ FrameEventUpdate::FrameEventUpdate()
 // @0x1414bc430
 float FrameEventUpdate::TakeSample(float fTime)
 {
-    efd::SmartPointer<Unk_FrameTimeSource> spSource(FUN_1411d15f0(FUN_1413f9850()));
+    efd::SmartPointer<Unk_FrameTimeSource> spSource(FUN_1411d15f0(((class Unk_ServiceHost*)FUN_1413f9850())));
     if (spSource)
         return spSource->FUN_1415040f0() * 1000.0f;
     return 0.0f;

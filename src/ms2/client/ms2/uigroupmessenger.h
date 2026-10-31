@@ -107,7 +107,7 @@ public:
     static CStringW FUN_14194d8f0(const CStringW& strName, int bSystem);    // the line frame name (static in the exe: rcx = sret)
     static bool FUN_14194da30(CStringW strMsg);                                  // the line shows a background
 
-    MS2Ptr<class Unk_GrmList> FUN_140c02900(const CString& strName);       // 0x140c02900 list / text output
+    MS2Ptr<class ASScrollingList> FUN_140c02900(const CString& strName);       // 0x140c02900 list / text output
     MS2Ptr<class Unk_GrmInput> FUN_140e35bd0(const CString& strName);      // 0x140e35bd0 text input
 
 private:

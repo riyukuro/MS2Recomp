@@ -14,7 +14,10 @@
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiadditionalcontroldialog.cpp"    // assumed
 
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uiadditionalcontroldialog.h"
 
@@ -37,6 +40,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
 
 // ---- the statics of the shared header (two sort-name tables, "skill", "stun", the null handle, the condition object) ----
 static CString s_sortNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -46,25 +50,6 @@ static CString s_strStun = "stun";
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local placeholders (unrecovered helpers) ----
-
-// The effect list of the movie ("m_effects" / "m_contextMenu"): an AS list control.
-class Unk_AcList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(int bVisible);
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                                   // clear
-    void FUN_1422dd230(const ASObj& row);                   // append a row
-    int FUN_1422dd150();                                    // row count
-    CStringW FUN_1422dd520();                               // label of the selected row
-    void FUN_1422c79e0(int nWidth, int nHeight);            // setSize
-    void FUN_1422de0e0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // change handler
-};
 
 // The click event of a list row (ctor 0x1422e2740, dtor 0x140f83bb0: symbols-manual.tsv).
 class ASListEvent
@@ -77,15 +62,12 @@ public:
 };
 class Unk_AcRow : public ASObj
 {
-public:
-    CStringW FUN_1422bb2b0(const char* szName);             // a member as text
 };
 
 // The skill table (FUN_1401958b0).
-class Unk_AcSkillTable
+class Unk_AcSkillTable : public SkillDataTableCli
 {
 public:
-    std::vector<MS2Ptr<AdditionalData> > FUN_140ab0080();                          // every additional row
     MS2Ptr<AdditionalLevelData> FUN_140aafef0(unsigned nId, unsigned short nLevel);
 };
 Unk_AcSkillTable* FUN_1401958b0();
@@ -228,11 +210,11 @@ void UIAdditionalControlDialog::FUN_1418b2c20(const Scaleform::GFx::FunctionHand
 // @0x1418b2e80
 void UIAdditionalControlDialog::FUN_1418b2e80(const CString& strGroup, const CStringW& strSearch)
 {
-    MS2Ptr<Unk_AcList> list = FUN_140c02900("m_effects");
+    MS2Ptr<ASScrollingList> list = FUN_140c02900("m_effects");
     if (!list)
         return;
     list->FUN_1422dd1d0();
-    std::vector<MS2Ptr<AdditionalData> > vecData = FUN_1401958b0()->FUN_140ab0080();
+    std::vector<MS2Ptr<AdditionalData> > vecData = FUN_1401958b0()->GetAdditionals();
     std::sort(vecData.begin(), vecData.end(), [](const MS2Ptr<AdditionalData>& a, const MS2Ptr<AdditionalData>& b) {
         return a->GetID() < b->GetID();
     });
@@ -316,7 +298,7 @@ void UIAdditionalControlDialog::FUN_1418b3620()
 // @0x1418b3ac0
 unsigned UIAdditionalControlDialog::FUN_1418b3ac0()
 {
-    MS2Ptr<Unk_AcList> list = FUN_140c02900("m_effects");
+    MS2Ptr<ASScrollingList> list = FUN_140c02900("m_effects");
     if (!list)
         return 0;
     CStringW strLabel = list->FUN_1422dd520();

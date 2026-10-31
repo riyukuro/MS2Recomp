@@ -24,7 +24,7 @@ class Unk_KeyState
 public:
     bool FUN_14116dcb0(int nKey, int a, int b);
 };
-Unk_KeyState* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(MS2DragSlot);
 
@@ -62,7 +62,7 @@ int MS2DragSlot::vfunc_19()
 {
     if (!IsEnabled())
         return 0;
-    if (FUN_14025e7c0()->FUN_14116dcb0(0x49406, 0, 0))
+    if (((class Unk_KeyState*)FUN_14025e7c0())->FUN_14116dcb0(0x49406, 0, 0))
         return 1;
     return 0;
 }

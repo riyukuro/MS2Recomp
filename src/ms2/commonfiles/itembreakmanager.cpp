@@ -106,7 +106,6 @@ public:
     void* p0; void* p8; void* p10; Unk_BreakIngredients ingredients;
 };
 MS2_CHECK_SIZE(CIngredientContainer,0x30);
-CFeatureManager* FUN_140166410();
 class Unk_BreakRecipe : public CLua { public: int FUN_140677910(); };
 Unk_BreakRecipe* FUN_1401c0db0();
 void FUN_140628390(int,unsigned short,int,CIngredientContainer&);
@@ -324,7 +323,7 @@ bool ItemBreakCommon::FUN_140530b40(Items& items,int index,__int64 id,int count)
 // @0x140530c90
 void FUN_140530c90(MS2Ptr<Unk_BreakTemplate> item,int grade,int enhance,CIngredientContainer& output) {
     if(item==0) return;
-    if(FUN_140166410()->FUN_14036d570(0x3a)) { int level=item->FUN_14053de40(); if(level) {
+    if(TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x3a)) { int level=item->FUN_14053de40(); if(level) {
     unsigned short category=item->category;
     __int64 value=item->FUN_14053ea00(grade);
     FUN_1401c0db0()->CalcMeratSkinItemBreakReward(category,grade,value,level,output);
@@ -358,7 +357,7 @@ int CItemBreakManager::FUN_140531270(ItemPtr item) {
     if(!item) return 0; if(item->FUN_140528e20()==true) return 0;
     if(FUN_140531510(item)==1) return 1;
     if(!FUN_140531630(item)) return 0; if(!FUN_140633bf0(item)) return 0; if(!FUN_140531850(item)) return 0;
-    if(item->FUN_140525f10()!=0) { if(FUN_140166410()->FUN_14036e5b0()) { if(item->FUN_1405279c0()!=0 && item->FUN_1405279c0()->FUN_140620a20()>0) return 0; } }
+    if(item->FUN_140525f10()!=0) { if(TSingleton<CFeatureManager>::GetInstance()->FUN_14036e5b0()) { if(item->FUN_1405279c0()!=0 && item->FUN_1405279c0()->FUN_140620a20()>0) return 0; } }
     return 1;
 }
 MS2_REPLACE_METHOD(0x140531270, CItemBreakManager, FUN_140531270, 653, 0xB1394540);

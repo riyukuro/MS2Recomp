@@ -35,9 +35,15 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/cxmldata.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <algorithm>
 #include <errno.h>
 #include <string.h>
+#include "ms2/commonfiles/itemdroptable.h"   // C3: TSingleton<> needs the class
 static CString s_sndOpen = "LulluOpenBox_Open";
 static CString s_sndSpecial = "LulluOpenBox_SpecialItem_Get";
 static CString s_snd10 = "LulluOpenBox_10Items_Open";
@@ -115,30 +121,20 @@ public:
 };
 MS2_CHECK_SIZE(Unk_PetBoxIntVec, 24);
 class Unk_PetBoxDropTable { public: void FUN_1402ea4c0(int, Unk_PetBoxDropVec&); };
-Unk_PetBoxDropTable* FUN_1405a1fd0();
 // the item record's attribute table (+0x320) and job table (+0x138)
-class Unk_PetBoxAttr
+class Unk_PetBoxAttr : public CXmlData
 {
 public:
-    CString FUN_1409e8560(const CStringW&, const CString&);
     Unk_PetBoxIntVec FUN_1409e8620(const CStringW&, const Unk_PetBoxIntVec& = Unk_PetBoxIntVec());
 };
-class Unk_PetBoxJobSet { public: bool FUN_140545da0(int); };
 class Unk_PetBoxData : public CItemData
 {
-public:
-    bool FUN_14053cc40();
-    int FUN_14053c940(int);
 };
-class Unk_PetBoxSelf { public: int FUN_141654700(); int FUN_141658e60(); };
+class Unk_PetBoxSelf : public PC { };
 class Unk_PetBoxWorld { public: Unk_PetBoxSelf* FUN_141bd0cc0(); };
-Unk_PetBoxWorld* FUN_1403ed2d0();
 class Unk_PetBoxUIMgr { public: void FUN_141adc530(int); };
-Unk_PetBoxUIMgr* FUN_1403ed2b0();
-class Unk_PetBoxStrings { public: CStringW FUN_141811980(int, int); };
-Unk_PetBoxStrings* FUN_1401a9d70();
 MS2Ptr<CItemData> FUN_14053f870(int);
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 // avatar of a pet (0xc8 bytes, RTTI UIAvatarPet : UIAvatarBase), rendered into an AS clip
 struct Unk_PetBoxVector
 {
@@ -484,7 +480,7 @@ void UIItemPetBoxDialog::SetBoxItemId(int id) { m_boxItemId = id; }
 bool UIItemPetBoxDialog::FUN_140e4fc50(int result, const CMsgBoxData&)
 {
     if (result == 0)
-        FUN_1403ed2b0()->FUN_141adc530(0x4ec1);
+        reinterpret_cast<Unk_PetBoxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ec1);
     return true;
 }
 
@@ -504,7 +500,7 @@ bool UIItemPetBoxDialog::FUN_140e4fd60()
 {
     if (m_30 == 0)
         return false;
-    Unk_PetBoxSelf* self = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PetBoxSelf* self = reinterpret_cast<Unk_PetBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (self == 0)
         return false;
     MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);
@@ -515,14 +511,14 @@ bool UIItemPetBoxDialog::FUN_140e4fd60()
     Unk_PetBoxIntVec ids = PETBOX_ATTR(data)->FUN_1409e8620(L"unCommonBoxId", Unk_PetBoxIntVec());
     Unk_PetBoxDropVec drops;
     for (size_t i = 0; i < ids.FUN_140191110(); ++i)
-        FUN_1405a1fd0()->FUN_1402ea4c0(ids.FUN_140297cb0(i), drops);
+        reinterpret_cast<Unk_PetBoxDropTable*>(TSingleton<ItemDropTable>::GetInstance())->FUN_1402ea4c0(ids.FUN_140297cb0(i), drops);
     Unk_PetBoxDropVec filtered;
     for (size_t i = 0; i < drops.FUN_140314170(); ++i) {
         Unk_PetBoxDrop* d = drops.FUN_140c461b0(i);
         MS2Ptr<CItemData> idata = FUN_14053f870(d->vfunc_0());
         if (idata == 0)
             continue;
-        Unk_PetBoxJobSet* jobs = reinterpret_cast<Unk_PetBoxJobSet*>(reinterpret_cast<char*>(idata.operator->()) + 0x138);
+        ItemLimit* jobs = reinterpret_cast<ItemLimit*>(reinterpret_cast<char*>(idata.operator->()) + 0x138);
         if (jobs->FUN_140545da0(self->FUN_141654700())) {
             if (static_cast<Unk_PetBoxData*>(idata.operator->())->FUN_14053c940(self->FUN_141658e60()) != 0)
                 filtered.FUN_140313cd0(d);
@@ -695,7 +691,7 @@ void UIItemPetBoxDialog::FUN_140e519b0(MS2Ptr<ASMovieClip> clip, const ItemEntit
     MS2Ptr<ASTextField> txt = clip->FUN_1409b4620("m_petNameText");
     if (txt == 0)
         return;
-    CStringW name = FUN_1401a9d70()->FUN_141811980(1, item.m_itemId);
+    CStringW name = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, item.m_itemId);
     txt->FUN_1422c4cd0(name);
     if (const_cast<ItemEntity&>(item).vfunc_o18_1() == 2)
         clip->vfunc_15("rare");
@@ -717,7 +713,7 @@ int UIItemPetBoxDialog::FUN_140e51ca0()
     int tagId = (int)FUN_140557640(FUN_140281980(), &tag);
     if (tagId == 0)
         return -1;
-    int have = DAT_143ab2a90.FUN_140a5f7b0(tagId, 0);
+    int have = g_143ab2a90.FUN_140a5f7b0(tagId, 0);
     int need = 1;
     if (m_multi)
         need = 10;
@@ -770,10 +766,10 @@ void UIItemPetBoxDialog::FUN_140e52110()
         return;
     CString tag = PETBOX_ATTR(data)->FUN_1409e8560(L"itemTag", "");
     int tagId = (int)FUN_140557640(FUN_140281980(), &tag);
-    MS2Ptr<CItem> inv = DAT_143ab2a90.FUN_140a5e040(tagId);
+    MS2Ptr<CItem> inv = g_143ab2a90.FUN_140a5e040(tagId);
     if (inv == 0)
         return;
-    if (DAT_143ab2a90.FUN_140a63880(inv.operator->(), mode) == 0)
+    if (g_143ab2a90.FUN_140a63880(inv.operator->(), mode) == 0)
         vfunc_67();
     else
         m_sent = true;

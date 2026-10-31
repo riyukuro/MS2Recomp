@@ -44,6 +44,8 @@
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/asmousecursor.h"
+class Unk_AvModeSvc;
+namespace ecr { class RenderService; }
 
 // ---- externs used by the helpers ----
 extern int DAT_143af7d44;                                           // "out of memory already reported"
@@ -101,18 +103,21 @@ private:
 };
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
-NiObject* FUN_14098d8d0(const NiRTTI* pkRTTI, NiObject* pkObj);     // dynamic cast by RTTI
-void* FUN_1409f7c90();                                              // the render settings singleton
-int FUN_14109a9d0(void* pSettings);                                 // 0 = key by name lookup
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class COptimizer   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14109a9d0();
+};
 const char* FUN_142087e50(const void* pFixed);                      // NiFixedString -> c string
-NiMaterial* FUN_140a17cd0(NiRenderObject* pObj);                    // active material
-const void* FUN_14106bd50(const NiMaterial* pMat);                  // material name
 bool FUN_141068d10(const void* pA, const void* pB);                 // name operator!=
 char FUN_1409a7ff0(const void* pA, const void* pB);                 // NiFixedString equality
 void FUN_1410479a0(NiAVObject* pObj, void* pKey, const Unk_Colc& kValue);   // set a shader constant
-void* FUN_140a17af0(Unk_MaterialTable* pTable, const NiMaterial* pMat);
-int FUN_140ef4dd0(void* pMatInfo);
-NiObject* FUN_141d17b40(NiObjectNET* pObj, const void* pKey);       // extra-data lookup by key
+class Unk_CubeKind   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140ef4dd0();
+};
 float FUN_140a0fde0(float fValue, float fMax);                      // min(value, max)
 // The exe's out-of-line copies of the inline NiColorExtraData::GetRed/GetGreen/GetBlue and
 // NiControllerSequence::GetSequenceData accessors.
@@ -519,7 +524,7 @@ void FUN_141b6f000(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
     if (pRoot == NULL)
         return;
     const char* pszKey = NULL;
-    if (FUN_14109a9d0(FUN_1409f7c90()) == 0) {
+    if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14109a9d0() == 0) {
         if (nSlot == 0)
             pszKey = FUN_142087e50(&DAT_143ae50c8);
         else if (nSlot == 1)
@@ -529,15 +534,15 @@ void FUN_141b6f000(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
     }
     Unk_SceneWalker kWalker(pRoot);
     while (NiAVObject* pNode = kWalker.Next(true)) {
-        NiRenderObject* pRender = (NiRenderObject*)FUN_14098d8d0(&NiRenderObject::ms_RTTI, pNode);
+        NiRenderObject* pRender = (NiRenderObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode));
         if (pRender != NULL) {
-            NiMaterial* pMaterial = FUN_140a17cd0(pRender);
+            NiMaterial* pMaterial = ((class NiMaterial*)((class NiRenderObject*)(class NiRenderObject*)(pRender))->GetActiveMaterial());
             if (pMaterial != NULL) {
-                if (FUN_141068d10(FUN_14106bd50(pMaterial), &DAT_143ae5200)) {
-                    NiObject* pTexturing = FUN_14098d8d0(&NiTexturingProperty::ms_RTTI, pRender->GetProperty(NiProperty::TEXTURING));
+                if (FUN_141068d10(((void const*)&((class NiMaterial*)(class NiMaterial const*)(pMaterial))->GetName()), &DAT_143ae5200)) {
+                    NiObject* pTexturing = NiObject::DynamicCast(&NiTexturingProperty::ms_RTTI, (class NiObject const*)(pRender->GetProperty(NiProperty::TEXTURING)));
                     if (pTexturing == NULL)
                         continue;
-                    if (FUN_14109a9d0(FUN_1409f7c90()) != 0) {
+                    if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14109a9d0() != 0) {
                         switch (nSlot) {
                         case 0: FUN_1410479a0(pRender, &DAT_143ae50c8, kValue); break;
                         case 1: FUN_1410479a0(pRender, &DAT_143ae50d0, kValue); break;
@@ -559,7 +564,7 @@ void FUN_141b6f220(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
     if (pRoot == NULL)
         return;
     const char* pszKey = NULL;
-    if (FUN_14109a9d0(FUN_1409f7c90()) == 0) {
+    if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14109a9d0() == 0) {
         if (nSlot == 0)
             pszKey = FUN_142087e50(&DAT_143ae50c8);
         else if (nSlot == 1)
@@ -569,14 +574,14 @@ void FUN_141b6f220(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
     }
     Unk_SceneWalker kWalker(pRoot);
     while (NiAVObject* pNode = kWalker.Next(true)) {
-        NiRenderObject* pRender = (NiRenderObject*)FUN_14098d8d0(&NiRenderObject::ms_RTTI, pNode);
+        NiRenderObject* pRender = (NiRenderObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode));
         if (pRender != NULL) {
-            void* pInfo = FUN_140a17af0(&DAT_143d69198, FUN_140a17cd0(pRender));
-            if (pInfo != NULL && FUN_140ef4dd0(pInfo) == 2) {
-                NiObject* pTexturing = FUN_14098d8d0(&NiTexturingProperty::ms_RTTI, pRender->GetProperty(NiProperty::TEXTURING));
+            void* pInfo = ((void*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), ((class NiMaterial*)((class NiRenderObject*)(class NiRenderObject*)(pRender))->GetActiveMaterial())));
+            if (pInfo != NULL && ((class Unk_CubeKind*)(void*)(pInfo))->FUN_140ef4dd0() == 2) {
+                NiObject* pTexturing = NiObject::DynamicCast(&NiTexturingProperty::ms_RTTI, (class NiObject const*)(pRender->GetProperty(NiProperty::TEXTURING)));
                 if (pTexturing == NULL)
                     continue;
-                if (FUN_14109a9d0(FUN_1409f7c90()) != 0) {
+                if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14109a9d0() != 0) {
                     switch (nSlot) {
                     case 0: FUN_1410479a0(pRender, &DAT_143ae50c8, kValue); break;
                     case 1: FUN_1410479a0(pRender, &DAT_143ae50d0, kValue); break;
@@ -598,7 +603,7 @@ bool FUN_141b6f440(NiAVObject* pRoot, int nSlot, Unk_UtilFloat3* pOut)
     if (pRoot == NULL)
         return false;
     const char* pszKey = NULL;
-    if (FUN_14109a9d0(FUN_1409f7c90()) == 0) {
+    if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14109a9d0() == 0) {
         if (nSlot == 0)
             pszKey = FUN_142087e50(&DAT_143ae50c8);
         else if (nSlot == 1)
@@ -614,17 +619,17 @@ bool FUN_141b6f440(NiAVObject* pRoot, int nSlot, Unk_UtilFloat3* pOut)
             NiAVObject* pNode = kWalker.Next(true);
             if (pNode == NULL)
                 return false;
-            pRender = (NiRenderObject*)FUN_14098d8d0(&NiRenderObject::ms_RTTI, pNode);
-        } while (pRender == NULL || FUN_1409a7ff0(FUN_14106bd50(FUN_140a17cd0(pRender)), &DAT_143ae5200));
-        if (FUN_14109a9d0(FUN_1409f7c90()) != 0) {
+            pRender = (NiRenderObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode));
+        } while (pRender == NULL || FUN_1409a7ff0(((void const*)&((class NiMaterial*)(class NiMaterial const*)(((class NiMaterial*)((class NiRenderObject*)(class NiRenderObject*)(pRender))->GetActiveMaterial())))->GetName()), &DAT_143ae5200));
+        if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14109a9d0() != 0) {
             switch (nSlot) {
-            case 0: pColor = FUN_14098d8d0(&NiColorExtraData::ms_RTTI, FUN_141d17b40(pRender, &DAT_143ae50c8)); break;
-            case 1: pColor = FUN_14098d8d0(&NiColorExtraData::ms_RTTI, FUN_141d17b40(pRender, &DAT_143ae50d0)); break;
-            default: pColor = FUN_14098d8d0(&NiColorExtraData::ms_RTTI, FUN_141d17b40(pRender, &DAT_143ae50d8)); break;
+            case 0: pColor = NiObject::DynamicCast(&NiColorExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pRender))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae50c8))))); break;
+            case 1: pColor = NiObject::DynamicCast(&NiColorExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pRender))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae50d0))))); break;
+            default: pColor = NiObject::DynamicCast(&NiColorExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pRender))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae50d8))))); break;
             }
         } else {
             NiFixedString kName(pszKey);
-            pColor = FUN_14098d8d0(&NiColorExtraData::ms_RTTI, FUN_141d17b40(pRender, &kName));
+            pColor = NiObject::DynamicCast(&NiColorExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pRender))->GetExtraData(*(class NiFixedString const*)(&kName)))));
         }
     } while (pColor == NULL);
     float fR = ((Unk_UtilColorData*)pColor)->FUN_141b72530();
@@ -644,7 +649,7 @@ float FUN_141b6f700(const egf::EntityID& rId)
     if (pScene != NULL) {
         Unk_SceneWalker kWalker(pScene);
         while (NiAVObject* pNode = kWalker.Next(true)) {
-            NiObject* pMaterial = FUN_14098d8d0(&NiMaterialProperty::ms_RTTI, pNode->GetProperty(NiProperty::MATERIAL));
+            NiObject* pMaterial = NiObject::DynamicCast(&NiMaterialProperty::ms_RTTI, (class NiObject const*)(pNode->GetProperty(NiProperty::MATERIAL)));
             if (pMaterial != NULL)
                 return ((NiMaterialProperty*)pMaterial)->GetAlpha();
         }
@@ -709,10 +714,10 @@ void FUN_141b6fae0(NiAVObject* pRoot, float fValue)
 {
     Unk_SceneWalker kWalker(pRoot);
     while (NiAVObject* pNode = kWalker.Next(true)) {
-        NiRenderObject* pRender = (NiRenderObject*)FUN_14098d8d0(&NiRenderObject::ms_RTTI, pNode);
+        NiRenderObject* pRender = (NiRenderObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode));
         if (pRender == NULL)
             continue;
-        NiFloatExtraData* pExtra = (NiFloatExtraData*)FUN_14098d8d0(&NiFloatExtraData::ms_RTTI, FUN_141d17b40(pRender, &DAT_143ae5140));
+        NiFloatExtraData* pExtra = (NiFloatExtraData*)NiObject::DynamicCast(&NiFloatExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pRender))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae5140)))));
         if (pExtra == NULL) {
             void* pTmp;
             efd::MemHint* pCat = (efd::MemHint*)FUN_140876480(&pTmp, 0);
@@ -849,22 +854,30 @@ bool FUN_141b70020(egf::Entity* pEntity, Unk_UtilTransform* pOut)
 // ---- list / directory / time helpers ----
 struct Unk_UtilNodeList;
 struct Unk_UtilNode;
-unsigned FUN_14106bf60(const Unk_UtilNodeList* pList);              // node count
-Unk_UtilNode* FUN_140d89e80(Unk_UtilNodeList* pList, unsigned nIndex);
-unsigned char FUN_14106b8f0(const Unk_UtilNode* pNode);             // node flag byte
+class NiMesh   // C3: member view for the former free stand-ins
+{
+public:
+    class NiDataStreamRef* GetStreamRefAt(unsigned int);
+    unsigned int GetStreamRefCount() const;
+};
+class NiDataStreamRef   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned char GetAccessMask() const;
+};
 
 // @0x141b701f0
 bool FUN_141b701f0(Unk_UtilNodeList* pList, unsigned bMask)
 {
     if (pList == NULL)
         return false;
-    unsigned nCount = FUN_14106bf60(pList);
+    unsigned nCount = ((class NiMesh*)(struct Unk_UtilNodeList const*)(pList))->GetStreamRefCount();
     if (nCount == 0)
         return false;
     for (unsigned i = 0; i < nCount; i++) {
-        Unk_UtilNode* pNode = FUN_140d89e80(pList, i);
+        Unk_UtilNode* pNode = ((struct Unk_UtilNode*)((class NiMesh*)(struct Unk_UtilNodeList*)(pList))->GetStreamRefAt(i));
         if (pNode != NULL) {
-            if ((FUN_14106b8f0(pNode) & bMask) != 0)
+            if ((((class NiDataStreamRef*)(struct Unk_UtilNode const*)(pNode))->GetAccessMask() & bMask) != 0)
                 continue;
             return false;
         }
@@ -878,7 +891,7 @@ struct Unk_UtilConfig
     char m_pad_00[0x60];
     CStringA m_kRoot;
 };
-Unk_UtilConfig* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 CStringA FUN_1412755f0();
 CStringA FUN_141275640();
 CStringA FUN_14016a5c0(const char* psz, int n);
@@ -890,7 +903,7 @@ bool thunk_FUN_1420b1ae0(const char* pszPath);                      // directory
 void FUN_141b70290()
 {
     CStringA kPath;
-    kPath.Format("%s%s", (LPCSTR)FUN_14016a5c0((LPCSTR)FUN_1401d31f0()->m_kRoot, 0), (LPCSTR)FUN_1412755f0());
+    kPath.Format("%s%s", (LPCSTR)FUN_14016a5c0((LPCSTR)((struct Unk_UtilConfig*)FUN_1401d31f0())->m_kRoot, 0), (LPCSTR)FUN_1412755f0());
     if (!thunk_FUN_1420b1ae0((LPCSTR)kPath))
         _mkdir((LPCSTR)kPath);
 }
@@ -900,7 +913,7 @@ void FUN_141b70290()
 void FUN_141b70390()
 {
     CStringA kPath;
-    kPath.Format("%s%s", (LPCSTR)FUN_14016a5c0((LPCSTR)FUN_1401d31f0()->m_kRoot, 0), (LPCSTR)FUN_141275640());
+    kPath.Format("%s%s", (LPCSTR)FUN_14016a5c0((LPCSTR)((struct Unk_UtilConfig*)FUN_1401d31f0())->m_kRoot, 0), (LPCSTR)FUN_141275640());
     if (!thunk_FUN_1420b1ae0((LPCSTR)kPath))
         _mkdir((LPCSTR)kPath);
 }
@@ -1019,7 +1032,6 @@ CStringW FUN_141b708a0(unsigned nSeconds, bool bShowSeconds)
 extern NiFixedString DAT_143ae5120;                                     // shader constant keys
 extern NiFixedString DAT_143ae5128;
 extern int DAT_143ae2b34;                                               // instanced rendering enabled
-void FUN_14116d500(NiMaterialProperty* pMaterial, const Unk_Colc& kColor);
 void FUN_141047ac0(NiObjectNET* pObj, const NiFixedString& kKey, float fValue);
 unsigned FUN_140d96630(NiAVObject* pObj);                               // scene flags
 void FUN_141568ec0(NiAVObject* pObj);
@@ -1042,9 +1054,9 @@ void FUN_141b70cb0(NiAVObject* pObj, float fValue, const Unk_Colc& kColor, float
         MS2_ASSERT_AT(0x3ad, 0);
         return;
     }
-    NiMaterialProperty* pMaterial = (NiMaterialProperty*)FUN_14098d8d0(&NiMaterialProperty::ms_RTTI, pObj->GetProperty(NiProperty::MATERIAL));
+    NiMaterialProperty* pMaterial = (NiMaterialProperty*)NiObject::DynamicCast(&NiMaterialProperty::ms_RTTI, (class NiObject const*)(pObj->GetProperty(NiProperty::MATERIAL)));
     if (pMaterial != NULL)
-        FUN_14116d500(pMaterial, Unk_Colc(fEmissive, fEmissive, fEmissive));
+        ((class NiMaterialProperty*)(class NiMaterialProperty*)(pMaterial))->SetEmittance(*(class NiColor const*)&static_cast<struct Unk_Colc const&>(Unk_Colc(fEmissive, fEmissive, fEmissive)));
     FUN_141047ac0(pObj, DAT_143ae5120, fValue);
     FUN_1410479a0(pObj, &DAT_143ae5128, kColor);
     if (DAT_143ae2b34 != 0) {
@@ -1059,7 +1071,6 @@ void FUN_141b70cb0(NiAVObject* pObj, float fValue, const Unk_Colc& kColor, float
 // ---- misc string / entity / scene helpers ----
 struct Unk_UtilNameSrc;
 struct Unk_UtilNameTable;
-Unk_UtilNameTable* FUN_140ae1be0(Unk_UtilNameSrc* pSrc);
 void FUN_140ae1f60(Unk_UtilNameTable* pTable, efd::utf8string& kOut);
 
 // @0x141b70dd0
@@ -1068,7 +1079,7 @@ CStringA FUN_141b70dd0(Unk_UtilNameSrc* pSrc)
     if (pSrc == NULL)
         return CStringA("");
     efd::utf8string kName;
-    FUN_140ae1f60(FUN_140ae1be0(pSrc), kName);
+    FUN_140ae1f60(((struct Unk_UtilNameTable*)&((egf::Entity*)(struct Unk_UtilNameSrc*)(pSrc))->GetDataFileID()), kName);
     return CStringA(kName.c_str());
 }
 MS2_REPLACE(0x141b70dd0, FUN_141b70dd0, 192, 0xADA3F07D);
@@ -1155,7 +1166,11 @@ public:
 private:
     Unk_UtilHolder* m_p;
 };
-Unk_UtilObject* FUN_141706540(Unk_UtilHolder* pHolder);             // the holder's rider
+class Ridee   // C3: member view for the former free stand-ins
+{
+public:
+    class PCBase* GetRider();
+};
 Unk_UtilHolder* FUN_141b72360(const Unk_UtilObjRef& kRef);
 
 // @0x141b71120
@@ -1166,7 +1181,7 @@ unsigned FUN_141b71120(Unk_UtilObjRef kRef)
     if (kRef.FUN_1409658c0()->GetKind() == 0x6200045) {
         Unk_UtilHolderRef kHolder(FUN_141b72360(kRef));
         if (kHolder.FUN_140965790() != NULL) {
-            Unk_UtilObject* pRider = FUN_141706540(kHolder.FUN_140975bc0());
+            Unk_UtilObject* pRider = ((class Unk_UtilObject*)((class Ridee*)(class Unk_UtilHolder*)(kHolder.FUN_140975bc0()))->GetRider());
             if (pRider != NULL && pRider->GetKind() == 0x6200004)
                 return 1;
         }
@@ -1187,13 +1202,13 @@ private:
     void* m_pad_00; void* m_pad_08;
 };
 class Unk_UtilHudMgr { public: Unk_UtilHudPtr FUN_1422b0370(int n); };
-Unk_UtilHudMgr* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 
 // @0x141b71250
 void FUN_141b71250(int nValue)
 {
-    if (FUN_14025e7a0() != NULL) {
-        Unk_UtilHudPtr kHud = FUN_14025e7a0()->FUN_1422b0370(6);
+    if (((class Unk_UtilHudMgr*)FUN_14025e7a0()) != NULL) {
+        Unk_UtilHudPtr kHud = ((class Unk_UtilHudMgr*)FUN_14025e7a0())->FUN_1422b0370(6);
         if (kHud.FUN_140a58470() != NULL)
             kHud.FUN_140a584a0()->FUN_1422cecb0(nValue != 0 ? 1 : 2);
     }
@@ -1202,9 +1217,9 @@ void FUN_141b71250(int nValue)
 // @0x141b712e0
 int FUN_141b712e0()
 {
-    if (FUN_14025e7a0() == NULL)
+    if (((class Unk_UtilHudMgr*)FUN_14025e7a0()) == NULL)
         return 0;
-    Unk_UtilHudPtr kHud = FUN_14025e7a0()->FUN_1422b0370(6);
+    Unk_UtilHudPtr kHud = ((class Unk_UtilHudMgr*)FUN_14025e7a0())->FUN_1422b0370(6);
     if (kHud.FUN_140d41080(0))
         return 0;
     return kHud.FUN_140a584a0()->FUN_1422bfca0() != 0;
@@ -1314,7 +1329,6 @@ void FUN_141b71a60(NiColor* pColor)
 // ---- scene / skin helpers ----
 class Unk_UtilWorld;
 class Unk_UtilPlayer;
-Unk_UtilPlayer* FUN_141bd0cc0(Unk_UtilWorld* pWorld);
 egf::Entity* FUN_14123c410(Unk_UtilPlayer* pPlayer);
 extern NiRTTI DAT_143afafe0;
 extern char DAT_143ae50f8;                                          // extra-data key of the skin tint
@@ -1323,13 +1337,13 @@ NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 // @0x141b71b00
 NiObject* FUN_141b71b00()
 {
-    Unk_UtilPlayer* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_UtilWorld*>(WorldService::GetInstance()));
+    Unk_UtilPlayer* pPlayer = ((class Unk_UtilPlayer*)((class WorldService*)(class Unk_UtilWorld*)(reinterpret_cast<Unk_UtilWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return NULL;
     NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410(pPlayer));
     if (pRoot != NULL) {
         NiFixedString kName("FA_Skin");
-        return FUN_14098d8d0(&NiRenderObject::ms_RTTI, pRoot->GetObjectByName(kName));
+        return NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pRoot->GetObjectByName(kName)));
     }
     return NULL;
 }
@@ -1340,7 +1354,7 @@ NiObject* FUN_141b71bb0()
 {
     NiObject* pSkin = FUN_141b71b00();
     if (pSkin != NULL)
-        return FUN_14098d8d0(&DAT_143afafe0, FUN_141d17b40((NiObjectNET*)pSkin, &DAT_143ae50f8));
+        return NiObject::DynamicCast(&DAT_143afafe0, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)((NiObjectNET*)pSkin))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae50f8)))));
     return NULL;
 }
 MS2_REPLACE(0x141b71bb0, FUN_141b71bb0, 63, 0x4FF135C2);
@@ -1349,12 +1363,12 @@ MS2_REPLACE(0x141b71bb0, FUN_141b71bb0, 63, 0x4FF135C2);
 struct Unk_ClientConfig;
 class Unk_14025a620 { public: int FUN_14025a620(); };
 struct Unk_ClientConfig { char m_pad_00[0x2b28]; Unk_14025a620 m_kLimit; };
-Unk_ClientConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // @0x141b71c00
 int FUN_141b71c00(unsigned short nValue)
 {
-    int nLimit = FUN_1401d3200()->m_kLimit.FUN_14025a620();
+    int nLimit = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_kLimit.FUN_14025a620();
     return (int)nValue >= nLimit ? 1 : 0;
 }
 MS2_REPLACE(0x141b71c00, FUN_141b71c00, 70, 0x478D9542);
@@ -1363,24 +1377,22 @@ MS2_REPLACE(0x141b71c00, FUN_141b71c00, 70, 0x478D9542);
 struct Unk_UtilRangeEntry { char m_pad_00[0x144]; float m_144; float m_148; };
 class Unk_UtilRangeOwner;
 class Unk_UtilRangeBook;
-Unk_UtilRangeOwner* FUN_1413f9890();
-Unk_UtilRangeEntry* FUN_140af7da0(Unk_UtilRangeOwner* pOwner);
+ecr::RenderService * FUN_1413f9890(void);  // C3: the definition's signature
 Unk_UtilRangeBook* FUN_1413f9910();
 Unk_UtilRangeEntry* FUN_14200aae0(Unk_UtilRangeBook* pBook, Unk_UtilRangeEntry* pEntry);
-Unk_UtilRangeEntry* FUN_142008b80(Unk_UtilRangeEntry* pEntry);
 float FUN_141b72510(const Unk_UtilRangeEntry* pInfo);
 float FUN_141b724f0(const Unk_UtilRangeEntry* pInfo);
 
 // @0x141b71c50
 float FUN_141b71c50()
 {
-    Unk_UtilRangeEntry* pEntry = FUN_140af7da0(FUN_1413f9890());
+    Unk_UtilRangeEntry* pEntry = ((struct Unk_UtilRangeEntry*)((ecr::RenderService*)(class Unk_UtilRangeOwner*)((Unk_UtilRangeOwner *)(FUN_1413f9890())))->GetActiveRenderSurface());
     if (pEntry == NULL)
         return FLT_MAX;
     Unk_UtilRangeEntry* pRange = FUN_14200aae0(FUN_1413f9910(), pEntry);
     if (pRange == NULL)
         return FLT_MAX;
-    Unk_UtilRangeEntry* pSize = FUN_142008b80(pRange);
+    Unk_UtilRangeEntry* pSize = ((struct Unk_UtilRangeEntry*)((ecr::CameraData*)(struct Unk_UtilRangeEntry*)(pRange))->GetCamera());
     if (pSize == NULL)
         return FLT_MAX;
     float fScale = 10000.0f;
@@ -1408,9 +1420,9 @@ extern char DAT_143ae51b8;                                          // tag extra
 extern char DAT_143ae50e8;                                          // tag text that excludes a branch
 efd::FixedString* FUN_141168130(NiObject* pStringData);
 efd::FixedString* FUN_1409a8b90(NiNode* pNode);
-void FUN_1414d3930(NiRenderObject* pObj);
+void FUN_1414d3930(void *);  // C3: the definition's signature
 void FUN_1414d38b0(NiRenderObject* pObj, const Unk_Colc& kColor);
-void FUN_1414d37a0(NiRenderObject* pObj, unsigned uColor);
+void FUN_1414d37a0(void *, int);  // C3: the definition's signature
 
 // @0x141b71d10
 void FUN_141b71d10(NiAVObject* pRoot, bool bEnable, const Unk_Colc& kColor)
@@ -1420,17 +1432,17 @@ void FUN_141b71d10(NiAVObject* pRoot, bool bEnable, const Unk_Colc& kColor)
     Unk_SceneWalker kWalk(pRoot);
     while (kWalk.FUN_1414d3ff0() > 0) {
         NiAVObject* pCurrent = kWalk.FUN_1414d4a50();
-        NiObject* pTag = FUN_14098d8d0(&DAT_143afb000, FUN_141d17b40(pCurrent, &DAT_143ae51b8));
+        NiObject* pTag = NiObject::DynamicCast(&DAT_143afb000, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pCurrent))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae51b8)))));
         if (pTag != NULL && FUN_141168130(pTag)->ContainsNoCase(FUN_142087e50(&DAT_143ae50e8)))
             continue;
-        NiRenderObject* pRender = (NiRenderObject*)FUN_14098d8d0(&NiRenderObject::ms_RTTI, pCurrent);
+        NiRenderObject* pRender = (NiRenderObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pCurrent));
         if (pRender != NULL) {
             if (bEnable)
                 FUN_1414d38b0(pRender, kColor);
             else
                 FUN_1414d3930(pRender);
         }
-        NiNode* pNode = (NiNode*)FUN_14098d8d0(&NiNode::ms_RTTI, pCurrent);
+        NiNode* pNode = (NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pCurrent));
         if (pNode != NULL)
             kWalk.FUN_14098d6d0(pNode);
     }
@@ -1444,17 +1456,17 @@ void FUN_141b71f20(NiAVObject* pRoot, bool bEnable, unsigned uColor, bool bSkipE
     Unk_SceneWalker kWalk(pRoot);
     while (kWalk.FUN_1414d3ff0() > 0) {
         NiAVObject* pCurrent = kWalk.FUN_1414d4a50();
-        NiObject* pTag = FUN_14098d8d0(&DAT_143afb000, FUN_141d17b40(pCurrent, &DAT_143ae51b8));
+        NiObject* pTag = NiObject::DynamicCast(&DAT_143afb000, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pCurrent))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae51b8)))));
         if (pTag != NULL && FUN_141168130(pTag)->ContainsNoCase(FUN_142087e50(&DAT_143ae50e8)))
             continue;
-        NiRenderObject* pRender = (NiRenderObject*)FUN_14098d8d0(&NiRenderObject::ms_RTTI, pCurrent);
+        NiRenderObject* pRender = (NiRenderObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pCurrent));
         if (pRender != NULL) {
             if (bEnable)
                 FUN_1414d37a0(pRender, uColor);
             else
                 FUN_1414d3930(pRender);
         }
-        NiNode* pNode = (NiNode*)FUN_14098d8d0(&NiNode::ms_RTTI, pCurrent);
+        NiNode* pNode = (NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pCurrent));
         if (pNode != NULL) {
             if (!bSkipEffectRoot || !FUN_1409a8b90(pNode)->EqualsNoCase("Effect Root"))
                 kWalk.FUN_14098d6d0(pNode);
@@ -1579,12 +1591,11 @@ float Unk_UtilColorData::FUN_141b72470() const
 }
 MS2_REPLACE_METHOD(0x141b72470, Unk_UtilColorData, FUN_141b72470, 16, 0x5463A882);
 
-bool FUN_142087fc0(const NiFixedString& kKey);                      // key is not empty
 
 // @0x141b72480
 float FUN_141b72480(NiControllerSequence* pSeq, const NiFixedString& kKey)
 {
-    if (!FUN_142087fc0(kKey)) {
+    if (!((efd::FixedString*)&static_cast<class NiFixedString const&>(kKey))->Exists()) {
         return -FLT_MAX;
     } else {
         NiTextKeyMatch kMatch(kKey);

@@ -72,7 +72,6 @@ class Unk_FileSys : public CFileSystem
 public:
     int FUN_14039a720();
 };
-Unk_FileSys* FUN_140166420();
 CString FUN_140188f50(const char* pcText, int nCodePage);               // converts attribute text to a CString
 
 // ---- static initializers (.text$di, in this order) ----
@@ -124,9 +123,13 @@ public:
     char m_acLabel[0x5c8];
 };
 MS2_CHECK_SIZE(Unk_KFStream, 0x5d0);
-void* FUN_1403ed2d0();                                                  // the player manager
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 void FUN_141bd2db0(void* pMgr, Unk_ShList& kList, int (*pfnFilter)(void*));    // collects the objects accepted by the filter
-void* FUN_141bd0cc0(void* pMgr);                                        // the local player (a GameObject)
 int FUN_141658e60(GameObject* pPlayer);                                 // gender of the player (0 male, 1 female)
 void FUN_1401d3700(CString& kStr);                                      // lower-cases in place
 bool FUN_141c43800(NiActorManager* pMgr, Unk_KFStream* pStream);       // NiActorManager::ReloadKFFile for a stream
@@ -135,7 +138,7 @@ void* FUN_14099eef0(void* pObj);                                        // objec
 bool FUN_1414f1760(ecr::SceneGraphService* pSvc, efd::utf8string kID); // MS2SceneGraphService::RemoveUnusedCacheAssetData
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
 int FUN_1401859c0(void* pLog, int nA, int nB, const wchar_t* pwcMsg);   // assertion report
-void* FUN_140166440();                                                  // the assert log
+class CLogString* GetLogString();   // C3: was FUN_140166440
 
 // Cached preload table entry of a KF file: 16 bytes (time at +0, text key name at +8).
 // Event handed to the asset filter: load state at +0x40, the asset's refcount base at +0x48.
@@ -218,7 +221,7 @@ efd::AsyncResult MS2AnimationService::OnInit()
 // @0x1414a8880
 efd::AsyncResult MS2AnimationService::OnTick()
 {
-    int nReload = FUN_140166420()->FUN_14039a720();
+    int nReload = ((class Unk_FileSys*)GetFileSystem())->FUN_14039a720();
     if (nReload != -1)
     {
         switch (nReload)
@@ -234,7 +237,7 @@ efd::AsyncResult MS2AnimationService::OnTick()
             ReloadFemaleKF();
             break;
         }
-        FUN_140166420()->FUN_14039a740();
+        ((class Unk_FileSys*)GetFileSystem())->FUN_14039a740();
     }
     return egmAnimation::AnimationService::OnTick();
 }
@@ -259,8 +262,8 @@ void MS2AnimationService::ReloadFemaleKF()
 {
     s_nReloading = 1;
     Unk_ShList kList(10);
-    FUN_141bd2db0(FUN_1403ed2d0(), kList, FUN_1414a9c80);
-    GameObject* pPlayer = (GameObject*)FUN_141bd0cc0(FUN_1403ed2d0());
+    FUN_141bd2db0(((void*)WorldService::GetInstance()), kList, FUN_1414a9c80);
+    GameObject* pPlayer = (GameObject*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer != 0 && FUN_141658e60(pPlayer) == 1)
     {
         NiFilename kFilename(pPlayer->FUN_14123bbd0());
@@ -302,8 +305,8 @@ void MS2AnimationService::ReloadMaleKF()
 {
     s_nReloading = 1;
     Unk_ShList kList(10);
-    FUN_141bd2db0(FUN_1403ed2d0(), kList, FUN_1414a9c80);
-    GameObject* pPlayer = (GameObject*)FUN_141bd0cc0(FUN_1403ed2d0());
+    FUN_141bd2db0(((void*)WorldService::GetInstance()), kList, FUN_1414a9c80);
+    GameObject* pPlayer = (GameObject*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer != 0 && FUN_141658e60(pPlayer) == 0)
     {
         NiFilename kFilename(pPlayer->FUN_14123bbd0());
@@ -408,7 +411,7 @@ int FUN_1414a90c0(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries)
         }
         if (pRoot == 0)
         {
-            if (FUN_140166420()->FUN_1403974b0(&kDoc, (const char*)kPath, 0, true, false) != 0)
+            if (((class Unk_FileSys*)GetFileSystem())->FUN_1403974b0(&kDoc, (const char*)kPath, 0, true, false) != 0)
             {
                 pRoot = FUN_140165cf0(&kDoc, "ms2");
                 s_mapXml.insert(std::make_pair(kPath, kDoc));
@@ -552,7 +555,7 @@ bool MS2AnimationService::RemoveUnusedAsset(efd::utf8string kPhysicalID)
         {
             if (!FUN_1414f1760(pSceneGraph, efd::utf8string(kID)))
             {
-                FUN_1401859c0(FUN_140166440(), 0xc, 0x13,
+                FUN_1401859c0(((void*)GetLogString()), 0xc, 0x13,
                               L"!((MS2SceneGraphService*)pSceneGraph)->RemoveUnusedCacheAssetData(id)");
                 return false;
             }

@@ -45,8 +45,6 @@ int FUN_140718170(const CString& str);                   // text -> number
 unsigned FUN_140869420();                                // millisecond clock
 int FUN_14028d260(float f);                              // seconds -> ms
 bool FUN_1401c0090(const CString& a, const CString& b);  // strings are equal
-void* FUN_14165f100(PCBase* p);
-void FUN_14165f170(PCBase* p);
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommon(int nId);                         // string table text by id
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);   // formatted system text
@@ -82,7 +80,6 @@ UICastingBar* FUN_140ac2270(int nId);
 // The actor's move-key state (PCBase::FUN_14166d240).
 class Unk_CcBuffMgr { public: efd::Point3 FUN_141683290(); };
 Unk_CcBuffMgr* FUN_14166d240(PCBase* p);
-bool FUN_1416749c0(PCBase* p);
 
 // The player inventory (global 0x143ab2a90): item lookup by uid and the item's name.
 extern Unk_Inventory DAT_143ab2a90;
@@ -188,8 +185,8 @@ void StateCashCall::vfunc_4(StateData* pData)
         if (pMyPC != 0)
         {
             m_nEnd = m_nEnd + 100;
-            if (FUN_14165f100(pMyPC) != 0)
-                FUN_14165f170(pMyPC);
+            if (((void*)(reinterpret_cast<PC*>(pMyPC)->FUN_14165f100())) != 0)
+                reinterpret_cast<PC*>(pMyPC)->SendRequestCube();
             UICastingBar* pBar = FUN_140ac2270(0x4e72);
             if (pBar != 0)
             {
@@ -277,7 +274,7 @@ void StateCashCall::vfunc_8(double fTime)
         return;
     Unk_CcBuffMgr* pMgr = FUN_14166d240(pRider);
     pRider->vfunc_22(pMgr->FUN_141683290());
-    if (FUN_1416749c0(m_pOwner) != 0)
+    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0() != 0)
         pRider->vfunc_59(2, 0, 0, 0);
     else
         FUN_1417b9460();

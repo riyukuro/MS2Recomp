@@ -40,10 +40,11 @@ class Unk_140165cf0
 public:
     Unk_140165cf0* FUN_140165cf0(const char*);              // first child element (also takes a document)
     Unk_140165cf0* FUN_140168650(const char*);              // next sibling element
+public:
+    class Unk_140165cf0* NextSiblingElement();   // C3: was free FUN_1403f0510
 };
 class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
@@ -52,15 +53,12 @@ void FUN_140873360(Unk_140165cf0*, const char*, float&);
 const char* FUN_14086f4b0(Unk_140165cf0*, const char*);
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 CString FUN_140188f50(const char* psz, int n);
-Unk_140165cf0* FUN_1403f0510(Unk_140165cf0*);                   // next sibling with the same name
-float FUN_140bf4fd0(float);                                     // ceilf: result in xmm0
 
 // The 12 byte zero point.
 extern Unk_SkipPoint DAT_143b01a60;
 
 // The view-distance probe (the host, its local actor).
 class Unk_SkipHost { public: };
-int FUN_140a18070(Unk_SkipHost*);
 class Unk_SkipActor
 {
 public:
@@ -71,7 +69,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17();
     virtual void GetPosition(Unk_SkipActorPos* pOut);       // slot 18 (+0x90)
 };
-Unk_SkipActor* FUN_140a38d60(Unk_SkipHost*);
 bool FUN_14028d470(float a, float b);                      // float equality test
 
 // The caller's world transform (NiTransform layout, 0x34 bytes: rotate 0x24, translate, scale). Only the translate is read.
@@ -131,9 +128,9 @@ int EffectSkipMgr::IsOutOfView(Unk_SkipCheck* pCheck) const
         return 0;
     if (pCheck->m_n14 != 0 && pCheck->m_nRow == 1)
         return 0;
-    if (FUN_140a18070(reinterpret_cast<Unk_SkipHost*>(TSingleton<CameraMgr>::GetInstance())) == 0)
+    if (((class CameraMgr*)(class Unk_SkipHost*)(reinterpret_cast<Unk_SkipHost*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140a18070() == 0)
         return 0;
-    Unk_SkipActor* pActor = FUN_140a38d60(reinterpret_cast<Unk_SkipHost*>(TSingleton<CameraMgr>::GetInstance()));
+    Unk_SkipActor* pActor = ((class Unk_SkipActor*)((class Unk_CameraManager*)(class Unk_SkipHost*)(reinterpret_cast<Unk_SkipHost*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140a38d60());
     if (pActor == 0)
         return 0;
     Unk_SkipActorPos pos;
@@ -177,12 +174,12 @@ bool EffectSkipMgr::LoadOption()
     int nOption = *FUN_1409a8ac0(FUN_1409a8b10());
     TiXmlDocument doc;
     CString strPath = FUN_14071a5b0("Table", "effectOption.xml");
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     CString strOption("option");
@@ -208,13 +205,13 @@ bool EffectSkipMgr::LoadLimitCount()
 {
     TiXmlDocument doc;
     CString strPath = FUN_14071a5b0("Table", "effectLimitCount.xml");
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     m_cache.FUN_1401d1160(strPath);
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     Unk_140165cf0* pDefault = pRoot->FUN_140165cf0("default");
@@ -283,7 +280,7 @@ int EffectSkipMgr::ParseCaster(const char* pszCaster, int* pnCaster)
 void EffectSkipMgr::LoadElements(void* pNode, int nRow)
 {
     for (Unk_140165cf0* pElement = static_cast<Unk_140165cf0*>(pNode)->FUN_140165cf0("element"); pElement != 0;
-         pElement = FUN_1403f0510(pElement))
+         pElement = ((class Unk_140165cf0*)(pElement))->NextSiblingElement())
     {
         CString strCaster = FUN_140188f50(FUN_14086f4b0(pElement, "caster"), 0);
         int nCaster;
@@ -358,12 +355,12 @@ void EffectSkipMgr::LoadBenchmark()
         return;
     TiXmlDocument doc;
     CString strPath = FUN_14071a5b0("Table", "effect_benchmark.xml");
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     CString strName;
@@ -373,7 +370,7 @@ void EffectSkipMgr::LoadBenchmark()
         FUN_1408733e0(pE, "p", strName);
         FUN_1408731e0(pE, "t", nTime);
         strName.MakeLower();
-        int nCount = (int)FUN_140bf4fd0(50000.0f / (float)(nTime * m_nBaseFrame));
+        int nCount = (int)ceil(50000.0f / (float)(nTime * m_nBaseFrame));
         CountMap::iterator it = m_mapLimit.find((const char*)strName);
         if (it == m_mapLimit.end())
             m_mapLimit.insert(CountMap::value_type((const char*)strName, nCount));

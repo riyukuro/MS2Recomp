@@ -11,7 +11,11 @@
 #include "ms2/ms2recover.h"
 
 // the payload handle's AddRef slot, shared by every instantiation
-void FUN_14015b020(void* pPayload);
+class CPtred   // C3: member view for the former free stand-ins
+{
+public:
+    static void AddRefPtred(class CPtred*);
+};
 
 void FUN_1404fabd0(void* pHandle, void* pUnused);
 void FUN_1404fac00(void* pHandle, void* pUnused);
@@ -162,103 +166,103 @@ void FUN_1404fa980(void* pHandle)
 // @0x1404fa9b0
 void FUN_1404fa9b0(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404fa9d0
 void FUN_1404fa9d0(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404fa9f0
 void FUN_1404fa9f0(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404faa10
 void FUN_1404faa10(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404faa30
 void FUN_1404faa30(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404faa50
 void FUN_1404faa50(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404faa70
 void FUN_1404faa70(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404faa90
 void FUN_1404faa90(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404faab0
 void FUN_1404faab0(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404faad0
 void FUN_1404faad0(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404faaf0
 void FUN_1404faaf0(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404fab10
 void FUN_1404fab10(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404fab30
 void FUN_1404fab30(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404fab50
 void FUN_1404fab50(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404fab70
 void FUN_1404fab70(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404fab90
 void FUN_1404fab90(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404fabb0
 void FUN_1404fabb0(void* pPayload)
 {
-    FUN_14015b020(pPayload);
+    CPtred::AddRefPtred((class CPtred*)(pPayload));
 }
 
 // @0x1404fabd0

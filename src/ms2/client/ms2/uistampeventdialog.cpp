@@ -3,7 +3,10 @@
 // MS2-RANGE: 0x140ed74c0-0x140ed9b80 .text$mn
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uistampeventdialog.cpp"    // assumed
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 #include "uistampeventdialog.h"
 #include "uiquesteventlistener.h"                       // UIQuestEventDispatcher
 #include "ms2/commonfiles/gamerule.h"
@@ -19,25 +22,14 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uiservice.h"
 
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
-
-// The list control of the movie (the AS list with clear / append).
-class Unk_StampList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                               // clear
-    void FUN_1422dd230(const ASObj& row);               // append a row
-};
 
 // The event counter / string tables (two objects 0x50 apart; the first is g_attendTable).
 class Unk_AttendTable
@@ -50,20 +42,10 @@ extern Unk_AttendTable g_attendTable;                   // 0x143ab2fc0
 extern Unk_AttendTable g_stampTable;                    // 0x143ab3010
 
 // The world manager (singleton accessor 0x1403ed2d0).
-class Unk_StampWorld
-{
-public:
-    bool FUN_141bcb0a0();
-    void* FUN_141bd0cc0();
-};
-Unk_StampWorld* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 class Unk_StampUIMgr { public: void FUN_141adc530(int nClass); };
-Unk_StampUIMgr* FUN_1403ed2b0();
-class Unk_StampNames { public: CStringW FUN_141811980(int nKind, int nId); };
-Unk_StampNames* FUN_1401a9d70();
 class Unk_StampItem { public: CString FUN_14053fdd0(); };
-class Unk_StampNotices { public: void FUN_140da4e40(CStringW strName, Delegate<void(NotifyObject*)> handler); };
-Unk_StampNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 // A quest as handed to the listener: the CQuestCommon base sits at +0x18 (after CPtred).
 class Unk_StampQuestData
@@ -103,7 +85,7 @@ Unk_GalleryPtr<Unk_StampItem> FUN_14053f870(int);
 UIStampEventDialog::UIStampEventDialog()
 {
     FUN_141924170(1);
-    FUN_140939a10()->FUN_140da4e40(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIStampEventDialog::FUN_140ed7f90));
+    FUN_140939a10()->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIStampEventDialog::FUN_140ed7f90));
 }
 
 // @0x140ed7610
@@ -229,7 +211,7 @@ void UIStampEventDialog::FUN_140ed7f90(NotifyObject*)
     MS2Ptr<StampEventContext> spContext = FUN_1401c0d90()->FUN_14047ca40(g_attendTable);
     if (spContext == 0) return;
     if (spContext->m_98 == 0) return;
-    FUN_1403ed2b0()->FUN_141adc530(0x4f33);
+    reinterpret_cast<Unk_StampUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f33);
 }
 MS2_REPLACE_METHOD(0x140ED7F90, UIStampEventDialog, FUN_140ed7f90, 167, 0xF65B920C);
 
@@ -279,7 +261,7 @@ MS2_REPLACE_METHOD(0x140ED81A0, UIStampEventDialog, FUN_140ed81a0, 994, 0x3AF285
 // @0x140ed8590
 void UIStampEventDialog::FUN_140ed8590(MS2Ptr<StampEventContext> spContext)
 {
-    if (MS2Ptr<Unk_StampList> spList = FUN_140c02900("m_reward")) {
+    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_reward")) {
         spList->FUN_1422dd1d0();
         CString strTag = FUN_140ed9560();
         for (size_t i = 0; i < spContext->m_rewards.GetCount(); ++i) {
@@ -313,7 +295,7 @@ void UIStampEventDialog::FUN_140ed89f0(MS2Ptr<StampEventContext> spContext)
     row.FUN_1409c0d20("id", spContext->m_item.m_itemId);
     row.FUN_1409adc90("rank", static_cast<ItemAble&>(spContext->m_item).vfunc_o18_1());
     row.FUN_1407cb9c0("active", FUN_140ed8fc0());
-    row.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, spContext->m_item.m_itemId));
+    row.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spContext->m_item.m_itemId));
     row.FUN_1407cba60("icon", FUN_140ed9480(spContext->m_item.m_itemId));
     row.FUN_1409c0d20("itemCount", static_cast<ItemAble&>(spContext->m_item).vfunc_o18_2());
     m_30->Invoke("setCompleteReward", row);

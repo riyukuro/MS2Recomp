@@ -89,7 +89,7 @@ class Unk_EmoUIManager
 public:
     MS2Ptr<UIObject> FUN_141adcea0(int nUiId);
 };
-UIChatDialog* FUN_140938cd0(int nUiId);
+class UIRewardNotify* FUN_140938cd0(int);   // C3: was FUN_140938cd0
 void FUN_141ac1580(UIChatDialog* pChat, const CStringW& strName, const CStringW& strMsg, int nFlag);
 
 // The emoticon table row and its handle.
@@ -121,8 +121,6 @@ private:
 };
 MS2_CHECK_SIZE(Unk_EmoItemPtr, 0x10);
 Unk_EmoItemPtr FUN_14053f870(int nItemId);
-
-CReservedWordTable* FUN_1403b4750();
 
 __int64 GetServerTime();                                            // server time
 CStringW GetStringCommonByKey(const CStringW& strKey);
@@ -255,13 +253,13 @@ void CChatEmoticonCli::FUN_140a39360(CInPacket& packet)
         MS2_ASSERT_AT(0x91, 0);
         return;
     }
-    UIChatDialog* pChat = FUN_140938cd0(0x4e5d);
+    UIChatDialog* pChat = ((class UIChatDialog*)FUN_140938cd0(0x4e5d));
     if (pChat != 0)
     {
         CStringW strName = FUN_14016a730((const char*)item.FUN_1401b52a0()->FUN_14053fdd0(), 0);
         CStringW strMsg = FUN_1405c2690(L"s_msg_chat_emoticon_add_notify_message",
                                         TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
-        FUN_1403b4750()->FUN_1416fb340(strMsg);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strMsg);
         FUN_141ac1580(pChat, strName, strMsg, 1);
         FUN_1412751f0(strMsg, 0, 1);
     }

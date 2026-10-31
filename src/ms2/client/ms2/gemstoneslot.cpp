@@ -32,7 +32,6 @@
 
 // ---- out-of-unit callees ----
 // Game context: FUN_141bd0cc0 returns the local player.
-WorldService* FUN_1403ed2d0();
 
 // The gemstone confirm box (itemsocketsystemutil.cpp).
 bool FUN_14062a3d0(MS2Ptr<CItem> spItem, int nSlot, MS2Ptr<CItem> spGem, Delegate<bool(int, const CMsgBoxData&)> cb);
@@ -43,9 +42,7 @@ CStringW FUN_14062ad80(MS2Ptr<CItem> spItem);               // the gemstone desc
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
-void FUN_1422cc9e0(DragSlotBag* pBag);                      // clear the bag's slots
 
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);         // the value is an object
 
 // gfxutil.h: a Value wrapped as a display object container (ctor 0x1422c6570 with the movie id, dtor 0x1422c65c0) and
 // the child lookups instantiated per wrapper type.
@@ -130,7 +127,7 @@ int GemStoneSlot::vfunc_8(void* p)
     {
         FUN_140cfdc70(&slot, bLocked);
     }
-    else if (!slot.FUN_1409c3860(spItem.get(), FUN_1403ed2d0()->FUN_141bd0cc0(), m_nIconType))
+    else if (!slot.FUN_1409c3860(spItem.get(), WorldService::GetInstance()->FUN_141bd0cc0(), m_nIconType))
     {
         return 0;
     }
@@ -211,7 +208,7 @@ void FUN_140cfe1b0(const CString& strName)
     GemStoneSlotBag* pBag = FUN_140cfe670(FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         FUN_1422c8f70(strName);
     }
 }
@@ -281,7 +278,7 @@ ItemInfoSlot* FUN_140cfe6c0(NotifyContext::BindData* p)
 // @0x140cfee80
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<Unk_GemText> spText = node.FUN_140bc7450(strName);
@@ -293,7 +290,7 @@ void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW 
 // @0x140cfefe0
 void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strClip, CString strName, CStringW strText)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<Unk_GemClip> spClip = node.FUN_140d01d80(strClip);
@@ -307,7 +304,7 @@ void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strClip, CString s
 // @0x140cff1b0
 void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     Unk_GemNode node(root, 2);
     MS2Ptr<Unk_GemClip> spClip = node.FUN_140d01d80(strName);

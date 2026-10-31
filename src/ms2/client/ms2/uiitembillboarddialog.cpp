@@ -54,6 +54,8 @@
 
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uiitembillboarddialog_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/commonfiles/jobtable.h"   // C3: TSingleton<> needs the class
+#include "ms2/placeholder/cstringtable.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                // @0x1400cce40
 
@@ -86,10 +88,7 @@ extern unsigned short DAT_143ab2964;
 extern int DAT_143ab2970;
 
 // The string table and the job table.
-class Unk_1401a9d70 { public: CStringW FUN_141811980(int nCategory, int nId); };
-Unk_1401a9d70* FUN_1401a9d70();
 class Unk_BbJobTable;
-Unk_BbJobTable* FUN_1401d7a50();
 int FUN_140644bb0(Unk_BbJobTable* p, int nId);
 
 // Localized formatters.
@@ -142,7 +141,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_1405340b0(void* pBox, __int64 n);
 __int64 FUN_141a02ed0(const CMsgBoxData* pData, int a, int b);
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 // The local player and the placement checks (see reactor.cpp).
 WorldService* FUN_1403ed2d0();
@@ -283,7 +282,7 @@ void UIItemBillBoardDialog::OnLoadComplete()
         }
         __int64 nDiff = m_info.end - m_info.start;
         CMsTime createTime(m_info.start);
-        CStringW strCharInfo = FormatStringId(2, m_info.type, FUN_1401a9d70()->FUN_141811980(6, FUN_140644bb0(FUN_1401d7a50(), m_info.value)));
+        CStringW strCharInfo = FormatStringId(2, m_info.type, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, FUN_140644bb0(reinterpret_cast<Unk_BbJobTable*>(TSingleton<JobTable>::GetInstance()), m_info.value)));
         __int64 nHours = nDiff / 60 / 60;
         int nMin = createTime.GetMinute();
         int nHour = createTime.GetHour();
@@ -606,10 +605,10 @@ bool UIItemBillBoardDialog::FUN_140c34050(int nResult, const CMsgBoxData& data)
     if (nResult == 0) {
         __int64 nUid = FUN_141a02ed0(&data, 0, 0);
         CStringW str = data.FUN_141a02fd0(1, CStringW());
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
         if (spItem == 0)
             return true;
-        DAT_143ab2a90.FUN_140a63880(spItem.get(), str);
+        g_143ab2a90.FUN_140a63880(spItem.get(), str);
         vfunc_67();
     }
     return true;

@@ -12,7 +12,7 @@
 
 // The pooled allocator New and the pool-constructor helper of the type built here (both live in other units).
 void* FUN_1410dc3b0(void* pTag);
-void* FUN_1401ba820(void* pMemory);
+class CPtred* FUN_1401ba820(class CPtred*);   // C3: was FUN_1401ba820
 void  FUN_141149360(void* pThis);   // the object's base initializer
 
 // The object's pointer member at +0x8.
@@ -25,7 +25,7 @@ MS2_CHECK_OFFSET(Unk_Obj8, m_pField8, 0x8);
 // @0x14112fe40
 void* FUN_14112fe40(void*)
 {
-    return FUN_1401ba820(FUN_1410dc3b0(0));
+    return ((void*)FUN_1401ba820((class CPtred*)(FUN_1410dc3b0(0))));
 }
 
 // @0x14112fe10

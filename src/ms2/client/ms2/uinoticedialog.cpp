@@ -18,6 +18,10 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/asbutton.h"
+#include "ms2/placeholder/cwebbrowserservice.h"
+#include "ms2/client/ms2/uiservice.h"
 
 #define MS2_ASCRIPT_INL_ASSERT(line, expression) \
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\ascript.inl", (unsigned)(line)), 0))
@@ -44,11 +48,10 @@ public:
     Unk_AasSource(CStringW strUrl, int nMovieId);                           // 0x1422e5a70
     char m_pad_00[0x40];
 };
-class Unk_140acd6e0 : public ASDisplayObject                                // the button wrapper
+class Unk_140acd6e0 : public ASButton                                // the button wrapper
 {
 public:
     void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, int nFlags);   // set the click handler
-    void FUN_1422ce090(int bChecked);                                       // 0x1422ce090 the button state
 };
 class ASDialog : public ASMovieClip                                         // the movie root
 {
@@ -56,18 +59,14 @@ public:
     CString FUN_1422c2420();                                                // 0x1422c2420 the current frame label
 };
 class Unk_NdConfigString { public: CString* FUN_140298f80(); };             // Value<CString>::Get
-class Unk_NdBrowserMgr                                                      // the browser manager
+class Unk_NdBrowserMgr : public CWebBrowserService                                                      // the browser manager
 {
 public:
     void FUN_141b78aa0(int nId, int n);
     void FUN_141b794e0(CString* pPage, const char* pszUrl);                 // remember the url in the dialog's page
-    void FUN_141b78b40(bool a, int nId);
 };
-Unk_NdBrowserMgr* FUN_140cc18a0();
-class Unk_NdFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_NdFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 class Unk_NdUIMgr { public: void FUN_141adc750(int nUiType); };             // open a dialog by its UI type
-Unk_NdUIMgr* FUN_1403ed2b0();
 unsigned FUN_140869420();                                                   // millisecond clock
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                      // has the AS object been released
 bool FUN_140e04c20(const MS2Ptr<ASDialog>* p, int n);                       // p == NULL
@@ -196,7 +195,7 @@ void UINoticeDialog::vfunc_85()
     m_spImage.AssignRaw(new Unk_AasImage(2));
     FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(StringFormat(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), m_renderTarget->FUN_1422c1340(), m_renderTarget->FUN_1422c13b0()), 2)));
     m_renderTarget->FUN_1422c6900(m_spImage->FUN_1422bb890());
-    FUN_140cc18a0()->FUN_141b78aa0(m_nBrowserId, 0);
+    reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78aa0(m_nBrowserId, 0);
 }
 
 // @0x1410092a0
@@ -284,7 +283,7 @@ void UINoticeDialog::FUN_141009770(const Scaleform::GFx::FunctionHandler::Params
 // @0x1410097a0
 void UINoticeDialog::FUN_1410097a0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_1403ed2b0()->FUN_141adc750(0x4e6a);
+    reinterpret_cast<Unk_NdUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e6a);
 }
 
 // @0x1410097d0
@@ -307,8 +306,8 @@ void UINoticeDialog::FUN_141009870()
     if (FUN_140166410()->FUN_14036d570(0x5c))
     {
     }
-    FUN_140cc18a0()->FUN_141b794e0(&m_strUrl, strUrl);
-    FUN_140cc18a0()->FUN_141b78b40(1, m_nBrowserId);
+    reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b794e0(&m_strUrl, strUrl);
+    reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78b40(1, m_nBrowserId);
 }
 
 // @0x141009950

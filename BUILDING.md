@@ -7,7 +7,7 @@ import library is ever part of the repository.
 cmake --preset fullexe && cmake --build build/fullexe
 ```
 
-The result is `build/fullexe/out/fullexe3.exe` (link log and map next to it). Rebuilding after an edit recompiles only
+The result is `build/fullexe/out/MapleStory2.exe`, a copy of `fullexe3.exe` next to it (link log and map there too). Rebuilding after an edit recompiles only
 the changed translation units; the link reads every object where the compile cache keeps it (a response file), so no
 copy of the objects is made.
 
@@ -98,16 +98,67 @@ stubs, duplicate symbols, unresolved symbols before the shim, `/FORCE` flags, bo
 
 `cmake/fullexe-plain/` links the exe once and runs no Python at build time. It writes the import-lib `.def` files from
 `data/fullexe/imports.tsv`, assembles the CryptoPP MASM objs and compiles `shim_runtime.cpp` itself. Everything else
-comes from glue files: the obj list in link order, the `/alternatename` lines and the `/ORDER` list.
-`tools/fullexe/plainglue.py write <dir>` writes them from a finished `cmake/fullexe` build. The objs come from that
-build's compile cache (`MS2_PLAIN_OBJ_ROOT`), so the compile is not covered yet. The one remaining data stub is
-extracted once from your exe with `plainglue.py stubs <exe> <dir>/stubs.tsv <obj>`:
+comes from the glue files in `data/fullexe/plain/`: `objs.txt` (the obj list in link order), `alias.rsp` (the
+`/alternatename` lines) and `stubs.tsv` (the data stubs, names and addresses only). They are generated from the newest
+`cmake/fullexe` build that linked and passed. By default the objs come from that kind of build's compile cache
+(`MS2_PLAIN_OBJ_ROOT`); `-DMS2_PLAIN_COMPILE=ON` compiles them instead (see Compile list below). The one remaining data stub is extracted once from your exe
+with `plainglue.py stubs <exe> data/fullexe/plain/stubs.tsv <obj>`:
 
 ```
-cmake -S cmake/fullexe-plain -B build/fullexe-plain -G Ninja -DMS2_PLAIN_GLUE=<dir> -DMS2_PLAIN_OBJ_ROOT=build/progress-<tag> \
+cmake -S cmake/fullexe-plain -B build/fullexe-plain -G Ninja -DMS2_PLAIN_OBJ_ROOT=build/progress-<tag> \
       -DMS2_PLAIN_STUBS_OBJ=<obj> -DMS2_RESOURCES_RES=<res> && cmake --build build/fullexe-plain
 ```
 
-The result is `build/fullexe-plain/out/fullexe-plain.exe`. With `-DMS2_PLAIN_NAME=fullexe3` and the same objs and glue,
-it is byte-identical to `link2`'s `fullexe3.exe` except for the link timestamp. The exe's export directory records
-the output name, so the default name shifts some `.rdata` bytes.
+The result is `build/fullexe-plain/out/MapleStory2.exe`, a copy of `fullexe-plain.exe`. The `/ORDER` list (`order.txt`,
+32 MB) is not committed, so by default the linker lays functions out in its own order. To get the exe's layout, run
+`tools/fullexe/plainglue.py write <dir>` on a finished `cmake/fullexe` build and pass `-DMS2_PLAIN_GLUE=<dir>`
+(`MS2_PLAIN_ORDER` turns on when `<dir>/order.txt` exists). With `-DMS2_PLAIN_NAME=fullexe3`, that build's glue and its
+objs, the result is byte-identical to `link2`'s `fullexe3.exe` except for the link timestamp. The exe's export directory
+records the output name, so the default name shifts some `.rdata` bytes.
+
+Refreshing the glue (maintainers): after each applied merge, once that commit's fullexe-latest build has linked and
+passed, run `tools/fullexe/plainglue.py write data/fullexe/plain` with `FULLEXE_DIR` and `--cache` pointing at that
+build. Delete the `order.txt` it writes, then commit `objs.txt`, `alias.rsp` and `stubs.tsv` together.
+
+### Compile list
+
+`tools/fullexe/plainglue.py compile <dir> --cache <obj cache>` writes the cl command of every obj in `<dir>/objs.txt`,
+as the finished build ran it, and checks each one against the flags key its `.deps` recorded:
+
+- `compile.tsv`: obj, tool, working dir, source, flag set. The tool is `cl` (14.16) or the unit's `MS2-TOOLSET`
+  (`vc9`, `vc9c`, `vc11`, `1414`, `1415`). Game units carry their `MS2-FLAGS` profile; engine and library units their
+  `data/engine` flags.
+- `flags.tsv`: one row per distinct flag set (no `/Fo`, no `/showIncludes`).
+- `tree.tsv`: the generated include dirs those commands name (`build/gb-tree` and the DirectX overlays), as symlinks or
+  one-line files.
+
+Paths are written as `${TP}`, `${ENGINE}`, `${GEN}` and `${ROOT}`. With `-DMS2_PLAIN_COMPILE=ON` the plain build
+fills them from `MS2_MSVC_ROOT`, `MS2_PLAIN_ENGINE`, `MS2_PLAIN_GEN` and `MS2_PLAIN_CHECKOUT`, recreates `tree.tsv`
+under `MS2_PLAIN_GEN`, and makes one custom command per obj into `<build>/cache`. Header dependencies are not tracked
+(no depfile); a header edit needs a clean rebuild. MS2_PCH=1 builds are not supported.
+
+What matches: compiled from the same checkout and SDKs, every obj's code, data, relocations and symbols are identical
+to the compile cache's (checked on 83 objs: 50 game, 10 vc9, 3 vc11, 10 engine, 10 Scaleform). Only the `/Z7` debug
+sections differ, and only in recorded paths: the obj's own `/Fo` path, the `${GEN}` dir and the command line (no
+`/showIncludes`). The link uses `/debug:none`, so those sections do not reach the exe. The checkout path itself does
+not leak into code or data in the sample.
+
+A full `-DMS2_PLAIN_COMPILE=ON` build (3637 steps, about 85 minutes at `-j16`) of a clean worktree with that build's glue
+and `-DMS2_PLAIN_NAME=fullexe3` gave an exe identical to `link2`'s `fullexe3.exe` except for 4 bytes, the link
+timestamps in the COFF header and the debug directory. The objs are not byte-identical files. That would need the same `/Fo`
+dir, the same `${GEN}` dir and `/showIncludes`.
+
+On Windows with Visual Studio:
+
+- VS opens `cmake/fullexe-plain` directly (Open Folder, or a `CMakePresets.json` entry with the cache variables above);
+  the Ninja generator is the tested one.
+- The 14.16 `cl` comes from the developer environment. Set `MS2_CL_1414` / `MS2_CL_1415` to those toolsets' `cl.exe`,
+  or the 14.16 compiler builds those units too (not byte-identical).
+- `vc9`, `vc9c` and `vc11` need `MS2_CL_<tool>` set to a `.cmd` wrapper that sets that compiler's own `INCLUDE`/`LIB`
+  and runs its `cl.exe`; the commands otherwise inherit the 14.16 environment. The `tools/msvc9/cl`-style wrappers the
+  Linux build uses are bash scripts with their own Wine prefix and are the only Wine-specific part.
+- Command lines reach 9.6 KB, over cmd.exe's limit, so on Windows each flag set goes into a response file
+  (`<build>/out/cl/<id>.rsp`). This path is untested.
+- `tree.tsv` symlinks need Developer Mode or an elevated prompt; without it CMake copies the target instead.
+- Flag-set arguments containing `$(` (unexpanded `$(GB_SDK)` include dirs that name no dir) are dropped, since Ninja and
+  MSBuild would both read them as variables.

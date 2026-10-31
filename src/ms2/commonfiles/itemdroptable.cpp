@@ -161,17 +161,10 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 
-// The common log (FUN_140166440()).
-class Unk_CommonLog
-{
-public:
-    void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg);
-};
-Unk_CommonLog* FUN_140166440();
-void FUN_140177a80(Unk_CommonLog* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nArg);
+class CLogString* GetLogString();
+template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
 void FUN_14028f5d0(Unk_140165cf0* pParent, const char* pszChild, std::vector<Unk_140165cf0*>& arrOut);
@@ -190,7 +183,7 @@ class Unk_DropItemData : public CItemData
 };
 bool FUN_14053ff30(int nItemId, int nRank);                 // the item exists in that rank
 int FUN_14053feb0(int nItemId);                             // default rank of an item
-unsigned FUN_140768010(unsigned nRange, unsigned nBase);    // random number in base..base+range-1
+int FUN_140768010(int, int);  // C3: the definition's signature
 bool FUN_14028d470(float a, float b);                       // a == b (within epsilon)
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
 
@@ -616,7 +609,7 @@ bool ItemDropGlobalBox::Load(Unk_140165cf0* pElem)
     XmlTokenList(pElem, "dropCountProbability", probabilities);
     if (counts.size() != probabilities.size())
     {
-        FUN_140177a80(FUN_140166440(), 1, 0x13, L"(Global)ID: {0}, [{1}] dropCount, dropCountProbability", m_dropGroupIDs);
+        Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"(Global)ID: {0}, [{1}] dropCount, dropCountProbability", m_dropGroupIDs);
         return false;
     }
     if (counts.size() != probabilities.size())
@@ -1476,12 +1469,12 @@ bool ItemDropTable::LoadGlobalBoxes()
     m_globalBoxes.clear();
     CString strPath = FUN_14071a5b0("Table/Server", "globalDropItemBox_Final.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pElem : pRoot->FUN_140165cf0("dropBox"))
@@ -1501,12 +1494,12 @@ bool ItemDropTable::LoadGlobalGroups()
     m_globalGroups.clear();
     CString strPath = FUN_14071a5b0("Table/Server", "globalDropItemSet_Final.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pElem : pRoot->FUN_140165cf0("dropBox"))
@@ -1517,7 +1510,7 @@ bool ItemDropTable::LoadGlobalGroups()
         if (!pGroup->Load(pElem))
             continue;
         if (!m_globalGroups.insert(std::make_pair(pGroup->GetId(), pGroup)).second)
-            FUN_140177a80(FUN_140166440(), 1, 0x13, L"Duplicate GlobalDrop GroupID:{0}", pGroup->GetId());
+            Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"Duplicate GlobalDrop GroupID:{0}", pGroup->GetId());
     }
     return true;
 }
@@ -1529,12 +1522,12 @@ bool ItemDropTable::LoadIndividualBoxes()
     m_individualBoxes.clear();
     CString strPath = FUN_14071a5b0("Table", "individualItemDrop_Final.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     std::vector<Unk_140165cf0*> elems;
@@ -1547,7 +1540,7 @@ bool ItemDropTable::LoadIndividualBoxes()
             return;
         Unk_CriticalSectionLock guard(lock, 1);
         if (!m_individualBoxes.insert(std::make_pair(pBox->GetId(), pBox)).second)
-            FUN_140177a80(FUN_140166440(), 1, 0x13, L"Duplicate IndividualDropID:{0}", pBox->GetId());
+            Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"Duplicate IndividualDropID:{0}", pBox->GetId());
     });
     return true;
 }

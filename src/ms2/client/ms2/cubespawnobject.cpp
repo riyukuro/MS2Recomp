@@ -63,7 +63,7 @@ class Unk_NpcTable
 public:
     MS2Ptr<Unk_NpcData> FUN_140a7cab0(int nNpcId);
 };
-Unk_NpcTable* FUN_1406d6e90();
+class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 
 // MS2Ptr<Unk_NpcData> members instantiated by earlier objs (the rest are this obj's COMDATs).
 template <> void MS2Ptr<Unk_NpcData>::Reference(Unk_NpcData* p);         // 0x1406d9f40
@@ -217,7 +217,7 @@ struct Unk_CsoConfig
 };
 MS2_CHECK_OFFSET(Unk_CsoConfig, m_6e8, 0x6e8);
 MS2_CHECK_OFFSET(Unk_CsoConfig, m_94a8, 0x94a8);
-Unk_CsoConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 CGameRule* FUN_1401c0d90();
 
@@ -226,7 +226,7 @@ class Unk_CsoGameMode
 public:
     int FUN_1409f7ea0();
 };
-Unk_CsoGameMode* FUN_1409f7c90();
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 
 class Unk_CsoGameCtx
 {
@@ -267,12 +267,12 @@ CubeSpawnObject::CubeSpawnObject()
     m_spStateMgr.AssignRaw(new CStateManager(this));
     m_spStateMgr->FUN_1417daeb0(1, new StateIdleSpawnObject(this));
     m_spStateMgr->FUN_1417daeb0(0x19, new StateInterActionSpawnObject(this));
-    m_f164 = FUN_1401d3200()->m_588.FUN_1402bac70();
-    m_f168 = FUN_1401d3200()->m_690.FUN_1402bac70();
-    m_f16c = FUN_1401d3200()->m_5e0.FUN_1402bac70();
+    m_f164 = ((struct Unk_CsoConfig*)FUN_1401d3200())->m_588.FUN_1402bac70();
+    m_f168 = ((struct Unk_CsoConfig*)FUN_1401d3200())->m_690.FUN_1402bac70();
+    m_f16c = ((struct Unk_CsoConfig*)FUN_1401d3200())->m_5e0.FUN_1402bac70();
     m_f170 = 0.0f;
     m_f174 = 0.0f;
-    m_f178 = FUN_1401d3200()->m_6e8.FUN_1402bac70();
+    m_f178 = ((struct Unk_CsoConfig*)FUN_1401d3200())->m_6e8.FUN_1402bac70();
     m_mapAnim.SetAt(0x5a, "Idle_A");
     m_mapAnim.SetAt(0x62, "Grow_A");
     m_mapAnim.SetAt(99, "Full_A");
@@ -297,7 +297,7 @@ CubeSpawnObject::~CubeSpawnObject()
 // @0x140a4ed00
 int CubeSpawnObject::vfunc_124(int nNpcId, Unk_EntRef ent, int nGaugeA, int nGaugeB, const CStringW& strOwner)
 {
-    m_spNpc = FUN_1406d6e90()->FUN_140a7cab0(nNpcId);
+    m_spNpc = ((class Unk_NpcTable*)FUN_1406d6e90())->FUN_140a7cab0(nNpcId);
     if (m_spNpc == NULL)
         return 0;
     m_entity = ent;
@@ -346,7 +346,7 @@ MS2_REPLACE_METHOD(0x140a4f080, CubeSpawnObject, vfunc_70, 27, 0xC7E44435);
 // @0x140a4f0b0
 MS2Ptr<Unk_PCBaseComp_aa8> CubeSpawnObject::vfunc_85()
 {
-    if (FUN_1409f7c90()->FUN_1409f7ea0() && !FUN_14123dbd0())
+    if (((class Unk_CsoGameMode*)FUN_1409f7c90())->FUN_1409f7ea0() && !FUN_14123dbd0())
         return MS2Ptr<Unk_PCBaseComp_aa8>(0);
     if (m_spAA8 == NULL)
         m_spAA8 = FUN_1418fbdb0(m_unk_70);
@@ -420,9 +420,9 @@ MS2_REPLACE_METHOD(0x140a4f3f0, CubeSpawnObject, FUN_140a4f3f0, 655, 0x7F90AEE9)
 // @0x140a4f690
 int CubeSpawnObject::FUN_140a4f690()
 {
-    if (FUN_140164830(m_strOwner, FUN_1401d3200()->m_94a8.FUN_140a50020()))
+    if (FUN_140164830(m_strOwner, ((struct Unk_CsoConfig*)FUN_1401d3200())->m_94a8.FUN_140a50020()))
         return false;
-    return FUN_1401c0d90()->FUN_1404793a0(FUN_1401d3200()->m_94a8.FUN_140a50020());
+    return FUN_1401c0d90()->FUN_1404793a0(((struct Unk_CsoConfig*)FUN_1401d3200())->m_94a8.FUN_140a50020());
 }
 MS2_REPLACE_METHOD(0x140a4f690, CubeSpawnObject, FUN_140a4f690, 112, 0x1E480BE2);
 

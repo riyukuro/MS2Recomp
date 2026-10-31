@@ -53,7 +53,6 @@ int FUN_1408b6200(int nType);
 unsigned char FUN_140361ab0(void* pMap, int nKey, int* pValue);
 struct Unk_SsMap;
 void FUN_14016a050(Unk_SsMap* pMap, int nKey, int nValue);
-CItemData* FUN_140527840(CItem* pItem);
 int FUN_14052a7e0(MS2Ptr<CItem> a, MS2Ptr<CItem> b);
 void FUN_140710590(COutPacket& packet);
 void FUN_1401fba60(unsigned char* pReq, COutputStream& rStream);
@@ -408,7 +407,7 @@ int CStore::CanMerge()
         if (pItem == 0) {
             continue;
         }
-        pData.AssignRaw(FUN_140527840(pItem));
+        pData.AssignRaw(((CItemData*)(static_cast<CItem*>(pItem)->FUN_140527840())));
         if (pData == 0) {
             continue;
         }
@@ -595,7 +594,7 @@ void FUN_140de2dc0(void*, __int64 nId, int nSlot, int nCount, MS2Ptr<CItemData> 
     if (!pItem) {
         return;
     }
-    if (FUN_140527840(pItem)->FUN_14053cd10()) {
+    if (((CItemData*)(static_cast<CItem*>(pItem)->FUN_140527840()))->FUN_14053cd10()) {
         if (FUN_140c8dab0(FUN_140c8dac0()) == ((CItem*)pItem)->FUN_140526a50()) {
             FUN_1412751f0(GetStringCommonByKey(L"s_item_err_binditem_by_playing_score"), 1, 1);
             return;

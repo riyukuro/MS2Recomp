@@ -21,6 +21,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -45,14 +47,11 @@ public:
     Scaleform::GFx::Value FUN_140ba4cc0(const char* szMethod, const ASObj& data);
 };
 
-class Unk_FpStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-class Unk_FpTextFilter { public: void FUN_1416fb300(CStringW& str); };
 
 CFameTable* FUN_140764010();                                            // the fame table
 CQuestManager* FUN_140764020();                                         // the quest manager
-Unk_FpStrings* FUN_1401a9d70();                                         // the string tables
-Unk_FpTextFilter* FUN_1403b4750();                                      // the text filter
-__int64 FUN_140869440();                                                // the server time
+CReservedWordTable* FUN_1403b4750();                                    // the text filter
+__int64 GetServerTime();                                                // the server time
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
 CStringW FUN_140762de0(int nAlliance);                                  // the alliance's name
@@ -171,7 +170,7 @@ void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
     data.FUN_1407cb9c0("currentFame", nCurrent);
     data.FUN_1407cb9c0("maxFame", nMax);
     data.FUN_1407cbb20("famePoint", strPoint);
-    CMsTime timeNow(FUN_140869440());
+    CMsTime timeNow(GetServerTime());
     ASArray logs(2);
     for (POSITION pos = DAT_143ab31e8.GetHeadPosition(); pos != 0; DAT_143ab31e8.GetNext(pos))
     {
@@ -179,7 +178,7 @@ void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
         __int64 nLogTime = DAT_143ab31e8.GetKeyAt(pos);
         if (FUN_140764010()->IsLogOfAlliance(nLogId, (Unk_FameAlliance)nAlliance) == 0)
             continue;
-        CStringW strMsg = FUN_1401a9d70()->FUN_141811980(0x43, nLogId);
+        CStringW strMsg = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x43, nLogId);
         FUN_1403b4750()->FUN_1416fb300(strMsg);
         CStringW strDate;
         CMsTime timeLog(nLogTime);

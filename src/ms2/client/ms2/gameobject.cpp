@@ -45,6 +45,7 @@
 #include "ms2/unnamed/unit_1416c4de0.h"
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/alphacomponent.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -63,8 +64,7 @@ struct Unk_GoConfig
     Unk_GoCfgValue m_kUpdateDuration;   // +0xab0
 };
 MS2_CHECK_OFFSET(Unk_GoConfig, m_kUpdateDuration, 0xab0);
-Unk_GoConfig* FUN_1401d3200();
-void FUN_14108c240(CMeshUpdateGate* pGate, float fInterval);
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The field object a position resolves to (CPtred-counted; held at GameObject+0x60).
 class Unk_GoField : public CPtred
@@ -78,14 +78,13 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_GoField, m_nFieldId, 0x18);
 
-// The world service (FUN_1403ed2d0).
+// A view of the world service.
 class Unk_GoWorld : public WorldService
 {
 public:
     MS2Ptr<Unk_GoField> FUN_141bd3210(NiPoint3 kPos);
     MS2Ptr<Unk_GoField> FUN_141bd3430(unsigned __int64 nFieldId);
 };
-Unk_GoWorld* FUN_1403ed2d0();
 
 // The object vfunc_26 places at the actor every frame.
 class Unk_GoAttachment
@@ -109,8 +108,12 @@ public:
 };
 
 class Unk_GoModeSvc { public: int FUN_1409f7ea0(); };
-Unk_GoModeSvc* FUN_1409f7c90();
-int FUN_140ddcc90(Unk_GoModeSvc* pSvc);
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_FsOptimizer   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140ddcc90();
+};
 
 class Unk_GoAnimSvc
 {
@@ -183,7 +186,7 @@ public:
     virtual Unk_GoPickList* vfunc_16(const efd::Point3& kOrigin, const efd::Point3& kDir, NiAVObject* pRoot,
         bool b, bool b2, bool b3);
 };
-Unk_GoPicker* FUN_1413f98f0();
+void* FUN_1413f98f0();   // C3: was FUN_1413f98f0
 
 // The shadow mesh (efd::SmartPointer at +0x58; the real class is CObjectShadow : CMesh, unit_14160fb10).
 class CObjectShadow : public NiRefObject
@@ -208,9 +211,6 @@ MS2_CHECK_SIZE(Unk_CubeSceneIterator, 0x30);
 extern NiFixedString DAT_143ae50b0;     // extra data key (alpha blending)
 
 // entity helpers
-const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
-unsigned __int64 FUN_140affe40(egf::Entity* pEntity);   // egf::Entity::GetEntityIDValue
-egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
 void FUN_1414737d0(egf::Entity* pEntity);
 int FUN_1409618c0(egf::Entity* pEntity, unsigned int nProp, efd::Point3* pOut);
 void FUN_140a38a50(egf::Entity* pEntity, unsigned int nProp, const efd::Point3& kValue);
@@ -221,10 +221,9 @@ void FUN_140de0cb0(efd::AssetID* pAsset, const efd::utf8string& strUrn);
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 bool Unk_IsFinite(const efd::Point3& kPos);
 bool FUN_1409943d0(NiAVObject* pObject);
-void FUN_14098f4d0(NiAVObject* pObject, bool b);
 void FUN_14098b3e0(NiAVObject* pObject, float f, bool b);
 void FUN_140ae1e80(NiAVObject* pObject, float a, float b, float c, float d, egf::EntityID kId);
-void FUN_140291bc0(efd::Point3* pAngles);
+void FUN_140291bc0(struct Unk_CommonVec3*);   // C3: was FUN_140291bc0
 
 #define GO_ENTITY() static_cast<egf::Entity*>(m_unk_80)
 #define GO_CAMEVENT(p) static_cast<Unk_GoCamEvent*>(p)
@@ -242,11 +241,11 @@ GameObject::GameObject()
 {
     m_spAnimMgr.AssignRaw(new CAnimationManager(this));
     m_pUnk130 = new CMeshUpdateGate;
-    float fRate = FUN_1401d3200()->m_kUpdateRate.FUN_1402bac70();
+    float fRate = ((struct Unk_GoConfig*)FUN_1401d3200())->m_kUpdateRate.FUN_1402bac70();
     if (fRate <= 0.0f)
         fRate = 60.0f;
-    FUN_14108c240(m_pUnk130, 1.0f / fRate);
-    m_pUnk130->FUN_14123ef30(FUN_1401d3200()->m_kUpdateDuration.FUN_1402bac70());
+    ((class CMeshUpdateGate*)(class CMeshUpdateGate*)(m_pUnk130))->FUN_14108c240(1.0f / fRate);
+    m_pUnk130->FUN_14123ef30(((struct Unk_GoConfig*)FUN_1401d3200())->m_kUpdateDuration.FUN_1402bac70());
 }
 
 // Deleting helper of the mesh update gate (its destructor is FUN_14176f390).
@@ -380,9 +379,9 @@ void GameObject::FUN_14123bc20(CString str)
         FUN_14123bb80(str);
         efd::AssetID kAsset;
         FUN_140de0cb0(&kAsset, (const char*)FUN_14123bbd0());
-        if (FUN_1408a9bd0(GO_ENTITY())->ContainsModel("Mesh"))
+        if (GO_ENTITY()->GetModel()->ContainsModel("Mesh"))
             FUN_140de8bd0(GO_ENTITY(), 0x770e5fc6, &kAsset);
-        else if (FUN_1408a9bd0(GO_ENTITY())->ContainsModel("Actor"))
+        else if (GO_ENTITY()->GetModel()->ContainsModel("Actor"))
             FUN_140de8bd0(GO_ENTITY(), 0x12383cea, &kAsset);
     }
 }
@@ -412,14 +411,14 @@ NiPoint3 GameObject::vfunc_17()
     if (m_spField.get())
     {
         Unk_GoField* pField = m_spField.operator->();
-        if (FUN_1403ed2d0()->FUN_141bd3430(pField->m_nFieldId).get())
+        if (static_cast<Unk_GoWorld*>(WorldService::GetInstance())->FUN_141bd3430(pField->m_nFieldId).get())
         {
             if (m_spField->vfunc_2(kPos))
                 return kPos;
         }
     }
     m_spField = 0;
-    MS2Ptr<Unk_GoField> spField = FUN_1403ed2d0()->FUN_141bd3210(kPos);
+    MS2Ptr<Unk_GoField> spField = static_cast<Unk_GoWorld*>(WorldService::GetInstance())->FUN_141bd3210(kPos);
     if (spField.get() != 0)
     {
         m_spField = spField;
@@ -544,17 +543,17 @@ MS2_REPLACE_METHOD(0x14123c430, GameObject, FUN_14123c430, 28, 0xF376627F);
 // @0x14123c460
 egf::EntityID GameObject::FUN_14123c460()
 {
-    if (FUN_1409f7c90()->FUN_1409f7ea0() != 0)
+    if (((class Unk_GoModeSvc*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
         return m_kEntityID;
-    return m_unk_80 != 0 ? *FUN_1408b76f0(GO_ENTITY()) : egf::kENTITY_INVALID;
+    return m_unk_80 != 0 ? GO_ENTITY()->GetEntityID() : egf::kENTITY_INVALID;
 }
 
 // @0x14123c500
 unsigned __int64 GameObject::FUN_14123c500()
 {
-    if (FUN_1409f7c90()->FUN_1409f7ea0() != 0)
+    if (((class Unk_GoModeSvc*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
         return m_kEntityID.GetValue();
-    return m_unk_80 != 0 ? FUN_140affe40(GO_ENTITY()) : egf::kENTITY_INVALID.GetValue();
+    return m_unk_80 != 0 ? ((egf::Entity*)(void*)(GO_ENTITY()))->GetEntityIDValue() : egf::kENTITY_INVALID.GetValue();
 }
 
 // @0x14123c580
@@ -579,7 +578,7 @@ void GameObject::vfunc_23(int n)
     {
         if (m_unk_40 != 0 && n == 0)
         {
-            if (FUN_140ddcc90(FUN_1409f7c90()) == 0)
+            if (((class Unk_FsOptimizer*)(class Unk_GoModeSvc*)(((class Unk_GoModeSvc*)FUN_1409f7c90())))->FUN_140ddcc90() == 0)
                 return;
         }
         bool bHide = n == 0 ? true : false;
@@ -732,7 +731,7 @@ float GameObject::FUN_14123cd50(efd::Point3 kDir)
     kMat.SetCol(2, efd::Point3::UNIT_Z);
     kMat.ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z);
     kAngles.z = -(kAngles.z * 180.0f / 3.1415927f);
-    FUN_140291bc0(&kAngles);
+    FUN_140291bc0((struct Unk_CommonVec3*)(&kAngles));
     return kAngles.z;
 }
 
@@ -756,10 +755,10 @@ void GameObject::vfunc_33(void* a, void* b)
 {
     if (reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 0xd)
     {
-        int nOwner = FUN_1403ed2d0()->FUN_141bd19d0(GO_CAMEVENT(a)->m_nOwner);
+        int nOwner = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(a)->m_nOwner);
         if (nOwner == 1)
         {
-            int nTarget = FUN_1403ed2d0()->FUN_141bd19d0(GO_CAMEVENT(a)->m_nTarget);
+            int nTarget = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(a)->m_nTarget);
             Unk_GoCamMode* pMode = reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520();
             if (nTarget)
                 pMode->FUN_1416c5b00(GO_CAMEVENT(a)->m_nTarget);
@@ -773,10 +772,10 @@ void GameObject::vfunc_34(void* p)
 {
     if (reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 0xd)
     {
-        int nOwner = FUN_1403ed2d0()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nOwner);
+        int nOwner = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nOwner);
         if (nOwner == 1)
         {
-            int nTarget = FUN_1403ed2d0()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nTarget);
+            int nTarget = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nTarget);
             Unk_GoCamMode* pMode = reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520();
             if (nTarget)
                 pMode->FUN_1416c5b00(GO_CAMEVENT(p)->m_nTarget);
@@ -790,10 +789,10 @@ void GameObject::vfunc_35(void* p)
 {
     if (reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 0xd && GO_CAMEVENT(p)->m_nOwner != 0)
     {
-        int nOwner = FUN_1403ed2d0()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nOwner);
+        int nOwner = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nOwner);
         if (nOwner == 1)
         {
-            int nTarget = FUN_1403ed2d0()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nTarget);
+            int nTarget = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nTarget);
             Unk_GoCamMode* pMode = reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520();
             if (nTarget)
                 pMode->FUN_1416c5b00(GO_CAMEVENT(p)->m_nTarget);
@@ -839,7 +838,7 @@ NiPoint3 GameObject::vfunc_38(const efd::Point3& kDir, const efd::Point3& kPos, 
     float fDistance = fRange;
     if (kDir == efd::Point3::ZERO)
         return static_cast<const NiPoint3&>(kPos);
-    Unk_GoPicker* pPicker = FUN_1413f98f0();
+    Unk_GoPicker* pPicker = ((class Unk_GoPicker*)FUN_1413f98f0());
     if (pPicker == 0)
         return static_cast<const NiPoint3&>(kPos);
     NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410());
@@ -1115,7 +1114,7 @@ MS2_REPLACE_METHOD(0x14123dec0, GameObject, vfunc_52, 337, 0x99EC682A);
 // @0x14123e020
 void GameObject::FUN_14123e020(NiAVObject* pNode)
 {
-    FUN_14098f4d0(pNode, false);
+    AlphaShellComposite::MarkScene(pNode, false);
     Unk_CubeSceneIterator iterator(pNode);
     while (NiAVObject* pObject = iterator.FUN_14098e0d0(true))
     {
@@ -1146,12 +1145,12 @@ MS2_REPLACE_METHOD(0x14123e1a0, GameObject, vfunc_53, 113, 0x1AAE6014);
 // @0x14123e220
 void GameObject::vfunc_54(float f)
 {
-    if (m_unk_40 != 0 && FUN_140ddcc90(FUN_1409f7c90()) == 0)
+    if (m_unk_40 != 0 && ((class Unk_FsOptimizer*)(class Unk_GoModeSvc*)(((class Unk_GoModeSvc*)FUN_1409f7c90())))->FUN_140ddcc90() == 0)
     {
         vfunc_56(f);
         return;
     }
-    int nMode = FUN_1403ed2d0()->FUN_141bdb5c0();
+    int nMode = WorldService::GetInstance()->FUN_141bdb5c0();
     float fDuration = 0.0f;
     switch (nMode)
     {
@@ -1162,7 +1161,7 @@ void GameObject::vfunc_54(float f)
         fDuration = FUN_14123ee40();
         break;
     case 2:
-        fDuration = FUN_14123ee40() - FUN_1401d3200()->m_kUpdateDuration.FUN_140298f40();
+        fDuration = FUN_14123ee40() - ((struct Unk_GoConfig*)FUN_1401d3200())->m_kUpdateDuration.FUN_140298f40();
         break;
     default:
         MS2_ASSERT_AT(0x180, FALSE);

@@ -27,13 +27,13 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
 
-// The common log (FUN_140166440()).
+// The common log (GetLogString()).
 class Unk_CommonLog
 {
 public:
     void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
 };
-Unk_CommonLog* FUN_140166440();
+class CLogString* GetLogString();
 
 
 int FUN_140873160(Unk_140165cf0* pElem, const char* pszName, short& nOut);
@@ -95,17 +95,17 @@ bool DungeonMissionData::Load(Unk_140165cf0* pElem)
     FUN_1408730a0(pElem, "isPenaltyType", m_isPenaltyType);
     if (m_id == 0)
     {
-        FUN_140166440()->Log(0, 0, 0x13, StringFormat(L"DungeonMissionData ID Error"));
+        reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x13, StringFormat(L"DungeonMissionData ID Error"));
         return false;
     }
     if (m_applyCount <= 0)
     {
-        FUN_140166440()->Log(0, 0, 0x13, StringFormat(L"applyCount must be more 0", m_id));
+        reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x13, StringFormat(L"applyCount must be more 0", m_id));
         return false;
     }
     if (m_applyCount != 0 && m_maxScore % m_applyCount != 0)
     {
-        FUN_140166440()->Log(0, 0, 0x13, StringFormat(L"DungeonMissionData Score Division Error ID={0}", m_id));
+        reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x13, StringFormat(L"DungeonMissionData Score Division Error ID={0}", m_id));
         return false;
     }
     return true;
@@ -249,7 +249,7 @@ bool DungeonMissionDataKillNpc::Load(Unk_140165cf0* pElem)
     FUN_140873220(pElem, "value2", m_value2);
     if (m_value2 <= 0)
     {
-        FUN_140166440()->Log(0, 0, 0x13, StringFormat(L"DataKillNpc mission value2 is 0"));
+        reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x13, StringFormat(L"DataKillNpc mission value2 is 0"));
         return false;
     }
     return true;

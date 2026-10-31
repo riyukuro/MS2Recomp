@@ -20,11 +20,10 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> KsClickDelegate;
 
-class Unk_KsButton : public ASDisplayObject
+class Unk_KsButton : public ASMovieClip
 {
 public:
     void FUN_1422ce240(const KsClickDelegate& onClick, int nFlags);     // click callback
-    void FUN_1422c1fe0(int bOn);                                        // toggled state
 };
 
 // The click event: the pressed button's index is read from the second pointer (+0x30).
@@ -32,8 +31,12 @@ struct Unk_KsParams { char m_pad[0x30]; void* m_pButton; };
 int FUN_140bd09c0(void* pButton);                                       // which button (2 = the mouse layout)
 
 class Unk_KsKeyBinds;                                                   // the key binding table
-Unk_KsKeyBinds* FUN_1409331f0();
-int FUN_14142e7a0(Unk_KsKeyBinds* p);                                   // 0 = no game pad
+class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
+class CKeyTable   // C3: member view for the former free stand-ins
+{
+public:
+    int GetLocked();
+};
 void FUN_1414297e0(Unk_KsKeyBinds* p, const CString& strXml, int n);    // load the key xml
 
 class Unk_KsInputState                                                  // singleton at FUN_1409a8b10
@@ -44,13 +47,29 @@ public:
 };
 Unk_KsInputState* FUN_1409a8b10();
 void* FUN_140c58ac0(Unk_KsInputState* p);
-void FUN_14125bd20(void* p, bool bMouse);
-void FUN_141243540(Unk_KsInputState* p);
-void* FUN_140a02e60(int nUiId);                                         // dialog by its ui id
-void FUN_1419438b0(void* p);
-void* FUN_140931900(int nUiId);
-void FUN_1419f19c0(void* p);
-void FUN_1412533f0();
+void FUN_14125bd20(struct Unk_InterfaceFlag*, bool);   // C3: was FUN_14125bd20
+class CGameOption   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141243540();
+};
+class UIGameOptionDialog* FUN_140a02e60(int);   // C3: was FUN_140a02e60
+class UIGameOptionDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419438b0();
+};
+class UIMainPlayerInfo* FUN_140931900(int);   // C3: was FUN_140931900
+class UIMainPlayerInfo   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419f19c0();
+};
+class CGameOptionInputDefault   // C3: member view for the former free stand-ins
+{
+public:
+    static void FUN_1412533f0();
+};
 
 // @0x140c581a0
 UIKeySettingSelectDialog::UIKeySettingSelectDialog()
@@ -85,7 +104,7 @@ void UIKeySettingSelectDialog::vfunc_67()
 void UIKeySettingSelectDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    int bOn = FUN_14142e7a0(FUN_1409331f0()) == 0;
+    int bOn = ((class CKeyTable*)(class Unk_KsKeyBinds*)(((class Unk_KsKeyBinds*)FUN_1409331f0())))->GetLocked() == 0;
     if (FUN_140bc6d10("m_button1", m_button1))
     {
         m_button1->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), 1);
@@ -104,22 +123,22 @@ void UIKeySettingSelectDialog::FUN_140c58690(const Scaleform::GFx::FunctionHandl
     int nButton = FUN_140bd09c0(((Unk_KsParams*)&params)->m_pButton);
     if (nButton == 2)
     {
-        FUN_1414297e0(FUN_1409331f0(), "./Data/Xml/Table/default/DefaultMouseControlKey.xml", 0);
-        FUN_14125bd20(FUN_140c58ac0(FUN_1409a8b10()), true);
+        FUN_1414297e0(((class Unk_KsKeyBinds*)FUN_1409331f0()), "./Data/Xml/Table/default/DefaultMouseControlKey.xml", 0);
+        FUN_14125bd20((struct Unk_InterfaceFlag*)(FUN_140c58ac0(FUN_1409a8b10())), true);
     }
     else
     {
-        FUN_1414297e0(FUN_1409331f0(), "./Data/Xml/Table/default/DefaultKey.xml", 0);
-        FUN_14125bd20(FUN_140c58ac0(FUN_1409a8b10()), false);
+        FUN_1414297e0(((class Unk_KsKeyBinds*)FUN_1409331f0()), "./Data/Xml/Table/default/DefaultKey.xml", 0);
+        FUN_14125bd20((struct Unk_InterfaceFlag*)(FUN_140c58ac0(FUN_1409a8b10())), false);
     }
-    FUN_141243540(FUN_1409a8b10());
-    void* pDlg = FUN_140a02e60(0x4ef3);
+    ((class CGameOption*)(class Unk_KsInputState*)(FUN_1409a8b10()))->FUN_141243540();
+    void* pDlg = ((void*)FUN_140a02e60(0x4ef3));
     if (pDlg != 0)
-        FUN_1419438b0(pDlg);
-    void* pInfo = FUN_140931900(0x4e5f);
+        ((class UIGameOptionDialog*)(void*)(pDlg))->FUN_1419438b0();
+    void* pInfo = ((void*)FUN_140931900(0x4e5f));
     if (pInfo != 0)
-        FUN_1419f19c0(pInfo);
-    FUN_1412533f0();
+        ((class UIMainPlayerInfo*)(void*)(pInfo))->FUN_1419f19c0();
+    CGameOptionInputDefault::FUN_1412533f0();
     vfunc_67();
 }
 

@@ -81,6 +81,7 @@ public:
     void FUN_1419a44d0(CInPacket* pPacket);                     // the preview list
     CString FUN_1419a4aa0(int nItemId);                         // bind a preview item; the binding name
     void FUN_1419a4c80();                                       // release the preview bindings
+    int FUN_1405352d0();                                        // 0x1405352d0 breaking (m_188); defined in itembreakmanager.cpp
 
 protected:
     MS2_LAYOUT_FRIEND;

@@ -101,10 +101,8 @@ CStringA FUN_14038f6d0(const CStringA&, const char*);
 #endif
 
 // Unrecovered helpers.
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int FUN_140873600(Unk_140165cf0* pElem, const char* pszName, CMsTime* pOut);   // time attribute
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);    // int attribute with default
@@ -504,11 +502,11 @@ CStringW CSeasonDataTable::GetContentsName(MS2Ptr<CSeasonData> spData, int nCont
 int CSeasonDataTable::ReadData(SeasonRankType type, CStringA strPath)
 {
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0) {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     TPtrValue<Seasons> spSeasons;
@@ -612,7 +610,7 @@ int CSeasonDataTable::ReadNames()
     CStringA strPath = FUN_14071ae20("seasonName" + FUN_140651390() + ".xml");
 #endif
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -694,11 +692,11 @@ int CSeasonDataTable::ReadRewards()
     CStringA strFile("SeasonReward_mapleSurvival.xml");
     CStringA strPath = FUN_14071a5b0("Table", strFile);
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0) {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     ATL::CAtlList<MS2Ptr<CSeasonRewardData> > entries(10);

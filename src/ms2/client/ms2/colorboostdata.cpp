@@ -13,7 +13,6 @@
 
 // ---- out-of-unit callees and the slider values (statics defined elsewhere) ----
                 // the application time
-CMainSystem* FUN_14086d260();
 float FUN_140a0fde0(float a, float b);                              // min
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                        // the actor's scene graph
 void FUN_141b6fae0(NiAVObject* pRoot, float fValue);                // set the colour scale of a scene graph
@@ -27,7 +26,7 @@ CColorBoostData::CColorBoostData(float fColorScale, float fDuration, float fAccu
     m_f14 = fDuration;
     m_f18 = fAccumRatio;
     m_f1c = 0.0f;
-    m_f0c = (float)FUN_14086d260()->FUN_141473280();
+    m_f0c = (float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
 }
 
 // @0x14109bfa0
@@ -49,7 +48,7 @@ CColorBoostData::~CColorBoostData()
 // @0x14109b770
 bool CColorBoostData::FUN_14109b770(float* pfScale, int nIndex)
 {
-    float fNow = (float)FUN_14086d260()->FUN_141473280();
+    float fNow = (float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
     float fElapsed = fNow - m_f0c;
     if (fElapsed > m_f14)
     {

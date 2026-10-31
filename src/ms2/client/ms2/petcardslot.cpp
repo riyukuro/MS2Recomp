@@ -21,7 +21,6 @@
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-WorldService* FUN_1403ed2d0();
 
 extern Unk_Inventory g_143ab2a90;                       // the player's inventory
 
@@ -29,9 +28,13 @@ extern Unk_Inventory g_143ab2a90;                       // the player's inventor
 CPetManager* FUN_140535320();
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
+class Unk_NotifyContext   // C3: static member view for the former free stand-ins
+{
+public:
+    static class NotifyContext::BindData* FUN_1422c8e90(CString const&);
+    static void FUN_1422c8f10(CString const&, class NotifyContext::BindData*);
+    static void FUN_1422c8f70(CString const&);
+};
 void FUN_1422cc9e0(DragSlotBag* pBag);
 
 PetCardSlotBag* FUN_140b78150(NotifyContext::BindData* p);
@@ -60,7 +63,7 @@ PetCardSlot::~PetCardSlot()
 // @0x140b770b0 (ITooltip::vfunc_0)
 int PetCardSlot::vfunc_0(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
@@ -79,7 +82,7 @@ int PetCardSlot::vfunc_0(void* p)
 // @0x140b771f0
 int PetCardSlot::vfunc_8(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
@@ -120,18 +123,18 @@ void FUN_140b773a0(const CString& strName, const ATL::CAtlArray<unsigned __int64
         int nCap = g_143ab2a90.FUN_140a5d050(9);
         int nSlots = PET_MIN(PET_MAX((int)uids.GetCount(), 15), nCap);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nSlots);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x140b77500
 void FUN_140b77500(const CString& strName)
 {
-    PetCardSlotBag* pBag = FUN_140b78150(FUN_1422c8e90(strName));
+    PetCardSlotBag* pBag = FUN_140b78150(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         FUN_1422cc9e0(pBag);
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 
@@ -181,7 +184,7 @@ PetConsumeSlot::~PetConsumeSlot()
 // @0x140b778b0 (ITooltip::vfunc_0)
 int PetConsumeSlot::vfunc_0(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
@@ -200,7 +203,7 @@ int PetConsumeSlot::vfunc_0(void* p)
 // @0x140b779f0
 int PetConsumeSlot::vfunc_8(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
@@ -256,18 +259,18 @@ void FUN_140b77cf0(const CString& strName, const ATL::CAtlArray<PetConsumeSlotBa
         int nCap = g_143ab2a90.FUN_140a5d050(9);
         int nSlots = PET_MIN(PET_MAX((int)entries.GetCount(), 15), nCap);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nSlots);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x140b77e50
 void FUN_140b77e50(const CString& strName)
 {
-    PetConsumeSlotBag* pBag = FUN_140b781a0(FUN_1422c8e90(strName));
+    PetConsumeSlotBag* pBag = FUN_140b781a0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         FUN_1422cc9e0(pBag);
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 

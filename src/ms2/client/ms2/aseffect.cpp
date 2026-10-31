@@ -40,10 +40,14 @@ unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);     // value is unde
 void FUN_1422c63f0(Scaleform::GFx::Value& value, int nGroup);   // unbind
 void FUN_1422c6380(Scaleform::GFx::Value& value, int nGroup);   // bind
 void FUN_1422bce70(Scaleform::GFx::Value*, const char*);        // Value::SetString
-unsigned FUN_140869420();                                       // millisecond clock
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 float FUN_14028d280(unsigned);                                  // ms -> seconds
 bool FUN_140930110(int nActorId);
-int FUN_14123c580(void*);                                       // actor id
+class GameObject   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14123c580();
+};
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1407196b0(unsigned);                               // number -> text
 CStringW FUN_1406329c0(const wchar_t* pszFormat, float* pfArg); // "{0}" substitution of a float
@@ -121,7 +125,7 @@ void ASEffect::Update()
     if (!IsLoaded() || !m_e8)
         return;
     UpdateIcon();
-    unsigned nElapsed = FUN_140869420() - m_90;
+    unsigned nElapsed = GetTickCountMs2() - m_90;
     if (nElapsed < 500)
     {
         unsigned nFrame = nElapsed * 60 / 1000;
@@ -203,7 +207,7 @@ bool ASEffect::IsOwnerAlive()
         return false;
     if (m_buff->FUN_14096d280() == 0)
         return false;
-    if (FUN_140930110(FUN_14123c580(m_buff->FUN_14096d280())) == 1)
+    if (FUN_140930110(((class GameObject*)(void*)(m_buff->FUN_14096d280()))->FUN_14123c580()) == 1)
         return false;
     if (FUN_140930110(m_buff->m_18) == 0)
         return false;
@@ -420,7 +424,7 @@ void ASEffectManager::AddEffect(MS2Ptr<Unk_AsBuff> spBuff)
 {
     MS2Ptr<ASEffect> spEffect(new ASEffect(spBuff));
     spEffect->SetE0(m_a0);
-    spEffect->SetStartTime(FUN_140869420());
+    spEffect->SetStartTime(GetTickCountMs2());
     spEffect->SetE4(spBuff->FUN_14096d350());
     m_b8.SetAt(spBuff->FUN_14096d260(), spEffect);
 }

@@ -2676,7 +2676,6 @@ void CUgcGetCostTable::Read(CInPacket& packet)
 
 // Blueprint fee currency selector (unit-local view of the fee object; its owner unit is uiitemblueprintcreatedialog.cpp)
 enum Unk_BpCurrency { Unk_BpCurrency_Default = 1 };
-CFeatureManager* FUN_140166410();
 class Unk_BpFee
 {
 public:
@@ -2689,7 +2688,7 @@ public:
 // @0x14089e200
 Unk_BpCurrency Unk_BpFee::FUN_14089e200()
 {
-    if (FUN_140166410()->FUN_14036d710(0x62))
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d710(0x62))
     {
         if (m_currency == 3)
             return (Unk_BpCurrency)10;

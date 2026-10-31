@@ -47,6 +47,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- the unit's static strings (.text$di) ------------------------------------------------------------------------
 static CString s_strStoreDialogClose = "store_dialog_close";                // @0x14011dbe0
@@ -59,15 +60,17 @@ static CString s_skill = "skill";                                           // @
 
 // The local player (MyPC) and the stats the hub reads.
 class Unk_StWorld { public: PCBase* FUN_141bd0cc0(); };
-Unk_StWorld* FUN_1403ed2d0();
 int FUN_141654730(PCBase* p);                                               // the job code
 const CStringW& FUN_141656be0(PCBase* p);                                   // the player name
 struct Unk_PCEquipSet;
 Unk_PCEquipSet* FUN_1416561a0(PCBase* p);                                   // the equip holder
-void FUN_1411e7660(Unk_PCEquipSet* p);                                      // refresh the equip set
-CPartyManager* FUN_1409670d0();
+class CEquipment   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1411e7660();
+};
 class Unk_StJobTable { public: void* FUN_140353610(unsigned short nLevel); };
-Unk_StJobTable* FUN_1404a1bb0();
+void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
 void* FUN_140930240();
 void* FUN_140930ae0();
 extern __int64 DAT_143ab2898;                                               // max deposit
@@ -77,18 +80,19 @@ extern __int64 DAT_143ab2958;
 CStringW FUN_140719a00(__int64 n);                                          // a number as text
 
 // The status listeners' registry (singleton 0x140aa6d40) and the item event hub (0x140a6a840).
-UIStatusEventDispatcher* FUN_140aa6d40();
 class Unk_StItemHub
 {
 public:
     void FUN_1419cae20(UIItemEventListener* listener);                      // register (once)
     void FUN_1419caeb0(UIItemEventListener* listener);                      // unregister
 };
-Unk_StItemHub* FUN_140a6a840();
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 
 // The store model (global 0x143ab2d80): meso balances, slot counts, the item names.
 class Unk_StItemNames;
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
+#include "ms2/placeholder/citem.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // The inventory dialog (UI id 0x4e2d) the store window is placed next to.
 class UIInventoryDialog : public UIDialog { };
@@ -109,7 +113,6 @@ public:
 // The bound slot bag of a bag id and the control state it keeps.
 Unk_StBagBind* FUN_1422c8e90(const CString& strBagId);
 StoreSlotBag* FUN_14180b940(Unk_StBagBind* pBind);
-void FUN_1422cca90(StoreSlotBag* pBag);
 void FUN_14180b230(CString* pBagId);                                        // drop the bag bound to the id
 void FUN_14180b170(CString* pBagId, int nSlot, int nSize);                  // create the bag
 class Unk_StBagCtl
@@ -136,8 +139,12 @@ public:
     void FUN_1422e0bd0(const CStringW& str);                                // set the text
     void FUN_1422e0920(const UIStoreDialog::StoreDelegate& onChange);       // text changed callback
 };
-int FUN_1422c76c0(Unk_StInput* p);                                          // the input has the focus
-void FUN_1422c7630(ASDisplayObject* p, int bFocus);
+class ASUIComponent   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1422c7630(int);
+    int FUN_1422c76c0();
+};
 Unk_StInput* FUN_140bc0500(const Unk_StInputRef& r);                             // operator T*
 Unk_StInput* FUN_140bc0550(Unk_StInputRef* p);                              // operator->
 void FUN_140bc0300(Unk_StInputRef* p, int n);                               // reset
@@ -177,7 +184,7 @@ public:
     virtual bool vfunc_40(__int64 nPrice);                                  // can pay the price
 #undef DC_V
 };
-Unk_DictPlatform* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 class Unk_DictRequest
 {
 public:
@@ -202,17 +209,13 @@ struct Unk_DictRequestValue
 
 // Input state, the movie manager, string helpers and message boxes.
 class Unk_StInputState { public: unsigned char FUN_14116d9c0(int a, int b, int c); };
-Unk_StInputState* FUN_14025e7c0();
-char* FUN_14025e7b0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 int FUN_1402c4c90(void* p, int n);
 class Unk_StUiSvc;
-Unk_StUiSvc* FUN_1403ed2b0();
-void FUN_141add1f0(Unk_StUiSvc* p);          // tell why the expansion is not possible
 class Unk_StUiMgr { public: int FUN_1422d4e20(CString strKey); void FUN_1422d4dd0(CString strKey); };
 Unk_StUiMgr* FUN_140b632f0();
-class Unk_StStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_StStrings* FUN_1401a9d70();
-CStringW FUN_1409eec40(int nStringId);
+CStringW BlockFormat(int nStringId);
 CStringW FUN_1413fa9b0(const CStringW& kIn);
 CStringW FUN_1409404f0(__int64 n);                                          // a number with thousand separators
 CStringW FUN_140763e10(int n);
@@ -235,9 +238,13 @@ int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wcha
 CStringW* FUN_140159a00(ATL::CAtlArray<CStringW>* p, size_t i);
 unsigned char FUN_1403b3c40(const CStringW& a, const wchar_t* b);
 const __int64& FUN_1402e49a0(const __int64* a, const __int64* b);           // std::min
-int FUN_141b21220(void* p);
+class UITalkManager   // C3: member view for the former free stand-ins
+{
+public:
+    int GetTalking();
+    void SendNpcTalkMode0();
+};
 void* FUN_140967100();
-void FUN_141b1feb0(void* p);
 struct Unk_PickXY { float x, y; };                                          // dialog offset
 extern Unk_PickXY DAT_143b02320;                                            // zero offset
 void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_PickXY offLeft, Unk_PickXY offRight);
@@ -251,11 +258,8 @@ public:
     ~Unk_StCandSet();                                                       // 0x14025c430
     void* m_pad[6];
 };
-void* FUN_14025e750(Unk_StCandSet* p);                                      // first position
 const CStringW& FUN_14025e5c0(Unk_StCandSet* p, void* pos);                 // the key at a position
 void FUN_14025e840(Unk_StCandSet* p, void** pPos);                          // next
-void* FUN_1409eea60(Unk_StCandSet* p, const CStringW& key, void* pStart);    // Find
-void FUN_14025d670(Unk_StCandSet* p, const CStringW& key);                  // insert
 class Unk_StItemEntry
 {
 public:
@@ -264,7 +268,7 @@ public:
     void* m_pad[2];
 };
 unsigned char FUN_1401c0050(Unk_StItemEntry* p, int n);
-class Unk_StItemObj { public: CStringW FUN_140527b10(); };                // the item name
+class Unk_StItemObj : public CItem { };                // the item name
 Unk_StItemObj* FUN_1401c0180(Unk_StItemEntry* p);
 size_t FUN_140720ca0_count(void*);
 // CAtlArray<MS2Ptr<CItem>> (ctor 0x1408f2190, dtor 0x1408f2340).
@@ -348,14 +352,14 @@ struct Unk_StActor { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual
 // @0x141b0ce20
 void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
 {
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_StWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (nEvent == 0)
     {
         ST_EACH_LISTENER(i0, pL)
             pL->vfunc_oa0_3((int)pPlayer->FUN_141670a00(4), (int)pPlayer->FUN_141670a30(4));
-        FUN_1409670d0()->FUN_14162a910(TPtr<PCBase>(pPlayer));
+        TSingleton<CPartyManager>::GetInstance()->FUN_14162a910(TPtr<PCBase>(pPlayer));
     }
     else if (nEvent == 1)
     {
@@ -370,16 +374,16 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
     else if (nEvent == 3)
     {
         ST_EACH_LISTENER(i3, pL)
-            pL->vfunc_oa0_6((void*)DAT_143ab28a0, FUN_1404a1bb0()->FUN_140353610(reinterpret_cast<Unk_StActor*>(pPlayer)->vfunc_78()));
+            pL->vfunc_oa0_6((void*)DAT_143ab28a0, ((class Unk_StJobTable*)FUN_1404a1bb0())->FUN_140353610(reinterpret_cast<Unk_StActor*>(pPlayer)->vfunc_78()));
     }
     else if (nEvent == 4)
     {
         ST_EACH_LISTENER(i4, pL)
         {
-            CStringW strJob = FUN_1401a9d70()->FUN_141811980(6, FUN_141654730(pPlayer));
+            CStringW strJob = TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, FUN_141654730(pPlayer));
             pL->vfunc_oa0_7(FUN_141654730(pPlayer), strJob);
         }
-        FUN_1409670d0()->FUN_14162a840(TPtr<PCBase>(pPlayer));
+        TSingleton<CPartyManager>::GetInstance()->FUN_14162a840(TPtr<PCBase>(pPlayer));
     }
     else if (nEvent == 5)
     {
@@ -391,10 +395,10 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
     }
     else if (nEvent == 6)
     {
-        FUN_1411e7660(FUN_1416561a0(pPlayer));
+        ((class CEquipment*)(struct Unk_PCEquipSet*)(FUN_1416561a0(pPlayer)))->FUN_1411e7660();
         ST_EACH_LISTENER(i6, pL)
             pL->vfunc_oa0_9((unsigned short)pPlayer->vfunc_78());
-        FUN_1409670d0()->FUN_14162aa10(TPtr<PCBase>(pPlayer));
+        TSingleton<CPartyManager>::GetInstance()->FUN_14162aa10(TPtr<PCBase>(pPlayer));
     }
     else if (nEvent == 7)
     {
@@ -628,10 +632,10 @@ MS2_REPLACE_METHOD(0x141B0EF40, UIStoreDialog, vfunc_66, 370, 0xA96F3C5E);
 // @0x141b0f0c0
 void UIStoreDialog::vfunc_67()
 {
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
-    FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    ((class Unk_StItemHub*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     FUN_14180b230(&m_188);
-    FUN_141b1feb0(FUN_140967100());
+    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
     DAT_143ab2d80.RequestSort();
     UIDialog::vfunc_67();
     m_80 = 1;
@@ -652,7 +656,7 @@ MS2_REPLACE_METHOD(0x141B0F1E0, UIStoreDialog, vfunc_54, 34, 0x95C54B23);
 // @0x141b0f210
 int UIStoreDialog::vfunc_73()
 {
-    if (FUN_1402c4c90(FUN_14025e7b0() + 8, 0xc) != 0)
+    if (FUN_1402c4c90(((char*)FUN_14025e7b0()) + 8, 0xc) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
@@ -672,9 +676,9 @@ int UIStoreDialog::vfunc_71()
     if (FUN_141b10af0() != 0)
     {
         if (m_190 != 0)
-            FUN_140d73aa0(FUN_1409eec40(0x2ae), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
+            FUN_140d73aa0(BlockFormat(0x2ae), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
         else
-            FUN_140d73aa0(FUN_1409eec40(0x2ad), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
+            FUN_140d73aa0(BlockFormat(0x2ad), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
         return 1;
     }
     return 0;
@@ -685,8 +689,8 @@ MS2_REPLACE_METHOD(0x141B0F2B0, UIStoreDialog, vfunc_71, 374, 0xCD6372B2);
 void UIStoreDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
-    FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    ((class Unk_StItemHub*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     vfunc_47(0);
     if (DAT_143ab2d80.Ready() == 0)
         DAT_143ab2d80.RequestLoad();
@@ -869,7 +873,7 @@ int UIStoreDialog::vfunc_13()
         return 0;
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+    if (((class Unk_StInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
     {
         ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDlg != 0)
@@ -881,15 +885,15 @@ int UIStoreDialog::vfunc_13()
             }
             if (FUN_140bc0500(m_1a8) != 0)
             {
-                if (FUN_1422c76c0(FUN_140bc0550(&m_1a8)) != 0)
+                if (((class ASUIComponent*)(class Unk_StInput*)(FUN_140bc0550(&m_1a8)))->FUN_1422c76c0() != 0)
                 {
                     FUN_141b10ed0(FUN_140bc0550(&m_1a8)->FUN_1422e0b00());
-                    FUN_1422c7630(pDlg, 1);
-                    FUN_1422c7630(FUN_140bc0550(&m_1a8), 0);
+                    ((class ASUIComponent*)(class ASDisplayObject*)(pDlg))->FUN_1422c7630(1);
+                    ((class ASUIComponent*)(class ASDisplayObject*)(FUN_140bc0550(&m_1a8)))->FUN_1422c7630(0);
                 }
                 else
                 {
-                    FUN_1422c7630(pDlg, 0);
+                    ((class ASUIComponent*)(class ASDisplayObject*)(pDlg))->FUN_1422c7630(0);
                 }
             }
             return 1;
@@ -916,7 +920,7 @@ void UIStoreDialog::vfunc_80(void* pRequest)
             else
             {
                 FUN_140bc0550(&m_1a8)->FUN_1422e0bd0(L"");
-                FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, CStringW(L""));
+                FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
             }
         }
     }
@@ -941,7 +945,7 @@ void UIStoreDialog::vfunc_oa0_9(unsigned short a1)
     {
         StoreSlotBag* pBag = FUN_14180b940(FUN_1422c8e90(m_188));
         if (pBag != 0)
-            FUN_1422cca90(pBag);
+            ((class DragSlotBag*)(class StoreSlotBag*)(pBag))->FUN_1422cca90();
     }
 }
 MS2_REPLACE_METHOD_VIA(0x141B10780, UIStoreDialog, UIStatusEventListener, vfunc_oa0_9, 90, 0x9FD650A0);
@@ -953,7 +957,7 @@ void UIStoreDialog::vfunc_oa0_7(int a1, CStringW s)
     {
         StoreSlotBag* pBag = FUN_14180b940(FUN_1422c8e90(m_188));
         if (pBag != 0)
-            FUN_1422cca90(pBag);
+            ((class DragSlotBag*)(class StoreSlotBag*)(pBag))->FUN_1422cca90();
     }
 }
 MS2_REPLACE_METHOD_VIA(0x141B107E0, UIStoreDialog, UIStatusEventListener, vfunc_oa0_7, 115, 0x8820D5B0);
@@ -1015,7 +1019,7 @@ MS2_REPLACE_METHOD(0x141B109A0, UIStoreDialog, FUN_141b109a0, 316, 0x290F2820);
 // @0x141b10af0
 int UIStoreDialog::FUN_141b10af0()
 {
-    return FUN_141b21220(FUN_140967100()) == 0 && vfunc_55() == 0;
+    return ((class UITalkManager*)(void*)(FUN_140967100()))->GetTalking() == 0 && vfunc_55() == 0;
 }
 MS2_REPLACE_METHOD(0x141B10AF0, UIStoreDialog, FUN_141b10af0, 76, 0x899AED12);
 
@@ -1038,7 +1042,7 @@ void UIStoreDialog::FUN_141b10bc0(const Scaleform::GFx::FunctionHandler::Params&
 {
     if (FUN_14199f2c0(&m_1a8) != 0)
         return;
-    if (FUN_1422c76c0(FUN_140bc0550(&m_1a8)) == 0)
+    if (((class ASUIComponent*)(class Unk_StInput*)(FUN_140bc0550(&m_1a8)))->FUN_1422c76c0() == 0)
         return;
     CStringW strText = FUN_140bc0550(&m_1a8)->FUN_1422e0b00();
     if (strText.IsEmpty())
@@ -1050,7 +1054,7 @@ void UIStoreDialog::FUN_141b10bc0(const Scaleform::GFx::FunctionHandler::Params&
     {
         Unk_StCandSet set(10);
         FUN_141b11a10(CStringW(strSearch), &set);
-        for (void* pos = FUN_14025e750(&set); pos != 0; FUN_14025e840(&set, &pos))
+        for (void* pos = ((void*)((ATL::CAtlList<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraitsBase<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)(class Unk_StCandSet*)(&set))->GetHeadPosition()); pos != 0; FUN_14025e840(&set, &pos))
         {
             CStringW strName = FUN_1413fa9b0(FUN_14025e5c0(&set, pos));
             ASObj row(2);
@@ -1081,7 +1085,7 @@ void UIStoreDialog::FUN_141b10ed0(CStringW strText)
     }
     Unk_DictRequest request(0x4e47);
     request.FUN_1401bac80("m_inputSearch", strText, 0);
-    int nResult = FUN_140d86260()->vfunc_37(&request);
+    int nResult = ((class Unk_DictPlatform*)FUN_140d86260())->vfunc_37(&request);
     if (nResult == 1)
     {
         CStringW strSearch = FUN_1413fa9b0(strText);
@@ -1177,7 +1181,7 @@ int UIStoreDialog::FUN_141b11490()
 {
     if (DAT_143ab2d80.Id() != 0)
         return 0;
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_StWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0 && pPlayer->FUN_14166ce30() == 0)
         return 1;
     return 0;
@@ -1196,11 +1200,11 @@ MS2_REPLACE_METHOD(0x141B114F0, UIStoreDialog, FUN_141b114f0, 39, 0x9C32443A);
 // @0x141b11520
 void UIStoreDialog::FUN_141b11520()
 {
-    Unk_DictPlatform* pPlatform = FUN_140d86260();
+    Unk_DictPlatform* pPlatform = ((class Unk_DictPlatform*)FUN_140d86260());
     if (pPlatform->vfunc_40(DAT_143ab2d80.Value4500()) == 1)
         DAT_143ab2d80.RequestExtend();
     else
-        FUN_141add1f0(FUN_1403ed2b0());
+        ((class CUIService*)(class Unk_StUiSvc*)(reinterpret_cast<Unk_StUiSvc*>(TSingleton<CUIService>::GetInstance())))->FUN_141add1f0();
 }
 MS2_REPLACE_METHOD(0x141B11520, UIStoreDialog, FUN_141b11520, 103, 0x3BDCFA30);
 
@@ -1235,7 +1239,7 @@ void UIStoreDialog::FUN_141b116d0(CStringW strText)
             {
                 if (FUN_140bc0500(m_1a8) != 0)
                 {
-                    FUN_1422c7630(FUN_140bc0550(&m_1a8), 0);
+                    ((class ASUIComponent*)(class ASDisplayObject*)(FUN_140bc0550(&m_1a8)))->FUN_1422c7630(0);
                     FUN_140bc0550(&m_1a8)->FUN_1422e0bd0(L"");
                     FUN_140bc0550(&m_1a8)->vfunc_24(1);
                 }
@@ -1267,8 +1271,8 @@ void UIStoreDialog::FUN_141b11a10(CStringW strText, Unk_StCandSet* pOut)
         strNorm.MakeLower();
         if (strNorm.Find(strText, 0) != -1)
         {
-            if (FUN_1409eea60(pOut, strItem, 0) == 0)
-                FUN_14025d670(pOut, strItem);
+            if (((void*)((ATL::CAtlList<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraits<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)(class Unk_StCandSet*)(pOut))->Find(strItem, (struct __POSITION*)(0))) == 0)
+                ((ATL::CAtlList<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraitsBase<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)(class Unk_StCandSet*)(pOut))->AddTail(strItem);
         }
     }
 }
@@ -1283,7 +1287,7 @@ bool UIStoreDialog::FUN_141b11ba0(int nButton, const CMsgBoxData& box)
     if (pDlg != 0 && FUN_140bc0500(m_1a8) != 0)
     {
         FUN_140b632f0()->FUN_1422d4dd0(CString(m_20));
-        FUN_1422c7630(FUN_140bc0550(&m_1a8), 1);
+        ((class ASUIComponent*)(class ASDisplayObject*)(FUN_140bc0550(&m_1a8)))->FUN_1422c7630(1);
     }
     return true;
 }

@@ -28,6 +28,10 @@ static CString s_strGuildBattleReward = "guildBattle_Reward";
 #include "ms2/placeholder/mypc.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/client/ms2/worldservice.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -41,13 +45,9 @@ public:
     MyPC* FUN_141bd0cc0();                                          // the local player
     PCBase* FUN_141bd1530(__int64 nCharId);                         // a player by character id
 };
-Unk_PrdWorld* FUN_1403ed2d0();
-
-class Unk_PrdStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_PrdStrings* FUN_1401a9d70();
 
 // The reward item: pointer 0x14053f870, get 0x140203c60, operator-> 0x1401b52a0, release 0x1401b50d0.
-class Unk_PrdItemData { public: CString FUN_14053fdd0(); };        // the icon name
+class Unk_PrdItemData : public CItemData { };        // the icon name
 class Unk_PrdItemPtr
 {
 public:
@@ -76,7 +76,7 @@ CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);   // format
 CStringW FUN_1408116a0(int nId, const int& nArg);
 CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount);   // formatted message
 __int64 FUN_141656a80(PCBase* pPC);                                 // the character id
-struct Unk_PrdProfile { CString FUN_1416612e0(); }; // the profile key of the player
+ // the profile key of the player
 CString FUN_141028be0(unsigned __int64 nId, const CString& strKey, int n, CString strExtra);   // the profile picture url
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 void FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
@@ -189,10 +189,10 @@ void UIPvPRankDuelResultDialog::FUN_140f90ec0(__int64 nCharId, bool bLeft)
         return;
     if (nCharId == 0)
         return;
-    PCBase* pPC = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
+    PCBase* pPC = reinterpret_cast<Unk_PrdWorld*>(WorldService::GetInstance())->FUN_141bd1530(nCharId);
     if (pPC == 0)
         return;
-    CStringW strUrl = FUN_14016a730(FUN_141028be0(FUN_141656a80(pPC), reinterpret_cast<Unk_PrdProfile*>(pPC)->FUN_1416612e0(), 1, ""), 0);
+    CStringW strUrl = FUN_14016a730(FUN_141028be0(FUN_141656a80(pPC), reinterpret_cast<PC*>(pPC)->FUN_1416612e0(), 1, ""), 0);
     if (bLeft)
         m_30->Invoke("setLeftCharProfile", strUrl);
     else
@@ -206,7 +206,7 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         return;
     CString strUnused1;
     CString strUnused2;
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = reinterpret_cast<Unk_PrdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return;
     bool bLeftWins = pResult->m_nCharIdL == pResult->m_nWinnerId;
@@ -253,7 +253,7 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         if (FUN_141656a80(pMe) == pResult->m_nCharIdR)
             nReward = pResult->m_nRewardR;
     }
-    CStringW strReward = FUN_14093fa20(0x401, FUN_1401a9d70()->FUN_141811980(1, 0x55d4a86), nReward);
+    CStringW strReward = FUN_14093fa20(0x401, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, 0x55d4a86), nReward);
     if (nReward == 0)
         strReward = L"";
     m_30->Invoke("setRewardText", strReward);

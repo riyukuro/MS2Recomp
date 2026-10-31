@@ -10,7 +10,10 @@
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiweddinghalllistdialog.cpp"    // assumed
 
+// The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ascorelist.h"
 
 #include "uiweddinghalllistdialog.h"
 
@@ -22,32 +25,16 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/weddingmanager.h"
+#include "ms2/placeholder/weddingtable.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
-
-// The list controls of the movie (AS lists with clear / append).
-class Unk_WhList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                               // clear
-    void FUN_1422dd230(const ASObj& row);               // append a row
-};
 
 // The hall tables: package -> hall -> string id of the hall name (day / night).
 class Unk_WhHall : public CPtred { public: int FUN_140906e40(bool bNight); };
 class Unk_WhPackage : public CPtred { public: MS2Ptr<Unk_WhHall> FUN_140907110(int nHallId); };
 class Unk_WhTable { public: MS2Ptr<Unk_WhPackage> FUN_140908b80(int nPackageId); };
-Unk_WhTable* FUN_1409023c0();
 
 // The own character: its wedding hall tickets and the "enter the wedding" request.
-WeddingManager* FUN_1409eed90();
 
 unsigned __int64 FUN_140718370(const CStringW& str);                // string to unsigned __int64
 __int64 GetServerTime();                                            // the current time
@@ -119,7 +106,7 @@ int UIWeddingHallListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
             unsigned __int64 nWeddingSn = FUN_140718370(data.FUN_1422b8f40());
-            FUN_1409eed90()->SendInvitation(nWeddingSn);
+            TSingleton<WeddingManager>::GetInstance()->SendInvitation(nWeddingSn);
             return 1;
         }
     }
@@ -138,9 +125,9 @@ MS2_REPLACE_METHOD(0x140FD90F0, UIWeddingHallListDialog, FUN_140fd90f0, 22, 0x41
 void UIWeddingHallListDialog::FUN_140fd9110()
 {
     std::map<unsigned __int64, WeddingHallTicket> halls;
-    FUN_1409eed90()->CollectTickets(halls);
-    MS2Ptr<Unk_WhList> pOpenList = FUN_140c02900("m_openList");
-    MS2Ptr<Unk_WhList> pProgressList = FUN_140c02900("m_progressList");
+    TSingleton<WeddingManager>::GetInstance()->CollectTickets(halls);
+    MS2Ptr<ASScrollingList> pOpenList = FUN_140c02900("m_openList");
+    MS2Ptr<ASScrollingList> pProgressList = FUN_140c02900("m_progressList");
     if (pOpenList.IsNull() || pProgressList.IsNull()) {
         vfunc_67();
         return;
@@ -152,7 +139,7 @@ void UIWeddingHallListDialog::FUN_140fd9110()
     __int64 nNow = GetServerTime();
     for (; it != itEnd; ++it) {
         WeddingHallTicket& ticket = it->second;
-        MS2Ptr<Unk_WhPackage> pPackage = FUN_1409023c0()->FUN_140908b80(ticket.m_nPackageId);
+        MS2Ptr<Unk_WhPackage> pPackage = reinterpret_cast<Unk_WhTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908b80(ticket.m_nPackageId);
         if (pPackage == 0)
             continue;
         MS2Ptr<Unk_WhHall> pHall = pPackage->FUN_140907110(ticket.m_nHallId);

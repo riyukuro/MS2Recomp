@@ -19,6 +19,13 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/uiugceventdispatcher.h"
+#include "ms2/placeholder/asbutton.h"
+#include "ms2/client/ms2/mypc.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -27,10 +34,8 @@ MS2_EMIT_CRT_MEMMOVE_S();
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> AptClickDelegate;
 
 // The broker / door / contract buttons.
-class Unk_140acd6e0 : public ASDisplayObject
+class Unk_140acd6e0 : public ASButton
 {
-public:
-    void FUN_1422ce240(const AptClickDelegate& onClick, void* pUserData);
 };
 
 class Unk_AptScript : public AScript
@@ -40,14 +45,13 @@ public:
     Scaleform::GFx::Value FUN_1418b7550(const char* szMethod, int n);
 };
 
-class Unk_AptPlayer { public: void FUN_14152a0c0(int nA, int nMapId, int nGroup, int nRoom, CStringW strA, CStringW strB); };
+class Unk_AptPlayer : public MyPC { };
 class Unk_AptWorld
 {
 public:
     Unk_AptPlayer* FUN_141bd0cc0();                             // the local player
     unsigned FUN_141bd3060();                                   // the current map id
 };
-Unk_AptWorld* FUN_1403ed2d0();
 
 class Unk_AptUIMgr
 {
@@ -55,18 +59,14 @@ public:
     int FUN_141adc890(int nUiId);                               // is shown
     void FUN_141adc530(int nUiId);                              // close
 };
-Unk_AptUIMgr* FUN_1403ed2b0();
 
 class Unk_AptContractDialog { public: void FUN_141ab4000(int nGroup, unsigned nMapId); };
 Unk_AptContractDialog* FUN_140961690(int nUiId);                // GetDialog
 
-class Unk_AptUgcEvents { public: void FUN_141b38be0(UIUGCEventListener* p); void FUN_141b38c70(UIUGCEventListener* p); };
-Unk_AptUgcEvents* FUN_140bc09f0();
+UIUGCEventDispatcher* FUN_140bc09f0();
 
 bool FUN_140a467d0(const MS2Ptr<AScript>*);                     // has the AS object been released
 int FUN_1408a0d30(int nGroup, Unk_UGCGroup& rResult, int nMapId);   // the apartment group row
-class Unk_AptStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_AptStrings* FUN_1401a9d70();
 CStringW FUN_140979570(int nMap);                               // the map name
 bool FUN_140e45240(const CStringW& s, const char* c);          // case-insensitive equal
 CStringW GetStringCommon(int nStringId);                          // string table text
@@ -147,7 +147,7 @@ void UIApartmentDialog::vfunc_26()
 // @0x1418b63d0
 int UIApartmentDialog::vfunc_13()
 {
-    Unk_AptPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_AptPlayer* pPlayer = reinterpret_cast<Unk_AptWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     if (FUN_14025e7c0()->FUN_14116d840())
@@ -195,7 +195,7 @@ void UIApartmentDialog::FUN_1418b6580()
 {
     if (FUN_140a467d0(&m_30))
         return;
-    Unk_AptPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_AptPlayer* pPlayer = reinterpret_cast<Unk_AptWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     FUN_140cfee80(FUN_1422dbc00(), CString("m_title"), FUN_1418b6de0());
@@ -211,7 +211,7 @@ void UIApartmentDialog::FUN_1418b6840(int nA, int nMapId, int nGroup)
     m_nA = nA;
     m_nMapId = nMapId;
     m_nGroup = nGroup;
-    FUN_1408a0d30(m_nGroup, m_group, FUN_1403ed2d0()->FUN_141bd3060());
+    FUN_1408a0d30(m_nGroup, m_group, reinterpret_cast<Unk_AptWorld*>(WorldService::GetInstance())->FUN_141bd3060());
 }
 
 // @0x1418b68c0
@@ -226,13 +226,13 @@ void UIApartmentDialog::FUN_1418b68c0()
 // @0x1418b6990
 void UIApartmentDialog::FUN_1418b6990(int nRoom)
 {
-    Unk_AptPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_AptPlayer* pPlayer = reinterpret_cast<Unk_AptWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (m_nMapId == 0)
         return;
     DAT_143ab288c = m_nMapId;
-    pPlayer->FUN_14152a0c0(m_nA, m_nMapId, m_nGroup, nRoom, CStringW(L""), CStringW(L""));
+    pPlayer->SendRequestMoveFieldMode0(m_nA, m_nMapId, m_nGroup, nRoom, CStringW(L""), CStringW(L""));
 }
 
 // @0x1418b6ab0
@@ -288,22 +288,22 @@ void UIApartmentDialog::FUN_1418b6d40(const Scaleform::GFx::FunctionHandler::Par
 // @0x1418b6d60
 void UIApartmentDialog::FUN_1418b6d60(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4e76))
+    if (reinterpret_cast<Unk_AptUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e76))
         return;
     Unk_AptContractDialog* pDialog = FUN_140961690(0x4e76);
     if (pDialog != 0)
-        pDialog->FUN_141ab4000(m_nGroup, FUN_1403ed2d0()->FUN_141bd3060());
-    FUN_1403ed2b0()->FUN_141adc530(0x4e76);
+        pDialog->FUN_141ab4000(m_nGroup, reinterpret_cast<Unk_AptWorld*>(WorldService::GetInstance())->FUN_141bd3060());
+    reinterpret_cast<Unk_AptUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e76);
 }
 
 // @0x1418b6de0
 CStringW UIApartmentDialog::FUN_1418b6de0()
 {
-    unsigned nMapId = FUN_1403ed2d0()->FUN_141bd3060();
+    unsigned nMapId = reinterpret_cast<Unk_AptWorld*>(WorldService::GetInstance())->FUN_141bd3060();
     Unk_UGCGroup group;
     if (FUN_1408a0d30(m_nGroup, group, nMapId) != 0)
         return FUN_140979570(nMapId);
-    return FUN_1401a9d70()->FUN_141811980(3, nMapId);
+    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nMapId);
 }
 
 // @0x1418b6ec0

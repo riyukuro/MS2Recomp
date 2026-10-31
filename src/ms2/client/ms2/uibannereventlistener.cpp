@@ -28,6 +28,9 @@ static CStringW s_strBannerClose(L"bannerClose");
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/buddymanager.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -104,7 +107,6 @@ public:
     __int64 FUN_141656a80();                                        // the character id
 };
 class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
-Unk_1403ed2d0* FUN_1403ed2d0();
 bool FUN_140b883c0();
 bool FUN_140b88470(Unk_Pos& posA, Unk_Pos& posB);
 bool FUN_140b884e0(Unk_Pos& pos);
@@ -123,7 +125,7 @@ public:
 };
 MS2Ptr<Unk_CMsgBoxData> FUN_140d73f20(CStringW strMessage, int nType);
 void FUN_140d73c60(MS2Ptr<Unk_CMsgBoxData> box);
-CStringW FUN_1409eec40(int nStringId);
+CStringW BlockFormat(int nStringId);
 CStringW FUN_140298ea0(CStringW strKey);
 void FUN_141275260(int nStringId, int a, int b);
 void FUN_1412752d0(const CStringW& str, int n);
@@ -140,11 +142,9 @@ MS2_CHECK_OFFSET(Unk_CoupleDanceEvent, m_id, 0x18);
 template <> Unk_CoupleDanceEvent* MS2Ptr<Unk_CoupleDanceEvent>::get() const { return m_p; }
 class Unk_CoupleEventHolder { public: MS2Ptr<Unk_CoupleDanceEvent> FUN_140428700(); };
 class Unk_140302b00 { public: Unk_CoupleEventHolder* FUN_1403ed140(); };
-Unk_140302b00* FUN_140302b00();
 
 // The buddy manager (blocked users).
-class Unk_SSG97a780 { public: unsigned FUN_140ae51b0(__int64 nCharacterId); };
-Unk_SSG97a780* FUN_14097a780();
+CBuddyManager* FUN_14097a780();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -156,7 +156,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         MS2_ASSERT_AT(0x10, 0);
         return;
     }
-    Unk_141bd0cc0* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pPlayer)
     {
         MS2_ASSERT_AT(0x17, 0);
@@ -172,7 +172,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
     if (bSelfTarget)
     {
         // We cannot challenge ourselves.
-        CStringW strMessage = FUN_1409eec40(0xd0c);
+        CStringW strMessage = BlockFormat(0xd0c);
         MS2Ptr<Unk_CMsgBoxData> box = FUN_140d73f20(strMessage, 1);
         box->FUN_141a01660(s_strBannerClose);
         box->FUN_141a024a0(0);
@@ -217,7 +217,7 @@ bool FUN_140bac700(int nResult, const Unk_CMsgBoxData& box)
 {
     if (box.FUN_141a04a80().m_nButton != 0)
         return true;
-    Unk_141bd0cc0* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pPlayer)
     {
         MS2_ASSERT_AT(0x5f, 0);
@@ -250,7 +250,7 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         MS2_ASSERT_AT(0x81, 0);
         return;
     }
-    Unk_141bd0cc0* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pPlayer)
     {
         MS2_ASSERT_AT(0x88, 0);
@@ -271,7 +271,7 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         FUN_140d73c60(box);
         return;
     }
-    MS2Ptr<Unk_CoupleDanceEvent> pEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_CoupleDanceEvent> pEvent = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
     if (pEvent == NULL)
     {
         FUN_1412752d0(L"s_microgame_couple_dance_end_event", 1);
@@ -311,7 +311,7 @@ bool FUN_140bacda0(int nResult, const Unk_CMsgBoxData& box)
 {
     if (box.FUN_141a04a80().m_nButton != 0)
         return true;
-    Unk_141bd0cc0* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pPlayer)
     {
         MS2_ASSERT_AT(0xd0, 0);
@@ -329,7 +329,7 @@ bool FUN_140bacda0(int nResult, const Unk_CMsgBoxData& box)
     if (!pTarget)
         return true;
     int nEventId = 0;
-    MS2Ptr<Unk_CoupleDanceEvent> pEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_CoupleDanceEvent> pEvent = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
     if (pEvent.get())
         nEventId = pEvent->m_id;
     COutPacket packet(static_cast<int>(SendOp::Microgame), 0);

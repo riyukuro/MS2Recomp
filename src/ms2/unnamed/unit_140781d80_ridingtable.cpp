@@ -50,10 +50,14 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 
+// return types of the getters this unit calls
+class CFileSystem;
+class Unk_SingletonObj1;
+
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
 class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
+CFileSystem* GetFileSystem();
 bool FUN_14028f710(Unk_140165cf0*);                                       // the element is usable
 int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
 int FUN_140873220(Unk_140165cf0*, const char*, int&);
@@ -313,7 +317,7 @@ public:
     char m_pad_00[0x33c0];
     Unk_RideeConstVal m_rideSummonCastTime;                 // +0x33c0
 };
-Unk_RideeConsts* FUN_1401d3200();
+Unk_SingletonObj1* FUN_1401d3200();
 int* FUN_1402056b0(Unk_RideeConstVal* slot);
 
 // @0x140781d80
@@ -451,7 +455,7 @@ RideeData::Basic::Basic()
       m_strPressXEffectRun(""), m_strA0(), m_strPressXEffectIdleNonstop(""), m_strPressXEffectRunNonstop(""),
       m_strLoopEffect(""), m_strRideOffBySkillEffect("")
 {
-    m_fSummonCastTime = (float)*FUN_1402056b0(&FUN_1401d3200()->m_rideSummonCastTime);
+    m_fSummonCastTime = (float)*FUN_1402056b0(&reinterpret_cast<Unk_RideeConsts*>(FUN_1401d3200())->m_rideSummonCastTime);
 }
 
 // @0x140782b10
@@ -924,7 +928,7 @@ CRideeDataPtr FUN_1407844b0(unsigned nId)
 bool FUN_1407845b0(CString strPath, std::vector<CRideeDataPtr>& rOut)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -953,7 +957,7 @@ CRideeDataPtr LoadRiding(unsigned nId)
     CString strPath;
     strPath.Format("./Data/Xml/Riding/%08d.xml", nId);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return CRideeDataPtr(0);
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -995,7 +999,7 @@ void LoadRidingEffectDummy(CRideeDataPtr spData)
     CString strPath;
     strPath.Format("./Data/Xml/Riding/EffectDummy/%08d.xml", spData->m_basic.m_nId);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

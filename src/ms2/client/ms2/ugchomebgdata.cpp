@@ -8,6 +8,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ugchomebgdata.h"
 #include "ms2/client/ms2/cameramode.h"
+#include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/tixmldocument.h"
@@ -38,12 +39,16 @@ public:
 };
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, Unk_UhXmlList* pOut);
-int FUN_140873220(Unk_140165cf0* pNode, const char* pszName, unsigned& nOut);    // unsigned attribute
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);   // string attribute
-void FUN_1408746f0(Unk_140165cf0* pNode, const char* pszName, Unk_UhPoint3& kOut);   // Point3 attribute
+int XmlGetAttr(class TiXmlElement*, char const*, class NiPoint3&);   // C3: was FUN_1408746f0
 class Unk_UhFiles;
-int FUN_1403974b0(Unk_UhFiles* pFiles, TiXmlDocument* doc, const char* path, int a, bool b, bool c);   // member in the exe, called with `this` last
-Unk_UhFiles* FUN_140166420();
+class CFileSystem   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1403974b0(class TiXmlDocument*, char const*, int, bool, bool);
+};
+class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 
 extern Vector3 DAT_143a08d08;   // zero colour
@@ -54,13 +59,10 @@ extern Vector3 DAT_143a08cf8;   // zero up axis
 class Unk_UhUiService { public: void FUN_141ad9980(unsigned char nStage); };
 struct Unk_UhHandle;
 struct Unk_UhWorld { Unk_UhHandle FUN_141bd0420(unsigned hash); };   // the tagged-entity lookup of the world service
-void* FUN_1409478c0();
-void FUN_140aed750(void* pCamera, int nMode, int nKeep);
 void FUN_14097faa0(void* pDst, const Unk_UhPoint3& pt);     // NiPoint3::operator=
 struct Unk_UhHandle { ~Unk_UhHandle(); void* m_a; void* m_p; void* m_c; };   // 24 byte handle, released at 0x1409f20e0
 long long FUN_1409f2170(Unk_UhHandle* h);   // get()
 void* FUN_1409f2190(Unk_UhHandle* h);
-unsigned __int64 FUN_140b285a0(void* p);
 void* FUN_140b285b0(void* p);
 struct Unk_UhEntRef { Unk_UhEntRef(void* p); ~Unk_UhEntRef(); void* m_p; };    // 0x1408a7ed0 / 0x1408a8720
 void* FUN_1408a9280(Unk_UhEntRef* r);
@@ -162,7 +164,7 @@ void UgcHomeOptionData::ApplyLight(unsigned char nType)
 {
     Unk_UhPoint3 color = GetLightColor(nType);
     Unk_UhHandle hTag = reinterpret_cast<Unk_UhWorld*>(WorldService::GetInstance())->FUN_141bd0420(0x169ea355);
-    if ((FUN_1409f2170(&hTag) != 0 ? true : false) && FUN_140b285a0(FUN_1409f2190(&hTag)) > 0)
+    if ((FUN_1409f2170(&hTag) != 0 ? true : false) && ((ATL::CAtlList<efd::SmartPointer<egf::Entity>, ATL::CElementTraits<efd::SmartPointer<egf::Entity>>>*)(void*)(FUN_1409f2190(&hTag)))->GetCount() > 0)
     {
         Unk_UhEntRef ent(FUN_140b285b0(FUN_1409f2190(&hTag)));
         Unk_UhVec3f vec(color.x, color.y, color.z);
@@ -173,17 +175,17 @@ void UgcHomeOptionData::ApplyLight(unsigned char nType)
 // @0x140b683f0
 void UgcHomeOptionData::ApplyCamera(unsigned char nType)
 {
-    FUN_14097faa0((char*)FUN_1409478c0() + 200, GetCameraOffset(nType));
-    FUN_14097faa0((char*)FUN_1409478c0() + 0xd4, GetCameraUp(nType));
-    FUN_140aed750(FUN_1409478c0(), 0x11, 1);
-    FUN_140b6bd30(FUN_1409478c0());
+    FUN_14097faa0((char*)CameraMgr::GetInstance() + 200, GetCameraOffset(nType));
+    FUN_14097faa0((char*)CameraMgr::GetInstance() + 0xd4, GetCameraUp(nType));
+    CameraMgr::GetInstance()->FUN_140aed750(0x11, 1);
+    FUN_140b6bd30(CameraMgr::GetInstance());
 }
 
 // @0x140b684a0
 void UgcHomeOptionData::LoadBg()
 {
     TiXmlDocument doc;
-    bool bFailed = FUN_1403974b0(FUN_140166420(), &doc, FUN_14071a5b0("Table", "ugcBackground.xml"), 0, true, false) == 0;
+    bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "ugcBackground.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
@@ -196,7 +198,7 @@ void UgcHomeOptionData::LoadBg()
     {
         Unk_140165cf0* pNode = list.FUN_140164a30(i);
         unsigned nId = 0;
-        FUN_140873220(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         CString strPath;
         FUN_1408733e0(pNode, "path", strPath);
         MS2Ptr<UgcHomeBgData> spData(new UgcHomeBgData(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x33, nId), strPath));
@@ -208,7 +210,7 @@ void UgcHomeOptionData::LoadBg()
 void UgcHomeOptionData::LoadLight()
 {
     TiXmlDocument doc;
-    bool bFailed = FUN_1403974b0(FUN_140166420(), &doc, FUN_14071a5b0("Table", "ugcHousingLight.xml"), 0, true, false) == 0;
+    bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "ugcHousingLight.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
@@ -218,9 +220,9 @@ void UgcHomeOptionData::LoadLight()
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("list"); pNode != 0; pNode = pNode->FUN_140168650("list"))
     {
         unsigned nId = 0;
-        FUN_140873220(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         Unk_UhPoint3 color;
-        FUN_1408746f0(pNode, "ambientcolor", color);
+        XmlGetAttr((class TiXmlElement*)(pNode), "ambientcolor", *(class NiPoint3*)&static_cast<struct Unk_UhPoint3&>(color));
         color.FUN_140ae9270(255.0f);
         MS2Ptr<UgcHomeLightData> spData(new UgcHomeLightData(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x33, nId), color));
         m_mapLight.SetAt((unsigned)m_mapLight.GetCount(), spData);
@@ -231,7 +233,7 @@ void UgcHomeOptionData::LoadLight()
 void UgcHomeOptionData::LoadCamera()
 {
     TiXmlDocument doc;
-    bool bFailed = FUN_1403974b0(FUN_140166420(), &doc, FUN_14071a5b0("Table", "ugcHousingCamera.xml"), 0, true, false) == 0;
+    bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "ugcHousingCamera.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
@@ -241,11 +243,11 @@ void UgcHomeOptionData::LoadCamera()
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("list"); pNode != 0; pNode = pNode->FUN_140168650("list"))
     {
         unsigned nId = 0;
-        FUN_140873220(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         Unk_UhPoint3 offset(DAT_143b01a60);
-        FUN_1408746f0(pNode, "offset", offset);
+        XmlGetAttr((class TiXmlElement*)(pNode), "offset", *(class NiPoint3*)&static_cast<struct Unk_UhPoint3&>(offset));
         Unk_UhPoint3 upAxis(DAT_143b01a60);
-        FUN_1408746f0(pNode, "upAxis", upAxis);
+        XmlGetAttr((class TiXmlElement*)(pNode), "upAxis", *(class NiPoint3*)&static_cast<struct Unk_UhPoint3&>(upAxis));
         MS2Ptr<UgcHomeCameraData> spData(new UgcHomeCameraData(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x33, nId)));
         spData->m_offset = offset;
         spData->m_upAxis = upAxis;

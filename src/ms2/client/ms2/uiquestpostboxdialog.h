@@ -5,7 +5,7 @@
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/client/ms2/uigalleryeventdialog.h"        // UIQuestEventListener (13 slots)
 
-class Unk_PostBoxList;
+class ASScrollingList;
 class UIQuestPostBoxDialog : public UIDialog, public UIQuestEventListener
 {
 public:
@@ -22,6 +22,6 @@ public:
     void FUN_140e7f660();                               // fill "m_list" with the quests, sorted by kind
     void FUN_140e7f920(int nQuest);                     // onSelectPost: talk to the quest's npc
     CString FUN_140e7fb90(int nQuest);                  // list icon name of a quest kind
-    MS2Ptr<Unk_PostBoxList> FUN_140c02900(const CString& strName);     // bind a list child
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);     // bind a list child
 };
 MS2_CHECK_SIZE(UIQuestPostBoxDialog, 0x180);

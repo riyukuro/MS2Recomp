@@ -35,6 +35,8 @@ static Unk_Handle1401cd100 s_dat_143acbc50(0);                                  
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/bigdatalogsystem.h"
+#include "ms2/placeholder/fittingdollpc.h"
 
 // ---- unit-local placeholders (unrecovered helpers) ----
 
@@ -61,7 +63,11 @@ public:
     char m_pad_2b1[0x320 - 0x2b0 - 1];
     Unk_SibProps m_props;                   // +0x320
 };
-extern bool FUN_14092c5c0(const Unk_SibProps& props);                   // true: the counts come from the argument list
+class CXmlData   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14092c5c0();
+};
 
 // The player's item inventory (global object) and the callbacks.
 class Unk_SibInventory
@@ -74,12 +80,15 @@ extern int DAT_143ab2a90;
 
 // The drop query is the 0x38-byte ItemDropContext (itemdroptable.h, ctor 0x1402e9180).
 class Unk_SibDropTable { public: void FUN_1402eaf10(int nBoxId, ItemDropContext& params, Unk_PetBoxDropVec& out, bool b); };
-Unk_SibDropTable* FUN_1405a1fd0();
 
-class Unk_SibPlayer { public: int FUN_141654700(); };               // the local player
+class Unk_SibPlayer : public PC { };               // the local player
 int FUN_141658e60(Unk_SibPlayer* pPlayer);                                       // the player's job
 class Unk_SibPlayers { public: Unk_SibPlayer* FUN_141bd0cc0(); };
-Unk_SibPlayers* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 
 // string-table text with arguments (the shared FUN_14028dfa0 back end and its instances)
@@ -90,10 +99,7 @@ void FUN_1412752d0(const CStringW& strMessage, int n);                  // pop a
 void FUN_141276180(const CString& strCommand, const CString& strArg);
 CString FUN_140b62550(unsigned nIndex);                                 // the index text
 CString FUN_14016a600(const wchar_t* psz, int n);                       // wide -> narrow
-class Unk_SibPacketSender { public: void FUN_140a1f970(const CString& strFunction, const CString& strArgs); };
-Unk_SibPacketSender* FUN_140d8ee90();
 void OpenItemBoxContents(CItem* pItem, CStringW strArgs);               // unit_140d1ae30 @0x140d1d3f0
-void* FUN_14052cd70(MS2Ptr<CItem>& item);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -147,7 +153,7 @@ void UISelectItemBoxDialog::OnLoadComplete()
     FUN_140e48d80("m_selectedCount", &m_selectedCount);
     FUN_140e48d80("m_selectNotice", &m_selectNotice);
     int nDropBoxId = 0;
-    if (FUN_14092c5c0(reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_props)) {
+    if (((class CXmlData*)&(reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_props))->FUN_14092c5c0()) {
         m_nSelectCount = reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args.FUN_1408d1fd0(0, 0);
         nDropBoxId = reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args.FUN_1408d1fd0(1, 0);
     } else {
@@ -158,14 +164,14 @@ void UISelectItemBoxDialog::OnLoadComplete()
     }
     if (nDropBoxId == 0 || m_nSelectCount == 0)
         return;
-    Unk_SibPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_SibPlayer* pPlayer = ((class Unk_SibPlayers*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     ItemDropContext params;
     params.m_job = pPlayer->FUN_141654700();
     params.m_gender = FUN_141658e60(pPlayer);
     reinterpret_cast<std::vector<ItemDropResult>&>(m_rewards).clear();
-    FUN_1405a1fd0()->FUN_1402eaf10(nDropBoxId, params, m_rewards, false);
+    ((class Unk_SibDropTable*)TSingleton<ItemDropTable>::GetInstance())->FUN_1402eaf10(nDropBoxId, params, m_rewards, false);
     m_binder.FUN_140d43990();
     unsigned nMinRows = 0x12;                                    // the list always shows at least 18 rows; the rest are empty entries
     unsigned nSize = (unsigned)m_rewards.FUN_140314170();
@@ -235,8 +241,8 @@ void UISelectItemBoxDialog::FUN_140f9a230(const Scaleform::GFx::FunctionHandler:
         if (i < selected.GetCount() - 1U)
             strIndices += L",";
     }
-    FUN_140d8ee90()->FUN_140a1f970("select_item_box_function", FUN_14016a600(strIndices, 0));
-    OpenItemBoxContents(static_cast<CItem*>(FUN_14052cd70(item)), CStringW(strIndices));
+    ((class CBigDataLogSystem*)TSingleton<CBigDataLogSystem>::GetInstance())->SendLog("select_item_box_function", FUN_14016a600(strIndices, 0));
+    OpenItemBoxContents(static_cast<CItem*>(((void*)((MS2Ptr<CItem>*)&(item))->get())), CStringW(strIndices));
     vfunc_67();
     FUN_141276180("select_confirm", "");
 }

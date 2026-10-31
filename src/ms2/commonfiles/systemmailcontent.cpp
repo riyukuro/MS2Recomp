@@ -27,8 +27,6 @@ typedef ATL::CAtlMap<unsigned int, CSystemMailContent::Ptr> Unk_SystemMailMap;
 
 // ---- unrecovered helpers ----
 
-class Unk_SmLoader : public CFileSystem { };
-Unk_SmLoader* FUN_140166420();
 CString FUN_140651390();                                        // the language directory
 CString FUN_140298360(const char* pszName, const CString& strDir);   // locale file name
 CString FUN_14038f6d0(const CString& strA, const char* pszB);   // string concatenation
@@ -74,10 +72,10 @@ void LoadSystemMailContent()
 {
     TiXmlDocument doc;
     CString strPath = FUN_14071ae20(FUN_14038f6d0(FUN_140298360("systemMailContent", FUN_140651390()), ".xml"));
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
         strPath = FUN_14071ae20("systemMailContent.xml");
-        if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             return;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");

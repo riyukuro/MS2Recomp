@@ -22,20 +22,10 @@ class Unk_RiObj { public: virtual void v0(); virtual void v1(); virtual void v2(
 __int64 FUN_141bd1200(Unk_RiMain* p, int nObjectId);            // find the object by id
 __int64 FUN_141020ad0(__int64 pObject);                         // the rider's body component (vfunc 5, id 0x6200013)
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                    // the scene root of an entity
-const NiTransform& FUN_140a33f90(NiAVObject* pObj);             // NiAVObject::GetLocalTransform
-const NiTransform& FUN_1409478e0(NiAVObject* pObj);             // NiAVObject::GetWorldTransform
-NiNode* FUN_140a0b000(NiAVObject* pObj);                        // NiAVObject::GetParent
 void FUN_141d2fab0(NiTransform* pXform);                        // NiTransform::MakeIdentity
 void FUN_140b86230(const efd::Point3& kEuler, NiMatrix3& kOut);    // euler angles (degrees) to a rotation matrix
 void FUN_140a0b1f0(const NiMatrix3& kRot, efd::Point3* pEuler); // rotation matrix to euler angles
-void FUN_140a01190(const NiMatrix3* pRot, unsigned int uiCol, efd::Point3* pOut);   // NiMatrix3::GetCol
-float FUN_140968990(efd::Point3& kPt);                          // efd::Point3::Unitize
-void FUN_140981070(NiAVObject* pObj, const NiPoint3& kTrn);     // NiAVObject::SetTranslate
-void FUN_140ddcca0(NiAVObject* pObj, const NiMatrix3& kRot);    // NiAVObject::SetRotate
-void FUN_141d16210(void* pObj);
-void FUN_141d16040(void* pObj, float fTime, bool bUpdateControllers);   // NiAVObject::Update
 class Unk_RiApp;
-double FUN_141473280(Unk_RiApp* pApp);                          // the current game time
 
 RideeInterpolator::RideeInterpolator()
     : NiTransformInterpolator()
@@ -78,11 +68,11 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
         MS2Ptr<Unk_RideeModel> spModel = spData->FUN_140784970();
         if (spModel == 0)
             return false;
-        NiTransform kXform = FUN_140a33f90(spNode.operator->());
+        NiTransform kXform = ((class NiAVObject*)(class NiAVObject*)(spNode.operator->()))->GetLocalTransform();
         NiTransform kParent;
         FUN_141d2fab0(&kParent);
-        if (FUN_140a0b000(spNode.operator->()) != 0)
-            kParent = FUN_1409478e0(FUN_140a0b000(spNode.operator->()));
+        if (((class NiAVObject*)(class NiAVObject*)(spNode.operator->()))->GetParent() != 0)
+            kParent = ((class NiAVObject*)(class NiAVObject*)(((class NiAVObject*)(class NiAVObject*)(spNode.operator->()))->GetParent()))->GetWorldTransform();
         kXform = kParent * kXform;
         NiPoint3 kPos = kXform.m_Translate;
         NiMatrix3 kRot = kXform.m_Rotate;
@@ -93,22 +83,22 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
         kRot = kRot * kSeat;
         FUN_140a0b1f0(kRot, &kEuler);
         efd::Point3 kX;
-        FUN_140a01190(&kRot, 0, &kX);
-        FUN_140968990(kX);
+        ((efd::Matrix3*)(class NiMatrix3 const*)(&kRot))->GetCol(0, *(class efd::Point3*)(&kX));
+        ((struct Vector3*)&(kX))->FUN_140968990();
         efd::Point3 kY;
-        FUN_140a01190(&kRot, 1, &kY);
-        FUN_140968990(kY);
+        ((efd::Matrix3*)(class NiMatrix3 const*)(&kRot))->GetCol(1, *(class efd::Point3*)(&kY));
+        ((struct Vector3*)&(kY))->FUN_140968990();
         efd::Point3 kZ;
-        FUN_140a01190(&kRot, 2, &kZ);
-        FUN_140968990(kZ);
+        ((efd::Matrix3*)(class NiMatrix3 const*)(&kRot))->GetCol(2, *(class efd::Point3*)(&kZ));
+        ((struct Vector3*)&(kZ))->FUN_140968990();
         kPos = kPos + kY * -spModel->m_fY;
         kPos = kPos + kX * spModel->m_fX;
         kPos = kPos + kZ * spModel->m_fZ;
-        FUN_140981070(pRoot, kPos);
-        FUN_140ddcca0(pRoot, kRot);
-        FUN_141d16210(pRoot);
+        ((class NiAVObject*)(class NiAVObject*)(pRoot))->SetTranslate(kPos);
+        ((class NiAVObject*)(class NiAVObject*)(pRoot))->SetRotate(kRot);
+        ((class NiAVObject*)(void*)(pRoot))->UpdateEffects();
         pRoot->UpdateProperties();
-        FUN_141d16040(pRoot, (float)FUN_141473280(reinterpret_cast<Unk_RiApp*>(TSingleton<CMainSystem>::GetInstance())), true);
+        ((class NiAVObject*)(void*)(pRoot))->Update((float)((class CMainSystem*)(class Unk_RiApp*)(reinterpret_cast<Unk_RiApp*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     }
     m_fLastTime = fTime;
     return true;

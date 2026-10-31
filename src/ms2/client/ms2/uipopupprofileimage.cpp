@@ -9,6 +9,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cpopupprofileimageman.h"
 #include <errno.h>
 #include <string.h>
 
@@ -36,30 +39,32 @@ struct Unk_PopupCfg
     char m_pad_0b68[0xcc0 - 0xb60 - sizeof(Unk_PopupCfgB60)];
     Unk_PopupCfgInt m_cc0;
 };
-Unk_PopupCfg* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_PopupUIScale;
-Unk_PopupUIScale* FUN_14025e7a0();                                          // ui scale service
-float FUN_1422afec0(Unk_PopupUIScale* pScale, int nLayer);                  // scale of a layer
-NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
-float FUN_1412762d0(const NiPoint3& pt);
-class Unk_PopupActor : public PCBase
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14166ce30();
-    CString FUN_1416612e0();                                                 // profile image name of the player
+    float FUN_1422afec0(int);
+};
+NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
+float FUN_1412762d0(const NiPoint3& pt);
+class Unk_PopupActor : public PC
+{
 };
 class Unk_PopupSvc { public: void FUN_1416979e0(__int64 nId); };
-Unk_PopupSvc* FUN_1414a5750();
 void* FUN_1408e57f0();
-int FUN_1422b9e00(void*);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSubSceneId();
+};
 PCBase* FUN_140974230(PCBase*);
-__int64 FUN_141656a80(PCBase*);
 CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString strExtra);   // profile image path
 CStringW FUN_14016a730(const char* sz, int nFlags);                         // FormatStringId(id) without arguments
 bool FUN_140930110(int nActorId);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 class Unk_PopupUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
-Unk_PopupUIMgr* FUN_1403ed2b0();
 class Unk_PopupInfoAS : public AScript
 {
 public:
@@ -69,7 +74,7 @@ public:
 };
 class Unk_PopupTimerCfg;
 Unk_PopupTimerCfg* FUN_140a36020(Unk_PopupCfgB60*);
-int FUN_140a35ca0(Unk_PopupTimerCfg*);
+unsigned int FUN_140a35ca0(struct MS2Tick*);   // C3: was FUN_140a35ca0
 UIPopupProfileImage* FUN_141a90250(int nUiId);
 int FUN_141a8fc10(Unk_PopupCfgB60* pCfg);
 
@@ -78,8 +83,8 @@ UIPopupProfileImage::Entity::Entity(int nLayer, const Scaleform::GFx::Value& cli
     : TimerEntity(nLayer, clip, nActorId)
 {
     m_a0 = 0;
-    m_64 = FUN_141a8fc10(&FUN_1401d3200()->m_b60);
-    m_54 = (float)*FUN_1401d3200()->m_cc0.FUN_1402056b0();
+    m_64 = FUN_141a8fc10(&((struct Unk_PopupCfg*)FUN_1401d3200())->m_b60);
+    m_54 = (float)*((struct Unk_PopupCfg*)FUN_1401d3200())->m_cc0.FUN_1402056b0();
 }
 
 // @0x141a8f450
@@ -118,11 +123,11 @@ void UIPopupProfileImage::Entity::vfunc_5()
     if (m_38.get() != 0)
     {
         Unk_PopupInfoAS info(m_18);
-        CString strPath = FUN_141028be0(FUN_141656a80(pPc), ((Unk_PopupActor*)pPc)->FUN_1416612e0(), 1, CString(""));
+        CString strPath = FUN_141028be0(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80(), ((Unk_PopupActor*)pPc)->FUN_1416612e0(), 1, CString(""));
         info.FUN_1407cbb20("imgPath", FUN_14016a730((const char*)strPath, 0));
         info.FUN_1407cb9c0("dead", ((Unk_PopupActor*)pPc)->FUN_14166ce30());
         m_38->Invoke("open", info);
-        float fScale = (float)*FUN_1401d3200()->m_b08.FUN_1402056b0();
+        float fScale = (float)*((struct Unk_PopupCfg*)FUN_1401d3200())->m_b08.FUN_1402056b0();
         float fSize = (fScale / 64.0f) * 100.0f;
         ((Unk_PopupEntity*)m_38.operator->())->FUN_1422c0290(fSize, fSize);
     }
@@ -133,7 +138,7 @@ void UIPopupProfileImage::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (m_38.get())
     {
-        FUN_140ad0c10(pPos, FUN_1422afec0(FUN_14025e7a0(), m_18));
+        FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_PopupUIScale*)(((class Unk_PopupUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
         pPos->y = pPos->y + vfunc_9();
         pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
         ((Unk_PopupEntity*)m_38.operator->())->FUN_1422c00f0(pPos->x, pPos->y);
@@ -145,7 +150,7 @@ void UIPopupProfileImage::Entity::vfunc_7()
 {
     PCBase* pPc = FUN_140974230((PCBase*)FUN_140f49330());
     if (pPc != 0)
-        FUN_1414a5750()->FUN_1416979e0(FUN_141656a80(pPc));
+        reinterpret_cast<Unk_PopupSvc*>(TSingleton<CPopupProfileImageMan>::GetInstance())->FUN_1416979e0(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80());
     if (m_38.get())
         m_38->Invoke("close");
 }
@@ -156,7 +161,7 @@ int UIPopupProfileImage::Entity::vfunc_8(int n)
     PCBase* pActor = (PCBase*)FUN_140f49330();
     if (pActor == 0)
         return 1;
-    if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001e)
+    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001e)
         return 1;
     MS2Ptr<Unk_PCBaseComp_aa8> sp = pActor->vfunc_85();
     if ((bool)sp.get() && ((UIHudEntity::Entity*)(void*)sp.operator->())->FUN_140f48d40() != 0)
@@ -208,7 +213,7 @@ void FUN_141a8fbd0(int nActorId)
 // @0x141a8fc10
 int FUN_141a8fc10(Unk_PopupCfgB60* pCfg)
 {
-    return FUN_140a35ca0(FUN_140a36020(pCfg));
+    return FUN_140a35ca0((struct MS2Tick*)(FUN_140a36020(pCfg)));
 }
 
 // @0x141a8fc30
@@ -290,9 +295,9 @@ UIPopupProfileImage::Entity* UIPopupProfileImage::FUN_141a8fe10(int nActorId)
 // @0x141a90250
 UIPopupProfileImage* FUN_141a90250(int nUiId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_PopupUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_PopupUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (p.get())
             return dynamic_cast<UIPopupProfileImage*>((UIObject*)p);
     }

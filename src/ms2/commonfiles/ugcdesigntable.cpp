@@ -63,9 +63,6 @@ int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& value);
 int FUN_14088da20(int nPriceType);                          // the xml priceType -> the runtime enum
 int FUN_1406e8ac0(Unk_140165cf0* pElem, const char* pszName, int& value);   // "saleTag"
    // the feature/locale singleton
-CFeatureManager* FUN_140166410();
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 class Unk_1401d3200;
 Unk_1401d3200* FUN_1401d3200();
@@ -133,7 +130,7 @@ bool CUGCDesignTable::Reload()
     {
         TiXmlDocument doc;
         // The exe converts the cache's CString to const char* inline (no named pointer local).
-        if (FUN_140166420()->FUN_1403974b0(&doc, *FUN_1401d1140(), 0, true, false) == 0)
+        if (GetFileSystem()->FUN_1403974b0(&doc, *FUN_1401d1140(), 0, true, false) == 0)
             return false;
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)
@@ -147,7 +144,7 @@ bool CUGCDesignTable::Reload()
                 continue;
             CStringW strLocale;
             FUN_140873420(pNode, "locale", strLocale);
-            if (!FUN_140166410()->FUN_14036d750(strLocale))
+            if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d750(strLocale))
                 continue;
             int nItemID = 0;
             FUN_140873220(pNode, "itemID", nItemID);

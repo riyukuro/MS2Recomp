@@ -27,6 +27,7 @@
 #include "ms2/client/ms2/questmanager_2.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -69,8 +70,7 @@ void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
 class Unk_TrCounters { public: int FUN_1409617d0(int nKind, unsigned nId, int* pnDefault); };
 extern Unk_TrCounters g_trCounters;
 
-class Unk_TrPlayer { public: void* FUN_141bd0cc0(); };
-Unk_TrPlayer* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 class Unk_TrDlg { public: void FUN_140ea5f80(); };
 Unk_TrDlg* FUN_140938b90(int nType);
 
@@ -81,7 +81,7 @@ UIQuestEventDispatcher* FUN_140bfc4b0();
 bool FUN_140184310(const CString& str, const char* sz);
 bool FUN_140841300(const CStringW& str, const char* sz);
 int FUN_140718170(const CString& str);
-__int64 FUN_140869440();                                // the server time
+__int64 GetServerTime();                                // the server time
 __int64 FUN_140282020(const CMsTime& kTime);            // time_t of a CMsTime
 __int64 FUN_140761ba0(int nA, int nB);
 __int64 FUN_140761ba0(unsigned nA, int nB);
@@ -136,14 +136,13 @@ void UITimeRunEventDialog::OnLoadComplete()
     MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
     if (spContext.IsNull()) {
         vfunc_67();
-    } else {
-        int nDay = FUN_140ee4bb0(spContext);
-        reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_1409ba030("setDay", nDay);
-        if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_remainTime"))
-            spText->FUN_1422c4cd0(FUN_140ee4380(spContext));
-        FUN_140ee3580();
-        FUN_140ee4ca0();
+        return;
     }
+    reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_1409ba030("setDay", FUN_140ee4bb0(spContext));
+    if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_remainTime"))
+        spText->FUN_1422c4cd0(FUN_140ee4380(spContext));
+    FUN_140ee3580();
+    FUN_140ee4ca0();
 }
 
 // @0x140ee26d0
@@ -158,7 +157,7 @@ void UITimeRunEventDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStrin
         int nTab = FUN_140718170(pArgs->FUN_1422b8d30());
         MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
         if (spContext.get() != 0) {
-            CMsTime now(FUN_140869440());
+            CMsTime now(GetServerTime());
             CMsTime start(FUN_140ee4990(spContext));
             AddDays(start, nTab);
             if (now.Get() < start.Get()) {
@@ -405,9 +404,8 @@ CStringW UITimeRunEventDialog::FUN_140ee4380(MS2Ptr<TimeRunEventContext> spConte
             break;
         }
     }
-    CMsTime now(FUN_140869440());
-    CMsTime end(nEnd);
-    return FormatTimeSpan(end - now, true, true, true, true);
+    ATL::CTimeSpan span = CMsTime(nEnd) - CMsTime(GetServerTime());
+    return FormatTimeSpan(span, true, true, true, true);
 }
 
 // @0x140ee4570
@@ -427,7 +425,7 @@ int UITimeRunEventDialog::FUN_140ee45c0()
     int nCount = 0;
     int bAll = 1;
     unsigned nTotal = 0;
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
         MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
         Unk_PayloadPtr<CQuest> quest = FUN_140764020()->vfunc_o10_3(spQuest->m_questId);
@@ -484,7 +482,7 @@ int UITimeRunEventDialog::FUN_140ee4b00()
 int UITimeRunEventDialog::FUN_140ee4bb0(MS2Ptr<TimeRunEventContext> spContext)
 {
     __int64 tStart = FUN_140ee4990(spContext);
-    ATL::CTimeSpan span = CMsTime(FUN_140869440()) - CMsTime(tStart);
+    ATL::CTimeSpan span = CMsTime(GetServerTime()) - CMsTime(tStart);
     int nDays = (int)span.GetDays();
     int nMax = 6;
     int nResult = (std::min)(nMax, nDays);
@@ -501,7 +499,7 @@ void UITimeRunEventDialog::FUN_140ee4ca0()
             std::map<int, int> counts;
             for (unsigned __int64 i = 1; i < 8; ++i)
                 counts[(int)i] = 0;
-            CMsTime now(FUN_140869440());
+            CMsTime now(GetServerTime());
             for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
                 MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
                 Unk_PayloadPtr<CQuest> quest = FUN_140764020()->vfunc_o10_3(spQuest->m_questId);

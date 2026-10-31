@@ -18,8 +18,6 @@
 struct Unk_TimerCfg { char m_pad_00[0x2f0]; CString m_strEffect; };
 Unk_TimerCfg* FUN_1401d31f0();
 
-CEffectService* FUN_1403ed280();               // the effect service singleton
-
 bool FUN_140a467d0(const MS2Ptr<AScript>* p);  // MS2Ptr<AScript>::IsNull / operator!
 
 // @0x141b265f0
@@ -72,7 +70,7 @@ void UITimerDialog::vfunc_72()
         Unk_EffectTarget kTarget;
         kTarget.m_strName = FUN_1401d31f0()->m_strEffect;
         kTarget.m_nKind = 0;
-        m_nEffect = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+        m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
         m_nEffectRunning = 1;
     } else if (m_nEffectRunning != 0 && (nMin > 0 || nSec > 10)) {
         FUN_141b26bf0();
@@ -130,7 +128,7 @@ MS2_REPLACE_METHOD(0x141B26B90, UITimerDialog, vfunc_86, 87, 0x0987DDCB);
 void UITimerDialog::FUN_141b26bf0()
 {
     if (m_nEffect > 0) {
-        FUN_1403ed280()->FUN_1411a6060(m_nEffect);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
         m_nEffectRunning = 0;
     }

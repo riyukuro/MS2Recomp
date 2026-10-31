@@ -2,6 +2,7 @@
 """Glue files of the plain full-exe build (cmake/fullexe/plain.cmake: one link, no Python at build time).
     plainglue.py write DIR [--rsp FILE] [--cache DIR]
     plainglue.py stubs EXE STUBS_TSV OBJ
+    plainglue.py compile DIR [--cache DIR] [--tree CHECKOUT]
   write   from a finished build (FULLEXE_DIR, its closed link link3.rsp; run at each merge, like symbols.tsv) -> DIR/:
             objs.txt   the link's objs in command-line order (plan order with the initorder --before moves applied), as
                        paths relative to the obj cache (--cache, default the first FULLEXE_OBJ_CACHES dir): obj/... gb/obj/...
@@ -12,9 +13,20 @@
           `stubs` can only extract plain data.
   stubs   one-shot extraction from the user's exe (like tools/extract_resources.py): the data stubs of STUBS_TSV as a
           COFF obj with the layout shim.py writes (the exe's bytes; keep it out of the repository). It stops on a stub
-          that holds a pointer slot (a base relocation), which would need the shim's relocation pass."""
+          that holds a pointer slot (a base relocation), which would need the shim's relocation pass.
+  compile the cl command of every obj of DIR/objs.txt, as the finished build ran it (tools/progress.py game units with
+          their MS2-FLAGS profile or MS2-TOOLSET cl, tools/gbprogress.py engine and library units), checked against the
+          flags key that each obj's .deps recorded -> DIR/:
+            compile.tsv  obj, tool (cl = 14.16, else the toolset: vc9 vc9c vc11 1414 1415), cwd, source, flag set
+            flags.tsv    flag set number, then one field per cl argument (no /Fo, no /showIncludes)
+            tree.tsv     the generated include dirs those commands name: build/gb-tree (gbtree.assemble) and the DirectX
+                         overlays build/ms2-engine-dxsdk* (progress.engine_flags): L <path> <symlink target> | F <path> <line>
+          Paths carry the prefixes ${TP} (MS2_THIRD_PARTY), ${ENGINE} (MS2_ENGINE_DIR), ${GEN} (<checkout>/build) and
+          ${ROOT} (the checkout); the plain build substitutes its own. --tree: the checkout the build compiled (its
+          tools/ are imported; default this one); run with that build's MS2_THIRD_PARTY / MS2_ENGINE_DIR."""
 import os, shutil, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(1, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 TEXT_EXTRA = ("asm", "shim")       # objs of the link outside the cache: built by plain.cmake itself
 
@@ -67,6 +79,98 @@ def write(argv):
     return 0
 
 
+GEN_TREES = ("gb-tree", "ms2-engine-dxsdk", "ms2-engine-dxsdk-preferred")
+
+
+def compile_list(argv):
+    import json
+    if "--tree" in argv:
+        sys.path.insert(0, os.path.join(os.path.abspath(argv[argv.index("--tree") + 1]), "tools"))
+    import progress
+    import gbprogress
+    import gbtree
+    import ms2paths
+    d = argv[0]
+    cache = os.path.realpath(argv[argv.index("--cache") + 1] if "--cache" in argv else progress.CACHE)
+    if progress.ms2pch.enabled():
+        sys.exit("compile: MS2_PCH=1 is not supported (the plain build has no PCH step)")
+    root, gen = progress.ROOT, os.path.join(progress.ROOT, "build")
+    subs = [(ms2paths.THIRD_PARTY, "${TP}"), (ms2paths.ENGINE_DIR, "${ENGINE}"), (gen, "${GEN}"), (root, "${ROOT}")]
+
+    def tok(a):
+        for pre, t in subs:
+            i = a.find(pre + "/")
+            if i < 0 and a.endswith(pre):
+                i = a.find(pre)
+            if i >= 0:
+                return a[:i] + t + a[i + len(pre):]
+        return a
+    tree, _ = gbtree.assemble()
+    gb = {os.path.relpath(gbprogress.obj_path(cache, u), cache): u for u in gbtree.load_units(tree) if u["source"]}
+    rows, bad = [], []
+    for o in open(os.path.join(d, "objs.txt")).read().split():
+        meta = json.load(open(os.path.join(cache, o[:-4] + ".deps")))
+        if o.startswith("gb/"):
+            u = gb.get(o)
+            if u is None:
+                sys.exit("compile: no engine unit for " + o)
+            if gbprogress._key(u) != meta.get("key"):
+                bad.append(o)
+            ts = u.get("toolset") or ms2paths.DEFAULT_TOOLSET
+            row = [o, "cl" if ts == ms2paths.DEFAULT_TOOLSET else ts, u["cwd"], u["source"], "/nologo", "/c"] + u["args"]
+        else:
+            src = os.path.join(progress.GAME, o[len("obj/"):-4] + ".cpp")
+            u = progress.Unit(src)
+            if u.flags_key() != meta.get("flags"):
+                bad.append(o)
+            if u.toolset:
+                row = [o, u.toolset, root, src] + progress.ms2flags.toolset_flags(u.toolset, u.profile)
+            else:
+                row = [o, "cl", root, src] + progress.ms2flags.apply(progress.GAME_FLAGS, u.profile)
+        rows.append([row[0], row[1]] + [tok(a) for a in row[2:]])
+    if bad:
+        sys.exit("compile: %d obj(s) were built with other flags than these sources give now (first %s): run it on the "
+                 "build's own checkout and environment" % (len(bad), bad[0]))
+    semi = [r[0] for r in rows if any(";" in a or "\t" in a for a in r)]
+    if semi:
+        sys.exit("compile: an argument holds ';' or a tab (%s)" % semi[0])
+    left = sorted({a for r in rows for a in r[2:] if root in a or "/mnt/" in a or "/home/" in a})
+    if left:
+        sys.exit("compile: untokenized absolute path %s" % left[0])
+    sets = {}
+    for r in rows:
+        r[4:] = [str(sets.setdefault(tuple(r[4:]), len(sets)))]
+    with open(os.path.join(d, "compile.tsv"), "w", newline="\n") as f:
+        f.write("#obj\ttool\tcwd\tsource\tflag set\n" + "".join("\t".join(r) + "\n" for r in rows))
+    with open(os.path.join(d, "flags.tsv"), "w", newline="\n") as f:
+        f.write("".join("%d\t%s\n" % (i, "\t".join(a)) for a, i in sets.items()))
+    ents = []
+    for t in GEN_TREES:
+        top = os.path.join(gen, t)
+        for dp, dn, fn in os.walk(top):
+            dn.sort()
+            for n in sorted(fn + [x for x in dn if os.path.islink(os.path.join(dp, x))]):
+                p = os.path.join(dp, n)
+                if n == ".stamp" and dp == top:
+                    continue
+                if os.path.islink(p):
+                    ents.append("L\t%s\t%s" % (tok(p), tok(os.readlink(p))))
+                else:
+                    txt = open(p, encoding="latin1").read()
+                    if "\t" in txt or txt.count("\n") != 1 or not txt.endswith("\n"):
+                        sys.exit("compile: %s is not a one-line file" % p)
+                    ents.append("F\t%s\t%s" % (tok(p), tok(txt[:-1])))
+    with open(os.path.join(d, "tree.tsv"), "w", newline="\n") as f:
+        f.write("".join(e + "\n" for e in ents))
+    tools = {}
+    for r in rows:
+        k = r[1] + (" engine" if r[0].startswith("gb/") else "")
+        tools[k] = tools.get(k, 0) + 1
+    print("%s: compile.tsv %d objs (%s), flags.tsv %d flag sets, tree.tsv %d entries"
+          % (d, len(rows), ", ".join("%s %d" % kv for kv in sorted(tools.items())), len(sets), len(ents)))
+    return 0
+
+
 def stubs(argv):
     import pefile
     from shim import BASE, Coff, DATA, RDATA, TEXT
@@ -103,6 +207,6 @@ def stubs(argv):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3 or sys.argv[1] not in ("write", "stubs") or (sys.argv[1] == "stubs" and len(sys.argv) < 5):
+    if len(sys.argv) < 3 or sys.argv[1] not in ("write", "stubs", "compile") or (sys.argv[1] == "stubs" and len(sys.argv) < 5):
         sys.exit(__doc__)
-    sys.exit(write(sys.argv[2:]) if sys.argv[1] == "write" else stubs(sys.argv[2:]))
+    sys.exit({"write": write, "stubs": stubs, "compile": compile_list}[sys.argv[1]](sys.argv[2:]))

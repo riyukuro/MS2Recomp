@@ -85,7 +85,6 @@ static CStringW s_wsUgcSetRow;
 static CStringW s_wsUnlimited;
 
 extern CStringW GetStringCommon(int nId);
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);
 
 // @0x1409c6540
 __int64 ASTooltip::FUN_1409c6540()
@@ -233,7 +232,7 @@ void ASObj::FUN_1409eb310(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 MS2_REPLACE_METHOD(0x1409EB310, ASObj, FUN_1409eb310, 152, 0x1164D0E6);
 
@@ -346,7 +345,6 @@ int ASTooltip::FUN_1409e26b0(const CStringW& strText)
 MS2_REPLACE_METHOD(0x1409E26B0, ASTooltip, FUN_1409e26b0, 146, 0x067A651D);
 
 struct Unk_CommandStrings { CStringW FUN_141811980(int, int); };
-Unk_CommandStrings* FUN_1401a9d70();
 
 // @0x1409d4350
 void ASTooltip::FUN_1409d4350(CItemData* pData)
@@ -394,7 +392,7 @@ MS2_REPLACE_METHOD(0x1409D46A0, ASTooltip, FUN_1409d46a0, 51, 0x7A950BD3);
 // @0x1409d5530
 void ASTooltip::FUN_1409d5530(unsigned nId)
 {
-    FUN_1407cbb20(s_strItemName, FUN_1401a9d70()->FUN_141811980(1, nId));
+    FUN_1407cbb20(s_strItemName, ((struct Unk_CommandStrings*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nId));
 }
 MS2_REPLACE_METHOD(0x1409D5530, ASTooltip, FUN_1409d5530, 93, 0xF4A248DA);
 
@@ -842,7 +840,7 @@ void ASTooltip::FUN_1409c72c0(CItem* pItem)
     MS2Ptr<CMaid> spMaid = CUserMaidManager::GetInstance()->GetMaid(pItem->FUN_140526a50());
     if (spMaid.get() != 0)
     {
-    CStringW strName = spMaid->FUN_1409eeda0().IsEmpty() ? FUN_1401a9d70()->FUN_141811980(1, pItem->FUN_1405276c0()) : spMaid->FUN_1409eeda0();
+    CStringW strName = spMaid->FUN_1409eeda0().IsEmpty() ? ((struct Unk_CommandStrings*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, pItem->FUN_1405276c0()) : spMaid->FUN_1409eeda0();
     FUN_1409dbbc0(strName);
     MS2Ptr<CManufacture> spManufacture(0);
     if (CManufactureManager::GetInstance()->Lookup(pItem->FUN_140526a50(), spManufacture) != 0)
@@ -854,7 +852,7 @@ void ASTooltip::FUN_1409c72c0(CItem* pItem)
         {
             MS2Ptr<CMaidRecipe> spRecipe = CMaidRecipeTable::GetInstance()->Find(spManufacture->FUN_1409eedf0());
             if (spRecipe.get() != 0)
-                strProduct = FUN_1401a9d70()->FUN_141811980(1, spRecipe->productItemId);
+                strProduct = ((struct Unk_CommandStrings*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, spRecipe->productItemId);
         }
         CStringW strRemain(L"");
         if (span.GetTotalSeconds() > 0)
@@ -4987,7 +4985,7 @@ int ASTooltip::FUN_1409e2630(int nId)
 {
     if (nId == 0)
         return 0;
-    return FUN_1409e26b0(FUN_1401a9d70()->FUN_141811980(9, nId));
+    return FUN_1409e26b0(((struct Unk_CommandStrings*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(9, nId));
 }
 namespace p5hook { MS2_REPLACE_METHOD(0x1409E2630, ASTooltip, FUN_1409e2630, 116, 0xE5467A3C); }
 
@@ -5790,7 +5788,7 @@ void ASObj::FUN_1409eb1d0(const char* szName, const ASArray& arr)
 {
     ASData data;
     data.FUN_1422b8270(arr);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x1409eb270
@@ -5798,7 +5796,7 @@ void ASObj::FUN_1409eb270(const char* szName, const ASObj& obj)
 {
     ASData data;
     data.FUN_1422b8270(obj);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x1409eb3b0
@@ -5806,7 +5804,7 @@ void ASObj::FUN_1409eb3b0(const char* szName, long n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x1409e7dc0

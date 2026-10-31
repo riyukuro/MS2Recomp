@@ -32,8 +32,6 @@
 
 // ---- unit-local views of exe objects ----
 
-class Unk_HsFileSystem : public CFileSystem { };
-Unk_HsFileSystem* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pElem);                              // element is enabled
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& rOut);
@@ -198,7 +196,7 @@ void HideAndSeek::LoadHideAndSeek()
         s_ridingTable.clear();
     }
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

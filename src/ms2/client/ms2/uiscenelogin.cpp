@@ -17,6 +17,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/filepreload_1.h"
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -55,7 +56,6 @@ public:
     char m_pad_00[0x20];
     LgProgressCallback m_callback;                      // +0x20
 };
-Unk_LgPreload* FUN_140ab7a10();
 
 class UILoginDialog : public UIDialog
 {
@@ -94,32 +94,48 @@ class Unk_LgMsgBox { public: virtual int vfunc_0(); virtual void vfunc_1(); virt
 class Unk_LgState { public: void FUN_1417e25a0(int nSceneId); };   // FUN_140aa6d30
 
 Unk_LgUIMgr* FUN_1403ed2b0();
-Unk_LgWorld* FUN_1403ed2d0();
-Unk_LgHost* FUN_14025e7a0();
-Unk_LgInput* FUN_14025e7c0();
-Unk_LgPlayerState* FUN_1409331f0();
-int FUN_141bcfbd0(Unk_LgWorld* pWorld);
-GFxMovie* FUN_1422b01a0(Unk_LgHost* pHost, int nType);
-CStringW FUN_141850100(int a, int b);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141bcfbd0();
+    static class WorldService* GetInstance();
+};
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    class GFxMovie* FUN_1422b01a0(int);
+};
+CStringW TakeScreenshotJpg(int a, int b);
 bool FUN_14116d9c0(Unk_LgInput* p, int a, int b, int c);
 bool FUN_14116dd30(Unk_LgInput* p, int a, int b, int c);
-bool FUN_14116d840(Unk_LgInput* p);
+class CInputKeyHandler   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14116d840();
+};
 int FUN_141210c60(Unk_LgPreload* p);
 int FUN_1406c34c0();
 CString FUN_14016a5c0(const char* psz, int n);          // text conversion
 int FUN_1406516b0();
-Unk_LgMsgBox* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 Unk_LgNet* FUN_140714f90();
 Unk_LgPopup* FUN_140a94350();
 Unk_LgState* FUN_140aa6d30();
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UISceneLogin* pScene);
+int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);            // has the AS object been released
 GFxMovieBackground* FUN_140e85550(const NiRTTI* pRtti, GFxMovie* pObj);
 UIIntroMovie* FUN_140e85420(int nUiId);
-UIDialog* FUN_140c300a0(unsigned nDialogID);                // the dialog of a UI id
-int FUN_140e85580(Unk_LgPlayerState* p);
-bool FUN_14036d570(void* pConfig, int nKey);
-void* FUN_140166410();
+class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
+int FUN_140e85580(class Unk_SmPlayerState*);   // C3: was FUN_140e85580
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 extern unsigned char DAT_143ab284b;
 extern int DAT_143ab0248;
 extern const NiRTTI DAT_143ad6328;
@@ -138,13 +154,13 @@ static int FUN_141ad03a0() { return 0x4eef; }
 UISceneLogin::UISceneLogin() : m_nTitleDone(0), m_nShown(0), m_nExitFlag(0), m_nProgressDirty(0), m_nProgress(0), m_bPending(0)
 {
     m_6c = 0x6200009;
-    FUN_140ab7a10()->SetCallback(LgProgressCallback(this, &UISceneLogin::FUN_141acf860));
+    reinterpret_cast<Unk_LgPreload*>(TSingleton<CFilePreload>::GetInstance())->SetCallback(LgProgressCallback(this, &UISceneLogin::FUN_141acf860));
 }
 
 // @0x141acec20
 UISceneLogin::~UISceneLogin()
 {
-    FUN_140ab7a10()->FUN_141ad0320();
+    reinterpret_cast<Unk_LgPreload*>(TSingleton<CFilePreload>::GetInstance())->FUN_141ad0320();
 }
 
 // @0x141acec90
@@ -175,7 +191,7 @@ void UISceneLogin::vfunc_48(int n)
 // @0x141acee00
 void UISceneLogin::vfunc_49(int n)
 {
-    FUN_140ab7a10()->FUN_141ad0320();
+    reinterpret_cast<Unk_LgPreload*>(TSingleton<CFilePreload>::GetInstance())->FUN_141ad0320();
     m_nTitleDone = 0;
     m_nShown = 0;
     if (FUN_1406c34c0() != 0)
@@ -204,7 +220,7 @@ void UISceneLogin::vfunc_15()
         FUN_141acfc70();
     if (m_nShown != 0)
         return;
-    if (FUN_141210c60(FUN_140ab7a10()) != 0)
+    if (FUN_141210c60(reinterpret_cast<Unk_LgPreload*>(TSingleton<CFilePreload>::GetInstance())) != 0)
         FUN_141acf860(0x3ffe);
     if (m_nProgress == 0xffff)
     {
@@ -233,12 +249,12 @@ int UISceneLogin::vfunc_13()
         return 1;
     if (FUN_141acfd00() != 0)
     {
-        FUN_141850100(1, 0);
+        TakeScreenshotJpg(1, 0);
         return 1;
     }
     if ((m_nProgress & 0x8000) != 0)
     {
-        if (FUN_14116d840(FUN_14025e7c0()) && m_nTitleDone == 0)
+        if (((class CInputKeyHandler*)(class Unk_LgInput*)(((class Unk_LgInput*)FUN_14025e7c0())))->FUN_14116d840() && m_nTitleDone == 0)
         {
             FUN_141acf7c0();
             return 1;
@@ -273,11 +289,11 @@ void UISceneLogin::vfunc_60(MS2Ptr<AScript> spBackground)
 void UISceneLogin::OnLoadComplete()
 {
     UISwfEntity::OnLoadComplete();
-    if (FUN_141bcfbd0(FUN_1403ed2d0()) != 0)
+    if (((class WorldService*)(class Unk_LgWorld*)(((class Unk_LgWorld*)WorldService::GetInstance())))->FUN_141bcfbd0() != 0)
         vfunc_55();
-    if (FUN_141210c60(FUN_140ab7a10()) != 0)
+    if (FUN_141210c60(reinterpret_cast<Unk_LgPreload*>(TSingleton<CFilePreload>::GetInstance())) != 0)
         FUN_141acf860(0x3ffe);
-    GFxMovieBackground* pBg = FUN_140e85550(&DAT_143ad6328, FUN_1422b01a0(FUN_14025e7a0(), 4));
+    GFxMovieBackground* pBg = FUN_140e85550(&DAT_143ad6328, ((class GFxManager*)(class Unk_LgHost*)(((class Unk_LgHost*)FUN_14025e7a0())))->FUN_1422b01a0(4));
     if (pBg != 0)
     {
         if (pBg->IsLoaded() != 0)
@@ -292,12 +308,12 @@ int UISceneLogin::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
 {
     if (UISceneEntity::vfunc_28(szMethod, pArgs, nArgs))
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, this))
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, (void*)(this)))
         return 1;
     if (_stricmp("OnPrev", szMethod) == 0)
     {
         if (m_nProgress != 0xffff)
-            FUN_140d86260()->vfunc_23(0x388, "NotPreloadingToModeSelect");
+            ((class Unk_LgMsgBox*)FUN_140d86260())->vfunc_23(0x388, "NotPreloadingToModeSelect");
         FUN_140aa6d30()->FUN_1417e25a0(0x6200085);
         return 1;
     }
@@ -378,7 +394,7 @@ void UISceneLogin::FUN_141acf700(unsigned int nBits)
 void UISceneLogin::FUN_141acf7c0()
 {
     ShowTitle();
-    GFxMovieBackground* pBg = FUN_140e85550(&DAT_143ad6328, FUN_1422b01a0(FUN_14025e7a0(), 4));
+    GFxMovieBackground* pBg = FUN_140e85550(&DAT_143ad6328, ((class GFxManager*)(class Unk_LgHost*)(((class Unk_LgHost*)FUN_14025e7a0())))->FUN_1422b01a0(4));
     if (pBg != 0)
     {
         if (pBg->FUN_14127ab60(FUN_14016a5c0("endTitleAni", 0)) != 0)
@@ -452,7 +468,7 @@ bool UISceneLogin::FUN_141acfb40()
 {
     if (FUN_1406c34c0() != 0)
     {
-        Unk_LgMsgBox* pBox = FUN_140d86260();
+        Unk_LgMsgBox* pBox = ((class Unk_LgMsgBox*)FUN_140d86260());
         if (pBox->vfunc_0() == 1)
             return true;
         return false;
@@ -469,7 +485,7 @@ void UISceneLogin::FUN_141acfba0(ASObj* pObj)
     bOption = true;
     bool bShowExit = (m_nExitFlag == 1);
     bool bShowOption = bOption;
-    bool bShowPrev = (FUN_14036d570(FUN_140166410(), 0xd8) == 1);
+    bool bShowPrev = (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xd8) == 1);
     pObj->FUN_1407cbbe0("showExit", bShowExit);
     pObj->FUN_1407cbbe0("showOption", bShowOption);
     pObj->FUN_1407cbbe0("showPrev", bShowPrev);
@@ -496,9 +512,9 @@ void UISceneLogin::OnEndPopdown()
 // @0x141acfd00
 static int FUN_141acfd00()
 {
-    if (FUN_140e85580(FUN_1409331f0()) == 0)
-        return FUN_14116d9c0(FUN_14025e7c0(), 0x75, 0, 0);
-    return FUN_14116dd30(FUN_14025e7c0(), 0x493ef, 0, 0);
+    if (FUN_140e85580((class Unk_SmPlayerState*)(((class Unk_LgPlayerState*)FUN_1409331f0()))) == 0)
+        return FUN_14116d9c0(((class Unk_LgInput*)FUN_14025e7c0()), 0x75, 0, 0);
+    return FUN_14116dd30(((class Unk_LgInput*)FUN_14025e7c0()), 0x493ef, 0, 0);
 }
 
 // @0x141acfe40

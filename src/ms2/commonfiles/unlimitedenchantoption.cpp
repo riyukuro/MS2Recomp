@@ -30,10 +30,8 @@
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
 bool FUN_14028f710(Unk_140165cf0* pElem);                   // the node is a usable element
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-class Unk_CommonLog { public: void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg); };
-Unk_CommonLog* FUN_140166440();
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
 CString FUN_1402bb1c0(const char* szFormat, const int& n);                  // StringFormat<int>
@@ -125,12 +123,12 @@ bool UnlimitedEnchantTable::Load()
     InitializeCosts();
     CString strPath = FUN_14071a5b0("Table/Server", "UnlimitedEnchantOption.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
     typedef std::map<std::pair<int, int>, MS2Ptr<UnlimitedEnchantOption> > RangeMap;
@@ -159,13 +157,13 @@ bool UnlimitedEnchantTable::Load()
         }
         else
         {
-            FUN_140166440()->FUN_14015eb90(1, 0x13, L"[<ms2> invalid unlimited enchanat grade {0}]", strGrade);
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"[<ms2> invalid unlimited enchanat grade {0}]", strGrade);
             continue;
         }
         std::pair<int, int> key(nFirst, nLast);
         if (ranges[nSlot].find(key) != ranges[nSlot].end())
         {
-            FUN_140166440()->FUN_14015eb90(1, 0x13, L"\uC911\uBCF5\uB41C \uD0A4 \uAC12\uC774 \uC874\uC7AC \uD569\uB2C8\uB2E4.[<ms2> {0}]", strPath);
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"\uC911\uBCF5\uB41C \uD0A4 \uAC12\uC774 \uC874\uC7AC \uD569\uB2C8\uB2E4.[<ms2> {0}]", strPath);
             continue;
         }
         MS2Ptr<UnlimitedEnchantOption> spInfo(new UnlimitedEnchantOption);

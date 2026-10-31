@@ -18,6 +18,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cwebbrowserservice.h"
 
 // ---- exe callees ----
 class Unk_AasImage : public AScript                                         // the image holder the page is drawn into (0x90 bytes)
@@ -51,19 +52,11 @@ public:
 Unk_AasConsts* FUN_1401d3200();
 int* FUN_1402056b0(Unk_AasConstInt* p);
 
-class Unk_AasBrowserMgr
-{
-public:
-    void FUN_141b781e0(int nId, const char* pszFrom, const char* pszTo, int n);
-    void FUN_141b788b0(int nId, int nWidth, int nHeight);
-};
-Unk_AasBrowserMgr* FUN_140cc18a0();
+CWebBrowserService* FUN_140cc18a0();
 
 class ASDialog : public ASDisplayObject
 {
 public:
-    float FUN_1422c10a0();                                                  // x
-    float FUN_1422c1110();                                                  // y
     void FUN_1407cbbe0(const char* szName, bool b);                         // set a bool member
 };
 
