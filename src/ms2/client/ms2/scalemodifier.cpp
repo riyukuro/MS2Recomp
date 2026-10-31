@@ -8,9 +8,10 @@
 #include "scalemodifier.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
 
-class Unk_GameClock { public: double FUN_141473280(); };   // current game time (seconds)
-Unk_GameClock* FUN_14086d260();
+   // current game time (seconds)
+CMainSystem* FUN_14086d260();
 
 // Ease-out curve on [0,1] (0x140cd8c20); empty functor, called on a temporary.
 struct Unk_EaseOut { float FUN_140cd8c20(float t); };

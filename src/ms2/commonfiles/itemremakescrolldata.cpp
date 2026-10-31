@@ -58,11 +58,13 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/itemdatatable.h"
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
 bool FUN_14028f650(Unk_140165cf0* pElem);                   // the node is a usable element
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 class Unk_CommonLog { public: void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg); };
 Unk_CommonLog* FUN_140166440();
@@ -78,13 +80,12 @@ CItemOptionTable* FUN_140166430();                          // TSingleton<CItemO
 CFeatureManager* FUN_140166410();                           // TSingleton<CFeatureManager>::GetInstance
 CGameRule* FUN_1401c0d90();                                 // TSingleton<CGameRule>::GetInstance
 CStringTable* GetStringTable();                              // TSingleton<CStringTable>::GetInstance
-Unk_IngTable* FUN_140281980();
 unsigned FUN_1405575b0(Unk_IngTable*, int);                 // the lock item of an item
 const CString& FUN_14082efb0(int nStat);                    // the xml name of a stat
 const CString& FUN_14081d380(int nSpecial);                 // the xml name of a special stat
-int FUN_14082ee80(const CStringA& strName);                 // stat name -> id (-1 when none)
+int FindStatByName(const CStringA& strName);                // stat name -> id (-1 when none)
 int FUN_14081d260(const CStringA& strName);                 // special option name -> id (0 when none)
-bool FUN_14082f250(int nStat);                              // the stat value is a percent
+bool IsStatKindTwo(int nStat);                              // the stat value is a percent
 bool FUN_14081dcd0(int nSaType);                            // the SA value is a percent
 CStringW FUN_140631600(int nStat, BaseOption* pBase);       // the text of a stat option
 CStringW FUN_140631830(int nStat, int nValue, Unk_ItemEquipData* pData);    // the text of a special stat option
@@ -745,7 +746,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
     CStringW strText;
     for (POSITION pos = names.GetHeadPosition(); pos != 0; names.GetNext(pos))
     {
-        int nStat = FUN_14082ee80(names.GetValueAt(pos));
+        int nStat = FindStatByName(names.GetValueAt(pos));
         if (nStat != -1)
         {
             Unk_EnchantMap::CPair* pPair = stats.Lookup(nStat);
@@ -763,7 +764,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
             CStringW strValue;
             if (!strRange.IsEmpty())
             {
-                if (FUN_14082f250(nStat))
+                if (IsStatKindTwo(nStat))
                 {
                     float fMin = (float)range.first / 10.0;
                     float fMax = (float)range.second / 10.0;
@@ -901,7 +902,7 @@ bool Unk_RemakeStat::FUN_140619290(int nOption, int& nIndex, int& nValue)
     }
     if (strName.IsEmpty())
         return false;
-    int nStat = FUN_14082ee80(strName);
+    int nStat = FindStatByName(strName);
     if (nStat != -1)
     {
         nIndex = 0;
@@ -925,7 +926,7 @@ CStringW FUN_140619760(int nItemId, unsigned nLevel)
     int nRank;
     if (nItemId == 0)
         return CStringW(L"");
-    unsigned nLockId = FUN_1405575b0(FUN_140281980(), nItemId);
+    unsigned nLockId = FUN_1405575b0(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), nItemId);
     nRank = nLevel;
     if (FUN_140166410()->FUN_14036d570(0xa5))
         nRank = nLevel;

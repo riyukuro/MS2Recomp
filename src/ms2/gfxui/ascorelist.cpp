@@ -21,7 +21,7 @@
 // new ASDataProvider(v, nMovieId) in an MS2Ptr (inline COMDAT, first emitted in uiwritemusicdialog.cpp).
 MS2Ptr<ASDataProvider> FUN_140ff6b60(int nMovieId, Scaleform::GFx::Value& v);
 // Text conversions (the CP_ACP helpers of the string utilities; the int is the code page / flags, 0 here).
-CStringW FUN_1408767c0(const char* sz);                                 // CStringW from a narrow string
+CStringW XmlWide(const char* sz);                                 // CStringW from a narrow string
 CStringW FUN_14016a730(const char* sz, int n);                          // narrow -> wide
 CString FUN_14016a600(const wchar_t* sz, int n);                        // wide -> narrow
 CString FUN_1409a23d0(const char* sz, int n);                           // CString from a narrow string
@@ -216,7 +216,7 @@ CStringW ASCoreList::FUN_1422dd520()
         AScript item = spProvider->FUN_1422df140(FUN_1422dccd0());
         Scaleform::GFx::Value label = item.FUN_1422baa20("label");
         if (label.IsString())
-            return FUN_1408767c0(label.GetString());
+            return XmlWide(label.GetString());
         if (label.IsStringW())
             return label.GetStringW();
     }
@@ -288,7 +288,7 @@ void ASCoreList::FUN_1422ddb40(const CString& strMember, const CStringW& strValu
             if (item.FUN_1422bb870().IsObject()) {
                 Scaleform::GFx::Value v = item.FUN_1422baa20(strMember);
                 if (v.IsString()) {
-                    if (strValue == FUN_1408767c0(v.GetString())) {
+                    if (strValue == XmlWide(v.GetString())) {
                         FUN_1422dcca0((int)i);
                         return;
                     }

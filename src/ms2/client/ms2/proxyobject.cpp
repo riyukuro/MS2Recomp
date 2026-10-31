@@ -16,6 +16,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // The ClassInfo initializer is the first dynamic initializer of the object, ahead of the shared header statics.
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CProxyObject);
@@ -65,7 +66,6 @@ struct Unk_PxApp
     void* m_pad_00;
     efd::SmartPointer<Unk_PxServiceMgr> m_spServiceManager;         // +0x08
 };
-Unk_PxApp* FUN_14086d260();
 Unk_PxServiceMgr* FUN_140af8310(efd::SmartPointer<Unk_PxServiceMgr>* pSmart);    // operator->
 void* FUN_140998330(Unk_PxServiceMgr* pMgr);                        // a system service (NULL when absent)
 
@@ -204,7 +204,7 @@ void Unk_ProxyMgr::FUN_1416c33c0(int bEnable)
     FUN_1416c3670();
     if (bEnable != 0)
     {
-        void* pService = FUN_140998330(FUN_140af8310(&FUN_14086d260()->m_spServiceManager));
+        void* pService = FUN_140998330(FUN_140af8310(&reinterpret_cast<Unk_PxApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager));
         if (pService == 0)
             return;
         Unk_PxEntIter iter;

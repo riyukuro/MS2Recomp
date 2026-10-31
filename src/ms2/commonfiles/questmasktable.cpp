@@ -528,7 +528,7 @@ int FUN_14074b050(CQuestData* pData);
 int FUN_14074b070(CQuestData* pData);
 int FUN_140931210(int n);
 CStringW FUN_140298ea0(CStringW str);
-CString FUN_14021a6b0(int n);
+CString Name_14021a6b0(int n);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_140719630(int n);
 CStringW FUN_14083cb20(const CStringW& str);
@@ -542,7 +542,7 @@ int FUN_140762280(void* pUnused, int n)
 // @0x140762de0
 CStringW FUN_140762de0(int nQuestId)
 {
-    return GetStringCommonByKey(StringFormat(L"s_quest_alliance_{0}", FUN_14021a6b0(nQuestId)));
+    return GetStringCommonByKey(StringFormat(L"s_quest_alliance_{0}", Name_14021a6b0(nQuestId)));
 }
 
 // @0x140762e90
@@ -635,9 +635,6 @@ class Unk_QmWorld
 public:
     Unk_QmPlayer* FUN_141bd0cc0();                              // the local player (NULL outside the field)
 };
-CGuildManager* FUN_1403ed290();
-CGuildXmlData* FUN_1404f4530();
-CGloabalFactor* FUN_140302b10();
 CExpTable* FUN_1404a1bb0();
 CLua* FUN_1401c0db0();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);                 // the quest table row (NULL when unknown)
@@ -836,7 +833,7 @@ Unk_QuestRewardCalc::Unk_QuestRewardCalc()
     Unk_QmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0)
         m_level = pPlayer->vfunc_78();
-    m_guildNpcLevel = FUN_1403ed290()->FUN_1404d2990(6);
+    m_guildNpcLevel = TSingleton<CGuildManager>::GetInstance()->FUN_1404d2990(6);
 }
 
 // @0x1407622b0
@@ -859,7 +856,7 @@ void FUN_1407622b0(int nQuestId, Unk_QuestRewardCalc& calc)
         calc.m_bonus = 0;
         if (FUN_14074b050(spData.operator->()) == 6)
         {
-            float fFactor = FUN_1404f4530()->FUN_1404d7360(calc.m_guildNpcLevel, 3);
+            float fFactor = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7360(calc.m_guildNpcLevel, 3);
             if (fFactor >= 1.0)
                 calc.m_bonus = fFactor - 1.0f;
         }
@@ -869,7 +866,7 @@ void FUN_1407622b0(int nQuestId, Unk_QuestRewardCalc& calc)
         calc.m_value = calc.m_enabled ? spData->m_complete.m_money : 0;
         calc.m_bonus = 0;
     }
-    float fFactor = FUN_140302b10()->FUN_1404c1810(CGloabalFactor::MULTI_QUEST_REWARD_MESO, FUN_14074b050(spData.operator->()));
+    float fFactor = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c1810(CGloabalFactor::MULTI_QUEST_REWARD_MESO, FUN_14074b050(spData.operator->()));
     if (!FUN_14028d470(1.0f, fFactor))
         calc.m_value = (__int64)((float)calc.m_value * fFactor);
 }
@@ -906,7 +903,7 @@ void FUN_140762500(int nQuestId, Unk_QuestRewardCalc& calc)
     calc.m_bonus = 0;
     if (FUN_14074b050(spData.operator->()) == 6)
     {
-        float fFactor = FUN_1404f4530()->FUN_1404d7360(calc.m_guildNpcLevel, 1);
+        float fFactor = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7360(calc.m_guildNpcLevel, 1);
         if (fFactor >= 1.0)
             calc.m_bonus = fFactor - 1.0f;
     }
@@ -923,7 +920,7 @@ void FUN_1407627a0(int nQuestId, Unk_QuestRewardCalc& calc)
     calc.m_bonus = 0;
     if (FUN_14074b050(spData.operator->()) == 6)
     {
-        float fFactor = FUN_1404f4530()->FUN_1404d7360(calc.m_guildNpcLevel, 2);
+        float fFactor = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7360(calc.m_guildNpcLevel, 2);
         if (fFactor >= 1.0)
             calc.m_bonus = fFactor - 1.0f;
     }
@@ -940,7 +937,7 @@ void FUN_1407628a0(int nQuestId, Unk_QuestRewardCalc& calc)
     calc.m_bonus = 0;
     if (FUN_14074b050(spData.operator->()) == 6)
     {
-        float fFactor = FUN_1404f4530()->FUN_1404d7360(calc.m_guildNpcLevel, 0);
+        float fFactor = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7360(calc.m_guildNpcLevel, 0);
         if (fFactor >= 1.0)
             calc.m_bonus = fFactor - 1.0f;
     }
@@ -957,7 +954,7 @@ void FUN_1407629a0(int nQuestId, Unk_QuestRewardCalc& calc)
     calc.m_bonus = 0;
     if (FUN_14074b050(spData.operator->()) == 6)
     {
-        float fFactor = FUN_1404f4530()->FUN_1404d7360(calc.m_guildNpcLevel, 4);
+        float fFactor = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7360(calc.m_guildNpcLevel, 4);
         if (fFactor >= 1.0)
             calc.m_bonus = fFactor - 1.0f;
     }

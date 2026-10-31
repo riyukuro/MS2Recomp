@@ -30,6 +30,7 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
@@ -50,7 +51,6 @@ public:
 
 // UI service: handle to a registered UI object.
 class Unk_FusionUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
-Unk_FusionUIManager* FUN_1403ed2b0();
 
 // The ItemInfoSlot setters take Delegates over references here (the exe's signature); same entries as
 // ItemInfoSlot::SetSlotFn / SetCanFn.
@@ -156,9 +156,9 @@ FusionSlotBag* FUN_14123a960(NotifyContext::BindData* p)
 // @0x14123a9b0
 UIItemMergeOptionDialog* FUN_14123a9b0(int nClass)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_FusionUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = FUN_1403ed2b0()->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_FusionUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIItemMergeOptionDialog*>(spObj.operator->());
     }

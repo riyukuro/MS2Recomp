@@ -21,11 +21,11 @@
 #include <ecr/CoreRuntimeMessages.h>
 #include "ms2/client/ms2/postprocessing/postprocessingservice.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/cgameoption.h"
 
-// Options block read by the scene-graph message callbacks (FUN_1409a8b10()->FUN_1409a8ac0()).
+// Options block read by the scene-graph message callbacks (reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()).
 class Unk_PPGraphicsOptions { public: bool FUN_1416b1d40(); };     // 0x1416b1d40, byte +0x1b
 class Unk_PPOptions { public: Unk_PPGraphicsOptions* FUN_1409a8ac0(); };
-Unk_PPOptions* FUN_1409a8b10();
 
 // The second scene view as the post-processing service sees it: only the click getter.
 class Unk_PPSecondView
@@ -183,7 +183,7 @@ void FUN_141773cc0(void* pRegistry, void* pNode)
 // @0x141773d90
 void FUN_141773d90(void* svc, const ecr::SceneGraphAddedMessage* pMsg, efd::Category cat)
 {
-    if (!FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1416b1d40())
+    if (!reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b1d40())
         return;
 
     ecr::SceneGraphService* pkService = FUN_1413f98b0();
@@ -195,7 +195,7 @@ void FUN_141773d90(void* svc, const ecr::SceneGraphAddedMessage* pMsg, efd::Cate
 // @0x141773e30
 void FUN_141773e30(void* svc, const ecr::SceneGraphRemovedMessage* pMsg, efd::Category cat)
 {
-    if (!FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1416b1d40())
+    if (!reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b1d40())
         return;
 
     ecr::SceneGraphService* pkService = FUN_1413f98b0();

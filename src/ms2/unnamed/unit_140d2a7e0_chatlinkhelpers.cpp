@@ -35,6 +35,8 @@
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
+#include "ms2/client/ms2/uimessenger.h"
+#include "ms2/client/ms2/inventory.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -88,17 +90,12 @@ MS2_CHECK_OFFSET(Unk_ChatWindow, m_pLog, 0x48);
 MS2_CHECK_OFFSET(Unk_ChatWindow, m_pMessenger, 0x50);
 
 // The messenger browser (UI id 0x4e61): finds an item that was linked into a chat line.
-class Unk_ChatBrowser
-{
-public:
-    MS2Ptr<CItem> FUN_141a263d0(unsigned __int64 nUid);
-};
 
 // shared helpers of other units
 Unk_ChatWindow* FUN_141482e80();
 void FUN_141a24fb0(Unk_ChatLog* pLog, CStringW strText);
 void FUN_141953660(Unk_ChatMessenger* pMessenger, CStringW strText);
-Unk_ChatBrowser* FUN_140a3ab70(int nUiId);
+UIMessengerBrowser* FUN_140a3ab70(int nUiId);
 CAchieveManager* FUN_1406c7600();
 CPetManager* FUN_140535320();
 CStringW FUN_14093e330(CAchieve* pAchieve, int nGrade);
@@ -107,7 +104,7 @@ CStringW FUN_141425950(int nItemId);                        // the item's name
 CStringW FUN_140763e10(int nId);
 CStringW FUN_140631720(int nId, int nValue, bool bTwo);     // a stat's "name +value" text
 CStringW FUN_140631830(int nId, int nValue, int nMode);     // a special stat's text
-bool FUN_14082f250(int nId);                                // IsStatKindTwo
+bool IsStatKindTwo(int nId);                                // IsStatKindTwo
 CStringA FUN_140719190(int nId);
 CStringA FUN_140719530(unsigned __int64 nId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
@@ -125,8 +122,7 @@ bool FUN_14053f8c0(unsigned nUid);
 bool FUN_14053f940(unsigned nUid);
 void FUN_140615ca0(MS2Ptr<CItem> spItem, int nMode, ATL::CAtlArray<MS2Ptr<Unk_StatRow> >& rows);
 WorldService* FUN_1403ed2d0();
-class Unk_DsInventory { public: MS2Ptr<CItem> FUN_140a5d680(__int64 nUid); };
-extern Unk_DsInventory DAT_143ab2a90;                       // the player's inventory
+extern Unk_Inventory DAT_143ab2a90;                         // the player's inventory
 void FUN_1402a9d70(void*, int, float, float, float, int);
 void FUN_142ca4bc0();                                       // the exe's atexit destructors of the string arrays / marker
 void FUN_142ca4bf0();
@@ -251,7 +247,7 @@ bool FUN_140d2ab10(CStringW& strLine)
     int nKind = FUN_1407181a0(parts[2]);
     CStringW strArgs(parts[3]);
 
-    Unk_ChatBrowser* pBrowser = FUN_140a3ab70(0x4e61);
+    UIMessengerBrowser* pBrowser = FUN_140a3ab70(0x4e61);
     if (pBrowser == NULL)
         return false;
 
@@ -390,7 +386,7 @@ CStringW FUN_140d2b8f0(MS2Ptr<CItem> spItem, const CStringW& strFilter)
                 strLines.Append(strSeparator);
             CStringW strText;
             if (nKind == 0)
-                strText = StringFormat(strLabel, FUN_140631720(spRow->m_nId, spRow->m_nValue, FUN_14082f250(spRow->m_nId)));
+                strText = StringFormat(strLabel, FUN_140631720(spRow->m_nId, spRow->m_nValue, IsStatKindTwo(spRow->m_nId)));
             else if (nKind == 1)
                 strText = StringFormat(strLabel, FUN_140631830(spRow->m_nId, spRow->m_nValue, 0));
             strLines.Append(strText);

@@ -288,6 +288,7 @@ pin already attributed	client/ms2/uiskillbookautodistributedialog.cpp: MS2-PIN ?
 pin already attributed	client/ms2/uiskillbookautodistributedialog.cpp: MS2-PIN ?Invoke@AScript@@QEAA?AVValue@GFx@Scaleform@@PEBDV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@1H@Z 0x140ed1090: already attributed (tag), ignored
 pin already attributed	client/ms2/uiskillbookautodistributedialog.cpp: MS2-PIN ?RefreshSlotsIfShown@UISkillBookTreeDialog@@QEAAXXZ 0x140ec8220: already attributed (tag), ignored
 pin already attributed	client/ms2/uisystemshopdialog.cpp: MS2-PIN ??$FUN_FindPush@VCSmartPushAutoFishing@@@Unk_SsPushMgr@@QEAA?AV?$MS2SvrPtr@VCSmartPushAutoFishing@@@@XZ 0x140fa7160: already attributed (tag), ignored
+pin already attributed	client/ms2/uiugcmodelhousedialog.cpp: MS2-PIN ??1UIUGCModelHouseDialog@@UEAA@XZ 0x140faf410: already attributed (tag), ignored
 pin already attributed	client/ms2/usercommandcli.cpp: MS2-PIN ??$construct@KAEBK@?$_Default_allocator_traits@V?$allocator@K@std@@@std@@SAXAEAV?$allocator@K@1@QEAKAEBK@Z 0x141370370: already attributed (tag), ignored
 pin already attributed	client/ms2/usercommandcli.cpp: MS2-PIN ??$construct@KK@?$_Default_allocator_traits@V?$allocator@K@std@@@std@@SAXAEAV?$allocator@K@1@QEAK$$QEAK@Z 0x141370370: already attributed (tag), ignored
 pin already attributed	client/ms2/usercommandcli.cpp: MS2-PIN ?_Myhead@?$_List_alloc@U?$_List_base_types@HV?$allocator@H@std@@@std@@@std@@QEAAAEAPEAU?$_List_node@HPEAX@2@XZ 0x141374590: already attributed (tag), ignored
@@ -554,6 +555,7 @@ pin already attributed	unnamed/unit_1408d1ec0_commandargumentaccessors.cpp: MS2-
 pin already attributed	unnamed/unit_14092f420_accountsessionstate.cpp: MS2-PIN ?erase@?$_Tree@V?$_Tset_traits@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@@2@V32@@Z 0x140935980: already attributed (tag), ignored
 pin already attributed	unnamed/unit_141017950_pvprankinglist.cpp: MS2-PIN ??1Unk_PvpTimerItem@@QEAA@XZ 0x14101a1b0: already attributed (tag), ignored
 pin already attributed	unnamed/unit_14108e1e0_npcactorandvibrate.cpp: MS2-PIN ?get@?$Unk_UmValuePtr@UUnk_UmDescRow@@@@QEBAPEAUUnk_UmDescRow@@XZ 0x14109a370: already attributed (tag), ignored
+pin already attributed	unnamed/unit_1414a6be0.cpp: MS2-PIN ?Unk_1414a7d40@@YAAEAVutf8string@efd@@PEAV12@PEBD@Z 0x1414a7d40: already attributed (tag), ignored
 pin already attributed	unnamed/unit_14156a020.cpp: MS2-PIN ??0CNMAvatarFullInfo@@QEAA@XZ 0x14156ce30: already attributed (tag), ignored
 pin already attributed	unnamed/unit_14156a020.cpp: MS2-PIN ??0CNMFriendInfo@@QEAA@XZ 0x14156e000: already attributed (tag), ignored
 pin already attributed	unnamed/unit_14156a020.cpp: MS2-PIN ??0CNMRealFriendInfo@@QEAA@XZ 0x14156d610: already attributed (tag), ignored
@@ -775,14 +777,14 @@ pin already attributed	unnamed/unit_1415b6920.cpp: MS2-PIN ??0CNMRealFriendInfoC
 pin already attributed	unnamed/unit_1415c2f20.cpp: MS2-PIN ?FUN_1415c2f20@@YAPEADPEAD@Z 0x1415c2f20: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?CallNMFunc@CNMManager@@QEAAHPEAVCNMFunc@@@Z 0x1415cb440: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415c47e0@@YAXPEAXI@Z 0x1415c47e0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415c4b60@@YAHXZ 0x1415c4b60: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415c4bb0@@YAPEAEPEAXPEAE@Z 0x1415c4bb0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415c4d40@@YAHXZ 0x1415c4d40: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415c4da0@@YAPEAEPEAXPEAE@Z 0x1415c4da0: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415c4e90@@YAPEAEPEAXPEAE0@Z 0x1415c4e90: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415c4f50@@YAPEAEPEAXPEAE@Z 0x1415c4f50: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415c5010@@YAPEAEPEAXPEAE@Z 0x1415c5010: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415c54f0@@YA_NPEAX0H@Z 0x1415c54f0: already attributed (tag), ignored
+pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415c5ce0@@YAIPEAX0_J@Z 0x1415c5ce0: already attributed (tag), ignored
+pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415c5d80@@YAIPEAX0_J@Z 0x1415c5d80: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415c6970@@YA_NPEAX00H@Z 0x1415c6970: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415c6a50@@YA_NPEAX00_K@Z 0x1415c6a50: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415c6b00@@YAIPEAXPEBE0@Z 0x1415c6b00: already attributed (tag), ignored
@@ -800,14 +802,10 @@ pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415caaa0@@YAPEA
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415cab60@@YAPEAXPEAXE@Z 0x1415cab60: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415cb0b0@@YAXPEBXPEAX@Z 0x1415cb0b0: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415cb200@@YAXPEAX0ZZ 0x1415cb200: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415cb420@@YAXXZ 0x1415cb420: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?FUN_1415cb430@@YAXXZ 0x1415cb430: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?vfunc_0@CNMEventHandler@@UEAAXPEAX@Z 0x1415cba80: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?vfunc_1@CNMEventHandler@@UEAAXPEAX@Z 0x1415cc350: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?vfunc_1@CStreamCryptor_v0@@UEAAXXZ 0x1415ca430: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?vfunc_1@CStreamCryptor_v1@@UEAAXXZ 0x1415ca4f0: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?vfunc_2@CNMEventHandler@@UEAAXPEAX@Z 0x1415cc370: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?vfunc_2@CStreamCryptor_v0@@UEAAXXZ 0x1415ca450: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415c44c0.cpp: MS2-PIN ?vfunc_2@CStreamCryptor_v1@@UEAAXXZ 0x1415ca770: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415e2390.cpp: MS2-PIN ??$make_pair@NAEAN@std@@YA?AU?$pair@NN@0@$$QEANAEAN@Z 0x1415e50f0: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415e2390.cpp: MS2-PIN ??0?$CNMSingleton@VCNMCOClientObject@@@@QEAA@XZ 0x1415e57b0: already attributed (tag), ignored
@@ -1043,7 +1041,6 @@ pin already attributed	unnamed/unit_1415ef130.cpp: MS2-PIN ?FUN_1415f1580@@YAPEA
 pin already attributed	unnamed/unit_1415ef130.cpp: MS2-PIN ?FUN_1415f1660@@YAXPEAXPEBX@Z 0x1415f1660: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415ef130.cpp: MS2-PIN ?FUN_1415f1be0@@YAXPEAXPEBX@Z 0x1415f1be0: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415ef130.cpp: MS2-PIN ?FUN_1415f1e90@@YA_J_J0@Z 0x1415f1e90: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415ef130.cpp: MS2-PIN ?FUN_1415f38c0@@YAPEAXPEAXH@Z 0x1415f38c0: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415f9410.cpp: MS2-PIN ?FUN_1415f9990@@YAXPEAX@Z 0x1415f9990: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415f9410.cpp: MS2-PIN ?FUN_1415f99f0@@YAXPEAX0@Z 0x1415f99f0: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415f9410.cpp: MS2-PIN ?FUN_1415f9a90@@YAXPEAXPEBD@Z 0x1415f9a90: already attributed (tag), ignored
@@ -1092,63 +1089,10 @@ pin already attributed	unnamed/unit_1415f9410.cpp: MS2-PIN ?vfunc_5@CStreamCrypt
 pin already attributed	unnamed/unit_1415f9410.cpp: MS2-PIN ?vfunc_6@CStreamCryptor_v0@@UEAAII@Z 0x1415fa0d0: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415f9410.cpp: MS2-PIN ?vfunc_6@CStreamCryptor_v1@@UEAAHH@Z 0x1415fa0e0: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1415ffc30@@YA_NPEAXAEBE1@Z 0x1415ffc30: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600710@@YAXPEAXPEAU?$_Tree_node@EPEAX@std@@@Z 0x141600710: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600760@@YAXPEAX0@Z 0x141600760: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600800@@YAPEAXPEAX0@Z 0x141600800: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600db0@@YAXPEAX0@Z 0x141600db0: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600de0@@YAXPEAX0@Z 0x141600de0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600e10@@YAPEAXPEAX@Z 0x141600e10: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600e40@@YAPEAXPEAX@Z 0x141600e40: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600e70@@YAPEAXPEAX@Z 0x141600e70: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600e90@@YAPEAXPEAX@Z 0x141600e90: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600eb0@@YAPEAXPEAX@Z 0x141600eb0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600ed0@@YAPEAXPEAX@Z 0x141600ed0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600ef0@@YAPEAXPEAX@Z 0x141600ef0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600f10@@YAPEAXPEAX@Z 0x141600f10: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600f30@@YAPEAXPEAX@Z 0x141600f30: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600f50@@YAPEAXPEAX@Z 0x141600f50: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600f70@@YAPEAXPEAX@Z 0x141600f70: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600f90@@YAPEAXPEAX@Z 0x141600f90: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600fb0@@YAPEAXPEAX@Z 0x141600fb0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600fd0@@YAPEAXPEAX@Z 0x141600fd0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600ff0@@YAPEAXPEAX@Z 0x141600ff0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601010@@YAXPEAX@Z 0x141601010: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601030@@YAXPEAX@Z 0x141601030: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601050@@YAXPEAX@Z 0x141601050: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601070@@YAXPEAX@Z 0x141601070: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601090@@YAXPEAX@Z 0x141601090: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1416010b0@@YAXPEAX@Z 0x1416010b0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1416010d0@@YAXPEAX@Z 0x1416010d0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1416010f0@@YAXPEAX@Z 0x1416010f0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601110@@YAXPEAX@Z 0x141601110: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601130@@YAXPEAX@Z 0x141601130: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601150@@YAXPEAX@Z 0x141601150: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601170@@YAXPEAX@Z 0x141601170: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601190@@YAXPEAX@Z 0x141601190: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1416011b0@@YAXPEAX@Z 0x1416011b0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1416011d0@@YAXPEAX@Z 0x1416011d0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1416011f0@@YAXPEAX@Z 0x1416011f0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601210@@YAXPEAX@Z 0x141601210: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601230@@YAXPEAX@Z 0x141601230: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601250@@YAXPEAX@Z 0x141601250: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601270@@YAXPEAX@Z 0x141601270: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601290@@YAXPEAX@Z 0x141601290: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1416012b0@@YAXPEAX@Z 0x1416012b0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1416012d0@@YAXPEAX@Z 0x1416012d0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1416012f0@@YAXPEAX@Z 0x1416012f0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601310@@YAXPEAX@Z 0x141601310: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601330@@YAXPEAX@Z 0x141601330: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601350@@YAXPEAX@Z 0x141601350: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601370@@YAXPEAX@Z 0x141601370: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601390@@YAXPEAX@Z 0x141601390: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1416013b0@@YAXPEAX@Z 0x1416013b0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1416013d0@@YAXPEAX@Z 0x1416013d0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1416013f0@@YAXPEAX@Z 0x1416013f0: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601410@@YAXPEAX@Z 0x141601410: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601a70@@YAPEAXPEAX@Z 0x141601a70: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601b50@@YAPEAXPEAX@Z 0x141601b50: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601b70@@YAPEAXPEAX@Z 0x141601b70: already attributed (tag), ignored
-pin already attributed	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141601bd0@@YAPEAXPEAX@Z 0x141601bd0: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1416020d0.cpp: MS2-PIN ?FUN_141607120@@YAXXZ 0x141607120: already attributed (tag), ignored
 pin already attributed	unnamed/unit_1416020d0.cpp: MS2-PIN ?FUN_141607220@@YAXXZ 0x141607220: already attributed (tag), ignored
 pin already attributed	unnamed/unit_141bb15d0.cpp: MS2-PIN ?_Umove_if_noexcept1@?$vector@UUnk_WsVa18@@V?$allocator@UUnk_WsVa18@@@std@@@std@@AEAAXPEAUUnk_WsVa18@@00U?$integral_constant@_N$00@2@@Z 0x141bb7000: already attributed (tag), ignored
@@ -1548,6 +1492,7 @@ pin names no function	client/ms2/uimessenger.cpp: MS2-PIN ?GetTypeName@?$Delegat
 pin names no function	client/ms2/uimessenger.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIMessenger@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uimessenger.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIMessengerBrowser@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uinpccontroldialog.cpp: MS2-PIN ?get@?$MS2Ptr@VAiDebugDialog@@@@QEBAPEAVAiDebugDialog@@XZ: no such function in the obj
+pin names no function	client/ms2/uipartydialog.cpp: MS2-PIN ??R<lambda_33b4866407a6444b0fe51dcd18b2ae7a>@@QEBA_NPEAVGameObject@@0@Z: no such function in the obj
 pin names no function	client/ms2/uipartydialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVASPartyVotePage@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uipartydialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uipartydialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
@@ -1939,7 +1884,6 @@ pin names no function	commonfiles/itemoptiondata_2.cpp: MS2-PIN ??R<lambda_6f4a8
 pin names no function	commonfiles/itemoptiondata_2.cpp: MS2-PIN ??R<lambda_ab439f4924c8364fde11f81291079c2c>@@QEBA_NH@Z: no such function in the obj
 pin names no function	commonfiles/masterytable.cpp: MS2-PIN ?FUN_140669980@Unk_MRec@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ: no such function in the obj
 pin names no function	commonfiles/masterytable.cpp: MS2-PIN ?FUN_14066aa90@Unk_MData@@QEAAXHAEAV?$CAtlArray@V?$MS2Ptr@VUnk_MRec@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_MRec@@@@@ATL@@@ATL@@@Z: no such function in the obj
-pin names no function	commonfiles/masterytable.cpp: MS2-PIN ?FUN_14066b100@Unk_MData@@QEAAXHHAEAV?$CAtlArray@UItemEntity@@V?$CElementTraits@UItemEntity@@@ATL@@@ATL@@@Z: no such function in the obj
 pin names no function	commonfiles/masterytable.cpp: MS2-PIN ?FUN_14066b100@Unk_MData@@QEAAXHHAEAV?$CAtlArray@V?$MS2Ptr@UItemEntity@@@@V?$CElementTraits@V?$MS2Ptr@UItemEntity@@@@@ATL@@@ATL@@@Z: no such function in the obj
 pin names no function	commonfiles/masterytable.cpp: MS2-PIN ?FUN_14066b100@Unk_MmTable@@QEAAXHHAEAV?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@@Z: no such function in the obj
 pin names no function	commonfiles/masterytable.cpp: MS2-PIN ?FUN_14066b910@Unk_MData@@QEAAHHH@Z: no such function in the obj
@@ -2102,23 +2046,6 @@ pin names no function	unnamed/unit_1415f9410.cpp: MS2-PIN ?FUN_1415fb5f0@@YAIPEB
 pin names no function	unnamed/unit_1415f9410.cpp: MS2-PIN ?FUN_1415fb700@@YA_NPEAX@Z: no such function in the obj
 pin names no function	unnamed/unit_1415f9410.cpp: MS2-PIN ?FUN_1415fb750@@YAHPEAX@Z: no such function in the obj
 pin names no function	unnamed/unit_1415f9410.cpp: MS2-PIN ?FUN_1415fb750@@YA_NPEAX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1415ffe20@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1415ffe50@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1415ffe80@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1415ffeb0@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1415ffee0@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1415fff10@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1415fff40@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1415fff70@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1415fffa0@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1415fffd0@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600000@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600030@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600060@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600090@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1416000c0@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_1416000f0@@YAXPEBX@Z: no such function in the obj
-pin names no function	unnamed/unit_1415fd530.cpp: MS2-PIN ?FUN_141600120@@YAXPEBX@Z: no such function in the obj
 pin outside MS2-RANGEs	client/ms2/alphacomponent.cpp: MS2-PIN ?MS2HasAnyFlag@NiAVObject@@QEBA_NG@Z 0x14098dba0: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/cubemapinformationservice_3.cpp: MS2-PIN ??0Unk_CMISFlags3@@QEAA@XZ 0x140b68e60: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/cubemapinformationservice_3.cpp: MS2-PIN ?AssignRaw@?$MS2Ptr@VCube@@@@QEAAAEAV1@PEAVCube@@@Z 0x140965090: outside the unit's MS2-RANGEs, ignored

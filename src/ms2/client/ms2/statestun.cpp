@@ -20,6 +20,7 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/client/ms2/additionalclilist.h"
 
 // ---- unit statics (.text$di): the shared sort-name / skill / stun / condition header statics, here only the last two ----
 
@@ -32,11 +33,10 @@ static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 void FUN_14123d7a0(PCBase* pOwner, CString strName, int bOn);   // 0x14123d7a0 switches a named input mode
 
 // The actor's buffs (PCBase::FUN_1416749a0).
-class Unk_PCBaseBuffs
+class Unk_PCBaseBuffs : public AdditionalCliList
 {
 public:
     int FUN_1409709b0();                                   // 0x1409709b0 the buffs forbid the stun animation
-    CString FUN_1409716a0();                               // 0x1409716a0 the custom stun animation name
 };
 
 // PCBase vtable view: slot 68 takes the move by value (the exe copies it to a 16-aligned temp)

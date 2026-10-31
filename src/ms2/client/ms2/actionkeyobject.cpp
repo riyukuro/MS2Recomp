@@ -167,6 +167,14 @@ static CString s_stun("stun");
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/gamerule.h"
+#include "ms2/placeholder/gfxservice.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/cugcmanager.h"
+#include "ms2/placeholder/cguidemanager.h"
+#include "ms2/client/ms2/mypc.h"
+#include "ms2/commonfiles/masterytable.h"
+#include "ms2/client/ms2/uiservice.h"
 
 #include <atlcoll.h>
 #include <vector>
@@ -259,11 +267,10 @@ public:
 };
 
 // The guide manager (global 0x143ab3330).
-class Unk_AkoGuide
+class Unk_AkoGuide : public CGuideManager
 {
 public:
     void FUN_14138bf00(int nGuide, int nA, int nB);         // a guide event
-    int FUN_14138c900(int nGuide);                          // the guide is running
 };
 Unk_AkoGuide* FUN_1409331e0();
 
@@ -304,15 +311,14 @@ public:
     void FUN_141adc5d0(int nUiId);                          // hide
     void FUN_141adc530(int nUiId);                          // close
 };
-Unk_AkoUIMgr* FUN_1403ed2b0();
 UIObject* FUN_1403ed9e0(Unk_AkoUIRef&);
 
 // The UI by id, cast to its class (a template: one COMDAT per class in first-use order, see the pins at the top).
 template <class T> T* Unk_GetUI(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        Unk_AkoUIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        Unk_AkoUIRef ref = reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (ref.FUN_1403e8a70() != 0)
             return dynamic_cast<T*>(FUN_1403ed9e0(ref));
     }
@@ -415,13 +421,6 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_WsC_GameObj, m_bTalkable, 0xe50);
 // The client string tables.
-class Unk_AkoStrings
-{
-public:
-    CStringW FUN_141811980(int nTable, int nId);            // a string of a table
-    CStringW FUN_141812290(int nItemId, unsigned short nRarity, CString strKey);   // an item string
-};
-Unk_AkoStrings* FUN_1401a9d70();
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // a formatted client string
 // The cutscene service: UITalkManager, viewed through the calls made here. Its singleton slot (0x143ab3900) is the one
 // TSingleton<UITalkManager>::s_instance every UITalkManager user shares (a TSingleton<Unk_AkoCutscene> of its own would
@@ -435,12 +434,7 @@ public:
     int FUN_141b21220();                                    // a cutscene is playing
     int FUN_141b211d0();                                    // npc talk is enabled
 };
-class Unk_AkoSceneMgr
-{
-public:
-    int FUN_1422b9e00();                                    // the current scene id
-};
-Unk_AkoSceneMgr* FUN_1408e57f0();
+GFxSceneService* FUN_1408e57f0();
 int FUN_141276980();                                        // npc talk is allowed
 
 // The world service's portal / current field lookups with their true return types (worldservice.h spells them with
@@ -470,16 +464,11 @@ Unk_AkoQuestGlobal* FUN_140764020();
 int FUN_140855d10(int nNpcId);                              // the npc has an event talk
 Unk_Int3 FUN_1408a1430(Vector3 pt);                 // the cube cell of a world position
 // MyPC's npc in front with its true return type (mypc.h spells it PCBase*).
-class Unk_AkoPlayerView
+class Unk_AkoPlayerView : public MyPC
 {
 public:
     Unk_WsC_GameObj* FUN_141529640();                       // the npc the player faces
-    int FUN_141659690();                                    // a liftable is being put down (PC member)
-    __int64 FUN_141656ad0();                                // the account id (PC member)
-    int FUN_14165c1b0(int* pnId, CString* pstrName, float fRange);   // the nearest holdable target (PC member)
     int FUN_1415279d0(Unk_WsC_GameObj* pTarget);            // the pc may be held (MyPC member)
-    int FUN_14152e060();                                    // the id of the held pc (MyPC member)
-    void FUN_14152df80();                                   // release the held pc (MyPC member)
 };
 int FUN_140a55d20(CFieldDataCli* pField, CStringW* pstrError);   // the field can be entered (else the reason)
 CStringW FUN_1416e4df0(int nQuestId);                       // the quest name
@@ -513,11 +502,8 @@ struct Unk_AkoReqItemList
 unsigned FUN_140966f40(const Unk_AkoReqItemList& list);
 unsigned short FUN_140966f80(const Unk_AkoReqItemList& list);
 // The mastery data singleton (global 0x143ab02e0).
-class Unk_MData
+class Unk_MData : public CMasteryTable
 {
-public:
-    CStringW FUN_14066bdd0(int nType);                      // the mastery name
-    CStringW FUN_14066c690(int nType, int nGrade);          // the mastery grade name
 };
 extern Unk_MData* DAT_143ab02e0;
 // @0x1409670c0
@@ -580,12 +566,7 @@ public:
     void FUN_1410aad50();                                   // put the lifted cube down
 };
 // The ugc manager singleton.
-class Unk_AkoUgcMgr
-{
-public:
-    void FUN_14187f590(efd::SmartPointer<egf::Entity> spEntity);   // open the ugc registration for the entity
-};
-Unk_AkoUgcMgr* FUN_14052d220();
+CUgcManager* FUN_14052d220();
 
 class UIGuildFlagTooltip : public UIDialog
 {
@@ -943,8 +924,8 @@ void TaxiStationAction::vfunc_2()
     MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (!pPlayer)
         return;
-    if (FUN_1403ed2b0()->FUN_141adc940(0x4e42))
-        FUN_1403ed2b0()->FUN_141adc530(0x4e42);
+    if (reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e42))
+        reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e42);
     if (UIWorldMapDialog* pDialog = Unk_GetUI<UIWorldMapDialog>(0x4e42))
         pDialog->FUN_141b5af80(1);
     FUN_1409331e0()->FUN_14138bf00(0x11, 0, 0);
@@ -982,8 +963,8 @@ PortalAction::~PortalAction()
 // @0x140955990
 void PortalAction::vfunc_3()
 {
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4ebd))
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4ebd);
+    if (reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ebd))
+        reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4ebd);
 }
 MS2_REPLACE_METHOD(0x140955990, PortalAction, vfunc_3, 54, 0xFD8A0CBF);
 // @0x140955280
@@ -994,7 +975,7 @@ int PortalAction::vfunc_1()
         return 0;
     if (pPlayer->FUN_1416595d0())
         return 0;
-    if (FUN_1409331e0()->FUN_14138c900(9))
+    if (FUN_1409331e0()->IsRestricted(9))
         return 0;
     m_spEntity = 0;
     m_spPortal = 0;
@@ -1131,9 +1112,9 @@ CStringW PortalAction::vfunc_6()
     }
     else
     {
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(0xf, nTarget);
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xf, nTarget);
         if (strName.IsEmpty())
-            strName = FUN_1401a9d70()->FUN_141811980(3, nTarget);
+            strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nTarget);
         MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nTarget);
         if (spField == 0)
             return GetStringCommon(0x632);
@@ -1365,7 +1346,7 @@ void BuyCubeAction::vfunc_2()
     int nError = spHouse->FUN_1410c8580(m_n18);
     if (nError == 0)
     {
-        FUN_1403ed2b0()->FUN_141adc750(0x4e76);
+        reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e76);
         if (UIRealEstateDialog* pDialog = Unk_GetUI<UIRealEstateDialog>(0x4e76))
             pDialog->FUN_141ab4000(m_n18, FUN_1403ed2d0()->FUN_141bd3060());
     }
@@ -1480,7 +1461,7 @@ CStringW LiftCubeAction::vfunc_6()
     Unk_WsB_Lift* pLift = FUN_1403ed2d0()->FUN_141bc5a20(m_str18);
     if (!pLift)
         return L"";
-    return FUN_140960c30(0x63a, FUN_1401a9d70()->FUN_141811980(1, pLift->FUN_141447cc0()));
+    return FUN_140960c30(0x63a, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pLift->FUN_141447cc0()));
 }
 MS2_REPLACE_METHOD(0x140957740, LiftCubeAction, vfunc_6, 315, 0x1C11A665);
 
@@ -1500,7 +1481,7 @@ int TalkAction::vfunc_1()
         return 0;
     if (pPlayer->FUN_1416595d0())
         return 0;
-    if (FUN_1409331e0()->FUN_14138c900(2))
+    if (FUN_1409331e0()->IsRestricted(2))
         return 0;
     if (!Unk_AkoCutscene::GetInstance()->FUN_141b211d0())
         return 0;
@@ -1549,7 +1530,7 @@ void TalkAction::vfunc_2()
         return;
     if (Unk_AkoCutscene::GetInstance()->FUN_141b21220() != 0)
         return;
-    if (FUN_1408e57f0()->FUN_1422b9e00() == 0x6200031)
+    if (FUN_1408e57f0()->GetSubSceneId() == 0x6200031)
         return;
     if (FUN_141276980() == 0)
         return;
@@ -1561,7 +1542,7 @@ CStringW TalkAction::vfunc_6()
 {
     if (m_n18 == 0)
         return L"";
-    CStringW strText = FUN_1401a9d70()->FUN_141811980(0xe, m_n18);
+    CStringW strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xe, m_n18);
     if (strText.GetLength() == 0)
         strText = GetStringCommon(0x62d);
     CStringW strName = FUN_14052bd00(0x649, m_strName);
@@ -1609,7 +1590,7 @@ MS2_REPLACE_METHOD(0x140958120, InteractAction, vfunc_1, 390, 0x2AE0A946);
 // @0x140958e70
 CInteractObject* InteractAction::FUN_140958e70()
 {
-    if (FUN_1409331e0()->FUN_14138c900(3) != 0)
+    if (FUN_1409331e0()->IsRestricted(3) != 0)
         return 0;
     MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (!pPlayer)
@@ -1672,14 +1653,14 @@ void InteractAction::vfunc_2()
         return;
     if (pObject->FUN_1413fde40() == 0)
     {
-        Unk_AkoMessage(0x7c9, 1, 1, FUN_1401a9d70()->FUN_141811980(1, spData->m_item.m_nCode));
+        Unk_AkoMessage(0x7c9, 1, 1, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spData->m_item.m_nCode));
         return;
     }
     if (pObject->FUN_1413fe220() == 0)
     {
         if (spData->m_aReqItem.m_aItem.size() == 1)
             FUN_1412751f0(FUN_1405c2690(L"s_interact_err_additional_effect",
-                FUN_1401a9d70()->FUN_141812290(
+                TSingleton<CStringTable>::GetInstance()->FUN_141812290(
                     FUN_140966f40(reinterpret_cast<const Unk_AkoReqItemList&>(spData->m_aReqItem)),
                     FUN_140966f80(reinterpret_cast<const Unk_AkoReqItemList&>(spData->m_aReqItem)),
                     CString("name"))), 1, 1);
@@ -1694,8 +1675,8 @@ void InteractAction::vfunc_2()
     }
     if (pObject->FUN_1413fdd80() == 0)
     {
-        CStringW strMastery = FUN_1409670c0()->FUN_14066bdd0(spData->m_mastery.m_eType);
-        CStringW strGrade = FUN_1409670c0()->FUN_14066c690(spData->m_mastery.m_eType, spData->m_mastery.m_nValue);
+        CStringW strMastery = FUN_1409670c0()->TypeName(spData->m_mastery.m_eType);
+        CStringW strGrade = FUN_1409670c0()->GradeName(spData->m_mastery.m_eType, spData->m_mastery.m_nValue);
         Unk_AkoMessage(0x896, 1, 1, strMastery, strGrade);
         return;
     }
@@ -1739,7 +1720,7 @@ CStringW InteractAction::vfunc_6()
     Unk_WsB_Prop* pObject = FUN_1403ed2d0()->FUN_141bc66b0(m_strObjectId);
     if (!pObject)
         return L"";
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(0xb, pObject->GetRowId());
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xb, pObject->GetRowId());
     if (strName.GetLength() < 1)
         return L"";
     return FUN_140960c30(0x634, strName);
@@ -2295,7 +2276,7 @@ void FittingDollAction::vfunc_2()
     if (pDoll)
     {
         DAT_143af25f0 = pDoll->FUN_141656a80();
-        FUN_1403ed2b0()->FUN_141adc530(0x4e77);
+        reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e77);
     }
 }
 MS2_REPLACE_METHOD(0x14095B940, FittingDollAction, vfunc_2, 249, 0xB3E2B065);
@@ -2305,7 +2286,7 @@ CStringW FittingDollAction::vfunc_6()
     CStringW strName;
     Unk_AkoFittingDoll* pDoll = efd::DynamicCast<Unk_AkoFittingDoll>(reinterpret_cast<Unk_AkoWorldView*>(FUN_1403ed2d0())->FUN_141bd0fa0(m_id));
     if (pDoll)
-        strName = FUN_1401a9d70()->FUN_141811980(1, pDoll->FUN_140967160());
+        strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pDoll->FUN_140967160());
     return FUN_1401d0080(FUN_14061ad70(GetStringCommon(0x646), L" - "), strName);
 }
 MS2_REPLACE_METHOD(0x14095BA60, FittingDollAction, vfunc_6, 386, 0x7FA9427E);
@@ -2569,7 +2550,7 @@ void ReleasePCAction::vfunc_2()
     if (pPlayer->FUN_14166c930() == 0x20)
     {
         if (m_n18 != 0)
-            reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_14152df80();
+            reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->SendRequestRideMode4();
         else
             pPlayer->vfunc_59(6, 0, 0, 0);
     }
@@ -2637,7 +2618,7 @@ CStringW GatheringAction::vfunc_6()
     ATL::CAtlMap<CStringW, int, ATL::CStringElementTraits<CStringW> > counts;
     for (size_t i = 0; i < m_objects.GetCount(); i++)
     {
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(0xb, m_objects[i]->GetRowId());
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xb, m_objects[i]->GetRowId());
         int nCount = 0;
         counts.Lookup(strName, nCount);
         nCount++;
@@ -2660,7 +2641,7 @@ int GatheringAction::vfunc_13(CInteractObject* pObject)
 {
     if (pObject->vfunc_5() != 6)
         return 0;
-    if (FUN_1409331e0()->FUN_14138c900(3) != 0)
+    if (FUN_1409331e0()->IsRestricted(3) != 0)
         return 0;
     CInteractObject* pGathering = pObject;
     MS2Ptr<CInteractObjectData> spData = pGathering->GetRow();
@@ -2705,7 +2686,7 @@ CStringW BillBoardInteractAction::vfunc_6()
     CInteractBillBoardObject* pBoard = dynamic_cast<CInteractBillBoardObject*>(pObject);
     if (pBoard == 0)
         return L"";
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(0xb, pObject->GetRowId());
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xb, pObject->GetRowId());
     if (strName.GetLength() < 1)
         return L"";
     CStringW strText = pBoard->m_strText;
@@ -2772,7 +2753,7 @@ CStringW HomemadeCubeAction::vfunc_6()
     ATL::CAtlMap<CStringW, int, ATL::CStringElementTraits<CStringW> > counts;
     for (size_t i = 0; i < m_cubes.GetCount(); i++)
     {
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(1, m_cubes[i]->FUN_141226cd0());
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_cubes[i]->FUN_141226cd0());
         int nCount = 0;
         counts.Lookup(strName, nCount);
         nCount++;
@@ -3194,12 +3175,7 @@ MS2_REPLACE_METHOD(0x140960020, QuestUserFindAction, vfunc_5, 11, 0x41502B22);
 
 // ---- TreeWateringAction ----------------------------------------------------------------------------------------------
 // The game event manager singleton (class of unit_1401c0d90, unrecovered): the tree watering event's context at +0xbf0.
-class Unk_1401c0d90
-{
-public:
-    MS2Ptr<TreeWateringContext> FUN_14047d320();            // the context (copied under the manager's lock)
-};
-Unk_1401c0d90* FUN_1401c0d90();
+CGameRule* FUN_1401c0d90();
 // The context pointer's out-of-line members (COMDATs of the gameevent tail; symbols-manual rows).
 template <> MS2Ptr<TreeWateringContext>::~MS2Ptr();
 template <> bool MS2Ptr<TreeWateringContext>::operator==(TreeWateringContext* p) const;
@@ -3227,7 +3203,7 @@ private:
 MS2_CHECK_SIZE(Unk_AttendIter, 0x18);
 class Unk_AttendMap { public: bool FUN_140420bb0(const Unk_AttendKey& key, Unk_AttendIter& it); };
 int FUN_1407181a0(const CStringW& strValue);                // _wtoi
-__int64 FUN_140869440();                                    // the server time
+__int64 GetServerTime();                                    // the server time
 class Unk_AttendValue
 {
 public:
@@ -3256,7 +3232,7 @@ extern Unk_AttendTable g_attendTable;
 // @0x140961970 the value while it has not expired, else the default
 inline int Unk_AttendValue::FUN_140961970(const int& nDefault) const
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (m_expire <= now)
         return nDefault;
     return FUN_1407181a0(m_strValue);
@@ -3272,7 +3248,7 @@ inline int Unk_AttendTable::FUN_1409617d0(int nRow, unsigned nEventId, const int
     return nDefault;
 }
 
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 // @0x140960250
 TreeWateringAction::TreeWateringAction() {}
@@ -3308,11 +3284,11 @@ int TreeWateringAction::vfunc_1()
         m_n1c = g_attendTable.FUN_1409617d0(0x778, spContext->m_nEventId, nDefaultBonus);
         if (m_n18 < spContext->m_nDailyLimit)
         {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(spContext->m_nWaterItemId);
+            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e2e0(spContext->m_nWaterItemId);
             if (spItem.get() != 0)
                 return 1;
         }
-        CMsTime now(FUN_140869440());
+        CMsTime now(GetServerTime());
         if (spContext->FUN_1404038c0(now) == 1 && m_n1c < spContext->m_nBonusLimit
             && m_n18 >= spContext->m_nDailyLimit)
             return 1;
@@ -3329,14 +3305,14 @@ void TreeWateringAction::vfunc_2()
     MS2Ptr<TreeWateringContext> spContext = FUN_1401c0d90()->FUN_14047d320();
     if (spContext == 0)
         return;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(spContext->m_nWaterItemId);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e2e0(spContext->m_nWaterItemId);
     if (spItem.get() != 0 && m_n18 < spContext->m_nDailyLimit)
     {
         MS2Ptr<StateTreeWateringData> spState(new StateTreeWateringData(spContext->m_strStateWater));
         pPlayer->vfunc_59(0x3e, spState, 0xa0, 0);
         return;
     }
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (spContext->FUN_1404038c0(now) == 1 && m_n1c < spContext->m_nBonusLimit
         && m_n18 >= spContext->m_nDailyLimit)
     {
@@ -3356,11 +3332,11 @@ CStringW TreeWateringAction::vfunc_6()
         return CStringW(L"");
     if (m_n18 < spContext->m_nDailyLimit)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(spContext->m_nWaterItemId);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e2e0(spContext->m_nWaterItemId);
         if (spItem.get() != 0)
             return GetStringCommon(0xd19);
     }
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (spContext->FUN_1404038c0(now) == 1 && m_n1c < spContext->m_nBonusLimit)
         return GetStringCommon(0xd1a);
     return CStringW(L"");

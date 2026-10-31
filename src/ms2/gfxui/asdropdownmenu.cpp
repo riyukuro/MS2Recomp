@@ -15,7 +15,7 @@
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ASCallback;
 
 bool FUN_1409b4d40(const Scaleform::GFx::Value& v);            // the value is set (not undefined / null)
-CStringW FUN_1408767c0(const char* sz);                         // a UTF-8 text as a wide string
+CStringW XmlWide(const char* sz);                         // a UTF-8 text as a wide string
 
 // @0x1422df570
 ASDropdownMenu::ASDropdownMenu(const Scaleform::GFx::Value& v, int nMovieId)
@@ -199,7 +199,7 @@ CStringW ASDropdownMenu::FUN_1422dfe00()
         AScript row = spProvider->FUN_1422df140(FUN_1422df6c0());
         Scaleform::GFx::Value v = row.FUN_1422baa20("label");
         if (v.IsString())
-            return FUN_1408767c0(v.GetString());
+            return XmlWide(v.GetString());
         if (v.IsStringW())
             return v.GetStringW();
     }
@@ -255,7 +255,7 @@ void ASDropdownMenu::FUN_1422e0300(const CString& strField, const CStringW& strV
             if (FUN_1409b4d40(row.FUN_1422bb870())) {
                 Scaleform::GFx::Value v = row.FUN_1422baa20(strField);
                 if (v.IsString()) {
-                    if (strValue == FUN_1408767c0(v.GetString())) {
+                    if (strValue == XmlWide(v.GetString())) {
                         FUN_1422df690((int)i);
                         return;
                     }
@@ -291,7 +291,7 @@ void ASDropdownMenu::FUN_1422e0580(const CStringW& strLabel)
             if (FUN_1409b4d40(row.FUN_1422bb870())) {
                 Scaleform::GFx::Value v = row.FUN_1422baa20("label");
                 if (v.IsString()) {
-                    if (strLabel == FUN_1408767c0(v.GetString())) {
+                    if (strLabel == XmlWide(v.GetString())) {
                         FUN_1422e0510((int)i);
                         return;
                     }

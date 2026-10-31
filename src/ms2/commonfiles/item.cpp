@@ -47,26 +47,27 @@
 #include "ms2/ms2format.h"
 #include <vector>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/luautil.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/citemenchantutil.h"
+#include "ms2/placeholder/unlimitedenchantinfo.h"
 
 class Unk_ItemEquipData : public CItemData
 {
 public:
     int FUN_14053c620();
-    int FUN_14053f0d0(int);
-    int FUN_14053f390(int, int);
-    int FUN_14053e9e0();
 };
-class Unk_ItemPriceSvc { public: int FUN_140678760(int, int, int); };
-extern Unk_ItemPriceSvc* FUN_1401c0db0();
-class Unk_ItemEnchantData : public CItemStatus { public: int FUN_14062ffb0(unsigned, int, int); int FUN_140630290(unsigned, int, int); unsigned short FUN_140630d00(); };
+extern CLua* FUN_1401c0db0();
+class Unk_ItemEnchantData : public CItemStatus { };
 class Unk_ItemOwnerRef : public CItemTransfer {};
-extern __int64 FUN_140869440();
+extern __int64 GetServerTime();
 extern unsigned FUN_14054b400(ItemModelData*);
 
 // w101 additions: unit-local record types for the table lookups CItem makes (names are descriptive, not original).
 class Unk_IngItem : public CPtred { public: bool FUN_14054aca0(); int FUN_14054ace0(); CStringW FUN_14054ad20(); int FUN_14054ad00(); };
-class Unk_IngTable { public: MS2Ptr<Unk_IngItem> FUN_1405565f0(int); CString FUN_140557270(int, int, int, unsigned); };
-extern Unk_IngTable* FUN_140281980();
+class Unk_IngTable : public CItemDataTable { public: MS2Ptr<Unk_IngItem> FUN_1405565f0(int);};
 extern bool FUN_1403b3c40(const CStringW&, const wchar_t*);
 CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB); // strA + strB
 extern void* FUN_140166410();
@@ -87,7 +88,7 @@ public:
 class Unk_MusicBookInfo : public CPtred { public: char m_pad18[0x10]; CString m_str28; CStringW FUN_14072c480(); };
 class Unk_MusicBookTable { public: MS2Ptr<Unk_MusicBookInfo> FUN_14072cc10(unsigned); };
 extern Unk_MusicBookTable* DAT_143aaf1a8;
-class Unk_EnchantRates { public: int FUN_140594720(int); int FUN_140594750(int); int FUN_1405947c0(int); };
+class Unk_EnchantRates : public CItemEnchantUtil { };
 extern Unk_EnchantRates* DAT_143aaf1b0;
 // The pet row table behind DAT_143aaf1c8 (tabcontentspetevolution.cpp declares the same lookup).
 class Unk_PetRow : public CPtred { public: int m_n18; };
@@ -1310,7 +1311,7 @@ MS2_REPLACE_METHOD(0x1405282D0, CItem, FUN_1405282d0, 40, 0x5F468EB9);
 // @0x140528930
 bool CItem::FUN_140528930()
 {
-    __int64 nNow = FUN_140869440();
+    __int64 nNow = GetServerTime();
     if (m_80 > 0 && m_80 <= nNow)
         return true;
     return false;
@@ -1347,7 +1348,7 @@ bool CItem::FUN_140528e20()
         return true;
     if (FUN_140528ca0() == 0)
     {
-        if (FUN_140869440() < FUN_140528e00())
+        if (GetServerTime() < FUN_140528e00())
             return true;
     }
     return false;
@@ -1435,7 +1436,7 @@ bool CItem::FUN_140526850()
 MS2_REPLACE_METHOD(0x140526850, CItem, FUN_140526850, 91, 0xCCCB08AA);
 
 // ---- w98 batch 2: status (enchant) / transfer delegations
-class Unk_ItemPlusInfo { public: int FUN_1408bbc50(); void FUN_1408bbcb0(int, bool); };
+class Unk_ItemPlusInfo : public UnlimitedEnchantInfo { };
 
 // @0x140526fc0
 int CItem::FUN_140526fc0()
@@ -1493,7 +1494,7 @@ int CItem::FUN_140527270()
     Unk_ItemPlusInfo* pInfo = m_spStatus->FUN_140630d90();
     if (pInfo == 0)
         return 0;
-    return pInfo->FUN_1408bbc50();
+    return pInfo->GetLevel();
 }
 MS2_REPLACE_METHOD(0x140527270, CItem, FUN_140527270, 100, 0x46C766FE);
 
@@ -1569,7 +1570,7 @@ void CItem::FUN_1405290b0()
     if (0 < nPlus)
     {
         int nExtra = FUN_140527840()->FUN_14053e9e0();
-        int nBonus = FUN_1401c0db0()->FUN_140678760(nPlus, nExtra, nB);
+        int nBonus = FUN_1401c0db0()->CalcUnlimitedEnchantItemLevel(nPlus, nExtra, nB);
         m_b4 = m_b4 + nBonus;
     }
     m_b0 = m_b4 + nBase;
@@ -1753,7 +1754,7 @@ bool CItem::FUN_140525680()
 {
     if (!FUN_1405277b0()->FUN_14053cd10())
         return false;
-    MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405565f0(FUN_1405276c0());
+    MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405565f0(FUN_1405276c0());
     if (spIng == 0)
         return false;
     return spIng->FUN_14054aca0();
@@ -2135,7 +2136,7 @@ MS2_REPLACE_METHOD(0x140529EB0, CItem, FUN_140529eb0, 168, 0xB191BA0F);
 // @0x140529f60
 CString CItem::FUN_140529f60(int nA, int nB, int nC, unsigned nD)
 {
-    return FUN_140281980()->FUN_140557270(nA, nB, nC, nD);
+    return reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->GetEnchantNif(nA, nB, nC, nD);
 }
 MS2_REPLACE_METHOD(0x140529F60, CItem, FUN_140529f60, 97, 0xF4F758D0);
 
@@ -2261,15 +2262,13 @@ int FUN_14052b910(const MS2Ptr<CItem>& rFirst, const MS2Ptr<CItem>& rSecond)
 }
 
 // ---- w101 batch 6: UGC / gem display names
-class Unk_StringTbl { public: CStringW FUN_141811980(int nTable, int nIndex); };
-extern Unk_StringTbl* FUN_1401a9d70();
 extern CString FUN_14016a5c0(const char* psz, int n);
 extern CStringW FUN_14183e9c0(CStringW strName, int nRank);
 
 // @0x140528010
 CStringW CItem::FUN_140528010()
 {
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(1, FUN_1405276c0());
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1405276c0());
     if (static_cast<CItemUgc*>(m_spUgc) != 0)
     {
         bool bNamed = m_spUgc->m_look.GetLocalPath().GetLength() > 0;
@@ -2283,7 +2282,7 @@ MS2_REPLACE_METHOD(0x140528010, CItem, FUN_140528010, 322, 0x89EAC3CB);
 // @0x140527b10
 CStringW CItem::FUN_140527b10()
 {
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(1, FUN_1405276c0());
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1405276c0());
     if (static_cast<CItemUgc*>(m_spUgc) != 0)
     {
         return FUN_141277a90(&m_spUgc->m_look, strName);
@@ -2316,7 +2315,7 @@ CStringW CItem::FUN_140527b10()
         if (!strGem.IsEmpty())
             return FUN_1401d0080(strName, strGem); // strName + strGem (exe operator+; clang would import MFC CopyChars)
     }
-    unsigned short nUnlimited = FUN_1405278a0()->FUN_140630d90()->FUN_1408bbc50();
+    unsigned short nUnlimited = FUN_1405278a0()->FUN_140630d90()->GetLevel();
     if (nUnlimited > 0)
         return FUN_14028dfa0(CStringW(L"s_word_item_unlimited_enchant"), nUnlimited, strName);
     unsigned short nEnchant = FUN_1405278a0()->FUN_140630d00();
@@ -2367,7 +2366,7 @@ bool CItem::FUN_140528e80(int nType, __int64 nTime)
     }
     else if (nType == 0)
     {
-        __int64 nNow = FUN_140869440();
+        __int64 nNow = GetServerTime();
         bool bMine = FUN_140528e00() == 0 || nNow >= FUN_140528e00();
         bool bOther = nTime == 0 || nNow >= nTime;
         if (bMine && bOther)
@@ -2412,7 +2411,7 @@ int CItem::FUN_140528f90()
 // @0x1405296c0
 CStringW CItem::FUN_1405296c0()
 {
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(1, FUN_1405276c0());
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1405276c0());
     if (!FUN_140527840()->FUN_14053cd10())
         return strName;
     if (FUN_140525680() && (static_cast<CItemCustomMusicScore*>(m_spMusic) != 0 ? true : false))
@@ -2453,7 +2452,7 @@ int CItem::FUN_1405299a0()
             return 0;
         return m_spMusic->m_n18;
     }
-    MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405565f0(FUN_1405276c0());
+    MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405565f0(FUN_1405276c0());
     if (spIng == NULL)
         return 0;
     return spIng->FUN_14054ace0();
@@ -2593,7 +2592,7 @@ CStringW CItem::FUN_140529aa0()
             return CStringW(L"");
         return spInfo->FUN_14072c480();
     }
-    MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405565f0(FUN_1405276c0());
+    MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405565f0(FUN_1405276c0());
     if (spIng == NULL)
         return CStringW(L"");
     return spIng->FUN_14054ad20();
@@ -2632,7 +2631,7 @@ int CItem::FUN_14052b130(int nItemId, int nRarity, int nAmount)
     m_spStatus->FUN_1406306f0(nItemId, FUN_140526bd0(), nAmount);
     if (FUN_140527840()->FUN_14053cd10())
     {
-        MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405565f0(nItemId);
+        MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405565f0(nItemId);
         if (static_cast<Unk_IngItem*>(spIng) != 0)
             FUN_140527320(spIng->FUN_14054ad00());
     }
@@ -2894,7 +2893,7 @@ static const CString s_sortNamesCopy[] = { "None", "Buy", "Like", "PriceLow", "P
 // ---- w106: CItemBreakIngredientTable (itemBreakIngredient.xml and the gacha box coin costs)
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax

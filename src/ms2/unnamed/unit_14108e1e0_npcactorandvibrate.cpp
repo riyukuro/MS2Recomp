@@ -113,6 +113,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/questdatatable.h"
 
 class CEffectService;
 CEffectService* FUN_1403ed280();                                    // the effect service
@@ -169,10 +172,8 @@ private:
 };
 
 // The buffs (AdditionalCliList, pcbase.h's Unk_PCBaseBuffs view).
-class Unk_PCBaseBuffs
+class Unk_PCBaseBuffs : public AdditionalCliList
 {
-public:
-    float FUN_140970720();                                          // scale
 };
 
 class Unk_CapWorld { public: void FUN_141bc7d40(const egf::EntityID& kId); void FUN_141bc7fe0(const egf::EntityID& kId); void FUN_141bc8e00(); PCBase* FUN_141bd0cc0(); void FUN_141bc7ec0(const egf::EntityID& kId); void FUN_141bc7f10(egf::EntityID kId); };    // WorldService
@@ -197,7 +198,6 @@ static Unk_SSG09a700* FUN_14109a700()
 class Unk_ArcMoverView { public: bool FUN_14160c1c0() const; CStringA FUN_14160c1e0() const; void FUN_14160bf90(float fTime, efd::Point3& kPos, float* pYaw); };   // Unk_NpcBeam getters
 CStringW FUN_1401aa6a0(int nNpcId);                                     // the npc name of the string table
 class Unk_Svc7476c0 { public: unsigned char FUN_14074e030(int nNpcId); };
-Unk_Svc7476c0* FUN_1407476c0();
 class Unk_PortalQuestTable { public: int FUN_140764c90(CNpc* pNpc); };
 class Unk_SingletonObj;
 extern Unk_SingletonObj* DAT_143ab0d68;                             // TSingleton<CQuestMaskTable>::s_instance
@@ -260,7 +260,6 @@ struct Unk_UmDescRow
     CStringW m_08;                                                  // +0x08
 };
 class Unk_UmDescTable { public: Unk_UmValuePtr<Unk_UmDescRow> FUN_14067f780(int nMsgId); };
-Unk_UmDescTable* FUN_1409eed10();
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 void FUN_141567330(NiAVObject* pObj, bool b);
 void FUN_1412751b0(const CStringW& str, int nLevel);              // debug log
@@ -305,7 +304,6 @@ struct Unk_TalkScriptPtr
 Unk_TalkScriptPtr FUN_140856fa0(int nNpcId, int n);
 class Unk_CinNpc;
 class Unk_CinNameFilter { public: void FUN_1416fb400(CStringW& name, Unk_CinNpc* npc); };
-Unk_CinNameFilter* FUN_1403b4750();
 MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);                  // the item data of an id
 CString FUN_140cc2ba0(const CString& strRoot, const CString& strFile);   // path join
 void FUN_1401d3700(CString& str);                                   // fixes up a resource path
@@ -349,10 +347,12 @@ void FUN_1411a4f40(CEffectService* pService, CStringA strEffect, const efd::Poin
 class Unk_EmoNpcTable { public: int FUN_14035b0a0(int nNpcType); };
 Unk_EmoNpcTable* FUN_140764010();
 class Unk_FactoryApp;
-Unk_FactoryApp* FUN_1403ed2b0();
 const CStringA& FUN_141adc5d0(Unk_FactoryApp* pApp, int nUiId); // close a ui
 const CStringA& FUN_141adc530(Unk_FactoryApp* pApp, int nUiId); // open a ui
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
+#include "ms2/placeholder/cgraphicoptiontable.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/placeholder/cmainsystem.h"
 extern int DAT_143abdc30;                                           // the npc id of the last 0x4f50 dialog
 class Unk_EmoCfgFloat { public: float* FUN_140967520(const float* pDefault); };
 
@@ -435,17 +435,13 @@ class UIUpperHpBar { public: void FUN_141b4c510(CNpc* pNpc, int nTargetId); };
 UIUpperHpBar* FUN_14096e340(int nUiId);
 extern int g_upperTargetId;                                         // 0x143ab2864
 
-class Unk_NpcShadowMgr { public: int FUN_141376880(int nKind); int FUN_1413769d0(int nKind); };   // shadow lod options
-Unk_NpcShadowMgr* FUN_140ae1c00();
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                         // the common npc row
 class SkillDataTableCli;
-SkillDataTableCli* FUN_1401958b0();
 void FUN_140aae720(SkillDataTableCli* pTable, unsigned int nSkillId, unsigned short nLevel, int nFlags);   // preload a skill
 class Unk_PCBaseFxLibView { public: void FUN_1411be510(int nNpcId, CString strUnused); };   // preload the npc's effects
-int FUN_14082f1a0(int nStat);                                       // the stat is 64-bit
+int IsPercentStat(int nStat);                                       // the stat is 64-bit
 
 struct Unk_ICCApp;
-Unk_ICCApp* FUN_14086d260();
 class CMainSystem;
 double FUN_141473280(CMainSystem* pSystem);                         // the frame time
 int FUN_140869420();                                                // tick count (ms)
@@ -1309,7 +1305,7 @@ CStringW CNpc::FUN_141093980()
     if (FUN_141093800().get() != 0) {
         if (!static_cast<Unk_NpcMaid*>(FUN_141093800().operator->())->FUN_14109a730().IsEmpty())
             return static_cast<Unk_NpcMaid*>(FUN_141093800().operator->())->FUN_14109a730();
-        Unk_UmValuePtr<Unk_UmDescRow> spDesc = FUN_1409eed10()->FUN_14067f780(FUN_141093800()->m_nMaidId);
+        Unk_UmValuePtr<Unk_UmDescRow> spDesc = reinterpret_cast<Unk_UmDescTable*>(TSingleton<CMaidDescTable>::GetInstance())->FUN_14067f780(FUN_141093800()->m_nMaidId);
         if (spDesc.get() != 0)
             return spDesc->m_08;
     }
@@ -1418,8 +1414,8 @@ int CNpc::FUN_141094200()
 {
     int nUiId = FUN_141094170();
     if (nUiId == 0x4e4a) {
-        FUN_141adc5d0(FUN_1403ed2b0(), 0x4e4a);
-        FUN_141adc5d0(FUN_1403ed2b0(), 0x4e49);
+        FUN_141adc5d0(reinterpret_cast<Unk_FactoryApp*>(TSingleton<CUIService>::GetInstance()), 0x4e4a);
+        FUN_141adc5d0(reinterpret_cast<Unk_FactoryApp*>(TSingleton<CUIService>::GetInstance()), 0x4e49);
     } else if (nUiId == 0x4e47) {
         if (DAT_143ab2d80.Ready() == 0) {
             DAT_143ab2d80.RequestLoad();
@@ -1429,7 +1425,7 @@ int CNpc::FUN_141094200()
     } else if (nUiId == 0x4f50) {
         DAT_143abdc30 = FUN_141092fa0();
     }
-    FUN_141adc530(FUN_1403ed2b0(), nUiId);
+    FUN_141adc530(reinterpret_cast<Unk_FactoryApp*>(TSingleton<CUIService>::GetInstance()), nUiId);
     return nUiId;
 }
 
@@ -1438,7 +1434,7 @@ void CNpc::FUN_1410942c0()
 {
     int nUiId = FUN_141094170();
     if (nUiId != 0)
-        FUN_141adc5d0(FUN_1403ed2b0(), nUiId);
+        FUN_141adc5d0(reinterpret_cast<Unk_FactoryApp*>(TSingleton<CUIService>::GetInstance()), nUiId);
 }
 
 // In talk range of the camera (always for property tag 0x1a).
@@ -1466,7 +1462,7 @@ void FUN_1410943b0(PCBase* pActor, int n)
                 CStringW strText = spScript.FUN_14085a610()->m_contents.FUN_140a4ffc0(0).FUN_14078f3d0()->m_strText;
                 if (strText.GetLength() > 0) {
                     if (static_cast<CNpc*>(pActor)->vfunc_128())
-                        FUN_1403b4750()->FUN_1416fb400(strText, reinterpret_cast<Unk_CinNpc*>(static_cast<CNpc*>(pActor)));
+                        reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb400(strText, reinterpret_cast<Unk_CinNpc*>(static_cast<CNpc*>(pActor)));
                     static_cast<CNpc*>(pActor)->FUN_14166fff0(strText);
                 }
                 if (spScript.FUN_14085a610()->m_contents.FUN_140a4ffc0(0).FUN_14078f3d0()->m_strSound.GetLength() > 0)
@@ -1915,7 +1911,7 @@ void CNpc::FUN_141097b40(unsigned short nGroup)
 // @0x141097c40
 void CNpc::vfunc_33(void* a, void* b)
 {
-    float fNow = (float)FUN_141473280(reinterpret_cast<CMainSystem*>(FUN_14086d260()));
+    float fNow = (float)FUN_141473280(reinterpret_cast<CMainSystem*>(reinterpret_cast<Unk_ICCApp*>(TSingleton<CMainSystem>::GetInstance())));
     efd::Point3 kHitDir = *static_cast<efd::Point3*>(b);
     GameObject::vfunc_33(a, &kHitDir);
     FUN_141671c20(MS2Ptr<CDamageRecord>(static_cast<CDamageRecord*>(a)));
@@ -2185,7 +2181,7 @@ int CNpc::vfunc_124(int nNpcId)
     vfunc_59(0, 0, 0, 0);
     m_fScaleAC = m_spNpcData->m_model.m_fScale;
     if (m_spNpcData->GetFriendly() != 0)
-        m_cE40 = FUN_1407476c0()->FUN_14074e030(nNpcId);
+        m_cE40 = reinterpret_cast<Unk_Svc7476c0*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074e030(nNpcId);
     m_nEB8 = FUN_14109a710()->FUN_140764c90(this);
     PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != NULL) {
@@ -2324,10 +2320,10 @@ void CNpc::vfunc_51(efd::Point3* pOffset)
 // @0x1410965d0
 void CNpc::vfunc_49()
 {
-    Unk_NpcShadowMgr* pMgr = FUN_140ae1c00();
+    CGraphicOptionTable* pMgr = TSingleton<CGraphicOptionTable>::GetInstance();
     int nKind = FUN_141092ff0() ? 3 : 2;
-    int nLodHi = pMgr->FUN_141376880(nKind);
-    int nLodLo = pMgr->FUN_1413769d0(nKind);
+    int nLodHi = pMgr->GetShadowOption(nKind);
+    int nLodLo = pMgr->GetShadowOptionOffset(nKind);
     float fUnused = 1.0f;
     m_spShadow = NiNew CObjectShadow(this, nLodHi, nLodLo, m_spNpcData->m_fShadowScale, 1.0f);
     FUN_14123cb20(m_bUnkB8);
@@ -2342,7 +2338,7 @@ void CNpc::vfunc_90(void* p)
         int nStat = static_cast<CInPacket*>(p)->ReadUInt8();
         for (int i = 0; i < 3; i++) {
             __int64 nValue = 0;
-            if (FUN_14082f1a0(nStat) != 0)
+            if (IsPercentStat(nStat) != 0)
                 nValue = static_cast<CInPacket*>(p)->ReadInt64();
             else
                 nValue = (unsigned int)static_cast<CInPacket*>(p)->ReadInt32();
@@ -2366,7 +2362,7 @@ void FUN_1410917a0(unsigned int nNpcId)
     if (spData.get() != 0) {
         for (unsigned __int64 i = 0; i < spData->m_skill.GetCount(); i++) {
             const std::pair<unsigned int, unsigned short>& kSkill = spData->m_skill.GetSkill(i);
-            FUN_140aae720(FUN_1401958b0(), kSkill.first, kSkill.second, 4);
+            FUN_140aae720(TSingleton<SkillDataTableCli>::GetInstance(), kSkill.first, kSkill.second, 4);
         }
         reinterpret_cast<Unk_PCBaseFxLibView*>(FUN_140a50010()->FUN_1411bf1e0())->FUN_1411be510(spData->GetId(), "");
     }
@@ -2436,7 +2432,7 @@ void CNpc::FUN_141099ab0()
 void CNpc::vfunc_53(float fTime)
 {
     PCBase::vfunc_53(fTime);
-    float fNow = (float)FUN_141473280(reinterpret_cast<CMainSystem*>(FUN_14086d260()));
+    float fNow = (float)FUN_141473280(reinterpret_cast<CMainSystem*>(reinterpret_cast<Unk_ICCApp*>(TSingleton<CMainSystem>::GetInstance())));
     if (FUN_141092ff0() && m_unk_15c == 0 && m_spNpcData.get() != 0) {
         if (m_spNpcData->m_fBossSoundDistance < m_unk_c4) {
             if (m_spNpcData->m_fBossSoundEndDistance <= m_unk_c4)

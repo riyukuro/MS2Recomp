@@ -19,6 +19,7 @@
 #include "ms2/placeholder/effectquery.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -56,7 +57,6 @@ struct Unk_SpawnXform
 };
 MS2_CHECK_SIZE(Unk_SpawnXform, 0x34);
 class Unk_SpawnEffectMgr { public: void FUN_1411a4a00(NoticeMessage* pRequest); };
-Unk_SpawnEffectMgr* FUN_1403ed280();
 void* FUN_140a332d0(Unk_SpawnXform* p);                                    // NiTransform default ctor
 void FUN_1420849a0(Unk_SpawnRot* p);                                       // efd::Matrix3::MakeIdentity
 struct Unk_SpawnNiPoint3 : public Vector3
@@ -138,7 +138,7 @@ void StateSpawn::vfunc_3(double fTime)
             request.m_strName = ((Unk_SpawnMount*)pMount)->FUN_141093270()->m_strEffect;
             request.m_nObject = 0;
             request.m_p18 = &xf;
-            FUN_1403ed280()->FUN_1411a4a00(&request);
+            reinterpret_cast<Unk_SpawnEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&request);
         }
     }
     m_fElapsed += (float)fTime;

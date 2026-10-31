@@ -70,12 +70,11 @@ extern __int64 DAT_143ab2828;                   // the own character id
 extern int DAT_143ab0248;                       // the service region (0 Korea)
 extern int DAT_1439f4840;                       // the default code page
 
-void FUN_140657820();                           // invalid call of an empty Delegate (shared)
+void Unk_140657820();                           // invalid call of an empty Delegate (shared)
 void* FUN_140aadf80();                          // the platform service
 HWND FUN_14209c720(void* pPlatform);            // its main window
-CWebBrowserService* FUN_140cc18a0();            // the web browser service
 void FUN_1418fe1c0(const CStringA& strUrl);     // open an url in the external browser
-CStringW FUN_1408767c0(const char* pszUtf8);    // UTF-8 -> wide
+CStringW XmlWide(const char* pszUtf8);          // UTF-8 -> wide
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);     // wide -> multi-byte
 int FUN_1407181d0(const CStringA& str);                        // string -> number (returns a 16-bit value in eax)
 int FUN_141349e30(const CStringA& strKind);     // banner link kind
@@ -87,7 +86,7 @@ UIWebBrowser* FUN_140c43790(int nUIClassID);    // the dialog of a class id
 inline CStringA Utf8ToMultiByte(const std::string& str, int nCodePage)
 {
     int nCP = nCodePage == 0 ? DAT_1439f4840 : nCodePage;
-    CStringW strWide = FUN_1408767c0(str.c_str());
+    CStringW strWide = XmlWide(str.c_str());
     return FUN_14016a600(strWide, nCP);
 }
 
@@ -113,7 +112,7 @@ template<> inline void Delegate<void(const CStringA&)>::Reset() {
 template<> inline bool Delegate<void(const CStringA&)>::is_valid() const { return m_pImpl != 0; }
 template<> inline bool Delegate<void(const CStringA&)>::IsSet() const { return is_valid(); }
 template<> inline void Delegate<void(const CStringA&)>::operator()(const CStringA& a1) const {
-    if(m_pImpl==0) FUN_140657820();
+    if(m_pImpl==0) Unk_140657820();
     m_pImpl->vfunc_2(a1);
 }
 template<> inline Delegate<void(const std::string&)>::Delegate(const Delegate& o) {
@@ -137,7 +136,7 @@ template<> inline void Delegate<void(const std::string&)>::Reset() {
 template<> inline bool Delegate<void(const std::string&)>::is_valid() const { return m_pImpl != 0; }
 template<> inline bool Delegate<void(const std::string&)>::IsSet() const { return is_valid(); }
 template<> inline void Delegate<void(const std::string&)>::operator()(const std::string& a1) const {
-    if(m_pImpl==0) FUN_140657820();
+    if(m_pImpl==0) Unk_140657820();
     m_pImpl->vfunc_2(a1);
 }
 
@@ -658,7 +657,7 @@ bool COffscreenWebBrowser::OnBeforeBrowse(CefRefPtr<CefBrowser> browser, CefRefP
     CefRefPtr<CefRequest> request, bool user_gesture, bool is_redirect)
 {
     CStringA strUrl = Utf8ToMultiByte(request->GetURL().ToString(), 0);
-    if (!FUN_140cc18a0()->IsAllowedURL(strUrl)) {
+    if (!TSingleton<CWebBrowserService>::GetInstance()->IsAllowedURL(strUrl)) {
         FUN_1418fe1c0(strUrl);
         return true;
     }

@@ -42,6 +42,9 @@
 #include "ms2/placeholder/effectquery.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/pcgemequip.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- unit-local placeholders ----
 
@@ -127,16 +130,13 @@ public:
 };
 
 // The world manager: the interact objects and the actors.
-class Unk_SiWorld
+class Unk_SiWorld : public WorldService
 {
 public:
     MS2Ptr<CInteractObject> FUN_141bc6090(Vector3 pt, int nSkipDisabled);   // the interactable object at a point
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);                  // an interact object by name
-    void FUN_141bc5fb0(void* pOut, int nCategory);                                  // the interact objects of a kind
-    void* FUN_141bd0cc0();                                                          // the local player
     Unk_SiNpc* FUN_141bd1320(int nActorId);                                         // an actor by object id
 };
-Unk_SiWorld* FUN_1403ed2d0();
 
 // The effect manager (the request is a NoticeMessage, placeholder/effectquery.h: name +0, owner +8, transform +0x18).
 struct Unk_SiRot                                         // efd::Matrix3 without the empty ctor call (NiTransform's ctor builds it)
@@ -159,7 +159,6 @@ public:
     int FUN_1411a49c0(NoticeMessage* pRequest);
     void FUN_1411a6060(int nHandle);
 };
-Unk_SiFxMgr* FUN_1403ed280();
 
 // The quest manager: does the quest state satisfy a mask.
 class Unk_SiQuestEval
@@ -183,7 +182,7 @@ Unk_SiQuestMgr* FUN_140764020();
 MS2Ptr<CInteractObjectData> FUN_14051f670(int nId);
 
 // The equipment of a player: the worn item of a slot.
-class Unk_SiEquip { public: MS2Ptr<CGemBase> FUN_141270740(int nSlot); };
+class Unk_SiEquip : public PCGemEquip { };
 Unk_SiEquip* FUN_14165f460(PCBase* p);
 
 // The pieces of the interact row this unit reads (offsets proven by the callers).
@@ -275,7 +274,7 @@ void StateInteraction::vfunc_4(StateData* pData)
     if (m_spInteract == 0)
     {
         m_spInteract.AssignRaw(new StateInteractData);
-        MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc6090(reinterpret_cast<Unk_SiPos*>(m_pOwner)->vfunc_18(), 0);
+        MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc6090(reinterpret_cast<Unk_SiPos*>(m_pOwner)->vfunc_18(), 0);
         if (spObject.get())
             m_spInteract->m_nObjectId = spObject->GetRowId();
     }
@@ -290,7 +289,7 @@ void StateInteraction::vfunc_4(StateData* pData)
             if (FUN_14165f100(pPC))
                 FUN_14165f170(pPC);
             Unk_CastInfo kInfo;
-            MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc6090(reinterpret_cast<Unk_SiPos*>(m_pOwner)->vfunc_18(), 1);
+            MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc6090(reinterpret_cast<Unk_SiPos*>(m_pOwner)->vfunc_18(), 1);
             if (spObject == 0)
             {
                 m_pOwner->vfunc_59(1, 0, 0, 0);
@@ -300,7 +299,7 @@ void StateInteraction::vfunc_4(StateData* pData)
             {
                 m_aObjects.clear();
                 ATL::CAtlArray<MS2Ptr<CInteractObject> > aObjects;
-                FUN_1403ed2d0()->FUN_141bc5fb0(&aObjects, 6);
+                reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc5fb0(&aObjects, 6);
                 for (size_t i = 0; i < aObjects.GetCount(); i++)
                 {
                     if (aObjects[i]->vfunc_4() == 0)
@@ -359,7 +358,7 @@ void StateInteraction::vfunc_5(int n)
     {
         if (m_spInteract.get())
         {
-            MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc66b0(m_spInteract->m_strObjectId);
+            MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_spInteract->m_strObjectId);
             if (spObject.get())
                 spObject->vfunc_9();
         }
@@ -368,7 +367,7 @@ void StateInteraction::vfunc_5(int n)
     if (FUN_1417b8560() != 0 && m_n10 == 0x8a)
     {
         if (m_nEffect != 0)
-            FUN_1403ed280()->FUN_1411a6060(m_nEffect);
+            reinterpret_cast<Unk_SiFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nEffect);
         UICastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar)
             pBar->FUN_1418e1390();
@@ -384,7 +383,7 @@ void StateInteraction::vfunc_8(double fTime)
         return;
     if (m_n10 == 0x8d && m_spInteract.get())
     {
-        MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc66b0(m_spInteract->m_strObjectId);
+        MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_spInteract->m_strObjectId);
         if (spObject.get() ? true : false)
         {
             if (spObject->vfunc_4() != 0)
@@ -398,7 +397,7 @@ void StateInteraction::vfunc_8(double fTime)
     }
     if (m_spInteract.get())
     {
-        MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc66b0(m_spInteract->m_strObjectId);
+        MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_spInteract->m_strObjectId);
         if (spObject.get())
         {
             if (m_n48 != 0)
@@ -497,7 +496,7 @@ void StateInteraction::FUN_1417d2230(CInteractObject* pObject)
 {
     if (pObject->vfunc_5() == 6)
     {
-        void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        void* pPlayer = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return;
         if (m_aObjects.size() == 0)
@@ -520,7 +519,7 @@ void StateInteraction::FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow)
             return;
         if (reinterpret_cast<Unk_SiQuestEval*>(&FUN_140764020()->m_pEvalVptr)->CheckMask(SiRowMask(spRow.operator->())) != 0)
         {
-            MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc6090(reinterpret_cast<Unk_SiPos*>(m_pOwner)->vfunc_18(), 1);
+            MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc6090(reinterpret_cast<Unk_SiPos*>(m_pOwner)->vfunc_18(), 1);
             if (spObject.get())
             {
                 Vector3 kRot = spObject->GetRot();
@@ -535,7 +534,7 @@ void StateInteraction::FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow)
                 kRequest.m_strName = SiRowEffect(spRow.get());
                 kRequest.m_nObject = 0;
                 kRequest.m_p18 = &kXform;
-                m_nEffect = FUN_1403ed280()->FUN_1411a49c0(&kRequest);
+                m_nEffect = reinterpret_cast<Unk_SiFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kRequest);
             }
         }
     }
@@ -580,7 +579,7 @@ int StateInteraction::FUN_1417d2880()
         return 0;
     if (m_spInteract->m_nFlag == 0)
         return 0;
-    MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc66b0(m_spInteract->m_strObjectId);
+    MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_spInteract->m_strObjectId);
     if (spObject.IsNull())
         return 0;
     if (spObject->vfunc_16() == 0)
@@ -611,7 +610,7 @@ void StateInteractionNpc::vfunc_4(StateData* pData)
     if (m_spNpc.get())
     {
         nNpc = m_spNpc->m_nNpc;
-        Unk_SiNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_spNpc->m_nNpc);
+        Unk_SiNpc* pNpc = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_spNpc->m_nNpc);
         if (pNpc)
         {
             MS2Ptr<CNpcData> spNpcData = MS2Ptr<CNpcData>(pNpc->GetNpcData());
@@ -657,7 +656,7 @@ void StateInteractionNpc::vfunc_8(double fTime)
         return;
     if (m_spNpc.get())
     {
-        Unk_SiNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_spNpc->m_nNpc);
+        Unk_SiNpc* pNpc = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_spNpc->m_nNpc);
         if (pNpc)
         {
             if (m_n48 != 0)

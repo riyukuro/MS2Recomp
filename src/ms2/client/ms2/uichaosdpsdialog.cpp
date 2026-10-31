@@ -2,7 +2,6 @@
 // MS2-UNIT: ?\uichaosdpsdialog.cpp
 // MS2-RANGE: 0x140e05460-0x140e09a90 .text$mn
 // MS2-RANGE: 0x1400d6fd0-0x1400d7230 .text$di
-// MS2-FUNCTIONAL: two functions (vfunc_72, the sort comparator) differ in register/stack allocation only; behaviour-equivalent.
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCPartyMember@@@@V?$CElementTraits@V?$MS2Ptr@VCPartyMember@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCPartyMember@@@@_K@Z 0x140e09040 ; unique
 // MS2-PIN: ?vfunc_48@UIChaosDPSDialog@@UEAAHXZ 0x140e09160 ; unique
@@ -28,6 +27,9 @@
 #include "hook/ms2hook.h"
 #include <string.h>
 #include "ms2/placeholder/commandchat.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // ---- header statics (the second copy of the sort names comes from a header between the two dialog statics) ----
 static CString s_strSortTypeNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -49,11 +51,8 @@ public:
     char m_pad_00[0x18];
     Unk_ChaosOpt m_opt;                                     // +0x18
 };
-Unk_ChaosSettings* FUN_1409a8b10();
 
-class Unk_ChaosFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_ChaosFeatures* FUN_140166410();
-CPartyManager* FUN_1409670d0();
+CFeatureManager* FUN_140166410();
 
 // The object registry (FUN_1403ed2d0) and the local player lookup.
 class Unk_ChaosWorld;
@@ -65,7 +64,6 @@ __int64 FUN_141656a80(PCBase* pPC);
 class Unk_ChaosAS : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_140acd130(const char* szMethod, CStringW str);        // 0x140acd130 Invoke(name, string)
     Scaleform::GFx::Value FUN_140e06cc0(const char* szMethod, double d);            // 0x140e06cc0 Invoke(name, number)
 };
 
@@ -133,7 +131,7 @@ void UIChaosDPSDialog::OnTextToggle()
     if (m_30.IsNull())
         return;
     CStringW strTitle = FUN_1405c2690(CStringW(L"s_chaosdps_titlebar"), CBattleRecordManager::FUN_140a04bc0(m_nMode));
-    static_cast<Unk_ChaosAS*>(m_30.operator->())->FUN_140acd130("setTitle", strTitle);
+    static_cast<Unk_ChaosAS*>(m_30.operator->())->Invoke("setTitle", strTitle);
     static_cast<AScript*>(m_30.operator->())->Invoke("setAscendingMeterValue", m_nMode == 6);
 }
 
@@ -144,8 +142,8 @@ void UIChaosDPSDialog::FUN_140e05950()
     if (m_30.IsNull())
         return;
     CStringW strTime = CBattleRecordManager::GetInstance()->FUN_140a04b00(m_nGroup);
-    static_cast<Unk_ChaosAS*>(m_30.operator->())->FUN_140acd130("setTime", strTime);
-    ATL::CAtlArray<MS2Ptr<CPartyMember> >& members = FUN_1409670d0()->FUN_14162ba30();
+    static_cast<Unk_ChaosAS*>(m_30.operator->())->Invoke("setTime", strTime);
+    ATL::CAtlArray<MS2Ptr<CPartyMember> >& members = TSingleton<CPartyManager>::GetInstance()->FUN_14162ba30();
     if (members.IsEmpty())
         return;
     m_members.clear();
@@ -196,7 +194,7 @@ void UIChaosDPSDialog::FUN_140e05f80()
 {
     if (m_30.IsNull())
         return;
-    int nCount = FUN_1409670d0()->FUN_14162af00();
+    int nCount = TSingleton<CPartyManager>::GetInstance()->FUN_14162af00();
     if (nCount < 10)
         m_30->Invoke("RemoveMember");
 }
@@ -222,7 +220,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 {
     if (_stricmp("OnCloseDialog", szMethod) == 0)
     {
-        FUN_1409a8b10()->FUN_140e09150()->m_bFlag = 0;
+        reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()->m_bFlag = 0;
         CBattleRecordManager::GetInstance()->FUN_140a03fe0(m_nGroup);
         vfunc_67();
         return 1;
@@ -276,22 +274,16 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 void UIChaosDPSDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (FUN_1409a8b10()->FUN_140e09150()->FUN_14125bbe0() != 0)
-    {
-        if (FUN_1409670d0()->FUN_14162ab20() != 0)
-        {
-            if (FUN_140166410()->FUN_14036d570(0xbe) != 0)
-            {
-                if (m_30.IsNull() != 0)
-                    return;
-                if (m_tick.FUN_140268870(100) == 0)
-                    return;
-                FUN_140e05950();
-                return;
-            }
-        }
+    if (reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()->FUN_14125bbe0() == 0 || TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20() == 0
+        || FUN_140166410()->FUN_14036d570(0xbe) == 0)
+        vfunc_67();
+    else {
+        if (!m_30)
+            return;
+        if (m_tick.FUN_140268870(100) == 0)
+            return;
+        FUN_140e05950();
     }
-    vfunc_67();
 }
 
 // Orders the ranking: descending meter value (ascending for mode 6).

@@ -112,6 +112,9 @@ static CString s_tabIndex2 = "tabIndex";
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/client/ms2/uiservice.h"
 #include <NiRect.h>
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -119,13 +122,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // ---- unit-local views of exe objects ----
 
 // The status-listener registry (singleton 0x140aa6d40).
-class Unk_UiStatusMgr
-{
-public:
-    void FUN_141b0cd00(UIStatusEventListener* pListener);       // register
-    void FUN_141b0cd90(UIStatusEventListener* pListener);       // unregister
-};
-Unk_UiStatusMgr* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 
 // The AS function object calling back into C++ (ctor 0x1422c8430, dtor 0x1422c85b0).
 class ASFunction : public AScript
@@ -138,7 +135,6 @@ private:
 };
 
 CUgcManager* FUN_14052d220();
-CUIService* FUN_1403ed2b0();
 bool FUN_1418ffe80(int nFlags, int nBit);                       // nFlags & nBit
 void FUN_1418ffef0(int& nFlags, int nBit);                      // nFlags &= ~nBit
 bool FUN_1409b0350(Scaleform::GFx::Value* pValue);              // undefined
@@ -196,12 +192,7 @@ NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 UGCItemSlot* FUN_141b46a20(const CString& strName);
 
 // The content switches (singleton 0x140166410).
-class Unk_FeatureSettings
-{
-public:
-    bool FUN_14036e510();                                       // the UGC preview switch
-};
-Unk_FeatureSettings* FUN_140166410();
+CFeatureManager* FUN_140166410();
 NotifySystem* FUN_140939a10();
 void FUN_1418ffec0(int* pnFlags, int nBit);                     // nFlags |= nBit
 bool FUN_140ebcc20(ATL::CAtlArray<int>& arrItemIds);            // the items may be used
@@ -421,7 +412,7 @@ int UIUGCItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("onClickCancle", szMethod) == 0)
     {
-        FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)vfunc_48());
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
         return 1;
     }
     else if (_stricmp("onClickNewDraw", szMethod) == 0)
@@ -2142,9 +2133,9 @@ bool UIUGCItemEditDialog::FUN_141b46070(int nResult, const CMsgBoxData& box)
             m_spMadeItem->SetName(CString(""));
         m_spMadeItem = 0;
         if (!FUN_14052d220()->FUN_14187f410())
-            FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)vfunc_48());
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
         if (m_spEditItem.get() != 0)
-            FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)vfunc_48());
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
         else
             FUN_141b40270();
     }

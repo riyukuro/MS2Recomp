@@ -72,6 +72,10 @@
 #include "ms2/client/ms2/npcdatacli.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/luautil.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/gamedictionarymanager.h"
 
 #include <stdlib.h>
 
@@ -944,7 +948,7 @@ MS2_REPLACE_METHOD(0x1406CD310, CNpcData, GetRace, 14, 0x828204CF);
 
 // --- Table/NpcRegionSpawnData.xml and the NpcData xml cache ---------------------------------------------------------
 
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
 void FUN_1402804e0(void*, unsigned __int64, unsigned __int64, int, const wchar_t*);
@@ -959,15 +963,13 @@ bool FUN_14025cd60(const CStringW&, const CStringW&);
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly);
 void* FUN_140166410();
 bool FUN_14036d4b0(void*, const CStringW&);
-struct Unk_NdFeature { CString FUN_14036d8e0(); };
 bool FUN_1401647e0(const CString&, const CString&);
 float FUN_14028d2e0();
 CStringW FUN_140298ea0(CStringW strKey);
 const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);
 
 // The weight table of the black market's rarity roll, reused for the region spawn weights (0x143aac4c8).
-class Unk_NpcWeightMgr { public: int FUN_1406762d0(int nMain, int nSub, int nRare, int nDiff); };
-Unk_NpcWeightMgr* FUN_1401c0db0();
+CLua* FUN_1401c0db0();
 
 class Unk_NpcTableCli { public: MS2Ptr<NpcDataCli> FUN_140a7cab0(int nNpcId); };
 class Unk_SingletonObj;
@@ -1166,7 +1168,7 @@ MS2Ptr<CRegionSpawnResult> CNpcDataTable::FindSpawnResult(CStringW strTags, int 
                 MS2Ptr<CRegionSpawnProb> pProb(new CRegionSpawnProb);
                 pProb->m_pSpawn = pData;
                 int nDiff = nMaxDifficulty - pData->m_nDifficulty;
-                pProb->m_fWeight = (float)FUN_1401c0db0()->FUN_1406762d0(hit.m_nMain, hit.m_nSub, pData->m_nRareDegree, nDiff);
+                pProb->m_fWeight = (float)FUN_1401c0db0()->CalcNpcSpawnWeight(hit.m_nMain, hit.m_nSub, pData->m_nRareDegree, nDiff);
                 nTotal += pProb->m_fWeight;
                 pResult->m_aProb.Add(pProb);
             }
@@ -1252,7 +1254,7 @@ void CNpcDataTable::LoadRegionSpawn()
         CString strLocale;
         FUN_140873420(pNode, "feature", strFeature);
         FUN_1408733e0(pNode, "locale", strLocale);
-        bool bSkip = !strLocale.IsEmpty() && FUN_1401647e0(strLocale, reinterpret_cast<Unk_NdFeature*>(FUN_140166410())->FUN_14036d8e0());
+        bool bSkip = !strLocale.IsEmpty() && FUN_1401647e0(strLocale, reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d8e0());
         if (bSkip)
             continue;
         if (!FUN_14036d4b0(FUN_140166410(), strFeature))
@@ -1380,7 +1382,7 @@ MS2_REPLACE(0x1406CEFB0, Unk_ParsePropertyTag, 1023, 0x6D7FA8CF);
 // --- CNpcData::LoadXml ------------------------------------------------------------------------------------------------
 bool FUN_1403d8350(Unk_140165cf0* pElem, const char* pszName, int& nOut);               // npc class reader
 unsigned FUN_14021c7c0(const CString& str);                                             // the id of a string key
-int FUN_14021bc30(const CStringA& strName);                                             // event tag by name
+int Parse_14021bc30(const CStringA& strName);                                           // event tag by name
 const CString& FUN_14082efb0(int nStat);                                                // xml name of the nStat-th stat
 bool FUN_14036d570(void* pOptions, int nFeature);                                       // feature id check
 void FUN_1406a6d70(void* pLog, int a, int b, int c, const wchar_t* pszFormat, const int& nArg);
@@ -1400,11 +1402,10 @@ void FUN_14015f050(const CString& str, ATL::CAtlArray<CString>& arr, const char*
 // The boss notify table (the pc bang style handle table): a handle lookup by (mode, npc id), then a per-node test.
 struct Unk_BossNotifyHandle { ~Unk_BossNotifyHandle(); unsigned long long m_a, m_b; };    // dtor 0x1403b87a0
 struct Unk_BossNotifyNode { bool FUN_1403b8910(int n); };
-class Unk_BossNotifyMgr
+class Unk_BossNotifyMgr : public GameDictionaryManager
 {
 public:
     Unk_BossNotifyNode* FUN_1403b7c40(Unk_BossNotifyHandle* pOut, int nMode, int nNpcId);
-    void FUN_1403b7d30(int nNpcId, int nClass);
 };
 Unk_BossNotifyMgr* FUN_140541580();
 
@@ -1482,7 +1483,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
                     Unk_BossNotifyNode* pNode = FUN_140541580()->FUN_1403b7c40(&handle, 2, GetId());
                     m_bBossNotifyDefault = pNode->FUN_1403b8910(0);
                 }
-                FUN_140541580()->FUN_1403b7d30(GetId(), m_nClass);
+                FUN_140541580()->SetMobLevel(GetId(), m_nClass);
             }
         }
         else
@@ -1508,7 +1509,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
     FUN_1406cfaa0(pElem, "eventTags", eventTags);
     for (CStringA strTag : eventTags)
     {
-        int nTag = FUN_14021bc30(strTag);
+        int nTag = Parse_14021bc30(strTag);
         if (nTag != 0)
             m_eventTags.set(nTag, true);
     }

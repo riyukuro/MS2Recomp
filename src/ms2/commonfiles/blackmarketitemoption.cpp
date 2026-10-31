@@ -106,6 +106,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/luautil.h"
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0
@@ -115,7 +119,7 @@ public:
     Unk_140165cf0* FUN_140168650(const char* pszName);              // NextSiblingElement
 };
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
@@ -132,28 +136,22 @@ void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const ch
 void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);   // split into strings
 enum Unk_BmLanguage { Unk_BmLanguage_None = 0 };
 Unk_BmLanguage FUN_140651920(CString strCode);                                 // language code -> enum
-__int64 FUN_140869440();                                            // server time
+__int64 GetServerTime();                                            // server time
 __int64 FUN_1418ff5a0(int nCurrency, __int64 nAmount, int nItemId); // random roll
-int FUN_14082ee80(const CStringA& strName);                         // stat name -> id (-1 when none)
+int FindStatByName(const CStringA& strName);                        // stat name -> id (-1 when none)
 int FUN_14081d260(const CStringA& strName);                         // special option name -> id
 CStringW FUN_140630e10(int nId);                                    // special option text
 CStringW FUN_14082f000(int nId);                                    // stat text
 unsigned FUN_140630d00(Unk_ItemEnchantData* pEnchant);
-class Unk_140166410 { public: bool FUN_14036d4b0(const CStringW& strFeature); };
-Unk_140166410* FUN_140166410();
+CFeatureManager* FUN_140166410();
 void FUN_140159b70(long hr);                                        // AtlThrow
-class Unk_1401a9d70 { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_1401a9d70* FUN_1401a9d70();
 
 // The singletons the price helpers talk to (0x143aac4c8 / 0x143aac4d0, the locale one is TSingleton<CLocaleLanguage>).
-class Unk_BmPriceMgr
+class Unk_BmPriceMgr : public CLua
 {
 public:
     long long FUN_140674f30(long long nPrice, int nRarity, unsigned nGroup, unsigned nEnchant);
-    float FUN_140675150(int);
     void FUN_1406752e0(long long);
-    __int64 FUN_1406755d0();
-    float FUN_140675470();
 };
 int FUN_140479560(void* pEventMgr);                                 // fixed black market fee rate (negative when none)
 class Unk_SingletonObj;
@@ -230,7 +228,7 @@ float FUN_1401bcd60()
     int nRate = FUN_140479560(FUN_1401c0d90());
     if (nRate >= 0)
         return (float)nRate / 10000.0f;
-    return FUN_1401c0db0()->FUN_140675150(1);
+    return FUN_1401c0db0()->CalcBlackMarketCostRate(1);
 }
 
 // @0x1401bcdb0
@@ -242,13 +240,13 @@ void FUN_1401bcdb0(long long n)
 // @0x1401bcde0
 __int64 FUN_1401bcde0()
 {
-    return FUN_1401c0db0()->FUN_1406755d0();
+    return FUN_1401c0db0()->CalcBlackMarketRegisterDepositMax();
 }
 
 // @0x1401bce00
 int FUN_1401bce00()
 {
-    return (int)FUN_1401c0db0()->FUN_140675470();
+    return (int)FUN_1401c0db0()->CalcBlackMarketRegisterDepositPercent();
 }
 
 // @0x1401bce20
@@ -604,7 +602,7 @@ int CBlackMarketProduct::GetState(bool bLike)
     {
         return 4;
     }
-    long long nNow = FUN_140869440();
+    long long nNow = GetServerTime();
     if (m_nExpire <= nNow)
         return 3;
     return 2;
@@ -1089,7 +1087,7 @@ void CBlackMarketTable::Load()
                             FUN_140873710(pStat, "percent", &stat->m_nPercent);
                             FUN_140873a50(pStat, "default", &stat->m_fDefault);
                             int nStat = 0;
-                            nStat = FUN_14082ee80(strName);
+                            nStat = FindStatByName(strName);
                             if (nStat == -1)
                             {
                                 nStat = FUN_14081d260(strName);
@@ -1179,7 +1177,7 @@ void CBlackMarketTable::ReadTabs(Unk_140165cf0* pElem, TabList* pOut, TabMap* pB
         int nName = 0;
         FUN_1408731e0(pTab, "name", nName);
         CStringW strName;
-        strName = FUN_1401a9d70()->FUN_141811980(13, nName);
+        strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(13, nName);
         if (nName > 0)
         {
             TabPtr tab(new TabInfo);

@@ -39,6 +39,11 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/windowservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/commonfiles/itemdata.h"
 
 // ---- exe data ----
 extern Vector3 DAT_143b01a60;       // the zero point
@@ -56,16 +61,14 @@ struct Unk_GVec3 : public Vector3
 };
 
 // The item data of the equipped cap (?\itemdatastruct.cpp); only the flags this unit reads.
-struct Unk_CapItemData
+struct Unk_CapItemData : public ItemModelHead
 {
     unsigned char FUN_140547130();                              // customizing allowed
     unsigned char FUN_140547150();                              // right button allowed
-    bool FUN_1405471b0();                                       // the item is a rotatable cap
 };
-struct Unk_CapItem
+struct Unk_CapItem : public CItemData
 {
     Unk_CapItemData* FUN_14053ec70();                           // item -> its data
-    int FUN_14053c620();                                        // item kind (0xd = cap)
 };
 
 // The model record of the cap item (CItem::FUN_140527870); only the three fields this unit writes.
@@ -113,7 +116,6 @@ public:
     float FUN_14123c260();                                      // model scale
 };
 struct Unk_CapWorld { Unk_CapPlayer* FUN_141bd0cc0(); };        // the local player
-Unk_CapWorld* FUN_1403ed2d0();
 void* FUN_1416561a0(Unk_CapPlayer* pPlayer);                    // the player's customize state
 void FUN_1411e5c10(void* pState);                               // applies the customization
 
@@ -123,21 +125,19 @@ struct Unk_CapEntityLoader
 };
 Unk_CapEntityLoader* FUN_141b6f910();
 
-struct Unk_CapCursor { int FUN_141b90e30(float* pX, float* pY); };   // cursor position in pixels
+struct Unk_CapCursor : public CWindowService { };   // cursor position in pixels
 Unk_CapCursor* FUN_140aadf80();
 
-struct Unk_CapCamera
+struct Unk_CapCamera : public CameraMgr
 {
-    int FUN_140a18070();                                        // camera ready
     bool FUN_140af0520(const Unk_PickXY& kCursor, Vector3* pOrigin, Vector3* pDir);   // cursor ray
 };
-Unk_CapCamera* FUN_1409478c0();
 
 struct Unk_CapInput { bool FUN_14116d950(int nKey, int nA, int nB); };   // key state
 Unk_CapInput* FUN_14025e7c0();
 
 float FUN_140a17940(float fValue, float fMin, float fMax);      // clamp
-float FUN_140a34650(float fCos);                                // acos
+float Unk_Acos(float fCos);                                     // acos
 void FUN_140968990(Unk_NiPoint3* p);                            // efd::Point3::Unitize
 void FUN_142084020(Unk_EfdMatrix3* p, float fY, float fX, float fZ);   // efd::Matrix3::FromEulerAnglesYXZ
 void FUN_14209bc90(void* pQuat, float fAngle, const Vector3* pAxis);   // efd::Quaternion::FromAngleAxis
@@ -233,7 +233,7 @@ void CCapRotationController::vfunc_6()
 // @0x140b00830
 int CCapRotationController::vfunc_29()
 {
-    Unk_CapPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_CapPlayer* pPlayer = reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     CAtlArray<CString> aParts;
@@ -280,7 +280,7 @@ void CCapRotationController::vfunc_30(const NiPoint3& kPos)
 {
     if (!m_spMesh)
         return;
-    Unk_CapPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_CapPlayer* pPlayer = reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     Unk_EfdMatrix3 kRotZ;
@@ -299,17 +299,17 @@ void CCapRotationController::vfunc_31()
 {
     if (!m_spMesh)
         return;
-    Unk_CapPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_CapPlayer* pPlayer = reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     Unk_PickXY kCursor = DAT_143b02320;
-    if (FUN_140aadf80()->FUN_141b90e30(&kCursor.x, &kCursor.y) != 0)
+    if (FUN_140aadf80()->GetCursorClientPos(&kCursor.x, &kCursor.y) != 0)
     {
-        if (FUN_1409478c0()->FUN_140a18070() != 0)
+        if (reinterpret_cast<Unk_CapCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
         {
             Unk_GVec3 kOrigin;
             Unk_GVec3 kDir;
-            if (FUN_1409478c0()->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
+            if (reinterpret_cast<Unk_CapCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
             {
                 Unk_GVec3 kHit;
                 FUN_14147aa60(kOrigin, kDir, FUN_140947900(m_spMesh.operator->()), m_fRadius, &kHit);
@@ -340,7 +340,7 @@ void CCapRotationController::vfunc_31()
 // @0x140b01310
 void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal, const NiPoint2& kUV, float fValue)
 {
-    Unk_CapPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_CapPlayer* pPlayer = reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (m_spPart == (Unk_PickTarget*)0)
@@ -403,7 +403,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
 void CCapRotationController::vfunc_33()
 {
     UpdateRotationMatrix();
-    Unk_CapPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_CapPlayer* pPlayer = reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
         FUN_1411e5c10(FUN_1416561a0(pPlayer));
     if (m_pListener != 0)
@@ -413,24 +413,24 @@ void CCapRotationController::vfunc_33()
 // @0x140b01920
 void CCapRotationController::vfunc_34(const NiPoint3& kPos)
 {
-    FUN_140aadf80()->FUN_141b90e30(&m_kDragStart.x, &m_kDragStart.y);
+    FUN_140aadf80()->GetCursorClientPos(&m_kDragStart.x, &m_kDragStart.y);
     m_kCurEuler = GetPartEuler();
 }
 
 // @0x140b019a0
 void CCapRotationController::vfunc_35()
 {
-    Unk_CapPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_CapPlayer* pPlayer = reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     Unk_PickXY kCursor = DAT_143b02320;
-    if (FUN_140aadf80()->FUN_141b90e30(&kCursor.x, &kCursor.y) != 0)
+    if (FUN_140aadf80()->GetCursorClientPos(&kCursor.x, &kCursor.y) != 0)
     {
-        if (FUN_1409478c0()->FUN_140a18070() != 0)
+        if (reinterpret_cast<Unk_CapCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
         {
             Unk_GVec3 kOrigin;
             Unk_GVec3 kDir;
-            if (FUN_1409478c0()->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
+            if (reinterpret_cast<Unk_CapCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
             {
                 float fDelta = (m_kDragStart.x - kCursor.x) * m_fSpeed;
                 float fYaw = m_kCurEuler.z + fDelta;
@@ -573,7 +573,7 @@ float CCapRotationController::SafeAcos(float fCos)
     if (-1.0f < fCos)
     {
         if (fCos < 1.0f)
-            return FUN_140a34650(fCos);
+            return Unk_Acos(fCos);
         else
             return 0.0f;
     }

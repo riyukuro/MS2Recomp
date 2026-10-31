@@ -46,6 +46,7 @@
 #include "animationmanager.h"
 #include "gameobject.h"
 #include "ms2actormanager.h"
+#include "ms2/placeholder/cmainsystem.h"
 #include <egmAnimation/AnimationService.h>
 #include <egf/EntityID.h>
 #include <NiActorManager.h>
@@ -67,7 +68,6 @@ void FUN_1409975a0(Unk_AnimTable* pTable, void* p);
 void FUN_140997070(Unk_AnimTable* pTable, GameObject* pOwner, CString str);
 float FUN_140997650(Unk_AnimTable* pTable, CString str);
 class Unk_GameClock;
-Unk_GameClock* FUN_14086d260();                                         // the game clock
 double FUN_141473280(Unk_GameClock* pClock);                            // seconds
 void FUN_14028b2d0(void* pList, const CString& str);                    // list.push_back
 bool FUN_14096ad40(const efd::utf8string& str);
@@ -79,7 +79,7 @@ NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 CStringW FUN_14016a730(const char* psz, int nCodePage);                 // multibyte -> wide
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);               // wide -> multibyte
 CString FUN_140391100(const wchar_t* psz);
-CStringW FUN_1408767c0(const char* pszUtf8);                            // utf8 -> wide
+CStringW XmlWide(const char* pszUtf8);                                  // utf8 -> wide
 
 // ---- unit-local views of exe objects ----
 // The MS2 build of egmAnimation::AnimationService: SetTargetAnimation by name takes a blend time and a force flag and
@@ -296,10 +296,10 @@ bool CAnimationManager::FUN_14099e050(Unk_AnimRef& kName, float fScale, bool bFo
         efd::UInt64 qwId6;
         NiActorManager* pForced = m_pModelCache->GetActorManager(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwId6)));
         if (pForced != 0)
-            pForced->Update((float)FUN_141473280(FUN_14086d260()));
+            pForced->Update((float)FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())));
         NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410(m_pOwner));
         if (pRoot != 0)
-            pRoot->Update((float)FUN_141473280(FUN_14086d260()), true);
+            pRoot->Update((float)FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())), true);
     }
     if (pActor != 0)
     {
@@ -444,7 +444,7 @@ CString FUN_1409a2360(const char* psz, int nCodePage)
 CString FUN_1409a23d0(const char* pszUtf8, int nCodePage)
 {
     int cp = (nCodePage == 0) ? DAT_1439f4840 : nCodePage;
-    CStringW str = FUN_1408767c0(pszUtf8);
+    CStringW str = XmlWide(pszUtf8);
     return FUN_14016a600((const wchar_t*)str, cp);
 }
 

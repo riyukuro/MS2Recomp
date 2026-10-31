@@ -38,6 +38,7 @@
 #include "ms2/ms2recover.h"
 #include <typeinfo>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Sort names of the item lists (header statics of this unit).
 #ifndef MS2_HOOK_DLL
@@ -46,7 +47,7 @@ static const CString s_lapenSortNames[] = {"None", "Buy", "Like", "PriceLow", "P
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);

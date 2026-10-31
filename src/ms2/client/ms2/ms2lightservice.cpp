@@ -41,6 +41,9 @@
 #include <NiPSSMShadowClickGenerator.h>
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/coptimizer.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/cgraphicoptiontable.h"
 
 using namespace egf;
 
@@ -52,16 +55,10 @@ void FUN_1413eb6d0(egf::IPropertyCallback* pCallback);                  // regis
 COptimizer* FUN_1409f7c90();                                            // the optimizer (singleton)
 int FUN_140ae1c10();                                                    // the current graphics quality level
 class Unk_QualityTable;
-Unk_QualityTable* FUN_140ae1c00();                                      // the per feature quality table
 int FUN_141376880(Unk_QualityTable* pTable, int nFeature);              // the level a feature needs (5: light shadows)
 
 // The effect service; told about every light the batch creates.
-class Unk_LightEffectService
-{
-public:
-    void FUN_1411a74a0(egf::EntityID entityID, egf::Entity* pEntity);
-};
-Unk_LightEffectService* FUN_1403ed280();
+CEffectService* FUN_1403ed280();
 
 // The graphics options: whether the "dim lights" option is on, and the post processing step that applies it.
 class Unk_LightVideoOptions
@@ -74,7 +71,6 @@ class Unk_LightOptions
 public:
     Unk_LightVideoOptions* FUN_1409a8ac0();
 };
-Unk_LightOptions* FUN_1409a8b10();
 class Unk_LightRenderStep
 {
 public:
@@ -375,7 +371,7 @@ void MS2LightService::UpdateLightShadow(egf::Entity* pEntity)
     if (!pEntity->GetModel()->ContainsModel(kFlatModelID_StandardModelLibrary_ShadowGenerator))
         return;
 
-    int nNeeded = FUN_141376880(FUN_140ae1c00(), 5);
+    int nNeeded = FUN_141376880(reinterpret_cast<Unk_QualityTable*>(TSingleton<CGraphicOptionTable>::GetInstance()), 5);
     bool bShadows = FUN_140ae1c10() >= nNeeded;
     std::map<egf::EntityID, bool>::iterator it = m_lightShadow.find(pEntity->GetEntityID());
     bool bKnown = it != m_lightShadow.end();
@@ -436,7 +432,7 @@ void MS2LightService::HandleEntityEnterWorld(const egf::EntityChangeMessage* pMe
     else
         fDimmer = it->second;
 
-    Unk_LightVideoOptions* pVideo = FUN_1409a8b10()->FUN_1409a8ac0();
+    Unk_LightVideoOptions* pVideo = reinterpret_cast<Unk_LightOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0();
     bool bDimmed = pVideo->FUN_14125e0b0();
     Unk_LightRenderStep* pStep = FUN_1409a8b20()->FUN_1416a3a90(3);
     if (pStep)

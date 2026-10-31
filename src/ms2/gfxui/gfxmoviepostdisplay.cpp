@@ -11,6 +11,7 @@
 #include "uiswfentity.h"
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/gfxmanager.h"
 
 // The UISwfEntityManager slots the movies call (vftable 0x143112518; the shared placeholder declares no virtuals). Both
 // take the swf key and the AS root object by value (the callee destroys them).
@@ -29,12 +30,7 @@ public:
     virtual void vfunc_9(CString strKey, Scaleform::GFx::Value vRoot, float fTime); // 0x1422d2a30 swf "loadComplete"
 };
 
-class Unk_GFxUIManager
-{
-public:
-    void FUN_1422b0790(int nMovieId);
-};
-Unk_GFxUIManager* FUN_14025e7a0();
+GFxManager* FUN_14025e7a0();
 
 class Unk_GfxLog
 {

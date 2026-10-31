@@ -13,11 +13,10 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
 
 // Out-of-unit callees.
-JobTable* FUN_1401d7a50();                              // the JobTable singleton
 class Unk_SpSkillTable { public: MS2Ptr<SkillData> FUN_1407ee1d0(int nSkillId); };
-Unk_SpSkillTable* FUN_1401958b0();                      // the skill table
 void* FUN_1403ed2d0();                                  // the game
 void* FUN_141bd0cc0(void*);                             // the local player
 JobSystem* FUN_1416546d0(void*);                        // its job system
@@ -43,7 +42,7 @@ void CSkillPointSimulator::Reset(unsigned short nLevel, int nJobCode, std::vecto
     m_mapSnapshot.RemoveAll();
     m_mapEdit.RemoveAll();
     m_nJobCode = nJobCode;
-    m_nJobRank = FUN_1401d7a50()->GetJobRank(nJobCode);
+    m_nJobRank = TSingleton<JobTable>::GetInstance()->GetJobRank(nJobCode);
     m_nLevel = nLevel;
     m_mapExtra = extra;
     m_nSpent = 0;
@@ -165,7 +164,7 @@ int CSkillPointSimulator::Validate(unsigned* pnBadSkill)
         if (!sp->m_bLearned)
             continue;
         *pnBadSkill = sp->GetID();
-        MS2Ptr<SkillData> spSkill = FUN_1401958b0()->FUN_1407ee1d0(sp->GetID());
+        MS2Ptr<SkillData> spSkill = reinterpret_cast<Unk_SpSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(sp->GetID());
         if (spSkill == 0)
             return 0;
         if (spSkill->FUN_1407e9ac0() < sp->m_nLevel)
@@ -187,7 +186,7 @@ int CSkillPointSimulator::LevelUp(unsigned nSkillId)
         return 0;
     if (!CanLevelUp(nSkillId))
         return 0;
-    MS2Ptr<SkillData> spSkill = FUN_1401958b0()->FUN_1407ee1d0(sp->GetID());
+    MS2Ptr<SkillData> spSkill = reinterpret_cast<Unk_SpSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(sp->GetID());
     if (spSkill == 0)
         return 0;
     if (sp->m_bLearned)
@@ -245,7 +244,7 @@ int CSkillPointSimulator::CanLevelUp(unsigned nSkillId)
         return 0;
     if (!GetRemainPoints(sp->GetJobLevel()))
         return 0;
-    MS2Ptr<SkillData> spSkill = FUN_1401958b0()->FUN_1407ee1d0(sp->GetID());
+    MS2Ptr<SkillData> spSkill = reinterpret_cast<Unk_SpSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(sp->GetID());
     if (spSkill == 0)
         return 0;
     if (sp->m_bLearned)

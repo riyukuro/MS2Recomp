@@ -49,6 +49,11 @@
 #include "ms2/client/ms2/uimainplayerinfo.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/actionkeyobject.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit statics (.text$di): three statics ahead of the shared header statics ----
 
@@ -107,7 +112,6 @@ public:
     PCBase* FUN_141bd1530(__int64 nId);                                 // an actor by id
     Unk_ObsProxyMap* FUN_141bc9fb0();                                   // the proxy table
 };
-Unk_ObsWorld* FUN_1403ed2d0();
 
 class UIDamageEffect : public UIObject
 {
@@ -121,16 +125,12 @@ public:
     MS2Ptr<UIObject> FUN_141adcea0(int nUiId);
     void FUN_141add120(int nUiId, int bShow);
 };
-Unk_ObsUIMgr* FUN_1403ed2b0();
 UIMainPlayerInfo* FUN_140931900(int nUiId);
 
-class Unk_ObsActionKeys { public: void FUN_1409536b0(int bEnable); };
-Unk_ObsActionKeys* FUN_140a7b810(MyPC* pPC);                // the actor's action key set
+Unk_ActionKeyManager* FUN_140a7b810(MyPC* pPC);             // the actor's action key set
 void FUN_141274f50();
-class Unk_ObsNotices { public: void FUN_140da4e40(CStringW, Delegate<void(NotifyObject*)>); void FUN_140da4eb0(CStringW, Delegate<void(NotifyObject*)>); };
-Unk_ObsNotices* FUN_140939a10();
-class Unk_ObsQuery { public: void FUN_140aecbb0(int a, int b, bool c); };
-Unk_ObsQuery* FUN_1409478c0();
+NotifySystem* FUN_140939a10();
+CameraMgr* FUN_1409478c0();
 CInputKeyHandler* FUN_14025e7c0();
 unsigned FUN_140869420();                                   // millisecond clock
 void FUN_14152e0c0(void* pPC);
@@ -155,7 +155,7 @@ static int FUN_140ac4f90(int nCount, int nIdx)
 static void FUN_140ac4fe0(std::vector<__int64>& ids)
 {
     ids.clear();
-    Unk_ObsWorld* pWorld = FUN_1403ed2d0();
+    Unk_ObsWorld* pWorld = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return;
     Unk_ObsProxyMap* pMap = pWorld->FUN_141bc9fb0();
@@ -179,7 +179,7 @@ static void FUN_140ac4fe0(std::vector<__int64>& ids)
 // The observable player nearest to the local player that is not in excluded (0 when there is none).
 static unsigned __int64 FUN_140ac5130(std::set<unsigned __int64>& excluded)
 {
-    Unk_ObsWorld* pWorld = FUN_1403ed2d0();
+    Unk_ObsWorld* pWorld = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return 0;
     MS2Ptr<Unk_FieldRef> spMap = pWorld->FUN_141bd30a0();
@@ -221,9 +221,9 @@ static unsigned __int64 FUN_140ac5130(std::set<unsigned __int64>& excluded)
 // @0x140ac55a0
 UIDamageEffect* FUN_140ac55a0(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_ObsUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spRef = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spRef = reinterpret_cast<Unk_ObsUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (spRef.get() != 0)
             return dynamic_cast<UIDamageEffect*>((UIObject*)spRef);
     }
@@ -351,7 +351,7 @@ bool StateObserver::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 // @0x140ac4170
 CStringW StateObserver::FUN_140ac4170()
 {
-    Unk_ObsWorld* pWorld = FUN_1403ed2d0();
+    Unk_ObsWorld* pWorld = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return CStringW(L"");
     MS2Ptr<CProxyGameObject> spProxy = pWorld->FUN_141bc9c60(m_spObserve->m_nTarget);
@@ -410,16 +410,16 @@ void StateObserver::FUN_140ac45e0()
     if (pPC == 0)
         return;
     FUN_141274f50();
-    FUN_140a7b810(pPC)->FUN_1409536b0(0);
+    FUN_140a7b810(pPC)->SetEnabled(0);
     UIDamageEffect* pDamage = FUN_140ac55a0(0x4e3c);
     if (pDamage != 0)
         pDamage->FUN_141910660();
     UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
     if (pInfo != 0)
         pInfo->FUN_1419f1d10(8, false);
-    FUN_1403ed2b0()->FUN_141add120(0x4e43, 0);
-    FUN_1403ed2b0()->FUN_141add120(0x4e28, 0);
-    FUN_140939a10()->FUN_140da4e40(L"NotifyKillPlayer", Delegate<void(NotifyObject*)>(this, &StateObserver::FUN_140ac4dc0));
+    reinterpret_cast<Unk_ObsUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141add120(0x4e43, 0);
+    reinterpret_cast<Unk_ObsUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141add120(0x4e28, 0);
+    FUN_140939a10()->RegisterNotify(L"NotifyKillPlayer", Delegate<void(NotifyObject*)>(this, &StateObserver::FUN_140ac4dc0));
 }
 
 // @0x140ac4760
@@ -430,16 +430,16 @@ void StateObserver::FUN_140ac4760()
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
         return;
-    FUN_140a7b810(pPC)->FUN_1409536b0(1);
+    FUN_140a7b810(pPC)->SetEnabled(1);
     UIDamageEffect* pDamage = FUN_140ac55a0(0x4e3c);
     if (pDamage != 0)
         pDamage->FUN_141910700();
     UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
     if (pInfo != 0)
         pInfo->FUN_1419f1d10(8, true);
-    FUN_1403ed2b0()->FUN_141add120(0x4e43, 1);
-    FUN_1403ed2b0()->FUN_141add120(0x4e28, 1);
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyKillPlayer", Delegate<void(NotifyObject*)>(this, &StateObserver::FUN_140ac4dc0));
+    reinterpret_cast<Unk_ObsUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141add120(0x4e43, 1);
+    reinterpret_cast<Unk_ObsUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141add120(0x4e28, 1);
+    FUN_140939a10()->UnregisterNotify(L"NotifyKillPlayer", Delegate<void(NotifyObject*)>(this, &StateObserver::FUN_140ac4dc0));
 }
 
 // @0x140ac48e0
@@ -447,7 +447,7 @@ void StateObserver::FUN_140ac48e0()
 {
     if (FUN_1417b8560() == 0)
         return;
-    Unk_ObsWorld* pWorld = FUN_1403ed2d0();
+    Unk_ObsWorld* pWorld = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return;
     Vector3 vTarget;
@@ -495,7 +495,7 @@ void StateObserver::FUN_140ac4c00()
 {
     if (m_nPending == 0)
         return;
-    PCBase* pObject = FUN_1403ed2d0()->FUN_141bd1530(m_nPending);
+    PCBase* pObject = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPending);
     if (pObject == 0)
         return;
     const int nCameraId = 100;
@@ -534,7 +534,7 @@ void StateObserver::FUN_140ac4dc0(NotifyObject* pNotice)
         return;
     const CStringW& strKiller = pKill->m_strKiller;
     const CStringW& strVictim = pKill->m_strVictim;
-    Unk_ObsWorld* pWorld = FUN_1403ed2d0();
+    Unk_ObsWorld* pWorld = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return;
     MS2Ptr<CProxyGameObject> spVictim = pWorld->FUN_141bc9d60(strVictim);

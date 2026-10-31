@@ -62,7 +62,7 @@ Unk_TexCache* FUN_140a0afd0();
 void* FUN_1422cf0f0();                                      // the UI renderer context
 void* FUN_14257a340(int n3, int n1, Unk_ImgSize* pSize, int nFormat, void* pHeap, void* pTexMan, void* pSync);   // Image::Create(format, mips, size, use, heap, texman, sync)
 NiPointer<NiSourceTexture> FUN_141d33530(NiPixelData* pPixels, const NiTexture::FormatPrefs& kPrefs, bool bStatic);   // NiSourceTexture::Create_ThreadSafe (smart pointer: hidden return in rcx)
-void FUN_14184d520(const unsigned char* pucPixel, NiPixelData* pkDest, const NiRect<unsigned int>& kRect);   // fill a rectangle
+void FillPixelRect(const unsigned char* pucPixel, NiPixelData* pkDest, const NiRect<unsigned int>& kRect);   // fill a rectangle
 void FUN_14272b7f0(void* pTarget, IDirect3DBaseTexture9* pD3DTexture);       // bind the D3D texture to the image
 void* FUN_14208a860(unsigned __int64 nSize, int nHint);     // MemObject operator new
 void* FUN_140876480(void* pOut, int n);                     // efd::MemHint(NONE)
@@ -414,7 +414,7 @@ Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
         return pImage;
     unsigned int uiPixel = 0x3f000000;     // r, g, b 0 and alpha 0x3f
     NiRect<unsigned int> kRect(0, MS2_IMAGE_SIZE(pImage).m_w, 0, MS2_IMAGE_SIZE(pImage).m_h);
-    FUN_14184d520((const unsigned char*)&uiPixel, spFill, kRect);
+    FillPixelRect((const unsigned char*)&uiPixel, spFill, kRect);
     NiPointer<NiSourceTexture> spPlaceholder = FUN_141d33530(spFill, DAT_1439fc800, true);
     if ((NiSourceTexture*)spPlaceholder == 0)
         return pImage;

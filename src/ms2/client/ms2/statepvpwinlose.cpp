@@ -36,7 +36,7 @@ public:
 struct Unk_PwlTeamOwner { Unk_PvPTeamPtr FUN_140967420(); }; // 0x140967420 the player's team-info proxy
 
 // Build the animation name of slot nSlot for the value nId, looked up in the owner's +0xd00 name table.
-struct Unk_PwlAnimOwner { efd::utf8string FUN_141679170(int nSlot, int nId); }; // 0x141679170
+ // 0x141679170
 
 // @0x141282440
 StatePvPWinLose::StatePvPWinLose(PCBase* pOwner) : State(pOwner)
@@ -61,11 +61,11 @@ void StatePvPWinLose::vfunc_4(StateData* pData)
     }
     if (m_n10 == 0x73)
     {
-        m_pOwner->FUN_14166dd20(reinterpret_cast<Unk_PwlAnimOwner*>(m_pOwner)->FUN_141679170(0x41, nId), 1.0f, false, false);
+        m_pOwner->FUN_14166dd20(reinterpret_cast<PCBase*>(m_pOwner)->FUN_141679170(0x41, nId), 1.0f, false, false);
     }
     else if (m_n10 == 0x74)
     {
-        m_pOwner->FUN_14166dd20(reinterpret_cast<Unk_PwlAnimOwner*>(m_pOwner)->FUN_141679170(0x40, nId), 1.0f, false, false);
+        m_pOwner->FUN_14166dd20(reinterpret_cast<PCBase*>(m_pOwner)->FUN_141679170(0x40, nId), 1.0f, false, false);
     }
 }
 

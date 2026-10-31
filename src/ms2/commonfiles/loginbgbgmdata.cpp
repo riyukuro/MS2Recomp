@@ -26,14 +26,15 @@
 #include <algorithm>
 #include <time.h>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char* pszName); };   // FirstChildElement
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
-void FUN_1401859c0(CLogString* log, int level, int category, const wchar_t* format);
+void Unk_AdditionalLog(CLogString* log, int level, int category, const wchar_t* format);
 void FUN_14054c030(CLogString* log, int level, int category, const wchar_t* format, const CString& first,
                    const CString& second);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
@@ -41,7 +42,7 @@ void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszA
 CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);   // string attribute
 unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
 void FUN_1401782a0(const CString& str, std::vector<unsigned int>& rOut, const char* pszSep);   // split into numbers
-__int64 FUN_140869440();                                                  // server time
+__int64 GetServerTime();                                                  // server time
 unsigned FUN_140768010(unsigned nRange, unsigned nBase);                  // random number in base..base+range-1
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's singleton and init flag (symbols-manual.tsv)
@@ -160,12 +161,12 @@ void LoginBgBgmTable::SelectCurrent()
     int nMonth = 0;
     if (CMsTime::IsTimeZoneSet())
     {
-        CMsTime time(FUN_140869440());
+        CMsTime time(GetServerTime());
         nMonth = time.GetMonth();
     }
     else
     {
-        __time64_t now = FUN_140869440();
+        __time64_t now = GetServerTime();
         struct tm* ptm = Unk_LocalTime(&now);
         if (ptm == 0)
             return;
@@ -188,7 +189,7 @@ void LoginBgBgmTable::SelectCurrent()
     int nCandidates = candidates.size();
     if (nCandidates == 0)
     {
-        FUN_1401859c0(GetLogString(), 2, 0x13, L"[<ms2> LoginBgBgmTable::Get candidateVector size 0 error");
+        Unk_AdditionalLog(GetLogString(), 2, 0x13, L"[<ms2> LoginBgBgmTable::Get candidateVector size 0 error");
         return;
     }
     m_spCurrent = candidates[FUN_140768010(nCandidates, 0)];

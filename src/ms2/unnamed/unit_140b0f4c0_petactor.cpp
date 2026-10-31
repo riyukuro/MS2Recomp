@@ -44,6 +44,12 @@
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/commonfiles/skilloverlapcompare.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -66,7 +72,6 @@ struct Unk_PetClientSettings
     Unk_PetOptFlags m_flags;                                                // +0x34
     Unk_PetOptFlags* FUN_140b123b0() { return &m_flags; }                   // @0x140b123b0
 };
-Unk_PetClientSettings* FUN_1409a8b10();
 
 // The game-mode flags of the client config (a blocked-action set at +8).
 struct Unk_PetBanFlags { int FUN_1402c4c90(int nFlag); };
@@ -77,14 +82,13 @@ Unk_PetConfig* FUN_14025e7b0();
 class Unk_PCBaseBuffs { public: int FUN_140970020(int nBuffId, unsigned short nLevel, int a, int b); };
 
 // The pet owner as a player: the equipped pet skin gem.
-class Unk_OwnerPC : public PCBase { public: MS2Ptr<CGemPetSkin> FUN_14165df00(); };
+class Unk_OwnerPC : public PC { };
 
 // The pet-skill service (skill table, skill service, pet food table).
-class Unk_SkillObj : public CPtred { public: bool FUN_140804450(); };
+class Unk_SkillObj : public SkillLevelData { };
 class Unk_PetSkillLevel : public CPtred { public: char m_pad_18[0x98 - sizeof(CPtred)]; std::vector<MS2Ptr<SkillActionAdditional> > m_vElems; };
 SkillActionAdditional* FUN_140b122e0(MS2Ptr<SkillActionAdditional>* p);   // .get() (in-unit copy, defined below)
 class Unk_PetSkillTable { public: MS2Ptr<Unk_PetSkillLevel> FUN_1407ee2f0(int nSkillId, unsigned short nLevel); };
-Unk_PetSkillTable* FUN_1401958b0();
 class Unk_ItemEquipData : public CItemData { public: int FUN_140526810(unsigned short nLevel); };
 struct Unk_PetFoodRule { int m_nKey; float m_fRate; int m_nItemId; };       // key +0, rate +4, item +8
 // The pet food book: its rule map sits at +0 (stateidle.cpp's Unk_SiPetBook).
@@ -118,8 +122,6 @@ CString FUN_140291c10(int nFxId);
 int FUN_14028d260(float fTime);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& arg0, const CStringW& arg1);
-struct Unk_PetStrings { CStringW FUN_141811980(int nTable, int nId); };
-Unk_PetStrings* FUN_1401a9d70();
 void FUN_1412751f0(const CStringW& str, int a, int b);
 bool FUN_14028d470(float a, float b);
 
@@ -169,8 +171,7 @@ public:
 MS2_CHECK_SIZE(NotifyRemoveNpc, 0x20);
 template <> efd::SmartPointer<Unk_SSGNpc>::SmartPointer(Unk_SSGNpc* pObject);   // 0x140aabff0
 template <> efd::SmartPointer<Unk_SSGNpc>::~SmartPointer();                          // 0x140a7b530
-class Unk_PetNotifyCenter { public: void FUN_140da4fe0(MS2Ptr<NotifyObject> spNotify); };   // NotifySystem::Post
-Unk_PetNotifyCenter* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 // The chat balloon component the actor owns (+0xaa8 of PCBase).
 class Unk_PCBaseComp_aa8 : public UIChatBalloon::Entity { };
@@ -326,7 +327,7 @@ void CPet::vfunc_125(int n)
     m_unk_15c = 1;
     FUN_1410932c0(0);
     FUN_1403ed2d0()->FUN_141bbbcf0(FUN_14123c580(), 1);
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyRemoveNpc(efd::SmartPointer<Unk_SSGNpc>((Unk_SSGNpc*)this))));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyRemoveNpc(efd::SmartPointer<Unk_SSGNpc>((Unk_SSGNpc*)this))));
 }
 
 // @0x140b0ff40
@@ -379,9 +380,9 @@ int CPet::FUN_140b10150()
     PCBase* pOwner = FUN_141094f60();
     if (pOwner == 0)
         return 0;
-    if (FUN_1409a8b10()->FUN_140b123b0()->m_bOwn != 0 && pOwner->GetClassID() == 0x6200004)
+    if (reinterpret_cast<Unk_PetClientSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bOwn != 0 && pOwner->GetClassID() == 0x6200004)
         return 1;
-    else if (FUN_1409a8b10()->FUN_140b123b0()->m_bOther != 0 && pOwner->GetClassID() != 0x6200004)
+    else if (reinterpret_cast<Unk_PetClientSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bOther != 0 && pOwner->GetClassID() != 0x6200004)
         return 1;
     if (FUN_14166cad0())
         return 1;
@@ -583,7 +584,7 @@ void CPet::FUN_140b10c80(CStringW str)
 {
     CStringW strName(str);
     if (strName.IsEmpty())
-        strName = FUN_1401a9d70()->FUN_141811980(0x3b, m_nPetId);
+        strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3b, m_nPetId);
     if (!strName.IsEmpty())
     {
         if (FUN_140a7c8d0(m_spNpcData.get()) != 0)
@@ -697,7 +698,7 @@ int CPet::vfunc_127()
     PCBase* pOwner = FUN_141094f60();
     if (pOwner == 0)
         return 0;
-    if (FUN_1409a8b10()->FUN_140b123b0()->m_bOther != 0 && pOwner->GetClassID() != 0x6200004)
+    if (reinterpret_cast<Unk_PetClientSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bOther != 0 && pOwner->GetClassID() != 0x6200004)
         return 0;
     return 1;
 }
@@ -747,7 +748,7 @@ int CPet::FUN_140b11810(int nSkillType, unsigned nSkillId, unsigned short nLevel
         return 0;
     if (nSkillType == 0x12)
     {
-        MS2Ptr<Unk_PetSkillLevel> spLevel = FUN_1401958b0()->FUN_1407ee2f0(nSkillId, nLevel);
+        MS2Ptr<Unk_PetSkillLevel> spLevel = reinterpret_cast<Unk_PetSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(nSkillId, nLevel);
         if (spLevel.get() != 0 ? true : false)
         {
             if (reinterpret_cast<Unk_SkillObj*>(spLevel.operator->())->FUN_140804450() != 0)
@@ -774,7 +775,7 @@ unsigned FUN_140b119c0(int nItemId, PCBase* pPC)
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return 0;
-    MS2Ptr<Unk_PetSkillLevel> spLevel = FUN_1401958b0()->FUN_1407ee2f0(spData->FUN_14053dc20(), spData->FUN_14053dc40());
+    MS2Ptr<Unk_PetSkillLevel> spLevel = reinterpret_cast<Unk_PetSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(spData->FUN_14053dc20(), spData->FUN_14053dc40());
     if (spLevel == 0)
         return 0;
     std::vector<MS2Ptr<SkillActionAdditional> >& vElems = spLevel->m_vElems;

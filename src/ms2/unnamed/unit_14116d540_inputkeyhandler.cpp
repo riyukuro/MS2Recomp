@@ -19,6 +19,12 @@
 #include "ms2/client/ms2/ms2inputservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/ckeytable.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/client/ms2/nifeffectparam.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // The notice posted when the debug mode toggles (the name virtual GetTypeName lives in another unit).
 class NotifyDebugMode : public NotifyObject
@@ -34,28 +40,16 @@ MS2_CHECK_SIZE(NotifyDebugMode, 0x20);
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 class Unk_KhUI { public: int FUN_141adbb00(); int FUN_141adbd10(); };   // CUIService
-Unk_KhUI* FUN_1403ed2b0();
 class Unk_KhCamera { public: bool FUN_140d07330(); };
 Unk_KhCamera* FUN_140c8dac0();
-class Unk_KhKeyBinds
-{
-public:
-    int FUN_14142c270(int nSetting);
-    int FUN_14142c4b0(int nSetting);
-    int FUN_14142c540(int nSetting);
-};
-Unk_KhKeyBinds* FUN_1409331f0();
-class Unk_KhGame { public: bool FUN_14036d570(int nId); };
-Unk_KhGame* FUN_140166410();
+CKeyTable* FUN_1409331f0();
+CFeatureManager* FUN_140166410();
 class Unk_KhState { public: unsigned char* FUN_140a58500(); };
-Unk_KhState* FUN_1409a8b10();
-class Unk_KhNotices { public: void FUN_140da4fe0(MS2Ptr<NotifyObject> spNotify); };
-Unk_KhNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 MS2InputService* FUN_140a58540();                           // TSingleton<MS2InputService>::GetInstance
 void FUN_1412751b0(const CStringW& text, int nType);        // chat/system line
 
-class Unk_KhTextures { public: NiTexturePtr FUN_141552f90(CString strPath, int nFlags); };   // loads (and caches) a texture file
-Unk_KhTextures* FUN_140a0afd0();
+CNifLoadingService* FUN_140a0afd0();
 class Unk_KhSkinView { public: void FUN_141047900(); };
 Unk_KhSkinView* FUN_140d89420(NiAVObject* pObject);
 
@@ -96,7 +90,7 @@ void CInputKeyHandler::SetDebugMode(bool bOn)
             pszState = L"Off";
         strMsg.Format(L"Debug Mode: %s", pszState);
         FUN_1412751b0(strMsg, 20);
-        FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyDebugMode(m_bDebugMode)));
+        FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyDebugMode(m_bDebugMode)));
     }
 }
 MS2_REPLACE_METHOD(0x14116D5D0, CInputKeyHandler, SetDebugMode, 317, 0x97A7D3E9);
@@ -127,7 +121,7 @@ MS2_REPLACE_METHOD(0x14116D780, CInputKeyHandler, SetModifier2, 23, 0x21F96C9B);
 // @0x14116d7a0
 bool CInputKeyHandler::FUN_14116d7a0(unsigned nMask)
 {
-    if (FUN_1403ed2b0()->FUN_141adbb00() != 0 && (nMask & 2) != 0)
+    if (reinterpret_cast<Unk_KhUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0 && (nMask & 2) != 0)
         return true;
     if (FUN_140c8dac0()->FUN_140d07330() != 0 && (nMask & 4) != 0)
         return true;
@@ -159,9 +153,9 @@ bool CInputKeyHandler::FUN_14116d890(bool bAlt)
         return true;
     if (FUN_140166410()->FUN_14036d570(0xb5) == true)
     {
-        if (*FUN_1409a8b10()->FUN_140a58500() != 0)
+        if (*reinterpret_cast<Unk_KhState*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500() != 0)
         {
-            if (FUN_1403ed2b0()->FUN_141adbb00() != 0)
+            if (reinterpret_cast<Unk_KhUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0)
                 return false;
         }
     }
@@ -249,7 +243,7 @@ bool CInputKeyHandler::FUN_14116dbf0(int* pnX, int* pnY, int* pnZ, bool bDebugOn
         return false;
     if (DAT_143af7d40 == 0)
         return false;
-    if (FUN_1403ed2b0()->FUN_141adbd10() != 0)
+    if (reinterpret_cast<Unk_KhUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adbd10() != 0)
     {
         FUN_140a58540()->FUN_140d8b130(pnX, pnY, pnZ);
         *pnZ = 0;
@@ -359,7 +353,7 @@ bool FUN_14116e080(NiAVObject* pObject)
     NiStringExtraData* pBaseDead = pBase = NiDynamicCast(NiStringExtraData, pObject->GetExtraData("OriginalBaseTexturePath"));
     if (pBase != 0)
     {
-        NiTexturePtr spBase = FUN_140a0afd0()->FUN_141552f90(CString((const char*)pBase->GetValue()), 5);
+        NiTexturePtr spBase = FUN_140a0afd0()->GetTexture(CString((const char*)pBase->GetValue()), 5);
         pTexturing->SetBaseTexture(spBase);
         pObject->RemoveExtraData("OriginalBaseTexturePath");
     }
@@ -367,7 +361,7 @@ bool FUN_14116e080(NiAVObject* pObject)
     NiStringExtraData* pControlDead = pControl = NiDynamicCast(NiStringExtraData, pObject->GetExtraData("OriginalControlTexturePath"));
     if (pControl != 0)
     {
-        NiTexturePtr spControl = FUN_140a0afd0()->FUN_141552f90(CString((const char*)pControl->GetValue()), 5);
+        NiTexturePtr spControl = FUN_140a0afd0()->GetTexture(CString((const char*)pControl->GetValue()), 5);
         NiTexturingProperty::ShaderMap* pMap = new (efd::MemHint(efd::MemHint::NONE))
             NiTexturingProperty::ShaderMap(spControl, 0, (NiTexturingProperty::ClampMode)3, (NiTexturingProperty::FilterMode)2, 0);
         pTexturing->SetShaderMap(0, pMap);

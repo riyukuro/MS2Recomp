@@ -32,14 +32,14 @@ Merged totals by area (functions in the original executable; regenerated on each
 <!-- progress:start -->
 | Area | Functions | Matched | Equivalent | Done |
 |---|---:|---:|---:|---:|
-| Game · ms2 | 178,548 | 176,828 (99.0%) | 1,698 (1.0%) | 100.0% |
-| Runtime & middleware | 21,608 | 17,748 (82.1%) | 3,694 (17.1%) | 99.2% |
+| Game · ms2 | 178,550 | 176,936 (99.1%) | 1,592 (0.9%) | 100.0% |
+| Runtime & middleware | 21,607 | 18,199 (84.2%) | 3,242 (15.0%) | 99.2% |
 | Gamebryo engine | 16,742 | 16,582 (99.0%) | 131 (0.8%) | 99.8% |
-| Game framework · egf | 12,725 | 12,596 (99.0%) | 109 (0.9%) | 99.8% |
-| Libraries | 6,717 | 6,314 (94.0%) | 56 (0.8%) | 94.8% |
-| Foundation | 11,661 | 11,460 (98.3%) | 169 (1.4%) | 99.7% |
+| Game framework · egf | 12,724 | 12,595 (99.0%) | 109 (0.9%) | 99.8% |
+| Libraries | 6,716 | 6,314 (94.0%) | 55 (0.8%) | 94.8% |
+| Foundation | 11,662 | 11,464 (98.3%) | 166 (1.4%) | 99.7% |
 | Imports | 782 | 717 (91.7%) | 1 (0.1%) | 91.8% |
-| **Total** | **248,783** | 242,245 (97.4%) | 5,858 (2.4%) | 99.7% |
+| **Total** | **248,783** | 242,807 (97.6%) | 5,296 (2.1%) | 99.7% |
 
 Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebuild.
 <!-- progress:end -->
@@ -95,7 +95,7 @@ CMake command:
 cmake --preset fullexe && cmake --build build/fullexe
 ```
 
-The result is `build/fullexe/out/fullexe3.exe`.
+The result is `build/fullexe/out/MapleStory2.exe` (a copy of `fullexe3.exe`, which stays next to it).
 
 ### Hook DLL (development)
 
@@ -127,7 +127,7 @@ The per-unit gate does these builds for you (`python tools\unit_check.py`). Both
 
 ### Full executable
 
-In a copy of the game folder, replace `x64/MapleStory2.exe` with `fullexe3.exe` and remove any `dinput8.dll`, then
+In a copy of the game folder, replace `x64/MapleStory2.exe` with the built `MapleStory2.exe` and remove any `dinput8.dll`, then
 start the game as usual (under Wine: `wine x64/MapleStory2.exe`). The runtime shim logs fatal exceptions, and any call to a
 function that is not recovered yet, to `fullexe-trap.log` beside the exe.
 

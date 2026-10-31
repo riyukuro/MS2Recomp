@@ -391,10 +391,12 @@ void Unk_CmdBitset::FUN_1414b23d0(bool bFill)
 }
 
 // @0x1414b2430
-// MS2-FUNCTIONAL: the exe compares the bit count as 4 where the template form folds it
 void Unk_CmdBitset::FUN_1414b2430()
 {
-    if (4 % 8 != 0)
+    if (4 % 8)
+    {
+    }
+    else
         m_bits[(4 - 1) / 8] &= (1 << (4 % 8)) - 1;
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

@@ -11,7 +11,6 @@
 // MS2-PIN: ??1ChangeColors@CCItemColoringPacket@@UEAA@XZ 0x1419b32c0
 // MS2-PIN: ??0Unk_IcEffectRequest@@QEAA@XZ 0x140a52ef0
 // MS2-PIN: ??1Unk_IcEffectRequest@@QEAA@XZ 0x1405a89e0
-// MS2-FUNCTIONAL: ??1ChangeColors (inline in ccitemcoloringpacket.h): CAtlArray dtor inlining differs
 // MS2-PIN: ??C?$MS2Ptr@VASArray@@@@QEBAPEAVASArray@@XZ 0x1419b3340
 // MS2-PIN: ??0?$MS2Ptr@VTData@UIBillDialog@@@@QEAA@PEAVTData@UIBillDialog@@@Z 0x1419b3190
 // MS2-PIN: ?AddRef@?$MS2Ptr@VTData@UIBillDialog@@@@AEBAXXZ 0x1419b3600
@@ -49,6 +48,15 @@ static CString s_strItemSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/commonfiles/gamerule.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // GetChild COMDATs are owned by unit_140ba6b20 (ASMovieClip, 0x140ba7930) and uibingoeventdialog (0x140bb4b10)
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
@@ -138,7 +146,6 @@ public:
     Unk_IcPlayer* FUN_141bd0cc0();              // the player (NULL outside the game)
     Unk_IcField* FUN_141bd3620();
 };
-Unk_IcWorld* FUN_1403ed2d0();
 
 class Unk_IcUIMgr
 {
@@ -147,7 +154,6 @@ public:
     void FUN_141adc5d0(int nId);                // close
     int FUN_141adc890(int nId);                 // is open
 };
-Unk_IcUIMgr* FUN_1403ed2b0();
 
 class Unk_IcPlatform
 {
@@ -161,26 +167,10 @@ public:
 };
 Unk_IcPlatform* FUN_140d86260();
 
-class Unk_IcOptions { public: bool FUN_14036d570(int nId); };
-Unk_IcOptions* FUN_140166410();
-class Unk_IcStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_IcStrings* FUN_1401a9d70();
-class Unk_IcGameEvents
-{
-public:
-    int FUN_140476cf0(int nEvent, int nLevel);                          // 0: the sale applies
-    unsigned FUN_140476c70(int nEvent, unsigned nPrice, int nLevel);    // the sale price
-};
-Unk_IcGameEvents* FUN_1401c0d90();
-class Unk_IcCutScene { public: bool FUN_14116d840(); };
-Unk_IcCutScene* FUN_14025e7c0();
-class Unk_IcNotices
-{
-public:
-    void FUN_140da4e40(CStringW strName, Delegate<void(NotifyObject*)> cb);
-    void FUN_140da4eb0(CStringW strName, Delegate<void(NotifyObject*)> cb);
-};
-Unk_IcNotices* FUN_140939a10();
+CFeatureManager* FUN_140166410();
+CGameRule* FUN_1401c0d90();
+CInputKeyHandler* FUN_14025e7c0();
+NotifySystem* FUN_140939a10();
 class Unk_IcPackets
 {
 public:
@@ -199,8 +189,7 @@ Unk_BSCamera* FUN_140cd47b0(int nId);
 class Unk_IcSound;
 Unk_IcSound* FUN_1408e57f0();
 void FUN_1422b9fd0(Unk_IcSound* p, int nEvent);
-class Unk_IcInventory { public: int FUN_140a5f7b0(int nItemId, int n); int FUN_140a60ec0(int nItemId); };
-extern Unk_IcInventory DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 unsigned FUN_140869420();                       // the tick count
 int FUN_14109a9e0();                            // rand
 
@@ -216,7 +205,6 @@ struct Unk_IcEffectRequest
 };
 MS2_CHECK_SIZE(Unk_IcEffectRequest, 0x70);
 class Unk_IcEffectMgr { public: void FUN_1411a4a00(Unk_IcEffectRequest* pRequest); };
-Unk_IcEffectMgr* FUN_1403ed280();
 void FUN_140a53190(Unk_IcEffectRequest* p, int nObjectId);
 struct Unk_IcEffectPaths { char m_pad_0[0x2e0]; CString m_hairApply; };   // +0x2e0
 Unk_IcEffectPaths* FUN_1401d31f0();
@@ -309,7 +297,7 @@ void UIItemColoringDialog::vfunc_67()
     UIDialog::vfunc_67();
     FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     FUN_1419ae790();
-    Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IcPlayer* pPc = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc != 0)
         pPc->FUN_14166ed70(0x56057c6);
     m_198 = 0;
@@ -321,9 +309,9 @@ void UIItemColoringDialog::vfunc_67()
     m_264 = 0;
     m_2a8.RemoveAll();
     m_278.RemoveAll();
-    FUN_140939a10()->FUN_140da4eb0(CStringW(L"NotifyGameEventChanged"),
+    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
                                    Delegate<void(NotifyObject*)>(this, &UIItemColoringDialog::FUN_1419adbe0));
-    FUN_140939a10()->FUN_140da4eb0(CStringW(L"NotifyChangeActiveMyCodiTab"),
+    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                    Delegate<void(NotifyObject*)>(this, &UIItemColoringDialog::FUN_1419addc0));
 }
 MS2_REPLACE_METHOD(0x1419ac220, UIItemColoringDialog, vfunc_67, 788, 0xC7A1D4F8);
@@ -340,7 +328,7 @@ void UIItemColoringDialog::OnLoadInit()
 {
     UIDialog::OnLoadInit();
     m_2d8 = FUN_140cd47b0(0x4ef2);
-    FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyGameEventChanged"),
+    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
                                    Delegate<void(NotifyObject*)>(this, &UIItemColoringDialog::FUN_1419adbe0));
 }
 MS2_REPLACE_METHOD(0x1419ac580, UIItemColoringDialog, OnLoadInit, 245, 0xE6DA347E);
@@ -349,7 +337,7 @@ MS2_REPLACE_METHOD(0x1419ac580, UIItemColoringDialog, OnLoadInit, 245, 0xE6DA347
 void UIItemColoringDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IcPlayer* pPc = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
@@ -359,7 +347,7 @@ void UIItemColoringDialog::OnLoadComplete()
     FUN_1419afe30();
     m_25c = 1;
     FUN_140d86260()->vfunc_43(0xe, 0, 1000);
-    FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyChangeActiveMyCodiTab"),
+    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                    Delegate<void(NotifyObject*)>(this, &UIItemColoringDialog::FUN_1419addc0));
 }
 MS2_REPLACE_METHOD(0x1419ac680, UIItemColoringDialog, OnLoadComplete, 618, 0x1F43C844);
@@ -382,7 +370,7 @@ void UIItemColoringDialog::vfunc_15()
 {
     if (vfunc_55() != 0)
         return;
-    Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IcPlayer* pPc = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (m_268 == 0)
@@ -507,7 +495,7 @@ int UIItemColoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             int nItemId = FUN_141b71a10(data.FUN_1422b8d30());
             if (m_268.get() != 0) {
-                if (void* pMy = FUN_1403ed2d0()->FUN_141bd0cc0()) {
+                if (void* pMy = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0()) {
                     MS2Ptr<CItem> spItem = FUN_1419b1440(nItemId);
                     if (spItem.get() != 0)
                         FUN_1419aeb50();
@@ -520,7 +508,7 @@ int UIItemColoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             int nItemId = FUN_141b71a10(data.FUN_1422b8d30());
             if (m_268.get() != 0) {
-                if (void* pMy = FUN_1403ed2d0()->FUN_141bd0cc0()) {
+                if (void* pMy = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0()) {
                     MS2Ptr<CItem> spItem = FUN_1419b1590(nItemId);
                     if (spItem.get() != 0)
                         FUN_1419aeb50();
@@ -581,7 +569,7 @@ void UIItemColoringDialog::FUN_1419adbe0(NotifyObject* pNotify)
             spPcBang->vfunc_4(nSale == 0);
         }
         UIBillDialog* pBill;
-        if (FUN_1403ed2b0()->FUN_141adc890(0x4e7b) != 0 && (pBill = FUN_140f0a350(0x4e7b)) != 0) {
+        if (reinterpret_cast<Unk_IcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e7b) != 0 && (pBill = FUN_140f0a350(0x4e7b)) != 0) {
             unsigned nSale = FUN_1419b1af0((unsigned)FUN_1419b1710());
             pBill->FUN_1418cda70(nSale);
         }
@@ -609,7 +597,7 @@ MS2_REPLACE_METHOD(0x1419addc0, UIItemColoringDialog, FUN_1419addc0, 439, 0x99B7
 // @0x1419adf80
 void UIItemColoringDialog::vfunc_24(void* p)
 {
-    Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IcPlayer* pPc = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if ((m_30.get() ? true : false) && vfunc_55() == 0) {
@@ -625,7 +613,7 @@ void UIItemColoringDialog::vfunc_24(void* p)
 // @0x1419ae170
 void UIItemColoringDialog::FUN_1419ae170()
 {
-    Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IcPlayer* pPc = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     m_278.RemoveAll();
@@ -651,7 +639,7 @@ void UIItemColoringDialog::FUN_1419ae170()
             ASObj obj(2);
             obj.FUN_1407cbb20("guid", FUN_141b71910(spItem->FUN_140526a50()));
             obj.FUN_1407cbb20("itemid", FUN_141b71990(nItemId));
-            obj.FUN_1407cbb20("itemname", FUN_1401a9d70()->FUN_141811980(1, nItemId));
+            obj.FUN_1407cbb20("itemname", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
             obj.FUN_1407cba60("iconPath", spItem->FUN_140528590());
             ASFunction tooltip(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemColoringDialog::FUN_1419afcd0),
                                spItem.get(), FUN_1422db730());
@@ -667,7 +655,7 @@ MS2_REPLACE_METHOD(0x1419ae170, UIItemColoringDialog, FUN_1419ae170, 1558, 0xF51
 // @0x1419ae790
 void UIItemColoringDialog::FUN_1419ae790()
 {
-    Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IcPlayer* pPc = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (m_268 == 0)
@@ -701,7 +689,7 @@ int UIItemColoringDialog::FUN_1419ae940()
     if (m_268 == 0)
         return 0;
     FUN_140f014f0(m_268);
-    Unk_IcField* pField = FUN_1403ed2d0()->FUN_141bd3620();
+    Unk_IcField* pField = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd3620();
     if (pField != 0)
         pField->vfunc_149();
     FUN_1422b9fd0(FUN_1408e57f0(), 0x620001d);
@@ -851,7 +839,7 @@ MS2_REPLACE_METHOD(0x1419af2f0, UIItemColoringDialog, FUN_1419af2f0, 1105, 0xDCB
 // @0x1419af750
 void UIItemColoringDialog::FUN_1419af750()
 {
-    Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IcPlayer* pPc = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc != 0) {
         if (pPc->FUN_14166c930() != 0xe)
             pPc->vfunc_59(0xe, 0, 0, 0);
@@ -860,7 +848,7 @@ void UIItemColoringDialog::FUN_1419af750()
         request.m_strName = FUN_1401d31f0()->m_hairApply;
         request.m_n08 = 1;
         FUN_140a53190(&request, FUN_14123c580(pPc));
-        FUN_1403ed280()->FUN_1411a4a00(&request);
+        reinterpret_cast<Unk_IcEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&request);
     }
 }
 MS2_REPLACE_METHOD(0x1419af750, UIItemColoringDialog, FUN_1419af750, 222, 0x7478D72B);
@@ -869,7 +857,7 @@ MS2_REPLACE_METHOD(0x1419af750, UIItemColoringDialog, FUN_1419af750, 222, 0x7478
 int UIItemColoringDialog::FUN_1419af840()
 {
     m_260 = false;
-    Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IcPlayer* pPc = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc != 0) {
         FUN_1419aeb50();
         FUN_1412761e0(m_30, 1);
@@ -928,7 +916,7 @@ void UIItemColoringDialog::FUN_1419afcd0(const Scaleform::GFx::FunctionHandler::
     CItem* pUser = static_cast<CItem*>(params.pUserData);
     if (pUser == 0)
         return;
-    Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IcPlayer* pPc = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     CItem* pItem = pPc->FUN_141655b80(pUser->FUN_140526a50()).get();
@@ -997,7 +985,7 @@ MS2_REPLACE_METHOD(0x1419b00b0, UIItemColoringDialog, FUN_1419b00b0, 514, 0x88E2
 // @0x1419b02c0
 void UIItemColoringDialog::FUN_1419b02c0(__int64 nUid, int nIndex)
 {
-    Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IcPlayer* pPc = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (m_268 == 0)
@@ -1081,7 +1069,7 @@ MS2_REPLACE_METHOD(0x1419b0700, UIItemColoringDialog, FUN_1419b0700, 1022, 0xDA0
 // @0x1419b0b10
 int UIItemColoringDialog::FUN_1419b0b10(ASArray* pRows, int* pTotal)
 {
-    Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IcPlayer* pPc = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     if (m_2a8.IsEmpty() != false)
@@ -1093,7 +1081,7 @@ int UIItemColoringDialog::FUN_1419b0b10(ASArray* pRows, int* pTotal)
         MS2Ptr<CItem> spItem = m_2a8.GetAt(pos);
         if (spItem == 0)
             continue;
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0());
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0());
         strDetail.Append(FUN_1401e8510(strRow, strName));
         nCount++;
     }
@@ -1140,7 +1128,7 @@ int UIItemColoringDialog::FUN_1419b0ef0()
                     spBill->m_38 = pFee->FUN_1406dc4d0();
                     spBill->m_48 = nTotal;
                     pBill->FUN_1418cda20(spBill);
-                    FUN_1403ed2b0()->FUN_141adc530(0x4e7b);
+                    reinterpret_cast<Unk_IcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e7b);
                 }
                 return 1;
             }
@@ -1236,7 +1224,7 @@ MS2_REPLACE_METHOD(0x1419b1970, UIItemColoringDialog, FUN_1419b1970, 69, 0xC1358
 CStringW UIItemColoringDialog::FUN_1419b19c0()
 {
     if (m_1a8.m_20 != 0)
-        return FUN_1401a9d70()->FUN_141811980(1, m_1a8.m_20);
+        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_1a8.m_20);
     return GetStringCommon(0x995);
 }
 MS2_REPLACE_METHOD(0x1419b19c0, UIItemColoringDialog, FUN_1419b19c0, 126, 0x454EE4C7);
@@ -1244,7 +1232,7 @@ MS2_REPLACE_METHOD(0x1419b19c0, UIItemColoringDialog, FUN_1419b19c0, 126, 0x454E
 // @0x1419b1a50
 int UIItemColoringDialog::FUN_1419b1a50()
 {
-    Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_IcPlayer* pPc = reinterpret_cast<Unk_IcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     return FUN_141658f30(pPc);
@@ -1281,7 +1269,7 @@ bool UIItemColoringDialog::FUN_1419b1b50()
         FUN_1412752d0(L"s_beauty_msg_wait_by_expired_codi", 1);
         return false;
     }
-    FUN_1403ed2b0()->FUN_141adc5d0(0x4e7b);
+    reinterpret_cast<Unk_IcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e7b);
     FUN_1419b1e40(m_2a8);
     FUN_1419b1e40(m_278);
     m_268->FUN_140cd2210(m_268->FUN_140cd1980());

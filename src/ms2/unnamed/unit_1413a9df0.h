@@ -8,9 +8,6 @@
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-// The position type vfunc_18 returns: the caller copies it into a Vector3 local (the exe slices it with rep movsb).
-struct Unk_G9Pos : Vector3 {};
-
 // The local player: only the position getter and the level getter.
 class Unk_G9Player
 {
@@ -33,7 +30,7 @@ public:
     virtual void Unk_Slot15();
     virtual void Unk_Slot16();
     virtual void Unk_Slot17();
-    virtual Unk_G9Pos vfunc_18();
+    virtual Vector3 vfunc_18();
     virtual void Unk_Slot19();
     virtual void Unk_Slot20();
     virtual void Unk_Slot21();
@@ -127,7 +124,7 @@ class Unk_G9World
 public:
     Unk_G9Player* FUN_141bd0cc0();                      // the local player
     Unk_G9MapInfo FUN_141bd30a0();
-    Unk_G9ObjRef FUN_141bc6510(const Vector3& pos, int nId);
+    Unk_G9ObjRef FUN_141bc6510(Vector3 pos, int nId);
 };
 Unk_G9World* FUN_1403ed2d0();
 

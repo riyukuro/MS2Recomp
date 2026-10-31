@@ -22,6 +22,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/cubecraft_2.h"
+#include "ms2/client/ms2/groundeffectdata.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -83,10 +85,9 @@ public:
 };
 // The land sound service.
 class Unk_LandSound { public: void FUN_141377420(PCBase* pOwner, CString strKey); };
-Unk_LandSound* FUN_141475cf0();
 
 // Cube craft selection of the owner (gates the "cube landing" animation).
-class Unk_LandCube { public: bool FUN_1410aa010(); };
+class Unk_LandCube : public Unk_PCCubeCraft { };
 Unk_LandCube* FUN_141659700(PCBase* p);
 int FUN_1416595d0(PCBase* p);
 
@@ -124,7 +125,7 @@ void StateLand::vfunc_4(StateData* pData)
             ((Unk_LandBody*)pPC->FUN_14166d220())->FUN_141240f20()->FUN_140cfb020(kRay.m_hitEntity);
     }
     m_pOwner->vfunc_93(true);
-    FUN_141475cf0()->FUN_141377420(m_pOwner, CString("land"));
+    reinterpret_cast<Unk_LandSound*>(TSingleton<CGroundEffectDataManager>::GetInstance())->FUN_141377420(m_pOwner, CString("land"));
     MyPC* pMyPC = FUN_1417b84b0();
     if (pMyPC != 0)
         pMyPC->FUN_14152dbc0();

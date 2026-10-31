@@ -29,6 +29,7 @@
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/nifeffectparam.h"
 class Unk_PCBaseComp_a58 : public CPtred {};
 class Unk_PCBaseComp_a78 : public CPtred {};
 class Unk_PCBaseComp_a88 : public CPtred {};
@@ -83,12 +84,7 @@ MS2_CHECK_OFFSET(Unk_FdTexConfig, m_strGlossTo, 0x120);
 Unk_FdTexConfig* FUN_1401d31f0();
 
 // The texture loader (FUN_140a0afd0).
-class Unk_FdTexMgr
-{
-public:
-    NiTexturePtr FUN_141552f90(CString strPath, int nFlags);          // loads (and caches) a texture file
-};
-Unk_FdTexMgr* FUN_140a0afd0();
+CNifLoadingService* FUN_140a0afd0();
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
 class Unk_SceneWalker
@@ -127,7 +123,7 @@ void FUN_141275260(int nStringId, int nA, int nB);          // notice by string 
 void FUN_1412752d0(const CStringW& strKey, int nA);         // notice by string key
 void FUN_141275460(int nStringId, int nA, int nB, const fmt::ArgList& args);
 
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 // The id of a doll item result (the notice picks the text).
 enum Unk_FdResult : int {};
@@ -404,7 +400,7 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
                         NiSourceTexture* pSource = NiDynamicCast(NiSourceTexture, pBase->GetTexture());
                         if (pSource != 0 && FUN_141068d50(pSource->GetFilename(), FUN_1401d31f0()->m_strBaseFrom))
                         {
-                            pBase->SetTexture(FUN_140a0afd0()->FUN_141552f90(CString(FUN_1401d31f0()->m_strBaseTo), 1));
+                            pBase->SetTexture(FUN_140a0afd0()->GetTexture(CString(FUN_1401d31f0()->m_strBaseTo), 1));
                         }
                     }
                     NiTexturingProperty::Map* pGloss = pTexturing->GetGlossMap();
@@ -413,7 +409,7 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
                         NiSourceTexture* pSource = NiDynamicCast(NiSourceTexture, pGloss->GetTexture());
                         if (pSource != 0 && FUN_141068d50(pSource->GetFilename(), FUN_1401d31f0()->m_strGlossFrom))
                         {
-                            pGloss->SetTexture(FUN_140a0afd0()->FUN_141552f90(CString(FUN_1401d31f0()->m_strGlossTo), 1));
+                            pGloss->SetTexture(FUN_140a0afd0()->GetTexture(CString(FUN_1401d31f0()->m_strGlossTo), 1));
                         }
                     }
                     if (FUN_1409f7c90()->FUN_14109a9d0() != 0)
@@ -486,9 +482,9 @@ int FittingDollPC::FUN_14121c870(CItem* pItem)
         return 0xb;
     if (pPlayer->FUN_14166ce30() != 0)
         return 0xb;
-    if (DAT_143ab2a90.FUN_140a65770(pItem) != 0)
+    if (g_143ab2a90.FUN_140a65770(pItem) != 0)
         return 6;
-    if (DAT_143ab2a90.FUN_140a63900(pItem, 0) == 0)
+    if (g_143ab2a90.FUN_140a63900(pItem, 0) == 0)
         return 5;
     return 0;
 }
@@ -511,7 +507,7 @@ int FittingDollPC::FUN_14121c9d0(CItem* pItem)
 {
     if (pItem == 0)
         return 0xc;
-    if (DAT_143ab2a90.FUN_140a61430(DAT_143ab2a90.FUN_140a617f0(MS2Ptr<CItem>(pItem))) == 0)
+    if (g_143ab2a90.FUN_140a61430(g_143ab2a90.FUN_140a617f0(MS2Ptr<CItem>(pItem))) == 0)
         return 1;
     return 0;
 }

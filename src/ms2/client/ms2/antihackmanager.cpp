@@ -54,7 +54,7 @@ public:
     CAntiHackManager();
     virtual ~CAntiHackManager();
     void FUN_1409a33d0();                           // @0x1409a33d0 tell the network service about the current state
-    int FUN_1409a3410(Unk_AntiHackRecord* pRecord);  // @0x1409a3410 ask the object the record carries
+    void FUN_1409a3410(Unk_AntiHackRecord* pRecord);  // @0x1409a3410 ask the object the record carries
 };
 MS2_CHECK_SIZE(CAntiHackManager, 8);
 
@@ -77,10 +77,8 @@ void CAntiHackManager::FUN_1409a33d0()
 MS2_REPLACE_METHOD(0x1409A33D0, CAntiHackManager, FUN_1409a33d0, 43, 0x2965EA44);
 
 // @0x1409a3410
-// MS2-FUNCTIONAL: the exe widens the bool result into a stack temporary before returning (movzx eax,al;
-// mov DWORD PTR [rsp+0x20],eax, and the temporary is then never read); this form leaves the value in eax.
-int CAntiHackManager::FUN_1409a3410(Unk_AntiHackRecord* pRecord)
+void CAntiHackManager::FUN_1409a3410(Unk_AntiHackRecord* pRecord)
 {
-    return pRecord->m_kArg.vfunc_1();
+    int nResult = pRecord->m_kArg.vfunc_1();
 }
 MS2_REPLACE_METHOD(0x1409A3410, CAntiHackManager, FUN_1409a3410, 60, 0xBCDE2DFF);

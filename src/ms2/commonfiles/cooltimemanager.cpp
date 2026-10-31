@@ -100,8 +100,9 @@
 #include "ms2/ms2recover.h"
 #include <vector>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 class Unk_CommonLog { public: void FUN_140177a80(int level, int category, const wchar_t* format, const unsigned& arg); };
 Unk_CommonLog* FUN_140166440();

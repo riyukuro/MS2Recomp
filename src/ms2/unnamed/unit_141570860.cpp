@@ -19,7 +19,7 @@ extern int FUN_1415fb750(void*);
 extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 
 extern bool FUN_141609910(void*);
-extern void* FUN_1415f38c0(void*, int);
+extern void* FUN_1415f38c0(void*, long long);
 extern void FUN_1415efdd0(void*, void*);
 extern void FUN_14160b210(void*, void*);
 extern void FUN_141608b60(void*);

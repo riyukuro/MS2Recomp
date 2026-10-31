@@ -320,7 +320,7 @@ CInputStream& FUN_14070f480(CInputStream& in, unsigned& value);
 CInputStream& FUN_14070f540(CInputStream& in, float& value);
 COutputStream& FUN_1403d7730(COutputStream& out, const ATL::CAtlArray<unsigned>& arr);   // count + values (gameevent.cpp)
 CInputStream& FUN_1403d7440(CInputStream& in, ATL::CAtlArray<unsigned>& arr);          // count + values (gameevent.cpp)
-__int64 FUN_140869440();                                                               // server time
+__int64 GetServerTime();                                                               // server time
 int FUN_140873b30(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);   // tinyxmlhelper string attribute
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned long& nOut);
 void FUN_1401d9a30(const CStringW& str, ATL::CAtlArray<int>& rOut, const wchar_t* pszSep);  // split into ints
@@ -1219,9 +1219,9 @@ bool RpsGameData::Load(Unk_140165cf0* pElem)
         MS2_ASSERT_AT(0x2ee, 0);
         return false;
     }
-    FUN_140873420(pActions, "rock", m_actionNames[0]);
-    FUN_140873420(pActions, "paper", m_actionNames[1]);
-    FUN_140873420(pActions, "scissors", m_actionNames[2]);
+    FUN_140873420(pActions, "rock", m_play.m_actionNames[0]);
+    FUN_140873420(pActions, "paper", m_play.m_actionNames[1]);
+    FUN_140873420(pActions, "scissors", m_play.m_actionNames[2]);
     Unk_140165cf0* pMessages = pPlay->FUN_140165cf0("messages");
     if (pMessages == NULL) {
         MS2_ASSERT_AT(0x2f9, 0);
@@ -1230,7 +1230,7 @@ bool RpsGameData::Load(Unk_140165cf0* pElem)
     for (Unk_140165cf0* pNode = FUN_140345b40(pMessages); pNode != NULL; pNode = FUN_1403f0510(pNode)) {
         CStringW strValue;
         FUN_140873420(pNode, "value", strValue);
-        m_messages.Add(strValue);
+        m_play.m_messages.Add(strValue);
     }
     Unk_140165cf0* pResults = pRoot->FUN_140165cf0("result");
     if (pResults == NULL) {
@@ -1920,7 +1920,7 @@ bool Unk_DayItemContext::IsTodayEnabled()
 {
     if (!IsValid())
         return false;
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     int dayOfWeek = now.GetDayOfWeek();
     bool bWeekend = dayOfWeek == 1 || dayOfWeek == 7;
     if ((m_weekends != 0 && bWeekend) || (m_weekdays != 0 && !bWeekend) ||
@@ -1939,7 +1939,7 @@ MS2_REPLACE_METHOD(0x140404260, Unk_DayItemContext, Update, 6, 0xA9AF6E37);
 // @0x140404270
 void Unk_DayItemContext::Period::Update()
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (m_state == 2 && now > m_endTime)
         m_state = 4;
 }
@@ -1948,7 +1948,7 @@ MS2_REPLACE_METHOD(0x140404270, Unk_DayItemContext::Period, Update, 84, 0x2C6AEA
 // @0x1404042d0
 bool Unk_DayItemContext::Period::IsActive()
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (m_state != 2)
         return false;
     if (now < m_beginTime)
@@ -2089,7 +2089,7 @@ bool BurningLevelupContext::HasTarget(int id)
 MS2_REPLACE_METHOD(0x140405230, BurningLevelupContext, HasTarget, 137, 0x25E725D3);
 
 // @0x1404052c0
-FestivalContext::FestivalContext() : m_18(0), m_1c(0), m_beginTime(FUN_140869440()), m_endTime(FUN_140869440())
+FestivalContext::FestivalContext() : m_18(0), m_1c(0), m_beginTime(GetServerTime()), m_endTime(GetServerTime())
 {
 }
 
@@ -2308,7 +2308,7 @@ BingoContext::NumbersPtr BingoContext::GetTodayNumbers()
 {
     if (m_numbers.GetCount() == 0)
         return 0;
-    int days = (int)(CMsTime(FUN_140869440()) - CMsTime(m_beginTime.GetYear(), m_beginTime.GetMonth(),
+    int days = (int)(CMsTime(GetServerTime()) - CMsTime(m_beginTime.GetYear(), m_beginTime.GetMonth(),
                                                           m_beginTime.GetDay(), 0, 0, 0)).GetDays();
     days = days % m_numbers.GetCount();
     return m_numbers[days];

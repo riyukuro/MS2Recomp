@@ -19,10 +19,10 @@ extern void* FUN_1415cab60(void*, unsigned char);
 extern void FUN_1415fa380(void*);
 extern unsigned int FUN_1415fa0c0(void*);
 extern unsigned char FUN_1415fb630(void*);
-extern void FUN_14156a080(void*);
+extern void FUN_14156a080(void*) noexcept;
 extern void FUN_14156a260(void*, int);
 extern void FUN_14156bcb0(void*, void*, void*);
-extern void FUN_14156bd50(void*);
+extern void FUN_14156bd50(void*) noexcept;
 extern void FUN_14156be10(void*, void*, void*);
 extern void FUN_14156bf10(void*);
 extern void FUN_14156ab00(void*, unsigned char);
@@ -105,9 +105,8 @@ long long FUN_14156a290(long long* p)
     return *p;
 }
 
-// MS2-FUNCTIONAL 0x14156a340: forwards through the codec-manager singleton helper with equivalent reset behavior.
 // @0x14156a340
-void FUN_14156a340()
+void FUN_14156a340(void*)
 {
     FUN_1415fa380(FUN_1415fa310());
 }
@@ -209,9 +208,8 @@ long long* FUN_14156a810(long long* p, long long value)
     return p;
 }
 
-// MS2-FUNCTIONAL 0x14156a840: empty helper behavior is preserved; compiler emits a different return sequence.
 // @0x14156a840
-void FUN_14156a840() {}
+void FUN_14156a840(void*) {}
 
 // The stream fields the compact-count writer touches: data, used size, cursor.
 struct Unk_NMStreamBuf
@@ -353,25 +351,20 @@ void FUN_14156b020(long long* stream, unsigned long long value)
     FUN_14156acb0(stream, value);
 }
 
-static unsigned char* nm_stream_data(CNMStream* stream)
+// Field view of CNMStream; the exe reads these fields inline.
+struct Unk_NMStreamView
 {
-    return *reinterpret_cast<unsigned char**>(stream);
-}
-
-static unsigned int& nm_stream_size(CNMStream* stream)
-{
-    return *reinterpret_cast<unsigned int*>(reinterpret_cast<char*>(stream) + 0xc);
-}
-
-static unsigned int& nm_stream_pos(CNMStream* stream)
-{
-    return *reinterpret_cast<unsigned int*>(reinterpret_cast<char*>(stream) + 0x14);
-}
-
-static int nm_stream_valid(CNMStream* stream)
-{
-    return *reinterpret_cast<int*>(reinterpret_cast<char*>(stream) + 0x18);
-}
+    unsigned char* pData;
+    unsigned char pad08[4];
+    unsigned int nSize;
+    unsigned char pad10[4];
+    unsigned int nPos;
+    int bValid;
+};
+#define nm_stream_data(stream) (reinterpret_cast<Unk_NMStreamView*>(stream)->pData)
+#define nm_stream_size(stream) (reinterpret_cast<Unk_NMStreamView*>(stream)->nSize)
+#define nm_stream_pos(stream) (reinterpret_cast<Unk_NMStreamView*>(stream)->nPos)
+#define nm_stream_valid(stream) (reinterpret_cast<Unk_NMStreamView*>(stream)->bValid)
 
 // @0x14156b050
 CNMSimpleStreamDecoder::CNMSimpleStreamDecoder(CNMStream* pStream)
@@ -596,7 +589,6 @@ CNMSerializableDecoder::CNMSerializableDecoder(CNMStream* pStream, CNMSerializab
     }
 }
 
-// MS2-FUNCTIONAL 0x14156bf10: restores the framed end position and then runs base decoder cleanup.
 // @0x14156bf10
 CNMSerializableDecoder::~CNMSerializableDecoder()
 {
@@ -645,7 +637,6 @@ unsigned int CNMSerializableDecoder::ReadCount()
     return result;
 }
 
-// MS2-FUNCTIONAL 0x14156c290: returns zero after the frame boundary; otherwise delegates to the simple decoder.
 // @0x14156c290
 unsigned char CNMSerializableDecoder::ReadU8()
 {
@@ -654,7 +645,6 @@ unsigned char CNMSerializableDecoder::ReadU8()
     return CNMSimpleStreamDecoder::ReadU8();
 }
 
-// MS2-FUNCTIONAL 0x14156c2e0: returns zero after the frame boundary; otherwise delegates to the simple decoder.
 // @0x14156c2e0
 unsigned short CNMSerializableDecoder::ReadU16()
 {
@@ -663,7 +653,6 @@ unsigned short CNMSerializableDecoder::ReadU16()
     return CNMSimpleStreamDecoder::ReadU16();
 }
 
-// MS2-FUNCTIONAL 0x14156c330: returns zero after the frame boundary; otherwise delegates to the simple decoder.
 // @0x14156c330
 unsigned int CNMSerializableDecoder::ReadU32()
 {
@@ -672,7 +661,6 @@ unsigned int CNMSerializableDecoder::ReadU32()
     return CNMSimpleStreamDecoder::ReadU32();
 }
 
-// MS2-FUNCTIONAL 0x14156c380: returns zero after the frame boundary; otherwise delegates to the simple decoder.
 // @0x14156c380
 unsigned long long CNMSerializableDecoder::ReadU64()
 {
@@ -745,7 +733,6 @@ unsigned int CNMSerializableDecoder::ReadBytes(unsigned char* pBuffer, unsigned 
     return copied;
 }
 
-// MS2-FUNCTIONAL 0x14156c880: delegates to the inherited 64-bit read operation.
 // @0x14156c880
 unsigned long long CNMSerializableDecoder::ReadU64Alias()
 {
@@ -805,17 +792,18 @@ CNMSerializable* CNMSerializable::CopyFrom(CNMSerializable* pSrc)
     return this;
 }
 
-// MS2-FUNCTIONAL 0x14156c8b0: initializes the serializable signature fields; constructor store ordering differs from the image.
 // @0x14156c8b0
 CNMSerializable::CNMSerializable(unsigned short signature, unsigned char kind, unsigned char format)
-    : m_wSignature(signature), m_bKind(kind), m_bFormat(format), m_bFlag(0)
+    : m_bFlag(0)
 {
+    m_wSignature = signature;
+    m_bKind = kind;
+    m_bFormat = format;
 }
 
 // @0x14156cba0
 CNMAvatarItemInfo::CNMAvatarItemInfo() : CNMSerializable(0x6169, 1, 1) {}
 
-// MS2-FUNCTIONAL 0x14156cbe0: uses opaque temporary encoder storage; frame behavior and payload are preserved.
 // @0x14156cbe0
 unsigned int CNMAvatarItemInfo::EncodeFramed(CNMStream* pStream)
 {
@@ -823,7 +811,6 @@ unsigned int CNMAvatarItemInfo::EncodeFramed(CNMStream* pStream)
     return CNMAvatarItemInfo::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156cc40: dispatches with the recovered encoder virtual slot selection.
 // @0x14156cc40
 unsigned int CNMAvatarItemInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
@@ -841,7 +828,6 @@ unsigned int CNMAvatarItemInfo::Encode(CNMEncoder* pEncoder, CNMStream*)
     return 1;
 }
 
-// MS2-FUNCTIONAL 0x14156ccf0: uses opaque temporary decoder storage and calls the recovered decode slot.
 // @0x14156ccf0
 unsigned int CNMAvatarItemInfo::DecodeFramed(CNMStream* pStream)
 {
@@ -851,7 +837,6 @@ unsigned int CNMAvatarItemInfo::DecodeFramed(CNMStream* pStream)
     return CNMAvatarItemInfo::Decode(&decoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156cd80: dispatches with the recovered decoder virtual slot selection.
 // @0x14156cd80
 unsigned int CNMAvatarItemInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
@@ -871,7 +856,6 @@ unsigned int CNMAvatarItemInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStre
 // @0x14156ce30
 __declspec(noinline) CNMAvatarFullInfo::CNMAvatarFullInfo() : CNMAvatarItemInfo() { ++m_bKind; }
 
-// MS2-FUNCTIONAL 0x14156cea0: uses opaque temporary encoder storage; frame behavior and payload are preserved.
 // @0x14156cea0
 unsigned int CNMAvatarFullInfo::EncodeFramed(CNMStream* pStream)
 {
@@ -879,7 +863,6 @@ unsigned int CNMAvatarFullInfo::EncodeFramed(CNMStream* pStream)
     return CNMAvatarFullInfo::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156cf00: dispatches with the recovered encoder virtual slot selection.
 // @0x14156cf00
 unsigned int CNMAvatarFullInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
@@ -903,7 +886,6 @@ unsigned int CNMAvatarFullInfo::Encode(CNMEncoder* pEncoder, CNMStream* pStream)
     return 1;
 }
 
-// MS2-FUNCTIONAL 0x14156d000: uses opaque temporary decoder storage and calls the recovered decode slot.
 // @0x14156d000
 unsigned int CNMAvatarFullInfo::DecodeFramed(CNMStream* pStream)
 {
@@ -913,7 +895,6 @@ unsigned int CNMAvatarFullInfo::DecodeFramed(CNMStream* pStream)
     return CNMAvatarFullInfo::Decode(&decoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156d090: dispatches with the recovered decoder virtual slot selection.
 // @0x14156d090
 unsigned int CNMAvatarFullInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
@@ -939,14 +920,12 @@ unsigned int CNMAvatarFullInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStre
 // MS2-PIN: ??0CNMAvatarFullInfo@@QEAA@XZ 0x14156ce30 ; recovered default constructor
 // MS2-PIN: ??0CNMRealFriendInfo@@QEAA@XZ 0x14156d610 ; recovered default constructor
 
-// MS2-FUNCTIONAL 0x14156d1a0: initializes the full fixed user record; bulk zeroing lowers differently from the exe.
 // @0x14156d1a0
 CNMDefaultUserInfo::CNMDefaultUserInfo() : CNMSerializable(0x7569, 1, 1), m_10{}, m_50(0), m_58(0), m_5c{},
     m_9c(0), m_a0(0), m_a4(0), m_a8(0)
 {
 }
 
-// MS2-FUNCTIONAL 0x14156d260: uses opaque temporary encoder storage; payload and frame length are preserved.
 // @0x14156d260
 unsigned int CNMDefaultUserInfo::EncodeFramed(CNMStream* pStream)
 {
@@ -954,7 +933,6 @@ unsigned int CNMDefaultUserInfo::EncodeFramed(CNMStream* pStream)
     return CNMDefaultUserInfo::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156d2c0: dispatches through the recovered encoder slots.
 // @0x14156d2c0
 unsigned int CNMDefaultUserInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
@@ -963,7 +941,6 @@ unsigned int CNMDefaultUserInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream*
     return CNMDefaultUserInfo::EncodeFramed(pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156d320: emits the recovered fields in their serialized order.
 // @0x14156d320
 unsigned int CNMDefaultUserInfo::Encode(CNMEncoder* pEncoder, CNMStream*)
 {
@@ -979,7 +956,6 @@ unsigned int CNMDefaultUserInfo::Encode(CNMEncoder* pEncoder, CNMStream*)
     return 1;
 }
 
-// MS2-FUNCTIONAL 0x14156d400: uses opaque decoder storage and invokes the recovered decode slot.
 // @0x14156d400
 unsigned int CNMDefaultUserInfo::DecodeFramed(CNMStream* pStream)
 {
@@ -989,7 +965,6 @@ unsigned int CNMDefaultUserInfo::DecodeFramed(CNMStream* pStream)
     return CNMDefaultUserInfo::Decode(&decoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156d490: dispatches through the recovered decoder slots.
 // @0x14156d490
 unsigned int CNMDefaultUserInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
@@ -998,7 +973,6 @@ unsigned int CNMDefaultUserInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder
     return CNMDefaultUserInfo::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156d4f0: reads the recovered fields with their original widths.
 // @0x14156d4f0
 unsigned int CNMDefaultUserInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStream*)
 {
@@ -1013,7 +987,6 @@ unsigned int CNMDefaultUserInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStr
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }
 
-// MS2-FUNCTIONAL 0x14156d610: builds the base user fields, avatar subobject, and version defaults.
 // @0x14156d610
 CNMRealFriendInfo::CNMRealFriendInfo() : CNMDefaultUserInfo(), m_b0()
 {
@@ -1022,7 +995,6 @@ CNMRealFriendInfo::CNMRealFriendInfo() : CNMDefaultUserInfo(), m_b0()
     m_d0 = 0;
 }
 
-// MS2-FUNCTIONAL 0x14156d6a0: uses opaque temporary encoder storage; payload and frame length are preserved.
 // @0x14156d6a0
 unsigned int CNMRealFriendInfo::EncodeFramed(CNMStream* pStream)
 {
@@ -1030,7 +1002,6 @@ unsigned int CNMRealFriendInfo::EncodeFramed(CNMStream* pStream)
     return CNMRealFriendInfo::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156d700: dispatches through the recovered encoder slots.
 // @0x14156d700
 unsigned int CNMRealFriendInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
@@ -1039,7 +1010,6 @@ unsigned int CNMRealFriendInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* 
     return CNMRealFriendInfo::EncodeFramed(pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156d760: encodes the base user fields followed by the friend-specific payload.
 // @0x14156d760
 unsigned int CNMRealFriendInfo::Encode(CNMEncoder* pEncoder, CNMStream* pStream)
 {
@@ -1056,7 +1026,6 @@ unsigned int CNMRealFriendInfo::Encode(CNMEncoder* pEncoder, CNMStream* pStream)
     return 1;
 }
 
-// MS2-FUNCTIONAL 0x14156d850: uses opaque decoder storage and invokes the recovered decode slot.
 // @0x14156d850
 unsigned int CNMRealFriendInfo::DecodeFramed(CNMStream* pStream)
 {
@@ -1066,7 +1035,6 @@ unsigned int CNMRealFriendInfo::DecodeFramed(CNMStream* pStream)
     return CNMRealFriendInfo::Decode(&decoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156d8e0: dispatches through the recovered decoder slots.
 // @0x14156d8e0
 unsigned int CNMRealFriendInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
@@ -1075,7 +1043,6 @@ unsigned int CNMRealFriendInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder,
     return CNMRealFriendInfo::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156d940: decodes base fields, consumes the separator string, then the avatar and versioned fields.
 // @0x14156d940
 unsigned int CNMRealFriendInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
@@ -1092,9 +1059,8 @@ unsigned int CNMRealFriendInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStre
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }
 
-// MS2-FUNCTIONAL: delegates to the stream reset implementation at 0x14156a5a0.
 // @0x14156a080
-void FUN_14156a080(void* p)
+void FUN_14156a080(void* p) noexcept
 {
     FUN_14156a5a0(p);
 }
@@ -1134,11 +1100,9 @@ int FUN_14156a320(void* p)
     return *reinterpret_cast<int*>(static_cast<char*>(p) + 0x0c) + 0x0c;
 }
 
-// MS2-FUNCTIONAL 0x14156da70: initializes the virtual friend identity and fixed-size strings.
 // @0x14156da70
 CNMVirtualFriendInfo::CNMVirtualFriendInfo() : CNMSerializable(0x6676, 1, 1), m_18(0), m_1c(0), m_20(0), m_24(0), m_28{}, m_68{}, m_a8{}, m_490{}, m_4b0(0), m_4b4(0), m_4b8(0) {}
 
-// MS2-FUNCTIONAL 0x14156db70: frames the encoder payload using the recovered wrapper helpers.
 // @0x14156db70
 unsigned int CNMVirtualFriendInfo::EncodeFramed(CNMStream* pStream)
 {
@@ -1146,7 +1110,6 @@ unsigned int CNMVirtualFriendInfo::EncodeFramed(CNMStream* pStream)
     return CNMVirtualFriendInfo::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156dbd0: selects framed or direct encoding by format.
 // @0x14156dbd0
 unsigned int CNMVirtualFriendInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
@@ -1155,7 +1118,6 @@ unsigned int CNMVirtualFriendInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStrea
     return CNMVirtualFriendInfo::EncodeFramed(pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156dc30: writes fields in the original wire order.
 // @0x14156dc30
 unsigned int CNMVirtualFriendInfo::Encode(CNMEncoder* pEncoder, CNMStream*)
 {
@@ -1166,7 +1128,6 @@ unsigned int CNMVirtualFriendInfo::Encode(CNMEncoder* pEncoder, CNMStream*)
     FUN_14156ae30(pEncoder, m_a8); FUN_14156ae30(pEncoder, m_490); FUN_1415f9990(pEncoder); return 1;
 }
 
-// MS2-FUNCTIONAL 0x14156dd60: decodes the framed payload after validating its header.
 // @0x14156dd60
 unsigned int CNMVirtualFriendInfo::DecodeFramed(CNMStream* pStream)
 {
@@ -1176,7 +1137,6 @@ unsigned int CNMVirtualFriendInfo::DecodeFramed(CNMStream* pStream)
     return CNMVirtualFriendInfo::Decode(&decoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156ddf0: dispatches to framed or direct decoding.
 // @0x14156ddf0
 unsigned int CNMVirtualFriendInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
@@ -1185,7 +1145,6 @@ unsigned int CNMVirtualFriendInfo::DecodeDispatch(CNMSerializableDecoder* pDecod
     return CNMVirtualFriendInfo::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156de50: reads fields in the original wire order and validates the decoder.
 // @0x14156de50
 unsigned int CNMVirtualFriendInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStream*)
 {
@@ -1206,17 +1165,14 @@ unsigned char FUN_14156ca50(int* a, int* b)
             reinterpret_cast<Unk_NMIntPair*>(a)->m_04 == reinterpret_cast<Unk_NMIntPair*>(b)->m_04) ? 1 : 0;
 }
 
-// MS2-FUNCTIONAL 0x14156caa0: compares a key and its two-word suffix.
 // @0x14156caa0
 unsigned char FUN_14156caa0(long long* a, long long* b) { return (*a == *b && FUN_14156ca50(reinterpret_cast<int*>(a + 1), reinterpret_cast<int*>(b + 1))) ? 1 : 0; }
 
-// MS2-FUNCTIONAL 0x14156cb10: compares the key and both two-word suffix blocks.
 // @0x14156cb10
 unsigned char FUN_14156cb10(long long* a, long long* b) { return (*a == *b && FUN_14156ca50(reinterpret_cast<int*>(a + 1), reinterpret_cast<int*>(b + 1)) && FUN_14156ca50(reinterpret_cast<int*>(a + 2), reinterpret_cast<int*>(b + 2))) ? 1 : 0; }
 
-// MS2-FUNCTIONAL 0x14156ce80: reports that the avatar record is supported.
 // @0x14156ce80
-unsigned char FUN_14156ce80() { return 1; }
+unsigned char FUN_14156ce80(void*, void*) { return 1; }
 
 // MS2-FUNCTIONAL 0x14156bd90: writes the payload length into the stream header.
 // @0x14156bd90
@@ -1230,9 +1186,8 @@ unsigned int FUN_14156bd90(long long* p)
     return static_cast<unsigned int>(reinterpret_cast<int*>(p)[2]);
 }
 
-// MS2-FUNCTIONAL 0x14156bd50: finalizes a framed encoder and releases its temporary buffer.
 // @0x14156bd50
-void FUN_14156bd50(void* p) { FUN_14156bd90(reinterpret_cast<long long*>(p)); FUN_14156a840(); }
+void FUN_14156bd50(void* p) noexcept { FUN_14156bd90(reinterpret_cast<long long*>(p)); FUN_14156a840(p); }
 
 // MS2-PIN: ??0CNMVirtualFriendInfo@@QEAA@XZ 0x14156da70 ; recovered virtual friend constructor
 
@@ -1273,7 +1228,6 @@ CNMRealUserInfo::CNMRealUserInfo() : CNMDefaultUserInfo(), m_140()
     m_15c = 0;
 }
 
-// MS2-FUNCTIONAL 0x14156e870: frames the encoder payload and finalizes the temporary header.
 // @0x14156e870
 unsigned int CNMRealUserInfo::EncodeFramed(CNMStream* pStream)
 {
@@ -1281,7 +1235,6 @@ unsigned int CNMRealUserInfo::EncodeFramed(CNMStream* pStream)
     return CNMRealUserInfo::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156e8d0: chooses the direct or framed encoder from the record format.
 // @0x14156e8d0
 unsigned int CNMRealUserInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
@@ -1290,7 +1243,6 @@ unsigned int CNMRealUserInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pS
     return CNMRealUserInfo::EncodeFramed(pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156e930: writes inherited user fields, profile data, avatar, and optional version data.
 // @0x14156e930
 unsigned int CNMRealUserInfo::Encode(CNMEncoder* e,CNMStream* s)
 {
@@ -1301,7 +1253,6 @@ unsigned int CNMRealUserInfo::Encode(CNMEncoder* e,CNMStream* s)
     if(m_bKind==2){FUN_14156ab00(e,m_160);FUN_14156ae30(e,m_161);} FUN_1415f9990(e); return 1;
 }
 
-// MS2-FUNCTIONAL 0x14156eb40: constructs the bounded decoder and dispatches its payload.
 // @0x14156eb40
 unsigned int CNMRealUserInfo::DecodeFramed(CNMStream* pStream)
 {
@@ -1311,7 +1262,6 @@ unsigned int CNMRealUserInfo::DecodeFramed(CNMStream* pStream)
     return CNMRealUserInfo::Decode(&decoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156ebd0: chooses direct or framed decoding by decoder mode.
 // @0x14156ebd0
 unsigned int CNMRealUserInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
@@ -1320,7 +1270,6 @@ unsigned int CNMRealUserInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, C
     return CNMRealUserInfo::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156ec30: decodes the complete real-user record in wire order.
 // @0x14156ec30
 unsigned int CNMRealUserInfo::Decode(CNMSerializableDecoder* d,CNMStream* s)
 {
@@ -1328,11 +1277,9 @@ unsigned int CNMRealUserInfo::Decode(CNMSerializableDecoder* d,CNMStream* s)
     m_12a.wYear=static_cast<unsigned short>(d->ReadU32());m_12a.wMonth=d->ReadU8();m_12a.wDay=d->ReadU8();m_140.DecodeFramed(s);m_150=d->ReadU8();m_154=d->ReadU8();m_158=d->ReadU8();m_15c=d->ReadU8();if(m_bKind==2){m_160=d->ReadU8();d->ReadStringBufAlias(reinterpret_cast<char*>(m_161),0x40);}return static_cast<unsigned int>(FUN_1415fb750(d));
 }
 
-// MS2-FUNCTIONAL 0x14156ef50: initializes the virtual-user record fields and serializable type.
 // @0x14156ef50
 CNMVirtualUserInfo::CNMVirtualUserInfo() : CNMSerializable(0x7576,1,1), m_10(0),m_14(0),m_18{},m_58{},m_98{},m_480(0),m_484(0),m_488(0),m_48c(0) {}
 
-// MS2-FUNCTIONAL 0x14156f030: frames and writes the virtual-user payload.
 // @0x14156f030
 unsigned int CNMVirtualUserInfo::EncodeFramed(CNMStream* pStream)
 {
@@ -1340,7 +1287,6 @@ unsigned int CNMVirtualUserInfo::EncodeFramed(CNMStream* pStream)
     return CNMVirtualUserInfo::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156f090: selects framed or direct encoding.
 // @0x14156f090
 unsigned int CNMVirtualUserInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
@@ -1349,11 +1295,9 @@ unsigned int CNMVirtualUserInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream*
     return CNMVirtualUserInfo::EncodeFramed(pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156f0f0: writes the virtual-user strings and numeric metadata in wire order.
 // @0x14156f0f0
 unsigned int CNMVirtualUserInfo::Encode(CNMEncoder*e,CNMStream*){FUN_14156ac20(e,m_10);FUN_14156ac20(e,m_14);FUN_14156ae30(e,m_18);FUN_14156ae30(e,m_58);FUN_14156ab00(e,static_cast<unsigned char>(m_480));FUN_14156ab00(e,static_cast<unsigned char>(m_484));FUN_14156ab00(e,static_cast<unsigned char>(m_488));FUN_14156ac20(e,m_48c);FUN_14156ae30(e,m_98);FUN_1415f9990(e);return 1;}
 
-// MS2-FUNCTIONAL 0x14156f1e0: decodes the framed virtual-user payload.
 // @0x14156f1e0
 unsigned int CNMVirtualUserInfo::DecodeFramed(CNMStream* pStream)
 {
@@ -1363,7 +1307,6 @@ unsigned int CNMVirtualUserInfo::DecodeFramed(CNMStream* pStream)
     return CNMVirtualUserInfo::Decode(&decoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156f270: dispatches decoding according to decoder mode.
 // @0x14156f270
 unsigned int CNMVirtualUserInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
@@ -1372,11 +1315,9 @@ unsigned int CNMVirtualUserInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder
     return CNMVirtualUserInfo::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156f2d0: reads all virtual-user fields and validates the decoder state.
 // @0x14156f2d0
 unsigned int CNMVirtualUserInfo::Decode(CNMSerializableDecoder*d,CNMStream*){m_10=d->ReadU32();m_14=d->ReadU32();d->ReadStringBufAlias(reinterpret_cast<char*>(m_18),0x40);d->ReadStringBufAlias(reinterpret_cast<char*>(m_58),0x40);m_480=d->ReadU8();m_484=d->ReadU8();m_488=d->ReadU8();m_48c=d->ReadU32();d->ReadStringBufAlias(reinterpret_cast<char*>(m_98),1000);return static_cast<unsigned int>(FUN_1415fb750(d));}
 
-// MS2-FUNCTIONAL 0x14156e000: initializes the friend key and fixed-size profile fields after the real-friend base.
 // @0x14156e000
 CNMFriendInfo::CNMFriendInfo() : CNMRealFriendInfo()
 {
@@ -1393,7 +1334,6 @@ CNMFriendInfo::CNMFriendInfo() : CNMRealFriendInfo()
     m_57c = 0;
 }
 
-// MS2-FUNCTIONAL 0x14156e100: frames and writes the friend entry.
 // @0x14156e100
 unsigned int CNMFriendInfo::EncodeFramed(CNMStream* pStream)
 {
@@ -1401,7 +1341,6 @@ unsigned int CNMFriendInfo::EncodeFramed(CNMStream* pStream)
     return CNMFriendInfo::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156e160: selects direct or framed friend encoding.
 // @0x14156e160
 unsigned int CNMFriendInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
@@ -1410,11 +1349,9 @@ unsigned int CNMFriendInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStr
     return CNMFriendInfo::EncodeFramed(pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156e1c0: serializes inherited friend data and the list-specific key and display fields.
 // @0x14156e1c0
 unsigned int CNMFriendInfo::Encode(CNMEncoder*e,CNMStream*s){CNMRealFriendInfo::EncodeDispatch(e,s);FUN_14156acb0(reinterpret_cast<long long*>(e),m_key.uIDCode);FUN_14156ac20(e,m_key.n08);FUN_14156ac20(e,m_key.n0c);FUN_14156ac20(e,m_key.n10);FUN_14156ac20(e,m_key.n14);FUN_14156ae30(e,m_f0);FUN_14156ae30(e,m_130);FUN_14156ab00(e,static_cast<unsigned char>(m_578));FUN_14156ac20(e,m_57c);FUN_14156ac20(e,m_c0.wYear);FUN_14156ab00(e,static_cast<unsigned char>(m_c0.wMonth));FUN_14156ab00(e,static_cast<unsigned char>(m_c0.wDay));FUN_14156ab00(e,m_d0);FUN_14156ae30(e,m_170);FUN_14156ae30(e,m_558);FUN_1415f9990(e);return 1;}
 
-// MS2-FUNCTIONAL 0x14156e350: decodes the framed friend entry.
 // @0x14156e350
 unsigned int CNMFriendInfo::DecodeFramed(CNMStream* pStream)
 {
@@ -1424,7 +1361,6 @@ unsigned int CNMFriendInfo::DecodeFramed(CNMStream* pStream)
     return CNMFriendInfo::Decode(&decoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156e3e0: selects direct or framed friend decoding.
 // @0x14156e3e0
 unsigned int CNMFriendInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
@@ -1433,7 +1369,6 @@ unsigned int CNMFriendInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNM
     return CNMFriendInfo::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156e440: decodes the inherited and friend-list payload in original order.
 // @0x14156e440
 unsigned int CNMFriendInfo::Decode(CNMSerializableDecoder*d,CNMStream*s){CNMRealFriendInfo::DecodeDispatch(d,s);m_key.uIDCode=d->ReadU64();m_key.n08=d->ReadU32();m_key.n0c=d->ReadU32();m_key.n10=d->ReadU32();m_key.n14=d->ReadU32();d->ReadStringBufAlias(reinterpret_cast<char*>(m_f0),0x40);d->ReadStringBufAlias(reinterpret_cast<char*>(m_130),0x40);m_578=d->ReadU8();m_57c=d->ReadU32();m_c0.wYear=static_cast<unsigned short>(d->ReadU32());m_c0.wMonth=d->ReadU8();m_c0.wDay=d->ReadU8();m_d0=static_cast<char>(d->ReadU8());d->ReadStringBufAlias(reinterpret_cast<char*>(m_170),1000);d->ReadStringBufAlias(reinterpret_cast<char*>(m_558),0x20);return static_cast<unsigned int>(FUN_1415fb750(d));}
 
@@ -1446,15 +1381,12 @@ unsigned int CNMFriendInfo::Decode(CNMSerializableDecoder*d,CNMStream*s){CNMReal
 // MS2-PIN: ??0CNMVirtualUserInfo@@QEAA@XZ 0x14156ef50 ; recovered virtual-user constructor
 // MS2-PIN: ??0CNMSelfUserInfo@@QEAA@XZ 0x14156ef10 ; recovered self-user constructor
 
-// MS2-FUNCTIONAL 0x14156ef10: builds the real-user base and replaces its vftable with the self-user table.
 // @0x14156ef10
 CNMSelfUserInfo::CNMSelfUserInfo() : CNMRealUserInfo() {}
 
-// MS2-FUNCTIONAL 0x14156f430: initializes the friend-list serializable and its vector.
 // @0x14156f430
 CNMFriendList::CNMFriendList() : CNMSerializable(0x466c,1,1),m_10{} {}
 
-// MS2-FUNCTIONAL 0x14156f480: writes the list count and each friend entry.
 // @0x14156f480
 unsigned int CNMFriendList::EncodeFramed(CNMStream* pStream)
 {
@@ -1462,7 +1394,6 @@ unsigned int CNMFriendList::EncodeFramed(CNMStream* pStream)
     return CNMFriendList::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156f4e0: selects framed or direct list encoding.
 // @0x14156f4e0
 unsigned int CNMFriendList::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
@@ -1471,11 +1402,9 @@ unsigned int CNMFriendList::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStr
     return CNMFriendList::EncodeFramed(pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156f540: serializes every friend in vector order.
 // @0x14156f540
 unsigned int CNMFriendList::Encode(CNMEncoder*e,CNMStream*s){FUN_14156ac20(e,static_cast<unsigned int>(m_10.size()));for(std::vector<CNMFriendInfo>::iterator it=m_10.begin(),itEnd=m_10.end();it!=itEnd;++it)(*it).EncodeFramed(s);FUN_1415f9990(e);return 1;}
 
-// MS2-FUNCTIONAL 0x14156f600: decodes the framed friend-list payload.
 // @0x14156f600
 unsigned int CNMFriendList::DecodeFramed(CNMStream* pStream)
 {
@@ -1485,7 +1414,6 @@ unsigned int CNMFriendList::DecodeFramed(CNMStream* pStream)
     return CNMFriendList::Decode(&decoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14156f690: selects direct or framed list decoding.
 // @0x14156f690
 unsigned int CNMFriendList::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {

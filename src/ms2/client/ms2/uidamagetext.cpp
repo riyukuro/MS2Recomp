@@ -23,18 +23,20 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/partymanager.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_WsC_GameObj : public PCBase {};                                   // the actor lookups of WorldService
 class Unk_MyPCEquip : public PCGemEquip {};                                 // PC::FUN_14165f460: the equipment
 class Unk_PCBaseBuffs { public: unsigned int FUN_140970b10(); };            // the buff flags of an actor
-// CNpc::FUN_141093270 returns the client row: the exe calls the MS2Ptr<NpcDataCli> get / operator-> (cnpc.h types it as
+// CNpc::GetNpcData returns the client row: the exe calls the MS2Ptr<NpcDataCli> get / operator-> (cnpc.h types it as
 // MS2Ptr<CNpcData>).
-class Unk_DtNpc : public CNpc { public: MS2Ptr<NpcDataCli> FUN_141093270(); };
+class Unk_DtNpc : public CNpc { };
 Unk_DtNpc* FUN_14096e110(GameObject* p);                                    // as an npc (0 for a player)
 PC* FUN_140974230(GameObject* p);                                           // as a player character (0 otherwise)
-class Unk_DtParty { public: int FUN_14162ae20(__int64 nCharId); };          // CPartyManager: a party member (int return)
-Unk_DtParty* FUN_1409670d0();                                               // the party manager
+          // CPartyManager: a party member (int return)
+CPartyManager* FUN_1409670d0();                                             // the party manager
 // The "RemoveAni" event dispatched by a dying number (an AS event object; 0x40 bytes, no array: the exe has no GS cookie).
 class Unk_DtAniEvent
 {
@@ -47,8 +49,6 @@ class Unk_DtClip : public ASMovieClip
 {
 public:
     void FUN_1407cbbe0(const char* szName, bool b);                         // set a bool member
-    void FUN_1422c0290(float cx, float cy);                                 // set the scale
-    float FUN_1422c11f0();                                                  // the y scale
     void FUN_1422c3d30(Unk_DtAniEvent& ev);                                 // dispatchEvent
 };
 class Unk_DtCamera
@@ -72,8 +72,7 @@ struct Unk_DtCfg
     Unk_DtCfgValue m_ca28;                  // diffAlpha
 };
 Unk_DtCfg* FUN_1401d3200();
-class Unk_DtOption { public: Unk_BattleState* FUN_141248630(); Unk_InterfaceState* FUN_140e09150(); };
-Unk_DtOption* FUN_1409a8b10();
+class Unk_DtOption : public CGameOption { public: Unk_InterfaceState* FUN_140e09150(); };
 class Unk_DtUIScale;
 Unk_DtUIScale* FUN_14025e7a0();                                             // ui scale service
 float FUN_1422afec0(Unk_DtUIScale* pScale, int nLayer);                     // scale of a layer
@@ -275,8 +274,8 @@ void UIDamageText::OnLoadComplete()
     m_onForceRemove = m_30->FUN_1422baa20("onForceRemove");
     m_spDamageEnable.AssignRaw(new AScript(m_30->FUN_1422baa20("damageEnable"), m_28));
     m_spDamageGarbage.AssignRaw(new AScript(m_30->FUN_1422baa20("damageGarbage"), m_28));
-    m_pBattleOption = FUN_1409a8b10()->FUN_141248630();
-    m_pInterfaceOption = FUN_1409a8b10()->FUN_140e09150();
+    m_pBattleOption = reinterpret_cast<Unk_DtOption*>(TSingleton<CGameOption>::GetInstance())->FUN_141248630();
+    m_pInterfaceOption = reinterpret_cast<Unk_DtOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150();
 }
 MS2_REPLACE_METHOD(0x141911550, UIDamageText, OnLoadComplete, 1294, 0x526C0A8E);
 
@@ -681,8 +680,8 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
                 {
                     if (pNpc->GetOwnerId() == nPlayerId)
                         bShow = true;
-                    else if (pNpc->FUN_141093270().get())
-                        bShow = pNpc->FUN_141093270()->m_bAttackDamage ? true : false;
+                    else if (pNpc->GetNpcData().get())
+                        bShow = pNpc->GetNpcData()->m_bAttackDamage ? true : false;
                 }
             }
         }

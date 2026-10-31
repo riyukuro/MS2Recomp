@@ -21,7 +21,7 @@
 
 // ---- unit-local views of exe objects --------------------------------------------------------------------------------------
 
-__int64 FUN_140869440();                                    // the server time
+__int64 GetServerTime();                                    // the server time
 
 // The Crypto++ CRC32 hash object (vftable + running value, 0x10 bytes); only the pieces this unit touches.
 class Unk_Crc32
@@ -230,7 +230,7 @@ void CPCDataPack::FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra
     CMsTime tmNull(0);
     if (tmBegin > tmNull) {
         CMsTime tmNull2(0);
-        bTimed = tmEnd == tmNull2 || FUN_140869440() < tmEnd.Get();
+        bTimed = tmEnd == tmNull2 || GetServerTime() < tmEnd.Get();
     }
     m_bufItems.WriteBool(bTimed);
     m_bufItems.WriteInt64(tmBegin.Get());

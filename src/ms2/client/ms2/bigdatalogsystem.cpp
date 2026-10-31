@@ -12,6 +12,8 @@
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/networkservice.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -23,13 +25,13 @@
 #endif
 
 // ---- exe callees ----
-class Unk_BdFrame { public: float FUN_141473210(); };                   // the frame timer: frame rate
+                   // the frame timer: frame rate
 class Unk_BdMemory { public: unsigned __int64 FUN_14161bdc0(); };       // the memory monitor: bytes in use
-class Unk_BdNetwork { public: unsigned FUN_141538f60(); };              // the network service: latency
+              // the network service: latency
 unsigned FUN_140869420();                                               // millisecond clock
-Unk_BdFrame* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 Unk_BdMemory* FUN_1409f7c90();
-Unk_BdNetwork* FUN_140714f90();
+CNetworkService* FUN_140714f90();
 float FUN_14096b1c0(float f);                                           // sqrtf
 void FUN_140710590(COutPacket& packet);                                 // send the packet
 
@@ -148,7 +150,7 @@ void CBigDataLogSystem::Update()
     unsigned nTick = FUN_140869420();
     if (nTick > m_dwLastSendTick + 300000)
         SendStatistics();
-    float fFrameRate = FUN_14086d260()->FUN_141473210();
+    float fFrameRate = FUN_14086d260()->GetFps();
     AddSample(SAMPLE_FPS, (__int64)fFrameRate);
     unsigned __int64 nMemory = FUN_1409f7c90()->FUN_14161bdc0();
     AddSample(SAMPLE_MEMORY, (__int64)(float)nMemory);

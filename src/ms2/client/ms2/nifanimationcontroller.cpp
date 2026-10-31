@@ -6,6 +6,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "nifanimationcontroller.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/nifeffectparam.h"
 #include <NiAVObject.h>
 #include <NiTransformController.h>
 #include <NiPathInterpolator.h>
@@ -60,12 +61,7 @@ CNifAnimationController::~CNifAnimationController()
 const NiRTTI* CNifAnimationController::GetRTTI() const { return &ms_RTTI; }
 
 // The .nif loading service (CNifLoadingService; nifmodel.cpp declares the same view). Only the loader this unit calls.
-class Unk_NifLoader
-{
-public:
-    NiAVObjectPtr FUN_141551ea0(CStringA strPath, bool bShared, int a, int b, int c);   // Load
-};
-Unk_NifLoader* FUN_140a0afd0();                           // the service singleton
+CNifLoadingService* FUN_140a0afd0();                      // the service singleton
 
 // The scene-graph walk (applyeffect.cpp / kfmmodel.cpp declare the same view).
 class Unk_AeSceneIter
@@ -82,7 +78,7 @@ bool CNifAnimationController::FUN_141544850(int mode, CStringA name, const efd::
 {
     m_58 = mode;
     if (m_58 == 0) {
-        m_10 = FUN_140a0afd0()->FUN_141551ea0(name, false, 5, 0, 0);
+        m_10 = FUN_140a0afd0()->Load(name, false, 5, 0, 0);
         if (m_10 != 0) {
             NiTransform kXf = m_10->GetLocalTransform();
             kXf.m_Rotate.FromEulerAnglesXYZ((-kEuler.x * 3.1415927f) / 180.0f, (-kEuler.y * 3.1415927f) / 180.0f,
@@ -109,7 +105,7 @@ bool CNifAnimationController::FUN_141544850(int mode, CStringA name, const efd::
             }
         }
     } else if (m_58 == 1) {
-        m_10 = FUN_140a0afd0()->FUN_141551ea0(name, false, 5, 0, 0);
+        m_10 = FUN_140a0afd0()->Load(name, false, 5, 0, 0);
         if (m_10 != 0) {
             m_28 = NiDynamicCast(NiNode, m_10->GetObjectByName("Camera01"));
             Unk_AeSceneIter walk(m_28);

@@ -162,8 +162,7 @@ template void GeListEnt::swap(GeListEnt&) noexcept;
 // @0x1413989f0
 const int* FUN_1413989f0(const Unk_GcOptInt* pOpt)
 {
-    if (!pOpt->m_bSet)
-        _wassert(L"m_isValueSet", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nullable.h", 0x5c);
+    (void)((!!(pOpt->m_bSet)) || (_wassert(L"m_isValueSet", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nullable.h", 0x5c), 0));
     return &pOpt->m_nValue;
 }
 

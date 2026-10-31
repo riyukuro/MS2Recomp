@@ -36,6 +36,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- statics (.text$di) ----
 // The first initializer is the sort-type name table of header_statics_a.h without the skill/stun strings that follow it
@@ -77,7 +78,6 @@ class Unk_PartyUIManager
 public:
     MS2Ptr<UIObject> FUN_141adcea0(int nUiId);
 };
-Unk_PartyUIManager* FUN_1403ed2b0();
 
 // The game constants: the ready-check length in seconds.
 class Unk_PartyConsts
@@ -90,9 +90,8 @@ Unk_PartyConsts* FUN_1401d3200();
 
 extern __int64 DAT_143ab2828;                                      // my character id
 unsigned FUN_140869420();                                          // tick count
-__int64 FUN_140869440();                                           // server time
+__int64 GetServerTime();                                           // server time
 CStringW FUN_140b8fbc0(const ATL::CTimeSpan& span);                // "mm:ss" text
-CPartyManager* FUN_1409670d0();
 CStringW GetStringCommon(int nId);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
@@ -243,7 +242,7 @@ void PartyVoteCli::vfunc_7(__int64, bool) {}
 CStringW PartyVoteCli::FUN_140a89720() const
 {
     CMsTime end(expires);
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (end < now)
         end = now;
     ATL::CTimeSpan span = end - now;
@@ -269,7 +268,7 @@ void PartyVoteKickUserCli::vfunc_1(CInPacket& packet)
 void PartyVoteKickUserCli::vfunc_2()
 {
     CStringW strName;
-    MS2Ptr<CPartyMember> member = FUN_1409670d0()->FUN_14162afc0(owner);
+    MS2Ptr<CPartyMember> member = TSingleton<CPartyManager>::GetInstance()->FUN_14162afc0(owner);
     if (member.get() != 0)
         strName = member->FUN_141637bd0();
     FUN_1412751b0(FUN_1405c2690(CStringW(L"s_party_vote_kick_user_notify"), strName), 2);
@@ -303,11 +302,11 @@ void PartyVoteReadyCli::vfunc_2()
     {
         unsigned __int64 member = *it;
         if (yes.find(member) != yes.end())
-            FUN_1409670d0()->FUN_14162c580(member, 2);
+            TSingleton<CPartyManager>::GetInstance()->FUN_14162c580(member, 2);
         else if (no.find(member) != no.end())
-            FUN_1409670d0()->FUN_14162c580(member, 3);
+            TSingleton<CPartyManager>::GetInstance()->FUN_14162c580(member, 3);
         else
-            FUN_1409670d0()->FUN_14162c580(member, 1);
+            TSingleton<CPartyManager>::GetInstance()->FUN_14162c580(member, 1);
     }
 
     void* pDialog = FUN_140a8a720();
@@ -334,7 +333,7 @@ void PartyVoteReadyCli::vfunc_2()
 void PartyVoteReadyCli::vfunc_3()
 {
     FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_vote_ready_message_end")), 1, 1);
-    FUN_1409670d0()->FUN_14162c3a0();
+    TSingleton<CPartyManager>::GetInstance()->FUN_14162c3a0();
     void* pDialog = FUN_140a8a720();
     if (pDialog != 0)
         FUN_141a75a00(pDialog, (int)FUN_140869420() + FUN_1401d3200()->m_nReadySeconds * 1000);
@@ -363,9 +362,9 @@ bool PartyVoteReadyCli::FUN_140a8a0b0(int result, const CMsgBoxData& box)
 void PartyVoteReadyCli::vfunc_7(__int64 member, bool accepted)
 {
     if (accepted)
-        FUN_1409670d0()->FUN_14162c580(member, 2);
+        TSingleton<CPartyManager>::GetInstance()->FUN_14162c580(member, 2);
     else
-        FUN_1409670d0()->FUN_14162c580(member, 3);
+        TSingleton<CPartyManager>::GetInstance()->FUN_14162c580(member, 3);
 }
 
 // ---- helpers ----
@@ -387,9 +386,9 @@ CInputStream& FUN_140a8a230(CInputStream& in, std::set<unsigned __int64>& ids)
 // @0x140a8a680
 void* FUN_140a8a680(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_PartyUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spUI = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = reinterpret_cast<Unk_PartyUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIPartyDialog*>(spUI.operator->());
     }
@@ -399,7 +398,7 @@ void* FUN_140a8a680(int nUiId)
 // @0x140a8a720
 void* FUN_140a8a720()
 {
-    Unk_PartyUIManager* pManager = FUN_1403ed2b0();
+    Unk_PartyUIManager* pManager = reinterpret_cast<Unk_PartyUIManager*>(TSingleton<CUIService>::GetInstance());
     if (pManager == 0)
         return 0;
     MS2Ptr<UIObject> spUI = pManager->FUN_141adcea0(FUN_140a8ac50());

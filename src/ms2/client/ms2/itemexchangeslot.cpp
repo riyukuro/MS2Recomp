@@ -14,28 +14,24 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/uidialog.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/invenslot.h"
+#include "ms2/client/ms2/uiservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-class Unk_GameCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_GameCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 // The inventory slot (invenslot.cpp) a slot can be dropped on: id 0x6200023.
-class Unk_InvenSlot : public DragSlot
+class Unk_InvenSlot : public InvenSlot
 {
-public:
-    __int64 FUN_141405a10();                            // the uid of the item in the slot
 };
 Unk_InvenSlot* FUN_140a50b50(DragSlot* pSlot);          // pSlot->TypeCast(0x6200023), 0 on failure
 
 // The inventory's bag of items by uid.
-class Unk_IesInventory { public: MS2Ptr<CItem> FUN_140a5d680(__int64 nUid); };
-extern Unk_IesInventory DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 
 // The dialog this slot lives on (uiitemexchangescrolldialog.cpp).
 class UIItemExchangeScrollDialog : public UIDialog
@@ -56,7 +52,6 @@ private:
     UIObject* object;
 };
 class Unk_IesUIMgr { public: Unk_IesUIRef FUN_141adcea0(int nId); };
-Unk_IesUIMgr* FUN_1403ed2b0();
 
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
@@ -93,15 +88,13 @@ ItemExchangeSlot::ItemExchangeSlot(const CString& strName, __int64 nTarget, MS2P
 }
 
 // @0x140b6c970
-// MS2-FUNCTIONAL: the exe's override returns void (no eax=1); DragSlot::vfunc_17 is int here
 int ItemExchangeSlot::vfunc_17()
 {
     SetItem(MS2Ptr<CItem>(0));
     UIItemExchangeScrollDialog* pDlg = FUN_140b6ce30(0x4f14);
     if (pDlg)
         pDlg->FUN_140f52c80();
-    vfunc_10();
-    return 1;
+    return vfunc_10();
 }
 
 // @0x140b6c9e0
@@ -110,7 +103,7 @@ int ItemExchangeSlot::vfunc_18(void* p)
     Unk_InvenSlot* pInven = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pInven != 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(pInven->FUN_141405a10());
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(pInven->GetItemUid());
         if (spItem.get() != 0)
         {
             COutPacket packet(static_cast<int>(SendOp::ItemExchangeScroll), 0);
@@ -187,9 +180,9 @@ ItemExchangeSlot* FUN_140b6cde0(NotifyContext::BindData* p)
 // @0x140b6ce30
 UIItemExchangeScrollDialog* FUN_140b6ce30(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_IesUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        Unk_IesUIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        Unk_IesUIRef ref = reinterpret_cast<Unk_IesUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70())
             return dynamic_cast<UIItemExchangeScrollDialog*>(ref.FUN_1403ed9e0());
     }

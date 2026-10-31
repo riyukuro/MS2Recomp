@@ -6,7 +6,7 @@
 #include "blockchecker.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-__int64 FUN_140869440();
+__int64 GetServerTime();
 CStringW GetStringCommon(int);
 #include "ms2/ms2format.h"
 CStringW BlockFormat(int,const fmt::ArgList&);
@@ -162,7 +162,7 @@ int FUN_1401ca560(int type,int action) {
 }
 MS2_REPLACE(0x1401CA560, FUN_1401ca560, 323, 0x2E15B3FC);
 // @0x1401ca720
-bool CBlockChecker::IsExpired(BlockPtr record) { return record==NULL || record->expiry<FUN_140869440(); }
+bool CBlockChecker::IsExpired(BlockPtr record) { return record==NULL || record->expiry<GetServerTime(); }
 MS2_REPLACE_METHOD(0x1401CA720, CBlockChecker, IsExpired, 120, 0x15368163);
 // @0x1401ca7a0
 bool CBlockChecker::IsBlockedAction(int type,int action) {

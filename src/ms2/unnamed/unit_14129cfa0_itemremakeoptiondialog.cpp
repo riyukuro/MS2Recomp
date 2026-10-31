@@ -55,6 +55,8 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/cstringtable.h"
 
 // ---- the unit's header statics ----
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -76,7 +78,7 @@ public:
     int FUN_140a5f7b0(int itemId, unsigned a);
     void FUN_140a60880(int tab, CAtlArray<MS2Ptr<CItem> >& out);
 };
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 extern int DAT_143ab2914;
 
 // Backup (equipped) item record.
@@ -152,8 +154,7 @@ unsigned __int64 FUN_140718350(const CString& s);
 void FUN_1412751f0(const CStringW& text, int a, int b);
 void FUN_141276180(const CString& a, const CString& b);
 void FUN_14151f460(int v);
-class Unk_DTNotices { public: void FUN_140da4e40(CStringW name, Delegate<void(NotifyObject*)> cb); void FUN_140da4eb0(CStringW name, Delegate<void(NotifyObject*)> cb); };
-Unk_DTNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW text);
@@ -197,8 +198,6 @@ CString FUN_140719530(unsigned __int64 uid);
 void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& out, bool* pFlag);
 void FUN_140f73320(CMsgBoxData* box, bool b);
 void FUN_1411e7660(Unk_PCItems* items);
-class Unk_ItemStr { public: CStringW FUN_141811980(int a, int b); };
-Unk_ItemStr* FUN_1401a9d70();
 void FUN_1412752d0(const CStringW& key, int a);
 void FUN_1412751b0(const CStringW& text, int a);
 void FUN_140d73aa0(CStringW text, int a, void* b, CStringW c);
@@ -261,7 +260,7 @@ void UIItemRemakeOptionDialog::OnLoadComplete()
     SetState(0);
     FUN_14129dd50();
     FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
-    FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyGameEventChanged"),
+    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
         Delegate<void(NotifyObject*)>(this, &UIItemRemakeOptionDialog::FUN_14129dc60));
     Unk_PetDialog* pane = FUN_140b99ba0(0x4f38);
     if (pane != 0) {
@@ -334,7 +333,7 @@ void UIItemRemakeOptionDialog::vfunc_67()
     m_cur = 0;
     m_new = 0;
     FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    FUN_140939a10()->FUN_140da4eb0(CStringW(L"NotifyGameEventChanged"),
+    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
         Delegate<void(NotifyObject*)>(this, &UIItemRemakeOptionDialog::FUN_14129dc60));
 }
 
@@ -390,7 +389,7 @@ void UIItemRemakeOptionDialog::FUN_14129dd50()
         return;
     CAtlArray<unsigned __int64> uids;
     CAtlArray<MS2Ptr<CItem> > items;
-    DAT_143ab2a90.FUN_140a60880(0, items);
+    g_143ab2a90.FUN_140a60880(0, items);
     for (size_t i = 0; i < items.GetCount(); ++i) {
         MS2Ptr<CItem> item = items[i];
         if (item == 0)
@@ -598,7 +597,7 @@ void UIItemRemakeOptionDialog::FUN_14129f360(ASData* pData)
         int lockId = FUN_140616dd0(MS2Ptr<CItem>(m_cur));
         if (lockId != 0) {
             unsigned lockLevel = FUN_140616f10(MS2Ptr<CItem>(m_cur));
-            int have = DAT_143ab2a90.FUN_140a5f7b0(lockId, lockLevel);
+            int have = g_143ab2a90.FUN_140a5f7b0(lockId, lockLevel);
             if (have > 0) {
                 bEnable = true;
             } else {
@@ -898,7 +897,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1650(MS2Ptr<CItem> item)
 {
     if (item.get() != 0) {
         if (FUN_1419beef0(item->FUN_140526a50()) != 0) {
-            DAT_143ab2a90.FUN_140a5d530(item.get());
+            g_143ab2a90.FUN_140a5d530(item.get());
         } else {
             MyPC* pc = FUN_1403ed2d0()->FUN_141bd0cc0();
             if (pc != 0) {
@@ -956,7 +955,7 @@ int UIItemRemakeOptionDialog::FUN_1412a1c80(MS2Ptr<CItem> item)
     int have = 0;
     int itemId = reinterpret_cast<CItemData*>(item->FUN_140527840())->FUN_14053c6f0();
     if (itemId != 0)
-        have = DAT_143ab2a90.FUN_140a5f7b0(itemId, 0);
+        have = g_143ab2a90.FUN_140a5f7b0(itemId, 0);
     return have;
 }
 
@@ -1037,7 +1036,7 @@ void UIItemRemakeOptionDialog::FUN_1412a2380(unsigned __int64 uid, int nOption, 
             return;
         }
         unsigned lockLevel = FUN_140616f10(MS2Ptr<CItem>(item));
-        int have = DAT_143ab2a90.FUN_140a5f7b0(lockId, lockLevel);
+        int have = g_143ab2a90.FUN_140a5f7b0(lockId, lockLevel);
         if (have <= 0) {
             CStringW lockText = FUN_140619760(lockId, lockLevel);
             NOTICE(FUN_1405c2690(CStringW(L"s_itemremake_notice_disable_lock_item_option_when_click_remake"), lockText));
@@ -1079,7 +1078,7 @@ void UIItemRemakeOptionDialog::FUN_1412a2ac0()
 // @0x1412a2b40
 void UIItemRemakeOptionDialog::FUN_1412a2b40(unsigned nItemId)
 {
-    CStringW name = FUN_1401a9d70()->FUN_141811980(1, nItemId);
+    CStringW name = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
     CStringW text = FUN_1405c2690(CStringW(L"s_itemremake_error_prev_option_item_not_exist"), name);
     FUN_140d73aa0(CStringW(text), 0, 0, CStringW(L""));
     FUN_1412751b0(text, 0x14);

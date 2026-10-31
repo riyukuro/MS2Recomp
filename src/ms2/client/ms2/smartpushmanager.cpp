@@ -21,6 +21,8 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // The UCRT's `static __inline memcpy_s` of this TU (kept alive by the pointer below).
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
@@ -44,7 +46,6 @@ class Unk_SpUIMgr
 public:
     Unk_SpUIRef FUN_141adcea0(int nUiId);                       // find a UI by type id
 };
-Unk_SpUIMgr* FUN_1403ed2b0();
 UIObject* FUN_1403ed9e0(Unk_SpUIRef& rRef);
 
 CSmartPush* FUN_1401f7f50(CStringW strClass);                   // class factory: new object by registered name
@@ -58,14 +59,13 @@ struct Unk_SpOptionData
     bool m_bSuppress;                                           // +0x14
 };
 class Unk_SpOptions { public: Unk_SpOptionData* FUN_140b123b0(); };
-Unk_SpOptions* FUN_1409a8b10();
 
 // @0x140dd88c0
 static UISmartPush* FindStripUI(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_SpUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        Unk_SpUIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        Unk_SpUIRef ref = reinterpret_cast<Unk_SpUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (ref.FUN_1403e8a70() != 0)
             return dynamic_cast<UISmartPush*>(FUN_1403ed9e0(ref));
     }
@@ -118,7 +118,7 @@ void CSmartPushManager::FUN_140dd8440()
     {
         const PushPtr push(static_cast<const PushPtr&>(m_pushes.GetValueAt(pos)));
         int nWanted = push->vfunc_6();
-        if (FUN_1409a8b10()->FUN_140b123b0()->m_bSuppress)
+        if (reinterpret_cast<Unk_SpOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bSuppress)
             nWanted = 0;
         if (push->m_nState != nWanted)
         {

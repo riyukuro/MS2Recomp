@@ -23,9 +23,10 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
@@ -38,7 +39,7 @@ Unk_140165cf0* FUN_1403f0510(Unk_140165cf0* pNode);                      // next
 const char* FUN_140189180(Unk_140165cf0* pElem);                         // the element name
 CString FUN_140188f50(const char* psz, int nCodePage);                   // CString from a C string
 const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);    // attribute text (null = absent)
-CString FUN_14021a6b0(int n);                                            // int to string
+CString Name_14021a6b0(int n);                                           // int to string
 CString FUN_140540050(const char* pszFormat, const CString& strArg);     // StringFormat with one string
 
 // The animation service (singleton behind FUN_141b6f910): the actor manager of an entity.
@@ -248,7 +249,7 @@ void CommonResource::LoadMembers()
     m_strMusicScorePremiumShopSample = GetValue("MUSIC_SCORE_PREMIUM_SHOP_SAMPLE");
     m_strEffectAdventureLevelUp = GetValue("EFFECT_ADVENTURE_LEVEL_UP");
     for (size_t i = 1; i < 10; i++)
-        m_strAllianceSidePopupIllust[i] = GetValue(FUN_140540050("allinace_sidepopup_illust_{0}", FUN_14021a6b0((int)i)));
+        m_strAllianceSidePopupIllust[i] = GetValue(FUN_140540050("allinace_sidepopup_illust_{0}", Name_14021a6b0((int)i)));
 }
 
 // @0x140cc9c00

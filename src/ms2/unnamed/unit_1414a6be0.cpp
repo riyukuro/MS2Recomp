@@ -85,8 +85,9 @@ int Unk_1414a6be0_WStrMapAnchor(std::unordered_map<std::wstring, int>& m)
 void FUN_14112cd60(efd::utf8string* s, const char* p);
 
 // @0x1414a7d40
+struct Unk_Str1414a7d40 { char m_first; };
 efd::utf8string& Unk_1414a7d40(efd::utf8string* s, const char* p)
 {
-    FUN_14112cd60(s, p);
+    FUN_14112cd60(reinterpret_cast<efd::utf8string*>(&reinterpret_cast<Unk_Str1414a7d40*>(s)->m_first), p);
     return *s;
 }

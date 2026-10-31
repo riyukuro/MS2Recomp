@@ -101,6 +101,7 @@
 #include "skillcollisionmanager.h"
 #include "functioncubeobject.h"
 #include "gameobject.h"
+#include "ms2/commonfiles/filesystem.h"
 #include <NiNode.h>
 #include <NiFixedString.h>
 #include <cfloat>
@@ -128,7 +129,7 @@ public:
     Unk_140165cf0* FUN_140165cf0(const char*);
     Unk_140165cf0* FUN_140168650(const char*);
 };
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument*, const char*, int, bool, bool); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
 int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
@@ -168,6 +169,10 @@ extern Unk_MagicTable DAT_143adca50;
 #endif
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/physxhelper.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/worldservice.h"
 // @0x1400f7660
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CMagicService);
 static CString s_sortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -178,8 +183,7 @@ static Unk_1402a9d70 s_conditions2(17, 0.75f, 0.25f, 2.25f, 10);
 
 extern Unk_EfdMatrix3 DAT_143a09600;        // identity rotation
 extern Unk_EfdMatrix3 DAT_143b01a90;        // efd::Matrix3::ZERO
-class Unk_MagicEffectMgr { public: void FUN_1411a6060(int nHandle); int FUN_1411a49c0(void* pReq); void FUN_1411a4a00(void* pReq); int FUN_1411a5580(int nLevel, int nEffect, int nFlag, Vector3 ptAt, float fRange); void FUN_1411a68f0(int nHandle, bool bHidden); NiNode* FUN_1411a6b10(); };    // releases a spawned effect
-Unk_MagicEffectMgr* FUN_1403ed280();
+class Unk_MagicEffectMgr : public CEffectService { public: void FUN_1411a6060(int nHandle); int FUN_1411a49c0(void* pReq); void FUN_1411a4a00(void* pReq); int FUN_1411a5580(int nLevel, int nEffect, int nFlag, Vector3 ptAt, float fRange); void FUN_1411a68f0(int nHandle, bool bHidden);};    // releases a spawned effect
 void* FUN_1409475d0(Unk_NodePtr*);
 void FUN_140a0b2a0(void* pNode);            // detach the node from its parent
 
@@ -378,16 +382,16 @@ CMagic::~CMagic()
         FUN_141469a90()->Touch(m_nCollision);
         m_nCollision = 0;
     }
-    FUN_1403ed280()->FUN_1411a6060(m_nEffectId);
+    reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nEffectId);
     m_nEffectId = 0;
     for (int i = 0; i < 16; ++i) {
         if (m_slots[i].m_nEffect != 0) {
-            FUN_1403ed280()->FUN_1411a6060(m_slots[i].m_nEffect);
+            reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_slots[i].m_nEffect);
             m_slots[i].m_nEffect = 0;
         }
     }
     FUN_140a0b2a0(FUN_1409475d0(&m_spScene));
-    FUN_1403ed280()->FUN_1411a6060(m_nEffectId2);
+    reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nEffectId2);
     m_nEffectId2 = 0;
 }
 
@@ -553,20 +557,19 @@ static inline bool FUN_1414691d0(Unk_MagicTagLookup* p, void* pNull) { return p-
 MS2_CHECK_SIZE(Unk_MagicTagLookup, 8);
 struct Unk_MagicActor;
 // The world manager (FUN_1403ed2d0).
-class Unk_MagicWorld {
+class Unk_MagicWorld : public WorldService {
 public:
     Unk_MagicEntity* FUN_141bd1180(int nId);                        // entity by id
     Unk_MagicEntity* FUN_141bd1200(int nId);
     Unk_MagicEntity* FUN_141bd1290(int nId);
     Unk_MagicTagLookup FUN_141bc5bb0(unsigned long long nTag);
     Unk_MagicEntity* FUN_141bd0cc0();
-    int FUN_141bd19d0(int nId);                                     // entity type by id
     int FUN_141bd1a10(Unk_MagicActor* pActor);                      // entity type of an actor
     bool FUN_141bd7230(Unk_NiPoint3* pPoint);                    // the player is outside the sight range of the point
     void FUN_141bc3470(Unk_MagicValPtr spVal, Unk_MagicTagPtr spTag);   // register the cast record's value (callee releases both)
 };
 Unk_MagicWorld* FUN_1403ed2d0();
-class Unk_MagicTime { public: long long FUN_1414732f0(int nMode); int FUN_1414734a0(); }; // 0x1414732f0 the clock in ms; mode from tag + 0x30
+class Unk_MagicTime : public CMainSystem { public: long long FUN_1414732f0(int nMode);}; // 0x1414732f0 the clock in ms; mode from tag + 0x30
 extern Unk_MagicTime* DAT_143ab1fa8;
 
 
@@ -639,7 +642,6 @@ void FUN_1409fabf0(Unk_NodePtr* pDst, void* pNode);                 // Unk_NodeP
 void FUN_141467f60(const Vector3& ptPos, const Vector3* pDirection, Unk_MagicXform* pOut);
 const Unk_NiMatrix3& FUN_1410b23c0(void* pNode);                      // NiAVObject::GetRotate
 const CString* FUN_1417590d0(Unk_MagicTag* pTag);                   // the effect name of the skill
-Unk_MagicEffectFiles* FUN_1411b1dd0();
 bool FUN_14119f5f0(void* pFile);
 void* FUN_1409f7c90();
 int FUN_14161ce60(void* pArg, int nId);
@@ -648,7 +650,6 @@ unsigned FUN_140869420();
 void FUN_140a53190(Unk_MagicEffectReq* pReq, unsigned nTarget);      // bind the target entity
 unsigned FUN_14123c580(Unk_MagicEntity* pEntity);                   // the entity's effect handle
 double FUN_141473280(Unk_MagicTime* pTime);                          // the frame time in seconds
-Unk_MagicTime* FUN_14086d260();
 float FUN_140966f00(Vector3 a, Vector3 b);                 // distance
 Unk_MagicCullCfg* FUN_141bd9c00(Unk_MagicWorld* pWorld);
 bool FUN_1410a82b0(Unk_MagicCullCfg* pCfg);
@@ -704,7 +705,7 @@ int CMagic::FUN_14145d5d0(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, con
     m_n53C = n53c;
     if (spSkill.get())
         m_n538 = spSkill->m_spAttacker.FUN_14063ed50()->m_nTag;
-    FUN_1403ed280()->FUN_1411a6b10()->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spScene)), true);
+    reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10()->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spScene)), true);
     FUN_1414609e0();
     FUN_14145d9d0();
     FUN_141464b40();
@@ -950,7 +951,7 @@ void CMagic::FUN_14145e960(unsigned nNow)
     bool bPlayable = false;
     CString strEffect(*FUN_1417590d0(m_spSkill.operator->()));
     if (!strEffect.IsEmpty()) {
-        Unk_MagicEffectFile kFile = FUN_1411b1dd0()->FUN_14119f870(strEffect);
+        Unk_MagicEffectFile kFile = reinterpret_cast<Unk_MagicEffectFiles*>(TSingleton<EffectDataManager>::GetInstance())->FUN_14119f870(strEffect);
         if (kFile.m_p != NULL)
             bPlayable = FUN_14119f5f0(kFile.m_p) != 0;
     }
@@ -962,13 +963,13 @@ void CMagic::FUN_14145e960(unsigned nNow)
         FUN_1409fabf0(&kReq.m_pNode, FUN_1409475d0(&m_spScene));
         kReq.m_bFlag = 1;
         kReq.m_pIds = &m_arr1A8;
-        m_nEffectId = FUN_1403ed280()->FUN_1411a49c0(&kReq);
+        m_nEffectId = reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
         bool bHidden;
         if (FUN_1409475d0(&m_spScene) == NULL)
             bHidden = true;
         else
             bHidden = FUN_14098dad0(FUN_1409475f0(&m_spScene)) == 0;
-        FUN_1403ed280()->FUN_1411a68f0(m_nEffectId, bHidden);
+        reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(m_nEffectId, bHidden);
     }
     FUN_141461a80(m_ptStart);
     m_n268 = nNow;
@@ -976,8 +977,7 @@ void CMagic::FUN_14145e960(unsigned nNow)
 MS2_REPLACE_METHOD(0x14145E960, CMagic, FUN_14145e960, 746, 0xDD0A920B);
 
 // The physics query service (decoeditservice.cpp names the same member).
-class Unk_MagicPhysX { public: int FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLength, int nMask); };
-Unk_MagicPhysX* FUN_1409f7ca0();
+CPhysXHelper* FUN_1409f7ca0();
 float FUN_14028d280(unsigned nMs);                                  // ms -> seconds
 float FUN_141403f20(Unk_NiPoint3 ptA, Unk_NiPoint3 ptB);            // distance
 Vector3 FUN_141b71390(Vector3 ptStart, Vector3 ptControl, Vector3 ptEnd, float fT);   // bezier point
@@ -1121,7 +1121,7 @@ void CMagic::FUN_14145f570(unsigned nNow)
                         FUN_141467f60(m_ptCurrent, &m_ptDirection, &kXform);
                     }
                     kReq.m_pXform = &kXform;
-                    FUN_1403ed280()->FUN_1411a4a00(&kReq);
+                    reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
                 }
             }
         }
@@ -1232,7 +1232,7 @@ void CMagic::FUN_141462900(unsigned nNow)
     if (FUN_1409709d0(FUN_1416749a0(pOwner)))
         return;
     FUN_1414609e0();
-    unsigned nEnd = (unsigned)(m_spSkill->FUN_141759190() - FUN_14086d260()->FUN_1414734a0());
+    unsigned nEnd = (unsigned)(m_spSkill->FUN_141759190() - reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())->FUN_1414734a0());
     if (m_n284 != 0) {
         bool bPick = false;
         if (!FUN_141464410() || nNow < nEnd) {
@@ -1312,7 +1312,7 @@ void CMagic::FUN_141462900(unsigned nNow)
                 FUN_1409fabf0(&kReq.m_pNode, FUN_1409475d0(&m_spScene));
                 kReq.m_bFlag = 1;
                 kReq.m_pIds = &m_slots[i].m_ids;
-                m_slots[i].m_nEffect = FUN_1403ed280()->FUN_1411a49c0(&kReq);
+                m_slots[i].m_nEffect = reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
             }
             if (bSingle) {
                 Unk_MagicXform kXform;
@@ -1323,7 +1323,7 @@ void CMagic::FUN_141462900(unsigned nNow)
                 kReq.m_strName = pRow->m_str148;
                 kReq.m_nObject = nOwnerType;
                 kReq.m_pXform = &kXform;
-                FUN_1403ed280()->FUN_1411a4a00(&kReq);
+                reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
             }
         }
     }
@@ -1363,7 +1363,7 @@ void CMagic::FUN_141462900(unsigned nNow)
         if (pRow->m_n11c != 2) {
             for (; i < 16; ++i) {
                 if (m_slots[i].m_nEffect != 0) {
-                    FUN_1403ed280()->FUN_1411a6060(m_slots[i].m_nEffect);
+                    reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_slots[i].m_nEffect);
                     m_slots[i].m_nEffect = 0;
                 }
             }
@@ -1375,10 +1375,10 @@ MS2_REPLACE_METHOD(0x141462900, CMagic, FUN_141462900, 4176, 0x4E7508B0);
 // @0x141460640
 void CMagic::FUN_141460640(unsigned nNow)
 {
-    FUN_1403ed280()->FUN_1411a6060(m_nEffectId);
+    reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nEffectId);
     for (int i = 0; i < 16; ++i) {
         if (m_slots[i].m_nEffect != 0) {
-            FUN_1403ed280()->FUN_1411a6060(m_slots[i].m_nEffect);
+            reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_slots[i].m_nEffect);
             m_slots[i].m_nEffect = 0;
         }
     }
@@ -1568,7 +1568,7 @@ void CMagic::FUN_141461720(int nFlag)
     matRotation.FUN_14109aa30(1, ptAxis);
     matRotation.FUN_14109aa30(2, ptUp);
     FUN_140ddcca0(FUN_1409475f0(&m_spScene), matRotation);
-    static_cast<NiAVObject*>(FUN_1409475f0(&m_spScene))->Update((float)FUN_141473280(FUN_14086d260()), false);
+    static_cast<NiAVObject*>(FUN_1409475f0(&m_spScene))->Update((float)FUN_141473280(reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())), false);
 }
 MS2_REPLACE_METHOD(0x141461720, CMagic, FUN_141461720, 852, 0x58FA7E4A);
 
@@ -1622,7 +1622,7 @@ void CMagic::FUN_141462490(unsigned nNow)
     }
     if (m_spSkill->FUN_141759090() == 0) {
         int nLife = m_spSkill->FUN_141759190() + FUN_14028d260(m_data.m_fDelayTime);
-        unsigned nDue = nLife - FUN_14086d260()->FUN_1414734a0();
+        unsigned nDue = nLife - reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())->FUN_1414734a0();
         if (nNow >= nDue) {
             m_n1D0 = 1;
             FUN_1403ed2d0()->FUN_141bc3470(Unk_MagicValPtr(m_spVal), Unk_MagicTagPtr(m_spSkill));
@@ -1675,7 +1675,7 @@ void CMagic::FUN_141463960()
             FUN_1409fabf0(&kReq.m_pNode, FUN_1409475d0(&m_spScene));
             kReq.m_bFlag = 1;
             kReq.m_pIds = &m_slots[0].m_ids;
-            m_slots[0].m_nEffect = FUN_1403ed280()->FUN_1411a49c0(&kReq);
+            m_slots[0].m_nEffect = reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
         }
     }
     if (m_n280 != 0) {
@@ -1728,12 +1728,12 @@ void CMagic::FUN_141464790(void* pHits, int nHits)
             if (pNpc == NULL) {
                 float fRange = FUN_1401d3200()->m_hitRange.FUN_1402bac70();
                 Vector3 ptAt = pHit->vf18_GetPosition();
-                FUN_1403ed280()->FUN_1411a5580(nEffect, 1, 1, ptAt, fRange);
+                reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(nEffect, 1, 1, ptAt, fRange);
             } else {
                 float fRange = FUN_1401d3200()->m_hitRange.FUN_1402bac70();
                 Vector3 ptAt = pNpc->vf18_GetPosition();
                 MS2Ptr<Unk_NpcData> spData = pNpc->FUN_141093270();
-                FUN_1403ed280()->FUN_1411a5580(nEffect, spData->m_nHitEffect, 1, ptAt, fRange);
+                reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(nEffect, spData->m_nHitEffect, 1, ptAt, fRange);
             }
         }
     }
@@ -1779,7 +1779,7 @@ void CMagic::FUN_141464d00(unsigned nNow, const Unk_MagicSkillRow* pRow)
     if (!FUN_141464410())
         return;
     int nEnd = m_spSkill->FUN_141759190() + FUN_14028d260(m_data.m_fDelayTime);
-    unsigned nDue = nEnd - FUN_14086d260()->FUN_1414734a0();
+    unsigned nDue = nEnd - reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())->FUN_1414734a0();
     if (nDue > nNow)
         return;
     m_n1CC = 1;
@@ -2025,7 +2025,7 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
                 kReq.m_nObject = nType;
                 kReq.m_pXform = &kXform;
                 kReq.m_bFlag31 = pRow->m_b19c;
-                FUN_1403ed280()->FUN_1411a4a00(&kReq);
+                reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
                 if (!FUN_141464410())
                     FUN_141464790(&spCtx->m_arr30, nHits);
             }
@@ -2049,9 +2049,9 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
                     else if (FUN_1403ed2d0()->FUN_141bd19d0(m_spSkill->m_nCasterId) == 1)
                         bSend = 1;
                     if (bSend != 0)
-                        FUN_1403ed280()->FUN_1411a4a00(&kReq);
+                        reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
                 } else {
-                    FUN_1403ed280()->FUN_1411a4a00(&kReq);
+                    reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
                 }
                 if (!FUN_141464410())
                     FUN_141464790(&spCtx->m_arr30, nHits);
@@ -2159,7 +2159,7 @@ void CMagic::FUN_141464b40()
         kReq.m_strName = pRow->m_str158;
         FUN_140a53190(&kReq, FUN_14123c580(pCaster));
         kReq.m_nObject = FUN_1403ed2d0()->FUN_141bd19d0(m_spSkill->m_nOwnerId);
-        m_nEffectId2 = FUN_1403ed280()->FUN_1411a49c0(&kReq);
+        m_nEffectId2 = reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
     }
 }
 MS2_REPLACE_METHOD(0x141464b40, CMagic, FUN_141464b40, 435, 0xE5AFB908);
@@ -2207,7 +2207,7 @@ void CMagic::FUN_141461a80(Vector3 ptNew)
     m_ptCurrent = ptNew;
     FUN_1410a7400(&m_arr1A8, &ptNew);
     FUN_140981070(FUN_1409475f0(&m_spScene), ptNew);
-    static_cast<NiAVObject*>(FUN_1409475f0(&m_spScene))->Update((float)FUN_141473280(FUN_14086d260()), false);
+    static_cast<NiAVObject*>(FUN_1409475f0(&m_spScene))->Update((float)FUN_141473280(reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())), false);
     FUN_141464160();
 }
 MS2_REPLACE_METHOD(0x141461A80, CMagic, FUN_141461a80, 210, 0x555ADF73);
@@ -2264,7 +2264,7 @@ void CMagic::FUN_141464160()
     bool bHidden = FUN_141464220();
     if (FUN_14098dad0(FUN_1409475f0(&m_spScene)) != bHidden) {
         FUN_140a0b300(FUN_1409475f0(&m_spScene), bHidden);
-        FUN_1403ed280()->FUN_1411a68f0(m_nEffectId, !bHidden);
+        reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(m_nEffectId, !bHidden);
     }
 }
 MS2_REPLACE_METHOD(0x141464160, CMagic, FUN_141464160, 183, 0x56FAAEF6);
@@ -2382,7 +2382,7 @@ MS2_REPLACE_METHOD(0x141464670, CMagic, FUN_141464670, 274, 0x2F8B3639);
 // @0x141467440
 unsigned CMagic::FUN_141467440()
 {
-    return (unsigned)FUN_14086d260()->FUN_1414732f0(m_spSkill->m_nTimeMode);
+    return (unsigned)reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())->FUN_1414732f0(m_spSkill->m_nTimeMode);
 }
 MS2_REPLACE_METHOD(0x141467440, CMagic, FUN_141467440, 57, 0x3E76BE86);
 
@@ -2405,7 +2405,7 @@ void CMagic::FUN_141466da0(unsigned nNow, const Unk_MagicSkillRow* pRow)
         kReq.m_strName = pRow->m_str160;
         kReq.m_nObject = FUN_1403ed2d0()->FUN_141bd19d0(m_spSkill->m_nOwnerId);
         kReq.m_pXform = &kXform;
-        FUN_1403ed280()->FUN_1411a4a00(&kReq);
+        reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
     }
     if (m_spSkill->FUN_141759050()->m_n34 != 0) {
         COutPacket packet(static_cast<int>(SendOp::Skill), 0);
@@ -2544,7 +2544,7 @@ MS2_REPLACE_METHOD(0x141467D50, CMagicModel, FUN_141467d50, 73, 0x85005B77);
 void CMagicModel::FUN_141467800()
 {
     if (!FUN_141467ae0()) {
-        m_spMagic->FUN_141460640((unsigned)(float)FUN_141473280(FUN_14086d260()));
+        m_spMagic->FUN_141460640((unsigned)(float)FUN_141473280(reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())));
     }
 }
 MS2_REPLACE_METHOD(0x141467800, CMagicModel, FUN_141467800, 82, 0xDAD81DAA);
@@ -2789,14 +2789,14 @@ void CMagicService::FUN_14146b440(Unk_MagicTag* pTag, int bTracked, Unk_MagicXfo
                 kReq.m_pXform = &kXform;
                 kReq.m_bFlag31 = pTag->FUN_14175ab40();
                 FUN_140a531b0(&kReq, pTag->m_nOwnerId);
-                FUN_1403ed280()->FUN_1411a4a00(&kReq);
+                reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
             }
             if (kPlay.second) {
                 kReq.m_strName = pTag->FUN_14175aa50();
                 kReq.m_pXform = NULL;
                 FUN_140a53190(&kReq, FUN_14123c580(pCaster));
                 kReq.m_bFlag31 = pTag->FUN_14175ab80();
-                FUN_1403ed280()->FUN_1411a4a00(&kReq);
+                reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
             }
             pCaster->vf33_Hit(pTag, ptDirection);
         }
@@ -2825,15 +2825,15 @@ void CMagicService::FUN_14146b440(Unk_MagicTag* pTag, int bTracked, Unk_MagicXfo
                         bSend = true;
                 }
                 if (bSend)
-                    FUN_1403ed280()->FUN_1411a4a00(&kReq);
+                    reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
             } else {
-                FUN_1403ed280()->FUN_1411a4a00(&kReq);
+                reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
             }
             kReq.m_strName = pTag->FUN_14175aa50();
             kReq.m_pXform = NULL;
             FUN_140a53190(&kReq, FUN_14123c580(pCaster));
             kReq.m_bFlag31 = pTag->FUN_14175ab80();
-            FUN_1403ed280()->FUN_1411a4a00(&kReq);
+            reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
         }
         pCaster->vf33_Hit(pTag, ptDirection);
     }
@@ -2878,14 +2878,14 @@ void CMagicService::FUN_14146bc80(Unk_MagicTag* pTag)
             kReq.m_pXform = &kXform;
             kReq.m_bFlag31 = pTag->FUN_14175ab40();
             FUN_140a531b0(&kReq, pTag->m_nOwnerId);
-            FUN_1403ed280()->FUN_1411a4a00(&kReq);
+            reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
         }
         if (kPlay.second) {
             kReq.m_strName = pTag->FUN_14175aa50();
             kReq.m_pXform = NULL;
             FUN_140a53190(&kReq, FUN_14123c580(pCaster));
             kReq.m_bFlag31 = pTag->FUN_14175ab80();
-            FUN_1403ed280()->FUN_1411a4a00(&kReq);
+            reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
         }
         pCaster->vf35_End(pTag);
         return;
@@ -2919,15 +2919,15 @@ void CMagicService::FUN_14146bc80(Unk_MagicTag* pTag)
                     bSend = 1;
             }
             if (bSend != 0)
-                FUN_1403ed280()->FUN_1411a4a00(&kReq);
+                reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
         } else {
-            FUN_1403ed280()->FUN_1411a4a00(&kReq);
+            reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
         }
         kReq.m_strName = pTag->FUN_14175aa50();
         kReq.m_pXform = NULL;
         FUN_140a53190(&kReq, FUN_14123c580(pCaster));
         kReq.m_bFlag31 = pTag->FUN_14175ab80();
-        FUN_1403ed280()->FUN_1411a4a00(&kReq);
+        reinterpret_cast<Unk_MagicEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
     }
     pCaster->vf35_End(pTag);
 }

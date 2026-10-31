@@ -16,6 +16,8 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/questmanager_2.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -40,8 +42,7 @@ private:
 class Unk_QmGroupTable { public: Unk_QmGroupRewardPtr FUN_14037c3d0(int group); };
 Unk_QmGroupTable* FUN_140d738f0();
 class CQuestManager;
-class Unk_QmGroupSource { public: int FUN_1416d0150(); };
-Unk_QmGroupSource* FUN_140764020();
+CQuestManager* FUN_140764020();
 
 class Unk_QmGameEvent {
 public:
@@ -68,7 +69,6 @@ Unk_QmGameEventMgr* FUN_1401c0d90();
 
 class Unk_MentorSchedule { public: int FUN_140424f20(int id); };
 class Unk_MentorScheduleHolder { public: Unk_MentorSchedule* FUN_14041d160(); };
-Unk_MentorScheduleHolder* FUN_140302b00();
 
 UIRewardNotify* FUN_140938cd0(int uiType);
 CStringW FUN_14062b4f0(CStringW, const int*);
@@ -245,7 +245,7 @@ void CMentoringMission::ShowExpired() {}
 int CMentoringMission::FUN_1407447c0()
 {
     if (CQuestCommon::FUN_1407447c0()) return 1;
-    if (FUN_140302b00()->FUN_14041d160()->FUN_140424f20(FUN_140bfc580()) == 0) return 1;
+    if (reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->FUN_140424f20(FUN_140bfc580()) == 0) return 1;
     if (FUN_140b71580(FUN_140c70240()) != 2) return 1;
     return 0;
 }

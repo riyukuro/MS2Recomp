@@ -610,7 +610,7 @@ public:
     ATL::CRBMap<unsigned, Unk_WsV0e8> m_0e8;              // +0x0e8 0x141befd10 / 0x141bf4bd0
     ATL::CRBMap<unsigned, Unk_WsV118> m_118;              // +0x118 0x141befd40 / 0x141bf4bf0
     ATL::CRBMap<unsigned, Unk_WsV148> m_148;              // +0x148 0x141befce0 / 0x141bf4bb0
-    ATL::CAtlList<Unk_WsP8> m_178;                      // +0x178 0x140963ae0 / 0x1409647c0 (shared)
+    ATL::CAtlList<efd::SmartPointer<GameObject> > m_178;   // +0x178 0x140963ae0 / 0x1409647c0 (shared; the dtor releases the objects)
     ATL::CRBMap<unsigned, Unk_WsV1a8> m_1a8;           // +0x1a8 0x141befcb0 / 0x141bf4b90
     std::map<unsigned __int64, Unk_WsV1d8> m_1d8;      // +0x1d8 0x141bf30e0 / 0x141bf5d50
     std::map<int, std::set<unsigned __int64> > m_1e8;   // +0x1e8 0x141bf2ff0 / 0x141bf5cb0

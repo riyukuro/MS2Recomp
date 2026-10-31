@@ -38,6 +38,12 @@
 #include <NiStringExtraData.h>
 #include <NiNode.h>
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/crashmanagercli.h"
+#include "ms2/client/ms2/bigdatalogsystem.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/asmousecursor.h"
 
 // ---- externs used by the helpers ----
 extern int DAT_143af7d44;                                           // "out of memory already reported"
@@ -45,12 +51,8 @@ extern int DAT_143ab0248;                                           // silent mo
 extern const wchar_t DAT_142ff376c[];                               // path separator suffix
 
 // The global logger object behind 0x140d8ee90 (category, message).
-class Unk_UtilLogger { public: void FUN_140a1f970(const CStringA& kCategory, const CStringA& kMessage); };
-Unk_UtilLogger* FUN_140d8ee90();
 
 // The debug-log singleton behind 0x140a44830.
-class Unk_UtilDebugLog { public: void FUN_140a43750(DWORD dwThreadId, CStringA kTag); void FUN_140a437d0(DWORD dwThreadId); };
-Unk_UtilDebugLog* FUN_140a44830();
 
 // The global out-of-memory report dialog (DAT_143af7e00, a CDialog).
 class Unk_UtilErrorDialog : public CDialog
@@ -190,19 +192,19 @@ int FUN_141b6db40(size_t nSize)
 {
     if (DAT_143af7d44 != 0)
         return 0;
-    if (FUN_140d8ee90() != 0) {
+    if (TSingleton<CBigDataLogSystem>::GetInstance() != 0) {
         if (nSize == 1) {
             CStringA kMessage("bad_alloc physx");
             CStringA kCategory("memory");
-            FUN_140d8ee90()->FUN_140a1f970(kCategory, kMessage);
+            TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(kCategory, kMessage);
         } else if (nSize == 2) {
             CStringA kMessage("bad_alloc cef");
             CStringA kCategory("memory");
-            FUN_140d8ee90()->FUN_140a1f970(kCategory, kMessage);
+            TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(kCategory, kMessage);
         } else {
             CStringA kMessage("bad_alloc others");
             CStringA kCategory("memory");
-            FUN_140d8ee90()->FUN_140a1f970(kCategory, kMessage);
+            TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(kCategory, kMessage);
         }
     }
     DAT_143af7d44 = 1;
@@ -224,8 +226,8 @@ int FUN_141b6db40(size_t nSize)
 void FUN_141b6de20()
 {
     AfxSetNewHandler(FUN_141b6fd90);
-    if (FUN_140a44830() != 0) {
-        FUN_140a44830()->FUN_140a43750(GetCurrentThreadId(), CStringA(""));
+    if (TSingleton<CrashManagerCli>::GetInstance() != 0) {
+        TSingleton<CrashManagerCli>::GetInstance()->FUN_140a43750(GetCurrentThreadId(), CStringA(""));
     }
 }
 MS2_REPLACE(0x141b6de20, FUN_141b6de20, 118, 0x4043FAA8);
@@ -1173,7 +1175,7 @@ unsigned FUN_141b71120(Unk_UtilObjRef kRef)
 }
 MS2_REPLACE(0x141b71120, FUN_141b71120, 290, 0x8ACF42B0);
 
-class Unk_UtilHudDlg { public: void FUN_1422cecb0(int nMode); bool FUN_1422bfca0(); };
+class Unk_UtilHudDlg : public ASMouseCursor { };
 class Unk_UtilHudPtr
 {
 public:
@@ -1212,7 +1214,6 @@ int FUN_141b712e0()
 float FUN_141b72560(float fBase, float fExp);
 float FUN_141b72600(float fBase, float fExp);
 float FUN_141b725e0(float fValue);
-float FUN_14096b1c0(float fValue);                                  // sqrtf
 float FUN_140993fe0(const Vector3& kA, const Vector3& kB);   // dot product
 
 // @0x141b71390
@@ -1248,10 +1249,10 @@ float FUN_141b71550(const Vector3& kStart, const Vector3& kControl, const Vector
     float fB = 4.0f * (fAB + FUN_140993fe0(kA, kB));
     float fBB = FUN_140993fe0(kB, kB);
     float fC = fBB + FUN_140993fe0(kB, kB);
-    float fSqrtAll = 2.0f * FUN_14096b1c0(fA + fB + fC);
-    float fSqrtA = FUN_14096b1c0(fA);
+    float fSqrtAll = 2.0f * sqrt(fA + fB + fC);
+    float fSqrtA = sqrt(fA);
     float fTermA = 2.0f * fA * fSqrtA;
-    float fSqrtC = 2.0f * FUN_14096b1c0(fC);
+    float fSqrtC = 2.0f * sqrt(fC);
     float fBA = fB / fSqrtA;
     return (fTermA * fSqrtAll + fSqrtA * fB * (fSqrtAll - fSqrtC)
         + (4.0f * fC * fA - fB * fB) * FUN_141b725e0((2.0f * fSqrtA + fBA + fSqrtAll) / (fBA + fSqrtC))) / (4.0f * fTermA);
@@ -1313,7 +1314,6 @@ void FUN_141b71a60(NiColor* pColor)
 // ---- scene / skin helpers ----
 class Unk_UtilWorld;
 class Unk_UtilPlayer;
-Unk_UtilWorld* FUN_1403ed2d0();
 Unk_UtilPlayer* FUN_141bd0cc0(Unk_UtilWorld* pWorld);
 egf::Entity* FUN_14123c410(Unk_UtilPlayer* pPlayer);
 extern NiRTTI DAT_143afafe0;
@@ -1323,7 +1323,7 @@ NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 // @0x141b71b00
 NiObject* FUN_141b71b00()
 {
-    Unk_UtilPlayer* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_UtilPlayer* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_UtilWorld*>(WorldService::GetInstance()));
     if (pPlayer == NULL)
         return NULL;
     NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410(pPlayer));
@@ -1487,22 +1487,18 @@ void FUN_141b71e70(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEf
 MS2_REPLACE(0x141b71e70, FUN_141b71e70, 168, 0xFEE15438);
 
 // ---- string table text ----
-class Unk_1401a9d70 { public: CStringW FUN_141811980(int nCategory, int nId); };
-Unk_1401a9d70* FUN_1401a9d70();
-class Unk_UtilTextFilter
+class Unk_UtilTextFilter : public CReservedWordTable
 {
 public:
     void FUN_1416fbc20(CStringW& kText, __int64 nValue);
-    void FUN_1416fbda0(CStringW& kText, int nValue);
 };
-Unk_UtilTextFilter* FUN_1403b4750();
 
 // @0x141b720b0
 CStringW FUN_141b720b0(int nId, __int64 nValue)
 {
-    CStringW kText = FUN_1401a9d70()->FUN_141811980(0x16, nId);
-    if (FUN_1403b4750() != NULL)
-        FUN_1403b4750()->FUN_1416fbc20(kText, nValue);
+    CStringW kText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x16, nId);
+    if (reinterpret_cast<Unk_UtilTextFilter*>(TSingleton<CReservedWordTable>::GetInstance()) != NULL)
+        reinterpret_cast<Unk_UtilTextFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fbc20(kText, nValue);
     return kText;
 }
 MS2_REPLACE(0x141b720b0, FUN_141b720b0, 146, 0xA5874D90);
@@ -1510,9 +1506,9 @@ MS2_REPLACE(0x141b720b0, FUN_141b720b0, 146, 0xA5874D90);
 // @0x141b72150
 CStringW FUN_141b72150(int nId, int nValue)
 {
-    CStringW kText = FUN_1401a9d70()->FUN_141811980(0x16, nId);
-    if (FUN_1403b4750() != NULL)
-        FUN_1403b4750()->FUN_1416fbda0(kText, nValue);
+    CStringW kText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x16, nId);
+    if (reinterpret_cast<Unk_UtilTextFilter*>(TSingleton<CReservedWordTable>::GetInstance()) != NULL)
+        reinterpret_cast<Unk_UtilTextFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fbda0(kText, nValue);
     return kText;
 }
 MS2_REPLACE(0x141b72150, FUN_141b72150, 146, 0x145A9D20);
@@ -1532,19 +1528,19 @@ MS2_CHECK_SIZE(Unk_UtilLogScope, 0x10);
 // @0x141b721f0
 Unk_UtilLogScope::Unk_UtilLogScope(CStringA kTag)
 {
-    if (FUN_140a44830() == NULL)
+    if (TSingleton<CrashManagerCli>::GetInstance() == NULL)
         return;
     m_dwThread = GetCurrentThreadId();
     m_kTag = kTag;
-    FUN_140a44830()->FUN_140a43750(m_dwThread, m_kTag);
+    TSingleton<CrashManagerCli>::GetInstance()->FUN_140a43750(m_dwThread, m_kTag);
 }
 
 // @0x141b722b0
 Unk_UtilLogScope::~Unk_UtilLogScope()
 {
-    if (FUN_140a44830() == NULL)
+    if (TSingleton<CrashManagerCli>::GetInstance() == NULL)
         return;
-    FUN_140a44830()->FUN_140a437d0(m_dwThread);
+    TSingleton<CrashManagerCli>::GetInstance()->FUN_140a437d0(m_dwThread);
 }
 
 // @0x141b72310

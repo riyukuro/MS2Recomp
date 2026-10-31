@@ -80,6 +80,7 @@
 #include "ms2/ms2recover.h"
 #include <typeinfo>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Sort names of the item lists (header statics of this unit).
 #ifndef MS2_HOOK_DLL
@@ -88,7 +89,7 @@ static const CString s_mergeShopSortNames[] = {"None", "Buy", "Like", "PriceLow"
 #endif
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
@@ -97,9 +98,9 @@ CString FUN_14016a5c0(const char* psz, int n);
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 CString FUN_1401d9af0(const char* pszFormat, const unsigned __int64& nArg);   // StringFormat, one numeric argument
 extern MS2Ptr<CItemData> FUN_14053f870(int);
-int FUN_14082ee80(const CString& strName);          // normal option id by name (-1: none)
+int FindStatByName(const CString& strName);         // normal option id by name (-1: none)
 int FUN_14081d2f0(const CString& strName);          // special option id by name (0: none)
-int FUN_14082f2d0(int nNormal);
+int GetStatValueType(int nNormal);
 int FUN_14081dd50(int nSpecial);
 void FUN_1403d7960(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nA, const unsigned& nB);
 
@@ -288,11 +289,11 @@ bool CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
         MS2Ptr<CItemMergeOption> spOption(new CItemMergeOption);
         FUN_1408733e0(pElem, "optionName", strName);
         FUN_140873220(pElem, "min", nPrev);
-        int nNormal = FUN_14082ee80(strName);
+        int nNormal = FindStatByName(strName);
         if (nNormal != -1)
         {
             spOption->m_nNormal = nNormal;
-            nCategory = FUN_14082f2d0(nNormal);
+            nCategory = GetStatValueType(nNormal);
         }
         else
         {
@@ -680,7 +681,7 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c1d20(int nItemId,
 // @0x1405c1f40
 CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c1f40(int nCategory)
 {
-    std::map<std::pair<int, int>, DataPtr>::iterator it = m_data.find(std::make_pair(nCategory, 0));
+    std::map<std::pair<int, int>, DataPtr>::iterator it = m_data.find(std::pair<int, int>(nCategory, 0));
     if (it != m_data.end())
         return it->second;
     return DataPtr(nullptr);

@@ -20,6 +20,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/reactordata.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -52,7 +54,6 @@ private:
 MS2_CHECK_SIZE(Unk_ReactRef, 8);
 
 class Unk_ReactWorld { public: Unk_ReactRef FUN_141bc6eb0(const CString& strName); };
-Unk_ReactWorld* FUN_1403ed2d0();
 
 // The time-limited behaviour table row of an actor (+0x5c the reach).
 class Unk_ReactRestart : public CPtred
@@ -125,7 +126,6 @@ public:
     CString FUN_14076b110();                                       // the 0x9f animation
 };
 class Unk_ReactTable { public: MS2Ptr<Unk_ReactClips> FUN_14076bbd0(int nId); };
-Unk_ReactTable* FUN_14076dcd0();
 
 // ---- StateReactData ----
 
@@ -191,7 +191,7 @@ void StateReact::vfunc_4(StateData* pData)
                 if (FUN_14165f100(pRider) != 0)
                     FUN_14165f170(pRider);
                 Unk_CastInfo kInfo;
-                Unk_ReactRef kRef = FUN_1403ed2d0()->FUN_141bc6eb0(m_spData->m_strTarget);
+                Unk_ReactRef kRef = reinterpret_cast<Unk_ReactWorld*>(WorldService::GetInstance())->FUN_141bc6eb0(m_spData->m_strTarget);
                 if (kRef == 0)
                 {
                     m_pOwner->vfunc_59(1, 0, 0, 0);
@@ -256,7 +256,7 @@ void StateReact::vfunc_8(double fTime)
         return;
     if ((StateReactData*)m_spData != 0)
     {
-        Unk_ReactRef kRef = FUN_1403ed2d0()->FUN_141bc6eb0(m_spData->m_strTarget);
+        Unk_ReactRef kRef = reinterpret_cast<Unk_ReactWorld*>(WorldService::GetInstance())->FUN_141bc6eb0(m_spData->m_strTarget);
         if (kRef.FUN_140965770() != 0)
         {
             if (m_n48 != 0)
@@ -323,7 +323,7 @@ void StateReact::FUN_140b8ded0()
         return;
     if (!m_spData)
         return;
-    Unk_ReactWorld* pWorld = FUN_1403ed2d0();
+    Unk_ReactWorld* pWorld = reinterpret_cast<Unk_ReactWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return;
     Unk_ReactRef kRef = pWorld->FUN_141bc6eb0(m_spData->m_strTarget);
@@ -357,7 +357,7 @@ bool StateReact::FUN_140b8e030()
 {
     if (m_spData == 0)
         return false;
-    MS2Ptr<Unk_ReactClips> spClips = FUN_14076dcd0()->FUN_14076bbd0(m_spData->m_nId);
+    MS2Ptr<Unk_ReactClips> spClips = reinterpret_cast<Unk_ReactTable*>(TSingleton<CReactorDataTable>::GetInstance())->FUN_14076bbd0(m_spData->m_nId);
     if (spClips.IsNull())
     {
         MS2_ASSERT_AT(0x6e, 0);

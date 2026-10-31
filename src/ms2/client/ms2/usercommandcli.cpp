@@ -76,6 +76,7 @@
 #include "ms2/placeholder/effectquery.h"
 #include "ms2/placeholder/ckeytable.h"
 #include "ms2/placeholder/ckeysettingparam.h"
+#include "ms2/placeholder/cstringtable.h"
 
 // Header-local objects in original initializer order. Unknown original names.
 struct Unk_CommandStatics {
@@ -104,8 +105,6 @@ static Unk_CommandStatics s_tableb(17,.75f,.25f,2.25f,10);
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 // External, non-RTTI command and XML helper types; scalar layout follows callers.
 void FUN_141276f80(const Unk_CommandChat&);
-struct Unk_CommandStrings { CStringW FUN_141811980(int,int); };
-Unk_CommandStrings* FUN_1401a9d70();
 CStringW FUN_14061ad70(const CStringW&,const wchar_t*);
 CStringW FUN_1401d0080(const CStringW&,const CStringW&);
 CStringW FUN_1408f71a0(CStringW,const CStringW&,const CStringW&);
@@ -130,6 +129,7 @@ extern bool DAT_143af62d0;
 extern int DAT_143ab2914,DAT_143ab0248;
 extern Vector3 DAT_143b01a60;
 #include "ms2/placeholder/mstime.h"
+#include "ms2/commonfiles/crashmanager.h"
 void FUN_1401d9a30(const CStringW&,ATL::CAtlArray<int>&,const wchar_t*);
 void* FUN_140ad4b90(); void FUN_141863340(void*,const ATL::CAtlArray<int>&,unsigned);
 void* FUN_1403ed2d0(); void* FUN_141bd0cc0(void*); void* FUN_1409478c0();
@@ -144,7 +144,7 @@ void* FUN_1409331e0();
 void FUN_14138d460(void*); void FUN_14138d160(void*,int); void FUN_14138d520(void*,int); void FUN_14138cc40(void*); void FUN_14138cce0(void*,int,int);
 CString FUN_14016a600(const wchar_t*,int); CString FUN_1401d4330(const wchar_t*,int);
 void FUN_14138d090(void*,CString); void FUN_14138d790(void*); void FUN_14138ba40(void*);
-__int64 FUN_140869440();
+__int64 GetServerTime();
 void* FUN_1403ed280(); void FUN_1411a4f40(void*,CString,const Vector3&);
 void* FUN_140d13c40(); void FUN_14177c100(void*,int,float,unsigned,int); struct Unk_UcSoundView { CStringW FUN_14177e020(); };
 void* FUN_14025e7d0(); void FUN_140259930(void*); void FUN_1409c51f0(); void* FUN_141371b20(); void FUN_141815db0(void*);
@@ -199,7 +199,7 @@ MS2_CHECK_SIZE(Unk_CommandUIRef,0x10);
 struct Unk_CommandUIMgr { Unk_CommandUIRef FUN_141adcf50(const CString&); Unk_CommandUIRef FUN_141adcea0(int); };
 void* FUN_1409a8b10(); void* FUN_140a58500(void*); void FUN_14125f670(void*,bool,bool);
 void FUN_1406537e0(Unk_CommandLog*,int);
-CStringW FUN_1402a61e0(const wchar_t*);
+CStringW StringFormat(const wchar_t*);
 
 class Unk_CommandActor { public:
     virtual void vfunc_0();
@@ -393,7 +393,7 @@ struct Unk_g2_Row {
 MS2_CHECK_OFFSET(Unk_g2_Row, m_4c, 0x4c);
 MS2_CHECK_OFFSET(Unk_g2_Row, m_50, 0x50);
 MS2_CHECK_SIZE(Unk_g2_Pair16,0x10);
-void* FUN_140764020(); CStringW FUN_1402a61e0(const wchar_t*);
+void* FUN_140764020(); CStringW StringFormat(const wchar_t*);
 void* FUN_140186750(void*);
 void* FUN_140186330(void*,void*);
 void FUN_140186480(void*,void**);
@@ -408,7 +408,7 @@ int* FUN_1401844d0(void*,unsigned __int64);
 unsigned __int64 FUN_1401662c0(void*);
 CString FUN_14136f6f0(int);
 CString FUN_14136f730(int);
-CString FUN_14021a6b0(int); CString FUN_14021aa20(int);
+CString Name_14021a6b0(int); CString FUN_14021aa20(int);
 CString FUN_14038f6d0(const CString&,const wchar_t*);
 int FUN_14074b030(void*);
 CStringW FUN_1416e4df0(int);
@@ -462,7 +462,7 @@ void FUN_14135ec00(void*,const CString&,bool);
 void* FUN_1403ed290();
 void FUN_1413b71c0(void*,CStringW);
 void* FUN_14136f480(int);
-CStringW FUN_1409eec40(int);
+CStringW BlockFormat(int);
 void FUN_140d73aa0(CStringW,int,void*,CStringW);   // the exe callee destroys both strings
 class Unk_HsInfo : public CPtred { public: int FUN_14050a6a0(); };
 struct Unk_HsPC { MS2Ptr<Unk_HsInfo> FUN_141664200(); };
@@ -483,7 +483,7 @@ void FUN_140bea390(void*,CStringW,CString);
 void FUN_141530910(unsigned);
 void FUN_140cca840(int);
 void* FUN_140a44830();
-struct Unk_UcLogView { CString FUN_1401ce8d0(); };   // member of the logger (this=rcx, hidden return=rdx)
+   // member of the logger (this=rcx, hidden return=rdx)
 CStringW FUN_14016a730(const char*,int);
 void FUN_14083d890(CStringW);
 void* FUN_140714f90();
@@ -582,7 +582,7 @@ CStringW CUserCommandCli::Tooltip() {
             if(info==0 || info->suffix.IsEmpty()) continue;
             int chatType=info->chatType; if(chatType==21 || chatType==10) continue;
             CStringW suffix=StringFormat((LPCWSTR)format,info->suffix);
-            CStringW names=FUN_1401a9d70()->FUN_141811980(0x38,info->stringId);
+            CStringW names=TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x38,info->stringId);
             names.Replace(L"\n",L", ");
             tooltip.Append(FUN_1408f71a0(suffix,names,info->firstAlias));
         }
@@ -609,7 +609,7 @@ bool CUserCommandCli::Load() {
         MS2Ptr<TUserCommandInfo> info(new TUserCommandInfo);
         if(info==0) continue;
         FUN_1408731e0(node,"id",info->stringId);
-        CStringW names=FUN_1401a9d70()->FUN_141811980(0x38,info->stringId);
+        CStringW names=TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x38,info->stringId);
         if(names.IsEmpty()) continue;
         ATL::CAtlArray<CStringW> items;
         FUN_14025a680(names,items,L"\n");
@@ -847,7 +847,7 @@ int CUserCommandCli::FUN_141365960(Unk_CommandArgs&) {
 int CUserCommandCli::FUN_1413659d0(Unk_CommandArgs&) {
     if(DAT_143ab0248==2) { if(DAT_143ab2914<51) return 0; }
     else if(DAT_143ab2914<50) return 0;
-    CMsTime time(FUN_140869440());
+    CMsTime time(GetServerTime());
     CStringW message;
     message.Format(L"CurrentTime : %04d-%02d-%02d %02d:%02d:%02d",time.GetYear(),time.GetMonth(),time.GetDay(),time.GetHour(),time.GetMinute(),time.GetSecond());
     FUN_1412751b0(message,20); return 1;
@@ -1041,12 +1041,12 @@ int CUserCommandCli::FUN_1413670c0(Unk_CommandArgs& args) {
 }
 // @0x1413671c0
 int CUserCommandCli::FUN_1413671c0(Unk_CommandArgs&) {
-    if(FUN_141371b30()) { FUN_141021140(FUN_141371b30()); FUN_1412751b0(FUN_1402a61e0(L"Script reloaded"),20); }
+    if(FUN_141371b30()) { FUN_141021140(FUN_141371b30()); FUN_1412751b0(StringFormat(L"Script reloaded"),20); }
     return 1;
 }
 // @0x141367240
 int CUserCommandCli::FUN_141367240(Unk_CommandArgs& args) {
-    if(args.FUN_1408d2380()!=2) { FUN_1412751b0(FUN_1402a61e0(L"Error! Usage: [cmd] [itemId] [transferType]"),20); return 0; }
+    if(args.FUN_1408d2380()!=2) { FUN_1412751b0(StringFormat(L"Error! Usage: [cmd] [itemId] [transferType]"),20); return 0; }
     int id=args.FUN_1408d1f60(0,0),kind=args.FUN_1408d1f60(1,0);
     Unk_CommandItemPtr item=FUN_14053f870(id);
     if(item.FUN_1402ffd90()) { FUN_1412751b0(StringFormat(L"Wrong itemID! {0}",id),20); return 0; }
@@ -1183,7 +1183,7 @@ int CUserCommandCli::FUN_141368000(Unk_CommandArgs& args) {
                     return 1;
                 }
                 unsigned mapId=*(unsigned*)(FUN_140300710(it2)+0x18);
-                CStringW name=FUN_1401a9d70()->FUN_141811980(3,mapId);
+                CStringW name=TSingleton<CStringTable>::GetInstance()->FUN_141811980(3,mapId);
                 FUN_140841420(name);
                 int found=FUN_14083fec0(CStringW(name),CStringW(query));
                 if(found!=-1) break;
@@ -1198,7 +1198,7 @@ int CUserCommandCli::FUN_141368000(Unk_CommandArgs& args) {
         }
         unsigned mapId=*(unsigned*)(FUN_140300710(it)+0x18);
         CStringW idText=StringFormat(L"{0}",mapId);
-        CStringW name=FUN_1401a9d70()->FUN_141811980(3,mapId);
+        CStringW name=TSingleton<CStringTable>::GetInstance()->FUN_141811980(3,mapId);
         FUN_140841420(name);
         if(FUN_14025cd60(name,query)||FUN_14025cd60(idText,query)) {
             Unk_CommandChat record;
@@ -1251,16 +1251,16 @@ int CUserCommandCli::FUN_1413688f0(Unk_CommandArgs& args) {
 int CUserCommandCli::FUN_141368990(Unk_CommandArgs& args) {
     bool enabled=args.FUN_1408d2140(0,true);
     FUN_1409a4b00(FUN_1409a8b00(),enabled);
-    if(enabled!=false) FUN_1412751b0(FUN_1402a61e0(L"Enable Fog"),20);
-    else FUN_1412751b0(FUN_1402a61e0(L"Disable Fog"),20);
+    if(enabled!=false) FUN_1412751b0(StringFormat(L"Enable Fog"),20);
+    else FUN_1412751b0(StringFormat(L"Disable Fog"),20);
     return 1;
 }
 // @0x141368a60
 int CUserCommandCli::FUN_141368a60(Unk_CommandArgs& args) {
     bool enabled=args.FUN_1408d2140(0,true);
     FUN_1411b98e0(FUN_14119f490(),enabled==false);
-    if(enabled!=false) FUN_1412751b0(FUN_1402a61e0(L"Enable effect limit"),20);
-    else FUN_1412751b0(FUN_1402a61e0(L"Disable effect limit"),20);
+    if(enabled!=false) FUN_1412751b0(StringFormat(L"Enable effect limit"),20);
+    else FUN_1412751b0(StringFormat(L"Disable effect limit"),20);
     return 1;
 }
 // @0x141368b50
@@ -1336,10 +1336,10 @@ int CUserCommandCli::FUN_1413691f0(Unk_CommandArgs& args) {
         FUN_141374920((unsigned char*)FUN_140c8dac0()+0x6b8,id);
         FUN_1412751b0(StringFormat(L"Set ForceGM ID : {0}",id),20);
     } else if(id>0x7f) {
-        FUN_1412751b0(FUN_1402a61e0(L"Invalid Range GM ID"),20);
+        FUN_1412751b0(StringFormat(L"Invalid Range GM ID"),20);
     } else {
         FUN_1413747d0((unsigned char*)FUN_140c8dac0()+0x6b8);
-        FUN_1412751b0(FUN_1402a61e0(L"reset ForceGM ID"),20);
+        FUN_1412751b0(StringFormat(L"reset ForceGM ID"),20);
     }
     return 1;
 }
@@ -1543,7 +1543,7 @@ int CUserCommandCli::FUN_14136a630(Unk_CommandArgs& args) {
     }
     Unk_g2_Path path;
     if (FUN_1416d2f30(FUN_140764020(),id,&path,1) == 0) {
-        FUN_1412751b0(FUN_1402a61e0(L"CompleteEpicChapter, Fail to find path, GetPathListToChapterIDForDebug()"),20);
+        FUN_1412751b0(StringFormat(L"CompleteEpicChapter, Fail to find path, GetPathListToChapterIDForDebug()"),20);
         return 0;
     }
     Unk_g2_Vec24 quests;
@@ -1553,7 +1553,7 @@ int CUserCommandCli::FUN_14136a630(Unk_CommandArgs& args) {
         quests.insert(quests.end(), chapter.begin(), chapter.end());
     }
     if (quests.empty()) {
-        FUN_1412751b0(FUN_1402a61e0(L"CompleteEpicChapter, There is no any chapterQuest to complete"),20);
+        FUN_1412751b0(StringFormat(L"CompleteEpicChapter, There is no any chapterQuest to complete"),20);
         return 0;
     }
     if (trace == 0) FUN_14136b910(this,&quests,2);
@@ -1596,7 +1596,7 @@ int CUserCommandCli::FUN_14136ac60(Unk_CommandArgs& args) {
     }
     Unk_g2_Path path;
     if (FUN_1416d2910(FUN_140764020(),id,&path,1) == 0) {
-        FUN_1412751b0(FUN_1402a61e0(L"CompleteEpicQuest, Fail to find path, GetPathListToToQuestIDForDebug"),20);
+        FUN_1412751b0(StringFormat(L"CompleteEpicQuest, Fail to find path, GetPathListToToQuestIDForDebug"),20);
         return 0;
     }
     Unk_g2_Vec24 quests;
@@ -1606,7 +1606,7 @@ int CUserCommandCli::FUN_14136ac60(Unk_CommandArgs& args) {
         quests.insert(quests.end(), chapter.begin(), chapter.end());
     }
     if (quests.empty()) {
-        FUN_1412751b0(FUN_1402a61e0(L"CompleteEpicQuest, There is no any chapterQuest to complete"),20);
+        FUN_1412751b0(StringFormat(L"CompleteEpicQuest, There is no any chapterQuest to complete"),20);
         return 0;
     }
     if (trace == 0) FUN_14136b910(this,&quests,2);
@@ -1645,7 +1645,7 @@ int CUserCommandCli::FUN_14136b290(Unk_CommandArgs& args) {
     ATL::CAtlArray<void*> ids;
     FUN_14074cfd0(FUN_1407476c0(),chapter,&ids);
     if (FUN_140187930(&ids)) {
-        CStringW msg = FUN_1402a61e0(L"SetEpicChapterStatus, There is no chapterQuest to set.");
+        CStringW msg = StringFormat(L"SetEpicChapterStatus, There is no chapterQuest to set.");
         FUN_1412751b0(msg,20);
         return 0;
     }
@@ -1762,7 +1762,7 @@ int CUserCommandCli::FUN_14136bf10(Unk_CommandArgs&) {
 int CUserCommandCli::FUN_14136bf50(Unk_CommandArgs&) {
     int one=1;
     FUN_1402be3c0((char*)FUN_1401d3200()+0xcfe0,&one);
-    FUN_1412751b0(FUN_1402a61e0(L"OnNoWaitRoomExit"),20);
+    FUN_1412751b0(StringFormat(L"OnNoWaitRoomExit"),20);
     return 1;
 }
 // @0x14136bfe0
@@ -1883,7 +1883,7 @@ struct Unk_UccGuildDlgListener { void* m_00; };
 struct Unk_UccGuildDlg : Unk_UccGuildDlgHead, Unk_UccGuildDlgListener {};
 // @0x14136c880
 int CUserCommandCli::FUN_14136c880(Unk_CommandArgs&) {
-    FUN_140d73aa0(FUN_1409eec40(0x3e0),1,static_cast<Unk_UccGuildDlgListener*>(static_cast<Unk_UccGuildDlg*>(FUN_14136f480(0x4e4f))),L"leaveGuild");
+    FUN_140d73aa0(BlockFormat(0x3e0),1,static_cast<Unk_UccGuildDlgListener*>(static_cast<Unk_UccGuildDlg*>(FUN_14136f480(0x4e4f))),L"leaveGuild");
 
 
     return 1;
@@ -1940,7 +1940,7 @@ int CUserCommandCli::FUN_14136ccf0(Unk_CommandArgs&) {
             MS2Ptr<TUserCommandInfo> info=ordered.GetValueAt(p);
             if(info==0 || info->suffix.IsEmpty()) continue;
             CStringW suffix=StringFormat(format,info->suffix);
-            CStringW names=FUN_1401a9d70()->FUN_141811980(0x38,info->stringId);
+            CStringW names=TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x38,info->stringId);
             names.Replace(L"\n",L", ");
             text.Append(FUN_1408f71a0(suffix,names,info->firstAlias));
         }
@@ -2014,7 +2014,7 @@ int CUserCommandCli::FUN_14136d4e0(Unk_CommandArgs& args) {
 }
 // @0x14136d520
 int CUserCommandCli::FUN_14136d520(Unk_CommandArgs&) {
-    CString path=static_cast<Unk_UcLogView*>(FUN_140a44830())->FUN_1401ce8d0();
+    CString path=static_cast<CCrashManager*>(FUN_140a44830())->FUN_1401ce8d0();
     FUN_1412751b0(FUN_14016a730(path,0),20);
     FUN_14083d890(FUN_14016a730(path,0));
     {
@@ -2045,7 +2045,7 @@ int CUserCommandCli::FUN_14136d6a0(Unk_CommandArgs& args) {
         if(dialog) FUN_141ab4000(dialog,group,field);
         FUN_1412751b0(StringFormat(L"OpenContract {0} {1}",field,group),20);
     } else {
-        FUN_1412751b0(FUN_1402a61e0(L"OpenContract Arguments error"),20);
+        FUN_1412751b0(StringFormat(L"OpenContract Arguments error"),20);
     }
     return 1;
 }
@@ -2164,7 +2164,7 @@ int FUN_14136f660(void* element,const char* key,int& value) {
     return result;
 }
 // @0x14136f6f0
-CString FUN_14136f6f0(int id) { return FUN_14021a6b0(id); }
+CString FUN_14136f6f0(int id) { return Name_14021a6b0(id); }
 // @0x14136f730
 CString FUN_14136f730(int id) { return FUN_14021aa20(id); }
 // @0x141370da0

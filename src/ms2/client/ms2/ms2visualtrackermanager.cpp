@@ -74,6 +74,12 @@
 // The unit's statics: the shared header statics (with the tracker channel and a handle between "stun" and the condition).
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/ms2visualtrackermanager_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/ms2animationservice.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/commonfiles/os.h"
+#include "ms2/client/ms2/ms2scenegraphservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/camera.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
 
 
@@ -174,20 +180,15 @@ MS2_CHECK_OFFSET(Unk_VtmCaches, m_nTexDependTime, 0x104);
 
 
 // ---- unit-local views of the managers the overlay reads (all bound to the exe by their FUN_ names) ----
-class Unk_VtmSession                                                         // the game session (entity/model counters)
+class Unk_VtmSession : public WorldService                                                         // the game session (entity/model counters)
 {
 public:
-    bool FUN_141bc7420();
     unsigned FUN_141bc1640();
     unsigned FUN_141bd86a0();
     unsigned FUN_141bd86c0();
-    int FUN_141bcfbd0();
 };
-Unk_VtmSession* FUN_1403ed2d0();
-class Unk_VtmEffectMgr { public: unsigned FUN_1411a85a0(); unsigned FUN_1411a85c0(); unsigned FUN_1411b1bd0(); };
-Unk_VtmEffectMgr* FUN_1403ed280();
+CEffectService* FUN_1403ed280();
 class Unk_VtmWorldCounts { public: unsigned FUN_1411d0ab0(); unsigned FUN_1411d0af0(); };   // EntityWorldManager block/game-object entity counts, read 32-bit
-EntityWorldManager* FUN_1409670f0();
 class Unk_VtmSystem                                                          // memory/system statistics
 {
 public:
@@ -196,20 +197,15 @@ public:
     unsigned __int64 FUN_141245b10();                                       // physical memory (MB)
 };
 Unk_VtmSystem* FUN_1409f7c90();
-class Unk_VtmSceneGraphMgr { public: unsigned FUN_1414f3660(); };
-Unk_VtmSceneGraphMgr* FUN_1413f98b0();
-class Unk_VtmAssetMgr { public: unsigned FUN_1414a9940(); unsigned FUN_1414a9970(); unsigned FUN_1414a99a0(); };
-Unk_VtmAssetMgr* FUN_1413f9b10();
+MS2SceneGraphService* FUN_1413f98b0();
+MS2AnimationService* FUN_1413f9b10();
 Unk_VtmCaches* FUN_140a0afd0();
-class Unk_VtmCameraMgr { public: int FUN_140a18070(); GameObject* FUN_140a38d60(); };
-Unk_VtmCameraMgr* FUN_1409478c0();
+class Unk_VtmCameraMgr : public CameraMgr { public: GameObject* FUN_140a38d60(); };
 Unk_VtmMover* FUN_1409ffd30(GameObject* pTarget);
 class Unk_VtmAnimSvc { public: efd::utf8string FUN_141206030(const egf::EntityID& kKey); };
 Unk_VtmAnimSvc* FUN_141b6f910();
 Unk_VtmMovie* FUN_1422bb8b0(int nLayer);
 CString FUN_141277f60(unsigned nLayer);                                      // name of UI layer nLayer
-class Unk_VtmOsInfo { public: CString FUN_14070ee50(); };
-Unk_VtmOsInfo* FUN_1411b1db0();
 GPUManager* FUN_141245b20();
 __int64 FUN_141245aa0(GPUManager*);
 CNetworkService* FUN_140714f90();
@@ -370,17 +366,17 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         {
             m_spInstancingGroup->FUN_14118b9b0(FUN_1413d7eb0(spInstancing.operator->()), bForce, 0);
             m_spInstancingGrid->FUN_14118b820(FUN_1413d7e30(spInstancing.operator->()), bForce, 0);
-            m_spUseInstancing->FUN_14118bc70(FUN_1403ed2d0()->FUN_141bc7420(), bForce, 0);
+            m_spUseInstancing->FUN_14118bc70(reinterpret_cast<Unk_VtmSession*>(WorldService::GetInstance())->FUN_141bc7420(), bForce, 0);
         }
         m_spEffectCount->FUN_14118b9b0(FUN_1403ed280()->FUN_1411a85a0(), bForce, 0);
         m_spInfiniteEffectCount->FUN_14118b9b0(FUN_1403ed280()->FUN_1411a85c0(), bForce, 0);
-        m_spNpcCount->FUN_14118b9b0(FUN_1403ed2d0()->FUN_141bc1640(), bForce, 0);
-        m_spVertices->FUN_14118b9b0(FUN_1403ed2d0()->FUN_141bd86a0(), bForce, 0);
-        m_spTriangles->FUN_14118b9b0(FUN_1403ed2d0()->FUN_141bd86c0(), bForce, 0);
-        m_spBlockEntityCount->FUN_14118b9b0(reinterpret_cast<Unk_VtmWorldCounts*>(FUN_1409670f0())->FUN_1411d0ab0(), bForce, 0);
-        m_spGameObjectEntityCount->FUN_14118b9b0(reinterpret_cast<Unk_VtmWorldCounts*>(FUN_1409670f0())->FUN_1411d0af0(), bForce, 0);
-        m_spEntityCount->FUN_14118b9b0(FUN_1409670f0()->FUN_1411d0b30(), bForce, 0);
-        m_spLoadedMap->FUN_14118b9b0(FUN_1409670f0()->FUN_1411cfbe0(), bForce, 0);
+        m_spNpcCount->FUN_14118b9b0(reinterpret_cast<Unk_VtmSession*>(WorldService::GetInstance())->FUN_141bc1640(), bForce, 0);
+        m_spVertices->FUN_14118b9b0(reinterpret_cast<Unk_VtmSession*>(WorldService::GetInstance())->FUN_141bd86a0(), bForce, 0);
+        m_spTriangles->FUN_14118b9b0(reinterpret_cast<Unk_VtmSession*>(WorldService::GetInstance())->FUN_141bd86c0(), bForce, 0);
+        m_spBlockEntityCount->FUN_14118b9b0(reinterpret_cast<Unk_VtmWorldCounts*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411d0ab0(), bForce, 0);
+        m_spGameObjectEntityCount->FUN_14118b9b0(reinterpret_cast<Unk_VtmWorldCounts*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411d0af0(), bForce, 0);
+        m_spEntityCount->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411d0b30(), bForce, 0);
+        m_spLoadedMap->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cfbe0(), bForce, 0);
 
         // Number of objects held by the GFx movie of each UI layer.
         for (unsigned nLayer = 0; nLayer < 7; ++nLayer)
@@ -400,9 +396,9 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         }
 
         // Position, animation and speed of the camera target.
-        if (FUN_1409478c0()->FUN_140a18070() != 0)
+        if (reinterpret_cast<Unk_VtmCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
         {
-            GameObject* pTarget = FUN_1409478c0()->FUN_140a38d60();
+            GameObject* pTarget = reinterpret_cast<Unk_VtmCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60();
             Unk_VtmMover* pMover = FUN_1409ffd30(pTarget);
             if (pTarget != 0)
             {
@@ -439,15 +435,15 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
             m_spSmallObject->FUN_14118b9b0(nKb, bForce, 0);
             m_spGfxSysAlloc->FUN_14118b820(nSysAllocMb, bForce, 0);
         }
-        Unk_VtmSceneGraphMgr* pSceneGraphs = FUN_1413f98b0();
+        MS2SceneGraphService* pSceneGraphs = FUN_1413f98b0();
         if (pSceneGraphs != 0)
             m_spSceneGraphCacheCount->FUN_14118b9b0(pSceneGraphs->FUN_1414f3660(), bForce, 0);
-        Unk_VtmAssetMgr* pAssets = FUN_1413f9b10();
+        MS2AnimationService* pAssets = FUN_1413f9b10();
         if (pAssets != 0)
         {
-            m_spAssetCount->FUN_14118b9b0(pAssets->FUN_1414a9940(), bForce, 0);
-            m_spActorCount->FUN_14118b9b0(pAssets->FUN_1414a9970(), bForce, 0);
-            m_spKfmCacheCount->FUN_14118b9b0(pAssets->FUN_1414a99a0(), bForce, 0);
+            m_spAssetCount->FUN_14118b9b0(pAssets->GetAssetCount(), bForce, 0);
+            m_spActorCount->FUN_14118b9b0(pAssets->GetActorCount(), bForce, 0);
+            m_spKfmCacheCount->FUN_14118b9b0(pAssets->GetKFMCacheCount(), bForce, 0);
         }
         m_spNifCount->FUN_14118b9b0(FUN_140a0afd0()->FUN_14151e770(), bForce, 0);
         m_spTextureCount->FUN_14118b9b0(FUN_140a0afd0()->FUN_14151e790(), bForce, 0);
@@ -471,7 +467,7 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
 
     if (m_nPage == 3)
     {
-        if (FUN_1403ed2d0()->FUN_141bcfbd0() != 0)
+        if (reinterpret_cast<Unk_VtmSession*>(WorldService::GetInstance())->FUN_141bcfbd0() != 0)
         {
             Unk_PhysXSceneHandle* pHandle = FUN_1409f7ca0()->FUN_1416892a0(0);
             if (pHandle != 0)
@@ -688,7 +684,7 @@ bool MS2VisualTrackerManager::CreateVisualTrackers()
 
     // --- page 1: System ---
     m_idSystemPage = AddPage("System");
-    m_spOsName = AddDebugString(m_idSystemPage, FUN_1411b1db0()->FUN_14070ee50(), 10, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spOsName = AddDebugString(m_idSystemPage, TSingleton<COSInfo>::GetInstance()->GetFullName(), 10, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
     {
         char szText[128];
         unsigned __int64 nVideoMem = FUN_1409f7c90()->FUN_141245b10();

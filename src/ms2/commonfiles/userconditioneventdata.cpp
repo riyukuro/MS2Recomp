@@ -18,17 +18,19 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/commonfiles/citemoptiontable.h"
+#include "ms2/commonfiles/filesystem.h"
 
 typedef ATL::CRBMap<int, CUserConditionEventData::Ptr> Unk_UceMap;
 
 // ---- unrecovered helpers ----
 
-class Unk_UceLoader { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_UceLoader : public CFileSystem { };
 Unk_UceLoader* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);         // undecorated class name
-class Unk_UceChecker { public: int FUN_1405f5e90(int nCode, int nRank, CString strTag, CString strInfo); };   // the item exists
-Unk_UceChecker* FUN_140166430();
+   // the item exists
+CItemOptionTable* FUN_140166430();
 int FUN_14029ea20(CConditionCommonData* pData, Unk_140165cf0* pNode, CStringW strTag, unsigned nId);   // reads a <condition>
 extern CLockCriticalSection g_cacheLock;                        // 0x143aac550
 extern int DAT_1439ed00c;

@@ -40,10 +40,11 @@
 #include "ms2/ms2recover.h"
 #include <typeinfo>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
@@ -55,7 +56,7 @@ int FUN_140873220(Unk_140165cf0*, const char*, unsigned&);
 int FUN_1408730a0(Unk_140165cf0*, const char*, bool&);
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
-__int64 FUN_140869440();                                                  // current time
+__int64 GetServerTime();                                                  // current time
 
 // The broken-down time (0x30 bytes, unit_14088dbf0) built by FUN_14088dfa0(out, time, hourOffset): hour at +0xc.
 struct Unk_DateParts
@@ -106,7 +107,7 @@ CFieldBannerData::~CFieldBannerData()
 __int64 CFieldBannerData::GetCurrentHourly()
 {
     Unk_DateParts t;
-    FUN_14088dfa0(&t, FUN_140869440(), 0);
+    FUN_14088dfa0(&t, GetServerTime(), 0);
     int nHour = t.m_hour;
     return GetHourly(nHour);
 }

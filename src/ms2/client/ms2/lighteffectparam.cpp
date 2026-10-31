@@ -29,6 +29,10 @@
 #include <NiFixedString.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/entityworldmanager.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 // Game TinyXML element.
@@ -51,8 +55,7 @@ Unk_LightUpdateBits* FUN_140314670(Unk_LightUpdateBits* pBits, unsigned nPos, bo
 bool FUN_1411fe0e0(const Unk_LightUpdateBits* pBits);               // any bit set
 bool FUN_140afc5a0(const Unk_LightUpdateBits* pBits);               // all bits set
 bool FUN_14028d470(float a, float b);                               // nearly equal
-class Unk_GameClock { public: double FUN_141473280(); };
-Unk_GameClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
@@ -65,8 +68,6 @@ ecr::SceneGraphService* FUN_1410a68f0(char* pCell);
 
 // The effect manager singleton (0x1403ed280): the effect root.
 class Unk_1403ed280 { public: void* FUN_1411a6b10(); };
-Unk_1403ed280* FUN_1403ed280();
-EntityWorldManager* FUN_1409670f0();
 
 // The world object behind an entity (slot 7: class id).
 class Unk_LightWorldObj
@@ -82,7 +83,6 @@ public:
     virtual int GetClassId();
 };
 class Unk_LightWorld { public: Unk_LightWorldObj* FUN_141bd0f50(egf::Entity* pEntity); };
-Unk_LightWorld* FUN_1403ed2d0();
 
 // The effect target (CEffect::vfunc_3's second argument), the part this unit reads.
 struct Unk_LightTarget
@@ -296,7 +296,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
         egf::Entity* pOwner = spService->GetEntityFromSceneGraphNode(pShadow);
         if (pOwner != 0)
         {
-            Unk_LightWorldObj* pObj = FUN_1403ed2d0()->FUN_141bd0f50(pOwner);
+            Unk_LightWorldObj* pObj = reinterpret_cast<Unk_LightWorld*>(WorldService::GetInstance())->FUN_141bd0f50(pOwner);
             if (pObj != 0 && pObj->GetClassId() == 0x6200044)
                 return false;
         }
@@ -326,7 +326,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
 
     if (pShadow == 0)
     {
-        FUN_1409f76f0(&m_spParent, FUN_1403ed280()->FUN_1411a6b10());
+        FUN_1409f76f0(&m_spParent, reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10());
     }
     else
     {
@@ -349,7 +349,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
 
     egf::EntityID id = egf::EntityIDFactory::GetNextID();
     efd::utf8string strModel("EffectPointLight");
-    egf::EntityPtr spEntity = FUN_1409670f0()->FactoryEntity(strModel, id, true);
+    egf::EntityPtr spEntity = TSingleton<EntityWorldManager>::GetInstance()->FactoryEntity(strModel, id, true);
     m_entity.FUN_1408b6ec0(reinterpret_cast<Unk_Entity*>(static_cast<egf::Entity*>(spEntity)));
     if (m_entity.FUN_1408b70b0(0))
         return false;
@@ -370,7 +370,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
     pEntity->FUN_1409457c0(0x9f7d1fa7, &pLightParam->m_fAttQuadratic);
     Vector3 ptWorld(kWorld.m_Translate.x, kWorld.m_Translate.y, kWorld.m_Translate.z);
     pEntity->FUN_140a38a50(0xfd95ca52, ptWorld);
-    FUN_1409670f0()->FUN_1411cf2d0(reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()), 0);
+    TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0(reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()), 0);
     if (FUN_14028d470(pLightParam->m_fStartDelay, 0.0f))
         vfunc_4();
     return true;

@@ -17,6 +17,12 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/gfxmanager.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cgameoption.h"
 #include <string.h>
 
 // ---- unit-local views of exe objects ----
@@ -43,24 +49,13 @@ public:
 };
 Unk_AdvGlobals* FUN_1401d3200();
 
-class Unk_AdvFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_AdvFeatures* FUN_140166410();
-class Unk_AdvStatusMgr
-{
-public:
-    void FUN_141b0cd00(UIStatusEventListener* pListener);           // register
-    void FUN_141b0cd90(UIStatusEventListener* pListener);           // unregister
-};
-Unk_AdvStatusMgr* FUN_140aa6d40();
+CFeatureManager* FUN_140166410();
+UIStatusEventDispatcher* FUN_140aa6d40();
 class Unk_AdvUIMgr { public: void FUN_141adc750(int nUiId); };      // opens a ui
-Unk_AdvUIMgr* FUN_1403ed2b0();
 struct Unk_AdvCfgData { char m_pad_00[8]; unsigned char m_bShowPoint; };
 class Unk_AdvCfg { public: Unk_AdvCfgData* FUN_140b123b0(); };
-Unk_AdvCfg* FUN_1409a8b10();
-class Unk_AdvUiScale { public: float FUN_1422afec0(int nUiId); };
-Unk_AdvUiScale* FUN_14025e7a0();
-class Unk_AdvTextFilter { public: void FUN_1416fb340(CStringW& strText); };
-Unk_AdvTextFilter* FUN_1403b4750();
+GFxManager* FUN_14025e7a0();
+CReservedWordTable* FUN_1403b4750();
 int FUN_1412755a0();
 int FUN_1418dd0c0();                                                // height of the exp bar
 bool FUN_140184310(const CString& str, const char* psz);            // str == psz
@@ -233,7 +228,7 @@ void UIAdventureLevelExpBar::OnLoadComplete()
     else
     {
         FUN_140ba6cf0(0);
-        FUN_140ba7080(FUN_1409a8b10()->FUN_140b123b0()->m_bShowPoint);
+        FUN_140ba7080(reinterpret_cast<Unk_AdvCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bShowPoint);
         FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
         FUN_140ba7130();
     }
@@ -278,9 +273,9 @@ int UIAdventureLevelExpBar::vfunc_28(const char* szMethod, const Scaleform::GFx:
     if (_stricmp("OnClickBar", szMethod) == 0)
     {
         if (FUN_140166410()->FUN_14036d570(0xfb))
-            FUN_1403ed2b0()->FUN_141adc750(0x4f67);
+            reinterpret_cast<Unk_AdvUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f67);
         else
-            FUN_1403ed2b0()->FUN_141adc750(0x4f87);
+            reinterpret_cast<Unk_AdvUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f87);
         return 1;
     }
     return 0;

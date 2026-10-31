@@ -46,7 +46,7 @@ Unk_ClientConfig* FUN_1401d3200();
 
 // Camera tuning values of the camera xml (FUN_140ae8910 consumes its by-value CString key).
 float FUN_140ae8910(CString key);
-int FUN_140ae8540();                                // reloads the camera xml (returns 0 on failure)
+int LoadTestCamerValue();                           // reloads the camera xml (returns 0 on failure)
 
 float FUN_14059d930(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
@@ -238,7 +238,7 @@ MS2_REPLACE_METHOD(0x1416c5b00, CPVPCameraMode, FUN_1416c5b00, 25, 0x7D8CAC3E);
 // @0x1416c5b20
 BOOL CPVPCameraMode::vfunc_31()
 {
-    if (FUN_140ae8540())
+    if (LoadTestCamerValue())
     {
         m_118 = FUN_140ae8910(CString("PVP_InterpolateDelay"));
         m_6c = FUN_140ae8910(CString("PVP_VertDeg")) * 3.1415927f / 180.0f;

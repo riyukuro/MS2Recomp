@@ -15,6 +15,9 @@
 #include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/client/ms2/cubemapinformationservice_3.h"
+#include "ms2/placeholder/fittingdollpc.h"
 
 // ---- unit-local views of exe types ----
 
@@ -27,10 +30,9 @@ public:
 
 class Unk_DemolishCube;
 // The local player (a MyPC).
-class Unk_DemolishPC
+class Unk_DemolishPC : public PC
 {
 public:
-    int FUN_141659690();                                        // state flag (nonzero: not buildable)
     Unk_DemolishCube* FUN_141530290();                          // the cube craft controller
 };
 __int64 FUN_141656ad0(Unk_DemolishPC* pPC);                     // the owner id of the player's plot
@@ -45,22 +47,15 @@ public:
 Unk_DemolishWorld* FUN_1403ed2d0();
 
 // The housing manager (FUN_1409670e0).
-class Unk_DemolishHousing
+class Unk_DemolishHousing : public CubeMapInformationService
 {
 public:
     bool FUN_1410d27c0(__int64 nOwner, int nMode, int* pCount, int* pLimit);   // building count and limit
-    __int64 FUN_1410c3180();                                    // the owner id of the visited house
 };
 Unk_DemolishHousing* FUN_1409670e0();
 
 // The notice dispatcher (FUN_140939a10).
-class Unk_DemolishNotices
-{
-public:
-    void FUN_140da4e40(CStringW strName, Delegate<void(NotifyObject*)> cb);    // subscribe
-    void FUN_140da4eb0(CStringW strName, Delegate<void(NotifyObject*)> cb);    // unsubscribe
-};
-Unk_DemolishNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 // The string table (FUN_1409331f0).
 class Unk_DemolishTable
@@ -133,8 +128,8 @@ void UIHouseDemolishDialog::vfunc_26()
     m_bRefreshed = false;
     m_nDirty = 0;
     m_tick.FUN_140268840();
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyChangeGameOptionInput", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeGameOptionInput));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyChangeUIBuildingCount", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeUIBuildingCount));
+    FUN_140939a10()->UnregisterNotify(L"NotifyChangeGameOptionInput", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeGameOptionInput));
+    FUN_140939a10()->UnregisterNotify(L"NotifyChangeUIBuildingCount", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeUIBuildingCount));
 }
 MS2_REPLACE_METHOD(0x14134FE70, UIHouseDemolishDialog, vfunc_26, 509, 0xF36A0F20);
 
@@ -149,8 +144,8 @@ MS2_REPLACE_METHOD(0x141350080, UIHouseDemolishDialog, vfunc_67, 24, 0x526E4F64)
 void UIHouseDemolishDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChangeGameOptionInput", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeGameOptionInput));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChangeUIBuildingCount", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeUIBuildingCount));
+    FUN_140939a10()->RegisterNotify(L"NotifyChangeGameOptionInput", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeGameOptionInput));
+    FUN_140939a10()->RegisterNotify(L"NotifyChangeUIBuildingCount", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeUIBuildingCount));
 }
 MS2_REPLACE_METHOD(0x1413500A0, UIHouseDemolishDialog, OnLoadComplete, 439, 0xA6D31912);
 

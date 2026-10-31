@@ -40,6 +40,10 @@
 #include "ms2/commonfiles/blockchecker.h"
 #include "ms2/commonfiles/itemdata.h"
 #include "ms2/client/ms2/arccontroller.h"
+#include "ms2/client/ms2/uidamagetext.h"
+#include "ms2/placeholder/cgraphicoptiontable.h"
+#include "ms2/client/ms2/nifeffectparam.h"
+#include "ms2/placeholder/cguidemanager.h"
 
 // ---- unit-local views of exe objects and unrecovered callees ----
 
@@ -78,22 +82,13 @@ private:
 MS2_CHECK_SIZE(CObjectShadow, 0x58);
 
 // The shadow quality settings (?\gameoption.cpp keeps the full view).
-class Unk_DropShadowCfg
-{
-public:
-    int FUN_141376880(int n);
-    int FUN_1413769d0(int n);
-};
-Unk_DropShadowCfg* FUN_140ae1c00();
 
-// The sound / effect service (FUN_1403ed280), see effectservice.h.
-CEffectService* FUN_1403ed280();
+// The sound / effect service (TSingleton<CEffectService>::GetInstance), see effectservice.h.
 
 // The notice and guide managers.
-class Unk_DropGuideMgr
+class Unk_DropGuideMgr : public CGuideManager
 {
 public:
-    int FUN_14138c900(int nGuide);                                  // the guide was cleared
     void FUN_14138bf00(int nGuide, int nItemId, int nA);
 };
 Unk_DropGuideMgr* FUN_1409331e0();
@@ -102,13 +97,7 @@ void FUN_141276180(const CString& strKey, const CString& strArg);   // system no
 void FUN_1412751b0(const CStringW& strText, int nSeconds);          // center notice
 
 // The ui dialogs a pickup notifies.
-class Unk_DropPickDlg
-{
-public:
-    void FUN_141913060(GameObject* pActor, int nCount, const CString& strName);   // pickup notice of an item
-    void FUN_141912a80(GameObject* pActor, int nAmount, int bMeso);        // pickup notice of meso
-};
-Unk_DropPickDlg* FUN_140b624b0(int nUiId);
+UIDamageText* FUN_140b624b0(int nUiId);
 class Unk_DropBagDlg { public: void FUN_141abfa10(MS2Ptr<CItem> spItem); };
 Unk_DropBagDlg* FUN_140938cd0(int nUiId);
 void FUN_14098c6e0(egf::Entity* pEntity, unsigned int uiPropId, const bool& b);   // set an entity bool property
@@ -130,8 +119,7 @@ extern char DAT_143afbbb0;                                          // NiMesh::m
 extern char DAT_143afa4f0;                                          // NiTexturingProperty::ms_RTTI
 NiTexturingProperty::Map* FUN_14109a6b0(NiTexturingProperty* pProp);   // the base map
 void FUN_140981040(NiTexturingProperty::Map* pMap, NiTexture* pTex);   // Map::SetTexture
-class Unk_DropTextures { public: NiTexturePtr FUN_141552f90(CString strPath, int nFlags); };
-Unk_DropTextures* FUN_140a0afd0();
+CNifLoadingService* FUN_140a0afd0();
 class Unk_DropPickTick                                              // 8-byte throttle (static of FUN_141190900)
 {
 public:
@@ -144,7 +132,7 @@ private:
 // More unit-local views of exe objects (the drop source, the model attachment, the item data, the prop of a tree).
 class Unk_WsB_Prop : public CInteractObject { };
 class Unk_GoAttachment { public: char m_pad[0xb4]; NxBox m_box; };     // +0xb4 the placement box
-class Unk_ItemEquipData { public: int FUN_14053c5c0(); };                      // the item kind
+                      // the item kind
 class Unk_DropAnimSvc { public: NiActorManager* FUN_140999440(const egf::EntityID& kId); };
 Unk_DropAnimSvc* FUN_141b6f910();
 void FUN_1409fae00(NiActorManager* pMgr, bool b);
@@ -153,7 +141,7 @@ MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 CString* FUN_140298f80(Common::Constants::Value<CString>* pValue);   // Value<CString>::Get as a free function
 bool FUN_140184310(const CStringA& str, const char* psz);            // str == psz
 class CBlockManager* FUN_140a6a830();
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 int FUN_140768010(unsigned nRange, unsigned nBase);                  // random in base..base+range-1
 float FUN_140966f00(Vector3 kA, Vector3 kB);        // the horizontal distance
 float FUN_140966f00(Vector3 kA, efd::Point3 kB);    // the same, the second point sliced from an NiPoint3
@@ -239,8 +227,8 @@ CDropItem::CDropItem(int nType, int nRarity)
 // @0x14118cac0
 CDropItem::~CDropItem()
 {
-    FUN_1403ed280()->FUN_1411a6060(m_nEffectIdA);
-    FUN_1403ed280()->FUN_1411a6060(m_nEffectIdB);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffectIdA);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffectIdB);
 }
 
 // Builds the item and the model of the drop; false when the item or its effect row does not exist.
@@ -420,7 +408,7 @@ void CDropItem::FUN_14118d720(NiAVObject* pRoot)
                     FUN_1401d3700(strPath);
                     if (!strPath.IsEmpty())
                     {
-                        FUN_140981040(pMap, FUN_140a0afd0()->FUN_141552f90(CString(strPath), 5));
+                        FUN_140981040(pMap, FUN_140a0afd0()->GetTexture(CString(strPath), 5));
                     }
                 }
             }
@@ -487,7 +475,7 @@ void CDropItem::FUN_14118d9a0(int nState)
                 kTarget.m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTrapDropItemEffect);
                 kTarget.m_nKind = 0;
                 kTarget.FUN_140a53190(FUN_14123c580());
-                FUN_1403ed280()->FUN_1411a4a00(kTarget);
+                TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(kTarget);
                 m_nFadeTime = FUN_140869420() + *Client::Constants::GetInstance()->PetTrapDropVisibleDelay.Get();
                 vfunc_23(1);
             }
@@ -660,16 +648,16 @@ void CDropItem::FUN_14118d9a0(int nState)
             int nKind = WorldService::GetInstance()->FUN_141bd19d0(m_nOwnerObjId);
             CString strSound = m_spEffect->dropSoundID;
             if (!strSound.IsEmpty())
-                FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"), CString(strSound), CString(""), nKind, &kXform, 1.0f, 0);
+                TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"), CString(strSound), CString(""), nKind, &kXform, 1.0f, 0);
         }
         m_pfnState = &CDropItem::FUN_141191780;
     }
     else if (nState == 2)
     {
         if (m_nEffectIdA != 0)
-            FUN_1403ed280()->FUN_1411a6060(m_nEffectIdA);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffectIdA);
         if (m_nEffectIdB != 0)
-            FUN_1403ed280()->FUN_1411a6060(m_nEffectIdB);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffectIdB);
         Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n278);
         if (!pOwner)
             pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
@@ -703,18 +691,18 @@ void CDropItem::FUN_14118d9a0(int nState)
             const efd::ClassInfo* pInfo = pOwner ? pOwner->GetClassDesc() : 0;
             if (FUN_14087ddc0(pInfo, 0x6200004))
             {
-                Unk_DropPickDlg* pDlg = FUN_140b624b0(0x4e32);
+                UIDamageText* pDlg = FUN_140b624b0(0x4e32);
                 if (pDlg)
                     pDlg->FUN_141912a80(pOwner, (int)m_n64Meso, 1);
             }
         }
-        else if (reinterpret_cast<Unk_ItemEquipData*>(m_spItem->FUN_140527840())->FUN_14053c5c0() == 3)
+        else if (reinterpret_cast<CItemData*>(m_spItem->FUN_140527840())->FUN_14053c5c0() == 3)
         {
             Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
             const efd::ClassInfo* pInfo = pOwner ? pOwner->GetClassDesc() : 0;
             if (FUN_14087ddc0(pInfo, 0x6200004))
             {
-                Unk_DropPickDlg* pDlg = FUN_140b624b0(0x4e32);
+                UIDamageText* pDlg = FUN_140b624b0(0x4e32);
                 if (pDlg)
                     pDlg->FUN_141913060(pOwner, m_spItem->FUN_140526c50(), m_spItem->FUN_140528590());
             }
@@ -737,14 +725,14 @@ void CDropItem::FUN_14118d9a0(int nState)
         kTarget.m_strName = CItemDataTable::GetInstance()->GetGradeEffect((ItemGradeKey)m_spItem->FUN_140526bd0());
         kTarget.m_nKind = 0;
         kTarget.m_pXform = &kXform;
-        m_nEffectIdA = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+        m_nEffectIdA = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
         if (m_spEffect->beEffect.GetLength() != 0)
         {
             Unk_EffectTarget kTargetB;
             kTargetB.m_strName = m_spEffect->beEffect;
             kTargetB.m_nKind = 0;
             kTargetB.m_pXform = &kXform;
-            m_nEffectIdB = FUN_1403ed280()->FUN_1411a49c0(kTargetB);
+            m_nEffectIdB = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTargetB);
         }
     }
     else if (nState == 5)
@@ -825,7 +813,7 @@ int CDropItem::FUN_141190120(const efd::Point3& kPos, int nA, int nB)
                 return 0;
             if (FUN_140869420() < m_nFadeTime)
                 return 0;
-            if (FUN_1409331e0()->FUN_14138c900(7))
+            if (FUN_1409331e0()->IsRestricted(7))
                 return 0;
             Vector3 kPlayer(reinterpret_cast<const Vector3&>(kPos));
             NiPoint3 kSelf = vfunc_18();
@@ -886,7 +874,7 @@ int CDropItem::FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB)
                 return 0;
             if (FUN_140869420() < m_nFadeTime)
                 return 0;
-            if (FUN_1409331e0()->FUN_14138c900(7))
+            if (FUN_1409331e0()->IsRestricted(7))
                 return 0;
             NiPoint3 kActor = pActor->vfunc_18();
             Vector3 kPlayer(reinterpret_cast<Vector3&>(kActor));
@@ -940,7 +928,7 @@ int CDropItem::FUN_1411905a0()
 // @0x141190640
 int CDropItem::FUN_141190640(bool bForce)
 {
-    int bInBag = DAT_143ab2a90.FUN_140a615d0(0);
+    int bInBag = g_143ab2a90.FUN_140a615d0(0);
     if (bInBag == 0 && FUN_1411906a0() == 0 && bForce == 0)
         return 0;
     return 1;
@@ -952,7 +940,7 @@ int CDropItem::FUN_1411906a0()
     if (m_spItem->FUN_1405257f0())
     {
         ATL::CAtlList<MS2Ptr<CItem> > kHave(10);
-        DAT_143ab2a90.FUN_140a5e8d0(m_spItem->FUN_1405276c0(), kHave, 1);
+        g_143ab2a90.FUN_140a5e8d0(m_spItem->FUN_1405276c0(), kHave, 1);
         POSITION pos = kHave.GetHeadPosition();
         while (pos)
         {
@@ -1009,7 +997,7 @@ void CDropItem::FUN_141190900(int nPickerId)
             return;
         }
     }
-    if (DAT_143ab2a90.FUN_140a61430(DAT_143ab2a90.FUN_140a617f0(m_spItem)))
+    if (g_143ab2a90.FUN_140a61430(g_143ab2a90.FUN_140a617f0(m_spItem)))
     {
         SendRequestItemPickup(nPickerId);
         return;
@@ -1041,7 +1029,7 @@ void CDropItem::FUN_141190b70(int nPickerId)
                 kXform.m_Rotate = DAT_143a09600;
                 CString strSound = m_spEffect->getSoundID;
                 if (!strSound.IsEmpty())
-                    FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"), CString(strSound), CString(""), 1, &kXform, 1.0f, 0);
+                    TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"), CString(strSound), CString(""), 1, &kXform, 1.0f, 0);
                 if (m_spItem->FUN_140526bd0() >= 1)
                 {
                     if (m_spItem->FUN_1405258f0() == 0)
@@ -1153,9 +1141,9 @@ void CDropItem::vfunc_49()
         fScale = m_spEffect->shadowScale;
         fBias = m_spEffect->shadowBias;
     }
-    Unk_DropShadowCfg* pCfg = FUN_140ae1c00();
-    int nLodHi = pCfg->FUN_141376880(4);
-    int nLodLo = pCfg->FUN_1413769d0(4);
+    CGraphicOptionTable* pCfg = TSingleton<CGraphicOptionTable>::GetInstance();
+    int nLodHi = pCfg->GetShadowOption(4);
+    int nLodLo = pCfg->GetShadowOptionOffset(4);
     m_spShadow = NiNew CObjectShadow(this, nLodHi, nLodLo, fScale, fBias);
     m_spShadow->FUN_14160fe10(false);
 }

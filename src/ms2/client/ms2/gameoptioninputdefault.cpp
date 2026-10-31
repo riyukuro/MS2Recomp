@@ -104,7 +104,7 @@ void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);    
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW tag);          // notice box by string id
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                            // show it
-CStringW FUN_1409eec40(int nStrId);                                     // string table text by id
+CStringW BlockFormat(int nStrId);                                       // string table text by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text by key
 CStringW FUN_14052bd00(int nStrId, const CStringW& strArg);             // formatted string table text
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);      // StringFormat<int>
@@ -598,7 +598,7 @@ void CGameOptionInputDefault::FUN_141252840(int nMsgId)
 {
     FUN_141252700(m_nOldKey);
     if (nMsgId != 0)
-        FUN_140d73aa0(FUN_1409eec40(nMsgId), 0, static_cast<IMessageListener*>(this), CStringW(L""));
+        FUN_140d73aa0(BlockFormat(nMsgId), 0, static_cast<IMessageListener*>(this), CStringW(L""));
 }
 MS2_REPLACE_METHOD(0x141252840, CGameOptionInputDefault, FUN_141252840, 201, 0xD16B40F0);
 

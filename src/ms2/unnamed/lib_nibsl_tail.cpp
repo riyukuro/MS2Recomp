@@ -28,14 +28,21 @@ struct UIntUIntTreeNode
 
 // std::_Tree_comp_alloc<map<unsigned int, unsigned int> traits>::_Buyheadnode: this library's own copy (the game's is
 // 0x140a422c0): a black nil head node linked to itself.
-// MS2-FUNCTIONAL: the exe's copy has the library's EH frame (the empty try/catch of the std source) and homes `this`.
 // @0x141cac4b0
 UIntUIntTreeNode* FUN_141cac4b0(void* self)
 {
     UIntUIntTreeNode* pnode = (UIntUIntTreeNode*)::operator new(sizeof(UIntUIntTreeNode));
-    pnode->_Left = pnode;
-    pnode->_Parent = pnode;
-    pnode->_Right = pnode;
+    try
+    {
+        pnode->_Left = pnode;
+        pnode->_Parent = pnode;
+        pnode->_Right = pnode;
+    }
+    catch (...)
+    {
+        reinterpret_cast<std::allocator<UIntUIntTreeNode>*>(self)->deallocate(pnode, 1);
+        throw;
+    }
     pnode->_Color = 1;   // _Black
     pnode->_Isnil = 1;
     return pnode;

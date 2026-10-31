@@ -27,6 +27,12 @@
 #include <egf/FlatModel.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/windowservice.h"
+#include "ms2/client/ms2/additionalclilist.h"
+#include "ms2/placeholder/asmousecursor.h"
+#include "ms2/client/ms2/triggerservice.h"
+#include "ms2/placeholder/gfxmanager.h"
 
 // ---- unit-local stand-ins and unrecovered callees (names invented from use) ----------------------------------------------
 extern Vector3 DAT_143b01a60;                           // the zero point
@@ -48,15 +54,12 @@ public:
 };
 
 // Settings (feature flags) and input.
-class Unk_McOptions { public: bool FUN_14036d570(int nId); };
-Unk_McOptions* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
-class Unk_McCursor
+class Unk_McCursor : public ASMouseCursor
 {
 public:
-    int FUN_1422cef10();                                        // cursor kind
     void FUN_1422cee50(int nKind);
-    void FUN_1422ceea0(const CStringW& strHint);
 };
 class Unk_McCursorPtr
 {
@@ -68,19 +71,16 @@ private:
     void* m_pad_00;
     Unk_McCursor* m_p;
 };
-class Unk_McInput
+class Unk_McInput : public GFxManager
 {
 public:
-    int FUN_1422aeed0(int nKey);                                // key / button state
     Unk_McCursorPtr FUN_1422b0370(int nSlot);                   // cursor widget
 };
-Unk_McInput* FUN_14025e7a0();
 
 // Application window.
-class Unk_McApp
+class Unk_McApp : public CWindowService
 {
 public:
-    int FUN_141b90e30(float* pfX, float* pfY);                  // cursor position inside the window
     RECT FUN_140ad4c30();                                       // client rectangle (inline getter)
 };
 Unk_McApp* FUN_140aadf80();
@@ -119,7 +119,7 @@ public:
     virtual void vfunc_32(); virtual void vfunc_33();
     virtual void vfunc_34();                                    // MS2: slot 34 (0x110) stop / interrupt the state
 };
-class Unk_McBuffSrc { public: int FUN_140970a40(); };
+class Unk_McBuffSrc : public AdditionalCliList { };
 class Unk_McAttach : public Unk_McRefObj
 {
 public:
@@ -245,7 +245,7 @@ private:
 };
 Unk_McInstSvc* FUN_14098c5b0(char* pCell);
 
-class Unk_McEntityRules { public: bool FUN_1418638d0(egf::Entity* pEntity); };
+class Unk_McEntityRules : public CTriggerService { };
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
 void FUN_1408a20a0(egf::Entity* pEntity, unsigned nHash, bool* pbOut);
 const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
@@ -417,7 +417,7 @@ void CMouseController::FUN_140ad1da0(int nMsg, int nX, int nY)
         FUN_140ad22d0();
         return;
     }
-    int nKey = FUN_14025e7a0()->FUN_1422aeed0(2);
+    int nKey = reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422aeed0(2);
     if (nMsg == 0x201)
         m_nIgnoreRelease = nKey;
     if (nKey != 0)
@@ -756,16 +756,16 @@ void CMouseController::FUN_140ad2d80()
     if (m_tmPick.FUN_140268870(100) != 0)
     {
         float fX, fY;
-        if (FUN_140aadf80()->FUN_141b90e30(&fX, &fY) != 0 && FUN_140ad3dd0((int)fX, (int)fY) != 0)
+        if (FUN_140aadf80()->GetCursorClientPos(&fX, &fY) != 0 && FUN_140ad3dd0((int)fX, (int)fY) != 0)
         {
             CStringW strHint;
             int nKind = 0;
-            if (FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
+            if (reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422aeed0(2) == 0)
             {
                 if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
                     nKind = FUN_140ad2ac0((int)fX, (int)fY, &strHint);
             }
-            Unk_McCursorPtr spCursor = FUN_14025e7a0()->FUN_1422b0370(6);
+            Unk_McCursorPtr spCursor = reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422b0370(6);
             if (spCursor.FUN_140a58470() != 0)
             {
                 int nCurrent = spCursor.FUN_140a584a0()->FUN_1422cef10();

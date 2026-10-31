@@ -17,7 +17,6 @@
 class ASData;
 class ASTextField;
 class Unk_CdInput;
-struct Unk_CdInputRef { void* m_0; void* m_8; };               // the layout of an MS2Ptr
 
 class UICameraDialog : public UIDialog
 {
@@ -40,6 +39,6 @@ public:
     void FUN_141032a90(ASData& data);                           // "onClickApplyMinDistance"
 
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // 0x140bb4cf0 text field child lookup (a UIDialog member)
-    Unk_CdInputRef FUN_140e35bd0(const CString& strName);       // 0x140e35bd0 input child lookup (a shared GetChild instance)
+    MS2Ptr<Unk_CdInput> FUN_140e35bd0(const CString& strName);       // 0x140e35bd0 input child lookup (a shared GetChild instance)
 };
 MS2_CHECK_SIZE(UICameraDialog, 0x178);

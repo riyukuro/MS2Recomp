@@ -15,6 +15,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local placeholders ----
 
@@ -43,19 +44,14 @@ public:
 class FieldProperty;
 
 // The world service (FUN_1403ed2d0).
-class Unk_GameContext
+class Unk_GameContext : public WorldService
 {
 public:
     Unk_CameraOptionPtr FUN_141bd30a0();            // copy of +0x298
-    FieldProperty* FUN_141bcab60(unsigned int nType);
-    bool FUN_141bd3cd0();
-    bool FUN_141bd3d10();
-    int FUN_141bd36f0(Vector3 pt, Vector3* pOut);   // nonzero if inside
 };
 Unk_GameContext* FUN_1403ed2d0();
 
-// The game clock (FUN_14086d260).
-CMainSystem* FUN_14086d260();
+// The game clock (TSingleton<CMainSystem>::GetInstance).
 
 namespace egf { class Entity; }
 egf::Entity* FUN_14123c410(Unk_CameraTargetEntity* p);      // m_80 of the game object
@@ -132,7 +128,7 @@ void CToolCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     NiAVObject* pNode = FUN_141b6efc0(FUN_14123c410(p));
     if (!pNode)
         return;
-    pNode->Update((float)FUN_14086d260()->FUN_141473280(), true);
+    pNode->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
     pNode->UpdateWorldBound();
     const NiBound& kBound = FUN_140994490(pNode);
     fDist = FUN_1409803f0(kBound);

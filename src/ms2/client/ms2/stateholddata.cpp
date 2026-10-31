@@ -20,6 +20,10 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/camera.h"
 
 // MS2Ptr members instantiated by other objs.
 template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0
@@ -63,7 +67,6 @@ public:
     PCBase* FUN_141bd1200(int nId);
     PCBase* FUN_141bd1290(int nId);
 };
-Unk_HoldWorld* FUN_1403ed2d0();
 class Unk_HoldBuffs                                                      // the actor's buff list
 {
 public:
@@ -71,8 +74,7 @@ public:
     bool FUN_141683100(int nBuff);
 };
 Unk_HoldBuffs* FUN_14166d240(PCBase* pOwner);
-class Unk_HoldFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_HoldFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 class Unk_HoldConsts                                                     // the game's constants table
 {
 public:
@@ -81,11 +83,9 @@ public:
 };
 Unk_HoldConsts* FUN_1401d3200();
 class Unk_HoldCamera { public: char m_pad[8]; };                         // the camera manager
-Unk_HoldCamera* FUN_1409478c0();
 void* FUN_140a38d60(Unk_HoldCamera* pCamera);                            // 0x140a38d60 the camera target
 void FUN_140aeaf40(Unk_HoldCamera* pCamera, Ridee* pTarget, int n);      // 0x140aeaf40 set the camera target
 class Unk_HoldSkillTable { public: MS2Ptr<SkillData> FUN_1407ee1d0(int nSkillId); };
-Unk_HoldSkillTable* FUN_1401958b0();
 int FUN_141654700(MyPC* pPc);                                            // 0x141654700 the job
 void* FUN_14165f100(MyPC* pPC);                                          // 0x14165f100 the playing emotion
 void FUN_14165f170(MyPC* pPC);                                           // 0x14165f170 stop it
@@ -153,7 +153,7 @@ void StateHoldData::vfunc_1(Unk_StateDataArg* p)
     StateSkillData::vfunc_1(p);
     p->m_n90 = m_nTargetId;
     p->m_str98 = m_strTargetName;
-    PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1290(m_nTargetId);
+    PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1290(m_nTargetId);
     if (pTarget != 0)
     {
         if (pTarget->FUN_1416764a0() != 0)
@@ -175,7 +175,7 @@ void StateHoldData::vfunc_2(Unk_StateDataArg* p)
 // @0x1417cbb50
 MS2Ptr<SkillData> StateHoldData::FUN_1417cbb50()
 {
-    return FUN_1401958b0()->FUN_1407ee1d0(m_nSkill);
+    return reinterpret_cast<Unk_HoldSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(m_nSkill);
 }
 
 // ---- StateHold ----
@@ -233,7 +233,7 @@ void StateHold::vfunc_5(int n)
     if (pPC != 0)
     {
         pPC->FUN_141676060(pPC->vfunc_18());
-        if (FUN_140a38d60(FUN_1409478c0()) != pPC)
+        if (FUN_140a38d60(reinterpret_cast<Unk_HoldCamera*>(TSingleton<CameraMgr>::GetInstance())) != pPC)
             pPC->SendRequestRideMode4();
     }
 }
@@ -244,7 +244,7 @@ void StateHold::vfunc_3(double fTime)
     efd::SmartPointer<NiAVObject> spNode(0);
     int nAttached = 0;
     StateHoldData* pData = m_spHold.get();
-    PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1200(pData->m_nTargetId);
+    PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1200(pData->m_nTargetId);
     if (pTarget != 0)
         spNode = pTarget->FUN_1416757c0(m_spHold.get()->m_strTargetName);
     if (((NiAVObject*)spNode ? true : false) && pTarget != 0 && pTarget->FUN_14166ce30() == 0)
@@ -317,7 +317,7 @@ void StateHold::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     StateHoldData* pData = m_spHold.get();
-    PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1200(pData->m_nTargetId);
+    PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1200(pData->m_nTargetId);
     if (pTarget != 0)
     {
     if (pTarget->GetClassID() == 0x6200028)
@@ -439,7 +439,7 @@ void StateHold::FUN_1417ccd50()
 {
     m_bRiding = false;
     StateHoldData* pData = m_spHold.get();
-    PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1290(pData->m_nTargetId);
+    PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1290(pData->m_nTargetId);
     if (pTarget != 0)
     {
         if (pTarget->FUN_1416764a0() != 0)
@@ -447,7 +447,7 @@ void StateHold::FUN_1417ccd50()
             m_bRiding = true;
             MyPC* pPC = FUN_1417b84b0();
             if (pPC != 0)
-                FUN_140aeaf40(FUN_1409478c0(), pTarget->FUN_1416764a0(), 1);
+                FUN_140aeaf40(reinterpret_cast<Unk_HoldCamera*>(TSingleton<CameraMgr>::GetInstance()), pTarget->FUN_1416764a0(), 1);
         }
     }
 }
@@ -466,7 +466,7 @@ void StateHold::FUN_1417cce10()
     if (FUN_141654700(pPC) != 0x46)
         return;
     StateHoldData* pData = m_spHold.get();
-    PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1200(pData->m_nTargetId);
+    PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1200(pData->m_nTargetId);
     if (pTarget == 0)
         return;
     if (pPC->vfunc_122(pTarget) == 0)
@@ -487,7 +487,7 @@ void StateHold::FUN_1417cce10()
 // @0x1417cd060
 bool StateHold::FUN_1417cd060()
 {
-    PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1290(m_spHold.get()->m_nTargetId);
+    PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1290(m_spHold.get()->m_nTargetId);
     if (pTarget != 0 && pTarget->FUN_1416764a0() != 0)
         return true;
     return false;
@@ -504,7 +504,7 @@ int StateHold::FUN_1417cd0d0()
 // @0x1417cd120
 int StateHold::vfunc_36()
 {
-    PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1200(m_spHold.get()->m_nTargetId);
+    PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_spHold.get()->m_nTargetId);
     if (pTarget != 0 && pTarget->GetClassID() != 0x6200045)
         return FUN_14116dcb0(FUN_14025e7c0(), 0x493e2, 0, 0);
     else

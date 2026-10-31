@@ -16,6 +16,8 @@
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
 
 // ---- unit-local views of exe types ----
 
@@ -27,7 +29,6 @@ public:
     MS2Ptr<Unk_JscSkillRow> FUN_1407ee1d0(int nSkillId);
     MS2Ptr<SkillLevelData> FUN_1407ee2f0(int nSkillId, short nLevel);
 };
-Unk_JscSkillTable* FUN_1401958b0();
 
 class Unk_JscSkillSet : public CPtred
 {
@@ -46,8 +47,7 @@ public:
 };
 Unk_JscPlayer* FUN_1409613d0(PCBase* pPC);                      // the MyPC of a PC, or 0
 
-class Unk_JscOptions { public: bool FUN_14036d570(int nId); };
-Unk_JscOptions* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 int FUN_14165c570(PCBase* pPC);                                 // the active stance skill
 void FUN_14165c720(PCBase* pPC, int nSkillId, unsigned short nLevel);
@@ -79,13 +79,13 @@ MS2Ptr<SkillLevelData> JobSystemCli::vfunc_1(unsigned nSkillId)
         {
             unsigned short nLevel = spSet->FUN_140809560(nSkillId);
             if (nLevel != 0)
-                return FUN_1401958b0()->FUN_1407ee2f0(nSkillId, nLevel);
+                return reinterpret_cast<Unk_JscSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(nSkillId, nLevel);
         }
         if (FUN_140166410()->FUN_14036d570(0xd3))
         {
             unsigned short nLevel = pPlayer->FUN_14152fce0(nSkillId);
             if (nLevel != 0)
-                return FUN_1401958b0()->FUN_1407ee2f0(nSkillId, nLevel);
+                return reinterpret_cast<Unk_JscSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(nSkillId, nLevel);
         }
     }
     return JobSystem::vfunc_1(nSkillId);
@@ -94,7 +94,7 @@ MS2Ptr<SkillLevelData> JobSystemCli::vfunc_1(unsigned nSkillId)
 // @0x140a6da90
 bool JobSystemCli::vfunc_2(unsigned nSkillId)
 {
-    MS2Ptr<Unk_JscSkillRow> spRow = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
+    MS2Ptr<Unk_JscSkillRow> spRow = reinterpret_cast<Unk_JscSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
     if (spRow.IsNull())
         return false;
     if (!spRow->FUN_1407e9f30())
@@ -229,7 +229,7 @@ void JobSystemCli::NotifySkill(int nSkillId, unsigned short nLevel)
 {
     if (m_pOwner != 0)
     {
-        MS2Ptr<Unk_JscSkillRow> spRow = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
+        MS2Ptr<Unk_JscSkillRow> spRow = reinterpret_cast<Unk_JscSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
         if (spRow.IsNull())
             return;
         FUN_14165c720(m_pOwner, nSkillId, nLevel);

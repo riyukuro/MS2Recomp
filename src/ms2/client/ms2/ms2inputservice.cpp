@@ -26,6 +26,13 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uimainplayerinfo.h"
+#include "ms2/client/ms2/bigdatalogsystem.h"
+#include "ms2/placeholder/asmousecursor.h"
+#include "ms2/client/ms2/windowservice.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/crashmanagercli.h"
 
 // ---- out-of-unit callees ----
 
@@ -39,7 +46,6 @@ public:
     char m_pad[0x60];
     bool m_bFlag;
 };
-Unk_140a44830* FUN_140a44830();
 
 class Unk_140a94350                                     // IME / cursor controller
 {
@@ -65,17 +71,15 @@ public:
 };
 Unk_KeyBindings* FUN_1409331f0();
 
-class Unk_QuestDlg { public: void FUN_1419f22a0(int nKey, int bOn); };
-Unk_QuestDlg* FUN_140931900(int nId);
+UIMainPlayerInfo* FUN_140931900(int nId);
 
 class Unk_Clock;
-Unk_Clock* FUN_14086d260();
 double FUN_141473280(Unk_Clock* pClock);
 
-class Unk_RsApp { public: void FUN_141b90ec0(int nX, int nY); void FUN_141b90f20(int nMsg); };
+class Unk_RsApp : public CWindowService { public: void FUN_141b90f20(int nMsg); };
 Unk_RsApp* FUN_140aadf80();
 
-class Unk_HudDlg { public: void FUN_1422cee00(); void FUN_1422cee50(int n); void FUN_1422cedb0(); };
+class Unk_HudDlg : public ASMouseCursor { public: void FUN_1422cee50(int n);};
 class Unk_HudPtr
 {
 public:
@@ -95,9 +99,8 @@ void* FUN_1409a8b10();
 Unk_PadCursorCfg* FUN_140a58500(void*);
 
 class Unk_1403ed2b0 { public: int FUN_141adbd10(); };
-Unk_1403ed2b0* FUN_1403ed2b0();
 
-class Unk_EventSink { public: void FUN_140a1f970(const CString& strEvent, const CString& strArg); };
+class Unk_EventSink : public CBigDataLogSystem { };
 extern int DAT_143af7d40;                               // input enabled
 extern float DAT_143ac30a8;                             // last stick x
 extern float DAT_143ac30ac;                             // last stick y
@@ -158,8 +161,8 @@ MS2InputService::~MS2InputService()
 efd::AsyncResult MS2InputService::OnInit()
 {
     efd::AsyncResult result = InputService::OnInit();
-    if (!FUN_140a44830()->FUN_140d8f0b0())
-        FUN_140a44830()->FUN_140a439b0();
+    if (!reinterpret_cast<Unk_140a44830*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_140d8f0b0())
+        reinterpret_cast<Unk_140a44830*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_140a439b0();
     NiInputSystem* pInput = GetInputSystem();
     if (pInput != NULL)
     {
@@ -189,7 +192,7 @@ efd::AsyncResult MS2InputService::OnTick()
                 int nX = (int)(fX * FUN_140d8bde0());
                 float fY = (float)m_spGamePad->GetStickAxisValue(NiInputGamePad::NIGP_STICK_LEFT | NiInputGamePad::NIGP_STICK_AXIS_V);
                 int nY = (int)(fY * FUN_140d8be10());
-                FUN_140aadf80()->FUN_141b90ec0(nX, nY);
+                FUN_140aadf80()->MoveCursor(nX, nY);
                 if (m_nLeftDown != 0)
                 {
                     if (m_spGamePad->ButtonWasReleased((NiInputGamePad::Button)FUN_140d8c0a0(0xc3506)))
@@ -303,13 +306,13 @@ bool MS2InputService::FUN_140d8ad60(int nKey)
                 {
                     if (m_nHeldKey != -1)
                     {
-                        Unk_QuestDlg* pDlg = FUN_140931900(0x4e5f);
+                        UIMainPlayerInfo* pDlg = FUN_140931900(0x4e5f);
                         if (pDlg != 0)
                             pDlg->FUN_1419f22a0(m_nHeldKey, 0);
                         m_nHeldKey = -1;
                     }
                     m_nHeldKey = nSlot;
-                    Unk_QuestDlg* pDlg = FUN_140931900(0x4e5f);
+                    UIMainPlayerInfo* pDlg = FUN_140931900(0x4e5f);
                     if (pDlg != 0)
                         pDlg->FUN_1419f22a0(m_nHeldKey, 1);
                 }
@@ -329,7 +332,7 @@ bool MS2InputService::FUN_140d8ad60(int nKey)
             {
                 if (m_nHeldKey == nSlot)
                 {
-                    Unk_QuestDlg* pDlg = FUN_140931900(0x4e5f);
+                    UIMainPlayerInfo* pDlg = FUN_140931900(0x4e5f);
                     if (pDlg != 0)
                         pDlg->FUN_1419f22a0(m_nHeldKey, 0);
                     m_nHeldKey = -1;
@@ -401,7 +404,7 @@ bool MS2InputService::FUN_140d8b130(int* pnX, int* pnY, int* pnZ)
         return false;
     if (!m_spMouse)
         return false;
-    if (FUN_1403ed2b0()->FUN_141adbd10() != 0)
+    if (reinterpret_cast<Unk_1403ed2b0*>(TSingleton<CUIService>::GetInstance())->FUN_141adbd10() != 0)
     {
         m_spMouse->GetPositionDelta(*pnX, *pnY, *pnZ);
         *pnZ = 0;
@@ -488,7 +491,7 @@ void MS2InputService::FUN_140d8b3e0(double dSeconds)
     if (FUN_14036d570(FUN_140166410(), 0xc3) != 1)
         return;
     m_nRumbleActive = 1;
-    m_dRumbleStart = FUN_141473280(FUN_14086d260());
+    m_dRumbleStart = FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance()));
     m_dRumbleEnd = m_dRumbleStart + dSeconds;
     FUN_140d8b470();
 }
@@ -652,7 +655,7 @@ void MS2InputService::FUN_140d8b900(bool bEnable, bool bNotify)
             m_spGamePad = 0;
         }
         if (nOldKind != m_nPadKind && FUN_140d8ee90() != 0)
-            FUN_140d8ee90()->FUN_140a1f970("controller", StringFormat("{0}", m_nPadKind));
+            FUN_140d8ee90()->SendLog("controller", StringFormat("{0}", m_nPadKind));
     }
 }
 MS2_REPLACE_METHOD(0x140D8B900, MS2InputService, FUN_140d8b900, 1016, 0x66A2098E);
@@ -789,7 +792,7 @@ MS2_REPLACE_METHOD(0x140D8C150, MS2InputService, FUN_140d8c150, 158, 0x643CAA41)
 // @0x140d8c230
 void MS2InputService::FUN_140d8c230()
 {
-    double dNow = FUN_141473280(FUN_14086d260());
+    double dNow = FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance()));
     if (m_nRumbleActive == 0)
         return;
     if (dNow < m_dRumbleStart)

@@ -29,6 +29,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/gfxmanager.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -67,8 +68,6 @@ public:
 // The clip whose children are searched by name; the name of the clip itself.
 class Unk_NamedClip : public ASMovieClip
 {
-public:
-    CString FUN_1422ba8c0();                            // the instance name
 };
 
 // Image holder of the web page (0x90 bytes) and its source object / handle.
@@ -198,18 +197,7 @@ CStringW FUN_1422e5b80(CStringW str);
 void FUN_1422e5060(Unk_TextFieldEx* p, const Scaleform::GFx::Value& v, unsigned n);
 void FUN_1422e5110(Unk_TextFieldEx* p, const Scaleform::GFx::Value& v, const CString& strMode);
 
-class Unk_UiMgr
-{
-public:
-    float FUN_1422afec0(int nUiId);                         // the ui scale of a movie
-    GFxMovie* FUN_1422b01a0(int nUiId);                     // the movie of a ui id
-};
-Unk_UiMgr* FUN_14025e7a0();
-class Unk_GfxMovie
-{
-public:
-    Scaleform::GFx::Value FUN_1422bd120(CString strClass);   // the AS class object of a name
-};
+GFxManager* FUN_14025e7a0();
 class Unk_AsEx : public AScript
 {
 public:
@@ -627,7 +615,7 @@ Unk_TextFieldExPtr FUN_140d01530(int nMovieId)
 {
     GFxMovie* pMovie = FUN_14025e7a0()->FUN_1422b01a0(nMovieId);
     if (pMovie != 0)
-        return Unk_TextFieldExPtr(new Unk_TextFieldEx(((Unk_GfxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.TextFieldEx")), nMovieId));
+        return Unk_TextFieldExPtr(new Unk_TextFieldEx(((GFxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.TextFieldEx")), nMovieId));
     return Unk_TextFieldExPtr(0);
 }
 
@@ -651,7 +639,7 @@ void FUN_140d01780(const Scaleform::GFx::Value& target, bool bDisable)
     GFxMovie* pMovie = FUN_14025e7a0()->FUN_1422b01a0(2);
     if (pMovie != 0)
     {
-        MS2Ptr<AScript> sp(new AScript(((Unk_GfxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.InteractiveObjectEx")), 2));
+        MS2Ptr<AScript> sp(new AScript(((GFxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.InteractiveObjectEx")), 2));
         if (sp->FUN_1422ba9a0())
             return;
         ((Unk_AsEx*)sp.operator->())->FUN_140ba9570("setHitTestDisable", Scaleform::GFx::Value(target), bDisable);

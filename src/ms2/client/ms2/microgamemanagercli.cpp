@@ -45,6 +45,8 @@ static CStringW s_strRpsWaiting(L"rpsGameWaiting");
 
 // @0x1400c8a20 .. 0x1400c8b40
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -68,10 +70,8 @@ public:
 MS2_CHECK_OFFSET(Unk_McEvent, m_nStages, 0x34);
 class Unk_McEventHolder { public: MS2Ptr<Unk_McEvent> FUN_140428700(); };
 class Unk_McEventService { public: Unk_McEventHolder* FUN_1403ed140(); };
-Unk_McEventService* FUN_140302b00();
 
 class Unk_McUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-Unk_McUIMgr* FUN_1403ed2b0();
 
 WorldService* FUN_1403ed2d0();
 void* FUN_14097a780();
@@ -86,7 +86,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW t
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                        // show the box
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_1409eec40(int nStringId);
+CStringW BlockFormat(int nStringId);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
@@ -250,7 +250,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             if (pTarget == 0)
                 break;
             pMyPC->vfunc_59(0x3c, new StateMicroGameRpsData(pTarget->FUN_14123c580()), 0x99, 0);
-            CStringW strText = FUN_1409eec40(0xd0d);
+            CStringW strText = BlockFormat(0xd0d);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strText), 0);
             if (spBox == 0)
             {
@@ -614,7 +614,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 MS2_ASSERT_AT(0x29c, 0);
                 break;
             }
-            MS2Ptr<Unk_McEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+            MS2Ptr<Unk_McEvent> spEvent = reinterpret_cast<Unk_McEventService*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
             if (spEvent == 0)
             {
                 MS2_ASSERT_AT(0x2a2, 0);
@@ -702,9 +702,9 @@ void CMsgBoxData::FUN_140b76940(CStringW str)
 // @0x140b769d0
 UICoupleDanceEventDialog* FUN_140b769d0(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_McUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_McUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<UICoupleDanceEventDialog*>((UIObject*)p);
     }

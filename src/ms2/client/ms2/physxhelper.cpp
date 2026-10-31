@@ -34,6 +34,7 @@ extern "C" float (__cdecl* __imp_sqrtf)(float);
 // Header statics, in the original initialization order. These are private
 // constants and a condition table, with no registration into exe registries.
 #include "ms2/placeholder/unk_1402a9d70.h"
+#include "ms2/placeholder/cmainsystem.h"
 class Unk_1401cd100 {
 public:
     Unk_1401cd100(void*);
@@ -106,7 +107,6 @@ Unk_PhysWorldSvc* FUN_14168ab40(efd::ServiceManager* pServices);
 void FUN_140d86210(char* pLock);
 void FUN_140d852c0(char* pLock);
 
-Unk_PhysAppHost* FUN_14086d260();
 efd::ServiceManager* FUN_140af8310(char* pManager);
 NxUserAllocator* FUN_141489fd0(Unk_PhysXApp* pApp);
 Unk_PhysXLockOwner* FUN_1414a5890();
@@ -145,7 +145,7 @@ CPhysXHelper* TSingleton<CPhysXHelper>::s_instance = 0;
 // @0x141689180
 CPhysXHelper::CPhysXHelper()
 {
-    efd::ServiceManager* pServices = FUN_140af8310(FUN_14086d260()->m_manager);
+    efd::ServiceManager* pServices = FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager);
     Unk_PhysXApp* pApp = FUN_14168ab00(pServices);
     m_pControllerMgr = NxCreateControllerManager(FUN_141489fd0(pApp));
     m_pLock = FUN_1414a5890();
@@ -223,7 +223,7 @@ NxActor* CPhysXHelper::FUN_1416897d0(void* pObj)
     NxActor* pActor = 0;
     if (DAT_143ae2b30 == 0)
     {
-        Unk_PhysWorldSvc* pWorld = FUN_14168ab40(FUN_140af8310(FUN_14086d260()->m_manager));
+        Unk_PhysWorldSvc* pWorld = FUN_14168ab40(FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager));
         Unk_PhysRpgActor* pRpg = FUN_1409ffd30(pWorld->FUN_141bd0f50(pObj));
         if (pRpg != 0)
             pActor = FUN_141240e70(FUN_14166d220(pRpg));
@@ -231,7 +231,7 @@ NxActor* CPhysXHelper::FUN_1416897d0(void* pObj)
     else
     {
         static CLockCriticalSection s_lock;     // 0x143ae3968
-        Unk_PhysWorldSvc* pWorld = FUN_14168ab40(FUN_140af8310(FUN_14086d260()->m_manager));
+        Unk_PhysWorldSvc* pWorld = FUN_14168ab40(FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager));
         if (Unk_LockGuard guard = s_lock)
         {
         }
@@ -266,7 +266,7 @@ bool CPhysXHelper::FUN_141689a10(egf::Entity* pEntity)
     FUN_1408a20a0(pEntity, 0x38141815, &bCube);
     if (bCube)
         return true;
-    efd::ServiceManager* pServices = FUN_140af8310(FUN_14086d260()->m_manager);
+    efd::ServiceManager* pServices = FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager);
     ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
     if (pProps != 0)
         return pProps->GetNumProps(pEntity->GetEntityID()) > 0 ? true : false;
@@ -275,7 +275,7 @@ bool CPhysXHelper::FUN_141689a10(egf::Entity* pEntity)
 // @0x141689ac0
 void CPhysXHelper::FUN_141689ac0(Unk_PhysPropPtr pProp)
 {
-    efd::ServiceManager* pServices = FUN_140af8310(FUN_14086d260()->m_manager);
+    efd::ServiceManager* pServices = FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager);
     ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
     if (pProps != 0)
     {
@@ -364,7 +364,7 @@ void CPhysXHelper::FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, co
     }
     else
     {
-        efd::ServiceManager* pServices = FUN_140af8310(FUN_14086d260()->m_manager);
+        efd::ServiceManager* pServices = FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager);
         ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
         if (pProps != 0)
         {
@@ -400,7 +400,7 @@ void CPhysXHelper::FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, co
 // @0x14168a1c0
 NxScene* CPhysXHelper::FUN_14168a1c0()
 {
-    efd::ServiceManager* pServices = FUN_140af8310(FUN_14086d260()->m_manager);
+    efd::ServiceManager* pServices = FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager);
     egfPhysX::SceneService* pScenes = FUN_1411d14f0(pServices);
     return FUN_141503cc0(pScenes, 0);
 }
@@ -482,7 +482,7 @@ void CPhysXHelper::FUN_14168a570()
 // @0x14168a5a0
 void CPhysXHelper::FUN_14168a5a0()
 {
-    efd::ServiceManager* pServices = FUN_140af8310(FUN_14086d260()->m_manager);
+    efd::ServiceManager* pServices = FUN_140af8310(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager);
     ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
     if (pProps != 0)
     {

@@ -13,6 +13,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 
 // ---- the unit's header statics (header_statics_a.h order plus a pointer holder before the map) ----
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -48,14 +49,7 @@ extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 extern const float g_142f5c218;
 
 // The input state (FUN_14025e7c0).
-class Unk_InputState
-{
-public:
-    bool FUN_14116d950(int nKey, bool b, int n);                    // key held
-    bool FUN_14116daa0(int nButton, bool b, int n);                 // mouse button held
-    bool FUN_14116dbf0(int* pnX, int* pnY, int* pnZ, bool b, int n);    // mouse move delta
-};
-Unk_InputState* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 
 class Unk_BuffContainer
 {

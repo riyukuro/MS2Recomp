@@ -102,6 +102,10 @@
 #include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/client/ms2/uishopdialog.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- header statics (the shared list of the merat market units) ----
 #ifndef MS2_HOOK_DLL
@@ -208,19 +212,9 @@ public:
 Unk_MmGameMenu* FUN_140938b90(int nUIType);
 
 // The shop dialog (UI type 0x4e3b) as FUN_140534780 returns it; only the call of this unit.
-class Unk_MmShopDialog
-{
-public:
-    void FUN_141afb290(int nProductId);                         // a product could not be bought
-};
 
 // Player inventory (global at 0x143ab2a90): item lookup by uid (the same declaration as unit_1406125d0.h).
-class Unk_LockInventory
-{
-public:
-    MS2Ptr<CItem> FUN_140a5d680(__int64 nItemUid);
-};
-extern Unk_LockInventory DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 
 // The item event hub (uiitemenchantdialog.h's UIItemEventDispatcher, FUN_140a6a840); the slots up to the one called.
 class Unk_MmItemEvents
@@ -238,9 +232,9 @@ class UIBlueprintMarketDialog : public UIObject
 {
 public:
     static int FUN_140d66e70() { return 0x4f7f; }               // the UI type id
-    void FUN_140bbb440(int nPage, int nFirst, int nLast, int nTotal, bool bMore);   // a page of blueprints
+    void ShowSearchResult(int nPage, int nFirst, int nLast, int nTotal, bool bMore); // a page of blueprints
     void FUN_140bbbc70(MS2Ptr<CMeratMarketProduct> spProduct);  // a blueprint changed
-    void FUN_140bbbcf0();                                       // a search was refused
+    void ClearSearchInput();                                    // a search was refused
 };
 
 // An open dialog of a class, by the class's own UI type id.
@@ -257,7 +251,7 @@ template <class T> T* Unk_MmGetDialogOf()
 
 bool FUN_1406a5040(int nSort);                                  // a valid market sort kind
 void FUN_1418ffec0(int& nFlags, int nBit);                      // set a flag bit
-__int64 FUN_140869440();                                        // the server time
+__int64 GetServerTime();                                        // the server time
 extern int DAT_143ab0248;                                       // the service region
 
 // The game constants singleton (FUN_1401d3200); only the slots read here.
@@ -275,24 +269,17 @@ __int64* FUN_1402c05b0(Unk_MmConstSlot* pSlot);
 int* FUN_1402056b0(Unk_MmConstSlot* pSlot);
 
 // The UI manager (FUN_1403ed2b0).
-class Unk_MmUIManager
+class Unk_MmUIManager : public CUIService
 {
 public:
     void FUN_141adc5d0(int nClass);                             // close a dialog (if open)
     MS2Ptr<UIObject> FUN_141adcea0(int nId);                    // an open dialog
     int FUN_141adc890(int nClass);                              // a dialog is open
-    void FUN_141add1f0();                                       // close the merat market dialogs
 };
 Unk_MmUIManager* FUN_1403ed2b0();
 
 // The notify centre (FUN_140939a10).
-class Unk_MmNotices
-{
-public:
-    void FUN_140da4e40(CStringW name, Delegate<void(NotifyObject*)> handler);   // add
-    void FUN_140da4eb0(CStringW name, Delegate<void(NotifyObject*)> handler);   // remove
-};
-Unk_MmNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 // The world service (FUN_1403ed2d0).
 class Unk_MmWorld
@@ -309,7 +296,7 @@ bool FUN_140ebfc70(unsigned short nLevel, CDBPremiumProduct* pProduct, bool bSho
 
 CStringW GetStringCommon(int nKey);                               // a common string by id
 CStringW GetStringCommonByKey(const CStringW& str);                    // a string by key
-CStringW FUN_1409eec40(int nKey);                               // a system string by id
+CStringW BlockFormat(int nKey);                                 // a system string by id
 CStringW FormatStringId(int nId, const fmt::ArgList& args);     // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
 CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);       // a string by key with one argument
@@ -356,7 +343,7 @@ void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag
 UIMessageBox* FUN_14151f890();                                  // the open message box
 void* FUN_1408e57f0();
 int FUN_1422b9dc0(void*);                                       // the screen layout id
-Unk_MmShopDialog* FUN_140534780(int nUIType);                   // the shop dialog (refreshes it)
+UIShopDialog* FUN_140534780(int nUIType);                       // the shop dialog (refreshes it)
 int FUN_1406a50b0(Unk_MeratProductMap& map);                    // meratmarketbasketinfo.cpp: the product count
 // UIMeratMarketCommon (uimeratmarketcommon.cpp): purchase checks.
 bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError);
@@ -748,7 +735,7 @@ void CMeratMarketMan::SendMeretMarketMode33(ATL::CAtlArray<unsigned __int64>& id
 // @0x140d553a0
 void CMeratMarketMan::FUN_140d553a0()
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     Unk_MmScopedLock lock(m_lock, 1);
     Unk_MmDialog* pDialog = FUN_140bd2c00();
     if (pDialog == 0)
@@ -947,7 +934,7 @@ void CMeratMarketMan::FUN_140d56190()
 void CMeratMarketMan::FUN_140d56320(MS2Ptr<CUgcMarketSeller> spSeller, __int64 nAmount)
 {
     if (m_nf0 == 0)
-        m_nf0 = FUN_140869440();
+        m_nf0 = GetServerTime();
     if (spSeller == 0)
         return;
     if (m_bf8) {
@@ -1557,7 +1544,7 @@ void CMeratMarketMan::FUN_140d59810(MS2Ptr<CPendingBuyBase> spBuy, int nBuyType)
 void CMeratMarketMan::FUN_140d59930()
 {
     if (m_n2a8 == 4)
-        Unk_MmShopDialog* pDialog = FUN_140534780(0x4e3b);
+        UIShopDialog* pDialog = FUN_140534780(0x4e3b);
 }
 
 // @0x140d59970
@@ -1577,7 +1564,7 @@ void CMeratMarketMan::FUN_140d59990(const CStringW& str)
 CStringW CMeratMarketMan::FUN_140d599d0()
 {
     if (m_str2d0.IsEmpty())
-        return FUN_1409eec40(0xa46);
+        return BlockFormat(0xa46);
     return m_str2d0;
 }
 
@@ -1619,7 +1606,7 @@ void CMeratMarketMan::FUN_140d59ce0()
     if (Unk_LockGuard lock = m_lock) {} else {
         m_270.RemoveAll();
         m_lists.clear();
-        FUN_140939a10()->FUN_140da4eb0(CStringW(L"NotifyChangeMyLevel"),
+        FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyChangeMyLevel"),
                                        Delegate<void(NotifyObject*)>(this, &CMeratMarketMan::FUN_140d59df0));
     }
 }
@@ -1747,7 +1734,7 @@ CStringW CMeratMarketMan::FUN_140d5a330(int nError, MS2Ptr<CPendingBuyBase> spBu
     case 0xb5:
         return GetStringCommonByKey(L"s_meratmarket_error_buy_limit_job");
     case 0xb6:
-        return FUN_140a228f0(0x688, *FUN_1402056b0(&FUN_1401d3200()->m_pcBangLevel), FUN_1409eec40(0x5a7));
+        return FUN_140a228f0(0x688, *FUN_1402056b0(&FUN_1401d3200()->m_pcBangLevel), BlockFormat(0x5a7));
     case 0xb7:
         return GetStringCommonByKey(L"s_meratmarket_error_buy_not_pcbang");
     case 0xb8:
@@ -2209,7 +2196,7 @@ void CMeratMarketMan::FUN_140d5c2f0(CInPacket& packet)
         }
     }
     if (bPush && !m_270.IsEmpty())
-        FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyChangeMyLevel"),
+        FUN_140939a10()->RegisterNotify(CStringW(L"NotifyChangeMyLevel"),
                                        Delegate<void(NotifyObject*)>(this, &CMeratMarketMan::FUN_140d59df0));
     Unk_MmDialog* pDialog;
     if (FUN_1418ffe80(m_nFlags, 2) && (pDialog = FUN_140bd2c00()) != 0) {
@@ -2312,7 +2299,7 @@ void CMeratMarketMan::FUN_140d5ce00(CInPacket& packet)
     m_bf8 = false;
     m_ne8 = 0;
     m_sellers.RemoveAll();
-    m_nf0 = FUN_140869440();
+    m_nf0 = GetServerTime();
     int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; i++) {
         MS2Ptr<CUgcMarketSeller> spSeller(new CUgcMarketSeller());
@@ -2623,7 +2610,7 @@ void CMeratMarketMan::FUN_140d5e540(CInPacket& packet)
         bMore = nLast < nEnd ? 1 : 0;
     UIBlueprintMarketDialog* pDialog = Unk_MmGetDialogOf<UIBlueprintMarketDialog>();
     if (pDialog != 0)
-        pDialog->FUN_140bbb440(nPage, nFirst, nLast, nTotal, bMore);
+        pDialog->ShowSearchResult(nPage, nFirst, nLast, nTotal, bMore);
 }
 
 // 0x1b: the search failed.
@@ -2757,9 +2744,9 @@ void CMeratMarketMan::FUN_140d5f330(CMeratMarketPacket::BuyPacket& buy, int nErr
         if (nError == 0x9d) {
             int nPremiumId = key.m_nPremiumId;
             if (m_n2a8 == 4) {
-                Unk_MmShopDialog* pShop = FUN_140534780(0x4e3b);
+                UIShopDialog* pShop = FUN_140534780(0x4e3b);
                 if (pShop != 0)
-                    pShop->FUN_141afb290(nPremiumId);
+                    pShop->StartMeratItem(nPremiumId);
             }
         }
         return;
@@ -2854,7 +2841,7 @@ void CMeratMarketMan::FUN_140d60050(const int& nUIType)
         }
         UIBlueprintMarketDialog* pDialog = Unk_MmGetDialogOf<UIBlueprintMarketDialog>();
         if (pDialog != 0)
-            pDialog->FUN_140bbb440(1, 0, 0, 0, false);
+            pDialog->ShowSearchResult(1, 0, 0, 0, false);
     }
 }
 
@@ -2937,7 +2924,7 @@ void CMeratMarketMan::FUN_140d5f610(CInPacket& packet)
             UIBlueprintMarketDialog* pBlueprint =
                 Unk_MmGetDialogOf<UIBlueprintMarketDialog>();
             if (pBlueprint != 0)
-                pBlueprint->FUN_140bbbcf0();
+                pBlueprint->ClearSearchInput();
         }
         else {
             Unk_MmDialog* pDialog = FUN_140bd2c00();
@@ -2952,7 +2939,7 @@ void CMeratMarketMan::FUN_140d5f610(CInPacket& packet)
     }
         break;
     case 0xb6:
-        FUN_1412751f0(FUN_140a228f0(0x688, *FUN_1402056b0(&FUN_1401d3200()->m_pcBangLevel), FUN_1409eec40(0x5a7)), 1, 1);
+        FUN_1412751f0(FUN_140a228f0(0x688, *FUN_1402056b0(&FUN_1401d3200()->m_pcBangLevel), BlockFormat(0x5a7)), 1, 1);
         break;
     case 0xbc:
         break;
@@ -3171,7 +3158,6 @@ void FUN_140d61590(Unk_MmProductListByKey& map, int nKey, MS2Ptr<CMeratMarketPro
 }
 
 // ---- the typed entry points uiservice.cpp / unit_140e3efd0 declare for Unk_MmGetDialog<UIAdPushDialog> ----
-enum eUIClassID : int;   // uiservice.h
 // MS2-FUNCTIONAL: forwards to the template instance
 UIAdPushDialog* FUN_140d61c00(int nClass)
 {

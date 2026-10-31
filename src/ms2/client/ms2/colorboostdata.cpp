@@ -8,11 +8,12 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
+#include "ms2/placeholder/cmainsystem.h"
 #include <NiAVObject.h>
 
 // ---- out-of-unit callees and the slider values (statics defined elsewhere) ----
-class Unk_CbApp { public: double FUN_141473280(); };                // the application time
-Unk_CbApp* FUN_14086d260();
+                // the application time
+CMainSystem* FUN_14086d260();
 float FUN_140a0fde0(float a, float b);                              // min
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                        // the actor's scene graph
 void FUN_141b6fae0(NiAVObject* pRoot, float fValue);                // set the colour scale of a scene graph

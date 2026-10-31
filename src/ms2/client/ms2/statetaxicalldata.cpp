@@ -22,6 +22,8 @@
 #include <NiTransform.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- statics (dynamic initializers 0x140104af0 / 0x140104b20) ----
 static CString s_strTaxiCall = "PC_Taxi_Call";
@@ -114,14 +116,12 @@ struct Unk_TcRequest
 };
 MS2_CHECK_SIZE(Unk_TcRequest, 0x78);
 class Unk_TcEffectMgr { public: void FUN_1411a4a00(Unk_TcRequest* pRequest); };
-Unk_TcEffectMgr* FUN_1403ed280();
 void FUN_140a52ef0(Unk_TcRequest* p);                    // construct
 void FUN_1405a89e0(Unk_TcRequest* p);                    // destroy
 
 // The world: the taxi stop entity near a position, its properties.
 class Unk_TcEntity;
 class Unk_TcWorld { public: Unk_TcEntity* FUN_141bcfd30(unsigned nHash, Vector3 kPos, float fRange, int nA, int nB); };
-Unk_TcWorld* FUN_1403ed2d0();
 void FUN_1409618c0(Unk_TcEntity* pEntity, unsigned nHash, Vector3* pOut);   // property read (point)
 
 // Point3 helpers (out-of-line in the exe).
@@ -366,7 +366,7 @@ void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
     NiPoint3 kOwnerNi = pPC->vfunc_18();
     Vector3 kOwner = reinterpret_cast<Vector3&>(kOwnerNi);
     float fRange = *FUN_140298f40(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiStationFindDistance) + 100.0f;
-    Unk_TcEntity* pStop = FUN_1403ed2d0()->FUN_141bcfd30(0x85359406, kOwner, fRange, 1, 0);
+    Unk_TcEntity* pStop = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bcfd30(0x85359406, kOwner, fRange, 1, 0);
     if (pStop == 0)
     {
         NiPoint3 kDirNi = pPC->vfunc_20();
@@ -402,7 +402,7 @@ void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
     request.m_strName = strEffect;
     request.m_nKind = (FUN_1417b8560() == 0) ? 3 : 1;
     request.m_pXform = &xf;
-    FUN_1403ed280()->FUN_1411a4a00(&request);
+    reinterpret_cast<Unk_TcEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&request);
     FUN_1405a89e0(&request);
 }
 

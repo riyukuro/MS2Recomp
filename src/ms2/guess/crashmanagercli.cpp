@@ -19,6 +19,7 @@
 #include "ms2/placeholder/crashmanagercli.h"
 #include "ms2/placeholder/iclientplatform.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
 
 // The CrashReporter_64.dll imports; the exe calls through the IAT slots (SetDumpFileName/SetFullDumpPath
 // as dllimport functions: the IAT-pointer form spills the converted CString argument through an extra slot).
@@ -48,8 +49,7 @@ CStringW GetStringCommon(int nStringId);
 CString FUN_14016a600(const wchar_t* pwsz, int n);          // wide -> narrow
 IClientPlatform* FUN_140d86260();
 void FUN_141b6db40(int nCode);
-class Unk_FeatureHolder { public: bool FUN_14036e510(); };
-Unk_FeatureHolder* FUN_140166410();
+CFeatureManager* FUN_140166410();
 void FUN_140a43b20();
 void FUN_140a43d40();
 void FUN_140a43f00();

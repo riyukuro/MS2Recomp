@@ -7,6 +7,7 @@
 #include "scriptcontent.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 
@@ -20,8 +21,7 @@ int FUN_140873890(Unk_ScriptXmlNode* pNode, const char* pszName, int& rOut);
 const char* FUN_14086f4b0(Unk_ScriptXmlNode* pNode, const char* pszName);           // attribute text (null = absent)
 Unk_ScriptXmlNode* FUN_140165cf0(Unk_ScriptXmlNode* pNode, const char* pszName);    // first child
 Unk_ScriptXmlNode* FUN_140168650(Unk_ScriptXmlNode* pNode, const char* pszName);    // next sibling
-class Unk_ScriptTextFilter { public: void FUN_1416fb380(CStringW& strText); };
-Unk_ScriptTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 int FUN_140768010(unsigned nRange, unsigned nBase);                                 // random in base..base+range-1
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
 size_t FUN_140186260(ATL::CAtlArray<int>& arr);                                     // GetCount

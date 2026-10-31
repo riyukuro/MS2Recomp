@@ -65,7 +65,7 @@ class CSkillRecord : public CPtred                                  // RTTI, 0x1
 {
 public:
     CSkillRecord();                                                 // 0x141759260
-    bool FUN_1417595d0(Unk_InventorySkillRequest& kReq);
+    bool Init(Unk_InventorySkillRequest& kReq);
     char m_pad_18[0x1c0 - 0x18];
 };
 MS2_CHECK_SIZE(CSkillRecord, 0x1c0);
@@ -139,7 +139,7 @@ void StateWaitingSelect::vfunc_2(int n)
                 kReq.origin = pPC->vfunc_18();
                 kReq.fValue = pPC->vfunc_20().z;
                 MS2Ptr<CSkillRecord> spSkill(new CSkillRecord);
-                if (spSkill->FUN_1417595d0(kReq))
+                if (spSkill->Init(kReq))
                     pPC->vfunc_102(spSkill);
             }
         }

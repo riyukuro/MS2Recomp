@@ -56,18 +56,16 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/client/ms2/additionalclilist.h"
 
 // The game objects the world query returns (worldservice.h names them by this stand-in).
 class Unk_WsC_GameObj : public GameObject { };
 
 // The buff container of an actor (PCBase::FUN_1416749a0).
-class Unk_PCBaseBuffs
+class Unk_PCBaseBuffs : public AdditionalCliList
 {
 public:
     unsigned int FUN_140970b10();                                   // extra target flags the actor's buffs grant
-    int FUN_140970990();                                            // the actor cannot be targeted
-    int FUN_140971260(int nBuffId);                                 // has the buff
-    int FUN_140971300(int nBuffId, int nCasterId);                  // has the buff from that caster
 };
 
 PCBase* FUN_140974230(GameObject* pObject);                         // efd::DynamicCast<PC>

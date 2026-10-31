@@ -37,6 +37,9 @@
 #include "ms2/client/ms2/uiobject.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/csoapclient.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- out-of-unit callees and data (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 
@@ -44,8 +47,8 @@ extern unsigned DAT_143ab2830;                      // the own character's type
 extern __int64 DAT_143ab2820;                       // the own account id
 extern __int64 DAT_143ab2828;                       // the own character id
 
-class Unk_MenteeSettings { public: bool FUN_14036d570(int nFeature); };     // the content switches
-Unk_MenteeSettings* FUN_140166410();
+     // the content switches
+CFeatureManager* FUN_140166410();
 class Unk_MenteeBanFlags { public: int FUN_1402c4c90(int nFlag); };         // blocked-action flag set
 struct Unk_MenteeConfig { char m_pad[8]; Unk_MenteeBanFlags m_8; };
 Unk_MenteeConfig* FUN_14025e7b0();                                          // global client config
@@ -61,10 +64,7 @@ private:
     DWORD m_dwThread;
     CStringA m_kTag;
 };
-class Unk_MenteeSoap { public: MS2Ptr<CMenteeSearchWebResult> FUN_141770be0(MS2Ptr<CMenteeSearchParam> pParam); };
-Unk_MenteeSoap* FUN_140b2e990();                                            // the web client
 class Unk_MenteeUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
-Unk_MenteeUIManager* FUN_1403ed2b0();                                       // the UI service
 
 // ---- MenteeSearch::ResponseMenteeList ----
 
@@ -307,7 +307,7 @@ UINT CMenteeSearchManager::RequestWeb(LPVOID pParam)
     MS2Ptr<CMenteeSearchParam> spParam(static_cast<CMenteeSearchParam*>(pParam));
     if (spParam == 0)
         return 1;
-    MS2Ptr<CMenteeSearchWebResult> spResult = FUN_140b2e990()->FUN_141770be0(spParam);
+    MS2Ptr<CMenteeSearchWebResult> spResult = TSingleton<CSoapClient>::GetInstance()->FUN_141770be0(spParam);
     GetInstance()->OnWebResult(spParam, spResult);
     return 0;
 }
@@ -365,9 +365,9 @@ static CMentorPtr FUN_140b6f200(CByteBuffer& buffer)
 // @0x140b6f4c0
 UIInviteMentoringDialog* FUN_140b6f4c0(int nClass)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_MenteeUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = FUN_1403ed2b0()->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_MenteeUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIInviteMentoringDialog*>(spObj.operator->());
     }

@@ -14,14 +14,10 @@
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // Game context: FUN_141bd0cc0 returns the local player (the tooltip owner).
-class Unk_UgcSlotCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_UgcSlotCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);           // item template data by id
 int FUN_141275a10(CItem* pItem);                         // the usable state of an item (1 locked, 2 disabled, 3 condition)

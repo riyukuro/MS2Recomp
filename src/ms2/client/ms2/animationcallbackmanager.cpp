@@ -76,6 +76,7 @@
 #include <stdlib.h>
 
 #include "ms2/commonfiles/logstring.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- exe data ----
 extern int DAT_143ae2b30;                   // 1: actor-manager callbacks are routed through the callback manager
@@ -91,7 +92,6 @@ template <class T, class U> void Unk_FileLog(CLogString* pLog, int nLevel, int n
 
 // The background effect play request is the NoticeMessage of effectquery.h (ctor 0x140a52ef0, dtor 0x1405a89e0).
 class Unk_BgEffectMgr { public: void FUN_1411a4a00(NoticeMessage* pRequest); };
-Unk_BgEffectMgr* FUN_1403ed280();
 
 // The URN text of an asset id (m_urn.c_str() read straight off the AssetID, +8).
 // @0x14099ad40
@@ -423,7 +423,7 @@ void CGlobalKeyTextCallback::TextKeyEvent(NiActorManager* pkManager, NiActorMana
             if (pPC != 0)
                 kRequest.SetActor(pPC->FUN_14123c580());
         }
-        FUN_1403ed280()->FUN_1411a4a00(&kRequest);
+        reinterpret_cast<Unk_BgEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kRequest);
     }
 }
 

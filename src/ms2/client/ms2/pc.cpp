@@ -230,6 +230,19 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/item.h"
+#include "ms2/client/ms2/uimainplayerinfo.h"
+#include "ms2/client/ms2/nifeffectparam.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/cgraphicoptiontable.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/additionalclilist.h"
+#include "ms2/client/ms2/uipvpobserverdialog.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/gameobjectcontroller.h"
+#include "ms2/client/ms2/entityworldmanager.h"
 
 // ---- exe functions and singletons used by the PC TU (other units) ----
 void FUN_1411e0810(Unk_PCEquipSet* pEquip);                         // the equipment was reset (equipitem.cpp)
@@ -270,29 +283,22 @@ struct Unk_PCEntListPtr
     Unk_PCEntList* m_p;
 };
 // The world (WorldService; FUN_1403ed2d0).
-class Unk_PCLocalPlayer : public PC                                 // the MyPC
+class Unk_PCLocalPlayer : public MyPC                                 // the MyPC
 {
 public:
-    void FUN_14152a960();                                           // stop observing
     int FUN_1415278d0(__int64 nCharId);                             // the character is in the party
 };
-class Unk_PCWorld
+class Unk_PCWorld : public WorldService
 {
 public:
     Unk_PCLocalPlayer* FUN_141bd0cc0();                             // the local player
     PCBase* FUN_141bd1290(int nObjectId);                           // the player of an object id
     GameObject* FUN_141bd0fa0(egf::EntityID kId);                   // the object of an entity
-    void FUN_141bbb7f0(GameObject* pObj, int n);                    // unregister an object
     int FUN_141bdb5a0(int nObserveMode);
     GameObject* FUN_141bd1180(int nObjectId);                       // the object of an id
     int FUN_141bc9830(int* pnId, CString* pstrName, float fRange, int n);   // the nearest holdable target
     MS2Ptr<CProxyGameObject> FUN_141bc9c60(__int64 nId);            // the proxy of a player by id
     MS2Ptr<CProxyGameObject> FUN_141bc9be0(int nObjectId);          // the proxy of an object id
-    void FUN_141bd92c0(float fFrom, float fTo, float fDuration, int n);   // slow the time scale
-    int FUN_141bca2e0();                                            // the field is loaded
-    void FUN_141bca390(unsigned int nObjectId);                     // the player model is ready (quick equip)
-    int FUN_141bd19d0(int nObjectId);                               // the relation of an object (1: the local player)
-    int FUN_141bd3060();                                            // the current map id
     PCBase* FUN_141bd1200(int nObjectId);                           // the actor of an object id
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                          // the current field
     struct Unk_PCEntListPtr FUN_141bd0420(unsigned int nModel);     // the entities of a model
@@ -302,7 +308,6 @@ Unk_PCWorld* FUN_1403ed2d0();
 void FUN_1419f37f0(int n);                                          // refresh the main player info's held item (UIMainPlayerInfo, static)
 void FUN_140cfaf30(void* pActor);                                   // wake the physics actor
 // CItem::FUN_1405278a0's record (CItemStatus, commonfiles/item.h): the enchant record.
-class Unk_PCItemStatus { public: CItemEnchantInfo* FUN_140630d60(); };
 // The movement keys of the local player (PCBase +0x6d8; unit_141682f80.cpp's Unk_PCMove).
 class Unk_PCMoveKeys
 {
@@ -331,23 +336,18 @@ float FUN_1409f2310(float f);                                       // sin
 void FUN_140e68a40(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const float* pA, const float* pB,
     const float* pC);                                               // Log<float, float, float> (uimodelview.cpp)
 // The effect service (FUN_1403ed280).
-class Unk_PCFxMgr
+class Unk_PCFxMgr : public CEffectService
 {
 public:
     void FUN_1411a5770(int nKind, PCBase* pTarget);                 // play an event effect on an actor
-    void FUN_1411a6060(unsigned nId);                               // stop the effects of an id
     unsigned FUN_1411a5580(int nMaterial, int nKind, int nRelation, NiPoint3 kPos, float fVolume);   // play a hit sound
-    unsigned int FUN_1411a49c0(Unk_EffectTarget& kTarget);          // play an effect (its id)
 };
 Unk_PCFxMgr* FUN_1403ed280();
 // The controller body (PCBase +0x150; unit_14123f5b0.cpp's GameObjectController).
-class Unk_PCBaseBody
+class Unk_PCBaseBody : public GameObjectController
 {
 public:
-    void FUN_14123fbf0(unsigned short nGroup);                      // collision group of every shape
-    void FUN_14123fd30(unsigned int nGroups);                       // the active groups
     bool FUN_1412410c0(const efd::Point3& kPos, float fRadius);     // the capsule at kPos overlaps something
-    void FUN_141240730();                                           // reset the body after a teleport
     void* FUN_141240f20();                                          // the physics actor
 };
 // The animation service singleton (statefall.h declares the global FUN_141b6f910 with a unit-local view type).
@@ -359,23 +359,15 @@ extern float DAT_1439f8214;
 extern float DAT_1439f8218;
 ClonePC* FUN_1405a7e30(PC* p);                                      // efd::DynamicCast<ClonePC>
 extern int DAT_1439f821c;                                           // the combo preload loop limit
-SkillDataTableCli* FUN_1401958b0();                                 // TSingleton<SkillDataTableCli>::GetInstance
 void* FUN_140166440();                                              // the log
 void FUN_1401859c0(void* pLog, int nLevel, int nCategory, const wchar_t* pszText);
-class Unk_PCBaseBuffs
+class Unk_PCBaseBuffs : public AdditionalCliList
 {
 public:
-    int FUN_1409701d0(int nKind);
     int FUN_1409709b0();                                            // a buff blocks being grabbed
-    bool FUN_140970a20();                                           // a buff protects from pk attacks
 };
 // The content switches (FUN_140166410).
-class Unk_PCFeatures
-{
-public:
-    bool FUN_14036d570(int nFeature);                               // the feature is enabled
-};
-Unk_PCFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 // The entity manager and the entity property reads (as pcbase.cpp).
 class Unk_PCEntMgr                                                  // EntityWorldManager (entityworldmanager.h)
 {
@@ -383,7 +375,6 @@ public:
     egf::EntityPtr FUN_1411ce7c0(efd::utf8string kModel, efd::utf8string kAsset, efd::Point3 kPos, efd::Point3 kRot,
         float fScale, int a, int b);                                // create an entity
 };
-Unk_PCEntMgr* FUN_1409670f0();
 egf::Entity* FUN_1411cf440(Unk_PCEntMgr* pMgr, const egf::EntityID& kId);
 void FUN_1409618c0(egf::Entity* pEntity, unsigned int nPropId, NiPoint3& kValue);   // Entity::GetPropertyValue<efd::Point3>
 float FUN_140966ea0(efd::Point3 a, efd::Point3 b);                  // the horizontal distance
@@ -445,13 +436,6 @@ CPhysXHelper* FUN_1409f7ca0();
 extern float DAT_1439f8220;                                         // the climb reach (3)
 extern float DAT_1439f8224;                                         // the climb probe range (30)
 // The shadow quality settings (?\gameoption.cpp keeps the full view).
-class Unk_PCShadowCfg
-{
-public:
-    int FUN_141376880(int n);
-    int FUN_1413769d0(int n);
-};
-Unk_PCShadowCfg* FUN_140ae1c00();
 // The actor's ground shadow (unit_14160fb10; dropitem.cpp has the 5-argument ctor).
 class CObjectShadow : public NiRefObject
 {
@@ -494,7 +478,7 @@ public:
 Unk_PCKfmActor* FUN_14141c720(const MS2Ptr<CKfmModel>& spModel);
 class Unk_ItemEquipData : public CItemData {};
 struct Unk_EquipItemData : public CItemData {};                     // CEquipItem::FUN_1411dc7f0's record (as astooltip_local.h)
-int FUN_14082f1a0(int nType);                                       // the stat is a 64-bit value                     // CItem::FUN_140527840's record (as astooltip_local.h)
+int IsPercentStat(int nType);                                       // the stat is a 64-bit value                     // CItem::FUN_140527840's record (as astooltip_local.h)
 // The optimizer (COptimizer, FUN_1409f7c90).
 class Unk_PCEquipConfig
 {
@@ -507,7 +491,7 @@ public:
 };
 Unk_PCEquipConfig* FUN_1409f7c90();
 // The dialogs 0x4e96 / 0x4ec4 (FUN_141531c80 / FUN_141531be0): the hp of a party member changed.
-class Unk_PCDialog4e96 { public: void FUN_141a92b10(__int64 nCharId, __int64 nCur, __int64 nMax); };
+class Unk_PCDialog4e96 : public UIPvPObserverDialog { };
 class Unk_PCDialog4ec4 { public: void FUN_14133afb0(__int64 nCharId, __int64 nCur, __int64 nMax); };
 Unk_PCDialog4e96* FUN_141531c80(int nId);
 Unk_PCDialog4ec4* FUN_141531be0(int nId);
@@ -515,9 +499,7 @@ Unk_PCDialog4ec4* FUN_141531be0(int nId);
 template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0
 template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::operator->() const;                   // 0x1407895d0
 template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::get() const;                          // 0x1409f78a0
-// The string table (FUN_1401a9d70).
-class Unk_PCStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_PCStrings* FUN_1401a9d70();
+// The string table (TSingleton<CStringTable>::GetInstance).
 // The PCBase UI components (pcbase.cpp has the same stand-ins) and their factories.
 class Unk_PCBaseComp_a68 : public CPtred {};
 class Unk_PCBaseComp_a78 : public CPtred
@@ -591,13 +573,7 @@ public:
 };
 unsigned FUN_141472bc0();                                           // the server tick
 // The main player info dialog (FUN_140931900 = the UI by id).
-class Unk_PCMainPlayerInfo
-{
-public:
-    void FUN_1419f1200(int nId, int nEnd);                          // start a timer
-    void FUN_1419f1370(int nId);                                    // stop it
-};
-Unk_PCMainPlayerInfo* FUN_140931900(int nUiId);
+UIMainPlayerInfo* FUN_140931900(int nUiId);
 // The client config singleton (FUN_1401d31f0): the invincibility effect file at +0x268 (other members not recovered).
 struct Unk_PCConfig
 {
@@ -606,11 +582,11 @@ struct Unk_PCConfig
 };
 Unk_PCConfig* FUN_1401d31f0();
 MyPC* FUN_1409613d0(PCBase* p);                                     // efd::DynamicCast<MyPC>
-int FUN_14086ae10(__int64 nTime);                                   // the time lies before today
+int IsMonthChanged(__int64 nTime);                                  // the time lies before today
 CMasteryTable* FUN_1409670c0();                                     // TSingleton<CMasteryTable>
 bool FUN_14081dc50(int nSpecial);                                   // the special ability is an integer
 bool FUN_14081dcd0(int nSpecial);                                   // the special ability value is a rate
-int FUN_14086ace0(__int64 nTime);                                   // the time has passed
+int IsNotRecentDayChange(__int64 nTime);                            // the time has passed
 // The hide and seek record / the water gun battle info as other TUs see them (fittingdollpc.h returns these types).
 class Unk_HsInfo : public CPtred                                    // HideAndSeek::Info
 {
@@ -634,13 +610,7 @@ extern bool DAT_143aad1e0;                                          // the upper
 extern CString DAT_143ae2de8;                                       // the hidden-equip reason (CEquipment::FUN_1411e8eb0 / FUN_1411e9020)
 bool FUN_14028d470(float a, float b);                               // the floats are equal
 // The model resource cache (FUN_140a0afd0) and the file preloader.
-class Unk_PCModelCache
-{
-public:
-    bool FUN_141551db0(CString strPath);                            // the file is cached
-};
-Unk_PCModelCache* FUN_140a0afd0();
-CFilePreload* FUN_140ab7a10();
+CNifLoadingService* FUN_140a0afd0();
 // The UI root (FUN_1403ed2b0).
 class Unk_PCUIRoot
 {
@@ -649,12 +619,7 @@ public:
 };
 Unk_PCUIRoot* FUN_1403ed2b0();
 // The notice dispatcher (FUN_140939a10).
-class Unk_PCNotices
-{
-public:
-    void FUN_140da4fe0(MS2Ptr<NotifyObject> spNotify);
-};
-Unk_PCNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 // The +0xd88 record is the head CBoneRotateManager (vfunc_12 news it; clonepc.cpp/stateidle.cpp keep the
 // Unk_PCD88 name, which the exe's MS2Ptr COMDAT symbols carry) and the +0xfd8 record (create 0x141993100).
@@ -1319,8 +1284,8 @@ void PC::FUN_141653d10(MS2Ptr<CItem> spItem)
             const ModelPart* pPart = pGroup->FUN_140544fe0(j);
             if (pPart->isNif != 0 && (pPart->gender == 2 || pPart->gender == FUN_141658e60()))
             {
-                if (!FUN_140a0afd0()->FUN_141551db0(CString(pPart->name0)))
-                    FUN_140ab7a10()->FUN_141210ac0(CString(pPart->name0));
+                if (!FUN_140a0afd0()->IsCached(CString(pPart->name0)))
+                    TSingleton<CFilePreload>::GetInstance()->FUN_141210ac0(CString(pPart->name0));
             }
         }
     }
@@ -1381,7 +1346,7 @@ int PC::FUN_141654760()
 void PC::FUN_141654790()
 {
     FUN_141679760();
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyChangeJob(this)));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyChangeJob(this)));
 }
 
 // @0x141654840
@@ -1480,14 +1445,14 @@ Unk_PCItemCooldowns* PC::FUN_1416561c0()
 void PC::vfunc_120(MS2Ptr<RideOnAction> spAction)
 {
     PCBase::vfunc_120(spAction);
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyChangePcRidee(this)));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyChangePcRidee(this)));
 }
 
 // @0x1416562d0
 void PC::vfunc_121(MS2Ptr<RideOffAction> spAction)
 {
     PCBase::vfunc_121(spAction);
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyChangePcRidee(this)));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyChangePcRidee(this)));
 }
 
 // @0x1416563c0
@@ -1625,7 +1590,7 @@ CStringW PC::vfunc_77()
     {
         MS2Ptr<Unk_RideeData> spData = spRidee->GetData();
         if (spData.get() && spData->m_nAC != 0)
-            return FUN_1401a9d70()->FUN_141811980(0x31, spData->m_nNameId);
+            return TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x31, spData->m_nNameId);
     }
     return PCBase::vfunc_77();
 }
@@ -1728,7 +1693,7 @@ void PC::vfunc_131(short n)
 {
     m_nLevelDDC = n;
     FUN_141a60f00(m_unk_70);
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyChangeLevel(this)));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyChangeLevel(this)));
 }
 
 // @0x1416578f0
@@ -1762,7 +1727,7 @@ void PC::vfunc_90(void* p)
             for (int i = 0; i < 3; i++)
             {
                 __int64 nValue = 0;
-                if (FUN_14082f1a0(nType))
+                if (IsPercentStat(nType))
                     nValue = static_cast<CInPacket*>(p)->ReadInt64();
                 else
                     nValue = (unsigned)static_cast<CInPacket*>(p)->ReadInt32();
@@ -2115,7 +2080,7 @@ void PC::FUN_1416619d0(unsigned int nEnd)
     m_n10e8 = nEnd;
     if (FUN_1409613d0(this))
     {
-        if (Unk_PCMainPlayerInfo* pInfo = FUN_140931900(0x4e5f))
+        if (UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f))
         {
             if (nEnd > 0)
                 pInfo->FUN_1419f1200(0x5f5e103, FUN_141661a80());
@@ -2213,7 +2178,7 @@ void PC::FUN_141662690(int nValue) { m_n1148 = nValue; }
 // @0x1416626b0
 int PC::FUN_1416626b0()
 {
-    if (FUN_14086ae10(m_n1140))
+    if (IsMonthChanged(m_n1140))
     {
         m_n1140 = FUN_140869440();
         m_n1148 = 0;
@@ -2442,7 +2407,7 @@ int PC::FUN_141663ac0()
 {
     if (m_n11f8 == 0)
         return 1;
-    if (FUN_14086ace0(m_n11f8))
+    if (IsNotRecentDayChange(m_n11f8))
         return 1;
     return 0;
 }
@@ -2746,7 +2711,7 @@ void PC::FUN_141661c70(int n)
 {
     m_n10f4 = n;
     FUN_141a60f00(m_unk_70);
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyChangeTitle(this)));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyChangeTitle(this)));
 }
 
 // @0x141661d40
@@ -2994,11 +2959,11 @@ void PC::FUN_14165c720(unsigned int nSkillId, short nLevel)
     if (nSkillId != 0)
     {
         bool bMyPC = FUN_1409613d0(this) ? true : false;
-        FUN_140ab7a10()->FUN_141210540(nSkillId, nLevel, bMyPC ? 2 : 3);
-        MS2Ptr<SkillData> spSkill = FUN_1401958b0()->GetSkillData(nSkillId);
+        TSingleton<CFilePreload>::GetInstance()->FUN_141210540(nSkillId, nLevel, bMyPC ? 2 : 3);
+        MS2Ptr<SkillData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillData(nSkillId);
         if (spSkill.get())
         {
-            FUN_140ab7a10()->FUN_141210540(spSkill->m_nJump, nLevel, bMyPC ? 2 : 3);
+            TSingleton<CFilePreload>::GetInstance()->FUN_141210540(spSkill->m_nJump, nLevel, bMyPC ? 2 : 3);
             std::set<unsigned int> kFound;
             std::set<unsigned int> kVisited;
             int nCount = 0;
@@ -3121,9 +3086,9 @@ MS2Ptr<CGemSwim> PC::FUN_14165e1b0()
 // @0x141660e00
 void PC::vfunc_49()
 {
-    Unk_PCShadowCfg* pCfg = FUN_140ae1c00();
-    int nLodHi = pCfg->FUN_141376880(1);
-    int nLodLo = pCfg->FUN_1413769d0(1);
+    CGraphicOptionTable* pCfg = TSingleton<CGraphicOptionTable>::GetInstance();
+    int nLodHi = pCfg->GetShadowOption(1);
+    int nLodLo = pCfg->GetShadowOptionOffset(1);
     m_spShadow = NiNew CObjectShadow(this, nLodHi, nLodLo);
     FUN_14123cb20(m_bUnkB8);
 }
@@ -3215,9 +3180,9 @@ int PC::vfunc_122(void* p)
                 return 0;
             if (FUN_141661bc0() != 0 && FUN_141661bc0() == pOther->FUN_141661bc0())
                 return 0;
-            if (FUN_1416749a0()->FUN_140970a20())
+            if (FUN_1416749a0()->IsPvpOnOff())
                 return 0;
-            if (pOther->FUN_1416749a0()->FUN_140970a20())
+            if (pOther->FUN_1416749a0()->IsPvpOnOff())
                 return 0;
             return 1;
         }
@@ -3233,7 +3198,7 @@ void PC::FUN_1416599b0()
     egf::EntityID kNone(0ull);
     if (m_entityDB0 != kNone)
     {
-        egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_entityDB0);
+        egf::Entity* pEntity = FUN_1411cf440(reinterpret_cast<Unk_PCEntMgr*>(TSingleton<EntityWorldManager>::GetInstance()), m_entityDB0);
         if (pEntity == 0)
             return;
         efd::Point3 kPos = reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18();
@@ -3386,7 +3351,7 @@ BOOL PC::FUN_141661e40(int* pnEnchant, int* pnGrade)
             continue;
         if (spItem->FUN_140526bd0() < *Client::Constants::GetInstance()->ShowNameTagEnchantItemGrade.Get())
             continue;
-        CItemEnchantInfo* pEnchant = reinterpret_cast<Unk_PCItemStatus*>(spItem->FUN_1405278a0())->FUN_140630d60();
+        CItemEnchantInfo* pEnchant = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->GetEnchant();
         if (pEnchant == 0)
             continue;
         if (pEnchant->GetLevel() < *Client::Constants::GetInstance()->ShowNameTagEnchantLevel.Get())
@@ -3479,7 +3444,7 @@ void PC::FUN_141661370(int bStart, int nFlag, int nTimerId)
 {
     if (FUN_1409613d0(this))
     {
-        if (Unk_PCMainPlayerInfo* pInfo = FUN_140931900(0x4e5f))
+        if (UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f))
         {
             if (m_n105c != 0)
                 pInfo->FUN_1419f1370(m_n105c);
@@ -4178,7 +4143,7 @@ void PC::FUN_14165cac0()
             }
         }
     }
-    spEntity = FUN_1409670f0()->FUN_1411ce7c0(kModel, kAsset, kPos, kRot, 1.0f, 0, 0);
+    spEntity = reinterpret_cast<Unk_PCEntMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411ce7c0(kModel, kAsset, kPos, kRot, 1.0f, 0, 0);
     if (spEntity == 0)
         return;
     efd::UInt32 nObjectId = FUN_14123c580();
@@ -4522,20 +4487,13 @@ float PC::vfunc_115(float a, float b, float c, float d, int nFlag, int* pOut)
 }
 
 // The couple effect view: the per-tick update takes the frame time (unit_140b0e5f0.h declares it without).
-class Unk_PCCoupleView
-{
-public:
-    void FUN_140b0e7a0(float fDelta);
-};
 // The random target effect view (randomtargeteffect.h lacks the update).
-class Unk_PCRandomTargetView
+class Unk_PCRandomTargetView : public CRandomTargetEffect
 {
 public:
-    void FUN_140aab0f0();                                           // per-frame update
     void FUN_140aab3c0(float fAlpha);                               // set the alpha
 };
 int FUN_14080b8e0(CSkillTierOptionManager* pTier);                  // the skill tier options changed
-UIStatusEventDispatcher* FUN_140aa6d40();
 extern __int64 DAT_143ab2828;                                       // the own character id
 
 // Per-frame update.
@@ -4582,10 +4540,10 @@ void PC::vfunc_53(float f)
     if (FUN_14080b8e0(m_spSkillTier1110.get()))
     {
         if (GetClassID() == 0x06200004)
-            FUN_140aa6d40()->FUN_141b0ce20(0xe, 0);
+            TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0ce20(0xe, 0);
     }
     if (m_spCouple11d8.get())
-        reinterpret_cast<Unk_PCCoupleView*>((CoupleEffectSystem*)m_spCouple11d8.operator->())->FUN_140b0e7a0(f);
+        reinterpret_cast<CoupleEffectSystem*>((CoupleEffectSystem*)m_spCouple11d8.operator->())->FUN_140b0e7a0(f);
     if (m_spTailEffect1270.get())
         m_spTailEffect1270->FUN_140ad0200();
     for (POSITION pos = m_mapTail1280.GetStartPosition(); pos; m_mapTail1280.GetNext(pos))
@@ -4594,7 +4552,7 @@ void PC::vfunc_53(float f)
         ((CTailEffectObjectFromAdditional*)spTail)->FUN_140ad0200();
     }
     if (m_spRandomTarget12c8.get())
-        reinterpret_cast<Unk_PCRandomTargetView*>((CRandomTargetEffect*)m_spRandomTarget12c8.operator->())->FUN_140aab0f0();
+        reinterpret_cast<Unk_PCRandomTargetView*>((CRandomTargetEffect*)m_spRandomTarget12c8.operator->())->UpdatePosition();
 }
 
 // The team of the player (the PvP team, the hide-and-seek side or the water gun battle team; 1: none).

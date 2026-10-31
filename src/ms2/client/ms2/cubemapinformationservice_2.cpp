@@ -23,7 +23,7 @@
 #pragma clang diagnostic pop
 #endif
 
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 class PCBase;
 class Unk_CubeCraftCore;
@@ -186,7 +186,7 @@ int CubeHolderManager::FUN_1410b5d70() {
 MS2_REPLACE_METHOD(0x1410B5D70, CubeHolderManager, FUN_1410b5d70, 69, 0xA29D55F1);
 // @0x1410b5dc0
 MS2Ptr<CItem> CubeHolderManager::FUN_1410b5dc0(__int64 instanceId) {
-    MS2Ptr<CItem> item=DAT_143ab2a90.FUN_140a5d680(instanceId);
+    MS2Ptr<CItem> item=g_143ab2a90.FUN_140a5d680(instanceId);
     if(item.get()) return item;
     return DAT_143ab2e20.FUN_1408fbf90(instanceId);
 }

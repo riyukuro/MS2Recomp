@@ -48,8 +48,7 @@ public:
 Unk_FreeCamContext* FUN_1403ed2d0();
 Unk_CameraTargetEntity* FUN_141bd0cc0(Unk_FreeCamContext* p);   // the local player
 
-// The UI service (FUN_1403ed2b0).
-CUIService* FUN_1403ed2b0();
+// The UI service (TSingleton<CUIService>::GetInstance).
 
 // The game's TinyXML element (0x90 bytes).
 class Unk_TiXmlElement
@@ -209,7 +208,7 @@ MS2_REPLACE_METHOD(0x141222b80, CFreeCameraMode, vfunc_9, 395, 0x1B154723);
 void CFreeCameraMode::vfunc_6(int n)
 {
     CCameraMode::vfunc_6(n);
-    FUN_1403ed2b0()->FUN_141adbca0(0);
+    TSingleton<CUIService>::GetInstance()->FUN_141adbca0(0);
 }
 MS2_REPLACE_METHOD(0x141222d20, CFreeCameraMode, vfunc_6, 47, 0x7D85A084);
 
@@ -217,6 +216,6 @@ MS2_REPLACE_METHOD(0x141222d20, CFreeCameraMode, vfunc_6, 47, 0x7D85A084);
 void CFreeCameraMode::vfunc_7()
 {
     CCameraMode::vfunc_7();
-    FUN_1403ed2b0()->FUN_141adbca0(1);
+    TSingleton<CUIService>::GetInstance()->FUN_141adbca0(1);
 }
 MS2_REPLACE_METHOD(0x141222d60, CFreeCameraMode, vfunc_7, 42, 0x92129541);

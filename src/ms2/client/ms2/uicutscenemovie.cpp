@@ -19,17 +19,26 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/gfxmanager.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/ckeytable.h"
+#include "ms2/placeholder/uiswfentitymanager.h"
+#include "ms2/client/ms2/soundeventmgr.h"
+#include "ms2/client/ms2/bigdatalogsystem.h"
+#include "ms2/client/ms2/autofindtaxistation.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uiloadingprogress.h"
+#include "ms2/placeholder/cgameoption.h"
+#include "ms2/client/ms2/loadingimagetable.h"
 
 static UICommon::CMyPCKeyInputController s_keyInputController;     // header static (origin unknown), 0x143af1e60
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
-class Unk_14025e7a0 { public: void FUN_1422ae920(int n); void FUN_1422afdd0(float fVolume); };
-Unk_14025e7a0* FUN_14025e7a0();
-class Unk_14025e7c0 { public: bool FUN_14116d840(); };
-Unk_14025e7c0* FUN_14025e7c0();
-class Unk_140b632f0 { public: void FUN_1422d4780(UISwfEntity* p, int n); void FUN_1422d4840(UISwfEntity* p, int n); };
-Unk_140b632f0* FUN_140b632f0();
+GFxManager* FUN_14025e7a0();
+CInputKeyHandler* FUN_14025e7c0();
+UISwfEntityManager* FUN_140b632f0();
 class Unk_140a94350
 {
 public:
@@ -40,31 +49,21 @@ public:
 };
 Unk_140a94350* FUN_140a94350();
 class Unk_141529a50 { public: void FUN_141529a50(bool b); };
-class Unk_1403ed2d0 { public: Unk_141529a50* FUN_141bd0cc0(); int FUN_141bd3060(); };
-Unk_1403ed2d0* FUN_1403ed2d0();
-class Unk_1403ed2b0 { public: void FUN_141adb7b0(int n); int FUN_141add860(); };
-Unk_1403ed2b0* FUN_1403ed2b0();
+class Unk_1403ed2d0 : public WorldService { public: Unk_141529a50* FUN_141bd0cc0();};
+CUIService* FUN_1403ed2b0();
 void FUN_14151f200();
 int FUN_14151f6e0();
 void FUN_141901390(int a1, int nUIType);
-class Unk_1412787a0 { public: void FUN_1409f1e20(); void FUN_1409f1e40(); };
-Unk_1412787a0* FUN_1412787a0();
 class Unk_140d13c70 { public: bool m_bMute; void FUN_14125fe20(); float FUN_1412602e0(); };
 class Unk_1409a8b10 { public: Unk_140d13c70* FUN_140d13c70(); const bool& FUN_140a58500(); };
-Unk_1409a8b10* FUN_1409a8b10();
-class Unk_140d13c40 { public: void FUN_14177dea0(int n, int nTime); void FUN_14177ddf0(int n, int nTime); };
-Unk_140d13c40* FUN_140d13c40();
+CSoundEventMgr* FUN_140d13c40();
 class Unk_1414a5700 { public: CString FUN_140d44f90(int n1, int n2); };
-Unk_1414a5700* FUN_1414a5700();
 void FUN_140d73bc0(int nId, int n, IMessageListener* pListener, CStringW str);
 class Unk_140298f40 { public: const float& FUN_140298f40(); };
 class Unk_1401d3200 { public: char m_pad[0x3c00]; Unk_140298f40 m_3c00; };
 Unk_1401d3200* FUN_1401d3200();
-class Unk_140d8ee90 { public: void FUN_140a1f970(const CString& strEvent, const CString& strArg); };
-Unk_140d8ee90* FUN_140d8ee90();
-class Unk_1409331f0 { public: CStringW FUN_14142d760(int nId, int n); };
-Unk_1409331f0* FUN_1409331f0();
-class Unk_1419e04b0 { public: int FUN_1419e04b0(); };
+CKeyTable* FUN_1409331f0();
+class Unk_1419e04b0 : public UILoadingProgress { };
 Unk_1419e04b0* FUN_141540270(int n);
 // "GfxError:{0} {1}({2}) function:{3}"-style formatter (probably a variadic template taking const T&...).
 CString FUN_140c05020(const char* szFormat, const char* a1, const char* a2, const int& a3, const char* a4);
@@ -98,7 +97,7 @@ int UICutSceneMovie::vfunc_52(const CString& strPath, float fVolume)
     FUN_140b632f0()->FUN_1422d4780(this, 2);
     FUN_140a94350()->vfunc_10(11);
     if (m_4c != 0) {
-        if (FUN_1403ed2d0()->FUN_141bd0cc0()) {
+        if (reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0()) {
             Play();
             return 1;
         } else {
@@ -122,14 +121,14 @@ int UICutSceneMovie::vfunc_53()
         m_30->Invoke("hide");
     SetSoundFade(false);
     FUN_14151f200();
-    Unk_141529a50* p = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_141529a50* p = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (p) {
         FUN_141901390(1, vfunc_48());
         if (m_bIntroStory)
             p->FUN_141529a50(false);
     }
     FUN_14025e7a0()->FUN_1422ae920(0);
-    FUN_1412787a0()->FUN_1409f1e40();
+    TSingleton<CAutoFindTaxiStation>::GetInstance()->FUN_1409f1e40();
     m_nCutSceneId = 0;
     return 1;
 }
@@ -198,8 +197,8 @@ int UICutSceneMovie::HasSceneVideo(int nScene)
 {
     if (!m_strScenePath.IsEmpty())
         return 1;
-    int nId = FUN_1403ed2d0()->FUN_141bd3060();
-    CString strPath = FUN_1414a5700()->FUN_140d44f90(nId, nScene);
+    int nId = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd3060();
+    CString strPath = reinterpret_cast<Unk_1414a5700*>(TSingleton<CLoadingImageTable>::GetInstance())->FUN_140d44f90(nId, nScene);
     return strPath.GetLength() != 0;
 }
 MS2_REPLACE_METHOD(0x14190F1D0, UICutSceneMovie, HasSceneVideo, 153, 0x29014FD9);
@@ -211,11 +210,11 @@ void UICutSceneMovie::SetSoundFade(bool bFade)
         return;
     const int nFadeTime = 1000;
     if (bFade) {
-        FUN_1409a8b10()->FUN_140d13c70()->FUN_14125fe20();
+        reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70()->FUN_14125fe20();
         FUN_140d13c40()->FUN_14177dea0(2, nFadeTime);
         FUN_140d13c40()->FUN_14177dea0(1, nFadeTime);
     } else {
-        FUN_1409a8b10()->FUN_140d13c70()->FUN_14125fe20();
+        reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70()->FUN_14125fe20();
         FUN_140d13c40()->FUN_14177ddf0(2, nFadeTime);
         FUN_140d13c40()->FUN_14177ddf0(1, nFadeTime);
     }
@@ -302,7 +301,7 @@ int UICutSceneMovie::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     if (_stricmp(szMethod, "onHideComplete") == 0) {
         FUN_1422dc080();
         m_strPath.Empty();
-        FUN_1409a8b10()->FUN_140d13c70()->FUN_14125fe20();
+        reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70()->FUN_14125fe20();
         return 1;
     } else if (_stricmp(szMethod, "onExit") == 0) {
         FUN_140d73bc0(0x88c, 1, this, L"");
@@ -328,7 +327,7 @@ int UICutSceneMovie::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     m_pExit->vfunc_3(1);
                     m_pExit->vfunc_13("hide");
                 }
-                FUN_140d8ee90()->FUN_140a1f970("cut_scene_stop", m_strPath);
+                TSingleton<CBigDataLogSystem>::GetInstance()->SendLog("cut_scene_stop", m_strPath);
             }
         }
         FUN_14151f200();
@@ -346,7 +345,7 @@ void UICutSceneMovie::vfunc_11()
         return;
     if (!FUN_1419102c0())
         return;
-    Unk_141529a50* p = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_141529a50* p = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (p) {
         FUN_141901390(0, vfunc_48());
         if (m_bPlayPending) {
@@ -375,7 +374,7 @@ void UICutSceneMovie::ShowSkipButton()
         if (m_30.get()) {
             CStringW strKey(L"$s_cutscene_skip_key");
             CStringW strText(L"$s_cutscene_skip");
-            if (FUN_1409a8b10()->FUN_140a58500())
+            if (reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500())
                 strKey = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
             m_30->Invoke("setSkipKey", strKey, strText);
         }
@@ -402,7 +401,7 @@ MS2_REPLACE_METHOD(0x14190FEF0, UICutSceneMovie, Play, 197, 0x9AC68545);
 bool UICutSceneMovie::PlayUsm()
 {
     if (MS2Ptr<Unk_ASVideoPlayer> pPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
-        Unk_140d13c70* pSound = FUN_1409a8b10()->FUN_140d13c70();
+        Unk_140d13c70* pSound = reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70();
         if (pSound)
             pPlayer->FUN_1422e9490(pSound->m_bMute ? 0.0f : pSound->FUN_1412602e0());
         pPlayer->FUN_1422e95b0(m_strPath);
@@ -418,7 +417,7 @@ bool UICutSceneMovie::PlaySwf()
 {
     if (m_30 == NULL)
         return false;
-    Unk_140d13c70* pSound = FUN_1409a8b10()->FUN_140d13c70();
+    Unk_140d13c70* pSound = reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70();
     if (pSound)
         FUN_14025e7a0()->FUN_1422afdd0(pSound->m_bMute ? 0.0f : pSound->FUN_1412602e0());
     m_30->Invoke("playSwfMovie", m_strPath);
@@ -451,14 +450,14 @@ MS2_REPLACE_METHOD(0x1419102C0, UICutSceneMovie, FUN_1419102c0, 24, 0x7AC102E0);
 // @0x1419102e0
 void UICutSceneMovie::PlayDefaultScene()
 {
-    int nId = FUN_1403ed2d0()->FUN_141bd3060();
+    int nId = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd3060();
     int nScene = 0;
-    Unk_1419e04b0* p = FUN_141540270(FUN_1403ed2b0()->FUN_141add860());
+    Unk_1419e04b0* p = FUN_141540270(FUN_1403ed2b0()->GetMode());
     if (p)
         nScene = p->FUN_1419e04b0();
-    CString strPath = FUN_1414a5700()->FUN_140d44f90(nId, nScene);
+    CString strPath = reinterpret_cast<Unk_1414a5700*>(TSingleton<CLoadingImageTable>::GetInstance())->FUN_140d44f90(nId, nScene);
     if (strPath.GetLength()) {
-        FUN_1412787a0()->FUN_1409f1e20();
+        TSingleton<CAutoFindTaxiStation>::GetInstance()->FUN_1409f1e20();
         vfunc_52(strPath, 0.0f);
     }
 }
@@ -467,7 +466,7 @@ MS2_REPLACE_METHOD(0x1419102E0, UICutSceneMovie, PlayDefaultScene, 191, 0x4FB651
 // @0x1419103b0
 void UICutSceneMovie::PlayPendingScene()
 {
-    int nId = FUN_1403ed2d0()->FUN_141bd3060();
+    int nId = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd3060();
     if (m_nSceneId == nId) {
         vfunc_52(m_strScenePath, 0.0f);
         m_strScenePath.Empty();

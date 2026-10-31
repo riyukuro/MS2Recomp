@@ -15,6 +15,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
 
 // ---- out-of-unit callees (names describe uses) ----
 int FUN_140873420(void* pElement, const char* szName, CStringW& strOut);        // xml attribute -> wide string
@@ -27,8 +28,7 @@ void* FUN_140165cf0(void* pNode, const char* szName);                           
 void* FUN_140168650(void* pNode, const char* szName);                           // next sibling element
 bool FUN_14083d7e0(const CStringW& strText, const CStringW& strPrefix);         // starts with
 CFileSystem* GetFileSystem();                                                   // the file system singleton
-class Unk_MtItemTexts { public: CStringW FUN_141811980(int n, int nId); };      // text by kind and id (1 = item name)
-Unk_MtItemTexts* FUN_1401a9d70();
+      // text by kind and id (1 = item name)
 
 // @0x14065ee80 / @0x14065eeb0: the arrays' Copy
 template <class T> void MailCopyArray(ATL::CAtlArray<T>& destination, const ATL::CAtlArray<T>& source)
@@ -89,7 +89,7 @@ CStringW MailTextValue::Resolve() {
     CStringW result(L"");
     if (m_kind == 0) result = m_value;
     else if (m_kind == 1) result = CommonString::GetInstance()->GetWideByKey(m_value);
-    else if (m_kind == 2) { int item = FUN_140718200(m_value); result = FUN_1401a9d70()->FUN_141811980(1, item); }
+    else if (m_kind == 2) { int item = FUN_140718200(m_value); result = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, item); }
     else if (m_kind == 3) result = m_value;
     else MS2_ASSERT_AT(0xa0, FALSE);
     return result;

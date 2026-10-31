@@ -15,10 +15,12 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 class Unk_CommonLog { public: void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg); };
 Unk_CommonLog* FUN_140166440();
@@ -31,7 +33,6 @@ ExchangeItemType FUN_14021a270(const CStringA& str);        // the "type" name -
 // The discount service chain: the discount rate (per 10000) of an item grade.
 class Unk_140302b00 { public: };
 class Unk_1403ed190 { public: int FUN_140428cb0(int nGrade); };
-Unk_140302b00* FUN_140302b00();
 Unk_1403ed190* FUN_1403ed190(Unk_140302b00* p);
 
 // The unit's init flag is an exe global (symbols-manual.tsv); the hook DLL binds the exe's.
@@ -48,7 +49,7 @@ __int64 FUN_1405957d0(__int64 nMeso, unsigned int nRate);
 // @0x140595050
 __int64 CExchangeItemInfo::GetMeso() const
 {
-    int nRate = FUN_1403ed190(FUN_140302b00())->FUN_140428cb0(m_nId);
+    int nRate = FUN_1403ed190(reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance()))->FUN_140428cb0(m_nId);
     if (nRate != 0)
         return FUN_1405957d0(m_nMeso, nRate);
     return m_nMeso;

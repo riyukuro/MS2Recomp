@@ -23,6 +23,10 @@
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/weddingtable.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -206,11 +210,9 @@ public:
     virtual CStringW vfunc_77();
 };
 class Unk_ThWorld { public: Unk_ThPc* FUN_141bd0cc0(); };
-Unk_ThWorld* FUN_1403ed2d0();
 bool FUN_14025cd60(const CStringW& strA, const CStringW& strB) noexcept;   // equal names (no EH state in the exe callers)
 
 class Unk_ThColorTbl { public: unsigned FUN_1405569f0(int nIdx) const; };
-Unk_ThColorTbl* FUN_140281980();
 class Unk_ThOptions { public: bool FUN_14036d570(int nOption) const; };
 Unk_ThOptions* FUN_140166410();
 struct Unk_ThFlags { char m_pad[0x30]; bool m_30; };
@@ -244,10 +246,8 @@ private:
 MS2_CHECK_SIZE(Unk_ThHallRef, 0x10);
 class Unk_ThHallBook { public: Unk_ThRoomRef FUN_140907110(int nRoom) const; };
 class Unk_ThHallMgr { public: Unk_ThHallRef FUN_140908b80(unsigned nHall) const; };
-Unk_ThHallMgr* FUN_1409023c0();
 unsigned char FUN_140900f30(unsigned __int64 nTime);
 class Unk_ThStrTbl { public: CStringW FUN_141811980(int nType, unsigned nId) const; };
-Unk_ThStrTbl* FUN_1401a9d70();
 // 0x1406c47a0 is CMsTime(__time64_t) (ms2/placeholder/mstime.h)
 CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strDateSep, CStringW strTimeSep);   // date and time text
 class Unk_ThUgc { public: CStringW FUN_140b15150(unsigned __int64 nId) const; };
@@ -262,7 +262,7 @@ CStringW FUN_140292a70(const wchar_t* pszFormat, const unsigned& a);
 CStringW FUN_14052bd00(int nId, const CStringW& a);
 CStringW FUN_14086d060(int nId, const __int64& n);              // FormatStringId<__int64>
 CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a, const CStringW& b, const CStringW& c);
-CStringW FUN_140cbf840(unsigned nId);                           // the dungeon name
+CStringW TranslateEnumDungeonGroup(unsigned nId);               // the dungeon name
 unsigned FUN_141275c00(unsigned nRank);
 unsigned FUN_141275bd0(unsigned __int64 nId);
 unsigned FUN_141275b40();
@@ -350,7 +350,7 @@ CStringW FUN_14183e930(const CStringW& strText, unsigned nColor)
 // @0x14183e9c0
 CStringW FUN_14183e9c0(CStringW strText, int nIdx)
 {
-    unsigned nColor = FUN_140281980()->FUN_1405569f0(nIdx);
+    unsigned nColor = reinterpret_cast<Unk_ThColorTbl*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405569f0(nIdx);
     return FUN_14183e930(strText, nColor);
 }
 
@@ -639,13 +639,13 @@ CStringW FUN_141841180(const Unk_ThMsg& msg, const Unk_ThWedding& wed, const CSt
                             s_strIconMoveToHouse, nColorB, nSize, strText2);
     strBody = FUN_141842560(strBody, nColorB, 0xfffffe);
     CStringW strDate;
-    Unk_ThHallRef hall = FUN_1409023c0()->FUN_140908b80(wed.m_8);
+    Unk_ThHallRef hall = reinterpret_cast<Unk_ThHallMgr*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908b80(wed.m_8);
     if (hall.FUN_141847330() != 0)
     {
         Unk_ThRoomRef room = hall.FUN_1409020f0()->FUN_140907110(wed.m_c);
         if (room.FUN_141847320() != 0)
         {
-            strDate = FUN_1401a9d70()->FUN_141811980(3, room.FUN_1409020e0()->FUN_140906e40(FUN_140900f30(wed.m_10)));
+            strDate = reinterpret_cast<Unk_ThStrTbl*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(3, room.FUN_1409020e0()->FUN_140906e40(FUN_140900f30(wed.m_10)));
         }
     }
     CStringW strBody2 = FUN_14028dee0(0x680, nIconSize);
@@ -684,8 +684,8 @@ CStringW FUN_141841c60(unsigned nSize, CStringW strName, unsigned __int64 nIdA, 
     CStringW strJoinLink = StringFormat(L"'event:joinPartyDungeonHelper,{0},{1},{2}'", nSize, strName, nRoomId);
     CStringW strJoin = FUN_1405c2690(CStringW(L"s_html_chat_join_party"), strJoinLink);
     CStringW strRoomLink = FUN_140292a70(L"'event:dungeonRoom,{0}'", nRoomId);
-    CStringW strDungeon = FUN_1409eaa20(CStringW(L"s_html_chat_dungeon_name"), strRoomLink, FUN_140cbf840(nDungeonId),
-                                        FUN_1401a9d70()->FUN_141811980(0x14, nRoomId));
+    CStringW strDungeon = FUN_1409eaa20(CStringW(L"s_html_chat_dungeon_name"), strRoomLink, TranslateEnumDungeonGroup(nDungeonId),
+                                        reinterpret_cast<Unk_ThStrTbl*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(0x14, nRoomId));
     CStringW strLine = FUN_14028dfa0(CStringW(L"s_html_chat_find_dungeon_helper"), strHelper, strDungeon, nP8, nP9, strJoin);
     return FUN_14028dfa0(CStringW(L"s_html_chat_system_notice"), s_color25, nSize2, strLine);
 }
@@ -783,7 +783,7 @@ ULong FUN_141842680(int nOwnFlag, int nIsMe, ULong nColor)
 // @0x1418426b0
 int FUN_1418426b0(const CStringW& strName)
 {
-    Unk_ThPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ThPc* pPc = reinterpret_cast<Unk_ThWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     bool bMe = pPc != 0 && FUN_14025cd60(pPc->vfunc_77(), strName);
     if (bMe)
         return 1;

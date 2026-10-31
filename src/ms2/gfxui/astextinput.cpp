@@ -16,7 +16,7 @@
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ASCallback;
 
-CStringW FUN_1408767c0(const char* sz);                            // a UTF-8 string as a wide CString
+CStringW XmlWide(const char* sz);                            // a UTF-8 string as a wide CString
 
 // @0x1422e07c0
 ASTextInput::ASTextInput(const Scaleform::GFx::Value& v, int nMovieId)
@@ -81,7 +81,7 @@ MS2_REPLACE_METHOD(0x1422E0AB0, ASTextInput, FUN_1422e0ab0, 72, 0x34312FD5);
 // @0x1422e0b00
 CStringW ASTextInput::FUN_1422e0b00()
 {
-    return FUN_1408767c0(FUN_1422baa20("text").GetString());
+    return XmlWide(FUN_1422baa20("text").GetString());
 }
 MS2_REPLACE_METHOD(0x1422E0B00, ASTextInput, FUN_1422e0b00, 122, 0x3FE447E4);
 
@@ -102,7 +102,7 @@ MS2_REPLACE_METHOD(0x1422E0BD0, ASTextInput, FUN_1422e0bd0, 72, 0xA9D05A60);
 // @0x1422e0c20
 CStringW ASTextInput::FUN_1422e0c20()
 {
-    return FUN_1408767c0(FUN_1422baa20("htmlText").GetString());
+    return XmlWide(FUN_1422baa20("htmlText").GetString());
 }
 MS2_REPLACE_METHOD(0x1422E0C20, ASTextInput, FUN_1422e0c20, 122, 0xB38E2811);
 

@@ -62,6 +62,11 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cserverstring.h"
+#include "ms2/client/ms2/uitriggertimerdialog.h"
+#include "ms2/client/ms2/uipvpobserverdialog.h"
+#include "ms2/client/ms2/uisidepopuptalk.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- services reached through globals ----
 void* FUN_140166440();                                              // the log
@@ -96,7 +101,6 @@ public:
     int FUN_1411a49c0(Unk_TrigSvcFxReq* pRequest);                  // spawn, returns the handle
     void FUN_1411a6060(int nHandle);                                // release
 };
-Unk_TrigSvcFxMgr* FUN_1403ed280();
 
 // ---- entities ----
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
@@ -151,9 +155,9 @@ public:
 };
 class Unk_TrigTextUI { public: void FUN_141b2b7e0(MS2Ptr<CFileBuffer> spText); };
 Unk_TrigTextUI* FUN_14122d570(int nId);
-class Unk_TrigHintUI { public: void FUN_141b334d0(int n); void FUN_141b33510(int n); };
+class Unk_TrigHintUI : public UITriggerTimerDialog { };
 Unk_TrigHintUI* FUN_140ee6300(int nId);
-class Unk_TrigTalkUI { public: void FUN_140e879a0(MS2Ptr<SidePopupTalkParam> spParam); };
+class Unk_TrigTalkUI : public UISidePopupTalk { };
 Unk_TrigTalkUI* FUN_1413868b0(int nId);
 UINpcDuelHPBarDialog* FUN_14096e200(int nId);
 UICutSceneMovie* FUN_14138fd50(int nId);
@@ -178,10 +182,9 @@ struct Unk_TrigPvpB
     int m_38, m_3c, m_40, m_44;
 };
 MS2_CHECK_SIZE(Unk_TrigPvpB, 0x48);
-class Unk_TrigPvpDlg
+class Unk_TrigPvpDlg : public UIPvPObserverDialog
 {
 public:
-    void FUN_141a92c80();
     void FUN_141a91940(const Unk_TrigPvpA& rBlock);
     void FUN_141a91a30(const Unk_TrigPvpB& rBlock);
 };
@@ -189,11 +192,10 @@ Unk_TrigPvpDlg* FUN_141531c80(int nId);
 void FUN_140743ca0(Unk_TrigPvpA* pOut, CInPacket* pPacket);
 void FUN_140743f50(Unk_TrigPvpB* pOut, CInPacket* pPacket);
 
-class Unk_TextFilter { public: CStringW FUN_14087ede0(const CStringW& rText); };
-Unk_TextFilter* FUN_140a87680();
+class Unk_TextFilter : public CServerStringGroup { };
 Unk_TextFilter* FUN_140a87690(Unk_TextFilter* p);
 bool FUN_140841300(const CStringW& rText, const char* szCompare);
-CStringW FUN_1408767c0(const char* pszUtf8);                        // utf8 -> wide
+CStringW XmlWide(const char* pszUtf8);                              // utf8 -> wide
 void FUN_14015f050(CString& rText, ATL::CAtlArray<CString>& rOut, const char* szDelimiter);
 void FUN_140d73bc0(int nId, int n, IMessageListener* pListener, CStringW str);
 
@@ -267,7 +269,7 @@ void CTriggerService::vfunc_3(int nMap)
     {
         int nHandle = m_mapHandles.GetValueAt(pos).m_n;
         if (nHandle != 0)
-            FUN_1403ed280()->FUN_1411a6060(nHandle);
+            reinterpret_cast<Unk_TrigSvcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(nHandle);
     }
     m_mapHandles.RemoveAll();
 }
@@ -516,7 +518,7 @@ void CTriggerService::FUN_141861f60(CInPacket* pEvent)
 // @0x141861fc0
 void CTriggerService::FUN_141861fc0(CInPacket* pEvent)
 {
-    CStringW strWide = FUN_1408767c0(pEvent->ReadString());
+    CStringW strWide = XmlWide(pEvent->ReadString());
     MS2Ptr<CFileBuffer> spBuffer(new CFileBuffer);
     spBuffer->SetText(strWide);
     Unk_TrigTextUI* pUi = FUN_14122d570(0x4e6b);
@@ -698,7 +700,7 @@ void CTriggerService::FUN_1418629b0(CInPacket* pEvent)
         spParam->m_strName = strName;
         spParam->m_strIcon = strIcon;
         spParam->m_nNpcId = nNpc;
-        spParam->m_strText = FUN_140a87690(FUN_140a87680())->FUN_14087ede0(strText);
+        spParam->m_strText = FUN_140a87690(reinterpret_cast<Unk_TextFilter*>(TSingleton<CServerString>::GetInstance()))->GetString(strText);
         spParam->m_strSound = strSound;
         spParam->m_strScript = strScript;
         pUi->FUN_140e879a0(spParam);
@@ -894,7 +896,7 @@ void CTriggerService::FUN_141863630(int nId, bool bAdd, CStringA strName)
         Unk_TrigSvcFxReq kRequest;
         kRequest.m_strName = strName;
         kRequest.m_nOwnerId = 0;
-        int nHandle = FUN_1403ed280()->FUN_1411a49c0(&kRequest);
+        int nHandle = reinterpret_cast<Unk_TrigSvcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kRequest);
         if (nHandle != 0)
             m_mapHandles.SetAt(nId, reinterpret_cast<Unk_TrigHandle&>(nHandle));
     }
@@ -904,7 +906,7 @@ void CTriggerService::FUN_141863630(int nId, bool bAdd, CStringA strName)
         if (m_mapHandles.Lookup(nId, reinterpret_cast<Unk_TrigHandle&>(nHandle)))
         {
             if (nHandle != 0)
-                FUN_1403ed280()->FUN_1411a6060(nHandle);
+                reinterpret_cast<Unk_TrigSvcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(nHandle);
             m_mapHandles.RemoveKey(nId);
         }
     }

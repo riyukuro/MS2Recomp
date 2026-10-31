@@ -69,7 +69,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                          
 int FUN_14028e280(CMsTime& out, const CStringA& strFormat, const CStringA& str); // parses a date string
 struct Unk_MeratDefaultIcon { char m_pad[0xc0]; CStringA m_strIcon; };
 Unk_MeratDefaultIcon* FUN_1401d31f0();
-CShopEventManager* FUN_1403ed2a0();                                         // TSingleton<CShopEventManager>::GetInstance
 void FUN_1407ce380(CShopEventManager* pManager, CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> >& arr,
                    const int& nCurrency);                                   // the sale events of a currency
 bool FUN_1407cde30(PreminmMarketSaleEventContext* pContext, unsigned nId, int nCurrency);  // the event covers the id
@@ -83,15 +82,12 @@ bool FUN_1406a5010(int nId);
 int FUN_140718170(const CString& strValue);                                 // a number or an enum name
 HRESULT FUN_140299dc0(ATL::CAtlFile* pFile, const void* pData, DWORD nSize, DWORD* pWritten);  // writes the data
 CFeatureManager* FUN_140166410();                                           // the CFeatureManager singleton
-CGameEventValueManager* FUN_140302b00();                                    // TSingleton<CGameEventValueManager>::GetInstance
 int FUN_140427050(Unk_GameEventLockedValue<0x38>* pValue);                 // the star shop npc
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 unsigned FUN_1402227e0(int nJob, int n);                                    // job -> job flag
 bool FUN_140633d50(MS2Ptr<CItem> spItem);                                   // the item can be traded
 // CItemDataTable::GetMusicScore / CUGCDesignTable::GetData are not in the link set; reached by VA.
-class Unk_MeratItemTable { public: MS2Ptr<ItemMusicScore> FUN_1405565f0(unsigned nId); };
-class Unk_MeratDesignTable { public: CUGCDesignDataPtr FUN_14089e9f0(unsigned nItemId); };
-Unk_MeratItemTable* FUN_140281980();
+CItemDataTable* FUN_140281980();
 __int64 FUN_1406a6d50(Common::Constants::Value<int>& value);
 
 // The UGC sell fees per server (FUN_1401c0db0()).
@@ -687,7 +683,7 @@ __int64 CDBPremiumProduct::GetSalePrice(const CDBPremiumProduct* pParent)
     {
         CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> > arrAll;
         const int nAllCurrency = 100002;
-        FUN_1407ce380(FUN_1403ed2a0(), arrAll, nAllCurrency);
+        FUN_1407ce380(TSingleton<CShopEventManager>::GetInstance(), arrAll, nAllCurrency);
         if (!arrAll.IsEmpty())
         {
             int nCount = (int)arrAll.GetCount();
@@ -702,7 +698,7 @@ __int64 CDBPremiumProduct::GetSalePrice(const CDBPremiumProduct* pParent)
         }
     }
     CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> > arr;
-    FUN_1407ce380(FUN_1403ed2a0(), arr, nCurrency);
+    FUN_1407ce380(TSingleton<CShopEventManager>::GetInstance(), arr, nCurrency);
     if (!arr.IsEmpty())
     {
         std::vector<unsigned> ids;
@@ -2399,7 +2395,7 @@ __int64 FUN_1406a5300(unsigned nItemId)
 {
     __int64 nPrice = FUN_1406a6d50(FUN_1401d3200()->UGCShopSellMinPrice);
     {
-        CUGCDesignDataPtr spData = reinterpret_cast<Unk_MeratDesignTable*>(CUGCDesignTable::GetInstance())->FUN_14089e9f0(nItemId);
+        CUGCDesignDataPtr spData = reinterpret_cast<CUGCDesignTable*>(CUGCDesignTable::GetInstance())->GetData(nItemId);
         if (spData.get() != 0)
         {
             if (spData->m_nMarketMinPrice > 0)
@@ -2421,7 +2417,7 @@ int FUN_1406a5390(int nItemId)
             return 2;
         else
         {
-            CUGCDesignDataPtr spData = reinterpret_cast<Unk_MeratDesignTable*>(CUGCDesignTable::GetInstance())->FUN_14089e9f0(nItemId);
+            CUGCDesignDataPtr spData = reinterpret_cast<CUGCDesignTable*>(CUGCDesignTable::GetInstance())->GetData(nItemId);
             if (spData.get() != 0)
                 return spData->m_nItemGrade;
         }
@@ -2441,7 +2437,7 @@ void FUN_1406a5480(MS2Ptr<CItemData> spItem, __int64* pMin, __int64* pMax)
     __int64 nMax = FUN_1406a6d50(FUN_1401d3200()->UGCShopSellMaxPrice);
     if (spItem->FUN_14053d6f0() || spItem->FUN_14053d900())
     {
-        CUGCDesignDataPtr spData = reinterpret_cast<Unk_MeratDesignTable*>(CUGCDesignTable::GetInstance())->FUN_14089e9f0(nId);
+        CUGCDesignDataPtr spData = reinterpret_cast<CUGCDesignTable*>(CUGCDesignTable::GetInstance())->GetData(nId);
         if (spData.get() != 0)
         {
             if (spData->m_nMarketMinPrice > 0)
@@ -2559,7 +2555,7 @@ MS2_REPLACE(0x1406A58F0, FUN_1406a58f0, 43, 0x5B820E5A);
 // @0x1406a5930
 bool FUN_1406a5930()
 {
-    int nNpcId = FUN_140427050(FUN_140302b00()->GetStarShop());
+    int nNpcId = FUN_140427050(TSingleton<CGameEventValueManager>::GetInstance()->GetStarShop());
     if (nNpcId == 0 || FUN_1406cd330(nNpcId) == NULL)
         return false;
     return true;
@@ -2624,7 +2620,7 @@ bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner)
             if (!FUN_14026d4d0(pOwner, pScore->m_nNoteType, pScore->m_nNoteId))
                 return false;
             MS2Ptr<ItemMusicScore> spScore =
-                FUN_140281980()->FUN_1405565f0(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c510());
+                FUN_140281980()->GetMusicScore(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c510());
             if (spScore == NULL)
                 return false;
             int nScore = spScore->FUN_14054ad00();

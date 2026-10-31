@@ -48,16 +48,7 @@ extern void* FUN_141575140(void*, void*);
 extern void* FUN_1415ef7b0(void*, void*);
 extern CNMSerializable* FUN_1415efd00(CNMSerializable*, long long);
 
-template <class Id, class Get, class Set, class First, class Last, class Range>
-static void* copy_nm_sequence(void* dst, void* src, Id id, Get get, Set set,
-                              First first, Last last, Range range)
-{
-    if (dst != id(src)) {
-        set(dst, get(src));
-        range(dst, *reinterpret_cast<void**>(first(src)), *reinterpret_cast<void**>(last(src)));
-    }
-    return dst;
-}
+template <int N> struct Unk_Stride { char m[N]; };
 
 #define NM_COPY_HELPERS(addr) \
     extern void* FUN_##addr(void*)
@@ -105,61 +96,72 @@ NM_COPY_RANGE(1415e20f0); NM_COPY_RANGE(1415e2150); NM_COPY_RANGE(1415e21b0);
 NM_COPY_RANGE(1415e2210); NM_COPY_RANGE(1415e2270);
 #undef NM_COPY_RANGE
 
-#define NM_COPY_FUNCTION(name, identity, getter, setter, first, last, range) \
-    void* name(void* dst, void* src) \
-    { return copy_nm_sequence(dst, src, identity, getter, setter, first, last, range); }
+#define NM_COPY_TIDY(addr) extern void FUN_##addr(void*)
+NM_COPY_TIDY(141604920);
+NM_COPY_TIDY(1416049f0);
+NM_COPY_TIDY(141604ac0);
+NM_COPY_TIDY(141604b90);
+NM_COPY_TIDY(141604c60);
+NM_COPY_TIDY(141604d30);
+NM_COPY_TIDY(141604e00);
+NM_COPY_TIDY(141604ed0);
+NM_COPY_TIDY(141605070);
+NM_COPY_TIDY(141605140);
+NM_COPY_TIDY(141605210);
+NM_COPY_TIDY(1416052e0);
+NM_COPY_TIDY(141605480);
+NM_COPY_TIDY(141605550);
+NM_COPY_TIDY(141605890);
+NM_COPY_TIDY(141605960);
+NM_COPY_TIDY(141605a30);
+#undef NM_COPY_TIDY
 
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+#define NM_COPY_FUNCTION(name, identity, tidy, getter, setter, first, last, range) \
+    void* name(void* dst, void* src) \
+    { \
+        if (dst != identity(src)) { \
+            if (false && dst != identity(src)) \
+                tidy(dst); \
+            setter(dst, getter(src)); \
+            range(dst, *reinterpret_cast<void**>(first(src)), *reinterpret_cast<void**>(last(src))); \
+        } \
+        return dst; \
+    }
+
 // @0x1415ef2b0
-NM_COPY_FUNCTION(FUN_1415ef2b0, FUN_1415e1620, FUN_141601af0, FUN_1415ffe20, FUN_1416039a0, FUN_1416033e0, FUN_1415e1c70)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef2b0, FUN_1415e1620, FUN_141604920, FUN_141601af0, FUN_1415ffe20, FUN_1416033e0, FUN_1416039a0, FUN_1415e1c70)
 // @0x1415ef330
-NM_COPY_FUNCTION(FUN_1415ef330, FUN_1415e1630, FUN_141601b30, FUN_1415ffe50, FUN_1416039e0, FUN_141603420, FUN_1415e1cd0)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef330, FUN_1415e1630, FUN_1416049f0, FUN_141601b30, FUN_1415ffe50, FUN_141603420, FUN_1416039e0, FUN_1415e1cd0)
 // @0x1415ef3b0
-NM_COPY_FUNCTION(FUN_1415ef3b0, FUN_1415e1640, FUN_141601b70, FUN_1415ffe80, FUN_141603a20, FUN_141603460, FUN_1415e1d30)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef3b0, FUN_1415e1640, FUN_141604ac0, FUN_141601b70, FUN_1415ffe80, FUN_141603460, FUN_141603a20, FUN_1415e1d30)
 // @0x1415ef430
-NM_COPY_FUNCTION(FUN_1415ef430, FUN_1415e1650, FUN_141601bb0, FUN_1415ffeb0, FUN_141603a60, FUN_1416034a0, FUN_1415e1d90)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef430, FUN_1415e1650, FUN_141604b90, FUN_141601bb0, FUN_1415ffeb0, FUN_1416034a0, FUN_141603a60, FUN_1415e1d90)
 // @0x1415ef4b0
-NM_COPY_FUNCTION(FUN_1415ef4b0, FUN_1415e1660, FUN_141601bf0, FUN_1415ffee0, FUN_141603aa0, FUN_1416034e0, FUN_1415e1df0)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef4b0, FUN_1415e1660, FUN_141604c60, FUN_141601bf0, FUN_1415ffee0, FUN_1416034e0, FUN_141603aa0, FUN_1415e1df0)
 // @0x1415ef530
-NM_COPY_FUNCTION(FUN_1415ef530, FUN_1415e1670, FUN_141601c30, FUN_1415fff10, FUN_141603ae0, FUN_141603520, FUN_1415e1e50)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef530, FUN_1415e1670, FUN_141604d30, FUN_141601c30, FUN_1415fff10, FUN_141603520, FUN_141603ae0, FUN_1415e1e50)
 // @0x1415ef5b0
-NM_COPY_FUNCTION(FUN_1415ef5b0, FUN_1415e1680, FUN_141601c70, FUN_1415fff40, FUN_141603b20, FUN_141603560, FUN_1415e1eb0)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef5b0, FUN_1415e1680, FUN_141604e00, FUN_141601c70, FUN_1415fff40, FUN_141603560, FUN_141603b20, FUN_1415e1eb0)
 // @0x1415ef630
-NM_COPY_FUNCTION(FUN_1415ef630, FUN_1415e1690, FUN_141601cb0, FUN_1415fff70, FUN_141603b60, FUN_1416035a0, FUN_1415e1f10)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef630, FUN_1415e1690, FUN_141604ed0, FUN_141601cb0, FUN_1415fff70, FUN_1416035a0, FUN_141603b60, FUN_1415e1f10)
 // @0x1415ef6b0
-NM_COPY_FUNCTION(FUN_1415ef6b0, FUN_1415e16a0, FUN_141601d30, FUN_1415fffa0, FUN_141603be0, FUN_141603620, FUN_1415e1f70)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef6b0, FUN_1415e16a0, FUN_141605070, FUN_141601d30, FUN_1415fffa0, FUN_141603620, FUN_141603be0, FUN_1415e1f70)
 // @0x1415ef730
-NM_COPY_FUNCTION(FUN_1415ef730, FUN_1415e16b0, FUN_141601d70, FUN_1415fffd0, FUN_141603c20, FUN_141603660, FUN_1415e1fd0)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef730, FUN_1415e16b0, FUN_141605140, FUN_141601d70, FUN_1415fffd0, FUN_141603660, FUN_141603c20, FUN_1415e1fd0)
 // @0x1415ef7b0
-NM_COPY_FUNCTION(FUN_1415ef7b0, FUN_1415e16c0, FUN_141601db0, FUN_141600000, FUN_141603c60, FUN_1416036a0, FUN_1415e2030)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef7b0, FUN_1415e16c0, FUN_141605210, FUN_141601db0, FUN_141600000, FUN_1416036a0, FUN_141603c60, FUN_1415e2030)
 // @0x1415ef830
-NM_COPY_FUNCTION(FUN_1415ef830, FUN_1415e16d0, FUN_141601df0, FUN_141600030, FUN_141603ca0, FUN_1416036e0, FUN_1415e2090)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef830, FUN_1415e16d0, FUN_1416052e0, FUN_141601df0, FUN_141600030, FUN_1416036e0, FUN_141603ca0, FUN_1415e2090)
 // @0x1415ef8b0
-NM_COPY_FUNCTION(FUN_1415ef8b0, FUN_1415e16e0, FUN_141601e70, FUN_141600060, FUN_141603d20, FUN_141603760, FUN_1415e20f0)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef8b0, FUN_1415e16e0, FUN_141605480, FUN_141601e70, FUN_141600060, FUN_141603760, FUN_141603d20, FUN_1415e20f0)
 // @0x1415ef930
-NM_COPY_FUNCTION(FUN_1415ef930, FUN_1415e16f0, FUN_141601eb0, FUN_141600090, FUN_141603d60, FUN_1416037a0, FUN_1415e2150)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef930, FUN_1415e16f0, FUN_141605550, FUN_141601eb0, FUN_141600090, FUN_1416037a0, FUN_141603d60, FUN_1415e2150)
 // @0x1415ef9b0
-NM_COPY_FUNCTION(FUN_1415ef9b0, FUN_1415e1700, FUN_141601fb0, FUN_1416000c0, FUN_141603e60, FUN_1416038a0, FUN_1415e21b0)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415ef9b0, FUN_1415e1700, FUN_141605890, FUN_141601fb0, FUN_1416000c0, FUN_1416038a0, FUN_141603e60, FUN_1415e21b0)
 // @0x1415efa30
-NM_COPY_FUNCTION(FUN_1415efa30, FUN_1415e1710, FUN_141601ff0, FUN_1416000f0, FUN_141603ea0, FUN_1416038e0, FUN_1415e2210)
-// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+NM_COPY_FUNCTION(FUN_1415efa30, FUN_1415e1710, FUN_141605960, FUN_141601ff0, FUN_1416000f0, FUN_1416038e0, FUN_141603ea0, FUN_1415e2210)
 // @0x1415efab0
-NM_COPY_FUNCTION(FUN_1415efab0, FUN_1415e1720, FUN_141602030, FUN_141600120, FUN_141603ee0, FUN_141603920, FUN_1415e2270)
+NM_COPY_FUNCTION(FUN_1415efab0, FUN_1415e1720, FUN_141605a30, FUN_141602030, FUN_141600120, FUN_141603920, FUN_141603ee0, FUN_1415e2270)
 
 #undef NM_COPY_FUNCTION
 
@@ -196,14 +198,12 @@ void** FUN_1415f3ec0(void** it, void** old)
     *old = value;
     return old;
 }
-// MS2-FUNCTIONAL: returns the iterator after applying the recovered tree increment.
 // @0x1415f3f10
 void* FUN_1415f3f10(void* it)
 {
     FUN_1415f3f50(static_cast<long long*>(it));
     return it;
 }
-// MS2-FUNCTIONAL: forwards to the recovered iterator increment and returns its input.
 // @0x1415f3f30
 void* FUN_1415f3f30(void* it)
 {
@@ -230,102 +230,74 @@ long long* FUN_1415f3f50(long long* it)
     return it;
 }
 
-// MS2-FUNCTIONAL: computes the recovered CNMChatRoomMemberInfo element address using its 0x220 stride.
 // @0x1415f38f0
 long long FUN_1415f38f0(void* p, long long index)
 {
-    return index * 0x220 + *static_cast<long long*>(FUN_141603500(p));
+    return reinterpret_cast<long long>(*static_cast<Unk_Stride<0x220>**>(FUN_141603500(p)) + index);
 }
-// MS2-FUNCTIONAL: computes the recovered CNMGuildListExInfo element address using its 0xf8 stride.
 // @0x1415f3920
 long long FUN_1415f3920(void* p, long long index)
 {
-    return index * 0xf8 + *static_cast<long long*>(FUN_1416038c0(p));
+    return reinterpret_cast<long long>(*static_cast<Unk_Stride<0xf8>**>(FUN_1416038c0(p)) + index);
 }
-// MS2-FUNCTIONAL: computes the recovered CNMChatRoomInfoEx element address using its 0x490 stride.
 // @0x1415f3950
 long long FUN_1415f3950(void* p, long long index)
 {
-    return index * 0x490 + *static_cast<long long*>(FUN_141603900(p));
+    return reinterpret_cast<long long>(*static_cast<Unk_Stride<0x490>**>(FUN_141603900(p)) + index);
 }
 // MS2-FUNCTIONAL: returns the constant one as in the executable.
 // @0x1415f3a00
 unsigned char FUN_1415f3a00() { return 1; }
-// MS2-FUNCTIONAL: returns the first pointer-sized field plus the recovered 0x20 offset.
 // @0x1415f3aa0
 long long FUN_1415f3aa0(long long* p) { return *p + 0x20; }
-// MS2-FUNCTIONAL: performs the recovered helper call and returns no value.
 // @0x1415f3ac0
 void FUN_1415f3ac0(void* p) { (void)FUN_1415f3aa0(static_cast<long long*>(p)); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3a60
 void FUN_1415f3a60(void* p) { FUN_1415d2670(FUN_1415f3a30(p)); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3a80
 void FUN_1415f3a80(void* p) { FUN_1415d2690(FUN_1415f3a50(p)); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3ea0
 void FUN_1415f3ea0(void* p) { (void)FUN_1415f3c30(p); }
 
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3c40
 void FUN_1415f3c40(void* p) { (void)FUN_1415f3b00(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3c60
 void FUN_1415f3c60(void* p) { (void)FUN_1415f3b10(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3c80
 void FUN_1415f3c80(void* p) { (void)FUN_1415f3b20(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3ca0
 void FUN_1415f3ca0(void* p) { (void)FUN_1415f3b30(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3cc0
 void FUN_1415f3cc0(void* p) { (void)FUN_1415f3b40(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3ce0
 void FUN_1415f3ce0(void* p) { (void)FUN_1415f3b50(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3d00
 void FUN_1415f3d00(void* p) { (void)FUN_1415f3b60(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3d20
 void FUN_1415f3d20(void* p) { (void)FUN_1415f3b70(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3d40
 void FUN_1415f3d40(void* p) { (void)FUN_1415f3b80(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3d60
 void FUN_1415f3d60(void* p) { (void)FUN_1415f3b90(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3d80
 void FUN_1415f3d80(void* p) { (void)FUN_1415f3ba0(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3da0
 void FUN_1415f3da0(void* p) { (void)FUN_1415f3bb0(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3dc0
 void FUN_1415f3dc0(void* p) { (void)FUN_1415f3bc0(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3de0
 void FUN_1415f3de0(void* p) { (void)FUN_1415f3bd0(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3e00
 void FUN_1415f3e00(void* p) { (void)FUN_1415f3be0(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3e20
 void FUN_1415f3e20(void* p) { (void)FUN_1415f3bf0(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3e40
 void FUN_1415f3e40(void* p) { (void)FUN_1415f3c00(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3e60
 void FUN_1415f3e60(void* p) { (void)FUN_1415f3c10(p); }
-// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3e80
 void FUN_1415f3e80(void* p) { (void)FUN_1415f3c20(p); }
 
-// MS2-FUNCTIONAL: follows the recovered two-call wrapper and returns the destination.
 // @0x1415ef130
 void* FUN_1415ef130(void* dst, void* src)
 {
@@ -333,7 +305,6 @@ void* FUN_1415ef130(void* dst, void* src)
     return dst;
 }
 
-// MS2-FUNCTIONAL: follows the recovered two-call wrapper and returns the destination.
 // @0x1415ef160
 void* FUN_1415ef160(void* dst, void* src)
 {
@@ -341,7 +312,6 @@ void* FUN_1415ef160(void* dst, void* src)
     return dst;
 }
 
-// MS2-FUNCTIONAL: forwards the value then returns the destination as in the executable.
 // @0x1415ef190
 void* FUN_1415ef190(void* dst, void* value)
 {
@@ -349,7 +319,6 @@ void* FUN_1415ef190(void* dst, void* value)
     return dst;
 }
 
-// MS2-FUNCTIONAL: follows the recovered two-call wrapper and returns the destination.
 // @0x1415ef1c0
 void* FUN_1415ef1c0(void* dst, void* src)
 {
@@ -357,7 +326,6 @@ void* FUN_1415ef1c0(void* dst, void* src)
     return dst;
 }
 
-// MS2-FUNCTIONAL: forwards the value then returns the destination as in the executable.
 // @0x1415ef1f0
 void* FUN_1415ef1f0(void* dst, void* value)
 {
@@ -365,7 +333,6 @@ void* FUN_1415ef1f0(void* dst, void* value)
     return dst;
 }
 
-// MS2-FUNCTIONAL: follows the recovered two-call wrapper and returns the destination.
 // @0x1415ef220
 void* FUN_1415ef220(void* dst, void* src)
 {
@@ -373,7 +340,6 @@ void* FUN_1415ef220(void* dst, void* src)
     return dst;
 }
 
-// MS2-FUNCTIONAL: forwards the value then returns the destination as in the executable.
 // @0x1415ef250
 void* FUN_1415ef250(void* dst, void* value)
 {
@@ -442,7 +408,7 @@ CNMChatRoomMemberInfo& CNMChatRoomMemberInfo::operator=(const CNMChatRoomMemberI
 // @0x1415f06d0
 CNMSerializable* FUN_1415f06d0(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(reinterpret_cast<char*>(dst) + 0x10, reinterpret_cast<const char*>(src) + 0x10, 0x4d0);
     return dst;
 }
@@ -500,7 +466,7 @@ CNMSerializable* FUN_1415f14b0(CNMSerializable* dst, long long src)
 {
     CNMGuildOnlineInfo* d = static_cast<CNMGuildOnlineInfo*>(dst);
     const CNMGuildOnlineInfo* s = reinterpret_cast<const CNMGuildOnlineInfo*>(src);
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(&d->m_10, &s->m_10, 0x40 - 0x10);
     d->m_40 = s->m_40;
     return dst;
@@ -513,7 +479,7 @@ CNMSerializable* FUN_1415f1580(CNMSerializable* dst, long long src)
 {
     CNMGuildOnlineInfoEx* d = static_cast<CNMGuildOnlineInfoEx*>(dst);
     const CNMGuildOnlineInfoEx* s = reinterpret_cast<const CNMGuildOnlineInfoEx*>(src);
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(&d->m_10, &s->m_10, 0x48 - 0x10);
     d->m_aMembers = s->m_aMembers;
     d->m_60 = s->m_60;
@@ -581,13 +547,12 @@ CNMSessionMemberInfo& CNMSessionMemberInfo::operator=(const CNMSessionMemberInfo
 CNMVirtualUserInfo& CNMVirtualUserInfo::operator=(const CNMVirtualUserInfo& r) { return copy_record_bytes(*this, r); }
 // MS2-PIN: ??4CNMVirtualUserInfo@@QEAAAEAV0@AEBV0@@Z 0x1415f28e0
 
-// MS2-FUNCTIONAL: performs the recovered 0x98-byte character-vector element calculation.
 // @0x1415f38c0
-void* FUN_1415f38c0(void* p, int index)
+extern unsigned long long FUN_1416034c0(void*);
+void* FUN_1415f38c0(void* p, long long index)
 {
-    return *reinterpret_cast<char**>(p) + static_cast<long long>(index) * sizeof(CNMCharacter);
+    return *reinterpret_cast<Unk_Stride<0x98>**>(FUN_1416034c0(p)) + index;
 }
-// MS2-PIN: ?FUN_1415f38c0@@YAPEAXPEAXH@Z 0x1415f38c0
 
 // These six helpers return the first pointer-sized field of their argument, as in the recovered decompilation.
 void* FUN_1415f3990(void* p) { return *static_cast<void**>(p); }
@@ -606,2818 +571,2456 @@ void* FUN_1415f39f0(void* p) { return *static_cast<void**>(p); }
 // @0x1415f9110
 void* FUN_1415f9110(void* object, unsigned int flags)
 {
-    static_cast<CNMVirtualUserInfo*>(object)->~CNMVirtualUserInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMVirtualUserInfo*>(object)->CNMVirtualUserInfo::~CNMVirtualUserInfo();
+    if (flags & 1) ::operator delete(object, 0x490);
     return object;
 }
 // MS2-FUNCTIONAL: the recovered target is the virtual slot's scalar deleting destructor entry.
 // MS2-PIN: ?vfunc_0@CNMVirtualUserInfo@@UEAAXXZ 0x1415f9110
 
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4850
 void* NMScalarDelete_1415f4850(void* object, unsigned int flags)
 {
-    static_cast<CNMAddCategoryFunc*>(object)->~CNMAddCategoryFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMAddCategoryFunc*>(object)->CNMAddCategoryFunc::~CNMAddCategoryFunc();
+    if (flags & 1) ::operator delete(object, 0x60);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4890
 void* NMScalarDelete_1415f4890(void* object, unsigned int flags)
 {
-    static_cast<CNMAddFriendToCategoryFunc*>(object)->~CNMAddFriendToCategoryFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMAddFriendToCategoryFunc*>(object)->CNMAddFriendToCategoryFunc::~CNMAddFriendToCategoryFunc();
+    if (flags & 1) ::operator delete(object, 0x50);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f48d0
 void* NMScalarDelete_1415f48d0(void* object, unsigned int flags)
 {
-    static_cast<CNMAppendRejectedUserFunc*>(object)->~CNMAppendRejectedUserFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMAppendRejectedUserFunc*>(object)->CNMAppendRejectedUserFunc::~CNMAppendRejectedUserFunc();
+    if (flags & 1) ::operator delete(object, 0xf8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4910
 void* NMScalarDelete_1415f4910(void* object, unsigned int flags)
 {
-    static_cast<CNMAttachToNMCOServerFunc*>(object)->~CNMAttachToNMCOServerFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMAttachToNMCOServerFunc*>(object)->CNMAttachToNMCOServerFunc::~CNMAttachToNMCOServerFunc();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4950
 void* NMScalarDelete_1415f4950(void* object, unsigned int flags)
 {
-    static_cast<CNMAttendanceEventEvent*>(object)->~CNMAttendanceEventEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMAttendanceEventEvent*>(object)->CNMAttendanceEventEvent::~CNMAttendanceEventEvent();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4990
 void* NMScalarDelete_1415f4990(void* object, unsigned int flags)
 {
-    static_cast<CNMAuthConnectionClosedEvent*>(object)->~CNMAuthConnectionClosedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMAuthConnectionClosedEvent*>(object)->CNMAuthConnectionClosedEvent::~CNMAuthConnectionClosedEvent();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f49d0
 void* NMScalarDelete_1415f49d0(void* object, unsigned int flags)
 {
-    static_cast<CNMAuthSecondaryConnectionClosedEvent*>(object)->~CNMAuthSecondaryConnectionClosedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMAuthSecondaryConnectionClosedEvent*>(object)->CNMAuthSecondaryConnectionClosedEvent::~CNMAuthSecondaryConnectionClosedEvent();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4a10
 void* NMScalarDelete_1415f4a10(void* object, unsigned int flags)
 {
-    static_cast<CNMAvatarFullInfo*>(object)->~CNMAvatarFullInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMAvatarFullInfo*>(object)->CNMAvatarFullInfo::~CNMAvatarFullInfo();
+    if (flags & 1) ::operator delete(object, 0x10);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4a50
 void* NMScalarDelete_1415f4a50(void* object, unsigned int flags)
 {
-    static_cast<CNMAvatarItemInfo*>(object)->~CNMAvatarItemInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMAvatarItemInfo*>(object)->CNMAvatarItemInfo::~CNMAvatarItemInfo();
+    if (flags & 1) ::operator delete(object, 0x10);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4a90
 void* NMScalarDelete_1415f4a90(void* object, unsigned int flags)
 {
-    static_cast<CNMBlockFriendFunc*>(object)->~CNMBlockFriendFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMBlockFriendFunc*>(object)->CNMBlockFriendFunc::~CNMBlockFriendFunc();
+    if (flags & 1) ::operator delete(object, 0x50);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4ad0
 void* NMScalarDelete_1415f4ad0(void* object, unsigned int flags)
 {
-    static_cast<CNMBringForwardStandAloneMsgFunc*>(object)->~CNMBringForwardStandAloneMsgFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMBringForwardStandAloneMsgFunc*>(object)->CNMBringForwardStandAloneMsgFunc::~CNMBringForwardStandAloneMsgFunc();
+    if (flags & 1) ::operator delete(object, 0x430);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4b10
 void* NMScalarDelete_1415f4b10(void* object, unsigned int flags)
 {
-    static_cast<CNMCHBanUserFunc*>(object)->~CNMCHBanUserFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCHBanUserFunc*>(object)->CNMCHBanUserFunc::~CNMCHBanUserFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4b50
 void* NMScalarDelete_1415f4b50(void* object, unsigned int flags)
 {
-    static_cast<CNMCHChangeChannelInfoFunc*>(object)->~CNMCHChangeChannelInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCHChangeChannelInfoFunc*>(object)->CNMCHChangeChannelInfoFunc::~CNMCHChangeChannelInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x90);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4b90
 void* NMScalarDelete_1415f4b90(void* object, unsigned int flags)
 {
-    static_cast<CNMCHChangeMyInfoFunc*>(object)->~CNMCHChangeMyInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCHChangeMyInfoFunc*>(object)->CNMCHChangeMyInfoFunc::~CNMCHChangeMyInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x60);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4bd0
 void* NMScalarDelete_1415f4bd0(void* object, unsigned int flags)
 {
-    static_cast<CNMCHCloseFunc*>(object)->~CNMCHCloseFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCHCloseFunc*>(object)->CNMCHCloseFunc::~CNMCHCloseFunc();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4c10
 void* NMScalarDelete_1415f4c10(void* object, unsigned int flags)
 {
-    static_cast<CNMCHGetChannelInfoFunc*>(object)->~CNMCHGetChannelInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCHGetChannelInfoFunc*>(object)->CNMCHGetChannelInfoFunc::~CNMCHGetChannelInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x90);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4c50
 void* NMScalarDelete_1415f4c50(void* object, unsigned int flags)
 {
-    static_cast<CNMCHGetMemberInfoListFunc*>(object)->~CNMCHGetMemberInfoListFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCHGetMemberInfoListFunc*>(object)->CNMCHGetMemberInfoListFunc::~CNMCHGetMemberInfoListFunc();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4c90
 void* NMScalarDelete_1415f4c90(void* object, unsigned int flags)
 {
-    static_cast<CNMCHInviteUserFunc*>(object)->~CNMCHInviteUserFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCHInviteUserFunc*>(object)->CNMCHInviteUserFunc::~CNMCHInviteUserFunc();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4cd0
 void* NMScalarDelete_1415f4cd0(void* object, unsigned int flags)
 {
-    static_cast<CNMCHSendChannelMessageFunc*>(object)->~CNMCHSendChannelMessageFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCHSendChannelMessageFunc*>(object)->CNMCHSendChannelMessageFunc::~CNMCHSendChannelMessageFunc();
+    if (flags & 1) ::operator delete(object, 0x78);
     return object;
 }
 
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4d50
 void* NMScalarDelete_1415f4d50(void* object, unsigned int flags)
 {
-    static_cast<CNMCRBanUserFunc*>(object)->~CNMCRBanUserFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRBanUserFunc*>(object)->CNMCRBanUserFunc::~CNMCRBanUserFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4d90
 void* NMScalarDelete_1415f4d90(void* object, unsigned int flags)
 {
-    static_cast<CNMCRChangeMyInfoFunc*>(object)->~CNMCRChangeMyInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRChangeMyInfoFunc*>(object)->CNMCRChangeMyInfoFunc::~CNMCRChangeMyInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x250);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4dd0
 void* NMScalarDelete_1415f4dd0(void* object, unsigned int flags)
 {
-    static_cast<CNMCRChangeRoomInfoFunc*>(object)->~CNMCRChangeRoomInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRChangeRoomInfoFunc*>(object)->CNMCRChangeRoomInfoFunc::~CNMCRChangeRoomInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x488);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4e50
 void* NMScalarDelete_1415f4e50(void* object, unsigned int flags)
 {
-    static_cast<CNMCRChatRoomCreatedEvent*>(object)->~CNMCRChatRoomCreatedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRChatRoomCreatedEvent*>(object)->CNMCRChatRoomCreatedEvent::~CNMCRChatRoomCreatedEvent();
+    if (flags & 1) ::operator delete(object, 0x850);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4e90
 void* NMScalarDelete_1415f4e90(void* object, unsigned int flags)
 {
-    static_cast<CNMCRChatRoomCreatedExEvent*>(object)->~CNMCRChatRoomCreatedExEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRChatRoomCreatedExEvent*>(object)->CNMCRChatRoomCreatedExEvent::~CNMCRChatRoomCreatedExEvent();
+    if (flags & 1) ::operator delete(object, 0x730);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4ed0
 void* NMScalarDelete_1415f4ed0(void* object, unsigned int flags)
 {
-    static_cast<CNMCRChatRoomErrorEvent*>(object)->~CNMCRChatRoomErrorEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRChatRoomErrorEvent*>(object)->CNMCRChatRoomErrorEvent::~CNMCRChatRoomErrorEvent();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4f10
 void* NMScalarDelete_1415f4f10(void* object, unsigned int flags)
 {
-    static_cast<CNMCRChatRoomEstablishedEvent*>(object)->~CNMCRChatRoomEstablishedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRChatRoomEstablishedEvent*>(object)->CNMCRChatRoomEstablishedEvent::~CNMCRChatRoomEstablishedEvent();
+    if (flags & 1) ::operator delete(object, 0x850);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4f50
 void* NMScalarDelete_1415f4f50(void* object, unsigned int flags)
 {
-    static_cast<CNMCRChatRoomEstablishedExEvent*>(object)->~CNMCRChatRoomEstablishedExEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRChatRoomEstablishedExEvent*>(object)->CNMCRChatRoomEstablishedExEvent::~CNMCRChatRoomEstablishedExEvent();
+    if (flags & 1) ::operator delete(object, 0x730);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4f90
 void* NMScalarDelete_1415f4f90(void* object, unsigned int flags)
 {
-    static_cast<CNMCRChatRoomInfoEvent*>(object)->~CNMCRChatRoomInfoEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRChatRoomInfoEvent*>(object)->CNMCRChatRoomInfoEvent::~CNMCRChatRoomInfoEvent();
+    if (flags & 1) ::operator delete(object, 0x850);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f4fd0
 void* NMScalarDelete_1415f4fd0(void* object, unsigned int flags)
 {
-    static_cast<CNMCRChatRoomInfoExEvent*>(object)->~CNMCRChatRoomInfoExEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRChatRoomInfoExEvent*>(object)->CNMCRChatRoomInfoExEvent::~CNMCRChatRoomInfoExEvent();
+    if (flags & 1) ::operator delete(object, 0x730);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5010
 void* NMScalarDelete_1415f5010(void* object, unsigned int flags)
 {
-    static_cast<CNMCRChatRoomMemberEvent*>(object)->~CNMCRChatRoomMemberEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRChatRoomMemberEvent*>(object)->CNMCRChatRoomMemberEvent::~CNMCRChatRoomMemberEvent();
+    if (flags & 1) ::operator delete(object, 0x488);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5050
 void* NMScalarDelete_1415f5050(void* object, unsigned int flags)
 {
-    static_cast<CNMCRChatRoomMessageReceivedEvent*>(object)->~CNMCRChatRoomMessageReceivedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRChatRoomMessageReceivedEvent*>(object)->CNMCRChatRoomMessageReceivedEvent::~CNMCRChatRoomMessageReceivedEvent();
+    if (flags & 1) ::operator delete(object, 0x6a8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5090
 void* NMScalarDelete_1415f5090(void* object, unsigned int flags)
 {
-    static_cast<CNMCRCloseFunc*>(object)->~CNMCRCloseFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRCloseFunc*>(object)->CNMCRCloseFunc::~CNMCRCloseFunc();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f50d0
 void* NMScalarDelete_1415f50d0(void* object, unsigned int flags)
 {
-    static_cast<CNMCRGetMemberInfoFunc*>(object)->~CNMCRGetMemberInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRGetMemberInfoFunc*>(object)->CNMCRGetMemberInfoFunc::~CNMCRGetMemberInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x258);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5110
 void* NMScalarDelete_1415f5110(void* object, unsigned int flags)
 {
-    static_cast<CNMCRGetMemberListFunc*>(object)->~CNMCRGetMemberListFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRGetMemberListFunc*>(object)->CNMCRGetMemberListFunc::~CNMCRGetMemberListFunc();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5150
 void* NMScalarDelete_1415f5150(void* object, unsigned int flags)
 {
-    static_cast<CNMCRGetRoomInfoExFunc*>(object)->~CNMCRGetRoomInfoExFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRGetRoomInfoExFunc*>(object)->CNMCRGetRoomInfoExFunc::~CNMCRGetRoomInfoExFunc();
+    if (flags & 1) ::operator delete(object, 0x510);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5190
 void* NMScalarDelete_1415f5190(void* object, unsigned int flags)
 {
-    static_cast<CNMCRGetRoomInfoFunc*>(object)->~CNMCRGetRoomInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRGetRoomInfoFunc*>(object)->CNMCRGetRoomInfoFunc::~CNMCRGetRoomInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x630);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f51d0
 void* NMScalarDelete_1415f51d0(void* object, unsigned int flags)
 {
-    static_cast<CNMCRInviteUserFunc*>(object)->~CNMCRInviteUserFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRInviteUserFunc*>(object)->CNMCRInviteUserFunc::~CNMCRInviteUserFunc();
+    if (flags & 1) ::operator delete(object, 0x830);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5210
 void* NMScalarDelete_1415f5210(void* object, unsigned int flags)
 {
-    static_cast<CNMCRRegisterCallbackFunc*>(object)->~CNMCRRegisterCallbackFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRRegisterCallbackFunc*>(object)->CNMCRRegisterCallbackFunc::~CNMCRRegisterCallbackFunc();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5250
 void* NMScalarDelete_1415f5250(void* object, unsigned int flags)
 {
-    static_cast<CNMCRSendChatMessageFunc*>(object)->~CNMCRSendChatMessageFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRSendChatMessageFunc*>(object)->CNMCRSendChatMessageFunc::~CNMCRSendChatMessageFunc();
+    if (flags & 1) ::operator delete(object, 0x6f0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5290
 void* NMScalarDelete_1415f5290(void* object, unsigned int flags)
 {
-    static_cast<CNMCSChatMessageReceivedEvent*>(object)->~CNMCSChatMessageReceivedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCSChatMessageReceivedEvent*>(object)->CNMCSChatMessageReceivedEvent::~CNMCSChatMessageReceivedEvent();
+    if (flags & 1) ::operator delete(object, 0x6a8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5310
 void* NMScalarDelete_1415f5310(void* object, unsigned int flags)
 {
-    static_cast<CNMCSMultiChatCreatedEvent*>(object)->~CNMCSMultiChatCreatedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCSMultiChatCreatedEvent*>(object)->CNMCSMultiChatCreatedEvent::~CNMCSMultiChatCreatedEvent();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5350
 void* NMScalarDelete_1415f5350(void* object, unsigned int flags)
 {
-    static_cast<CNMCSSendChatMessageFunc*>(object)->~CNMCSSendChatMessageFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCSSendChatMessageFunc*>(object)->CNMCSSendChatMessageFunc::~CNMCSSendChatMessageFunc();
+    if (flags & 1) ::operator delete(object, 0x6a0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5390
 void* NMScalarDelete_1415f5390(void* object, unsigned int flags)
 {
-    static_cast<CNMCateFriendInfo*>(object)->~CNMCateFriendInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCateFriendInfo*>(object)->CNMCateFriendInfo::~CNMCateFriendInfo();
+    if (flags & 1) ::operator delete(object, 0x58);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f53d0
 void* NMScalarDelete_1415f53d0(void* object, unsigned int flags)
 {
-    static_cast<CNMCategoryInfo*>(object)->~CNMCategoryInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCategoryInfo*>(object)->CNMCategoryInfo::~CNMCategoryInfo();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5410
 void* NMScalarDelete_1415f5410(void* object, unsigned int flags)
 {
-    static_cast<CNMChangeCategoryAllowTypeFunc*>(object)->~CNMChangeCategoryAllowTypeFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChangeCategoryAllowTypeFunc*>(object)->CNMChangeCategoryAllowTypeFunc::~CNMChangeCategoryAllowTypeFunc();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5450
 void* NMScalarDelete_1415f5450(void* object, unsigned int flags)
 {
-    static_cast<CNMChangeCategoryNameFunc*>(object)->~CNMChangeCategoryNameFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChangeCategoryNameFunc*>(object)->CNMChangeCategoryNameFunc::~CNMChangeCategoryNameFunc();
+    if (flags & 1) ::operator delete(object, 0x58);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5490
 void* NMScalarDelete_1415f5490(void* object, unsigned int flags)
 {
-    static_cast<CNMChangeCategoryPropertyFunc*>(object)->~CNMChangeCategoryPropertyFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChangeCategoryPropertyFunc*>(object)->CNMChangeCategoryPropertyFunc::~CNMChangeCategoryPropertyFunc();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f54d0
 void* NMScalarDelete_1415f54d0(void* object, unsigned int flags)
 {
-    static_cast<CNMChangeConfigFunc*>(object)->~CNMChangeConfigFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChangeConfigFunc*>(object)->CNMChangeConfigFunc::~CNMChangeConfigFunc();
+    if (flags & 1) ::operator delete(object, 0x80);
     return object;
 }
 
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5510
 void* NMScalarDelete_1415f5510(void* object, unsigned int flags)
 {
-    static_cast<CNMChangeFriendMemoExFunc*>(object)->~CNMChangeFriendMemoExFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChangeFriendMemoExFunc*>(object)->CNMChangeFriendMemoExFunc::~CNMChangeFriendMemoExFunc();
+    if (flags & 1) ::operator delete(object, 0x68);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5550
 void* NMScalarDelete_1415f5550(void* object, unsigned int flags)
 {
-    static_cast<CNMChangeFriendMemoFunc*>(object)->~CNMChangeFriendMemoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChangeFriendMemoFunc*>(object)->CNMChangeFriendMemoFunc::~CNMChangeFriendMemoFunc();
+    if (flags & 1) ::operator delete(object, 0x58);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5590
 void* NMScalarDelete_1415f5590(void* object, unsigned int flags)
 {
-    static_cast<CNMChangeLocalConfigFunc*>(object)->~CNMChangeLocalConfigFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChangeLocalConfigFunc*>(object)->CNMChangeLocalConfigFunc::~CNMChangeLocalConfigFunc();
+    if (flags & 1) ::operator delete(object, 0x438);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f55d0
 void* NMScalarDelete_1415f55d0(void* object, unsigned int flags)
 {
-    static_cast<CNMChangeMetaDataFunc*>(object)->~CNMChangeMetaDataFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChangeMetaDataFunc*>(object)->CNMChangeMetaDataFunc::~CNMChangeMetaDataFunc();
+    if (flags & 1) ::operator delete(object, 0x420);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5610
 void* NMScalarDelete_1415f5610(void* object, unsigned int flags)
 {
-    static_cast<CNMChangeMyInfoFunc*>(object)->~CNMChangeMyInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChangeMyInfoFunc*>(object)->CNMChangeMyInfoFunc::~CNMChangeMyInfoFunc();
+    if (flags & 1) ::operator delete(object, 0xc0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5650
 void* NMScalarDelete_1415f5650(void* object, unsigned int flags)
 {
-    static_cast<CNMChangeMyLevelFunc*>(object)->~CNMChangeMyLevelFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChangeMyLevelFunc*>(object)->CNMChangeMyLevelFunc::~CNMChangeMyLevelFunc();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5690
 void* NMScalarDelete_1415f5690(void* object, unsigned int flags)
 {
-    static_cast<CNMChangeMyPositionFunc*>(object)->~CNMChangeMyPositionFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChangeMyPositionFunc*>(object)->CNMChangeMyPositionFunc::~CNMChangeMyPositionFunc();
+    if (flags & 1) ::operator delete(object, 0x78);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f56d0
 void* NMScalarDelete_1415f56d0(void* object, unsigned int flags)
 {
-    static_cast<CNMChangeNicknameFunc*>(object)->~CNMChangeNicknameFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChangeNicknameFunc*>(object)->CNMChangeNicknameFunc::~CNMChangeNicknameFunc();
+    if (flags & 1) ::operator delete(object, 0x78);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5710
 void* NMScalarDelete_1415f5710(void* object, unsigned int flags)
 {
-    static_cast<CNMChannelCreatedEvent*>(object)->~CNMChannelCreatedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChannelCreatedEvent*>(object)->CNMChannelCreatedEvent::~CNMChannelCreatedEvent();
+    if (flags & 1) ::operator delete(object, 0xc0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5750
 void* NMScalarDelete_1415f5750(void* object, unsigned int flags)
 {
-    static_cast<CNMChannelErrorEvent*>(object)->~CNMChannelErrorEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChannelErrorEvent*>(object)->CNMChannelErrorEvent::~CNMChannelErrorEvent();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5790
 void* NMScalarDelete_1415f5790(void* object, unsigned int flags)
 {
-    static_cast<CNMChannelEstablishedEvent*>(object)->~CNMChannelEstablishedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChannelEstablishedEvent*>(object)->CNMChannelEstablishedEvent::~CNMChannelEstablishedEvent();
+    if (flags & 1) ::operator delete(object, 0xc0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f57d0
 void* NMScalarDelete_1415f57d0(void* object, unsigned int flags)
 {
-    static_cast<CNMChannelInfo*>(object)->~CNMChannelInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChannelInfo*>(object)->CNMChannelInfo::~CNMChannelInfo();
+    if (flags & 1) ::operator delete(object, 0x58);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5810
 void* NMScalarDelete_1415f5810(void* object, unsigned int flags)
 {
-    static_cast<CNMChannelInfoEvent*>(object)->~CNMChannelInfoEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChannelInfoEvent*>(object)->CNMChannelInfoEvent::~CNMChannelInfoEvent();
+    if (flags & 1) ::operator delete(object, 0xc0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5850
 void* NMScalarDelete_1415f5850(void* object, unsigned int flags)
 {
-    static_cast<CNMChannelMemberInfo*>(object)->~CNMChannelMemberInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChannelMemberInfo*>(object)->CNMChannelMemberInfo::~CNMChannelMemberInfo();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5890
 void* NMScalarDelete_1415f5890(void* object, unsigned int flags)
 {
-    static_cast<CNMChannelMemberInfoEvent*>(object)->~CNMChannelMemberInfoEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChannelMemberInfoEvent*>(object)->CNMChannelMemberInfoEvent::~CNMChannelMemberInfoEvent();
+    if (flags & 1) ::operator delete(object, 0x60);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f58d0
 void* NMScalarDelete_1415f58d0(void* object, unsigned int flags)
 {
-    static_cast<CNMChannelMemberInfoList*>(object)->~CNMChannelMemberInfoList();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChannelMemberInfoList*>(object)->CNMChannelMemberInfoList::~CNMChannelMemberInfoList();
+    if (flags & 1) ::operator delete(object, 0x28);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5910
 void* NMScalarDelete_1415f5910(void* object, unsigned int flags)
 {
-    static_cast<CNMChannelMemberInfoListEvent*>(object)->~CNMChannelMemberInfoListEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChannelMemberInfoListEvent*>(object)->CNMChannelMemberInfoListEvent::~CNMChannelMemberInfoListEvent();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5950
 void* NMScalarDelete_1415f5950(void* object, unsigned int flags)
 {
-    static_cast<CNMChannelMessage*>(object)->~CNMChannelMessage();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChannelMessage*>(object)->CNMChannelMessage::~CNMChannelMessage();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5990
 void* NMScalarDelete_1415f5990(void* object, unsigned int flags)
 {
-    static_cast<CNMChannelMessageEvent*>(object)->~CNMChannelMessageEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChannelMessageEvent*>(object)->CNMChannelMessageEvent::~CNMChannelMessageEvent();
+    if (flags & 1) ::operator delete(object, 0x78);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f59d0
 void* NMScalarDelete_1415f59d0(void* object, unsigned int flags)
 {
-    static_cast<CNMCharacter*>(object)->~CNMCharacter();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCharacter*>(object)->CNMCharacter::~CNMCharacter();
+    if (flags & 1) ::operator delete(object, 0x98);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5a10
 void* NMScalarDelete_1415f5a10(void* object, unsigned int flags)
 {
-    static_cast<CNMCharacterChangeName64Func*>(object)->~CNMCharacterChangeName64Func();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCharacterChangeName64Func*>(object)->CNMCharacterChangeName64Func::~CNMCharacterChangeName64Func();
+    if (flags & 1) ::operator delete(object, 0x80);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5a50
 void* NMScalarDelete_1415f5a50(void* object, unsigned int flags)
 {
-    static_cast<CNMCharacterChangeNameFunc*>(object)->~CNMCharacterChangeNameFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCharacterChangeNameFunc*>(object)->CNMCharacterChangeNameFunc::~CNMCharacterChangeNameFunc();
+    if (flags & 1) ::operator delete(object, 0x80);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5a90
 void* NMScalarDelete_1415f5a90(void* object, unsigned int flags)
 {
-    static_cast<CNMCharacterLogin64Func*>(object)->~CNMCharacterLogin64Func();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCharacterLogin64Func*>(object)->CNMCharacterLogin64Func::~CNMCharacterLogin64Func();
+    if (flags & 1) ::operator delete(object, 0x80);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5ad0
 void* NMScalarDelete_1415f5ad0(void* object, unsigned int flags)
 {
-    static_cast<CNMCharacterLoginFunc*>(object)->~CNMCharacterLoginFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCharacterLoginFunc*>(object)->CNMCharacterLoginFunc::~CNMCharacterLoginFunc();
+    if (flags & 1) ::operator delete(object, 0x80);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5b10
 void* NMScalarDelete_1415f5b10(void* object, unsigned int flags)
 {
-    static_cast<CNMCharacterLogout64Func*>(object)->~CNMCharacterLogout64Func();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCharacterLogout64Func*>(object)->CNMCharacterLogout64Func::~CNMCharacterLogout64Func();
+    if (flags & 1) ::operator delete(object, 0x80);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5b50
 void* NMScalarDelete_1415f5b50(void* object, unsigned int flags)
 {
-    static_cast<CNMCharacterLogoutFunc*>(object)->~CNMCharacterLogoutFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCharacterLogoutFunc*>(object)->CNMCharacterLogoutFunc::~CNMCharacterLogoutFunc();
+    if (flags & 1) ::operator delete(object, 0x80);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5b90
 void* NMScalarDelete_1415f5b90(void* object, unsigned int flags)
 {
-    static_cast<CNMCharacterRemove64Func*>(object)->~CNMCharacterRemove64Func();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCharacterRemove64Func*>(object)->CNMCharacterRemove64Func::~CNMCharacterRemove64Func();
+    if (flags & 1) ::operator delete(object, 0x80);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5bd0
 void* NMScalarDelete_1415f5bd0(void* object, unsigned int flags)
 {
-    static_cast<CNMCharacterRemoveFunc*>(object)->~CNMCharacterRemoveFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCharacterRemoveFunc*>(object)->CNMCharacterRemoveFunc::~CNMCharacterRemoveFunc();
+    if (flags & 1) ::operator delete(object, 0x80);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5c10
 void* NMScalarDelete_1415f5c10(void* object, unsigned int flags)
 {
-    static_cast<CNMCharacterSync64Func*>(object)->~CNMCharacterSync64Func();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCharacterSync64Func*>(object)->CNMCharacterSync64Func::~CNMCharacterSync64Func();
+    if (flags & 1) ::operator delete(object, 0x80);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5c50
 void* NMScalarDelete_1415f5c50(void* object, unsigned int flags)
 {
-    static_cast<CNMCharacterSyncFunc*>(object)->~CNMCharacterSyncFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCharacterSyncFunc*>(object)->CNMCharacterSyncFunc::~CNMCharacterSyncFunc();
+    if (flags & 1) ::operator delete(object, 0x80);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5c90
 void* NMScalarDelete_1415f5c90(void* object, unsigned int flags)
 {
-    static_cast<CNMChatMessage*>(object)->~CNMChatMessage();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChatMessage*>(object)->CNMChatMessage::~CNMChatMessage();
+    if (flags & 1) ::operator delete(object, 0x670);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5cd0
 void* NMScalarDelete_1415f5cd0(void* object, unsigned int flags)
 {
-    static_cast<CNMChatRoomInfo*>(object)->~CNMChatRoomInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChatRoomInfo*>(object)->CNMChatRoomInfo::~CNMChatRoomInfo();
+    if (flags & 1) ::operator delete(object, 0x600);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5d10
 void* NMScalarDelete_1415f5d10(void* object, unsigned int flags)
 {
-    static_cast<CNMChatRoomInfoEx*>(object)->~CNMChatRoomInfoEx();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChatRoomInfoEx*>(object)->CNMChatRoomInfoEx::~CNMChatRoomInfoEx();
+    if (flags & 1) ::operator delete(object, 0x4e0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5d50
 void* NMScalarDelete_1415f5d50(void* object, unsigned int flags)
 {
-    static_cast<CNMChatRoomMemberInfo*>(object)->~CNMChatRoomMemberInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChatRoomMemberInfo*>(object)->CNMChatRoomMemberInfo::~CNMChatRoomMemberInfo();
+    if (flags & 1) ::operator delete(object, 0x220);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5d90
 void* NMScalarDelete_1415f5d90(void* object, unsigned int flags)
 {
-    static_cast<CNMChatRoomMemberList*>(object)->~CNMChatRoomMemberList();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMChatRoomMemberList*>(object)->CNMChatRoomMemberList::~CNMChatRoomMemberList();
+    if (flags & 1) ::operator delete(object, 0x28);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5dd0
 void* NMScalarDelete_1415f5dd0(void* object, unsigned int flags)
 {
-    static_cast<CNMCheckNewsFunc*>(object)->~CNMCheckNewsFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCheckNewsFunc*>(object)->CNMCheckNewsFunc::~CNMCheckNewsFunc();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5e10
 void* NMScalarDelete_1415f5e10(void* object, unsigned int flags)
 {
-    static_cast<CNMClientChannelInfo*>(object)->~CNMClientChannelInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMClientChannelInfo*>(object)->CNMClientChannelInfo::~CNMClientChannelInfo();
+    if (flags & 1) ::operator delete(object, 0x60);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5e50
 void* NMScalarDelete_1415f5e50(void* object, unsigned int flags)
 {
-    static_cast<CNMConfirmNewFriendFunc*>(object)->~CNMConfirmNewFriendFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMConfirmNewFriendFunc*>(object)->CNMConfirmNewFriendFunc::~CNMConfirmNewFriendFunc();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5e90
 void* NMScalarDelete_1415f5e90(void* object, unsigned int flags)
 {
-    static_cast<CNMConnConfig*>(object)->~CNMConnConfig();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMConnConfig*>(object)->CNMConnConfig::~CNMConnConfig();
+    if (flags & 1) ::operator delete(object, 0x68);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5ed0
 void* NMScalarDelete_1415f5ed0(void* object, unsigned int flags)
 {
-    static_cast<CNMCreateChannelFunc*>(object)->~CNMCreateChannelFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCreateChannelFunc*>(object)->CNMCreateChannelFunc::~CNMCreateChannelFunc();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5f10
 void* NMScalarDelete_1415f5f10(void* object, unsigned int flags)
 {
-    static_cast<CNMCreateChatRoomExFunc*>(object)->~CNMCreateChatRoomExFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCreateChatRoomExFunc*>(object)->CNMCreateChatRoomExFunc::~CNMCreateChatRoomExFunc();
+    if (flags & 1) ::operator delete(object, 0x758);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5f50
 void* NMScalarDelete_1415f5f50(void* object, unsigned int flags)
 {
-    static_cast<CNMCreateChatRoomFunc*>(object)->~CNMCreateChatRoomFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCreateChatRoomFunc*>(object)->CNMCreateChatRoomFunc::~CNMCreateChatRoomFunc();
+    if (flags & 1) ::operator delete(object, 0x878);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5f90
 void* NMScalarDelete_1415f5f90(void* object, unsigned int flags)
 {
-    static_cast<CNMCustomMessageEvent*>(object)->~CNMCustomMessageEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCustomMessageEvent*>(object)->CNMCustomMessageEvent::~CNMCustomMessageEvent();
+    if (flags & 1) ::operator delete(object, 0x1040);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f5fd0
 void* NMScalarDelete_1415f5fd0(void* object, unsigned int flags)
 {
-    static_cast<CNMCustomNotifyData*>(object)->~CNMCustomNotifyData();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCustomNotifyData*>(object)->CNMCustomNotifyData::~CNMCustomNotifyData();
+    if (flags & 1) ::operator delete(object, 0x1d0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6010
 void* NMScalarDelete_1415f6010(void* object, unsigned int flags)
 {
-    static_cast<CNMCustomNotifyEvent*>(object)->~CNMCustomNotifyEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCustomNotifyEvent*>(object)->CNMCustomNotifyEvent::~CNMCustomNotifyEvent();
+    if (flags & 1) ::operator delete(object, 0x1f8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6050
 void* NMScalarDelete_1415f6050(void* object, unsigned int flags)
 {
-    static_cast<CNMCustomNotifyFunc*>(object)->~CNMCustomNotifyFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCustomNotifyFunc*>(object)->CNMCustomNotifyFunc::~CNMCustomNotifyFunc();
+    if (flags & 1) ::operator delete(object, 0x200);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6090
 void* NMScalarDelete_1415f6090(void* object, unsigned int flags)
 {
-    static_cast<CNMDefaultUserInfo*>(object)->~CNMDefaultUserInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMDefaultUserInfo*>(object)->CNMDefaultUserInfo::~CNMDefaultUserInfo();
+    if (flags & 1) ::operator delete(object, 0xb0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f60d0
 void* NMScalarDelete_1415f60d0(void* object, unsigned int flags)
 {
-    static_cast<CNMDeleteCategoryFunc*>(object)->~CNMDeleteCategoryFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMDeleteCategoryFunc*>(object)->CNMDeleteCategoryFunc::~CNMDeleteCategoryFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6110
 void* NMScalarDelete_1415f6110(void* object, unsigned int flags)
 {
-    static_cast<CNMDeleteFriendFromCategoryFunc*>(object)->~CNMDeleteFriendFromCategoryFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMDeleteFriendFromCategoryFunc*>(object)->CNMDeleteFriendFromCategoryFunc::~CNMDeleteFriendFromCategoryFunc();
+    if (flags & 1) ::operator delete(object, 0x50);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6150
 void* NMScalarDelete_1415f6150(void* object, unsigned int flags)
 {
-    static_cast<CNMDetachFromNMCOServerFunc*>(object)->~CNMDetachFromNMCOServerFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMDetachFromNMCOServerFunc*>(object)->CNMDetachFromNMCOServerFunc::~CNMDetachFromNMCOServerFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6190
 void* NMScalarDelete_1415f6190(void* object, unsigned int flags)
 {
-    static_cast<CNMDownloadFileFunc*>(object)->~CNMDownloadFileFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMDownloadFileFunc*>(object)->CNMDownloadFileFunc::~CNMDownloadFileFunc();
+    if (flags & 1) ::operator delete(object, 0x230);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f61d0
 void* NMScalarDelete_1415f61d0(void* object, unsigned int flags)
 {
-    static_cast<CNMDownloadGuildMarkFileFunc*>(object)->~CNMDownloadGuildMarkFileFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMDownloadGuildMarkFileFunc*>(object)->CNMDownloadGuildMarkFileFunc::~CNMDownloadGuildMarkFileFunc();
+    if (flags & 1) ::operator delete(object, 0x140);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6210
 void* NMScalarDelete_1415f6210(void* object, unsigned int flags)
 {
-    static_cast<CNMEvent*>(object)->~CNMEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMEvent*>(object)->CNMEvent::~CNMEvent();
+    if (flags & 1) ::operator delete(object, 0x28);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6250
 void* NMScalarDelete_1415f6250(void* object, unsigned int flags)
 {
-    static_cast<CNMExecuteCommonFunc*>(object)->~CNMExecuteCommonFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMExecuteCommonFunc*>(object)->CNMExecuteCommonFunc::~CNMExecuteCommonFunc();
+    if (flags & 1) ::operator delete(object, 0x438);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6290
 void* NMScalarDelete_1415f6290(void* object, unsigned int flags)
 {
-    static_cast<CNMExecuteLauncherFunc*>(object)->~CNMExecuteLauncherFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMExecuteLauncherFunc*>(object)->CNMExecuteLauncherFunc::~CNMExecuteLauncherFunc();
+    if (flags & 1) ::operator delete(object, 0x810);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f62d0
 void* NMScalarDelete_1415f62d0(void* object, unsigned int flags)
 {
-    static_cast<CNMExecuteNGMInstallerFunc*>(object)->~CNMExecuteNGMInstallerFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMExecuteNGMInstallerFunc*>(object)->CNMExecuteNGMInstallerFunc::~CNMExecuteNGMInstallerFunc();
+    if (flags & 1) ::operator delete(object, 0x8e0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6310
 void* NMScalarDelete_1415f6310(void* object, unsigned int flags)
 {
-    static_cast<CNMExecuteNGMLauncherFunc*>(object)->~CNMExecuteNGMLauncherFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMExecuteNGMLauncherFunc*>(object)->CNMExecuteNGMLauncherFunc::~CNMExecuteNGMLauncherFunc();
+    if (flags & 1) ::operator delete(object, 0x8d0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6350
 void* NMScalarDelete_1415f6350(void* object, unsigned int flags)
 {
-    static_cast<CNMExecuteNGMPatcher2Func*>(object)->~CNMExecuteNGMPatcher2Func();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMExecuteNGMPatcher2Func*>(object)->CNMExecuteNGMPatcher2Func::~CNMExecuteNGMPatcher2Func();
+    if (flags & 1) ::operator delete(object, 0x8038);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6390
 void* NMScalarDelete_1415f6390(void* object, unsigned int flags)
 {
-    static_cast<CNMExecuteNGMPatcherFunc*>(object)->~CNMExecuteNGMPatcherFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMExecuteNGMPatcherFunc*>(object)->CNMExecuteNGMPatcherFunc::~CNMExecuteNGMPatcherFunc();
+    if (flags & 1) ::operator delete(object, 0x85f0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f63d0
 void* NMScalarDelete_1415f63d0(void* object, unsigned int flags)
 {
-    static_cast<CNMExecutePatcherFunc*>(object)->~CNMExecutePatcherFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMExecutePatcherFunc*>(object)->CNMExecutePatcherFunc::~CNMExecutePatcherFunc();
+    if (flags & 1) ::operator delete(object, 0xa10);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6410
 void* NMScalarDelete_1415f6410(void* object, unsigned int flags)
 {
-    static_cast<CNMFDSControlFunc*>(object)->~CNMFDSControlFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFDSControlFunc*>(object)->CNMFDSControlFunc::~CNMFDSControlFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6450
 void* NMScalarDelete_1415f6450(void* object, unsigned int flags)
 {
-    static_cast<CNMFDSFileDownloadEventReceivedEvent*>(object)->~CNMFDSFileDownloadEventReceivedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFDSFileDownloadEventReceivedEvent*>(object)->CNMFDSFileDownloadEventReceivedEvent::~CNMFDSFileDownloadEventReceivedEvent();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f64d0
 void* NMScalarDelete_1415f64d0(void* object, unsigned int flags)
 {
-    static_cast<CNMFDSGetDownloadDirFunc*>(object)->~CNMFDSGetDownloadDirFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFDSGetDownloadDirFunc*>(object)->CNMFDSGetDownloadDirFunc::~CNMFDSGetDownloadDirFunc();
+    if (flags & 1) ::operator delete(object, 0x138);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6510
 void* NMScalarDelete_1415f6510(void* object, unsigned int flags)
 {
-    static_cast<CNMFDSSetDownloadDirFunc*>(object)->~CNMFDSSetDownloadDirFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFDSSetDownloadDirFunc*>(object)->CNMFDSSetDownloadDirFunc::~CNMFDSSetDownloadDirFunc();
+    if (flags & 1) ::operator delete(object, 0x138);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6550
 void* NMScalarDelete_1415f6550(void* object, unsigned int flags)
 {
-    static_cast<CNMFUDSGetFileEventFunc*>(object)->~CNMFUDSGetFileEventFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFUDSGetFileEventFunc*>(object)->CNMFUDSGetFileEventFunc::~CNMFUDSGetFileEventFunc();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6590
 void* NMScalarDelete_1415f6590(void* object, unsigned int flags)
 {
-    static_cast<CNMFUSControlFunc*>(object)->~CNMFUSControlFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFUSControlFunc*>(object)->CNMFUSControlFunc::~CNMFUSControlFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f65d0
 void* NMScalarDelete_1415f65d0(void* object, unsigned int flags)
 {
-    static_cast<CNMFUSFileUploadEventReceivedEvent*>(object)->~CNMFUSFileUploadEventReceivedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFUSFileUploadEventReceivedEvent*>(object)->CNMFUSFileUploadEventReceivedEvent::~CNMFUSFileUploadEventReceivedEvent();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6650
 void* NMScalarDelete_1415f6650(void* object, unsigned int flags)
 {
-    static_cast<CNMFUSSendFileFunc*>(object)->~CNMFUSSendFileFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFUSSendFileFunc*>(object)->CNMFUSSendFileFunc::~CNMFUSSendFileFunc();
+    if (flags & 1) ::operator delete(object, 0x138);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6690
 void* NMScalarDelete_1415f6690(void* object, unsigned int flags)
 {
-    static_cast<CNMFileEvent*>(object)->~CNMFileEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFileEvent*>(object)->CNMFileEvent::~CNMFileEvent();
+    if (flags & 1) ::operator delete(object, 0x128);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f66d0
 void* NMScalarDelete_1415f66d0(void* object, unsigned int flags)
 {
-    static_cast<CNMFilePath*>(object)->~CNMFilePath();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFilePath*>(object)->CNMFilePath::~CNMFilePath();
+    if (flags & 1) ::operator delete(object, 0x118);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6710
 void* NMScalarDelete_1415f6710(void* object, unsigned int flags)
 {
-    static_cast<CNMFinalizeFunc*>(object)->~CNMFinalizeFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFinalizeFunc*>(object)->CNMFinalizeFunc::~CNMFinalizeFunc();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6750
 void* NMScalarDelete_1415f6750(void* object, unsigned int flags)
 {
-    static_cast<CNMFindUserFunc*>(object)->~CNMFindUserFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFindUserFunc*>(object)->CNMFindUserFunc::~CNMFindUserFunc();
+    if (flags & 1) ::operator delete(object, 0x88);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6790
 void* NMScalarDelete_1415f6790(void* object, unsigned int flags)
 {
-    static_cast<CNMFindUserInfo*>(object)->~CNMFindUserInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFindUserInfo*>(object)->CNMFindUserInfo::~CNMFindUserInfo();
+    if (flags & 1) ::operator delete(object, 0xe0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f67d0
 void* NMScalarDelete_1415f67d0(void* object, unsigned int flags)
 {
-    static_cast<CNMFindUserReplyEvent*>(object)->~CNMFindUserReplyEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFindUserReplyEvent*>(object)->CNMFindUserReplyEvent::~CNMFindUserReplyEvent();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6810
 void* NMScalarDelete_1415f6810(void* object, unsigned int flags)
 {
-    static_cast<CNMFindUserRequestInfo*>(object)->~CNMFindUserRequestInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFindUserRequestInfo*>(object)->CNMFindUserRequestInfo::~CNMFindUserRequestInfo();
+    if (flags & 1) ::operator delete(object, 0x50);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6850
 void* NMScalarDelete_1415f6850(void* object, unsigned int flags)
 {
-    static_cast<CNMFriendInfo*>(object)->~CNMFriendInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFriendInfo*>(object)->CNMFriendInfo::~CNMFriendInfo();
+    if (flags & 1) ::operator delete(object, 0x580);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6890
 void* NMScalarDelete_1415f6890(void* object, unsigned int flags)
 {
-    static_cast<CNMFriendInfoChangedEvent*>(object)->~CNMFriendInfoChangedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFriendInfoChangedEvent*>(object)->CNMFriendInfoChangedEvent::~CNMFriendInfoChangedEvent();
+    if (flags & 1) ::operator delete(object, 0x5c0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f68d0
 void* NMScalarDelete_1415f68d0(void* object, unsigned int flags)
 {
-    static_cast<CNMFriendList*>(object)->~CNMFriendList();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFriendList*>(object)->CNMFriendList::~CNMFriendList();
+    if (flags & 1) ::operator delete(object, 0x28);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6910
 void* NMScalarDelete_1415f6910(void* object, unsigned int flags)
 {
-    static_cast<CNMFunc*>(object)->~CNMFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMFunc*>(object)->CNMFunc::~CNMFunc();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6990
 void* NMScalarDelete_1415f6990(void* object, unsigned int flags)
 {
-    static_cast<CNMGSGetInviteCandidateListFunc*>(object)->~CNMGSGetInviteCandidateListFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSGetInviteCandidateListFunc*>(object)->CNMGSGetInviteCandidateListFunc::~CNMGSGetInviteCandidateListFunc();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f69d0
 void* NMScalarDelete_1415f69d0(void* object, unsigned int flags)
 {
-    static_cast<CNMGSGetMemberListFunc*>(object)->~CNMGSGetMemberListFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSGetMemberListFunc*>(object)->CNMGSGetMemberListFunc::~CNMGSGetMemberListFunc();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6a10
 void* NMScalarDelete_1415f6a10(void* object, unsigned int flags)
 {
-    static_cast<CNMGSGetSessionInfoFunc*>(object)->~CNMGSGetSessionInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSGetSessionInfoFunc*>(object)->CNMGSGetSessionInfoFunc::~CNMGSGetSessionInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x90);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6a50
 void* NMScalarDelete_1415f6a50(void* object, unsigned int flags)
 {
-    static_cast<CNMGSInviteRejectedEvent*>(object)->~CNMGSInviteRejectedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSInviteRejectedEvent*>(object)->CNMGSInviteRejectedEvent::~CNMGSInviteRejectedEvent();
+    if (flags & 1) ::operator delete(object, 0x100);
     return object;
 }
 
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6a90
 void* NMScalarDelete_1415f6a90(void* object, unsigned int flags)
 {
-    static_cast<CNMGSInviteUserExFunc*>(object)->~CNMGSInviteUserExFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSInviteUserExFunc*>(object)->CNMGSInviteUserExFunc::~CNMGSInviteUserExFunc();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6ad0
 void* NMScalarDelete_1415f6ad0(void* object, unsigned int flags)
 {
-    static_cast<CNMGSInviteUserFunc*>(object)->~CNMGSInviteUserFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSInviteUserFunc*>(object)->CNMGSInviteUserFunc::~CNMGSInviteUserFunc();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6b10
 void* NMScalarDelete_1415f6b10(void* object, unsigned int flags)
 {
-    static_cast<CNMGSMemberInfoChangedEvent*>(object)->~CNMGSMemberInfoChangedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSMemberInfoChangedEvent*>(object)->CNMGSMemberInfoChangedEvent::~CNMGSMemberInfoChangedEvent();
+    if (flags & 1) ::operator delete(object, 0x220);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6b50
 void* NMScalarDelete_1415f6b50(void* object, unsigned int flags)
 {
-    static_cast<CNMGSMemberLeavedEvent*>(object)->~CNMGSMemberLeavedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSMemberLeavedEvent*>(object)->CNMGSMemberLeavedEvent::~CNMGSMemberLeavedEvent();
+    if (flags & 1) ::operator delete(object, 0x128);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6b90
 void* NMScalarDelete_1415f6b90(void* object, unsigned int flags)
 {
-    static_cast<CNMGSNewMemberJoinedEvent*>(object)->~CNMGSNewMemberJoinedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSNewMemberJoinedEvent*>(object)->CNMGSNewMemberJoinedEvent::~CNMGSNewMemberJoinedEvent();
+    if (flags & 1) ::operator delete(object, 0x128);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6bd0
 void* NMScalarDelete_1415f6bd0(void* object, unsigned int flags)
 {
-    static_cast<CNMGSRegisterCallbackFunc*>(object)->~CNMGSRegisterCallbackFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSRegisterCallbackFunc*>(object)->CNMGSRegisterCallbackFunc::~CNMGSRegisterCallbackFunc();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6c10
 void* NMScalarDelete_1415f6c10(void* object, unsigned int flags)
 {
-    static_cast<CNMGSSessionClosedEvent*>(object)->~CNMGSSessionClosedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSSessionClosedEvent*>(object)->CNMGSSessionClosedEvent::~CNMGSSessionClosedEvent();
+    if (flags & 1) ::operator delete(object, 0x78);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6c50
 void* NMScalarDelete_1415f6c50(void* object, unsigned int flags)
 {
-    static_cast<CNMGSSessionCreatedEvent*>(object)->~CNMGSSessionCreatedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSSessionCreatedEvent*>(object)->CNMGSSessionCreatedEvent::~CNMGSSessionCreatedEvent();
+    if (flags & 1) ::operator delete(object, 0x98);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6c90
 void* NMScalarDelete_1415f6c90(void* object, unsigned int flags)
 {
-    static_cast<CNMGSSessionEstablishedEvent*>(object)->~CNMGSSessionEstablishedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSSessionEstablishedEvent*>(object)->CNMGSSessionEstablishedEvent::~CNMGSSessionEstablishedEvent();
+    if (flags & 1) ::operator delete(object, 0x98);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6cd0
 void* NMScalarDelete_1415f6cd0(void* object, unsigned int flags)
 {
-    static_cast<CNMGSSessionFailedEvent*>(object)->~CNMGSSessionFailedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSSessionFailedEvent*>(object)->CNMGSSessionFailedEvent::~CNMGSSessionFailedEvent();
+    if (flags & 1) ::operator delete(object, 0x78);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6d10
 void* NMScalarDelete_1415f6d10(void* object, unsigned int flags)
 {
-    static_cast<CNMGSSessionInfoChangedEvent*>(object)->~CNMGSSessionInfoChangedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSSessionInfoChangedEvent*>(object)->CNMGSSessionInfoChangedEvent::~CNMGSSessionInfoChangedEvent();
+    if (flags & 1) ::operator delete(object, 0x78);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6d50
 void* NMScalarDelete_1415f6d50(void* object, unsigned int flags)
 {
-    static_cast<CNMGSSessionInfoEvent*>(object)->~CNMGSSessionInfoEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSSessionInfoEvent*>(object)->CNMGSSessionInfoEvent::~CNMGSSessionInfoEvent();
+    if (flags & 1) ::operator delete(object, 0x98);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6d90
 void* NMScalarDelete_1415f6d90(void* object, unsigned int flags)
 {
-    static_cast<CNMGSSetServingProcessIDFunc*>(object)->~CNMGSSetServingProcessIDFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSSetServingProcessIDFunc*>(object)->CNMGSSetServingProcessIDFunc::~CNMGSSetServingProcessIDFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6dd0
 void* NMScalarDelete_1415f6dd0(void* object, unsigned int flags)
 {
-    static_cast<CNMGSWantCloseFunc*>(object)->~CNMGSWantCloseFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGSWantCloseFunc*>(object)->CNMGSWantCloseFunc::~CNMGSWantCloseFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6e10
 void* NMScalarDelete_1415f6e10(void* object, unsigned int flags)
 {
-    static_cast<CNMGameCode*>(object)->~CNMGameCode();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGameCode*>(object)->CNMGameCode::~CNMGameCode();
+    if (flags & 1) ::operator delete(object, 0x18);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6e50
 void* NMScalarDelete_1415f6e50(void* object, unsigned int flags)
 {
-    static_cast<CNMGameInfo*>(object)->~CNMGameInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGameInfo*>(object)->CNMGameInfo::~CNMGameInfo();
+    if (flags & 1) ::operator delete(object, 0x14a8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6e90
 void* NMScalarDelete_1415f6e90(void* object, unsigned int flags)
 {
-    static_cast<CNMGameListData*>(object)->~CNMGameListData();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGameListData*>(object)->CNMGameListData::~CNMGameListData();
+    if (flags & 1) ::operator delete(object, 0x28);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6ed0
 void* NMScalarDelete_1415f6ed0(void* object, unsigned int flags)
 {
-    static_cast<CNMGameLogFinalizeFunc*>(object)->~CNMGameLogFinalizeFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGameLogFinalizeFunc*>(object)->CNMGameLogFinalizeFunc::~CNMGameLogFinalizeFunc();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6f10
 void* NMScalarDelete_1415f6f10(void* object, unsigned int flags)
 {
-    static_cast<CNMGameLogGetSessionIDFunc*>(object)->~CNMGameLogGetSessionIDFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGameLogGetSessionIDFunc*>(object)->CNMGameLogGetSessionIDFunc::~CNMGameLogGetSessionIDFunc();
+    if (flags & 1) ::operator delete(object, 0x50);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6f50
 void* NMScalarDelete_1415f6f50(void* object, unsigned int flags)
 {
-    static_cast<CNMGameLogInitializeFunc*>(object)->~CNMGameLogInitializeFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGameLogInitializeFunc*>(object)->CNMGameLogInitializeFunc::~CNMGameLogInitializeFunc();
+    if (flags & 1) ::operator delete(object, 0x170);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6f90
 void* NMScalarDelete_1415f6f90(void* object, unsigned int flags)
 {
-    static_cast<CNMGameLogWriteErrorLogFunc*>(object)->~CNMGameLogWriteErrorLogFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGameLogWriteErrorLogFunc*>(object)->CNMGameLogWriteErrorLogFunc::~CNMGameLogWriteErrorLogFunc();
+    if (flags & 1) ::operator delete(object, 0x138);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f6fd0
 void* NMScalarDelete_1415f6fd0(void* object, unsigned int flags)
 {
-    static_cast<CNMGameLogWriteStageLogFunc*>(object)->~CNMGameLogWriteStageLogFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGameLogWriteStageLogFunc*>(object)->CNMGameLogWriteStageLogFunc::~CNMGameLogWriteStageLogFunc();
+    if (flags & 1) ::operator delete(object, 0x138);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7010
 void* NMScalarDelete_1415f7010(void* object, unsigned int flags)
 {
-    static_cast<CNMGameServerCode*>(object)->~CNMGameServerCode();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGameServerCode*>(object)->CNMGameServerCode::~CNMGameServerCode();
+    if (flags & 1) ::operator delete(object, 0x18);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7050
 void* NMScalarDelete_1415f7050(void* object, unsigned int flags)
 {
-    static_cast<CNMGetConfigFunc*>(object)->~CNMGetConfigFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetConfigFunc*>(object)->CNMGetConfigFunc::~CNMGetConfigFunc();
+    if (flags & 1) ::operator delete(object, 0x80);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7090
 void* NMScalarDelete_1415f7090(void* object, unsigned int flags)
 {
-    static_cast<CNMGetConnConfigFunc*>(object)->~CNMGetConnConfigFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetConnConfigFunc*>(object)->CNMGetConnConfigFunc::~CNMGetConnConfigFunc();
+    if (flags & 1) ::operator delete(object, 0x98);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f70d0
 void* NMScalarDelete_1415f70d0(void* object, unsigned int flags)
 {
-    static_cast<CNMGetCountFunc*>(object)->~CNMGetCountFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetCountFunc*>(object)->CNMGetCountFunc::~CNMGetCountFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7110
 void* NMScalarDelete_1415f7110(void* object, unsigned int flags)
 {
-    static_cast<CNMGetDomainFunc*>(object)->~CNMGetDomainFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetDomainFunc*>(object)->CNMGetDomainFunc::~CNMGetDomainFunc();
+    if (flags & 1) ::operator delete(object, 0x430);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7150
 void* NMScalarDelete_1415f7150(void* object, unsigned int flags)
 {
-    static_cast<CNMGetFindUserResultFunc*>(object)->~CNMGetFindUserResultFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetFindUserResultFunc*>(object)->CNMGetFindUserResultFunc::~CNMGetFindUserResultFunc();
+    if (flags & 1) ::operator delete(object, 0x50);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7190
 void* NMScalarDelete_1415f7190(void* object, unsigned int flags)
 {
-    static_cast<CNMGetFriendInfoFunc*>(object)->~CNMGetFriendInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetFriendInfoFunc*>(object)->CNMGetFriendInfoFunc::~CNMGetFriendInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x5c8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f71d0
 void* NMScalarDelete_1415f71d0(void* object, unsigned int flags)
 {
-    static_cast<CNMGetFriendListFunc*>(object)->~CNMGetFriendListFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetFriendListFunc*>(object)->CNMGetFriendListFunc::~CNMGetFriendListFunc();
+    if (flags & 1) ::operator delete(object, 0x68);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7210
 void* NMScalarDelete_1415f7210(void* object, unsigned int flags)
 {
-    static_cast<CNMGetGameFriendTitleFunc*>(object)->~CNMGetGameFriendTitleFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetGameFriendTitleFunc*>(object)->CNMGetGameFriendTitleFunc::~CNMGetGameFriendTitleFunc();
+    if (flags & 1) ::operator delete(object, 0xb8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7250
 void* NMScalarDelete_1415f7250(void* object, unsigned int flags)
 {
-    static_cast<CNMGetGameFullNameFunc*>(object)->~CNMGetGameFullNameFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetGameFullNameFunc*>(object)->CNMGetGameFullNameFunc::~CNMGetGameFullNameFunc();
+    if (flags & 1) ::operator delete(object, 0xb8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7290
 void* NMScalarDelete_1415f7290(void* object, unsigned int flags)
 {
-    static_cast<CNMGetGameListFunc*>(object)->~CNMGetGameListFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetGameListFunc*>(object)->CNMGetGameListFunc::~CNMGetGameListFunc();
+    if (flags & 1) ::operator delete(object, 0x58);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f72d0
 void* NMScalarDelete_1415f72d0(void* object, unsigned int flags)
 {
-    static_cast<CNMGetGameServerListFunc*>(object)->~CNMGetGameServerListFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetGameServerListFunc*>(object)->CNMGetGameServerListFunc::~CNMGetGameServerListFunc();
+    if (flags & 1) ::operator delete(object, 0x50);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7310
 void* NMScalarDelete_1415f7310(void* object, unsigned int flags)
 {
-    static_cast<CNMGetGameServerNameFunc*>(object)->~CNMGetGameServerNameFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetGameServerNameFunc*>(object)->CNMGetGameServerNameFunc::~CNMGetGameServerNameFunc();
+    if (flags & 1) ::operator delete(object, 0xb8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7350
 void* NMScalarDelete_1415f7350(void* object, unsigned int flags)
 {
-    static_cast<CNMGetGameShortNameFunc*>(object)->~CNMGetGameShortNameFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetGameShortNameFunc*>(object)->CNMGetGameShortNameFunc::~CNMGetGameShortNameFunc();
+    if (flags & 1) ::operator delete(object, 0xb8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7390
 void* NMScalarDelete_1415f7390(void* object, unsigned int flags)
 {
-    static_cast<CNMGetGameTokenFunc*>(object)->~CNMGetGameTokenFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetGameTokenFunc*>(object)->CNMGetGameTokenFunc::~CNMGetGameTokenFunc();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f73d0
 void* NMScalarDelete_1415f73d0(void* object, unsigned int flags)
 {
-    static_cast<CNMGetLocalConfigFunc*>(object)->~CNMGetLocalConfigFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetLocalConfigFunc*>(object)->CNMGetLocalConfigFunc::~CNMGetLocalConfigFunc();
+    if (flags & 1) ::operator delete(object, 0x438);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7410
 void* NMScalarDelete_1415f7410(void* object, unsigned int flags)
 {
-    static_cast<CNMGetMyGuildListExFunc*>(object)->~CNMGetMyGuildListExFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetMyGuildListExFunc*>(object)->CNMGetMyGuildListExFunc::~CNMGetMyGuildListExFunc();
+    if (flags & 1) ::operator delete(object, 0x58);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7450
 void* NMScalarDelete_1415f7450(void* object, unsigned int flags)
 {
-    static_cast<CNMGetMyInfoFunc*>(object)->~CNMGetMyInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetMyInfoFunc*>(object)->CNMGetMyInfoFunc::~CNMGetMyInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x11f0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7490
 void* NMScalarDelete_1415f7490(void* object, unsigned int flags)
 {
-    static_cast<CNMGetMyVirtualUserListFunc*>(object)->~CNMGetMyVirtualUserListFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetMyVirtualUserListFunc*>(object)->CNMGetMyVirtualUserListFunc::~CNMGetMyVirtualUserListFunc();
+    if (flags & 1) ::operator delete(object, 0x50);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f74d0
 void* NMScalarDelete_1415f74d0(void* object, unsigned int flags)
 {
-    static_cast<CNMGetNexonPassportFunc*>(object)->~CNMGetNexonPassportFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetNexonPassportFunc*>(object)->CNMGetNexonPassportFunc::~CNMGetNexonPassportFunc();
+    if (flags & 1) ::operator delete(object, 0x1038);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7510
 void* NMScalarDelete_1415f7510(void* object, unsigned int flags)
 {
-    static_cast<CNMGetNoteBox2Func*>(object)->~CNMGetNoteBox2Func();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetNoteBox2Func*>(object)->CNMGetNoteBox2Func::~CNMGetNoteBox2Func();
+    if (flags & 1) ::operator delete(object, 0x60);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7550
 void* NMScalarDelete_1415f7550(void* object, unsigned int flags)
 {
-    static_cast<CNMGetNoteBoxFunc*>(object)->~CNMGetNoteBoxFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetNoteBoxFunc*>(object)->CNMGetNoteBoxFunc::~CNMGetNoteBoxFunc();
+    if (flags & 1) ::operator delete(object, 0x60);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7590
 void* NMScalarDelete_1415f7590(void* object, unsigned int flags)
 {
-    static_cast<CNMGetNxHWIDFunc*>(object)->~CNMGetNxHWIDFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetNxHWIDFunc*>(object)->CNMGetNxHWIDFunc::~CNMGetNxHWIDFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f75d0
 void* NMScalarDelete_1415f75d0(void* object, unsigned int flags)
 {
-    static_cast<CNMGetPathFunc*>(object)->~CNMGetPathFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetPathFunc*>(object)->CNMGetPathFunc::~CNMGetPathFunc();
+    if (flags & 1) ::operator delete(object, 0x138);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7610
 void* NMScalarDelete_1415f7610(void* object, unsigned int flags)
 {
-    static_cast<CNMGetRejectedUserListFunc*>(object)->~CNMGetRejectedUserListFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetRejectedUserListFunc*>(object)->CNMGetRejectedUserListFunc::~CNMGetRejectedUserListFunc();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7650
 void* NMScalarDelete_1415f7650(void* object, unsigned int flags)
 {
-    static_cast<CNMGetSecurityCodeCNFunc*>(object)->~CNMGetSecurityCodeCNFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetSecurityCodeCNFunc*>(object)->CNMGetSecurityCodeCNFunc::~CNMGetSecurityCodeCNFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7690
 void* NMScalarDelete_1415f7690(void* object, unsigned int flags)
 {
-    static_cast<CNMGetSecurityQuestionFunc*>(object)->~CNMGetSecurityQuestionFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetSecurityQuestionFunc*>(object)->CNMGetSecurityQuestionFunc::~CNMGetSecurityQuestionFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f76d0
 void* NMScalarDelete_1415f76d0(void* object, unsigned int flags)
 {
-    static_cast<CNMGetServerInfoFunc*>(object)->~CNMGetServerInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetServerInfoFunc*>(object)->CNMGetServerInfoFunc::~CNMGetServerInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x50);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7710
 void* NMScalarDelete_1415f7710(void* object, unsigned int flags)
 {
-    static_cast<CNMGetSessionValueFunc*>(object)->~CNMGetSessionValueFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetSessionValueFunc*>(object)->CNMGetSessionValueFunc::~CNMGetSessionValueFunc();
+    if (flags & 1) ::operator delete(object, 0x150);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7750
 void* NMScalarDelete_1415f7750(void* object, unsigned int flags)
 {
-    static_cast<CNMGetSupportGameListFunc*>(object)->~CNMGetSupportGameListFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetSupportGameListFunc*>(object)->CNMGetSupportGameListFunc::~CNMGetSupportGameListFunc();
+    if (flags & 1) ::operator delete(object, 0x50);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7790
 void* NMScalarDelete_1415f7790(void* object, unsigned int flags)
 {
-    static_cast<CNMGetUrlExFunc*>(object)->~CNMGetUrlExFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetUrlExFunc*>(object)->CNMGetUrlExFunc::~CNMGetUrlExFunc();
+    if (flags & 1) ::operator delete(object, 0x760);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f77d0
 void* NMScalarDelete_1415f77d0(void* object, unsigned int flags)
 {
-    static_cast<CNMGetUrlFunc*>(object)->~CNMGetUrlFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetUrlFunc*>(object)->CNMGetUrlFunc::~CNMGetUrlFunc();
+    if (flags & 1) ::operator delete(object, 0x650);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7810
 void* NMScalarDelete_1415f7810(void* object, unsigned int flags)
 {
-    static_cast<CNMGetUserDataListFunc*>(object)->~CNMGetUserDataListFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetUserDataListFunc*>(object)->CNMGetUserDataListFunc::~CNMGetUserDataListFunc();
+    if (flags & 1) ::operator delete(object, 0x80040);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7850
 void* NMScalarDelete_1415f7850(void* object, unsigned int flags)
 {
-    static_cast<CNMGetUserInfoFunc*>(object)->~CNMGetUserInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGetUserInfoFunc*>(object)->CNMGetUserInfoFunc::~CNMGetUserInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x78);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7890
 void* NMScalarDelete_1415f7890(void* object, unsigned int flags)
 {
-    static_cast<CNMGuildChatMessageEvent*>(object)->~CNMGuildChatMessageEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGuildChatMessageEvent*>(object)->CNMGuildChatMessageEvent::~CNMGuildChatMessageEvent();
+    if (flags & 1) ::operator delete(object, 0x6b0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f78d0
 void* NMScalarDelete_1415f78d0(void* object, unsigned int flags)
 {
-    static_cast<CNMGuildInfoEx*>(object)->~CNMGuildInfoEx();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGuildInfoEx*>(object)->CNMGuildInfoEx::~CNMGuildInfoEx();
+    if (flags & 1) ::operator delete(object, 0x190);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7910
 void* NMScalarDelete_1415f7910(void* object, unsigned int flags)
 {
-    static_cast<CNMGuildListExInfo*>(object)->~CNMGuildListExInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGuildListExInfo*>(object)->CNMGuildListExInfo::~CNMGuildListExInfo();
+    if (flags & 1) ::operator delete(object, 0x28);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7950
 void* NMScalarDelete_1415f7950(void* object, unsigned int flags)
 {
-    static_cast<CNMGuildMemberInfo*>(object)->~CNMGuildMemberInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGuildMemberInfo*>(object)->CNMGuildMemberInfo::~CNMGuildMemberInfo();
+    if (flags & 1) ::operator delete(object, 0xb8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7990
 void* NMScalarDelete_1415f7990(void* object, unsigned int flags)
 {
-    static_cast<CNMGuildMemberLevelInfo*>(object)->~CNMGuildMemberLevelInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGuildMemberLevelInfo*>(object)->CNMGuildMemberLevelInfo::~CNMGuildMemberLevelInfo();
+    if (flags & 1) ::operator delete(object, 0x58);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f79d0
 void* NMScalarDelete_1415f79d0(void* object, unsigned int flags)
 {
-    static_cast<CNMGuildOnlineInfo*>(object)->~CNMGuildOnlineInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGuildOnlineInfo*>(object)->CNMGuildOnlineInfo::~CNMGuildOnlineInfo();
+    if (flags & 1) ::operator delete(object, 0x58);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7a10
 void* NMScalarDelete_1415f7a10(void* object, unsigned int flags)
 {
-    static_cast<CNMGuildOnlineInfoEvent*>(object)->~CNMGuildOnlineInfoEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGuildOnlineInfoEvent*>(object)->CNMGuildOnlineInfoEvent::~CNMGuildOnlineInfoEvent();
+    if (flags & 1) ::operator delete(object, 0x80);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7a50
 void* NMScalarDelete_1415f7a50(void* object, unsigned int flags)
 {
-    static_cast<CNMGuildOnlineInfoEx*>(object)->~CNMGuildOnlineInfoEx();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGuildOnlineInfoEx*>(object)->CNMGuildOnlineInfoEx::~CNMGuildOnlineInfoEx();
+    if (flags & 1) ::operator delete(object, 0x68);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7a90
 void* NMScalarDelete_1415f7a90(void* object, unsigned int flags)
 {
-    static_cast<CNMGuildOnlineInfoExEvent*>(object)->~CNMGuildOnlineInfoExEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMGuildOnlineInfoExEvent*>(object)->CNMGuildOnlineInfoExEvent::~CNMGuildOnlineInfoExEvent();
+    if (flags & 1) ::operator delete(object, 0x90);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7ad0
 void* NMScalarDelete_1415f7ad0(void* object, unsigned int flags)
 {
-    static_cast<CNMInitializeFunc*>(object)->~CNMInitializeFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMInitializeFunc*>(object)->CNMInitializeFunc::~CNMInitializeFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7b10
 void* NMScalarDelete_1415f7b10(void* object, unsigned int flags)
 {
-    static_cast<CNMInviteVirtualUserEvent*>(object)->~CNMInviteVirtualUserEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMInviteVirtualUserEvent*>(object)->CNMInviteVirtualUserEvent::~CNMInviteVirtualUserEvent();
+    if (flags & 1) ::operator delete(object, 0x1d0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7b50
 void* NMScalarDelete_1415f7b50(void* object, unsigned int flags)
 {
-    static_cast<CNMIsNGMInstalledFunc*>(object)->~CNMIsNGMInstalledFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMIsNGMInstalledFunc*>(object)->CNMIsNGMInstalledFunc::~CNMIsNGMInstalledFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7b90
 void* NMScalarDelete_1415f7b90(void* object, unsigned int flags)
 {
-    static_cast<CNMJoinChannelFunc*>(object)->~CNMJoinChannelFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMJoinChannelFunc*>(object)->CNMJoinChannelFunc::~CNMJoinChannelFunc();
+    if (flags & 1) ::operator delete(object, 0xf0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7bd0
 void* NMScalarDelete_1415f7bd0(void* object, unsigned int flags)
 {
-    static_cast<CNMJoinToChatRoomExFunc*>(object)->~CNMJoinToChatRoomExFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMJoinToChatRoomExFunc*>(object)->CNMJoinToChatRoomExFunc::~CNMJoinToChatRoomExFunc();
+    if (flags & 1) ::operator delete(object, 0x760);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7c10
 void* NMScalarDelete_1415f7c10(void* object, unsigned int flags)
 {
-    static_cast<CNMJoinToChatRoomFunc*>(object)->~CNMJoinToChatRoomFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMJoinToChatRoomFunc*>(object)->CNMJoinToChatRoomFunc::~CNMJoinToChatRoomFunc();
+    if (flags & 1) ::operator delete(object, 0x880);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7c50
 void* NMScalarDelete_1415f7c50(void* object, unsigned int flags)
 {
-    static_cast<CNMLogReportSyncEvent*>(object)->~CNMLogReportSyncEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMLogReportSyncEvent*>(object)->CNMLogReportSyncEvent::~CNMLogReportSyncEvent();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7c90
 void* NMScalarDelete_1415f7c90(void* object, unsigned int flags)
 {
-    static_cast<CNMLogReportSyncFunc*>(object)->~CNMLogReportSyncFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMLogReportSyncFunc*>(object)->CNMLogReportSyncFunc::~CNMLogReportSyncFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7cd0
 void* NMScalarDelete_1415f7cd0(void* object, unsigned int flags)
 {
-    static_cast<CNMLoginAuthFunc*>(object)->~CNMLoginAuthFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMLoginAuthFunc*>(object)->CNMLoginAuthFunc::~CNMLoginAuthFunc();
+    if (flags & 1) ::operator delete(object, 0x13c8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7d10
 void* NMScalarDelete_1415f7d10(void* object, unsigned int flags)
 {
-    static_cast<CNMLoginAuthSecurityCNFunc*>(object)->~CNMLoginAuthSecurityCNFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMLoginAuthSecurityCNFunc*>(object)->CNMLoginAuthSecurityCNFunc::~CNMLoginAuthSecurityCNFunc();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7d50
 void* NMScalarDelete_1415f7d50(void* object, unsigned int flags)
 {
-    static_cast<CNMLoginMessengerFunc*>(object)->~CNMLoginMessengerFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMLoginMessengerFunc*>(object)->CNMLoginMessengerFunc::~CNMLoginMessengerFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7d90
 void* NMScalarDelete_1415f7d90(void* object, unsigned int flags)
 {
-    static_cast<CNMLoginNexonPassportFunc*>(object)->~CNMLoginNexonPassportFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMLoginNexonPassportFunc*>(object)->CNMLoginNexonPassportFunc::~CNMLoginNexonPassportFunc();
+    if (flags & 1) ::operator delete(object, 0x1048);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7dd0
 void* NMScalarDelete_1415f7dd0(void* object, unsigned int flags)
 {
-    static_cast<CNMLoginPassportFunc*>(object)->~CNMLoginPassportFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMLoginPassportFunc*>(object)->CNMLoginPassportFunc::~CNMLoginPassportFunc();
+    if (flags & 1) ::operator delete(object, 0x80d0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7e10
 void* NMScalarDelete_1415f7e10(void* object, unsigned int flags)
 {
-    static_cast<CNMLoginVirtualFunc*>(object)->~CNMLoginVirtualFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMLoginVirtualFunc*>(object)->CNMLoginVirtualFunc::~CNMLoginVirtualFunc();
+    if (flags & 1) ::operator delete(object, 0xb8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7e50
 void* NMScalarDelete_1415f7e50(void* object, unsigned int flags)
 {
-    static_cast<CNMLogoutAuthFunc*>(object)->~CNMLogoutAuthFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMLogoutAuthFunc*>(object)->CNMLogoutAuthFunc::~CNMLogoutAuthFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7e90
 void* NMScalarDelete_1415f7e90(void* object, unsigned int flags)
 {
-    static_cast<CNMLogoutMessengerFunc*>(object)->~CNMLogoutMessengerFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMLogoutMessengerFunc*>(object)->CNMLogoutMessengerFunc::~CNMLogoutMessengerFunc();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7ed0
 void* NMScalarDelete_1415f7ed0(void* object, unsigned int flags)
 {
-    static_cast<CNMLogoutVirtualFunc*>(object)->~CNMLogoutVirtualFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMLogoutVirtualFunc*>(object)->CNMLogoutVirtualFunc::~CNMLogoutVirtualFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
 // MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7f10
 void* NMScalarDelete_1415f7f10(void* object, unsigned int flags)
 {
-    static_cast<CNMManager*>(object)->~CNMManager();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMManager*>(object)->CNMManager::~CNMManager();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7f50
 void* NMScalarDelete_1415f7f50(void* object, unsigned int flags)
 {
-    static_cast<CNMMessageData*>(object)->~CNMMessageData();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMMessageData*>(object)->CNMMessageData::~CNMMessageData();
+    if (flags & 1) ::operator delete(object, 0x1018);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7f90
 void* NMScalarDelete_1415f7f90(void* object, unsigned int flags)
 {
-    static_cast<CNMMessengerReplyEvent*>(object)->~CNMMessengerReplyEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMMessengerReplyEvent*>(object)->CNMMessengerReplyEvent::~CNMMessengerReplyEvent();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f7fd0
 void* NMScalarDelete_1415f7fd0(void* object, unsigned int flags)
 {
-    static_cast<CNMMinimizeAllFunc*>(object)->~CNMMinimizeAllFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMMinimizeAllFunc*>(object)->CNMMinimizeAllFunc::~CNMMinimizeAllFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8010
 void* NMScalarDelete_1415f8010(void* object, unsigned int flags)
 {
-    static_cast<CNMMonitorGuildOnlineInfoExFunc*>(object)->~CNMMonitorGuildOnlineInfoExFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMMonitorGuildOnlineInfoExFunc*>(object)->CNMMonitorGuildOnlineInfoExFunc::~CNMMonitorGuildOnlineInfoExFunc();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8050
 void* NMScalarDelete_1415f8050(void* object, unsigned int flags)
 {
-    static_cast<CNMMonitorGuildOnlineInfoFunc*>(object)->~CNMMonitorGuildOnlineInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMMonitorGuildOnlineInfoFunc*>(object)->CNMMonitorGuildOnlineInfoFunc::~CNMMonitorGuildOnlineInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8090
 void* NMScalarDelete_1415f8090(void* object, unsigned int flags)
 {
-    static_cast<CNMMoveFriendCategoryFunc*>(object)->~CNMMoveFriendCategoryFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMMoveFriendCategoryFunc*>(object)->CNMMoveFriendCategoryFunc::~CNMMoveFriendCategoryFunc();
+    if (flags & 1) ::operator delete(object, 0x58);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f80d0
 void* NMScalarDelete_1415f80d0(void* object, unsigned int flags)
 {
-    static_cast<CNMMsgConnectionClosedEvent*>(object)->~CNMMsgConnectionClosedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMMsgConnectionClosedEvent*>(object)->CNMMsgConnectionClosedEvent::~CNMMsgConnectionClosedEvent();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8110
 void* NMScalarDelete_1415f8110(void* object, unsigned int flags)
 {
-    static_cast<CNMMyGameInfo*>(object)->~CNMMyGameInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMMyGameInfo*>(object)->CNMMyGameInfo::~CNMMyGameInfo();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8150
 void* NMScalarDelete_1415f8150(void* object, unsigned int flags)
 {
-    static_cast<CNMNoteInfo2*>(object)->~CNMNoteInfo2();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMNoteInfo2*>(object)->CNMNoteInfo2::~CNMNoteInfo2();
+    if (flags & 1) ::operator delete(object, 0xae8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8190
 void* NMScalarDelete_1415f8190(void* object, unsigned int flags)
 {
-    static_cast<CNMNoteInfo*>(object)->~CNMNoteInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMNoteInfo*>(object)->CNMNoteInfo::~CNMNoteInfo();
+    if (flags & 1) ::operator delete(object, 0xec8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f81d0
 void* NMScalarDelete_1415f81d0(void* object, unsigned int flags)
 {
-    static_cast<CNMNoteInfoEvent*>(object)->~CNMNoteInfoEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMNoteInfoEvent*>(object)->CNMNoteInfoEvent::~CNMNoteInfoEvent();
+    if (flags & 1) ::operator delete(object, 0xb10);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8210
 void* NMScalarDelete_1415f8210(void* object, unsigned int flags)
 {
-    static_cast<CNMNoteInfoEx*>(object)->~CNMNoteInfoEx();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMNoteInfoEx*>(object)->CNMNoteInfoEx::~CNMNoteInfoEx();
+    if (flags & 1) ::operator delete(object, 0x8018);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8250
 void* NMScalarDelete_1415f8250(void* object, unsigned int flags)
 {
-    static_cast<CNMNoteInstantMsgEvent*>(object)->~CNMNoteInstantMsgEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMNoteInstantMsgEvent*>(object)->CNMNoteInstantMsgEvent::~CNMNoteInstantMsgEvent();
+    if (flags & 1) ::operator delete(object, 0xef0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8290
 void* NMScalarDelete_1415f8290(void* object, unsigned int flags)
 {
-    static_cast<CNMNotifyEvent*>(object)->~CNMNotifyEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMNotifyEvent*>(object)->CNMNotifyEvent::~CNMNotifyEvent();
+    if (flags & 1) ::operator delete(object, 0x848);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f82d0
 void* NMScalarDelete_1415f82d0(void* object, unsigned int flags)
 {
-    static_cast<CNMOpenGameSummaryFunc*>(object)->~CNMOpenGameSummaryFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMOpenGameSummaryFunc*>(object)->CNMOpenGameSummaryFunc::~CNMOpenGameSummaryFunc();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8310
 void* NMScalarDelete_1415f8310(void* object, unsigned int flags)
 {
-    static_cast<CNMPCBangLoginFunc*>(object)->~CNMPCBangLoginFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMPCBangLoginFunc*>(object)->CNMPCBangLoginFunc::~CNMPCBangLoginFunc();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8350
 void* NMScalarDelete_1415f8350(void* object, unsigned int flags)
 {
-    static_cast<CNMProcessNoteFunc*>(object)->~CNMProcessNoteFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMProcessNoteFunc*>(object)->CNMProcessNoteFunc::~CNMProcessNoteFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8390
 void* NMScalarDelete_1415f8390(void* object, unsigned int flags)
 {
-    static_cast<CNMRealFriendInfo*>(object)->~CNMRealFriendInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRealFriendInfo*>(object)->CNMRealFriendInfo::~CNMRealFriendInfo();
+    if (flags & 1) ::operator delete(object, 0xd8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f83d0
 void* NMScalarDelete_1415f83d0(void* object, unsigned int flags)
 {
-    static_cast<CNMRealFriendInfoChangedEvent*>(object)->~CNMRealFriendInfoChangedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRealFriendInfoChangedEvent*>(object)->CNMRealFriendInfoChangedEvent::~CNMRealFriendInfoChangedEvent();
+    if (flags & 1) ::operator delete(object, 0x120);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8410
 void* NMScalarDelete_1415f8410(void* object, unsigned int flags)
 {
-    static_cast<CNMRealUserInfo*>(object)->~CNMRealUserInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRealUserInfo*>(object)->CNMRealUserInfo::~CNMRealUserInfo();
+    if (flags & 1) ::operator delete(object, 0x1a8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8450
 void* NMScalarDelete_1415f8450(void* object, unsigned int flags)
 {
-    static_cast<CNMRefreshEvent*>(object)->~CNMRefreshEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRefreshEvent*>(object)->CNMRefreshEvent::~CNMRefreshEvent();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8490
 void* NMScalarDelete_1415f8490(void* object, unsigned int flags)
 {
-    static_cast<CNMRefreshMessageEvent*>(object)->~CNMRefreshMessageEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRefreshMessageEvent*>(object)->CNMRefreshMessageEvent::~CNMRefreshMessageEvent();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f84d0
 void* NMScalarDelete_1415f84d0(void* object, unsigned int flags)
 {
-    static_cast<CNMRegisterCallbackFunc*>(object)->~CNMRegisterCallbackFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRegisterCallbackFunc*>(object)->CNMRegisterCallbackFunc::~CNMRegisterCallbackFunc();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8510
 void* NMScalarDelete_1415f8510(void* object, unsigned int flags)
 {
-    static_cast<CNMRejectedUser*>(object)->~CNMRejectedUser();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRejectedUser*>(object)->CNMRejectedUser::~CNMRejectedUser();
+    if (flags & 1) ::operator delete(object, 0xc8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8550
 void* NMScalarDelete_1415f8550(void* object, unsigned int flags)
 {
-    static_cast<CNMRejectedUserListChangedEvent*>(object)->~CNMRejectedUserListChangedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRejectedUserListChangedEvent*>(object)->CNMRejectedUserListChangedEvent::~CNMRejectedUserListChangedEvent();
+    if (flags & 1) ::operator delete(object, 0x28);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8590
 void* NMScalarDelete_1415f8590(void* object, unsigned int flags)
 {
-    static_cast<CNMRemoveMyVirtualUserFunc*>(object)->~CNMRemoveMyVirtualUserFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRemoveMyVirtualUserFunc*>(object)->CNMRemoveMyVirtualUserFunc::~CNMRemoveMyVirtualUserFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f85d0
 void* NMScalarDelete_1415f85d0(void* object, unsigned int flags)
 {
-    static_cast<CNMRemoveRejectedUserFunc*>(object)->~CNMRemoveRejectedUserFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRemoveRejectedUserFunc*>(object)->CNMRemoveRejectedUserFunc::~CNMRemoveRejectedUserFunc();
+    if (flags & 1) ::operator delete(object, 0xf8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8610
 void* NMScalarDelete_1415f8610(void* object, unsigned int flags)
 {
-    static_cast<CNMReplySessionRequestFunc*>(object)->~CNMReplySessionRequestFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMReplySessionRequestFunc*>(object)->CNMReplySessionRequestFunc::~CNMReplySessionRequestFunc();
+    if (flags & 1) ::operator delete(object, 0x40);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8650
 void* NMScalarDelete_1415f8650(void* object, unsigned int flags)
 {
-    static_cast<CNMReportInfo*>(object)->~CNMReportInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMReportInfo*>(object)->CNMReportInfo::~CNMReportInfo();
+    if (flags & 1) ::operator delete(object, 0x5e68);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8690
 void* NMScalarDelete_1415f8690(void* object, unsigned int flags)
 {
-    static_cast<CNMRequestChatSessionExFunc*>(object)->~CNMRequestChatSessionExFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRequestChatSessionExFunc*>(object)->CNMRequestChatSessionExFunc::~CNMRequestChatSessionExFunc();
+    if (flags & 1) ::operator delete(object, 0x58);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f86d0
 void* NMScalarDelete_1415f86d0(void* object, unsigned int flags)
 {
-    static_cast<CNMRequestChatSessionFunc*>(object)->~CNMRequestChatSessionFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRequestChatSessionFunc*>(object)->CNMRequestChatSessionFunc::~CNMRequestChatSessionFunc();
+    if (flags & 1) ::operator delete(object, 0x50);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8710
 void* NMScalarDelete_1415f8710(void* object, unsigned int flags)
 {
-    static_cast<CNMRequestFileUploadSessionExFunc*>(object)->~CNMRequestFileUploadSessionExFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRequestFileUploadSessionExFunc*>(object)->CNMRequestFileUploadSessionExFunc::~CNMRequestFileUploadSessionExFunc();
+    if (flags & 1) ::operator delete(object, 0x70);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8750
 void* NMScalarDelete_1415f8750(void* object, unsigned int flags)
 {
-    static_cast<CNMRequestFileUploadSessionFunc*>(object)->~CNMRequestFileUploadSessionFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRequestFileUploadSessionFunc*>(object)->CNMRequestFileUploadSessionFunc::~CNMRequestFileUploadSessionFunc();
+    if (flags & 1) ::operator delete(object, 0x68);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8790
 void* NMScalarDelete_1415f8790(void* object, unsigned int flags)
 {
-    static_cast<CNMRequestMultiChatSessionExFunc*>(object)->~CNMRequestMultiChatSessionExFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRequestMultiChatSessionExFunc*>(object)->CNMRequestMultiChatSessionExFunc::~CNMRequestMultiChatSessionExFunc();
+    if (flags & 1) ::operator delete(object, 0x58);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f87d0
 void* NMScalarDelete_1415f87d0(void* object, unsigned int flags)
 {
-    static_cast<CNMRequestMultiChatSessionFunc*>(object)->~CNMRequestMultiChatSessionFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRequestMultiChatSessionFunc*>(object)->CNMRequestMultiChatSessionFunc::~CNMRequestMultiChatSessionFunc();
+    if (flags & 1) ::operator delete(object, 0x58);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8810
 void* NMScalarDelete_1415f8810(void* object, unsigned int flags)
 {
-    static_cast<CNMRequestNewFriendData*>(object)->~CNMRequestNewFriendData();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRequestNewFriendData*>(object)->CNMRequestNewFriendData::~CNMRequestNewFriendData();
+    if (flags & 1) ::operator delete(object, 0x1f0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8850
 void* NMScalarDelete_1415f8850(void* object, unsigned int flags)
 {
-    static_cast<CNMRequestNewFriendEvent*>(object)->~CNMRequestNewFriendEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRequestNewFriendEvent*>(object)->CNMRequestNewFriendEvent::~CNMRequestNewFriendEvent();
+    if (flags & 1) ::operator delete(object, 0x218);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8890
 void* NMScalarDelete_1415f8890(void* object, unsigned int flags)
 {
-    static_cast<CNMRequestNewFriendFunc*>(object)->~CNMRequestNewFriendFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRequestNewFriendFunc*>(object)->CNMRequestNewFriendFunc::~CNMRequestNewFriendFunc();
+    if (flags & 1) ::operator delete(object, 0x220);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f88d0
 void* NMScalarDelete_1415f88d0(void* object, unsigned int flags)
 {
-    static_cast<CNMRequestNewsFunc*>(object)->~CNMRequestNewsFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRequestNewsFunc*>(object)->CNMRequestNewsFunc::~CNMRequestNewsFunc();
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8910
 void* NMScalarDelete_1415f8910(void* object, unsigned int flags)
 {
-    static_cast<CNMRequestSessionData*>(object)->~CNMRequestSessionData();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRequestSessionData*>(object)->CNMRequestSessionData::~CNMRequestSessionData();
+    if (flags & 1) ::operator delete(object, 0x98);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8950
 void* NMScalarDelete_1415f8950(void* object, unsigned int flags)
 {
-    static_cast<CNMRequestSessionToOtherFunc*>(object)->~CNMRequestSessionToOtherFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRequestSessionToOtherFunc*>(object)->CNMRequestSessionToOtherFunc::~CNMRequestSessionToOtherFunc();
+    if (flags & 1) ::operator delete(object, 0xb0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8990
 void* NMScalarDelete_1415f8990(void* object, unsigned int flags)
 {
-    static_cast<CNMRequestWBSessionExFunc*>(object)->~CNMRequestWBSessionExFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRequestWBSessionExFunc*>(object)->CNMRequestWBSessionExFunc::~CNMRequestWBSessionExFunc();
+    if (flags & 1) ::operator delete(object, 0x58);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f89d0
 void* NMScalarDelete_1415f89d0(void* object, unsigned int flags)
 {
-    static_cast<CNMRequestWBSessionFunc*>(object)->~CNMRequestWBSessionFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRequestWBSessionFunc*>(object)->CNMRequestWBSessionFunc::~CNMRequestWBSessionFunc();
+    if (flags & 1) ::operator delete(object, 0x50);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8a10
 void* NMScalarDelete_1415f8a10(void* object, unsigned int flags)
 {
-    static_cast<CNMResetCallbackFunc*>(object)->~CNMResetCallbackFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMResetCallbackFunc*>(object)->CNMResetCallbackFunc::~CNMResetCallbackFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8a50
 void* NMScalarDelete_1415f8a50(void* object, unsigned int flags)
 {
-    static_cast<CNMRestrictedWordsFunc*>(object)->~CNMRestrictedWordsFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMRestrictedWordsFunc*>(object)->CNMRestrictedWordsFunc::~CNMRestrictedWordsFunc();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8a90
 void* NMScalarDelete_1415f8a90(void* object, unsigned int flags)
 {
-    static_cast<CNMSelfUserInfo*>(object)->~CNMSelfUserInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSelfUserInfo*>(object)->CNMSelfUserInfo::~CNMSelfUserInfo();
+    if (flags & 1) ::operator delete(object, 0x1a8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8ad0
 void* NMScalarDelete_1415f8ad0(void* object, unsigned int flags)
 {
-    static_cast<CNMSendAccuseNoteMsgFunc*>(object)->~CNMSendAccuseNoteMsgFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSendAccuseNoteMsgFunc*>(object)->CNMSendAccuseNoteMsgFunc::~CNMSendAccuseNoteMsgFunc();
+    if (flags & 1) ::operator delete(object, 0x5e98);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8b10
 void* NMScalarDelete_1415f8b10(void* object, unsigned int flags)
 {
-    static_cast<CNMSendNoteExMsgFunc*>(object)->~CNMSendNoteExMsgFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSendNoteExMsgFunc*>(object)->CNMSendNoteExMsgFunc::~CNMSendNoteExMsgFunc();
+    if (flags & 1) ::operator delete(object, 0x8048);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8b50
 void* NMScalarDelete_1415f8b50(void* object, unsigned int flags)
 {
-    static_cast<CNMSendNoteInfoFunc*>(object)->~CNMSendNoteInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSendNoteInfoFunc*>(object)->CNMSendNoteInfoFunc::~CNMSendNoteInfoFunc();
+    if (flags & 1) ::operator delete(object, 0xb20);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8b90
 void* NMScalarDelete_1415f8b90(void* object, unsigned int flags)
 {
-    static_cast<CNMSendNoteMsgFunc*>(object)->~CNMSendNoteMsgFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSendNoteMsgFunc*>(object)->CNMSendNoteMsgFunc::~CNMSendNoteMsgFunc();
+    if (flags & 1) ::operator delete(object, 0xf00);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8bd0
 void* NMScalarDelete_1415f8bd0(void* object, unsigned int flags)
 {
-    static_cast<CNMSendRefreshMessageFunc*>(object)->~CNMSendRefreshMessageFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSendRefreshMessageFunc*>(object)->CNMSendRefreshMessageFunc::~CNMSendRefreshMessageFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8c10
 void* NMScalarDelete_1415f8c10(void* object, unsigned int flags)
 {
-    static_cast<CNMSerializable*>(object)->~CNMSerializable();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSerializable*>(object)->CNMSerializable::~CNMSerializable();
+    if (flags & 1) ::operator delete(object, 0x10);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8c50
 void* NMScalarDelete_1415f8c50(void* object, unsigned int flags)
 {
-    static_cast<CNMServerMessageEvent*>(object)->~CNMServerMessageEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMServerMessageEvent*>(object)->CNMServerMessageEvent::~CNMServerMessageEvent();
+    if (flags & 1) ::operator delete(object, 0x1040);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8c90
 void* NMScalarDelete_1415f8c90(void* object, unsigned int flags)
 {
-    static_cast<CNMSessionInfo*>(object)->~CNMSessionInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSessionInfo*>(object)->CNMSessionInfo::~CNMSessionInfo();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8cd0
 void* NMScalarDelete_1415f8cd0(void* object, unsigned int flags)
 {
-    static_cast<CNMSessionMemberInfo*>(object)->~CNMSessionMemberInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSessionMemberInfo*>(object)->CNMSessionMemberInfo::~CNMSessionMemberInfo();
+    if (flags & 1) ::operator delete(object, 0xf8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8d10
 void* NMScalarDelete_1415f8d10(void* object, unsigned int flags)
 {
-    static_cast<CNMSessionMemberList*>(object)->~CNMSessionMemberList();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSessionMemberList*>(object)->CNMSessionMemberList::~CNMSessionMemberList();
+    if (flags & 1) ::operator delete(object, 0x28);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8d50
 void* NMScalarDelete_1415f8d50(void* object, unsigned int flags)
 {
-    static_cast<CNMSetAuthClosedCallbackFunc*>(object)->~CNMSetAuthClosedCallbackFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSetAuthClosedCallbackFunc*>(object)->CNMSetAuthClosedCallbackFunc::~CNMSetAuthClosedCallbackFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8d90
 void* NMScalarDelete_1415f8d90(void* object, unsigned int flags)
 {
-    static_cast<CNMSetCodePageFunc*>(object)->~CNMSetCodePageFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSetCodePageFunc*>(object)->CNMSetCodePageFunc::~CNMSetCodePageFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8dd0
 void* NMScalarDelete_1415f8dd0(void* object, unsigned int flags)
 {
-    static_cast<CNMSetConnConfigFunc*>(object)->~CNMSetConnConfigFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSetConnConfigFunc*>(object)->CNMSetConnConfigFunc::~CNMSetConnConfigFunc();
+    if (flags & 1) ::operator delete(object, 0x98);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8e10
 void* NMScalarDelete_1415f8e10(void* object, unsigned int flags)
 {
-    static_cast<CNMSetCountFunc*>(object)->~CNMSetCountFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSetCountFunc*>(object)->CNMSetCountFunc::~CNMSetCountFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8e50
 void* NMScalarDelete_1415f8e50(void* object, unsigned int flags)
 {
-    static_cast<CNMSetLocaleFunc*>(object)->~CNMSetLocaleFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSetLocaleFunc*>(object)->CNMSetLocaleFunc::~CNMSetLocaleFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8e90
 void* NMScalarDelete_1415f8e90(void* object, unsigned int flags)
 {
-    static_cast<CNMSetServerInfoFunc*>(object)->~CNMSetServerInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSetServerInfoFunc*>(object)->CNMSetServerInfoFunc::~CNMSetServerInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8ed0
 void* NMScalarDelete_1415f8ed0(void* object, unsigned int flags)
 {
-    static_cast<CNMSetSessionValueFunc*>(object)->~CNMSetSessionValueFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSetSessionValueFunc*>(object)->CNMSetSessionValueFunc::~CNMSetSessionValueFunc();
+    if (flags & 1) ::operator delete(object, 0x158);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8f10
 void* NMScalarDelete_1415f8f10(void* object, unsigned int flags)
 {
-    static_cast<CNMSetStatInfoFunc*>(object)->~CNMSetStatInfoFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSetStatInfoFunc*>(object)->CNMSetStatInfoFunc::~CNMSetStatInfoFunc();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8f50
 void* NMScalarDelete_1415f8f50(void* object, unsigned int flags)
 {
-    static_cast<CNMSpecialEvent*>(object)->~CNMSpecialEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSpecialEvent*>(object)->CNMSpecialEvent::~CNMSpecialEvent();
+    if (flags & 1) ::operator delete(object, 0x130);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8f90
 void* NMScalarDelete_1415f8f90(void* object, unsigned int flags)
 {
-    static_cast<CNMStartStandAloneMsgFunc*>(object)->~CNMStartStandAloneMsgFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMStartStandAloneMsgFunc*>(object)->CNMStartStandAloneMsgFunc::~CNMStartStandAloneMsgFunc();
+    if (flags & 1) ::operator delete(object, 0x430);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f8fd0
 void* NMScalarDelete_1415f8fd0(void* object, unsigned int flags)
 {
-    static_cast<CNMTPATokenLoginFunc*>(object)->~CNMTPATokenLoginFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMTPATokenLoginFunc*>(object)->CNMTPATokenLoginFunc::~CNMTPATokenLoginFunc();
+    if (flags & 1) ::operator delete(object, 0x48);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f9010
 void* NMScalarDelete_1415f9010(void* object, unsigned int flags)
 {
-    static_cast<CNMUploadFileFunc*>(object)->~CNMUploadFileFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMUploadFileFunc*>(object)->CNMUploadFileFunc::~CNMUploadFileFunc();
+    if (flags & 1) ::operator delete(object, 0xa38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f9050
 void* NMScalarDelete_1415f9050(void* object, unsigned int flags)
 {
-    static_cast<CNMUserInfoEvent*>(object)->~CNMUserInfoEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMUserInfoEvent*>(object)->CNMUserInfoEvent::~CNMUserInfoEvent();
+    if (flags & 1) ::operator delete(object, 0x1d0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f9090
 void* NMScalarDelete_1415f9090(void* object, unsigned int flags)
 {
-    static_cast<CNMVirtualFriendInfo*>(object)->~CNMVirtualFriendInfo();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMVirtualFriendInfo*>(object)->CNMVirtualFriendInfo::~CNMVirtualFriendInfo();
+    if (flags & 1) ::operator delete(object, 0x4c0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f90d0
 void* NMScalarDelete_1415f90d0(void* object, unsigned int flags)
 {
-    static_cast<CNMVirtualFriendInfoChangedEvent*>(object)->~CNMVirtualFriendInfoChangedEvent();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMVirtualFriendInfoChangedEvent*>(object)->CNMVirtualFriendInfoChangedEvent::~CNMVirtualFriendInfoChangedEvent();
+    if (flags & 1) ::operator delete(object, 0x4f0);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f9190
 void* NMScalarDelete_1415f9190(void* object, unsigned int flags)
 {
-    static_cast<CNMWSGetAssocSerialKeyFunc*>(object)->~CNMWSGetAssocSerialKeyFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMWSGetAssocSerialKeyFunc*>(object)->CNMWSGetAssocSerialKeyFunc::~CNMWSGetAssocSerialKeyFunc();
+    if (flags & 1) ::operator delete(object, 0x38);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f91d0
 void* NMScalarDelete_1415f91d0(void* object, unsigned int flags)
 {
-    static_cast<CNMWSSendWBMessageFunc*>(object)->~CNMWSSendWBMessageFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMWSSendWBMessageFunc*>(object)->CNMWSSendWBMessageFunc::~CNMWSSendWBMessageFunc();
+    if (flags & 1) ::operator delete(object, 0x8038);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered class destructor and frees the object only for flag bit 0.
 // @0x1415f92d0
 void* NMScalarDelete_1415f92d0(void* object, unsigned int flags)
 {
-    static_cast<CNMWriteToWiselogFunc*>(object)->~CNMWriteToWiselogFunc();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMWriteToWiselogFunc*>(object)->CNMWriteToWiselogFunc::~CNMWriteToWiselogFunc();
+    if (flags & 1) ::operator delete(object, 0x430);
     return object;
 }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3980
 void* FUN_1415f3980(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f39b0
 void* FUN_1415f39b0(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3a30
 void* FUN_1415f3a30(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3a40
 void* FUN_1415f3a40(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3a50
 void* FUN_1415f3a50(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3ae0
 void* FUN_1415f3ae0(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3af0
 void* FUN_1415f3af0(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3b00
 void* FUN_1415f3b00(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3b10
 void* FUN_1415f3b10(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3b20
 void* FUN_1415f3b20(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3b30
 void* FUN_1415f3b30(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3b40
 void* FUN_1415f3b40(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3b50
 void* FUN_1415f3b50(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3b60
 void* FUN_1415f3b60(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3b70
 void* FUN_1415f3b70(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3b80
 void* FUN_1415f3b80(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3b90
 void* FUN_1415f3b90(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3ba0
 void* FUN_1415f3ba0(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3bb0
 void* FUN_1415f3bb0(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3bc0
 void* FUN_1415f3bc0(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3bd0
 void* FUN_1415f3bd0(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3be0
 void* FUN_1415f3be0(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3bf0
 void* FUN_1415f3bf0(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3c00
 void* FUN_1415f3c00(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3c10
 void* FUN_1415f3c10(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3c20
 void* FUN_1415f3c20(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3c30
 void* FUN_1415f3c30(void* p) { return *static_cast<void**>(p); }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x10.
 // @0x1415f3fe0
 long long* FUN_1415f3fe0(long long* p) { *p += 0x10; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x18.
 // @0x1415f4000
 long long* FUN_1415f4000(long long* p) { *p += 0x18; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x20.
 // @0x1415f4020
 long long* FUN_1415f4020(long long* p) { *p += 0x20; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x58.
 // @0x1415f4040
 long long* FUN_1415f4040(long long* p) { *p += 0x58; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x30.
 // @0x1415f4060
 long long* FUN_1415f4060(long long* p) { *p += 0x30; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x98.
 // @0x1415f4080
 long long* FUN_1415f4080(long long* p) { *p += 0x98; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x220.
 // @0x1415f40b0
 long long* FUN_1415f40b0(long long* p) { *p += 0x220; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x128.
 // @0x1415f40e0
 long long* FUN_1415f40e0(long long* p) { *p += 0x128; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x118.
 // @0x1415f4110
 long long* FUN_1415f4110(long long* p) { *p += 0x118; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0xe0.
 // @0x1415f4140
 long long* FUN_1415f4140(long long* p) { *p += 0xe0; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x580.
 // @0x1415f4170
 long long* FUN_1415f4170(long long* p) { *p += 0x580; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x18.
 // @0x1415f41a0
 long long* FUN_1415f41a0(long long* p) { *p += 0x18; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x14a8.
 // @0x1415f41c0
 long long* FUN_1415f41c0(long long* p) { *p += 0x14a8; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x18.
 // @0x1415f41f0
 long long* FUN_1415f41f0(long long* p) { *p += 0x18; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0xb8.
 // @0x1415f4240
 long long* FUN_1415f4240(long long* p) { *p += 0xb8; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x58.
 // @0x1415f4270
 long long* FUN_1415f4270(long long* p) { *p += 0x58; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x68.
 // @0x1415f4290
 long long* FUN_1415f4290(long long* p) { *p += 0x68; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0xae8.
 // @0x1415f42b0
 long long* FUN_1415f42b0(long long* p) { *p += 0xae8; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0xec8.
 // @0x1415f42e0
 long long* FUN_1415f42e0(long long* p) { *p += 0xec8; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0xf8.
 // @0x1415f4340
 long long* FUN_1415f4340(long long* p) { *p += 0xf8; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x490.
 // @0x1415f4370
 long long* FUN_1415f4370(long long* p) { *p += 0x490; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x20.
 // @0x1415f43a0
 long long* FUN_1415f43a0(long long* p) { *p += 0x20; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered pointer by 400 bytes.
 // @0x1415f4210
 long long* FUN_1415f4210(long long* p) { *p += 400; return p; }
 
-// MS2-FUNCTIONAL: advances the recovered pointer by 200 bytes.
 // @0x1415f4310
 long long* FUN_1415f4310(long long* p) { *p += 200; return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f43c0
 void* FUN_1415f43c0(void* p) { FUN_1415f4020(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f43e0
 void* FUN_1415f43e0(void* p) { FUN_1415f4040(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4400
 void* FUN_1415f4400(void* p) { FUN_1415f4060(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4420
 void* FUN_1415f4420(void* p) { FUN_1415f4080(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4440
 void* FUN_1415f4440(void* p) { FUN_1415f40b0(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4460
 void* FUN_1415f4460(void* p) { FUN_1415f40e0(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4480
 void* FUN_1415f4480(void* p) { FUN_1415f4110(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f44a0
 void* FUN_1415f44a0(void* p) { FUN_1415f4140(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f44c0
 void* FUN_1415f44c0(void* p) { FUN_1415f4170(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f44e0
 void* FUN_1415f44e0(void* p) { FUN_1415f41a0(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4500
 void* FUN_1415f4500(void* p) { FUN_1415f41c0(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4520
 void* FUN_1415f4520(void* p) { FUN_1415f41f0(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4540
 void* FUN_1415f4540(void* p) { FUN_1415f4210(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4560
 void* FUN_1415f4560(void* p) { FUN_1415f4240(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4580
 void* FUN_1415f4580(void* p) { FUN_1415f4270(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f45a0
 void* FUN_1415f45a0(void* p) { FUN_1415f4290(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f45c0
 void* FUN_1415f45c0(void* p) { FUN_1415f42b0(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f45e0
 void* FUN_1415f45e0(void* p) { FUN_1415f42e0(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4600
 void* FUN_1415f4600(void* p) { FUN_1415f4310(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4620
 void* FUN_1415f4620(void* p) { FUN_1415f4340(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4640
 void* FUN_1415f4640(void* p) { FUN_1415f4370(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4660
 void* FUN_1415f4660(void* p) { FUN_1415f43a0(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f4680
 void* FUN_1415f4680(void* p) { FUN_1415f46c0(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f46a0
 void* FUN_1415f46a0(void* p) { FUN_1415f4680(static_cast<long long*>(p)); return p; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2aa0
-bool NMStringIteratorCompare_1415f2aa0(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffc70(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2aa0(const long long* a, const long long* b) { FUN_1415ffc70(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2af0
-bool NMStringIteratorCompare_1415f2af0(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffc80(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2af0(const long long* a, const long long* b) { FUN_1415ffc80(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2b40
-bool NMStringIteratorCompare_1415f2b40(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffc90(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2b40(const long long* a, const long long* b) { FUN_1415ffc90(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2b90
-bool NMStringIteratorCompare_1415f2b90(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffca0(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2b90(const long long* a, const long long* b) { FUN_1415ffca0(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2be0
-bool NMStringIteratorCompare_1415f2be0(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffcb0(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2be0(const long long* a, const long long* b) { FUN_1415ffcb0(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2c30
-bool NMStringIteratorCompare_1415f2c30(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffcc0(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2c30(const long long* a, const long long* b) { FUN_1415ffcc0(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2c80
-bool NMStringIteratorCompare_1415f2c80(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffcd0(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2c80(const long long* a, const long long* b) { FUN_1415ffcd0(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2cd0
-bool NMStringIteratorCompare_1415f2cd0(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffce0(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2cd0(const long long* a, const long long* b) { FUN_1415ffce0(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2d20
-bool NMStringIteratorCompare_1415f2d20(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffcf0(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2d20(const long long* a, const long long* b) { FUN_1415ffcf0(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2d70
-bool NMStringIteratorCompare_1415f2d70(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffd00(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2d70(const long long* a, const long long* b) { FUN_1415ffd00(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2dc0
-bool NMStringIteratorCompare_1415f2dc0(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffd10(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2dc0(const long long* a, const long long* b) { FUN_1415ffd10(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2e10
-bool NMStringIteratorCompare_1415f2e10(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffd20(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2e10(const long long* a, const long long* b) { FUN_1415ffd20(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2e60
-bool NMStringIteratorCompare_1415f2e60(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffd30(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2e60(const long long* a, const long long* b) { FUN_1415ffd30(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2eb0
-bool NMStringIteratorCompare_1415f2eb0(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffd40(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2eb0(const long long* a, const long long* b) { FUN_1415ffd40(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2f00
-bool NMStringIteratorCompare_1415f2f00(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffd50(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2f00(const long long* a, const long long* b) { FUN_1415ffd50(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2f50
-bool NMStringIteratorCompare_1415f2f50(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffd60(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2f50(const long long* a, const long long* b) { FUN_1415ffd60(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2fa0
-bool NMStringIteratorCompare_1415f2fa0(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffd70(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2fa0(const long long* a, const long long* b) { FUN_1415ffd70(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f2ff0
-bool NMStringIteratorCompare_1415f2ff0(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffd80(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f2ff0(const long long* a, const long long* b) { FUN_1415ffd80(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3040
-bool NMStringIteratorCompare_1415f3040(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffd90(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f3040(const long long* a, const long long* b) { FUN_1415ffd90(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3090
-bool NMStringIteratorCompare_1415f3090(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffda0(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f3090(const long long* a, const long long* b) { FUN_1415ffda0(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f30e0
-bool NMStringIteratorCompare_1415f30e0(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffdb0(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f30e0(const long long* a, const long long* b) { FUN_1415ffdb0(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3130
-bool NMStringIteratorCompare_1415f3130(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffdc0(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f3130(const long long* a, const long long* b) { FUN_1415ffdc0(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3180
-bool NMStringIteratorCompare_1415f3180(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffdd0(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f3180(const long long* a, const long long* b) { FUN_1415ffdd0(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f31d0
-bool NMStringIteratorCompare_1415f31d0(const long long* a, const long long* b) { return *a == *b; }
+extern void FUN_1415ffde0(const long long*, const long long*);
+bool NMStringIteratorCompare_1415f31d0(const long long* a, const long long* b) { FUN_1415ffde0(a, b); return *a == *b; }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f32c0
-bool NMStringIteratorCompare_1415f32c0(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2aa0(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f32c0(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2aa0(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3300
-bool NMStringIteratorCompare_1415f3300(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2af0(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3300(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2af0(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3340
-bool NMStringIteratorCompare_1415f3340(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2b40(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3340(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2b40(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3380
-bool NMStringIteratorCompare_1415f3380(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2b90(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3380(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2b90(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f33c0
-bool NMStringIteratorCompare_1415f33c0(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2be0(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f33c0(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2be0(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3400
-bool NMStringIteratorCompare_1415f3400(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2c30(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3400(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2c30(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3440
-bool NMStringIteratorCompare_1415f3440(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2c80(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3440(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2c80(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3480
-bool NMStringIteratorCompare_1415f3480(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2cd0(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3480(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2cd0(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f34c0
-bool NMStringIteratorCompare_1415f34c0(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2d20(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f34c0(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2d20(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3500
-bool NMStringIteratorCompare_1415f3500(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2d70(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3500(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2d70(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3540
-bool NMStringIteratorCompare_1415f3540(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2dc0(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3540(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2dc0(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3580
-bool NMStringIteratorCompare_1415f3580(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2e10(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3580(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2e10(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f35c0
-bool NMStringIteratorCompare_1415f35c0(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2e60(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f35c0(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2e60(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3600
-bool NMStringIteratorCompare_1415f3600(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2eb0(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3600(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2eb0(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3640
-bool NMStringIteratorCompare_1415f3640(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2f00(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3640(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2f00(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3680
-bool NMStringIteratorCompare_1415f3680(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2f50(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3680(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2f50(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f36c0
-bool NMStringIteratorCompare_1415f36c0(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2fa0(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f36c0(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2fa0(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3700
-bool NMStringIteratorCompare_1415f3700(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f2ff0(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3700(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f2ff0(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3740
-bool NMStringIteratorCompare_1415f3740(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f3040(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3740(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f3040(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3780
-bool NMStringIteratorCompare_1415f3780(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f3090(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3780(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f3090(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f37c0
-bool NMStringIteratorCompare_1415f37c0(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f30e0(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f37c0(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f30e0(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3800
-bool NMStringIteratorCompare_1415f3800(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f3130(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3800(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f3130(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3840
-bool NMStringIteratorCompare_1415f3840(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f3180(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3840(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f3180(a, b); }
 
-// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
 // @0x1415f3880
-bool NMStringIteratorCompare_1415f3880(const long long* a, const long long* b) { return *a != *b; }
+extern bool NMStringIteratorCompare_1415f31d0(const long long* a, const long long* b);
+bool NMStringIteratorCompare_1415f3880(const long long* a, const long long* b) { return !NMStringIteratorCompare_1415f31d0(a, b); }
 
 // MS2-FUNCTIONAL: copies the serializable base and the recovered contiguous 0x2e-byte record payload.
 // @0x1415efc40
 CNMSerializable* FUN_1415efc40(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
                 reinterpret_cast<const unsigned char*>(src) + 0x10, 0x2e);
     return dst;
@@ -3426,7 +3029,7 @@ CNMSerializable* FUN_1415efc40(CNMSerializable* dst, long long src)
 // @0x1415efd00
 CNMSerializable* FUN_1415efd00(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
                 reinterpret_cast<const unsigned char*>(src) + 0x10, 0x88);
     return dst;
@@ -3437,11 +3040,11 @@ unsigned char FUN_1415f3220(const int* a, const int* b)
 {
     return static_cast<unsigned char>(a[0] == b[0] && a[1] == b[1] && a[2] == b[2]);
 }
-// MS2-FUNCTIONAL: returns the inverse of the recovered iterator position equality.
 // @0x1415f3280
+extern bool FUN_1415f2a60(const long long* a, const long long* b);
 bool FUN_1415f3280(const long long* a, const long long* b)
 {
-    return *a != *b;
+    return !FUN_1415f2a60(a, b);
 }
 // MS2-FUNCTIONAL: copies the recovered base, nested serializable field, and five fixed payload regions.
 // @0x1415efea0
@@ -3449,7 +3052,7 @@ CNMSerializable* FUN_1415efea0(CNMSerializable* dst, long long src)
 {
     auto* d = reinterpret_cast<unsigned char*>(dst);
     auto* s = reinterpret_cast<const unsigned char*>(src);
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(d + 0x10, s + 0x10, 8);
     reinterpret_cast<CNMSerializable*>(d + 0x18)->CopyFrom(reinterpret_cast<CNMSerializable*>(const_cast<unsigned char*>(s + 0x18)));
     std::memcpy(d + 0x28, s + 0x28, 0x40);
@@ -3463,7 +3066,7 @@ CNMSerializable* FUN_1415efea0(CNMSerializable* dst, long long src)
 // @0x1415f0050
 CNMSerializable* FUN_1415f0050(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
                 reinterpret_cast<const unsigned char*>(src) + 0x10, 0x5f0);
     return dst;
@@ -3472,7 +3075,7 @@ CNMSerializable* FUN_1415f0050(CNMSerializable* dst, long long src)
 // @0x1415f0870
 CNMSerializable* FUN_1415f0870(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
                 reinterpret_cast<const unsigned char*>(src) + 0x10, 0x9a);
     return dst;
@@ -3481,7 +3084,7 @@ CNMSerializable* FUN_1415f0870(CNMSerializable* dst, long long src)
 // @0x1415f09b0
 CNMSerializable* FUN_1415f09b0(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
                 reinterpret_cast<const unsigned char*>(src) + 0x10, 0x114);
     return dst;
@@ -3490,16 +3093,15 @@ CNMSerializable* FUN_1415f09b0(CNMSerializable* dst, long long src)
 // @0x1415f0b10
 CNMSerializable* FUN_1415f0b10(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
                 reinterpret_cast<const unsigned char*>(src) + 0x10, 0x3c);
     return dst;
 }
-// MS2-FUNCTIONAL: copies the base then delegates the embedded sequence assignment at offset 0x10.
 // @0x1415f10f0
 CNMSerializable* FUN_1415f10f0(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     FUN_1415ef7b0(reinterpret_cast<unsigned char*>(dst) + 0x10,
                   reinterpret_cast<void*>(src + 0x10));
     return dst;
@@ -3508,7 +3110,7 @@ CNMSerializable* FUN_1415f10f0(CNMSerializable* dst, long long src)
 // @0x1415f16f0
 CNMSerializable* FUN_1415f16f0(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
                 reinterpret_cast<const unsigned char*>(src) + 0x10, 0x28);
     return dst;
@@ -3517,7 +3119,7 @@ CNMSerializable* FUN_1415f16f0(CNMSerializable* dst, long long src)
 // @0x1415f21f0
 CNMSerializable* FUN_1415f21f0(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     FUN_1415efd00(reinterpret_cast<CNMSerializable*>(reinterpret_cast<unsigned char*>(dst) + 0x10), src + 0x10);
     std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0xa8,
                 reinterpret_cast<const unsigned char*>(src) + 0xa8, 0x20);
@@ -3527,12 +3129,11 @@ CNMSerializable* FUN_1415f21f0(CNMSerializable* dst, long long src)
 // @0x1415f24e0
 CNMSerializable* FUN_1415f24e0(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
                 reinterpret_cast<const unsigned char*>(src) + 0x10, 0x38);
     return dst;
 }
-// MS2-FUNCTIONAL: compares the recovered pointer-sized iterator positions.
 // @0x1415f2a60
 bool FUN_1415f2a60(const long long* a, const long long* b)
 {
@@ -3550,7 +3151,7 @@ CNMSerializable* FUN_1415f1930(CNMSerializable* dst, long long src)
 {
     auto* d = reinterpret_cast<unsigned char*>(dst);
     auto* s = reinterpret_cast<const unsigned char*>(src);
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(d + 0x10, s + 0x10, 0xea8);
     FUN_1415efb30(reinterpret_cast<CNMSerializable*>(d + 0xeb8), reinterpret_cast<long long>(s + 0xeb8));
     return dst;
@@ -3573,7 +3174,7 @@ long long FUN_1415f1f10(long long dst, long long src)
 // @0x1415f2310
 CNMSerializable* FUN_1415f2310(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
                 reinterpret_cast<const unsigned char*>(src) + 0x10, 0x1e0);
     return dst;
@@ -3582,34 +3183,30 @@ CNMSerializable* FUN_1415f2310(CNMSerializable* dst, long long src)
 // @0x1415f2720
 CNMSerializable* FUN_1415f2720(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
                 reinterpret_cast<const unsigned char*>(src) + 0x10, 0x4ac);
     return dst;
 }
 
-// MS2-FUNCTIONAL: dispatches the executable's virtual CopyFrom slot and returns the destination.
 // @0x1415efb90
 CNMSerializable* FUN_1415efb90(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     return dst;
 }
-// MS2-FUNCTIONAL: dispatches the executable's virtual CopyFrom slot and returns the destination.
 // @0x1415efbc0
 CNMSerializable* FUN_1415efbc0(CNMSerializable* dst, long long src)
 {
-    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    dst->CNMSerializable::CopyFrom(reinterpret_cast<CNMSerializable*>(src));
     return dst;
 }
-// MS2-FUNCTIONAL: forwards to the recovered CNMSerializable CopyFrom wrapper.
 // @0x1415efb30
 CNMSerializable* FUN_1415efb30(CNMSerializable* dst, long long src)
 {
     FUN_1415efb90(dst, src);
     return dst;
 }
-// MS2-FUNCTIONAL: forwards to the recovered CNMSerializable CopyFrom wrapper.
 // @0x1415efb60
 CNMSerializable* FUN_1415efb60(CNMSerializable* dst, long long src)
 {
@@ -3617,76 +3214,67 @@ CNMSerializable* FUN_1415efb60(CNMSerializable* dst, long long src)
     return dst;
 }
 
-// MS2-FUNCTIONAL: runs the recovered chat-room destructor and applies scalar-delete flag semantics.
 // @0x1415f4e10
 void* NMScalarDelete_1415f4e10(void* object, unsigned int flags)
 {
-    static_cast<CNMCRChatRoom*>(object)->~CNMCRChatRoom();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMCRChatRoom*>(object)->CNMCRChatRoom::~CNMCRChatRoom();
+    if (flags & 1) ::operator delete(object, 0x4f0);
     return object;
 }
-// MS2-FUNCTIONAL: runs the recovered abstract stream-cryptor destructor and applies scalar-delete flag semantics.
 // @0x1415f9310
 void* NMScalarDelete_1415f9310(void* object, unsigned int flags)
 {
-    static_cast<CStreamCryptor*>(object)->~CStreamCryptor();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CStreamCryptor*>(object)->CStreamCryptor::~CStreamCryptor();
+    if (flags & 1) ::operator delete(object, 8);
     return object;
 }
-// MS2-FUNCTIONAL: runs the recovered v0 stream-cryptor destructor and applies scalar-delete flag semantics.
 // @0x1415f9350
 void* NMScalarDelete_1415f9350(void* object, unsigned int flags)
 {
-    static_cast<CStreamCryptor_v0*>(object)->~CStreamCryptor_v0();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CStreamCryptor_v0*>(object)->CStreamCryptor_v0::~CStreamCryptor_v0();
+    if (flags & 1) ::operator delete(object, 8);
     return object;
 }
-// MS2-FUNCTIONAL: runs the recovered v1 stream-cryptor destructor and applies scalar-delete flag semantics.
 // @0x1415f9390
 void* NMScalarDelete_1415f9390(void* object, unsigned int flags)
 {
-    static_cast<CStreamCryptor_v1*>(object)->~CStreamCryptor_v1();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CStreamCryptor_v1*>(object)->CStreamCryptor_v1::~CStreamCryptor_v1();
+    if (flags & 1) ::operator delete(object, 8);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered event destructor and applies scalar-delete flag semantics.
 // @0x1415f9150
 void* NMScalarDelete_1415f9150(void* object, unsigned int flags)
 {
     FUN_1415eefa0(object);
-    if (flags & 1) ::operator delete(object);
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered event destructor and applies scalar-delete flag semantics.
 // @0x1415f9250
 void* NMScalarDelete_1415f9250(void* object, unsigned int flags)
 {
     FUN_1415ef000(object);
-    if (flags & 1) ::operator delete(object);
+    if (flags & 1) ::operator delete(object, 0x30);
     return object;
 }
-// MS2-FUNCTIONAL: calls the recovered event destructor and applies scalar-delete flag semantics.
 // @0x1415f9290
 void* NMScalarDelete_1415f9290(void* object, unsigned int flags)
 {
     FUN_1415ef020(object);
-    if (flags & 1) ::operator delete(object);
+    if (flags & 1) ::operator delete(object, 0x8030);
     return object;
 }
-// MS2-FUNCTIONAL: invokes the recovered CNMSingleton destructor and applies scalar-delete flag semantics.
 // @0x1415f47d0
 void* NMScalarDelete_1415f47d0(void* object, unsigned int flags)
 {
-    static_cast<CNMSingleton<CNMCOClientObject>*>(object)->~CNMSingleton();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSingleton<CNMCOClientObject>*>(object)->CNMSingleton<CNMCOClientObject>::~CNMSingleton();
+    if (flags & 1) ::operator delete(object, 8);
     return object;
 }
-// MS2-FUNCTIONAL: invokes the recovered CNMSingleton destructor and applies scalar-delete flag semantics.
 // @0x1415f4810
 void* NMScalarDelete_1415f4810(void* object, unsigned int flags)
 {
-    static_cast<CNMSingleton<CNMManager>*>(object)->~CNMSingleton();
-    if (flags & 1) ::operator delete(object);
+    static_cast<CNMSingleton<CNMManager>*>(object)->CNMSingleton<CNMManager>::~CNMSingleton();
+    if (flags & 1) ::operator delete(object, 8);
     return object;
 }
 // MS2-FUNCTIONAL: materializes the recovered guild-online tuple and compares its three key fields.
@@ -3697,11 +3285,10 @@ unsigned char FUN_1415f4790(const int* key, void* item)
     void* value = FUN_141575140(item, tuple);
     return FUN_1415f3220(static_cast<const int*>(value), key);
 }
-// MS2-FUNCTIONAL: calls the recovered destructor helper and conditionally frees the object.
 // @0x1415f93d0
 void* FUN_1415f93d0(void* object, unsigned int flags)
 {
     FUN_1415ef100(object);
-    if (flags & 1) ::operator delete(object);
+    if (flags & 1) ::operator delete(object, 0x20);
     return object;
 }

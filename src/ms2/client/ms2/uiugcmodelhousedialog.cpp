@@ -33,6 +33,11 @@ UIUGCModelHouseDialog::UIUGCModelHouseDialog()
     FUN_141924170(1);
 }
 
+// @0x140faf410
+UIUGCModelHouseDialog::~UIUGCModelHouseDialog()
+{
+}
+
 // @0x140faf450
 CString UIUGCModelHouseDialog::GetTypeName()
 {

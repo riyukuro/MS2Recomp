@@ -34,10 +34,11 @@
 #include "ms2/ms2recover.h"
 #include <typeinfo>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
@@ -95,16 +96,15 @@ bool CItemChangeBeautyTable::s_bInit;
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/citemextradata.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
+#include "ms2/commonfiles/itemdatatable.h"
 
 // Item table singleton (commonstruct_wa.h declares the free functions): the members this unit calls.
-class Unk_IngTable
+class Unk_IngTable : public CItemDataTable
 {
 public:
     MS2Ptr<ItemModelData> FUN_1405577f0(int nPreset);       // loads the model of an item preset
-    MS2Ptr<CItemData> FUN_140557f70(int nItemId);           // the item row, null when unknown
     CString FUN_140558690(int nSoundId);
 };
-Unk_IngTable* FUN_140281980();
 unsigned FUN_140557640(Unk_IngTable*, CString*);
 
 class Unk_PriceRow { public: unsigned* FUN_1401d7c10(); };
@@ -322,7 +322,7 @@ bool CItemData::Load(Unk_140165cf0* pElem)
         FUN_140873220(pBasic, "originID", originID);
         CString strStringTag;
         FUN_1408733e0(pBasic, "stringTag", strStringTag);
-        stringTag = FUN_140557640(FUN_140281980(), &strStringTag);
+        stringTag = FUN_140557640(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), &strStringTag);
     }
     Unk_140165cf0* pProperty = pElem->FUN_140165cf0("property");
     if (pProperty) {
@@ -1518,7 +1518,7 @@ unsigned long long CItemData::FUN_14053ea00(int nRank)
 // @0x14053eb20
 void CItemData::FUN_14053eb20()
 {
-    model = FUN_140281980()->FUN_1405577f0(FUN_14053ec50());
+    model = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405577f0(FUN_14053ec50());
 }
 
 // @0x14053eba0
@@ -1545,7 +1545,7 @@ void CItemData::FUN_14053ec70()
 // @0x14053eca0
 CString CItemData::FUN_14053eca0()
 {
-    return FUN_140281980()->FUN_140558690(material.unknown0);
+    return reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558690(material.unknown0);
 }
 
 // @0x14053ecf0
@@ -1871,7 +1871,7 @@ int CItemData::FUN_14053f7c0()
 // @0x14053f870
 MS2Ptr<CItemData> FUN_14053f870(int nItemId)
 {
-    return FUN_140281980()->FUN_140557f70(nItemId);
+    return reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->GetItemData(nItemId);
 }
 
 // @0x14053f8c0
@@ -2095,11 +2095,11 @@ bool FUN_14053ff30(int nItemId, int nRank)
 // @0x140540000
 unsigned FUN_140540000(const CString& strName)
 {
-    if (FUN_140281980() == 0)
+    if (reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()) == 0)
         return 0;
     if (strName.IsEmpty())
         return 0;
-    return FUN_140557640(FUN_140281980(), const_cast<CString*>(&strName));
+    return FUN_140557640(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), const_cast<CString*>(&strName));
 }
 
 // @0x140540050

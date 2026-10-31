@@ -75,7 +75,7 @@ bool FUN_140184310(const CString& rString, const char* psz);
 CStringW FUN_140560c00(const wchar_t* pszFmt, const int& rArg);
 CStringW FUN_14136e2e0(const wchar_t* pszFmt, const wchar_t* const& rArg);
 CString  FUN_140540050(const char* pszFmt, const CString& rArg);
-CStringW FUN_1401d02a0(const wchar_t* psz, const fmt::ArgList& args);
+CStringW StringFormat(const wchar_t* psz, const fmt::ArgList& args);
 void     FUN_141b77e50(const CString& rString);
 void     FUN_141b77e90(const CString& rString);
 void*    FUN_1402da110(void* p1, void* p2, void* p3);
@@ -93,13 +93,13 @@ struct Unk_PlatformErrorTable
 
 // Stage settings read from .\anysetting.ini / the platform helpers.
 extern int DAT_143ac2fd0;                                   // platform error code
-extern CStringW DAT_143ac2fe0;                              // platform error text
-extern CString DAT_143ae0908;                               // default channel name
-extern CString DAT_143ae0910;                               // default ugc address
-extern CString DAT_143ae0918;                               // MapleStory2 service name
-extern CString DAT_143ae0928;                               // login ip
-extern int DAT_143ae08f8;                                   // login ip already cached
-extern int DAT_143ae08f4;                                   // login port
+extern CStringW g_143ac2fe0;                                // platform error text
+extern CString g_strCmdLine;                                // default channel name
+extern CString g_strPassport;                               // default ugc address
+extern CString g_strSid;                                    // MapleStory2 service name
+extern CString g_strServerAddr;                             // login ip
+extern int g_bPortSet;                                      // login ip already cached
+extern int g_nPort;                                         // login port
 
 // @0x14160d540
 CNXMan::CNXMan()
@@ -128,14 +128,14 @@ unsigned CNXMan::FUN_14160d820()
     if (FUN_14160e630() == 0)
     {
         DAT_143ac2fd0 = 0x44d;
-        DAT_143ac2fe0 = kErrors.FUN_140c7a360(2);
+        g_143ac2fe0 = kErrors.FUN_140c7a360(2);
         return 0;
     }
     FUN_1415cb420(FUN_1415fa260());
     if (FUN_1415c4540(FUN_1415fa1b0(), m_0c, m_10, 0, 0) == 0)
     {
         DAT_143ac2fd0 = 0x44e;
-        DAT_143ac2fe0 = kErrors.FUN_140c7a360(2);
+        g_143ac2fe0 = kErrors.FUN_140c7a360(2);
         return 0;
     }
     unsigned uResult = 1;
@@ -143,9 +143,9 @@ unsigned CNXMan::FUN_14160d820()
     {
         uResult = 0;
         DAT_143ac2fd0 = 0x44f;
-        DAT_143ac2fe0 = kErrors.FUN_140c7a360(2);
+        g_143ac2fe0 = kErrors.FUN_140c7a360(2);
     }
-    FUN_1415ca030("MapleStory2", (LPCSTR)m_str18, (LPCSTR)DAT_143ae0918);
+    FUN_1415ca030("MapleStory2", (LPCSTR)m_str18, (LPCSTR)g_strSid);
     return uResult;
 }
 
@@ -178,7 +178,7 @@ void CNXMan::FUN_14160db40(void* p1, void* p2)
 // @0x14160db80
 int CNXMan::FUN_14160db80()
 {
-    CString strAddress = DAT_143ae0910;
+    CString strAddress = g_strPassport;
     int bConnected = 0;
     if (strAddress.GetLength() > 0)
     {
@@ -338,7 +338,7 @@ int CNXMan::FUN_14160e630()
     int nGameCodeDefault = FUN_14160eb40(this);
     m_nGameCode = GetPrivateProfileIntA("Stage", "gc", nGameCodeDefault, ".\\anysetting.ini");
     m_str18.Format("http://gamelog.nexon.com/%d.html", m_nGameCode);
-    if (DAT_143ae08f8 == 0)
+    if (g_bPortSet == 0)
     {
         char szIp[0x104];
         memset(szIp, 0, sizeof(szIp));
@@ -346,8 +346,8 @@ int CNXMan::FUN_14160e630()
         GetPrivateProfileStringA("Stage", "cip", (LPCSTR)strIpDefault, szIp, 0x104, ".\\anysetting.ini");
         int nPortDefault = FUN_14160ecd0(this);
         int nPort = GetPrivateProfileIntA("Stage", "cport", nPortDefault, ".\\anysetting.ini");
-        DAT_143ae0928 = szIp;
-        DAT_143ae08f4 = nPort;
+        g_strServerAddr = szIp;
+        g_nPort = nPort;
     }
     return 1;
 }
@@ -377,7 +377,7 @@ void CNXMan::FUN_14160e870()
 // @0x14160e9b0
 void CNXMan::FUN_14160e9b0()
 {
-    m_48 = DAT_143ae0908;
+    m_48 = g_strCmdLine;
 }
 
 // @0x14160e9e0
@@ -475,7 +475,7 @@ CStringW FUN_14160f680(const wchar_t* psz, const int* pCode)
 {
     fmt::internal::Value kValue;
     const fmt::internal::Value args[1] = {*FUN_14160f650(&kValue, pCode)};
-    return FUN_1401d02a0(psz, fmt::ArgList(FUN_14160f870(pCode), args));
+    return StringFormat(psz, fmt::ArgList(FUN_14160f870(pCode), args));
 }
 
 // @0x14160f720

@@ -21,16 +21,13 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/inventory.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-class Unk_GameCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_GameCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 // The item break manager (TSingleton, 0x1409c4b20 is its GetInstance).
 class Unk_BrkMgr
@@ -43,12 +40,7 @@ public:
 Unk_BrkMgr* FUN_1409c4b20();
 
 // Player inventory (global at 0x143ab2a90): item lookup by uid.
-class Unk_LockInventory
-{
-public:
-    MS2Ptr<CItem> FUN_140a5d680(__int64 nItemUid);
-};
-extern Unk_LockInventory DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for the item
 bool FUN_140633bf0(MS2Ptr<CItem> spItem);               // the item can be broken

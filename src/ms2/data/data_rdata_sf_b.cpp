@@ -21,6 +21,1073 @@
 
 #ifndef MS2_HOOK_DLL
 
+// Functions the tables below point at (static members and free functions defined in other units), declared
+// here so the slots name them directly; the owning classes are reduced to those members.
+namespace Scaleform {
+namespace GFx {
+namespace AS3 {
+struct ThunkInfo;
+class VM;
+class Value;
+namespace Instances {
+namespace fl_net {
+class URLRequest;
+}
+namespace fl_media {
+class SoundTransform;
+class Sound;
+class ID3Info;
+class SoundLoaderContext;
+class SoundChannel;
+}
+}
+class Class;
+namespace ClassTraits {
+class Traits;
+namespace fl_security {
+class XMLSignatureValidator;
+}
+namespace fl_xml {
+class XMLNodeType;
+class XMLNode;
+class XMLDocument;
+}
+namespace fl_media {
+class Camera;
+class ID3Info;
+class Microphone;
+class SoundTransform;
+class Sound;
+class SoundChannel;
+class SoundLoaderContext;
+class SoundMixer;
+}
+namespace fl_vec {
+class Vector_int;
+class Vector_uint;
+class Vector_double;
+class Vector_String;
+class Vector_object;
+class Vector;
+}
+}
+class MovieRoot;
+namespace FlashUI {
+enum OutputMessageType : int;
+}
+template <class P0, unsigned __int64 P1, class P2> struct ThunkFunc0;
+template <class P0> class SPtr;
+template <class P0, unsigned __int64 P1, class P2, class P3> struct ThunkFunc1;
+template <class P0, unsigned __int64 P1, class P2, class P3, class P4, class P5> struct ThunkFunc3;
+template <class P0, unsigned __int64 P1, class P2, class P3, class P4> struct ThunkFunc2;
+}
+class ASString;
+class MovieDefImpl;
+class DrawingContext;
+class DisplayObject;
+class Value;
+class DisplayObjContainer;
+class InteractiveObject;
+enum FocusMovedType : int;
+struct ProcessFocusKeyInfo;
+namespace AS2 {
+class FnCall;
+typedef void (*FunctionCFunc)(const FnCall &);
+struct NameFunction
+{
+    const char* Name;
+    FunctionCFunc Function;
+};
+class SelectionProto
+{
+public: static const NameFunction FunctionTable[];
+};
+class ArrayProto
+{
+public: static const NameFunction FunctionTable[];
+};
+class MouseProto
+{
+public: static const NameFunction FunctionTable[];
+};
+class BitmapDataProto
+{
+public: static const NameFunction FunctionTable[];
+};
+class ButtonProto
+{
+public: static const NameFunction FunctionTable[];
+};
+class BooleanProto
+{
+public: static const NameFunction FunctionTable[];
+};
+class StageProto
+{
+public: static const NameFunction FunctionTable[];
+};
+class DateCtorFunction
+{
+public: static const NameFunction StaticFunctionTable[];
+};
+class SharedObjectCtorFunction
+{
+public: static const NameFunction StaticFunctionTable[];
+};
+class MovieClipProto
+{
+public: static const NameFunction FunctionTable[];
+};
+class NumberProto
+{
+public: static const NameFunction FunctionTable[];
+};
+class KeyProto
+{
+public: static const NameFunction FunctionTable[];
+};
+class LocalFrame;
+class LoadVarsProto;
+class ColorProto;
+class MatrixProto;
+class ColorTransformProto;
+class RectangleProto;
+class PointProto;
+class StringProto;
+class ArrayObject;
+class DropShadowFilterProto;
+class GlowFilterProto;
+class BlurFilterProto;
+class BevelFilterProto;
+class StyleSheetProto;
+class ColorMatrixFilterProto;
+class AsBroadcasterProto;
+class DateProto;
+class KeyCtorFunction;
+class ExternalInterfaceCtorFunction;
+class AvmCharacter;
+class SharedObjectProto;
+class ObjectProto;
+class FunctionProto;
+class AvmSprite;
+class TextSnapshotProto;
+class AvmTextField;
+class MovieClipLoaderProto;
+class TextFieldProto;
+class TextFieldCtorFunction;
+class BitmapDataCtorFunction;
+class TextFormatProto;
+}
+namespace DisplayObjectBase {
+enum TopMostResult : int;
+struct TopMostDescr;
+}
+class EventId;
+namespace TextField {
+enum LinkEvent : int;
+}
+}
+class String;
+class MemoryHeap;
+namespace Render {
+namespace Text {
+class Allocator;
+}
+class Cxform;
+namespace TreeRoot {
+class NodeData;
+}
+template <class P0> class Point;
+}
+template <class P0> class Pickable;
+}
+namespace Scaleform {
+namespace GFx {
+namespace AS3 {
+namespace ClassTraits {
+namespace fl_security {
+class XMLSignatureValidator
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+}
+namespace fl_xml {
+class XMLNodeType
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+class XMLNode
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+class XMLDocument
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+}
+namespace fl_media {
+class Camera
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+class ID3Info
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+class Microphone
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+class SoundTransform
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+class Sound
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+class SoundChannel
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+class SoundLoaderContext
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+class SoundMixer
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+}
+namespace fl_vec {
+class Vector_int
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+class Vector_uint
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+class Vector_double
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+class Vector_String
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+class Vector_object
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+class Vector
+{
+public: static ::Scaleform::Pickable<::Scaleform::GFx::AS3::ClassTraits::Traits> MakeClassTraits(::Scaleform::GFx::AS3::VM &);
+};
+}
+}
+template <class P0, unsigned __int64 P1, class P2> struct ThunkFunc0
+{
+public: static void Func(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
+};
+template <class P0, unsigned __int64 P1, class P2, class P3> struct ThunkFunc1
+{
+public: static void Func(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
+};
+template <class P0, unsigned __int64 P1, class P2, class P3, class P4, class P5> struct ThunkFunc3
+{
+public: static void Func(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
+};
+template <class P0, unsigned __int64 P1, class P2, class P3, class P4> struct ThunkFunc2
+{
+public: static void Func(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
+};
+void Sfr33StickyVarNodeAssign(unsigned char *, unsigned char const *);
+void * Sfr33MovieRootCreateMovieDefRootNode(::Scaleform::GFx::AS3::MovieRoot *, ::Scaleform::MemoryHeap *, ::Scaleform::GFx::MovieDefImpl *, bool);
+void Sfr33MovieRootDoActions(::Scaleform::GFx::AS3::MovieRoot *);
+void Sfr33UserDefinedFunctionExecute(void *, ::Scaleform::GFx::AS3::Value const &, unsigned int, ::Scaleform::GFx::AS3::Value const *, bool);
+void Sfr33PtrArrayForEachChildGC(unsigned char *, void *, void (__cdecl *)(void *, void *, void *));
+void Sfr33QueueOwnerObject(unsigned char *);
+::Scaleform::String & Sfr33AvmBitmapGetASClassName(void const *, ::Scaleform::String *);
+::Scaleform::GFx::DrawingContext * Sfr33GetDrawingContext(::Scaleform::GFx::DisplayObject *);
+bool Sfr33ArrayGetElement(unsigned char const *, unsigned char *, unsigned int, ::Scaleform::GFx::Value *);
+char * Sfr27ForwardVirtual1b8(void *, char *);
+bool Sfr27TextFieldHasStyleSheet(unsigned __int64);
+bool FUN_142518480(::Scaleform::GFx::AS3::MovieRoot const *, ::Scaleform::GFx::InteractiveObject *, ::Scaleform::GFx::InteractiveObject *, unsigned int, ::Scaleform::GFx::FocusMovedType, ::Scaleform::GFx::ProcessFocusKeyInfo *);
+bool Sfr31SetCxform(unsigned __int64, unsigned __int64, ::Scaleform::Render::Cxform const *);
+bool Sfr31SetDisplayMatrix(unsigned __int64, unsigned __int64, float const *);
+bool Sfr31SetElement(unsigned __int64, unsigned __int64, unsigned long, void const *);
+void Sfr31ShapeObjectSetRatio(unsigned __int64, float);
+void Sfr31ToString(unsigned __int64, ::Scaleform::String *, void const *);
+void * DeleteAs3_1424e2610(void *, unsigned int);
+void * DeleteAs3_1424e26d0(void *, unsigned int);
+void * DeleteAs3_1424e2a10(void *, unsigned int);
+void * DeleteAs3_1424e2ac0(void *, unsigned int);
+void * DeleteAs3_1424e2c90(void *, unsigned int);
+void * DeleteAs3_1424e2e70(void *, unsigned int);
+void * DeleteAs3_1424e33f0(void *, unsigned int);
+void * DeleteAs3_1424e3450(void *, unsigned int);
+void * DeleteAs3_1424e3890(void *, unsigned int);
+void * DeleteAs3_1424e3a00(void *, unsigned int);
+void * DeleteAs3_1424e3b90(void *, unsigned int);
+bool Sfr33CheckAvm(::Scaleform::GFx::AS3::MovieRoot *);
+char const * FUN_142508960(void const *);
+unsigned __int64 FUN_14250ba00(unsigned __int64);
+float FUN_14250d630(unsigned __int64);
+unsigned __int64 FUN_14250d960(unsigned __int64);
+unsigned __int64 FUN_14250eef0(unsigned __int64);
+unsigned __int64 AvmTextField_GetStyleSheet(unsigned __int64);
+::Scaleform::GFx::DisplayObjectBase::TopMostResult FUN_14250f660(::Scaleform::GFx::DisplayObject *, ::Scaleform::Render::Point<float> const &, ::Scaleform::GFx::DisplayObjectBase::TopMostDescr *);
+bool FUN_142510da0(unsigned __int64);
+bool FUN_142510da4(unsigned __int64);
+bool FUN_142510db0(unsigned __int64);
+bool FUN_142510df0(unsigned __int64);
+bool FUN_142510df4(unsigned __int64);
+bool FUN_142510e00(unsigned __int64);
+bool FUN_142514280(unsigned __int64);
+bool FUN_142514284(unsigned __int64);
+bool Sfr27TextFieldTabCheck(unsigned __int64, unsigned long);
+bool FUN_142514304(unsigned __int64, unsigned long);
+bool FUN_142514d10(unsigned __int64);
+bool AvmButton_IsTabable(unsigned __int64);
+bool FUN_142514efc(unsigned __int64);
+bool AvmTextField_IsTabable(unsigned __int64);
+bool FUN_1425150b0(unsigned __int64);
+void FUN_142518360(unsigned __int64);
+void FUN_142518470(unsigned __int64);
+void FUN_1425184f0(unsigned __int64);
+void FUN_142518510(unsigned __int64, ::Scaleform::GFx::InteractiveObject *, unsigned int, ::Scaleform::GFx::FocusMovedType);
+void FUN_142518520(unsigned __int64);
+bool FUN_142518740(unsigned __int64);
+bool FUN_142518750(unsigned __int64, wchar_t, unsigned int);
+bool FUN_142518a10(unsigned __int64, ::Scaleform::GFx::EventId const &);
+bool FUN_142518a18(unsigned __int64, ::Scaleform::GFx::EventId const &);
+bool FUN_142518a24(unsigned __int64, ::Scaleform::GFx::EventId const &);
+bool FUN_142518fc0(unsigned __int64, ::Scaleform::GFx::EventId const &);
+bool FUN_142518fc8(unsigned __int64, ::Scaleform::GFx::EventId const &);
+bool FUN_142518fd4(unsigned __int64, ::Scaleform::GFx::EventId const &);
+void FUN_142518fe0(unsigned __int64);
+void FUN_142518ffc(unsigned __int64);
+void FUN_142519008(unsigned __int64);
+void FUN_1425190d0(unsigned __int64);
+void FUN_1425190d4(unsigned __int64);
+void FUN_1425190e0(unsigned __int64);
+void AvmTextField_OnEventLoad(unsigned __int64);
+void FUN_1425191bc(unsigned __int64);
+void FUN_1425191c8(unsigned __int64);
+void FUN_1425191e0(unsigned __int64);
+void FUN_1425191e8(unsigned __int64);
+void FUN_1425191f4(unsigned __int64);
+void FUN_142519890(unsigned __int64);
+void FUN_142519898(unsigned __int64);
+void FUN_1425198a4(unsigned __int64);
+void FUN_1425198b0(unsigned __int64);
+void FUN_1425198b8(unsigned __int64);
+void FUN_1425198c4(unsigned __int64);
+void FUN_14251a0d0(unsigned __int64);
+void FUN_14251a0d4(unsigned __int64);
+void FUN_14251a0f0(unsigned __int64);
+void FUN_14251a0f4(unsigned __int64);
+void FUN_14251a1e0(unsigned __int64, ::Scaleform::GFx::InteractiveObject *, ::Scaleform::GFx::EventId const &, int);
+bool FUN_14251a330(unsigned __int64);
+bool FUN_14251a334(unsigned __int64);
+bool AvmTextField_OnKeyEvent(unsigned __int64, ::Scaleform::GFx::EventId const &, int *);
+bool FUN_14251a388(unsigned __int64, ::Scaleform::GFx::EventId const &, int *);
+void FUN_14251a3b0(unsigned __int64, ::Scaleform::GFx::InteractiveObject *, ::Scaleform::GFx::EventId const &, int);
+void FUN_14251a500(unsigned __int64, ::Scaleform::GFx::TextField::LinkEvent, unsigned int, unsigned int);
+bool FUN_14251a7f0(unsigned __int64);
+bool FUN_14251a7f4(unsigned __int64);
+bool FUN_14251a810(unsigned __int64);
+bool FUN_14251a814(unsigned __int64);
+bool AvmButton_OnMouseEvent(unsigned __int64, ::Scaleform::GFx::EventId const &);
+bool FUN_14251a8a0(unsigned __int64, ::Scaleform::GFx::EventId const &);
+void FUN_14251ac40(unsigned __int64, bool);
+void FUN_14251ac60(unsigned __int64);
+void FUN_14251ac80(unsigned __int64);
+bool FUN_14251ac90(unsigned __int64);
+bool FUN_14251acb0(unsigned __int64);
+void FUN_14251acc0(unsigned __int64);
+void FUN_14251ae60(unsigned __int64);
+bool FUN_14251af20(unsigned __int64);
+bool FUN_14251af24(unsigned __int64);
+bool FUN_14251af30(unsigned __int64);
+bool FUN_14251b0f0(unsigned __int64);
+bool FUN_14251b0f4(unsigned __int64);
+bool FUN_14251b100(unsigned __int64);
+void FUN_14251bc40(unsigned __int64, ::Scaleform::GFx::AS3::FlashUI::OutputMessageType, char const *);
+void FUN_14251bda0(unsigned __int64, ::Scaleform::GFx::AS3::FlashUI::OutputMessageType, char const *);
+void FUN_14251d060(unsigned __int64);
+void FUN_1425210c0(unsigned __int64);
+void Sfr31ResolveStickyVariables(unsigned __int64, unsigned __int64);
+void FUN_1425262d0(char *);
+void FUN_142527390(char *, void const *);
+void FUN_1425282c0(void *);
+char Sfr31MovieRootSetVariable(unsigned __int64, char const *, void const *, int);
+bool Sfr31SetArray(unsigned __int64, int, unsigned __int64, unsigned long, void const *, unsigned long, unsigned long);
+bool Sfr31SetArraySize(unsigned __int64, unsigned __int64, int, unsigned long);
+void FUN_14252e530(char *, bool);
+void Sfr31ButtonSwitchState(unsigned __int64, int);
+void * FUN_14252f220(char *);
+void * FUN_14252f230(char *);
+void * FUN_14252f23c(char *);
+unsigned __int64 FUN_14252f290(void *);
+unsigned __int64 FUN_14252f294(char *);
+unsigned __int64 FUN_14252f2a0(char *);
+unsigned __int64 FUN_14252f2b0(void *);
+unsigned __int64 FUN_14252f2b4(char *);
+unsigned __int64 FUN_14252f2c0(char *);
+unsigned __int64 FUN_14252f300(void *);
+unsigned __int64 FUN_14252f304(char *);
+unsigned __int64 FUN_14252f310(char *);
+void * FUN_14252f320(char *);
+void * FUN_14252f330(char *);
+void * FUN_14252f33c(char *);
+void * FUN_14252f3b0(char *);
+void * FUN_14252f3c0(char *);
+void * FUN_14252f3cc(char *);
+unsigned __int64 FUN_14252f3e0(void *);
+unsigned __int64 FUN_14252f3e4(char *);
+unsigned __int64 FUN_14252f3f0(char *);
+unsigned __int64 FUN_14252f440(void *);
+unsigned __int64 FUN_14252f444(char *);
+unsigned __int64 FUN_14252f450(char *);
+unsigned __int64 FUN_14252f460(void *);
+unsigned __int64 FUN_14252f464(char *);
+unsigned __int64 FUN_14252f470(char *);
+void * FUN_14252f4c0(char *);
+void * FUN_14252f4d0(char *);
+void * FUN_14252f4dc(char *);
+void FUN_142530fb0(void *);
+bool FUN_1425310d0(void *);
+void FUN_142531250(void *);
+}
+namespace AS2 {
+class LoadVarsProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void GetBytesLoaded(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetBytesTotal(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ToString(::Scaleform::GFx::AS2::FnCall const &);
+public: static void AddRequestHeader(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Decode(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Load(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Send(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SendAndLoad(::Scaleform::GFx::AS2::FnCall const &);
+};
+class ColorProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void SetTransform(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SetRGB(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetTransform(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetRGB(::Scaleform::GFx::AS2::FnCall const &);
+};
+class MatrixProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void ToString(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Clone(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Concat(::Scaleform::GFx::AS2::FnCall const &);
+public: static void CreateBox(::Scaleform::GFx::AS2::FnCall const &);
+public: static void CreateGradientBox(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Identity(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Invert(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Rotate(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Scale(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Translate(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DeltaTransformPoint(::Scaleform::GFx::AS2::FnCall const &);
+public: static void TransformPoint(::Scaleform::GFx::AS2::FnCall const &);
+};
+class ColorTransformProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void Concat(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ToString(::Scaleform::GFx::AS2::FnCall const &);
+};
+class RectangleProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void Clone(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Contains(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ContainsPoint(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ContainsRectangle(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Equals(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Inflate(::Scaleform::GFx::AS2::FnCall const &);
+public: static void InflatePoint(::Scaleform::GFx::AS2::FnCall const &);
+public: static void IsEmpty(::Scaleform::GFx::AS2::FnCall const &);
+public: static void OffsetPoint(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SetEmpty(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ToString(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Union(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Intersection(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Intersects(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Offset(::Scaleform::GFx::AS2::FnCall const &);
+};
+class PointProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void Add(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Clone(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Equals(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Normalize(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Subtract(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ToString(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Offset(::Scaleform::GFx::AS2::FnCall const &);
+};
+class StringProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void StringCharAt(::Scaleform::GFx::AS2::FnCall const &);
+public: static void StringCharCodeAt(::Scaleform::GFx::AS2::FnCall const &);
+public: static void StringConcat(::Scaleform::GFx::AS2::FnCall const &);
+public: static void StringIndexOf(::Scaleform::GFx::AS2::FnCall const &);
+public: static void StringLastIndexOf(::Scaleform::GFx::AS2::FnCall const &);
+public: static void StringLocaleCompare(::Scaleform::GFx::AS2::FnCall const &);
+public: static void StringSlice(::Scaleform::GFx::AS2::FnCall const &);
+public: static void StringSplit(::Scaleform::GFx::AS2::FnCall const &);
+public: static void StringSubstr(::Scaleform::GFx::AS2::FnCall const &);
+public: static void StringSubstring(::Scaleform::GFx::AS2::FnCall const &);
+public: static void StringToLowerCase(::Scaleform::GFx::AS2::FnCall const &);
+public: static void StringToString(::Scaleform::GFx::AS2::FnCall const &);
+public: static void StringToUpperCase(::Scaleform::GFx::AS2::FnCall const &);
+public: static void StringValueOf(::Scaleform::GFx::AS2::FnCall const &);
+};
+class ArrayObject
+{
+public: static void ArrayConcat(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ArrayJoin(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ArrayPop(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ArrayPush(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ArrayReverse(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ArrayShift(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ArraySlice(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ArrayValueOf(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ArrayUnshift(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ArrayToString(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ArraySort(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ArraySortOn(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ArraySplice(::Scaleform::GFx::AS2::FnCall const &);
+};
+class DropShadowFilterProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void Clone(::Scaleform::GFx::AS2::FnCall const &);
+};
+class GlowFilterProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void Clone(::Scaleform::GFx::AS2::FnCall const &);
+};
+class BlurFilterProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void Clone(::Scaleform::GFx::AS2::FnCall const &);
+};
+class BevelFilterProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void Clone(::Scaleform::GFx::AS2::FnCall const &);
+};
+class StyleSheetProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void Clear(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ParseCSS(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetStyle(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetStyleNames(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Load(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SetStyle(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Transform(::Scaleform::GFx::AS2::FnCall const &);
+};
+class ColorMatrixFilterProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void Clone(::Scaleform::GFx::AS2::FnCall const &);
+};
+class AsBroadcasterProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void AddListener(::Scaleform::GFx::AS2::FnCall const &);
+public: static void BroadcastMessage(::Scaleform::GFx::AS2::FnCall const &);
+public: static void RemoveListener(::Scaleform::GFx::AS2::FnCall const &);
+};
+class DateProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void DateGetDate(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetDay(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetFullYear(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetHours(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetMilliseconds(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetMinutes(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetMonth(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetSeconds(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetTime(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetTimezoneOffset(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetYear(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetHours(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetMilliseconds(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetMinutes(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetMonth(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetSeconds(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetTime(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetUTCDate(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetUTCDay(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetUTCFullYear(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetUTCHours(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetUTCMilliseconds(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetUTCMinutes(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetUTCMonth(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetUTCSeconds(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateGetUTCYear(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetUTCHours(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetUTCMilliseconds(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetUTCMinutes(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetUTCMonth(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetUTCSeconds(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateToString(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateValueOf(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetDate(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetFullYear(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetYear(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetUTCDate(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetUTCFullYear(::Scaleform::GFx::AS2::FnCall const &);
+public: static void DateSetUTCYear(::Scaleform::GFx::AS2::FnCall const &);
+};
+class KeyCtorFunction
+{
+public: static const NameFunction FunctionTable[];
+public: static void KeyGetAscii(::Scaleform::GFx::AS2::FnCall const &);
+public: static void KeyGetCode(::Scaleform::GFx::AS2::FnCall const &);
+public: static void KeyIsDown(::Scaleform::GFx::AS2::FnCall const &);
+public: static void KeyIsToggled(::Scaleform::GFx::AS2::FnCall const &);
+};
+class ExternalInterfaceCtorFunction
+{
+public: static const NameFunction StaticFunctionTable[];
+public: static void Call(::Scaleform::GFx::AS2::FnCall const &);
+public: static void AddCallback(::Scaleform::GFx::AS2::FnCall const &);
+};
+class AvmCharacter
+{
+public: static void CharacterGetDepth(::Scaleform::GFx::AS2::FnCall const &);
+};
+class SharedObjectProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void Clear(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Flush(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetSize(::Scaleform::GFx::AS2::FnCall const &);
+};
+class ObjectProto
+{
+public: static void HasOwnProperty(::Scaleform::GFx::AS2::FnCall const &);
+public: static void IsPropertyEnumerable(::Scaleform::GFx::AS2::FnCall const &);
+public: static void IsPrototypeOf(::Scaleform::GFx::AS2::FnCall const &);
+public: static void Unwatch_(::Scaleform::GFx::AS2::FnCall const &);
+};
+class FunctionProto
+{
+public: static void ToString(::Scaleform::GFx::AS2::FnCall const &);
+};
+class AvmSprite
+{
+public: static void SpriteSwapDepths(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpritePlay(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteStop(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteGotoAndStop(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteGotoAndPlay(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteNextFrame(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpritePrevFrame(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteGetBytesLoaded(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteGetBytesTotal(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteLocalToGlobal(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteGlobalToLocal(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteAttachAudio(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteDuplicateMovieClip(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteRemoveMovieClip(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteGetInstanceAtDepth(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteGetTextSnapshot(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteGetSWFVersion(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteStopDrag(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteSetMask(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteLoadMovie(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteUnloadMovie(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteLoadVariables(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteClear(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteBeginFill(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteBeginGradientFill(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteLineGradientStyle(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteEndFill(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteLineStyle(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteMoveTo(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteLineTo(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteCurveTo(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteGetBounds(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteGetRect(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteHitTest(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteAttachBitmap(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteAttachMovie(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteCreateEmptyMovieClip(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteCreateTextField(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteGetNextHighestDepth(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteStartDrag(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SpriteBeginBitmapFill(::Scaleform::GFx::AS2::FnCall const &);
+};
+class TextSnapshotProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void FindTextA(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetCount(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetSelected(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetSelectedText(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetText(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetTextRunInfo(::Scaleform::GFx::AS2::FnCall const &);
+public: static void HitTestTextNearPos(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SetSelectColor(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SetSelected(::Scaleform::GFx::AS2::FnCall const &);
+};
+class AvmTextField
+{
+public: static void GetNewTextFormat(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ReplaceSel(::Scaleform::GFx::AS2::FnCall const &);
+public: static void RemoveTextField(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetLineText(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SetTextFormat(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SetNewTextFormat(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetTextFormat(::Scaleform::GFx::AS2::FnCall const &);
+public: static void ReplaceTextA(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetCharBoundaries(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetCharIndexAtPoint(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetExactCharBoundaries(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetLineIndexAtPoint(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetLineIndexOfChar(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetLineOffset(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetLineLength(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetLineMetrics(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetFirstCharInParagraph(::Scaleform::GFx::AS2::FnCall const &);
+public: static void SetImageSubstitutions(::Scaleform::GFx::AS2::FnCall const &);
+public: static void UpdateImageSubstitution(::Scaleform::GFx::AS2::FnCall const &);
+public: static void AppendText(::Scaleform::GFx::AS2::FnCall const &);
+public: static void AppendHtml(::Scaleform::GFx::AS2::FnCall const &);
+public: static void CopyToClipboard(::Scaleform::GFx::AS2::FnCall const &);
+public: static void CutToClipboard(::Scaleform::GFx::AS2::FnCall const &);
+public: static void PasteFromClipboard(::Scaleform::GFx::AS2::FnCall const &);
+};
+class MovieClipLoaderProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void GetProgress(::Scaleform::GFx::AS2::FnCall const &);
+public: static void LoadClip(::Scaleform::GFx::AS2::FnCall const &);
+public: static void UnloadClip(::Scaleform::GFx::AS2::FnCall const &);
+};
+class TextFieldProto
+{
+public: static void SetIMECompositionStringStyle(::Scaleform::GFx::AS2::FnCall const &);
+public: static void GetIMECompositionStringStyle(::Scaleform::GFx::AS2::FnCall const &);
+};
+class TextFieldCtorFunction
+{
+public: static const NameFunction StaticFunctionTable[];
+public: static void GetFontList(::Scaleform::GFx::AS2::FnCall const &);
+};
+class BitmapDataCtorFunction
+{
+public: static const NameFunction StaticFunctionTable[];
+public: static void LoadBitmapA(::Scaleform::GFx::AS2::FnCall const &);
+};
+class TextFormatProto
+{
+public: static const NameFunction FunctionTable[];
+public: static void GetTextExtent(::Scaleform::GFx::AS2::FnCall const &);
+};
+void GFx_KeyFuncStub(::Scaleform::GFx::AS2::FnCall const &);
+void GFx_BitmapDataFuncStub(::Scaleform::GFx::AS2::FnCall const &);
+void GFx_FuncStub(::Scaleform::GFx::AS2::FnCall const &);
+void GAS_BooleanToString(::Scaleform::GFx::AS2::FnCall const &);
+void GAS_BooleanValueOf(::Scaleform::GFx::AS2::FnCall const &);
+void GFx_MouseFuncStub(::Scaleform::GFx::AS2::FnCall const &);
+void GAS_NumberToString(::Scaleform::GFx::AS2::FnCall const &);
+void GAS_NumberValueOf(::Scaleform::GFx::AS2::FnCall const &);
+void FUN_142902a00(::Scaleform::GFx::AS2::FnCall const &);
+void FUN_1429033a0(::Scaleform::GFx::AS2::FnCall const &);
+void GFx_StageFuncStub(::Scaleform::GFx::AS2::FnCall const &);
+void * DeleteAs2_1429276e0(void *, unsigned int);
+void * DeleteAs2_142928b00(void *, unsigned int);
+void * DeleteAs2_142928c70(void *, unsigned int);
+void * DeleteAs2_142928d00(void *, unsigned int);
+void * DeleteAs2_142928dc0(void *, unsigned int);
+void * DeleteAs2_14292afe0(void *, unsigned int);
+void * DeleteAs2_14292b1e0(void *, unsigned int);
+void * DeleteAs2_14292b300(void *, unsigned int);
+void * DeleteAs2_14292b390(void *, unsigned int);
+void * DeleteAs2_14292ba00(void *, unsigned int);
+void FUN_142942db0(::Scaleform::GFx::AS2::LocalFrame *);
+}
+namespace NumberUtil {
+double MAX_VALUE(void);
+double MIN_VALUE(void);
+double NEGATIVE_INFINITY(void);
+double NaN(void);
+double POSITIVE_INFINITY(void);
+}
+void * FUN_14261e1c0(void *, unsigned __int64);
+void * FUN_14261e1f0(void *, unsigned __int64);
+::Scaleform::String * FUN_14261e3d0(void *, ::Scaleform::String *);
+::Scaleform::String * FUN_14261e400(void *, ::Scaleform::String *);
+void * FUN_142620160(void *, unsigned int);
+void * FUN_1426201d0(void *, unsigned int);
+void * FUN_1426202f0(char *, unsigned int);
+void * FUN_142620370(char *, unsigned int);
+void * FUN_1426203f0(char *, unsigned int);
+void * FUN_142591e10(void *, unsigned int);
+void * FUN_142591e70(void *, unsigned int);
+void * FUN_142591ed0(void *, unsigned int);
+void * FUN_142591fd0(void *, unsigned int);
+void * FUN_1425924e0(void *);
+void * FUN_1425924f0(void *);
+void FUN_1425925b0(void *, void *, void *);
+void FUN_14261e220(void *);
+void FUN_14261e230(void *);
+void FUN_14261e240(void *);
+void FUN_14261e250(void *);
+void FUN_14261e260(void *);
+void FUN_14261e270(void *);
+void FUN_14261e280(void *);
+void FUN_14261e290(void *);
+void FUN_14261e2a0(void *);
+void FUN_14261e2b0(void *);
+bool FUN_14261e2c0(void *);
+unsigned __int64 FUN_14261e2d0(void *);
+unsigned __int64 FUN_14261e2e0(void *);
+unsigned __int64 FUN_14261e2f0(void *);
+unsigned __int64 FUN_14261e300(void *);
+unsigned __int64 FUN_14261e3b0(void *);
+int FUN_14261e3c0(void *);
+bool FUN_14261e430(void *);
+void FUN_14261e440(void *);
+void FUN_14261e450(void *);
+bool FUN_14261e4e0(void *);
+bool FUN_14261e4f0(void *);
+bool FUN_14261e500(void *);
+bool FUN_14261e510(void *);
+bool FUN_14261e520(void *);
+bool FUN_14261e530(void *);
+bool FUN_14261e540(void *);
+bool FUN_14261e550(void *);
+void FUN_14261e560(void *);
+void FUN_14261e570(void *);
+void FUN_14261e580(void *);
+void FUN_14261e590(void *);
+void FUN_14261e5a0(void *);
+void FUN_14261e5b0(void *);
+void FUN_14261e5c0(void *);
+void FUN_14261e5d0(void *);
+void FUN_14261e5e0(void *);
+void FUN_14261e5f0(void *);
+void FUN_14261e600(void *);
+void FUN_14261e610(void *);
+void FUN_14261e620(void *);
+void FUN_14261e630(void *);
+void FUN_14261e640(void *);
+void FUN_14261e650(void *);
+void FUN_14261e660(void *);
+void FUN_14261e670(void *);
+void FUN_14261e680(void *);
+void FUN_14261e690(void *);
+void FUN_14261e6a0(void *);
+unsigned __int64 FUN_14261e6b0(void **);
+void FUN_14261e6c0(void *);
+void FUN_14261e6d0(void *);
+void FUN_14261e6e0(void *);
+void FUN_14261e6f0(void *);
+void FUN_14261e700(void *);
+void FUN_14261e720(void *);
+void * FUN_14261ff20(void *, unsigned int);
+void * FUN_142620240(void *, unsigned int);
+void * FUN_142620460(char *, unsigned int);
+void FUN_1426204c0(char *, int);
+void FUN_1426204d0(char *, int);
+void FUN_142622c90(char *, unsigned __int64);
+void FUN_142622d00(char *, char const *, unsigned int, unsigned __int64);
+}
+namespace Render {
+namespace ContextImpl {
+void FUN_14256e920(::Scaleform::Render::TreeRoot::NodeData *);
+}
+void * FUN_14256ba70(::Scaleform::Render::TreeRoot::NodeData *, unsigned int);
+}
+}
+::Scaleform::GFx::DisplayObjContainer * FUN_14250daa0(::Scaleform::GFx::AS3::MovieRoot const *, ::Scaleform::GFx::DisplayObject *);
+::Scaleform::Render::Text::Allocator * FUN_14250f290(::Scaleform::GFx::AS3::MovieRoot *);
+bool FUN_142513210(::Scaleform::GFx::AS3::MovieRoot *, char const *, ::Scaleform::GFx::Value *, char const *, ...);
+void * FUN_1424e1a98(unsigned __int64, unsigned int);
+void * FUN_1424e1aa4(unsigned __int64, unsigned int);
+void * FUN_1424e1ab0(unsigned __int64, unsigned int);
+void * FUN_1424e1abc(unsigned __int64, unsigned int);
+void * FUN_1424e1b40(unsigned __int64, unsigned int);
+void * FUN_1424e1b4c(unsigned __int64, unsigned int);
+void * FUN_1424e1b58(unsigned __int64, unsigned int);
+void * FUN_1424e1b64(unsigned __int64, unsigned int);
+void * FUN_1424e1b7c(unsigned __int64, unsigned int);
+void * FUN_1424e1b88(unsigned __int64, unsigned int);
+void * FUN_1424e1b94(unsigned __int64, unsigned int);
+void * FUN_1424e1ba0(unsigned __int64, unsigned int);
+bool FUN_1424e5460(unsigned __int64);
+bool FUN_1424e5464(unsigned __int64);
+bool FUN_1424e54f0(unsigned __int64);
+bool FUN_1424e54f4(unsigned __int64);
+void FUN_1424efde0(unsigned __int64);
+void FUN_1424efde4(unsigned __int64);
+void FUN_1424efe20(unsigned __int64);
+void FUN_1424efe24(unsigned __int64);
+void FUN_1424f1f50(unsigned __int64);
+void FUN_1424f1f54(unsigned __int64);
+void FUN_1424f1f80(unsigned __int64);
+void FUN_1424f1f84(unsigned __int64);
+unsigned __int64 FUN_142502cf0(unsigned __int64);
+void FUN_1425046d0(unsigned __int64);
+void FUN_1425047c0(unsigned __int64);
+char const * FUN_142505e00(unsigned __int64);
+char const * FUN_142506df0(unsigned __int64, ::Scaleform::String *);
+char const * FUN_142506df8(unsigned __int64, ::Scaleform::String *);
+char const * FUN_142506e04(unsigned __int64, ::Scaleform::String *);
+char const * FUN_142506ed0(unsigned __int64, ::Scaleform::String *);
+char const * FUN_142506ed8(unsigned __int64, ::Scaleform::String *);
+char const * FUN_142506ee4(unsigned __int64, ::Scaleform::String *);
+unsigned __int64 FUN_142507b30(unsigned __int64);
+unsigned __int64 FUN_142507b70(unsigned __int64);
+unsigned int FUN_142508500(unsigned __int64);
+unsigned int FUN_142508514(unsigned __int64);
+unsigned int FUN_142508550(unsigned __int64);
+unsigned int FUN_142508554(unsigned __int64);
+char const * FUN_1425088f0(unsigned __int64);
+char const * FUN_142508900(unsigned __int64);
+char const * FUN_142508980(unsigned __int64);
+char const * FUN_142508990(unsigned __int64);
+bool FUN_142513240(::Scaleform::GFx::AS3::MovieRoot *, char const *, ::Scaleform::GFx::Value *, ::Scaleform::GFx::Value const *, unsigned int);
+bool FUN_1425136f0(::Scaleform::GFx::AS3::MovieRoot *, char const *, ::Scaleform::GFx::Value *, char const *, char *);
+void FUN_14251aca0(void *, void *, int);
+void FUN_14251acd0(void *, unsigned __int64, unsigned __int64);
+
+// The AS2 constructor functions below keep their private/protected access (it is part of the mangled name);
+// SfSlotAccess is their friend and hands the table slots their addresses.
+struct SfSlotAccess;
+namespace Scaleform {
+namespace GFx {
+namespace AS2 {
+class FnCall;
+class AmpMarkerCtorFunction
+{
+    friend struct ::SfSlotAccess;
+private:
+    static void AddMarker(const FnCall& fn);
+};
+class AsBroadcasterCtorFunction
+{
+    friend struct ::SfSlotAccess;
+private:
+    static void Initialize(const FnCall& fn);
+};
+class MathCtorFunction
+{
+    friend struct ::SfSlotAccess;
+private:
+    static void Abs(const FnCall& fn);
+    static void Acos(const FnCall& fn);
+    static void Asin(const FnCall& fn);
+    static void Atan(const FnCall& fn);
+    static void Atan2(const FnCall& fn);
+    static void Ceil(const FnCall& fn);
+    static void Cos(const FnCall& fn);
+    static void Exp(const FnCall& fn);
+    static void Floor(const FnCall& fn);
+    static void Log(const FnCall& fn);
+    static void Max(const FnCall& fn);
+    static void Min(const FnCall& fn);
+    static void Pow(const FnCall& fn);
+    static void Random(const FnCall& fn);
+    static void Round(const FnCall& fn);
+    static void Sin(const FnCall& fn);
+    static void Sqrt(const FnCall& fn);
+    static void Tan(const FnCall& fn);
+};
+class MouseCtorFunction
+{
+    friend struct ::SfSlotAccess;
+protected:
+    static void Hide(const FnCall& fn);
+    static void Show(const FnCall& fn);
+};
+class ObjectCtorFunction
+{
+    friend struct ::SfSlotAccess;
+private:
+    static void RegisterClassA(const FnCall& fn);
+};
+class PointCtorFunction
+{
+    friend struct ::SfSlotAccess;
+protected:
+    static void Interpolate(const FnCall& fn);
+    static void Polar(const FnCall& fn);
+};
+class SelectionCtorFunction
+{
+    friend struct ::SfSlotAccess;
+private:
+    static void GetBeginIndex(const FnCall& fn);
+    static void GetCaretIndex(const FnCall& fn);
+    static void GetEndIndex(const FnCall& fn);
+    static void GetFocus(const FnCall& fn);
+    static void SetFocus(const FnCall& fn);
+    static void SetSelection(const FnCall& fn);
+};
+class StringCtorFunction
+{
+    friend struct ::SfSlotAccess;
+private:
+    static void StringFromCharCode(const FnCall& fn);
+};
+}
+}
+}
+struct SfSlotAccess
+{
+    static constexpr auto AmpMarkerCtorFunction_AddMarker = &::Scaleform::GFx::AS2::AmpMarkerCtorFunction::AddMarker;
+    static constexpr auto AsBroadcasterCtorFunction_Initialize = &::Scaleform::GFx::AS2::AsBroadcasterCtorFunction::Initialize;
+    static constexpr auto MathCtorFunction_Abs = &::Scaleform::GFx::AS2::MathCtorFunction::Abs;
+    static constexpr auto MathCtorFunction_Acos = &::Scaleform::GFx::AS2::MathCtorFunction::Acos;
+    static constexpr auto MathCtorFunction_Asin = &::Scaleform::GFx::AS2::MathCtorFunction::Asin;
+    static constexpr auto MathCtorFunction_Atan = &::Scaleform::GFx::AS2::MathCtorFunction::Atan;
+    static constexpr auto MathCtorFunction_Atan2 = &::Scaleform::GFx::AS2::MathCtorFunction::Atan2;
+    static constexpr auto MathCtorFunction_Ceil = &::Scaleform::GFx::AS2::MathCtorFunction::Ceil;
+    static constexpr auto MathCtorFunction_Cos = &::Scaleform::GFx::AS2::MathCtorFunction::Cos;
+    static constexpr auto MathCtorFunction_Exp = &::Scaleform::GFx::AS2::MathCtorFunction::Exp;
+    static constexpr auto MathCtorFunction_Floor = &::Scaleform::GFx::AS2::MathCtorFunction::Floor;
+    static constexpr auto MathCtorFunction_Log = &::Scaleform::GFx::AS2::MathCtorFunction::Log;
+    static constexpr auto MathCtorFunction_Max = &::Scaleform::GFx::AS2::MathCtorFunction::Max;
+    static constexpr auto MathCtorFunction_Min = &::Scaleform::GFx::AS2::MathCtorFunction::Min;
+    static constexpr auto MathCtorFunction_Pow = &::Scaleform::GFx::AS2::MathCtorFunction::Pow;
+    static constexpr auto MathCtorFunction_Random = &::Scaleform::GFx::AS2::MathCtorFunction::Random;
+    static constexpr auto MathCtorFunction_Round = &::Scaleform::GFx::AS2::MathCtorFunction::Round;
+    static constexpr auto MathCtorFunction_Sin = &::Scaleform::GFx::AS2::MathCtorFunction::Sin;
+    static constexpr auto MathCtorFunction_Sqrt = &::Scaleform::GFx::AS2::MathCtorFunction::Sqrt;
+    static constexpr auto MathCtorFunction_Tan = &::Scaleform::GFx::AS2::MathCtorFunction::Tan;
+    static constexpr auto MouseCtorFunction_Hide = &::Scaleform::GFx::AS2::MouseCtorFunction::Hide;
+    static constexpr auto MouseCtorFunction_Show = &::Scaleform::GFx::AS2::MouseCtorFunction::Show;
+    static constexpr auto ObjectCtorFunction_RegisterClassA = &::Scaleform::GFx::AS2::ObjectCtorFunction::RegisterClassA;
+    static constexpr auto PointCtorFunction_Interpolate = &::Scaleform::GFx::AS2::PointCtorFunction::Interpolate;
+    static constexpr auto PointCtorFunction_Polar = &::Scaleform::GFx::AS2::PointCtorFunction::Polar;
+    static constexpr auto SelectionCtorFunction_GetBeginIndex = &::Scaleform::GFx::AS2::SelectionCtorFunction::GetBeginIndex;
+    static constexpr auto SelectionCtorFunction_GetCaretIndex = &::Scaleform::GFx::AS2::SelectionCtorFunction::GetCaretIndex;
+    static constexpr auto SelectionCtorFunction_GetEndIndex = &::Scaleform::GFx::AS2::SelectionCtorFunction::GetEndIndex;
+    static constexpr auto SelectionCtorFunction_GetFocus = &::Scaleform::GFx::AS2::SelectionCtorFunction::GetFocus;
+    static constexpr auto SelectionCtorFunction_SetFocus = &::Scaleform::GFx::AS2::SelectionCtorFunction::SetFocus;
+    static constexpr auto SelectionCtorFunction_SetSelection = &::Scaleform::GFx::AS2::SelectionCtorFunction::SetSelection;
+    static constexpr auto StringCtorFunction_StringFromCharCode = &::Scaleform::GFx::AS2::StringCtorFunction::StringFromCharCode;
+};
+
 extern unsigned char DAT_14000e1a0[];
 extern unsigned char DAT_1423dc0b0[];
 extern unsigned char DAT_1423dccc0[];
@@ -35,65 +1102,37 @@ extern unsigned char DAT_1423df5b0[];
 extern unsigned char DAT_1424057c0[];
 extern unsigned char DAT_142407230[];
 extern unsigned char DAT_142414f60[];
-extern unsigned char DAT_1424cca40[];
-extern unsigned char DAT_1424ccce0[];
-extern unsigned char DAT_1424cce30[];
-extern unsigned char DAT_1424ccf70[];
-extern unsigned char DAT_1424ce240[];
-extern unsigned char DAT_1424ce380[];
-extern unsigned char DAT_1424ce4c0[];
-extern unsigned char DAT_1424ce600[];
-extern unsigned char DAT_1424ce740[];
-extern unsigned char DAT_1424ce880[];
-extern unsigned char DAT_1424ce9c0[];
-extern unsigned char DAT_1424ceb00[];
-extern unsigned char DAT_1424ceb60[];
-extern unsigned char DAT_1424cebc0[];
-extern unsigned char DAT_1424cec70[];
-extern unsigned char DAT_1424cecd0[];
-extern unsigned char DAT_1424ced40[];
-extern unsigned char DAT_1424cedb0[];
-extern unsigned char DAT_1424cedd0[];
-extern unsigned char DAT_1424cee20[];
-extern unsigned char DAT_1424cef10[];
-extern unsigned char DAT_1424cef80[];
-extern unsigned char DAT_1424ceff0[];
-extern unsigned char DAT_1424cf060[];
-extern unsigned char DAT_1424cf110[];
-extern unsigned char DAT_1424cf150[];
-extern unsigned char DAT_1424cf170[];
-extern unsigned char DAT_1424d2160[];
-extern unsigned char DAT_1424d2180[];
 extern unsigned char DAT_1424e2730[];
 extern unsigned char DAT_1424e29e0[];
 extern unsigned char DAT_1424e4290[];
 extern unsigned char DAT_1424e8060[];
 extern unsigned char DAT_1424eb250[];
-extern unsigned char DAT_1424ed890[];
 extern unsigned char DAT_1424ede80[];
 extern unsigned char DAT_1424f2400[];
 extern unsigned char DAT_1424f33d0[];
-extern unsigned char DAT_1424f3910[];
 extern unsigned char DAT_1424f39c0[];
 extern unsigned char DAT_1424f3d20[];
 extern unsigned char DAT_1424f3f40[];
 extern unsigned char DAT_1424f4780[];
 extern unsigned char DAT_1424f4a40[];
 extern unsigned char DAT_1424f7180[];
-extern unsigned char DAT_1424f73d0[];
 extern unsigned char DAT_1424f74c0[];
-extern unsigned char DAT_1424f9480[];
-extern unsigned char DAT_1424f9ce0[];
+namespace Scaleform {
+namespace GFx {
+namespace AS3 {
+struct ThunkInfo
+{
+public: static void EmptyFunc(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
+};
+}
+}
+}
+
 extern unsigned char DAT_142500250[];
 extern unsigned char DAT_142500e50[];
 extern unsigned char DAT_142501a60[];
-extern unsigned char DAT_142503800[];
-extern unsigned char DAT_142503860[];
 extern unsigned char DAT_1425038d0[];
-extern unsigned char DAT_142503fa0[];
-extern unsigned char DAT_142504750[];
 extern unsigned char DAT_142504840[];
-extern unsigned char DAT_142505ef0[];
 extern unsigned char DAT_142505f20[];
 extern unsigned char DAT_142506e10[];
 extern unsigned char DAT_142506ef0[];
@@ -105,9 +1144,7 @@ extern unsigned char DAT_142508560[];
 extern unsigned char DAT_1425094e0[];
 extern unsigned char DAT_142509850[];
 extern unsigned char DAT_142509990[];
-extern unsigned char DAT_1425099a0[];
 extern unsigned char DAT_142509a80[];
-extern unsigned char DAT_142509ad0[];
 extern unsigned char DAT_142509da0[];
 extern unsigned char DAT_14250b3c0[];
 extern unsigned char DAT_14250b4a0[];
@@ -117,13 +1154,10 @@ extern unsigned char DAT_14250c060[];
 extern unsigned char DAT_14250c2e0[];
 extern unsigned char DAT_14250cc60[];
 extern unsigned char DAT_14250d620[];
-extern unsigned char DAT_14250d6b0[];
 extern unsigned char DAT_14250d830[];
 extern unsigned char DAT_14250d970[];
-extern unsigned char DAT_14250daa0[];
 extern unsigned char DAT_14250ee10[];
 extern unsigned char DAT_14250f110[];
-extern unsigned char DAT_14250f290[];
 extern unsigned char DAT_14250f770[];
 extern unsigned char DAT_14250f820[];
 extern unsigned char DAT_14250f850[];
@@ -138,16 +1172,13 @@ extern unsigned char DAT_142510c30[];
 extern unsigned char DAT_142510d40[];
 extern unsigned char DAT_142510dc0[];
 extern unsigned char DAT_142510e70[];
-extern unsigned char DAT_1425113d0[];
 extern unsigned char DAT_142511530[];
 extern unsigned char DAT_142512620[];
 extern unsigned char DAT_142512870[];
-extern unsigned char DAT_142513210[];
 extern unsigned char DAT_142513920[];
 extern unsigned char DAT_142513f90[];
 extern unsigned char DAT_142514240[];
 extern unsigned char DAT_142515190[];
-extern unsigned char DAT_142518480[];
 extern unsigned char DAT_142518530[];
 extern unsigned char DAT_142518570[];
 extern unsigned char DAT_1425185d0[];
@@ -163,16 +1194,12 @@ extern unsigned char DAT_14251f780[];
 extern unsigned char DAT_1425227e0[];
 extern unsigned char DAT_142525c90[];
 extern unsigned char DAT_1425265d0[];
-extern unsigned char DAT_1425266c0[];
 extern unsigned char DAT_142526730[];
-extern unsigned char DAT_1425270e0[];
-extern unsigned char DAT_142527300[];
 extern unsigned char DAT_1425278d0[];
 extern unsigned char DAT_142527d60[];
 extern unsigned char DAT_142528740[];
 extern unsigned char DAT_142528a50[];
 extern unsigned char DAT_142528d90[];
-extern unsigned char DAT_142528da0[];
 extern unsigned char DAT_142529f40[];
 extern unsigned char DAT_14252a230[];
 extern unsigned char DAT_14252a360[];
@@ -181,24 +1208,11 @@ extern unsigned char DAT_14252b580[];
 extern unsigned char DAT_14252f250[];
 extern unsigned char DAT_14252f400[];
 extern unsigned char DAT_14252f480[];
-extern unsigned char DAT_14252fd40[];
 extern unsigned char DAT_142531550[];
 extern unsigned char DAT_142531630[];
-extern unsigned char DAT_142546c50[];
-extern unsigned char DAT_142546da0[];
-extern unsigned char DAT_142546ef0[];
-extern unsigned char DAT_142547040[];
-extern unsigned char DAT_142547190[];
-extern unsigned char DAT_142547420[];
-extern unsigned char DAT_14256ba70[];
 extern unsigned char DAT_14256e2e0[];
 extern unsigned char DAT_14256e350[];
 extern unsigned char DAT_1425ab870[];
-extern unsigned char DAT_1425e3e60[];
-extern unsigned char DAT_1425e3e80[];
-extern unsigned char DAT_1425e3ea0[];
-extern unsigned char DAT_1425e3ee0[];
-extern unsigned char DAT_1425e3f00[];
 extern unsigned char DAT_1425f1ae0[];
 extern unsigned char DAT_1425f1ca0[];
 extern unsigned char DAT_1425f1d50[];
@@ -258,15 +1272,6 @@ extern unsigned char DAT_14261bfc0[];
 extern unsigned char DAT_14261c910[];
 extern unsigned char DAT_14261ce60[];
 extern unsigned char DAT_14261e030[];
-extern unsigned char DAT_14261e1c0[];
-extern unsigned char DAT_14261e1f0[];
-extern unsigned char DAT_14261e3d0[];
-extern unsigned char DAT_14261e400[];
-extern unsigned char DAT_142620160[];
-extern unsigned char DAT_1426201d0[];
-extern unsigned char DAT_1426202f0[];
-extern unsigned char DAT_142620370[];
-extern unsigned char DAT_1426203f0[];
 extern unsigned char DAT_14263a800[];
 extern unsigned char DAT_142646630[];
 extern unsigned char DAT_1426467f0[];
@@ -277,206 +1282,6 @@ extern unsigned char DAT_142646f00[];
 extern unsigned char DAT_142646f90[];
 extern unsigned char DAT_142647090[];
 extern unsigned char DAT_14280ef52[];
-extern unsigned char DAT_1428ec290[];
-extern unsigned char DAT_1428ec330[];
-extern unsigned char DAT_1428ec610[];
-extern unsigned char DAT_1428ec780[];
-extern unsigned char DAT_1428ed2a0[];
-extern unsigned char DAT_1428ed580[];
-extern unsigned char DAT_1428ed9e0[];
-extern unsigned char DAT_1428edaf0[];
-extern unsigned char DAT_1428edc40[];
-extern unsigned char DAT_1428edfc0[];
-extern unsigned char DAT_1428ee770[];
-extern unsigned char DAT_1428ee800[];
-extern unsigned char DAT_1428ee8b0[];
-extern unsigned char DAT_1428ee9e0[];
-extern unsigned char DAT_1428ef010[];
-extern unsigned char DAT_1428ef180[];
-extern unsigned char DAT_1428ef400[];
-extern unsigned char DAT_1428ef8b0[];
-extern unsigned char DAT_1428ef8d0[];
-extern unsigned char DAT_1428efa40[];
-extern unsigned char DAT_1428efc90[];
-extern unsigned char DAT_1428eff60[];
-extern unsigned char DAT_1428f0220[];
-extern unsigned char DAT_1428f03e0[];
-extern unsigned char DAT_1428f05f0[];
-extern unsigned char DAT_1428f0e60[];
-extern unsigned char DAT_1428f12e0[];
-extern unsigned char DAT_1428f1710[];
-extern unsigned char DAT_1428f1780[];
-extern unsigned char DAT_1428f1a60[];
-extern unsigned char DAT_1428f1e30[];
-extern unsigned char DAT_1428f1e50[];
-extern unsigned char DAT_1428f2040[];
-extern unsigned char DAT_1428f2250[];
-extern unsigned char DAT_1428f2430[];
-extern unsigned char DAT_1428f2570[];
-extern unsigned char DAT_1428f2970[];
-extern unsigned char DAT_1428f2b90[];
-extern unsigned char DAT_1428f3240[];
-extern unsigned char DAT_1428f3530[];
-extern unsigned char DAT_1428f37a0[];
-extern unsigned char DAT_1428f3910[];
-extern unsigned char DAT_1428f3a40[];
-extern unsigned char DAT_1428f3be0[];
-extern unsigned char DAT_1428f3e70[];
-extern unsigned char DAT_1428f40d0[];
-extern unsigned char DAT_1428f4240[];
-extern unsigned char DAT_1428f4420[];
-extern unsigned char DAT_1428f4610[];
-extern unsigned char DAT_1428f47b0[];
-extern unsigned char DAT_1428f4980[];
-extern unsigned char DAT_1428f4a20[];
-extern unsigned char DAT_1428f4aa0[];
-extern unsigned char DAT_1428f4b40[];
-extern unsigned char DAT_1428f4bc0[];
-extern unsigned char DAT_1428f4cd0[];
-extern unsigned char DAT_1428f4da0[];
-extern unsigned char DAT_1428f4e40[];
-extern unsigned char DAT_1428f4e60[];
-extern unsigned char DAT_1428f4fd0[];
-extern unsigned char DAT_1428f5170[];
-extern unsigned char DAT_1428f5240[];
-extern unsigned char DAT_1428f5340[];
-extern unsigned char DAT_1428f53e0[];
-extern unsigned char DAT_1428f5530[];
-extern unsigned char DAT_1428f6880[];
-extern unsigned char DAT_1428f6a10[];
-extern unsigned char DAT_1428f6b30[];
-extern unsigned char DAT_1428f6cc0[];
-extern unsigned char DAT_1428f7290[];
-extern unsigned char DAT_1428f7c10[];
-extern unsigned char DAT_1428f82d0[];
-extern unsigned char DAT_1428f86b0[];
-extern unsigned char DAT_1428f9ba0[];
-extern unsigned char DAT_1428faed0[];
-extern unsigned char DAT_1428fb110[];
-extern unsigned char DAT_1428fb1a0[];
-extern unsigned char DAT_1428fb220[];
-extern unsigned char DAT_1428fb2a0[];
-extern unsigned char DAT_1428fb320[];
-extern unsigned char DAT_1428fb3a0[];
-extern unsigned char DAT_1428fb420[];
-extern unsigned char DAT_1428fb4a0[];
-extern unsigned char DAT_1428fb520[];
-extern unsigned char DAT_1428fb5a0[];
-extern unsigned char DAT_1428fb620[];
-extern unsigned char DAT_1428fb6a0[];
-extern unsigned char DAT_1428fb720[];
-extern unsigned char DAT_1428fb800[];
-extern unsigned char DAT_1428fb8d0[];
-extern unsigned char DAT_1428fb9a0[];
-extern unsigned char DAT_1428fba80[];
-extern unsigned char DAT_1428fbae0[];
-extern unsigned char DAT_1428fbd10[];
-extern unsigned char DAT_1428fc080[];
-extern unsigned char DAT_1428fc160[];
-extern unsigned char DAT_1428fc350[];
-extern unsigned char DAT_1428fc410[];
-extern unsigned char DAT_1428fc490[];
-extern unsigned char DAT_1428fc520[];
-extern unsigned char DAT_1428fc5c0[];
-extern unsigned char DAT_1428fc680[];
-extern unsigned char DAT_1428fc7e0[];
-extern unsigned char DAT_1428fc8a0[];
-extern unsigned char DAT_1428fc920[];
-extern unsigned char DAT_1428fc9b0[];
-extern unsigned char DAT_1428fcd60[];
-extern unsigned char DAT_1428fce60[];
-extern unsigned char DAT_1428fcf60[];
-extern unsigned char DAT_1428fd070[];
-extern unsigned char DAT_1428fd230[];
-extern unsigned char DAT_1428fd340[];
-extern unsigned char DAT_1428fd580[];
-extern unsigned char DAT_1428fd770[];
-extern unsigned char DAT_1428fd830[];
-extern unsigned char DAT_1428fd8b0[];
-extern unsigned char DAT_1428fd940[];
-extern unsigned char DAT_1428fd9e0[];
-extern unsigned char DAT_1428fdaa0[];
-extern unsigned char DAT_1428fdc00[];
-extern unsigned char DAT_1428fdcc0[];
-extern unsigned char DAT_1428fe050[];
-extern unsigned char DAT_1428fe140[];
-extern unsigned char DAT_1428fe230[];
-extern unsigned char DAT_1428fe340[];
-extern unsigned char DAT_1428fe560[];
-extern unsigned char DAT_1428fe7e0[];
-extern unsigned char DAT_1428fec90[];
-extern unsigned char DAT_1428ff0b0[];
-extern unsigned char DAT_1428ff160[];
-extern unsigned char DAT_1428ff220[];
-extern unsigned char DAT_1428ff360[];
-extern unsigned char DAT_1428ff4a0[];
-extern unsigned char DAT_1428ff580[];
-extern unsigned char DAT_1428ffa20[];
-extern unsigned char DAT_1428ffcd0[];
-extern unsigned char DAT_1428ffe30[];
-extern unsigned char DAT_1429000d0[];
-extern unsigned char DAT_142900260[];
-extern unsigned char DAT_1429003c0[];
-extern unsigned char DAT_142900530[];
-extern unsigned char DAT_142900f50[];
-extern unsigned char DAT_142900fc0[];
-extern unsigned char DAT_142901150[];
-extern unsigned char DAT_142901ae0[];
-extern unsigned char DAT_142901c70[];
-extern unsigned char DAT_142902200[];
-extern unsigned char DAT_1429022b0[];
-extern unsigned char DAT_1429023e0[];
-extern unsigned char DAT_1429027a0[];
-extern unsigned char DAT_142902a00[];
-extern unsigned char DAT_142902a10[];
-extern unsigned char DAT_142903350[];
-extern unsigned char DAT_1429033a0[];
-extern unsigned char DAT_1429033c0[];
-extern unsigned char DAT_1429035a0[];
-extern unsigned char DAT_1429035f0[];
-extern unsigned char DAT_142903650[];
-extern unsigned char DAT_1429037b0[];
-extern unsigned char DAT_142903910[];
-extern unsigned char DAT_1429039a0[];
-extern unsigned char DAT_142903a20[];
-extern unsigned char DAT_142903aa0[];
-extern unsigned char DAT_142904450[];
-extern unsigned char DAT_142904700[];
-extern unsigned char DAT_142905a00[];
-extern unsigned char DAT_142905b80[];
-extern unsigned char DAT_142905d70[];
-extern unsigned char DAT_1429063c0[];
-extern unsigned char DAT_1429064b0[];
-extern unsigned char DAT_1429065d0[];
-extern unsigned char DAT_1429069f0[];
-extern unsigned char DAT_142906a90[];
-extern unsigned char DAT_142906ba0[];
-extern unsigned char DAT_142906d80[];
-extern unsigned char DAT_142906de0[];
-extern unsigned char DAT_142906fc0[];
-extern unsigned char DAT_142907040[];
-extern unsigned char DAT_142907210[];
-extern unsigned char DAT_142907550[];
-extern unsigned char DAT_1429075f0[];
-extern unsigned char DAT_142907680[];
-extern unsigned char DAT_142907bb0[];
-extern unsigned char DAT_142907d20[];
-extern unsigned char DAT_142907e70[];
-extern unsigned char DAT_142908090[];
-extern unsigned char DAT_1429082a0[];
-extern unsigned char DAT_142908330[];
-extern unsigned char DAT_1429084b0[];
-extern unsigned char DAT_142908610[];
-extern unsigned char DAT_142908840[];
-extern unsigned char DAT_142908a70[];
-extern unsigned char DAT_142908c30[];
-extern unsigned char DAT_142908d00[];
-extern unsigned char DAT_142908e90[];
-extern unsigned char DAT_1429099d0[];
-extern unsigned char DAT_142909b00[];
-extern unsigned char DAT_14290a0f0[];
-extern unsigned char DAT_14290afc0[];
-extern unsigned char DAT_14290bed0[];
 extern unsigned char DAT_142935ea0[];
 extern unsigned char DAT_14293fcd0[];
 extern unsigned char DAT_14293fdf0[];
@@ -517,63 +1322,23 @@ void FUN_140015c00();
 void FUN_1423dc0c0();
 void FUN_1423dd1b0();
 void FUN_1423dd3f0();
-void FUN_1424d21e0();
-void FUN_1424e1a98();
-void FUN_1424e1aa4();
-void FUN_1424e1ab0();
-void FUN_1424e1abc();
-void FUN_1424e1b40();
-void FUN_1424e1b4c();
-void FUN_1424e1b58();
-void FUN_1424e1b64();
-void FUN_1424e1b7c();
-void FUN_1424e1b88();
-void FUN_1424e1b94();
-void FUN_1424e1ba0();
 void FUN_1424e1ce0();
 void FUN_1424e1e60();
 void FUN_1424e1fe0();
 void FUN_1424e2150();
-void FUN_1424e2610();
-void FUN_1424e26d0();
-void FUN_1424e2a10();
-void FUN_1424e2ac0();
-void FUN_1424e2c90();
-void FUN_1424e3a00();
-void FUN_1424e2e70();
-void FUN_142928b00();
-void FUN_142928dc0();
-void FUN_142928c70();
 void FUN_1424e3020();
 void FUN_1424e3290();
-void FUN_1424e33f0();
-void FUN_1424e3450();
-void FUN_1424e3890();
 void FUN_1424e3ac0();
-void FUN_1424e3b90();
 void FUN_1424e3de0();
-void FUN_1424e5460();
-void FUN_1424e5464();
 void FUN_1424e5470();
 void FUN_1424e5474();
-void FUN_1424e54f0();
-void FUN_1424e54f4();
 void FUN_1424eb2f0();
 void FUN_1424eeae0();
-void FUN_1424eecb0();
 void FUN_1424efb40();
-void FUN_1424efde0();
-void FUN_1424efde4();
 void FUN_1424efdf0();
 void FUN_1424efdf4();
-void FUN_1424efe20();
-void FUN_1424efe24();
-void FUN_1424f1f50();
-void FUN_1424f1f54();
 void FUN_1424f1f60();
 void FUN_1424f1f64();
-void FUN_1424f1f80();
-void FUN_1424f1f84();
 void FUN_1424f2010();
 void FUN_1424f2700();
 void FUN_1424f2e90();
@@ -588,385 +1353,85 @@ void FUN_1424feaa0();
 void FUN_1424fee00();
 void FUN_142500770();
 void FUN_142501920();
-void FUN_142502cf0();
-void FUN_1425046d0();
-void FUN_1425047c0();
 void FUN_142504800();
 void FUN_142504b40();
 void FUN_142504b50();
 void FUN_1425057e0();
-void FUN_142505e00();
-void FUN_142506df0();
-void FUN_142506df8();
-void FUN_142506e04();
 void FUN_142506ea0();
 void FUN_142506ea8();
 void FUN_142506eb4();
-void FUN_142506ed0();
-void FUN_142506ed8();
-void FUN_142506ee4();
 void FUN_142507730();
 void FUN_142507910();
-void FUN_142507b30();
-void FUN_142507b70();
-void FUN_142508500();
-void FUN_142508514();
 void FUN_142508520();
 void FUN_142508524();
-void FUN_142508550();
-void FUN_142508554();
-void FUN_1425088f0();
-void FUN_142508900();
-const char* FUN_142508960(const void*);
-void FUN_142508980();
-void FUN_142508990();
 void FUN_14250b490();
-void FUN_14250ba00();
 void FUN_14250c360();
-void FUN_14250d630();
 void FUN_14250d700();
-void FUN_14250d960();
-void FUN_14250eef0();
-void FUN_14250ef30();
-void FUN_14250f660();
 void FUN_142510240();
-void FUN_142510da0();
-void FUN_142510da4();
-void FUN_142510db0();
 void FUN_142510dd0();
 void FUN_142510dd4();
 void FUN_142510de0();
-void FUN_142510df0();
-void FUN_142510df4();
-void FUN_142510e00();
-void FUN_142513240();
-void FUN_1425136f0();
-void FUN_142514280();
-void FUN_142514284();
 void FUN_142514290();
 void FUN_142514294();
-void FUN_1425142e0();
-void FUN_142514304();
 void FUN_142514330();
-void FUN_142514d10();
-void FUN_142514eb0();
-void FUN_142514efc();
 void FUN_142514f10();
 void FUN_142514f5c();
-void FUN_142515050();
-void FUN_1425150b0();
 void FUN_1425181b0();
-void FUN_142518360();
-void FUN_142518470();
-void FUN_1425184f0();
-void FUN_142518510();
-void FUN_142518520();
 void FUN_142518730();
-void FUN_142518740();
-void FUN_142518750();
 void FUN_142518a00();
-void FUN_142518a10();
-void FUN_142518a18();
-void FUN_142518a24();
 void FUN_142518a30();
 void FUN_142518c50();
 void FUN_142518c58();
 void FUN_142518c64();
-void FUN_142518fc0();
-void FUN_142518fc8();
-void FUN_142518fd4();
-void FUN_142518fe0();
-void FUN_142518ffc();
-void FUN_142519008();
-void FUN_1425190d0();
-void FUN_1425190d4();
-void FUN_1425190e0();
-void FUN_1425190f0();
-void FUN_1425191bc();
-void FUN_1425191c8();
-void FUN_1425191e0();
-void FUN_1425191e8();
-void FUN_1425191f4();
-void FUN_142519890();
-void FUN_142519898();
-void FUN_1425198a4();
-void FUN_1425198b0();
-void FUN_1425198b8();
-void FUN_1425198c4();
 void FUN_142519d10();
 void FUN_142519d18();
 void FUN_142519d30();
 void FUN_142519d38();
 void FUN_142519ec0();
 void FUN_142519ec8();
-void FUN_14251a0d0();
-void FUN_14251a0d4();
 void FUN_14251a0e0();
 void FUN_14251a0e4();
-void FUN_14251a0f0();
-void FUN_14251a0f4();
-void FUN_14251a1e0();
-void FUN_14251a330();
-void FUN_14251a334();
 void FUN_14251a340();
 void FUN_14251a344();
-void FUN_14251a350();
-void FUN_14251a388();
-void FUN_14251a3b0();
-void FUN_14251a500();
-void FUN_14251a7f0();
-void FUN_14251a7f4();
 void FUN_14251a800();
 void FUN_14251a804();
-void FUN_14251a810();
-void FUN_14251a814();
-void FUN_14251a830();
-void FUN_14251a8a0();
-void FUN_14251ac40();
-void FUN_14251ac60();
-void FUN_14251ac80();
-void FUN_14251ac90();
-void FUN_14251aca0();
-void FUN_14251acb0();
-void FUN_14251acc0();
-void FUN_14251acd0();
-void FUN_14251ae60();
-void FUN_14251af20();
-void FUN_14251af24();
-void FUN_14251af30();
 void FUN_14251af40();
 void FUN_14251b0a0();
 void FUN_14251b0a8();
 void FUN_14251b0b4();
-void FUN_14251b0f0();
-void FUN_14251b0f4();
-void FUN_14251b100();
-void FUN_14251bc40();
-void FUN_14251bda0();
 void FUN_14251c9f0();
-void FUN_14251d060();
 void FUN_14251e560();
 void FUN_14251f430();
-void FUN_1425210c0();
-void FUN_142525500();
-void FUN_1425262d0();
-void FUN_142527390();
-void FUN_1425282c0();
-void FUN_14252a700();
-void FUN_14252acc0();
-void FUN_14252b3a0();
 void FUN_14252c4f0();
-void FUN_14252e530();
-void FUN_14252e980();
-void FUN_14252f220();
-void FUN_14252f230();
-void FUN_14252f23c();
 void FUN_14252f260();
 void FUN_14252f264();
 void FUN_14252f270();
-void FUN_14252f290();
-void FUN_14252f294();
-void FUN_14252f2a0();
-void FUN_14252f2b0();
-void FUN_14252f2b4();
-void FUN_14252f2c0();
 void FUN_14252f2d0();
 void FUN_14252f2d4();
 void FUN_14252f2e0();
-void FUN_14252f300();
-void FUN_14252f304();
-void FUN_14252f310();
-void FUN_14252f320();
-void FUN_14252f330();
-void FUN_14252f33c();
 void FUN_14252f350();
 void FUN_14252f360();
 void FUN_14252f370();
 void FUN_14252f37c();
-void FUN_14252f3b0();
-void FUN_14252f3c0();
-void FUN_14252f3cc();
-void FUN_14252f3e0();
-void FUN_14252f3e4();
-void FUN_14252f3f0();
 void FUN_14252f410();
 void FUN_14252f414();
 void FUN_14252f420();
-void FUN_14252f440();
-void FUN_14252f444();
-void FUN_14252f450();
-void FUN_14252f460();
-void FUN_14252f464();
-void FUN_14252f470();
 void FUN_14252f490();
 void FUN_14252f494();
 void FUN_14252f4a0();
-void FUN_14252f4c0();
-void FUN_14252f4d0();
-void FUN_14252f4dc();
-void FUN_142530fb0();
-void FUN_1425310d0();
-void FUN_142531250();
-void FUN_14256e920();
-void FUN_142591e10();
-void FUN_142591e70();
-void FUN_142591ed0();
-void FUN_142591fd0();
-void FUN_1425924e0();
-void FUN_1425924f0();
-void FUN_1425925b0();
-void FUN_14261e220();
-void FUN_14261e230();
-void FUN_14261e240();
-void FUN_14261e250();
-void FUN_14261e260();
-void FUN_14261e270();
-void FUN_14261e280();
-void FUN_14261e290();
-void FUN_14261e2a0();
-void FUN_14261e2b0();
-void FUN_14261e2c0();
-void FUN_14261e2d0();
-void FUN_14261e2e0();
-void FUN_14261e2f0();
-void FUN_14261e300();
-void FUN_14261e3b0();
-void FUN_14261e3c0();
-void FUN_14261e430();
-void FUN_14261e440();
-void FUN_14261e450();
-void FUN_14261e4e0();
-void FUN_14261e4f0();
-void FUN_14261e500();
-void FUN_14261e510();
-void FUN_14261e520();
-void FUN_14261e530();
-void FUN_14261e540();
-void FUN_14261e550();
-void FUN_14261e560();
-void FUN_14261e570();
-void FUN_14261e580();
-void FUN_14261e590();
-void FUN_14261e5a0();
-void FUN_14261e5b0();
-void FUN_14261e5c0();
-void FUN_14261e5d0();
-void FUN_14261e5e0();
-void FUN_14261e5f0();
-void FUN_14261e600();
-void FUN_14261e610();
-void FUN_14261e620();
-void FUN_14261e630();
-void FUN_14261e640();
-void FUN_14261e650();
-void FUN_14261e660();
-void FUN_14261e670();
-void FUN_14261e680();
-void FUN_14261e690();
-void FUN_14261e6a0();
-void FUN_14261e6b0();
-void FUN_14261e6c0();
-void FUN_14261e6d0();
-void FUN_14261e6e0();
-void FUN_14261e6f0();
-void FUN_14261e700();
-void FUN_14261e720();
-void FUN_14261ff20();
 void FUN_142620100();
-void FUN_142620240();
-void FUN_142620460();
-void FUN_1426204c0();
-void FUN_1426204d0();
-void FUN_142622c90();
-void FUN_142622d00();
-void FUN_1428eb050();
-void FUN_1428eb340();
-void FUN_1428eb6d0();
-void FUN_1428eb900();
-void FUN_1428ebbd0();
-void FUN_1428ebd60();
-void FUN_1428ec0b0();
-void FUN_1428ec130();
-void FUN_1428ec3d0();
-void FUN_1428ec510();
-void FUN_1428ec590();
-void FUN_1428eccf0();
-void FUN_1428ed450();
-void FUN_1428ee370();
-void FUN_1428eeb50();
-void FUN_1428f0760();
-void FUN_1428f0b20();
-void FUN_1428f1040();
-void FUN_1428f1e70();
-void FUN_1428f2790();
 void FUN_1428f2e40();
-void FUN_1428f5740();
-void FUN_1428f5d60();
-void FUN_1428f65c0();
 void FUN_1428f7bb0();
 void FUN_1428f7be0();
-void FUN_1428f8720();
-void FUN_1428f9630();
-void FUN_1428f99f0();
-void FUN_1428f9cf0();
-void FUN_1428fa620();
-void FUN_1428fbdc0();
-void FUN_1428fbea0();
-void FUN_1428fca40();
-void FUN_1428fcbf0();
-void FUN_1428fd400();
-void FUN_1428fdd50();
-void FUN_1428fdef0();
-void FUN_1428fe670();
 void FUN_1428fed10();
-void FUN_1428ff660();
-void FUN_1429006a0();
-void FUN_142901280();
 void FUN_142901410();
 void FUN_142901d20();
 void FUN_1429024e0();
 void FUN_142902880();
 void FUN_142902ae0();
 void FUN_142902f40();
-void FUN_142903b30();
-void FUN_142903fc0();
-void FUN_1429049b0();
-void FUN_142905190();
-void FUN_1429055f0();
-void FUN_142905e00();
-void FUN_142906040();
-void FUN_142906330();
-void FUN_142906650();
-void FUN_1429072c0();
-void FUN_142909300();
-void FUN_142909590();
-void FUN_1429096e0();
-void FUN_142909d80();
-void FUN_14290a180();
-void FUN_14290a350();
-void FUN_14290a4b0();
-void FUN_14290a680();
-void FUN_14290a7d0();
-void FUN_14290a8c0();
-void FUN_14290a9c0();
-void FUN_14290aac0();
-void FUN_14290b1c0();
-void FUN_14290b2c0();
-void FUN_14290b4c0();
-void FUN_14290b920();
-void FUN_14290b9f0();
-void FUN_14290bb20();
-void FUN_14290bc50();
-void FUN_14290bd90();
-void FUN_1429276e0();
 void FUN_142928a40();
-void FUN_142928d00();
-void FUN_14292afe0();
-void FUN_14292b1e0();
 void FUN_14292b270();
-void FUN_14292b300();
-void FUN_14292b390();
-void FUN_14292ba00();
 void FUN_14292bdc0();
 void FUN_14292be50();
 void FUN_14292dc40();
@@ -974,7 +1439,6 @@ void FUN_1429318d0();
 void FUN_142937a20();
 void FUN_1429384f0();
 void FUN_142941190();
-void FUN_142942db0();
 void FUN_1429497d0();
 void FUN_142949820();
 void FUN_14294a5b0();
@@ -1084,26 +1548,6 @@ struct Sd_143175fb0 {
     const void* p290;
     unsigned char b298[0x128];
 };
-struct Sd_1431765d0 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    const void* p48;
-};
-struct Sd_143176620 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    const void* p48;
-};
 struct Sd_143176670 {
     unsigned char b0[0x8];
     const void* p8;
@@ -1209,78 +1653,6 @@ struct Sd_143176670 {
     const void* p3c0;
     const void* p3c8;
     unsigned char b3d0[0x40];
-};
-struct Sd_1431778e0 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x20];
-    const void* p48;
-};
-struct Sd_143177930 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x8];
-    const void* p30;
-    unsigned char b38[0x8];
-    const void* p40;
-    unsigned char b48[0x8];
-};
-struct Sd_143177980 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    unsigned char b48[0x8];
-};
-struct Sd_1431779d0 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    unsigned char b48[0x8];
-};
-struct Sd_143177a20 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x20];
-    const void* p48;
-};
-struct Sd_143177a70 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x8];
-    const void* p30;
-    unsigned char b38[0x8];
-    const void* p40;
-    unsigned char b48[0x8];
-};
-struct Sd_143177ac0 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    unsigned char b48[0x8];
 };
 struct Sd_143177b10 {
     unsigned char b0[0x8];
@@ -2554,54 +2926,6 @@ struct Sd_14317fea0 {
     const void* pff8;
     unsigned char b1000[0xb60];
 };
-struct Sd_143181a20 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x28];
-};
-struct Sd_143181a70 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    unsigned char b48[0x8];
-};
-struct Sd_143181ac0 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    unsigned char b48[0x8];
-};
-struct Sd_143181b10 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    unsigned char b48[0x8];
-};
-struct Sd_143181b60 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    unsigned char b48[0x8];
-};
 struct Sd_143181bb0 {
     unsigned char b0[0x8];
     const void* p8;
@@ -2816,91 +3140,6 @@ struct Sd_1431c51e8 {
     const void* p340;
     unsigned char b348[0x600];
 };
-struct Sd_143212f60 {
-    const void* p0;
-    const void* p8;
-    unsigned char b10[0x10];
-};
-struct Sd_143212f80 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    unsigned char b80[0x10];
-};
-struct Sd_143213010 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    unsigned char b20[0x10];
-};
-struct Sd_143213040 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    unsigned char b90[0x10];
-};
-struct Sd_1432130e0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
-    unsigned char bf0[0x10];
-};
 struct Sd_1432131e0 {
     const void* p0;
     unsigned char b8[0x8];
@@ -2915,120 +3154,6 @@ struct Sd_1432131e0 {
     const void* p50;
     unsigned char b58[0x18];
 };
-struct Sd_143213250 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    unsigned char bd0[0x10];
-};
-struct Sd_143213330 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    unsigned char bd0[0x10];
-};
-struct Sd_143213410 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    unsigned char b40[0x10];
-};
-struct Sd_143213460 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    unsigned char b30[0x10];
-};
-struct Sd_1432134b0 {
-    const void* p0;
-    const void* p8;
-    unsigned char b10[0x10];
-};
-struct Sd_1432134d0 {
-    const void* p0;
-    const void* p8;
-    unsigned char b10[0x10];
-};
-struct Sd_1432134f0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    unsigned char b30[0x10];
-};
-struct Sd_143213530 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    unsigned char b70[0x10];
-};
 struct Sd_1432135b0 {
     const void* p0;
     const void* p8;
@@ -3038,115 +3163,10 @@ struct Sd_1432135b0 {
     const void* p28;
     unsigned char b30[0x10];
 };
-struct Sd_1432135f0 {
-    const void* p0;
-    const void* p8;
-    unsigned char b10[0x10];
-};
 struct Sd_143213610 {
     const void* p0;
     const void* p8;
     unsigned char b10[0x10];
-};
-struct Sd_143213630 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    unsigned char b20[0x10];
-};
-struct Sd_143213660 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    unsigned char b30[0x10];
-};
-struct Sd_1432136a0 {
-    const void* p0;
-    const void* p8;
-    unsigned char b10[0x10];
-};
-struct Sd_1432136c0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    unsigned char b40[0x10];
-};
-struct Sd_143213710 {
-    const void* p0;
-    const void* p8;
-    unsigned char b10[0x10];
-};
-struct Sd_143213730 {
-    const void* p0;
-    const void* p8;
-    unsigned char b10[0x10];
-};
-struct Sd_143213750 {
-    const void* p0;
-    const void* p8;
-    unsigned char b10[0x10];
-};
-struct Sd_143213770 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    unsigned char be0[0x10];
-};
-struct Sd_143213860 {
-    const void* p0;
-    const void* p8;
-    unsigned char b10[0x10];
-};
-struct Sd_143213880 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    unsigned char b70[0x10];
 };
 struct Sd_143213900 {
     const void* p0;
@@ -3192,116 +3212,7 @@ struct Sd_143213a30 {
     const void* p8;
     unsigned char b10[0x10];
 };
-struct Sd_143213a50 {
-    const void* p0;
-    const void* p8;
-    unsigned char b10[0x10];
-};
-struct Sd_143213a70 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    unsigned char b40[0x10];
-};
-struct Sd_143213ac0 {
-    const void* p0;
-    const void* p8;
-    unsigned char b10[0x10];
-};
-struct Sd_143213ae0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
-    const void* pf0;
-    const void* pf8;
-    const void* p100;
-    const void* p108;
-    const void* p110;
-    const void* p118;
-    const void* p120;
-    const void* p128;
-    const void* p130;
-    const void* p138;
-    const void* p140;
-    const void* p148;
-    const void* p150;
-    const void* p158;
-    const void* p160;
-    const void* p168;
-    const void* p170;
-    const void* p178;
-    const void* p180;
-    const void* p188;
-    const void* p190;
-    const void* p198;
-    const void* p1a0;
-    const void* p1a8;
-    const void* p1b0;
-    const void* p1b8;
-    const void* p1c0;
-    const void* p1c8;
-    const void* p1d0;
-    const void* p1d8;
-    const void* p1e0;
-    const void* p1e8;
-    const void* p1f0;
-    const void* p1f8;
-    const void* p200;
-    const void* p208;
-    const void* p210;
-    const void* p218;
-    const void* p220;
-    const void* p228;
-    const void* p230;
-    const void* p238;
-    const void* p240;
-    const void* p248;
-    const void* p250;
-    const void* p258;
-    const void* p260;
-    const void* p268;
-    unsigned char b270[0x10];
-};
 struct Sd_143213d60 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    unsigned char b20[0x10];
-};
-struct Sd_143213d90 {
     const void* p0;
     const void* p8;
     const void* p10;
@@ -3323,114 +3234,6 @@ struct Sd_143213dc0 {
     const void* p58;
     unsigned char b60[0x10];
 };
-struct Sd_143213e40 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    unsigned char b30[0x10];
-};
-struct Sd_143213ed0 {
-    const void* p0;
-    const void* p8;
-    unsigned char b10[0x10];
-};
-struct Sd_143213ef0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
-    const void* pf0;
-    const void* pf8;
-    const void* p100;
-    const void* p108;
-    const void* p110;
-    const void* p118;
-    const void* p120;
-    const void* p128;
-    const void* p130;
-    const void* p138;
-    const void* p140;
-    const void* p148;
-    const void* p150;
-    const void* p158;
-    const void* p160;
-    const void* p168;
-    const void* p170;
-    const void* p178;
-    const void* p180;
-    const void* p188;
-    const void* p190;
-    const void* p198;
-    const void* p1a0;
-    const void* p1a8;
-    const void* p1b0;
-    const void* p1b8;
-    const void* p1c0;
-    const void* p1c8;
-    const void* p1d0;
-    const void* p1d8;
-    const void* p1e0;
-    const void* p1e8;
-    const void* p1f0;
-    const void* p1f8;
-    const void* p200;
-    const void* p208;
-    const void* p210;
-    const void* p218;
-    const void* p220;
-    const void* p228;
-    const void* p230;
-    const void* p238;
-    const void* p240;
-    const void* p248;
-    const void* p250;
-    const void* p258;
-    const void* p260;
-    const void* p268;
-    const void* p270;
-    const void* p278;
-    const void* p280;
-    const void* p288;
-    const void* p290;
-    const void* p298;
-    unsigned char b2a0[0x10];
-};
-struct Sd_1432141a0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    unsigned char b20[0x10];
-};
 struct Sd_1432141d0 {
     const void* p0;
     const void* p8;
@@ -3449,46 +3252,10 @@ struct Sd_143214230 {
     const void* p8;
     unsigned char b10[0x10];
 };
-struct Sd_143214250 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    unsigned char b90[0x10];
-};
 struct Sd_1432142f0 {
     const void* p0;
     const void* p8;
     unsigned char b10[0x10];
-};
-struct Sd_1432143a0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    unsigned char b60[0x10];
 };
 struct Sd_143214410 {
     const void* p0;
@@ -3723,7 +3490,35 @@ struct Sd_143177660 {
         unsigned long long q20;
     } e[16];
 };
-extern Sd_143177930 DAT_143177930;
+namespace Scaleform {
+namespace GFx {
+namespace AS3 {
+struct TypeInfo;
+struct MemberInfo;
+typedef ::Scaleform::Pickable<ClassTraits::Traits> (*TTraitsFactory)(VM &);
+struct ClassInfo
+{
+    unsigned long long Flags;
+    const char* Name;
+    const char* PkgName;
+    const TypeInfo* Parent;
+    TTraitsFactory Factory;
+    unsigned char ClassMethodNum;
+    unsigned char ClassMemberNum;
+    unsigned char InstanceMethodNum;
+    unsigned char InstanceMemberNum;
+    const ThunkInfo* ClassMethod;
+    const MemberInfo* ClassMember;
+    const ThunkInfo* InstanceMethod;
+    const MemberInfo* InstanceMember;
+};
+namespace fl_media { alignas(16) extern const ClassInfo ID3InfoCI; alignas(16) extern const ClassInfo MicrophoneCI; alignas(16) extern const ClassInfo SoundCI; alignas(16) extern const ClassInfo SoundChannelCI; alignas(16) extern const ClassInfo SoundLoaderContextCI; alignas(16) extern const ClassInfo SoundMixerCI; alignas(16) extern const ClassInfo SoundTransformCI; }
+namespace fl_vec { alignas(16) extern const ClassInfo VectorCI; alignas(16) extern const ClassInfo Vector_objectCI; alignas(16) extern const ClassInfo Vector_intCI; alignas(16) extern const ClassInfo Vector_uintCI; alignas(16) extern const ClassInfo Vector_doubleCI; }
+namespace fl_xml { alignas(16) extern const ClassInfo XMLDocumentCI; alignas(16) extern const ClassInfo XMLNodeCI; }
+}
+}
+}
+
 extern Sd_1431765b0 DAT_1431765b0;
 extern Sd_143177000 DAT_143177000;
 extern Sd_143177050 DAT_143177050;
@@ -3733,23 +3528,8 @@ extern Sd_1431773e8 DAT_1431773e8;
 extern Sd_143177410 DAT_143177410;
 extern Sd_143177480 DAT_143177480;
 extern Sd_143177660 DAT_143177660;
-extern unsigned char DAT_1424cdc40[];
-extern unsigned char DAT_1424cdcb0[];
-extern unsigned char DAT_1424cdd40[];
-extern unsigned char DAT_1424cddb0[];
-extern unsigned char DAT_1424cde40[];
-extern unsigned char DAT_1424cdeb0[];
-extern unsigned char DAT_1424cdf40[];
-extern unsigned char DAT_1424cdfb0[];
-extern unsigned char DAT_1424ce040[];
-extern unsigned char DAT_1424ce0b0[];
-extern unsigned char DAT_1424ce140[];
-extern unsigned char DAT_1424ce1b0[];
 extern Sd_143175fb0 DAT_143175fb0;
-extern Sd_143176620 DAT_143176620;
 extern Sd_143176670 DAT_143176670;
-extern Sd_1431778e0 DAT_1431778e0;
-extern Sd_143177ac0 DAT_143177ac0;
 extern Sd_143177b10 DAT_143177b10;
 
 // 0x143175fb0
@@ -3760,98 +3540,98 @@ alignas(16) Sd_143175fb0 DAT_143175fb0 = {
     "XMLSignatureValidator",
     "flash.security",
     DAT_143150b00,
-    DAT_1424cca40,
+    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_security::XMLSignatureValidator::MakeClassTraits,
     {
         0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     (const unsigned char*)&DAT_143175fb0 + 0x50,
     {0},
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d9e0,
     "digestStatus",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d9e0,
     "identityStatus",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d9e0,
     "referencesStatus",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d9e0,
     "revocationCheckSetting",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     {0},
     "revocationCheckSetting",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d9e0,
     "signerCN",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d9e0,
     "signerDN",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313dbc0,
     "signerExtendedKeyUsages",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313dbc0,
     "signerTrustSettings",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     {0},
     "uriDereferencer",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313da30,
     "useSystemTrustStore",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     {0},
     "useSystemTrustStore",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d9e0,
     "validityStatus",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     {0},
     "addCertificate",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     {0},
     "verify",
     {
@@ -3884,37 +3664,9 @@ alignas(16) Sd_1431765b0 DAT_1431765b0 = {
     },
 };
 // 0x1431765d0
-alignas(16) Sd_1431765d0 DAT_1431765d0 = {
-    {
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "XMLDocument",
-    "flash.xml",
-    (const void*)&DAT_143176620,
-    DAT_1424ccf70,
-    {
-        0x00, 0x00, 0x04, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_143176670 + 0x340,
-    (const unsigned char*)&DAT_143176670 + 0x300,
-};
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_xml { alignas(16) extern const ClassInfo XMLDocumentCI = { 0x1, "XMLDocument", "flash.xml", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_xml::XMLNodeCI, &::Scaleform::GFx::AS3::ClassTraits::fl_xml::XMLDocument::MakeClassTraits, 0, 0, 4, 4, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143176670 + 0x340), (const MemberInfo*)((const unsigned char*)&DAT_143176670 + 0x300) }; } } } }
 // 0x143176620
-alignas(16) Sd_143176620 DAT_143176620 = {
-    {
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "XMLNode",
-    "flash.xml",
-    DAT_14313d990,
-    DAT_1424cce30,
-    {
-        0x00, 0x00, 0x0e, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_143176670 + 0xd0,
-    (const unsigned char*)&DAT_143176670 + 0x50,
-};
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_xml { alignas(16) extern const ClassInfo XMLNodeCI = { 0x1, "XMLNode", "flash.xml", (const TypeInfo*)DAT_14313d990, &::Scaleform::GFx::AS3::ClassTraits::fl_xml::XMLNode::MakeClassTraits, 0, 0, 14, 8, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143176670 + 0xd0), (const MemberInfo*)((const unsigned char*)&DAT_143176670 + 0x50) }; } } } }
 // 0x143176670
 alignas(16) Sd_143176670 DAT_143176670 = {
     {
@@ -3923,7 +3675,7 @@ alignas(16) Sd_143176670 DAT_143176670 = {
     "XMLNodeType",
     "flash.xml",
     DAT_14313d990,
-    DAT_1424ccce0,
+    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_xml::XMLNodeType::MakeClassTraits,
     {
         0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
@@ -3961,81 +3713,81 @@ alignas(16) Sd_143176670 DAT_143176670 = {
     {
         0x70, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d990,
     "attributes",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     {0},
     "attributes",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313dbc0,
     "childNodes",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d9e0,
     "localName",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d9e0,
     "namespaceURI",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d9e0,
     "prefix",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     {0},
     "appendChild",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
-    (const void*)&DAT_143176620,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
+    (const void*)&::Scaleform::GFx::AS3::fl_xml::XMLNodeCI,
     "cloneNode",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d9e0,
     "getNamespaceForPrefix",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d9e0,
     "getPrefixForNamespace",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313da30,
     "hasChildNodes",
     {0},
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     {0},
     "insertBefore",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     {0},
     "removeNode",
     {0},
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d9e0,
     "toString",
     {0},
@@ -4055,25 +3807,25 @@ alignas(16) Sd_143176670 DAT_143176670 = {
     {
         0x90, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
-    (const void*)&DAT_143176620,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
+    (const void*)&::Scaleform::GFx::AS3::fl_xml::XMLNodeCI,
     "createElement",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
-    (const void*)&DAT_143176620,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
+    (const void*)&::Scaleform::GFx::AS3::fl_xml::XMLNodeCI,
     "createTextNode",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     {0},
     "parseXML",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424f9480,
+    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     DAT_14313d9e0,
     "toString",
     {
@@ -4086,52 +3838,52 @@ alignas(16) Sd_143176670 DAT_143176670 = {
 // 0x143177000
 alignas(16) Sd_143177000 DAT_143177000 = {
     {
-        {DAT_1424f9480, 0, "bufferTime", 0, 0x4a},
-        {DAT_1424f9480, 0, "soundTransform", 0, 0x4a},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "bufferTime", 0, 0x4a},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "soundTransform", 0, 0x4a},
     },
 };
 // 0x143177050
 alignas(16) Sd_143177050 DAT_143177050 = {
     {
-        {DAT_1424f9480, (const void*)&DAT_14313da30, "areSoundsInaccessible", 0, 0x0},
-        {DAT_1424f9480, 0, "computeSpectrum", 0, 0xc8},
-        {DAT_1424f9480, 0, "stopAll", 0, 0x0},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da30, "areSoundsInaccessible", 0, 0x0},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "computeSpectrum", 0, 0xc8},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "stopAll", 0, 0x0},
     },
 };
 // 0x1431770c8
 alignas(16) Sd_1431770c8 DAT_1431770c8 = {
     {
-        {DAT_1424f9480, (const void*)&DAT_143177b10, "getCamera", 0, 0x40},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_143177b10, "getCamera", 0, 0x40},
     },
 };
 // 0x1431770f0
 alignas(16) Sd_1431770f0 DAT_1431770f0 = {
     {
-        {DAT_1424f9480, (const void*)&DAT_14313db20, "activityLevel", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313da80, "bandwidth", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313db20, "currentFPS", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313db20, "fps", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313da80, "height", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313da80, "index", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313da80, "keyFrameInterval", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313da30, "loopback", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313da80, "motionLevel", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313da80, "motionTimeout", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313da30, "muted", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "name", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313da80, "quality", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313da80, "width", 0, 0x1},
-        {DAT_1424f9480, 0, "setKeyFrameInterval", 0, 0x48},
-        {DAT_1424f9480, 0, "setLoopback", 0, 0x40},
-        {DAT_1424f9480, 0, "setMode", 0, 0x118},
-        {DAT_1424f9480, 0, "setMotionLevel", 0, 0x88},
-        {DAT_1424f9480, 0, "setQuality", 0, 0x90},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313db20, "activityLevel", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da80, "bandwidth", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313db20, "currentFPS", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313db20, "fps", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da80, "height", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da80, "index", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da80, "keyFrameInterval", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da30, "loopback", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da80, "motionLevel", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da80, "motionTimeout", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da30, "muted", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313d9e0, "name", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da80, "quality", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da80, "width", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "setKeyFrameInterval", 0, 0x48},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "setLoopback", 0, 0x40},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "setMode", 0, 0x118},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "setMotionLevel", 0, 0x88},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "setQuality", 0, 0x90},
     },
 };
 // 0x1431773e8
 alignas(16) Sd_1431773e8 DAT_1431773e8 = {
     {
-        {DAT_1424f9480, (const void*)&DAT_143177930, "getMicrophone", 0, 0x40},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&::Scaleform::GFx::AS3::fl_media::MicrophoneCI, "getMicrophone", 0, 0x40},
     },
 };
 // 0x143177410
@@ -4149,153 +3901,55 @@ alignas(16) Sd_143177410 DAT_143177410 = {
 // 0x143177480
 alignas(16) Sd_143177480 DAT_143177480 = {
     {
-        {DAT_1424cdc40, (const void*)&DAT_14313db20, "leftToLeft", 0, 0x1},
-        {DAT_1424cdcb0, 0, "leftToLeft", 0, 0x4a},
-        {DAT_1424cdd40, (const void*)&DAT_14313db20, "leftToRight", 0, 0x1},
-        {DAT_1424cddb0, 0, "leftToRight", 0, 0x4a},
-        {DAT_1424cde40, (const void*)&DAT_14313db20, "pan", 0, 0x1},
-        {DAT_1424cdeb0, 0, "pan", 0, 0x4a},
-        {DAT_1424cdf40, (const void*)&DAT_14313db20, "rightToLeft", 0, 0x1},
-        {DAT_1424cdfb0, 0, "rightToLeft", 0, 0x4a},
-        {DAT_1424ce040, (const void*)&DAT_14313db20, "rightToRight", 0, 0x1},
-        {DAT_1424ce0b0, 0, "rightToRight", 0, 0x4a},
-        {DAT_1424ce140, (const void*)&DAT_14313db20, "volume", 0, 0x1},
-        {DAT_1424ce1b0, 0, "volume", 0, 0x4a},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform, 0, double>::Func, (const void*)&DAT_14313db20, "leftToLeft", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform, 1, ::Scaleform::GFx::AS3::Value const, double>::Func, 0, "leftToLeft", 0, 0x4a},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform, 2, double>::Func, (const void*)&DAT_14313db20, "leftToRight", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform, 3, ::Scaleform::GFx::AS3::Value const, double>::Func, 0, "leftToRight", 0, 0x4a},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform, 4, double>::Func, (const void*)&DAT_14313db20, "pan", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform, 5, ::Scaleform::GFx::AS3::Value const, double>::Func, 0, "pan", 0, 0x4a},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform, 6, double>::Func, (const void*)&DAT_14313db20, "rightToLeft", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform, 7, ::Scaleform::GFx::AS3::Value const, double>::Func, 0, "rightToLeft", 0, 0x4a},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform, 8, double>::Func, (const void*)&DAT_14313db20, "rightToRight", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform, 9, ::Scaleform::GFx::AS3::Value const, double>::Func, 0, "rightToRight", 0, 0x4a},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform, 10, double>::Func, (const void*)&DAT_14313db20, "volume", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform, 11, ::Scaleform::GFx::AS3::Value const, double>::Func, 0, "volume", 0, 0x4a},
     },
 };
 // 0x143177660
 alignas(16) Sd_143177660 DAT_143177660 = {
     {
-        {DAT_1424f9480, (const void*)&DAT_14313db20, "activityLevel", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313db20, "gain", 0, 0x1},
-        {DAT_1424f9480, 0, "gain", 0, 0x4a},
-        {DAT_1424f9480, (const void*)&DAT_14313da80, "index", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313da30, "muted", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "name", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313da80, "rate", 0, 0x1},
-        {DAT_1424f9480, 0, "rate", 0, 0x4a},
-        {DAT_1424f9480, (const void*)&DAT_14313db20, "silenceLevel", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_14313da80, "silenceTimeout", 0, 0x1},
-        {DAT_1424f9480, (const void*)&DAT_143177ac0, "soundTransform", 0, 0x1},
-        {DAT_1424f9480, 0, "soundTransform", 0, 0x4a},
-        {DAT_1424f9480, (const void*)&DAT_14313da30, "useEchoSuppression", 0, 0x1},
-        {DAT_1424f9480, 0, "setLoopBack", 0, 0x40},
-        {DAT_1424f9480, 0, "setSilenceLevel", 0, 0x88},
-        {DAT_1424f9480, 0, "setUseEchoSuppression", 0, 0x48},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313db20, "activityLevel", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313db20, "gain", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "gain", 0, 0x4a},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da80, "index", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da30, "muted", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313d9e0, "name", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da80, "rate", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "rate", 0, 0x4a},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313db20, "silenceLevel", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da80, "silenceTimeout", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&::Scaleform::GFx::AS3::fl_media::SoundTransformCI, "soundTransform", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "soundTransform", 0, 0x4a},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&DAT_14313da30, "useEchoSuppression", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "setLoopBack", 0, 0x40},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "setSilenceLevel", 0, 0x88},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "setUseEchoSuppression", 0, 0x48},
     },
 };
 // 0x1431778e0
-alignas(16) Sd_1431778e0 DAT_1431778e0 = {
-    {
-        0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "ID3Info",
-    "flash.media",
-    DAT_14313d990,
-    DAT_1424ce380,
-    {
-        0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    &DAT_143177410,
-};
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_media { alignas(16) extern const ClassInfo ID3InfoCI = { 0xb, "ID3Info", "flash.media", (const TypeInfo*)DAT_14313d990, &::Scaleform::GFx::AS3::ClassTraits::fl_media::ID3Info::MakeClassTraits, 0, 0, 0, 7, 0, 0, 0, (const MemberInfo*)&DAT_143177410 }; } } } }
 // 0x143177930
-alignas(16) Sd_143177930 DAT_143177930 = {
-    {
-        0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Microphone",
-    "flash.media",
-    DAT_143150b00,
-    DAT_1424ce4c0,
-    {
-        0x01, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    &DAT_1431773e8,
-    {0},
-    &DAT_143177660,
-    {0},
-};
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_media { alignas(16) extern const ClassInfo MicrophoneCI = { 0x9, "Microphone", "flash.media", (const TypeInfo*)DAT_143150b00, &::Scaleform::GFx::AS3::ClassTraits::fl_media::Microphone::MakeClassTraits, 1, 0, 16, 0, (const ThunkInfo*)&DAT_1431773e8, 0, (const ThunkInfo*)&DAT_143177660, 0 }; } } } }
 // 0x143177980
-alignas(16) Sd_143177980 DAT_143177980 = {
-    {
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Sound",
-    "flash.media",
-    DAT_143150b00,
-    DAT_1424ce740,
-    {
-        0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_143177b10 + 0x50,
-    {0},
-};
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_media { alignas(16) extern const ClassInfo SoundCI = { 0x1, "Sound", "flash.media", (const TypeInfo*)DAT_143150b00, &::Scaleform::GFx::AS3::ClassTraits::fl_media::Sound::MakeClassTraits, 0, 0, 9, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143177b10 + 0x50), 0 }; } } } }
 // 0x1431779d0
-alignas(16) Sd_1431779d0 DAT_1431779d0 = {
-    {
-        0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "SoundChannel",
-    "flash.media",
-    DAT_143150b00,
-    DAT_1424ce880,
-    {
-        0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_143177b10 + 0x1c0,
-    {0},
-};
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_media { alignas(16) extern const ClassInfo SoundChannelCI = { 0x9, "SoundChannel", "flash.media", (const TypeInfo*)DAT_143150b00, &::Scaleform::GFx::AS3::ClassTraits::fl_media::SoundChannel::MakeClassTraits, 0, 0, 6, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143177b10 + 0x1c0), 0 }; } } } }
 // 0x143177a20
-alignas(16) Sd_143177a20 DAT_143177a20 = {
-    {
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "SoundLoaderContext",
-    "flash.media",
-    DAT_14313d990,
-    DAT_1424ce9c0,
-    {
-        0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_143177b10 + 0x2b0,
-};
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_media { alignas(16) extern const ClassInfo SoundLoaderContextCI = { 0x1, "SoundLoaderContext", "flash.media", (const TypeInfo*)DAT_14313d990, &::Scaleform::GFx::AS3::ClassTraits::fl_media::SoundLoaderContext::MakeClassTraits, 0, 0, 0, 2, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143177b10 + 0x2b0) }; } } } }
 // 0x143177a70
-alignas(16) Sd_143177a70 DAT_143177a70 = {
-    {
-        0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "SoundMixer",
-    "flash.media",
-    DAT_14313d990,
-    DAT_1424cf170,
-    {
-        0x03, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    &DAT_143177050,
-    {0},
-    &DAT_143177000,
-    {0},
-};
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_media { alignas(16) extern const ClassInfo SoundMixerCI = { 0x9, "SoundMixer", "flash.media", (const TypeInfo*)DAT_14313d990, &::Scaleform::GFx::AS3::ClassTraits::fl_media::SoundMixer::MakeClassTraits, 3, 0, 2, 0, (const ThunkInfo*)&DAT_143177050, 0, (const ThunkInfo*)&DAT_143177000, 0 }; } } } }
 // 0x143177ac0
-alignas(16) Sd_143177ac0 DAT_143177ac0 = {
-    {
-        0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "SoundTransform",
-    "flash.media",
-    DAT_14313d990,
-    DAT_1424ce600,
-    {
-        0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    &DAT_143177480,
-    {0},
-};
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_media { alignas(16) extern const ClassInfo SoundTransformCI = { 0x9, "SoundTransform", "flash.media", (const TypeInfo*)DAT_14313d990, &::Scaleform::GFx::AS3::ClassTraits::fl_media::SoundTransform::MakeClassTraits, 0, 0, 12, 0, 0, 0, (const ThunkInfo*)&DAT_143177480, 0 }; } } } }
 // 0x143177b10
 alignas(16) Sd_143177b10 DAT_143177b10 = {
     {
@@ -4304,7 +3958,7 @@ alignas(16) Sd_143177b10 DAT_143177b10 = {
     "Camera",
     "flash.media",
     DAT_143150b00,
-    DAT_1424ce240,
+    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_media::Camera::MakeClassTraits,
     {
         0x01, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
@@ -4312,90 +3966,90 @@ alignas(16) Sd_143177b10 DAT_143177b10 = {
     {0},
     &DAT_1431770f0,
     {0},
-    DAT_1424ceb00,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::Sound, 0, unsigned long>::Func,
     DAT_14313dad0,
     "bytesLoaded",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424ceb60,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::Sound, 1, long>::Func,
     DAT_14313da80,
     "bytesTotal",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424cebc0,
-    (const void*)&DAT_1431778e0,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::Sound, 2, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl_media::ID3Info>>::Func,
+    (const void*)&::Scaleform::GFx::AS3::fl_media::ID3InfoCI,
     "id3",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424cec70,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::Sound, 3, bool>::Func,
     DAT_14313da30,
     "isBuffering",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424cecd0,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::Sound, 4, double>::Func,
     DAT_14313db20,
     "length",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424ced40,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::Sound, 5, ::Scaleform::GFx::ASString>::Func,
     DAT_14313d9e0,
     "url",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424cedb0,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::Sound, 6, ::Scaleform::GFx::AS3::Value const>::Func,
     {0},
     "close",
     {0},
-    DAT_1424cedd0,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl_media::Sound, 7, ::Scaleform::GFx::AS3::Value const, ::Scaleform::GFx::AS3::Instances::fl_net::URLRequest *, ::Scaleform::GFx::AS3::Instances::fl_media::SoundLoaderContext *>::Func,
     {0},
     "load",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424cee20,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc3<::Scaleform::GFx::AS3::Instances::fl_media::Sound, 8, ::Scaleform::GFx::AS3::Value, double, long, ::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform *>::Func,
     {0},
     "play",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424cef10,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::SoundChannel, 0, double>::Func,
     DAT_14313db20,
     "leftPeak",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424cef80,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::SoundChannel, 1, double>::Func,
     DAT_14313db20,
     "position",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424ceff0,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::SoundChannel, 2, double>::Func,
     DAT_14313db20,
     "rightPeak",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424cf060,
-    (const void*)&DAT_143177ac0,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::SoundChannel, 3, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform>>::Func,
+    (const void*)&::Scaleform::GFx::AS3::fl_media::SoundTransformCI,
     "soundTransform",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424cf110,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl_media::SoundChannel, 4, ::Scaleform::GFx::AS3::Value const, ::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform *>::Func,
     {0},
     "soundTransform",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424cf150,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_media::SoundChannel, 5, ::Scaleform::GFx::AS3::Value const>::Func,
     {0},
     "stop",
     {0},
@@ -4455,19 +4109,19 @@ alignas(16) Sd_143177b10 DAT_143177b10 = {
 };
 // 0x14317aeb0
 alignas(16) Sd_14317aeb0 DAT_14317aeb0 = {
-    DAT_1424d2160,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Class, 0, ::Scaleform::GFx::AS3::Value>::Func,
     DAT_14313d990,
     "prototype",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_1424d2180,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Class, 1, long>::Func,
     DAT_14313da80,
     "length",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    (const void*)&FUN_1424d21e0,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Class, 2, ::Scaleform::GFx::ASString>::Func,
     DAT_14313d9e0,
     "toString",
     {0},
@@ -4500,7 +4154,7 @@ alignas(16) Sd_14317af80 DAT_14317af80 = {
 };
 // 0x14317afe8
 alignas(8) Sd_14317afe8 DAT_14317afe8 = {
-    (const void*)&FUN_1424e2e70,
+    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e2e70,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
@@ -4508,11 +4162,11 @@ alignas(8) Sd_14317afe8 DAT_14317afe8 = {
 };
 // 0x14317b058
 alignas(8) Sd_14317b058 DAT_14317b058 = {
-    DAT_142503860,
+    (const void*)&::Scaleform::GFx::AS3::Sfr33PtrArrayForEachChildGC,
     DAT_1423df5a0,
     (const void*)&FUN_142505e00,
     DAT_1423df430,
-    (const void*)&FUN_1424e3450,
+    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e3450,
     DAT_1423df420,
     {
         0x4e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x53, 0x65, 0x74, 0x00, 0x00, 0x00, 0x00,
@@ -4520,9 +4174,9 @@ alignas(8) Sd_14317b058 DAT_14317b058 = {
 };
 // 0x14317b938
 alignas(8) Sd_14317b938 DAT_14317b938 = {
-    (const void*)&FUN_1424e3b90,
-    (const void*)&FUN_14251bda0,
-    (const void*)&FUN_14251acb0,
+    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e3b90,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251bda0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251acb0,
     {
         0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x00, 0x00, 0x70, 0x72, 0x6f, 0x74, 0x65, 0x63, 0x74, 0x65,
         0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x73, 0x74, 0x61, 0x74, 0x69, 0x63, 0x20, 0x70,
@@ -4559,7 +4213,7 @@ alignas(8) Sd_14317b938 DAT_14317b938 = {
 };
 // 0x14317c210
 alignas(16) Sd_14317c210 DAT_14317c210 = {
-    (const void*)&FUN_1424e3890,
+    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e3890,
     DAT_1424f3f40,
     DAT_1425f2210,
     DAT_1425f5010,
@@ -4574,8 +4228,8 @@ alignas(16) Sd_14317c210 DAT_14317c210 = {
     DAT_142510d40,
     DAT_1425f1ca0,
     DAT_1425f4010,
-    (const void*)&FUN_14250d630,
-    DAT_142528da0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14250d630,
+    (const void*)&::Scaleform::GFx::AS3::Sfr31ShapeObjectSetRatio,
     DAT_1425f64c0,
     DAT_1425f2cd0,
     DAT_1425f69f0,
@@ -4636,7 +4290,7 @@ alignas(16) Sd_14317c210 DAT_14317c210 = {
     DAT_14250ee10,
     DAT_14250f890,
     DAT_1425f1ae0,
-    DAT_1425099a0,
+    (const void*)&::Scaleform::GFx::AS3::Sfr33GetDrawingContext,
     DAT_1424f74c0,
 };
 // 0x14317c488
@@ -4675,7 +4329,7 @@ alignas(8) Sd_14317c498 DAT_14317c498 = {
 };
 // 0x14317c560
 alignas(16) Sd_14317c560 DAT_14317c560 = {
-    (const void*)&FUN_1424e2610,
+    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e2610,
     (const void*)&FUN_1424f3e60,
     DAT_1425f2210,
     DAT_1425f5010,
@@ -4731,11 +4385,11 @@ alignas(16) Sd_14317c560 DAT_14317c560 = {
     DAT_142510a30,
     (const void*)&FUN_1425047c0,
     (const void*)&FUN_142507730,
-    DAT_14250d6b0,
+    (const void*)&::Scaleform::GFx::AS3::Sfr27ForwardVirtual1b8,
     (const void*)&FUN_14251c9f0,
-    (const void*)&FUN_14250f660,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14250f660,
     (const void*)&FUN_142507b30,
-    (const void*)&FUN_14250d960,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14250d960,
     DAT_142509da0,
     DAT_14250f850,
     DAT_14250d830,
@@ -4779,7 +4433,7 @@ alignas(8) Sd_14317c7e8 DAT_14317c7e8 = {
     DAT_14251ace0,
     (const void*)&FUN_1424f2010,
     (const void*)&FUN_1425088f0,
-    DAT_142505ef0,
+    (const void*)&::Scaleform::GFx::AS3::Sfr33AvmBitmapGetASClassName,
     DAT_14251f3a0,
     DAT_1425185d0,
     DAT_14250c2e0,
@@ -4792,7 +4446,7 @@ alignas(16) Sd_14317c9b0 DAT_14317c9b0 = {
 };
 // 0x14317d600
 alignas(16) Sd_14317d600 DAT_14317d600 = {
-    (const void*)&FUN_1424e2a10,
+    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e2a10,
     (const void*)&FUN_14252f360,
     (const void*)&FUN_14252f410,
     (const void*)&FUN_14252f260,
@@ -4801,20 +4455,20 @@ alignas(16) Sd_14317d600 DAT_14317d600 = {
     (const void*)&FUN_142506ea0,
     (const void*)&FUN_142510dd0,
     (const void*)&FUN_142518c50,
-    (const void*)&FUN_1425190d0,
-    (const void*)&FUN_142519890,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425190d0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142519890,
     (const void*)&FUN_14251b0a0,
     DAT_1423dd4f0,
     DAT_1423dc0b0,
     DAT_14251ace0,
     DAT_1424f2400,
-    (const void*)&FUN_142508960,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142508960,
     DAT_142505f20,
     (const void*)&FUN_14251f430,
     DAT_1425185d0,
     (const void*)&FUN_14250c360,
     (const void*)&FUN_1424f7190,
-    (const void*)&FUN_142514d10,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142514d10,
     DAT_14250f820,
     DAT_142507590,
     (const void*)&FUN_142501920,
@@ -4835,8 +4489,8 @@ alignas(8) Sd_14317d6f8 DAT_14317d6f8 = {
     (const void*)&FUN_142506ea8,
     (const void*)&FUN_142510dd4,
     (const void*)&FUN_142518c58,
-    (const void*)&FUN_1425190d4,
-    (const void*)&FUN_142519898,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425190d4,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142519898,
     (const void*)&FUN_14251b0a8,
     DAT_1423dd4f0,
     (const void*)&FUN_1424e5470,
@@ -4861,8 +4515,8 @@ alignas(16) Sd_14317d7b0 DAT_14317d7b0 = {
     (const void*)&FUN_142506eb4,
     (const void*)&FUN_142510de0,
     (const void*)&FUN_142518c64,
-    (const void*)&FUN_1425190e0,
-    (const void*)&FUN_1425198a4,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425190e0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425198a4,
     (const void*)&FUN_14251b0b4,
     DAT_1423dd4f0,
     (const void*)&FUN_1424e5474,
@@ -4888,73 +4542,73 @@ alignas(16) Sd_14317d8c0 DAT_14317d8c0 = {
 };
 // 0x14317d8d8
 alignas(8) Sd_14317d8d8 DAT_14317d8d8 = {
-    (const void*)&FUN_1424e33f0,
+    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e33f0,
     DAT_142528740,
     (const void*)&FUN_1424eb2f0,
     (const void*)&FUN_1424eeae0,
-    (const void*)&FUN_1424eecb0,
+    (const void*)&::Scaleform::GFx::AS3::Sfr33CheckAvm,
     (const void*)&FUN_1424efb40,
-    DAT_1424f3910,
-    DAT_1424f73d0,
+    (const void*)&::Scaleform::GFx::AS3::Sfr33MovieRootCreateMovieDefRootNode,
+    (const void*)&::Scaleform::GFx::AS3::Sfr33MovieRootDoActions,
     (const void*)&FUN_142502cf0,
     (const void*)&FUN_1425046d0,
-    DAT_142504750,
+    (const void*)&::Scaleform::GFx::AS3::Sfr33QueueOwnerObject,
     (const void*)&FUN_142504b50,
     (const void*)&FUN_1425057e0,
     (const void*)&FUN_142504b40,
-    DAT_14250daa0,
+    (const void*)&FUN_14250daa0,
     DAT_142511530,
-    (const void*)&FUN_142518470,
-    (const void*)&FUN_1425184f0,
-    (const void*)&FUN_142518510,
-    (const void*)&FUN_142518520,
-    DAT_142518480,
-    (const void*)&FUN_14251ac40,
-    (const void*)&FUN_14251ac60,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518470,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425184f0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518510,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518520,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518480,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251ac40,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251ac60,
     (const void*)&FUN_142518a00,
     (const void*)&FUN_142518730,
-    (const void*)&FUN_14251d060,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251d060,
     (const void*)&FUN_14251e560,
     DAT_14251f250,
     DAT_14251e4b0,
-    (const void*)&FUN_1425210c0,
-    (const void*)&FUN_142525500,
-    (const void*)&FUN_142527390,
-    (const void*)&FUN_1425282c0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425210c0,
+    (const void*)&::Scaleform::GFx::AS3::Sfr31ResolveStickyVariables,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142527390,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425282c0,
     (const void*)&FUN_14252c4f0,
     (const void*)&FUN_1424f41f0,
     (const void*)&FUN_1424f42d0,
     DAT_1424f39c0,
     (const void*)&FUN_1424f2700,
     (const void*)&FUN_1424f3780,
-    (const void*)&FUN_14252a700,
+    (const void*)&::Scaleform::GFx::AS3::Sfr31MovieRootSetVariable,
     DAT_142510180,
-    (const void*)&FUN_14252acc0,
-    (const void*)&FUN_14252b3a0,
+    (const void*)&::Scaleform::GFx::AS3::Sfr31SetArray,
+    (const void*)&::Scaleform::GFx::AS3::Sfr31SetArraySize,
     DAT_142510770,
     (const void*)&FUN_142510240,
     DAT_142513f90,
-    DAT_142513210,
+    (const void*)&FUN_142513210,
     (const void*)&FUN_142513240,
     (const void*)&FUN_1425136f0,
-    (const void*)&FUN_14250ba00,
-    (const void*)&FUN_14250eef0,
-    DAT_14250f290,
-    (const void*)&FUN_14252e530,
-    (const void*)&FUN_1425262d0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14250ba00,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14250eef0,
+    (const void*)&FUN_14250f290,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252e530,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425262d0,
 };
 // 0x14317da88
 alignas(8) Sd_14317da88 DAT_14317da88 = {
     (const void*)&FUN_1424e1b7c,
-    (const void*)&FUN_14251bc40,
-    (const void*)&FUN_14251ac90,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251bc40,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251ac90,
 };
 // 0x14317daa0
 alignas(16) Sd_14317daa0 DAT_14317daa0 = {
     (const void*)&FUN_1424e1b88,
-    (const void*)&FUN_14251a1e0,
-    (const void*)&FUN_14251a3b0,
-    (const void*)&FUN_142530fb0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a1e0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a3b0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142530fb0,
     {
         0x49, 0x6d, 0x61, 0x67, 0x65, 0x20, 0x69, 0x73, 0x20, 0x6e, 0x6f, 0x74, 0x20, 0x63, 0x72, 0x65,
         0x61, 0x74, 0x65, 0x64, 0x3a, 0x20, 0x63, 0x61, 0x6e, 0x27, 0x74, 0x20, 0x66, 0x69, 0x6e, 0x64,
@@ -4965,18 +4619,18 @@ alignas(16) Sd_14317daa0 DAT_14317daa0 = {
 };
 // 0x14317dbe0
 alignas(16) Sd_14317dbe0 DAT_14317dbe0 = {
-    (const void*)&FUN_1424e26d0,
-    (const void*)&FUN_14252f320,
-    (const void*)&FUN_14252f3e0,
-    (const void*)&FUN_14252f220,
-    (const void*)&FUN_14252f460,
-    (const void*)&FUN_14252f2b0,
+    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e26d0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f320,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f3e0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f220,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f460,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f2b0,
     (const void*)&FUN_142506df0,
-    (const void*)&FUN_142510da0,
-    (const void*)&FUN_142518a10,
-    (const void*)&FUN_142518fe0,
-    (const void*)&FUN_1425191e0,
-    (const void*)&FUN_14251af20,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142510da0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518a10,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518fe0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425191e0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251af20,
     DAT_1423dd4f0,
     DAT_1423dc0b0,
     DAT_14251ace0,
@@ -4995,58 +4649,58 @@ alignas(16) Sd_14317dbe0 DAT_14317dbe0 = {
 // 0x14317dcb0
 alignas(16) Sd_14317dcb0 DAT_14317dcb0 = {
     (const void*)&FUN_1424e1ab0,
-    (const void*)&FUN_14252f330,
-    (const void*)&FUN_14252f3e4,
-    (const void*)&FUN_14252f230,
-    (const void*)&FUN_14252f464,
-    (const void*)&FUN_14252f2b4,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f330,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f3e4,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f230,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f464,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f2b4,
     (const void*)&FUN_142506df8,
-    (const void*)&FUN_142510da4,
-    (const void*)&FUN_142518a18,
-    (const void*)&FUN_142518ffc,
-    (const void*)&FUN_1425191e8,
-    (const void*)&FUN_14251af24,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142510da4,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518a18,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518ffc,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425191e8,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251af24,
     DAT_1423dd4f0,
     (const void*)&FUN_1424e5460,
     (const void*)&FUN_142508500,
     (const void*)&FUN_1424efde0,
     (const void*)&FUN_1424f1f50,
     (const void*)&FUN_142519d10,
-    (const void*)&FUN_14251a0d0,
-    (const void*)&FUN_14251a330,
-    (const void*)&FUN_14251a7f0,
-    (const void*)&FUN_142514280,
-    (const void*)&FUN_142514eb0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a0d0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a330,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a7f0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142514280,
+    (const void*)&::Scaleform::GFx::AS3::AvmButton_IsTabable,
 };
 // 0x14317dd68
 alignas(8) Sd_14317dd68 DAT_14317dd68 = {
     (const void*)&FUN_1424e1abc,
-    (const void*)&FUN_14252f33c,
-    (const void*)&FUN_14252f3f0,
-    (const void*)&FUN_14252f23c,
-    (const void*)&FUN_14252f470,
-    (const void*)&FUN_14252f2c0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f33c,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f3f0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f23c,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f470,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f2c0,
     (const void*)&FUN_142506e04,
-    (const void*)&FUN_142510db0,
-    (const void*)&FUN_142518a24,
-    (const void*)&FUN_142519008,
-    (const void*)&FUN_1425191f4,
-    (const void*)&FUN_14251af30,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142510db0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518a24,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142519008,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425191f4,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251af30,
     DAT_1423dd4f0,
     (const void*)&FUN_1424e5464,
     (const void*)&FUN_142508514,
     (const void*)&FUN_1424efde4,
     (const void*)&FUN_1424f1f54,
     (const void*)&FUN_142519d18,
-    (const void*)&FUN_14251a0d4,
-    (const void*)&FUN_14251a334,
-    (const void*)&FUN_14251a7f4,
-    (const void*)&FUN_142514284,
-    (const void*)&FUN_142514efc,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a0d4,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a334,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a7f4,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142514284,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142514efc,
     (const void*)&FUN_1424f2e90,
-    (const void*)&FUN_14251a830,
-    (const void*)&FUN_142518740,
-    (const void*)&FUN_14252e980,
+    (const void*)&::Scaleform::GFx::AS3::AvmButton_OnMouseEvent,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518740,
+    (const void*)&::Scaleform::GFx::AS3::Sfr31ButtonSwitchState,
     {
         0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x2e, 0x53, 0x69,
         0x6d, 0x70, 0x6c, 0x65, 0x42, 0x75, 0x74, 0x74, 0x6f, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -5054,18 +4708,18 @@ alignas(8) Sd_14317dd68 DAT_14317dd68 = {
 };
 // 0x14317ea80
 alignas(16) Sd_14317ea80 DAT_14317ea80 = {
-    (const void*)&FUN_1424e2ac0,
-    (const void*)&FUN_14252f3b0,
-    (const void*)&FUN_14252f440,
-    (const void*)&FUN_14252f290,
-    (const void*)&FUN_14252f4c0,
-    (const void*)&FUN_14252f300,
+    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e2ac0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f3b0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f440,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f290,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f4c0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f300,
     (const void*)&FUN_142506ed0,
-    (const void*)&FUN_142510df0,
-    (const void*)&FUN_142518fc0,
-    (const void*)&FUN_1425190f0,
-    (const void*)&FUN_1425198b0,
-    (const void*)&FUN_14251b0f0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142510df0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518fc0,
+    (const void*)&::Scaleform::GFx::AS3::AvmTextField_OnEventLoad,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425198b0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251b0f0,
     DAT_1423dd4f0,
     DAT_1423dc0b0,
     DAT_14251ace0,
@@ -5084,63 +4738,63 @@ alignas(16) Sd_14317ea80 DAT_14317ea80 = {
 // 0x14317eb50
 alignas(16) Sd_14317eb50 DAT_14317eb50 = {
     (const void*)&FUN_1424e1b58,
-    (const void*)&FUN_14252f3c0,
-    (const void*)&FUN_14252f444,
-    (const void*)&FUN_14252f294,
-    (const void*)&FUN_14252f4d0,
-    (const void*)&FUN_14252f304,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f3c0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f444,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f294,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f4d0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f304,
     (const void*)&FUN_142506ed8,
-    (const void*)&FUN_142510df4,
-    (const void*)&FUN_142518fc8,
-    (const void*)&FUN_1425191bc,
-    (const void*)&FUN_1425198b8,
-    (const void*)&FUN_14251b0f4,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142510df4,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518fc8,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425191bc,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425198b8,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251b0f4,
     DAT_1423dd4f0,
     (const void*)&FUN_1424e54f0,
     (const void*)&FUN_142508550,
     (const void*)&FUN_1424efe20,
     (const void*)&FUN_1424f1f80,
     (const void*)&FUN_142519ec0,
-    (const void*)&FUN_14251a0f0,
-    (const void*)&FUN_14251a350,
-    (const void*)&FUN_14251a810,
-    (const void*)&FUN_1425142e0,
-    (const void*)&FUN_142515050,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a0f0,
+    (const void*)&::Scaleform::GFx::AS3::AvmTextField_OnKeyEvent,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a810,
+    (const void*)&::Scaleform::GFx::AS3::Sfr27TextFieldTabCheck,
+    (const void*)&::Scaleform::GFx::AS3::AvmTextField_IsTabable,
 };
 // 0x14317ec08
 alignas(8) Sd_14317ec08 DAT_14317ec08 = {
     (const void*)&FUN_1424e1b64,
-    (const void*)&FUN_14252f3cc,
-    (const void*)&FUN_14252f450,
-    (const void*)&FUN_14252f2a0,
-    (const void*)&FUN_14252f4dc,
-    (const void*)&FUN_14252f310,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f3cc,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f450,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f2a0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f4dc,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14252f310,
     (const void*)&FUN_142506ee4,
-    (const void*)&FUN_142510e00,
-    (const void*)&FUN_142518fd4,
-    (const void*)&FUN_1425191c8,
-    (const void*)&FUN_1425198c4,
-    (const void*)&FUN_14251b100,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142510e00,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518fd4,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425191c8,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425198c4,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251b100,
     DAT_1423dd4f0,
     (const void*)&FUN_1424e54f4,
     (const void*)&FUN_142508554,
     (const void*)&FUN_1424efe24,
     (const void*)&FUN_1424f1f84,
     (const void*)&FUN_142519ec8,
-    (const void*)&FUN_14251a0f4,
-    (const void*)&FUN_14251a388,
-    (const void*)&FUN_14251a814,
-    (const void*)&FUN_142514304,
-    (const void*)&FUN_1425150b0,
-    (const void*)&FUN_14250ef30,
-    DAT_1425113d0,
-    (const void*)&FUN_142518360,
-    (const void*)&FUN_14251a500,
-    (const void*)&FUN_14251a8a0,
-    (const void*)&FUN_142518750,
-    (const void*)&FUN_14251ae60,
-    (const void*)&FUN_1425310d0,
-    (const void*)&FUN_142531250,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a0f4,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a388,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a814,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142514304,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425150b0,
+    (const void*)&::Scaleform::GFx::AS3::AvmTextField_GetStyleSheet,
+    (const void*)&::Scaleform::GFx::AS3::Sfr27TextFieldHasStyleSheet,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518360,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a500,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251a8a0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142518750,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251ae60,
+    (const void*)&::Scaleform::GFx::AS3::FUN_1425310d0,
+    (const void*)&::Scaleform::GFx::AS3::FUN_142531250,
     {
         0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x54, 0x65, 0x78, 0x74, 0x46,
         0x69, 0x65, 0x6c, 0x64, 0x00, 0x00, 0x00, 0x00, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x3a, 0x00, 0x00,
@@ -5203,7 +4857,7 @@ alignas(8) Sd_14317ef38 DAT_14317ef38 = {
     DAT_142500e50,
     DAT_142512620,
     DAT_142500250,
-    DAT_1424f9ce0,
+    (const void*)&::Scaleform::GFx::AS3::Sfr33UserDefinedFunctionExecute,
     (const void*)&FUN_14250b490,
 };
 // 0x14317eff8
@@ -5220,8 +4874,8 @@ alignas(8) Sd_14317eff8 DAT_14317eff8 = {
     DAT_142531630,
     DAT_142507540,
     DAT_1425265d0,
-    DAT_142509ad0,
-    DAT_142527300,
+    (const void*)&::Scaleform::GFx::AS3::Sfr33ArrayGetElement,
+    (const void*)&::Scaleform::GFx::AS3::Sfr31SetElement,
     DAT_142531550,
     DAT_14251f780,
     DAT_14251cbe0,
@@ -5231,11 +4885,11 @@ alignas(8) Sd_14317eff8 DAT_14317eff8 = {
     DAT_142526730,
     DAT_142510a70,
     DAT_142509850,
-    DAT_1425270e0,
+    (const void*)&::Scaleform::GFx::AS3::Sfr31SetDisplayMatrix,
     DAT_14250b3c0,
     DAT_1425278d0,
     DAT_142508560,
-    DAT_1425266c0,
+    (const void*)&::Scaleform::GFx::AS3::Sfr31SetCxform,
     DAT_14250f110,
     DAT_14252a360,
     DAT_14252a230,
@@ -5243,7 +4897,7 @@ alignas(8) Sd_14317eff8 DAT_14317eff8 = {
     DAT_1424ede80,
     DAT_142510b70,
     DAT_142510c30,
-    DAT_14252fd40,
+    (const void*)&::Scaleform::GFx::AS3::Sfr31ToString,
     DAT_14252a4f0,
     DAT_14250f980,
     DAT_1424f3d20,
@@ -5271,15 +4925,15 @@ alignas(8) Sd_14317eff8 DAT_14317eff8 = {
 };
 // 0x14317f848
 Sd_14317f848 DAT_14317f848 = {
-    (const void*)&FUN_1424e3a00,
+    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e3a00,
     (const void*)&FUN_14251aca0,
     (const void*)&FUN_14251acd0,
 };
 // 0x14317f860
 alignas(16) Sd_14317f860 DAT_14317f860 = {
-    (const void*)&FUN_1424e2c90,
-    (const void*)&FUN_14251ac80,
-    (const void*)&FUN_14251acc0,
+    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e2c90,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251ac80,
+    (const void*)&::Scaleform::GFx::AS3::FUN_14251acc0,
     {
         0x52, 0x65, 0x61, 0x64, 0x69, 0x6e, 0x67, 0x20, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x65, 0x64, 0x20,
         0x6d, 0x75, 0x6c, 0x74, 0x69, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x69, 0x6e, 0x20, 0x69, 0x74, 0x73,
@@ -6511,80 +6165,15 @@ alignas(16) Sd_14317fea0 DAT_14317fea0 = {
     },
 };
 // 0x143181a20
-alignas(16) Sd_143181a20 DAT_143181a20 = {
-    {
-        0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Vector",
-    "__AS3__.vec",
-    DAT_14313d990,
-    DAT_142547420,
-    {0},
-};
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_vec { alignas(16) extern const ClassInfo VectorCI = { 0xb, "Vector", "__AS3__.vec", (const TypeInfo*)DAT_14313d990, &::Scaleform::GFx::AS3::ClassTraits::fl_vec::Vector::MakeClassTraits, 0, 0, 0, 0, 0, 0, 0, 0 }; } } } }
 // 0x143181a70
-alignas(16) Sd_143181a70 DAT_143181a70 = {
-    {
-        0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Vector$object",
-    "__AS3__.vec",
-    DAT_14313d990,
-    DAT_142547190,
-    {
-        0x00, 0x00, 0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    &DAT_143a2dd50[0xe90],
-    {0},
-};
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_vec { alignas(16) extern const ClassInfo Vector_objectCI = { 0xb, "Vector$object", "__AS3__.vec", (const TypeInfo*)DAT_14313d990, &::Scaleform::GFx::AS3::ClassTraits::fl_vec::Vector_object::MakeClassTraits, 0, 0, 23, 0, 0, 0, (const ThunkInfo*)&DAT_143a2dd50[0xe90], 0 }; } } } }
 // 0x143181ac0
-alignas(16) Sd_143181ac0 DAT_143181ac0 = {
-    {
-        0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Vector$int",
-    "__AS3__.vec",
-    DAT_14313d990,
-    DAT_142546c50,
-    {
-        0x00, 0x00, 0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    &DAT_143a2dd50[0x10],
-    {0},
-};
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_vec { alignas(16) extern const ClassInfo Vector_intCI = { 0xb, "Vector$int", "__AS3__.vec", (const TypeInfo*)DAT_14313d990, &::Scaleform::GFx::AS3::ClassTraits::fl_vec::Vector_int::MakeClassTraits, 0, 0, 23, 0, 0, 0, (const ThunkInfo*)&DAT_143a2dd50[0x10], 0 }; } } } }
 // 0x143181b10
-alignas(16) Sd_143181b10 DAT_143181b10 = {
-    {
-        0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Vector$uint",
-    "__AS3__.vec",
-    DAT_14313d990,
-    DAT_142546da0,
-    {
-        0x00, 0x00, 0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    &DAT_143a2dd50[0x3b0],
-    {0},
-};
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_vec { alignas(16) extern const ClassInfo Vector_uintCI = { 0xb, "Vector$uint", "__AS3__.vec", (const TypeInfo*)DAT_14313d990, &::Scaleform::GFx::AS3::ClassTraits::fl_vec::Vector_uint::MakeClassTraits, 0, 0, 23, 0, 0, 0, (const ThunkInfo*)&DAT_143a2dd50[0x3b0], 0 }; } } } }
 // 0x143181b60
-alignas(16) Sd_143181b60 DAT_143181b60 = {
-    {
-        0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Vector$double",
-    "__AS3__.vec",
-    DAT_14313d990,
-    DAT_142546ef0,
-    {
-        0x00, 0x00, 0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    &DAT_143a2dd50[0x750],
-    {0},
-};
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_vec { alignas(16) extern const ClassInfo Vector_doubleCI = { 0xb, "Vector$double", "__AS3__.vec", (const TypeInfo*)DAT_14313d990, &::Scaleform::GFx::AS3::ClassTraits::fl_vec::Vector_double::MakeClassTraits, 0, 0, 23, 0, 0, 0, (const ThunkInfo*)&DAT_143a2dd50[0x750], 0 }; } } } }
 // 0x143181bb0
 alignas(16) Sd_143181bb0 DAT_143181bb0 = {
     {
@@ -6593,7 +6182,7 @@ alignas(16) Sd_143181bb0 DAT_143181bb0 = {
     "Vector$String",
     "__AS3__.vec",
     DAT_14313d990,
-    DAT_142547040,
+    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_vec::Vector_String::MakeClassTraits,
     {
         0x00, 0x00, 0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -6609,11 +6198,11 @@ alignas(16) Sd_143181bb0 DAT_143181bb0 = {
 };
 // 0x143183320
 alignas(16) Sd_143183320 DAT_143183320 = {
-    DAT_14256ba70,
+    (const void*)&::Scaleform::Render::FUN_14256ba70,
     DAT_14256e2e0,
     DAT_14256e350,
     DAT_14261ce60,
-    (const void*)&FUN_14256e920,
+    (const void*)&::Scaleform::Render::ContextImpl::FUN_14256e920,
     DAT_14261c910,
     DAT_14261e030,
     DAT_14261bfc0,
@@ -6622,16 +6211,16 @@ alignas(16) Sd_143183320 DAT_143183320 = {
 };
 // 0x143184be8
 alignas(8) Sd_143184be8 DAT_143184be8 = {
-    (const void*)&FUN_142591ed0,
-    (const void*)&FUN_1425924e0,
-    (const void*)&FUN_1425924f0,
-    (const void*)&FUN_1425925b0,
-    (const void*)&FUN_142591e70,
-    (const void*)&FUN_142591e10,
+    (const void*)&::Scaleform::GFx::FUN_142591ed0,
+    (const void*)&::Scaleform::GFx::FUN_1425924e0,
+    (const void*)&::Scaleform::GFx::FUN_1425924f0,
+    (const void*)&::Scaleform::GFx::FUN_1425925b0,
+    (const void*)&::Scaleform::GFx::FUN_142591e70,
+    (const void*)&::Scaleform::GFx::FUN_142591e10,
 };
 // 0x143184c18
 alignas(8) Sd_143184c18 DAT_143184c18 = {
-    (const void*)&FUN_142591fd0,
+    (const void*)&::Scaleform::GFx::FUN_142591fd0,
     DAT_142646630,
     DAT_142646dd0,
     DAT_142647090,
@@ -7497,7 +7086,7 @@ alignas(16) unsigned char DAT_1431892f0[0x100] = {
 };
 // 0x14318ec30
 alignas(16) Sd_14318ec30 DAT_14318ec30 = {
-    DAT_14261e1c0,
+    (const void*)&::Scaleform::GFx::FUN_14261e1c0,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
@@ -7523,7 +7112,7 @@ alignas(16) Sd_14318ec30 DAT_14318ec30 = {
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
-    (const void*)&FUN_14261e6b0,
+    (const void*)&::Scaleform::GFx::FUN_14261e6b0,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
@@ -7559,69 +7148,69 @@ alignas(16) Sd_14318ec30 DAT_14318ec30 = {
 };
 // 0x14318ee08
 alignas(8) Sd_14318ee08 DAT_14318ee08 = {
-    DAT_14261e1f0,
-    (const void*)&FUN_14261e2a0,
-    (const void*)&FUN_14261e600,
-    (const void*)&FUN_14261e550,
-    (const void*)&FUN_14261e2b0,
-    (const void*)&FUN_14261e540,
-    (const void*)&FUN_14261e2d0,
-    (const void*)&FUN_14261e630,
-    (const void*)&FUN_14261e5f0,
-    (const void*)&FUN_14261e6f0,
-    (const void*)&FUN_14261e650,
-    (const void*)&FUN_14261e660,
-    (const void*)&FUN_14261e720,
-    (const void*)&FUN_14261e4e0,
-    (const void*)&FUN_14261e520,
-    (const void*)&FUN_14261e530,
-    (const void*)&FUN_14261e500,
-    (const void*)&FUN_14261e510,
-    (const void*)&FUN_14261e4f0,
-    (const void*)&FUN_14261e3c0,
-    (const void*)&FUN_14261e6c0,
-    (const void*)&FUN_14261e6a0,
-    (const void*)&FUN_14261e610,
-    (const void*)&FUN_14261e700,
-    (const void*)&FUN_14261e690,
-    (const void*)&FUN_14261e620,
-    (const void*)&FUN_14261e6b0,
-    (const void*)&FUN_14261e640,
-    (const void*)&FUN_14261e670,
-    (const void*)&FUN_14261e680,
-    (const void*)&FUN_14261e6e0,
-    (const void*)&FUN_14261e430,
-    (const void*)&FUN_14261e5e0,
-    (const void*)&FUN_14261e5d0,
-    (const void*)&FUN_14261e5c0,
-    (const void*)&FUN_14261e250,
-    (const void*)&FUN_14261e590,
-    (const void*)&FUN_14261e2c0,
-    (const void*)&FUN_14261e220,
-    (const void*)&FUN_14261e560,
-    (const void*)&FUN_14261e240,
-    (const void*)&FUN_14261e580,
-    (const void*)&FUN_14261e230,
-    (const void*)&FUN_14261e570,
-    (const void*)&FUN_14261e260,
-    (const void*)&FUN_14261e5a0,
-    (const void*)&FUN_14261e280,
-    (const void*)&FUN_14261e5b0,
-    (const void*)&FUN_14261e450,
-    (const void*)&FUN_14261e440,
-    (const void*)&FUN_14261e6d0,
-    (const void*)&FUN_14261e3b0,
-    (const void*)&FUN_14261e290,
-    DAT_14261e400,
-    DAT_14261e3d0,
-    (const void*)&FUN_14261e270,
-    (const void*)&FUN_14261e2e0,
-    (const void*)&FUN_14261e300,
-    (const void*)&FUN_14261e2f0,
+    (const void*)&::Scaleform::GFx::FUN_14261e1f0,
+    (const void*)&::Scaleform::GFx::FUN_14261e2a0,
+    (const void*)&::Scaleform::GFx::FUN_14261e600,
+    (const void*)&::Scaleform::GFx::FUN_14261e550,
+    (const void*)&::Scaleform::GFx::FUN_14261e2b0,
+    (const void*)&::Scaleform::GFx::FUN_14261e540,
+    (const void*)&::Scaleform::GFx::FUN_14261e2d0,
+    (const void*)&::Scaleform::GFx::FUN_14261e630,
+    (const void*)&::Scaleform::GFx::FUN_14261e5f0,
+    (const void*)&::Scaleform::GFx::FUN_14261e6f0,
+    (const void*)&::Scaleform::GFx::FUN_14261e650,
+    (const void*)&::Scaleform::GFx::FUN_14261e660,
+    (const void*)&::Scaleform::GFx::FUN_14261e720,
+    (const void*)&::Scaleform::GFx::FUN_14261e4e0,
+    (const void*)&::Scaleform::GFx::FUN_14261e520,
+    (const void*)&::Scaleform::GFx::FUN_14261e530,
+    (const void*)&::Scaleform::GFx::FUN_14261e500,
+    (const void*)&::Scaleform::GFx::FUN_14261e510,
+    (const void*)&::Scaleform::GFx::FUN_14261e4f0,
+    (const void*)&::Scaleform::GFx::FUN_14261e3c0,
+    (const void*)&::Scaleform::GFx::FUN_14261e6c0,
+    (const void*)&::Scaleform::GFx::FUN_14261e6a0,
+    (const void*)&::Scaleform::GFx::FUN_14261e610,
+    (const void*)&::Scaleform::GFx::FUN_14261e700,
+    (const void*)&::Scaleform::GFx::FUN_14261e690,
+    (const void*)&::Scaleform::GFx::FUN_14261e620,
+    (const void*)&::Scaleform::GFx::FUN_14261e6b0,
+    (const void*)&::Scaleform::GFx::FUN_14261e640,
+    (const void*)&::Scaleform::GFx::FUN_14261e670,
+    (const void*)&::Scaleform::GFx::FUN_14261e680,
+    (const void*)&::Scaleform::GFx::FUN_14261e6e0,
+    (const void*)&::Scaleform::GFx::FUN_14261e430,
+    (const void*)&::Scaleform::GFx::FUN_14261e5e0,
+    (const void*)&::Scaleform::GFx::FUN_14261e5d0,
+    (const void*)&::Scaleform::GFx::FUN_14261e5c0,
+    (const void*)&::Scaleform::GFx::FUN_14261e250,
+    (const void*)&::Scaleform::GFx::FUN_14261e590,
+    (const void*)&::Scaleform::GFx::FUN_14261e2c0,
+    (const void*)&::Scaleform::GFx::FUN_14261e220,
+    (const void*)&::Scaleform::GFx::FUN_14261e560,
+    (const void*)&::Scaleform::GFx::FUN_14261e240,
+    (const void*)&::Scaleform::GFx::FUN_14261e580,
+    (const void*)&::Scaleform::GFx::FUN_14261e230,
+    (const void*)&::Scaleform::GFx::FUN_14261e570,
+    (const void*)&::Scaleform::GFx::FUN_14261e260,
+    (const void*)&::Scaleform::GFx::FUN_14261e5a0,
+    (const void*)&::Scaleform::GFx::FUN_14261e280,
+    (const void*)&::Scaleform::GFx::FUN_14261e5b0,
+    (const void*)&::Scaleform::GFx::FUN_14261e450,
+    (const void*)&::Scaleform::GFx::FUN_14261e440,
+    (const void*)&::Scaleform::GFx::FUN_14261e6d0,
+    (const void*)&::Scaleform::GFx::FUN_14261e3b0,
+    (const void*)&::Scaleform::GFx::FUN_14261e290,
+    (const void*)&::Scaleform::GFx::FUN_14261e400,
+    (const void*)&::Scaleform::GFx::FUN_14261e3d0,
+    (const void*)&::Scaleform::GFx::FUN_14261e270,
+    (const void*)&::Scaleform::GFx::FUN_14261e2e0,
+    (const void*)&::Scaleform::GFx::FUN_14261e300,
+    (const void*)&::Scaleform::GFx::FUN_14261e2f0,
 };
 // 0x14318efe8
 alignas(8) Sd_14318efe8 DAT_14318efe8 = {
-    DAT_142620160,
+    (const void*)&::Scaleform::GFx::FUN_142620160,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
@@ -7629,33 +7218,33 @@ alignas(8) Sd_14318efe8 DAT_14318efe8 = {
 };
 // 0x14318f020
 alignas(16) Sd_14318f020 DAT_14318f020 = {
-    DAT_1426203f0,
-    (const void*)&FUN_14261ff20,
+    (const void*)&::Scaleform::GFx::FUN_1426203f0,
+    (const void*)&::Scaleform::GFx::FUN_14261ff20,
 };
 // 0x14318f030
 alignas(16) Sd_14318f030 DAT_14318f030 = {
-    DAT_1426202f0,
+    (const void*)&::Scaleform::GFx::FUN_1426202f0,
 };
 // 0x14318f040
 alignas(16) Sd_14318f040 DAT_14318f040 = {
-    (const void*)&FUN_142620240,
+    (const void*)&::Scaleform::GFx::FUN_142620240,
 };
 // 0x14318f048
 alignas(8) Sd_14318f048 DAT_14318f048 = {
-    DAT_142620370,
+    (const void*)&::Scaleform::GFx::FUN_142620370,
     (const void*)&FUN_142620100,
 };
 // 0x14318f060
 alignas(16) Sd_14318f060 DAT_14318f060 = {
-    DAT_1426201d0,
+    (const void*)&::Scaleform::GFx::FUN_1426201d0,
 };
 // 0x14318f068
 alignas(8) Sd_14318f068 DAT_14318f068 = {
-    (const void*)&FUN_142620460,
-    (const void*)&FUN_142622d00,
-    (const void*)&FUN_142622c90,
-    (const void*)&FUN_1426204d0,
-    (const void*)&FUN_1426204c0,
+    (const void*)&::Scaleform::GFx::FUN_142620460,
+    (const void*)&::Scaleform::GFx::FUN_142622d00,
+    (const void*)&::Scaleform::GFx::FUN_142622c90,
+    (const void*)&::Scaleform::GFx::FUN_1426204d0,
+    (const void*)&::Scaleform::GFx::FUN_1426204c0,
     {
         0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x20, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x66, 0x61, 0x63, 0x65,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -8139,94 +7728,59 @@ alignas(8) Sd_1431c51e8 DAT_1431c51e8 = {
     },
 };
 // 0x143212f60
-alignas(16) Sd_143212f60 DAT_143212f60 = {
-    "getFontList",
-    (const void*)&FUN_1428ebd60,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::TextFieldCtorFunction::StaticFunctionTable[] = {
+    { "getFontList", &::Scaleform::GFx::AS2::TextFieldCtorFunction::GetFontList },
+    { 0, 0 },
 };
 // 0x143212f80
-alignas(16) Sd_143212f80 DAT_143212f80 = {
-    "addRequestHeader",
-    (const void*)&FUN_1428ec0b0,
-    "decode",
-    (const void*)&FUN_1428ec130,
-    "getBytesLoaded",
-    DAT_1428ec290,
-    "getBytesTotal",
-    DAT_1428ec330,
-    "load",
-    (const void*)&FUN_1428ec3d0,
-    "send",
-    (const void*)&FUN_1428ec510,
-    "sendAndLoad",
-    (const void*)&FUN_1428ec590,
-    "toString",
-    DAT_1428ec610,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::LoadVarsProto::FunctionTable[] = {
+    { "addRequestHeader", &::Scaleform::GFx::AS2::LoadVarsProto::AddRequestHeader },
+    { "decode", &::Scaleform::GFx::AS2::LoadVarsProto::Decode },
+    { "getBytesLoaded", &::Scaleform::GFx::AS2::LoadVarsProto::GetBytesLoaded },
+    { "getBytesTotal", &::Scaleform::GFx::AS2::LoadVarsProto::GetBytesTotal },
+    { "load", &::Scaleform::GFx::AS2::LoadVarsProto::Load },
+    { "send", &::Scaleform::GFx::AS2::LoadVarsProto::Send },
+    { "sendAndLoad", &::Scaleform::GFx::AS2::LoadVarsProto::SendAndLoad },
+    { "toString", &::Scaleform::GFx::AS2::LoadVarsProto::ToString },
+    { 0, 0 },
 };
 // 0x143213010
-alignas(16) Sd_143213010 DAT_143213010 = {
-    "concat",
-    DAT_1428ef180,
-    "toString",
-    DAT_1428ef400,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::ColorTransformProto::FunctionTable[] = {
+    { "concat", &::Scaleform::GFx::AS2::ColorTransformProto::Concat },
+    { "toString", &::Scaleform::GFx::AS2::ColorTransformProto::ToString },
+    { 0, 0 },
 };
 // 0x143213040
-alignas(16) Sd_143213040 DAT_143213040 = {
-    "addListener",
-    DAT_1428ef8b0,
-    "broadcastMessage",
-    DAT_1428ef8b0,
-    "getBeginIndex",
-    DAT_1428ef8b0,
-    "getCaretIndex",
-    DAT_1428ef8b0,
-    "getEndIndex",
-    DAT_1428ef8b0,
-    "getFocus",
-    DAT_1428ef8b0,
-    "setFocus",
-    DAT_1428ef8b0,
-    "setSelection",
-    DAT_1428ef8b0,
-    "removeListener",
-    DAT_1428ef8b0,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::SelectionProto::FunctionTable[] = {
+    { "addListener", &::Scaleform::GFx::AS2::GFx_KeyFuncStub },
+    { "broadcastMessage", &::Scaleform::GFx::AS2::GFx_KeyFuncStub },
+    { "getBeginIndex", &::Scaleform::GFx::AS2::GFx_KeyFuncStub },
+    { "getCaretIndex", &::Scaleform::GFx::AS2::GFx_KeyFuncStub },
+    { "getEndIndex", &::Scaleform::GFx::AS2::GFx_KeyFuncStub },
+    { "getFocus", &::Scaleform::GFx::AS2::GFx_KeyFuncStub },
+    { "setFocus", &::Scaleform::GFx::AS2::GFx_KeyFuncStub },
+    { "setSelection", &::Scaleform::GFx::AS2::GFx_KeyFuncStub },
+    { "removeListener", &::Scaleform::GFx::AS2::GFx_KeyFuncStub },
+    { 0, 0 },
 };
 // 0x1432130e0
-alignas(16) Sd_1432130e0 DAT_1432130e0 = {
-    "clone",
-    DAT_1428ef8d0,
-    "contains",
-    DAT_1428efa40,
-    "containsPoint",
-    DAT_1428efc90,
-    "containsRectangle",
-    DAT_1428eff60,
-    "equals",
-    DAT_1428f0220,
-    "inflate",
-    DAT_1428f03e0,
-    "inflatePoint",
-    DAT_1428f05f0,
-    "intersection",
-    (const void*)&FUN_1428f0760,
-    "intersects",
-    (const void*)&FUN_1428f0b20,
-    "isEmpty",
-    DAT_1428f0e60,
-    "offset",
-    (const void*)&FUN_1428f1040,
-    "offsetPoint",
-    DAT_1428f12e0,
-    "setEmpty",
-    DAT_1428f1710,
-    "toString",
-    DAT_1428f1780,
-    "union",
-    DAT_1428f1a60,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::RectangleProto::FunctionTable[] = {
+    { "clone", &::Scaleform::GFx::AS2::RectangleProto::Clone },
+    { "contains", &::Scaleform::GFx::AS2::RectangleProto::Contains },
+    { "containsPoint", &::Scaleform::GFx::AS2::RectangleProto::ContainsPoint },
+    { "containsRectangle", &::Scaleform::GFx::AS2::RectangleProto::ContainsRectangle },
+    { "equals", &::Scaleform::GFx::AS2::RectangleProto::Equals },
+    { "inflate", &::Scaleform::GFx::AS2::RectangleProto::Inflate },
+    { "inflatePoint", &::Scaleform::GFx::AS2::RectangleProto::InflatePoint },
+    { "intersection", &::Scaleform::GFx::AS2::RectangleProto::Intersection },
+    { "intersects", &::Scaleform::GFx::AS2::RectangleProto::Intersects },
+    { "isEmpty", &::Scaleform::GFx::AS2::RectangleProto::IsEmpty },
+    { "offset", &::Scaleform::GFx::AS2::RectangleProto::Offset },
+    { "offsetPoint", &::Scaleform::GFx::AS2::RectangleProto::OffsetPoint },
+    { "setEmpty", &::Scaleform::GFx::AS2::RectangleProto::SetEmpty },
+    { "toString", &::Scaleform::GFx::AS2::RectangleProto::ToString },
+    { "union", &::Scaleform::GFx::AS2::RectangleProto::Union },
+    { 0, 0 },
 };
 // 0x1432131e0
 alignas(16) Sd_1432131e0 DAT_1432131e0 = {
@@ -8257,678 +7811,487 @@ alignas(16) Sd_1432131e0 DAT_1432131e0 = {
     },
 };
 // 0x143213250
-alignas(16) Sd_143213250 DAT_143213250 = {
-    "concat",
-    DAT_1428f4e60,
-    "join",
-    DAT_1428f4fd0,
-    "pop",
-    DAT_1428f5170,
-    "push",
-    DAT_1428f5240,
-    "reverse",
-    DAT_1428f5340,
-    "shift",
-    DAT_1428f53e0,
-    "slice",
-    DAT_1428f5530,
-    "sort",
-    (const void*)&FUN_1428f5740,
-    "sortOn",
-    (const void*)&FUN_1428f5d60,
-    "splice",
-    (const void*)&FUN_1428f65c0,
-    "toString",
-    DAT_1428f6880,
-    "unshift",
-    DAT_1428f6a10,
-    "valueOf",
-    DAT_1428f6b30,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::ArrayProto::FunctionTable[] = {
+    { "concat", &::Scaleform::GFx::AS2::ArrayObject::ArrayConcat },
+    { "join", &::Scaleform::GFx::AS2::ArrayObject::ArrayJoin },
+    { "pop", &::Scaleform::GFx::AS2::ArrayObject::ArrayPop },
+    { "push", &::Scaleform::GFx::AS2::ArrayObject::ArrayPush },
+    { "reverse", &::Scaleform::GFx::AS2::ArrayObject::ArrayReverse },
+    { "shift", &::Scaleform::GFx::AS2::ArrayObject::ArrayShift },
+    { "slice", &::Scaleform::GFx::AS2::ArrayObject::ArraySlice },
+    { "sort", &::Scaleform::GFx::AS2::ArrayObject::ArraySort },
+    { "sortOn", &::Scaleform::GFx::AS2::ArrayObject::ArraySortOn },
+    { "splice", &::Scaleform::GFx::AS2::ArrayObject::ArraySplice },
+    { "toString", &::Scaleform::GFx::AS2::ArrayObject::ArrayValueOf },
+    { "unshift", &::Scaleform::GFx::AS2::ArrayObject::ArrayUnshift },
+    { "valueOf", &::Scaleform::GFx::AS2::ArrayObject::ArrayToString },
+    { 0, 0 },
 };
 // 0x143213330
-alignas(16) Sd_143213330 DAT_143213330 = {
-    "toString",
-    DAT_1428ed580,
-    "valueOf",
-    DAT_1428ed580,
-    "clone",
-    DAT_1428ed9e0,
-    "concat",
-    DAT_1428edaf0,
-    "createBox",
-    DAT_1428edc40,
-    "createGradientBox",
-    DAT_1428edfc0,
-    "deltaTransformPoint",
-    (const void*)&FUN_1428ee370,
-    "identity",
-    DAT_1428ee770,
-    "invert",
-    DAT_1428ee800,
-    "rotate",
-    DAT_1428ee8b0,
-    "scale",
-    DAT_1428ee9e0,
-    "transformPoint",
-    (const void*)&FUN_1428eeb50,
-    "translate",
-    DAT_1428ef010,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::MatrixProto::FunctionTable[] = {
+    { "toString", &::Scaleform::GFx::AS2::MatrixProto::ToString },
+    { "valueOf", &::Scaleform::GFx::AS2::MatrixProto::ToString },
+    { "clone", &::Scaleform::GFx::AS2::MatrixProto::Clone },
+    { "concat", &::Scaleform::GFx::AS2::MatrixProto::Concat },
+    { "createBox", &::Scaleform::GFx::AS2::MatrixProto::CreateBox },
+    { "createGradientBox", &::Scaleform::GFx::AS2::MatrixProto::CreateGradientBox },
+    { "deltaTransformPoint", &::Scaleform::GFx::AS2::MatrixProto::DeltaTransformPoint },
+    { "identity", &::Scaleform::GFx::AS2::MatrixProto::Identity },
+    { "invert", &::Scaleform::GFx::AS2::MatrixProto::Invert },
+    { "rotate", &::Scaleform::GFx::AS2::MatrixProto::Rotate },
+    { "scale", &::Scaleform::GFx::AS2::MatrixProto::Scale },
+    { "transformPoint", &::Scaleform::GFx::AS2::MatrixProto::TransformPoint },
+    { "translate", &::Scaleform::GFx::AS2::MatrixProto::Translate },
+    { 0, 0 },
 };
 // 0x143213410
-alignas(16) Sd_143213410 DAT_143213410 = {
-    "addListener",
-    DAT_1428f1e30,
-    "removeListener",
-    DAT_1428f1e30,
-    "show",
-    DAT_1428f1e30,
-    "hide",
-    DAT_1428f1e30,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::MouseProto::FunctionTable[] = {
+    { "addListener", &::Scaleform::GFx::AS2::GFx_BitmapDataFuncStub },
+    { "removeListener", &::Scaleform::GFx::AS2::GFx_BitmapDataFuncStub },
+    { "show", &::Scaleform::GFx::AS2::GFx_BitmapDataFuncStub },
+    { "hide", &::Scaleform::GFx::AS2::GFx_BitmapDataFuncStub },
+    { 0, 0 },
 };
 // 0x143213460
-alignas(16) Sd_143213460 DAT_143213460 = {
-    "addListener",
-    DAT_1428fbd10,
-    "broadcastMessage",
-    (const void*)&FUN_1428fbdc0,
-    "removeListener",
-    (const void*)&FUN_1428fbea0,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::AsBroadcasterProto::FunctionTable[] = {
+    { "addListener", &::Scaleform::GFx::AS2::AsBroadcasterProto::AddListener },
+    { "broadcastMessage", &::Scaleform::GFx::AS2::AsBroadcasterProto::BroadcastMessage },
+    { "removeListener", &::Scaleform::GFx::AS2::AsBroadcasterProto::RemoveListener },
+    { 0, 0 },
 };
 alignas(16) unsigned char DAT_1432134a0[0x10];                  // 0x1432134a0
 // 0x1432134b0
-alignas(16) Sd_1432134b0 DAT_1432134b0 = {
-    "loadBitmap",
-    DAT_1428f1e50,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::BitmapDataProto::FunctionTable[] = {
+    { "loadBitmap", &::Scaleform::GFx::AS2::GFx_FuncStub },
+    { 0, 0 },
 };
 // 0x1432134d0
-alignas(16) Sd_1432134d0 DAT_1432134d0 = {
-    "loadBitmap",
-    (const void*)&FUN_1428f1e70,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::BitmapDataCtorFunction::StaticFunctionTable[] = {
+    { "loadBitmap", &::Scaleform::GFx::AS2::BitmapDataCtorFunction::LoadBitmapA },
+    { 0, 0 },
 };
 // 0x1432134f0
-alignas(16) Sd_1432134f0 DAT_1432134f0 = {
-    "getProgress",
-    (const void*)&FUN_1428eb050,
-    "loadClip",
-    (const void*)&FUN_1428eb340,
-    "unloadClip",
-    (const void*)&FUN_1428eb6d0,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::MovieClipLoaderProto::FunctionTable[] = {
+    { "getProgress", &::Scaleform::GFx::AS2::MovieClipLoaderProto::GetProgress },
+    { "loadClip", &::Scaleform::GFx::AS2::MovieClipLoaderProto::LoadClip },
+    { "unloadClip", &::Scaleform::GFx::AS2::MovieClipLoaderProto::UnloadClip },
+    { 0, 0 },
 };
 // 0x143213530
-alignas(16) Sd_143213530 DAT_143213530 = {
-    "add",
-    DAT_1428f2040,
-    "clone",
-    DAT_1428f2250,
-    "equals",
-    DAT_1428f2430,
-    "normalize",
-    DAT_1428f2570,
-    "offset",
-    (const void*)&FUN_1428f2790,
-    "subtract",
-    DAT_1428f2970,
-    "toString",
-    DAT_1428f2b90,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::PointProto::FunctionTable[] = {
+    { "add", &::Scaleform::GFx::AS2::PointProto::Add },
+    { "clone", &::Scaleform::GFx::AS2::PointProto::Clone },
+    { "equals", &::Scaleform::GFx::AS2::PointProto::Equals },
+    { "normalize", &::Scaleform::GFx::AS2::PointProto::Normalize },
+    { "offset", &::Scaleform::GFx::AS2::PointProto::Offset },
+    { "subtract", &::Scaleform::GFx::AS2::PointProto::Subtract },
+    { "toString", &::Scaleform::GFx::AS2::PointProto::ToString },
+    { 0, 0 },
 };
 // 0x1432135b0
 alignas(16) Sd_1432135b0 DAT_1432135b0 = {
     "interpolate",
-    DAT_1428f3240,
+    (const void*)SfSlotAccess::PointCtorFunction_Interpolate,
     "distance",
     (const void*)&FUN_1428f2e40,
     "polar",
-    DAT_1428f3530,
+    (const void*)SfSlotAccess::PointCtorFunction_Polar,
     {0},
 };
 // 0x1432135f0
-alignas(16) Sd_1432135f0 DAT_1432135f0 = {
-    "getDepth",
-    DAT_142900f50,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::ButtonProto::FunctionTable[] = {
+    { "getDepth", &::Scaleform::GFx::AS2::AvmCharacter::CharacterGetDepth },
+    { 0, 0 },
 };
 // 0x143213610
 alignas(16) Sd_143213610 DAT_143213610 = {
     "fromCharCode",
-    DAT_1428f4bc0,
+    (const void*)SfSlotAccess::StringCtorFunction_StringFromCharCode,
     {0},
 };
 // 0x143213630
-alignas(16) Sd_143213630 DAT_143213630 = {
-    "toString",
-    DAT_1428f4cd0,
-    "valueOf",
-    DAT_1428f4da0,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::BooleanProto::FunctionTable[] = {
+    { "toString", &::Scaleform::GFx::AS2::GAS_BooleanToString },
+    { "valueOf", &::Scaleform::GFx::AS2::GAS_BooleanValueOf },
+    { 0, 0 },
 };
 // 0x143213660
-alignas(16) Sd_143213660 DAT_143213660 = {
-    "addListener",
-    DAT_1428f4e40,
-    "removeListener",
-    DAT_1428f4e40,
-    "broadcastMessage",
-    DAT_1428f4e40,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::StageProto::FunctionTable[] = {
+    { "addListener", &::Scaleform::GFx::AS2::GFx_MouseFuncStub },
+    { "removeListener", &::Scaleform::GFx::AS2::GFx_MouseFuncStub },
+    { "broadcastMessage", &::Scaleform::GFx::AS2::GFx_MouseFuncStub },
+    { 0, 0 },
 };
 // 0x1432136a0
-alignas(16) Sd_1432136a0 DAT_1432136a0 = {
-    "clone",
-    DAT_1428f6cc0,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::DropShadowFilterProto::FunctionTable[] = {
+    { "clone", &::Scaleform::GFx::AS2::DropShadowFilterProto::Clone },
+    { 0, 0 },
 };
 // 0x1432136c0
-alignas(16) Sd_1432136c0 DAT_1432136c0 = {
-    "setTransform",
-    DAT_1428ec780,
-    "getTransform",
-    (const void*)&FUN_1428eccf0,
-    "setRGB",
-    DAT_1428ed2a0,
-    "getRGB",
-    (const void*)&FUN_1428ed450,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::ColorProto::FunctionTable[] = {
+    { "setTransform", &::Scaleform::GFx::AS2::ColorProto::SetTransform },
+    { "getTransform", &::Scaleform::GFx::AS2::ColorProto::GetTransform },
+    { "setRGB", &::Scaleform::GFx::AS2::ColorProto::SetRGB },
+    { "getRGB", &::Scaleform::GFx::AS2::ColorProto::GetRGB },
+    { 0, 0 },
 };
 // 0x143213710
-alignas(16) Sd_143213710 DAT_143213710 = {
-    "clone",
-    DAT_1428f7290,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::GlowFilterProto::FunctionTable[] = {
+    { "clone", &::Scaleform::GFx::AS2::GlowFilterProto::Clone },
+    { 0, 0 },
 };
 // 0x143213730
-alignas(16) Sd_143213730 DAT_143213730 = {
-    "clone",
-    DAT_1428f7c10,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::BlurFilterProto::FunctionTable[] = {
+    { "clone", &::Scaleform::GFx::AS2::BlurFilterProto::Clone },
+    { 0, 0 },
 };
 // 0x143213750
-alignas(16) Sd_143213750 DAT_143213750 = {
-    "clone",
-    DAT_1428f82d0,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::BevelFilterProto::FunctionTable[] = {
+    { "clone", &::Scaleform::GFx::AS2::BevelFilterProto::Clone },
+    { 0, 0 },
 };
 // 0x143213770
-alignas(16) Sd_143213770 DAT_143213770 = {
-    "charAt",
-    DAT_1428f37a0,
-    "charCodeAt",
-    DAT_1428f3910,
-    "concat",
-    DAT_1428f3a40,
-    "indexOf",
-    DAT_1428f3be0,
-    "lastIndexOf",
-    DAT_1428f3e70,
-    "localeCompare",
-    DAT_1428f40d0,
-    "slice",
-    DAT_1428f4240,
-    "split",
-    DAT_1428f4420,
-    "substr",
-    DAT_1428f4610,
-    "substring",
-    DAT_1428f47b0,
-    "toLowerCase",
-    DAT_1428f4980,
-    "toString",
-    DAT_1428f4a20,
-    "toUpperCase",
-    DAT_1428f4aa0,
-    "valueOf",
-    DAT_1428f4b40,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::StringProto::FunctionTable[] = {
+    { "charAt", &::Scaleform::GFx::AS2::StringProto::StringCharAt },
+    { "charCodeAt", &::Scaleform::GFx::AS2::StringProto::StringCharCodeAt },
+    { "concat", &::Scaleform::GFx::AS2::StringProto::StringConcat },
+    { "indexOf", &::Scaleform::GFx::AS2::StringProto::StringIndexOf },
+    { "lastIndexOf", &::Scaleform::GFx::AS2::StringProto::StringLastIndexOf },
+    { "localeCompare", &::Scaleform::GFx::AS2::StringProto::StringLocaleCompare },
+    { "slice", &::Scaleform::GFx::AS2::StringProto::StringSlice },
+    { "split", &::Scaleform::GFx::AS2::StringProto::StringSplit },
+    { "substr", &::Scaleform::GFx::AS2::StringProto::StringSubstr },
+    { "substring", &::Scaleform::GFx::AS2::StringProto::StringSubstring },
+    { "toLowerCase", &::Scaleform::GFx::AS2::StringProto::StringToLowerCase },
+    { "toString", &::Scaleform::GFx::AS2::StringProto::StringToString },
+    { "toUpperCase", &::Scaleform::GFx::AS2::StringProto::StringToUpperCase },
+    { "valueOf", &::Scaleform::GFx::AS2::StringProto::StringValueOf },
+    { 0, 0 },
 };
 // 0x143213860
-alignas(16) Sd_143213860 DAT_143213860 = {
-    "clone",
-    DAT_1428faed0,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::ColorMatrixFilterProto::FunctionTable[] = {
+    { "clone", &::Scaleform::GFx::AS2::ColorMatrixFilterProto::Clone },
+    { 0, 0 },
 };
 // 0x143213880
-alignas(16) Sd_143213880 DAT_143213880 = {
-    "clear",
-    DAT_1428f86b0,
-    "getStyle",
-    (const void*)&FUN_1428f8720,
-    "getStyleNames",
-    (const void*)&FUN_1428f9630,
-    "load",
-    (const void*)&FUN_1428f99f0,
-    "parseCSS",
-    DAT_1428f9ba0,
-    "setStyle",
-    (const void*)&FUN_1428f9cf0,
-    "transform",
-    (const void*)&FUN_1428fa620,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::StyleSheetProto::FunctionTable[] = {
+    { "clear", &::Scaleform::GFx::AS2::StyleSheetProto::Clear },
+    { "getStyle", &::Scaleform::GFx::AS2::StyleSheetProto::GetStyle },
+    { "getStyleNames", &::Scaleform::GFx::AS2::StyleSheetProto::GetStyleNames },
+    { "load", &::Scaleform::GFx::AS2::StyleSheetProto::Load },
+    { "parseCSS", &::Scaleform::GFx::AS2::StyleSheetProto::ParseCSS },
+    { "setStyle", &::Scaleform::GFx::AS2::StyleSheetProto::SetStyle },
+    { "transform", &::Scaleform::GFx::AS2::StyleSheetProto::Transform },
+    { 0, 0 },
 };
 // 0x143213900
 alignas(16) Sd_143213900 DAT_143213900 = {
     "abs",
-    DAT_1428fb110,
+    (const void*)SfSlotAccess::MathCtorFunction_Abs,
     "acos",
-    DAT_1428fb1a0,
+    (const void*)SfSlotAccess::MathCtorFunction_Acos,
     "asin",
-    DAT_1428fb220,
+    (const void*)SfSlotAccess::MathCtorFunction_Asin,
     "atan",
-    DAT_1428fb2a0,
+    (const void*)SfSlotAccess::MathCtorFunction_Atan,
     "atan2",
-    DAT_1428fb720,
+    (const void*)SfSlotAccess::MathCtorFunction_Atan2,
     "ceil",
-    DAT_1428fb320,
+    (const void*)SfSlotAccess::MathCtorFunction_Ceil,
     "cos",
-    DAT_1428fb3a0,
+    (const void*)SfSlotAccess::MathCtorFunction_Cos,
     "exp",
-    DAT_1428fb420,
+    (const void*)SfSlotAccess::MathCtorFunction_Exp,
     "floor",
-    DAT_1428fb4a0,
+    (const void*)SfSlotAccess::MathCtorFunction_Floor,
     "log",
-    DAT_1428fb520,
+    (const void*)SfSlotAccess::MathCtorFunction_Log,
     "max",
-    DAT_1428fb800,
+    (const void*)SfSlotAccess::MathCtorFunction_Max,
     "min",
-    DAT_1428fb8d0,
+    (const void*)SfSlotAccess::MathCtorFunction_Min,
     "pow",
-    DAT_1428fb9a0,
+    (const void*)SfSlotAccess::MathCtorFunction_Pow,
     "random",
-    DAT_1428fba80,
+    (const void*)SfSlotAccess::MathCtorFunction_Random,
     "round",
-    DAT_1428fbae0,
+    (const void*)SfSlotAccess::MathCtorFunction_Round,
     "sin",
-    DAT_1428fb5a0,
+    (const void*)SfSlotAccess::MathCtorFunction_Sin,
     "sqrt",
-    DAT_1428fb620,
+    (const void*)SfSlotAccess::MathCtorFunction_Sqrt,
     "tan",
-    DAT_1428fb6a0,
+    (const void*)SfSlotAccess::MathCtorFunction_Tan,
     {0},
 };
 // 0x143213a30
 alignas(16) Sd_143213a30 DAT_143213a30 = {
     "initialize",
-    DAT_1428fc080,
+    (const void*)SfSlotAccess::AsBroadcasterCtorFunction_Initialize,
     {0},
 };
 // 0x143213a50
-alignas(16) Sd_143213a50 DAT_143213a50 = {
-    "UTC",
-    (const void*)&FUN_1428fed10,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::DateCtorFunction::StaticFunctionTable[] = {
+    { "UTC", (::Scaleform::GFx::AS2::FunctionCFunc)&FUN_1428fed10 },
+    { 0, 0 },
 };
 // 0x143213a70
-alignas(16) Sd_143213a70 DAT_143213a70 = {
-    "getAscii",
-    DAT_1428ff0b0,
-    "getCode",
-    DAT_1428ff160,
-    "isDown",
-    DAT_1428ff220,
-    "isToggled",
-    DAT_1428ff360,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::KeyCtorFunction::FunctionTable[] = {
+    { "getAscii", &::Scaleform::GFx::AS2::KeyCtorFunction::KeyGetAscii },
+    { "getCode", &::Scaleform::GFx::AS2::KeyCtorFunction::KeyGetCode },
+    { "isDown", &::Scaleform::GFx::AS2::KeyCtorFunction::KeyIsDown },
+    { "isToggled", &::Scaleform::GFx::AS2::KeyCtorFunction::KeyIsToggled },
+    { 0, 0 },
 };
 // 0x143213ac0
-alignas(16) Sd_143213ac0 DAT_143213ac0 = {
-    "getTextExtent",
-    (const void*)&FUN_1429006a0,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::TextFormatProto::FunctionTable[] = {
+    { "getTextExtent", &::Scaleform::GFx::AS2::TextFormatProto::GetTextExtent },
+    { 0, 0 },
 };
 // 0x143213ae0
-alignas(16) Sd_143213ae0 DAT_143213ae0 = {
-    "getDate",
-    DAT_1428fc160,
-    "getDay",
-    DAT_1428fc350,
-    "getFullYear",
-    DAT_1428fc410,
-    "getHours",
-    DAT_1428fc490,
-    "getMilliseconds",
-    DAT_1428fc520,
-    "getMinutes",
-    DAT_1428fc5c0,
-    "getMonth",
-    DAT_1428fc680,
-    "getSeconds",
-    DAT_1428fc7e0,
-    "getTime",
-    DAT_1428fc8a0,
-    "getTimezoneOffset",
-    DAT_1428fc920,
-    "getYear",
-    DAT_1428fc9b0,
-    "getUTCDate",
-    DAT_1428fd580,
-    "getUTCDay",
-    DAT_1428fd770,
-    "getUTCFullYear",
-    DAT_1428fd830,
-    "getUTCHours",
-    DAT_1428fd8b0,
-    "getUTCMilliseconds",
-    DAT_1428fd940,
-    "getUTCMinutes",
-    DAT_1428fd9e0,
-    "getUTCMonth",
-    DAT_1428fdaa0,
-    "getUTCSeconds",
-    DAT_1428fdc00,
-    "getUTCYear",
-    DAT_1428fdcc0,
-    "setDate",
-    (const void*)&FUN_1428fca40,
-    "setFullYear",
-    (const void*)&FUN_1428fcbf0,
-    "setHours",
-    DAT_1428fcd60,
-    "setMilliseconds",
-    DAT_1428fce60,
-    "setMinutes",
-    DAT_1428fcf60,
-    "setMonth",
-    DAT_1428fd070,
-    "setSeconds",
-    DAT_1428fd230,
-    "setTime",
-    DAT_1428fd340,
-    "setYear",
-    (const void*)&FUN_1428fd400,
-    "setUTCDate",
-    (const void*)&FUN_1428fdd50,
-    "setUTCFullYear",
-    (const void*)&FUN_1428fdef0,
-    "setUTCHours",
-    DAT_1428fe050,
-    "setUTCMilliseconds",
-    DAT_1428fe140,
-    "setUTCMinutes",
-    DAT_1428fe230,
-    "setUTCSeconds",
-    DAT_1428fe560,
-    "setUTCMonth",
-    DAT_1428fe340,
-    "setUTCYear",
-    (const void*)&FUN_1428fe670,
-    "toString",
-    DAT_1428fe7e0,
-    "valueOf",
-    DAT_1428fec90,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::DateProto::FunctionTable[] = {
+    { "getDate", &::Scaleform::GFx::AS2::DateProto::DateGetDate },
+    { "getDay", &::Scaleform::GFx::AS2::DateProto::DateGetDay },
+    { "getFullYear", &::Scaleform::GFx::AS2::DateProto::DateGetFullYear },
+    { "getHours", &::Scaleform::GFx::AS2::DateProto::DateGetHours },
+    { "getMilliseconds", &::Scaleform::GFx::AS2::DateProto::DateGetMilliseconds },
+    { "getMinutes", &::Scaleform::GFx::AS2::DateProto::DateGetMinutes },
+    { "getMonth", &::Scaleform::GFx::AS2::DateProto::DateGetMonth },
+    { "getSeconds", &::Scaleform::GFx::AS2::DateProto::DateGetSeconds },
+    { "getTime", &::Scaleform::GFx::AS2::DateProto::DateGetTime },
+    { "getTimezoneOffset", &::Scaleform::GFx::AS2::DateProto::DateGetTimezoneOffset },
+    { "getYear", &::Scaleform::GFx::AS2::DateProto::DateGetYear },
+    { "getUTCDate", &::Scaleform::GFx::AS2::DateProto::DateGetUTCDate },
+    { "getUTCDay", &::Scaleform::GFx::AS2::DateProto::DateGetUTCDay },
+    { "getUTCFullYear", &::Scaleform::GFx::AS2::DateProto::DateGetUTCFullYear },
+    { "getUTCHours", &::Scaleform::GFx::AS2::DateProto::DateGetUTCHours },
+    { "getUTCMilliseconds", &::Scaleform::GFx::AS2::DateProto::DateGetUTCMilliseconds },
+    { "getUTCMinutes", &::Scaleform::GFx::AS2::DateProto::DateGetUTCMinutes },
+    { "getUTCMonth", &::Scaleform::GFx::AS2::DateProto::DateGetUTCMonth },
+    { "getUTCSeconds", &::Scaleform::GFx::AS2::DateProto::DateGetUTCSeconds },
+    { "getUTCYear", &::Scaleform::GFx::AS2::DateProto::DateGetUTCYear },
+    { "setDate", &::Scaleform::GFx::AS2::DateProto::DateSetDate },
+    { "setFullYear", &::Scaleform::GFx::AS2::DateProto::DateSetFullYear },
+    { "setHours", &::Scaleform::GFx::AS2::DateProto::DateSetHours },
+    { "setMilliseconds", &::Scaleform::GFx::AS2::DateProto::DateSetMilliseconds },
+    { "setMinutes", &::Scaleform::GFx::AS2::DateProto::DateSetMinutes },
+    { "setMonth", &::Scaleform::GFx::AS2::DateProto::DateSetMonth },
+    { "setSeconds", &::Scaleform::GFx::AS2::DateProto::DateSetSeconds },
+    { "setTime", &::Scaleform::GFx::AS2::DateProto::DateSetTime },
+    { "setYear", &::Scaleform::GFx::AS2::DateProto::DateSetYear },
+    { "setUTCDate", &::Scaleform::GFx::AS2::DateProto::DateSetUTCDate },
+    { "setUTCFullYear", &::Scaleform::GFx::AS2::DateProto::DateSetUTCFullYear },
+    { "setUTCHours", &::Scaleform::GFx::AS2::DateProto::DateSetUTCHours },
+    { "setUTCMilliseconds", &::Scaleform::GFx::AS2::DateProto::DateSetUTCMilliseconds },
+    { "setUTCMinutes", &::Scaleform::GFx::AS2::DateProto::DateSetUTCMinutes },
+    { "setUTCSeconds", &::Scaleform::GFx::AS2::DateProto::DateSetUTCSeconds },
+    { "setUTCMonth", &::Scaleform::GFx::AS2::DateProto::DateSetUTCMonth },
+    { "setUTCYear", &::Scaleform::GFx::AS2::DateProto::DateSetUTCYear },
+    { "toString", &::Scaleform::GFx::AS2::DateProto::DateToString },
+    { "valueOf", &::Scaleform::GFx::AS2::DateProto::DateValueOf },
+    { 0, 0 },
 };
 // 0x143213d60
 alignas(16) Sd_143213d60 DAT_143213d60 = {
     "show",
-    DAT_1428ff580,
+    (const void*)SfSlotAccess::MouseCtorFunction_Show,
     "hide",
-    DAT_1428ff4a0,
+    (const void*)SfSlotAccess::MouseCtorFunction_Hide,
     {0},
 };
 // 0x143213d90
-alignas(16) Sd_143213d90 DAT_143213d90 = {
-    "addCallback",
-    (const void*)&FUN_1428ff660,
-    "call",
-    DAT_1428ffa20,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::ExternalInterfaceCtorFunction::StaticFunctionTable[] = {
+    { "addCallback", &::Scaleform::GFx::AS2::ExternalInterfaceCtorFunction::AddCallback },
+    { "call", &::Scaleform::GFx::AS2::ExternalInterfaceCtorFunction::Call },
+    { 0, 0 },
 };
 // 0x143213dc0
 alignas(16) Sd_143213dc0 DAT_143213dc0 = {
     "getBeginIndex",
-    DAT_1429003c0,
+    (const void*)SfSlotAccess::SelectionCtorFunction_GetBeginIndex,
     "getCaretIndex",
-    DAT_142900260,
+    (const void*)SfSlotAccess::SelectionCtorFunction_GetCaretIndex,
     "getEndIndex",
-    DAT_142900530,
+    (const void*)SfSlotAccess::SelectionCtorFunction_GetEndIndex,
     "getFocus",
-    DAT_1428ffcd0,
+    (const void*)SfSlotAccess::SelectionCtorFunction_GetFocus,
     "setFocus",
-    DAT_1428ffe30,
+    (const void*)SfSlotAccess::SelectionCtorFunction_SetFocus,
     "setSelection",
-    DAT_1429000d0,
+    (const void*)SfSlotAccess::SelectionCtorFunction_SetSelection,
     {0},
 };
 alignas(16) unsigned char DAT_143213e30[0x10];                  // 0x143213e30
 // 0x143213e40
-alignas(16) Sd_143213e40 DAT_143213e40 = {
-    "clear",
-    DAT_142900fc0,
-    "flush",
-    DAT_142901150,
-    "getSize",
-    (const void*)&FUN_142901280,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::SharedObjectProto::FunctionTable[] = {
+    { "clear", &::Scaleform::GFx::AS2::SharedObjectProto::Clear },
+    { "flush", &::Scaleform::GFx::AS2::SharedObjectProto::Flush },
+    { "getSize", &::Scaleform::GFx::AS2::SharedObjectProto::GetSize },
+    { 0, 0 },
 };
 // 0x143213ed0
-alignas(16) Sd_143213ed0 DAT_143213ed0 = {
-    "getLocal",
-    (const void*)&FUN_142901410,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::SharedObjectCtorFunction::StaticFunctionTable[] = {
+    { "getLocal", (::Scaleform::GFx::AS2::FunctionCFunc)&FUN_142901410 },
+    { 0, 0 },
 };
 // 0x143213ef0
-alignas(16) Sd_143213ef0 DAT_143213ef0 = {
-    "play",
-    DAT_1429035a0,
-    "stop",
-    DAT_1429035f0,
-    "gotoAndStop",
-    DAT_142903650,
-    "gotoAndPlay",
-    DAT_1429037b0,
-    "nextFrame",
-    DAT_142903910,
-    "prevFrame",
-    DAT_1429039a0,
-    "getBytesLoaded",
-    DAT_142903a20,
-    "getBytesTotal",
-    DAT_142903aa0,
-    "getBounds",
-    (const void*)&FUN_142903b30,
-    "getRect",
-    (const void*)&FUN_142903fc0,
-    "localToGlobal",
-    DAT_142904450,
-    "globalToLocal",
-    DAT_142904700,
-    "hitTest",
-    (const void*)&FUN_1429049b0,
-    "attachBitmap",
-    (const void*)&FUN_142905190,
-    "attachMovie",
-    (const void*)&FUN_1429055f0,
-    "attachAudio",
-    DAT_142905a00,
-    "duplicateMovieClip",
-    DAT_142905b80,
-    "removeMovieClip",
-    DAT_142905d70,
-    "createEmptyMovieClip",
-    (const void*)&FUN_142905e00,
-    "createTextField",
-    (const void*)&FUN_142906040,
-    "getDepth",
-    DAT_142900f50,
-    "swapDepths",
-    DAT_1429033c0,
-    "getNextHighestDepth",
-    (const void*)&FUN_142906330,
-    "getInstanceAtDepth",
-    DAT_1429063c0,
-    "getTextSnapshot",
-    DAT_1429064b0,
-    "getSWFVersion",
-    DAT_1429065d0,
-    "startDrag",
-    (const void*)&FUN_142906650,
-    "stopDrag",
-    DAT_1429069f0,
-    "setMask",
-    DAT_142906a90,
-    "loadMovie",
-    DAT_142906ba0,
-    "unloadMovie",
-    DAT_142906d80,
-    "loadVariables",
-    DAT_142906de0,
-    "clear",
-    DAT_142906fc0,
-    "beginFill",
-    DAT_142907040,
-    "beginGradientFill",
-    DAT_142907210,
-    "beginBitmapFill",
-    (const void*)&FUN_1429072c0,
-    "lineGradientStyle",
-    DAT_142907550,
-    "endFill",
-    DAT_1429075f0,
-    "lineStyle",
-    DAT_142907680,
-    "moveTo",
-    DAT_142907bb0,
-    "lineTo",
-    DAT_142907d20,
-    "curveTo",
-    DAT_142907e70,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::MovieClipProto::FunctionTable[] = {
+    { "play", &::Scaleform::GFx::AS2::AvmSprite::SpritePlay },
+    { "stop", &::Scaleform::GFx::AS2::AvmSprite::SpriteStop },
+    { "gotoAndStop", &::Scaleform::GFx::AS2::AvmSprite::SpriteGotoAndStop },
+    { "gotoAndPlay", &::Scaleform::GFx::AS2::AvmSprite::SpriteGotoAndPlay },
+    { "nextFrame", &::Scaleform::GFx::AS2::AvmSprite::SpriteNextFrame },
+    { "prevFrame", &::Scaleform::GFx::AS2::AvmSprite::SpritePrevFrame },
+    { "getBytesLoaded", &::Scaleform::GFx::AS2::AvmSprite::SpriteGetBytesLoaded },
+    { "getBytesTotal", &::Scaleform::GFx::AS2::AvmSprite::SpriteGetBytesTotal },
+    { "getBounds", &::Scaleform::GFx::AS2::AvmSprite::SpriteGetBounds },
+    { "getRect", &::Scaleform::GFx::AS2::AvmSprite::SpriteGetRect },
+    { "localToGlobal", &::Scaleform::GFx::AS2::AvmSprite::SpriteLocalToGlobal },
+    { "globalToLocal", &::Scaleform::GFx::AS2::AvmSprite::SpriteGlobalToLocal },
+    { "hitTest", &::Scaleform::GFx::AS2::AvmSprite::SpriteHitTest },
+    { "attachBitmap", &::Scaleform::GFx::AS2::AvmSprite::SpriteAttachBitmap },
+    { "attachMovie", &::Scaleform::GFx::AS2::AvmSprite::SpriteAttachMovie },
+    { "attachAudio", &::Scaleform::GFx::AS2::AvmSprite::SpriteAttachAudio },
+    { "duplicateMovieClip", &::Scaleform::GFx::AS2::AvmSprite::SpriteDuplicateMovieClip },
+    { "removeMovieClip", &::Scaleform::GFx::AS2::AvmSprite::SpriteRemoveMovieClip },
+    { "createEmptyMovieClip", &::Scaleform::GFx::AS2::AvmSprite::SpriteCreateEmptyMovieClip },
+    { "createTextField", &::Scaleform::GFx::AS2::AvmSprite::SpriteCreateTextField },
+    { "getDepth", &::Scaleform::GFx::AS2::AvmCharacter::CharacterGetDepth },
+    { "swapDepths", &::Scaleform::GFx::AS2::AvmSprite::SpriteSwapDepths },
+    { "getNextHighestDepth", &::Scaleform::GFx::AS2::AvmSprite::SpriteGetNextHighestDepth },
+    { "getInstanceAtDepth", &::Scaleform::GFx::AS2::AvmSprite::SpriteGetInstanceAtDepth },
+    { "getTextSnapshot", &::Scaleform::GFx::AS2::AvmSprite::SpriteGetTextSnapshot },
+    { "getSWFVersion", &::Scaleform::GFx::AS2::AvmSprite::SpriteGetSWFVersion },
+    { "startDrag", &::Scaleform::GFx::AS2::AvmSprite::SpriteStartDrag },
+    { "stopDrag", &::Scaleform::GFx::AS2::AvmSprite::SpriteStopDrag },
+    { "setMask", &::Scaleform::GFx::AS2::AvmSprite::SpriteSetMask },
+    { "loadMovie", &::Scaleform::GFx::AS2::AvmSprite::SpriteLoadMovie },
+    { "unloadMovie", &::Scaleform::GFx::AS2::AvmSprite::SpriteUnloadMovie },
+    { "loadVariables", &::Scaleform::GFx::AS2::AvmSprite::SpriteLoadVariables },
+    { "clear", &::Scaleform::GFx::AS2::AvmSprite::SpriteClear },
+    { "beginFill", &::Scaleform::GFx::AS2::AvmSprite::SpriteBeginFill },
+    { "beginGradientFill", &::Scaleform::GFx::AS2::AvmSprite::SpriteBeginGradientFill },
+    { "beginBitmapFill", &::Scaleform::GFx::AS2::AvmSprite::SpriteBeginBitmapFill },
+    { "lineGradientStyle", &::Scaleform::GFx::AS2::AvmSprite::SpriteLineGradientStyle },
+    { "endFill", &::Scaleform::GFx::AS2::AvmSprite::SpriteEndFill },
+    { "lineStyle", &::Scaleform::GFx::AS2::AvmSprite::SpriteLineStyle },
+    { "moveTo", &::Scaleform::GFx::AS2::AvmSprite::SpriteMoveTo },
+    { "lineTo", &::Scaleform::GFx::AS2::AvmSprite::SpriteLineTo },
+    { "curveTo", &::Scaleform::GFx::AS2::AvmSprite::SpriteCurveTo },
+    { 0, 0 },
 };
 // 0x1432141a0
-alignas(16) Sd_1432141a0 DAT_1432141a0 = {
-    "toString",
-    DAT_142901ae0,
-    "valueOf",
-    DAT_142901c70,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::NumberProto::FunctionTable[] = {
+    { "toString", &::Scaleform::GFx::AS2::GAS_NumberToString },
+    { "valueOf", &::Scaleform::GFx::AS2::GAS_NumberValueOf },
+    { 0, 0 },
 };
 // 0x1432141d0
 alignas(16) Sd_1432141d0 DAT_1432141d0 = {
     "MAX_VALUE",
-    DAT_1425e3e60,
+    (const void*)&::Scaleform::GFx::NumberUtil::MAX_VALUE,
     "MIN_VALUE",
-    DAT_1425e3e80,
+    (const void*)&::Scaleform::GFx::NumberUtil::MIN_VALUE,
     "NaN",
-    DAT_1425e3ee0,
+    (const void*)&::Scaleform::GFx::NumberUtil::NaN,
     "NEGATIVE_INFINITY",
-    DAT_1425e3ea0,
+    (const void*)&::Scaleform::GFx::NumberUtil::NEGATIVE_INFINITY,
     "POSITIVE_INFINITY",
-    DAT_1425e3f00,
+    (const void*)&::Scaleform::GFx::NumberUtil::POSITIVE_INFINITY,
     {0},
 };
 // 0x143214230
 alignas(16) Sd_143214230 DAT_143214230 = {
     "addMarker",
-    DAT_142902a10,
+    (const void*)SfSlotAccess::AmpMarkerCtorFunction_AddMarker,
     {0},
 };
 // 0x143214250
-alignas(16) Sd_143214250 DAT_143214250 = {
-    "findText",
-    DAT_142908090,
-    "getCount",
-    DAT_1429082a0,
-    "getSelected",
-    DAT_142908330,
-    "getSelectedText",
-    DAT_1429084b0,
-    "getText",
-    DAT_142908610,
-    "getTextRunInfo",
-    DAT_142908840,
-    "hitTestTextNearPos",
-    DAT_142908a70,
-    "setSelectColor",
-    DAT_142908c30,
-    "setSelected",
-    DAT_142908d00,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::TextSnapshotProto::FunctionTable[] = {
+    { "findText", &::Scaleform::GFx::AS2::TextSnapshotProto::FindTextA },
+    { "getCount", &::Scaleform::GFx::AS2::TextSnapshotProto::GetCount },
+    { "getSelected", &::Scaleform::GFx::AS2::TextSnapshotProto::GetSelected },
+    { "getSelectedText", &::Scaleform::GFx::AS2::TextSnapshotProto::GetSelectedText },
+    { "getText", &::Scaleform::GFx::AS2::TextSnapshotProto::GetText },
+    { "getTextRunInfo", &::Scaleform::GFx::AS2::TextSnapshotProto::GetTextRunInfo },
+    { "hitTestTextNearPos", &::Scaleform::GFx::AS2::TextSnapshotProto::HitTestTextNearPos },
+    { "setSelectColor", &::Scaleform::GFx::AS2::TextSnapshotProto::SetSelectColor },
+    { "setSelected", &::Scaleform::GFx::AS2::TextSnapshotProto::SetSelected },
+    { 0, 0 },
 };
 // 0x1432142f0
 alignas(16) Sd_1432142f0 DAT_1432142f0 = {
     "registerClass",
-    DAT_142908e90,
+    (const void*)SfSlotAccess::ObjectCtorFunction_RegisterClassA,
     {0},
 };
 // 0x1432143a0
-alignas(16) Sd_1432143a0 DAT_1432143a0 = {
-    "addListener",
-    DAT_14290bed0,
-    "getAscii",
-    DAT_14290bed0,
-    "getCode",
-    DAT_14290bed0,
-    "isDown",
-    DAT_14290bed0,
-    "isToggled",
-    DAT_14290bed0,
-    "removeListener",
-    DAT_14290bed0,
-    {0},
+alignas(16) const ::Scaleform::GFx::AS2::NameFunction Scaleform::GFx::AS2::KeyProto::FunctionTable[] = {
+    { "addListener", &::Scaleform::GFx::AS2::GFx_StageFuncStub },
+    { "getAscii", &::Scaleform::GFx::AS2::GFx_StageFuncStub },
+    { "getCode", &::Scaleform::GFx::AS2::GFx_StageFuncStub },
+    { "isDown", &::Scaleform::GFx::AS2::GFx_StageFuncStub },
+    { "isToggled", &::Scaleform::GFx::AS2::GFx_StageFuncStub },
+    { "removeListener", &::Scaleform::GFx::AS2::GFx_StageFuncStub },
+    { 0, 0 },
 };
 // 0x143214410
 alignas(16) Sd_143214410 DAT_143214410 = {
     "getDepth",
-    DAT_142900f50,
+    (const void*)&::Scaleform::GFx::AS2::AvmCharacter::CharacterGetDepth,
     "getTextFormat",
-    (const void*)&FUN_1429096e0,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::GetTextFormat,
     "getNewTextFormat",
-    DAT_1429099d0,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::GetNewTextFormat,
     "setTextFormat",
-    (const void*)&FUN_142909300,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::SetTextFormat,
     "setNewTextFormat",
-    (const void*)&FUN_142909590,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::SetNewTextFormat,
     "replaceSel",
-    DAT_142909b00,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::ReplaceSel,
     "replaceText",
-    (const void*)&FUN_142909d80,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::ReplaceTextA,
     "removeTextField",
-    DAT_14290a0f0,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::RemoveTextField,
     {0},
     "appendText",
-    (const void*)&FUN_14290b920,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::AppendText,
     "appendHtml",
-    (const void*)&FUN_14290b9f0,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::AppendHtml,
     "copyToClipboard",
-    (const void*)&FUN_14290bb20,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::CopyToClipboard,
     "cutToClipboard",
-    (const void*)&FUN_14290bc50,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::CutToClipboard,
     "getCharBoundaries",
-    (const void*)&FUN_14290a180,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::GetCharBoundaries,
     "getCharIndexAtPoint",
-    (const void*)&FUN_14290a350,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::GetCharIndexAtPoint,
     "getExactCharBoundaries",
-    (const void*)&FUN_14290a4b0,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::GetExactCharBoundaries,
     "getFirstCharInParagraph",
-    (const void*)&FUN_14290b1c0,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::GetFirstCharInParagraph,
     "getIMECompositionStringStyle",
-    (const void*)&FUN_1428ebbd0,
+    (const void*)&::Scaleform::GFx::AS2::TextFieldProto::GetIMECompositionStringStyle,
     "getLineIndexAtPoint",
-    (const void*)&FUN_14290a680,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::GetLineIndexAtPoint,
     "getLineIndexOfChar",
-    (const void*)&FUN_14290a7d0,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::GetLineIndexOfChar,
     "getLineOffset",
-    (const void*)&FUN_14290a8c0,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::GetLineOffset,
     "getLineMetrics",
-    (const void*)&FUN_14290aac0,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::GetLineMetrics,
     "getLineText",
-    DAT_14290afc0,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::GetLineText,
     "getLineLength",
-    (const void*)&FUN_14290a9c0,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::GetLineLength,
     "pasteFromClipboard",
-    (const void*)&FUN_14290bd90,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::PasteFromClipboard,
     "setIMECompositionStringStyle",
-    (const void*)&FUN_1428eb900,
+    (const void*)&::Scaleform::GFx::AS2::TextFieldProto::SetIMECompositionStringStyle,
     "setImageSubstitutions",
-    (const void*)&FUN_14290b2c0,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::SetImageSubstitutions,
     "updateImageSubstitution",
-    (const void*)&FUN_14290b4c0,
+    (const void*)&::Scaleform::GFx::AS2::AvmTextField::UpdateImageSubstitution,
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x1f, 0x00, 0x00, 0x00, 0x3b, 0x00, 0x00, 0x00, 0x5a, 0x00, 0x00, 0x00, 0x78, 0x00, 0x00, 0x00,
@@ -9160,19 +8523,19 @@ alignas(8) Sd_143215368 DAT_143215368 = {
 };
 // 0x1432153a0
 alignas(8) Sd_1432153a0 DAT_1432153a0 = {
-    (const void*)&FUN_142928c70,
-    (const void*)&FUN_142928dc0,
-    (const void*)&FUN_142928b00,
+    (const void*)&::Scaleform::GFx::AS2::DeleteAs2_142928c70,
+    (const void*)&::Scaleform::GFx::AS2::DeleteAs2_142928dc0,
+    (const void*)&::Scaleform::GFx::AS2::DeleteAs2_142928b00,
 };
 // 0x143215a98
 alignas(8) Sd_143215a98 DAT_143215a98 = {
     (const void*)&FUN_142941190,
-    (const void*)&FUN_142942db0,
-    (const void*)&FUN_14292ba00,
+    (const void*)&::Scaleform::GFx::AS2::FUN_142942db0,
+    (const void*)&::Scaleform::GFx::AS2::DeleteAs2_14292ba00,
 };
 // 0x143215ab0
 alignas(8) Sd_143215ab0 DAT_143215ab0 = {
-    (const void*)&FUN_1429276e0,
+    (const void*)&::Scaleform::GFx::AS2::DeleteAs2_1429276e0,
     (const void*)&FUN_142966210,
 };
 // 0x143217750
@@ -9183,25 +8546,25 @@ alignas(16) Sd_143217750 DAT_143217750 = {
 };
 // 0x143217768
 alignas(8) Sd_143217768 DAT_143217768 = {
-    (const void*)&FUN_14292b390,
+    (const void*)&::Scaleform::GFx::AS2::DeleteAs2_14292b390,
     DAT_14293fdf0,
     DAT_1425ab870,
 };
 // 0x143217780
 alignas(16) Sd_143217780 DAT_143217780 = {
-    (const void*)&FUN_14292b300,
+    (const void*)&::Scaleform::GFx::AS2::DeleteAs2_14292b300,
     (const void*)&FUN_142967010,
     DAT_14263a800,
 };
 // 0x143217798
 alignas(8) Sd_143217798 DAT_143217798 = {
-    (const void*)&FUN_14292afe0,
+    (const void*)&::Scaleform::GFx::AS2::DeleteAs2_14292afe0,
     DAT_14293fcd0,
     DAT_1425ab870,
 };
 // 0x1432177b0
 alignas(16) Sd_1432177b0 DAT_1432177b0 = {
-    (const void*)&FUN_14292b1e0,
+    (const void*)&::Scaleform::GFx::AS2::DeleteAs2_14292b1e0,
     (const void*)&FUN_1429665a0,
     DAT_14263a800,
 };
@@ -9213,7 +8576,7 @@ alignas(8) Sd_143218188 DAT_143218188 = {
 };
 // 0x143222128
 alignas(8) Sd_143222128 DAT_143222128 = {
-    (const void*)&FUN_142928d00,
+    (const void*)&::Scaleform::GFx::AS2::DeleteAs2_142928d00,
     DAT_14296a990,
     DAT_14296a9f0,
     (const void*)&FUN_14295d5e0,
@@ -9348,29 +8711,8 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
     },
 };
 
-#pragma comment(linker, "/alternatename:?DAT_1424cdc40@@3PAEA=?Func@?$ThunkFunc0@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$0A@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cdcb0@@3PAEA=?Func@?$ThunkFunc1@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cdd40@@3PAEA=?Func@?$ThunkFunc0@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$01N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cddb0@@3PAEA=?Func@?$ThunkFunc1@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cde40@@3PAEA=?Func@?$ThunkFunc0@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$03N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cdeb0@@3PAEA=?Func@?$ThunkFunc1@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$04$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cdf40@@3PAEA=?Func@?$ThunkFunc0@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$05N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cdfb0@@3PAEA=?Func@?$ThunkFunc1@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$06$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ce040@@3PAEA=?Func@?$ThunkFunc0@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$07N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ce0b0@@3PAEA=?Func@?$ThunkFunc1@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$08$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ce140@@3PAEA=?Func@?$ThunkFunc0@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$09N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ce1b0@@3PAEA=?Func@?$ThunkFunc1@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$0L@$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
 #pragma comment(linker, "/alternatename:?XMLSignatureValidatorCI@fl_security@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143175fb0@@3USd_143175fb0@@A")
-#pragma comment(linker, "/alternatename:?XMLDocumentCI@fl_xml@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_1431765d0@@3USd_1431765d0@@A")
-#pragma comment(linker, "/alternatename:?XMLNodeCI@fl_xml@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143176620@@3USd_143176620@@A")
 #pragma comment(linker, "/alternatename:?XMLNodeTypeCI@fl_xml@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143176670@@3USd_143176670@@A")
-#pragma comment(linker, "/alternatename:?ID3InfoCI@fl_media@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_1431778e0@@3USd_1431778e0@@A")
-#pragma comment(linker, "/alternatename:?MicrophoneCI@fl_media@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143177930@@3USd_143177930@@A")
-#pragma comment(linker, "/alternatename:?SoundCI@fl_media@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143177980@@3USd_143177980@@A")
-#pragma comment(linker, "/alternatename:?SoundChannelCI@fl_media@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_1431779d0@@3USd_1431779d0@@A")
-#pragma comment(linker, "/alternatename:?SoundLoaderContextCI@fl_media@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143177a20@@3USd_143177a20@@A")
-#pragma comment(linker, "/alternatename:?SoundMixerCI@fl_media@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143177a70@@3USd_143177a70@@A")
-#pragma comment(linker, "/alternatename:?SoundTransformCI@fl_media@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143177ac0@@3USd_143177ac0@@A")
 #pragma comment(linker, "/alternatename:?CameraCI@fl_media@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143177b10@@3USd_143177b10@@A")
 #pragma comment(linker, "/alternatename:?DAT_14317aeb0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_14317aeb0@@3USd_14317aeb0@@A")
 #pragma comment(linker, "/alternatename:?CInfo@Anonimous@InstanceTraits@AS3@GFx@Scaleform@@2UClassInfo@345@B=?DAT_14317af30@@3USd_14317af30@@A")
@@ -9403,11 +8745,6 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_14317f860@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317f860@@3USd_14317f860@@A")
 #pragma comment(linker, "/alternatename:?Empty@StringView@Abc@AS3@GFx@Scaleform@@2EB=?DAT_14317fe92@@3EA")
 #pragma comment(linker, "/alternatename:?DAT_14317fea0@@3QBUSfr34_OpCodeInfo@@B=?DAT_14317fea0@@3USd_14317fea0@@A")
-#pragma comment(linker, "/alternatename:?VectorCI@fl_vec@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143181a20@@3USd_143181a20@@A")
-#pragma comment(linker, "/alternatename:?Vector_objectCI@fl_vec@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143181a70@@3USd_143181a70@@A")
-#pragma comment(linker, "/alternatename:?Vector_intCI@fl_vec@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143181ac0@@3USd_143181ac0@@A")
-#pragma comment(linker, "/alternatename:?Vector_uintCI@fl_vec@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143181b10@@3USd_143181b10@@A")
-#pragma comment(linker, "/alternatename:?Vector_doubleCI@fl_vec@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143181b60@@3USd_143181b60@@A")
 #pragma comment(linker, "/alternatename:?Vector_StringCI@fl_vec@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143181bb0@@3USd_143181bb0@@A")
 #pragma comment(linker, "/alternatename:?TreeRootNodeDataVTable@Render@Scaleform@@3QBQEBXB=?DAT_143183320@@3USd_143183320@@A")
 #pragma comment(linker, "/alternatename:?DAT_143184be8@GFx@Scaleform@@3PADA=?DAT_143184be8@@3USd_143184be8@@A")
@@ -9461,53 +8798,18 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:DAT_1431c51b8=?DAT_1431c51b8@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_1431c51d8=?DAT_1431c51d8@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_1431c51e8=?DAT_1431c51e8@@3USd_1431c51e8@@A")
-#pragma comment(linker, "/alternatename:?StaticFunctionTable@TextFieldCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143212f60@@3USd_143212f60@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@LoadVarsProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143212f80@@3USd_143212f80@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@ColorTransformProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213010@@3USd_143213010@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@SelectionProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213040@@3USd_143213040@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@RectangleProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_1432130e0@@3USd_1432130e0@@A")
 #pragma comment(linker, "/alternatename:?SortFlagTable@ArrayCtorFunction@AS2@GFx@Scaleform@@2QBUNameNumber@234@B=?DAT_1432131e0@@3USd_1432131e0@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@ArrayProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213250@@3USd_143213250@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@MatrixProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213330@@3USd_143213330@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@MouseProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213410@@3USd_143213410@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@AsBroadcasterProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213460@@3USd_143213460@@A")
 #pragma comment(linker, "/alternatename:?FunctionTable@TransformProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_1432134a0@@3PAEA")
-#pragma comment(linker, "/alternatename:?FunctionTable@BitmapDataProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_1432134b0@@3USd_1432134b0@@A")
-#pragma comment(linker, "/alternatename:?StaticFunctionTable@BitmapDataCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_1432134d0@@3USd_1432134d0@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@MovieClipLoaderProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_1432134f0@@3USd_1432134f0@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@PointProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213530@@3USd_143213530@@A")
 #pragma comment(linker, "/alternatename:?StaticFunctionTable@PointCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_1432135b0@@3USd_1432135b0@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@ButtonProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_1432135f0@@3USd_1432135f0@@A")
 #pragma comment(linker, "/alternatename:?StaticFunctionTable@StringCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213610@@3USd_143213610@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@BooleanProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213630@@3USd_143213630@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@StageProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213660@@3USd_143213660@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@DropShadowFilterProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_1432136a0@@3USd_1432136a0@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@ColorProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_1432136c0@@3USd_1432136c0@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@GlowFilterProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213710@@3USd_143213710@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@BlurFilterProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213730@@3USd_143213730@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@BevelFilterProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213750@@3USd_143213750@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@StringProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213770@@3USd_143213770@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@ColorMatrixFilterProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213860@@3USd_143213860@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@StyleSheetProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213880@@3USd_143213880@@A")
 #pragma comment(linker, "/alternatename:?StaticFunctionTable@MathCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213900@@3USd_143213900@@A")
 #pragma comment(linker, "/alternatename:?StaticFunctionTable@AsBroadcasterCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213a30@@3USd_143213a30@@A")
-#pragma comment(linker, "/alternatename:?StaticFunctionTable@DateCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213a50@@3USd_143213a50@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@KeyCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213a70@@3USd_143213a70@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@TextFormatProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213ac0@@3USd_143213ac0@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@DateProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213ae0@@3USd_143213ae0@@A")
 #pragma comment(linker, "/alternatename:?StaticFunctionTable@MouseCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213d60@@3USd_143213d60@@A")
-#pragma comment(linker, "/alternatename:?StaticFunctionTable@ExternalInterfaceCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213d90@@3USd_143213d90@@A")
 #pragma comment(linker, "/alternatename:?StaticFunctionTable@SelectionCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213dc0@@3USd_143213dc0@@A")
 #pragma comment(linker, "/alternatename:?FunctionTable@ExternalInterfaceProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213e30@@3PAEA")
-#pragma comment(linker, "/alternatename:?FunctionTable@SharedObjectProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213e40@@3USd_143213e40@@A")
-#pragma comment(linker, "/alternatename:?StaticFunctionTable@SharedObjectCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213ed0@@3USd_143213ed0@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@MovieClipProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143213ef0@@3USd_143213ef0@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@NumberProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_1432141a0@@3USd_1432141a0@@A")
 #pragma comment(linker, "/alternatename:?ConstTable@NumberCtorFunction@AS2@GFx@Scaleform@@2QBUNameConstFunction@1234@B=?DAT_1432141d0@@3USd_1432141d0@@A")
 #pragma comment(linker, "/alternatename:?StaticFunctionTable@AmpMarkerCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143214230@@3USd_143214230@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@TextSnapshotProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143214250@@3USd_143214250@@A")
 #pragma comment(linker, "/alternatename:?StaticFunctionTable@ObjectCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_1432142f0@@3USd_1432142f0@@A")
-#pragma comment(linker, "/alternatename:?FunctionTable@KeyProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_1432143a0@@3USd_1432143a0@@A")
 #pragma comment(linker, "/alternatename:?FunctionTable@TextFieldProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143214410@@3USd_143214410@@A")
 #pragma comment(linker, "/alternatename:?DAT_143215a98@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_143215a98@@3USd_143215a98@@A")
 #pragma comment(linker, "/alternatename:?DAT_143217750@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_143217750@@3USd_143217750@@A")
@@ -9531,65 +8833,26 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_1424057c0@@3PAEA=?Call@FunctionBase@Instances@AS3@GFx@Scaleform@@UEAAXAEBVValue@345@AEAV6345@IQEBV6345@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142407230@@3PAEA=?Construct@FunctionBase@Instances@AS3@GFx@Scaleform@@UEAAXAEAVValue@345@IPEBV6345@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_142414f60@@3PAEA=?GetAS3ObjectType@Object@fl@Instances@AS3@GFx@Scaleform@@UEBAPEBDXZ")
-#pragma comment(linker, "/alternatename:?DAT_1424cca40@@3PAEA=?MakeClassTraits@XMLSignatureValidator@fl_security@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ccce0@@3PAEA=?MakeClassTraits@XMLNodeType@fl_xml@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cce30@@3PAEA=?MakeClassTraits@XMLNode@fl_xml@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ccf70@@3PAEA=?MakeClassTraits@XMLDocument@fl_xml@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ce240@@3PAEA=?MakeClassTraits@Camera@fl_media@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ce380@@3PAEA=?MakeClassTraits@ID3Info@fl_media@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ce4c0@@3PAEA=?MakeClassTraits@Microphone@fl_media@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ce600@@3PAEA=?MakeClassTraits@SoundTransform@fl_media@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ce740@@3PAEA=?MakeClassTraits@Sound@fl_media@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ce880@@3PAEA=?MakeClassTraits@SoundChannel@fl_media@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ce9c0@@3PAEA=?MakeClassTraits@SoundLoaderContext@fl_media@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ceb00@@3PAEA=?Func@?$ThunkFunc0@VSound@fl_media@Instances@AS3@GFx@Scaleform@@$0A@K@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ceb60@@3PAEA=?Func@?$ThunkFunc0@VSound@fl_media@Instances@AS3@GFx@Scaleform@@$00J@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cebc0@@3PAEA=?Func@?$ThunkFunc0@VSound@fl_media@Instances@AS3@GFx@Scaleform@@$01V?$SPtr@VID3Info@fl_media@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cec70@@3PAEA=?Func@?$ThunkFunc0@VSound@fl_media@Instances@AS3@GFx@Scaleform@@$02_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cecd0@@3PAEA=?Func@?$ThunkFunc0@VSound@fl_media@Instances@AS3@GFx@Scaleform@@$03N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ced40@@3PAEA=?Func@?$ThunkFunc0@VSound@fl_media@Instances@AS3@GFx@Scaleform@@$04VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cedb0@@3PAEA=?Func@?$ThunkFunc0@VSound@fl_media@Instances@AS3@GFx@Scaleform@@$05$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cedd0@@3PAEA=?Func@?$ThunkFunc2@VSound@fl_media@Instances@AS3@GFx@Scaleform@@$06$$CBVValue@456@PEAVURLRequest@fl_net@3456@PEAVSoundLoaderContext@23456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cee20@@3PAEA=?Func@?$ThunkFunc3@VSound@fl_media@Instances@AS3@GFx@Scaleform@@$07VValue@456@NJPEAVSoundTransform@23456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cef10@@3PAEA=?Func@?$ThunkFunc0@VSoundChannel@fl_media@Instances@AS3@GFx@Scaleform@@$0A@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cef80@@3PAEA=?Func@?$ThunkFunc0@VSoundChannel@fl_media@Instances@AS3@GFx@Scaleform@@$00N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ceff0@@3PAEA=?Func@?$ThunkFunc0@VSoundChannel@fl_media@Instances@AS3@GFx@Scaleform@@$01N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cf060@@3PAEA=?Func@?$ThunkFunc0@VSoundChannel@fl_media@Instances@AS3@GFx@Scaleform@@$02V?$SPtr@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cf110@@3PAEA=?Func@?$ThunkFunc1@VSoundChannel@fl_media@Instances@AS3@GFx@Scaleform@@$03$$CBVValue@456@PEAVSoundTransform@23456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cf150@@3PAEA=?Func@?$ThunkFunc0@VSoundChannel@fl_media@Instances@AS3@GFx@Scaleform@@$04$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424cf170@@3PAEA=?MakeClassTraits@SoundMixer@fl_media@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424d2160@@3PAEA=?Func@?$ThunkFunc0@VClass@AS3@GFx@Scaleform@@$0A@VValue@234@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424d2180@@3PAEA=?Func@?$ThunkFunc0@VClass@AS3@GFx@Scaleform@@$00J@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424e2730@@3PAEA=??_GAvmButtonBase@GFx@Scaleform@@UEAAPEAXI@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424e29e0@@3PAEA=??_GAvmSpriteBase@GFx@Scaleform@@UEAAPEAXI@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424e4290@@3PAEA=?AS3Constructor@Object@AS3@GFx@Scaleform@@UEAAXIPEBVValue@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424e8060@@3PAEA=?AddDynamicSlotValuePair@Object@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@0W4Attribute@SlotInfo@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424eb250@@3PAEA=?AdvanceFrame@DisplayObjectBase@GFx@Scaleform@@UEAAX_NM@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ed890@@3PAEA=?Sfr33StickyVarNodeAssign@AS3@GFx@Scaleform@@YAXPEAEPEBE@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424ede80@@3PAEA=?AttachMovie@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@PEBD2JPEBVMemberValueSet@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f2400@@3PAEA=?CreateASInstance@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAI_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f33d0@@3PAEA=?CreateEmptyMovieClip@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@PEBDJ@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f3910@@3PAEA=?Sfr33MovieRootCreateMovieDefRootNode@AS3@GFx@Scaleform@@YAPEAXPEAVMovieRoot@123@PEAVMemoryHeap@3@PEAVMovieDefImpl@23@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f39c0@@3PAEA=?CreateObject@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEBDPEBV534@I@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f3d20@@3PAEA=?CreateObjectValue@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAVValue@23@PEAX_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f3f40@@3PAEA=?CreateRenderNode@Sfr33ShapeObject@AS3@GFx@Scaleform@@QEAA?AV?$Ptr@VTreeNode@Render@Scaleform@@@4@AEAVContext@ContextImpl@Render@4@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f4780@@3PAEA=?DeleteMember@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBD_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f4a40@@3PAEA=?DeleteProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f7180@@3PAEA=?DetachChild@AvmDisplayObj@AS3@GFx@Scaleform@@UEAA_NPEAVDisplayObjectBase@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f73d0@@3PAEA=?Sfr33MovieRootDoActions@AS3@GFx@Scaleform@@YAXPEAVMovieRoot@123@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f74c0@@3PAEA=?DoDisplayCallback@DisplayObject@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1424f9480@@3PAEA=?EmptyFunc@ThunkInfo@AS3@GFx@Scaleform@@SAXAEBU1234@AEAVVM@234@AEBVValue@234@AEAV6234@IPEBV6234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f9ce0@@3PAEA=?Sfr33UserDefinedFunctionExecute@AS3@GFx@Scaleform@@YAXPEAXAEBVValue@123@IPEBV4123@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_142500250@@3PAEA=?ExecuteUnsafe@UserDefinedFunction@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IPEBV5234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142500e50@@3PAEA=?FindDynamicSlot@Object@AS3@GFx@Scaleform@@UEAA?AVPropRef@234@AEBVMultiname@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142501a60@@3PAEA=?FindInsertToPlayList@AvmInteractiveObj@AS3@GFx@Scaleform@@UEAAPEAVInteractiveObject@34@PEAV534@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142503800@@3PAEA=?Sfr33ForEachChildGC_38_48@AS3@GFx@Scaleform@@YAXPEAEPEAXP6AX111@Z@Z")
-#pragma comment(linker, "/alternatename:?DAT_142503860@@3PAEA=?Sfr33PtrArrayForEachChildGC@AS3@GFx@Scaleform@@YAXPEAEPEAXP6AX111@Z@Z")
 #pragma comment(linker, "/alternatename:?DAT_1425038d0@@3PAEA=?FUN_1425038d0@@YAXPEAX0P6AX000@Z@Z")
-#pragma comment(linker, "/alternatename:?DAT_142503fa0@@3PAEA=?Sfr33ForEachChildGC_c0b@AS3@GFx@Scaleform@@YAXPEAEPEAXP6AX111@Z@Z")
-#pragma comment(linker, "/alternatename:?DAT_142504750@@3PAEA=?Sfr33QueueOwnerObject@AS3@GFx@Scaleform@@YAXPEAE@Z")
 #pragma comment(linker, "/alternatename:?DAT_142504840@@3PAEA=?ForceShutdown@DisplayObjectBase@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_142505ef0@@3PAEA=?Sfr33AvmBitmapGetASClassName@AS3@GFx@Scaleform@@YAAEAVString@3@PEBXPEAV43@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142505f20@@3PAEA=?GetASClassName@AvmDisplayObj@AS3@GFx@Scaleform@@UEBAAEAVString@4@PEAV54@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142506e10@@3PAEA=?GetAbsolutePath@AvmDisplayObj@AS3@GFx@Scaleform@@UEBAPEBDPEAVString@4@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142506ef0@@3PAEA=?GetAcceptAnimMoves@DisplayObject@GFx@Scaleform@@UEBA_NXZ")
@@ -9601,9 +8864,7 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_1425094e0@@3PAEA=?GetDisplayInfo@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAVDisplayInfo@Value@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142509850@@3PAEA=?GetDisplayMatrix@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAV?$Matrix2x4@M@Render@3@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142509990@@3PAEA=?GetDrawingContext@DisplayObject@GFx@Scaleform@@UEAAPEAVDrawingContext@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1425099a0@@3PAEA=?Sfr33GetDrawingContext@AS3@GFx@Scaleform@@YAPEAVDrawingContext@23@PEAVDisplayObject@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142509a80@@3PAEA=?GetDynamicProperty@Object@AS3@GFx@Scaleform@@UEAAXVAbsoluteIndex@234@AEAVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142509ad0@@3PAEA=?Sfr33ArrayGetElement@AS3@GFx@Scaleform@@YA_NPEBEPEAEIPEAVValue@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142509da0@@3PAEA=?GetFontManager@DisplayObjectBase@GFx@Scaleform@@UEBAPEAVFontManager@23@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14250b3c0@@3PAEA=?GetMatrix3D@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEBA_NPEAXPEAV?$Matrix3x4@M@Render@4@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250b4a0@@3PAEA=?GetMember@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEBDPEAVValue@23@_N@Z")
@@ -9613,13 +8874,10 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_14250c2e0@@3PAEA=?GetObjectsUnderPoint@AvmDisplayObj@AS3@GFx@Scaleform@@UEBA_NPEAV?$ArrayDH@V?$Ptr@VDisplayObjectBase@GFx@Scaleform@@@Scaleform@@$01UArrayDefaultPolicy@2@@4@AEBV?$Point@M@Render@4@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250cc60@@3PAEA=?GetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEAVValue@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250d620@@3PAEA=?GetRatio@DisplayObjectBase@GFx@Scaleform@@UEBAMXZ")
-#pragma comment(linker, "/alternatename:?DAT_14250d6b0@@3PAEA=?Sfr27ForwardVirtual1b8@AS3@GFx@Scaleform@@YAPEADPEAXPEAD@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250d830@@3PAEA=?GetRenderContainer@DisplayObjectBase@GFx@Scaleform@@UEAAPEAVTreeContainer@Render@3@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14250d970@@3PAEA=?GetResourceMovieDef@DisplayObjectBase@GFx@Scaleform@@UEBAPEAVMovieDefImpl@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14250daa0@@3PAEA=?FUN_14250daa0@@YAPEAVDisplayObjContainer@GFx@Scaleform@@PEBVMovieRoot@AS3@23@PEAVDisplayObject@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250ee10@@3PAEA=?GetStateChangeFlags@DisplayObjectBase@GFx@Scaleform@@UEBAEXZ")
 #pragma comment(linker, "/alternatename:?DAT_14250f110@@3PAEA=?GetText@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAVValue@23@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250f290@@3PAEA=?FUN_14250f290@@YAPEAVAllocator@Text@Render@Scaleform@@PEAVMovieRoot@AS3@GFx@4@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250f770@@3PAEA=?GetTopMostMouseEntity@Sfr34_ShapeObjectView@AS3@GFx@Scaleform@@UEAA?AW4TopMostResult@DisplayObjectBase@34@AEBV?$Point@M@Render@4@PEAUTopMostDescr@634@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250f820@@3PAEA=?GetTopParent@AvmInteractiveObj@AS3@GFx@Scaleform@@UEBAPEAVInteractiveObject@34@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250f850@@3PAEA=?GetTopParent@DisplayObjectBase@GFx@Scaleform@@UEBAPEAVInteractiveObject@23@_N@Z")
@@ -9634,16 +8892,13 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_142510d40@@3PAEA=?Has3D@DisplayObjectBase@GFx@Scaleform@@UEAA_NXZ")
 #pragma comment(linker, "/alternatename:?DAT_142510dc0@@3PAEA=?HasEventHandler@AvmDisplayObj@AS3@GFx@Scaleform@@UEBA_NAEBVEventId@34@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142510e70@@3PAEA=?HasMember@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEBD_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425113d0@@3PAEA=?Sfr27TextFieldHasStyleSheet@AS3@GFx@Scaleform@@YA_N_K@Z")
 #pragma comment(linker, "/alternatename:?DAT_142511530@@3PAEA=?Init@MovieRoot@AS3@GFx@Scaleform@@UEAA_NPEAVMovieDefImpl@34@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142512620@@3PAEA=?InitializeOnDemand@Object@AS3@GFx@Scaleform@@UEAAPEBVSlotInfo@234@PEBV5234@AEBVASString@34@AEBVNamespace@Instances@234@AEA_K@Z")
 #pragma comment(linker, "/alternatename:?DAT_142512870@@3PAEA=?Invoke@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@PEBDPEBV423@_K_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142513210@@3PAEA=?FUN_142513210@@YA_NPEAVMovieRoot@AS3@GFx@Scaleform@@PEBDPEAVValue@34@1ZZ")
 #pragma comment(linker, "/alternatename:?DAT_142513920@@3PAEA=?InvokeClosure@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAX_KPEAVValue@23@PEBV423@1@Z")
 #pragma comment(linker, "/alternatename:?DAT_142513f90@@3PAEA=?IsAvailable@MovieRoot@AS3@GFx@Scaleform@@UEBA_NPEBD@Z")
 #pragma comment(linker, "/alternatename:?DAT_142514240@@3PAEA=?IsDisplayObjectActive@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAX@Z")
 #pragma comment(linker, "/alternatename:?DAT_142515190@@3PAEA=?IsUsedAsMask@DisplayObject@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_142518480@@3PAEA=?FUN_142518480@AS3@GFx@Scaleform@@YA_NPEBVMovieRoot@123@PEAVInteractiveObject@23@1IW4FocusMovedType@23@PEAUProcessFocusKeyInfo@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142518530@@3PAEA=?ObjectAddRef@AS3ValueObjectInterface@GFx@Scaleform@@EEAAXPEAVValue@23@PEAX@Z")
 #pragma comment(linker, "/alternatename:?DAT_142518570@@3PAEA=?ObjectRelease@AS3ValueObjectInterface@GFx@Scaleform@@EEAAXPEAVValue@23@PEAX@Z")
 #pragma comment(linker, "/alternatename:?DAT_1425185d0@@3PAEA=?OnAdded@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAX_N@Z")
@@ -9659,42 +8914,25 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_1425227e0@@3PAEA=?RemoveElements@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXIH@Z")
 #pragma comment(linker, "/alternatename:?DAT_142525c90@@3PAEA=?Restart@DisplayObjectBase@GFx@Scaleform@@UEAAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_1425265d0@@3PAEA=?SetArraySize@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXI@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425266c0@@3PAEA=?Sfr31SetCxform@AS3@GFx@Scaleform@@YA_N_K0PEBVCxform@Render@3@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142526730@@3PAEA=?SetDisplayInfo@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBVDisplayInfo@Value@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425270e0@@3PAEA=?Sfr31SetDisplayMatrix@AS3@GFx@Scaleform@@YA_N_K0PEBM@Z")
-#pragma comment(linker, "/alternatename:?DAT_142527300@@3PAEA=?Sfr31SetElement@AS3@GFx@Scaleform@@YA_N_K0KPEBX@Z")
 #pragma comment(linker, "/alternatename:?DAT_1425278d0@@3PAEA=?SetMatrix3D@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBV?$Matrix3x4@M@Render@3@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142527d60@@3PAEA=?SetMember@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBDAEBVValue@23@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_142528740@@3PAEA=?SetMovie@ASMovieRootBase@GFx@Scaleform@@UEAAXPEAVMovieImpl@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142528a50@@3PAEA=?SetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEBVValue@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142528d90@@3PAEA=?SetRatio@DisplayObjectBase@GFx@Scaleform@@UEAAXM@Z")
-#pragma comment(linker, "/alternatename:?DAT_142528da0@@3PAEA=?Sfr31ShapeObjectSetRatio@AS3@GFx@Scaleform@@YAX_KM@Z")
 #pragma comment(linker, "/alternatename:?DAT_142529f40@@3PAEA=?SetStateChangeFlags@DisplayObjectBase@GFx@Scaleform@@UEAAXE@Z")
 #pragma comment(linker, "/alternatename:?DAT_14252a230@@3PAEA=?SetText@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBD_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14252a360@@3PAEA=?SetText@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEB_W_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14252a4f0@@3PAEA=?Sfr31SetHolderOf@AS3@GFx@Scaleform@@YAX_K00E@Z")
+#pragma comment(linker, "/alternatename:?DAT_14252a4f0@@3PAEA=?SetUserData@AS3ValueObjectInterface@GFx@Scaleform@@EEAAXPEAXPEAVASUserData@23@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14252b580@@3PAEA=?SetVisible@DisplayObjectBase@GFx@Scaleform@@UEAAX_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14252f250@@3PAEA=?ToAvmButttonBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmButtonBase@34@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14252f400@@3PAEA=?ToAvmSpriteBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmSpriteBase@34@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14252f480@@3PAEA=?ToAvmTextFieldBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmTextFieldBase@34@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14252fd40@@3PAEA=?Sfr31ToString@AS3@GFx@Scaleform@@YAX_KPEAVString@3@PEBX@Z")
 #pragma comment(linker, "/alternatename:?DAT_142531550@@3PAEA=?VisitElements@AS3ValueObjectInterface@GFx@Scaleform@@EEBAXPEAXPEAVArrVisitor@ObjectInterface@Value@23@IH@Z")
 #pragma comment(linker, "/alternatename:?DAT_142531630@@3PAEA=?VisitMembers@AS3ValueObjectInterface@GFx@Scaleform@@EEBAXPEAXPEAVObjVisitor@ObjectInterface@Value@23@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142546c50@@3PAEA=?MakeClassTraits@Vector_int@fl_vec@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142546da0@@3PAEA=?MakeClassTraits@Vector_uint@fl_vec@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142546ef0@@3PAEA=?MakeClassTraits@Vector_double@fl_vec@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142547040@@3PAEA=?MakeClassTraits@Vector_String@fl_vec@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142547190@@3PAEA=?MakeClassTraits@Vector_object@fl_vec@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142547420@@3PAEA=?MakeClassTraits@Vector@fl_vec@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14256ba70@@3PAEA=?FUN_14256ba70@Render@Scaleform@@YAPEAXPEAVNodeData@TreeRoot@12@I@Z")
 #pragma comment(linker, "/alternatename:?DAT_14256e2e0@@3PAEA=?ConstructCopy@?$ContextData_ImplMixin@VNodeData@TreeRoot@Render@Scaleform@@V1TreeContainer@34@@ContextImpl@Render@Scaleform@@UEBAPEAVEntryData@234@AEAVLinearHeap@34@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14256e350@@3PAEA=?CopyTo@?$ContextData_ImplMixin@VNodeData@TreeRoot@Render@Scaleform@@V1TreeContainer@34@@ContextImpl@Render@Scaleform@@UEBAXPEAX@Z")
 #pragma comment(linker, "/alternatename:?DAT_1425ab870@@3PAEA=?OnAbandon@Task@GFx@Scaleform@@UEAAX_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425e3e60@@3PAEA=?MAX_VALUE@NumberUtil@GFx@Scaleform@@YANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425e3e80@@3PAEA=?MIN_VALUE@NumberUtil@GFx@Scaleform@@YANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425e3ea0@@3PAEA=?NEGATIVE_INFINITY@NumberUtil@GFx@Scaleform@@YANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425e3ee0@@3PAEA=?NaN@NumberUtil@GFx@Scaleform@@YANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425e3f00@@3PAEA=?POSITIVE_INFINITY@NumberUtil@GFx@Scaleform@@YANXZ")
 #pragma comment(linker, "/alternatename:?DAT_1425f1ae0@@3PAEA=?CreateNewInstanceName@DisplayObject@GFx@Scaleform@@MEBA?AVASString@23@XZ")
 #pragma comment(linker, "/alternatename:?DAT_1425f1ca0@@3PAEA=?GetBlendMode@DisplayObjectBase@GFx@Scaleform@@UEBA?AW4BlendMode@Render@3@XZ")
 #pragma comment(linker, "/alternatename:?DAT_1425f1d50@@3PAEA=?GetFOV@DisplayObjectBase@GFx@Scaleform@@UEBANXZ")
@@ -9754,15 +8992,6 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_14261c910@@3PAEA=?PropagateUp@NodeData@TreeContainer@Render@Scaleform@@UEBA_NPEAVEntry@ContextImpl@34@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14261ce60@@3PAEA=?ReleaseNodes@NodeData@TreeContainer@Render@Scaleform@@UEBAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_14261e030@@3PAEA=?updateCache@NodeData@TreeContainer@Render@Scaleform@@UEBAPEAVTreeCacheNode@34@PEAV534@0PEAVTreeNode@34@G@Z")
-#pragma comment(linker, "/alternatename:?DAT_14261e1c0@@3PAEA=?FUN_14261e1c0@GFx@Scaleform@@YAPEAXPEAX_K@Z")
-#pragma comment(linker, "/alternatename:?DAT_14261e1f0@@3PAEA=?FUN_14261e1f0@GFx@Scaleform@@YAPEAXPEAX_K@Z")
-#pragma comment(linker, "/alternatename:?DAT_14261e3d0@@3PAEA=?FUN_14261e3d0@GFx@Scaleform@@YAPEAVString@2@PEAXPEAV32@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14261e400@@3PAEA=?FUN_14261e400@GFx@Scaleform@@YAPEAVString@2@PEAXPEAV32@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142620160@@3PAEA=?FUN_142620160@GFx@Scaleform@@YAPEAXPEAXI@Z")
-#pragma comment(linker, "/alternatename:?DAT_1426201d0@@3PAEA=?FUN_1426201d0@GFx@Scaleform@@YAPEAXPEAXI@Z")
-#pragma comment(linker, "/alternatename:?DAT_1426202f0@@3PAEA=?FUN_1426202f0@GFx@Scaleform@@YAPEAXPEADI@Z")
-#pragma comment(linker, "/alternatename:?DAT_142620370@@3PAEA=?FUN_142620370@GFx@Scaleform@@YAPEAXPEADI@Z")
-#pragma comment(linker, "/alternatename:?DAT_1426203f0@@3PAEA=?FUN_1426203f0@GFx@Scaleform@@YAPEAXPEADI@Z")
 #pragma comment(linker, "/alternatename:?DAT_14263a800@@3PAEA=?IsPreloadingFinished@LoadQueueEntryMT@GFx@Scaleform@@UEAA_NXZ")
 #pragma comment(linker, "/alternatename:?DAT_142646630@@3PAEA=?ReadButtonSoundDef@SoundTagsReader@GFx@Scaleform@@UEAAPEAVButtonSoundDef@23@PEAVLoadProcess@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1426467f0@@3PAEA=?ReadButtonSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
@@ -9773,206 +9002,6 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_142646f90@@3PAEA=?ReadSoundStreamHeadTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142647090@@3PAEA=?ReadStartSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14280ef52@@3PAEA=_purecall")
-#pragma comment(linker, "/alternatename:?DAT_1428ec290@@3PAEA=?GetBytesLoaded@LoadVarsProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ec330@@3PAEA=?GetBytesTotal@LoadVarsProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ec610@@3PAEA=?ToString@LoadVarsProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ec780@@3PAEA=?SetTransform@ColorProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ed2a0@@3PAEA=?SetRGB@ColorProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ed580@@3PAEA=?ToString@MatrixProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ed9e0@@3PAEA=?Clone@MatrixProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428edaf0@@3PAEA=?Concat@MatrixProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428edc40@@3PAEA=?CreateBox@MatrixProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428edfc0@@3PAEA=?CreateGradientBox@MatrixProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ee770@@3PAEA=?Identity@MatrixProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ee800@@3PAEA=?Invert@MatrixProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ee8b0@@3PAEA=?Rotate@MatrixProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ee9e0@@3PAEA=?Scale@MatrixProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ef010@@3PAEA=?Translate@MatrixProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ef180@@3PAEA=?Concat@ColorTransformProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ef400@@3PAEA=?ToString@ColorTransformProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ef8b0@@3PAEA=?GFx_KeyFuncStub@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ef8d0@@3PAEA=?Clone@RectangleProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428efa40@@3PAEA=?Contains@RectangleProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428efc90@@3PAEA=?ContainsPoint@RectangleProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428eff60@@3PAEA=?ContainsRectangle@RectangleProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f0220@@3PAEA=?Equals@RectangleProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f03e0@@3PAEA=?Inflate@RectangleProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f05f0@@3PAEA=?InflatePoint@RectangleProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f0e60@@3PAEA=?IsEmpty@RectangleProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f12e0@@3PAEA=?OffsetPoint@RectangleProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f1710@@3PAEA=?SetEmpty@RectangleProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f1780@@3PAEA=?ToString@RectangleProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f1a60@@3PAEA=?Union@RectangleProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f1e30@@3PAEA=?GFx_BitmapDataFuncStub@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f1e50@@3PAEA=?GFx_FuncStub@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f2040@@3PAEA=?Add@PointProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f2250@@3PAEA=?Clone@PointProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f2430@@3PAEA=?Equals@PointProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f2570@@3PAEA=?Normalize@PointProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f2970@@3PAEA=?Subtract@PointProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f2b90@@3PAEA=?ToString@PointProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f3240@@3PAEA=?Interpolate@PointCtorFunction@AS2@GFx@Scaleform@@KAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f3530@@3PAEA=?Polar@PointCtorFunction@AS2@GFx@Scaleform@@KAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f37a0@@3PAEA=?StringCharAt@StringProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f3910@@3PAEA=?StringCharCodeAt@StringProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f3a40@@3PAEA=?StringConcat@StringProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f3be0@@3PAEA=?StringIndexOf@StringProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f3e70@@3PAEA=?StringLastIndexOf@StringProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f40d0@@3PAEA=?StringLocaleCompare@StringProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f4240@@3PAEA=?StringSlice@StringProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f4420@@3PAEA=?StringSplit@StringProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f4610@@3PAEA=?StringSubstr@StringProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f47b0@@3PAEA=?StringSubstring@StringProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f4980@@3PAEA=?StringToLowerCase@StringProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f4a20@@3PAEA=?StringToString@StringProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f4aa0@@3PAEA=?StringToUpperCase@StringProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f4b40@@3PAEA=?StringValueOf@StringProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f4bc0@@3PAEA=?StringFromCharCode@StringCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f4cd0@@3PAEA=?GAS_BooleanToString@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f4da0@@3PAEA=?GAS_BooleanValueOf@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f4e40@@3PAEA=?GFx_MouseFuncStub@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f4e60@@3PAEA=?ArrayConcat@ArrayObject@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f4fd0@@3PAEA=?ArrayJoin@ArrayObject@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f5170@@3PAEA=?ArrayPop@ArrayObject@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f5240@@3PAEA=?ArrayPush@ArrayObject@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f5340@@3PAEA=?ArrayReverse@ArrayObject@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f53e0@@3PAEA=?ArrayShift@ArrayObject@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f5530@@3PAEA=?ArraySlice@ArrayObject@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f6880@@3PAEA=?ArrayValueOf@ArrayObject@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f6a10@@3PAEA=?ArrayUnshift@ArrayObject@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f6b30@@3PAEA=?ArrayToString@ArrayObject@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f6cc0@@3PAEA=?Clone@DropShadowFilterProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f7290@@3PAEA=?Clone@GlowFilterProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f7c10@@3PAEA=?Clone@BlurFilterProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f82d0@@3PAEA=?Clone@BevelFilterProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f86b0@@3PAEA=?Clear@StyleSheetProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428f9ba0@@3PAEA=?ParseCSS@StyleSheetProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428faed0@@3PAEA=?Clone@ColorMatrixFilterProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb110@@3PAEA=?Abs@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb1a0@@3PAEA=?Acos@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb220@@3PAEA=?Asin@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb2a0@@3PAEA=?Atan@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb320@@3PAEA=?Ceil@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb3a0@@3PAEA=?Cos@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb420@@3PAEA=?Exp@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb4a0@@3PAEA=?Floor@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb520@@3PAEA=?Log@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb5a0@@3PAEA=?Sin@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb620@@3PAEA=?Sqrt@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb6a0@@3PAEA=?Tan@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb720@@3PAEA=?Atan2@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb800@@3PAEA=?Max@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb8d0@@3PAEA=?Min@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fb9a0@@3PAEA=?Pow@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fba80@@3PAEA=?Random@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fbae0@@3PAEA=?Round@MathCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fbd10@@3PAEA=?AddListener@AsBroadcasterProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fc080@@3PAEA=?Initialize@AsBroadcasterCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fc160@@3PAEA=?DateGetDate@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fc350@@3PAEA=?DateGetDay@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fc410@@3PAEA=?DateGetFullYear@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fc490@@3PAEA=?DateGetHours@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fc520@@3PAEA=?DateGetMilliseconds@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fc5c0@@3PAEA=?DateGetMinutes@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fc680@@3PAEA=?DateGetMonth@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fc7e0@@3PAEA=?DateGetSeconds@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fc8a0@@3PAEA=?DateGetTime@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fc920@@3PAEA=?DateGetTimezoneOffset@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fc9b0@@3PAEA=?DateGetYear@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fcd60@@3PAEA=?DateSetHours@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fce60@@3PAEA=?DateSetMilliseconds@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fcf60@@3PAEA=?DateSetMinutes@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fd070@@3PAEA=?DateSetMonth@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fd230@@3PAEA=?DateSetSeconds@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fd340@@3PAEA=?DateSetTime@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fd580@@3PAEA=?DateGetUTCDate@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fd770@@3PAEA=?DateGetUTCDay@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fd830@@3PAEA=?DateGetUTCFullYear@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fd8b0@@3PAEA=?DateGetUTCHours@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fd940@@3PAEA=?DateGetUTCMilliseconds@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fd9e0@@3PAEA=?DateGetUTCMinutes@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fdaa0@@3PAEA=?DateGetUTCMonth@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fdc00@@3PAEA=?DateGetUTCSeconds@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fdcc0@@3PAEA=?DateGetUTCYear@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fe050@@3PAEA=?DateSetUTCHours@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fe140@@3PAEA=?DateSetUTCMilliseconds@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fe230@@3PAEA=?DateSetUTCMinutes@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fe340@@3PAEA=?DateSetUTCMonth@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fe560@@3PAEA=?DateSetUTCSeconds@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fe7e0@@3PAEA=?DateToString@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428fec90@@3PAEA=?DateValueOf@DateProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ff0b0@@3PAEA=?KeyGetAscii@KeyCtorFunction@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ff160@@3PAEA=?KeyGetCode@KeyCtorFunction@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ff220@@3PAEA=?KeyIsDown@KeyCtorFunction@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ff360@@3PAEA=?KeyIsToggled@KeyCtorFunction@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ff4a0@@3PAEA=?Hide@MouseCtorFunction@AS2@GFx@Scaleform@@KAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ff580@@3PAEA=?Show@MouseCtorFunction@AS2@GFx@Scaleform@@KAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ffa20@@3PAEA=?Call@ExternalInterfaceCtorFunction@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ffcd0@@3PAEA=?GetFocus@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1428ffe30@@3PAEA=?SetFocus@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429000d0@@3PAEA=?SetSelection@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142900260@@3PAEA=?GetCaretIndex@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429003c0@@3PAEA=?GetBeginIndex@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142900530@@3PAEA=?GetEndIndex@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142900f50@@3PAEA=?CharacterGetDepth@AvmCharacter@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142900fc0@@3PAEA=?Clear@SharedObjectProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142901150@@3PAEA=?Flush@SharedObjectProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142901ae0@@3PAEA=?GAS_NumberToString@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142901c70@@3PAEA=?GAS_NumberValueOf@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142902200@@3PAEA=?HasOwnProperty@ObjectProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429022b0@@3PAEA=?IsPropertyEnumerable@ObjectProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429023e0@@3PAEA=?IsPrototypeOf@ObjectProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429027a0@@3PAEA=?Unwatch_@ObjectProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142902a00@@3PAEA=?FUN_142902a00@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142902a10@@3PAEA=?AddMarker@AmpMarkerCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142903350@@3PAEA=?ToString@FunctionProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429033a0@@3PAEA=?FUN_1429033a0@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429033c0@@3PAEA=?SpriteSwapDepths@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429035a0@@3PAEA=?SpritePlay@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429035f0@@3PAEA=?SpriteStop@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142903650@@3PAEA=?SpriteGotoAndStop@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429037b0@@3PAEA=?SpriteGotoAndPlay@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142903910@@3PAEA=?SpriteNextFrame@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429039a0@@3PAEA=?SpritePrevFrame@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142903a20@@3PAEA=?SpriteGetBytesLoaded@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142903aa0@@3PAEA=?SpriteGetBytesTotal@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142904450@@3PAEA=?SpriteLocalToGlobal@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142904700@@3PAEA=?SpriteGlobalToLocal@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142905a00@@3PAEA=?SpriteAttachAudio@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142905b80@@3PAEA=?SpriteDuplicateMovieClip@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142905d70@@3PAEA=?SpriteRemoveMovieClip@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429063c0@@3PAEA=?SpriteGetInstanceAtDepth@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429064b0@@3PAEA=?SpriteGetTextSnapshot@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429065d0@@3PAEA=?SpriteGetSWFVersion@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429069f0@@3PAEA=?SpriteStopDrag@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142906a90@@3PAEA=?SpriteSetMask@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142906ba0@@3PAEA=?SpriteLoadMovie@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142906d80@@3PAEA=?SpriteUnloadMovie@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142906de0@@3PAEA=?SpriteLoadVariables@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142906fc0@@3PAEA=?SpriteClear@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142907040@@3PAEA=?SpriteBeginFill@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142907210@@3PAEA=?SpriteBeginGradientFill@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142907550@@3PAEA=?SpriteLineGradientStyle@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429075f0@@3PAEA=?SpriteEndFill@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142907680@@3PAEA=?SpriteLineStyle@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142907bb0@@3PAEA=?SpriteMoveTo@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142907d20@@3PAEA=?SpriteLineTo@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142907e70@@3PAEA=?SpriteCurveTo@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142908090@@3PAEA=?FindTextA@TextSnapshotProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429082a0@@3PAEA=?GetCount@TextSnapshotProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142908330@@3PAEA=?GetSelected@TextSnapshotProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429084b0@@3PAEA=?GetSelectedText@TextSnapshotProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142908610@@3PAEA=?GetText@TextSnapshotProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142908840@@3PAEA=?GetTextRunInfo@TextSnapshotProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142908a70@@3PAEA=?HitTestTextNearPos@TextSnapshotProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142908c30@@3PAEA=?SetSelectColor@TextSnapshotProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142908d00@@3PAEA=?SetSelected@TextSnapshotProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142908e90@@3PAEA=?RegisterClassA@ObjectCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429099d0@@3PAEA=?GetNewTextFormat@AvmTextField@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142909b00@@3PAEA=?ReplaceSel@AvmTextField@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14290a0f0@@3PAEA=?RemoveTextField@AvmTextField@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14290afc0@@3PAEA=?GetLineText@AvmTextField@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14290bed0@@3PAEA=?GFx_StageFuncStub@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142935ea0@@3PAEA=?CreateEmptyMovieClip@AS2ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@PEBDJ@Z")
 #pragma comment(linker, "/alternatename:?DAT_14293fcd0@@3PAEA=?Execute@GFxAS2LoadCSSTask@AS2@GFx@Scaleform@@UEAAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_14293fdf0@@3PAEA=?Execute@GFxAS2LoadXMLTask@AS2@GFx@Scaleform@@UEAAXXZ")

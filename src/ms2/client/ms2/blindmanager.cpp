@@ -22,14 +22,14 @@ CString FUN_1409a2360(const char* psz, int n);                          // text 
 CString FUN_14016a5c0(const char* psz, int n);                          // path conversion
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);
-__int64 FUN_140354150(Unk_140165cf0* pElem, const char* pszName, __int64 nDefault); // _time64 attribute
+__int64 Unk_ExpGetInt64(Unk_140165cf0* pElem, const char* pszName, __int64 nDefault); // _time64 attribute
 void* FUN_14086e000(void* pParent, const void* pChild);                 // InsertEndChild
 void FUN_140873ca0(void* pElem, const char* pszName, int nValue);       // SetAttribute(name, int)
 void FUN_1408740a0(void* pElem, const char* pszName, const CStringW* pstrValue);   // SetAttribute(name, string)
 void FUN_140873eb0(void* pElem, const char* pszName, const __int64* pnValue);      // SetAttribute(name, time)
 bool FUN_1408710c0(void* pDoc, const char* pszPath);                    // SaveFile
 __int64 FUN_140190260();                                                // the default block duration end
-__int64 FUN_140869440();                                                // the server time
+__int64 GetServerTime();                                                // the server time
 CFeatureManager* FUN_140166410();
 CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const unsigned __int64& nArg);   // "{0}" formatter
 void* FUN_14086e9c0(void* pNode, int nType);                            // TiXmlNode::TiXmlNode
@@ -114,7 +114,7 @@ void BlindManager::Load()
     {
         int nType = FUN_140197350(pNode, "type", 0);
         CStringW strTarget = FUN_1401bf530(pNode, "target", CStringW(L""));
-        __int64 nExpire = FUN_140354150(pNode, "time", 0);
+        __int64 nExpire = Unk_ExpGetInt64(pNode, "time", 0);
         if (nType < 0 || nType >= 6)
             continue;
         __time64_t nNow;
@@ -185,7 +185,7 @@ bool BlindManager::IsBlocked(int nType, CStringW strKey)
     if (it == pList->end())
         return false;
     BlindEntry& entry = it->second;
-    if (entry.m_expire > FUN_140869440())
+    if (entry.m_expire > GetServerTime())
         return true;
     return false;
 }

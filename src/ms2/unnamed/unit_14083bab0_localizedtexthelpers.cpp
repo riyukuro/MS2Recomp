@@ -15,6 +15,7 @@
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/tixmldocument.h"
+#include "ms2/commonfiles/filesystem.h"
 #include <atlcoll.h>
 
 int FUN_1406516a0();                                                    // client language (localepath.cpp)
@@ -26,7 +27,7 @@ class Unk_Be790Xml;
 Unk_Be790Xml* FUN_140345b40(TiXmlDocument* pDoc);                      // first child element
 Unk_Be790Xml* FUN_140345b40(Unk_Be790Xml* pNode);
 void FUN_140873420(Unk_Be790Xml* pElem, const char* pszName, CStringW& rOut);   // string attribute
-class Unk_Be790Loader { public: int FUN_140397ab0(TiXmlDocument* pDoc, const CStringW& strXml); };
+class Unk_Be790Loader : public CFileSystem { };
 Unk_Be790Loader* FUN_140166420();
 double FUN_1407184e0(const CStringW& str);                              // text -> number
 long long FUN_140718320(const CStringW& str);

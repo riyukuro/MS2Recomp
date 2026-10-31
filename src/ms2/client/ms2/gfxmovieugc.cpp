@@ -26,7 +26,7 @@ const NiRTTI GFxMovieUgc::ms_RTTI("GFxMovieUgc", &GFxMovieEventHandler::ms_RTTI)
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 extern char DAT_143b059e8;                                                  // efd::SmartPointer<efd::ServiceManager> cell
 extern int DAT_1439f7358;                                                   // edge length of the UGC render texture
-ecr::RenderService* FUN_14127bf80(char* pCell);                             // the render service (gfxmoviebackground.cpp)
+ecr::RenderService* Unk_GetRenderService(char* pCell);                      // the render service (gfxmoviebackground.cpp)
 
 // ---- GFxMovieUgc ----
 // @0x14127d290
@@ -180,7 +180,7 @@ int GFxMovieUgc::FUN_14127dd70()
 {
     if (!m_spObject)
         return 0;
-    ecr::RenderService* pRender = FUN_14127bf80(&DAT_143b059e8);
+    ecr::RenderService* pRender = Unk_GetRenderService(&DAT_143b059e8);
     if (pRender != 0)
     {
         NiRenderTargetGroup* pGroup = pRender->GetActiveRenderSurface()->GetRenderTargetGroup();

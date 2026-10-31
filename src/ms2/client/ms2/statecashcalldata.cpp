@@ -26,6 +26,8 @@
 #include <NiTransform.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- unit-local stand-ins and unrecovered callees ----
 
@@ -83,13 +85,7 @@ Unk_CcBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
 
 // The player inventory (global 0x143ab2a90): item lookup by uid and the item's name.
-class Unk_CcInventory
-{
-public:
-    MS2Ptr<CItem> FUN_140a5d680(__int64 nItemUid);                         // the item with that uid
-    int FUN_140a63880(CItem* pItem, const CStringW& strName);              // the item's name
-};
-extern Unk_CcInventory DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 
 // The effect request.
 struct Unk_CcRot { float m_af[9]; };
@@ -111,7 +107,6 @@ struct Unk_CcRequest
 };
 MS2_CHECK_SIZE(Unk_CcRequest, 0x78);
 class Unk_CcEffectMgr { public: void FUN_1411a4a00(Unk_CcRequest* pRequest); };
-Unk_CcEffectMgr* FUN_1403ed280();
 void FUN_140a52ef0(Unk_CcRequest* p);                    // construct
 void FUN_1405a89e0(Unk_CcRequest* p);                    // destroy
 
@@ -442,7 +437,7 @@ void StateCashCall::SpawnEffect(const CString& strEffect)
     request.m_strName = strEffect;
     request.m_nKind = (FUN_1417b8560() == 0) ? 3 : 1;
     request.m_pXform = &xf;
-    FUN_1403ed280()->FUN_1411a4a00(&request);
+    reinterpret_cast<Unk_CcEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&request);
     FUN_1405a89e0(&request);
 }
 MS2_REPLACE_METHOD(0x1410238D0, StateCashCall, SpawnEffect, 623, 0x4B23E957);

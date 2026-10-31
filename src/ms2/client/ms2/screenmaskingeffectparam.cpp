@@ -12,14 +12,10 @@
 #include "ms2/placeholder/postprocesseffect.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // Main system (commonfiles singleton 0x14086d260): resource root path.
-class Unk_MainSystem
-{
-public:
-    CString FUN_1414736e0();
-};
-Unk_MainSystem* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 
 // Resource manager (singleton 0x140a0afd0): texture load by path.
 class Unk_ResourceMgr
@@ -80,7 +76,7 @@ void ScreenMaskingEffect::vfunc_1()
     FUN_1409a8b20()->FUN_1416a3920(8, true);
     float fBlend = 0.0f;
     CString strPath;
-    strPath.Format("%s/Image/ScreenMask/%s", (const char*)FUN_14086d260()->FUN_1414736e0(), (const char*)m_strTexture);
+    strPath.Format("%s/Image/ScreenMask/%s", (const char*)FUN_14086d260()->GetDataPath(), (const char*)m_strTexture);
     FUN_1416ba640(FUN_140a0afd0()->FUN_141552f90(CString((const char*)strPath), 5));
     FUN_1409a5770(DAT_143ae5340, &fBlend, 1);
 }
@@ -102,7 +98,7 @@ bool ScreenMaskingEffect::vfunc_6(bool b)
     if (!b)
     {
         CString strPath;
-        strPath.Format("%s/Image/ScreenMask/%s", (const char*)FUN_14086d260()->FUN_1414736e0(), (const char*)m_strTexture);
+        strPath.Format("%s/Image/ScreenMask/%s", (const char*)FUN_14086d260()->GetDataPath(), (const char*)m_strTexture);
         FUN_1416ba640(FUN_140a0afd0()->FUN_141552f90(strPath, 5));
         vfunc_7(m_nState, m_fAlpha);
     }

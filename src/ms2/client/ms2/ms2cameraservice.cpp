@@ -9,6 +9,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2cameraservice.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/camera.h"
 #include <egf/Entity.h>
 #include <egf/EntityManager.h>
 #include <ecr/CameraData.h>
@@ -18,7 +19,6 @@
 
 // ---- out-of-unit callees ----
 class Unk_GameInstance;
-Unk_GameInstance* FUN_1409478c0();                                           // the game instance (global)
 egf::Entity* FUN_140af7f70(Unk_GameInstance* pGame);                         // its local player entity (or 0)
 egf::EntityManager* FUN_1409670f0();                                         // the world's entity manager
 egf::Entity* FUN_1411cf440(egf::EntityManager* mgr, const egf::EntityID* id);   // entity lookup by id
@@ -51,7 +51,7 @@ MS2_REPLACE_METHOD(0x1414af410, MS2CameraService, OnPreInit, 92, 0x25AB48BB);
 // @0x1414af480
 void MS2CameraService::FUN_1414af480(ecr::CameraData* pCamera)
 {
-    egf::Entity* pEntity = FUN_140af7f70(FUN_1409478c0());
+    egf::Entity* pEntity = FUN_140af7f70(reinterpret_cast<Unk_GameInstance*>(TSingleton<CameraMgr>::GetInstance()));
     if (pEntity && pCamera)
         UpdateCamera(pCamera, pEntity);
 }

@@ -36,10 +36,13 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/itemdatatable.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-class Unk_MaidLoader { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_MaidLoader : public CFileSystem { };
 Unk_MaidLoader* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
@@ -48,8 +51,7 @@ CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undec
 bool FUN_14028f710(Unk_140165cf0* pNode);                               // the row is for this client's region
 int FUN_1408733a0(Unk_140165cf0* pNode, const char* pszName, double& rOut);
 // The locale list test and the game rule block (the level limit slot at +0x5180).
-class Unk_MaidLocale { public: bool FUN_14036d750(const CStringW& strLocale); };
-Unk_MaidLocale* FUN_140166410();
+CFeatureManager* FUN_140166410();
 struct Unk_MaidLimitSlot { char m_pad[0x58]; };
 struct Unk_MaidRule
 {
@@ -61,7 +63,6 @@ unsigned* FUN_1402056b0(Unk_MaidLimitSlot* pSlot);   // the level limit
 void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* pszDelim);   // split into ints
 // The item string table (id <-> name).
 class Unk_MaidIngTable;
-Unk_MaidIngTable* FUN_140281980();
 unsigned FUN_1405575b0(Unk_MaidIngTable* pTable, int nStringId);
 int FUN_140557640(Unk_MaidIngTable* pTable, const CString& strName);
 unsigned FUN_1407181d0(const CString& strItem);                         // numeric item id of a text, or 0
@@ -147,7 +148,7 @@ unsigned MaidIngredient::GetItemId()
 {
     if (itemStringId == 0)
         return itemId;
-    return FUN_1405575b0(FUN_140281980(), itemStringId);
+    return FUN_1405575b0(reinterpret_cast<Unk_MaidIngTable*>(TSingleton<CItemDataTable>::GetInstance()), itemStringId);
 }
 MS2_REPLACE_METHOD(0x140684C40, MaidIngredient, GetItemId, 56, 0x2A489CEE);
 
@@ -165,7 +166,7 @@ void MaidIngredient::SetItem(const CStringA& value)
     if (nId > 0)
         itemId = nId;
     else if (!value.IsEmpty())
-        itemStringId = FUN_140557640(FUN_140281980(), value);
+        itemStringId = FUN_140557640(reinterpret_cast<Unk_MaidIngTable*>(TSingleton<CItemDataTable>::GetInstance()), value);
 }
 MS2_REPLACE_METHOD(0x140684CA0, MaidIngredient, SetItem, 98, 0xA762B9F0);
 

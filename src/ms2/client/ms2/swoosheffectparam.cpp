@@ -41,6 +41,7 @@
 // MS2-PIN: ??1?$_Uninitialized_backout_al@PEAUVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAA@XZ 0x141820c20 ; unique
 // MS2-PIN: ??1?$_Vector_alloc@U?$_Vec_base_types@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@@std@@QEAA@XZ 0x141820c60 ; prop
 // MS2-PIN: ??1?$vector@UVector3@@@efd@@QEAA@XZ 0x141820c80 ; unique
+// MS2-PIN: ??1?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAA@XZ 0x141820ca0 ; unique
 // MS2-PIN: ??A?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAAAEAUVector3@@_K@Z 0x141820d30 ; unique
 // MS2-PIN: ?_Calculate_growth@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@AEBA_K_K@Z 0x141820fc0 ; unique
 // MS2-PIN: ?_Change_array@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@AEAAXQEAUVector3@@_K1@Z 0x141821050 ; unique
@@ -113,6 +114,10 @@
 #include <d3dx9math.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/filepreload_1.h"
+#include "ms2/client/ms2/nifeffectparam.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
@@ -123,8 +128,7 @@ int FUN_140ad02f0(int nValue, int nLimit);                          // upper cla
 bool FUN_14028d470(float a, float b);                               // nearly equal
 const int& FUN_1404eb7e0(const int& a, const int& b);               // max
 unsigned FUN_14181fd60(unsigned nA, unsigned nB);                     // max by value
-class Unk_GameClock { public: double FUN_141473280(); float FUN_141473210(); };
-Unk_GameClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
 void* FUN_14098d0f0(void* pHandle);                                 // handle -> object
@@ -177,18 +181,16 @@ private:
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
 
 // The resource manager (singleton, instance pointer at 0x143ab5bc8): model / texture cache by path.
-class Unk_ResourceMgr
+class Unk_ResourceMgr : public CNifLoadingService
 {
 public:
     Unk_PPSmartC FUN_141552f90(CString strPath, int nFlags);                    // texture load
-    NiAVObjectPtr FUN_141551ea0(CString strPath, bool bA, int nB, int nC, int nD);   // model load
-    bool FUN_141551db0(CString strPath);                                        // model is available
     void FUN_1415525d0(CString strPath, int nA, int nB);                        // preload
 };
 extern Unk_ResourceMgr* DAT_143ab5bc8;
 Unk_ResourceMgr* FUN_140a0afd0();
-class Unk_ModelCache { public: void FUN_141210ac0(CString strPath); };           // release by path
-Unk_ModelCache* FUN_140ab7a10();
+           // release by path
+CFilePreload* FUN_140ab7a10();
 
 // The effect manager (singleton 0x1403ed280): scene root, quality level.
 class Unk_EffectMgr
@@ -199,7 +201,6 @@ public:
     char m_pad_08[0x128];
     int m_nTrailMode;                               // +0x128
 };
-Unk_EffectMgr* FUN_1403ed280();
 
 // Scene nodes of the effect system. EffectNode (400 bytes) carries the effect-space point; SeparateNode (0x138) follows
 // only the selected parts of its parent's transform.
@@ -272,7 +273,7 @@ bool CSwooshEffectParam::vfunc_3()
 {
     if (m_strNifPath.IsEmpty())
         return true;
-    return FUN_140a0afd0()->FUN_141551db0(FUN_140cc2ba0("Effect", m_strNifPath));
+    return FUN_140a0afd0()->IsCached(FUN_140cc2ba0("Effect", m_strNifPath));
 }
 
 // @0x14181d290
@@ -335,10 +336,10 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         return false;
 
     unsigned nSampling = pSwoosh->m_nSampling;
-    unsigned nLevel = FUN_1403ed280()->FUN_1411a88c0();
-    if (FUN_141820fa0(FUN_1403ed280()) != 0)
+    unsigned nLevel = reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a88c0();
+    if (FUN_141820fa0(reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())) != 0)
     {
-        float fFps = FUN_14086d260()->FUN_141473210();
+        float fFps = FUN_14086d260()->GetFps();
         int nPenalty = 0;
         switch (m_unk_18)
         {
@@ -387,7 +388,7 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
 
     if (pSwoosh->m_strNifPath.GetLength() > 0)
     {
-        NiAVObjectPtr spModel = FUN_140a0afd0()->FUN_141551ea0(FUN_140cc2ba0("Effect", pSwoosh->m_strNifPath), false, 5, 0, 0);
+        NiAVObjectPtr spModel = FUN_140a0afd0()->Load(FUN_140cc2ba0("Effect", pSwoosh->m_strNifPath), false, 5, 0, 0);
         NiMesh* pFound = 0;
         {
             Unk_SceneWalker kWalker(static_cast<NiObject*>(FUN_1409849b0(&spModel)));
@@ -737,14 +738,6 @@ void FUN_141820bf0(void* /*pObj*/)
 void FUN_141820c00(void* pObj)
 {
     FUN_141820bf0(pObj);
-}
-
-// @0x141820ca0
-// MS2-FUNCTIONAL: stand-in for the std::vector destructor body (_Tidy + proxy release).
-void FUN_141820ca0(Unk_PointVec* pVec)
-{
-    pVec->clear();
-    pVec->shrink_to_fit();
 }
 
 // @0x141821210 identity

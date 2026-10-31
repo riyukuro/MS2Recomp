@@ -16,9 +16,9 @@
 using Scaleform::GFx::Value;
 
 CString FUN_14016a600(const wchar_t* psz, int n);                   // a wide string as UTF-8
-CStringW FUN_1408767c0(const char* sz);                             // a UTF-8 string as a wide CString
+CStringW XmlWide(const char* sz);                             // a UTF-8 string as a wide CString
 CString FUN_1409a23d0(const char* sz, int n);                       // a UTF-8 string as a CString
-CStringW FUN_140efe330(const wchar_t* psz, int n);                  // a wide string as a CString
+CStringW Unk_ArcWide(const wchar_t* psz, int n);                  // a wide string as a CString
 void FUN_1422bccb0(Value* pValue, int n);                           // set an Int value
 void FUN_1422bce70(Value* pValue, const char* psz);                 // set a String value
 
@@ -61,9 +61,9 @@ CStringW ASTextField::FUN_1422c4da0()
     if (FUN_1422bb870().GetText(&v))
     {
         if (v.IsString())
-            return FUN_1408767c0(v.GetString());
+            return XmlWide(v.GetString());
         if (v.IsStringW())
-            return FUN_140efe330(v.GetStringW(), 0);
+            return Unk_ArcWide(v.GetStringW(), 0);
     }
     return L"";
 }
@@ -97,9 +97,9 @@ CStringW ASTextField::FUN_1422c4fd0()
     if (FUN_1422bb870().GetTextHTML(&v))
     {
         if (v.IsString())
-            return FUN_1408767c0(v.GetString());
+            return XmlWide(v.GetString());
         if (v.IsStringW())
-            return FUN_140efe330(v.GetStringW(), 0);
+            return Unk_ArcWide(v.GetStringW(), 0);
     }
     return L"";
 }

@@ -257,7 +257,7 @@ extern unsigned char** DAT_143aaeae0;
 extern unsigned char** DAT_143aaeae8;
 extern unsigned char** DAT_143aaeaf0;
 extern unsigned char** DAT_143aaeaf8;
-extern std::string DAT_143ab0568, DAT_143ab0588;
+extern std::string g_strLocaleDir2, g_strLocaleDir;
 extern int DAT_143ab0560;
 class Unk_FileIgnoreList;
 extern Unk_FileIgnoreList* DAT_143aaecb0;
@@ -544,14 +544,14 @@ int CFileSystem::FUN_1403987d0(std::string path) {
             std::string alternate;
             size_t slash = resolved.find_last_of('/');
             if (slash != std::string::npos) {
-                if (stringResource) alternate = resolved.substr(0, slash + 1) + DAT_143ab0568;
-                else alternate = resolved.substr(0, slash + 1) + DAT_143ab0588;
+                if (stringResource) alternate = resolved.substr(0, slash + 1) + g_strLocaleDir2;
+                else alternate = resolved.substr(0, slash + 1) + g_strLocaleDir;
                 alternate += resolved.substr(slash + 1, resolved.length());
                 file = CreateFileA(alternate.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
                 if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
             } else {
-                if (stringResource) alternate.assign(DAT_143ab0568);
-                else alternate.assign(DAT_143ab0588);
+                if (stringResource) alternate.assign(g_strLocaleDir2);
+                else alternate.assign(g_strLocaleDir);
                 alternate += resolved;
                 file = CreateFileA(alternate.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
                 if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
@@ -940,12 +940,12 @@ std::string CFileSystem::FUN_14039b810(std::string path) {
     std::string result;
     size_t slash = path.find_last_of('/');
     if (slash != std::string::npos) {
-        if (stringResource) result = path.substr(0, slash + 1) + DAT_143ab0568;
-        else result = path.substr(0, slash + 1) + DAT_143ab0588;
+        if (stringResource) result = path.substr(0, slash + 1) + g_strLocaleDir2;
+        else result = path.substr(0, slash + 1) + g_strLocaleDir;
         result += path.substr(slash + 1, path.length());
     } else {
-        if (stringResource) result.assign(DAT_143ab0568);
-        else result.assign(DAT_143ab0588);
+        if (stringResource) result.assign(g_strLocaleDir2);
+        else result.assign(g_strLocaleDir);
         result += path;
     }
     return result;
@@ -958,15 +958,15 @@ std::string CFileSystem::FUN_14039bb50(std::string path) {
     std::string result;
     size_t slash = path.find_last_of('/');
     if (slash != std::string::npos) {
-        result = path.substr(0, slash + 1) + DAT_143ab0588;
-        std::string language(DAT_143ab0568);
+        result = path.substr(0, slash + 1) + g_strLocaleDir;
+        std::string language(g_strLocaleDir2);
         std::transform(language.begin(), language.end(), language.begin(), ::tolower);
         result.append(language);
         result.append("/");
         result += path.substr(slash + 1, path.length());
     } else {
-        result.assign(DAT_143ab0588);
-        std::string language(DAT_143ab0568);
+        result.assign(g_strLocaleDir);
+        std::string language(g_strLocaleDir2);
         std::transform(language.begin(), language.end(), language.begin(), ::tolower);
         result.append(language);
         result.append("/");
@@ -1432,14 +1432,14 @@ int CFileSystem::FUN_14039faf0(std::string path) {
             std::string alternate;
             size_t slash = resolved.find_last_of('/');
             if (slash != std::string::npos) {
-                if (stringResource) alternate = resolved.substr(0, slash + 1) + DAT_143ab0568;
-                else alternate = resolved.substr(0, slash + 1) + DAT_143ab0588;
+                if (stringResource) alternate = resolved.substr(0, slash + 1) + g_strLocaleDir2;
+                else alternate = resolved.substr(0, slash + 1) + g_strLocaleDir;
                 alternate += resolved.substr(slash + 1, resolved.length());
                 file = CreateFileA(alternate.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
                 if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
             } else {
-                if (stringResource) alternate.assign(DAT_143ab0568);
-                else alternate.assign(DAT_143ab0588);
+                if (stringResource) alternate.assign(g_strLocaleDir2);
+                else alternate.assign(g_strLocaleDir);
                 alternate += resolved;
                 file = CreateFileA(alternate.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
                 if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }

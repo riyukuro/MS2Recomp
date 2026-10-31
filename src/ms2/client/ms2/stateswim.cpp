@@ -24,6 +24,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -60,7 +61,6 @@ class Unk_SwimHitReport { public: void FUN_140cfaf30(); };   // the actor body's
 Unk_SwimHitReport* FUN_141240f20(Unk_PCBaseBody* pBody);
 
 class Unk_SwimApp;
-Unk_SwimApp* FUN_14086d260();                              // 0x14086d260 the application
 int FUN_141473390(Unk_SwimApp* p);                         // 0x141473390 the current service tick id
 bool FUN_1415337c0(int nLast, int nNow, int nMillis);      // 0x1415337c0 enough time passed since the last request
 int FUN_1416764d0(MyPC* p);                                // 0x1416764d0 is riding
@@ -95,7 +95,7 @@ StateSwim::~StateSwim()
 void StateSwim::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    m_nMode = FUN_141473390(FUN_14086d260());
+    m_nMode = FUN_141473390(reinterpret_cast<Unk_SwimApp*>(TSingleton<CMainSystem>::GetInstance()));
     FUN_1417fb440();
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
@@ -281,7 +281,7 @@ int StateSwim::vfunc_22(MS2Ptr<Unk_StateArg22> p)
     if (p == 0)
         return 0;
     MyPC* pPC = FUN_1417b84b0();
-    int nNow = FUN_141473390(FUN_14086d260());
+    int nNow = FUN_141473390(reinterpret_cast<Unk_SwimApp*>(TSingleton<CMainSystem>::GetInstance()));
     if (pPC != 0 && FUN_1416764d0(pPC) != 0 && FUN_1415337c0(m_nMode, nNow, 1000))
     {
         m_nMode = nNow;

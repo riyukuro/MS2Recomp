@@ -9,6 +9,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/camera.h"
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_BuffEntity : public ASGameEntity
@@ -33,18 +35,13 @@ NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // e
 float FUN_1412762d0(const NiPoint3& pt);
 class Unk_BuffActor : public PCBase
 {
-public:
-    int FUN_14166ce30();
-    float FUN_141670500();
 };
 class Unk_BuffMgr;
-Unk_BuffMgr* FUN_1409478c0();                                               // singleton accessor
 int FUN_140a18070(Unk_BuffMgr*);
 CStringW FUN_14016a730(const char* sz, int nFlags);                         // FormatStringId(id) without arguments
 bool FUN_140930110(int nActorId);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 class Unk_BuffUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
-Unk_BuffUIMgr* FUN_1403ed2b0();
 class Unk_BuffInfoAS : public AScript
 {
 public:
@@ -69,7 +66,7 @@ UIBuffBalloon::Entity::~Entity()
 // @0x14128e8e0
 void UIBuffBalloon::Entity::vfunc_2()
 {
-    if (FUN_140a18070(FUN_1409478c0()) == 0)
+    if (FUN_140a18070(reinterpret_cast<Unk_BuffMgr*>(TSingleton<CameraMgr>::GetInstance())) == 0)
         return;
     TimerEntity::vfunc_2();
 }
@@ -93,7 +90,7 @@ void UIBuffBalloon::Entity::vfunc_4()
 void UIBuffBalloon::Entity::vfunc_5()
 {
     UIHudEntity::Entity::vfunc_5();
-    if (FUN_140a18070(FUN_1409478c0()) == 0)
+    if (FUN_140a18070(reinterpret_cast<Unk_BuffMgr*>(TSingleton<CameraMgr>::GetInstance())) == 0)
         return;
     if (m_38.get() != 0)
     {
@@ -291,9 +288,9 @@ UIBuffBalloon::Entity* UIBuffBalloon::FUN_14128f210(int nActorId)
 // @0x14128f650
 UIBuffBalloon* FUN_14128f650(int nUiId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_BuffUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_BuffUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (p.get())
             return dynamic_cast<UIBuffBalloon*>((UIObject*)p);
     }

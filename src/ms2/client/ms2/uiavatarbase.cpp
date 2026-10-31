@@ -3,7 +3,7 @@
 // MS2-RANGE: 0x14010fe10-0x140110080 .text$di
 // MS2-RANGE: 0x1418b7a10-0x1418c34c0 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$?0AEAHAEAH$0A@@?$pair@I_K@std@@QEAA@AEAH0@Z 0x1418bfd10 ; unique
+// MS2-PIN: ??$?0AEAIAEAH$0A@@?$pair@I_K@std@@QEAA@AEAIAEAH@Z 0x1418bfd10 ; unique
 // MS2-PIN: ??$?0AEAU?$pair@I_K@std@@AEAV?$MS2Ptr@VCAvatarPackageEquip@@@@$0A@@?$pair@$$CBU?$pair@I_K@std@@V?$MS2Ptr@VCAvatarPackageEquip@@@@@std@@QEAA@AEAU?$pair@I_K@1@AEAV?$MS2Ptr@VCAvatarPackageEquip@@@@@Z 0x1418bfea0 ; unique
 // MS2-PIN: ??$?0AEAHAEAJ$0A@@?$pair@I_K@std@@QEAA@AEAHAEAJ@Z 0x1418bff00 ; unique
 // MS2-PIN: ??$forward@AEAV?$MS2Ptr@VCAvatarPackageEquip@@@@@std@@YAAEAV?$MS2Ptr@VCAvatarPackageEquip@@@@AEAV1@@Z 0x1418c0e90 ; prop
@@ -1191,7 +1191,7 @@ bool UIAvatarPC::FUN_1418bb2a0(MS2Ptr<CItemData> spData, int nEffect, ATL::CAtlA
         return false;
     if (FUN_1405729c0(pItems))
         return false;
-    int nId = spData->FUN_14053c510();
+    unsigned nId = spData->FUN_14053c510();
     int nZero = 0;
     Unk_AvPackageKey kKey(nId, nZero);
     return FUN_1418bb3f0(&kKey, nEffect, pItems);
@@ -1261,7 +1261,7 @@ bool UIAvatarPC::FUN_1418bb3f0(Unk_AvPackageKey* pKey, int nEffect, ATL::CAtlArr
 
 void* FUN_1416561a0(AvatarPC* pAvatar);                                 // the state record of an avatar
 void FUN_1411ea620(void* pRecord, const CMsTime& kStart, const CMsTime& kEnd);  // CEquipment::FUN_1411ea620: sets the codi tab period
-__int64 FUN_140869440();                                                // the server time
+__int64 GetServerTime();                                                // the server time
 
 // @0x1418bbc20
 void UIAvatarPC::FUN_1418bbc20(int nValue)
@@ -1500,8 +1500,9 @@ void UIAvatarPC::FUN_1418bc8c0(int nSkin, int /*nUnused*/)
 void UIAvatarPC::FUN_1418bca10(Unk_CharEquip kColor0, Unk_CharEquip kColor1)
 {
     AvatarPC* pAvatar = FUN_1418bd1d0();
-    if (pAvatar)
-        pAvatar->FUN_1409f41d0(kColor0, kColor1);
+    if (!pAvatar)
+        return;
+    pAvatar->FUN_1409f41d0(kColor0, kColor1);
 }
 
 // @0x1418bca60
@@ -1749,7 +1750,7 @@ void UIAvatarPC::FUN_1418bd780(PC* pSource, AvatarPC* pAvatar)
 {
     if (pAvatar == 0)
         return;
-    __int64 nNow = FUN_140869440();
+    __int64 nNow = GetServerTime();
     CMsTime kZero((__time64_t)0);
     CMsTime kNow(nNow);
     FUN_1411ea620(FUN_1416561a0(pAvatar), kNow, kZero);
@@ -2374,7 +2375,7 @@ bool FUN_1418bf500(int nDepth, MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<C
 // ---- package keys ---------------------------------------------------------------------------------------------------
 
 // @0x1418bf800
-void FUN_1418bf800(int nKey, Unk_AvPackageKey* pOut)
+void FUN_1418bf800(unsigned nKey, Unk_AvPackageKey* pOut)
 {
     int nZero = 0;
     *pOut = Unk_AvPackageKey(nKey, nZero);

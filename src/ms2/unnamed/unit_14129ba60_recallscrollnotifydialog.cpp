@@ -23,6 +23,7 @@
 
 static CStringW s_strRecallConfirm(L"recallscrollconfirm");
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/ascript.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -32,10 +33,9 @@ class ASDialog : public ASDisplayObject {};
 class Unk_RsClip : public ASMovieClip {};
 
 // The root script object of the dialog, as the Invoke back end sees it. Only the overloads this unit calls.
-class Unk_RsScript
+class Unk_RsScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_1409ba030(const char* szMethod, int a1);                  // 1 int
     Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2);     // int, string
 };
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -50,7 +50,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW FUN_14183e930(const CStringW& str, int nColor);
 UIBottomCenterAlignManager* FUN_140c24ef0();
 int FUN_1418dd0d0();
-__int64 FUN_140869440();                                // the server time
+__int64 GetServerTime();                                // the server time
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -119,7 +119,7 @@ void UIRecallScrollNotifyDialog::OnLoadComplete()
     m_clips[1] = FUN_140ba4b70("m_partyNotify");
     m_clips[0] = FUN_140ba4b70("m_guildNotify");
     m_clips[2] = FUN_140ba4b70("m_weddingNotify");
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     for (int i = 0; i < 3; i++) {
         if (m_times[i] > now) {
             ATL::CTimeSpan span = m_times[i] - now;
@@ -185,7 +185,7 @@ void UIRecallScrollNotifyDialog::vfunc_72()
     if (FUN_1422dc2d0() == 0)
         return;
     if (m_tick.FUN_140268870(1000) != 0) {
-        CMsTime now(FUN_140869440());
+        CMsTime now(GetServerTime());
         int nActive = 0;
         for (int i = 0; i < 3; i++) {
             CMsTime zero(0);
@@ -195,7 +195,7 @@ void UIRecallScrollNotifyDialog::vfunc_72()
                 if (m_clips[i]->FUN_1422bfca0()) {
                     nActive = nActive + 1;
                     if (now > m_times[i]) {
-                        reinterpret_cast<Unk_RsScript*>(m_30.operator->())->FUN_1409ba030("CloseNotify", i);
+                        reinterpret_cast<Unk_RsScript*>(m_30.operator->())->Invoke("CloseNotify", i);
                     } else {
                         ATL::CTimeSpan span = m_times[i] - now;
                         reinterpret_cast<Unk_RsScript*>(m_30.operator->())->FUN_14129cce0("UpdateNotify", i, FUN_14129cb50(span));
@@ -224,7 +224,7 @@ void UIRecallScrollNotifyDialog::FUN_14129c920(int nSlot, __time64_t nTime, cons
     m_fields[nSlot] = nField;
     if (FUN_1422dc2d0() == 0)
         return;
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     ATL::CTimeSpan span = m_times[nSlot] - now;
     reinterpret_cast<Unk_RsScript*>(m_30.operator->())->FUN_14129cce0("OpenNotify", nSlot, FUN_14129cb50(span));
     FUN_14129cc60(true);
@@ -236,7 +236,7 @@ void UIRecallScrollNotifyDialog::FUN_14129caa0(int nSlot)
     m_times[nSlot] = 0;
     if (FUN_1422dc2d0() == 0)
         return;
-    reinterpret_cast<Unk_RsScript*>(m_30.operator->())->FUN_1409ba030("CloseNotify", nSlot);
+    reinterpret_cast<Unk_RsScript*>(m_30.operator->())->Invoke("CloseNotify", nSlot);
 }
 
 // @0x14129cb20

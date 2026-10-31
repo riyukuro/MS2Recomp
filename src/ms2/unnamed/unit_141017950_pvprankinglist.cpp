@@ -42,6 +42,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/mypc.h"
 #include "ms2/ms2recover.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -90,7 +91,6 @@ public:
     void FUN_141adc530(int nClass);                                 // open a dialog
     MS2Ptr<UIObject> FUN_141adcea0(int nClass);                     // object by class id
 };
-Unk_PvpUiService* FUN_1403ed2b0();
 
 CStringW FUN_14052bd00(int nStringId, const CStringW& strName);     // formatted message
 void FUN_1412751f0(const CStringW& strText, int nType, int nFlag);  // post a notice
@@ -165,8 +165,8 @@ void Unk_PvpTimer::FUN_141017950(int nMessage, CInPacket& packet)
         int nFrom = FUN_141017f40(nCharId);
         FUN_141018260(nCharId, nScore, nKill, nDeath, n1c);
         int nTo = FUN_141017f40(nCharId);
-        if (FUN_1403ed2b0()->FUN_141adc940(0x4e9a) != 0)
-            FUN_1403ed2b0()->FUN_141adc530(0x4e9a);
+        if (reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e9a) != 0)
+            reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e9a);
         UIPvPRankingDialog* pRanking = FUN_1410189e0(0x4e9a);
         if (pRanking != 0)
             pRanking->FUN_1413432b0();
@@ -183,8 +183,8 @@ void Unk_PvpTimer::FUN_141017950(int nMessage, CInPacket& packet)
         if (pFirst != 0)
             FUN_141018260(pFirst->m_nCharId, pFirst->m_nScore, pFirst->m_nKill, pFirst->m_nDeath, pFirst->m_n1c);
         int nRank = packet.ReadInt32();
-        if (FUN_1403ed2b0()->FUN_141adc940(0x4e9b) != 0)
-            FUN_1403ed2b0()->FUN_141adc530(0x4e9b);
+        if (reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e9b) != 0)
+            reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e9b);
         UIPvPResultDialog* pResult = FUN_141018a80(0x4e9b);
         if (pResult != 0)
             pResult->FUN_141343da0(nRank);
@@ -386,9 +386,9 @@ bool FUN_141018870(Unk_PvpTimerItem* pA, Unk_PvpTimerItem* pB)
 // @0x1410189e0
 UIPvPRankingDialog* FUN_1410189e0(int nClass)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObject = FUN_1403ed2b0()->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObject = reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
         if (spObject.get() != 0)
             return dynamic_cast<UIPvPRankingDialog*>((UIObject*)spObject);
     }
@@ -398,9 +398,9 @@ UIPvPRankingDialog* FUN_1410189e0(int nClass)
 // @0x141018a80
 UIPvPResultDialog* FUN_141018a80(int nClass)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObject = FUN_1403ed2b0()->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObject = reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
         if (spObject.get() != 0)
             return dynamic_cast<UIPvPResultDialog*>((UIObject*)spObject);
     }

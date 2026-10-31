@@ -12,7 +12,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-int FUN_14082f1a0(int nType);                               // stat kind: 0 = 32-bit value
+int IsPercentStat(int nType);                               // stat kind: 0 = 32-bit value
 
 // @0x140db9e30
 PCInfo::PCInfo()
@@ -73,7 +73,7 @@ void PCInfo::FUN_140dba280(CInPacket* pPacket)
             for (int i = 0; i < 3; i++)
             {
                 __int64 nValue = 0;
-                if (FUN_14082f1a0(nType))
+                if (IsPercentStat(nType))
                     nValue = pPacket->ReadInt64();
                 else
                     nValue = (unsigned)pPacket->ReadInt32();
@@ -94,7 +94,7 @@ void PCInfo::FUN_140dba280(CInPacket* pPacket)
             for (int i = 0; i < 3; i++)
             {
                 __int64 nValue = 0;
-                if (FUN_14082f1a0(nType))
+                if (IsPercentStat(nType))
                     nValue = pPacket->ReadInt64();
                 else
                     nValue = (unsigned)pPacket->ReadInt32();

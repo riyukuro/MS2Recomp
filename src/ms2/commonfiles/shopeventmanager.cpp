@@ -39,7 +39,6 @@ struct Unk_ShopEventLock
 };
 MS2_CHECK_SIZE(Unk_ShopEventLock, 8);
 
-CShopEventManager* FUN_1403ed2a0();                                 // TSingleton<CShopEventManager>::GetInstance
 extern "C" float (__cdecl* __imp_ceilf)(float);
 bool FUN_1406a5040(int nId);                                        // the id is a special (whole) sale id
 
@@ -206,7 +205,7 @@ bool CShopEventManager::FUN_1407ce7c0()
     Unk_ShopEventLock lock(m_lock, 1);
     ATL::CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> > arr;
     int nCurrency = 0x186a2;
-    FUN_1403ed2a0()->FUN_1407ce380(arr, nCurrency);
+    TSingleton<CShopEventManager>::GetInstance()->FUN_1407ce380(arr, nCurrency);
     return !arr.IsEmpty();
 }
 

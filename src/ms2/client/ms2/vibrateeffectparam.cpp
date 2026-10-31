@@ -11,6 +11,10 @@
 #include <efd/MemoryDefines.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/ms2inputservice.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // Game TinyXML element and its float attribute helper (commonfiles\tinyxmlhelper.cpp).
 class Unk_140165cf0;
@@ -25,12 +29,7 @@ public:
 Unk_GameLog* FUN_140166440();
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
-class Unk_GameClock
-{
-public:
-    double FUN_141473280();
-};
-Unk_GameClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 
 // The camera shake of the camera service (camera.cpp): constructed here, started through the camera manager.
 class CVibrateCameraEffect
@@ -60,12 +59,7 @@ public:
 Unk_CameraManager* FUN_1409478c0();
 
 // Feature switches (commonfiles\featuremanager.cpp) and game options (gamepad vibration flag).
-class Unk_FeatureSet
-{
-public:
-    bool FUN_14036d570(int nFeature);
-};
-Unk_FeatureSet* FUN_140166410();
+CFeatureManager* FUN_140166410();
 struct Unk_PadOption
 {
     char m_unk_00[2];
@@ -76,13 +70,7 @@ class Unk_GameOption
 public:
     Unk_PadOption* FUN_140a58500();
 };
-Unk_GameOption* FUN_1409a8b10();
-class Unk_GamepadService
-{
-public:
-    void FUN_140d8b3e0(double dSeconds);                        // rumble for the given time
-};
-Unk_GamepadService* FUN_140a58540();
+MS2InputService* FUN_140a58540();
 
 // A float table value of the client configuration (FUN_1401d3200).
 class Unk_VibrateScale
@@ -176,7 +164,7 @@ CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectPara
         }
         if (FUN_140166410()->FUN_14036d570(0xc3))
         {
-            if (FUN_1409a8b10()->FUN_140a58500()->m_bVibration && 0.0f < pEffect->m_fDuration)
+            if (reinterpret_cast<Unk_GameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bVibration && 0.0f < pEffect->m_fDuration)
                 FUN_140a58540()->FUN_140d8b3e0(pEffect->m_fDuration * FUN_1401d3200()->m_90a0.FUN_140298f40());
         }
         return pEffect;
@@ -200,7 +188,7 @@ bool CVibrateEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarg
     }
     if (FUN_140166410()->FUN_14036d570(0xc3))
     {
-        if (FUN_1409a8b10()->FUN_140a58500()->m_bVibration && 0.0f < m_fDuration)
+        if (reinterpret_cast<Unk_GameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bVibration && 0.0f < m_fDuration)
             FUN_140a58540()->FUN_140d8b3e0(m_fDuration * FUN_1401d3200()->m_90a0.FUN_140298f40());
     }
     return true;

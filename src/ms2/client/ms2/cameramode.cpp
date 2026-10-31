@@ -11,14 +11,13 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ecrcameraservice.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/pcbase.h"
 
 // ---- unit-local placeholders ----
 
 // The engine-side actor of the camera target (CCameraMode::vfunc_6).
-class Unk_UpperActor
+class Unk_UpperActor : public PCBase
 {
-public:
-    void FUN_1416781a0(int nMode);
 };
 Unk_UpperActor* FUN_1409ffd30(void* p);
 
@@ -84,7 +83,7 @@ public:
     static Unk_CameraListOwner* s_pInstance;            // 0x143afa980
 };
 
-int FUN_140ae8540();                                    // reloads the camera xml (returns 0 on failure)
+int LoadTestCamerValue();                               // reloads the camera xml (returns 0 on failure)
 Unk_CameraTarget* FUN_1413f98d0();
 bool FUN_14028d470(float a, float b);                   // a == b (within epsilon)
 
@@ -385,7 +384,7 @@ MS2_REPLACE_METHOD(0x140afe270, CCameraMode, FUN_140afe270, 60, 0x4C2590A6);
 // @0x140afe2c0
 BOOL CCameraMode::vfunc_31()
 {
-    return FUN_140ae8540();
+    return LoadTestCamerValue();
 }
 MS2_REPLACE_METHOD(0x140afe2c0, CCameraMode, vfunc_31, 19, 0x6704C278);
 

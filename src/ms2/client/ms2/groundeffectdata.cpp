@@ -26,6 +26,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 #include <egf/EntityID.h>
 
 // The statics of three header copies sit in this .text$di range: the first full copy comes from header_statics_a.h
@@ -46,7 +47,7 @@ public:
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
 const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);   // string attribute
 int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);   // integer attribute, 0 when present
-class Unk_GroundFiles { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_GroundFiles : public CFileSystem { };
 Unk_GroundFiles* FUN_140166420();
 class Unk_GroundLog { public: void FUN_14015eb90(int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg); };
 Unk_GroundLog* FUN_140166440();
@@ -57,12 +58,10 @@ extern int DAT_1439ed00c;   // ground effect cache enabled
 typedef egf::EntityID Unk_ModelKey;   // model key (8 bytes)
 typedef egf::EntityID Unk_ModelKeyCopy;
 
-class Unk_GroundOwner : public GameObject
+class Unk_GroundOwner : public PCBase
 {
 public:
-    CString FUN_141671480();                    // the ground name under the object
     void* FUN_14123c460(Unk_ModelKey* pKeyOut);         // fills the 16-byte model key
-    int FUN_14123c660();                        // non-zero when the object is hidden
 };
 class Unk_ObjectRef
 {

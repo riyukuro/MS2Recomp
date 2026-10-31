@@ -16,6 +16,9 @@
 #include <atlcoll.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/masterytable.h"
 
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
@@ -29,14 +32,10 @@ template <class A> CStringW Unk_MmFormat(CStringW strKey, const A& x)
 // ---- unit-local views of the exe objects --------------------------------------------------------------------------
 
 // The local player.
-class Unk_MmPlayer
+class Unk_MmPlayer : public PC
 {
-public:
-    unsigned int FUN_141662750(int nType);                  // the mastery exp of the type
-    int FUN_141654700();                                    // the job
 };
 class Unk_MmWorld { };
-Unk_MmWorld* FUN_1403ed2d0();
 Unk_MmPlayer* FUN_141bd0cc0(Unk_MmWorld* pWorld);
 
 // A cost entry of a mastery step: +0x1c kind (0 = item, else an item class), +0x20 count.
@@ -80,14 +79,10 @@ public:
 // The mastery table (singleton).
 typedef ATL::CAtlArray<MS2Ptr<ItemEntity> > Unk_MmItemArray;   // reward lists hold item pointers (CMasteryTable::Rewards)
 
-class Unk_MmTable
+class Unk_MmTable : public CMasteryTable
 {
 public:
     MS2Ptr<Unk_MmRow> FUN_14066aa00(int nStep);             // the row of a step
-    int FUN_14066b050(int nType);                           // number of levels of the type
-    unsigned int FUN_14066b310(int nType, int nLevel);      // exp needed
-    int FUN_14066b500(int nType, int nLevel);               // step id
-    void FUN_14066b100(int nStep, int nJob, Unk_MmItemArray& rOut);         // rewards of the step
 };
 Unk_MmTable* FUN_1409670c0();
 
@@ -137,18 +132,18 @@ int CMasteryManager::FUN_140b6d0e0()
 // @0x140b6d140
 int CMasteryManager::FUN_140b6d140(int nType)
 {
-    Unk_MmPlayer* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_MmPlayer* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance()));
     if (pPlayer == 0)
         return 0;
     unsigned int nExp = pPlayer->FUN_141662750(nType);
-    int nMax = FUN_1409670c0()->FUN_14066b050(nType);
+    int nMax = FUN_1409670c0()->MaxGrade(nType);
     int nCount = 0;
     for (int nLevel = 1; nLevel <= nMax; nLevel++)
     {
-        unsigned int nNeed = FUN_1409670c0()->FUN_14066b310(nType, nLevel);
+        unsigned int nNeed = FUN_1409670c0()->Value(nType, nLevel);
         if (nExp < nNeed)
             break;
-        int nStep = FUN_1409670c0()->FUN_14066b500(nType, nLevel);
+        int nStep = FUN_1409670c0()->MakeID(nType, nLevel);
         if (DAT_143ab31a0.FUN_140167ca0(nStep) != 0)
             continue;
         if (FUN_140b6d250(nType, nLevel) == 0)
@@ -161,12 +156,12 @@ int CMasteryManager::FUN_140b6d140(int nType)
 // @0x140b6d250
 int CMasteryManager::FUN_140b6d250(int nType, int nLevel)
 {
-    Unk_MmPlayer* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_MmPlayer* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance()));
     if (pPlayer == 0)
         return 0;
-    int nStep = FUN_1409670c0()->FUN_14066b500(nType, nLevel);
+    int nStep = FUN_1409670c0()->MakeID(nType, nLevel);
     Unk_MmItemArray rewards;
-    FUN_1409670c0()->FUN_14066b100(nStep, pPlayer->FUN_141654700(), rewards);
+    FUN_1409670c0()->Rewards(nStep, pPlayer->FUN_141654700(), rewards);
     return rewards.GetCount() != 0 ? 1 : 0;
 }
 
@@ -189,7 +184,7 @@ int CMasteryManager::FUN_140b6d330(int nStep)
 // @0x140b6d470
 Unk_MasteryResult CMasteryManager::FUN_140b6d470(int nStep)
 {
-    Unk_MmPlayer* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_MmPlayer* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance()));
     if (pPlayer == 0)
         return (Unk_MasteryResult)5;
     MS2Ptr<Unk_MmRow> spRow = FUN_1409670c0()->FUN_14066aa00(nStep);

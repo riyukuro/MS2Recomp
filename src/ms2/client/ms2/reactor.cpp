@@ -40,6 +40,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(CReactor);
 
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/reactor_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/effectservice.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
 
 // The object holds two copies of the header's static data (the second without the extra handle).
@@ -82,7 +83,6 @@ public:
     int FUN_1411a49c0(Unk_RxFxRequest* pRequest);               // plays the effect, returns its handle
     void FUN_1411a6060(int nHandle);                            // stops it
 };
-Unk_RxFxMgr* FUN_1403ed280();
 #ifdef __clang__
 CString FUN_140298360(const char* psz, const CString& str);             // psz + str (ATL operator+)
 #endif
@@ -125,7 +125,7 @@ bool FUN_140930b70();
 
 // Inventory (0x143ab2a90) and the daily counters (0x143ab2fc0).
 class Unk_Inventory { public: int FUN_140a5f180(int nItemId, int nRank); };
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 int FUN_14053feb0(int nItemId);                                 // default rank of an item
 class Unk_AttendTable { public: int FUN_1409617d0(int a, int b, int* pOut); };
 extern Unk_AttendTable g_attendTable;
@@ -220,7 +220,7 @@ CReactor::~CReactor()
     for (POSITION pos = m_mapEffects.GetHeadPosition(); pos != 0; m_mapEffects.GetNext(pos))
     {
         int nHandle = m_mapEffects.GetValueAt(pos);
-        FUN_1403ed280()->FUN_1411a6060(nHandle);
+        reinterpret_cast<Unk_RxFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(nHandle);
     }
     m_mapEffects.RemoveAll();
 }
@@ -305,7 +305,7 @@ bool CReactor::FUN_140b78ef0(const CString& strEffect)
     request.m_strName = strEffect;
     request.m_nOwnerId = 0;
     request.m_pXform = &xf;
-    int nHandle = FUN_1403ed280()->FUN_1411a49c0(&request);
+    int nHandle = reinterpret_cast<Unk_RxFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&request);
     m_mapEffects.SetAt(strEffect, nHandle);
     return true;
 }
@@ -316,7 +316,7 @@ bool CReactor::FUN_140b79120(const CString& strEffect)
     int nHandle = 0;
     if (!m_mapEffects.Lookup(strEffect, nHandle))
         return true;
-    FUN_1403ed280()->FUN_1411a6060(nHandle);
+    reinterpret_cast<Unk_RxFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(nHandle);
     m_mapEffects.RemoveKey(strEffect);
     return true;
 }
@@ -514,7 +514,7 @@ int CReactor::FUN_140b79ee0(PCBase* pPc)
                 break;
             if (nRank == 0)
                 nRank = FUN_14053feb0(nCode);
-            int nHave = DAT_143ab2a90.FUN_140a5f180(nCode, nRank);
+            int nHave = g_143ab2a90.FUN_140a5f180(nCode, nRank);
             if (nHave < nCheck)
                 return 1;
         }
@@ -835,19 +835,10 @@ void* FUN_140b7e770(void* p);
 void* FUN_140b7e750(void* p);
 void FUN_14016c7c0(void* p);
 void FUN_14016c7c0(void* p);
-Unk_Int3* FUN_140b7c1d0(Unk_Int3* p);
-void FUN_140b7c1e0(void* a, void* b);
-void FUN_140b7c220(void* a, void* b);
-void FUN_140b7c270(void* a, void* b);
-Unk_Int3* FUN_140b7c370(Unk_Int3* f, Unk_Int3* l, Unk_Int3* d, void* alloc, char a, char b);
 void FUN_14015fc80(void* p, __int64 nBytes);   // std::_Deallocate<16,0>
 
-// @0x140b7bab0
-// MS2-FUNCTIONAL: std::vector<Unk_Int3> _Compressed_pair ctor glue (allocator 0x140b7c690, _Vector_val 0x140b7c650), stand-in for the exe instantiation
-void* FUN_140b7bab0(void* p) { ::new (p) std::allocator<Unk_Int3>(); ::new (p) std::_Vector_val<std::_Simple_types<Unk_Int3> >(); return p; }
-
 // @0x140b7c2a0
-// MS2-FUNCTIONAL: std::vector<Unk_Int3> _Ucopy stand-in
+// MS2-FUNCTIONAL: std::_Uninitialized_move stand-in; the exe's element has a non-trivial move (the general-tag 0x140b7c370), Unk_Int3 doesn't
 Unk_Int3* FUN_140b7c2a0(Unk_Int3* pFirst, Unk_Int3* pLast, Unk_Int3* pDest, void* pAlloc)
 {
     for (; pFirst != pLast; ++pFirst, ++pDest)
@@ -855,23 +846,11 @@ Unk_Int3* FUN_140b7c2a0(Unk_Int3* pFirst, Unk_Int3* pLast, Unk_Int3* pDest, void
     return pDest;
 }
 
-// @0x140b7c620
-// MS2-FUNCTIONAL: empty-allocator _Compressed_pair ctor stand-in
-void* FUN_140b7c620(void* p) { return p; }
-
-// @0x140b7c6a0
-// MS2-FUNCTIONAL: empty-allocator _Compressed_pair ctor stand-in
-void* FUN_140b7c6a0(void* p) { return FUN_140b7c620(p); }
-
 // @0x140b7c870
 bool FUN_140b7c870(const Unk_GluePair* pIt, void* pOther) { return pIt->first == pOther; }
 
 // @0x140b7c8b0
 bool FUN_140b7c8b0(const Unk_GluePair* pIt, void* pOther) { return pIt->second == pOther; }
-
-// @0x140b7c930
-// MS2-FUNCTIONAL: vector element address stand-in
-Unk_Int3* FUN_140b7c930(Unk_GlueVec* pVec, __int64 nIdx) { return pVec->first + nIdx; }
 
 // @0x140b7c960
 void* FUN_140b7c960(const Unk_GluePair* p) { return p->second; }
@@ -922,21 +901,18 @@ Unk_GlueNode* FUN_140b7cec0(void* pTree, Unk_GlueNode** ppIt)
 }
 
 // @0x140b7cf00
-// MS2-FUNCTIONAL: std::set<__int64> node value accessor stand-in
 void* FUN_140b7cf00(void* pTree, Unk_GlueNode* pNode)
 {
-    if (pNode)
-        return reinterpret_cast<char*>(pNode) + 8;
-    FUN_140159b70(0x80004005);
+    ATLENSURE(pNode != NULL);
+    return reinterpret_cast<char*>(pNode) + 8;
 }
 
 // @0x140b7d300
-// MS2-FUNCTIONAL: std::set<__int64> tree walk stand-in
 Unk_GlueNode* FUN_140b7d300(void* pTree, Unk_GlueNode* pNode)
 {
-    Unk_GlueNode* pCur;
-    if (!pNode || (pCur = pNode, Rx_IsNil(pTree, pNode)))
+    if (pNode == NULL || Rx_IsNil(pTree, pNode))
         return 0;
+    Unk_GlueNode* pCur = pNode;
     while (!Rx_IsNil(pTree, pCur->left))
         pCur = pCur->left;
     return pCur;
@@ -1002,5 +978,9 @@ unsigned __int64 FUN_140b7ec90(void* pAlloc) { return 0x1555555555555555ull; }
 // MS2-PIN: ?push_back@?$vector@VPoint3@efd@@V?$allocator@VPoint3@efd@@@std@@@std@@QEAAX$$QEAVPoint3@efd@@@Z 0x140b7ed20
 // MS2-PIN: ?push_back@?$vector@UUnk_Int3@@V?$allocator@UUnk_Int3@@@std@@@std@@QEAAX$$QEAUUnk_Int3@@@Z 0x140b7ecf0
 // MS2-PIN: ??$emplace_back@VPoint3@efd@@@?$vector@VPoint3@efd@@V?$allocator@VPoint3@efd@@@std@@@std@@QEAAX$$QEAVPoint3@efd@@@Z 0x140b7c4c0
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@UUnk_Int3@@@std@@V?$_Vector_val@U?$_Simple_types@UUnk_Int3@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x140b7bab0
+// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@UUnk_Int3@@V?$allocator@UUnk_Int3@@@std@@@std@@@std@@QEAA@XZ 0x140b7c620
+// MS2-PIN: ??0?$vector@UUnk_Int3@@V?$allocator@UUnk_Int3@@@std@@@std@@QEAA@XZ 0x140b7c6a0
+// MS2-PIN: ??A?$vector@UUnk_Int3@@V?$allocator@UUnk_Int3@@@std@@@std@@QEAAAEAUUnk_Int3@@_K@Z 0x140b7c930
 // MS2-PIN: ??$emplace_back@UUnk_Int3@@@?$vector@UUnk_Int3@@V?$allocator@UUnk_Int3@@@std@@@std@@QEAAX$$QEAUUnk_Int3@@@Z 0x140b7c450
 // MS2-PIN: ??$_Emplace_reallocate@VPoint3@efd@@@?$vector@VPoint3@efd@@V?$allocator@VPoint3@efd@@@std@@@std@@QEAAPEAVPoint3@efd@@QEAV23@$$QEAV23@@Z 0x140b7bf80

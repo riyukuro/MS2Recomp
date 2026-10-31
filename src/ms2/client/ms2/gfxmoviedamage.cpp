@@ -41,7 +41,7 @@ static Unk_Handle1401cd100 s_dat_143abb130(0);                                  
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 unsigned int FUN_1407181d0(const CString& s);                       // the font id of a font name
 CString FUN_140719210(long n);                                      // number text
-__int64 FUN_140869440();                                            // the current server time
+__int64 GetServerTime();                                            // the current server time
 bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                 // the value is set
 
 class Unk_DmgGFxUIManager
@@ -272,7 +272,7 @@ void GFxMovieDamage::FUN_140b61ce0()
     if (m_90.GetCount() > nMinCount)
     {
         ATL::CAtlArray<MS2Ptr<UIDamageFont> > arrExpired;
-        __int64 nNow = FUN_140869440();
+        __int64 nNow = GetServerTime();
         for (POSITION pos = m_90.GetStartPosition(); pos; m_90.GetNext(pos))
         {
             MS2Ptr<UIDamageFont> spFont = m_90.GetValueAt(pos);

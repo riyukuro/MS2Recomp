@@ -73,6 +73,8 @@ static CString s_strSkill0 = "skill";
 static CString s_strStun0 = "stun";
 static Unk_1402a9d70 s_unk1402a9d70_0(17, 0.75f, 0.25f, 2.25f, 10);
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local placeholders ----
 
@@ -122,7 +124,6 @@ class Unk_ClubUIManager
 public:
     MS2Ptr<UIObject> FUN_141adcea0(int nUiId);
 };
-Unk_ClubUIManager* FUN_1403ed2b0();
 
 // The world (FUN_1403ed2d0): my player and the player lookup by name.
 class Unk_ClubWorldObj;
@@ -163,21 +164,15 @@ public:
 Unk_ClubConsts* FUN_1401d3200();
 int* FUN_1402056b0(Unk_ClubLimit* pLimit);
 
-// Feature flags (FUN_140166410 / FUN_14036d570) and the party manager (FUN_1409670d0).
-class Unk_ClubFeatures
-{
-public:
-    bool FUN_14036d570(int nFeature);
-};
-Unk_ClubFeatures* FUN_140166410();
-CPartyManager* FUN_1409670d0();
+// Feature flags (FUN_140166410 / FUN_14036d570) and the party manager (TSingleton<CPartyManager>::GetInstance).
+CFeatureManager* FUN_140166410();
 
 // String helpers (string table lookups with arguments) and the chat/notice output.
 CStringW GetStringCommon(int nId);
 CStringW FUN_14052bd00(int nId, const CStringW& a);
 CStringW FUN_140632a60(int nId, const CStringW& a, const CStringW& b);
 CStringW FUN_1409eadb0(int nId, const CStringW& a, const CStringW& b, const CStringW& c);
-CStringW FUN_1409eec40(int nId);
+CStringW BlockFormat(int nId);
 CStringW FUN_1408116a0(int nId, const int& n);
 void FUN_1412751b0(const CStringW& str, int nChannel);
 void FUN_1412751f0(const CStringW& str, int a, int b);
@@ -532,7 +527,7 @@ void CClubCli::SendClubMode12(CStringW strName)
         return;
     if (FUN_140211080(CStringW(strMe)) == 0)
     {
-        FUN_1412751f0(FUN_1409eec40(0x37b), 1, 1);
+        FUN_1412751f0(BlockFormat(0x37b), 1, 1);
         return;
     }
     COutPacket pkt(static_cast<int>(SendOp::Club), 0);
@@ -550,7 +545,7 @@ void CClubCli::FUN_140b146e0(int nBuffId, int nBuffLevel)
         return;
     if (FUN_140211080(CStringW(strMe)) == 0)
     {
-        FUN_1412751f0(FUN_1409eec40(0x37b), 1, 1);
+        FUN_1412751f0(BlockFormat(0x37b), 1, 1);
         return;
     }
     if (FUN_14020f640() == nBuffId && FUN_14020f6b0() == (unsigned)nBuffLevel)
@@ -584,12 +579,12 @@ void CClubCli::SendClubMode14(CStringW strNewName)
     }
     if (FUN_140211080(CStringW(strMe)) == 0)
     {
-        FUN_1412751f0(FUN_1409eec40(0x37b), 1, 1);
+        FUN_1412751f0(BlockFormat(0x37b), 1, 1);
         return;
     }
     if (m_name.CompareNoCase(strNewName) == 0)
     {
-        FUN_1412751f0(FUN_1409eec40(0x385), 1, 1);
+        FUN_1412751f0(BlockFormat(0x385), 1, 1);
         return;
     }
     COutPacket pkt(static_cast<int>(SendOp::Club), 0);
@@ -953,12 +948,12 @@ bool CClubClientManager::FUN_140b15c10(CStringW strName)
         FUN_141275260(0x386, 1, 1);
         return false;
     }
-    if (!FUN_1409670d0()->FUN_14162ab20())
+    if (!TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20())
     {
         FUN_141275260(0x36c, 1, 1);
         return false;
     }
-    if (!FUN_1409670d0()->FUN_14162ab60())
+    if (!TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
     {
         FUN_141275260(0x36c, 1, 1);
         return false;
@@ -1570,9 +1565,9 @@ Unk_ClubBuffTable* FUN_140b1a4e0()
 // @0x140b19090
 UIClubDialog* FUN_140b19090(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_ClubUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spUI = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = reinterpret_cast<Unk_ClubUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIClubDialog*>(spUI.operator->());
     }

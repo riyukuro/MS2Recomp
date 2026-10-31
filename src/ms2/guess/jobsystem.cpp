@@ -28,11 +28,10 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
 
 // Out-of-unit callees.
-JobTable* FUN_1401d7a50();                              // the JobTable singleton
 class Unk_JobSkillTable { public: MS2Ptr<SkillData> FUN_1407ee1d0(int nSkillId); };
-Unk_JobSkillTable* FUN_1401958b0();                     // the skill table
 
 
 // @0x140637b00
@@ -149,9 +148,9 @@ JobSystem::~JobSystem()
 // @0x140638200
 void JobSystem::SetJob(int nJobGroup, int nJobCode, unsigned short nLevel)
 {
-    if (!FUN_1401d7a50()->GetJobData(nJobGroup))
+    if (!TSingleton<JobTable>::GetInstance()->GetJobData(nJobGroup))
         return;
-    int nRank = FUN_1401d7a50()->GetJobRank(nJobCode);
+    int nRank = TSingleton<JobTable>::GetInstance()->GetJobRank(nJobCode);
     Unk_CriticalSectionLock lock(m_lock, 1);
     InitSkills(nJobGroup, nRank);
     RecalcPoints();
@@ -161,7 +160,7 @@ void JobSystem::SetJob(int nJobGroup, int nJobCode, unsigned short nLevel)
 bool JobSystem::ChangeJob(int nJobGroup, int nRank, unsigned short nLevel)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    if (!FUN_1401d7a50()->GetJobData(nJobGroup))
+    if (!TSingleton<JobTable>::GetInstance()->GetJobData(nJobGroup))
         return false;
     ATL::CAtlMap<unsigned, unsigned short> learned;
     for (auto& kv : m_skills)
@@ -277,7 +276,7 @@ void JobSystem::vfunc_7(CByteBuffer& buf)
     Unk_CriticalSectionLock lock(m_lock, 1);
     m_nRank = buf.ReadInt32();
     int nJobGroup = buf.ReadInt32();
-    m_spJob = FUN_1401d7a50()->GetJobData(nJobGroup);
+    m_spJob = TSingleton<JobTable>::GetInstance()->GetJobData(nJobGroup);
     m_skills.clear();
     int nCount = buf.ReadUInt8();
     for (int i = 0; i < nCount; i++)
@@ -295,7 +294,7 @@ void JobSystem::vfunc_7(CByteBuffer& buf)
 // @0x140639210
 MS2Ptr<SkillData> JobSystem::GetSkillData(unsigned nSkillId)
 {
-    return FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
+    return reinterpret_cast<Unk_JobSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
 }
 
 // @0x140639260
@@ -393,7 +392,7 @@ void JobSystem::ClearChanged()
 // @0x140639920
 void JobSystem::SetRank(unsigned short nLevel, int nJobCode)
 {
-    m_nRank = FUN_1401d7a50()->GetJobRank(nJobCode);
+    m_nRank = TSingleton<JobTable>::GetInstance()->GetJobRank(nJobCode);
     UpdateLearnable(nLevel);
 }
 
@@ -441,7 +440,7 @@ JobDataPtr JobSystem::GetJobData()
 void JobSystem::InitSkills(int nJobGroup, int nRank)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    m_spJob = FUN_1401d7a50()->GetJobData(nJobGroup);
+    m_spJob = TSingleton<JobTable>::GetInstance()->GetJobData(nJobGroup);
     m_nRank = nRank;
     m_skills.clear();
     std::vector<JobSkillDataPtr> skills;

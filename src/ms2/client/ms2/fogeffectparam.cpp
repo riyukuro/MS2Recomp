@@ -12,6 +12,9 @@
 #include <efd/MemoryDefines.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/applyeffect.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // D3DCOLOR_XRGB (d3d9types.h), spelled out: the game does not include d3d9 here.
 #define MS2_D3DCOLOR_XRGB(r, g, b) \
@@ -32,21 +35,10 @@ void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>& arr, const 
 bool FUN_14028d470(float a, float b);                                                   // nearly equal
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
-class Unk_GameClock
-{
-public:
-    double FUN_141473280();
-};
-Unk_GameClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 
 // Scene fog state (?\applyeffect.cpp manager, singleton 0x1409a8b00).
-class Unk_PostEffectMgr
-{
-public:
-    void FUN_1409a4960(float* pfNear, float* pfFar, unsigned int* pdwColor);                  // get
-    void FUN_1409a4450(bool b, float fNear, float fFar, unsigned int dwColor);                 // set
-};
-Unk_PostEffectMgr* FUN_1409a8b00();
+ApplyEffect* FUN_1409a8b00();
 
 // Renderer wrapper (singleton 0x1409a8b10) -> back buffer (0x1409a8ac0) -> flag passed to the fog setter.
 class Unk_RenderTarget
@@ -59,7 +51,6 @@ class Unk_RendererWrap
 public:
     Unk_RenderTarget* FUN_1409a8ac0();
 };
-Unk_RendererWrap* FUN_1409a8b10();
 
 // @0x1412208a0
 CFogEffectParam::CFogEffectParam()
@@ -109,7 +100,7 @@ CFogEffect* CFogEffect::FUN_141220be0(void* pUnused, const CFogEffectParam* pPar
     if (pParam)
     {
         CFogEffect* pEffect = new (efd::MemHint(efd::MemHint::NONE)) CFogEffect;
-        FUN_1409a8b00()->FUN_1409a4960(&pEffect->m_fNearFrom, &pEffect->m_fFarFrom, &pEffect->m_dwColorFrom);
+        FUN_1409a8b00()->GetFog(&pEffect->m_fNearFrom, &pEffect->m_fFarFrom, &pEffect->m_dwColorFrom);
         pEffect->m_dStartTime = FUN_14086d260()->FUN_141473280() + pParam->m_fStartDelay;
         pEffect->m_fDuration = pParam->m_fDuration;
         pEffect->m_b2c = pParam->m_b30;
@@ -129,7 +120,7 @@ bool CFogEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
     const CFogEffectParam* pFog = static_cast<const CFogEffectParam*>(pParam);
-    FUN_1409a8b00()->FUN_1409a4960(&m_fNearFrom, &m_fFarFrom, &m_dwColorFrom);
+    FUN_1409a8b00()->GetFog(&m_fNearFrom, &m_fFarFrom, &m_dwColorFrom);
     m_fNear = pFog->m_fNear;
     m_fFar = pFog->m_fFar;
     m_dwColor = pFog->m_dwColor;
@@ -155,7 +146,7 @@ MS2_REPLACE_METHOD(0x141220e90, CFogEffect, vfunc_9, 73, 0xDF8F6F44);
 // @0x141220ee0
 void CFogEffect::vfunc_7()
 {
-    FUN_1409a8b00()->FUN_1409a4450(FUN_1409a8b10()->FUN_1409a8ac0()->FUN_14125e020(), m_fNear, m_fFar, m_dwColor);
+    FUN_1409a8b00()->SetFogRange(reinterpret_cast<Unk_RendererWrap*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_14125e020(), m_fNear, m_fFar, m_dwColor);
 }
 MS2_REPLACE_METHOD(0x141220ee0, CFogEffect, vfunc_7, 92, 0x1780D1FA);
 
@@ -175,7 +166,7 @@ void CFogEffect::FUN_141220f60(double dNow)
     unsigned char g = (unsigned char)((1.0 - t) * ((m_dwColorFrom >> 8) & 0xff) + t * ((m_dwColor >> 8) & 0xff));
     unsigned char b = (unsigned char)((1.0 - t) * (m_dwColorFrom & 0xff) + t * (m_dwColor & 0xff));
     unsigned int dwColor = MS2_D3DCOLOR_XRGB(r, g, b);
-    FUN_1409a8b00()->FUN_1409a4450(FUN_1409a8b10()->FUN_1409a8ac0()->FUN_14125e020(), fNear, fFar, dwColor);
+    FUN_1409a8b00()->SetFogRange(reinterpret_cast<Unk_RendererWrap*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_14125e020(), fNear, fFar, dwColor);
 }
 MS2_REPLACE_METHOD(0x141220f60, CFogEffect, FUN_141220f60, 579, 0xAA2C7DF0);
 

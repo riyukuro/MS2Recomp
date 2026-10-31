@@ -235,9 +235,9 @@ extern void FUN_14015eb90(void*,int,int,const wchar_t*,const CString&);
 extern void FUN_140353fc0(void*,int,int,const wchar_t*,const int&);
 extern int FUN_14015f500(void*,const char*,int*);
 extern void FUN_14026b1c0(ItemEntity*,int);
-extern void FUN_1404fa010(bool);
-extern void FUN_1404f3460();
-extern __time64_t FUN_140869440();
+extern void Unk_SetGuildFlag_a010(bool);
+extern void Unk_GuildXmlDataCheckInit_3460();
+extern __time64_t GetServerTime();
 // @0x1404d4180
 CGuildPVPSeasonHistoryData::CGuildPVPSeasonHistoryData(){FUN_1404d4250();}
 // @0x1404d41f0
@@ -467,7 +467,7 @@ bool CGuildXmlData::FUN_1404d5960(){
     if(!FUN_1404d6ab0())return false;
     if(!LoadGuildQuestRewardFactor())return false;
     if(!LoadGuildContribution())return false;
-    FUN_1404fa010(true);return true;
+    Unk_SetGuildFlag_a010(true);return true;
 }
 // @0x1404d5a50
 bool CGuildXmlData::LoadGuildProperty(){
@@ -603,7 +603,7 @@ bool CGuildXmlData::LoadGuildContribution(){
 }
 // @0x1404d7130
 unsigned CGuildXmlData::FUN_1404d7130(int exp){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     if(property.empty()) return 0;
     for(auto i=property.begin(),e=property.end();i!=e;++i){
         if(exp<i->second->f1c) return i->second->f18;
@@ -613,7 +613,7 @@ unsigned CGuildXmlData::FUN_1404d7130(int exp){
 MS2_REPLACE_METHOD(0x1404d7130, CGuildXmlData, FUN_1404d7130, 202, 0x3091EC2D);
 // @0x1404d7200
 int CGuildXmlData::FUN_1404d7200(int level){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     if(level<=0) return 0;
     if(property[level]==0) return 0;
     return property[level]->f1c;
@@ -629,35 +629,35 @@ int CGuildXmlData::FUN_1404d7280(){
 MS2_REPLACE_METHOD(0x1404d7280, CGuildXmlData, FUN_1404d7280, 106, 0x29C0DD3C);
 // @0x1404d72f0
 int CGuildXmlData::FUN_1404d72f0(){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     if(property.empty()) return 0;
     return property.rbegin()->second->f18;
 }
 MS2_REPLACE_METHOD(0x1404d72f0, CGuildXmlData, FUN_1404d72f0, 92, 0x2687DE1D);
 // @0x1404d7360
 float CGuildXmlData::FUN_1404d7360(unsigned short level,int index){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     if(level<0 || level>=300) return 1.0f;
     return questFactors[level][index];
 }
 MS2_REPLACE_METHOD(0x1404d7360, CGuildXmlData, FUN_1404d7360, 92, 0x1CD9898D);
 // @0x1404d73d0
 int CGuildXmlData::FUN_1404d73d0(int kind){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     if(kind<=0 || kind>=10) return 0;
     return contribution[kind];
 }
 MS2_REPLACE_METHOD(0x1404d73d0, CGuildXmlData, FUN_1404d73d0, 58, 0x0185980C);
 // @0x1404d7410
 Unk_PayloadPtr<CGuildXmlData::GuildProperty> CGuildXmlData::FUN_1404d7410(int level){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     if(property.find(level)==property.end()) return Unk_PayloadPtr<GuildProperty>(0);
     return property[level];
 }
 MS2_REPLACE_METHOD(0x1404d7410, CGuildXmlData, FUN_1404d7410, 192, 0x621EADAB);
 // @0x1404d74e0
 Unk_PayloadPtr<CGuildXmlData::GuildSkill> CGuildXmlData::FUN_1404d74e0(int id,int level){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     if(skill.find(id)==skill.end()) return Unk_PayloadPtr<GuildSkill>(0);
     std::vector<Unk_PayloadPtr<GuildSkill>>& list=skill[id];
     for(size_t i=0;i<list.size();++i){
@@ -668,7 +668,7 @@ Unk_PayloadPtr<CGuildXmlData::GuildSkill> CGuildXmlData::FUN_1404d74e0(int id,in
 MS2_REPLACE_METHOD(0x1404d74e0, CGuildXmlData, FUN_1404d74e0, 325, 0x79DB9B95);
 // @0x1404d7630
 void CGuildXmlData::FUN_1404d7630(std::vector<int>& out){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     out.reserve(skill.size());
     for(auto i=skill.begin(),e=skill.end();i!=e;++i){
         if(i->second.empty()) continue;
@@ -679,7 +679,7 @@ void CGuildXmlData::FUN_1404d7630(std::vector<int>& out){
 MS2_REPLACE_METHOD(0x1404d7630, CGuildXmlData, FUN_1404d7630, 240, 0x7C76FF84);
 // @0x1404d7730
 void CGuildXmlData::FUN_1404d7730(std::vector<int>& out){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     out.reserve(skill.size());
     for(auto i=skill.begin(),e=skill.end();i!=e;++i){
         if(i->second.empty()) continue;
@@ -690,21 +690,21 @@ void CGuildXmlData::FUN_1404d7730(std::vector<int>& out){
 MS2_REPLACE_METHOD(0x1404d7730, CGuildXmlData, FUN_1404d7730, 240, 0xAD6C0DE5);
 // @0x1404d7830
 Unk_PayloadPtr<CGuildXmlData::GuildEvent> CGuildXmlData::FUN_1404d7830(int id){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     if(event.find(id)==event.end()) return Unk_PayloadPtr<GuildEvent>(0);
     return event[id];
 }
 MS2_REPLACE_METHOD(0x1404d7830, CGuildXmlData, FUN_1404d7830, 192, 0x7276C91B);
 // @0x1404d7900
 void CGuildXmlData::FUN_1404d7900(std::vector<int>& out){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     out.reserve(event.size());
     for(auto i=event.begin(),e=event.end();i!=e;++i) out.push_back(i->first);
 }
 MS2_REPLACE_METHOD(0x1404d7900, CGuildXmlData, FUN_1404d7900, 157, 0xFAEEBFF0);
 // @0x1404d79b0
 Unk_PayloadPtr<CGuildXmlData::GuildHouse> CGuildXmlData::FUN_1404d79b0(int level,int theme){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     std::pair<int,int> key(level,theme);
     if(house.find(key)==house.end()) return Unk_PayloadPtr<GuildHouse>(0);
     return house[key];
@@ -712,14 +712,14 @@ Unk_PayloadPtr<CGuildXmlData::GuildHouse> CGuildXmlData::FUN_1404d79b0(int level
 MS2_REPLACE_METHOD(0x1404d79b0, CGuildXmlData, FUN_1404d79b0, 217, 0x4798F80C);
 // @0x1404d7a90
 void CGuildXmlData::FUN_1404d7a90(std::vector<std::pair<int,int>>& out){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     out.reserve(house.size());
     for(auto i=house.begin(),e=house.end();i!=e;++i) out.push_back(i->first);
 }
 MS2_REPLACE_METHOD(0x1404d7a90, CGuildXmlData, FUN_1404d7a90, 157, 0x032A47F6);
 // @0x1404d7b40
 Unk_PayloadPtr<CGuildXmlData::GuildNpc> CGuildXmlData::FUN_1404d7b40(Unk_GuildNpcKind kind,int level){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     std::pair<Unk_GuildNpcKind,int> key(kind,level);
     if(npc.find(key)==npc.end()) return Unk_PayloadPtr<GuildNpc>(0);
     return npc[key];
@@ -727,27 +727,27 @@ Unk_PayloadPtr<CGuildXmlData::GuildNpc> CGuildXmlData::FUN_1404d7b40(Unk_GuildNp
 MS2_REPLACE_METHOD(0x1404d7b40, CGuildXmlData, FUN_1404d7b40, 217, 0x88080605);
 // @0x1404d7c20
 void CGuildXmlData::FUN_1404d7c20(std::set<Unk_GuildNpcKind>& out){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     for(auto i=npc.begin(),e=npc.end();i!=e;++i) out.insert(i->first.first);
 }
 MS2_REPLACE_METHOD(0x1404d7c20, CGuildXmlData, FUN_1404d7c20, 132, 0x7F14F619);
 // @0x1404d7cb0
 Unk_PayloadPtr<CGuildXmlData::GuildRaid> CGuildXmlData::FUN_1404d7cb0(unsigned id){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     if(raid.find(id)==raid.end()) return Unk_PayloadPtr<GuildRaid>(0);
     return raid[id];
 }
 MS2_REPLACE_METHOD(0x1404d7cb0, CGuildXmlData, FUN_1404d7cb0, 192, 0x4C2B2E5E);
 // @0x1404d7d80
 void CGuildXmlData::FUN_1404d7d80(std::vector<unsigned>& out){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     out.reserve(raid.size());
     for(auto i=raid.begin(),e=raid.end();i!=e;++i) out.push_back(i->first);
 }
 MS2_REPLACE_METHOD(0x1404d7d80, CGuildXmlData, FUN_1404d7d80, 157, 0xEC01BA76);
 // @0x1404d7e30
 Unk_PayloadPtr<CGuildXmlData::GuildRaidReward> CGuildXmlData::FUN_1404d7e30(int id){
-    FUN_1404f3460();
+    Unk_GuildXmlDataCheckInit_3460();
     if(id<0) return Unk_PayloadPtr<GuildRaidReward>(0);
     auto i=reward.lower_bound(id);
     if(i!=reward.end()) return i->second;
@@ -865,7 +865,7 @@ Unk_PayloadPtr<CGuildNpcShop> CGuildNpcShopMgr::FUN_1404d88e0(unsigned id){
 }
 // @0x1404d89e0
 int CGuildNpcShopMgr::FUN_1404d89e0(ItemEntity* item,Unk_GuildShopOffer* offer,bool* created){
-    __int64 now=FUN_140869440();
+    __int64 now=GetServerTime();
     Unk_PayloadPtr<CGuildNpcShop> shop=FUN_1404d87f0(offer->f20);
     if(shop){
         if(shop->f20!=offer->f28 || shop->f20<now){

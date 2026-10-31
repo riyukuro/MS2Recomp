@@ -43,6 +43,10 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // ---- exe data ----
 extern char DAT_143afa4d8;          // NiNode::ms_RTTI
@@ -80,25 +84,18 @@ void FUN_14059a1f0(Unk_UserProxyItemData* pData, int nValue);   // stores the po
 int FUN_14059a210(Unk_UserProxyItemData* pData);                // reads it
 
 // The local player (a world actor).
-class Unk_PonyPlayer : public GameObject
+class Unk_PonyPlayer : public PC
 {
-public:
-    CString FUN_14166dc50();                                    // name of the current action
-    MS2Ptr<CEquipItem> FUN_141655e10(int nSlot);                // the item equipped in a slot
-    void FUN_14123d7a0(CString strName, int bOn);               // switches a named input mode
 };
 struct Unk_PonyWorld { Unk_PonyPlayer* FUN_141bd0cc0(); };      // the local player
-Unk_PonyWorld* FUN_1403ed2d0();
 struct Unk_PonyAnimSvc { NiActorManager* FUN_140999440(const egf::EntityID& kId); };   // loaded actor of an entity
 Unk_PonyAnimSvc* FUN_141b6f910();
 NiNode* FUN_1409f7cb0(NiActorManager* pActor);                  // the actor's scene root
 
 // The app framework (+8 = the service manager) and the world scene.
 struct Unk_PonyApp { char m_pad[8]; char m_manager[1]; double FUN_141473280(); };
-Unk_PonyApp* FUN_14086d260();
 void* FUN_140af8310(char* pManager);
 struct Unk_PonyScene;
-Unk_PonyScene* FUN_1403ed280();
 NiNode* FUN_1411a6b10(Unk_PonyScene* pScene);                   // the root node the hair models are attached to
 char* FUN_1401d3200();                                          // Client::Constants
 float FUN_1402bac70(void* pValue);                              // Constants::Value<float>::get
@@ -324,7 +321,7 @@ void CPonyTailController::vfunc_6()
 {
     ReadValues();
     Unk_PonyAnimSvc* pSvc = FUN_141b6f910();
-    Unk_PonyPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PonyPlayer* pPlayer = reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (m_bBusy != 0)
@@ -370,7 +367,7 @@ float CPonyTailController::vfunc_20()
 // @0x141692440
 const Unk_CustomizeRange* CPonyTailController::vfunc_23()
 {
-    Unk_PonyPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PonyPlayer* pPlayer = reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
         MS2Ptr<Unk_PickTarget> spFirst = m_kFirst.m_spModel;
@@ -400,7 +397,7 @@ int CPonyTailController::vfunc_17()
 // @0x1416925e0
 void CPonyTailController::vfunc_14(float fValue)
 {
-    Unk_PonyPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PonyPlayer* pPlayer = reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (m_bBusy != 0)
@@ -442,7 +439,7 @@ void CPonyTailController::vfunc_9(int nIndex)
 // @0x1416929b0
 int CPonyTailController::vfunc_29()
 {
-    Unk_PonyPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PonyPlayer* pPlayer = reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     Unk_PickTarget* pFirst = 0;
@@ -567,7 +564,7 @@ static void ApplyPartPose(CPonyTailController* pThis, Unk_PonyPart& kPart, Unk_P
 void CPonyTailController::vfunc_30(const NiPoint3& kPos)
 {
     Unk_PonyAnimSvc* pSvc = FUN_141b6f910();
-    Unk_PonyPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PonyPlayer* pPlayer = reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
         pPlayer->FUN_14123d7a0(CString("TailController"), 1);
     NiActorManager* pActor = 0;
@@ -615,7 +612,7 @@ void CPonyTailController::vfunc_30(const NiPoint3& kPos)
 // MS2-FUNCTIONAL: the two part branches share ApplyPartPose
 void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal, const NiPoint2& kUV, float fValue)
 {
-    Unk_PonyPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PonyPlayer* pPlayer = reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (FUN_1402a5b40(pPlayer->FUN_14166dc50(), "Equip_Change_Idle_A") != 0)
@@ -657,7 +654,7 @@ void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal
 // @0x141694380
 void CPonyTailController::vfunc_33()
 {
-    Unk_PonyPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PonyPlayer* pPlayer = reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
         pPlayer->FUN_14123d7a0(CString("TailController"), 0);
     MS2Ptr<Unk_PickTarget> spFirst = m_kFirst.m_spModel;
@@ -682,7 +679,7 @@ void CPonyTailController::vfunc_33()
 // @0x141694650
 void CPonyTailController::FUN_141694650()
 {
-    Unk_PonyPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PonyPlayer* pPlayer = reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0 || m_spEquipItem == (CEquipItem*)0)
         return;
     Unk_PickTarget* pFirst = 0;
@@ -741,7 +738,7 @@ void CPonyTailController::FUN_141694650()
 // @0x141694ea0
 void CPonyTailController::FUN_141694ea0(Unk_PickTarget** ppFirst, Unk_PickTarget** ppSecond)
 {
-    Unk_PonyPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PonyPlayer* pPlayer = reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     Unk_PickTarget* pA = 0;
@@ -834,8 +831,8 @@ void CPonyTailController::FUN_1416952c0(Unk_PonyPart* pPart)
     reinterpret_cast<CEquipModel*>(spPart.operator->())->vfunc_29(&kB, &kC, fScale);
     if (*(int*)((char*)FUN_141200ab0(spPart.operator->()) + 0x20) != 0)
     {
-        NiNode* pScene = FUN_1411a6b10(FUN_1403ed280());
-        float fTime = (float)FUN_14086d260()->FUN_141473280();
+        NiNode* pScene = FUN_1411a6b10(reinterpret_cast<Unk_PonyScene*>(TSingleton<CEffectService>::GetInstance()));
+        float fTime = (float)reinterpret_cast<Unk_PonyApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280();
         Unk_MeshSet* pSet = FUN_141201c90(spPart.operator->());
         Unk_MeshSet& kSet = *pSet;
         Unk_MeshSet::iterator itEnd = kSet.end();
@@ -864,7 +861,7 @@ void CPonyTailController::FUN_141695710(Unk_PonyPart* pPart, int nMode, int nInd
                                         int bSecond)
 {
     Unk_PonyAnimSvc* pSvc = FUN_141b6f910();
-    Unk_PonyPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PonyPlayer* pPlayer = reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     NiActorManager* pActor = pSvc->FUN_140999440(pPlayer->FUN_14123c460());
     if (pActor == 0)
         return;
@@ -1031,7 +1028,7 @@ void CPonyTailPhysXHelper::UpdateModelPhysXValues(Unk_PickTarget* pModel, const 
     CKfmModel* pKfm = FUN_1411de170(pModel);
     if (pKfm == 0)
         return;
-    void* pProp = FUN_14120a240(FUN_140af8310(FUN_14086d260()->m_manager));
+    void* pProp = FUN_14120a240(FUN_140af8310(reinterpret_cast<Unk_PonyApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager));
     unsigned nJoints = FUN_14120ade0(pProp, pKfm->FUN_14143ff70());
     NiObjectNET* pNode = (NiObjectNET*)FUN_1412018c0(pModel);
     if (pNode == 0)

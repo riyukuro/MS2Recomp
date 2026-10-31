@@ -30,6 +30,7 @@
 #include "ms2/placeholder/uimessagebox.h"
 #include <string>
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/postprocessing/postprocessingservice.h"
 
 // ---- out-of-unit callees and data (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 extern char DAT_143d6eb58;
@@ -49,8 +50,8 @@ extern char DAT_143b059e8;                                  // render-target reg
 void* FUN_14127bf80(void* pkHolder);                        // registry singleton
 void* FUN_140af7da0(void* pkRegistry);                      // its current scene
 NiRenderTargetGroup* FUN_14127cca0(void* pkScene);          // the scene's render-target group
-class Unk_1409a8b20 { public: NiPointer<NiRenderTargetGroup> FUN_1416a3fb0(); };   // the renderer wrapper
-Unk_1409a8b20* FUN_1409a8b20();
+   // the renderer wrapper
+PostProcessingService* FUN_1409a8b20();
 CStringW FUN_1401d0080(const CStringW& kA, const CStringW& kB);   // CStringW concatenation
 CStringW FUN_14052bd00(int nStringId, const CStringW& kArg);      // localized string with one argument
 CStringW FUN_1401e8510(const wchar_t* pwcFormat, const CStringW& kArg);   // StringFormat(const wchar_t*, const CStringW&)

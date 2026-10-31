@@ -34,6 +34,8 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/client/ms2/commoneffectdummy.h"
 
 // ---- unit-local views of exe objects ----------------------------------------------------------------------------
 
@@ -44,23 +46,20 @@ public:
     void FUN_14015eb90(int level, int flags, const wchar_t* format, const CStringA& arg);
 };
 Unk_NpcLog* FUN_140166440();
-class Unk_NpcFileSystem
+class Unk_NpcFileSystem : public CFileSystem
 {
-public:
-    int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c);
 };
 Unk_NpcFileSystem* FUN_140166420();
 CStringA FUN_14071a5b0(const CStringA& strDir, const CStringA& strFile);
 CStringA FUN_140513200(const char* szFormat, const int& n);       // StringFormat<int>: the identical-code copy Load calls
 
-// The default effect dummy table (FUN_140789c40()): CommonEffectDummy, its row count and row getter.
+// The default effect dummy table (reinterpret_cast<Unk_NpcEffectDummies*>(TSingleton<CommonEffectDummy>::GetInstance())): CommonEffectDummy, its row count and row getter.
 class Unk_NpcEffectDummies
 {
 public:
     size_t FUN_140a40200();
     bool FUN_140a40230(unsigned nIndex, CEffectDummy& dummy);
 };
-Unk_NpcEffectDummies* FUN_140789c40();
 
 // An entry of the Common::Constants table (the shared Object header, then the value).
 void FUN_1402b7560(void*, const char*);
@@ -171,11 +170,11 @@ bool NpcDataCli::LoadXml(Unk_140165cf0* pElem)
     FUN_1408731e0(pElem, "gender", m_nGender);
     {
         CEffectDummy dummy;
-        size_t nCount = FUN_140789c40()->FUN_140a40200();
+        size_t nCount = reinterpret_cast<Unk_NpcEffectDummies*>(TSingleton<CommonEffectDummy>::GetInstance())->FUN_140a40200();
         m_effectDummies.reserve(nCount);
         for (size_t i = 0; i < nCount; i++)
         {
-            if (FUN_140789c40()->FUN_140a40230((unsigned)i, dummy))
+            if (reinterpret_cast<Unk_NpcEffectDummies*>(TSingleton<CommonEffectDummy>::GetInstance())->FUN_140a40230((unsigned)i, dummy))
                 m_effectDummies.push_back(dummy);
         }
         Unk_140165cf0* pDummies = pElem->FUN_140165cf0("effectdummy");

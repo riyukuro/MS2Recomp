@@ -41,9 +41,11 @@
 #include <typeinfo>
 #include <stdlib.h>
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
@@ -52,8 +54,7 @@ CString FUN_14016a5c0(const char* psz, int n);
 int FUN_14051fd20(Unk_140165cf0* pElem, const char* pszName, int& nOut);     // enum value (mastery type)
 bool FUN_14028f710(Unk_140165cf0* pElem);                                    // element is enabled
 CStringA FUN_140cc2ad0(const CString& strCategory, const CString& strFile);   // icon file path in a category
-class Unk_MtTextMgr { public: CStringW FUN_1416fbfe0(unsigned nId, CStringW strColor); };
-Unk_MtTextMgr* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 CStringW GetStringCommonByKey(const CStringW& strKey);                              // string table lookup
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);      // string table format
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);

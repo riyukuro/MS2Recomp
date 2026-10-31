@@ -17,6 +17,7 @@
 #include "ms2/client/ms2/uiobject.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uidialog.h"
 #include <stdarg.h>
 
 // ---- header statics (the order of the unit's dynamic initializers) ----
@@ -42,17 +43,15 @@ class CFeatureManager { public: bool FUN_14036d650(); };
 class UIReportDialog;
 Unk_NexonAnalytics* FUN_140c77900();
 UIReportDialog* FUN_140c76fd0(int nId);
-class UIReportDialog : public UIObject
+class UIReportDialog : public UIDialog
 {
 public:
-    int FUN_141924630();                                            // the dialog's busy test
     void FUN_141ab9aa0(__int64 nTargetId, const CStringW& strText);
     void FUN_141ab9b10(const CStringW& strA, const CStringW& strB);
     void FUN_141ab9a10(__int64 nTargetId, int nKind, const CStringA& strA, const CStringW& strText);
     void FUN_141ab9b80(Unk_ReportId id, __int64 nTargetId, CStringW strA, CStringW strB, int nFlag);
     void FUN_141ab9c50(__int64 nTargetId, const CStringW& strText, int nA, int nB);
     void FUN_141ab9ce0(CStringW strA, CStringW strB);
-    void FUN_141924680();                                           // show
 };
 void FUN_141276180(const CStringA& strTarget, const CStringA& strValue);
 void* FUN_140166440();                                              // the common log

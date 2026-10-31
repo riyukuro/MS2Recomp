@@ -135,6 +135,9 @@
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/astextfield.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // The header statics of the three original TUs of this range (itemsocketsystempagebase.cpp, the gemstone manage page,
 // the gemstone upgrade page): each TU has the sort-type table, two labels and the condition object, then its own
@@ -204,7 +207,6 @@ MS2Ptr<CItem> FUN_141420330(void*, int);
 void FUN_141415600(const CString&);
 void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
 CStringW FUN_1419021b0(unsigned, unsigned);
-struct Unk_SpInvokeB { Scaleform::GFx::Value FUN_140f356e0(const char*, int, bool); };
 void FUN_14141f860(const CString&, int, void*, MS2Ptr<ItemSlotBag::CreateParam>);
 DragSlotBag* FUN_140c54570(const CString&);
 void FUN_1422cc9e0(DragSlotBag*);
@@ -238,8 +240,6 @@ bool FUN_14062a3d0(MS2Ptr<CItem>, int, MS2Ptr<CItem>, Delegate<bool(int, const C
 bool SendItemSocketSystem(MS2Ptr<CItem>, const CMsgBoxData&);
 unsigned short FUN_140626f20(unsigned);
 void FUN_1406284f0(unsigned short, int, int*, int*);
-struct Unk_SocketPageStrings { CStringW FUN_141811980(int, int); };
-Unk_SocketPageStrings* FUN_1401a9d70();
 extern __int64 DAT_143ab2898;
 extern unsigned DAT_143ab2914;
 CStringW FUN_14062b4f0(CStringW, const int*);
@@ -305,7 +305,6 @@ void FUN_140628be0(Unk_SSGGemUnequip&, CInPacket&);
 void FUN_140628b70(Unk_SSGGemUnequip&, COutputStream&);
 void FUN_140629de0(Unk_SockMsgIIL&, COutputStream&);
 class Unk_SocketPageUIService;
-Unk_SocketPageUIService* FUN_1403ed2b0();
 struct Unk_SpUIService { MS2Ptr<UIObject> FUN_141adcea0(int); };
 
 // The gemstone upgrade page (itemsocketsystempagegemstoneupgrade.cpp).
@@ -314,7 +313,6 @@ int FUN_140627a20(unsigned, unsigned*, unsigned);
 bool FUN_140627020(MS2Ptr<CItemGemStoneData>);
 bool FUN_140626fb0(unsigned);
 CStringW FUN_14042cb90(CStringW, const float&);
-struct Unk_SpTooltipRoot { MS2Ptr<AScript> FUN_1409db730(); };
 bool FUN_140841300(const CStringW&, const char*);
 NotifySystem* FUN_140939a10();
 int FUN_1422dccd0(Unk_SocketPageBag*);
@@ -774,7 +772,7 @@ void ItemSocketSystemPageBase::FUN_140f6e500(int index, bool isNew)
 {
     if (m_root == 0)
         return;
-    reinterpret_cast<Unk_SpInvokeB*>(m_root.operator->())->FUN_140f356e0("setNew", index, isNew);
+    reinterpret_cast<AScript*>(m_root.operator->())->Invoke("setNew", index, isNew);
 }
 
 // @0x140f6e580
@@ -1198,7 +1196,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f71530(int slot)
                 lack = true;
             }
         }
-        CStringW name = FUN_1401a9d70()->FUN_141811980(1, itemId);
+        CStringW name = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, itemId);
         CStringW msg = FUN_1409e8970(L"s_itemsocketsystem_msg_ask_gemstone_put_off", shown, costCount);
         if (fee != 0)
 #ifdef __clang__
@@ -1441,7 +1439,7 @@ MS2Ptr<CGemStoneItem> ItemSocketSystemPageGemStoneManage::FUN_140f733a0(CAtlArra
 // @0x140f73450
 UIHighlightGameMenu* FUN_140f73450()
 {
-    Unk_SocketPageUIService* service = FUN_1403ed2b0();
+    Unk_SocketPageUIService* service = reinterpret_cast<Unk_SocketPageUIService*>(TSingleton<CUIService>::GetInstance());
     if (service == 0)
         return 0;
     MS2Ptr<UIObject> ui = reinterpret_cast<Unk_SpUIService*>(service)->FUN_141adcea0(FUN_140f73c10());
@@ -2253,7 +2251,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f79c50(ItemInfoSlot& slot, ASTo
             equip = record->m_equipment;
         tooltip.FUN_1409e13a0(equip.get(), item.get());
         if (equip.get() != 0) {
-            MS2Ptr<AScript> sub = reinterpret_cast<Unk_SpTooltipRoot*>(&tooltip)->FUN_1409db730();
+            MS2Ptr<AScript> sub = reinterpret_cast<ASTooltip*>(&tooltip)->FUN_1409db730();
             if (sub.get() != 0) {
                 ASTooltip compare(sub->FUN_1422bb870(), 2);
                 if (!compare.FUN_1422ba9a0() && !FUN_1414258e0(equip->FUN_140526a50()))

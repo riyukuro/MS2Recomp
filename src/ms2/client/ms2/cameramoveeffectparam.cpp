@@ -14,6 +14,8 @@
 #include <efd/MemoryDefines.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // Game TinyXML element: FirstChildElement.
 class Unk_140165cf0
@@ -29,21 +31,10 @@ int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
 int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
-class Unk_GameClock
-{
-public:
-    double FUN_141473280();
-};
-Unk_GameClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 
 // Camera manager (singleton 0x1409478c0): camera-path playback.
-class Unk_CameraManager
-{
-public:
-    int FUN_140a18070();                                        // camera ready
-    void FUN_140af0e40(const CCameraMoveEffectParam* pParam);   // play the param's camera path
-};
-Unk_CameraManager* FUN_1409478c0();
+CameraMgr* FUN_1409478c0();
 
 // @0x140afe800
 CCameraMoveEffectParam::CCameraMoveEffectParam()

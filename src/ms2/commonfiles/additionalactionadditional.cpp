@@ -355,10 +355,11 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/stanceleveldata.h"
 
 // Unrecovered helpers.
 CLogString* GetLogString();                                                // the log singleton
-class Unk_AdditionalFlags { public: bool FUN_140829c80(unsigned nID); bool FUN_140829cf0(unsigned nID); };
+class Unk_AdditionalFlags : public StanceTable { };
 extern Unk_AdditionalFlags* DAT_143aac270;
 bool FUN_14028f650(Unk_140165cf0* pElem);                                   // the element is usable
 Unk_CompareOp FUN_140219400(const CString& str);
@@ -701,9 +702,9 @@ bool AdditionalData::Load(Unk_140165cf0* pElem)
             continue;
         ReadLevel(pLevel);
     }
-    if (FUN_140186320()->FUN_140829c80(m_nID))
+    if (FUN_140186320()->HasStance(m_nID))
         m_b48 = true;
-    if (FUN_140186320()->FUN_140829cf0(m_nID))
+    if (FUN_140186320()->HasHitCountStance(m_nID))
         m_b49 = true;
     if (m_vLevel.empty())
         return false;

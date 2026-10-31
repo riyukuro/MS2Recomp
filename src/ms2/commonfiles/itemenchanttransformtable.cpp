@@ -26,10 +26,11 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-class Unk_EtLoader { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_EtLoader : public CFileSystem { };
 Unk_EtLoader* FUN_140166420();
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
@@ -37,7 +38,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table
 CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
 unsigned char FUN_1401d1320(CCacheData* p);                             // file changed since load
 bool FUN_14028f710(Unk_140165cf0* pNode);                               // the row is for this client's region
-__int64 FUN_140869440();                                                // the server time
+__int64 GetServerTime();                                                // the server time
 
 // The header statics of this unit (the sort name tables every item table unit carries).
 #ifndef MS2_HOOK_DLL
@@ -201,7 +202,7 @@ int CItemEnchantTransformTable::FUN_140592110(MS2Ptr<CItem> spItem)
         return 0;
     if (spItem->FUN_140528ca0() == 0)
     {
-        if (spItem->FUN_140528e00() > FUN_140869440())
+        if (spItem->FUN_140528e00() > GetServerTime())
             return 0;
     }
     if (spItem->FUN_140528ca0() == 1)

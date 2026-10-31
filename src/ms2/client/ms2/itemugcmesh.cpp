@@ -51,6 +51,11 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/commonfiles/itemdata.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- statics (.text$di) ----
 
@@ -61,17 +66,11 @@ static CString s_aStrUgcTab[7] = { CString("None"), CString("Buy"), CString("Lik
 // ---- out-of-unit callees ----
 
 // The item data of an equip item (CItemData-like; only the kind tests this unit calls).
-struct Unk_UgcItemData
+struct Unk_UgcItemData : public CItemData
 {
-    bool FUN_14053cfd0();                                           // kind test: has per-part customize floats
-    int FUN_14053c620();                                            // item kind id
-    bool FUN_14053d070();                                           // kind test: has the second float
     unsigned char FUN_14053d020();
     unsigned char FUN_14053cf00();                                           // kind test: customize-colour item
-    int FUN_14053e260();                                            // item id
-    int FUN_14053c5c0();                                            // item kind id
     unsigned FUN_14053dc60();                                       // linked item id
-    int FUN_14053ec50();                                            // item category
     unsigned FUN_14053c510();                                       // name string id
     struct Unk_UgcDesc* FUN_14053eba0();                            // description text holder
     unsigned FUN_14053e310(int nIndex);
@@ -211,20 +210,17 @@ struct Unk_UgcTable
     Unk_UgcRowPtr FUN_140558e80(int nItemId, MS2Ptr<CItemData> spData, Delegate<bool(const ItemColorEx&, MS2Ptr<CItemData>)> kFn);
     Unk_UgcRowPtr FUN_1405590e0(int nItemId, unsigned* pColor0, unsigned* pColor1);
 };
-Unk_UgcTable* FUN_140281980();
 void* FUN_14059cf00(Unk_UgcRowPtr* pRow);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 struct Unk_UgcPlayer;
-struct Unk_UgcDesc
+struct Unk_UgcDesc : public ItemModelData
 {
-    CStringW FUN_14054b6e0();                                       // the text
 };
 struct Unk_UgcNames
 {
     CStringW FUN_141811980(int nType, unsigned nId);                // string table lookup
 };
-Unk_UgcNames* FUN_1401a9d70();
 struct Unk_UgcRow2
 {
     char m_pad[0x18];
@@ -304,7 +300,6 @@ struct Unk_UgcWorld
 {
     Unk_UgcPlayer* FUN_141bd0cc0();
 };
-Unk_UgcWorld* FUN_1403ed2d0();
 
 // ---- item-name builders ----
 
@@ -638,7 +633,7 @@ int FUN_141423650(unsigned* pArgb, int nSlot, Unk_UgcPlayer* pPlayer)
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
@@ -663,7 +658,7 @@ int FUN_141423760(Unk_UgcLook* pLook, Unk_UgcPlayer* pPlayer)
 {
     if (pPlayer == 0)
     {
-        pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
@@ -687,7 +682,7 @@ int FUN_141423880(const Unk_UgcColorList& kColors, Unk_UgcPlayer* pPlayer)
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
@@ -711,7 +706,7 @@ int FUN_1414239e0(unsigned* pOut, int nSlot, Unk_UgcPlayer* pPlayer)
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
@@ -731,7 +726,7 @@ int FUN_141423a70(__int64 nUid, const Unk_UgcColorList& kColors, Unk_UgcPlayer* 
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
@@ -755,7 +750,7 @@ int FUN_141423cf0(__int64 nUid, const Unk_UgcExtra& kExtra, Unk_UgcPlayer* pPlay
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
@@ -782,7 +777,7 @@ int FUN_141423fb0(__int64 nUid, void* pColor, int nIndex, Unk_UgcPlayer* pPlayer
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
@@ -806,7 +801,7 @@ int FUN_141424230(__int64 nUid, Unk_UgcPlayer* pPlayer)
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
@@ -827,7 +822,7 @@ int FUN_1414244b0(__int64 nUid, unsigned* pOut, int nIndex, Unk_UgcPlayer* pPlay
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
@@ -853,7 +848,7 @@ int FUN_141424760(MS2Ptr<CItem> spItem, unsigned* pOut, int nIndex, Unk_UgcPlaye
     {
         if (pPlayer == 0)
         {
-            pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+            pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
             if (pPlayer == 0)
                 return 0;
         }
@@ -875,7 +870,7 @@ int FUN_1414248a0(Unk_UgcItemData* pData, __int64 nKey, int* pOut)
     int nItemId = pData->FUN_14053e260();
     if (nItemId == 0)
         return 0;
-    Unk_UgcRowPtr kRow = FUN_140281980()->FUN_140558cc0(nItemId, nKey);
+    Unk_UgcRowPtr kRow = reinterpret_cast<Unk_UgcTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558cc0(nItemId, nKey);
     if (kRow.FUN_14056cf90(0))
         return 0;
     *pOut = kRow.FUN_14056d570()->m_nValue;
@@ -898,7 +893,7 @@ int FUN_141424970(MS2Ptr<CItem> spItem, Unk_UgcPlayer* pPlayer)
         unsigned nItemId = ((Unk_UgcItemData*)spData.operator->())->FUN_14053e260();
         if (nItemId > 0)
         {
-            Unk_UgcRowPtr kRow = FUN_140281980()->FUN_1405590e0(nItemId, &aColor[0], &aColor[1]);
+            Unk_UgcRowPtr kRow = reinterpret_cast<Unk_UgcTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405590e0(nItemId, &aColor[0], &aColor[1]);
             if (FUN_14059cf00(&kRow) != 0)
                 return 1;
         }
@@ -909,7 +904,7 @@ int FUN_141424970(MS2Ptr<CItem> spItem, Unk_UgcPlayer* pPlayer)
         if (nItemId > 0)
         {
             CItemExtraData* pExtra = (Unk_UgcProxy*)spItem->FUN_140527870();
-            Unk_UgcRowPtr kRow = FUN_140281980()->FUN_140558e80(
+            Unk_UgcRowPtr kRow = reinterpret_cast<Unk_UgcTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558e80(
                 nItemId, spData, Delegate<bool(const ItemColorEx&, MS2Ptr<CItemData>)>(pExtra, &CItemExtraData::FUN_140599480));
             if (FUN_14059cf00(&kRow) != 0)
                 return 1;
@@ -1053,11 +1048,7 @@ void FUN_141425610()
 
 // ---- item lookup ----
 
-struct Unk_UgcInventory
-{
-    MS2Ptr<CItem> FUN_140a5d680(__int64 nUid);                      // the inventory's item by uid
-};
-extern Unk_UgcInventory DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 
 // @0x141425750 - an item by uid: from the inventory, else the one the player wears (*pbEquipped = true)
 MS2Ptr<CItem> FUN_141425750(__int64 nUid, bool* pbEquipped)
@@ -1067,7 +1058,7 @@ MS2Ptr<CItem> FUN_141425750(__int64 nUid, bool* pbEquipped)
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
     if (spItem.get() != 0)
         return spItem;
-    Unk_UgcPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_UgcPlayer* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return MS2Ptr<CItem>(0);
     MS2Ptr<CEquipItem> spEquip = pPlayer->FUN_141655c30(nUid);
@@ -1092,13 +1083,13 @@ bool FUN_1414258e0(__int64 nUid)
 // @0x141425950 - display name of an item; a linked item (kind 0xb) is shown through its link-kind string
 CStringW FUN_141425950(unsigned nItemId)
 {
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nItemId);
+    CStringW strName = reinterpret_cast<Unk_UgcNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nItemId);
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
-        return FUN_1401a9d70()->FUN_141811980(1, nItemId);
+        return reinterpret_cast<Unk_UgcNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nItemId);
     if (((Unk_UgcItemData*)spData.operator->())->FUN_14053c5c0() == 0xb)
     {
-        CStringW strLinked = FUN_1401a9d70()->FUN_141811980(1, ((Unk_UgcItemData*)spData.operator->())->FUN_14053dc60());
+        CStringW strLinked = reinterpret_cast<Unk_UgcNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, ((Unk_UgcItemData*)spData.operator->())->FUN_14053dc60());
         Unk_UgcRow2Ptr kRow = FUN_14052d210()->FUN_1407290f0(((Unk_UgcItemData*)spData.operator->())->FUN_14053dc60());
         if (kRow.FUN_14052cde0())
         {
@@ -1117,13 +1108,13 @@ CStringW FUN_141425c00(int nCategory)
 {
     CStringW strName;
     std::vector<MS2Ptr<CItemData> > aItems;
-    FUN_1405592e0(FUN_140281980(), &aItems);
+    FUN_1405592e0(reinterpret_cast<Unk_UgcTable*>(TSingleton<CItemDataTable>::GetInstance()), &aItems);
     for (unsigned __int64 i = 0; i < aItems.size(); i++)
     {
         MS2Ptr<CItemData> spData = aItems[i];
         if (spData.get() != 0 && ((Unk_UgcItemData*)spData.operator->())->FUN_14053ec50() == nCategory)
         {
-            strName = FUN_1401a9d70()->FUN_141811980(1, ((Unk_UgcItemData*)spData.operator->())->FUN_14053c510());
+            strName = reinterpret_cast<Unk_UgcNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, ((Unk_UgcItemData*)spData.operator->())->FUN_14053c510());
             if (!strName.IsEmpty())
                 return strName;
             else
@@ -1164,7 +1155,7 @@ void FUN_141425fc0(__int64 nUid, int nCount, void* pCallback)
 {
     if (nCount <= 0)
         return;
-    Unk_UgcPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_UgcPlayer* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (FUN_141676b00(pPlayer, nUid) != 0)

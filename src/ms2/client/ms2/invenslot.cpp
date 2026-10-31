@@ -76,6 +76,14 @@
 #include "ms2/client/ms2/uiitemextractionscrolldialog.h"
 #include "ms2/client/ms2/uiblackmarketdialog.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/networkservice.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/uiquesteventlistener.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/uiugceventdispatcher.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/itembreakmanager.h"
 #include <utility>
 #include <efd/IBase.h>
 #include <efd/MemHint.h>
@@ -85,7 +93,7 @@
 class Unk_ItemEquipData : public CItemData { };          // CItem::FUN_140527840's record
 class Unk_ItemOwnerRef : public CItemTransfer { };       // CItem::FUN_140527930 (the binding holder)
 
-extern Unk_Inventory DAT_143ab2a90;                       // the player's inventory
+extern Unk_Inventory g_143ab2a90;                         // the player's inventory
 extern __int64 DAT_143ab2828;                             // the own character id
 extern __int64 DAT_143af25f0;                             // the fitting doll object id
 
@@ -96,9 +104,7 @@ public:
     MyPC* FUN_141bd0cc0();                                // the local player
     Unk_IsNetObject* FUN_141bd1530(__int64 nId);          // a field object by id
 };
-Unk_IsWorld* FUN_1403ed2d0();
 CEffectService* FUN_1403ed280();                          // the sound service
-CUIService* FUN_1403ed2b0();                              // the UI service
 FittingDollPC* FUN_140884db0(Unk_IsNetObject* pObject);   // the object as a fitting doll (class 0x6200046)
 void FUN_14121b840(int nResult);                          // the notice of a doll item result (fittingdollslot#1)
 int FUN_141420a70(CItem* pItem, FittingDollPC* pDoll);   // the equip slot the item goes to on the avatar
@@ -126,33 +132,20 @@ UIInventoryDialog* FUN_1405344f0(int nId);
 void FUN_140c3fe30(UIInventoryDialog* pDialog, int n);
 
 // The quest event dispatcher (FUN_140bfc4b0) the slot registers with.
-class Unk_IsQuestEvents
-{
-public:
-    void FUN_141aa87c0(UIQuestEventListener*);
-    void FUN_141aa8850(UIQuestEventListener*);
-};
-Unk_IsQuestEvents* FUN_140bfc4b0();
+UIQuestEventDispatcher* FUN_140bfc4b0();
 // The item / UGC event hubs the bag registers with.
 struct Unk_IsItemEvents;
 Unk_IsItemEvents* FUN_140a6a840();
 void FUN_1419cae20(Unk_IsItemEvents*, UIItemEventListener*);
 void FUN_1419caeb0(Unk_IsItemEvents*, UIItemEventListener*);
-class Unk_IsUgcEvents
-{
-public:
-    void FUN_141b38be0(UIUGCEventListener*);
-    void FUN_141b38c70(UIUGCEventListener*);
-};
-Unk_IsUgcEvents* FUN_140bc09f0();
+UIUGCEventDispatcher* FUN_140bc09f0();
 
 
 // The item break manager (FUN_1409c4b20).
-class Unk_IsBreakMgr
+class Unk_IsBreakMgr : public CItemBreakManager
 {
 public:
     int FUN_140531270(MS2Ptr<CItem> spItem);              // the item can be broken
-    int FUN_140532ab0();                                  // the break window is open
     int FUN_140532de0(MS2Ptr<CItem> spItem, int nSlot);   // add the item
     int FUN_140533340(MS2Ptr<CItem> spItem);              // replace the item
 };
@@ -171,18 +164,12 @@ Unk_IsLockMgr* FUN_140535310();
 CPetManager* FUN_140535320();
 
 // The feature switches (FUN_140166410).
-class Unk_IsFeatures
-{
-public:
-    bool FUN_14036d570(int nFeature);
-};
-Unk_IsFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 // The key state.
-class Unk_IsKeys
+class Unk_IsKeys : public CInputKeyHandler
 {
 public:
-    bool FUN_14116d950(int nKey, bool b, int c);
     bool FUN_14116dcb0(int nAction, int a, int b);        // an action key is bound
 };
 Unk_IsKeys* FUN_14025e7c0();
@@ -219,22 +206,9 @@ public:
 Unk_IsUiScale* FUN_14025e7a0();
 
 // The names of the inventory tabs / item kinds.
-class Unk_IsTabNames
-{
-public:
-    CStringW FUN_141813300(int nTab);
-    CStringW FUN_141811980(int nKind, int nId);
-};
-Unk_IsTabNames* FUN_1401a9d70();
 
 // The item rules (quest items, ...).
-class Unk_IsItemRules
-{
-public:
-    int FUN_1416ce170(MS2Ptr<CItem> spItem);              // 0: normal, 1: quest item, 2: hidden
-    void FUN_1416ce860(MS2Ptr<CItem> spItem, ATL::CAtlArray<Unk_QuestItemLink>& quests);
-};
-Unk_IsItemRules* FUN_140764020();
+CQuestManager* FUN_140764020();
 CStringW FUN_1416e5210(int nQuestId, CStringW strFormat);
 
 // Strings and notices.
@@ -341,7 +315,6 @@ class Unk_IsJobSkills
 public:
     MS2Ptr<SkillData> FUN_1407ee1d0(int nSkillId);        // the skill record
 };
-Unk_IsJobSkills* FUN_1401958b0();
 int FUN_141769320(MS2Ptr<CItemData> spData);              // the skill of an emotion / skill book item
 void FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nPage);   // register a shortcut
 void* FUN_140938c30(int nId);                             // the profile dialog (0x2711)
@@ -355,12 +328,7 @@ static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint);
 static void FUN_14140c4d0(__int64 nUid, int nItemId, int nCount, int nMax);
 
 // The drop paths (vfunc_18).
-class Unk_IsInventoryView
-{
-public:
-    int FUN_140a65b70();                                  // the open tab of the inventory window (-1: closed)
-};
-#define IS_INVENTORY_VIEW (*reinterpret_cast<Unk_IsInventoryView*>(&DAT_143ab2a90))
+#define IS_INVENTORY_VIEW (*reinterpret_cast<Unk_Inventory*>(&g_143ab2a90))
 bool FUN_141271f90(MS2Ptr<CItem> spItem);                 // take the gem item off (packet 0x47)
 void FUN_140c88c30(MS2Ptr<CItem> spItem, int nSlot);      // take the item out of the pet inventory
 bool FUN_140633fb0(MS2Ptr<CItem> spItem, int* pReason);   // may the item go to the black market
@@ -377,12 +345,9 @@ static CStringW FUN_14140c2b0(MS2Ptr<CItem> spItem);
 
 // The tooltip paths (vfunc_0).
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);   // str == sz
-CItemExchangeScrollTable* FUN_140f56960();
 class Unk_IsEquipView : public MyPC
 {
 public:
-    MS2Ptr<CEquipItem> FUN_141655e10(int nSlot);          // the worn item of a slot
-    int FUN_141658f30();                                  // the account is premium (PC room)
     int FUN_141662de0();                                  // the VIP state
 };
 
@@ -391,12 +356,7 @@ bool FUN_140633e40(MS2Ptr<CItem> spItem, int* pReason);   // may the item be tra
 void FUN_141425fc0(__int64 nUid, unsigned int nCount, CItem* pItem);   // sell the item to the npc shop
 static void FUN_14140d200(__int64 nUid, int nCount, int nMax);
 static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int nPrice, CStringW strName);
-class Unk_IsDropper
-{
-public:
-    void FUN_141538930(__int64 nUid, int nCount);         // drop the item (packet)
-};
-Unk_IsDropper* FUN_140714f90();
+CNetworkService* FUN_140714f90();
 void FUN_1419f8920(MS2Ptr<CItem> spItem, int nCount);     // sell without a box
 static int FUN_14140d350(CItem* pItem);
 
@@ -412,14 +372,12 @@ class Unk_IsItemRequire : public CItem
 {
 public:
     int FUN_140526810(int nLevel);                        // the level is enough
-    int FUN_140526790(int nJob);                          // the job may wear it
-    int FUN_1405267d0(int nGender);                       // the gender may wear it
 };
 bool FUN_1406343b0(MS2Ptr<CItem> spItem, const __int64* pCharacterId);   // the binding allows the character
 class UIShopDialog : public UIDialog
 {
 public:
-    bool FUN_141afb780(MS2Ptr<CItem> spItem);             // the shop buys the item
+    bool CanSellItem(MS2Ptr<CItem> spItem);               // the shop buys the item
 };
 UIShopDialog* FUN_140534780(int nId);
 static int FUN_14140e3f0(MS2Ptr<CItem> spItem);
@@ -428,7 +386,7 @@ static __int64 FUN_14140fa00(int nIndex, int nTab);
 // The open dialogs of a UI class (COMDATs 0x14140e770 / 0x14140e820).
 template <class T> inline T* Unk_InvGetDialog()
 {
-    CUIService* pService = FUN_1403ed2b0();
+    CUIService* pService = TSingleton<CUIService>::GetInstance();
     if (pService == 0)
         return 0;
     MS2Ptr<UIObject> obj = pService->FUN_141adcea0(T::GetUIClassID());
@@ -438,9 +396,9 @@ template <class T> inline T* Unk_InvGetDialog()
 }
 template <class T> inline T* Unk_InvGetDialogById(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> obj = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> obj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (obj.get())
             return dynamic_cast<T*>(obj.operator->());
     }
@@ -548,7 +506,7 @@ MS2_REPLACE(0x1414048F0, FUN_1414048f0, 52, 0xB9C08CBF);
 // @0x141404930
 void FUN_141404930(__int64 nUid)
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
     if (spItem.get() != 0)
         FUN_1414047c0(MS2Ptr<CItemData>(spItem->FUN_140527840()));
 }
@@ -561,7 +519,7 @@ void FUN_1414049c0(ATL::CAtlArray<CString>* pArr, int nSkillId)
 {
     if (nSkillId == 0)
         return;
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     FUN_1416546d0(pPc);
@@ -594,7 +552,7 @@ MS2_REPLACE(0x141404C70, FUN_141404c70, 15, 0x5CE537A7);
 // The cooldown left of a skill of the local player.
 float FUN_141404c90(int nSkillId)
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     return pPc->FUN_141523bc0()->FUN_141765fe0(nSkillId, 1);
@@ -608,7 +566,7 @@ bool FUN_141404ce0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* p
 {
     if (nSkillId == 0)
         return false;
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
     FUN_1416546d0(pPc);
@@ -659,7 +617,7 @@ bool FUN_1414050c0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* p
 {
     if (nSkillId == 0)
         return false;
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
     FUN_1416546d0(pPc);
@@ -759,7 +717,7 @@ InvenSlot::~InvenSlot()
 // @0x1414058f0
 int InvenSlot::FUN_1414058f0()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(GetItemUid());
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(GetItemUid());
     if (spItem.get() != 0)
         return spItem->FUN_140527840()->FUN_14053dc20();
     return 0;
@@ -769,7 +727,7 @@ MS2_REPLACE_METHOD(0x1414058F0, InvenSlot, FUN_1414058f0, 137, 0x89645CA2);
 // @0x141405980
 int InvenSlot::FUN_141405980()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(GetItemUid());
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(GetItemUid());
     if (spItem.get() != 0)
         return spItem->FUN_1405276c0();
     return 0;
@@ -802,7 +760,7 @@ int InvenSlot::FUN_141405a60(CItem* pItem, int nSlot)
         return false;
     if (pItem->FUN_140526c30() == 0)
         return false;
-    FittingDollPC* pDoll = FUN_140884db0(FUN_1403ed2d0()->FUN_141bd1530(DAT_143af25f0));
+    FittingDollPC* pDoll = FUN_140884db0(reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0));
     if (pDoll == 0)
         return false;
     if (nSlot != 0 && pItem->FUN_140527840()->FUN_14053eba0()->FUN_14054b450(nSlot) == false)
@@ -838,7 +796,7 @@ MS2_REPLACE_METHOD(0x141405A60, InvenSlot, FUN_141405a60, 573, 0xE7C18AAB);
 void InvenSlot::vfunc_6(void* p)
 {
     FUN_140165270(static_cast<ATL::CAtlArray<CString>*>(p), FUN_140719530(m_nItemUid));
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem == 0)
         return;
     int nItemId = spItem->FUN_1405276c0();
@@ -884,14 +842,14 @@ MS2_REPLACE_METHOD(0x141405EB0, InvenSlot, vfunc_11, 97, 0x8C911851);
 int InvenSlot::vfunc_13()
 {
     int nResult;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
     {
         nResult = 0;
     }
     else
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(GetItemUid());
         if (!(spItem == 0))
         {
             if (FUN_141659690(pPC) == 0)
@@ -907,7 +865,7 @@ int InvenSlot::vfunc_13()
                             if (pEdit->vfunc_55() == 1)
                             {
                                 spEdit.get()->SetEditItem(spItem);
-                                FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4e69);
+                                TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4e69);
                             }
                         }
                     }
@@ -921,7 +879,7 @@ int InvenSlot::vfunc_13()
                 {
                     if (spItem->FUN_140527840()->FUN_14053cd90() == true)
                     {
-                        if (DAT_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
+                        if (g_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
                             return 0;
                         if (FUN_14140dea0(spItem.get(), pPC) != 0)
                             return FUN_140d1c3a0(spItem);
@@ -932,9 +890,9 @@ int InvenSlot::vfunc_13()
                         {
                             if (FUN_14140dea0(spItem.get(), pPC) == 0)
                                 return 0;
-                            if (FUN_1403ed2b0()->FUN_141adc7f0((eUIClassID)0x4e3b) == 0)
+                            if (TSingleton<CUIService>::GetInstance()->FUN_141adc7f0((eUIClassID)0x4e3b) == 0)
                                 return 0;
-                            FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4e3b);
+                            TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4e3b);
                             COutPacket packet(static_cast<int>(SendOp::SystemShop), 0);
                             packet.WriteUInt8(10);
                             packet.WriteUInt8(1);
@@ -951,19 +909,19 @@ int InvenSlot::vfunc_13()
                                     if (spItem->FUN_140527840()->FUN_14053c8b0())
                                     {
                                         if (FUN_14140dea0(spItem.get(), pPC) != 0)
-                                            DAT_143ab2a90.FUN_140a635f0(spItem.get());
+                                            g_143ab2a90.FUN_140a635f0(spItem.get());
                                     }
                                 }
-                                else if (FUN_1403ed2b0()->FUN_141adc940((eUIClassID)0x4e3b) == 0)
+                                else if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e3b) == 0)
                                 {
                                     int nSlot = FUN_1414056b0(spItem);
-                                    DAT_143ab2a90.FUN_140a621c0(GetItemUid(), 0, nSlot);
+                                    g_143ab2a90.FUN_140a621c0(GetItemUid(), 0, nSlot);
                                 }
                             }
                             else if (FUN_14140dea0(spItem.get(), pPC) != 0)
                             {
                                 int nSkillId = spItem->FUN_140527840()->FUN_14053dc20();
-                                CStringW strText = FUN_14052bd00(0x85a, FUN_1401a9d70()->FUN_141811980(4, nSkillId));
+                                CStringW strText = FUN_14052bd00(0x85a, TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nSkillId));
                                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, s_strLearnEmotion);
                                 if (spBox.get() != 0)
                                 {
@@ -987,7 +945,7 @@ int InvenSlot::vfunc_13()
                         FUN_141275260(0x2f7, 1, 1);
                         return 0;
                     }
-                    if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4eec) != 0)
+                    if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4eec) != 0)
                     {
                         CStringW strKey(L"s_play_instrument_cant_while_play_instrument");
                         FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
@@ -1013,7 +971,7 @@ int InvenSlot::vfunc_13()
                     }
                     else
                     {
-                        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4eed);
+                        TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4eed);
                         Unk_IsInstrumentDialog* pDialog = FUN_140d0c0e0(0x4eed);
                         if (pDialog != 0)
                             pDialog->FUN_140fef7b0(spItem);
@@ -1042,7 +1000,7 @@ MS2_REPLACE_METHOD(0x141405F20, InvenSlot, vfunc_13, 2856, 0x77317826);
 // @0x141406a60
 int InvenSlot::vfunc_14()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(GetItemUid());
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(GetItemUid());
     if (!spItem)
         return 0;
     UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
@@ -1095,7 +1053,7 @@ int InvenSlot::vfunc_14()
     }
     case 4:
     {
-        MS2Ptr<CItem> spCur = DAT_143ab2a90.FUN_140a5d680(GetItemUid());
+        MS2Ptr<CItem> spCur = g_143ab2a90.FUN_140a5d680(GetItemUid());
         if (spCur.get() != 0)
             FUN_141405a60(spCur.get(), 0);
         break;
@@ -1105,13 +1063,13 @@ int InvenSlot::vfunc_14()
         int bCodi = 0;
         if (spItem->FUN_1405258b0() != 0)
             bCodi = 1;
-        DAT_143ab2a90.FUN_140a621c0(GetItemUid(), 0, bCodi);
+        g_143ab2a90.FUN_140a621c0(GetItemUid(), 0, bCodi);
         break;
     }
     case 6:
     {
         int nSlot = FUN_1414056b0(spItem);
-        DAT_143ab2a90.FUN_140a621c0(GetItemUid(), 0, nSlot);
+        g_143ab2a90.FUN_140a621c0(GetItemUid(), 0, nSlot);
         break;
     }
     case 7:
@@ -1129,7 +1087,7 @@ int InvenSlot::vfunc_14()
                 nUid = spItem->FUN_140526a50();
             }
             bool bShortcut = false;
-            MS2Ptr<SkillData> spSkill = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
+            MS2Ptr<SkillData> spSkill = reinterpret_cast<Unk_IsJobSkills*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
             if (spSkill.get() != 0)
                 bShortcut = spSkill->FUN_1407e9ea0();
             if (spItem->FUN_140527840()->FUN_14053d270() == false || bShortcut)
@@ -1202,7 +1160,7 @@ int InvenSlot::vfunc_14()
         break;
     case 16:
     {
-        MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPC == 0)
             return 0;
         if (spItem->FUN_140525640() != 0)
@@ -1237,7 +1195,7 @@ MS2_REPLACE_METHOD(0x141406A60, InvenSlot, vfunc_14, 3942, 0x65D9E63E);
 // @0x141407a20
 int InvenSlot::vfunc_15()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem.get() != 0)
         FUN_140d2cfc0(spItem);
     return DragSlot::vfunc_15();
@@ -1247,7 +1205,7 @@ MS2_REPLACE_METHOD(0x141407A20, InvenSlot, vfunc_15, 136, 0xAA066DF1);
 // @0x141407ab0
 int InvenSlot::vfunc_17()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     int nResult = vfunc_26(spItem);
     if (nResult == 0)
     {
@@ -1295,17 +1253,17 @@ int InvenSlot::vfunc_18(void* p)
     if (pEquip != 0)
     {
         MS2Ptr<CItem> spWorn = pEquip->vfunc_25();
-        MS2Ptr<CItem> spMine = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+        MS2Ptr<CItem> spMine = g_143ab2a90.FUN_140a5d680(m_nItemUid);
         if (spWorn.get() != 0)
         {
             if (spMine.get() != 0
                 && spMine->FUN_140527840()->FUN_14053eba0()->FUN_14054b450(spWorn->FUN_140527a20()))
             {
-                DAT_143ab2a90.FUN_140a62270(spMine.get(), spWorn->FUN_140527a20(), pEquip->GetKind(), 0);
+                g_143ab2a90.FUN_140a62270(spMine.get(), spWorn->FUN_140527a20(), pEquip->GetKind(), 0);
             }
-            else if (IS_INVENTORY_VIEW.FUN_140a65b70() == DAT_143ab2a90.FUN_140a617f0(spWorn))
+            else if (IS_INVENTORY_VIEW.FUN_140a65b70() == g_143ab2a90.FUN_140a617f0(spWorn))
             {
-                DAT_143ab2a90.FUN_140a62920(spWorn->FUN_140526a50());
+                g_143ab2a90.FUN_140a62920(spWorn->FUN_140526a50());
             }
         }
     }
@@ -1316,15 +1274,15 @@ int InvenSlot::vfunc_18(void* p)
             return pDrag->vfunc_10();
         if (pStore->vfunc_26(spItem) == 1)
             return 1;
-        int nTab = DAT_143ab2a90.FUN_140a617f0(spItem);
-        int nSlot = DAT_143ab2a90.FUN_140a612b0(nTab, spItem, spItem->FUN_140526c50());
+        int nTab = g_143ab2a90.FUN_140a617f0(spItem);
+        int nSlot = g_143ab2a90.FUN_140a612b0(nTab, spItem, spItem->FUN_140526c50());
         if (nSlot == -1)
         {
-            FUN_140961010(0x44, 1, 1, FUN_1401a9d70()->FUN_141813300(nTab));
+            FUN_140961010(0x44, 1, 1, TSingleton<CStringTable>::GetInstance()->FUN_141813300(nTab));
             FUN_141276180(s_strSystemNoticeErrorWarningBag, CString(""));
             return pDrag->vfunc_10();
         }
-        if (DAT_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
+        if (g_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
             return 0;
         if (spItem->FUN_14052a580((void*)DAT_143ab2828) != 1)
         {
@@ -1350,7 +1308,7 @@ int InvenSlot::vfunc_18(void* p)
     else if (GemSlot* pGem = efd::DynamicCast<GemSlot>(pDrag))
     {
         MS2Ptr<CItem> spGem = pGem->vfunc_25();
-        MS2Ptr<CItem> spMine = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+        MS2Ptr<CItem> spMine = g_143ab2a90.FUN_140a5d680(m_nItemUid);
         if (spGem.get() != 0)
         {
             if (spMine.get() != 0 && spMine->FUN_140525a30() != 0)
@@ -1380,7 +1338,7 @@ int InvenSlot::vfunc_18(void* p)
     else if (ItemBreakSlot* pBreak = efd::DynamicCast<ItemBreakSlot>(pDrag))
     {
         MS2Ptr<CItem> spOld = pBreak->vfunc_25();
-        MS2Ptr<CItem> spMine = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+        MS2Ptr<CItem> spMine = g_143ab2a90.FUN_140a5d680(m_nItemUid);
         if (FUN_1409c4b20()->FUN_140531270(spOld) != 0)
         {
             if (FUN_1409c4b20()->FUN_140531270(spMine) == 0)
@@ -1392,7 +1350,7 @@ int InvenSlot::vfunc_18(void* p)
     else if (ItemLockSlot* pLock = efd::DynamicCast<ItemLockSlot>(pDrag))
     {
         MS2Ptr<CItem> spOld = pLock->vfunc_25();
-        MS2Ptr<CItem> spMine = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+        MS2Ptr<CItem> spMine = g_143ab2a90.FUN_140a5d680(m_nItemUid);
         if (spOld.get() != 0 && spOld->FUN_140528cc0())
         {
             if (spMine.get() != 0 && spMine->FUN_140528cc0())
@@ -1413,9 +1371,9 @@ int InvenSlot::vfunc_18(void* p)
     }
     else if (TabContentsPetInfo::EquipSlot* pPetEquip = efd::DynamicCast<TabContentsPetInfo::EquipSlot>(pDrag))
     {
-        if (IS_INVENTORY_VIEW.FUN_140a65b70() == DAT_143ab2a90.FUN_140a617f0(pPetEquip->vfunc_25()))
+        if (IS_INVENTORY_VIEW.FUN_140a65b70() == g_143ab2a90.FUN_140a617f0(pPetEquip->vfunc_25()))
         {
-            MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+            MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
             if (pPC != 0)
                 pPC->SendRequestPet(pPetEquip->FUN_140cbcb00());
             return 1;
@@ -1433,7 +1391,7 @@ MS2_REPLACE_METHOD(0x141407C80, InvenSlot, vfunc_18, 4021, 0xF695C1A1);
 // @0x141408c50
 MS2Ptr<CItem> InvenSlot::vfunc_25()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(GetItemUid());
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(GetItemUid());
     return spItem;
 }
 MS2_REPLACE_METHOD(0x141408C50, InvenSlot, vfunc_25, 108, 0xBDCB37C8);
@@ -1442,7 +1400,7 @@ MS2_REPLACE_METHOD(0x141408C50, InvenSlot, vfunc_25, 108, 0xBDCB37C8);
 int InvenSlot::vfunc_20()
 {
     DragSlot::vfunc_20();
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem.get() != 0)
     {
         FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
@@ -1459,7 +1417,7 @@ MS2_REPLACE_METHOD(0x141408CD0, InvenSlot, vfunc_20, 444, 0x148FB318);
 int InvenSlot::vfunc_21()
 {
     DragSlot::vfunc_21();
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem.get() != 0)
     {
         FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
@@ -1476,7 +1434,7 @@ MS2_REPLACE_METHOD(0x141408EA0, InvenSlot, vfunc_21, 441, 0x8B133860);
 // @0x141409060
 float InvenSlot::FUN_141409060()
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     return pPC->FUN_141523bc0()->FUN_141765fe0(FUN_1414058f0(), 0);
@@ -1486,7 +1444,7 @@ MS2_REPLACE_METHOD(0x141409060, InvenSlot, FUN_141409060, 86, 0x7F94C302);
 // @0x1414090c0
 int InvenSlot::FUN_1414090c0()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(GetItemUid());
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(GetItemUid());
     if (!spItem)
         return 0;
     return FUN_141409150(spItem);
@@ -1531,7 +1489,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
         FUN_141275260(0x88a, 1, 1);
         return 0;
     }
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     if (pPC->FUN_14166ce30() != 0)
@@ -1559,13 +1517,13 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
         FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
         return 0;
     }
-    if (spItem->FUN_140525640() != 0 && FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f38) != 0)
+    if (spItem->FUN_140525640() != 0 && TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4f38) != 0)
     {
         CStringW strKey(L"s_err_cannot_destroy_petsystem_opendialog");
         FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
         return 0;
     }
-    if (spData->FUN_14053c6f0() == 0xd8 && FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f38) != 0)
+    if (spData->FUN_14053c6f0() == 0xd8 && TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4f38) != 0)
     {
         CStringW strKey(L"s_err_cannot_destroy_petsystem_opendialog");
         FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
@@ -1587,15 +1545,15 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
                 MS2Ptr<TSocketGemStoneInfo> spGem = spItem->FUN_1405279c0()->FUN_140620c40();
                 if (spGem.get() == 0)
                 {
-                    if (DAT_143ab2a90.FUN_140a65770(spItem.get()) == 7)
+                    if (g_143ab2a90.FUN_140a65770(spItem.get()) == 7)
                     {
                         strError = GetStringCommonByKey(CStringW(L"s_item_err_cannot_vip_drop"));
-                        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f1b);
+                        TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4f1b);
                     }
                     else
                     {
                         int nItemId = spItem->FUN_1405276c0();
-                        strError = FUN_14052bd00(0xd8, FUN_1401a9d70()->FUN_141811980(1, nItemId));
+                        strError = FUN_14052bd00(0xd8, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
                     }
                 }
                 else
@@ -1660,10 +1618,10 @@ MS2_REPLACE_METHOD(0x1414092C0, InvenSlot, vfunc_26, 4553, 0x6E22C975);
 // @0x14140a490 (ITooltip::vfunc_0)
 int InvenSlot::vfunc_0(void* p)
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (!spItem)
         return 0;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     int nMode = FUN_14140d3e0(spItem, 1);
@@ -1675,7 +1633,7 @@ int InvenSlot::vfunc_0(void* p)
     }
     if (FUN_1403b3c40(spItem->FUN_140527840()->function.name, L"ItemExchangeScroll"))
     {
-        MS2Ptr<CExchangeItemInfo> spInfo = FUN_140f56960()->GetData(spItem->FUN_1405276c0());
+        MS2Ptr<CExchangeItemInfo> spInfo = TSingleton<CItemExchangeScrollTable>::GetInstance()->GetData(spItem->FUN_1405276c0());
         if (spInfo.get() != 0)
         {
             MS2Ptr<CItem> spResult(new CItem);
@@ -1722,7 +1680,7 @@ int InvenSlot::vfunc_0(void* p)
     }
     if (nMode == 2)
         tip.FUN_1409c0e60("customizeColor", L"");
-    if (FUN_1403ed2b0()->FUN_141adcb40() != 0 && spItem->FUN_140527840()->FUN_14053d510())
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adcb40() != 0 && spItem->FUN_140527840()->FUN_14053d510())
     {
         MS2Ptr<CEquipItem> spEquip = static_cast<Unk_IsEquipView*>(pPC)->FUN_141655e10(4);
         bool bDagger = spEquip.get() != 0 && spEquip->GetItem() == spWorn.get();
@@ -1739,10 +1697,10 @@ MS2_REPLACE_METHOD_VIA(0x14140A490, InvenSlot, ITooltip, vfunc_0, 2550, 0x2972CB
 // @0x14140ae90
 int InvenSlot::vfunc_8(void* p)
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (!spItem)
         return 0;
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     ASSlot slot(2);
@@ -1760,7 +1718,7 @@ MS2_REPLACE_METHOD(0x14140AE90, InvenSlot, vfunc_8, 406, 0x667BD262);
 // @0x14140b030
 CStringW InvenSlot::vfunc_22()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (!spItem)
         return CStringW(L"");
     switch (FUN_14140d3e0(spItem, 1))
@@ -1883,7 +1841,7 @@ MS2_REPLACE_METHOD(0x14140B6D0, InvenSlot, FUN_14140b6d0, 1397, 0xA82B334A);
 // @0x14140bc50
 int InvenSlot::FUN_14140bc50(CStringW strSearch)
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem == 0)
         return -1;
     CStringW strName = spItem->FUN_140527b10();
@@ -1928,7 +1886,7 @@ MS2_REPLACE_METHOD(0x14140BE60, InvenSlot, FUN_14140be60, 447, 0xAE0AD242);
 // @0x14140c030
 CItem* InvenSlot::FUN_14140c030(MS2Ptr<CItem> spItem)
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     return pPC->FUN_14152e2f0(spItem).get();
@@ -1994,11 +1952,11 @@ MS2_REPLACE(0x14140C2B0, FUN_14140c2b0, 526, 0x185916FD);
 // Drop the item: at once for one non-quest item, else ask (with a count for stacks).
 static void FUN_14140c4d0(__int64 nUid, int nItemId, int nCount, int nMax)
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
     int nQuest = FUN_140764020()->FUN_1416ce170(spItem);
     if (nCount < 2 && nQuest == 0)
     {
-        FUN_140714f90()->FUN_141538930(nUid, nCount);
+        FUN_140714f90()->SendRequestItemInventoryMode4(nUid, nCount);
         return;
     }
     CStringW strText;
@@ -2014,7 +1972,7 @@ static void FUN_14140c4d0(__int64 nUid, int nItemId, int nCount, int nMax)
         strText = nQuest == 0 ? FUN_140298ea0(CStringW(L"s_msg_item_drop"))
                               : FUN_1405c2690(CStringW(L"s_msg_quest_item_drop_stack"), FUN_14140c2b0(spItem));
     }
-    MS2Ptr<CItem> spCur = DAT_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spCur = g_143ab2a90.FUN_140a5d680(nUid);
     if (!spCur)
         return;
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(nType, strText, 0, s_strDrop);
@@ -2036,11 +1994,11 @@ MS2_REPLACE(0x14140C4D0, FUN_14140c4d0, 1719, 0x28342F3F);
 // Sell the item to the npc shop: at once for one non-quest item, else ask.
 static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int nPrice, CStringW strName)
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
     int nQuest = FUN_140764020()->FUN_1416ce170(spItem);
     if (nMax < 2 && nQuest == 0)
     {
-        FUN_1419f8920(DAT_143ab2a90.FUN_140a5d680(nUid), nCount);
+        FUN_1419f8920(g_143ab2a90.FUN_140a5d680(nUid), nCount);
         return;
     }
     CStringW strText;
@@ -2059,7 +2017,7 @@ static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int n
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(nType, strText, 0, s_strSell);
     if (spBox.get() != 0)
     {
-        MS2Ptr<CItem> spCur = DAT_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spCur = g_143ab2a90.FUN_140a5d680(nUid);
         if (spCur.get() != 0)
         {
             spBox->FUN_141a01600(nUid);
@@ -2096,7 +2054,7 @@ static int FUN_14140d350(CItem* pItem)
         return 0;
     if (pItem->FUN_140527840()->FUN_14053cbc0() == false)
         return 0;
-    FittingDollPC* pDoll = FUN_140884db0(FUN_1403ed2d0()->FUN_141bd1530(DAT_143af25f0));
+    FittingDollPC* pDoll = FUN_140884db0(reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0));
     if (pDoll == 0)
         return 0;
     if (pDoll->FUN_14121c910(pItem) != 0)
@@ -2298,7 +2256,7 @@ static int FUN_14140e3f0(MS2Ptr<CItem> spItem)
         MS2Ptr<UIShopDialog> spShop(FUN_140534780(0x4e3b));
         if (spShop.get() != 0)
         {
-            if (spShop->FUN_141afb780(spItem) == false)
+            if (spShop->CanSellItem(spItem) == false)
                 return 0;
             return 1;
         }
@@ -2364,7 +2322,7 @@ MS2_REPLACE_METHOD_VIA(0x14140EFE0, InventorySlotBag, UIItemEventListener, vfunc
 // @0x14140f030
 void InventorySlotBag::vfunc_ugc_2(void* p, CString str)
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680((__int64)p);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680((__int64)p);
     if (spItem == 0)
         return;
     if (FUN_14140f990(spItem.get()) == 0)
@@ -2434,7 +2392,7 @@ void InventorySlotBag::vfunc_5(void* p, int n)
         InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50()));
         if (pSlot != 0)
         {
-            MS2Ptr<CItem> spCur = DAT_143ab2a90.FUN_140a5d680(static_cast<CItem*>(p)->FUN_140526a50());
+            MS2Ptr<CItem> spCur = g_143ab2a90.FUN_140a5d680(static_cast<CItem*>(p)->FUN_140526a50());
             if (spCur == 0 || spCur->FUN_140526b50() != static_cast<CItem*>(p)->FUN_140526b50())
                 return;
             pSlot->SetItemUid(static_cast<CItem*>(p)->FUN_140526a50());
@@ -2463,7 +2421,7 @@ void InventorySlotBag::vfunc_22(void* p)
 {
     if (FUN_14140f990(static_cast<CItem*>(p)) == 0)
         return;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(static_cast<CItem*>(p)->FUN_140526a50());
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(static_cast<CItem*>(p)->FUN_140526a50());
     if (!spItem)
         return;
     m_nPendingSlot = spItem->FUN_140526b50();
@@ -2527,7 +2485,7 @@ MS2_REPLACE_METHOD(0x14140F8A0, InventorySlotBag, vfunc_16, 221, 0x9FBDFB00);
 // @0x14140f990
 int InventorySlotBag::FUN_14140f990(CItem* pItem)
 {
-    return m_nTab == DAT_143ab2a90.FUN_140a617f0(MS2Ptr<CItem>(pItem));
+    return m_nTab == g_143ab2a90.FUN_140a617f0(MS2Ptr<CItem>(pItem));
 }
 MS2_REPLACE_METHOD(0x14140F990, InventorySlotBag, FUN_14140f990, 101, 0xBAE87DBE);
 
@@ -2536,7 +2494,7 @@ MS2_REPLACE_METHOD(0x14140F990, InventorySlotBag, FUN_14140f990, 101, 0xBAE87DBE
 static __int64 FUN_14140fa00(int nIndex, int nTab)
 {
     ATL::CAtlArray<MS2Ptr<CItem> > items;
-    DAT_143ab2a90.FUN_140a60880(nTab, items);
+    g_143ab2a90.FUN_140a60880(nTab, items);
     for (unsigned i = 0; i < items.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem = items[i];

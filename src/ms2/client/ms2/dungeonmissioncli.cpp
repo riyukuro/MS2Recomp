@@ -44,7 +44,7 @@
 class Unk_CommonLog
 {
 public:
-    void FUN_1402804e0(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
+    void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
 };
 Unk_CommonLog* FUN_140166440();
 
@@ -87,14 +87,14 @@ MS2Ptr<DungeonMissionCli> DungeonMissionCli::Create(unsigned nId)
     MS2Ptr<DungeonMissionData> pData = DungeonMissionDataTable::GetInstance()->GetMission(nId);
     if (pData == 0)
     {
-        FUN_140166440()->FUN_1402804e0(0, 0, 0x13, L"DungeonMissionGroup Data Error");
+        FUN_140166440()->Log(0, 0, 0x13, L"DungeonMissionGroup Data Error");
         return MS2Ptr<DungeonMissionCli>(0);
     }
     CStringW strClass = StringFormat(L"DungeonMission{0}", pData->m_type);
     MS2Ptr<DungeonMissionCli> pCli(static_cast<DungeonMissionCli*>(FUN_1401f7f50(strClass)));
     if (pCli == 0)
     {
-        FUN_140166440()->FUN_1402804e0(0, 0, 0x13, L"DungeonMissionCli NotFound Class");
+        FUN_140166440()->Log(0, 0, 0x13, L"DungeonMissionCli NotFound Class");
         return MS2Ptr<DungeonMissionCli>(0);
     }
     pCli->m_data = pData.get();

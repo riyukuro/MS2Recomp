@@ -38,7 +38,6 @@
 
 // ---- out-of-unit callees (names are exe addresses) ----------------------------------------------------------------
 extern char DAT_143b059e8;                                      // service lookup cell
-EntityWorldManager* FUN_1409670f0();
 HardwareInstancingService* FUN_14098c5b0(char* pCell);
 void FUN_1413d78e0(HardwareInstancingService* pSvc, egf::Entity* pEntity);   // refresh the entity's instancing
 bool FUN_14028d470(float a, float b);                           // nearly equal
@@ -158,7 +157,7 @@ Unk_CmFade::Unk_CmFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, b
     m_timer.FUN_140868750(nMs);
     m_bHide = bHide;
     m_id = id;
-    egf::EntityPtr spEntity(FUN_1409670f0()->FUN_1411cf440(id));
+    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id));
     if (spEntity != 0)
     {
         ((Unk_CmEntity*)spEntity.operator->())->FUN_14098c6e0(0xd89e9b12, &bHide);
@@ -195,7 +194,7 @@ Unk_CmFade::Unk_CmFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, b
 // @0x141161600
 void Unk_CmFade::FUN_141161600()
 {
-    egf::EntityPtr spEntity(FUN_1409670f0()->FUN_1411cf440(m_id));
+    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_id));
     if (spEntity != 0)
     {
         bool bVisible = true;
@@ -304,7 +303,7 @@ void CCubeMotionManager::Update()
     for (POSITION pos1 = m_rotate.GetHeadPosition(); pos1 != 0; m_rotate.GetNext(pos1))
     {
         egf::EntityID id = m_rotate.GetKeyAt(pos1);
-        egf::EntityPtr spEntity(FUN_1409670f0()->FUN_1411cf440(id));
+        egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id));
         if (spEntity == 0)
         {
             finished.AddTail(id);
@@ -339,7 +338,7 @@ void CCubeMotionManager::Update()
     for (POSITION pos3 = m_bounce.GetHeadPosition(); pos3 != 0; m_bounce.GetNext(pos3))
     {
         egf::EntityID id = m_bounce.GetKeyAt(pos3);
-        egf::EntityPtr spEntity(FUN_1409670f0()->FUN_1411cf440(id));
+        egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id));
         if (spEntity == 0)
         {
             finished.AddTail(id);
@@ -391,7 +390,7 @@ void CCubeMotionManager::Update()
     for (POSITION pos5 = m_scale.GetHeadPosition(); pos5 != 0; m_scale.GetNext(pos5))
     {
         egf::EntityID id = m_scale.GetKeyAt(pos5);
-        egf::EntityPtr spEntity(FUN_1409670f0()->FUN_1411cf440(id));
+        egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id));
         if (spEntity == 0)
         {
             finished.AddTail(id);
@@ -423,7 +422,7 @@ void CCubeMotionManager::Update()
     for (POSITION pos7 = m_fade.GetHeadPosition(); pos7 != 0; m_fade.GetNext(pos7))
     {
         egf::EntityID id = m_fade.GetKeyAt(pos7);
-        egf::EntityPtr spEntity(FUN_1409670f0()->FUN_1411cf440(id));
+        egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id));
         if (spEntity == 0)
         {
             finished.AddTail(id);

@@ -38,6 +38,7 @@
 #include "ms2/gfxui/dragslot.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/inventory.h"
 
 // The header statics of the original TU (the same set as the other pages of the family).
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -56,14 +57,7 @@ Unk_TrPlayer* FUN_141bd0cc0(Unk_TrWorld*);
 Unk_TrInventory* FUN_1416561a0(Unk_TrPlayer*);
 void FUN_1411e1ce0(Unk_TrInventory*, CAtlList<MS2Ptr<CEquipItem>>&, int);
 // The player's inventory (global 0x143ab2a90).
-class Unk_TrBag {
-public:
-    MS2Ptr<CItem> FUN_140a5d680(__int64 uid);
-    int FUN_140a5f180(int itemId, int grade);
-    int FUN_140a5f7b0(int itemId, int rarity);
-    void FUN_140a60880(int tab, CAtlArray<MS2Ptr<CItem>>& out);
-};
-extern Unk_TrBag DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 extern int DAT_143ab2914;
 
 MS2Ptr<CItem> FUN_141425750(__int64 uid, bool* pbEquipped);

@@ -61,6 +61,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/gfxui/uialignwidget.h"
+#include "ms2/placeholder/cmeratmarketman.h"
 
 // ---- statics of the unit's header (init order: a path key, sort names, skill, stun, a condition object, the key
 // controller, then three more attribute names) ----
@@ -91,32 +94,26 @@ private:
     void* m_unrecovered_80;
 };
 MS2_CHECK_SIZE(ASDialog, 0x88);
-class Unk_AdWorld {
+class Unk_AdWorld : public CMeratMarketMan {
 public:
-    void FUN_140d543c0(int n);
     bool FUN_140d5b370(MS2Ptr<Unk_AdMarketItem> item);
     MS2Ptr<Unk_AdMarketItem> FUN_140d578d0(Unk_AdSn id);
 };
 UIAdPushDialog* FUN_140d61c00(eUIClassID nClass);
 void FUN_1409e3190(ASTooltip* p, Unk_AdItemInfo* pInfo, bool b);
 Unk_AdWorld* FUN_140939a00();
-class Unk_AdNotices {
-public:
-    void FUN_140da4e40(CStringW strName, Delegate<void(NotifyObject*)> cb);    // subscribe
-    void FUN_140da4eb0(CStringW strName, Delegate<void(NotifyObject*)> cb);    // unsubscribe
-};
-Unk_AdNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 class Unk_McInput { public: void FUN_1422b06e0(int nMovie, unsigned* pWidth, unsigned* pHeight); };
 Unk_McInput* FUN_14025e7a0();
 int FUN_1422db730();
 class Unk_AdPlayerMgr;
-class Unk_AdActor : public PCBase { public: int FUN_14123bea0(); };
+class Unk_AdActor : public PCBase { };
 Unk_AdPlayerMgr* FUN_1403ed2d0();
 Unk_AdActor* FUN_141bd0cc0(Unk_AdPlayerMgr* pMgr);
 void* FUN_14041beb0();
 int FUN_1408d7e60(void* p, unsigned short n);
 struct Unk_AdLevelView { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };   // the local player: the level (slot 78, +0x270) returns a word
-class Unk_140e45740 { public: int FUN_1422e6bf0(UIDialog* p, int n); void FUN_1422e6d00(int n); };
+class Unk_140e45740 : public UIAlignWidgetManager { public: int FUN_1422e6bf0(UIDialog* p, int n);};
 UIObject* FUN_140c9b540(int nClass);
 UIObject* FUN_140ce8270(int nClass);
 int FUN_1422dc430(UIObject* p);
@@ -124,7 +121,7 @@ Unk_140e45740* FUN_140e45740();
 bool FUN_1418ffe80(int, int);
 void FUN_1418ffec0(int*, int);
 void FUN_1418ffef0(int*, int);
-__int64 FUN_140869440();
+__int64 GetServerTime();
 CStringA FUN_1412755f0();
 CStringA FUN_141275640();
 CString FUN_14038f6d0(const CString&, const char*);
@@ -236,8 +233,8 @@ int UIAdPushDialog::vfunc_65()
 {
     if (!UIDialog::vfunc_65())
         return 0;
-    FUN_140939a10()->FUN_140da4e40(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyCompleteMyPC));
-    FUN_140939a00()->FUN_140d543c0(1);
+    FUN_140939a10()->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyCompleteMyPC));
+    FUN_140939a00()->SendMeretMarketMode103(1);
     return 1;
 }
 
@@ -292,7 +289,7 @@ int UIAdPushDialog::vfunc_4()
         Unk_AdXmlNode* pAccount = FUN_14081b310(&m_xmlAccountSave);
         if (pAccount)
         {
-            CMsTime now(FUN_140869440());
+            CMsTime now(GetServerTime());
             for (Unk_AdXmlNode* pNode = FUN_140345b40(pAccount); pNode;)
             {
                 Unk_AdXmlNode* pCur = pNode;
@@ -363,7 +360,7 @@ void UIAdPushDialog::OnLoadComplete()
     if (m_limitedBundle.get())
         m_limitedBundle->FUN_1422c3600("dirtyPos", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIAdPushDialog::OnDirtyPos), false, 0, 0, (void*)0);
     Refresh(4);
-    FUN_140939a10()->FUN_140da4e40(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyGameEventChanged));
+    FUN_140939a10()->RegisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyGameEventChanged));
 }
 
 // @0x140e401b0
@@ -376,8 +373,8 @@ void UIAdPushDialog::vfunc_26()
     m_sns.clear();
     m_limitedBundle = 0;
     m_tick.FUN_140268840();
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyCompleteMyPC));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyGameEventChanged));
+    FUN_140939a10()->UnregisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyCompleteMyPC));
+    FUN_140939a10()->UnregisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyGameEventChanged));
 }
 
 // @0x140e403f0
@@ -913,7 +910,7 @@ bool AdPushEntityLimitedBundle::UpdateRemainTime()
         return false;
     if (!m_bShowRemain)
         return true;
-    ATL::CTimeSpan left(m_endTime - FUN_140869440());
+    ATL::CTimeSpan left(m_endTime - GetServerTime());
     if (left < 0)
         return vfunc_3(), false;
     int nSeconds = left.GetSeconds();
@@ -949,7 +946,7 @@ bool AdPushEntityLimitedBundle::vfunc_1()
     if (m_endTime == 0)
     {
         if (0 < nRemain)
-            m_endTime = FUN_140869440() + nRemain;
+            m_endTime = GetServerTime() + nRemain;
     }
     else if (nRemain == 0)
         m_endTime = 0;

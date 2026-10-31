@@ -5,6 +5,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2rendercontext.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cgameoption.h"
 #include <time.h>
 #include <string.h>
 #include <NiDX9Renderer.h>
@@ -27,11 +28,10 @@ class Unk_RendererWrap
 public:
     Unk_RenderTarget* FUN_1409a8ac0();
 };
-Unk_RendererWrap* FUN_1409a8b10();
 class Unk_RenderLog;
 Unk_RenderLog* FUN_140166440();
 void FUN_1401859c0(Unk_RenderLog* pLog, int nCategory, int nLevel, const wchar_t* pszMessage);
-Ni2DBuffer* FUN_14184e5d0(int nTarget);                  // back buffer of the default render target group
+Ni2DBuffer* GetScreenshotBuffer(int nTarget);            // back buffer of the default render target group
 NiDX9Renderer* FUN_140d89bc0();                          // the DX9 renderer, or 0 when the renderer is not a DX9 one
 extern NiRenderer* GetNiRenderer();                      // NiRenderer::GetRenderer()
 
@@ -121,8 +121,8 @@ int MS2RenderContext::CreateRecodeSurface()
         return 0;
     }
     Unk_RecodeSurfaceInfo* pInfo = (Unk_RecodeSurfaceInfo*)m_pInfoMemory->m_pView;
-    pInfo->m_nWidth = FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8ab0();
-    pInfo->m_nHeight = FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8aa0();
+    pInfo->m_nWidth = reinterpret_cast<Unk_RendererWrap*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8ab0();
+    pInfo->m_nHeight = reinterpret_cast<Unk_RendererWrap*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8aa0();
     pInfo->m_nFrameSize = pInfo->m_nWidth * pInfo->m_nHeight * 4;
     pInfo->m_nOutWidth = 0x500;
     pInfo->m_nOutHeight = 0x2d0;
@@ -260,7 +260,7 @@ void MS2RenderContext::CaptureRecodeFrame()
     if (m_bRecode == 0) {
         return;
     }
-    Ni2DBuffer* pBuffer = FUN_14184e5d0(0);
+    Ni2DBuffer* pBuffer = GetScreenshotBuffer(0);
     if (pBuffer == 0) {
         return;
     }

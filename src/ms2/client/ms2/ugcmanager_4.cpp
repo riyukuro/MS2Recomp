@@ -65,11 +65,19 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/bigdatalogsystem.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/csoapclient.h"
+#include "ms2/client/ms2/guildmanager.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/statemanager.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/camera.h"
 
 // ---- callees ------------------------------------------------------------------------------------------------------
 
-CUIService* FUN_1403ed2b0();
-CGuildManager* FUN_1403ed290();
 void FUN_141275260(int nStringId, int nA, int nB);          // system message
 CStringW FUN_1408116a0(int nId, const int& nArg);           // string table entry with one integer argument
 
@@ -78,12 +86,6 @@ void FUN_140a30ad0(const BlockPtr& rec, int action, unsigned long long cb);
 CBlockManager* FUN_140a6a830();
 
 // The event log: "upload_exception" reports.
-class Unk_UgcEventLog
-{
-public:
-    void FUN_140a1f970(const CString& strEvent, const CString& strArg);
-};
-Unk_UgcEventLog* FUN_140d8ee90();
 CString FUN_140741200(const char* szFormat, const CString& a1, const CString& a2);   // "{0} {1}" formatter
 
 // UGC paths.
@@ -104,16 +106,9 @@ public:
     int FUN_141bd0dd0(efd::Point3& kA, efd::Point3& kB);
     unsigned FUN_141bd3060();
 };
-Unk_UgcWorld* FUN_1403ed2d0();
 
 // The game settings; FUN_14036d570 tests a content switch.
-class Unk_UgcSettings
-{
-public:
-    bool FUN_14036d570(int nId);
-    CStringW FUN_14036d960();                               // the language directory
-};
-Unk_UgcSettings* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 // A client config singleton; +0xb0 is the default UGC image.
 class Unk_UgcClientPaths
@@ -140,7 +135,6 @@ class Unk_UgcCamera
 public:
     bool FUN_140af0700(const efd::Point3& kWorld, efd::Point3& kScreen);   // world to screen
 };
-Unk_UgcCamera* FUN_1409478c0();
 Unk_UgcFileResult SaveUgcThumbnailImage(NiRect<unsigned int> kRect, int nTarget);   // ugcmanager.cpp#1
 CStringW FUN_141026ab0();                                   // ".\Custom\Thumbnail"
 CStringW FUN_141026920(int nType);                          // the upload directory of an upload kind
@@ -172,13 +166,6 @@ int FUN_14102ac40(const CStringW& strPath, CAtlArray<CStringW>& parts);   // spl
 
 // The upload kinds sent through the web server (0: through the game server).
 int FUN_14088db30(int nType);
-class Unk_UgcSoap
-{
-public:
-    int FUN_14176feb0();                                    // send the upload request
-    void FUN_14176fcf0(CString strUrl, int nResult);        // an upload answer of the web server
-};
-Unk_UgcSoap* FUN_140b2e990();
 
 // The upload dialogs (vfunc_55: the dialog is closed).
 class UIUGCImageUploadDialog : public UIDialog
@@ -201,7 +188,6 @@ public:
 };
 UIUGCItemEditDialog* FUN_140eeff60(int nId);                // uiugccubepalettedialog.cpp
 
-CStateService* FUN_140aa6d30();                             // the state service
 CUgcManager* FUN_14052d220();                               // the UGC manager singleton
 
 // The kinds whose upload is answered by the game server (0: the file goes through the web server first).
@@ -307,9 +293,8 @@ struct Unk_DateParts
 };
 MS2_CHECK_SIZE(Unk_DateParts, 0x30);
 Unk_DateParts* FUN_14088dfa0(Unk_DateParts* out, __int64 t, int nHourOffset);
-__int64 FUN_140869440();                                    // the current time
+__int64 GetServerTime();                                    // the current time
 
-CUgcDownloadDown* FUN_1414a57f0();                          // the download queue
 // The scene-graph texture cache (ugcmanager.cpp#1 keeps the same declaration).
 class Unk_UgcTextureCache
 {
@@ -318,10 +303,8 @@ public:
 };
 Unk_UgcTextureCache* FUN_140a0afd0();
 // A player in the field (Unk_UgcWorld::FUN_141bd1290 finds it by object id).
-class Unk_UgcWearer : public PCBase
+class Unk_UgcWearer : public PC
 {
-public:
-    MS2Ptr<CEquipItem> FUN_141655c30(__int64 itemUid);      // a worn item by uid
 };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the table data of an item id
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                // the scene node of an entity
@@ -379,13 +362,9 @@ public:
 };
 
 // The item containers: the bag and the cube fallback inventory (unit_14092f420.cpp / uicommon.cpp).
-class Unk_UgcBagInventory
-{
-public:
-    MS2Ptr<CItem> FUN_140a5d680(__int64 itemUid);
-};
-extern Unk_UgcBagInventory DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
+#include "ms2/placeholder/uiugceventdispatcher.h"
 
 // The blueprint create dialog (0x4f7b; uiitemblueprintcreatedialog.cpp).
 class Unk_UgcBlueprintDialog : public UIDialog
@@ -402,10 +381,9 @@ public:
     virtual void vfunc_0();
     virtual void vfunc_1(__int64 characterId, CString strUrl);
 };
-Unk_UgcEventHub* FUN_140bc09f0();
 
 CString FUN_141028be0(__int64 characterId, const CString& strUrl, int nSize, CString strExt);   // the profile image file
-CStringW FUN_1409eec40(int nId);
+CStringW BlockFormat(int nId);
 CStringW FUN_140a228f0(int nId, const int& nArg, const CStringW& strArg);
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
 
@@ -413,9 +391,9 @@ void FUN_1412751f0(const CStringW& strText, int nA, int nB);
 template <class T>
 T* UgcFindDialog(eUIClassID nId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spObject = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FUN_141adcea0(nId);
         if (spObject.get() != 0)
             return dynamic_cast<T*>((UIObject*)spObject);
     }
@@ -720,7 +698,7 @@ void CUgcManager::FUN_14187f590(efd::SmartPointer<egf::Entity> spEntity)
         return;
     int nProperty = 0;
     spEntity->GetPropertyValue(0x819a96c0, nProperty);
-    unsigned nMapId = FUN_1403ed2d0()->FUN_141bd3060();
+    unsigned nMapId = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd3060();
     int nBannerId = nProperty;
     Unk_BannerPtr spBanner = CFieldBannerData::GetBanner(nBannerId);
     if (spBanner == NULL)
@@ -767,7 +745,7 @@ void CUgcManager::FUN_14187f590(efd::SmartPointer<egf::Entity> spEntity)
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
     spCtrl->SetDialog(nDialog);
-    FUN_1403ed2b0()->ToggleDialog((eUIClassID)nDialog);
+    TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)nDialog);
 }
 MS2_REPLACE_METHOD(0x14187f590, CUgcManager, FUN_14187f590, 1434, 0x6D889E75);
 
@@ -799,7 +777,7 @@ void CUgcManager::FUN_14187fb30()
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
     spCtrl->SetDialog(0x4e56);
-    FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
+    TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4e56);
 }
 MS2_REPLACE_METHOD(0x14187fb30, CUgcManager, FUN_14187fb30, 576, 0x62F8DDA3);
 
@@ -835,7 +813,7 @@ void CUgcManager::FUN_14187fd80()
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
     spCtrl->SetDialog(0x4e56);
-    FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
+    TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4e56);
 }
 MS2_REPLACE_METHOD(0x14187fd80, CUgcManager, FUN_14187fd80, 593, 0x14D4A975);
 
@@ -858,7 +836,7 @@ void CUgcManager::FUN_14187ffe0()
     }
     if (FUN_14188fdb0(0x4e56) == 0)
         return;
-    __int64 nGuildId = FUN_1403ed290()->FUN_1404ccbd0();
+    __int64 nGuildId = TSingleton<CGuildManager>::GetInstance()->FUN_1404ccbd0();
     if (nGuildId == 0)
         return;
     MS2Ptr<CUgcViewerGuildMark> spViewer(new CUgcViewerGuildMark());
@@ -868,7 +846,7 @@ void CUgcManager::FUN_14187ffe0()
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
     spCtrl->SetDialog(0x4e56);
-    FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
+    TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4e56);
 }
 MS2_REPLACE_METHOD(0x14187ffe0, CUgcManager, FUN_14187ffe0, 575, 0xFFED958F);
 
@@ -883,7 +861,7 @@ void CUgcManager::FUN_141880230(CString strName, int nIndex)
     }
     if (FUN_14188fdb0(0x4e56) == 0)
         return;
-    __int64 nGuildId = FUN_1403ed290()->FUN_1404ccbd0();
+    __int64 nGuildId = TSingleton<CGuildManager>::GetInstance()->FUN_1404ccbd0();
     if (nGuildId == 0)
         return;
     MS2Ptr<CUgcViewerGuildPoster> spViewer(new CUgcViewerGuildPoster());
@@ -895,7 +873,7 @@ void CUgcManager::FUN_141880230(CString strName, int nIndex)
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
     spCtrl->SetDialog(0x4e56);
-    FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
+    TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4e56);
 }
 MS2_REPLACE_METHOD(0x141880230, CUgcManager, FUN_141880230, 598, 0x8F015935);
 
@@ -912,12 +890,12 @@ bool CUgcManager::FUN_141880490(MS2Ptr<CUgcUploadCtrl> spCtrl)
     }
     if (!FUN_140166410()->FUN_14036d570(0xe9))
         return false;
-    FUN_1403ed2b0()->FUN_141adc690(eUI_4e56);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc690(eUI_4e56);
     if (FUN_14188fdb0(0x4e56) == 0)
         return false;
     FUN_141882450(spCtrl);
     spCtrl->SetDialog(0x4e56);
-    FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
+    TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4e56);
     return true;
 }
 MS2_REPLACE_METHOD(0x141880490, CUgcManager, FUN_141880490, 348, 0xE6E12340);
@@ -931,9 +909,9 @@ void CUgcManager::FUN_141880600(MS2Ptr<Unk_CharListEntry> spEntry)
         return;
     efd::Point3 kA;
     efd::Point3 kB;
-    if (FUN_1403ed2d0()->FUN_141bd0dd0(kB, kA) == 0)
+    if (reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0dd0(kB, kA) == 0)
         return;
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     NiAVObject* pUI = FUN_141675150(pPlayer, "Eff_UI");
@@ -945,7 +923,7 @@ void CUgcManager::FUN_141880600(MS2Ptr<Unk_CharListEntry> spEntry)
     efd::Point3 kTop;
     efd::Point3 kBottom;
     NiRect<unsigned int> kRect;
-    if (!FUN_1409478c0()->FUN_140af0700(FUN_140947900(pUI), kTop) || !FUN_1409478c0()->FUN_140af0700(FUN_140947900(pBody), kBottom))
+    if (!reinterpret_cast<Unk_UgcCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(FUN_140947900(pUI), kTop) || !reinterpret_cast<Unk_UgcCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(FUN_140947900(pBody), kBottom))
         return;
     int n = (int)(kBottom.y - kTop.y);
     int nMargin = (int)(n * 0.2f);
@@ -981,7 +959,7 @@ void CUgcManager::FUN_141880c90(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return;
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     MS2Ptr<CUgcViewerProfile> spViewer(new CUgcViewerProfile());
@@ -1208,7 +1186,7 @@ int CUgcManager::FUN_141882020()
         return 0xd;
     if (spCtrl->m_spFile == 0)
         return 0xb;
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0xc;
     int nResult = FUN_141882370();
@@ -1242,7 +1220,7 @@ int CUgcManager::FUN_141882020()
                 int nError = spCtrl->FUN_1418a3b80(0);
                 if (nError != 0)
                     throw Exception(CString("error PreUpload"), nError);
-                FUN_140b2e990()->FUN_14176feb0();
+                TSingleton<CSoapClient>::GetInstance()->FUN_14176feb0();
                 nError = 0;
             }
         }
@@ -1315,10 +1293,10 @@ void CUgcManager::FUN_141882450(MS2Ptr<CUgcUploadCtrl> spCtrl)
         if (s_bReport)
         {
             s_bReport = false;
-            if (FUN_140d8ee90())
+            if (TSingleton<CBigDataLogSystem>::GetInstance())
             {
                 CString strMessage = FUN_140741200("prevCtrl {0}, nextCtrl {1}", strPrev, strNext);
-                FUN_140d8ee90()->FUN_140a1f970("upload_exception", strMessage);
+                TSingleton<CBigDataLogSystem>::GetInstance()->SendLog("upload_exception", strMessage);
             }
         }
     }
@@ -1444,10 +1422,10 @@ void CUgcManager::FUN_141882d80(MS2Ptr<CUgcUploadCtrl> spCtrl, int nResult, cons
         int nKind = spCtrl->m_nKind;
         if (nKind == 5)
         {
-            int nState = FUN_140aa6d30()->FUN_1417e2610();
+            int nState = TSingleton<CStateService>::GetInstance()->FUN_1417e2610();
             if (nState == 0x620000c)
             {
-                PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+                PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
                 if (pPlayer != 0)
                 {
                     SendUGCMode11(strPath);
@@ -1593,7 +1571,7 @@ void CUgcManager::FUN_141883860(CString strPath)
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_141882610();
     if (spCtrl == 0)
         return;
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     int nKind = spCtrl->m_nKind;
@@ -2053,7 +2031,7 @@ MS2_REPLACE_METHOD(0x141885e20, CUgcManager, FUN_141885e20, 802, 0x47FBD40F);
 // @0x141886150
 void CUgcManager::FUN_141886150(CUgcDownloadParam* pParam, IUgcProxy* pProxy)
 {
-    FUN_1414a57f0()->Push(pParam, pProxy);
+    TSingleton<CUgcDownloadDown>::GetInstance()->Push(pParam, pProxy);
 }
 MS2_REPLACE_METHOD(0x141886150, CUgcManager, FUN_141886150, 47, 0x48A95CC3);
 
@@ -2159,7 +2137,7 @@ int CUgcManager::FUN_141886a90(CUgcItemPC* pItem, NiTexture* pTexture)
         return 0;
     if (pTexture == 0)
         return 0;
-    Unk_UgcWearer* pWearer = FUN_1403ed2d0()->FUN_141bd1290(pItem->m_nObjectId);
+    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd1290(pItem->m_nObjectId);
     if (pWearer == 0)
         return 0;
     MS2Ptr<CItemData> spData = FUN_14053f870(pItem->m_nItemId);
@@ -2354,7 +2332,7 @@ void CUgcManager::FUN_141887dc0(int nBannerId, MS2Ptr<CUgcRegistBanner> spBanner
         {
             m_mapBanner.RemoveKey(nBannerId);
         }
-        efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(nBannerId);
+        efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd04d0(nBannerId);
         if (spEntity != 0)
         {
             NiTexturePtr spTexture = FUN_1418896e0(nBannerId);
@@ -2398,7 +2376,7 @@ int CUgcManager::FUN_1418881e0(int nBannerId, CString strPath, MS2Ptr<CUgcRegist
 {
     if (spBanner == 0)
         return 0;
-    efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd04d0(nBannerId);
     if (spEntity == 0)
         return 0;
     NiTexturePtr spTexture = FUN_140a0afd0()->FUN_141553eb0(strPath, 0);
@@ -2414,7 +2392,7 @@ MS2_REPLACE_METHOD(0x1418881e0, CUgcManager, FUN_1418881e0, 569, 0xBC422A61);
 // @0x141888420
 int CUgcManager::FUN_141888420(int nBannerId, CString strPath)
 {
-    efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd04d0(nBannerId);
     if (spEntity == 0)
         return 0;
     NiTexture* pTexture = LoadCachedTexture(FUN_14016a730(strPath, 0));
@@ -2435,7 +2413,7 @@ void CUgcManager::FUN_1418885b0(int nBannerId)
     {
         m_mapBanner.RemoveKey(nBannerId);
     }
-    efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd04d0(nBannerId);
     if (spEntity != 0)
     {
         if (m_spDefaultTexture != 0)
@@ -2583,12 +2561,12 @@ MS2_REPLACE_METHOD(0x141888dc0, CUgcManager, IsReserveChanged, 15, 0x43A40A0D);
 // The AS rows of the 24 hours of a banner's day: reserved (by state), past, or free (selected when picked).
 void CUgcManager::FUN_141888de0(int nBannerId, const Unk_BannerDay& day, CRBMap<int, int>& selected, ASArray* pArray)
 {
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == NULL)
         return;
     static int s_nCheckTime = FUN_1401d3200()->UgcBannerCheckTime.Read();
     Unk_DateParts now;
-    FUN_14088dfa0(&now, FUN_140869440(), s_nCheckTime);
+    FUN_14088dfa0(&now, GetServerTime(), s_nCheckTime);
     CRBMap<int, ReserveBannerInfo> hours(10);
     FUN_141888bf0(nBannerId, day.m_nDate, hours);
     for (int nHour = 0; nHour < 24; nHour++)
@@ -2639,7 +2617,7 @@ void CUgcManager::FUN_141888de0(int nBannerId, const Unk_BannerDay& day, CRBMap<
 // Keeps the decal image of every banner object that has none in the map yet.
 void CUgcManager::FUN_141889150()
 {
-    Unk_UgcBoxPtr<CAtlList<efd::SmartPointer<egf::Entity> > > spList = FUN_1403ed2d0()->FUN_141bd0420(0xc7f9dd65);
+    Unk_UgcBoxPtr<CAtlList<efd::SmartPointer<egf::Entity> > > spList = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0420(0xc7f9dd65);
     if (spList == 0)
         return;
     POSITION pos = spList->GetHeadPosition();
@@ -2684,7 +2662,7 @@ MS2_REPLACE_METHOD(0x141889150, CUgcManager, FUN_141889150, 879, 0x863C8866);
 // @0x1418894d0
 void CUgcManager::FUN_1418894d0()
 {
-    Unk_UgcBoxPtr<CAtlList<efd::SmartPointer<egf::Entity> > > spList = FUN_1403ed2d0()->FUN_141bd0420(0xc7f9dd65);
+    Unk_UgcBoxPtr<CAtlList<efd::SmartPointer<egf::Entity> > > spList = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0420(0xc7f9dd65);
     if (spList == 0)
         return;
     POSITION pos = spList->GetHeadPosition();
@@ -2799,7 +2777,7 @@ void CUgcManager::OnUgc(CInPacket& packet)
         CString strA = packet.ReadUnicodeStringA();
         CString strB = packet.ReadUnicodeStringA();
         int nResult = packet.ReadUInt8();
-        FUN_140b2e990()->FUN_14176fcf0(strUrl, nResult);
+        TSingleton<CSoapClient>::GetInstance()->FUN_14176fcf0(strUrl, nResult);
         FUN_1410268a0(strA, strB);
     }
     else if (nType == 0x12)
@@ -3204,8 +3182,8 @@ void CUgcManager::FUN_14188bbb0()
         MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_141882610();
         if (spCtrl == NULL)
             return;
-        if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)spCtrl->GetDialog()))
-            FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)spCtrl->GetDialog());
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)spCtrl->GetDialog()))
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)spCtrl->GetDialog());
     }
 }
 MS2_REPLACE_METHOD(0x14188bbb0, CUgcManager, FUN_14188bbb0, 291, 0x207117CD);
@@ -3367,7 +3345,7 @@ MS2_REPLACE_METHOD(0x14188c5b0, CUgcManager, FUN_14188c5b0, 309, 0xFE58047D);
 void CUgcManager::FUN_14188c6f0()
 {
     CRBMap<unsigned int, Unk_BannerPtr> banners(10);
-    CFieldBannerData::GetBannersOfField(FUN_1403ed2d0()->FUN_141bd3060(), banners);
+    CFieldBannerData::GetBannersOfField(reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd3060(), banners);
     CRBMap<CString, std::vector<unsigned int> > urls(10);
     for (POSITION pos = banners.GetHeadPosition(); pos != 0; banners.GetNext(pos))
     {
@@ -3621,7 +3599,7 @@ int CUgcManager::FUN_14188dd70(CInPacket& packet)
         nResult = spCtrl->FUN_1418a3b80(uid);
         if (nResult != 0)
             throw Exception(CString("error PreUpload"), nResult);
-        nResult = FUN_140b2e990()->FUN_14176feb0();
+        nResult = TSingleton<CSoapClient>::GetInstance()->FUN_14176feb0();
         if (nResult != 0)
             throw Exception(CString("error soap upload"), nResult);
     }
@@ -3660,7 +3638,7 @@ void CUgcManager::FUN_14188e200(CInPacket& packet)
         strUrl = "";
     if (nObjectId == 0)
     {
-        int nState = FUN_140aa6d30()->FUN_1417e2610();
+        int nState = TSingleton<CStateService>::GetInstance()->FUN_1417e2610();
         if (nState == 0x620000d)
         {
             Unk_CharSelectDialog* pDialog = FUN_140b72de0(0x4ef1);
@@ -3675,13 +3653,13 @@ void CUgcManager::FUN_14188e200(CInPacket& packet)
     }
     else
     {
-        Unk_UgcWearer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
+        Unk_UgcWearer* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd1290(nObjectId);
         if (pPlayer == 0)
             return;
         CString strPath = FUN_141028be0(FUN_141656a80(pPlayer), strUrl, 0, "");
         if (!strPath.IsEmpty())
         {
-            FUN_140bc09f0()->vfunc_1(FUN_141656a80(pPlayer), strUrl);
+            reinterpret_cast<Unk_UgcEventHub*>(TSingleton<UIUGCEventDispatcher>::GetInstance())->vfunc_1(FUN_141656a80(pPlayer), strUrl);
         }
     }
 }
@@ -3696,10 +3674,10 @@ void CUgcManager::FUN_14188e5b0(CInPacket& packet, int nType)
     proxy.Read(packet);
     CUgcItemLook look;
     look.Read(packet);
-    Unk_UgcWearer* pWearer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
+    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd1290(nObjectId);
     if (pWearer == 0)
         return;
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != pWearer)
         return;
     __int64 itemUid = proxy.m_itemUid;
@@ -3730,10 +3708,10 @@ void CUgcManager::FUN_14188e930(CInPacket& packet)
     CUgcItemLook look;
     look.Read(packet);
     __int64 itemUid = proxy.m_n20;
-    Unk_UgcWearer* pWearer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
+    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd1290(nObjectId);
     if (pWearer == 0)
         return;
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != pWearer)
         return;
     CItem* pItem = DAT_143ab2a90.FUN_140a5d680(itemUid).get();
@@ -3890,7 +3868,7 @@ void CUgcManager::FUN_14188f450(CInPacket& packet)
         FUN_140d73aa0(GetStringCommonByKey(L"s_err_lack_price"), 0, 0, L"");
         break;
     case 0x83:
-        FUN_1403ed2b0()->FUN_141add1f0();
+        TSingleton<CUIService>::GetInstance()->FUN_141add1f0();
         break;
     case 0x84:
         FUN_140d73aa0(GetStringCommonByKey(L"s_err_warehouse"), 0, 0, L"");
@@ -3899,22 +3877,22 @@ void CUgcManager::FUN_14188f450(CInPacket& packet)
         FUN_140d73aa0(GetStringCommonByKey(L"s_ugc_itemedit_error_change_price"), 0, 0, L"");
         break;
     case 0x87:
-        FUN_1412751f0(FUN_140a228f0(0x688, *TSingleton<Client::Constants>::GetInstance()->PropertyProtectionTime.Get(), FUN_1409eec40(0x5a8)), 1, 1);
+        FUN_1412751f0(FUN_140a228f0(0x688, *TSingleton<Client::Constants>::GetInstance()->PropertyProtectionTime.Get(), BlockFormat(0x5a8)), 1, 1);
         break;
     case 0x8a:
         break;
     case 0x8b:
-        FUN_1403ed2b0()->FUN_141adc5d0(eUI_4e69);
-        FUN_1403ed2b0()->FUN_141adc5d0(eUI_4e70);
-        FUN_1403ed2b0()->FUN_141adc5d0(eUI_4f7b);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e69);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e70);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4f7b);
         break;
     case 0x8e:
         FUN_140d73aa0(GetStringCommonByKey(L"s_ugc_uic_error"), 0, 0, L"");
         break;
     default:
-        FUN_1403ed2b0()->FUN_141adc5d0(eUI_4e69);
-        FUN_1403ed2b0()->FUN_141adc5d0(eUI_4e70);
-        FUN_1403ed2b0()->FUN_141adc5d0(eUI_4f7b);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e69);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e70);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4f7b);
         FUN_141275260(0x6d7, 1, 1);
         break;
     }
@@ -3945,24 +3923,24 @@ int CUgcManager::FUN_14188fdb0(int nDialog)
 {
     if (nDialog == 0x4e56)
     {
-        if (FUN_1403ed2b0()->FUN_141adc940(eUI_4e56) == 0)
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940(eUI_4e56) == 0)
             return 0;
-        FUN_1403ed2b0()->FUN_141adc5d0(eUI_4e69);
-        FUN_1403ed2b0()->FUN_141adc5d0(eUI_4e70);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e69);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e70);
     }
     else if (nDialog == 0x4e69)
     {
-        if (FUN_1403ed2b0()->FUN_141adc940(eUI_4e69) == 0)
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940(eUI_4e69) == 0)
             return 0;
-        FUN_1403ed2b0()->FUN_141adc5d0(eUI_4e56);
-        FUN_1403ed2b0()->FUN_141adc5d0(eUI_4e70);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e56);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e70);
     }
     else if (nDialog == 0x4e70)
     {
-        if (FUN_1403ed2b0()->FUN_141adc940(eUI_4e70) == 0)
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940(eUI_4e70) == 0)
             return 0;
-        FUN_1403ed2b0()->FUN_141adc5d0(eUI_4e56);
-        FUN_1403ed2b0()->FUN_141adc5d0(eUI_4e69);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e56);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e69);
     }
     return 1;
 }
@@ -4011,7 +3989,7 @@ void CUgcManager::FUN_14188ff10(CInPacket& packet)
     catch (Exception& e)
     {
         int nCode = e.GetCode();
-        FUN_1403ed2b0()->FUN_141adc5d0(eUI_4f7b);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4f7b);
         CStringW strError(L"error add blueprint");
         FUN_1412751f0(strError, 1, 1);
     }

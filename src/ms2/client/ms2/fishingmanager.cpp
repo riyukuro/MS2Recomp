@@ -90,6 +90,10 @@ extern template class MS2Ptr<UIObject>;
 static CString s_strCursorSound("System_Fishing_Cursor_01");
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uichatballoon_ptr.h"
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/worldservice.h"
 // MS2-PIN: ??__Es_pointer1401cd100@@YAXXZ 0x1400d09f0
 static CString s_strFailSound("System_Fishing_Fail");
 static CString s_strGreatSuccessSound("System_Fishing_Great_Success");
@@ -139,7 +143,6 @@ int FUN_1408a13d0(efd::Point3 kPos);                        // the grid cell key
 Unk_FmInt3 FUN_1408a1430(efd::Point3 kPos);                 // the grid cell of a point
 Unk_FmInt3 FUN_1408a0400(int nKey);                         // the grid cell of a key
 efd::Point3 FUN_1408a15b0(Unk_FmInt3 kCell, const efd::Point3& kOffset);   // the cell centre
-float FUN_14096b1c0(float f);                               // sqrt
 extern efd::Point3 DAT_143b01a60;                           // the zero point
 void FUN_1420849a0(NiMatrix3* pRot);                        // identity
 
@@ -160,22 +163,14 @@ public:
     int FUN_141bd3060();                                    // the current map
     int FUN_141bcafa0(egf::Entity* pEntity);                // the entity blocks the way
 };
-Unk_FmWorld* FUN_1403ed2d0();
 bool FUN_140374410(int nMapId);                             // fishing is forbidden on the map
 
 // The player's buffs.
 class Unk_FmBuffs { public: int FUN_1409701d0(int nKind); int FUN_140970020(int nId, int a, int b, int c); };
 
 // The effect manager.
-class Unk_FmEffects
-{
-public:
-    unsigned FUN_1411a49c0(Unk_EffectTarget& kTarget);     // spawn
-    unsigned FUN_1411a4a00(Unk_EffectTarget& kTarget);     // play once
-    NiNode* FUN_1411a6b10();                                // the effect root
-};
-Unk_FmEffects* FUN_1403ed280();
-void FUN_1411a6060(Unk_FmEffects* pMgr, unsigned nId);     // stop an effect
+CEffectService* FUN_1403ed280();
+void FUN_1411a6060(CEffectService* pMgr, unsigned nId);    // stop an effect
 void FUN_140a332d0(NiTransform* pXform);                    // NiTransform()
 void FUN_140a53190(Unk_EffectTarget* pTarget, int nObjectId);
 
@@ -215,8 +210,6 @@ CStringW FUN_14062b4f0(CStringW strKey, const int* pn);
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
 CStringW FUN_1409e97f0(int nId, const unsigned* pn);
 CStringW FUN_140632a60(int nId, const CStringW& a, const CStringW& b);
-class Unk_FmStringTable { public: CStringW FUN_141811980(int nKind, int nId); };
-Unk_FmStringTable* FUN_1401a9d70();
 class Unk_FmMasteryTable { public: unsigned FUN_14066b050(int nKind); int FUN_14066af60(int nKind, unsigned nMastery); };
 Unk_FmMasteryTable* FUN_1409670c0();
 CStringW FUN_14016a730(const char* sz, int nCodePage);      // CString -> CStringW
@@ -245,17 +238,15 @@ class Unk_FmAdditionalRowPtr { public: ~Unk_FmAdditionalRowPtr(); bool FUN_14096
 struct Unk_FmAdditionalRow { char m_pad_00[0x30]; int m_nType; };
 class Unk_FmAdditionalData { public: Unk_FmAdditionalRowPtr FUN_140aafef0(int nId, unsigned short nLevel);
     Unk_FmAdditionalPtr FUN_1407ee2f0(int nId, short nLevel); };
-Unk_FmAdditionalData* FUN_1401958b0();                      // the additional effect table
 
 class Unk_FmPhysX { public: int FUN_14168a310(const efd::Point3& kFrom, const efd::Point3& kTo, void* pHit, float fLen, __int64 b, int c); };
 Unk_FmPhysX* FUN_1409f7ca0();
 void FUN_140ad4440(void* pHit);
 
 void FUN_140710590(COutPacket& pkt);
-CUIService* FUN_1403ed2b0();                               // TSingleton<CUIService>::GetInstance
 CFeatureManager* FUN_140166410();                           // TSingleton<CFeatureManager>::GetInstance
 NotifySystem* FUN_140939a10();
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 extern int DAT_143ab2914;                                   // the account's GM level
 
 // The fishing line (Unk_FishLine of cubecraft_1.h, CFishingGuideObject + 0xda8) with its members.
@@ -298,9 +289,9 @@ static Unk_FishLineBody* FUN_140ce02b0(CFishingGuideObject* pGuide)
 
 template <class T> T* Unk_FmGetDialog(eUIClassID nId)
 {
-    if (FUN_1403ed2b0())
+    if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> obj = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> obj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0(nId);
         if (obj.get())
             return dynamic_cast<T*>(obj.operator->());
     }
@@ -359,7 +350,7 @@ float Unk_EaseOut::FUN_140cd8c20(float t)
         return 0.0f;
     if (1.0f < t)
         return 1.0f;
-    return FUN_14096b1c0(1.0f - (t - 1.0f) * (t - 1.0f));
+    return sqrt(1.0f - (t - 1.0f) * (t - 1.0f));
 }
 
 // @0x140cd80d0
@@ -553,13 +544,13 @@ public:
 };
 CStringW FUN_1401ceea0(const wchar_t* format, const fmt::ArgList& args);   // wide StringFormat
 FMT_VARIADIC_W(CStringW, FUN_1401ceea0, const wchar_t*)
-__int64 FUN_140869440();                                    // now
+__int64 GetServerTime();                                    // now
 
 // @0x140cd8f60
 // MS2-FUNCTIONAL: formatter argument temporaries
 CString Unk_FishRecord::FUN_140cd8f60()
 {
-    CMsTime kNow(FUN_140869440());
+    CMsTime kNow(GetServerTime());
     int nMinute = kNow.GetMinute();
     int nHour = kNow.GetHour();
     CString strFile = StringFormat(".\\log\\client\\fishRecord_{0:02d}{1:02d}.txt", nHour, nMinute);
@@ -572,7 +563,7 @@ CString Unk_FishRecord::FUN_140cd8f60()
     for (POSITION pos = m_counts.GetStartPosition(); pos != 0; m_counts.GetNext(pos))
     {
         const unsigned& nId = m_counts.GetKeyAt(pos);
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(0x1d, nId);
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nId);
         const int& nCount = m_counts.GetValueAt(pos);
         strText += FUN_140390ea0(StringFormat(L"{0} {1}[{2}]\r\n", m_counts.GetKeyAt(pos), nCount, strName), 0);
     }
@@ -620,7 +611,7 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
     unsigned char nMode = pPacket->ReadUInt8();
     if (nMode == 0)
     {
-        MS2Ptr<CItem> rod = DAT_143ab2a90.FUN_140a5d680(pPacket->ReadInt64());
+        MS2Ptr<CItem> rod = g_143ab2a90.FUN_140a5d680(pPacket->ReadInt64());
         FUN_140cdce70(rod);
     }
     else if (nMode == 1)
@@ -702,7 +693,7 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
         CStringW strName = pPacket->ReadUnicodeString();
         int nFishId = pPacket->ReadInt32();
         int nCount = pPacket->ReadInt32();
-        CStringW strFish = FUN_1401a9d70()->FUN_141811980(0x1d, nFishId);
+        CStringW strFish = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nFishId);
         CStringW strNotice = FUN_1408f71a0(CStringW(L"s_fishing_notice_bigfish"), strName, strFish);
         if (nCount != 0 && 0x31 < DAT_143ab2914)
             strNotice += FUN_14062b4f0(CStringW(L"s_fishing_notice_bigfish_count"), &nCount);
@@ -738,14 +729,14 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
         for (size_t i = 0; i < results.GetCount(); i++)
         {
             MS2Ptr<CFishSimulteData> result = results[i];
-            CStringW strFish = FUN_1401a9d70()->FUN_141811980(0x1d, result->m_n18);
+            CStringW strFish = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, result->m_n18);
             FUN_1412751b0(FUN_14028dfa0(CStringW(L"s_fishing_simulate"), strFish, result->m_n1c, result->m_n20,
                 result->m_aN24[3]), 0x14);
         }
     }
     else if (nMode == 3)
     {
-        Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPC != 0)
         {
             unsigned nMastery = pPC->FUN_141662750(1);
@@ -762,12 +753,12 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
                 }
                 else if (nKind == 2)
                 {
-                    CStringW strFish = FUN_1401a9d70()->FUN_141811980(0x1d, nFishId);
+                    CStringW strFish = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nFishId);
                     strNotice = FUN_14028dee0(0xbe8, strFish, nExp, nMastery);
                 }
                 else if (nKind == 3)
                 {
-                    CStringW strFish = FUN_1401a9d70()->FUN_141811980(0x1d, nFishId);
+                    CStringW strFish = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nFishId);
                     strNotice = FUN_14028dee0(0xbe9, strFish, nExp, nMastery);
                 }
                 FUN_1412751b0(strNotice, 0x14);
@@ -826,7 +817,7 @@ void CFishingManager::FUN_140cdac20()
 // @0x140cdac50
 void CFishingManager::FUN_140cdac50()
 {
-    Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (reinterpret_cast<Unk_FmBuffs*>(pPC->FUN_1416749a0())->FUN_1409701d0(1) != 0)
@@ -841,7 +832,7 @@ void CFishingManager::FUN_140cdacb0(NotifyObject* pNotify)
         return;
     if (pBuff->m_bAdded == 0)
         return;
-    Unk_FmAdditionalRowPtr row = FUN_1401958b0()->FUN_140aafef0(pBuff->m_nId, 1);
+    Unk_FmAdditionalRowPtr row = reinterpret_cast<Unk_FmAdditionalData*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(pBuff->m_nId, 1);
     if (row.FUN_14096e7e0(0))
         return;
     if (!(row.FUN_140184880()->m_nType == 1))
@@ -863,14 +854,14 @@ MS2_REPLACE_METHOD(0x140CDADB0, CFishingManager, FUN_140cdadb0, 107, 0x5D2F9C3D)
 // @0x140cdae30
 void CFishingManager::FUN_140cdae30(MS2Ptr<CItem> rod)
 {
-    Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (FUN_140954150() != 0)
         return;
     if (m_startTimer.FUN_140868ba0() != 0)
         return;
-    if (FUN_140374410(FUN_1403ed2d0()->FUN_141bd3060()))
+    if (FUN_140374410(reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd3060()))
     {
         FUN_141275260(0xbe6, 1, 1);
         return;
@@ -947,7 +938,7 @@ int CFishingManager::FUN_140cdb250()
         return 0;
     if (m_nBiteEnd != 0)
         return 0;
-    Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     if (pPC->FUN_14166cc80() != 0x76 && pPC->FUN_14166cc80() != 0x77)
@@ -1038,7 +1029,7 @@ void CFishingManager::FUN_140cdb450()
                 param.m_nDuration = 5000;
                 pBar->FUN_1418e13c0(this, &param);
             }
-            Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+            Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
             if (pPC != 0)
             {
                 CAtlArray<CString> texts;
@@ -1053,17 +1044,17 @@ void CFishingManager::FUN_140cdb450()
     }
     if (m_uidRod != 0)
     {
-        MS2Ptr<CItem> rod = DAT_143ab2a90.FUN_140a5d680(m_uidRod);
+        MS2Ptr<CItem> rod = g_143ab2a90.FUN_140a5d680(m_uidRod);
         if (rod.IsNull())
             SendFishingMode1();
     }
     if (m_tick.Check(1000) != 0 && FUN_140954150() != 0 && FUN_140ce0cb0() != 0)
     {
         int nBuff = FUN_140cdbe80();
-        Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPC != 0 && reinterpret_cast<Unk_FmBuffs*>(pPC->FUN_1416749a0())->FUN_140970020(nBuff, 0, 0, 1) == 0)
         {
-            MS2Ptr<CItem> bait = DAT_143ab2a90.FUN_140a5e2e0(m_nBaitId);
+            MS2Ptr<CItem> bait = g_143ab2a90.FUN_140a5e2e0(m_nBaitId);
             if (bait.get() != 0 && FUN_140cdbbd0(MS2Ptr<CItem>(bait)) != 0)
                 FUN_14092f4e0(reinterpret_cast<CItemData*>(bait->FUN_140527840())->FUN_14053dc20());
         }
@@ -1107,7 +1098,7 @@ MS2_REPLACE_METHOD(0x140CDBB90, CFishingManager, FUN_140cdbb90, 47, 0x728BBEF3);
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 int CFishingManager::FUN_140cdbbd0(MS2Ptr<CItem> rod)
 {
-    Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     if (!((CItem*)rod)->FUN_140528980())
@@ -1165,7 +1156,7 @@ int CFishingManager::FUN_140cdbe80()
     MS2Ptr<CItemData> data = FUN_14053f870(m_nBaitId);
     if (!data)
         return 0;
-    Unk_FmAdditionalPtr add = FUN_1401958b0()->FUN_1407ee2f0(data->FUN_14053dc20(), data->FUN_14053dc40());
+    Unk_FmAdditionalPtr add = reinterpret_cast<Unk_FmAdditionalData*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(data->FUN_14053dc20(), data->FUN_14053dc40());
     if (add.FUN_1409c4ad0())
         return 0;
     if (add.FUN_1407ebbf0()->m_levels.FUN_1407e59e0() == 0)
@@ -1191,7 +1182,7 @@ CStringW CFishingManager::FUN_140cdc000(unsigned nSpotId)
         int nLevel = FUN_1409670c0()->FUN_14066af60(1, pSpot->m_nMinMastery);
         CStringW strLevel = TSingleton<CFishingTable>::GetInstance()->FUN_1403b2240(nLevel);
         unsigned nMastery = 0;
-        Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPC != 0)
             nMastery = pPC->FUN_141662750(1);
         int nId = (nMastery < spot->m_nMinMastery) ? 0x719 : 0x718;
@@ -1232,7 +1223,7 @@ int CFishingManager::FUN_140cdc380(unsigned nFishId)
 // MS2-FUNCTIONAL: the exe adds Point3(0,0,10) straight to vfunc_18's efd::Point3 result; MyPC::vfunc_18 (shared pcbase.h) returns NiPoint3
 int CFishingManager::FUN_140cdc520()
 {
-    Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     Unk_PCBaseRayHit kHit;
@@ -1252,7 +1243,7 @@ int CFishingManager::FUN_140cdc520()
             return 0;
         if (FUN_1408a9bd0(kHit.m_hitEntity)->ContainsModel(0x72f49865))
             return 0;
-        if (FUN_1403ed2d0()->FUN_141bcafa0(kHit.m_hitEntity))
+        if (reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bcafa0(kHit.m_hitEntity))
             return 0;
         return 1;
     }
@@ -1262,7 +1253,7 @@ int CFishingManager::FUN_140cdc520()
 // @0x140cdc810
 int CFishingManager::FUN_140cdc810()
 {
-    Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     int nState = pPC->FUN_14166c930();
@@ -1300,7 +1291,7 @@ int CFishingManager::FUN_140cdc810()
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 unsigned CFishingManager::FUN_140cdc950()
 {
-    Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     CFishingGuideObject* pGuide = efd::DynamicCast<CFishingGuideObject>(pPC->FUN_141662440(1));
@@ -1313,7 +1304,7 @@ unsigned CFishingManager::FUN_140cdc950()
 // @0x140cdc9d0
 void CFishingManager::FUN_140cdc9d0(int nState, int nGuideState)
 {
-    Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (pPC->FUN_14166cc80() != nState)
@@ -1378,7 +1369,7 @@ void CFishingManager::FUN_140cdce70(MS2Ptr<CItem> rod)
 {
     if (rod.IsNull())
         return;
-    Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC != 0)
         pPC->vfunc_59(0x2d, new StateFishingData(rod->FUN_1405276c0()), 0, 0);
     m_bFishing = 1;
@@ -1409,11 +1400,11 @@ void CFishingManager::FUN_140cdd030()
     FUN_140cdcde0();
     if (m_nReelSound != 0)
         FUN_1411a6060(FUN_1403ed280(), m_nReelSound);
-    Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC != 0 && pPC->FUN_14166c930() == 0x2d)
         pPC->vfunc_59(1, 0, 0, 0);
-    if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f07) != 0)
-        FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4f07);
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4f07) != 0)
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f07);
     Unk_FmCastingBar* pBar = FUN_140ac2270(0x4e72);
     if (pBar != 0)
         pBar->FUN_1418e1390();
@@ -1438,7 +1429,7 @@ void CFishingManager::FUN_140cdd1f0()
         CStringW strEnd(L"");
         pBar->FUN_1418e12f0(this, FUN_140cddc70(texts), nDuration, false, true, strEnd);
     }
-    Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC != 0)
     {
         CAtlArray<CString> texts;
@@ -1462,7 +1453,7 @@ void CFishingManager::FUN_140cdd540(unsigned nFishId, unsigned nSize, int bSucce
     m_nBiteEnd = 0;
     m_bGreat = 0;
     FUN_140cdc9d0(0x79, 0x7c);
-    FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4ee7);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ee7);
     if (bSuccess != 0)
     {
         FUN_1409331e0()->FUN_14138bf00(0x16, nFishId, 0);
@@ -1503,7 +1494,7 @@ void CFishingManager::FUN_140cdd540(unsigned nFishId, unsigned nSize, int bSucce
 // MS2-FUNCTIONAL: temporaries
 int CFishingManager::FUN_140cdd7b0()
 {
-    Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     NiPoint3 kPos = pPC->vfunc_18();

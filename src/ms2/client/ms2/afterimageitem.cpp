@@ -98,23 +98,24 @@
 #include "ms2/client/ms2/renderedtexturerenderclick.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/camera.h"
 
 extern unsigned DAT_143af62d4;
 extern unsigned DAT_143af62d8;
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 unsigned FUN_140869420();                                           // tick count in ms
-class Unk_GameClock { public: double FUN_141473280(); float FUN_141473210(); };
-Unk_GameClock* FUN_14086d260();
+class Unk_GameClock : public CMainSystem { public: float FUN_141473210(); };
 int FUN_140a53390(Unk_EffectTarget* pTarget);                       // the target's owner id
 bool FUN_14119f3c0(CEffect* pEffect);                               // the effect has been started
 float FUN_140966f00(efd::Point3 kA, efd::Point3 kB);                    // distance
 class Unk_Camera { public: void FUN_140af05d0(const efd::Point3& kWorld, efd::Point2* pkScreen); };   // world -> screen
-Unk_Camera* FUN_1409478c0();
 
 // The effect manager (singleton 0x1403ed280): the scene root.
 class Unk_1403ed280 { public: void* FUN_1411a6b10(); };
-Unk_1403ed280* FUN_1403ed280();
 
 // The object table (singleton 0x1403ed2d0) and an actor's position (vtable slot 18).
 class Unk_AfterImageActor                                           // MS2: slot 18 is GetPosition
@@ -128,7 +129,6 @@ public:
     virtual efd::Point3 vfunc_18();
 };
 class Unk_AfterImageWorld { public: Unk_AfterImageActor* FUN_141bd1200(int nId); };
-Unk_AfterImageWorld* FUN_1403ed2d0();
 
 // The target context as seen by CAfterImageEffect::vfunc_3: the owner's scene node is at +0x10.
 struct Unk_AfterImageTarget { char m_pad_00[0x10]; NiAVObjectPtr m_spNode; };
@@ -251,12 +251,12 @@ void AfterImageItem::Init(Unk_AfterImageRef kParam, NiDynamicTexturePtr spTextur
     m_spNode->SetMode((NiBillboardNode::FaceMode)1);
     m_spNode->SetRotate(-1.5707964f, 1.0f, 0.0f, 0.0f);
     m_spNode->AttachChild(m_spMesh, false);
-    NiNode* pRoot = static_cast<NiNode*>(FUN_1403ed280()->FUN_1411a6b10());
+    NiNode* pRoot = static_cast<NiNode*>(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10());
     pRoot->AttachChild(m_spNode, false);
     m_spNode->SetTranslate(kPos);
     m_spNode->UpdateEffects();
     m_spNode->UpdateProperties();
-    m_spNode->Update((float)FUN_14086d260()->FUN_141473280(), true);
+    m_spNode->Update((float)reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280(), true);
     m_fSize = fSize;
     m_nBirth = FUN_140869420();
     m_nLife = nLife;
@@ -269,7 +269,7 @@ void AfterImageItem::Release()
     m_spMesh = (NiMeshScreenElements*)0;
     if ((NiBillboardNode*)m_spNode != 0)
     {
-        NiNode* pRoot = static_cast<NiNode*>(FUN_1403ed280()->FUN_1411a6b10());
+        NiNode* pRoot = static_cast<NiNode*>(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10());
         pRoot->DetachChild(m_spNode);
         m_spNode->RemoveAllChildren();
         m_spNode = (NiBillboardNode*)0;
@@ -400,7 +400,7 @@ bool CAfterImageEffect::IsTimeUp() const
 {
     if (m_b2d)
         return false;
-    double dNow = FUN_14086d260()->FUN_141473280();
+    double dNow = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280();
     if (!::FUN_14119f3c0(const_cast<CAfterImageEffect*>(this)))
         return false;
     return dNow > m_dStartTime + (double)m_fDuration ? !m_b2c : false;
@@ -415,9 +415,9 @@ bool CAfterImageEffect::ShouldCapture()
         return false;
     if (FUN_140869420() > m_nLastCapture + m_kParam->GetTimeInterval())
         return true;
-    if (FUN_1403ed2d0() == 0)
+    if (reinterpret_cast<Unk_AfterImageWorld*>(WorldService::GetInstance()) == 0)
         return false;
-    Unk_AfterImageActor* pActor = FUN_1403ed2d0()->FUN_141bd1200(m_nTarget);
+    Unk_AfterImageActor* pActor = reinterpret_cast<Unk_AfterImageWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nTarget);
     if (pActor == 0)
         return false;
     NiPoint3 kActor(pActor->vfunc_18());
@@ -428,9 +428,9 @@ bool CAfterImageEffect::ShouldCapture()
 // @0x14097db30
 void CAfterImageEffect::StartCapture()
 {
-    if (FUN_1403ed2d0() == 0)
+    if (reinterpret_cast<Unk_AfterImageWorld*>(WorldService::GetInstance()) == 0)
         return;
-    Unk_AfterImageActor* pActor = FUN_1403ed2d0()->FUN_141bd1200(m_nTarget);
+    Unk_AfterImageActor* pActor = reinterpret_cast<Unk_AfterImageWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nTarget);
     if (pActor == 0)
         return;
     m_nLastCapture = FUN_140869420();
@@ -448,7 +448,7 @@ void CAfterImageEffect::StartCapture()
     {
         efd::Point3 kCorner = kBound.GetCenter() + (s_akCorner[i] * kBound.GetRadius()) * 0.5f;
         efd::Point2 kScreen;
-        FUN_1409478c0()->FUN_140af05d0(kCorner, &kScreen);
+        reinterpret_cast<Unk_Camera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af05d0(kCorner, &kScreen);
         if (kRect.b < kScreen.y)
             kRect.b = kScreen.y;
         if (kRect.t > kScreen.y)

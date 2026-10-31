@@ -7,6 +7,7 @@
 #include <efd/MemoryDefines.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // Game TinyXML element and attribute helper (commonfiles\tinyxmlhelper.cpp).
 int FUN_140873220(Unk_140165cf0* pNode, const char* pszName, int& nOut);
@@ -17,7 +18,6 @@ class Unk_WeatherMgr
 public:
     void FUN_1411a7960(int nFallType);
 };
-Unk_WeatherMgr* FUN_1403ed280();
 
 // @0x141b77250
 WeatherEffectParam::WeatherEffectParam()
@@ -61,7 +61,7 @@ MS2_REPLACE_METHOD(0x141b773d0, WeatherEffect, vfunc_3, 83, 0xC8C62722);
 void WeatherEffect::vfunc_4()
 {
     CEffect::vfunc_4();
-    FUN_1403ed280()->FUN_1411a7960(m_nFallType);
+    reinterpret_cast<Unk_WeatherMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a7960(m_nFallType);
 }
 MS2_REPLACE_METHOD(0x141b77430, WeatherEffect, vfunc_4, 45, 0x474AF68F);
 
@@ -69,7 +69,7 @@ MS2_REPLACE_METHOD(0x141b77430, WeatherEffect, vfunc_4, 45, 0x474AF68F);
 void WeatherEffect::vfunc_7()
 {
     CEffect::vfunc_7();
-    FUN_1403ed280()->FUN_1411a7960(0);
+    reinterpret_cast<Unk_WeatherMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a7960(0);
 }
 MS2_REPLACE_METHOD(0x141b77470, WeatherEffect, vfunc_7, 39, 0x3046C663);
 

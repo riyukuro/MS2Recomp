@@ -50,7 +50,8 @@
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVGameEventItemBuffCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAPEAXI@Z 0x140ce99f0
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVGameEventSnowmanCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAA@XZ 0x140ce9390
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVGameEventSnowmanCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAPEAXI@Z 0x140ce9a30
-// MS2-FUNCTIONAL ??1RpsGameData@@UEAA@XZ: RpsGameData +0x18..+0x50 is a nested play struct { CStringW names[3]; CAtlArray<CStringW> messages; } in the exe with its own implicit ctor 0x140ce91f0 / dtor 0x140ce9720 (one call each in RpsGameData's ctor/dtor); gameevent.h keeps the members flat (statemicrogame.cpp / gameeventcontext.cpp access them directly)
+// MS2-PIN: ??0Play@RpsGameData@@QEAA@XZ 0x140ce91f0
+// MS2-PIN: ??1Play@RpsGameData@@QEAA@XZ 0x140ce9720
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gameeventcli.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "gameeventcli.h"
@@ -83,6 +84,15 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/ms2format.h"
+#include "ms2/client/ms2/smartpushmanager.h"
+#include "ms2/client/ms2/uidungeonroomdialog.h"
+#include "ms2/commonfiles/commonstringtable.h"
+#include "ms2/client/ms2/uiattendgiftdialog.h"
+#include "ms2/placeholder/cmeratmarketman.h"
+#include "ms2/client/ms2/statebannerdata.h"
+#include "ms2/placeholder/cserverstring.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // Out-of-unit helpers.
 // Constructor at 0x140316aa0: registers the factory under the name (the by-value CString is destroyed by the callee).
@@ -92,7 +102,7 @@ struct Unk_GEFactoryRegistry {
 };
 class Unk_SingletonObj;
 CStringTable* GetStringTable();                                  // the string table singleton
-__int64 FUN_140869440();                                        // the server time
+__int64 GetServerTime();                                        // the server time
 UIGameMenuDialog* FUN_140938b90(unsigned nUIId);                // the game menu bar
 NotifySystem* FUN_140939a10();                                  // TSingleton<NotifySystem>::GetInstance
 // The event-key table at 0x143ab2fc0: (kind, id) -> value, read through the typed lookups below.
@@ -112,30 +122,26 @@ extern Unk_CliEvtKeys DAT_143ab2fc0;
 int Unk_CliEvtKeys::Get(int nKey, unsigned* pOut) { return FUN_1409617d0(nKey, 0, *(const int*)pOut); }
 void FUN_14086a6c0(const CMsTime& t);                           // checks the time is valid
 class Unk_CliClock { public: int FUN_141473560(); };            // seconds until the day ended
-Unk_CliClock* FUN_14086d260();
 void* FUN_140931510();                                          // the dungeon room manager
 __int64 FUN_140d9f580(void* pMgr, unsigned nId);                // the room's end time
 CStringW FUN_140275590(const wchar_t* pszFormat, const CStringW& a, const int& b);   // {0}({1})
 void* FUN_140c053e0(int nId);                                   // the attend gift dialog (UIAttendGiftDialog)
 int FUN_140397ab0(void* pFs, TiXmlDocument* pDoc, const CStringW& strPath);   // CFileSystem::LoadXml as a free call
-class Unk_CliTextFilter { public: CStringW FUN_14087ede0(const CStringW& str); };
+class Unk_CliTextFilter : public CServerStringGroup { };
 class Unk_CliCustomStr;
 void FUN_14087f0f0(Unk_CliCustomStr* p, const CStringW& key, const CStringW& value);
 void FUN_14087f140(Unk_CliCustomStr* p, const CStringW& key);
 class Unk_CliTextMgr { public: Unk_CliTextFilter* FUN_140be95b0(); };
 Unk_CliCustomStr* FUN_140a87690(Unk_CliTextMgr* p);
-Unk_SingletonObj* FUN_140a87680();                              // the text manager
-class Unk_CliDungeonDlg { public: void FUN_1412b9320(); };      // the dungeon bookmark dialog
-Unk_CliDungeonDlg* FUN_140961550(int nUiId);
-class Unk_CliMarket { public: void FUN_140d59990(const CStringW* pStr); CStringW FUN_140d599d0(); };
+      // the dungeon bookmark dialog
+UIDungeonRoomDialog* FUN_140961550(int nUiId);
+class Unk_CliMarket : public CMeratMarketMan { public: void FUN_140d59990(const CStringW* pStr);};
 Unk_CliMarket* FUN_140939a00();                                 // the ugc market
 class Unk_CliMeratDlg { public: void FUN_14130c5b0(const CStringW& str); };
 Unk_CliMeratDlg* FUN_140bfed50(int nUiId);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 void FUN_1412751b0(const CStringW& str, int nType);             // chat / system message
-class Unk_CliStrMgr { public: void FUN_140259e60(Unk_140165cf0* pElem); };
-Unk_CliStrMgr* FUN_14025e7d0();                                 // the CommonString singleton
-class Unk_CliStrTbl { public: void FUN_141813970(Unk_140165cf0* pElem); void FUN_1418139b0(Unk_140165cf0* pElem); void FUN_1418139f0(Unk_140165cf0* pElem); };
+CommonString* FUN_14025e7d0();                                  // the CommonString singleton
 void FUN_140851c40(Unk_140165cf0* pElem);
 Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);              // the document's first child element
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& rOut);
@@ -153,10 +159,8 @@ class Unk_CliEvents { public: void FUN_140da5430(int nId, Delegate<void(GameEven
 Unk_CliEvents* FUN_140933220();                                 // the game event variable manager
 UICoupleDanceEventDialog* FUN_140b769d0(int nUiId);
 typedef void (UICoupleDanceEventDialog::*Unk_CliCoupleFn)(GameEventVariable*);
-class Unk_CliAttendOps {                                        // the attend popups' add / remove entries
+class Unk_CliAttendOps : public UIAttendGiftDialog {                                        // the attend popups' add / remove entries
 public:
-    void FUN_14102c8e0(Unk_14102fe10<Unk_140ce3510> spEvent);
-    void FUN_14102c9e0(Unk_14102fe10<Unk_140ce3510> spEvent);
     void FUN_140c040c0(Unk_14102fe10<Unk_140ce3510> spEvent);
     void FUN_140c041a0(Unk_14102fe10<Unk_140ce3510> spEvent);
 };
@@ -178,7 +182,7 @@ template <class T> T* FindCliDialog(int id)
 // The DT attend popup (uidtattendpopup.h clashes with uidteventdialog.h, so only its type is stood in here).
 class UIDTAttendPopup : public UIDialog {};
 
-class Unk_CliStateObj { public: int FUN_140b7f3b0(); };
+class Unk_CliStateObj : public StateBanner { };
 // The local player (CWorldService::FUN_141bd0cc0), whose slot 78 is the level.
 class Unk_CliPlayer {
 public:
@@ -264,17 +268,12 @@ public:
     int FUN_14166c930();                                        // the state
     Unk_CliStateObj* FUN_14166ccb0();                           // the state's object
 };
-class Unk_CliWorld {
+class Unk_CliWorld : public WorldService {
 public:
-    int FUN_141bcfbd0();                                        // m_state == 4 && m_2b4 != 0
     Unk_CliPlayer* FUN_141bd0cc0();                             // the local player
 };
 void* FUN_14041beb0();                                          // the DT context manager
 int FUN_1408d7e60(void* p, unsigned short n);                   // the manager has a context for the level
-class Unk_CliAutoSvc {
-public:
-    void FUN_140dd87d0();
-};
 extern Unk_SingletonObj* DAT_143ac0d40;
 // @0x140ce8270 (the DT dialog hands its reward through the by-value context handle)
 class Unk_CliDTOps {
@@ -300,7 +299,7 @@ void GameEventOntimeCli::OnStart()
         return;
     pDlg = FindCliDialog<UISystemMailNotifyDialog>(0x4edc);
     if (pDlg != 0) {
-        CMsTime now(FUN_140869440());
+        CMsTime now(GetServerTime());
         CMsTime end(m_38);
         ATL::CTimeSpan span = end - now;
         if (pDlg->FUN_141924630())
@@ -455,14 +454,14 @@ Unk_SingletonObj* FUN_140cea070() { return DAT_143ac0d40; }
 void GameEventSaleAutoFishingCli::OnStart()
 {
     GameEventSaleAutoFishing::OnStart();
-    reinterpret_cast<Unk_CliAutoSvc*>(FUN_140cea070())->FUN_140dd87d0();
+    reinterpret_cast<CSmartPushManager*>(FUN_140cea070())->FUN_140dd87d0();
 }
 
 // @0x140ce3110
 void GameEventSaleAutoFishingCli::vfunc_6()
 {
     GameEventSaleAutoFishing::vfunc_6();
-    reinterpret_cast<Unk_CliAutoSvc*>(FUN_140cea070())->FUN_140dd87d0();
+    reinterpret_cast<CSmartPushManager*>(FUN_140cea070())->FUN_140dd87d0();
 }
 
 // @0x140ce3140
@@ -475,14 +474,14 @@ CStringW GameEventSaleAutoPlayInstrumentCli::GetTypeName() { return CStringW(L"G
 void GameEventSaleAutoPlayInstrumentCli::OnStart()
 {
     GameEventSaleAutoPlayInstrument::OnStart();
-    reinterpret_cast<Unk_CliAutoSvc*>(FUN_140cea070())->FUN_140dd87d0();
+    reinterpret_cast<CSmartPushManager*>(FUN_140cea070())->FUN_140dd87d0();
 }
 
 // @0x140ce3220
 void GameEventSaleAutoPlayInstrumentCli::vfunc_6()
 {
     GameEventSaleAutoPlayInstrument::vfunc_6();
-    reinterpret_cast<Unk_CliAutoSvc*>(FUN_140cea070())->FUN_140dd87d0();
+    reinterpret_cast<CSmartPushManager*>(FUN_140cea070())->FUN_140dd87d0();
 }
 
 // ---- GameEventAttendGiftCli ------------------------------------------------------------------------------------------
@@ -524,7 +523,7 @@ void GameEventAttendGiftCli::vfunc_6()
 // @0x140ce3480
 void GameEventAttendGiftCli::vfunc_10()
 {
-    m_strName = ((Unk_CliTextMgr*)FUN_140a87680())->FUN_140be95b0()->FUN_14087ede0(m_strName);
+    m_strName = ((Unk_CliTextMgr*)reinterpret_cast<Unk_SingletonObj*>(TSingleton<CServerString>::GetInstance()))->FUN_140be95b0()->GetString(m_strName);
 }
 
 // @0x140ce3510
@@ -547,7 +546,7 @@ bool GameEventAttendGiftCli::FUN_140ce3510()
 // @0x140ce35c0
 bool GameEventAttendGiftCli::FUN_140ce35c0()
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     __int64 nDefault = 0;
     __int64 nEnd = DAT_143ab2fc0.FUN_140be8f80(0x65, FUN_1402e1d00(), nDefault);
     if (nEnd == 0)
@@ -625,7 +624,7 @@ int GameEventAttendGiftCli::FUN_140ce39a0()
 {
     int nDefault = 0;
     int nTotal = DAT_143ab2fc0.FUN_140c6d8d0(0x6a, FUN_1402e1d00(), nDefault);
-    nTotal += FUN_14086d260()->FUN_141473560();
+    nTotal += reinterpret_cast<Unk_CliClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473560();
     return nTotal;
 }
 
@@ -691,7 +690,7 @@ void GameEventCashAttendCli::vfunc_6()
 // @0x140ce3d00
 void GameEventCashAttendCli::vfunc_10()
 {
-    m_strDesc = ((Unk_CliTextMgr*)FUN_140a87680())->FUN_140be95b0()->FUN_14087ede0(m_strDesc);
+    m_strDesc = ((Unk_CliTextMgr*)reinterpret_cast<Unk_SingletonObj*>(TSingleton<CServerString>::GetInstance()))->FUN_140be95b0()->GetString(m_strDesc);
 }
 
 // @0x140ce3d90
@@ -700,7 +699,7 @@ bool GameEventCashAttendCli::FUN_140ce3d90() { return true; }
 // @0x140ce3da0
 bool GameEventCashAttendCli::FUN_140ce3da0()
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     __int64 nDefault = 0;
     __int64 nEnd = DAT_143ab2fc0.FUN_140be8f80(0x65, FUN_1402e1d00(), nDefault);
     if (nEnd == 0)
@@ -832,7 +831,7 @@ CStringW GameEventDungeonExtraRewardCli::GetTypeName() { return CStringW(L"GameE
 void GameEventDungeonExtraRewardCli::OnStart()
 {
     GameEventDungeonExtraReward::OnStart();
-    Unk_CliDungeonDlg* pDlg = FUN_140961550(0x4ebd);
+    UIDungeonRoomDialog* pDlg = FUN_140961550(0x4ebd);
     if (pDlg)
         pDlg->FUN_1412b9320();
 }
@@ -841,7 +840,7 @@ void GameEventDungeonExtraRewardCli::OnStart()
 void GameEventDungeonExtraRewardCli::vfunc_6()
 {
     GameEventDungeonExtraReward::vfunc_6();
-    Unk_CliDungeonDlg* pDlg = FUN_140961550(0x4ebd);
+    UIDungeonRoomDialog* pDlg = FUN_140961550(0x4ebd);
     if (pDlg)
         pDlg->FUN_1412b9320();
 }
@@ -927,16 +926,16 @@ void GameEventUpdateStringCli::OnStart()
 void GameEventUpdateStringCli::vfunc_6() {}
 
 // @0x140ce4c60
-void GameEventUpdateStringCli::FUN_140ce4c60(Unk_140165cf0* pElem) { FUN_14025e7d0()->FUN_140259e60(pElem); }
+void GameEventUpdateStringCli::FUN_140ce4c60(Unk_140165cf0* pElem) { FUN_14025e7d0()->LoadStrings(pElem); }
 
 // @0x140ce4c90
-void GameEventUpdateStringCli::FUN_140ce4c90(Unk_140165cf0* pElem) { ((Unk_CliStrTbl*)GetStringTable())->FUN_141813970(pElem); }
+void GameEventUpdateStringCli::FUN_140ce4c90(Unk_140165cf0* pElem) { ((CStringTable*)GetStringTable())->FUN_141813970(pElem); }
 
 // @0x140ce4cc0
-void GameEventUpdateStringCli::FUN_140ce4cc0(Unk_140165cf0* pElem) { ((Unk_CliStrTbl*)GetStringTable())->FUN_1418139b0(pElem); }
+void GameEventUpdateStringCli::FUN_140ce4cc0(Unk_140165cf0* pElem) { ((CStringTable*)GetStringTable())->FUN_1418139b0(pElem); }
 
 // @0x140ce4cf0
-void GameEventUpdateStringCli::FUN_140ce4cf0(Unk_140165cf0* pElem) { ((Unk_CliStrTbl*)GetStringTable())->FUN_1418139f0(pElem); }
+void GameEventUpdateStringCli::FUN_140ce4cf0(Unk_140165cf0* pElem) { ((CStringTable*)GetStringTable())->FUN_1418139f0(pElem); }
 
 // @0x140ce4d20
 void GameEventUpdateStringCli::FUN_140ce4d20(Unk_140165cf0* pElem) { FUN_140851c40(pElem); }
@@ -1175,8 +1174,8 @@ void GameEventCustomTriggerStringCli::OnStart()
 {
     GameEventCustomTriggerString::OnStart();
     for (POSITION pos = m_d0.GetHeadPosition(); pos != 0; m_d0.GetNext(pos)) {
-        CStringW strText = ((Unk_CliTextMgr*)FUN_140a87680())->FUN_140be95b0()->FUN_14087ede0(m_d0.GetValueAt(pos));
-        FUN_14087f0f0(FUN_140a87690((Unk_CliTextMgr*)FUN_140a87680()), m_d0.GetKeyAt(pos), strText);
+        CStringW strText = ((Unk_CliTextMgr*)reinterpret_cast<Unk_SingletonObj*>(TSingleton<CServerString>::GetInstance()))->FUN_140be95b0()->GetString(m_d0.GetValueAt(pos));
+        FUN_14087f0f0(FUN_140a87690((Unk_CliTextMgr*)reinterpret_cast<Unk_SingletonObj*>(TSingleton<CServerString>::GetInstance())), m_d0.GetKeyAt(pos), strText);
     }
 }
 
@@ -1185,7 +1184,7 @@ void GameEventCustomTriggerStringCli::vfunc_6()
 {
     GameEventCustomTriggerString::vfunc_6();
     for (POSITION pos = m_d0.GetHeadPosition(); pos != 0; m_d0.GetNext(pos)) {
-        FUN_14087f140(FUN_140a87690((Unk_CliTextMgr*)FUN_140a87680()), m_d0.GetKeyAt(pos));
+        FUN_14087f140(FUN_140a87690((Unk_CliTextMgr*)reinterpret_cast<Unk_SingletonObj*>(TSingleton<CServerString>::GetInstance())), m_d0.GetKeyAt(pos));
     }
 }
 
@@ -1531,28 +1530,6 @@ int EventIconInfo::Load(Unk_140165cf0* pElem)
 // @0x140ce8ce0
 template MS2Ptr<CMsgBoxDataItem>::MS2Ptr(CMsgBoxDataItem*);
 
-// RpsGameData builds its text set (3 names + the message array, +0x18..+0x50) through these helpers; the shared header
-// lays the members out flat.
-// MS2-FUNCTIONAL: element loops are written out, the exe uses the EH vector iterators
-// @0x140ce91f0
-void* FUN_140ce91f0(void* p)
-{
-    CStringW* pNames = (CStringW*)p;
-    for (int i = 0; i < 3; ++i)
-        new (&pNames[i]) CStringW;
-    new ((char*)p + 0x18) ATL::CAtlArray<CStringW>;
-    return p;
-}
-
-// MS2-FUNCTIONAL: element loops are written out, the exe uses the EH vector iterators
-// @0x140ce9720
-void FUN_140ce9720(void* p)
-{
-    ((ATL::CAtlArray<CStringW>*)((char*)p + 0x18))->~CAtlArray();   // CallDestructors frees each message (0x140164210)
-    CStringW* pNames = (CStringW*)p;
-    for (int i = 2; i >= 0; --i)
-        pNames[i].~CStringW();
-}
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca44b0-0x142ca4570 .text$yd
 // Atexit thunks of this unit's statics (gap2 yd sweep, yd2).

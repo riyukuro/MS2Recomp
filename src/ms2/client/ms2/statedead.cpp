@@ -23,6 +23,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/fielddata.h"
+#include "ms2/placeholder/cnpc.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -44,7 +47,7 @@ struct Unk_DeadString
 };
 
 // The map data of the current field: +0x140375570 tells whether the field revives players on its own.
-class Unk_DeadField { public: int FUN_140375570(); };
+class Unk_DeadField : public CFieldData { };
 class Unk_DeadFieldRef
 {
 public:
@@ -64,8 +67,6 @@ public:
     int FUN_141bd1a10(GameObject* pObject);              // object -> effect owner id
     MyPC* FUN_141bd0cc0();                               // the local player
 };
-Unk_DeadWorld* FUN_1403ed2d0();
-CEffectService* FUN_1403ed280();                         // effect manager
 
 // The player's team-info proxy (see statepvpwinlose.cpp): +0x1c holds the revive animation id.
 struct Unk_DeadTeam
@@ -113,11 +114,10 @@ public:
     void* m_p8;
 };
 // The owner seen as an npc.
-class Unk_DeadNpc
+class Unk_DeadNpc : public CNpc
 {
 public:
     Unk_DeadNpcRef FUN_141093270();                      // the npc table row
-    __int64 FUN_141094e20();                             // the exp reward
 };
 Unk_DeadNpc* FUN_14096e110(PCBase* pActor);              // as an npc (0 for a player)
 
@@ -156,7 +156,7 @@ void StateDead::vfunc_4(StateData* pData)
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
-        Unk_DeadFieldRef kField = FUN_1403ed2d0()->FUN_141bd30a0();
+        Unk_DeadFieldRef kField = reinterpret_cast<Unk_DeadWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
         if (kField.FUN_140965240(0))
             return;
         if (FUN_14165ef30(pPC) != 0)
@@ -205,7 +205,7 @@ void StateDead::vfunc_4(StateData* pData)
             kTarget.m_strName = FUN_1401d31f0()->m_strReviveEffect;
             kTarget.m_nKind = 1;
             kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
-            m_nEffect = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+            m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
         }
         else
         {
@@ -213,7 +213,7 @@ void StateDead::vfunc_4(StateData* pData)
             kTarget.m_strName = FUN_1401d31f0()->m_strDeathEffect;
             kTarget.m_nKind = 1;
             kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
-            FUN_1403ed280()->FUN_1411a4a00(kTarget);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(kTarget);
         }
         if (FUN_141661970(FUN_1417b84b0()) != 0)
             FUN_14138bf00(FUN_1409331e0(), 8, 0, 0);
@@ -224,7 +224,7 @@ void StateDead::vfunc_4(StateData* pData)
 void StateDead::vfunc_5(int n)
 {
     if (m_nEffect != 0)
-        FUN_1403ed280()->FUN_1411a6060(m_nEffect);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
     m_pOwner->vfunc_23(0);
     m_pOwner->vfunc_31(true);
     FUN_140ef4330();
@@ -262,7 +262,7 @@ StateDeadNPC::~StateDeadNPC()
 {
     if (m_nEffect != 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_nEffect);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
 }
@@ -288,9 +288,9 @@ void StateDeadNPC::vfunc_4(StateData* pData)
     {
         Unk_EffectTarget kTarget;
         kTarget.m_strName = strEffect;
-        kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
+        kTarget.m_nKind = reinterpret_cast<Unk_DeadWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
         kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
-        m_nEffect = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+        m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
     }
     FUN_14123fbf0(m_pOwner->FUN_14166d220(), 5);
     m_pOwner->FUN_14166dd20(efd::utf8string((const char*)FUN_1409a2360(m_strAnim, 0)), 1.0f, false, false);
@@ -300,7 +300,7 @@ void StateDeadNPC::vfunc_4(StateData* pData)
 void StateDeadNPC::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    FUN_1403ed280()->FUN_1411a6060(m_nEffect);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
     m_nEffect = 0;
 }
 
@@ -348,7 +348,7 @@ void StateDeadNPC::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
         {
             if (pNpc->FUN_141094e20() <= 0)
                 return;
-            MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+            MyPC* pMyPC = reinterpret_cast<Unk_DeadWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
             if (pMyPC != 0)
                 pMyPC->FUN_1415294f0(m_pOwner->FUN_14123c580(), pNpc->FUN_141094e20());
         }

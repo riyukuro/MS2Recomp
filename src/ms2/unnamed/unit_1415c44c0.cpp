@@ -19,7 +19,7 @@ extern void* FUN_1415ef9b0(void*, void*);
 class CStreamCryptor_v0
 {
 public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
+    virtual int vfunc_1(void*, int, void*); virtual int vfunc_2(void*, int, void*); virtual void vfunc_3();
     virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6();
 };
 class CStreamCryptor_v1
@@ -32,56 +32,54 @@ class CNMEventHandler
 {
 public:
     virtual void vfunc_0(void*); virtual void vfunc_1(void*); virtual void vfunc_2(void*);
-    virtual void vfunc_3();
-    virtual void vfunc_4();
-    virtual void vfunc_5();
-    virtual void vfunc_6();
-    virtual void vfunc_7();
-    virtual void vfunc_8();
-    virtual void vfunc_9();
-    virtual void vfunc_10();
-    virtual void vfunc_11();
-    virtual void vfunc_12();
-    virtual void vfunc_13();
-    virtual void vfunc_14();
-    virtual void vfunc_15();
-    virtual void vfunc_16();
-    virtual void vfunc_17();
-    virtual void vfunc_18();
-    virtual void vfunc_19();
-    virtual void vfunc_20();
-    virtual void vfunc_21();
-    virtual void vfunc_22();
-    virtual void vfunc_23();
-    virtual void vfunc_24();
-    virtual void vfunc_25();
-    virtual void vfunc_26();
-    virtual void vfunc_27();
-    virtual void vfunc_28();
-    virtual void vfunc_29();
-    virtual void vfunc_30();
-    virtual void vfunc_31();
-    virtual void vfunc_32();
-    virtual void vfunc_33();
-    virtual void vfunc_34();
-    virtual void vfunc_35();
-    virtual void vfunc_36();
-    virtual void vfunc_37();
-    virtual void vfunc_38();
-    virtual void vfunc_39();
-    virtual void vfunc_40();
-    virtual void vfunc_41();
+    virtual void vfunc_3(void*);
+    virtual void vfunc_4(void*);
+    virtual void vfunc_5(void*);
+    virtual void vfunc_6(void*);
+    virtual void vfunc_7(void*);
+    virtual void vfunc_8(void*);
+    virtual void vfunc_9(void*);
+    virtual void vfunc_10(void*);
+    virtual void vfunc_11(void*);
+    virtual void vfunc_12(void*);
+    virtual void vfunc_13(void*);
+    virtual void vfunc_14(void*);
+    virtual void vfunc_15(void*);
+    virtual void vfunc_16(void*);
+    virtual void vfunc_17(void*);
+    virtual void vfunc_18(void*);
+    virtual void vfunc_19(void*);
+    virtual void vfunc_20(void*);
+    virtual void vfunc_21(void*);
+    virtual void vfunc_22(void*);
+    virtual void vfunc_23(void*);
+    virtual void vfunc_24(void*);
+    virtual void vfunc_25(void*);
+    virtual void vfunc_26(void*);
+    virtual void vfunc_27(void*);
+    virtual void vfunc_28(void*);
+    virtual void vfunc_29(void*);
+    virtual void vfunc_30(void*);
+    virtual void vfunc_31(void*);
+    virtual void vfunc_32(void*);
+    virtual void vfunc_33(void*);
+    virtual void vfunc_34(void*);
+    virtual void vfunc_35(void*);
+    virtual void vfunc_36(void*);
+    virtual void vfunc_37(void*);
+    virtual void vfunc_38(void*);
+    virtual void vfunc_39(void*);
+    virtual void vfunc_40(void*);
+    virtual void vfunc_41(void*);
 };
 
 // @0x1415ca430
-void CStreamCryptor_v0::vfunc_1() { }
+int CStreamCryptor_v0::vfunc_1(void*, int, void*) { return 0; }
 // MS2-FUNCTIONAL: this recovered v0 virtual slot has no side effects and returns zero in the decompilation.
-// MS2-PIN: ?vfunc_1@CStreamCryptor_v0@@UEAAXXZ 0x1415ca430
 
 // @0x1415ca450
-void CStreamCryptor_v0::vfunc_2() { }
+int CStreamCryptor_v0::vfunc_2(void*, int, void*) { return 0; }
 // MS2-FUNCTIONAL: this recovered v0 virtual slot has no side effects and returns zero in the decompilation.
-// MS2-PIN: ?vfunc_2@CStreamCryptor_v0@@UEAAXXZ 0x1415ca450
 
 // MS2-FUNCTIONAL: preserves the recovered virtual entry; the cryptor's opaque COM context is not represented in the client headers.
 // @0x1415ca4f0
@@ -176,39 +174,32 @@ void CNMEventHandler::vfunc_2(void*) { }
 // MS2-FUNCTIONAL: preserves the recovered empty event-handler virtual slot.
 // MS2-PIN: ?vfunc_2@CNMEventHandler@@UEAAXPEAX@Z 0x1415cc370
 
-// MS2-FUNCTIONAL: returns the recovered session state field at offset 0x18c.
 // @0x1415c91c0
 int FUN_1415c91c0(const void* session)
 {
     return *reinterpret_cast<const int*>(static_cast<const unsigned char*>(session) + 0x18c);
 }
 
-// MS2-FUNCTIONAL: returns the recovered session state field at offset 0x1a0.
 // @0x1415c91e0
 int FUN_1415c91e0(const void* session)
 {
     return *reinterpret_cast<const int*>(static_cast<const unsigned char*>(session) + 0x1a0);
 }
 
-// MS2-FUNCTIONAL: preserves the recovered null result returned by both empty optional callbacks.
 // @0x1415c5750
-unsigned long long FUN_1415c5750() { return 0; }
-// MS2-FUNCTIONAL: preserves the recovered null result returned by both empty optional callbacks.
+unsigned long long FUN_1415c5750(void*) { return 0; }
 // @0x1415c5760
-unsigned long long FUN_1415c5760() { return 0; }
+unsigned long long FUN_1415c5760(void*) { return 0; }
 // MS2-FUNCTIONAL: copies the recovered 16-byte identifier field to the caller buffer.
 // @0x1415c5970
 void* FUN_1415c5970(const void* p, void* out) { const auto* src = static_cast<const unsigned char*>(p) + 0x15a; auto* dst = static_cast<unsigned char*>(out); for (int i = 0; i != 16; ++i) dst[i] = src[i]; return out; }
 
-// MS2-FUNCTIONAL 0x1415cb420: the recovered callback is empty.
 // @0x1415cb420
-void FUN_1415cb420() {}
-// MS2-FUNCTIONAL 0x1415cb430: the recovered callback is empty.
+void FUN_1415cb420(void*) {}
 // @0x1415cb430
-void FUN_1415cb430() {}
+void FUN_1415cb430(void*) {}
 
 // MS2-FUNCTIONAL: stores the recovered code page field and returns the helper's success value.
-// MS2-FUNCTIONAL 0x1415cb710: stores the request result at offset 0x38 and returns success.
 // @0x1415cb710
 unsigned long long FUN_1415cb710(void* manager, unsigned int value)
 {
@@ -216,88 +207,77 @@ unsigned long long FUN_1415cb710(void* manager, unsigned int value)
     return 1;
 }
 
-// MS2-FUNCTIONAL 0x1415cb740: returns the request result stored at offset 0x38.
 // @0x1415cb740
 unsigned int FUN_1415cb740(const void* manager)
 {
     return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(manager) + 0x38);
 }
 
-// MS2-FUNCTIONAL: constructs the finalize request and forwards it to the manager dispatcher.
 // @0x1415c4870
-int FUN_1415c4870()
+int FUN_1415c4870(void*)
 {
     CNMFinalizeFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: constructs the messenger logout request and forwards it to the manager dispatcher.
 // @0x1415c53b0
-int FUN_1415c53b0()
+int FUN_1415c53b0(void*)
 {
     CNMLogoutMessengerFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: constructs the news request and forwards it to the manager dispatcher.
 // @0x1415c5b40
-int FUN_1415c5b40()
+int FUN_1415c5b40(void*)
 {
     CNMRequestNewsFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: constructs the game summary request and forwards it to the manager dispatcher.
 // @0x1415c8e30
-int FUN_1415c8e30()
+int FUN_1415c8e30(void*)
 {
     CNMOpenGameSummaryFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: creates the default auth logout request and dispatches it.
 // @0x1415c4a30
-int FUN_1415c4a30()
+int FUN_1415c4a30(void*)
 {
     CNMLogoutAuthFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: creates the default auth logout request and dispatches it.
 // @0x1415c4b60
-int FUN_1415c4b60()
+int FUN_1415c4b60(void*)
 {
     CNMLogoutAuthFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: sets the recovered auth logout mode before dispatch.
 // @0x1415c4d40
-int FUN_1415c4d40()
+int FUN_1415c4d40(void*)
 {
     CNMLogoutAuthFunc request;
     request.m_34 = 1;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: creates and dispatches the virtual logout request.
 // @0x1415c54a0
-int FUN_1415c54a0()
+int FUN_1415c54a0(void*)
 {
     CNMLogoutVirtualFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches the security-code query and returns its output field.
 // @0x1415c4f00
-int FUN_1415c4f00()
+int FUN_1415c4f00(void*)
 {
     CNMGetSecurityCodeCNFunc request;
     (void)CNMManager::GetInstance()->CallNMFunc(&request);
     return request.m_30;
 }
 
-// MS2-FUNCTIONAL: creates and dispatches the game-log finalize request.
 // @0x1415ca0d0
 int FUN_1415ca0d0()
 {
@@ -356,12 +336,15 @@ CNMGuildListExInfo* FUN_1415c76f0(void*, CNMGuildListExInfo* out)
 // @0x1415c7b10
 int FUN_1415c7b10(void*, long long outAddress)
 {
-    if (!outAddress) return 0;
-    CNMGetGameListFunc request;
-    if (!CNMManager::GetInstance()->CallNMFunc(&request)) return 0;
-    FUN_1415f10f0(reinterpret_cast<CNMSerializable*>(outAddress),
-                   reinterpret_cast<long long>(&request.m_30));
-    return 1;
+    if (outAddress)
+    {
+        CNMGetGameListFunc request;
+        if (!CNMManager::GetInstance()->CallNMFunc(&request)) return 0;
+        FUN_1415f10f0(reinterpret_cast<CNMSerializable*>(outAddress),
+                       reinterpret_cast<long long>(&request.m_30));
+        return 1;
+    }
+    return 0;
 }
 
 // MS2-FUNCTIONAL: fetches the passport and copies its bounded string into the caller buffer.
@@ -391,7 +374,6 @@ unsigned char* FUN_1415c4da0(void*, unsigned char* out)
     return out;
 }
 
-// MS2-FUNCTIONAL: creates the user-info request with the recovered identifier and query type.
 // @0x1415c7ba0
 int FUN_1415c7ba0(void*, const char* userId, int type)
 {
@@ -427,12 +409,14 @@ unsigned char* FUN_1415ca240(unsigned char* out)
 int FUN_1415c4640(void*, int codePage)
 {
     CNMManager* manager = CNMManager::GetInstance();
-    if (!FUN_1415cb710(manager, static_cast<unsigned int>(codePage))) return 0;
-    CNMSetCodePageFunc request(codePage);
-    return manager->CallNMFunc(&request);
+    if (FUN_1415cb710(manager, static_cast<unsigned int>(codePage)))
+    {
+        CNMSetCodePageFunc request(codePage);
+        return manager->CallNMFunc(&request);
+    }
+    return 0;
 }
 
-// MS2-FUNCTIONAL: wraps the recovered connection configuration in a request and dispatches it.
 // @0x1415c46f0
 int FUN_1415c46f0(void*, const CNMConnConfig* config)
 {
@@ -440,7 +424,6 @@ int FUN_1415c46f0(void*, const CNMConnConfig* config)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: wraps the supplied server request vector and dispatches it.
 // @0x1415c4780
 int FUN_1415c4780(void*, const void* requests)
 {
@@ -449,7 +432,6 @@ int FUN_1415c4780(void*, const void* requests)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: initializes the manager request with the recovered high-bit flag.
 // @0x1415c4810
 int FUN_1415c4810(void*, int value)
 {
@@ -457,7 +439,6 @@ int FUN_1415c4810(void*, int value)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches the callback registration request with the recovered flag.
 // @0x1415c48c0
 int FUN_1415c48c0(void*, const void* callback, int flags)
 {
@@ -465,7 +446,6 @@ int FUN_1415c48c0(void*, const void* callback, int flags)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches the callback reset request for the supplied callback value.
 // @0x1415c4930
 int FUN_1415c4930(void*, unsigned long long callback)
 {
@@ -473,7 +453,6 @@ int FUN_1415c4930(void*, unsigned long long callback)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches a change-position request for the supplied key.
 // @0x1415c5590
 int FUN_1415c5590(void*, long long position)
 {
@@ -481,7 +460,6 @@ int FUN_1415c5590(void*, long long position)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches the refresh notification with its recovered result value.
 // @0x1415c5620
 int FUN_1415c5620(void*, unsigned int result)
 {
@@ -489,7 +467,6 @@ int FUN_1415c5620(void*, unsigned int result)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches the requested character level and job values.
 // @0x1415c5680
 int FUN_1415c5680(void*, int level, int job)
 {
@@ -497,7 +474,6 @@ int FUN_1415c5680(void*, int level, int job)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches removal of the supplied virtual-user key.
 // @0x1415c56f0
 int FUN_1415c56f0(void*, const NMKey64* key)
 {
@@ -505,7 +481,6 @@ int FUN_1415c56f0(void*, const NMKey64* key)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: queries a game token and returns both recovered result fields.
 // @0x1415c50d0
 int FUN_1415c50d0(void*, const char* token, int* output)
 {
@@ -532,7 +507,6 @@ int FUN_1415c51b0(void*, const char* account, const char* password)
     return request.m_40;
 }
 
-// MS2-FUNCTIONAL: dispatches registration of the authentication close callback.
 // @0x1415c5220
 int FUN_1415c5220(void*, long long callback)
 {
@@ -540,7 +514,6 @@ int FUN_1415c5220(void*, long long callback)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches the messenger login using the recovered mode value.
 // @0x1415c5280
 int FUN_1415c5280(void*, int mode)
 {
@@ -548,16 +521,14 @@ int FUN_1415c5280(void*, int mode)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: obtains the request count, returning zero when dispatch fails.
 // @0x1415c5ac0
-int FUN_1415c5ac0()
+int FUN_1415c5ac0(void*)
 {
     CNMGetCountFunc request(2);
-    if (!CNMManager::GetInstance()->CallNMFunc(&request)) request.m_34 = 0;
-    return request.m_34;
+    if (CNMManager::GetInstance()->CallNMFunc(&request)) return request.m_34;
+    return 0;
 }
 
-// MS2-FUNCTIONAL: dispatches the news check using its recovered result and key.
 // @0x1415c5b90
 int FUN_1415c5b90(void*, unsigned int result, unsigned long long newsKey)
 {
@@ -565,7 +536,6 @@ int FUN_1415c5b90(void*, unsigned int result, unsigned long long newsKey)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: constructs the recovered optional change-my-info fields and dispatches them.
 // @0x1415c5e20
 int FUN_1415c5e20(void*, int mode, const char* name, const void* position, int state)
 {
@@ -574,64 +544,52 @@ int FUN_1415c5e20(void*, int mode, const char* name, const void* position, int s
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches a change-my-info request containing only the recovered mode.
 // @0x1415c5c00
 void FUN_1415c5c00(void* self, unsigned int mode)
 {
     (void)FUN_1415c5e20(self, static_cast<int>(mode), nullptr, nullptr, -1);
 }
 
-// MS2-FUNCTIONAL: dispatches a change-my-info request containing the recovered name field.
 // @0x1415c5c40
 void FUN_1415c5c40(void* self, const char* name)
 {
     (void)FUN_1415c5e20(self, 0, name, nullptr, -1);
 }
 
-// MS2-FUNCTIONAL: dispatches a change-my-info request containing the recovered position field.
 // @0x1415c5c80
 void FUN_1415c5c80(void* self, const void* position)
 {
     (void)FUN_1415c5e20(self, 0, nullptr, position, -1);
 }
 
-// MS2-FUNCTIONAL: fetches configuration selector 1 and returns its recovered field on success.
 // @0x1415c5ed0
-int FUN_1415c5ed0()
+int FUN_1415c5ed0(void*)
 {
     CNMGetConfigFunc request(1);
-    if (!CNMManager::GetInstance()->CallNMFunc(&request)) return 0;
-    return request.m_34;
+    return CNMManager::GetInstance()->CallNMFunc(&request) ? request.m_34 : 0;
 }
 
-// MS2-FUNCTIONAL: fetches configuration selector 2 and returns its recovered field on success.
 // @0x1415c5f70
-int FUN_1415c5f70()
+int FUN_1415c5f70(void*)
 {
     CNMGetConfigFunc request(2);
-    if (!CNMManager::GetInstance()->CallNMFunc(&request)) return 0;
-    return request.m_38;
+    return CNMManager::GetInstance()->CallNMFunc(&request) ? request.m_38 : 0;
 }
 
-// MS2-FUNCTIONAL: fetches configuration selector 4 and returns its recovered field on success.
 // @0x1415c6010
-int FUN_1415c6010()
+int FUN_1415c6010(void*)
 {
     CNMGetConfigFunc request(4);
-    if (!CNMManager::GetInstance()->CallNMFunc(&request)) return 0;
-    return request.m_3c;
+    return CNMManager::GetInstance()->CallNMFunc(&request) ? request.m_3c : 0;
 }
 
-// MS2-FUNCTIONAL: fetches configuration selector 8 and returns its recovered field on success.
 // @0x1415c60b0
-int FUN_1415c60b0()
+int FUN_1415c60b0(void*)
 {
     CNMGetConfigFunc request(8);
-    if (!CNMManager::GetInstance()->CallNMFunc(&request)) return 0;
-    return request.m_40;
+    return CNMManager::GetInstance()->CallNMFunc(&request) ? request.m_40 : 0;
 }
 
-// MS2-FUNCTIONAL: updates the first manager configuration value and dispatches the request.
 // @0x1415c6150
 int FUN_1415c6150(void*, int value)
 {
@@ -639,7 +597,6 @@ int FUN_1415c6150(void*, int value)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: updates the second manager configuration value and dispatches the request.
 // @0x1415c61f0
 int FUN_1415c61f0(void*, int value)
 {
@@ -647,7 +604,6 @@ int FUN_1415c61f0(void*, int value)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: updates the third manager configuration value and dispatches the request.
 // @0x1415c6290
 int FUN_1415c6290(void*, int value)
 {
@@ -655,7 +611,6 @@ int FUN_1415c6290(void*, int value)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: updates the fourth manager configuration value and dispatches the request.
 // @0x1415c6330
 int FUN_1415c6330(void*, int value)
 {
@@ -663,17 +618,18 @@ int FUN_1415c6330(void*, int value)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: retrieves local configuration and copies its bounded value on success.
 // @0x1415c63d0
 int FUN_1415c63d0(void*, unsigned int selector, void* out)
 {
     CNMGetLocalConfigFunc request(selector);
-    if (!CNMManager::GetInstance()->CallNMFunc(&request)) return 0;
-    FUN_1415fbe70(out, 0x400, request.m_34);
-    return 1;
+    if (CNMManager::GetInstance()->CallNMFunc(&request))
+    {
+        FUN_1415fbe70(out, 0x400, request.m_34);
+        return 1;
+    }
+    return 0;
 }
 
-// MS2-FUNCTIONAL: changes local configuration with the recovered selector and value.
 // @0x1415c6490
 int FUN_1415c6490(void*, unsigned int selector, long long value)
 {
@@ -681,7 +637,6 @@ int FUN_1415c6490(void*, unsigned int selector, long long value)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches the supplied authentication credentials and returns its timeout result.
 // @0x1415c4990
 int FUN_1415c4990(void*, const char* password, unsigned int value)
 {
@@ -690,7 +645,6 @@ int FUN_1415c4990(void*, const char* password, unsigned int value)
     return request.m_timeout;
 }
 
-// MS2-FUNCTIONAL: dispatches the full authentication request and exposes its result field.
 // @0x1415c4a80
 int FUN_1415c4a80(void*, const char* user, const char* password, unsigned int value,
                   const char* token, unsigned int flags, unsigned int* result)
@@ -701,7 +655,6 @@ int FUN_1415c4a80(void*, const char* user, const char* password, unsigned int va
     return request.m_timeout;
 }
 
-// MS2-FUNCTIONAL: dispatches authentication with the recovered alternate-login mode.
 // @0x1415c4c90
 int FUN_1415c4c90(void*, const char* user, const char* password)
 {
@@ -711,7 +664,6 @@ int FUN_1415c4c90(void*, const char* user, const char* password)
     return request.m_timeout;
 }
 
-// MS2-FUNCTIONAL: dispatches the new-friend confirmation with the recovered result and flags.
 // @0x1415c6640
 int FUN_1415c6640(void*, int result, int flags)
 {
@@ -719,7 +671,6 @@ int FUN_1415c6640(void*, int result, int flags)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches a category creation request with its key, name, flags, and status.
 // @0x1415c66b0
 int FUN_1415c66b0(void*, long long key, long long name, int flags, int status)
 {
@@ -727,7 +678,6 @@ int FUN_1415c66b0(void*, long long key, long long name, int flags, int status)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches the requested category deletion.
 // @0x1415c6760
 int FUN_1415c6760(void*, int category, int flags)
 {
@@ -735,7 +685,6 @@ int FUN_1415c6760(void*, int category, int flags)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches the category rename request.
 // @0x1415c67d0
 int FUN_1415c67d0(void*, int category, const char* name, int flags)
 {
@@ -743,7 +692,6 @@ int FUN_1415c67d0(void*, int category, const char* name, int flags)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches the requested category property change.
 // @0x1415c6870
 int FUN_1415c6870(void*, int category, int property, int value)
 {
@@ -751,7 +699,6 @@ int FUN_1415c6870(void*, int category, int property, int value)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
-// MS2-FUNCTIONAL: dispatches the category allow-type update.
 // @0x1415c68f0
 int FUN_1415c68f0(void*, int category, int allowType, int value)
 {
@@ -760,7 +707,7 @@ int FUN_1415c68f0(void*, int category, int allowType, int value)
 }
 
 // @0x1415c46c0
-void FUN_1415c46c0()
+void FUN_1415c46c0(void*)
 {
     (void)FUN_1415cb740(CNMManager::GetInstance());
 }
@@ -814,307 +761,307 @@ unsigned int FUN_1415c5930(const void* p) { return *reinterpret_cast<const unsig
 void* FUN_1415c5950(void* p) { return static_cast<unsigned char*>(p) + 0x158; }
 
 // @0x1415cc390
-void CNMEventHandler::vfunc_3() {}
+void CNMEventHandler::vfunc_3(void*) {}
 
 // @0x1415cc3b0
-void CNMEventHandler::vfunc_4() {}
+void CNMEventHandler::vfunc_4(void*) {}
 
 // @0x1415cc3d0
-void CNMEventHandler::vfunc_5() {}
+void CNMEventHandler::vfunc_5(void*) {}
 
 // @0x1415cc3f0
-void CNMEventHandler::vfunc_6() {}
+void CNMEventHandler::vfunc_6(void*) {}
 
 // @0x1415cc410
-void CNMEventHandler::vfunc_7() {}
+void CNMEventHandler::vfunc_7(void*) {}
 
 // @0x1415cc430
-void CNMEventHandler::vfunc_8() {}
+void CNMEventHandler::vfunc_8(void*) {}
 
 // @0x1415cc450
-void CNMEventHandler::vfunc_9() {}
+void CNMEventHandler::vfunc_9(void*) {}
 
 // @0x1415cc470
-void CNMEventHandler::vfunc_10() {}
+void CNMEventHandler::vfunc_10(void*) {}
 
 // @0x1415cc490
-void CNMEventHandler::vfunc_11() {}
+void CNMEventHandler::vfunc_11(void*) {}
 
 // @0x1415cc4b0
-void CNMEventHandler::vfunc_12() {}
+void CNMEventHandler::vfunc_12(void*) {}
 
 // @0x1415cc4d0
-void CNMEventHandler::vfunc_13() {}
+void CNMEventHandler::vfunc_13(void*) {}
 
 // @0x1415cc4f0
-void CNMEventHandler::vfunc_14() {}
+void CNMEventHandler::vfunc_14(void*) {}
 
 // @0x1415cc510
-void CNMEventHandler::vfunc_15() {}
+void CNMEventHandler::vfunc_15(void*) {}
 
 // @0x1415cc530
-void CNMEventHandler::vfunc_16() {}
+void CNMEventHandler::vfunc_16(void*) {}
 
 // @0x1415cc550
-void CNMEventHandler::vfunc_17() {}
+void CNMEventHandler::vfunc_17(void*) {}
 
 // @0x1415cc570
-void CNMEventHandler::vfunc_18() {}
+void CNMEventHandler::vfunc_18(void*) {}
 
 // @0x1415cc590
-void CNMEventHandler::vfunc_19() {}
+void CNMEventHandler::vfunc_19(void*) {}
 
 // @0x1415cc5b0
-void CNMEventHandler::vfunc_20() {}
+void CNMEventHandler::vfunc_20(void*) {}
 
 // @0x1415cc5d0
-void CNMEventHandler::vfunc_21() {}
+void CNMEventHandler::vfunc_21(void*) {}
 
 // @0x1415cc5f0
-void CNMEventHandler::vfunc_22() {}
+void CNMEventHandler::vfunc_22(void*) {}
 
 // @0x1415cc610
-void CNMEventHandler::vfunc_23() {}
+void CNMEventHandler::vfunc_23(void*) {}
 
 // @0x1415cc630
-void CNMEventHandler::vfunc_24() {}
+void CNMEventHandler::vfunc_24(void*) {}
 
 // @0x1415cc650
-void CNMEventHandler::vfunc_25() {}
+void CNMEventHandler::vfunc_25(void*) {}
 
 // @0x1415cc670
-void CNMEventHandler::vfunc_26() {}
+void CNMEventHandler::vfunc_26(void*) {}
 
 // @0x1415cc690
-void CNMEventHandler::vfunc_27() {}
+void CNMEventHandler::vfunc_27(void*) {}
 
 // @0x1415cc6b0
-void CNMEventHandler::vfunc_28() {}
+void CNMEventHandler::vfunc_28(void*) {}
 
 // @0x1415cc6d0
-void CNMEventHandler::vfunc_29() {}
+void CNMEventHandler::vfunc_29(void*) {}
 
 // @0x1415cc6f0
-void CNMEventHandler::vfunc_30() {}
+void CNMEventHandler::vfunc_30(void*) {}
 
 // @0x1415cc710
-void CNMEventHandler::vfunc_31() {}
+void CNMEventHandler::vfunc_31(void*) {}
 
 // @0x1415cc730
-void CNMEventHandler::vfunc_32() {}
+void CNMEventHandler::vfunc_32(void*) {}
 
 // @0x1415cc750
-void CNMEventHandler::vfunc_33() {}
+void CNMEventHandler::vfunc_33(void*) {}
 
 // @0x1415cc770
-void CNMEventHandler::vfunc_34() {}
+void CNMEventHandler::vfunc_34(void*) {}
 
 // @0x1415cc790
-void CNMEventHandler::vfunc_35() {}
+void CNMEventHandler::vfunc_35(void*) {}
 
 // @0x1415cc7b0
-void CNMEventHandler::vfunc_36() {}
+void CNMEventHandler::vfunc_36(void*) {}
 
 // @0x1415cc7d0
-void CNMEventHandler::vfunc_37() {}
+void CNMEventHandler::vfunc_37(void*) {}
 
 // @0x1415cc7f0
-void CNMEventHandler::vfunc_38() {}
+void CNMEventHandler::vfunc_38(void*) {}
 
 // @0x1415cc810
-void CNMEventHandler::vfunc_39() {}
+void CNMEventHandler::vfunc_39(void*) {}
 
 // @0x1415cc830
-void CNMEventHandler::vfunc_40() {}
+void CNMEventHandler::vfunc_40(void*) {}
 
 // @0x1415cc850
-void CNMEventHandler::vfunc_41() {}
+void CNMEventHandler::vfunc_41(void*) {}
 
 // @0x1415cc870
-void FUN_1415cc870() {}
+void FUN_1415cc870(void*, void*) {}
 
 // @0x1415cc890
-void FUN_1415cc890() {}
+void FUN_1415cc890(void*, void*) {}
 
 // @0x1415cc8b0
-void FUN_1415cc8b0() {}
+void FUN_1415cc8b0(void*, void*) {}
 
 // @0x1415cc8d0
-void FUN_1415cc8d0() {}
+void FUN_1415cc8d0(void*, void*) {}
 
 // @0x1415cc8f0
-void FUN_1415cc8f0() {}
+void FUN_1415cc8f0(void*, void*) {}
 
 // @0x1415cc910
-void FUN_1415cc910() {}
+void FUN_1415cc910(void*, void*) {}
 
 // @0x1415cc930
-void FUN_1415cc930() {}
+void FUN_1415cc930(void*, void*) {}
 
 // @0x1415cc950
-void FUN_1415cc950() {}
+void FUN_1415cc950(void*, void*) {}
 
 // @0x1415cc970
-void FUN_1415cc970() {}
+void FUN_1415cc970(void*, void*) {}
 
 // @0x1415cc990
-void FUN_1415cc990() {}
+void FUN_1415cc990(void*, void*) {}
 
 // @0x1415cc9b0
-void FUN_1415cc9b0() {}
+void FUN_1415cc9b0(void*, void*) {}
 
 // @0x1415cc9d0
-void FUN_1415cc9d0() {}
+void FUN_1415cc9d0(void*, void*) {}
 
 // @0x1415cc9f0
-void FUN_1415cc9f0() {}
+void FUN_1415cc9f0(void*, void*) {}
 
 // @0x1415cca10
-void FUN_1415cca10() {}
+void FUN_1415cca10(void*, void*) {}
 
 // @0x1415cca30
-void FUN_1415cca30() {}
+void FUN_1415cca30(void*, void*) {}
 
 // @0x1415cca50
-void FUN_1415cca50() {}
+void FUN_1415cca50(void*, void*) {}
 
 // @0x1415cca70
-void FUN_1415cca70() {}
+void FUN_1415cca70(void*, void*) {}
 
 // @0x1415cca90
-void FUN_1415cca90() {}
+void FUN_1415cca90(void*, void*) {}
 
 // @0x1415ccab0
-void FUN_1415ccab0() {}
+void FUN_1415ccab0(void*, void*) {}
 
 // @0x1415ccad0
-void FUN_1415ccad0() {}
+void FUN_1415ccad0(void*, void*) {}
 
 // @0x1415ccaf0
-void FUN_1415ccaf0() {}
+void FUN_1415ccaf0(void*, void*) {}
 
 // @0x1415ccb10
-void FUN_1415ccb10() {}
+void FUN_1415ccb10(void*, void*) {}
 
 // @0x1415ccb30
-void FUN_1415ccb30() {}
+void FUN_1415ccb30(void*, void*) {}
 
 // @0x1415ccb50
-void FUN_1415ccb50() {}
+void FUN_1415ccb50(void*, void*) {}
 
 // @0x1415ccb70
-void FUN_1415ccb70() {}
+void FUN_1415ccb70(void*, void*) {}
 
 // @0x1415ccb90
-void FUN_1415ccb90() {}
+void FUN_1415ccb90(void*, void*) {}
 
 // @0x1415ccbb0
-void FUN_1415ccbb0() {}
+void FUN_1415ccbb0(void*, void*) {}
 
 // @0x1415ccbd0
-void FUN_1415ccbd0() {}
+void FUN_1415ccbd0(void*, void*) {}
 
 // @0x1415ccbf0
-void FUN_1415ccbf0() {}
+void FUN_1415ccbf0(void*, void*) {}
 
 // @0x1415ccc10
-void FUN_1415ccc10() {}
+void FUN_1415ccc10(void*, void*) {}
 
 // @0x1415ccc30
-void FUN_1415ccc30() {}
+void FUN_1415ccc30(void*, void*) {}
 
 // @0x1415ccc50
-void FUN_1415ccc50() {}
+void FUN_1415ccc50(void*, void*) {}
 
 // @0x1415ccc70
-void FUN_1415ccc70() {}
+void FUN_1415ccc70(void*, void*) {}
 
 // @0x1415ccc90
-void FUN_1415ccc90() {}
+void FUN_1415ccc90(void*, void*) {}
 
 // @0x1415cccb0
-void FUN_1415cccb0() {}
+void FUN_1415cccb0(void*, void*) {}
 
 // @0x1415cccd0
-void FUN_1415cccd0() {}
+void FUN_1415cccd0(void*, void*) {}
 
 // @0x1415cccf0
-void FUN_1415cccf0() {}
+void FUN_1415cccf0(void*, void*) {}
 
 // @0x1415ccd10
-void FUN_1415ccd10() {}
+void FUN_1415ccd10(void*, void*) {}
 
 // @0x1415ccd30
-void FUN_1415ccd30() {}
+void FUN_1415ccd30(void*, void*) {}
 
 // @0x1415ccd50
-void FUN_1415ccd50() {}
+void FUN_1415ccd50(void*, void*) {}
 
 // @0x1415ccd70
-void FUN_1415ccd70() {}
+void FUN_1415ccd70(void*, void*) {}
 
 // @0x1415ccd90
-void FUN_1415ccd90() {}
+void FUN_1415ccd90(void*, void*) {}
 
 // @0x1415ccdb0
-void FUN_1415ccdb0() {}
+void FUN_1415ccdb0(void*, void*) {}
 
 // @0x1415ccdd0
-void FUN_1415ccdd0() {}
+void FUN_1415ccdd0(void*, void*) {}
 
 // @0x1415ccdf0
-void FUN_1415ccdf0() {}
+void FUN_1415ccdf0(void*, void*) {}
 
 // @0x1415cce10
-void FUN_1415cce10() {}
+void FUN_1415cce10(void*, void*) {}
 
 // @0x1415cce30
-void FUN_1415cce30() {}
+void FUN_1415cce30(void*, void*) {}
 
 // @0x1415cce50
-void FUN_1415cce50() {}
+void FUN_1415cce50(void*, void*) {}
 
 // @0x1415cce70
-void FUN_1415cce70() {}
+void FUN_1415cce70(void*, void*) {}
 
 // @0x1415cce90
-void FUN_1415cce90() {}
+void FUN_1415cce90(void*, void*) {}
 
 // @0x1415cceb0
-void FUN_1415cceb0() {}
+void FUN_1415cceb0(void*, void*) {}
 
 // @0x1415cced0
-void FUN_1415cced0() {}
+void FUN_1415cced0(void*, void*) {}
 
 // @0x1415ccef0
-void FUN_1415ccef0() {}
+void FUN_1415ccef0(void*, void*) {}
 
 // @0x1415ccf10
-void FUN_1415ccf10() {}
+void FUN_1415ccf10(void*, void*) {}
 
 // @0x1415ccf30
-void FUN_1415ccf30() {}
+void FUN_1415ccf30(void*, void*) {}
 
 // @0x1415ccf50
-void FUN_1415ccf50() {}
+void FUN_1415ccf50(void*, void*) {}
 
 // @0x1415ccf70
-void FUN_1415ccf70() {}
+void FUN_1415ccf70(void*, void*) {}
 
 // @0x1415ccf90
-void FUN_1415ccf90() {}
+void FUN_1415ccf90(void*, void*) {}
 
 // @0x1415ccfb0
-void FUN_1415ccfb0() {}
+void FUN_1415ccfb0(void*, void*) {}
 
 // @0x1415ccfd0
-void FUN_1415ccfd0() {}
+void FUN_1415ccfd0(void*, void*) {}
 
 // @0x1415ccff0
-void FUN_1415ccff0() {}
+void FUN_1415ccff0(void*, void*) {}
 
 // @0x1415cd010
-void FUN_1415cd010() {}
+void FUN_1415cd010(void*, void*) {}
 
 // @0x1415c7010
 int FUN_1415c7010(void*, const CNMRejectedUser* user)
@@ -1342,15 +1289,6 @@ bool FUN_1415c9e90(void* self, void* out)
 }
 
 
-// MS2-PIN: ?FUN_1415c4870@@YAHXZ 0x1415c4870
-// MS2-PIN: ?FUN_1415c53b0@@YAHXZ 0x1415c53b0
-// MS2-PIN: ?FUN_1415c5b40@@YAHXZ 0x1415c5b40
-// MS2-PIN: ?FUN_1415c8e30@@YAHXZ 0x1415c8e30
-// MS2-PIN: ?FUN_1415c4a30@@YAHXZ 0x1415c4a30
-// MS2-PIN: ?FUN_1415c4b60@@YAHXZ 0x1415c4b60
-// MS2-PIN: ?FUN_1415c4d40@@YAHXZ 0x1415c4d40
-// MS2-PIN: ?FUN_1415c54a0@@YAHXZ 0x1415c54a0
-// MS2-PIN: ?FUN_1415c4f00@@YAHXZ 0x1415c4f00
 // MS2-PIN: ?FUN_1415ca0d0@@YAHXZ 0x1415ca0d0
 // MS2-PIN: ?FUN_1415c4f50@@YAPEAEPEAXPEAE@Z 0x1415c4f50
 // MS2-PIN: ?FUN_1415c5010@@YAPEAEPEAXPEAE@Z 0x1415c5010
@@ -1362,8 +1300,6 @@ bool FUN_1415c9e90(void* self, void* out)
 // MS2-PIN: ?FUN_1415c4e90@@YAPEAEPEAXPEAE0@Z 0x1415c4e90
 // MS2-PIN: ?FUN_1415c6f80@@YA_NPEAX0@Z 0x1415c6f80
 // MS2-PIN: ?FUN_1415ca240@@YAPEAEPEAE@Z 0x1415ca240
-// MS2-PIN: ?FUN_1415c5ac0@@YAHXZ 0x1415c5ac0
-// MS2-FUNCTIONAL 0x1415c9fa0: builds the recovered send-chat request from this session's serial and dispatches it through the manager.
 // @0x1415c9fa0
 extern unsigned int FUN_1415c91c0(void* self);
 extern void* FUN_1415fa260();
@@ -1373,12 +1309,11 @@ int FUN_1415c9fa0(void* self, const CNMChatMessage& message)
     return FUN_1415cb440(FUN_1415fa260(), &request);
 }
 
-// MS2-FUNCTIONAL 0x1415ca030: constructs the game-log initialize request from its three recovered strings and dispatches it.
 // @0x1415ca030
-void FUN_1415ca030(const char* gameName, const char* userName, const char* characterName)
+int FUN_1415ca030(const char* gameName, const char* userName, const char* characterName)
 {
     CNMGameLogInitializeFunc request(gameName, userName, characterName);
-    FUN_1415cb440(FUN_1415fa260(), &request);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
 }
 
 // MS2-FUNCTIONAL 0x1415c4540: applies the requested locale after the manager accepts it and reports the recovered error outputs.
@@ -1532,7 +1467,6 @@ unsigned int FUN_1415c6ed0(void*, const unsigned char* key, unsigned long long m
 }
 
 
-// MS2-FUNCTIONAL 0x1415c72c0: sends a note-ex request with the supplied type and text.
 // @0x1415c72c0
 unsigned int FUN_1415c72c0(void*, int type, const char* text)
 {
@@ -1540,7 +1474,6 @@ unsigned int FUN_1415c72c0(void*, int type, const char* text)
     return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
 }
 
-// MS2-FUNCTIONAL 0x1415c7360: sends the accusation-note request with its type, detail record, and status.
 // @0x1415c7360
 unsigned int FUN_1415c7360(void*, int type, const void* details, int status)
 {
@@ -1550,7 +1483,6 @@ unsigned int FUN_1415c7360(void*, int type, const void* details, int status)
 
 
 extern void FUN_1415cb640(void*, unsigned int);
-// MS2-FUNCTIONAL 0x1415c47e0: forwards the integer command to the messenger manager.
 // @0x1415c47e0
 void FUN_1415c47e0(void*, unsigned int command)
 {
@@ -1558,28 +1490,31 @@ void FUN_1415c47e0(void*, unsigned int command)
 }
 
 
-// MS2-FUNCTIONAL 0x1415c5ce0: returns zero for an empty nickname; otherwise submits the nickname request.
 // @0x1415c5ce0
 unsigned int FUN_1415c5ce0(void*, void* key, long long nickname)
 {
-    if (!nickname) return 0;
-    CNMChangeNicknameFunc request(reinterpret_cast<long long>(key), nickname);
-    return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+    if (nickname)
+    {
+        CNMChangeNicknameFunc request(reinterpret_cast<long long>(key), nickname);
+        return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+    }
+    return 0;
 }
 
-// MS2-FUNCTIONAL 0x1415c5d80: returns zero for an empty metadata value; otherwise submits the metadata request.
 // @0x1415c5d80
 unsigned int FUN_1415c5d80(void*, void* key, long long metadata)
 {
-    if (!metadata) return 0;
-    CNMChangeMetaDataFunc request(reinterpret_cast<long long>(key), metadata);
-    return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+    if (metadata)
+    {
+        CNMChangeMetaDataFunc request(reinterpret_cast<long long>(key), metadata);
+        return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+    }
+    return 0;
 }
 
 
 
 extern void* FUN_1415efab0(void*, void*);
-// MS2-FUNCTIONAL 0x1415c5400: submits a virtual-login request with the supplied login, value, and password fields.
 // @0x1415c5400
 unsigned int FUN_1415c5400(void*, long long login, int value, long long password)
 {
@@ -1635,7 +1570,7 @@ void FUN_1415caa40(void* map, void* item)
 extern void FUN_1415e89b0(void*, const void*);
 extern unsigned char FUN_1415f3a00(void*);
 extern void FUN_141609160(void*);
-extern void FUN_14156a080(void*);
+extern void FUN_14156a080(void*) noexcept;
 // MS2-FUNCTIONAL: initializes a temporary BSTR from the object's text and clears its trailing list when nonempty.
 // @0x1415c9040
 void FUN_1415c9040(void* object)
@@ -1647,11 +1582,9 @@ void FUN_1415c9040(void* object)
     FUN_14156a080(text);
 }
 
-// MS2-PIN: ?FUN_1415c5ed0@@YAHXZ 0x1415c5ed0
 // MS2-PIN: ?FUN_1415c4540@@YAHPEAXHHHH@Z 0x1415c4540
 // MS2-PIN: ?FUN_1415caaa0@@YAPEAXPEAXI@Z 0x1415caaa0
 // MS2-PIN: ?FUN_1415cab60@@YAPEAXPEAXE@Z 0x1415cab60
-// MS2-PIN: ?FUN_1415ca030@@YAXPEBD00@Z 0x1415ca030
 // MS2-PIN: ?FUN_1415c6970@@YA_NPEAX00H@Z 0x1415c6970
 // MS2-PIN: ?FUN_1415c6a50@@YA_NPEAX00_K@Z 0x1415c6a50
 // MS2-PIN: ?FUN_1415c6b00@@YAIPEAXPEBE0@Z 0x1415c6b00
@@ -1666,8 +1599,6 @@ void FUN_1415c9040(void* object)
 // MS2-PIN: ?FUN_1415c5ce0@@YAIPEAX0_J@Z 0x1415c5ce0
 // MS2-PIN: ?FUN_1415c5d80@@YAIPEAX0_J@Z 0x1415c5d80
 // MS2-PIN: ?FUN_1415c7400@@YAHPEAXG@Z 0x1415c7400
-// MS2-PIN: ?FUN_1415cb420@@YAXXZ 0x1415cb420
-// MS2-PIN: ?FUN_1415cb430@@YAXXZ 0x1415cb430
 // MS2-PIN: ?FUN_1415c5400@@YAIPEAX_JH0@Z 0x1415c5400
 // MS2-PIN: ?FUN_1415c54f0@@YA_NPEAX0H@Z 0x1415c54f0
 // MS2-PIN: ?FUN_1415c7500@@YAHPEAXHH0@Z 0x1415c7500

@@ -24,6 +24,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/cubecraft_2.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -34,10 +35,9 @@ const char* FUN_1408ac310(const efd::utf8string& str);     // 0x1408ac310 the st
 int FUN_1416595d0(PCBase* p);                              // 0x1416595d0
 class Unk_CubeSelection;
 Unk_CubeSelection* FUN_141659700(PCBase* p);               // 0x141659700 the cube selection of a player
-class Unk_JpCube { public: bool FUN_1410aa010(); };        // the cube selection is in the craft mode
+        // the cube selection is in the craft mode
 float FUN_141240c40(bool b);                               // 0x141240c40 the move speed (xmm0)
 float FUN_14059d930(float f);                              // 0x14059d930 fabs
-float FUN_14096b1c0(float f);                              // 0x14096b1c0
 int FUN_14028d260(float f);                                // 0x14028d260 round to ms
 unsigned FUN_140869420();                                  // 0x140869420 the millisecond clock
 egf::Entity* FUN_141659af0(MyPC* p, int nSide);            // 0x141659af0 the nearby object to sit / lie on
@@ -308,7 +308,7 @@ void StateJump::vfunc_8(double fTime)
 // MS2-FUNCTIONAL: temporaries / frame layout differ from the exe
 void StateJump::vfunc_9(double fTime)
 {
-    static int s_nDelay = FUN_14028d260(FUN_14096b1c0(12.0f / FUN_14059d930(FUN_141240c40(true))));
+    static int s_nDelay = FUN_14028d260(sqrt(12.0f / FUN_14059d930(FUN_141240c40(true))));
     State::vfunc_9(fTime);
     unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
     unsigned nLimit = s_nDelay;
@@ -327,7 +327,7 @@ void StateJump::vfunc_9(double fTime)
     {
         int nAnim;
         PCBase* pPC = FUN_1417b8370();
-        if (pPC != 0 && FUN_1416595d0(pPC) != 0 && ((Unk_JpCube*)FUN_141659700(pPC))->FUN_1410aa010())
+        if (pPC != 0 && FUN_1416595d0(pPC) != 0 && ((Unk_PCCubeCraft*)FUN_141659700(pPC))->FUN_1410aa010())
         {
             if (JpBody(m_pOwner)->FUN_1412407a0() != 0)
                 nAnim = 0x3a;

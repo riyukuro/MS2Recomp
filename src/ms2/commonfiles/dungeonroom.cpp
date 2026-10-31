@@ -110,6 +110,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
 #include <algorithm>
 #include <iterator>
 #include <stdlib.h>
@@ -123,11 +124,10 @@ public:
         fmt::internal::Value values[] = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(value)};
         FUN_140653690(a, b, flags, format, fmt::ArgList(fmt::internal::make_type(value), values));
     }
-    void FUN_1402804e0(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
+    void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
 };
 Unk_CommonLog* FUN_140166440();
 
-class Unk_140166410 { public: bool FUN_14036d570(int nId); };   // the content switches
 
 // Common::Constants::Value<T>::Get, header-inline in the original (the Value<bool> instance 0x140336990 is in this
 // unit's COMDAT tail); same body as unit_1402ab440's.
@@ -137,13 +137,13 @@ template<class T> T* Common::Constants::Value<T>::Get()
         Error("constants is not set");
     return &m_value;
 }
-Unk_140166410* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 int FUN_140768010(int nRange, int nBase);              // random number in [nBase, nBase + nRange)
-int FUN_1402178b0(int nValue);
+int Unk_ClubBuffTypeOf(int nValue);
 int FUN_140873160(Unk_140165cf0* pElem, const char* pszName, short& nOut);
 int FUN_140873600(Unk_140165cf0* pElem, const char* pszName, CMsTime& tOut);
-int FUN_14021ab60(const CString& str);                 // timer type name -> value
+int Parse_14021ab60(const CString& str);               // timer type name -> value
 void FUN_140274fc0(CStringW& str, void* pOut, const wchar_t* pszDelim);   // split into a CAtlArray<unsigned>
 
 // The table file loader helpers.
@@ -223,7 +223,7 @@ inline int ReadTimerType(Unk_140165cf0* pElem, const char* pszName, DungeonTimer
     int nRet = FUN_1408733e0(pElem, pszName, str);
     if (nRet != 0)
         return nRet;
-    out = (DungeonTimerType)FUN_14021ab60(str);
+    out = (DungeonTimerType)Parse_14021ab60(str);
     return nRet;
 }
 
@@ -280,7 +280,7 @@ bool DungeonRankRewardBase::Load(Unk_140165cf0* pElem)
         FUN_1408731e0(pChild, "rank", nRank);
         if (nRank <= 0 || nRank > 5)
         {
-            FUN_140166440()->FUN_1402804e0(0, 0, 0x13, StringFormat(L"DungeonRankReward::FromXel Invalid Rank", m_rewardID, nRank));
+            FUN_140166440()->Log(0, 0, 0x13, StringFormat(L"DungeonRankReward::FromXel Invalid Rank", m_rewardID, nRank));
             return false;
         }
         if (m_maxRank < nRank)
@@ -741,7 +741,7 @@ MS2_REPLACE_OVERLOAD(0x14031E720, bool(unsigned short, unsigned short), IsDungeo
 // @0x14031e780
 bool Unk_DungeonRoom_14031e780(int nValue)
 {
-    int nResult = FUN_1402178b0(nValue);
+    int nResult = Unk_ClubBuffTypeOf(nValue);
     return nResult != 0;
 }
 MS2_REPLACE_OVERLOAD(0x14031E780, bool(int), Unk_DungeonRoom_14031e780, 56, 0x8141B625);
@@ -823,7 +823,7 @@ void DungeonRankRequire::Load(Unk_140165cf0* pElem)
         FUN_1408731e0(pChild, "score", nScore);
         if (nPrev >= nScore)
         {
-            FUN_140166440()->FUN_1402804e0(0, 0, 0x13, L"DungeonRankRequire Error Score");
+            FUN_140166440()->Log(0, 0, 0x13, L"DungeonRankRequire Error Score");
             return;
         }
         nPrev = nScore;
@@ -831,7 +831,7 @@ void DungeonRankRequire::Load(Unk_140165cf0* pElem)
         m_scores.push_back(sScore);
     }
     if (m_scores.empty() || *m_scores.rbegin() > m_maxScore)
-        FUN_140166440()->FUN_1402804e0(0, 0, 0x13, L"DungeonRankRequire Error Score");
+        FUN_140166440()->Log(0, 0, 0x13, L"DungeonRankRequire Error Score");
 }
 MS2_REPLACE_METHOD(0x14031EA30, DungeonRankRequire, Load, 337, 0xF8BFEB06);
 
@@ -902,7 +902,7 @@ bool DungeonSeason::Load(Unk_140165cf0* pElem)
         {
             if (m_rewards[i]->m_requireScore <= m_rewards[i + 1]->m_requireScore)
             {
-                FUN_140166440()->FUN_1402804e0(0, 0, 0x13, L"DungeonSeason Reward Item RequireScore");
+                FUN_140166440()->Log(0, 0, 0x13, L"DungeonSeason Reward Item RequireScore");
                 return false;
             }
         }

@@ -12,10 +12,11 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/bigdatalogsystem.h"
+#include "ms2/placeholder/crashmanagercli.h"
 
 // ---- unit-local placeholders ----
 
-CCrashManager* FUN_140a44830();                                     // the crash manager (log sink)
 void* FUN_140166440();                                              // the logger
 void FUN_1403a1310(void* pLogger, int nLevel, int nId, const wchar_t* pszFormat, const char* const& a, const char* const& b);
 void FUN_1401859c0(void* pLogger, int nLevel, int nId, const wchar_t* pszText);
@@ -23,13 +24,7 @@ CStringW FUN_14016a730(const char* psz, int n);                     // narrow ->
 int FUN_140392040(char* pBuffer, size_t nSize, const char* pszFormat, ...);
 void FUN_141b6fc50(const CString& strText, const CString& strCaption, int n);   // message box
 
-// The event sink (FUN_140d8ee90).
-class Unk_PxEventSink
-{
-public:
-    void FUN_140a1f970(const CString& strEvent, const CString& strArg);
-};
-Unk_PxEventSink* FUN_140d8ee90();
+// The event sink (TSingleton<CBigDataLogSystem>::GetInstance).
 
 extern char DAT_143ae37d0[0x100];                                   // message buffer
 
@@ -91,11 +86,11 @@ void CPhysXError::reportError(NxErrorCode code, const char* message, const char*
     }
     else
     {
-        if (FUN_140d8ee90() != 0)
+        if (TSingleton<CBigDataLogSystem>::GetInstance() != 0)
         {
             CString strLog;
             strLog.Format("%s %s", strType.c_str(), message);
-            FUN_140d8ee90()->FUN_140a1f970("physx", strLog);
+            TSingleton<CBigDataLogSystem>::GetInstance()->SendLog("physx", strLog);
         }
         switch (code)
         {
@@ -109,8 +104,8 @@ void CPhysXError::reportError(NxErrorCode code, const char* message, const char*
             TerminateProcess(GetCurrentProcess(), 2);
             break;
         }
-        FUN_140a44830()->FUN_1401ce2b0("\n--- CPhysXError Log---");
-        FUN_140a44830()->FUN_1401ce2f0("reportError : %s, %s, %s, %d", strType.c_str(), message, file, line);
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- CPhysXError Log---");
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("reportError : %s, %s, %s, %d", strType.c_str(), message, file, line);
         throw 13;
     }
 }
@@ -118,13 +113,13 @@ void CPhysXError::reportError(NxErrorCode code, const char* message, const char*
 // @0x141688f50
 NxAssertResponse CPhysXError::reportAssertViolation(const char* message, const char* file, int line)
 {
-    FUN_140a44830()->FUN_1401ce2b0("\n--- CPhysXError Log---");
-    FUN_140a44830()->FUN_1401ce2f0("reportAssertViolation : %s, %s, Line:%d", message, file, line);
-    if (FUN_140d8ee90() != 0)
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- CPhysXError Log---");
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("reportAssertViolation : %s, %s, Line:%d", message, file, line);
+    if (TSingleton<CBigDataLogSystem>::GetInstance() != 0)
     {
         CString strLog;
         strLog.Format("assert %s %s %d", message, file, line);
-        FUN_140d8ee90()->FUN_140a1f970("physx", strLog);
+        TSingleton<CBigDataLogSystem>::GetInstance()->SendLog("physx", strLog);
     }
     return NX_AR_CONTINUE;
 }

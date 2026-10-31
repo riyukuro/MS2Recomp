@@ -137,6 +137,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 CLogString* GetLogString();
@@ -157,10 +159,8 @@ unsigned char FUN_1401d1320(CCacheData* pCache);                        // the f
 int FUN_141658e60(GameObject* pActor);                                  // gender of the player (0 male, 1 female)
 int FUN_141654700(GameObject* pActor);                                  // job code
 class Unk_SpWorld { public: GameObject* FUN_141bd0cc0(); };
-Unk_SpWorld* FUN_1403ed2d0();
 class Unk_SpOptions { public: int FUN_141260470(); };
 class Unk_SpConfig { public: Unk_SpOptions* FUN_1411b1f30(); };
-Unk_SpConfig* FUN_1409a8b10();
 
 CString FUN_14038f6d0(const CString& str, const char* psz);
 int FUN_141793500(CString strEvent);
@@ -279,7 +279,7 @@ CString SystemSoundProperty::GetCategory(int nGender)
 CString SystemSoundProperty::GetSoundName(unsigned nGender, int nJob)
 {
     bool bByJob = m_bByJob;
-    if (FUN_1409a8b10()->FUN_1411b1f30()->FUN_141260470() != 0)
+    if (reinterpret_cast<Unk_SpConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_1411b1f30()->FUN_141260470() != 0)
         bByJob = false;
     if (m_bByGender && bByJob)
     {
@@ -629,7 +629,7 @@ int SoundPropertyMgr::FUN_141792e00(int nEventId, GameObject* pActor, Unk_EventV
     {
         int nGender = FUN_141658e60(pActor);
         int nJob = FUN_141654700(pActor);
-        unsigned bCaster = FUN_1403ed2d0()->FUN_141bd0cc0() == pActor;
+        unsigned bCaster = reinterpret_cast<Unk_SpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0() == pActor;
         *pOut = m_events[nEventId][nGender][nJob][bCaster];
         return 1;
     }

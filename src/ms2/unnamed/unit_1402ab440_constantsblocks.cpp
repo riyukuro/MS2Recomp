@@ -195,6 +195,7 @@
 #include "ms2/placeholder/tixmldocument.h"
 
 #include "ms2/ms2format.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Registry of every Object (filled by Value<T>::Value through Constants::Register).
 static ATL::CAtlArray<Common::Constants::Object*> s_objects;                             // @0x1400b59f0 (DAT_143aad0f0)
@@ -1296,11 +1297,8 @@ public:
     Unk_ConstXmlNode*& FUN_140164a30(unsigned __int64 n);       // operator[]
     void *m_a, *m_b, *m_c;
 };
-class Unk_ConstFileSystem
+class Unk_ConstFileSystem : public CFileSystem
 {
-public:
-    int FUN_1403974b0(TiXmlDocument* doc, const char* path, int encoding, bool warn, bool localOnly);
-    bool FUN_140398190();
 };
 Unk_ConstFileSystem* FUN_140166420();
 unsigned char FUN_1401d1320(CCacheData* cacheData);

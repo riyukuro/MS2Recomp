@@ -16,13 +16,13 @@
 #include "ms2/client/ms2/cubemapinformationservice_tail.h"
 #include "ms2/commonfiles/ugcmapsetiteminfo.h"
 #include "ms2/ms2recover.h"
+#include "ms2/client/ms2/uiservice.h"
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                // string table text by key
 CStringW GetStringCommon(int nStringId);                         // string table text by id
 void FUN_141276180(const CString&, const CString&);
 void FUN_1412751f0(const CStringW&, int, int);                 // show a notice
 class Unk_LockUIManager;
-Unk_LockUIManager* FUN_1403ed2b0();
 void FUN_141add1f0(Unk_LockUIManager*);
 
 // @0x1400e6420
@@ -307,7 +307,7 @@ CStringW Unk_Service6100017::FUN_1410d5d80(int nMessage)
 void Unk_MyPCHousingSvc::FUN_1410d6590(int nMessage)
 {
     if (nMessage == 0x22) {
-        FUN_141add1f0(FUN_1403ed2b0());
+        FUN_141add1f0(reinterpret_cast<Unk_LockUIManager*>(TSingleton<CUIService>::GetInstance()));
     }
     else {
         if (nMessage == 1)

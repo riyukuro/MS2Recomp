@@ -17,14 +17,12 @@
 #include "ms2/placeholder/uiswfentitymanager.h"
 
 #include "hook/ms2hook.h"
+#include "ms2/gfxui/uialignwidget.h"
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
-class Unk_140e45740     // UI focus/modal manager? (0x1422e6bf0 / 0x1422e6d00 live in the GFx UI library)
+class Unk_140e45740 : public UIAlignWidgetManager     // UI focus/modal manager? (0x1422e6bf0 / 0x1422e6d00 live in the GFx UI library)
 {
-public:
-    int FUN_1422e6bf0(UISwfEntity* p, int n);
-    void FUN_1422e6d00(int n);
 };
 Unk_140e45740* FUN_140e45740();
 class Unk_1422d6240     // GFx file system / loader (0x1422f6d50 resolves a swf key to a path)

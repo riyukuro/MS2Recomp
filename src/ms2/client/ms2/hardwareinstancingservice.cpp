@@ -194,6 +194,8 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/entityworldmanager.h"
 
 // ---- the entity property cache (MS2's keyed Entity::SetPropertyValue<T>) ----
 // @0x1413d9bb0
@@ -294,16 +296,14 @@ void MeshInstancing::FUN_1413ed300(int nCount)
 // ---- services reached through globals ----
 extern char DAT_143b059e8;                                          // the application framework
 HardwareInstancingService* FUN_14098c5b0(char* pFramework);
-EntityWorldManager* FUN_1409670f0();
 class WorldService;
 WorldService* FUN_1403ed2d0();
 void FUN_141bbae40(WorldService* pWorld, IWorldServiceCallback* pCallback);
 bool FUN_141bc7b20(void* pWorld, const egf::EntityID& id);         // is the entity drawn by the world itself
 efd::MessageService* FUN_1413f9830();
 ecr::RenderService* FUN_1413f9890();
-class Unk_Clock { public: double FUN_141473260(); };
-Unk_Clock* FUN_14086d260();
-double FUN_141473280(Unk_Clock* pClock);
+CMainSystem* FUN_14086d260();
+double FUN_141473280(CMainSystem* pClock);
 int FUN_140ae1c10();                                                // the current game mode
 class COptimizer;
 COptimizer* FUN_1409f7c90();
@@ -647,8 +647,8 @@ MS2_REPLACE_METHOD(0x1413D47B0, HardwareInstancingService, FUN_1413d47b0, 564, 0
 egf::EntityID HardwareInstancingService::FUN_1413d49f0(const efd::utf8string& strName, efd::AssetID& rAsset,
     bool bInstanced, NiTransform* pTransform, int nArg10, int nArg14)
 {
-    egf::EntityID id = FUN_1409670f0()->FUN_1411ce760(strName, rAsset, false);
-    egf::Entity* pEntity = FUN_1409670f0()->FUN_1411cf440(id);
+    egf::EntityID id = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce760(strName, rAsset, false);
+    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id);
     if (pEntity == NULL)
         return s_invalidId;
     FUN_14098c6e0(pEntity, 0x2a7fd9f4, bInstanced);
@@ -760,7 +760,7 @@ void HardwareInstancingService::FUN_1413d5220(egf::EntityID id)
     std::map<egf::EntityID, MeshInstancing*>::iterator itDynamic = m_maps[m_nMap].m_mapDynamic.find(id);
     if (itDynamic != m_maps[m_nMap].m_mapDynamic.end())
     {
-        egf::Entity* pEntity = FUN_1409670f0()->FUN_1411cf440(id);
+        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id);
         efd::UInt64 uValue = pEntity->GetEntityIDValue();
         std::map<efd::UInt64, MeshInstancing*>::iterator itValue = m_maps[m_nMap].m_mapByValue.find(uValue);
         if (itValue != m_maps[m_nMap].m_mapByValue.end())
@@ -776,7 +776,7 @@ void HardwareInstancingService::FUN_1413d5220(egf::EntityID id)
         }
         delete itDynamic->second;
         m_maps[m_nMap].m_mapDynamic.erase(itDynamic);
-        FUN_1409670f0()->FUN_1411cf540(egf::EntityID(id));
+        TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf540(egf::EntityID(id));
     }
     else
     {
@@ -814,9 +814,9 @@ void HardwareInstancingService::FUN_1413d5710()
         return;
     Unk_HwiNearby kNearby;
     egf::Entity* pEntity;
-    Unk_WorldEntityMap::iterator itEntity = FUN_1409670f0()->FUN_1411ce5a0();
+    Unk_WorldEntityMap::iterator itEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce5a0();
     m_maps[m_nMap].m_listNearby.clear();
-    while (FUN_1409670f0()->FUN_1411ce5f0(itEntity, pEntity))
+    while (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce5f0(itEntity, pEntity))
     {
         if (FUN_1408a9bd0(pEntity) != NULL)
         {
@@ -840,8 +840,8 @@ void HardwareInstancingService::FUN_1413d5710()
     {
         std::map<efd::AssetID, std::list<EntityInstancing*> > mapByAsset;
         size_t nCreated = 0;
-        Unk_WorldEntityMap::iterator itEntity2 = FUN_1409670f0()->FUN_1411ce5a0();
-        while (FUN_1409670f0()->FUN_1411ce5f0(itEntity2, pEntity))
+        Unk_WorldEntityMap::iterator itEntity2 = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce5a0();
+        while (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce5f0(itEntity2, pEntity))
         {
             bool bVisible = false;
             bool bInstanced = false;
@@ -1475,7 +1475,7 @@ void HardwareInstancingService::FUN_1413d83f0(egf::Entity* pEntity)
         return;
     MeshInstancing* pInstancing = FUN_1413d66b0(pEntity);
     if (pInstancing != NULL)
-        pInstancing->FUN_14147c910(FUN_14086d260()->FUN_141473260());
+        pInstancing->FUN_14147c910(FUN_14086d260()->GetDeltaTime());
 }
 MS2_REPLACE_METHOD(0x1413D83F0, HardwareInstancingService, FUN_1413d83f0, 195, 0xBD0271EA);
 

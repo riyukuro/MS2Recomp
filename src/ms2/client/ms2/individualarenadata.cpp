@@ -11,6 +11,7 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 #include <typeinfo>
 
 // Unrecovered helpers (same ones continentregiontable.cpp uses).
@@ -21,7 +22,7 @@ int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& rOut);
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& rOut);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CString FUN_14016a5c0(const char* psz, int n);
 void* FUN_140166440();

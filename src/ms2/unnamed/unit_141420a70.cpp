@@ -10,6 +10,7 @@
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/cequipitem.h"
 #include "ms2/commonfiles/itemdata.h"
+#include "ms2/commonfiles/featuremanager.h"
 
 class AvatarPC;
 
@@ -59,8 +60,7 @@ struct Unk_CzAvatarView
 struct Unk_CzEquipView { Unk_CustomizeCopy FUN_1411dc7a0(); };
 bool FUN_1409edd90(void* pHandle, int n);                         // 0x1409edd90
 void* FUN_1411dc7f0(void* pEquip);                                // 0x1411dc7f0
-class Unk_ContentSwitch { public: bool FUN_14036d570(int nFeature); };
-Unk_ContentSwitch* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar);
 

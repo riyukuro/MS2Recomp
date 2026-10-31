@@ -13,15 +13,15 @@
 #include "ms2/client/ms2/questmanager_2.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/fittingdollpc.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 // The local player: the dead / construct-mode tests.
-class Unk_GcPC
+class Unk_GcPC : public PC
 {
-public:
-    int FUN_14166ce30();                                    // dead
-    int FUN_141659610();                                    // construct mode
 };
 
 // The world manager (FUN_1403ed2d0).
@@ -32,10 +32,9 @@ public:
 };
 Unk_GcWorld* FUN_1403ed2d0();
 
-class Unk_GcUI { public: int FUN_141adbb00(); };            // CUIService
-Unk_GcUI* FUN_1403ed2b0();
-class Unk_GcKeyboard { public: bool FUN_14116dcb0(int nSetting, bool bDebugOnly, int nLevel); };
-Unk_GcKeyboard* FUN_14025e7c0();
+            // CUIService
+CUIService* FUN_1403ed2b0();
+CInputKeyHandler* FUN_14025e7c0();
 unsigned FUN_140869420();                                   // millisecond clock
 CQuestManager* FUN_140764020();
 

@@ -28,7 +28,6 @@
 // ---- unrecovered helpers ----
 
 // The property cache of the client's entities: a map keyed by property id (+0xd0) that is only kept when the flag at +0xc8 is set.
-CUIService* FUN_1403ed2b0();                                                    // the UI service
 unsigned FUN_1408a1ff0();                                                       // class id of int
 // Private members keep these non-POD, so /GS does not treat the out-param locals as buffers (the exe has no cookie).
 class Unk_PropIt { void* p; };
@@ -90,8 +89,8 @@ template efd::SmartPointer<efd::IMessage> efd::GenericFactory<efd::SmartPointer<
 //   the house demolish dialog (class id given), null when it is not open
 Unk_CMISDemolishUI* FUN_1410dbf80(unsigned nId)
 {
-    if (FUN_1403ed2b0() != 0) {
-        MS2Ptr<UIObject> sp = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nId);
+    if (TSingleton<CUIService>::GetInstance() != 0) {
+        MS2Ptr<UIObject> sp = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (sp.get() != 0)
             return reinterpret_cast<Unk_CMISDemolishUI*>(dynamic_cast<UIHouseDemolishDialog*>(sp.operator->()));
     }
@@ -102,7 +101,7 @@ Unk_CMISDemolishUI* FUN_1410dbf80(unsigned nId)
 unsigned FUN_14112e2a0();
 Unk_CMISHouseMark* FUN_1410dc020()
 {
-    CUIService* pUI = FUN_1403ed2b0();
+    CUIService* pUI = TSingleton<CUIService>::GetInstance();
     if (pUI == 0)
         return 0;
     MS2Ptr<UIObject> sp = pUI->FUN_141adcea0((eUIClassID)FUN_14112e2a0());

@@ -51,7 +51,7 @@ template <class T> T ClampProxyValue(const T &x, T lo, T hi) {
 extern int DAT_143ab0248; // platform setting owned by the configuration unit
 
 void FUN_14083d2b0(CStringW &);
-__int64 FUN_140869440();
+__int64 GetServerTime();
 unsigned char FUN_14028da10();
 CStringW FUN_1405c2690(CStringW, const CStringW &);
 #define PROXY_STREAM(p) (reinterpret_cast<CInputStream *>(reinterpret_cast<char *>(p) + 8))
@@ -2541,7 +2541,7 @@ void CPlatformProxy::vfunc_36(int p) {}
 // @0x1408f4690
 void Unk_UserProxyLabel::Expire() {
   if (m_18 != 0) {
-    __int64 now = FUN_140869440();
+    __int64 now = GetServerTime();
     if (now > m_18)
       Clear();
   }

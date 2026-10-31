@@ -16,6 +16,7 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -42,7 +43,6 @@ public:
 };
 Unk_GtBody* FUN_14166d220(PCBase* pOwner);
 class Unk_SSGWorld { public: PCBase* FUN_141bd1200(int nId); };          // the field's actor by id
-Unk_SSGWorld* FUN_1403ed2d0();
 int FUN_1409709b0(void* pBuffs);                                         // 0x1409709b0 the actor's buffs forbid a grab
 void* FUN_14165f100(MyPC* pPC);                                          // 0x14165f100 the playing emotion
 void FUN_14165f170(MyPC* pPC);                                           // 0x14165f170 stop it
@@ -126,7 +126,7 @@ void StateGrabTarget::vfunc_3(double fTime)
     if (m_spGrab == 0)
         return;
     StateDataGrabTarget* pData = m_spGrab.get();
-    PCBase* pGrabber = FUN_1403ed2d0()->FUN_141bd1200(pData->m_nTarget);
+    PCBase* pGrabber = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd1200(pData->m_nTarget);
     if (pGrabber == 0 || pGrabber->FUN_14166ce30() != 0 || FUN_1409709b0(pGrabber->FUN_1416749a0()) != 0)
     {
         m_pOwner->vfunc_59(5, 0, 0, 0);

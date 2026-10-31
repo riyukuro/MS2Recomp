@@ -10,6 +10,7 @@
 #include "hook/ms2hook.h"
 
 struct Unk_CMISStr;                                          // efd::utf8string (0x20)
+struct Unk_CMISStrView { Unk_CMISStr* m_first; };            // the string's first member, its internal string
 
 void FUN_14114d9b0(Unk_CMISStr* pStr, const char* pSz);      // operator+= (const char*)
 Unk_CMISStr* FUN_1409a1570(Unk_CMISStr* pStr, Unk_CMISStr* pAdd);   // operator+= (const string&)
@@ -31,9 +32,8 @@ Unk_CMISStr* FUN_14112cd90(Unk_CMISStr* pStr, Unk_CMISStr* pAdd)
 }
 
 // @0x14112cdc0
-// MS2-FUNCTIONAL: as FUN_14112cd90 - the exe routes the first argument through rax (its own home) before the call.
 Unk_CMISStr* FUN_14112cdc0(Unk_CMISStr* pStr, const char* pSz)
 {
-    FUN_14112cd60(pStr, pSz);
+    FUN_14112cd60(reinterpret_cast<Unk_CMISStr*>(&reinterpret_cast<Unk_CMISStrView*>(pStr)->m_first), pSz);
     return pStr;
 }

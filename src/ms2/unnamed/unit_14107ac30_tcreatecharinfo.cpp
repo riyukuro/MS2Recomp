@@ -31,6 +31,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/jobtable.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -58,7 +59,6 @@ MS2_CHECK_OFFSET(Unk_PCArg125, m_strName, 0x3e8);
 class Unk_MyPCEquip : public PCGemEquip {};
 int FUN_14123c580(PCBase* pPC);                                         // the object id
 struct Unk_JobTable;
-Unk_JobTable* FUN_1401d7a50();
 int FUN_140644bb0(Unk_JobTable* p, int nClass);
 bool FUN_1401c0050(MS2Ptr<CItem>& ref, int n);
 int FUN_14107c2d0(int nId, unsigned nType, unsigned nSex, PC* pPC);
@@ -507,7 +507,7 @@ int FUN_14107c2d0(int nId, unsigned nType, unsigned nSex, PC* pPC)
     kInfo.m_nType = nId;
     kInfo.m_nGender = nType;
     kInfo.m_nJobCode = nSex;
-    kInfo.m_n30 = FUN_140644bb0(FUN_1401d7a50(), nSex);
+    kInfo.m_n30 = FUN_140644bb0(reinterpret_cast<Unk_JobTable*>(TSingleton<JobTable>::GetInstance()), nSex);
     return kInfo.FUN_14107c3a0(pPC);
 }
 MS2_REPLACE(0x14107c2d0, FUN_14107c2d0, 190, 0xB277E6A4);

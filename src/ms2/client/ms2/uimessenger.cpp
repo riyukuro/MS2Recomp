@@ -368,6 +368,23 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/blindmanager.h"
+#include "ms2/client/ms2/buddymanager.h"
+#include "ms2/commonfiles/dynamicbanwordmanager.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/clientlogmanager.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/uitalkmanager.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/gfxmanager.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/cmycharacter.h"
+#include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/weddingmanager.h"
 
 // The exe's out-of-line CStringW operator+ copies (the clang hook build cannot compile ATL's: MFC CopyChars import).
 CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB);         // CStringW + CStringW
@@ -405,9 +422,7 @@ class ASDialog : public ASUIComponent
 {
 public:
     int FUN_1422c1340();                                            // the width
-    int FUN_1422c13b0();                                            // the height
     void FUN_1422c7490(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // "moved"
-    void FUN_1422deb40(bool bActive);                               // the active frame
     void FUN_1407cb9c0(const char* szName, int n);                  // set an int member
 };
 
@@ -432,40 +447,29 @@ public:
 };
 
 // The key state.
-class Unk_MsgKeys
+class Unk_MsgKeys : public CInputKeyHandler
 {
 public:
-    bool FUN_14116d840();                                           // escape pressed
     bool FUN_14116d9c0(int nKey, int a, int b);                     // key pressed
     bool FUN_14116dd30(int nKeyCode, int a, int b);                 // bound key pressed
-    bool FUN_14116d720();                                           // the ":alias:" emoticons are on
     bool FUN_14116d7a0(int nKey);                                   // a key is held
 };
 Unk_MsgKeys* FUN_14025e7c0();
 
 // The own field state.
-class Unk_MsgField
+class Unk_MsgField : public CUIService
 {
 public:
-    int FUN_141adbb00();
     void FUN_141adc530(int nUiId);                                  // opens a UI
     void FUN_141adc750(int nUiId);                                  // toggles a UI
     int FUN_141adc940(int nUiId);                                   // the UI can open
-    void FUN_141add1f0();                                           // the field chat is blocked
 };
-Unk_MsgField* FUN_1403ed2b0();
 
 // The notify manager.
-class Unk_MsgNotices
-{
-public:
-    void FUN_140da4e40(CStringW strName, Delegate<void(NotifyObject*)> cb);   // subscribe
-    void FUN_140da4eb0(CStringW strName, Delegate<void(NotifyObject*)> cb);   // unsubscribe
-};
-Unk_MsgNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 // The data file loader.
-class Unk_MsgFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* szPath, int a, bool b, bool c); };
+class Unk_MsgFiles : public CFileSystem { };
 Unk_MsgFiles* FUN_140166420();
 
 CString FUN_14071a6f0(const CString& strFile);                      // the data path of a file
@@ -493,15 +497,12 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType);          // uicommon.
 void FUN_1418fdfd0(__int64 nKey);                                   // uicommon.cpp: blocks a user
 
 // The emoticon tables and the per-user emoticon state.
-class Unk_MsgUser
+class Unk_MsgUser : public CMyCharacter
 {
 public:
-    MS2Ptr<DungeonRecordManagerCli> FUN_140d9f2c0();                // the dungeon records
     int FUN_140d9f880(int nRoomId);                                 // the room's entry state (10+: refused)
-    MS2Ptr<CChatEmoticonCli> FUN_140d9f8f0();
 };
 Unk_MsgUser* FUN_140931510();
-CChatEmoticonTable* FUN_1409eecd0();
 
 // The world and its local player (the selected super world chat item).
 class Unk_MsgWorld
@@ -510,8 +511,7 @@ public:
     MyPC* FUN_141bd0cc0();
     PCBase* FUN_141bd1420(CStringW strName);                        // a player by name
 };
-Unk_MsgWorld* FUN_1403ed2d0();
-extern Unk_Inventory DAT_143ab2a90;                                 // the player's inventory
+extern Unk_Inventory g_143ab2a90;                                   // the player's inventory
 
 // The messenger state (messengerdata.cpp's Unk_MdState): the current window name and the browser (+0x48).
 class Unk_MsgState
@@ -542,13 +542,7 @@ public:
 };
 MS2Ptr<Unk_MsgEmotionKeywords> FUN_140347050(int nEmotionId);
 
-class Unk_MsgStrings
-{
-public:
-    CStringW FUN_1422af5f0(int nId);                                // the UI string table
-    CStringW FUN_1422b0570(const CString& strKey);                  // the text of a "$..." key
-};
-Unk_MsgStrings* FUN_14025e7a0();
+GFxManager* FUN_14025e7a0();
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1409e97f0(int nStringId, const int& n);                // a string with one number
 CStringW FUN_1409e97f0(int nStringId, const unsigned& n);
@@ -566,11 +560,8 @@ int FUN_140718200(const CStringW& str);                             // to int
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);        // a system message
 void FUN_1412b9870(int nRoomId, int nState);                        // the room entry refusal message
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);   // a yes/no box
-CPartyManager* FUN_1409670d0();
-DungeonRoomTable* FUN_14031c2a0();
 UIDungeonRoomDialog* FUN_140961550(int nUiId);                      // Unk_GetUI<UIDungeonRoomDialog>
-class Unk_MsgNames { public: CStringW FUN_141811980(int nKind, int nId); };   // names of ids
-Unk_MsgNames* FUN_1401a9d70();
+   // names of ids
 UIMessenger* FUN_141a184c0(CString strName);                       // Unk_GetUI<UIMessenger> by name
 
 class TiXmlElement
@@ -616,9 +607,9 @@ int UIMessenger::vfunc_65()
 {
     if (!UIDialog::vfunc_65())
         return 0;
-    FUN_140939a10()->FUN_140da4e40(L"NotifyGameEventChanged",
+    FUN_140939a10()->RegisterNotify(L"NotifyGameEventChanged",
                                    Delegate<void(NotifyObject*)>(this, &UIMessenger::FUN_141a0f550));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChatEmoticonSelected",
+    FUN_140939a10()->RegisterNotify(L"NotifyChatEmoticonSelected",
                                    Delegate<void(NotifyObject*)>(this, &UIMessenger::FUN_141a0f5d0));
     return 1;
 }
@@ -627,9 +618,9 @@ int UIMessenger::vfunc_65()
 void UIMessenger::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyGameEventChanged",
+    FUN_140939a10()->UnregisterNotify(L"NotifyGameEventChanged",
                                    Delegate<void(NotifyObject*)>(this, &UIMessenger::FUN_141a0f550));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyChatEmoticonSelected",
+    FUN_140939a10()->UnregisterNotify(L"NotifyChatEmoticonSelected",
                                    Delegate<void(NotifyObject*)>(this, &UIMessenger::FUN_141a0f5d0));
     m_inputHistory.RemoveAll();
     m_tabs.RemoveAll();
@@ -839,7 +830,7 @@ int UIMessenger::vfunc_13()
     }
     else if (FUN_14025e7c0()->FUN_14116d9c0(0x39, 0, 0))
     {
-        if (FUN_1403ed2b0()->FUN_141adbb00())
+        if (reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00())
         {
             FUN_141a14600();
             return 1;
@@ -1284,10 +1275,10 @@ void UIMessenger::FUN_141a0f5d0(NotifyObject* pNotify)
         FUN_141a13940();
         return;
     }
-    ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(pSelected->m_nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(pSelected->m_nEmoticonId);
     if (!spEmo)
         return;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x4c3, 0);
@@ -1304,14 +1295,14 @@ void UIMessenger::FUN_141a0f5d0(NotifyObject* pNotify)
 // @0x141a0f7b0
 void UIMessenger::FUN_141a0f7b0()
 {
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     FUN_141a14dc0();
     int nType = FUN_141a14500();
     if (!m_pBrowser->FUN_141a264c0(0x10))
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(pPlayer->FUN_1416639e0());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e2e0(pPlayer->FUN_1416639e0());
         if (spItem)
             nType = 0x10;
     }
@@ -1427,10 +1418,10 @@ bool UIMessenger::FUN_141a0fcb0(int nButton, const CMsgBoxData& box)
 // @0x141a0fe20
 int UIMessenger::FUN_141a0fe20(int nEmoticonId)
 {
-    ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!spEmo)
         return 0;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x782, 0);
@@ -1451,7 +1442,7 @@ int UIMessenger::FUN_141a0fe20(int nEmoticonId)
 // @0x141a10010
 void UIMessenger::FUN_141a10010(int nType, int nEmoticonId)
 {
-    ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!spEmo)
         return;
     CStringW strSize(L"");
@@ -1493,10 +1484,10 @@ void UIMessenger::FUN_141a10010(int nType, int nEmoticonId)
 // @0x141a10490
 int UIMessenger::FUN_141a10490(int nEmoticonId, bool bFavorite)
 {
-    ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!spEmo)
         return 0;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x7d3, 0);
@@ -1678,7 +1669,7 @@ void UIMessenger::FUN_141a13210()
     MS2Ptr<ASTextInput> spInput = m_textInput;
     if (spInput.IsNull())
         return;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x720, 0);
@@ -1688,7 +1679,7 @@ void UIMessenger::FUN_141a13210()
     strText.Trim();
     std::list<ChatEmoticonDataPtr> found;
     std::list<ChatEmoticonDataPtr> aliases;
-    FUN_1409eecd0()->FUN_1401e74c0(strText, &aliases);
+    TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e74c0(strText, &aliases);
     std::list<ChatEmoticonDataPtr>& rAliases = aliases;
     std::list<ChatEmoticonDataPtr>::const_iterator itEnd = rAliases.end();
     for (std::list<ChatEmoticonDataPtr>::const_iterator it = rAliases.begin(); it != itEnd; ++it)
@@ -1712,7 +1703,7 @@ void UIMessenger::FUN_141a13510(std::list<ChatEmoticonDataPtr>& emoticons)
 {
     if (emoticons.empty())
         return;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x747, 0);
@@ -1899,14 +1890,14 @@ int UIMessenger::FUN_141a14250()
         }
         do
         {
-            bool bEmoticons = FUN_14025e7c0()->FUN_14116d720();
+            bool bEmoticons = FUN_14025e7c0()->IsDebugMode();
             if (!bEmoticons)
                 break;
             int nLast = strText.GetLength() - 1;
             if (strText.GetAt(0) != L':' || strText.GetAt(nLast) != L':')
                 break;
             std::list<ChatEmoticonDataPtr> aliases;
-            FUN_1409eecd0()->FUN_1401e74c0(strText, &aliases);
+            TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e74c0(strText, &aliases);
             if (aliases.size() > 0)
                 return 0x18;
         } while (0);
@@ -1979,7 +1970,7 @@ void UIMessenger::FUN_141a146d0(int nType)
 // @0x141a14760
 void UIMessenger::FUN_141a14760()
 {
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (m_subject.get() != 0)
@@ -1991,7 +1982,7 @@ void UIMessenger::FUN_141a14760()
         int nType = FUN_141a14580(nNext);
         if (nType == 0x10)
         {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(pPlayer->FUN_1416639e0());
+            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e2e0(pPlayer->FUN_1416639e0());
             if (spItem == 0)
             {
                 if (m_pBrowser->FUN_141a264c0(0xb))
@@ -2007,7 +1998,7 @@ void UIMessenger::FUN_141a14760()
 // @0x141a148b0
 bool UIMessenger::FUN_141a148b0(const CStringW& strText)
 {
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
     ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> > emotions;
@@ -2046,7 +2037,7 @@ bool UIMessenger::FUN_141a148b0(const CStringW& strText)
 // @0x141a14bb0
 void UIMessenger::FUN_141a14bb0(const CStringW& strTarget)
 {
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (pPlayer->vfunc_77() == strTarget)
@@ -2175,7 +2166,7 @@ void UIMessenger::vfunc_91()
 // @0x141a15f60
 void UIMessenger::vfunc_92()
 {
-    if (FUN_1403ed2b0()->FUN_141adc940(0x4e62))
+    if (reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e62))
     {
         const CStringW& strName = FUN_141a13d20();
         if (FUN_141a0e810(strName, 1, 1, 0))
@@ -2184,7 +2175,7 @@ void UIMessenger::vfunc_92()
             vfunc_4();
             FUN_141482e80()->m_nNewTabMode = 2;
             FUN_141482e80()->m_pNewTabWindow = this;
-            FUN_1403ed2b0()->FUN_141adc530(0x4e62);
+            reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e62);
         }
     }
 }
@@ -2242,7 +2233,7 @@ void UIMessenger::vfunc_96(int nMenu)
     {
         FUN_141482e80()->m_nNewTabMode = 1;
         FUN_141482e80()->m_pNewTabWindow = this;
-        FUN_1403ed2b0()->FUN_141adc530(0x4e62);
+        reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e62);
     }
     else if (nMenu == 1)
     {
@@ -2385,7 +2376,7 @@ void UIMessenger::FUN_141a16c50(int nRoomId)
 // @0x141a16cc0
 void UIMessenger::FUN_141a16cc0(int nPartyId, CStringW strLeader, int nRoomId)
 {
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return;
     if (pMe->vfunc_77() == strLeader)
@@ -2393,7 +2384,7 @@ void UIMessenger::FUN_141a16cc0(int nPartyId, CStringW strLeader, int nRoomId)
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_is_my_dungeon_help")), 1, 1);
         return;
     }
-    if (FUN_1409670d0()->FUN_14162ab20())
+    if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20())
     {
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_has_party")), 1, 1);
         return;
@@ -2404,18 +2395,18 @@ void UIMessenger::FUN_141a16cc0(int nPartyId, CStringW strLeader, int nRoomId)
         FUN_1412b9870(nRoomId, nState);
         return;
     }
-    if (!FUN_140931510()->FUN_140d9f2c0()->CanClaimHelperReward(nRoomId))
+    if (!FUN_140931510()->GetRecord()->CanClaimHelperReward(nRoomId))
     {
-        DungeonRoomPtr spRoom = FUN_14031c2a0()->GetRoom(nRoomId);
+        DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nRoomId);
         if (spRoom == 0)
             return;
         FUN_1412751f0(FUN_140bfa7f0(CStringW(L"s_party_join_only_dungeon_expert"),
-                                    FUN_1401a9d70()->FUN_141811980(0x14, nRoomId),
+                                    TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nRoomId),
                                     spRoom->m_dungeonHelperRequireClearCount), 1, 1);
         return;
     }
     CStringW strMsg = FUN_1408f71a0(CStringW(L"s_party_join_dungeon_helper_msg"), strLeader,
-                                    FUN_1401a9d70()->FUN_141811980(0x14, nRoomId));
+                                    TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nRoomId));
     MS2Ptr<CMsgBoxData> box = FUN_140d74230(
         Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a17bc0), CStringW(strMsg));
     if (box.get() != 0)
@@ -2428,7 +2419,7 @@ void UIMessenger::FUN_141a16cc0(int nPartyId, CStringW strLeader, int nRoomId)
 // @0x141a172a0
 void UIMessenger::FUN_141a172a0(int nPartyId, CStringW strLeader, int nRoomId)
 {
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return;
     if (pMe->vfunc_77() == strLeader)
@@ -2436,7 +2427,7 @@ void UIMessenger::FUN_141a172a0(int nPartyId, CStringW strLeader, int nRoomId)
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_is_my_dungeon_help")), 1, 1);
         return;
     }
-    if (FUN_1409670d0()->FUN_14162ab20())
+    if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20())
     {
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_has_party")), 1, 1);
         return;
@@ -2448,7 +2439,7 @@ void UIMessenger::FUN_141a172a0(int nPartyId, CStringW strLeader, int nRoomId)
         return;
     }
     CStringW strMsg = FUN_1408f71a0(CStringW(L"s_party_join_dungeon_member_msg"), strLeader,
-                                    FUN_1401a9d70()->FUN_141811980(0x14, nRoomId));
+                                    TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nRoomId));
     MS2Ptr<CMsgBoxData> box = FUN_140d74230(
         Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a17c90), CStringW(strMsg));
     if (box.get() != 0)
@@ -2461,7 +2452,7 @@ void UIMessenger::FUN_141a172a0(int nPartyId, CStringW strLeader, int nRoomId)
 // @0x141a17690
 void UIMessenger::FUN_141a17690(CStringW strName)
 {
-    FUN_1409670d0()->SendPartyMode1(CStringW(strName));
+    TSingleton<CPartyManager>::GetInstance()->SendPartyMode1(CStringW(strName));
 }
 
 // @0x141a17700
@@ -2647,26 +2638,12 @@ public:
 };
 class Unk_MbStrings { public: MS2Ptr<Unk_MbChecker> FUN_140229a50(); };
 Unk_MbStrings* FUN_14025e7d0();
-class Unk_MbDynamicBan { public: int FUN_14034a230(const CStringW& str, CStringW& strReplaced); };   // 2: drop, 1: replaced
-Unk_MbDynamicBan* FUN_1414a56d0();
-class Unk_MbBlind { public: bool FUN_140a25840(int nKind, CStringW strName); };   // the user is blinded
-Unk_MbBlind* FUN_1409c1730();
-class Unk_MbBuddies
-{
-public:
-    unsigned FUN_140ae51b0(__int64 nCharId);                        // blocked by id
-    unsigned FUN_140ae5240(const CStringW& strName);                // blocked by name
-};
-Unk_MbBuddies* FUN_14097a780();
-class Unk_MbFeatures
-{
-public:
-    bool FUN_14036d570(int nFeature);
-    bool FUN_14036e5b0();                                           // the meret market is off
-};
-Unk_MbFeatures* FUN_140166410();
-class Unk_MbReserved { public: void FUN_1416fb340(CStringW& str); };
-Unk_MbReserved* FUN_1403b4750();
+   // 2: drop, 1: replaced
+   // the user is blinded
+BlindManager* FUN_1409c1730();
+CBuddyManager* FUN_14097a780();
+CFeatureManager* FUN_140166410();
+CReservedWordTable* FUN_1403b4750();
 
 // The game options: the community switches and the chat balloon switches.
 class Unk_MbBalloons { public: int FUN_14125c820(int nType); };   // the balloon shows the chat type
@@ -2676,23 +2653,19 @@ public:
     Unk_CommunityStateB* FUN_140ae6540();
     Unk_MbBalloons* FUN_140b123b0();
 };
-Unk_MbGameOption* FUN_1409a8b10();
 
-class Unk_MbTalk { public: int FUN_141b21220(); };               // UITalkManager: a talk is running
-Unk_MbTalk* FUN_140967100();
+               // UITalkManager: a talk is running
+UITalkManager* FUN_140967100();
 class Unk_MbItemTable { public: int FUN_1405569f0(int nGrade); };   // the grade colour
-Unk_MbItemTable* FUN_140281980();
-class Unk_MbLogs { public: void FUN_141451a60(); };               // ClientLogManager::Flush
-Unk_MbLogs* FUN_1412976a0();
+               // ClientLogManager::Flush
 class Unk_MbConfig { public: char m_pad_00[0x60]; CString m_strRoot; };   // +0x60 the client root
 Unk_MbConfig* FUN_1401d31f0();
-CUserCommandCli* FUN_14135a4d0();
 UIWhisperNotifyDialog* FUN_140e88970(int nUiId);                    // Unk_GetUI<UIWhisperNotifyDialog>
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 
 extern MessengerData::ScreenSetting DAT_143adda48;                 // messengerdata.cpp: the shared screen look
 extern int DAT_143ab2864;                                          // the own object id
-extern unsigned long DAT_1439f880c;                                // the system notice colour
+extern unsigned long s_color25;                                    // the system notice colour
 
 CStringW FUN_1401aa6a0(int n);                                      // to string
 CStringW FUN_14052bd00(int nStringId, const CStringW& a);
@@ -2728,7 +2701,7 @@ CString FUN_141275750();                                            // the defau
 CString FUN_14016a5c0(const char* psz, int n);
 CStringW FUN_14016a730(const char* psz, int n);                     // narrow -> wide
 bool thunk_FUN_1420b1ae0(const char* pszPath);                      // directory exists
-__int64 FUN_140869440();                                            // now
+__int64 GetServerTime();                                            // now
 int FUN_1418dd0c0();                                                // the bottom bar height
 int FUN_1418dd110();
 
@@ -2914,10 +2887,10 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
         pChecker->FUN_140226980(strText);
         pChecker->FUN_140226b10(strText);
     }
-    if (FUN_1414a56d0() != 0)
+    if (TSingleton<CDynamicBanWordManager>::GetInstance() != 0)
     {
         CStringW strReplaced;
-        int nResult = FUN_1414a56d0()->FUN_14034a230(strText, strReplaced);
+        int nResult = TSingleton<CDynamicBanWordManager>::GetInstance()->FUN_14034a230(strText, strReplaced);
         if (nResult == 2)
             return;
         if (nResult == 1)
@@ -2925,7 +2898,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     }
     if (strText.IsEmpty())
         return;
-    if (FUN_1409c1730()->FUN_140a25840(0, strName))
+    if (FUN_1409c1730()->IsBlocked(0, strName))
         return;
     if (nType == 5)
     {
@@ -2939,7 +2912,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     }
     else if (nType == 3)
     {
-        if (MSG_COMMUNITY_FLAGS(FUN_1409a8b10()->FUN_140ae6540())->m_b7)
+        if (MSG_COMMUNITY_FLAGS(reinterpret_cast<Unk_MbGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540())->m_b7)
         {
             // the whisper block option: answer with the block notice
             Unk_CommandChat chat;
@@ -2967,7 +2940,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     else if (nType == 0xd || nType == 0xe)
     {
         if (line.m_nStringId == 0x35)
-            FUN_1403ed2b0()->FUN_141add1f0();
+            reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141add1f0();
         else
             FUN_1412751f0(strText, 1, 1);
     }
@@ -2978,19 +2951,19 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     }
     else if (nType == 0x10)
     {
-        MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pMe != 0 && pMe->FUN_141656a80() == nCharId)
         {
-            const CStringW& strMsg = FUN_14052bd00(0xac7, FUN_1401a9d70()->FUN_141811980(1, line.m_nFieldId));
+            const CStringW& strMsg = FUN_14052bd00(0xac7, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, line.m_nFieldId));
             FUN_1412751f0(strMsg, 1, 1);
         }
     }
     else if (nType == 0x19)
     {
-        MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pMe != 0 && pMe->FUN_141656a80() == nCharId)
         {
-            const CStringW& strMsg = FUN_14052bd00(0xaca, FUN_1401a9d70()->FUN_141811980(1, line.m_nFieldId));
+            const CStringW& strMsg = FUN_14052bd00(0xaca, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, line.m_nFieldId));
             FUN_1412751f0(strMsg, 1, 1);
         }
     }
@@ -3000,7 +2973,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     }
     if (nType == 10)
     {
-        FUN_14135a4d0()->ExecuteInternal(strText);
+        TSingleton<CUserCommandCli>::GetInstance()->ExecuteInternal(strText);
         return;
     }
     if (nType != 4)
@@ -3097,12 +3070,12 @@ void UIMessengerBrowser::FUN_141a230e0(CInPacket& packet)
     __int64 nCharId = packet.ReadInt64();
     int nRoomId = packet.ReadInt32();
     unsigned bFlag = packet.ReadUInt8();
-    DungeonRoomPtr spRoom = FUN_14031c2a0()->GetRoom(nRoomId);
+    DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nRoomId);
     if (spRoom == 0)
         return;
     if (FUN_14097a780()->FUN_140ae51b0(nCharId))
         return;
-    FUN_1409670d0()->FUN_1416312f0(nPartyId);
+    TSingleton<CPartyManager>::GetInstance()->FUN_1416312f0(nPartyId);
     CStringW strHtml = FUN_141841c60(nPartyId, strLeader, nA, nCharId, nRoomId, spRoom->m_groupType, bFlag,
                                      spRoom->m_maxUserCount, FUN_141a27de0());
     FUN_141a26e00(strHtml, 0x1b);
@@ -3121,23 +3094,23 @@ void UIMessengerBrowser::FUN_141a233d0(CInPacket& packet)
     unsigned __int64 nCharId = in.ReadInt64();
     unsigned nRoomId = in.ReadInt32();
     int nMembers = in.ReadUInt8();
-    DungeonRoomPtr spRoom = FUN_14031c2a0()->GetRoom(nRoomId);
+    DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nRoomId);
     if (spRoom == 0)
         return;
     if (FUN_14097a780()->FUN_140ae51b0(nCharId))
         return;
-    FUN_1409670d0()->FUN_1416312f0(nPartyId);
+    TSingleton<CPartyManager>::GetInstance()->FUN_1416312f0(nPartyId);
     CStringW strUserEvent = FUN_141842c40(L"'event:userSelect,{0},{1},{2}'", strLeader, nAccountId, nCharId);
     CStringW strUser = FUN_1408f71a0(CStringW(L"s_html_chat_user_dungeon_member"), strUserEvent, strLeader);
     CStringW strJoinEvent = FUN_1418428c0(L"'event:joinPartyDungeonMember,{0},{1},{2}'", nPartyId, strLeader, nRoomId);
     CStringW strJoin = FUN_1405c2690(CStringW(L"s_html_chat_join_party"), strJoinEvent);
     CStringW strRoomEvent = FUN_140292a70(L"'event:dungeonRoom,{0}'", nRoomId);
     CStringW strRoom = FUN_1409eaa20(CStringW(L"s_html_chat_dungeon_name"), strRoomEvent,
-                                     FUN_140cbf840(spRoom->m_groupType), FUN_1401a9d70()->FUN_141811980(0x14, nRoomId));
+                                     FUN_140cbf840(spRoom->m_groupType), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nRoomId));
     CStringW strBody = FUN_14028dfa0(CStringW(L"s_html_chat_find_dungeon_member"), strUser, strRoom, nMembers,
                                      spRoom->m_maxUserCount, nNeedMember, nNeedHelper, strJoin);
     unsigned nFontSize = FUN_141a27de0();
-    CStringW strHtml = FUN_141843060(CStringW(L"s_html_chat_system_notice"), DAT_1439f880c, nFontSize, strBody);
+    CStringW strHtml = FUN_141843060(CStringW(L"s_html_chat_system_notice"), s_color25, nFontSize, strBody);
     FUN_141a26e00(strHtml, 0x1b);
 }
 
@@ -3183,7 +3156,7 @@ void UIMessengerBrowser::vfunc_15()
         else
             FUN_141a27ca0();
     }
-    FUN_1412976a0()->FUN_141451a60();
+    TSingleton<ClientLogManager>::GetInstance()->Flush();
 }
 
 // @0x141a23c20
@@ -3355,7 +3328,7 @@ void UIMessengerBrowser::FUN_141a24890(CItem* pItem, unsigned nCount, int nManyI
         strText = FUN_1401e8510(strFormat, strItem);
     }
     int nBefore = pItem->FUN_140526c50() - nCount;
-    if (FUN_14025e7c0()->FUN_14116d720())
+    if (FUN_14025e7c0()->IsDebugMode())
     {
         CStringW strDebug;
         unsigned nNow = pItem->FUN_140526c50();
@@ -3368,18 +3341,18 @@ void UIMessengerBrowser::FUN_141a24890(CItem* pItem, unsigned nCount, int nManyI
 // @0x141a24cb0
 void UIMessengerBrowser::FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta)
 {
-    if (!FUN_14025e7c0()->FUN_14116d720())
+    if (!FUN_14025e7c0()->IsDebugMode())
         return;
     CStringW strItem = FUN_141841b40(pItem, L"inven", DAT_143adda48.m_nFontSize);
     unsigned nBefore = nCount - nDelta;
     if (nBefore > nCount)
     {
         int nUsed = nDelta * -1;
-        Unk_MbLog(FUN_140166440(), 2, 0x21, L"{0} Item Use:{1}  [{2}->{3}]", strItem, nUsed, nBefore, nCount);
+        Unk_MbLog(GetLogString(), 2, 0x21, L"{0} Item Use:{1}  [{2}->{3}]", strItem, nUsed, nBefore, nCount);
     }
     else if (nBefore < nCount)
     {
-        Unk_MbLog(FUN_140166440(), 2, 0x21, L"{0} [Count:{1}] Item Add:{1} [{2}->{3}]", strItem, nDelta, nBefore,
+        Unk_MbLog(GetLogString(), 2, 0x21, L"{0} [Count:{1}] Item Add:{1} [{2}->{3}]", strItem, nDelta, nBefore,
                   nCount);
     }
 }
@@ -3387,21 +3360,21 @@ void UIMessengerBrowser::FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta
 // @0x141a24e10
 void UIMessengerBrowser::FUN_141a24e10(CItem* pItem)
 {
-    if (!FUN_14025e7c0()->FUN_14116d720())
+    if (!FUN_14025e7c0()->IsDebugMode())
         return;
     CStringW strItem = FUN_141841b40(pItem, L"inven", DAT_143adda48.m_nFontSize);
     unsigned nCount = pItem->FUN_140526c50();
-    Unk_MbLog(FUN_140166440(), 2, 0x21, L"{0} [Count:{1}] Item Removed", strItem, nCount);
+    Unk_MbLog(GetLogString(), 2, 0x21, L"{0} [Count:{1}] Item Removed", strItem, nCount);
 }
 
 // @0x141a24ee0
 void UIMessengerBrowser::FUN_141a24ee0(CItem* pItem)
 {
-    if (!FUN_14025e7c0()->FUN_14116d720())
+    if (!FUN_14025e7c0()->IsDebugMode())
         return;
     CStringW strItem = FUN_141841b40(pItem, L"inven", DAT_143adda48.m_nFontSize);
     unsigned nCount = pItem->FUN_140526c50();
-    Unk_MbLog(FUN_140166440(), 2, 0x21, L"{0} [Count:{1}] Item Added", strItem, nCount);
+    Unk_MbLog(GetLogString(), 2, 0x21, L"{0} [Count:{1}] Item Added", strItem, nCount);
 }
 
 // @0x141a24fb0
@@ -3572,7 +3545,7 @@ void UIMessengerBrowser::FUN_141a25ad0(CStringW& strHtml)
         {
             MS2Ptr<CItem> spItem = FUN_141a263d0(nUid);
             if (spItem.get() != 0)
-                nColor = FUN_140281980()->FUN_1405569f0(spItem->FUN_140526bd0());
+                nColor = reinterpret_cast<Unk_MbItemTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405569f0(spItem->FUN_140526bd0());
         }
         CStringW strColored = FUN_14183e930(strLink, nColor);
         strHtml.Replace(strLink, strColored);
@@ -3820,15 +3793,15 @@ int UIMessengerBrowser::FUN_141a26e00(const CStringW& strHtml, int nKind)
 // @0x141a26f10
 int UIMessengerBrowser::FUN_141a26f10(const CStringW& strName, const CStringW& strText, int nType)
 {
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return 0;
-    PCBase* pSpeaker = FUN_1403ed2d0()->FUN_141bd1420(strName);
+    PCBase* pSpeaker = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd1420(strName);
     if (pSpeaker == 0)
         return 0;
-    if (pSpeaker == pMe && FUN_140967100()->FUN_141b21220())
+    if (pSpeaker == pMe && FUN_140967100()->GetTalking())
         return 1;
-    int bShow = FUN_1409a8b10()->FUN_140b123b0()->FUN_14125c820(nType);
+    int bShow = reinterpret_cast<Unk_MbGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->FUN_14125c820(nType);
     CStringW strBalloon;
     if (nType == 7 && bShow)
         strBalloon = GetStringCommon(0xaa7);
@@ -3874,7 +3847,7 @@ int UIMessengerBrowser::FUN_141a271b0(const CStringW& strName, const CStringW& s
         m_timedLogs.erase(m_timedLogs.begin());
     CStringW strLine;
     strLine.Format(L"%s[%s] %s", (const wchar_t*)strTag, (const wchar_t*)strName, (const wchar_t*)strText);
-    __int64 nNow = FUN_140869440();
+    __int64 nNow = GetServerTime();
     m_timedLogs.insert(std::make_pair(nNow, strLine));
     ReportLog report(strName, strText);
     m_reports.AddTail(report);
@@ -4059,7 +4032,7 @@ int UIMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     {
         FUN_141a15890();
         if (!m_pBrowser->FUN_141a264c0(0x10) && FUN_141a144a0() == 0x10)
-            FUN_1403ed2b0()->FUN_141adc530(0x4f58);
+            reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f58);
         return 1;
     }
     if (_stricmp("eventShowWhisperList", szMethod) == 0)
@@ -4124,11 +4097,11 @@ int UIMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     }
     if (_stricmp("eventEmotion", szMethod) == 0)
     {
-        FUN_1403ed2b0()->FUN_141adc750(0x4e7a);
+        reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e7a);
     }
     else if (_stricmp("eventChatEmoticonOpen", szMethod) == 0)
     {
-        FUN_1403ed2b0()->FUN_141adc750(0x4f80);
+        reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f80);
     }
     else if (_stricmp("eventChatEmoticonPush", szMethod) == 0)
     {
@@ -4156,7 +4129,7 @@ int UIMessenger::vfunc_46()
         return 0;
     if (m_subject.get() != 0)
     {
-        CStringW strTooltip = FUN_14135a4d0()->Tooltip();
+        CStringW strTooltip = TSingleton<CUserCommandCli>::GetInstance()->Tooltip();
         m_subject->FUN_1422c7b40(strTooltip);
     }
     return 1;
@@ -4276,7 +4249,6 @@ int UIMessenger::vfunc_74(int a1, void* p2, void* p3)
     return 0;
 }
 
-CGuildManager* FUN_1403ed290();
 CClubClientManager* FUN_140e0d900(); template <> void MS2Ptr<CClubCli>::AddRef() const; template <> void MS2Ptr<CClubCli>::Release(); // clubcli.cpp (CPtred at +0xd8)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item table record
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);        // str equals psz
@@ -4286,7 +4258,7 @@ void FUN_141bca010(Unk_MsgWorld* pWorld);                           // the chat 
 // @0x141a10660
 void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget, __int64 nClubId)
 {
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return;
     int nChannel = FUN_141482f00(nType);
@@ -4329,7 +4301,7 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
     case 3:
         if (!strText.IsEmpty())
         {
-            if (FUN_1403ed290()->FUN_1413b6160() == 0)
+            if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() == 0)
             {
                 FUN_141275260(0x388, 1, 1);
             }
@@ -4397,11 +4369,11 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
     case 0x18:
         if (!strText.IsEmpty())
         {
-            if (FUN_1403ed290()->FUN_1413b6160() == 0)
+            if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() == 0)
             {
                 FUN_141275260(0x388, 1, 1);
             }
-            else if (!FUN_1403ed290()->FUN_1404d0600(pMe->vfunc_77(), 0x800))
+            else if (!TSingleton<CGuildManager>::GetInstance()->FUN_1404d0600(pMe->vfunc_77(), 0x800))
             {
                 FUN_141275260(0x415, 1, 1);
             }
@@ -4438,7 +4410,7 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
         }
         break;
     }
-    FUN_141bca010(FUN_1403ed2d0());
+    FUN_141bca010(reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance()));
 }
 
 // MS2-FUNCTIONAL: temporaries differ from the exe (functional-first)
@@ -4447,7 +4419,7 @@ int UIMessenger::FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks)
 {
     if (FUN_141a148b0(strText))
         return 1;
-    if (FUN_14135a4d0()->Execute(CStringW(strText)))
+    if (TSingleton<CUserCommandCli>::GetInstance()->Execute(CStringW(strText)))
         return 1;
     int nPos = 0;
     CStringW strCommand = strText.Tokenize(L" ", nPos);
@@ -4469,7 +4441,7 @@ int UIMessenger::FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks)
     case 0x12:
         FUN_141a146d0(nType);
         if (!m_pBrowser->FUN_141a264c0(0x10) && FUN_141a144a0() == 0x10)
-            FUN_1403ed2b0()->FUN_141adc530(0x4f58);
+            reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f58);
         return 1;
     case 4:
         strTarget = strText.Tokenize(L" ", nPos);
@@ -4542,12 +4514,12 @@ int FUN_1403bb850();                                                // the chann
 // @0x141a12380
 bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
 {
-    if (nType == 0x10 && MSG_COMMUNITY_FLAGS(FUN_1409a8b10()->FUN_140ae6540())->m_b0)
+    if (nType == 0x10 && MSG_COMMUNITY_FLAGS(reinterpret_cast<Unk_MbGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540())->m_b0)
     {
-        MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pMe == 0)
             return false;
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(pMe->FUN_1416639e0());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e2e0(pMe->FUN_1416639e0());
         if (spItem == 0)
             return false;
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, GetStringCommon(0xaa1), 0, CStringW(L""));
@@ -4565,7 +4537,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
             return true;
         }
     }
-    if (nType == 0xb && MSG_COMMUNITY_FLAGS(FUN_1409a8b10()->FUN_140ae6540())->m_b1)
+    if (nType == 0xb && MSG_COMMUNITY_FLAGS(reinterpret_cast<Unk_MbGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540())->m_b1)
     {
         int nPrice = FUN_1403bb830();
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, FUN_1409e97f0(0xaa2, nPrice), 0, CStringW(L""));
@@ -4580,7 +4552,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
             return true;
         }
     }
-    if (nType == 0xc && MSG_COMMUNITY_FLAGS(FUN_1409a8b10()->FUN_140ae6540())->m_b2)
+    if (nType == 0xc && MSG_COMMUNITY_FLAGS(reinterpret_cast<Unk_MbGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540())->m_b2)
     {
         int nPrice = FUN_1403bb850();
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, FUN_1409e97f0(0xaa3, nPrice), 0, CStringW(L""));
@@ -4602,18 +4574,18 @@ template <class T> inline T Unk_HpxMin(T a, T b) { return a < b ? a : b; }
 void FUN_14183ea40(int nItemId, CStringW& strIconPath);             // the icon of an item
 int FUN_1403bb8a0();                                                // the world chat original price
 int FUN_1403bb8d0();                                                // the channel chat original price
-extern unsigned long DAT_1439f87d0;                                 // the subject colours: social
-extern unsigned long DAT_1439f87e8;                                 // party
-extern unsigned long DAT_1439f87ec;                                 // guild
-extern unsigned long DAT_1439f87f0;                                 // super
-extern unsigned long DAT_1439f87f4;                                 // world
-extern unsigned long DAT_1439f87f8;                                 // channel
+extern unsigned long s_color10;                                     // the subject colours: social
+extern unsigned long s_color16;                                     // party
+extern unsigned long s_color17;                                     // guild
+extern unsigned long s_color18;                                     // super
+extern unsigned long s_color19;                                     // world
+extern unsigned long s_color20;                                     // channel
 
 // MS2-FUNCTIONAL: temporaries differ from the exe (functional-first)
 // @0x141a14dc0
 void UIMessenger::FUN_141a14dc0()
 {
-    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return;
     FUN_141a13e00();
@@ -4625,7 +4597,7 @@ void UIMessenger::FUN_141a14dc0()
     if (!m_pBrowser->FUN_141a264c0(0x10))
     {
         int nItemId = pMe->FUN_1416639e0();
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(nItemId);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e2e0(nItemId);
         if (spItem == 0)
             nItemId = 0;
         CStringW strIcon;
@@ -4634,7 +4606,7 @@ void UIMessenger::FUN_141a14dc0()
         item.FUN_1409c0dc0(s_strFrame, "super");
         item.FUN_1407cbb20(s_strIconPath, CStringW(strIcon));
         item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_super")));
-        item.FUN_1409c4990(s_strColor, DAT_1439f87f0);
+        item.FUN_1409c4990(s_strColor, s_color18);
         spSubject->FUN_1422dfc70(item);
     }
     if (!m_pBrowser->FUN_141a264c0(0xb))
@@ -4644,7 +4616,7 @@ void UIMessenger::FUN_141a14dc0()
         item.FUN_1409c0d20(s_strPrice, FUN_1403bb830());
         item.FUN_1409c0d20(s_strOriginPrice, FUN_1403bb8a0());
         item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_world")));
-        item.FUN_1409c4990(s_strColor, DAT_1439f87f4);
+        item.FUN_1409c4990(s_strColor, s_color19);
         spSubject->FUN_1422dfc70(item);
     }
     if (!m_pBrowser->FUN_141a264c0(0xc))
@@ -4654,28 +4626,28 @@ void UIMessenger::FUN_141a14dc0()
         item.FUN_1409c0d20(s_strPrice, FUN_1403bb850());
         item.FUN_1409c0d20(s_strOriginPrice, FUN_1403bb8d0());
         item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_channel")));
-        item.FUN_1409c4990(s_strColor, DAT_1439f87f8);
+        item.FUN_1409c4990(s_strColor, s_color20);
         spSubject->FUN_1422dfc70(item);
     }
     if (!m_pBrowser->FUN_141a264c0(0))
     {
         ASObj item(2);
         item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_social")));
-        item.FUN_1409c4990(s_strColor, DAT_1439f87d0);
+        item.FUN_1409c4990(s_strColor, s_color10);
         spSubject->FUN_1422dfc70(item);
     }
     if (!m_pBrowser->FUN_141a264c0(7))
     {
         ASObj item(2);
         item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_party")));
-        item.FUN_1409c4990(s_strColor, DAT_1439f87e8);
+        item.FUN_1409c4990(s_strColor, s_color16);
         spSubject->FUN_1422dfc70(item);
     }
     if (!m_pBrowser->FUN_141a264c0(8))
     {
         ASObj item(2);
         item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_guild")));
-        item.FUN_1409c4990(s_strColor, DAT_1439f87ec);
+        item.FUN_1409c4990(s_strColor, s_color17);
         spSubject->FUN_1422dfc70(item);
     }
     if (!m_pBrowser->FUN_141a264c0(0x12))
@@ -4684,7 +4656,7 @@ void UIMessenger::FUN_141a14dc0()
         item.FUN_1409c0dc0(s_strFrame, "guildMegaphone");
         item.FUN_1407cbb20(s_strLabel,
                            FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_guild_megaphone")));
-        item.FUN_1409c4990(s_strColor, DAT_1439f87ec);
+        item.FUN_1409c4990(s_strColor, s_color17);
         spSubject->FUN_1422dfc70(item);
     }
     if (m_subjectIndex.find(m_nTargetSelectedIndex) == m_subjectIndex.end())
@@ -4707,7 +4679,6 @@ class Unk_MsgWedding
 public:
     bool FUN_141b867e0(__int64 nWeddingId);                         // the hall is open
 };
-Unk_MsgWedding* FUN_1409eed90();
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 int FUN_1418fd330(__int64 nCharId);
 void FUN_1418fde20(__int64 nAccountId, __int64 nCharId, int nKind, const CStringW& strName, Delegate<bool(int, const CMsgBoxData&)> callback);
@@ -4720,7 +4691,7 @@ int FUN_1407181a0(const CStringW& str);
 // @0x141a0a900
 void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
-    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (strMethod == "getTooltip")
@@ -4788,7 +4759,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
             {
                 Unk_PopupMenuInfo info(x, y, 3, 0x635e, 0, "", (void*)nAccountId);
                 CStringW strHistory;
-                m_pBrowser->FUN_141a254c0(FUN_140869440(), strHistory);
+                m_pBrowser->FUN_141a254c0(GetServerTime(), strHistory);
                 pMenu->FUN_141a805f0(info, (void*)nAccountId, nCharId, strName, strHistory, 4);
             }
         }
@@ -4898,7 +4869,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
         if (strB.GetLength() > 0)
             nB = _wtoi(strB);
         CStringW strText = FUN_140632a60(0xbfb, strGroom, strBride);
-        if (FUN_1409eed90() != 0 && FUN_1409eed90()->FUN_141b867e0(nWeddingId))
+        if (reinterpret_cast<Unk_MsgWedding*>(TSingleton<WeddingManager>::GetInstance()) != 0 && reinterpret_cast<Unk_MsgWedding*>(TSingleton<WeddingManager>::GetInstance())->FUN_141b867e0(nWeddingId))
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
             spBox->FUN_141a01800(1);

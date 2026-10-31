@@ -17,6 +17,8 @@
 #include <stdlib.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // Unrecovered xml loader helpers (the same ones the other table units use).
 class Unk_140165cf0
@@ -43,8 +45,6 @@ class Unk_UhFiles;
 int FUN_1403974b0(Unk_UhFiles* pFiles, TiXmlDocument* doc, const char* path, int a, bool b, bool c);   // member in the exe, called with `this` last
 Unk_UhFiles* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-class Unk_UhStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_UhStrings* FUN_1401a9d70();
 
 extern Vector3 DAT_143a08d08;   // zero colour
 extern Vector3 DAT_143b01a60;   // zero point
@@ -52,10 +52,8 @@ extern Vector3 DAT_143a08cf8;   // zero up axis
 
 // The statics of the home apply functions (opaque stand-ins for helpers of other units).
 class Unk_UhUiService { public: void FUN_141ad9980(unsigned char nStage); };
-Unk_UhUiService* FUN_1403ed2b0();
 struct Unk_UhHandle;
 struct Unk_UhWorld { Unk_UhHandle FUN_141bd0420(unsigned hash); };   // the tagged-entity lookup of the world service
-Unk_UhWorld* FUN_1403ed2d0();
 void* FUN_1409478c0();
 void FUN_140aed750(void* pCamera, int nMode, int nKeep);
 void FUN_14097faa0(void* pDst, const Unk_UhPoint3& pt);     // NiPoint3::operator=
@@ -156,14 +154,14 @@ Unk_UhPoint3 UgcHomeOptionData::GetCameraUp(unsigned char nType)
 // @0x140b682c0
 void UgcHomeOptionData::ApplyBg(unsigned char nType)
 {
-    FUN_1403ed2b0()->FUN_141ad9980(nType);
+    reinterpret_cast<Unk_UhUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141ad9980(nType);
 }
 
 // @0x140b682f0
 void UgcHomeOptionData::ApplyLight(unsigned char nType)
 {
     Unk_UhPoint3 color = GetLightColor(nType);
-    Unk_UhHandle hTag = FUN_1403ed2d0()->FUN_141bd0420(0x169ea355);
+    Unk_UhHandle hTag = reinterpret_cast<Unk_UhWorld*>(WorldService::GetInstance())->FUN_141bd0420(0x169ea355);
     if ((FUN_1409f2170(&hTag) != 0 ? true : false) && FUN_140b285a0(FUN_1409f2190(&hTag)) > 0)
     {
         Unk_UhEntRef ent(FUN_140b285b0(FUN_1409f2190(&hTag)));
@@ -201,7 +199,7 @@ void UgcHomeOptionData::LoadBg()
         FUN_140873220(pNode, "id", nId);
         CString strPath;
         FUN_1408733e0(pNode, "path", strPath);
-        MS2Ptr<UgcHomeBgData> spData(new UgcHomeBgData(FUN_1401a9d70()->FUN_141811980(0x33, nId), strPath));
+        MS2Ptr<UgcHomeBgData> spData(new UgcHomeBgData(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x33, nId), strPath));
         m_mapBg.SetAt((unsigned)m_mapBg.GetCount(), spData);
     }
 }
@@ -224,7 +222,7 @@ void UgcHomeOptionData::LoadLight()
         Unk_UhPoint3 color;
         FUN_1408746f0(pNode, "ambientcolor", color);
         color.FUN_140ae9270(255.0f);
-        MS2Ptr<UgcHomeLightData> spData(new UgcHomeLightData(FUN_1401a9d70()->FUN_141811980(0x33, nId), color));
+        MS2Ptr<UgcHomeLightData> spData(new UgcHomeLightData(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x33, nId), color));
         m_mapLight.SetAt((unsigned)m_mapLight.GetCount(), spData);
     }
 }
@@ -248,7 +246,7 @@ void UgcHomeOptionData::LoadCamera()
         FUN_1408746f0(pNode, "offset", offset);
         Unk_UhPoint3 upAxis(DAT_143b01a60);
         FUN_1408746f0(pNode, "upAxis", upAxis);
-        MS2Ptr<UgcHomeCameraData> spData(new UgcHomeCameraData(FUN_1401a9d70()->FUN_141811980(0x33, nId)));
+        MS2Ptr<UgcHomeCameraData> spData(new UgcHomeCameraData(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x33, nId)));
         spData->m_offset = offset;
         spData->m_upAxis = upAxis;
         m_mapCamera.SetAt((unsigned)m_mapCamera.GetCount(), spData);

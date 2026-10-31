@@ -98,6 +98,10 @@
 #include "ms2/commonfiles/gameevent.h"
 #include "ms2/client/ms2/guideentity.h"
 #include "ms2/client/ms2/uicutscenemovie.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/gfxui/uiswfentity.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/placeholder/uiugceventdispatcher.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -107,11 +111,9 @@ CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);        // ANSI -> wi
 void FUN_1419cae20(Unk_GmItemEvents* pEvents, UIItemEventListener* pListener);
 void FUN_1419caeb0(Unk_GmItemEvents* pEvents, UIItemEventListener* pListener);
 class Unk_GmUgcEvents;
-Unk_GmUgcEvents* FUN_140bc09f0();                                   // the UGC event dispatcher
 void FUN_141b38be0(Unk_GmUgcEvents* pEvents, UIUGCEventListener* pListener);
 void FUN_141b38c70(Unk_GmUgcEvents* pEvents, UIUGCEventListener* pListener);
 class Unk_GmStatusEvents;
-Unk_GmStatusEvents* FUN_140aa6d40();                                // the status event dispatcher
 void FUN_141b0cd00(Unk_GmStatusEvents* pEvents, UIStatusEventListener* pListener);
 void FUN_141b0cd90(Unk_GmStatusEvents* pEvents, UIStatusEventListener* pListener);
 NotifySystem* FUN_140939a10();
@@ -123,7 +125,7 @@ int FUN_141383760(int nType);                                       // the activ
 CStringW FUN_1413892f0(int nTrigger);                               // trigger name
 void FUN_1413a3710(CGuideEntity* pEntity);                          // empty hook (guideentity_9.cpp)
 
-class Unk_GmFileSystem { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); bool FUN_140398190(); };
+class Unk_GmFileSystem : public CFileSystem { };
 Unk_GmFileSystem* FUN_140166420();
 class Unk_GmLog { public: void FUN_14015eb90(int level, int category, const wchar_t* format, const CStringA& arg); };
 Unk_GmLog* FUN_140166440();
@@ -131,7 +133,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 bool FUN_14028f710(Unk_140165cf0* pElem);                           // element is enabled
 
-class Unk_GmMovie { public: int FUN_1419102c0(); };
+class Unk_GmMovie : public UICutSceneMovie { };
 Unk_GmMovie* FUN_14138fd50(unsigned nUIId);                         // the cut scene movie dialog
 class Unk_CommandUIRef {
 public:
@@ -142,7 +144,7 @@ private: void* unknown; UIObject* object;
 void* FUN_1403ed2b0();
 struct Unk_GeUiMgr { Unk_CommandUIRef FUN_141adcea0(int); };
 UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
-class Unk_GmPane { public: int FUN_1422dc2d0(); };
+class Unk_GmPane : public UISwfEntity { };
 Unk_GmPane* FUN_14136f3e0(unsigned nUIId);
 class Unk_GmScene { public: int FUN_1422b9dc0(); int FUN_1422b9e00(); };
 Unk_GmScene* FUN_1408e57f0();
@@ -171,8 +173,8 @@ CGuideManager::CGuideManager()
     : m_n20(0), m_n24(0), m_nDebug(0), m_entities(10), m_map60(10), m_map90(10), m_triggers(0x11, 0.75f, 0.25f, 2.25f, 10)
 {
     FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
-    FUN_141b38be0(FUN_140bc09f0(), static_cast<UIUGCEventListener*>(this));
-    FUN_141b0cd00(FUN_140aa6d40(), static_cast<UIStatusEventListener*>(this));
+    FUN_141b38be0(reinterpret_cast<Unk_GmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance()), static_cast<UIUGCEventListener*>(this));
+    FUN_141b0cd00(reinterpret_cast<Unk_GmStatusEvents*>(TSingleton<UIStatusEventDispatcher>::GetInstance()), static_cast<UIStatusEventListener*>(this));
     FUN_140939a10()->RegisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &CGuideManager::OnLearnEmotion));
     FUN_140939a10()->RegisterNotify(CStringW(L"NotifyUseSKill"), Delegate<void(NotifyObject*)>(this, &CGuideManager::OnUseSkill));
     FUN_140939a10()->RegisterNotify(CStringW(L"NotifyChangeMyLevel"), Delegate<void(NotifyObject*)>(this, &CGuideManager::OnChangeMyLevel));
@@ -183,8 +185,8 @@ CGuideManager::CGuideManager()
 CGuideManager::~CGuideManager()
 {
     FUN_1419caeb0(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
-    FUN_141b38c70(FUN_140bc09f0(), static_cast<UIUGCEventListener*>(this));
-    FUN_141b0cd90(FUN_140aa6d40(), static_cast<UIStatusEventListener*>(this));
+    FUN_141b38c70(reinterpret_cast<Unk_GmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance()), static_cast<UIUGCEventListener*>(this));
+    FUN_141b0cd90(reinterpret_cast<Unk_GmStatusEvents*>(TSingleton<UIStatusEventDispatcher>::GetInstance()), static_cast<UIStatusEventListener*>(this));
     FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &CGuideManager::OnLearnEmotion));
     FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyUseSKill"), Delegate<void(NotifyObject*)>(this, &CGuideManager::OnUseSkill));
     FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyChangeMyLevel"), Delegate<void(NotifyObject*)>(this, &CGuideManager::OnChangeMyLevel));

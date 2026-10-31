@@ -43,6 +43,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 #include <memory>
 #include <string>
@@ -50,7 +51,7 @@
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
@@ -93,13 +94,16 @@ private:
 };
 MS2_CHECK_SIZE(Unk_FmtBufBase, 0x210);
 
-class Unk_FmtBuf : public Unk_FmtBufBase
+class Unk_FmtBuf
 {
 public:
     explicit Unk_FmtBuf(const std::allocator<char>& alloc); // 0x1401db790
     ~Unk_FmtBuf();                                          // 0x1401dbf70
     void Write(Unk_FmtStringRef fmt, fmt::ArgList args);    // 0x1401df3d0
     std::string ToString();                                 // 0x1401df360
+private:
+    MS2_LAYOUT_FRIEND;
+    Unk_FmtBufBase m_kBuf;
 };
 
 class Unk_FmtWriterBase
@@ -111,10 +115,11 @@ public:
 class Unk_FmtWriter : public Unk_FmtWriterBase
 {
 public:
-    explicit Unk_FmtWriter(Unk_FmtBufBase* pBuf);           // 0x1401db730
+    explicit Unk_FmtWriter(Unk_FmtBuf* pBuf);               // 0x1401db730
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_FmtBufBase* m_pBuf;
+    Unk_FmtBuf* m_pBuf;
+    void* m_unk20;                                          // the exe's frame holds at least 0x28 bytes for the writer
 };
 
 void FUN_1401cff40(Unk_FmtWriterBase* pThis);
@@ -158,36 +163,32 @@ char* Unk_FmtBufBase::GetData(size_t n)
 }
 
 // @0x1401db790
-// MS2-FUNCTIONAL: the exe reaches the base-class helpers through a copied this (mov rax,this; mov rcx,rax) and a different frame; no source form found
-Unk_FmtBuf::Unk_FmtBuf(const std::allocator<char>& alloc) : Unk_FmtBufBase(alloc)
+Unk_FmtBuf::Unk_FmtBuf(const std::allocator<char>& alloc) : m_kBuf(alloc)
 {
 }
 
 // @0x1401dbf70
-// MS2-FUNCTIONAL: the exe reaches the base-class helpers through a copied this (mov rax,this; mov rcx,rax) and a different frame; no source form found
 Unk_FmtBuf::~Unk_FmtBuf()
 {
 }
 
 // @0x1401db730
-Unk_FmtWriter::Unk_FmtWriter(Unk_FmtBufBase* pBuf)
+Unk_FmtWriter::Unk_FmtWriter(Unk_FmtBuf* pBuf)
 {
     FUN_1401cff40(this);
     m_pBuf = pBuf;
 }
 
 // @0x1401df3d0
-// MS2-FUNCTIONAL: the exe reaches the base-class helpers through a copied this (mov rax,this; mov rcx,rax) and a different frame; no source form found
 void Unk_FmtBuf::Write(Unk_FmtStringRef fmt, fmt::ArgList args)
 {
     FUN_1402d9f20(Unk_FmtWriter(this), fmt, args);
 }
 
 // @0x1401df360
-// MS2-FUNCTIONAL: the exe reaches the base-class helpers through a copied this (mov rax,this; mov rcx,rax) and a different frame; no source form found
 std::string Unk_FmtBuf::ToString()
 {
-    return std::string(GetData(0), GetSize());
+    return std::string(m_kBuf.GetData(0), m_kBuf.GetSize());
 }
 
 // @0x1401df160

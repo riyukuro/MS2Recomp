@@ -35,6 +35,7 @@ static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- other units --------------------------------------------------------------------------------------------------
 
@@ -51,8 +52,7 @@ Unk_UgcTextureCache* FUN_140a0afd0();
 NiImageConverter* FUN_141851720();
 extern NiTexture::FormatPrefs DAT_1439fc800;                // NiSourceTexture's default format preferences
 // The world service and its local player (MyPC).
-class Unk_UgcWorld { public: void* FUN_141bd0cc0(); };
-Unk_UgcWorld* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 // A client config singleton; +0xd8 is the capture file path.
 class Unk_UgcClientPaths
 {
@@ -61,7 +61,6 @@ public:
     CString m_strCaptureFile;                               // +0xd8
 };
 Unk_UgcClientPaths* FUN_1401d31f0();
-CUgcDownloadDown* FUN_1414a57f0();
 LPDIRECT3DDEVICE9 FUN_1422cf0d0();                          // the renderer's D3D device
 
 // Upload/convert paths (all under ".\Custom\Convert").
@@ -95,7 +94,7 @@ class Unk_140659080
 {
 public:
     void FUN_1401d42d0();                                   // the thread is running
-    int FUN_140659080(int nResult);                         // the thread failed to start
+    int Fail(int nResult);                                  // the thread failed to start
 };
 
 // The unit's log calls (FMT_VARIADIC wrappers over CLogString::FUN_1406530d0).
@@ -1124,7 +1123,7 @@ unsigned int CUgcDownloadLoad::vfunc_1(void* pParam, Unk_140659080& start)
     m_hEvent = CreateEventA(NULL, FALSE, FALSE, NULL);
     if (m_hEvent == NULL)
     {
-        start.FUN_140659080(E_FAIL);
+        start.Fail(E_FAIL);
         return -1;
     }
     start.FUN_1401d42d0();
@@ -1209,16 +1208,16 @@ unsigned int CUgcDownloadLoad::vfunc_1(void* pParam, Unk_140659080& start)
                 CString strName = loaded.GetAt(pos);
                 if (!FUN_141027420(strName))
                     strName = FUN_141027200(strName);
-                if (FUN_1414a57f0())
-                    FUN_1414a57f0()->Finish(strName, 0);
+                if (TSingleton<CUgcDownloadDown>::GetInstance())
+                    TSingleton<CUgcDownloadDown>::GetInstance()->Finish(strName, 0);
             }
             for (POSITION pos = failed.GetHeadPosition(); pos != NULL; failed.GetNext(pos))
             {
                 CString strName = failed.GetAt(pos);
                 if (!FUN_141027420(strName))
                     strName = FUN_141027200(strName);
-                if (FUN_1414a57f0())
-                    FUN_1414a57f0()->Finish(strName, 0x20);
+                if (TSingleton<CUgcDownloadDown>::GetInstance())
+                    TSingleton<CUgcDownloadDown>::GetInstance()->Finish(strName, 0x20);
             }
             batch.RemoveAll();
             loaded.RemoveAll();

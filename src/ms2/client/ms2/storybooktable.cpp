@@ -18,10 +18,12 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 class Unk_CommonLog { public: void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg); };
 Unk_CommonLog* FUN_140166440();
@@ -33,7 +35,6 @@ CString FUN_140536a50(const char* pszFormat, const CString& strArg0);       // f
 const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);   // attribute text (null = absent)
 CString FUN_140cc2ad0(const CString& strDir, const CString& strFile);      // <resource root><dir>/<file>
 class Unk_ScriptTextFilter { public: void FUN_1416fb380(CStringW* pText); };
-Unk_ScriptTextFilter* FUN_1403b4750();
 
 // The unit's init flag is an exe global (symbols-manual.tsv); the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -117,7 +118,7 @@ void CStoryBookTable::Load()
                 CString strDir = FUN_140536a50("StoryBook/{0}", arrPath[0]);
                 spPage->m_strImage = FUN_140cc2ad0(strDir, arrPath[1]);
             }
-            FUN_1403b4750()->FUN_1416fb380(&spPage->m_strText);
+            reinterpret_cast<Unk_ScriptTextFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb380(&spPage->m_strText);
             spData->m_pages.SetAt(nNumber, spPage);
             if (nNumber > spData->m_nMaxPage)
                 spData->m_nMaxPage = nNumber;

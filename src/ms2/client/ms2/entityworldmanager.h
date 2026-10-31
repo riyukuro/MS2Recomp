@@ -18,8 +18,15 @@
 #include <egf/BlockIdentification.h>
 #include <egf/EntityChangeMessage.h>
 #include <egf/Scheduler.h>
+// NxMath.h refuses the windows.h min/max macros; keep them out of the PhysX headers only
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
 #include <egfPhysX/SceneService.h>
 #include <ecrPhysX/PropService.h>
+#pragma pop_macro("max")
+#pragma pop_macro("min")
 #include <ecr/SceneGraphService.h>
 #include <ecr/RenderService.h>
 #include <ecr/ShaderService.h>

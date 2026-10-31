@@ -16,6 +16,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -46,8 +47,8 @@ public:
     virtual Vector3 vfunc_18();                     // 0x90 the position
 };
 
-class Unk_GcUI { public: int FUN_141adbb00(); };            // CUIService
-Unk_GcUI* FUN_1403ed2b0();
+            // CUIService
+CUIService* FUN_1403ed2b0();
 class Unk_GcKeyboard { public: unsigned char FUN_14116d950(int nKey, bool a, int b); };
 Unk_GcKeyboard* FUN_14025e7c0();
 class Unk_GcKeyBinds
@@ -220,15 +221,13 @@ CStringW CGuideConditionPortalEnable::GetTypeName()
 MS2_REPLACE_METHOD(0x1413A6D00, CGuideConditionPortalEnable, GetTypeName, 61, 0x4519D41B);
 
 // @0x1413a6d50
-// MS2-FUNCTIONAL: local slot order differs (the exe keeps an extra 8-byte slot below the copied position)
 int CGuideConditionPortalEnable::vfunc_3()
 {
     Unk_GcPC* pPC = (Unk_GcPC*)FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     ATL::CAtlArray<MS2Ptr<Unk_GcPortal> > arrPortals;
-    Vector3 pt = pPC->vfunc_18();
-    FUN_1403ed2d0()->FUN_141bc2c90(pt, arrPortals);
+    FUN_1403ed2d0()->FUN_141bc2c90(pPC->vfunc_18(), arrPortals);
     return FUN_1413a5600(FUN_140966da0(arrPortals) != 0);
 }
 MS2_REPLACE_METHOD(0x1413A6D50, CGuideConditionPortalEnable, vfunc_3, 205, 0x9D153889);

@@ -100,13 +100,17 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/cnpc.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/additionalclilist.h"
+#include "ms2/client/ms2/dpsmetersystem.h"
 
 extern "C" wchar_t* (__cdecl* __imp_wcscat)(wchar_t*, const wchar_t*);   // the exe calls wcscat through its import
 
 IMPLEMENT_DYNAMIC(CDPSDialog, CDialog)
 
 // ---- callees outside the unit ----
-CDPSMeterSystem* FUN_14109a6f0();                           // TSingleton<CDPSMeterSystem>::GetInstance
 CStringTable* GetStringTable();
 unsigned FUN_140869420();                                   // the current time (ms)
 CStringA FUN_1401d4330(const wchar_t* pszWide, int nCodePage);   // wide -> multibyte
@@ -128,10 +132,9 @@ void FUN_1411e1ce0(Unk_DpsEquipSet* pSet, ATL::CAtlList<MS2Ptr<CEquipItem> >& kO
 float FUN_1411e1110(Unk_DpsEquipSet* pSet, int nStat);      // the summed rate bonus of a stat
 int FUN_1411e1160(Unk_DpsEquipSet* pSet, int nStat);        // the summed value bonus of a stat
 // The own player (a PC) as this unit uses it.
-class Unk_DpsPC : public PCBase
+class Unk_DpsPC : public PC
 {
 public:
-    MS2Ptr<CEquipItem> FUN_141655c90(int nSlot);            // a worn item by slot
     Unk_DpsEquipSet* FUN_1416561a0();                       // the worn items
 };
 // CItem::FUN_1405278a0's record is the item status.
@@ -140,19 +143,15 @@ class Unk_ItemEnchantData : public CItemStatus {};
 class Unk_ItemEquipData : public CItemData {};
 
 // The world service (FUN_1403ed2d0) as this unit uses it.
-class Unk_DpsSummon
+class Unk_DpsSummon : public CNpc
 {
-public:
-    int FUN_141094f40();                                    // the owner's object id
 };
-class Unk_DpsWorld
+class Unk_DpsWorld : public WorldService
 {
 public:
     PCBase* FUN_141bd0cc0();                                // the own player
     PCBase* FUN_141bd1200(int nId);                         // an actor by object id
     Unk_DpsSummon* FUN_141bd13a0(int nId);                  // a pet / summon by object id
-    CStringW FUN_141bd1830(int nId);                        // the name of an object
-    CStringW* FUN_141bd3080();                              // the field name
 };
 Unk_DpsWorld* FUN_1403ed2d0();
 
@@ -165,10 +164,8 @@ public:
 Unk_DpsSkillTable* FUN_1401958b0();
 
 // The buffs of an actor (PCBase::FUN_1416749a0).
-class Unk_PCBaseBuffs
+class Unk_PCBaseBuffs : public AdditionalCliList
 {
-public:
-    MS2Ptr<AdditionalCli> FUN_14096fc80(int nEffectLevel);  // one buff
 };
 
 // ---- helpers ----
@@ -292,7 +289,7 @@ MS2_REPLACE_METHOD(0x1411786E0, CDPSDialog, OnSizing, 319, 0xD572249B);
 // @0x141178830
 void CDPSDialog::OnBnClickedSave()
 {
-    FUN_14109a6f0()->Flush();
+    TSingleton<CDPSMeterSystem>::GetInstance()->Flush();
     m_btnSave.EnableWindow(0);
 }
 MS2_REPLACE_METHOD(0x141178830, CDPSDialog, OnBnClickedSave, 48, 0x682FA97F);
@@ -305,12 +302,12 @@ void CDPSDialog::Refresh()
     }
     else
     {
-        if (FUN_14109a6f0()->IsRecording())
+        if (TSingleton<CDPSMeterSystem>::GetInstance()->IsRecording())
         {
             if (m_btnSave.IsWindowVisible())
                 m_btnSave.EnableWindow(0);
             CStringW strSummary;
-            FUN_14109a6f0()->GetSummary(strSummary);
+            TSingleton<CDPSMeterSystem>::GetInstance()->GetSummary(strSummary);
             m_editText.SetWindowText(FUN_1401d4330(strSummary, 0));
         }
         else
@@ -327,11 +324,11 @@ MS2_REPLACE_METHOD(0x141178870, CDPSDialog, Refresh, 359, 0xB4C07349);
 // @0x1411789e0
 void CDPSDialog::OnStop(unsigned nTime)
 {
-    if (FUN_14109a6f0()->IsRecording() != 0)
+    if (TSingleton<CDPSMeterSystem>::GetInstance()->IsRecording() != 0)
     {
-        FUN_14109a6f0()->FUN_14117ea90(nTime, 1);
+        TSingleton<CDPSMeterSystem>::GetInstance()->FUN_14117ea90(nTime, 1);
         CStringW strSummary;
-        FUN_14109a6f0()->GetSummary(strSummary);
+        TSingleton<CDPSMeterSystem>::GetInstance()->GetSummary(strSummary);
         m_editText.SetWindowText(FUN_1401d4330(strSummary, 0));
     }
 }
@@ -1105,7 +1102,7 @@ void CDPSMeterSystem::OnDamage(MS2Ptr<CDamageRecord> spRecord)
     int nAttackerId = spRecord->m_nOwnerId;
     Unk_DpsSummon* pSummon = FUN_1403ed2d0()->FUN_141bd13a0(nAttackerId);
     if (pSummon != 0)
-        nAttackerId = pSummon->FUN_141094f40();
+        nAttackerId = pSummon->GetOwnerId();
     int bTarget = 0;
     if (spRecord->m_nCasterId != FUN_14123c580(pMe) && nAttackerId != FUN_14123c580(pMe))
         break;
@@ -1145,7 +1142,7 @@ void CDPSMeterSystem::OnDotDamage(MS2Ptr<CDotDamageRecord> spRecord)
     int nAttackerId = spRecord->m_nOwnerId;
     Unk_DpsSummon* pSummon = FUN_1403ed2d0()->FUN_141bd13a0(nAttackerId);
     if (pSummon != 0)
-        nAttackerId = pSummon->FUN_141094f40();
+        nAttackerId = pSummon->GetOwnerId();
     int bTarget = 0;
     if (spRecord->m_nCasterId != FUN_14123c580(pMe) && nAttackerId != FUN_14123c580(pMe))
         break;
@@ -1187,7 +1184,7 @@ void CDPSMeterSystem::OnSplashDamage(MS2Ptr<CSplashDamageRecord> spRecord)
     int nAttackerId = spRecord->m_nOwnerId;
     Unk_DpsSummon* pSummon = FUN_1403ed2d0()->FUN_141bd13a0(nAttackerId);
     if (pSummon != 0)
-        nAttackerId = pSummon->FUN_141094f40();
+        nAttackerId = pSummon->GetOwnerId();
     int bTarget = 0;
     if (spRecord->m_nCasterId != FUN_14123c580(pMe) && nAttackerId != FUN_14123c580(pMe))
         break;

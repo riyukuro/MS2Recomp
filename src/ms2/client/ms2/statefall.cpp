@@ -29,6 +29,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/skilloverlapcompare.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -60,7 +61,7 @@ public:
 };
 
 // The casting skill record (CSkillRecord); +0x30 holds the table row of its skill.
-class Unk_FallRow { public: int FUN_1407e9bd0(); bool FUN_1407e9d70(); };
+class Unk_FallRow : public SkillData { };
 class Unk_FallTable { public: Unk_FallRow* FUN_14063ed50(); };
 class Unk_PCBaseComp_b18 : public CPtred
 {

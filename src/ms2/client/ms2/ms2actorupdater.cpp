@@ -11,6 +11,7 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -34,12 +35,7 @@ void FUN_14108c240(CMeshUpdateGate* pGate, float fInterval);
 void* FUN_14123ed90(CMeshUpdateGate* pGate, unsigned int nFlags) throw();
 
 // The world service (FUN_1403ed2d0); only the update mode is read here.
-class Unk_AuWorld
-{
-public:
-    int FUN_141bdb5c0();
-};
-Unk_AuWorld* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 // Property access on the entity (hash id, value).
 class Unk_AuEntity
@@ -47,7 +43,6 @@ class Unk_AuEntity
 public:
     void FUN_1409618c0(unsigned nProp, Vector3* pOut);          // get a point property
 };
-EntityWorldManager* FUN_1409670f0();
 
 // @0x1414a8240
 MS2ActorUpdater::MS2ActorUpdater(const egf::EntityID& kId)
@@ -77,7 +72,7 @@ MS2ActorUpdater::~MS2ActorUpdater()
 float MS2ActorUpdater::FUN_1414a8410(const Vector3& kPos)
 {
     Vector3 kEntityPos(0.0f, 0.0f, 0.0f);
-    egf::EntityPtr spEntity(FUN_1409670f0()->FUN_1411cf440(m_kId));
+    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_kId));
     if ((egf::Entity*)spEntity != 0)
         ((Unk_AuEntity*)spEntity.operator->())->FUN_1409618c0(0xfd95ca52, &kEntityPos);
     m_fDistB = kPos.FUN_140965c40(kEntityPos).FUN_140967ac0();
@@ -88,7 +83,7 @@ float MS2ActorUpdater::FUN_1414a8410(const Vector3& kPos)
 float MS2ActorUpdater::FUN_1414a84f0(const Vector3& kPos)
 {
     Vector3 kEntityPos(0.0f, 0.0f, 0.0f);
-    egf::EntityPtr spEntity(FUN_1409670f0()->FUN_1411cf440(m_kId));
+    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_kId));
     if ((egf::Entity*)spEntity != 0)
         ((Unk_AuEntity*)spEntity.operator->())->FUN_1409618c0(0xfd95ca52, &kEntityPos);
     m_fDistA = kPos.FUN_140965c40(kEntityPos).FUN_140967ac0();
@@ -114,7 +109,7 @@ void MS2ActorUpdater::FUN_1414a85d0(float fInterval)
     default:
         MS2_ASSERT_AT(0x31, FALSE);
     }
-    egf::EntityPtr spEntity(FUN_1409670f0()->FUN_1411cf440(m_kId));
+    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_kId));
     m_pGate->FUN_14176f500(spEntity, fInterval, fDuration);
 }
 

@@ -87,20 +87,28 @@ static CString s_strStun = "stun";
 #include "ms2/client/ms2/statemanager_statics.h"
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 #endif
+#include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/cguidemanager.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/logstring.h"
+#include "ms2/client/ms2/uimainplayerinfo.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // ---- callees in other units ----
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
-class Unk_KtLog                                             // CLogString
+class Unk_KtLog : public CLogString                                             // CLogString
 {
 public:
     void FUN_14015eb90(int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
-    void FUN_1406530d0(int nLevel, int nCategory, const wchar_t* pszFormat, const fmt::ArgList& args);
 };
 Unk_KtLog* FUN_140166440();
 CFeatureManager* FUN_140166410();
 MS2InputService* FUN_140a58540();
-CStateService* FUN_140aa6d30();
 CStringTable* GetStringTable();
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 int FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, int* pOut);       // QueryIntAttribute
@@ -119,43 +127,30 @@ bool FUN_14028f710(Unk_140165cf0* pElem);                   // the element is en
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);           // int attribute
 unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);  // unsigned attribute
 void FUN_1422c9380(const CString& str);                     // the action's binding changed (UI notice)
-class Unk_KtHeldData { public: int FUN_14053dc90(); };     // CItemData: the item's skill id
+class Unk_KtHeldData : public CItemData { };     // CItemData: the item's skill id
 class Unk_KtHeldItem { public: Unk_KtHeldData* FUN_140527840(); };   // CItem: its data
-class Unk_KtPlayer                                          // MyPC
+class Unk_KtPlayer : public PC                                          // MyPC
 {
 public:
-    int FUN_14165c570();                                    // the active stance skill
     Unk_KtHeldItem* FUN_14165f100();                        // the held item
-    int FUN_14165f150();                                    // an item is held
-    int FUN_14166c930();                                    // the current state id
-    int FUN_1416764d0();                                    // riding
-    Ridee* FUN_1416764a0();                                 // the ridee this player rides
-    int FUN_141654700();                                    // the job
-    int FUN_14166ce30();                                    // busy (a cutscene/state blocks input)
-    int FUN_1416595d0();                                    // dead
 };
 class Unk_KtWorld { public: Unk_KtPlayer* FUN_141bd0cc0(); };   // the local player
-class Unk_KtRestrictions { public: int FUN_14138c900(int nKind); };
-Unk_KtRestrictions* FUN_1409331e0();
+CGuideManager* FUN_1409331e0();
 void FUN_141275260(int nStringId, int nA, int nB);          // system notice of a string table entry
 bool FUN_140347960(int nSkillId);
-class Unk_KtMainPlayerInfo                                  // UIMainPlayerInfo
+class Unk_KtMainPlayerInfo : public UIMainPlayerInfo                                  // UIMainPlayerInfo
 {
 public:
     SkillSlot* FUN_1419f2930(int nIndex);                   // a quick slot
-    void FUN_1419f2a90();                                   // leave the skill set mode
 };
 Unk_KtMainPlayerInfo* FUN_140931900(int nUiId);
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);   // string-table text with two arguments
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);          // string-table text, "{0}" arguments
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* sep);   // split
-Unk_KtWorld* FUN_1403ed2d0();
 class Unk_KtGameOption { public: unsigned char* FUN_140a58500(); };   // CGameOption: &m_gamepad (its first byte: use the pad)
-Unk_KtGameOption* FUN_1409a8b10();
 CInputKeyHandler* FUN_14025e7c0();
-class Unk_KtNotices { public: void FUN_140da4fe0(MS2Ptr<NotifyObject> spNotify); };
-Unk_KtNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 int SendKeyTableMode8(int nPage);                               // send the quick slot page
 class Unk_KtScene                                           // the scene sound/cinematic manager (uiguideeventarrow.cpp)
 {
@@ -167,7 +162,6 @@ public:
 Unk_KtScene* FUN_140a94350();
 class Unk_KtSkill : public CPtred { public: bool FUN_1407e9d30(); };   // SkillData
 class Unk_KtSkillTable { public: MS2Ptr<Unk_KtSkill> FUN_1407ee1d0(int nSkillId); };
-Unk_KtSkillTable* FUN_1401958b0();
 class Unk_KtQuestList { public: int FUN_140745590(int nQuestId); };   // completed
 class Unk_KtQuestMgr                                        // the quest client manager
 {
@@ -189,7 +183,6 @@ Unk_KtPopup* FUN_140938b90(int nUiId);
 class Unk_KtRuleFlags { public: int FUN_1402c4c90(int nRule); };
 class Unk_KtRules { public: unsigned char m_pad[8]; Unk_KtRuleFlags m_flags; };
 Unk_KtRules* FUN_14025e7b0();
-CUIService* FUN_1403ed2b0();
 CStringW FUN_140298ea0(CStringW strKey);                    // string table text (second table)
 void FUN_140d73aa0(CStringW strMsg, int nType, int nTarget, CStringW strTag);   // message box
 class Unk_ItemEquipData : public CItemData { };             // CItem::FUN_140527840's record (item.cpp owns the real one)
@@ -202,8 +195,8 @@ public:
 };
 int UseItem(MS2Ptr<CItem> spItem, int nMode);              // 0x140d1bd60
 int FUN_140dffeb0(ItemFunctionArgs* pArgs);                 // the ugc event item command
-class Unk_KtCamera { public: int FUN_140af7e30(); };       // the camera manager: its mode
-Unk_KtCamera* FUN_1409478c0();
+       // the camera manager: its mode
+CameraMgr* FUN_1409478c0();
 extern Unk_KtInventory DAT_143ab2a90;                       // the player's inventory
 void FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nPage, int nSlot);   // send the quick slot change
 
@@ -228,7 +221,7 @@ private:
 bool FUN_1408710c0(TiXmlDocument* pDoc, const char* pszPath);   // SaveFile
 void FUN_14086e000(TiXmlDocument* pDoc, const TiXmlDeclaration& decl);   // InsertEndChild (a copy)
 void FUN_140873ce0(TiXmlElement* pElem, const char* pszName, int nValue);         // SetAttribute (int)
-void FUN_140873f20(TiXmlElement* pElem, const char* pszName, const size_t& nValue);   // SetAttribute (size_t)
+void XmlSetAttr(TiXmlElement* pElem, const char* pszName, const size_t& nValue);      // SetAttribute (size_t)
 CString FUN_140540050(const char* pszFormat, const CString& strArg);   // StringFormat<CString>
 CString FUN_1412755f0();                                    // the user setting directory
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
@@ -421,7 +414,7 @@ MS2_REPLACE_METHOD(0x1414294E0, CKeyTable, SendKeyTableMode1, 281, 0xE9AD9B88);
 // @0x141429600
 void CKeyTable::FUN_141429600()
 {
-    if (FUN_140aa6d30()->FUN_1417e2610() != 0x620000c)
+    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000c)
         return;
     if (m_bDirty == 0)
         return;
@@ -756,26 +749,26 @@ int CKeyTable::FUN_14142b340(int nAction)
     switch (nAction)
     {
     case 400001:
-        FUN_1403ed2b0()->ToggleDialog(eUI_4e2d);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4e2d);
         break;
     case 400002:
-        FUN_1403ed2b0()->ToggleDialog(eUI_2711);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_2711);
         break;
     case 400005:
-        FUN_1403ed2b0()->ToggleDialog(eUI_4f2d);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4f2d);
         break;
     case 400006:
-        FUN_1403ed2b0()->ToggleDialog(eUI_4e42);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4e42);
         break;
     case 400007:
-        FUN_1403ed2b0()->ToggleDialog(eUI_4e3e);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4e3e);
         break;
     case 400009:
-        FUN_1403ed2b0()->ToggleDialog(eUI_4e73);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4e73);
         break;
     case 400010:
     {
-        Unk_KtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_KtPlayer* pPlayer = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer != 0 && !pPlayer->FUN_14166ce30())
         {
             UISceneEntity* pScene = FUN_1408e57f0()->FUN_1422b9e80();
@@ -791,7 +784,7 @@ int CKeyTable::FUN_14142b340(int nAction)
     }
     case 400011:
     {
-        Unk_KtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_KtPlayer* pPlayer = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer != 0 && !pPlayer->FUN_14166ce30())
             FUN_1408e57f0()->FUN_1422b9fd0(0x620001f);
         break;
@@ -804,52 +797,52 @@ int CKeyTable::FUN_14142b340(int nAction)
         break;
     }
     case 400012:
-        FUN_1403ed2b0()->ToggleDialog(eUI_4e4d);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4e4d);
         break;
     case 400008:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4e5b);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4e5b);
         break;
     case 400013:
-        FUN_1403ed2b0()->ToggleDialog(eUI_4e49);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4e49);
         break;
     case 400014:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4e4f);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4e4f);
         break;
     case 400015:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4e6a);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4e6a);
         break;
     case 400016:
-        FUN_1403ed2b0()->ToggleDialog(eUI_4ec1);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4ec1);
         break;
     case 400017:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4ebc);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4ebc);
         break;
     case 400018:
         if (FUN_140166410()->FUN_14036d570(0xf9))
-            FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f84);
+            TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f84);
         else
-            FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f1c);
+            TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f1c);
         break;
     case 400019:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4ec9);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4ec9);
         break;
     case 400020:
         if (FUN_140166410()->FUN_14036d570(0x4e))
-            FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f04);
+            TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f04);
         else
             FUN_140d73aa0(FUN_140298ea0(L"s_pvp_arena_close_test_season_msg"), 0, 0, L"");
         break;
     case 400021:
-        FUN_1403ed2b0()->ToggleDialog(eUI_4e97);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4e97);
         break;
     case 400022:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4efa);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4efa);
         break;
     case 400036:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f53);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f53);
         break;
     case 400037:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4ebd);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4ebd);
         break;
     case 400038:
         if (FUN_140166410()->FUN_14036d570(0xd3))
@@ -859,27 +852,27 @@ int CKeyTable::FUN_14142b340(int nAction)
                 FUN_141275260(0x2f7, 1, 1);
                 break;
             }
-            FUN_1403ed2b0()->ToggleDialog(eUI_4f6d);
+            TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4f6d);
         }
         break;
     case 800004:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f63);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f63);
         break;
     case 400023:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4efd);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4efd);
         break;
     case 400024:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4efe);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4efe);
         break;
     case 400025:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f0c);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f0c);
         break;
     case 400026:
         if (FUN_140166410()->FUN_14036d570(0x4a))
-            FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f1b);
+            TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f1b);
         break;
     case 400027:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4eda);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4eda);
         break;
     case 400028:
     {
@@ -889,11 +882,11 @@ int CKeyTable::FUN_14142b340(int nAction)
         break;
     }
     case 400029:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f1e);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f1e);
         break;
     case 400030:
-        if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f18))
-            FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4f18);
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4f18))
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f18);
         else
         {
             Unk_KtPopup* pPopup = FUN_140938b90(0x4e28);
@@ -902,20 +895,20 @@ int CKeyTable::FUN_14142b340(int nAction)
         }
         break;
     case 400031:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4ef6);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4ef6);
         break;
     case 400032:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f0b);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f0b);
         break;
     case 400033:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f24);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f24);
         break;
     case 400034:
-        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f25);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f25);
         break;
     case 400035:
         if (FUN_140166410()->FUN_14036d570(0x8c))
-            FUN_1403ed2b0()->ToggleDialog(eUI_4f38);
+            TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4f38);
         break;
     }
     return 1;
@@ -941,7 +934,7 @@ void CKeyTable::FUN_14142bb10()
 {
     if (!FUN_141431fc0())
         return;
-    Unk_KtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_KtPlayer* pPlayer = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (pPlayer->FUN_1416595d0())
@@ -1454,7 +1447,7 @@ int CKeyTable::FUN_14142d9b0(stKeyData* pKey)
     }
     else if (pKey->m_nType == 1)
     {
-        if (FUN_1409331e0()->FUN_14138c900(8))
+        if (FUN_1409331e0()->IsRestricted(8))
         {
             FUN_141275260(0x888, 1, 1);
             return 0;
@@ -1474,7 +1467,7 @@ MS2_REPLACE_METHOD(0x14142D9B0, CKeyTable, FUN_14142d9b0, 264, 0xE98EBD47);
 // @0x14142dad0
 int CKeyTable::FUN_14142dad0(unsigned nKey)
 {
-    Unk_KtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_KtPlayer* pPlayer = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     if (FUN_14142cd50(nKey, 0x49401))
@@ -1488,7 +1481,7 @@ int CKeyTable::FUN_14142dad0(unsigned nKey)
     }
     else if (FUN_14142cd50(nKey, 0x493e2))
     {
-        Unk_KtPlayer* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_KtPlayer* pMe = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         Unk_KtHeldItem* pHeld;
         if (pMe != 0 && pMe->FUN_14165f150() && (pHeld = pMe->FUN_14165f100()) != 0)
             return pHeld->FUN_140527840()->FUN_14053dc90();
@@ -1810,7 +1803,7 @@ void CKeyTable::FUN_14142e8c0(MS2Ptr<CSkillSet> spSet)
     QuickSlotPage* pPage = FUN_141431c20(m_nQuickSlotPage);
     if (pPage == 0)
         return;
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifySkillSetMode(true)));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifySkillSetMode(true)));
     Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
     if (pInfo == 0)
         return;
@@ -1866,7 +1859,7 @@ void CKeyTable::FUN_14142ece0(const ATL::CAtlArray<unsigned>& aItemIds)
     QuickSlotPage* pPage = FUN_141431c20(m_nQuickSlotPage);
     if (pPage == 0)
         return;
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifySkillSetMode(true)));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifySkillSetMode(true)));
     Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
     if (pInfo == 0)
         return;
@@ -1956,7 +1949,7 @@ void CKeyTable::FUN_14142f1c0(int nSkillId, int nItemId, __int64 nItemUid)
         return;
     if (FUN_14142e7c0(nSkillId, nItemId, nItemUid, 25))
         return;
-    Unk_KtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_KtPlayer* pPlayer = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer)
     {
         if (pPlayer->FUN_141654700() == 90)
@@ -2049,7 +2042,7 @@ void CKeyTable::SendKeyTableMode7()
     if (pInfo)
         pInfo->FUN_1419f2a90();
     m_nLocked = 0;
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifySkillSetMode(false)));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifySkillSetMode(false)));
     FUN_141429600();
     COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
     packet.Encode1(7);
@@ -2059,7 +2052,7 @@ void CKeyTable::SendKeyTableMode7()
 // @0x14142f830
 int CKeyTable::FUN_14142f830(int nSlot)
 {
-    Unk_KtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_KtPlayer* pPlayer = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return nSlot;
     return nSlot;
@@ -2069,7 +2062,7 @@ MS2_REPLACE_METHOD(0x14142F830, CKeyTable, FUN_14142f830, 54, 0x89DB0C7A);
 // @0x14142f870
 int CKeyTable::FUN_14142f870(int nSlot)
 {
-    Unk_KtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_KtPlayer* pPlayer = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return nSlot;
     return nSlot;
@@ -2108,7 +2101,7 @@ void CKeyTable::SaveKeySetting(CString strName)
                 nSkillId = spItem->FUN_14053dc20();
         }
         TiXmlElement* pSetting = new TiXmlElement("setting");
-        FUN_140873f20(pSetting, "index", i);
+        XmlSetAttr(pSetting, "index", i);
         FUN_140873ce0(pSetting, "itemId", nJobItemId);
         FUN_140873ce0(pSetting, "skillId", nSkillId);
         FUN_14086e090(pRoot, pSetting);
@@ -2500,7 +2493,7 @@ MS2_REPLACE_METHOD(0x1414317B0, CKeyTable, FUN_1414317b0, 104, 0xEB7B6208);
 // @0x141431820
 CStringW CKeyTable::FUN_141431820(int nKey)
 {
-    if (*FUN_1409a8b10()->FUN_140a58500())
+    if (*reinterpret_cast<Unk_KtGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500())
     {
         if (FUN_140a58540()->FUN_140d8ee40() == 2)
         {
@@ -2530,7 +2523,7 @@ MS2_REPLACE_METHOD(0x141431820, CKeyTable, FUN_141431820, 445, 0xA9F48A3D);
 // @0x1414319f0
 int CKeyTable::FUN_1414319f0()
 {
-    if (*FUN_1409a8b10()->FUN_140a58500() != 0)
+    if (*reinterpret_cast<Unk_KtGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500() != 0)
         return 2;
     else
         return 0;
@@ -2576,7 +2569,7 @@ void CKeyTable::FUN_141431ae0(int nPage, bool bSend)
     }
     int nPrev = m_nQuickSlotPage;
     m_nQuickSlotPage = nPage;
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyShortkeyPage(nPrev, nPage)));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyShortkeyPage(nPrev, nPage)));
     if (bSend)
         SendKeyTableMode8(nPage);
 }
@@ -2653,7 +2646,7 @@ MS2_REPLACE_METHOD(0x141431FC0, CKeyTable, FUN_141431fc0, 63, 0x6C16D997);
 // @0x141432010
 int CKeyTable::FUN_141432010(int nAction)
 {
-    Unk_KtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_KtPlayer* pPlayer = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 1;
     efd::SmartPointer<Ridee> spRidee = pPlayer->FUN_1416764a0();
@@ -2698,7 +2691,7 @@ void CKeyTable::FUN_141432360(int nSkillId)
 {
     if (nSkillId == 0)
         return;
-    MS2Ptr<Unk_KtSkill> spSkill = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
+    MS2Ptr<Unk_KtSkill> spSkill = reinterpret_cast<Unk_KtSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
     if (spSkill.get())
     {
         if (spSkill->FUN_1407e9d30())

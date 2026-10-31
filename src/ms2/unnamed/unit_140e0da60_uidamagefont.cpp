@@ -13,7 +13,7 @@
 #include "hook/ms2hook.h"
 
 CString FUN_140540050(const char* szFormat, const CString& strArg);          // StringFormat<CString> (this TU's own exe copy)
-__int64 FUN_140869440();                                                    // current server time
+__int64 GetServerTime();                                                    // current server time
 
 // The per-font attribute record: the time of the last use is kept at +0x20.
 class TDamageFontAttr : public CPtred
@@ -91,7 +91,7 @@ bool UIDamageFont::FUN_140e0dc30()
 {
     if (m_spAttr == 0 || m_30 == 0)
         return false;
-    m_spAttr->m_20 = FUN_140869440();
+    m_spAttr->m_20 = GetServerTime();
     return true;
 }
 

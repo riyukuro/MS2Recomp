@@ -16,18 +16,25 @@
 
 class Unk_AeFeatureMgr;
 
+class CFunctionCubeService;
+class EntityWorldManager;
+class GFxSceneService;
+class PostProcessingService;
+template<class T> class SingletonClass { public: static T* ms_pSingleton; };
+template<class T> class TSingleton { public: static T* s_instance; };
+class Cube { public: static long ms_nCount; };
 bool DAT_143ab1b14;                                     // 0x143ab1b14
-long DAT_143ab2440;                                     // 0x143ab2440
-__int64 DAT_143ab25e8;                                  // 0x143ab25e8
+long Cube::ms_nCount;                                     // 0x143ab2440
+template<> GFxSceneService* SingletonClass<GFxSceneService>::ms_pSingleton{};                                  // 0x143ab25e8
 __int64 DAT_143ab2820;                                  // 0x143ab2820
-__int64 DAT_143ab2828;                                  // 0x143ab2828
-int DAT_143ab2830;                                      // 0x143ab2830
+unsigned __int64 DAT_143ab2828;                                  // 0x143ab2828
+unsigned int DAT_143ab2830;                                      // 0x143ab2830
 int DAT_143ab2834;                                      // 0x143ab2834
 __int64 DAT_143ab2838;                                  // 0x143ab2838
 __int64 DAT_143ab2840;                                  // 0x143ab2840
 unsigned short DAT_143ab2848;                           // 0x143ab2848
 unsigned char DAT_143ab284a;                            // 0x143ab284a
-char DAT_143ab284b;                                     // 0x143ab284b
+unsigned char DAT_143ab284b;                                     // 0x143ab284b
 int DAT_143ab284c;                                      // 0x143ab284c
 int DAT_143ab2850;                                      // 0x143ab2850
 unsigned short DAT_143ab2854;                           // 0x143ab2854
@@ -64,7 +71,7 @@ int DAT_143ab2900;                                      // 0x143ab2900
 int DAT_143ab2904;                                      // 0x143ab2904
 __int64 g_nShutdownTime;                                // 0x143ab2908
 int g_socketClosing;                                    // 0x143ab2910
-int DAT_143ab2914;                                      // 0x143ab2914
+unsigned int DAT_143ab2914;                                      // 0x143ab2914
 int DAT_143ab2918;                                      // 0x143ab2918
 unsigned short DAT_143ab291c;                           // 0x143ab291c
 bool DAT_143ab291e;                                     // 0x143ab291e
@@ -76,7 +83,7 @@ unsigned short DAT_143ab2940;                           // 0x143ab2940
 bool DAT_143ab2942;                                     // 0x143ab2942
 char DAT_143ab2943;                                     // 0x143ab2943
 unsigned short DAT_143ab2944;                           // 0x143ab2944
-char DAT_143ab2946;                                     // 0x143ab2946
+bool DAT_143ab2946;                                     // 0x143ab2946
 bool DAT_143ab2947;                                     // 0x143ab2947
 __int64 DAT_143ab2948;                                  // 0x143ab2948
 int DAT_143ab2950;                                      // 0x143ab2950
@@ -86,30 +93,24 @@ unsigned int DAT_143ab2960;                             // 0x143ab2960
 unsigned short DAT_143ab2964;                           // 0x143ab2964
 bool DAT_143ab2966;                                     // 0x143ab2966
 __int64 DAT_143ab2968;                                  // 0x143ab2968
-int DAT_143ab2970;                                      // 0x143ab2970
+unsigned int DAT_143ab2970;                                      // 0x143ab2970
 int DAT_143ab2974;                                      // 0x143ab2974
 __int64 DAT_143ab2978;                                  // 0x143ab2978
 __int64 DAT_143ab2980;                                  // 0x143ab2980
 __int64 DAT_143ab2988;                                  // 0x143ab2988
-void* DAT_143ab3910;                                    // 0x143ab3910
-void* DAT_143ab3918;                                    // 0x143ab3918
-Unk_AeFeatureMgr* DAT_143ab3da0;                        // 0x143ab3da0
+template<> EntityWorldManager* TSingleton<EntityWorldManager>::s_instance{};                                    // 0x143ab3910
+template<> CFunctionCubeService* TSingleton<CFunctionCubeService>::s_instance{};                                    // 0x143ab3918
+template<> PostProcessingService* TSingleton<PostProcessingService>::s_instance{};                        // 0x143ab3da0
 
-#pragma comment(linker, "/alternatename:?ms_nCount@Cube@@2JA=?DAT_143ab2440@@3JA")
-#pragma comment(linker, "/alternatename:?ms_pSingleton@?$SingletonClass@VGFxSceneService@@@@2PEAVGFxSceneService@@EA=?DAT_143ab25e8@@3_JA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2820@@3HA=?DAT_143ab2820@@3_JA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2828@@3_KA=?DAT_143ab2828@@3_JA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2830@@3IA=?DAT_143ab2830@@3HA")
-#pragma comment(linker, "/alternatename:?DAT_143ab284b@@3EA=?DAT_143ab284b@@3DA")
+#pragma comment(linker, "/alternatename:?DAT_143ab25e8@@3_JA=?ms_pSingleton@?$SingletonClass@VGFxSceneService@@@@2PEAVGFxSceneService@@EA")
+#pragma comment(linker, "/alternatename:?DAT_143ab2828@@3_JA=?DAT_143ab2828@@3_KA")
+#pragma comment(linker, "/alternatename:?DAT_143ab2830@@3HA=?DAT_143ab2830@@3IA")
+#pragma comment(linker, "/alternatename:?DAT_143ab284b@@3DA=?DAT_143ab284b@@3EA")
 #pragma comment(linker, "/alternatename:?DAT_143ab2864@@3HA=?g_upperTargetId@@3HA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2898@@3HA=?DAT_143ab2898@@3_JA")
 #pragma comment(linker, "/alternatename:?DAT_143ab2910@@3HA=?g_socketClosing@@3HA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2914@@3IA=?DAT_143ab2914@@3HA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2930@@3HA=?DAT_143ab2930@@3_JA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2946@@3_NA=?DAT_143ab2946@@3DA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2970@@3IA=?DAT_143ab2970@@3HA")
-#pragma comment(linker, "/alternatename:?s_instance@?$TSingleton@VEntityWorldManager@@@@2PEAVEntityWorldManager@@EA=?DAT_143ab3910@@3PEAXEA")
-#pragma comment(linker, "/alternatename:?s_instance@?$TSingleton@VCFunctionCubeService@@@@2PEAVCFunctionCubeService@@EA=?DAT_143ab3918@@3PEAXEA")
-#pragma comment(linker, "/alternatename:?s_instance@?$TSingleton@VPostProcessingService@@@@2PEAVPostProcessingService@@EA=?DAT_143ab3da0@@3PEAVUnk_AeFeatureMgr@@EA")
+#pragma comment(linker, "/alternatename:?DAT_143ab2914@@3HA=?DAT_143ab2914@@3IA")
+#pragma comment(linker, "/alternatename:?DAT_143ab2946@@3DA=?DAT_143ab2946@@3_NA")
+#pragma comment(linker, "/alternatename:?DAT_143ab2970@@3HA=?DAT_143ab2970@@3IA")
+#pragma comment(linker, "/alternatename:?DAT_143ab3da0@@3PEAVUnk_AeFeatureMgr@@EA=?s_instance@?$TSingleton@VPostProcessingService@@@@2PEAVPostProcessingService@@EA")
 
 #endif // MS2_HOOK_DLL

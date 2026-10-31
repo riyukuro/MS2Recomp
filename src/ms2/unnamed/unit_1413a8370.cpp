@@ -21,24 +21,16 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/inventory.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 // The world manager (FUN_1403ed2d0): only the local player.
-class Unk_GcWorld { public: void* FUN_141bd0cc0(); };
-Unk_GcWorld* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 // The player inventory (global 0x143ab2a90).
-class Unk_GuideInvMgr
-{
-public:
-    void FUN_140a60790(ATL::CAtlArray<MS2Ptr<CItem> >& arrOut);   // every item
-    int FUN_140a5ece0(int nItemId, int nCount);                   // has nCount of the item
-    int FUN_140a60ad0(int nType);
-    int FUN_140a60c20(int nType);                                 // the count of an item type
-    int FUN_140a60d70(int nIconType);
-};
-extern Unk_GuideInvMgr DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 
 // CItem::FUN_140527840's record (item.cpp owns the real one).
 class Unk_ItemEquipData : public CItemData { };

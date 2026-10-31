@@ -64,7 +64,9 @@ int FUN_1418dd100()
 // @0x1418dd110
 int FUN_1418dd110()
 {
-    return FUN_140166410()->FUN_14036d570(0xbd) ? DAT_1439f8cd0 - 2 : 0;
+    if (!FUN_140166410()->FUN_14036d570(0xbd))
+        return 0;
+    return DAT_1439f8cd0 - 2;
 }
 
 // @0x1418dd150

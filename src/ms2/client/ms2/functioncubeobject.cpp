@@ -154,6 +154,9 @@
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/cequipitem.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/camera.h"
 
 // ---- unit-local placeholders ----
 
@@ -217,10 +220,9 @@ public:
     void FUN_1411a6060(int nHandle);                                // stop
     int FUN_1411a5580(int nId, int nOwner, int bFlag, Vector3 vPos, float fRange);      // the exe copies vPos to a temp (rep movsb)
 };
-Unk_FcFxMgr* FUN_1403ed280();
 void FUN_140a52ef0(Unk_FcSoundReq* p);                              // construct
 void FUN_1405a89e0(Unk_FcSoundReq* p);                              // destroy
-// The same request as a scoped local: ctor 0x140a52ef0, dtor 0x1405a89e0 (the 0x68 block as pointers: no /GS buffer).
+// The same request as a scoped local: ctor 0x140a52ef0, dtor 0x1405a89e0 (the block as pointers, no /GS buffer; the exe frame leaves 0x70 bytes for the local).
 struct Unk_FcSoundReqL
 {
     Unk_FcSoundReqL();
@@ -228,7 +230,7 @@ struct Unk_FcSoundReqL
     CString m_strName;                                              // +0x00
     int m_nType;                                                    // +0x08
     int m_nPad0c;                                                   // +0x0c
-    struct { void *p0, *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8, *p9, *pa, *pb, *pc; } m_unk;   // +0x10
+    struct { void *p0, *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8, *p9, *pa, *pb; } m_unk;   // +0x10
 };
 void FUN_1409fabf0(void* pSub, void* pAnchor);                      // construct the 0x68 block from an anchor
 void* FUN_14098d8d0(void* pCell, NiAVObject* pRoot);
@@ -264,7 +266,6 @@ public:
     Vector3* FUN_140af8290(Vector3* pOut);
     void FUN_140aeb420(int nEffect, Unk_FcCamFx* pParam);
 };
-Unk_FcCamMgr* FUN_1409478c0();
 void FUN_140947440(Unk_FcCamFx* p);                                 // construct
 void FUN_141839640(void* pDst, void* pSrc);
 void FUN_14183c3e0(void* pDst, void* pSrc);
@@ -336,7 +337,6 @@ public:
     int FUN_141adc890(int nId);                                     // is open
     void FUN_141adc5d0(int nId);                                    // close
 };
-Unk_FcUIMgr* FUN_1403ed2b0();
 class UITriggerEditorDialog : public UIDialog
 {
 public:
@@ -348,14 +348,14 @@ public:
 };
 MS2_CHECK_OFFSET(UITriggerEditorDialog, m_strCubeId, 0x190);
 class UIHomePasswordDialog : public UIDialog { public: void FUN_1412c9680(CString str); };
-class UIHomeSummonDialog : public UIDialog { public: void FUN_141299eb0(CString str); };
+class UIHomeSummonDialog : public UIDialog { public: void SetName(CString str); };
 class UIObjectStoreDialog : public UIDialog { public: virtual void vfunc_84(CString* pId, int nItemId); };
 void FUN_141924680(UIDialog* pDialog);                              // show
 template <class T> T* Unk_FcDialog(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -374,6 +374,10 @@ void* FUN_1408e57f0();
 UISwfEntity* FUN_1422b9e20(void* pMgr, int nEvent);                 // the entity registered for the event
 void FUN_1422b9fd0(void* pMgr, int nEvent);                         // unregister
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
+#include "ms2/client/ms2/uiupperhuddialog.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/equipment.h"
+#include "ms2/client/ms2/entityworldmanager.h"
 
 // Physics helper (singleton): the interaction-start call.
 class CPhysXHelper;
@@ -399,8 +403,6 @@ void FUN_140fb4bb0(UIUGCCubeNoticePopup* p);
 void FUN_140fb5080(UIUGCCubeNoticePopup* p, int bShow);
 
 // Strings and animation/listener glue of other units.
-class Unk_FcStrMgr { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_FcStrMgr* FUN_1401a9d70();
 CStringW GetStringCommon(int nId);                                    // string table lookup
 CStringW FUN_14061ad70(const CStringW& str, const wchar_t* psz);    // str + psz
 CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB); // strA + strB
@@ -453,9 +455,9 @@ CFunctionCubeObject::CFunctionCubeObject()
 CFunctionCubeObject::~CFunctionCubeObject()
 {
     if (m_nSoundHandle != 0)
-        FUN_1403ed280()->FUN_1411a6060(m_nSoundHandle);
+        reinterpret_cast<Unk_FcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nSoundHandle);
     if (m_bFxOn != 0)
-        FUN_1409478c0()->FUN_140aeb420(2, 0);
+        reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeb420(2, 0);
     m_ent = 0;
     m_spItem = 0;
     m_spData = 0;
@@ -615,7 +617,7 @@ CStringW CFunctionCubeObject::vfunc_6()
     if (pRow == 0)
         return L"";
     if (FUN_140966fc0() == 3 || FUN_140966fc0() == 9)
-        return FUN_1401d0080(FUN_14061ad70(GetStringCommon(0x63e), L" - "), FUN_1401a9d70()->FUN_141811980(1, pRow->FUN_1408b4f20()));
+        return FUN_1401d0080(FUN_14061ad70(GetStringCommon(0x63e), L" - "), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pRow->FUN_1408b4f20()));
     return L"";
 }
 
@@ -678,7 +680,7 @@ void CFunctionCubeObject::vfunc_10(int nState, bool bFlag)
 void CFunctionCubeObject::vfunc_11(int nState)
 {
     if (m_nSoundHandle != 0)
-        FUN_1403ed280()->FUN_1411a6060(m_nSoundHandle);
+        reinterpret_cast<Unk_FcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nSoundHandle);
     CString strSound = m_spData->m_sounds[nState];
     if (!strSound.IsEmpty())
     {
@@ -686,7 +688,7 @@ void CFunctionCubeObject::vfunc_11(int nState)
         kReq.m_strName = strSound;
         kReq.m_nType = 0;
         FUN_1409fabf0(&kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
-        m_nSoundHandle = FUN_1403ed280()->FUN_1411a49c0(reinterpret_cast<Unk_FcSoundReq*>(&kReq));
+        m_nSoundHandle = reinterpret_cast<Unk_FcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(reinterpret_cast<Unk_FcSoundReq*>(&kReq));
     }
 }
 
@@ -831,7 +833,7 @@ void CFunctionCubeObject::FUN_141227100(int nSound)
     Vector3 vPos;
     FUN_1409618c0(m_ent.FUN_1408a9280(), 0xfd95ca52, &vPos);
     float fRange = FUN_1401d3200()->m_range.FUN_1402bac70();
-    FUN_1403ed280()->FUN_1411a5580(nSound, m_n60, 1, vPos, fRange);
+    reinterpret_cast<Unk_FcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(nSound, m_n60, 1, vPos, fRange);
 }
 
 // @0x1412271c0
@@ -952,7 +954,7 @@ void CFunctionCubeObject::FUN_1412278b0()
 void CFunctionCubeObject::FUN_141227950()
 {
     int nState = m_nState;
-    if (FUN_1409478c0()->FUN_140a18070() == 0)
+    if (reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() == 0)
         return;
     if (nState == 1)
     {
@@ -961,10 +963,10 @@ void CFunctionCubeObject::FUN_141227950()
         case 0:
             return;
         case 1:
-            FUN_1409478c0()->FUN_140aeb420(9, 0);
+            reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeb420(9, 0);
             break;
         case 2:
-            FUN_1409478c0()->FUN_140aeb420(10, 0);
+            reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeb420(10, 0);
             break;
         case 3:
         {
@@ -972,28 +974,28 @@ void CFunctionCubeObject::FUN_141227950()
             FUN_140947440(&kFx);
             kFx.m_nKind = 1;
             kFx.m_fScale = 1.0f;
-            kFx.m_f8 = FUN_1409478c0()->FUN_140ad4b40();
-            kFx.m_fC = FUN_1409478c0()->FUN_140af7f00();
-            kFx.m_f10 = FUN_1409478c0()->FUN_140af7ea0();
+            kFx.m_f8 = reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140ad4b40();
+            kFx.m_fC = reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7f00();
+            kFx.m_f10 = reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7ea0();
             Vector3 vTmpA;
-            kFx.m_v14 = *FUN_1409478c0()->FUN_140a17e10(&vTmpA);
+            kFx.m_v14 = *reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a17e10(&vTmpA);
             Vector3 vTmpB;
-            kFx.m_v20 = *FUN_1409478c0()->FUN_140af8290(&vTmpB);
+            kFx.m_v20 = *reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af8290(&vTmpB);
             kFx.m_f30 = kFx.m_f8;
             kFx.m_f34 = kFx.m_fC;
             kFx.m_f38 = kFx.m_f10;
             FUN_141839640(kFx.m_unk3c, kFx.m_unk48);
-            FUN_1409478c0()->FUN_140aeb420(11, &kFx);
+            reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeb420(11, &kFx);
             break;
         }
         case 4:
-            FUN_1409478c0()->FUN_140aeb420(12, 0);
+            reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeb420(12, 0);
             break;
         case 5:
-            FUN_1409478c0()->FUN_140aeb420(13, 0);
+            reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeb420(13, 0);
             break;
         case 6:
-            FUN_1409478c0()->FUN_140aeb420(14, 0);
+            reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeb420(14, 0);
         }
         m_bFxOn = 1;
     }
@@ -1004,18 +1006,18 @@ void CFunctionCubeObject::FUN_141227950()
         FUN_140947440(&kFx);
         kFx.m_nKind = 1;
         kFx.m_fScale = 1.0f;
-        kFx.m_f8 = FUN_1409478c0()->FUN_140ad4b40();
-        kFx.m_fC = FUN_1409478c0()->FUN_140af7f00();
-        kFx.m_f10 = FUN_1409478c0()->FUN_140af7ea0();
+        kFx.m_f8 = reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140ad4b40();
+        kFx.m_fC = reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7f00();
+        kFx.m_f10 = reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7ea0();
         Vector3 vTmpA;
-        kFx.m_v14 = *FUN_1409478c0()->FUN_140a17e10(&vTmpA);
+        kFx.m_v14 = *reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a17e10(&vTmpA);
         Vector3 vTmpB;
-        kFx.m_v20 = *FUN_1409478c0()->FUN_140af8290(&vTmpB);
+        kFx.m_v20 = *reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af8290(&vTmpB);
         kFx.m_f30 = kFx.m_f8;
         kFx.m_f34 = kFx.m_fC;
         kFx.m_f38 = kFx.m_f10;
         FUN_14183c3e0(kFx.m_unk3c, kFx.m_unk48);
-        FUN_1409478c0()->FUN_140aeb420(2, &kFx);
+        reinterpret_cast<Unk_FcCamMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeb420(2, &kFx);
     }
 }
 
@@ -1063,8 +1065,8 @@ void CFunctionCubeObject::FUN_141227dd0(int nSkip)
 // @0x141228060
 void CFunctionCubeObject::FUN_141228060()
 {
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4e6b))
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4e6b);
+    if (reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e6b))
+        reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e6b);
     UITriggerEditorDialog* pDlg = Unk_FcDialog<UITriggerEditorDialog>(0x4e6b);
     if (pDlg != 0)
     {
@@ -1120,7 +1122,7 @@ void CFunctionCubeObject::FUN_141228340()
     UIHomeSummonDialog* pDlg = Unk_FcDialog<UIHomeSummonDialog>(0x4ede);
     if (pDlg != 0)
     {
-        pDlg->FUN_141299eb0(CString(m_strId));
+        pDlg->SetName(CString(m_strId));
         FUN_141924680(pDlg);
     }
 }
@@ -1192,9 +1194,9 @@ Unk_FcHmInfo* FUN_141235220(Unk_FcSp24* p)
 Unk_FcHmInfo* FUN_1409658d0(Unk_FcSp24* p);
 void FUN_140ca62a0(Unk_FcSp24* p);
 extern __int64 DAT_143ab2898;                                       // the player's meso
-__int64 FUN_140869440();                                            // now
+__int64 GetServerTime();                                            // now
 int FUN_14086bd90(int nId);                                         // growth seconds of a table id
-CStringW FUN_14086aec0(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);   // format a time span
+CStringW FormatTimeSpan(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);  // format a time span
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_14086d060(int nStringId, const __int64* pnValue);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table lookup by key
@@ -1209,7 +1211,7 @@ CHomemadeCubeObject::CHomemadeCubeObject()
 {
     m_nB8 = 0;
     m_nSoundHandle2 = 0;
-    m_nB0 = FUN_140869440();
+    m_nB0 = GetServerTime();
 }
 
 // @0x141228430
@@ -1217,7 +1219,7 @@ CHomemadeCubeObject::~CHomemadeCubeObject()
 {
     if (m_nSoundHandle2 != 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_nSoundHandle2);
+        reinterpret_cast<Unk_FcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nSoundHandle2);
         m_nSoundHandle2 = 0;
     }
     m_nB0 = 0;
@@ -1234,7 +1236,7 @@ void CHomemadeCubeObject::vfunc_4()
 {
     if (m_nSoundHandle2 != 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_nSoundHandle2);
+        reinterpret_cast<Unk_FcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nSoundHandle2);
         m_nSoundHandle2 = 0;
     }
     CString strSound = m_spData->m_str108;
@@ -1246,7 +1248,7 @@ void CHomemadeCubeObject::vfunc_4()
             kReq.m_strName = strSound;
             kReq.m_nType = 0;
             FUN_1409fabf0(&kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
-            m_nSoundHandle2 = FUN_1403ed280()->FUN_1411a49c0(reinterpret_cast<Unk_FcSoundReq*>(&kReq));
+            m_nSoundHandle2 = reinterpret_cast<Unk_FcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(reinterpret_cast<Unk_FcSoundReq*>(&kReq));
         }
     }
 }
@@ -1356,7 +1358,7 @@ void CHomemadeCubeObject::vfunc_11(int nState)
     CFunctionCubeObject::vfunc_11(nState);
     if (m_nSoundHandle2 != 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_nSoundHandle2);
+        reinterpret_cast<Unk_FcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nSoundHandle2);
         m_nSoundHandle2 = 0;
     }
     CString strSound = m_spData->m_str108;
@@ -1368,7 +1370,7 @@ void CHomemadeCubeObject::vfunc_11(int nState)
             kReq.m_strName = strSound;
             kReq.m_nType = 0;
             FUN_1409fabf0(&kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
-            m_nSoundHandle2 = FUN_1403ed280()->FUN_1411a49c0(reinterpret_cast<Unk_FcSoundReq*>(&kReq));
+            m_nSoundHandle2 = reinterpret_cast<Unk_FcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(reinterpret_cast<Unk_FcSoundReq*>(&kReq));
         }
     }
 }
@@ -1451,7 +1453,6 @@ int CHomemadeCubeObject::vfunc_17()
 
 // The entity manager (creates / removes the pet entity) and the animation table row of a pet.
 class Unk_FcEntMgr;
-Unk_FcEntMgr* FUN_1409670f0();
 void FUN_1411cf570(Unk_FcEntMgr* pMgr, Unk_Entity* pEntity);        // remove
 void FUN_1411cf2d0(Unk_FcEntMgr* pMgr, Unk_Entity* pEntity, int nFlag);
 Unk_EntRef* FUN_1411cec80(Unk_FcEntMgr* pMgr, Unk_EntRef* pOut, Unk_FcAnimName* pClass, egf::EntityID kId, bool bMaster);   // EntityWorldManager::FUN_1411cec80
@@ -1495,7 +1496,7 @@ CBreedingCubeObject::~CBreedingCubeObject()
     m_strAnim = "";
     if (m_entPet.FUN_1408a9090() != 0)
     {
-        FUN_1411cf570(FUN_1409670f0(), (Unk_Entity*)m_entPet.FUN_1408a9090());
+        FUN_1411cf570(reinterpret_cast<Unk_FcEntMgr*>(TSingleton<EntityWorldManager>::GetInstance()), (Unk_Entity*)m_entPet.FUN_1408a9090());
         m_entPet.FUN_1408b6ec0(0);
     }
 }
@@ -1536,7 +1537,7 @@ int CBreedingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
         Unk_FcAnimName kClass;
         FUN_1409989e0(&kClass, "GameObject");
         Unk_EntRef kTmp(0);
-        m_entPet = *FUN_1411cec80(FUN_1409670f0(), &kTmp, &kClass, kId, true);
+        m_entPet = *FUN_1411cec80(reinterpret_cast<Unk_FcEntMgr*>(TSingleton<EntityWorldManager>::GetInstance()), &kTmp, &kClass, kId, true);
         FUN_1408a8900(&kClass);
         if (m_entPet.FUN_1408a9090() != 0)
         {
@@ -1557,7 +1558,7 @@ int CBreedingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
             FUN_1409457c0(m_entPet.FUN_1408a9280(), 0x2d7cad2d, &FUN_14035eb90(&kAnim)->m_pFx);
             unsigned char bFlag = 0;
             FUN_14098c6e0(m_entPet.FUN_1408a9280(), 0xa0b6b179, &bFlag);
-            FUN_1411cf2d0(FUN_1409670f0(), (Unk_Entity*)m_entPet.FUN_1408a9090(), 0);
+            FUN_1411cf2d0(reinterpret_cast<Unk_FcEntMgr*>(TSingleton<EntityWorldManager>::GetInstance()), (Unk_Entity*)m_entPet.FUN_1408a9090(), 0);
             FUN_14066d5b0(&kItem);
             FUN_14035e5b0(&kAnim);
             return 1;
@@ -1622,7 +1623,7 @@ CStringW CBreedingCubeObject::vfunc_6()
         if (kItem.FUN_140b6dda0() != 0)
         {
             CStringW strLine;
-            strLine.Format(L"%s %s", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, pRow->FUN_1408b4f20()),
+            strLine.Format(L"%s %s", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pRow->FUN_1408b4f20()),
                            (const wchar_t*)FUN_14086d060(0x63f, &kItem.FUN_14066d9a0()->m_nPrice));
             return FUN_14052bd00(0x634, strLine);
         }
@@ -1633,11 +1634,11 @@ CStringW CBreedingCubeObject::vfunc_6()
     }
     else if (m_nState == 1)
     {
-        ATL::CTimeSpan kSpan(m_nB0 + FUN_14086bd90(m_spData->m_n110) - FUN_140869440());
+        ATL::CTimeSpan kSpan(m_nB0 + FUN_14086bd90(m_spData->m_n110) - GetServerTime());
         if (kSpan.GetTotalSeconds() >= 60)
-            return FUN_14052bd00(0x644, FUN_14052bd00(0x643, FUN_14086aec0(kSpan, false, false, true, false)));
+            return FUN_14052bd00(0x644, FUN_14052bd00(0x643, FormatTimeSpan(kSpan, false, false, true, false)));
         else if (kSpan.GetTotalSeconds() > 0)
-            return FUN_14052bd00(0x644, FUN_14052bd00(0x643, FUN_14086aec0(kSpan, false, false, false, true)));
+            return FUN_14052bd00(0x644, FUN_14052bd00(0x643, FormatTimeSpan(kSpan, false, false, false, true)));
     }
     return CStringW(L"");
 }
@@ -1759,7 +1760,7 @@ CStringW CFarmingCubeObject::vfunc_6()
         if (kItem.FUN_140b6dda0() != 0)
         {
             CStringW strLine;
-            strLine.Format(L"%s %s", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, pRow->FUN_1408b4f20()),
+            strLine.Format(L"%s %s", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pRow->FUN_1408b4f20()),
                            (const wchar_t*)FUN_14086d060(0x640, &kItem.FUN_14066d9a0()->m_nPrice));
             return FUN_14052bd00(0x634, strLine);
         }
@@ -1770,11 +1771,11 @@ CStringW CFarmingCubeObject::vfunc_6()
     }
     else if (m_nState == 1)
     {
-        ATL::CTimeSpan kSpan(m_nB0 + FUN_14086bd90(m_spData->m_n110) - FUN_140869440());
+        ATL::CTimeSpan kSpan(m_nB0 + FUN_14086bd90(m_spData->m_n110) - GetServerTime());
         if (kSpan.GetTotalSeconds() >= 60)
-            return FUN_14052bd00(0x645, FUN_14052bd00(0x643, FUN_14086aec0(kSpan, false, false, true, false)));
+            return FUN_14052bd00(0x645, FUN_14052bd00(0x643, FormatTimeSpan(kSpan, false, false, true, false)));
         else if (kSpan.GetTotalSeconds() > 0)
-            return FUN_14052bd00(0x645, FUN_14052bd00(0x643, FUN_14086aec0(kSpan, false, false, false, true)));
+            return FUN_14052bd00(0x645, FUN_14052bd00(0x643, FormatTimeSpan(kSpan, false, false, false, true)));
     }
     return CStringW(L"");
 }
@@ -1805,7 +1806,7 @@ int CFarmingCubeObject::vfunc_17()
 void FUN_141bbb7f0(void* pWorld, CubeSpawnObject* pObj, int nFlag);   // remove an object from the world
 void FUN_141bbb1e0(void* pWorld, CubeSpawnObject* pObj, int nA, int nB);   // add an object to the world
 extern int DAT_1439f706c;                                           // object id counter
-int FUN_14086ace0(__int64 nTime);
+int IsNotRecentDayChange(__int64 nTime);
 int FUN_14152ebd0(Unk_FcActor* p);
 void FUN_14152eb80(Unk_FcActor* p);
 unsigned FUN_14152eb20(Unk_FcActor* p);                             // times fed today
@@ -1921,7 +1922,7 @@ void CNurturingCubeObject::vfunc_3()
     if (FUN_14122d190() != 0)
     {
         m_nF4 = 0;
-        m_nTime = FUN_140869440();
+        m_nTime = GetServerTime();
     }
     Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pActor != 0)
@@ -1962,7 +1963,7 @@ CStringW CNurturingCubeObject::vfunc_6()
     Unk_FcItemRow* pRow = spSvc.FUN_1401cd1a0()->FUN_1410b8b00(FUN_14112e110());
     if (pRow == 0)
         return CStringW(L"");
-    return FUN_1401a9d70()->FUN_141811980(1, pRow->FUN_1408b4f20());
+    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pRow->FUN_1408b4f20());
 }
 
 // @0x14122bbe0
@@ -2243,9 +2244,9 @@ int CNurturingCubeObject::FUN_14122d190()
 {
     if (!(0 != m_nTime))
         return 1;
-    if (m_nTime > FUN_140869440())
+    if (m_nTime > GetServerTime())
         return 1;
-    if (FUN_14086ace0(m_nTime) != 0)
+    if (IsNotRecentDayChange(m_nTime) != 0)
     {
         return 1;
     }
@@ -2330,8 +2331,7 @@ void FUN_1414737d0(Unk_Entity* pEntity);                            // remove th
 void FUN_1418fe220(const CString& str);                             // show a skill message
 bool FUN_14036d570(void* pLog, int nId);
 void* FUN_140166410();
-class Unk_FcNoticeUI { public: void FUN_14135ec00(const CString& str, bool bOnce); };
-Unk_FcNoticeUI* FUN_140c43790(int nId);
+UIWebBrowserBase* FUN_140c43790(int nId);
 void FUN_14152ee60(Unk_FcActor* pActor, CInPacket* pPacket);
 struct Unk_FcCountMap { char m_pad[0x48]; };
 extern Unk_FcCountMap DAT_143ab3150;                                // item id -> count
@@ -2347,7 +2347,7 @@ unsigned char FUN_1401c0090(const CString& strA, const CString& strB);
 // The local player's equip holder and the colliding tag areas (classes of other units; only what is called).
 struct Unk_FcEquipData { char m_pad_00[0x10c]; int m_n10c; };
 Unk_FcEquipData* FUN_140527840(CItem* pItem);                       // the item's data record
-class Unk_FcEquipSet { public: MS2Ptr<CEquipItem> FUN_1411e1860(int nSlot, int nA, int nB); };
+class Unk_FcEquipSet : public CEquipment { };
 Unk_FcEquipSet* FUN_1416561a0(Unk_FcActor* pActor);
 int FUN_1409ff0d0(Unk_FcArea* pArea, CBoxCollision* pBox);         // does the box touch the area
 void FUN_1417591b0(Unk_FcTag* pTag);                                // the tag's owner reacts
@@ -2556,7 +2556,7 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
                     {
                         if (!FUN_14036d570(FUN_140166410(), 0x3b))
                             break;
-                        Unk_FcNoticeUI* pUi = FUN_140c43790(0x4e6a);
+                        UIWebBrowserBase* pUi = FUN_140c43790(0x4e6a);
                         if (pUi == 0)
                             break;
                         pUi->FUN_14135ec00(strA, true);
@@ -2565,7 +2565,7 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
                     {
                         if (!FUN_14036d570(FUN_140166410(), 0x5c))
                             break;
-                        Unk_FcNoticeUI* pUi = FUN_140c43790(0x4e6a);
+                        UIWebBrowserBase* pUi = FUN_140c43790(0x4e6a);
                         if (pUi == 0)
                             break;
                         pUi->FUN_14135ec00(strA, true);
@@ -2748,7 +2748,7 @@ void CFunctionCubeService::FUN_141230c90(MS2Ptr<CFunctionCubeObject> spObject)
     FUN_141230580(spObject->FUN_141226bd0(), spObject);
     m_mapCubes.SetAt(spObject->FUN_141226bd0(), spObject);
     spObject->vfunc_13();
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4e6b))
+    if (reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e6b))
     {
         UITriggerEditorDialog* pDlg = Unk_FcDialog<UITriggerEditorDialog>(0x4e6b);
         if (pDlg != 0)
@@ -2767,13 +2767,13 @@ void CFunctionCubeService::FUN_141230df0(CString strId)
         FUN_1414737d0(spCube->GetEnt().FUN_1408a9090());
         m_mapCubes.RemoveKey(strId);
     }
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4e6b))
+    if (reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e6b))
     {
         UITriggerEditorDialog* pDlg = Unk_FcDialog<UITriggerEditorDialog>(0x4e6b);
         if (pDlg != 0)
         {
             if (pDlg->GetCubeId() == strId)
-                FUN_1403ed2b0()->FUN_141adc5d0(0x4e6b);
+                reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e6b);
             else
                 pDlg->FUN_141b2b930();
         }

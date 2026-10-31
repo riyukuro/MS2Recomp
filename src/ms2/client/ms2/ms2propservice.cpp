@@ -108,9 +108,9 @@
 #include <efd/ILogger.h>
 #include <cstring>
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/entityworldmanager.h"
 
 void FUN_1413eb6d0(egf::IPropertyCallback*);
-EntityWorldManager* FUN_1409670f0();
 // @0x1414d9cb0
 inline unsigned FUN_1414d9cb0(EntityWorldManager* world) { return world->currentMap; }
 void FUN_1409618c0(egf::Entity*, unsigned, efd::Point3*);
@@ -246,7 +246,7 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
 MS2_REPLACE_METHOD_VIA(0x1414d70f0, MS2PropService, egf::IPropertyCallback, OnPropertyUpdate, 2189, 0x26D58610);
 // @0x1414d7990
 efd::utf8string FUN_1414d7990(const efd::utf8string& name) {
-    efd::utf8string result(efd::Formatted, "%08d_", FUN_1414d9cb0(FUN_1409670f0()));
+    efd::utf8string result(efd::Formatted, "%08d_", FUN_1414d9cb0(TSingleton<EntityWorldManager>::GetInstance()));
     result += name;
     return result;
 }

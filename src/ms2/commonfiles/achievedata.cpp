@@ -296,6 +296,7 @@
 #include <utility>
 #include <vector>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
 
 // ---------------------------------------------------------------------------------------------------------------
 // Unrecovered helpers (externs bound by VA).
@@ -310,11 +311,8 @@ public:
     Unk_XmlNode* FUN_14086e8d0(const char* pszName);
     Unk_XmlNode* FUN_14086e7e0(const char* pszName);
 };
-class Unk_140166410
+class Unk_140166410 : public CFeatureManager
 {
-public:
-    bool FUN_14036d4b0(const CStringW& strFeature);
-    CString FUN_14036d8e0();
 };
 extern Unk_140166410* DAT_143aab388;
 // @0x140166410

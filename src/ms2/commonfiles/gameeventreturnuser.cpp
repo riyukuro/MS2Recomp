@@ -9,6 +9,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
 
 #define MS2_GE_OUT(out) (*reinterpret_cast<COutputStream*>(out))
 
@@ -32,7 +33,6 @@ private:
     char m_pad[0x448];
     Unk_RuMentoring m_448;
 };
-Unk_RuManager* FUN_140302b00();
 
 // @0x14041cb50
 GameEvent* FUN_14041cb50() { return new GameEventReturnUser; }
@@ -70,14 +70,14 @@ void GameEventReturnUser::vfunc_4(Unk_GEIn* in)
 void GameEventReturnUser::OnStart()
 {
     if (0 < m_e0->m_18)
-        FUN_140302b00()->GetMentoring()->FUN_140424da0(m_e0);
+        reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->FUN_140424da0(m_e0);
 }
 
 // @0x14041ce30
 void GameEventReturnUser::vfunc_6()
 {
     if (0 < m_e0->m_18)
-        FUN_140302b00()->GetMentoring()->FUN_140424ea0();
+        reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->FUN_140424ea0();
 }
 
 // @0x14041cf20

@@ -21,6 +21,10 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/cubecraft_2.h"
+#include "ms2/unnamed/unit_140ad1860.h"
+#include "ms2/client/ms2/ms2inputservice.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -30,11 +34,10 @@ int FUN_1416764d0(MyPC* p);                                // 0x1416764d0 is rid
 int FUN_1416595d0(PCBase* p);                              // 0x1416595d0
 float FUN_141240c40(bool b);                               // 0x141240c40 the move speed (xmm0)
 float FUN_14059d930(float f);                              // 0x14059d930 fabs
-float FUN_14096b1c0(float f);                              // 0x14096b1c0
 int FUN_14028d260(float f);                                // 0x14028d260 round to ms
 class Unk_CubeSelection;
 Unk_CubeSelection* FUN_141659700(PCBase* p);               // 0x141659700 the cube selection of a player
-class Unk_WkCube { public: bool FUN_1410aa010(); };        // the cube selection is in the craft mode
+        // the cube selection is in the craft mode
 egf::Entity* FUN_141659b80(PCBase* p, int n, unsigned nProp, float fRange);   // 0x141659b80 the nearby object to sit on
 int* FUN_1404eb7e0(int* pA, int* pB);                      // 0x1404eb7e0 the larger of two ints
 
@@ -50,15 +53,11 @@ Unk_WkAnimSvc* FUN_141b6f910();
 // The replay / spectator mode flag, the key-binding config and the controller input readings.
 class Unk_WkPlayback { public: bool FUN_1406af100(); };
 Unk_WkPlayback* FUN_1406aeee0();
-class Unk_WkConfig { public: bool FUN_14036d570(int nSetting); };
-Unk_WkConfig* FUN_140166410();
-class Unk_WkInputSvc { public: int FUN_140d8c450(); int FUN_140d8c4d0(); };
-Unk_WkInputSvc* FUN_140a58540();
+CFeatureManager* FUN_140166410();
+MS2InputService* FUN_140a58540();
 class Unk_WkOption { public: char m_pad[0xc]; int m_n0c; };
 Unk_WkOption* FUN_140a58500(void* p);
 void* FUN_1409a8b10();
-class Unk_WkInput { public: int FUN_140ad2220(); int FUN_140ad2260(); };
-Unk_WkInput* FUN_140953f30();
 
 // The actor's buff set: the movement direction and the buff tests.
 class Unk_WkBuff
@@ -303,7 +302,7 @@ void StateWalk::vfunc_8(double fTime)
     }
     if (FUN_1417b9460())
         return;
-    if (pPC != 0 && (pBuff->FUN_141682fe0(0x30d41) || FUN_140953f30()->FUN_140ad2220() != 0))
+    if (pPC != 0 && (pBuff->FUN_141682fe0(0x30d41) || TSingleton<CMouseController>::GetInstance()->FUN_140ad2220() != 0))
     {
         if (FUN_141659b80(pPC, 1, 0xbadf0a13, 90.0f) != 0)
         {
@@ -321,7 +320,7 @@ void StateWalk::vfunc_8(double fTime)
         }
         return;
     }
-    if ((pPC != 0 && pBuff->FUN_141682fe0(0x30d42)) || FUN_140953f30()->FUN_140ad2260() != 0)
+    if ((pPC != 0 && pBuff->FUN_141682fe0(0x30d42)) || TSingleton<CMouseController>::GetInstance()->FUN_140ad2260() != 0)
     {
         pPC->FUN_1415248d0(2, 0xbadf0a13);
     }
@@ -336,7 +335,7 @@ void StateWalk::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     int bFalling = m_pOwner->FUN_141675ed0();
-    static int s_nDelay = FUN_14028d260(FUN_14096b1c0(3.0f / FUN_14059d930(FUN_141240c40(true))));
+    static int s_nDelay = FUN_14028d260(sqrt(3.0f / FUN_14059d930(FUN_141240c40(true))));
     if (bFalling != 0)
     {
         m_pOwner->vfunc_59(0x1b, 0, 0, 0);
@@ -356,7 +355,7 @@ void StateWalk::vfunc_9(double fTime)
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0 && FUN_1416595d0(pPC) != 0)
     {
-        if (((Unk_WkCube*)FUN_141659700(pPC))->FUN_1410aa010())
+        if (((Unk_PCCubeCraft*)FUN_141659700(pPC))->FUN_1410aa010())
         {
             if (nKey == 0x1c)
                 nKey = 0x38;

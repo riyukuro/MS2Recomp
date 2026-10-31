@@ -14,9 +14,14 @@ void* FUN_1408665a0(void* node)
     return *FUN_140864d80(node);
 }
 
-// MS2-FUNCTIONAL: exe reloads the argument through rax (mov rax,[arg]; mov rcx,rax); no source form found
+// The argument is the node's first member.
+struct Unk_NodeView
+{
+    void* m_first;
+};
+
 // @0x1408665c0
 void FUN_1408665c0(void* node)
 {
-    FUN_1408665a0(node);
+    FUN_1408665a0(&static_cast<Unk_NodeView*>(node)->m_first);
 }

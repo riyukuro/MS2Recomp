@@ -31,11 +31,11 @@ CFeatureManager* FUN_140166410();                           // the game settings
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pNode);                   // the element is enabled for this build
 unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);
-__int64 FUN_140869440();                                    // the server clock
-__int64 FUN_14086b2a0(int year, int month, int day, int hour, int minute, int second);
-__int64 FUN_14086b380(__int64 nTime);                       // midnight of the day
+__int64 GetServerTime();                                    // the server clock
+__int64 MakeTime(int year, int month, int day, int hour, int minute, int second);
+__int64 GetNextMonthStart(__int64 nTime);                   // midnight of the day
 __int64 FUN_14086ba60(const __int64& nTime, int nDays);
-int FUN_14086ae10(__int64 nTime);
+int IsMonthChanged(__int64 nTime);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
 bool PaybackTable::s_bInit;
@@ -95,7 +95,7 @@ bool PaybackTable::Load()
         int nYear = (int)((double)*FUN_1401d3200()->PaybackStartDate.Get() / 10000.0);
         int nMonth = *FUN_1401d3200()->PaybackStartDate.Get() / 100 % 100;
         int nDay = *FUN_1401d3200()->PaybackStartDate.Get() % 100;
-        m_nStart = FUN_14086b2a0(nYear, nMonth, nDay, 0, 0, 0);
+        m_nStart = MakeTime(nYear, nMonth, nDay, 0, 0, 0);
     }
     m_nEnd = 0;
     if (*FUN_1401d3200()->PaybackEndDate.Get() != 0)
@@ -103,7 +103,7 @@ bool PaybackTable::Load()
         int nYear = (int)((double)*FUN_1401d3200()->PaybackEndDate.Get() / 10000.0);
         int nMonth = *FUN_1401d3200()->PaybackEndDate.Get() / 100 % 100;
         int nDay = *FUN_1401d3200()->PaybackEndDate.Get() % 100;
-        m_nEnd = FUN_14086b2a0(nYear, nMonth, nDay, 23, 59, 59);
+        m_nEnd = MakeTime(nYear, nMonth, nDay, 23, 59, 59);
     }
     if (FUN_140166410()->FUN_14036d650())
     {
@@ -186,12 +186,12 @@ bool PaybackTable::InPeriod(__int64 nTime)
 // @0x14071b860
 bool PaybackTable::IsPaybackDay(__int64 nTime)
 {
-    __int64 nNow = FUN_140869440();
+    __int64 nNow = GetServerTime();
     if (!InMonthPeriod(nNow))
         return false;
     if (nTime == 0)
         return true;
-    return FUN_14086ae10(nTime) ? true : false;
+    return IsMonthChanged(nTime) ? true : false;
 }
 
 // @0x14071b8d0
@@ -203,8 +203,8 @@ bool PaybackTable::InMonthPeriod(__int64 nTime)
         return false;
     if (m_nEnd == 0)
         return false;
-    CMsTime start(FUN_14086b380(m_nStart));
-    __int64 nEndDay = FUN_14086b380(m_nEnd);
+    CMsTime start(GetNextMonthStart(m_nStart));
+    __int64 nEndDay = GetNextMonthStart(m_nEnd);
     CMsTime end(FUN_14086ba60(nEndDay, 0));
     bool bIn = start.Get() <= nTime && nTime < end.Get();
     return bIn;
@@ -215,7 +215,7 @@ bool PaybackTable::IsResetWindow()
 {
     if (!FUN_140166410()->FUN_14036d570(0x109))
         return false;
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (now.GetDay() != 1)
         return false;
     if (now.GetHour() != 0)

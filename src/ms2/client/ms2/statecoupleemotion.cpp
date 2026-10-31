@@ -43,6 +43,8 @@
 static CStringW s_strCoupleEmotion(L"coupleEmotion");                             // @0x1400c90a0
 
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -91,21 +93,12 @@ public:
     int m_n30;                                                             // +0x30 the actor's height offset
 };
 class Unk_EmoTable { public: MS2Ptr<Unk_EmoRow> FUN_1407ee1d0(int nEmotion); };
-Unk_EmoTable* FUN_1401958b0();                                             // 0x1401958b0
 
 // World service lookups.
 WorldService* FUN_1403ed2d0();                                             // 0x1403ed2d0
 
 // The effect service (0x1403ed280): plays / stops effects.
-class Unk_CeFxMgr
-{
-public:
-    unsigned FUN_1411a49c0(Unk_EffectTarget& kTarget);                     // play, not detached
-    unsigned FUN_1411a4a00(Unk_EffectTarget& kTarget);                     // play
-    void FUN_1411a6060(unsigned nId);                                      // stop
-    NiNode* FUN_1411a6b10();                                               // the effect root with the fewest children
-};
-Unk_CeFxMgr* FUN_1403ed280();                                              // 0x1403ed280
+CEffectService* FUN_1403ed280();                                           // 0x1403ed280
 
 // PCBase / MyPC non-virtual helpers (free-function form: `this` is the first argument).
 void* FUN_14165f100(PCBase* p);                                            // 0x14165f100 the playing emotion
@@ -472,7 +465,7 @@ void StateCoupleEmotion::vfunc_4(StateData* pData)
     if (pOwnerPC == 0 || pPartner == 0)
         return;
     StateCoupleEmotionData* pCouple = m_spCoupleData.get();
-    MS2Ptr<Unk_EmoRow> spRow = FUN_1401958b0()->FUN_1407ee1d0(pCouple->m_nEmotion);
+    MS2Ptr<Unk_EmoRow> spRow = reinterpret_cast<Unk_EmoTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(pCouple->m_nEmotion);
     if (spRow == 0)
         return;
     if (spRow->FUN_1407e9a60() != 0xf)
@@ -696,7 +689,6 @@ void StateCoupleEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int e
 }
 
 // Follows the owner's ridden mount position; ends the state when the actor can no longer stay.
-// MS2-FUNCTIONAL: the exe copies the returned position into a by-value argument temporary for PCBase vfunc_22 (rep movsb frame); the shared mypc.h slot is declared const efd::Point3& and has 270+ users, not re-typed here
 // @0x140b81830
 void StateCoupleEmotion::vfunc_8(double fTime)
 {
@@ -704,8 +696,7 @@ void StateCoupleEmotion::vfunc_8(double fTime)
     if (FUN_1417b8560() == 0)
         return;
     Unk_CeBuffMgr* pMgr = static_cast<Unk_CeBuffMgr*>(m_pOwner->FUN_14166d240());
-    efd::Point3 kPos = pMgr->FUN_141683290();
-    m_pOwner->vfunc_22(kPos);
+    m_pOwner->vfunc_22(pMgr->FUN_141683290());
     if (m_pOwner->FUN_1416749c0())
     {
         Stop(0);
@@ -1214,7 +1205,6 @@ bool StateCoupleEmotion::PlayNextAni()
 }
 
 // Plays animation nAni on the owner and restarts the nif clock.
-// MS2-FUNCTIONAL: the exe passes the start time through xmm0 then movaps xmm1 (a computed float temp); ours loads xmm1 directly from the named float
 // @0x140b83ce0
 bool StateCoupleEmotion::PlayAni(int nAni)
 {
@@ -1229,8 +1219,7 @@ bool StateCoupleEmotion::PlayAni(int nAni)
     m_spCoupleData->m_nAni = nAni;
     CStringA strName = m_spAnimInfo->GetAniName(nAni);
     m_spAnimInfo->Load(nAni);
-    float fNow = (float)FUN_141473280(FUN_14086d260());
-    m_spAnimInfo->SetStartTime(fNow);
+    m_spAnimInfo->SetStartTime((float)FUN_141473280(FUN_14086d260()));
     pOwnerPC->FUN_14166dd20((const char*)strName, 1.0f, true, false);
     return true;
 }

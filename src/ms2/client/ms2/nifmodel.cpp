@@ -9,6 +9,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "nifmodel.h"
 #include "kfmmodel_actor.h"
+#include "ms2/client/ms2/nifeffectparam.h"
 #include <efd/Matrix3.h>
 #include <string.h>
 #include <errno.h>
@@ -97,18 +98,13 @@ CNifModel::CNifModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p20)
 }
 
 // The .nif loading service (CNifLoadingService; nifeffectparam.h). Only the loader this unit calls.
-class Unk_NifLoader
-{
-public:
-    NiAVObjectPtr FUN_141551ea0(CString strPath, bool bShared, int a, int b, int c);   // Load
-};
-Unk_NifLoader* FUN_140a0afd0();                           // the service singleton
+CNifLoadingService* FUN_140a0afd0();                      // the service singleton
 
 // @0x141565700
 int CNifModel::vfunc_4(CString strPath)
 {
     FUN_141200e30(this, 1);
-    m_unk_f0 = FUN_140a0afd0()->FUN_141551ea0(strPath, FUN_1412033e0(this) != 0, 5, 0, 0);
+    m_unk_f0 = FUN_140a0afd0()->Load(strPath, FUN_1412033e0(this) != 0, 5, 0, 0);
     if (m_unk_f0 == 0)
         return 0;
     m_str38 = strPath;

@@ -69,6 +69,9 @@
 #include "raindroponcubeemitter.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/nifeffectparam.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 #include <stdlib.h>
 #include <NiAlphaProperty.h>
@@ -110,10 +113,8 @@ class Unk_RainContext
 public:
     Unk_RainActor* FUN_141bd0cc0();                                 // the local player
 };
-Unk_RainContext* FUN_1403ed2d0();
 
 class Unk_Clock;
-Unk_Clock* FUN_14086d260();
 double FUN_141473280(Unk_Clock* pClock);                            // seconds
 
 // The cube terrain: the height of a column (INT_MIN when empty).
@@ -138,12 +139,7 @@ struct Unk_RainPaths
     CString m_strTexture;
 };
 Unk_RainPaths* FUN_1401d31f0();
-class Unk_RainTextureFactory
-{
-public:
-    NiTexturePtr FUN_141552f90(CString strName, int nFlags);
-};
-Unk_RainTextureFactory* FUN_140a0afd0();
+CNifLoadingService* FUN_140a0afd0();
 
 // The scene registry: takes the list of nodes to draw, returns a handle.
 struct Unk_RainAVPtr
@@ -268,7 +264,7 @@ RainDropOnCubeEmitter::RainDropOnCubeEmitter(const NiFixedString& kName, NiAVObj
 {
     m_fCooldown = fLifeSpan;
     Vector3 kPos = g_143b01a60;
-    Unk_RainActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_RainActor* pActor = reinterpret_cast<Unk_RainContext*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pActor)
         kPos = pActor->GetPosition();
     m_nCenterKey = FUN_1408a13d0(kPos);
@@ -276,7 +272,7 @@ RainDropOnCubeEmitter::RainDropOnCubeEmitter(const NiFixedString& kName, NiAVObj
     ATL::CAtlArray<Unk_Int3> arrCube;
     FillColumns(kPos, arrCube);
     ShuffleColumns(arrCube);
-    double dNow = FUN_141473280(FUN_14086d260());
+    double dNow = FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance()));
     for (unsigned int i = 0; i < arrCube.GetCount(); i++)
     {
         const Unk_Int3& kCube = static_cast<const ATL::CAtlArray<Unk_Int3>&>(arrCube)[i];
@@ -296,7 +292,7 @@ void RainDropOnCubeEmitter::MarkDirty()
 // @0x1416eca00
 void RainDropOnCubeEmitter::Refresh()
 {
-    Unk_RainActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_RainActor* pActor = reinterpret_cast<Unk_RainContext*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pActor)
         return;
 
@@ -316,7 +312,7 @@ void RainDropOnCubeEmitter::Refresh()
     ATL::CAtlArray<Unk_Int3> arrCube;
     FillColumns(kPos, arrCube);
     ShuffleColumns(arrCube);
-    double dNow = FUN_141473280(FUN_14086d260());
+    double dNow = FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance()));
     ATL::CAtlArray<unsigned int> arrKey;
     for (unsigned int i = 0; i < arrCube.GetCount(); i++)
     {
@@ -343,7 +339,7 @@ bool RainDropOnCubeEmitter::ComputeVolumeInitialPositionAndVelocity(NiQuatTransf
         return false;
 
     Unk_RainDrop& kDrop = m_lstDrops.front();
-    double dNow = FUN_141473280(FUN_14086d260());
+    double dNow = FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance()));
     if (kDrop.GetTime() > dNow)
         return false;
 
@@ -391,7 +387,7 @@ void RainDropSystem::Create()
     {
         CString strName;
         strName.Format("%sRainDrop%d.dds", (const char*)FUN_1401d31f0()->m_strTexture, i);
-        m_arrTexture.Add(FUN_140a0afd0()->FUN_141552f90(strName, 5));
+        m_arrTexture.Add(FUN_140a0afd0()->GetTexture(strName, 5));
     }
 
     m_spSystem = NiPSParticleSystem::Create(0x200, (NiPSParticleSystem::AlignMethod)2, AsPoint(g_143a08cf8),
@@ -478,7 +474,7 @@ void RainDropSystem::SetupProperties()
 void RainDropSystem::SelectTexture()
 {
     const float fPeriod = 1.0f;
-    float fTime = (float)FUN_141473280(FUN_14086d260());
+    float fTime = (float)FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance()));
     float fRatio = Fmod(fTime, fPeriod);
     unsigned int nIndex = (unsigned int)((float)m_arrTexture.GetCount() * fRatio / fPeriod);
     NiTexturingProperty* pTexturing = (NiTexturingProperty*)m_spSystem->GetProperty(NiProperty::TEXTURING);

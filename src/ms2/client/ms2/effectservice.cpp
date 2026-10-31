@@ -153,6 +153,10 @@
 #include "soundeventmgr.h"
 
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/crashmanagercli.h"
 
 // Params whose units are not recovered yet: only the constructor and the size are known here.
 class CSoundMusicEffectParam : public CEffectParam      // ?\soundmusiceffectparam.cpp, vftable 0x142f67b50
@@ -197,23 +201,12 @@ void* FUN_140166440();
 void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
 
 // Game clock (commonfiles singleton 0x14086d260, mainsystem.cpp 0x141473280: current time in seconds).
-class Unk_EsClock
-{
-public:
-    double FUN_141473280();
-    double FUN_141473260();                         // elapsed seconds
-    float FUN_141473210();                          // frames per second
-};
-Unk_EsClock* FUN_14086d260();
-CCrashManager* FUN_140a44830();                                 // the crash manager (CrashManagerCli)
+CMainSystem* FUN_14086d260();
 
 // World service (singleton 0x1403ed2d0): the local player.
 // The local player (a MyPC; only its gender and job getters are used here).
-class Unk_EsPlayer : public GameObject
+class Unk_EsPlayer : public PC
 {
-public:
-    int FUN_141658e60();                                        // gender
-    int FUN_141654700();                                        // job code
 };
 class Unk_EsWorld
 {
@@ -228,7 +221,6 @@ public:
     GameObject* FUN_141bd0fa0(egf::EntityID id);                // the object of an entity
     void FUN_141bbae40(IWorldServiceCallback* pCallback);       // add a map callback
 };
-Unk_EsWorld* FUN_1403ed2d0();
 NiAVObject* FUN_141b6ef70(egf::EntityID id);            // scene node of an entity
 
 extern int DAT_1439ed00c;                               // effect cache enabled (reload when the file changed)
@@ -310,7 +302,7 @@ CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget)
         GameObject* pOwner = pTarget->FUN_140a533b0();
         if (efd::ClassInfo::IsKindOf(pOwner ? pOwner->GetClassDesc() : NULL, 0x6200044))
         {
-            Unk_EsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+            Unk_EsPlayer* pPlayer = reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
             pTarget->m_spObject = FUN_141b6ef70(pPlayer->FUN_14123c460());
         }
         break;
@@ -971,7 +963,7 @@ void EffectNode::UpdateWorldData()
         m_kWorld = m_kLocal;
     }
     if (m_spMovement.get()) {
-        double dTime = FUN_14086d260()->FUN_141473260();
+        double dTime = FUN_14086d260()->GetDeltaTime();
         m_kWorld = m_spMovement->FUN_141625430(dTime, m_kWorld);
     }
     if (m_bOnGround) {
@@ -1056,6 +1048,10 @@ CSoundService* FUN_140c9cb10();                                // the sound serv
 #include "ms2/commonfiles/crashmanager.h"
 #include "ms2/placeholder/tfunctor_search.h"
 #include "ms2/client/ms2/ms2scenegraphservice.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/client/ms2/soundeventmgr.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
+#include "ms2/placeholder/cgameoption.h"
 namespace FMOD { class EventGroup; }
 
 // PendingEffect::Init (0x140a8f300) with the real argument types (pendingeffect.h declares it over stand-ins of
@@ -1070,12 +1066,12 @@ NiCamera* FUN_1413f9950();                                      // the main came
 void FUN_140ab1290(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nArg0, const CString& strArg1);
 CString FUN_140298360(const char* psz, const CString& str);     // ATL operator+(const char*, const CString&)
 CString FUN_14038f6d0(const CString& str, const char* psz);     // ATL operator+(const CString&, const char*)
-void FUN_140657820();                                           // invalid call of an empty Delegate
+void Unk_140657820();                                           // invalid call of an empty Delegate
 // @0x1411b0e30
 template <> inline void Delegate<void(unsigned int, CString, bool)>::operator()(unsigned int nId, CString strName, bool b) const
 {
     if (m_pImpl == 0)
-        FUN_140657820();
+        Unk_140657820();
     m_pImpl->vfunc_2(nId, strName, b);
 }
 // The copy constructor / move assignment COMDATs NiPoint3 values go through here (0x14027dcf0 / 0x14097faa0).
@@ -1160,7 +1156,6 @@ public:
     char m_pad_00[0xe4];
     Unk_EsVoiceOption m_voice;                                  // +0xe4
 };
-Unk_EsOption* FUN_1409a8b10();
 // The client config (FUN_1401d31f0, declared void* in postprocesseffect.h): sky object files at +0x208, area effect files at +0x3c0.
 struct Unk_EsConfig
 {
@@ -1182,10 +1177,9 @@ struct Unk_EsConfig
     CString m_strArea3f0;
 };
 // The camera (FUN_1409478c0) and its target.
-class Unk_EsCamera
+class Unk_EsCamera : public CameraMgr
 {
 public:
-    int FUN_140a18070();
     GameObject* FUN_140a38d60();
 };
 Unk_EsCamera* FUN_1409478c0();
@@ -1208,7 +1202,7 @@ private:
     Unk_EsFieldData* m_p;
 };
 Unk_EsFieldPtr FUN_140a55460(int nMapId);
-// A map override row (FUN_140302b00()->FUN_1403ed1d0()->FUN_140428a90()).
+// A map override row (reinterpret_cast<Unk_EsMapMgr*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed1d0()->FUN_140428a90()).
 struct Unk_EsMapRow
 {
     int FUN_1404054d0(int nMapId);                              // applies to the map
@@ -1227,7 +1221,6 @@ private:
 };
 class Unk_EsMapTable { public: Unk_EsMapRowPtr FUN_140428a90(); };
 class Unk_EsMapMgr { public: Unk_EsMapTable* FUN_1403ed1d0(); };
-Unk_EsMapMgr* FUN_140302b00();
 CString FUN_1401d4330(const wchar_t* psz, int n);              // wide to multi-byte
 void* FUN_1409ffd30(GameObject* pObject);                       // the actor of an object
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class, same as util.cpp).
@@ -1478,12 +1471,12 @@ unsigned CEffectService::FUN_1411a5770(int nId, GameObject* pActor)
     Unk_EsVoice kVoice;
     if (TSingleton<SoundPropertyMgr>::GetInstance()->FUN_141792e00(nId, pActor, &kVoice)) {
         CString strName;
-        if (FUN_1409a8b10()->FUN_1411b1f30()->FUN_141260470())
+        if (reinterpret_cast<Unk_EsOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1411b1f30()->FUN_141260470())
             strName = kVoice.m_strFemale;
         else
             strName = kVoice.m_strMale;
         if (!strName.IsEmpty()) {
-            int nKind = FUN_1403ed2d0()->FUN_141bd1a10(pActor);
+            int nKind = reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_141bd1a10(pActor);
             if (kVoice.m_bPlayerOnly && nKind != 1)
                 return 0;
             NiTransform kXform;
@@ -1501,7 +1494,7 @@ unsigned CEffectService::FUN_1411a5a60(const CString& strName, const CString& st
 {
     int nGender = 0;
     int nJob = 1;
-    Unk_EsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_EsPlayer* pPlayer = reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0) {
         nGender = pPlayer->FUN_141658e60();
         nJob = pPlayer->FUN_141654700();
@@ -1526,7 +1519,7 @@ unsigned CEffectService::FUN_1411a5d80(const CString& strName)
 {
     int nGender = 0;
     int nJob = 1;
-    Unk_EsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_EsPlayer* pPlayer = reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0) {
         nGender = pPlayer->FUN_141658e60();
         nJob = pPlayer->FUN_141654700();
@@ -1797,7 +1790,7 @@ void CEffectService::FUN_1411a6f00(const egf::EntityID& id)
         POSITION posCur = pos;
         Unk_EsTrackedPtr& spTracked = m_listTracked.GetNext(pos);
         if (spTracked->FUN_1411b1ee0() == id) {
-            GameObject* pObject = FUN_1403ed2d0()->FUN_141bd0fa0(id);
+            GameObject* pObject = reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_141bd0fa0(id);
             if (pObject != NULL)
                 pObject->vfunc_39();
             m_listTracked.RemoveAt(posCur);
@@ -2079,7 +2072,7 @@ void CEffectService::vfunc_1(int nMap)
     Unk_EsFieldPtr spField = FUN_140a55460(nMap);
     if (spField.FUN_1409657a0() != NULL) {
         CString strArea = spField.FUN_140885340()->m_strAreaEffect;
-        Unk_EsMapRowPtr spRow = FUN_140302b00()->FUN_1403ed1d0()->FUN_140428a90();
+        Unk_EsMapRowPtr spRow = reinterpret_cast<Unk_EsMapMgr*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed1d0()->FUN_140428a90();
         if (spRow.FUN_1403e8a60() != NULL) {
             if (spRow.FUN_1403e8c40()->FUN_1404054d0(nMap) != 0)
                 strArea = FUN_1401d4330(spRow.FUN_1403e8c40()->m_strAreaEffect, 0);
@@ -2149,17 +2142,17 @@ MS2_REPLACE_METHOD(0x1411a85c0, CEffectService, FUN_1411a85c0, 61, 0xAC303898);
 // Crash log callback (CCrashManager shutdown list): the counters and the effects of the newest id.
 void CEffectService::FUN_1411a8610()
 {
-    FUN_140a44830()->FUN_1401ce2b0("\n--- CEffectService Log---");
-    FUN_140a44830()->FUN_1401ce2f0("Effect count %d", FUN_1411a85a0());
-    FUN_140a44830()->FUN_1401ce2f0("Infinite Effect count %d", FUN_1411a85c0());
-    FUN_140a44830()->FUN_1401ce2f0("EffectOID %d", FUN_1411b1bd0());
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- CEffectService Log---");
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Effect count %d", FUN_1411a85a0());
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Infinite Effect count %d", FUN_1411a85c0());
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("EffectOID %d", FUN_1411b1bd0());
     Unk_EsGroupMap::iterator it = m_mapGroups.find(FUN_1411b1bd0());
     if (it == m_mapGroups.end())
         return;
     Unk_EsEffectGroup* pGroup = it->second;
     for (std::list<CEffectPtr>::iterator itEffect = pGroup->FUN_141044280(); itEffect != pGroup->FUN_1410443f0(); ++itEffect) {
         CEffectPtr& spEffect = *itEffect;
-        FUN_140a44830()->FUN_1401ce2f0("[%s][%s]", (const char*)FUN_1411a12f0(spEffect->vfunc_12()),
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("[%s][%s]", (const char*)FUN_1411a12f0(spEffect->vfunc_12()),
             (const char*)spEffect->GetName());
     }
 }
@@ -2201,7 +2194,7 @@ int CEffectService::FUN_1411a88e0(int nKind, float fDistance)
     case 6:
     case 7:
     {
-        float fFps = FUN_14086d260()->FUN_141473210();
+        float fFps = FUN_14086d260()->GetFps();
         int nDrop = 0;
         if (fFps <= 50.0f)
             nDrop = 3;
@@ -2303,9 +2296,9 @@ MS2_REPLACE_METHOD(0x1411a8e70, CEffectService, GetTick, 17, 0xFA964832);
 // @0x1411a91d0
 bool CEffectService::FUN_1411a91d0(int nType)
 {
-    if (FUN_1409a8b10()->FUN_140b123b0()->m_bHide12 == true && nType == 4)
+    if (reinterpret_cast<Unk_EsOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bHide12 == true && nType == 4)
         return false;
-    if (FUN_1409a8b10()->FUN_140b123b0()->m_bHide13 == true && nType == 2)
+    if (reinterpret_cast<Unk_EsOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bHide13 == true && nType == 2)
         return false;
     return true;
 }
@@ -2361,7 +2354,7 @@ efd::AsyncResult CEffectService::OnInit()
         pSceneGraph->AddSceneGraph(kObjects, true, true);
     }
     FUN_1413f9830()->Subscribe(this, s_catEffectChannel, 0, false);
-    FUN_140d13c40()->FUN_14177d6e0("ms2sound/sound/attack/hit", 1);
+    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177d6e0("ms2sound/sound/attack/hit", 1);
     FUN_14025e7a0()->FUN_1422b0690(Unk_EsSoundFunctor(this, &CEffectService::FUN_1411a5a60));
     {
         CNifLoadingService* pLoader = FUN_140a0afd0();
@@ -2391,8 +2384,8 @@ efd::AsyncResult CEffectService::OnInit()
     m_spF8 = 0;
     m_spRain = 0;
     m_nAreaEffect = 0;
-    FUN_1403ed2d0()->FUN_141bbae40(this);
-    FUN_140a44830()->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CEffectService::FUN_1411a8610));
+    reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_141bbae40(this);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CEffectService::FUN_1411a8610));
     return efd::AsyncResult_Complete;
 }
 
@@ -2451,7 +2444,7 @@ efd::AsyncResult CEffectService::OnTick()
         if (!spTracked->vfunc_2())
             m_listTracked.RemoveAt(posCur);
     }
-    if (FUN_1403ed2d0()->FUN_141bcfbd0() && !FUN_1403ed2d0()->FUN_1411b2740()) {
+    if (reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_141bcfbd0() && !reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_1411b2740()) {
         FUN_1411aab90(m_spF8);
         if (m_spRain)
             m_spRain->Update();

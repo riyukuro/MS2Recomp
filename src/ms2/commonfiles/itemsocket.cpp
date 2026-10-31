@@ -17,7 +17,7 @@
 #include "ms2/ms2recover.h"
 
 class Unk_ItemOwnerRef : public CItemTransfer {};
-__int64 FUN_140869440();                        // the current server time
+__int64 GetServerTime();                        // the current server time
 MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);
 int FUN_14053feb0(int nItemId);                 // the rank of an item
 bool FUN_140635b90(unsigned nFlags, unsigned nFlag);
@@ -59,7 +59,7 @@ bool TSocketGemStoneLock::FUN_14061f6d0()
 {
     if (FUN_140623e20() == 1)
         return true;
-    if (FUN_140623e20() == 0 && FUN_140869440() < FUN_140623e10())
+    if (FUN_140623e20() == 0 && GetServerTime() < FUN_140623e10())
         return true;
     return false;
 }
@@ -193,7 +193,7 @@ bool TSocketGemStoneInfo::FUN_14061fde0(MS2Ptr<CItem> spGem)
 // @0x14061fea0
 bool TSocketGemStoneInfo::FUN_14061fea0(const int& nState, const __int64& nExpireTime)
 {
-    if (nState == 0 && FUN_140869440() >= nExpireTime)
+    if (nState == 0 && GetServerTime() >= nExpireTime)
         return false;
     m_spLock.AssignRaw(new TSocketGemStoneLock);
     if (m_spLock.get() != 0)

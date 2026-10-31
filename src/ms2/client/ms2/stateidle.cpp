@@ -32,6 +32,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/bonerotateinterpolator.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -57,17 +60,10 @@ public:
 };
 
 // The player-side views of the actor (PC members seen through the PCBase pointer of FUN_1417b8370).
-class Unk_PCD88 : public CPtred { public: int FUN_140a35780(); };    // the target the player is bound to
-class Unk_SiPC
+class Unk_PCD88 : public CBoneRotateManager { };    // the target the player is bound to
+class Unk_SiPC : public PC
 {
 public:
-    void FUN_141659000(int n);
-    int FUN_141659610();                                 // sitting
-    int FUN_141659690();                                 // lying
-    int FUN_141654700();                                 // the job
-    int FUN_141661970();                                 // busy (a count at +0x10ec, a flag at +0x10f0 or the +0x748 timer)
-    MS2Ptr<Unk_PCD88> FUN_14165c2d0();                   // copies the +0xd88 pointer out
-    CString FUN_14165e010(int nKey);                     // the player's sound name of a key
     void FUN_14165e2a0(void* pStr, int nKey);            // the player's animation name of a key
 };
 // The actor's +0xd00 action table lookup (returns an int; pcbase.h declares it void).
@@ -128,15 +124,12 @@ MS2_CHECK_OFFSET(Unk_SiConsts, m_intervalB, 0x7e90);
 MS2_CHECK_OFFSET(Unk_SiConsts, m_strSoundJob110, 0xe098);
 Unk_SiConsts* FUN_1401d3200();
 class Unk_PCBaseComp_aa8 : public CPtred { public: int FUN_140f48d40(); };     // the pet component
-CStateService* FUN_140aa6d30();                            // 0x140aa6d30 the actor state manager
 egf::Entity* FUN_141659af0(MyPC* p, int n);                // 0x141659af0 the nearby object to sit on
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);       // 0x1408a9bd0
 Ridee* FUN_141468360(PCBase* p);                           // 0x141468360 the ridee the actor sits on
 
 // The effect service and the player manager.
-CEffectService* FUN_1403ed280();
 class Unk_SiWorld { public: int FUN_141bd1a10(GameObject* pObject); };
-Unk_SiWorld* FUN_1403ed2d0();
 
 // Scene / mode queries of the bore timer.
 class Unk_SiScene;
@@ -235,7 +228,7 @@ int StateIdle::vfunc_15()
 void StateIdle::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
-    if (FUN_140aa6d30()->FUN_1417e2610() == 0x620000d)
+    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000d)
     {
         FUN_1417cef60();
         return;
@@ -690,7 +683,7 @@ void StateIdle::FUN_1417cf210()
 {
     if (m_nSoundIdle != 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_nSoundIdle);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nSoundIdle);
         m_nSoundIdle = 0;
     }
 }
@@ -704,9 +697,9 @@ void StateIdle::FUN_1417cf260()
     {
         Unk_EffectTarget kTarget;
         kTarget.m_strName = AsPC(pPC)->FUN_14165e010(0x30);
-        kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
+        kTarget.m_nKind = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
         kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
-        m_nSoundIdle = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+        m_nSoundIdle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
     }
 }
 
@@ -730,10 +723,10 @@ void StateIdle::FUN_1417cf360()
         {
             return;
         }
-        kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
+        kTarget.m_nKind = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
         kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
         kTarget.m_b30 = true;
-        m_nSoundEmotion = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+        m_nSoundEmotion = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
     }
 }
 
@@ -742,7 +735,7 @@ void StateIdle::FUN_1417cf4a0()
 {
     if (m_nSoundEmotion != 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_nSoundEmotion);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nSoundEmotion);
         m_nSoundEmotion = 0;
     }
 }

@@ -46,6 +46,8 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/itemdatatable.h"
 #include <map>
 
 // The header statics of the original TU (the same set as the other pages of the family).
@@ -81,11 +83,8 @@ int FUN_140222ce0(MS2Ptr<CItemData>);
 unsigned short FUN_140626f20(unsigned gemId);
 void FUN_1406284f0(unsigned short gemInfo, int recipe, int* tag, int* amount);
 struct Unk_GsIngTable;
-Unk_GsIngTable* FUN_140281980();
 unsigned FUN_1405575b0(Unk_GsIngTable*, int tag);
 int FUN_14053feb0(int itemId);
-struct Unk_GsStrings { CStringW FUN_141811980(int, int); };
-Unk_GsStrings* FUN_1401a9d70();
 CStringW FUN_140bfa7f0(CStringW key, const CStringW& name, const int& count);
 CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
 CStringW GetStringCommonByKey(const CStringW& key);
@@ -646,26 +645,26 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4ab30(MS2Ptr<CItem> item, CString
     CStringW list;
     __int64 fee = 0;
     for (; it != last; ++it) {
-        int itemId = FUN_1405575b0(FUN_140281980(), it->first);
+        int itemId = FUN_1405575b0(reinterpret_cast<Unk_GsIngTable*>(TSingleton<CItemDataTable>::GetInstance()), it->first);
         int grade = FUN_14053feb0(itemId);
         int have = DAT_143ab2a90.FUN_140a5f780(it->first, grade);
         if (have < it->second) {
             if (it->first != Unk_GsCostTag_Meso) {
                 int lack = it->second - have;
-                text = FUN_140bfa7f0(CStringW(L"s_itemsocketsystem_socket_swap_price"), FUN_1401a9d70()->FUN_141811980(1, itemId), lack);
+                text = FUN_140bfa7f0(CStringW(L"s_itemsocketsystem_socket_swap_price"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, itemId), lack);
                 return false;
             }
             int lack = it->second - have;
             fee += (unsigned)(lack * 1000);
             if (DAT_143ab2898 < fee) {
                 int lackFee = it->second - have;
-                text = FUN_140bfa7f0(CStringW(L"s_itemsocketsystem_socket_swap_price"), FUN_1401a9d70()->FUN_141811980(1, itemId), lackFee);
+                text = FUN_140bfa7f0(CStringW(L"s_itemsocketsystem_socket_swap_price"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, itemId), lackFee);
                 return false;
             }
         }
         if (!list.IsEmpty())
             list += L",";
-        list = FUN_140bfa7f0(CStringW(L"s_itemsocketsystem_socket_swap_price"), FUN_1401a9d70()->FUN_141811980(1, itemId), it->second);
+        list = FUN_140bfa7f0(CStringW(L"s_itemsocketsystem_socket_swap_price"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, itemId), it->second);
     }
     if (costs.size() > 0) {
         text = FUN_1405c2690(CStringW(L"s_itemsocketsystem_socket_swap_confirm"), list);

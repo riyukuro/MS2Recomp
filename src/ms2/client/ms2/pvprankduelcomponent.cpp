@@ -62,6 +62,9 @@
 #include "ms2/client/ms2/uipvprankduelresultdialog.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/seasondatatable.h"
+#include "ms2/placeholder/cgameoption.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -76,7 +79,6 @@ public:
     void FUN_140f94840();                                           // the records changed
 };
 class Unk_RankUIService { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); int FUN_141adc940(int nId); void FUN_141adc530(int nId); };
-Unk_RankUIService* FUN_1403ed2b0();
 void* FUN_1403ed2d0();
 void FUN_141276180(const CString& strName, const CString& strExtra);
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -86,11 +88,9 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pL
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_141275260(int nStringId, int nA, int nB);
 class Unk_RankClientState { public: };
-Unk_RankClientState* FUN_1409a8b10();
 struct Unk_RankClientFlags { unsigned char m_0; unsigned char m_observer; };
 Unk_RankClientFlags* FUN_140c9b8b0(Unk_RankClientState* p);
 class Unk_RankLeaguePlayer { public: };
-Unk_RankLeaguePlayer* FUN_1404f4540();
 int FUN_140791f50(Unk_RankLeaguePlayer* p, int n);
 class Unk_RankTable { public: };
 struct Unk_RankEntry { char m_pad[0x28]; int m_rating; };
@@ -127,9 +127,9 @@ public:
 
 template <class T> T* Unk_RankDialog(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -298,7 +298,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     {
         if (m_state != 0)
             return;
-        if (FUN_140c9b8b0(FUN_1409a8b10())->m_observer)
+        if (FUN_140c9b8b0(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance()))->m_observer)
         {
             CStringW strText(GetStringCommonByKey(L"s_rank_duel_matching_complete_to_observe"));
             UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
@@ -317,8 +317,8 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x12)
     {
-        if (FUN_1403ed2b0()->FUN_141adc940(0x4f05))
-            FUN_1403ed2b0()->FUN_141adc530(0x4f05);
+        if (reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4f05))
+            reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f05);
         UIPvPRankDuelResultDialog* pDialog = Unk_RankDialog<UIPvPRankDuelResultDialog>(0x4f05);
         if (pDialog)
             pDialog->FUN_140f90b10(&packet);
@@ -418,7 +418,7 @@ void CPvpRankDuelComponent::Reset()
 // @0x140dbf110
 void CPvpRankDuelComponent::RefreshLeague()
 {
-    int nLeague = FUN_140791f50(FUN_1404f4540(), 1);
+    int nLeague = FUN_140791f50(reinterpret_cast<Unk_RankLeaguePlayer*>(TSingleton<CSeasonDataTable>::GetInstance()), 1);
     if (m_league != nLeague)
     {
         m_league = nLeague;

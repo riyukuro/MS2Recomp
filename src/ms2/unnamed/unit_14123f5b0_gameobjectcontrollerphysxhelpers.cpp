@@ -21,7 +21,7 @@ CPhysXHelper* FUN_1409f7ca0();                          // TSingleton<CPhysXHelp
 float FUN_14028d380(float fValue);                      // PhysX units -> game units (x100), commonutil.cpp
 float FUN_14028d3a0(float fValue);                      // game units -> PhysX units (x0.01), commonutil.cpp
 float FUN_14029d220(float fValue);                      // fabsf, commonutil.cpp
-bool FUN_140a33ff0(const efd::Point3& kPoint);          // all three coordinates finite
+bool Unk_IsFinite(const efd::Point3& kPoint);           // all three coordinates finite
 CString FUN_140390ea0(const wchar_t* pszText, int nCodePage);   // wide -> multibyte, filebuffer_1.cpp
 
 // Gravity used while no PhysX scene exists (game units / s^2).
@@ -214,7 +214,7 @@ void GameObjectController::FUN_14123ff80(efd::Point3 kDisp, unsigned int nExclud
 {
     if (m_pController != 0)
     {
-        if (!FUN_140a33ff0(kDisp))
+        if (!Unk_IsFinite(kDisp))
             kDisp = efd::Point3::ZERO;
         NxU32 nGroups = m_nGroups;
         nGroups &= ~nExcludeGroups;

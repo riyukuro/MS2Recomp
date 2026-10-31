@@ -181,14 +181,13 @@ typedef std::list<MS2Ptr<CUserChangeableItemHistory> > Unk_CsHistList;
 // vector<MS2Ptr<CIngredientInfo>>::_Make_iterator_offset: auto& d = _Get_data(); return iterator(d._Myfirst + idx, addressof(d)).
 struct Unk_CsIngVal { Unk_IngRef* first; Unk_IngRef* last; Unk_IngRef* end; };   // _Vector_val
 struct Unk_CsVecAlloc { Unk_CsIngVal* FUN_140288210() const; };      // _Vector_alloc::_Get_data
-struct Unk_CsVecView : Unk_CsVecAlloc {};
+struct Unk_CsVecView { Unk_CsVecAlloc m_alloc; };
 void* FUN_14027b590(void* p);                           // std::addressof
 void FUN_14027d3d0(__int64 it, Unk_IngRef* ptr, void* cont);  // iterator ctor
-// MS2-FUNCTIONAL: one instruction short: the exe loads this through rax (mov rax,[this]; mov rcx,rax) before _Get_data
 // @0x140288770
 __int64 FUN_140288770(__int64 self, __int64 out, __int64 idx) noexcept
 {
-    Unk_CsIngVal* d = reinterpret_cast<Unk_CsVecView*>(self)->FUN_140288210();
+    Unk_CsIngVal* d = reinterpret_cast<Unk_CsVecView*>(self)->m_alloc.FUN_140288210();
     FUN_14027d3d0(out, d->first + idx, FUN_14027b590(d));
     return out;
 }

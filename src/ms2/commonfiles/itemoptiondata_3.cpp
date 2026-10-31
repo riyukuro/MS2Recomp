@@ -95,6 +95,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/commonfiles/gamerule.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/citemenchantutil.h"
 
 static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 
@@ -107,7 +110,7 @@ void FUN_140177a80(CLogString* pLog, int nLevel, int nCategory, const wchar_t* p
 // The log's two-argument call (FMT_VARIADIC instantiation outside this unit).
 void FUN_1401e0850(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CString& first,
                    const unsigned& second);
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028f5d0(Unk_140165cf0* pParent, const char* pszChild, std::vector<Unk_140165cf0*>& arrOut);
@@ -132,9 +135,8 @@ inline float Ms2PowFI(float _Xx, int _Yx)
         return (_Xx * _Xx);
     return (__imp_powf(_Xx, static_cast<float>(_Yx)));
 }
-class Unk_GameRule { public: unsigned FUN_14047f720(unsigned nMeso); };   // CGameRule: the meso cost rate
-Unk_GameRule* FUN_1401c0d90();
-class Unk_EnchantRates { public: int FUN_140594810(int nItemId); };    // the remake cost rates (item.cpp)
+CGameRule* FUN_1401c0d90();
+class Unk_EnchantRates : public CItemEnchantUtil { };    // the remake cost rates (item.cpp)
 Unk_EnchantRates* FUN_14052d1e0();
 
 // RTTI Probability::LogContext (probability.cpp, unrecovered): only held through MS2Ptr here, so just the CPtred base.

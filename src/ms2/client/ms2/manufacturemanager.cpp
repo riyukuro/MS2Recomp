@@ -30,6 +30,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/gamerule.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/commonfiles/maidgradejockpottable.h"
 
 // ---- statics of the unit's header (init order: maid sound names, then the market sort names) ----------------------------
 static CString s_strMaidCancel = "maid_Cancel";
@@ -124,9 +127,8 @@ public:
 };
 class Unk_MfEquipSet { public: float FUN_1411e1110(int nStat); };
 class Unk_MfPC { public: Unk_MfEquipSet* FUN_1416561a0(); };
-class Unk_MfGameRule { public: unsigned FUN_14047b860(float fRate, unsigned nValue); };
 class Unk_MfCubeService : public efd::ISystemService { public: int FUN_1410d2fb0(__int64 nAccountId, int nMeso, int* pnCode); };
-class Unk_MfWordTable { public: void FUN_1416fb400(CStringW& str, Unk_MfNpc* pNpc); void FUN_1416fb340(CStringW& str); };
+class Unk_MfWordTable : public CReservedWordTable { public: void FUN_1416fb400(CStringW& str, Unk_MfNpc* pNpc);};
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 
 extern Unk_EntityAppFramework DAT_143b059e8;
@@ -136,12 +138,11 @@ extern __int64 DAT_143ab2820;                                   // own account i
 // ---- out-of-unit callees ----
 void* FUN_1403ed2d0();                                          // the world of my character
 Unk_MfPC* FUN_141bd0cc0(void* pWorld);                          // my character
-Unk_MfRecipeTable* FUN_1409eed30();
-Unk_MfGameRule* FUN_1401c0d90();
+CGameRule* FUN_1401c0d90();
 Unk_MfCubeService* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_14053feb0(int nItemId);                                 // default rarity of an item
-__int64 FUN_140869440();                                        // server time
+__int64 GetServerTime();                                        // server time
 void FUN_140710590(COutPacket& packet);                         // send
 void* FUN_1403ed2b0();                                          // the UI service
 int FUN_141adc890(void* pService, int nUiId);                   // is the dialog open
@@ -149,7 +150,6 @@ struct Unk_MfUIService { MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };  // the d
 void FUN_141276180(const CString& strName, const CString& strArg);  // play a system sound
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1408116a0(int nStringId, const int& nValue);
-Unk_MfWordTable* FUN_1403b4750();
 void FUN_140694050(CManufacture& v, CInPacket& in);             // reads a record from the packet
 void FUN_1412e6110(UIManufactureDialog* pDlg, int a);
 void FUN_1412e6850(UIManufactureDialog* pDlg, int a);
@@ -298,7 +298,7 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
     if (pPC == 0)
         return 0;
     {
-        Unk_MfValuePtr<Unk_MfRecipe> spRecipe = FUN_1409eed30()->FUN_1406855c0(nRecipeId);
+        Unk_MfValuePtr<Unk_MfRecipe> spRecipe = reinterpret_cast<Unk_MfRecipeTable*>(TSingleton<CMaidRecipeTable>::GetInstance())->FUN_1406855c0(nRecipeId);
         if (spRecipe.get() != 0)
         {
             for (unsigned __int64 i = 0; i < spRecipe->m_aIngredients.size(); i++)
@@ -366,7 +366,7 @@ int CManufactureManager::SendRequest6(unsigned __int64 nId, int* pnResult)
         *pnResult = 7;
         return 0;
     }
-    if (spItem->FUN_140694170() > FUN_140869440())
+    if (spItem->FUN_140694170() > GetServerTime())
     {
         *pnResult = 0xd;
         return 0;
@@ -524,8 +524,8 @@ CStringW CManufactureManager::GetMaidText(int nType, Unk_MfNpc* pNpc)
         strText = GetStringCommon(0xc07);
         break;
     }
-    FUN_1403b4750()->FUN_1416fb400(strText, pNpc);
-    FUN_1403b4750()->FUN_1416fb340(strText);
+    reinterpret_cast<Unk_MfWordTable*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb400(strText, pNpc);
+    reinterpret_cast<Unk_MfWordTable*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb340(strText);
     return strText;
 }
 

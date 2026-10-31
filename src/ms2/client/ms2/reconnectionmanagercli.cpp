@@ -12,6 +12,8 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/networkservice.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // Header static string table (7 names) that this TU instantiates; no use here.
 static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -32,7 +34,6 @@ public:
 class Unk_RCApp { public: CStringW FUN_14067c400(); };
 class Unk_RCUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
 // The exe's caller treats 0x1415384e0 as an int-returning function (no movzx after the call).
-class Unk_RCNetInt { public: int FUN_1415384e0(); };
 class Unk_RCState;
 Unk_RCState* FUN_140aa6d30();
 int FUN_1417e2610(Unk_RCState*);
@@ -43,7 +44,6 @@ HWND FUN_14209c720(void*);
 void* FUN_140aadf70();
 void* FUN_140aadf80();
 Unk_RCApp* FUN_140d4fdf0(void*);
-Unk_RCUIManager* FUN_1403ed2b0();
 UIReconnectTopLayerNotify* FUN_140aade00(int id);
 CStringW FUN_1408116a0(int, const int&);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
@@ -231,7 +231,7 @@ void CReconnectionManagerCli::FUN_140aad6e0(int error) {
     if (FUN_140aad2d0(error) == 1 || FUN_140aad220() == 1) {
         FUN_140aad970();
         if (FUN_140714f90() != 0) {
-            if (reinterpret_cast<Unk_RCNetInt*>(FUN_140714f90())->FUN_1415384e0() != 0) {
+            if (reinterpret_cast<CNetworkService*>(FUN_140714f90())->FUN_1415384e0() != 0) {
                 FUN_140714f90()->FUN_141538510();
             }
         }
@@ -350,8 +350,8 @@ MS2_REPLACE_METHOD(0x140AADD70, CReconnectionManagerCli, FUN_140aadd70, 129, 0x7
 
 // @0x140aade00
 UIReconnectTopLayerNotify* FUN_140aade00(int id) {
-    if (FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(id);
+    if (reinterpret_cast<Unk_RCUIManager*>(TSingleton<CUIService>::GetInstance())) {
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_RCUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(id);
         if (p.get()) {
             return dynamic_cast<UIReconnectTopLayerNotify*>((UIObject*)p);
         }

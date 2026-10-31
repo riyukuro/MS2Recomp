@@ -37,6 +37,8 @@ asm = os.path.join(F, "asm")
 objs += [("asm/" + p, os.path.join(asm, p)) for p in sorted(os.listdir(asm)) if p.endswith(".obj")] if os.path.isdir(asm) else []
 with open(os.path.join(F, "defsyms.tsv"), "w") as out:
     for p, path in objs:
-        for s in set(defined(path)):
+        # dict.fromkeys, not set(): a set iterates in per-run string-hash order, and alias.py takes the first definition
+        # at a VA in this order (203 picks moved between two builds of the same objs)
+        for s in dict.fromkeys(defined(path)):
             out.write(f"{s}\t{p}\n")
 print("done")

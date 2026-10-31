@@ -21,10 +21,12 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/adventureleveltablehelper.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-class Unk_RwLoader { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_RwLoader : public CFileSystem { };
 Unk_RwLoader* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
@@ -35,7 +37,6 @@ bool FUN_14028f710(Unk_140165cf0* pNode);                               // the r
 int FUN_1408733a0(Unk_140165cf0* pElem, const char* pszName, double* pOut);
 bool FUN_140768040(unsigned nChance);                                   // the percent roll
 CExpTable* FUN_1404a1bb0();
-CAdventureLevelTable* FUN_1401958a0();
 
 // @0x1407790a0
 bool Unk_DcLevelRange::FUN_1407790a0() const
@@ -211,7 +212,7 @@ bool RewardContentsTable::GetReward(unsigned nRewardId, unsigned short nLevel, R
     if (spReward == static_cast<RewardContents*>(0))
         return false;
     rResult.m_nExp = FUN_1404a1bb0()->GetScaledValue(nLevel, spReward->m_nExpTableId, spReward->m_dExpFactor);
-    rResult.m_nAdventureExp = (__int64)FUN_1401958a0()->FindUnused2(spReward->m_nAdventureExpTableId);
+    rResult.m_nAdventureExp = (__int64)TSingleton<CAdventureLevelTable>::GetInstance()->FindUnused2(spReward->m_nAdventureExpTableId);
     rResult.m_nMeso = GetMeso(spReward->m_nMesoTableId, spReward->m_dMesoFactor, nLevel);
     GetItems(spReward->m_nItemTableId, nLevel, rResult.m_items);
     return true;

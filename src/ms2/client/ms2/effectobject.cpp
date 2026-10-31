@@ -18,6 +18,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/stateskill.h"
 
 // ---- out-of-unit callees (names of the Unk_ types are invented) ----
 
@@ -47,11 +48,10 @@ public:
     Unk_EffDescHolder m_f30;                                        // +0x30
 };
 // The state machine's current state.
-class Unk_EffState
+class Unk_EffState : public StateSkill
 {
 public:
     MS2Ptr<Unk_EffTarget> FUN_1417ed6f0();                          // the state's target
-    float FUN_1417e9380();                                          // the state's animation speed
 };
 Unk_EffState* FUN_1417db1c0(CStateManager* pMgr);                   // current state
 Unk_EffDesc* FUN_14063ed50(Unk_EffDescHolder* pHolder);                          // descriptor of a holder
@@ -222,7 +222,7 @@ void CEffectObject::vfunc_53(float f)
             {
                 Unk_EffState* pState = FUN_1417db1c0(pOwner->GetStateMgr());
                 if (pState)
-                    fScale = pState->FUN_1417e9380();
+                    fScale = pState->GetSpeed();
             }
             GetAnimMgr()->FUN_14099e050(pOwner->GetAnimMgr()->FUN_140a53f90(), fScale, 0);
         }

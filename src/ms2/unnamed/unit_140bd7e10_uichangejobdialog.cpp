@@ -13,6 +13,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/questmanager_2.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -64,7 +67,6 @@ struct Unk_CjSkillRef
     void* m_0; void* m_8;
 };
 class Unk_CjSkillTable { public: Unk_CjSkillRef FUN_1407ee1d0(int nSkillId); };
-Unk_CjSkillTable* FUN_1401958b0();
 
 class Unk_CjTable
 {
@@ -105,11 +107,10 @@ class Unk_CjMsgSvc { public: void FUN_141b213f0(Unk_CjNotice kScript, int nValue
 Unk_CjMsgSvc* FUN_140967100();
 
 // The local player: the world service hands out the actor; a few members used here.
-class Unk_CjWorld { public: void* FUN_141bd0cc0(); };
-Unk_CjWorld* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 int FUN_141654730(PCBase* pPC);                                 // the player's job code
 int FUN_141654700(PCBase* pPC);                                 // the player's job
-class Unk_CjQuestMgr { public: int FUN_1416cae20(int nJobCode); };
+class Unk_CjQuestMgr : public CQuestManager { };
 Unk_CjQuestMgr* FUN_141523ba0(PCBase* pPC);
 
 // ASObj / ASArray members used here only.
@@ -186,7 +187,7 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
     ASArray skills2(2);
     for (size_t i = 0; i < spData.FUN_1401d75d0()->m_skills1.GetCount(); i++)
     {
-        Unk_CjSkillRef spSkill = FUN_1401958b0()->FUN_1407ee1d0(spData.FUN_1401d75d0()->m_skills1[i]);
+        Unk_CjSkillRef spSkill = reinterpret_cast<Unk_CjSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(spData.FUN_1401d75d0()->m_skills1[i]);
         if (spSkill.FUN_14063eab0(0))
             continue;
         ASObj skill(2);
@@ -199,7 +200,7 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
     }
     for (size_t i = 0; i < spData.FUN_1401d75d0()->m_skills2.GetCount(); i++)
     {
-        Unk_CjSkillRef spSkill = FUN_1401958b0()->FUN_1407ee1d0(spData.FUN_1401d75d0()->m_skills2[i]);
+        Unk_CjSkillRef spSkill = reinterpret_cast<Unk_CjSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(spData.FUN_1401d75d0()->m_skills2[i]);
         if (spSkill.FUN_14063eab0(0))
             continue;
         ASObj skill(2);

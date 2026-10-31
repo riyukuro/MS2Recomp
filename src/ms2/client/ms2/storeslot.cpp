@@ -30,6 +30,13 @@
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/questmanager_2.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/uiquesteventlistener.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uistatuseventlistener.h"
+#include "ms2/client/ms2/pcbase.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
@@ -37,42 +44,31 @@
 class Unk_ItemEquipData : public CItemData { };          // CItem::FUN_140527840's record
 
 
-extern Unk_Inventory DAT_143ab2a90;                       // the player's inventory
+extern Unk_Inventory g_143ab2a90;                         // the player's inventory
 extern __int64 DAT_143ab2828;
 
 // The local player.
-class Unk_SsPlayer
+class Unk_SsPlayer : public PCBase
 {
 public:
-    __int64 FUN_141656a80();                              // the character id
-    int FUN_14166ce30();                                  // nonzero: the player is dead
 };
 class Unk_SsWorld
 {
 public:
     Unk_SsPlayer* FUN_141bd0cc0();                        // the local player
 };
-Unk_SsWorld* FUN_1403ed2d0();
-CEffectService* FUN_1403ed280();                          // the sound service
 
 // A dialog of the GetDialog<T> registry (the inventory 0x4e2d, the store 0x4e47).
-class Unk_SsDialog : public UIDialog
+class Unk_SsDialog : public UIStoreDialog
 {
 public:
-    CStringW FUN_141b10b50();                             // the search text of the store dialog
 };
 Unk_SsDialog* FUN_1405344f0(int nId);
 Unk_SsDialog* FUN_140de48d0(int nId);
 void FUN_141b10eb0(Unk_SsDialog* pDlg);                   // refresh the store dialog (icon search)
 
 // The quest event dispatcher (FUN_140bfc4b0) the slot registers with.
-class Unk_SsQuestEvents
-{
-public:
-    void FUN_141aa87c0(UIQuestEventListener*);
-    void FUN_141aa8850(UIQuestEventListener*);
-};
-Unk_SsQuestEvents* FUN_140bfc4b0();
+UIQuestEventDispatcher* FUN_140bfc4b0();
 // The item event hub (FUN_140a6a840) the bag registers with.
 struct Unk_SsItemEvents;
 Unk_SsItemEvents* FUN_140a6a840();
@@ -80,28 +76,12 @@ void FUN_1419cae20(Unk_SsItemEvents*, UIItemEventListener*);
 void FUN_1419caeb0(Unk_SsItemEvents*, UIItemEventListener*);
 
 // The singleton that decides whether an item may be sold into the store.
-class Unk_SsItemRules
-{
-public:
-    int FUN_1416ce170(MS2Ptr<CItem> spItem);
-};
-Unk_SsItemRules* FUN_140764020();
+CQuestManager* FUN_140764020();
 
 // The input state (modifier keys).
-class Unk_SsKeys
-{
-public:
-    bool FUN_14116d950(int nKey, bool b, int c);
-};
-Unk_SsKeys* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 
 // The names of the inventory tabs.
-class Unk_SsTabNames
-{
-public:
-    CStringW FUN_141813300(int nTab);
-};
-Unk_SsTabNames* FUN_1401a9d70();
 
 // The account state (a flag at +0xa9c).
 struct Unk_SsAccount
@@ -281,7 +261,7 @@ int StoreSlot::vfunc_14()
         return 0;
     if (vfunc_26(spItem) == 1)
         return 1;
-    if (DAT_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
+    if (g_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
         return 0;
     if (spItem->FUN_14052a580((void*)DAT_143ab2828) != 1)
     {
@@ -291,13 +271,13 @@ int StoreSlot::vfunc_14()
     Unk_SsDialog* pDlg = FUN_1405344f0(0x4e2d);
     if (pDlg != 0 && pDlg->vfunc_55() == 0)
     {
-        int nTab = DAT_143ab2a90.FUN_140a617f0(spItem);
+        int nTab = g_143ab2a90.FUN_140a617f0(spItem);
         BOOL bAll = FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0) || FUN_14025e7c0()->FUN_14116d950(0x36, false, 0);
         int nCount = bAll ? spItem->FUN_140526c50() : 1;
-        int nSlot = DAT_143ab2a90.FUN_140a612b0(nTab, spItem, nCount);
+        int nSlot = g_143ab2a90.FUN_140a612b0(nTab, spItem, nCount);
         if (nSlot == -1)
         {
-            FUN_140961010(0x44, 1, 1, FUN_1401a9d70()->FUN_141813300(nTab));
+            FUN_140961010(0x44, 1, 1, TSingleton<CStringTable>::GetInstance()->FUN_141813300(nTab));
             FUN_141276180(s_strSystemNoticeErrorWarningBag, "");
             return 0;
         }
@@ -350,7 +330,7 @@ int StoreSlot::vfunc_18(void* p)
     if (pItemSlot != 0)
     {
         MS2Ptr<CItem> spStoreItem = MS2_STORE_TABLE.Slot(m_nIndex);
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
         if (spItem == NULL)
             return static_cast<DragSlot*>(p)->vfunc_10();
         int nSlot = m_nIndex;
@@ -373,7 +353,7 @@ int StoreSlot::vfunc_18(void* p)
             FUN_141275260(0xf1, 1, 0);
             return static_cast<DragSlot*>(p)->vfunc_10();
         }
-        if (DAT_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
+        if (g_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
             return static_cast<DragSlot*>(p)->vfunc_10();
         if (spItem->FUN_140526850() == false)
         {
@@ -403,7 +383,7 @@ int StoreSlot::vfunc_18(void* p)
                 if (spItem.get() != 0 && (spItem.get() ? true : false))
                 {
                     if (spItem->FUN_140527840() != 0)
-                        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
+                        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
                             spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
                 }
             }
@@ -426,7 +406,7 @@ int StoreSlot::vfunc_20()
     DragSlot::vfunc_20();
     MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(m_nStoreItemId);
     if (spItem.get() != 0)
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
             spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
@@ -437,7 +417,7 @@ int StoreSlot::vfunc_21()
     DragSlot::vfunc_21();
     MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(m_nStoreItemId);
     if (spItem.get() != 0)
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
             spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
     return vfunc_10();
 }
@@ -453,7 +433,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
         FUN_141275260(0x88a, 1, 1);
         return 0;
     }
-    Unk_SsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_SsPlayer* pPlayer = reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     if (pPlayer->FUN_14166ce30() != 0)
@@ -536,7 +516,7 @@ int StoreSlot::vfunc_0(void* p)
     MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(m_nStoreItemId);
     if (spItem.IsNull())
         return 0;
-    ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x80, 2);
+    ASTooltip tip(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0(), 0x80, 2);
     if (tip.FUN_1409e0d40(spItem.get()))
     {
         tip.FUN_1409c69b0(GetStringCommon(0x754));
@@ -555,7 +535,7 @@ int StoreSlot::vfunc_8(void* p)
     if (spItem.IsNull())
         return 0;
     ASSlot slot(2);
-    if (slot.FUN_1409c3860(spItem.get(), FUN_1403ed2d0()->FUN_141bd0cc0(), 0x1c01f))
+    if (slot.FUN_1409c3860(spItem.get(), reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0(), 0x1c01f))
     {
         slot.FUN_1407cbbe0(s_strUpdateIconSearchOn, FUN_14180aea0());
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();

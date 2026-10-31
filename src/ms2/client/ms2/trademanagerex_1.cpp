@@ -28,6 +28,10 @@
 #include "blockmanager.h"
 #include "pcbase.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- out-of-unit callees ----
 
@@ -38,7 +42,6 @@ struct Unk_TradeOptions
     bool m_bRefuseTrade;
 };
 class Unk_TradeConfig;
-Unk_TradeConfig* FUN_1409a8b10();
 Unk_TradeOptions* FUN_140ae6540(Unk_TradeConfig*);
 
 // The trade window (UI id 0x4e83): +0x1a0 is the partner's name.
@@ -86,16 +89,8 @@ class Unk_TradeWorld
 public:
     PCBase* FUN_141bd1530(__int64 uid);                 // find a player by id
 };
-Unk_TradeWorld* FUN_1403ed2d0();
 
-class Unk_TradeText
-{
-public:
-    CStringW FUN_141811980(int a, int nId);
-};
-Unk_TradeText* FUN_1401a9d70();
-
-struct Unk_TmPlayerView { CString FUN_1416612e0(); };   // the player's account/character name (PCBase member: this=rcx, hidden return=rdx)
+   // the player's account/character name (PCBase member: this=rcx, hidden return=rdx)
 CBlockManager* FUN_140a6a830();
 CStringW FUN_1401ca400(const BlockPtr& record, int action);
 Unk_MessageBoxPtr FUN_14151f820();
@@ -112,7 +107,7 @@ int FUN_14025a620(void*);
 void* FUN_1401d3200();
 CStringW GetStringCommon(int id);
 CStringW FUN_14052bd00(int id, const CStringW& arg);
-CStringW FUN_1409eec40(int id);
+CStringW BlockFormat(int id);
 CStringW FUN_1409e8820(CStringW key, const unsigned short& n);
 CStringW FUN_140a22c00(int id, const CStringW& a, const unsigned short& n);
 void FUN_1412751b0(const CStringW& text, int channel);
@@ -131,6 +126,7 @@ FMT_VARIADIC_W(CStringW, Unk_TradeFormat, int)
 // ---- statics (.text$di) ----
 static CStringW s_requestTradeEx(L"requestTradeEx");
 #include "ms2/placeholder/header_statics_a.h"     // sort names, skill/stun, the condition table (Unk_1402a9d70: ctor 0x1402a9d70)
+#include "ms2/client/ms2/trademanagerex.h"
 static CString s_inviteSuccess("PC_InviteSuccess");
 
 CTradeManagerEx* TSingleton<CTradeManagerEx>::s_instance = 0;
@@ -395,16 +391,16 @@ void CTradeManagerEx::FUN_14185bec0(CInPacket& packet)
 {
     CStringW strName = packet.ReadUnicodeString();
     __int64 uid = packet.ReadInt64();
-    if (FUN_140ae6540(FUN_1409a8b10())->m_bRefuseTrade != 0)
+    if (FUN_140ae6540(reinterpret_cast<Unk_TradeConfig*>(TSingleton<CGameOption>::GetInstance()))->m_bRefuseTrade != 0)
     {
-        FUN_14140ea30()->FUN_14185b8e0(uid, 0);
+        TSingleton<CTradeManagerEx>::GetInstance()->FUN_14185b8e0(uid, 0);
         return;
     }
     {
         BlockPtr blocked = FUN_140a6a830()->FindBlockedAction(0x20);
         if (blocked.get() != 0)
         {
-            FUN_14140ea30()->FUN_14185b8e0(uid, 0);
+            TSingleton<CTradeManagerEx>::GetInstance()->FUN_14185b8e0(uid, 0);
             CStringW strMsg = FUN_1401ca400(blocked, 0x20);
             FUN_1412751b0(strMsg, 0x12);
             return;
@@ -471,25 +467,25 @@ void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
         strMsg = FUN_14052bd00(0x82e, strName);
         break;
     case 0xe:
-        strMsg = FUN_1409eec40(0x82c);
+        strMsg = BlockFormat(0x82c);
         break;
     case 7:
-        strMsg = FUN_1409eec40(0x82f);
+        strMsg = BlockFormat(0x82f);
         break;
     case 8:
-        strMsg = FUN_1409eec40(0x830);
+        strMsg = BlockFormat(0x830);
         break;
     case 9:
-        strMsg = FUN_1409eec40(0x831);
+        strMsg = BlockFormat(0x831);
         break;
     case 10:
-        strMsg = FUN_1409eec40(0x832);
+        strMsg = BlockFormat(0x832);
         break;
     case 0xb:
-        strMsg = FUN_1409eec40(0x833);
+        strMsg = BlockFormat(0x833);
         break;
     case 0xd:
-        strMsg = FUN_1409eec40(0x834);
+        strMsg = BlockFormat(0x834);
         break;
     case 0xf:
         strMsg = FUN_14052bd00(0x835, strName);
@@ -506,10 +502,10 @@ void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
         strMsg = FUN_1409e8820(CStringW(L"s_trade_error_restricted_target_userlevel_max"), nLevel);
         break;
     case 0x14:
-        strMsg = FUN_140a22c00(0x93f, FUN_1401a9d70()->FUN_141811980(1, nArg), nLevel);
+        strMsg = FUN_140a22c00(0x93f, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nArg), nLevel);
         break;
     case 0x15:
-        strMsg = FUN_140a22c00(0x940, FUN_1401a9d70()->FUN_141811980(1, nArg), nLevel);
+        strMsg = FUN_140a22c00(0x940, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nArg), nLevel);
         break;
     default:
         strMsg = Unk_TradeFormat(0x837, code);
@@ -537,10 +533,10 @@ void CTradeManagerEx::FUN_14185cc60(CInPacket& packet)
 void CTradeManagerEx::FUN_14185cd10(CInPacket& packet)
 {
     __int64 uid = packet.ReadInt64();
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(uid);
+    PCBase* pPlayer = reinterpret_cast<Unk_TradeWorld*>(WorldService::GetInstance())->FUN_141bd1530(uid);
     if (pPlayer != 0)
     {
-        FUN_14185d820(uid, pPlayer->vfunc_77(), reinterpret_cast<Unk_TmPlayerView*>(pPlayer)->FUN_1416612e0());
+        FUN_14185d820(uid, pPlayer->vfunc_77(), reinterpret_cast<PC*>(pPlayer)->FUN_1416612e0());
         FUN_1403ed2b0()->FUN_141adc5d0(0x4e3b);
         FUN_1403ed2b0()->FUN_141adc5d0(0x4ec1);
         FUN_1403ed2b0()->FUN_141adc5d0(0x4e47);

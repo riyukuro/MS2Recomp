@@ -32,6 +32,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/itemdatatable.h"
 
 // ---- externs used by the validator ----
 class PCBase;
@@ -119,7 +120,6 @@ int FUN_14053f9c0(int nItemId);
 // the cube recipe tables
 class Unk_IngItem : public CPtred { public: char unknown18[0x36]; unsigned char m_bFree; };    // +0x4e
 class Unk_IngTable { public: MS2Ptr<Unk_IngItem> FUN_1405566e0(int nItemId); };
-Unk_IngTable* FUN_140281980();
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 class Unk_CubeStock { public: int FUN_140dfcb00(int nItemId); };
 extern Unk_CubeStock DAT_143ab2e50;
@@ -534,7 +534,7 @@ int CUGCBuildValidatorCli::vfunc_3(unsigned* pErr)
         MS2Ptr<CItemData> spData = FUN_14053f870(m_pItem->itemId);
         if (spData == 0)
             return 0;
-        MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405566e0(m_pItem->itemId);
+        MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405566e0(m_pItem->itemId);
         if (spIng == 0)
             return 0;
         if (spIng->m_bFree != 0)

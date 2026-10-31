@@ -64,13 +64,13 @@ template<> bool Delegate<void(NotifyObject*)>::operator==(const Delegate& o) con
     return m_pImpl->vfunc_3(o.m_pImpl);
 }
 
-void FUN_140657820();                                           // invalid call of an empty Delegate (shared)
+void Unk_140657820();                                           // invalid call of an empty Delegate (shared)
 
 // @0x140daec00
 template<> void Delegate<void(CInPacket&)>::operator()(CInPacket& a1) const
 {
     if (m_pImpl == 0)
-        FUN_140657820();
+        Unk_140657820();
     m_pImpl->vfunc_2(a1);
 }
 
@@ -78,7 +78,7 @@ template<> void Delegate<void(CInPacket&)>::operator()(CInPacket& a1) const
 template<> void Delegate<void(GameEventVariable*)>::operator()(GameEventVariable* a1) const
 {
     if (m_pImpl == 0)
-        FUN_140657820();
+        Unk_140657820();
     m_pImpl->vfunc_2(a1);
 }
 
@@ -86,7 +86,7 @@ template<> void Delegate<void(GameEventVariable*)>::operator()(GameEventVariable
 template<> void Delegate<void(NotifyObject*)>::operator()(NotifyObject* a1) const
 {
     if (m_pImpl == 0)
-        FUN_140657820();
+        Unk_140657820();
     m_pImpl->vfunc_2(a1);
 }
 

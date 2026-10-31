@@ -12,6 +12,9 @@
 #include "ms2/placeholder/socketptr.h"
 #include "ms2/placeholder/unk_nodeptr.h"
 #include <efd/ISystemService.h>
+#include <efd/SmartPointer.h>
+
+class GameObject;
 
 class Unk_140165cf0;    // game TinyXML element
 CPtred* FUN_1404efd80(CPtred* pThis, const CPtred* pOther);      // the exe's CPtred assignment (ICF-folded `return this`)
@@ -120,7 +123,6 @@ MS2_CHECK_SIZE(Unk_MagicValPtr, 0x10);
 // Element types of the 8 byte pointer arrays (distinct instantiations in the exe, so distinct types; names invented).
 struct Unk_MagicNodeLink;
 struct Unk_MagicTargetRef;
-struct Unk_MagicArrowRef;
 
 // One of the 16 effect slots of a CMagic: the ids spawned for it and the live effect handle.
 struct Unk_MagicSlot {
@@ -274,7 +276,7 @@ public:
 
     Unk_MagicTagPtr m_spOwner;                                      // +0x18
     void* m_p28;
-    ATL::CAtlArray<Unk_MagicArrowRef*> m_arr30;
+    ATL::CAtlArray<efd::SmartPointer<GameObject> > m_arr30;       // +0x30 the picked objects (StateSkill appends them)
     Vector3 m_ptFrom;                                       // +0x50
     Vector3 m_ptTo;                                         // +0x5c
     Unk_NiMatrix3 m_matAim;                                         // +0x68

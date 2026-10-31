@@ -60,6 +60,14 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/uisystemshopdialog.h"
+#include "ms2/client/ms2/additionalclilist.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uiservice.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -72,7 +80,7 @@ static CString s_strNotThisPlace("system_notice_error_warningNotThisPlace");
 
 // ---- unit-local views of exe objects ----
 
-class Unk_ImBuffs { public: int FUN_1409701d0(int nKind); };      // an active buff of a kind
+class Unk_ImBuffs : public AdditionalCliList { };      // an active buff of a kind
 
 // A field actor (PC base): vtable slot 18 returns the world position.
 class Unk_ImActor
@@ -95,17 +103,14 @@ public:
 };
 
 // The world service (singleton 0x1403ed2d0).
-class Unk_ImWorld
+class Unk_ImWorld : public WorldService
 {
 public:
     Unk_ImActor* FUN_141bd0cc0();                                           // the local player
     Unk_ImActor* FUN_141bd1290(int nId);                                    // an actor by object id
     Unk_ImActor* FUN_141bd1530(__int64 nId);                                // an actor by character id
-    bool FUN_141bcb150();                                                   // the field mutes the distance falloff
-    int FUN_141bdb660(int nKind);                                           // the field forbids a feature
     void FUN_141bbae40(IWorldServiceCallback* pCallback);                  // register a callback
 };
-Unk_ImWorld* FUN_1403ed2d0();
 
 // The UI service (dialog lookup / open).
 class Unk_ImUIService
@@ -114,14 +119,10 @@ public:
     MS2Ptr<UIObject> FUN_141adcea0(int nId);
     void FUN_141adc530(int nId);
 };
-Unk_ImUIService* FUN_1403ed2b0();
 
 // The auto play pane (UI class 0x4f07).
-class Unk_ImAutoPlayPane : public UIDialog
+class Unk_ImAutoPlayPane : public UISystemShopDialog
 {
-public:
-    void FUN_140fa5ba0(int nMode);
-    void FUN_140fa64e0();                                                   // refresh
 };
 Unk_ImAutoPlayPane* FUN_140cdee10(int nId);
 
@@ -154,8 +155,7 @@ public:
 Unk_ImItemEvents* FUN_140a6a840();
 
 // The player inventory (global at 0x143ab2a90): item lookup by uid.
-class Unk_ImInventory { public: MS2Ptr<CItem> FUN_140a5d680(__int64 nItemUid); };
-extern Unk_ImInventory DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 class Unk_ItemEquipData { public: bool FUN_14053cd10(); };
 
 // CommonResource: +0x598 the ensemble notice effect file.
@@ -166,12 +166,11 @@ public:
     CString m_strEnsembleEffect;                                            // +0x598
 };
 Unk_ImResource* FUN_1401d31f0();
-class Unk_ImEffectService { public: unsigned FUN_1411a4a00(Unk_EffectTarget& kTarget); };
-Unk_ImEffectService* FUN_1403ed280();
+CEffectService* FUN_1403ed280();
 
-class Unk_ImConfig { public: bool FUN_14036d570(int nFeature); };          // a feature is enabled
-Unk_ImConfig* FUN_140166410();
-class Unk_ImFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+          // a feature is enabled
+CFeatureManager* FUN_140166410();
+class Unk_ImFiles : public CFileSystem { };
 Unk_ImFiles* FUN_140166420();
 class Unk_ImLog { public: void FUN_14015eb90(int nLevel, int nFlags, const wchar_t* pszFormat, const CString& strArg); };
 Unk_ImLog* FUN_140166440();
@@ -190,7 +189,7 @@ int FUN_141260310(Unk_SoundState* pSound);                                  // t
 unsigned FUN_140869420();                                                   // the client clock (ms)
 int FUN_141472bc0();                                                        // the server clock bias
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
-CStringW FUN_1409eec40(int nId);                                            // system notice text
+CStringW BlockFormat(int nId);                                              // system notice text
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);  // message box
 void FUN_1412751f0(const CStringW& str, int a, int b);                      // notice
 void FUN_1412751b0(const CStringW& str, int nType);                         // system chat notice
@@ -250,7 +249,7 @@ CInstrumentManager::CInstrumentManager()
     for (int i = 0; i < 0x10; i++)
         m_slots[i].Init();
     m_remoteVoices.clear();
-    FUN_1403ed2d0()->FUN_141bbae40(this);
+    reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bbae40(this);
     TSingleton<UIBuddyEventDispatcher>::GetInstance()->FUN_1418d9450(this);
 }
 
@@ -286,7 +285,7 @@ void CInstrumentManager::vfunc_buddy_4(__int64 nId, int n)
     CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4b70(nId);
     if (spBuddy == 0)
         return;
-    Unk_ImActor* pActor = FUN_1403ed2d0()->FUN_141bd1530(spBuddy->FUN_1401cc230());
+    Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1530(spBuddy->FUN_1401cc230());
     if (pActor == 0)
         return;
     if (pActor->FUN_14166c930() != 0x2f)
@@ -299,7 +298,7 @@ void CInstrumentManager::vfunc_buddy_4(__int64 nId, int n)
 void CInstrumentManager::vfunc_buddy_7(__int64 nId)
 {
     UpdateVolume(false);
-    Unk_ImActor* pActor = FUN_1403ed2d0()->FUN_141bd1530(nId);
+    Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1530(nId);
     if (pActor == 0)
         return;
     if (pActor->FUN_14166c930() != 0x2f)
@@ -311,9 +310,9 @@ void CInstrumentManager::vfunc_buddy_7(__int64 nId)
 // The scene dialog lookup template (instances pinned: 0x140d0c040 / 0x140d0c0e0).
 template <class T> T* Unk_ImGetDialog(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_ImUIService*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_ImUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -338,7 +337,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         voice.m_position = ptPos;
         voice.m_program = nProgram;
         voice.m_percussion = nPercussion;
-        Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pMe != 0 && pMe->FUN_14123c580() == nOwner)
             nKey = 0;
         int nSlot = GetSlot(nKey, voice);
@@ -355,7 +354,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         int nKey = packet.ReadInt32();
         int nOwner = packet.ReadInt32();
         unsigned nMsg = packet.ReadInt32();
-        Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pMe != 0 && pMe->FUN_14123c580() == nOwner)
             nKey = 0;
         if (IsBlocked(nOwner) == true)
@@ -382,7 +381,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         voice.m_position = ptPos;
         voice.m_program = nProgram;
         voice.m_percussion = nPercussion;
-        Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pMe != 0 && pMe->FUN_14123c580() == nOwner)
             nKey = 0;
         int nSlot = GetSlot(nKey, voice);
@@ -418,7 +417,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         // a performer stopped (4: the score performance ended)
         int nKey = packet.ReadInt32();
         int nOwner = packet.ReadInt32();
-        Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pMe != 0 && pMe->FUN_14123c580() == nOwner)
             nKey = 0;
         int nSlot = FindSlot(nKey);
@@ -471,10 +470,10 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
     {
         // the ensemble effect over a performer
         int nId = packet.ReadInt32();
-        Unk_ImActor* pActor = FUN_1403ed2d0()->FUN_141bd1290(nId);
+        Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1290(nId);
         if (pActor == 0)
             return;
-        Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pMe == 0)
             return;
         Unk_EffectTarget kTarget;
@@ -524,13 +523,13 @@ void CInstrumentManager::SetInstrument(int nInstrument, __int64 nItemUid)
     UIPlayInstrumentDialog* pDialog = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
     if (pDialog != 0)
         pDialog->SetInstrument(m_instrument);
-    FUN_1403ed2b0()->FUN_141adc530(0x4eec);
+    reinterpret_cast<Unk_ImUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4eec);
 }
 
 // @0x140d071b0
 int CInstrumentManager::CanPlayEnsemble()
 {
-    Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return 0;
     return pMe->FUN_1416749a0()->FUN_1409701d0(4);
@@ -539,7 +538,7 @@ int CInstrumentManager::CanPlayEnsemble()
 // @0x140d07200
 bool CInstrumentManager::SetPcState(int nState)
 {
-    Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return false;
     if (pMe->FUN_14166c930() == 0x2f)
@@ -595,13 +594,13 @@ void CInstrumentManager::NoteOn(int nNote)
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 1, 1);
         return;
     }
-    if (FUN_1403ed2d0()->FUN_141bdb660(3) != 0)
+    if (reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bdb660(3) != 0)
     {
-        FUN_1412751f0(FUN_1409eec40(0x62), 1, 1);
+        FUN_1412751f0(BlockFormat(0x62), 1, 1);
         FUN_141276180(s_strNotThisPlace, "");
         return;
     }
-    Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return;
     MS2Ptr<CInstrumentCategoryData> spCategory = TSingleton<CInstrumentDataTable>::GetInstance()->GetInstrumentCategory(m_instrument);
@@ -684,9 +683,9 @@ bool CInstrumentManager::PlayScore(__int64 nScoreUid)
         return false;
     if (!pData->FUN_14053cd10())
         return false;
-    if (FUN_1403ed2d0()->FUN_141bdb660(3) != 0)
+    if (reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bdb660(3) != 0)
     {
-        FUN_1412751f0(FUN_1409eec40(0x62), 1, 1);
+        FUN_1412751f0(BlockFormat(0x62), 1, 1);
         FUN_141276180(s_strNotThisPlace, "");
         return false;
     }
@@ -702,7 +701,7 @@ bool CInstrumentManager::PlayScore(__int64 nScoreUid)
 // @0x140d07f00
 bool CInstrumentManager::PlayEnsemble(__int64 nScoreUid)
 {
-    Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return false;
     if (!pMe->FUN_141527280())
@@ -737,9 +736,9 @@ bool CInstrumentManager::PlayEnsemble(__int64 nScoreUid)
         return false;
     if (!pData->FUN_14053cd10())
         return false;
-    if (FUN_1403ed2d0()->FUN_141bdb660(3) != 0)
+    if (reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bdb660(3) != 0)
     {
-        FUN_1412751f0(FUN_1409eec40(0x62), 1, 1);
+        FUN_1412751f0(BlockFormat(0x62), 1, 1);
         FUN_141276180(s_strNotThisPlace, "");
         return false;
     }
@@ -961,7 +960,7 @@ int CInstrumentManager::PlayScoreText(const CString& strText, int nTime, int nPr
 // @0x140d09710
 void CInstrumentManager::OnPerformStart(int nOwner, int nStart, int nEnd, bool bRemote)
 {
-    Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe != 0 && pMe->FUN_14123c580() == nOwner)
     {
         FUN_140d86260()->vfunc_52(m_scoreUid, bRemote == true ? 1 : 0);
@@ -985,7 +984,7 @@ void CInstrumentManager::OnPerformStart(int nOwner, int nStart, int nEnd, bool b
             Unk_ImAutoPlayPane* pPane;
             if (CanPlayEnsemble() != 0 && (pPane = FUN_140cdee10(0x4f07)) != 0 && pPane->FUN_141924630() == 0)
             {
-                pPane->FUN_140fa5ba0(5);
+                pPane->SetMode(5);
                 pPane->FUN_141924680();
             }
         }
@@ -996,10 +995,10 @@ void CInstrumentManager::OnPerformStart(int nOwner, int nStart, int nEnd, bool b
 // @0x140d098a0
 void CInstrumentManager::OnPerformEnd(int nOwner)
 {
-    Unk_ImActor* pActor = FUN_1403ed2d0()->FUN_141bd1290(nOwner);
+    Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1290(nOwner);
     if (pActor != 0)
         pActor->FUN_14165ebb0(1.0f);
-    Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe != 0 && pMe->FUN_14123c580() == nOwner)
     {
         FUN_140d86260()->vfunc_53(m_scoreUid, m_remote == true ? 1 : 0);
@@ -1020,7 +1019,7 @@ bool CInstrumentManager::PreviewScore(const CString& strText, int nCategory, int
     MS2Ptr<CInstrumentCategoryData> spCategory = TSingleton<CInstrumentDataTable>::GetInstance()->GetCategory(nCategory);
     if (spCategory == 0)
         return false;
-    Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return false;
     int nProgram = spCategory->m_nGMId;
@@ -1101,7 +1100,7 @@ bool CInstrumentManager::HasOtherFlags(unsigned nFlags)
 // @0x140d09dd0
 bool CInstrumentManager::IsBlocked(int nOwner)
 {
-    Unk_ImActor* pActor = FUN_1403ed2d0()->FUN_141bd1290(nOwner);
+    Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1290(nOwner);
     if (pActor == 0)
         return false;
     CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(pActor->FUN_141656a80());
@@ -1255,7 +1254,7 @@ void CInstrumentManager::UpdateVolume(bool bForce)
 {
     if (!m_midi.IsOpen())
         return;
-    Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return;
     for (int i = 0; i < 0x10; i++)
@@ -1277,7 +1276,7 @@ void CInstrumentManager::UpdateVolume(bool bForce)
                 nVolume = 0;
                 break;
             }
-            if (FUN_1403ed2d0()->FUN_141bcb150() == true)
+            if (reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bcb150() == true)
                 break;
             float fDistance = pMe->vfunc_18().FUN_140965c40(m_slots[i].m_position).FUN_140967ac0();
             if (fDistance < *Client::Constants::GetInstance()->MusicListenInRadius.Get())
@@ -1316,14 +1315,14 @@ void CInstrumentManager::UpdateVolume(bool bForce)
         {
             RemoteVoice* pVoice = &it->second;
             bool bActive = true;
-            Unk_ImActor* pActor = FUN_1403ed2d0()->FUN_141bd1290(pVoice->m_owner);
+            Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1290(pVoice->m_owner);
             if (pActor != 0)
             {
                 CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(pActor->FUN_141656a80());
                 if (spBuddy.get() != 0 && spBuddy->FUN_1401cc5b0() != 0)
                     bActive = false;
             }
-            if (!FUN_1403ed2d0()->FUN_141bcb150())
+            if (!reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bcb150())
             {
                 float fDistance = pMe->vfunc_18().FUN_140965c40(pVoice->m_position).FUN_140967ac0();
                 float fLimit = (*Client::Constants::GetInstance()->MusicListenInRadius.Get() + *Client::Constants::GetInstance()->MusicListenOutRadius.Get()) / 2.0f;
@@ -1355,7 +1354,7 @@ void CInstrumentManager::PlayEvents()
     std::map<unsigned, Unk_ImScoreEvents>::iterator itEnd = m_events.end();
     while (it != itEnd)
     {
-        Unk_ImActor* pActor = FUN_1403ed2d0()->FUN_141bd1290(it->first);
+        Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1290(it->first);
         if (pActor == 0)
         {
             std::map<unsigned, Unk_ImScoreEvents>::iterator itErase = it;
@@ -1415,7 +1414,7 @@ void CInstrumentManager::Release()
 // @0x140d0b030
 void CInstrumentManager::CheckPlayState()
 {
-    Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ImActor* pMe = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return;
     if (pMe->FUN_14166c930() != 0x2f)

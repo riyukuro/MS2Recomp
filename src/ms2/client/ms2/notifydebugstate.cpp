@@ -40,6 +40,7 @@
 #include "ms2/placeholder/cmycharacter.h"
 #include "ms2/client/ms2/chatemoticoncli.h"
 #include "ms2/client/ms2/uimainplayerinfo.h"
+#include "ms2/placeholder/notifysystem.h"
 
 // The notices CMyCharacter posts (the name virtual GetTypeName is defined in unit_140db46d0).
 class NotifyDebugState : public NotifyObject
@@ -66,14 +67,9 @@ public:
     void FUN_140da51e0(int nOp, Delegate<void(CInPacket&)> handler);
 };
 Unk_McPackets* FUN_140bccd50();
-class Unk_McNotices
-{
-public:
-    void FUN_140da4fe0(MS2Ptr<NotifyObject> spNotify);
-};
-Unk_McNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 UIMainPlayerInfo* FUN_140931900(int nUiId);
-__int64 FUN_140869440();                        // server time
+__int64 GetServerTime();                        // server time
 int FUN_141472bc0();                            // tick count
 CInputStream& FUN_14070f480(CInputStream& in, int& value);
 CInputStream& FUN_14070f500(CInputStream& in, __int64& value);
@@ -157,7 +153,7 @@ void CMyCharacter::FUN_140d9f1c0(CInPacket& packet)
 void CMyCharacter::FUN_140d9f200(CInPacket& packet)
 {
     m_titles.Decode(packet);
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyDebugState));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyDebugState));
 }
 
 // @0x140d9f2c0
@@ -173,7 +169,7 @@ void CMyCharacter::FUN_140d9f310(__int64 nExpire)
     UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
     if (pInfo != 0)
     {
-        __int64 nNow = FUN_140869440();
+        __int64 nNow = GetServerTime();
         if (nNow < m_nExpire)
         {
             ATL::CTimeSpan span = CMsTime(m_nExpire) - CMsTime(nNow);
@@ -254,7 +250,7 @@ void CMyCharacter::FUN_140d9f710(CInPacket& packet)
         unsigned nState = packet.ReadUInt8();
         m_states[nKey] = nState;
     }
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyDungeonEnterState));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyDungeonEnterState));
 }
 
 // @0x140d9f880

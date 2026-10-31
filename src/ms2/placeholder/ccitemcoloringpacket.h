@@ -25,7 +25,7 @@ public:
     class ChangeColors:public CPtred {
     public:
         ChangeColors() {}
-        virtual ~ChangeColors() {}
+        // implicit (virtual) dtor: the exe ~ChangeColors stores no vftable
         void FUN_140200950(COutputStream& stream);                          // encode
         void FUN_140200bc0(Unk_PayloadPtr<ChangeColorItem> spItem);         // add
         ATL::CAtlArray<Unk_PayloadPtr<ChangeColorItem> > items;

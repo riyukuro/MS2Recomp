@@ -17,14 +17,14 @@ class CItemDefaultData
 public:
     static int FUN_140583f00(int nTable);           // default value of kind 2 in the table, 0 if the index is out of range
     static int FUN_140583f70(int nTable);           // 1 if nTable is 0 or 1
-    static void FUN_140587a50();                    // message box "<class> is not initialized" until the tables are loaded
+    static void CheckInit();                        // message box "<class> is not initialized" until the tables are loaded
     static ATL::CAtlMap<Unk_ItemDefaultKind, int> ms_aMaps[2];      // 0x143aafa40, 0x48 bytes each
 };
 
 // @0x140583f00
 int CItemDefaultData::FUN_140583f00(int nTable)
 {
-    FUN_140587a50();
+    CheckInit();
     if (FUN_140583f70(nTable) == 0) {
         return 0;
     }

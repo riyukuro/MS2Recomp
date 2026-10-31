@@ -25,20 +25,16 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/customize.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- unit-local views of exe objects ----
 
 // The world service: only the local player accessor is used here.
-class Unk_WsView
-{
-public:
-    void* FUN_141bd0cc0();                                      // the local player
-};
-Unk_WsView* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 CFeatureManager* FUN_140166410();
-CItemDataTable* FUN_140281980();
 CStringTable* GetStringTable();
 int FUN_140f02bc0();                                            // the hair palette id
 CStringW FUN_141b71990(unsigned nValue);
@@ -48,8 +44,6 @@ ItemModelHead* FUN_14053ec70(CItemData* pData);                 // &model.head
 // The customize controller reports the item it edits (a CItem handle).
 class Unk_CustomizeView : public Customize
 {
-public:
-    MS2Ptr<CItem> FUN_140cd1890();                              // the item being edited
 };
 unsigned FUN_140cd1b20(Customize* pCustomize);                  // what the item can customize (bit 1/2 size, 4 degree, 8 position)
 
@@ -474,7 +468,7 @@ void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPale
     ASArray kColors(2);
     int nSelected = -1;
     bBuild = (nFlags & 1) > 0 ? true : false;
-    ColorArrayPtr spPalette = FUN_140281980()->GetPaletteColors(nPalette);
+    ColorArrayPtr spPalette = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColors(nPalette);
     if (spPalette.get() != 0)
         FUN_140f33950(kColors, &nSelected, nColor1, nColor2, MS2Ptr<CItemData>(spData), nPalette, ColorArrayPtr(spPalette),
                       bBuild);
@@ -484,7 +478,7 @@ void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPale
     {
         int nSelected2 = -1;
         int nHair = FUN_140f02bc0();
-        ColorArrayPtr spHair = FUN_140281980()->GetPaletteColors(nHair);
+        ColorArrayPtr spHair = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColors(nHair);
         if (spHair.get() != 0)
             FUN_140f33950(kColors, &nSelected2, nColor1, nColor2, MS2Ptr<CItemData>(spData), nHair, ColorArrayPtr(spHair),
                           bF8);

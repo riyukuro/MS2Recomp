@@ -16,6 +16,9 @@ extern "C" long long __cdecl llabs(long long);
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cnpc.h"
+#include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <Shlwapi.h>
 #include <cstdlib>
 
@@ -99,7 +102,6 @@ private: void* pad; Unk_BattleRoom* p;
 };
 MS2_CHECK_SIZE(Unk_BattleRoomPtr,16);
 class Unk_BattleRoomMgr { public: Unk_BattleRoomPtr FUN_1403206b0(int); };
-Unk_BattleRoomMgr* FUN_14031c2a0();
 class Unk_BattleActor {
 public:
     virtual void vfunc_0();
@@ -182,11 +184,10 @@ public:
     virtual CStringW vfunc_77();
     unsigned FUN_141654700();
 };
-class Unk_BattleNpc { public: unsigned FUN_141094f40(); int FUN_1410934c0(); };
+class Unk_BattleNpc : public CNpc { public: unsigned FUN_141094f40();};
 class Unk_BattleWorld {
 public: Unk_BattleActor* FUN_141bd1530(__int64); __int64 FUN_141bd1980(unsigned); Unk_BattleNpc* FUN_141bd13a0(unsigned); Unk_BattleNpc* FUN_141bd1320(unsigned);
 };
-Unk_BattleWorld* FUN_1403ed2d0();
 struct Unk_BattleDamage {
     unsigned __int64 pad_0;
     unsigned __int64 pad_8;
@@ -256,7 +257,7 @@ void CBattleRecordGroup::FUN_140a03460() {
 MS2_REPLACE_METHOD(0x140a03460, CBattleRecordGroup, FUN_140a03460, 199, 0xEAC73EAE);
 // @0x140a03530
 int CBattleRecordGroup::FUN_140a03530() {
-    if(type==2) { int roomId=DAT_143ab2884; if(!roomId) return 0; Unk_BattleRoomPtr room=FUN_14031c2a0()->FUN_1403206b0(roomId); if(room==0) return 0; if(!room->enabled) return 0; }
+    if(type==2) { int roomId=DAT_143ab2884; if(!roomId) return 0; Unk_BattleRoomPtr room=reinterpret_cast<Unk_BattleRoomMgr*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(roomId); if(room==0) return 0; if(!room->enabled) return 0; }
     return active;
 }
 MS2_REPLACE_METHOD(0x140a03530, CBattleRecordGroup, FUN_140a03530, 192, 0x1BC023A0);
@@ -308,7 +309,7 @@ void CBattleRecordGroup::FUN_140a03c30() { if(file.handle!=INVALID_HANDLE_VALUE)
 MS2_REPLACE_METHOD(0x140a03c30, CBattleRecordGroup, FUN_140a03c30, 73, 0xC1B25F1F);
 // @0x140a03c80
 void CBattleRecordGroup::FUN_140a03c80(__int64 id,int type,__int64 amount) {
-    Unk_BattleActor* actor=FUN_1403ed2d0()->FUN_141bd1530(id);
+    Unk_BattleActor* actor=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd1530(id);
     if(!actor) return; { CString text; text.Format("%s\t%d\t%d\t%u\r\n",(const char*)FUN_1401d4330(actor->vfunc_77(),0),actor->FUN_141654700(),type,amount); FUN_140a03b30(text); }
 }
 MS2_REPLACE_METHOD(0x140a03c80, CBattleRecordGroup, FUN_140a03c80, 321, 0xCE2B9BD6);
@@ -395,9 +396,9 @@ MS2_REPLACE(0x140a04bc0, CBattleRecordManager::FUN_140a04bc0, 762, 0x64D39263);
 // @0x140a04ef0
 void CBattleRecordManager::FUN_140a04ef0(Unk_BattleDamage* damage) {
     if(!damage) return;
-    __int64 source=FUN_1403ed2d0()->FUN_141bd1980(damage->source);
-    if(!source) { Unk_BattleNpc* npc=FUN_1403ed2d0()->FUN_141bd13a0(damage->source); if(npc && npc->FUN_141094f40()) source=FUN_1403ed2d0()->FUN_141bd1980(npc->FUN_141094f40()); }
-    __int64 target=FUN_1403ed2d0()->FUN_141bd1980(damage->target);
+    __int64 source=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd1980(damage->source);
+    if(!source) { Unk_BattleNpc* npc=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd13a0(damage->source); if(npc && npc->FUN_141094f40()) source=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd1980(npc->FUN_141094f40()); }
+    __int64 target=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd1980(damage->target);
     for(unsigned i=0;i<3;++i) {
         Ptr group=groups[i]; if(!group->FUN_140a03530()) continue;
         CBattleRecordGroup::Ptr record=group->FUN_140a03750(source);
@@ -405,7 +406,7 @@ void CBattleRecordManager::FUN_140a04ef0(Unk_BattleDamage* damage) {
             unsigned count=(unsigned)damage->values.FUN_1401b8910();
             group->FUN_140a037d0(record,2,count);
             group->FUN_140a037d0(record,0,std::abs(damage->FUN_14175ac30()));
-            Unk_BattleNpc* npc=FUN_1403ed2d0()->FUN_141bd1320(damage->target);
+            Unk_BattleNpc* npc=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd1320(damage->target);
             if(npc && npc->FUN_1410934c0()==6) group->FUN_140a037d0(record,7,std::abs(damage->FUN_14175ac30()));
             for(unsigned j=0;j<count;++j) {
                 int hit=damage->hitTypes[j]; switch(hit) {
