@@ -41,7 +41,7 @@ struct Unk_EmoCfg
     char m_pad_0640[0x2600 - 0x638 - sizeof(Unk_EmoCfgFloat)];
     Unk_EmoCfgFloat m_2600;
 };
-Unk_EmoCfg* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_EmoPlayer : public CNpc                                                         // the player-side object of an actor (quest/status)
 {
 public:
@@ -53,15 +53,22 @@ Unk_EmoNpcTable* FUN_140764010();
 CString FUN_141082090(unsigned int nQuestId, const CString& a, const CString& b, const CString& c, const CString& d);
 UIQuestEventDispatcher* FUN_140bfc4b0();
 class Unk_EmoUIScale;
-Unk_EmoUIScale* FUN_14025e7a0();                                            // ui scale service
-float FUN_1422afec0(Unk_EmoUIScale* pScale, int nLayer);                    // scale of a layer
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1422afec0(int);
+};
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 float FUN_1412762d0(const NiPoint3& pt);
-float FUN_141670500(PCBase* pActor);
 PCBase* FUN_140974230(PCBase*);
 void* FUN_1408e57f0();
-int FUN_1422b9ea0(void*);
-int FUN_1422b9e00(void*);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1422b9ea0();
+    int GetSubSceneId();
+};
 bool FUN_140930110(int nActorId);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 class Unk_EmoClip : public ASGameEntity
@@ -154,8 +161,8 @@ UIEmoticon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nA
 {
     m_64 = 99999999;
     float fDefault = 400.0f;
-    m_c0 = *FUN_1401d3200()->m_218.FUN_140967520(&fDefault);
-    m_54 = FUN_1401d3200()->m_2600.FUN_1402bac70();
+    m_c0 = *((struct Unk_EmoCfg*)FUN_1401d3200())->m_218.FUN_140967520(&fDefault);
+    m_54 = ((struct Unk_EmoCfg*)FUN_1401d3200())->m_2600.FUN_1402bac70();
     FUN_140bfc4b0()->FUN_141aa87c0(static_cast<UIQuestEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     FUN_14192f910();
@@ -210,15 +217,15 @@ void UIEmoticon::Entity::vfunc_6(NiPoint3* pPos)
         return;
     if (m_38.get())
     {
-        FUN_140ad0c10(pPos, FUN_1422afec0(FUN_14025e7a0(), m_18));
+        FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_EmoUIScale*)(((class Unk_EmoUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
         if (FUN_14096e110(pActor) != 0)
         {
-            pPos->y = pPos->y + *FUN_1401d3200()->m_638.FUN_140298f40();
+            pPos->y = pPos->y + *((struct Unk_EmoCfg*)FUN_1401d3200())->m_638.FUN_140298f40();
         }
         else
         {
             if (FUN_140974230(pActor) != 0)
-                pPos->y = pPos->y + FUN_141670500(pActor);
+                pPos->y = pPos->y + ((class PCBase*)(class PCBase*)(pActor))->FUN_141670500();
         }
         switch (m_b0)
         {
@@ -251,7 +258,7 @@ int UIEmoticon::Entity::vfunc_8(int n)
     MS2Ptr<Unk_PCBaseComp_aa8> sp = pActor->vfunc_85();
     if ((bool)sp.get() && ((UIHudEntity::Entity*)(void*)sp.operator->())->FUN_140f48d40() != 0 && FUN_1419305c0() == 0 && !bKind3)
         return 1;
-    if (FUN_1422b9ea0(FUN_1408e57f0()) != 0 || FUN_1422b9e00(FUN_1408e57f0()) == 0x6200031)
+    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9ea0() != 0 || ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x6200031)
     {
         if (m_b0 != 2)
             return 1;

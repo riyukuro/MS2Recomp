@@ -69,9 +69,7 @@ CStringA FUN_140540050(const char* pszFormat, const CStringA& strArg);       // 
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 int FUN_14028e280(CMsTime& out, const CStringA& strFormat, const CStringA& str); // parses a date string
 struct Unk_MeratDefaultIcon { char m_pad[0xc0]; CStringA m_strIcon; };
-Unk_MeratDefaultIcon* FUN_1401d31f0();
-void FUN_1407ce380(CShopEventManager* pManager, CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> >& arr,
-                   const int& nCurrency);                                   // the sale events of a currency
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 bool FUN_1407cde30(PreminmMarketSaleEventContext *, int, int);  // C3: the definition's signature
 int FUN_1407ce100(PreminmMarketSaleEventContext* pContext, int nPrice);    // the discounted price
 bool FUN_1406a5840();
@@ -82,12 +80,15 @@ bool FUN_1406a4fe0(int nId);
 bool FUN_1406a5010(int nId);
 int FUN_140718170(const CString& strValue);                                 // a number or an enum name
 HRESULT FUN_140299dc0(ATL::CAtlFile* pFile, const void* pData, DWORD nSize, DWORD* pWritten);  // writes the data
-int FUN_140427050(Unk_GameEventLockedValue<0x38>* pValue);                 // the star shop npc
+class CGameEventValueStarShop   // C3: member view for the former free stand-ins
+{
+public:
+    int GetValue();
+};
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 int FUN_1402227e0(int, int);  // C3: the definition's signature
 bool FUN_140633d50(MS2Ptr<CItem> spItem);                                   // the item can be traded
 // CItemDataTable::GetMusicScore / CUGCDesignTable::GetData are not in the link set; reached by VA.
-CItemDataTable* FUN_140281980();
 __int64 FUN_1406a6d50(Common::Constants::Value<int>& value);
 
 // The UGC sell fees per server (FUN_1401c0db0()).
@@ -96,7 +97,7 @@ class Unk_MeratPriceTable : public CLua
 public:
     void FUN_140674d70(const CString& strServer, __int64* pMin, __int64* pMax);
 };
-Unk_MeratPriceTable* FUN_1401c0db0();
+class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 
 // The blocked-action flags of the client config (FUN_14025e7b0()).
 class Unk_MeratFlagSet { public: int FUN_1402c4c90(int nFlag); };
@@ -105,7 +106,7 @@ struct Unk_MeratConfig
     void* m_p00;
     Unk_MeratFlagSet m_flags;                                               // +0x08
 };
-Unk_MeratConfig* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
 // The owner a UGC market listing is checked against.
 struct Unk_MeratItemOwner
@@ -113,7 +114,11 @@ struct Unk_MeratItemOwner
     __int64 m_nId;                                                          // +0x00
     int m_nType;                                                            // +0x08
 };
-bool FUN_14026d4d0(const Unk_MeratItemOwner* pOwner, int nType, __int64 nId);   // the owner matches
+class Unk_CommonOwner   // C3: member view for the former free stand-ins
+{
+public:
+    bool Matches(int, __int64);
+};
 
 // CItemUgc (item.h, which clashes with ugcdef.h): the UGC info of an inventory item.
 class Unk_MeratItemUgc : public CPtred
@@ -682,7 +687,7 @@ __int64 CDBPremiumProduct::GetSalePrice(const CDBPremiumProduct* pParent)
     {
         CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> > arrAll;
         const int nAllCurrency = 100002;
-        FUN_1407ce380(TSingleton<CShopEventManager>::GetInstance(), arrAll, nAllCurrency);
+        ((class CShopEventManager*)(class CShopEventManager*)(TSingleton<CShopEventManager>::GetInstance()))->FUN_1407ce380(arrAll, nAllCurrency);
         if (!arrAll.IsEmpty())
         {
             int nCount = (int)arrAll.GetCount();
@@ -697,7 +702,7 @@ __int64 CDBPremiumProduct::GetSalePrice(const CDBPremiumProduct* pParent)
         }
     }
     CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> > arr;
-    FUN_1407ce380(TSingleton<CShopEventManager>::GetInstance(), arr, nCurrency);
+    ((class CShopEventManager*)(class CShopEventManager*)(TSingleton<CShopEventManager>::GetInstance()))->FUN_1407ce380(arr, nCurrency);
     if (!arr.IsEmpty())
     {
         std::vector<unsigned> ids;
@@ -833,7 +838,7 @@ CStringA CDBPremiumProduct::GetIconPath()
     if (m_nType != 3)
         return CStringA("");
     if (m_strIcon.IsEmpty())
-        return FUN_1401d31f0()->m_strIcon;
+        return ((struct Unk_MeratDefaultIcon*)FUN_1401d31f0())->m_strIcon;
     return FUN_140540050("./Data/Resource/Image/Item/icon/{0}", m_strIcon);
 }
 MS2_REPLACE_METHOD(0x1406A0160, CDBPremiumProduct, GetIconPath, 191, 0x7FE7101A);
@@ -2373,7 +2378,7 @@ __int64 FUN_1406a5240(int nItemId)
 {
     CString strServer = TSingleton<CFeatureManager>::GetInstance()->FUN_14036d8e0();
     const CString& rServer = strServer;
-    __int64 nFee = FUN_1401c0db0()->CalcMarketRegisterFee(nItemId, rServer);
+    __int64 nFee = ((class Unk_MeratPriceTable*)FUN_1401c0db0())->CalcMarketRegisterFee(nItemId, rServer);
     return nFee;
 }
 MS2_REPLACE(0x1406A5240, FUN_1406a5240, 104, 0x2A6490A4);
@@ -2450,7 +2455,7 @@ void FUN_1406a5480(MS2Ptr<CItemData> spItem, __int64* pMin, __int64* pMax)
         const CString& strServer = TSingleton<CFeatureManager>::GetInstance()->FUN_14036d8e0();
         __int64 nServerMin = 0;
         __int64 nServerMax = 0;
-        FUN_1401c0db0()->FUN_140674d70(strServer, &nServerMin, &nServerMax);
+        ((class Unk_MeratPriceTable*)FUN_1401c0db0())->FUN_140674d70(strServer, &nServerMin, &nServerMax);
         if (nServerMin > 0)
             nMin = nServerMin;
         if (nServerMax > 0)
@@ -2492,7 +2497,7 @@ MS2_REPLACE(0x1406A5770, FUN_1406a5770, 27, 0x1C72616A);
 // @0x1406a57a0
 bool FUN_1406a57a0()
 {
-    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x34) == 1)
+    if (((struct Unk_MeratConfig*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(0x34) == 1)
         return true;
     return false;
 }
@@ -2501,7 +2506,7 @@ MS2_REPLACE(0x1406A57A0, FUN_1406a57a0, 42, 0x6D0F554E);
 // @0x1406a57d0
 bool FUN_1406a57d0()
 {
-    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x35) == 1)
+    if (((struct Unk_MeratConfig*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(0x35) == 1)
         return true;
     return false;
 }
@@ -2554,7 +2559,7 @@ MS2_REPLACE(0x1406A58F0, FUN_1406a58f0, 43, 0x5B820E5A);
 // @0x1406a5930
 bool FUN_1406a5930()
 {
-    int nNpcId = FUN_140427050(TSingleton<CGameEventValueManager>::GetInstance()->GetStarShop());
+    int nNpcId = ((class CGameEventValueStarShop*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetStarShop()))->GetValue();
     if (nNpcId == 0 || FUN_1406cd330(nNpcId) == NULL)
         return false;
     return true;
@@ -2616,10 +2621,10 @@ bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner)
         {
             if (pScore->m_n38 != 0)
                 return false;
-            if (!FUN_14026d4d0(pOwner, pScore->m_nNoteType, pScore->m_nNoteId))
+            if (!((class Unk_CommonOwner*)(struct Unk_MeratItemOwner const*)(pOwner))->Matches(pScore->m_nNoteType, pScore->m_nNoteId))
                 return false;
             MS2Ptr<ItemMusicScore> spScore =
-                FUN_140281980()->GetMusicScore(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c510());
+                TSingleton<CItemDataTable>::GetInstance()/*C3:TSingleton<CItemDataTable>::GetInstance*/->GetMusicScore(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c510());
             if (spScore == NULL)
                 return false;
             int nScore = spScore->FUN_14054ad00();

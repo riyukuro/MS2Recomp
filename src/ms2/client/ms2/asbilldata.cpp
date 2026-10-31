@@ -56,7 +56,6 @@ CStringW FUN_140ebd020(bool bDay, CDBPremiumProduct* pProduct); // the option la
 CStringW FUN_140ebd520(CMeratMarketPremiumProduct* pProduct, int nSubId);   // the chosen option's text
 CStringW FUN_140ebd870(CMeratMarketPremiumProduct* pProduct);   // the option text of a UGC option
 CStringW FUN_140ec05f0(CDBPremiumProduct* pProduct);            // the star point text
-void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);   // set a member of an AS object
 
 // defined below
 void FUN_1409ad9c0(ASObj& obj, const CStringW& strPoint, __int64 nPoint);   // "strStarPoint" / "starPoint"
@@ -688,7 +687,7 @@ void ASObj::FUN_1409adbe0(const char* szName, Scaleform::GFx::Value v)
 {
     ASData data;
     data.FUN_1422b83f0(v);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x1409adc90
@@ -696,7 +695,7 @@ void ASObj::FUN_1409adc90(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x1409b03d0

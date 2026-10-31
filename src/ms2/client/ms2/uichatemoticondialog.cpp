@@ -94,14 +94,14 @@ public:
 // The world (the own character) and the chat window.
 WorldService* FUN_1403ed2d0();
 class Unk_EdChat { public: CStringW FUN_1414829e0(); };
-Unk_EdChat* FUN_141482e80();
+struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 
 // The notify manager.
 NotifySystem* FUN_140939a10();
 
 // The restrictions object (0x143ab3330 holder): FUN_14138d7e0 posts a restriction event.
 class Unk_EdRestrictions { public: void FUN_14138d7e0(int a1, int a2); };
-Unk_EdRestrictions* FUN_1409331e0();
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
 // The per-user client state: the chat emoticon pack state is an MS2Ptr<CChatEmoticonCli> at +0x80.
 CMyCharacter* FUN_140931510();
@@ -473,9 +473,9 @@ MS2_REPLACE_METHOD(0x140BD2660, UIChatEmoticonDialog, FUN_140bd2660, 90, 0xFAB05
 void UIChatEmoticonDialog::FUN_140bd26c0(unsigned nGroupId)
 {
     m_setNewGroups.insert(nGroupId);
-    if (FUN_1409331e0() == 0)
+    if (((class Unk_EdRestrictions*)FUN_1409331e0()) == 0)
         return;
-    FUN_1409331e0()->FUN_14138d7e0(9, 0);
+    ((class Unk_EdRestrictions*)FUN_1409331e0())->FUN_14138d7e0(9, 0);
 }
 MS2_REPLACE_METHOD(0x140BD26C0, UIChatEmoticonDialog, FUN_140bd26c0, 80, 0x9F8D5E99);
 
@@ -512,7 +512,7 @@ MS2_REPLACE_METHOD(0x140BD27E0, UIChatEmoticonDialog, FUN_140bd27e0, 187, 0x7E80
 // @0x140bd28b0
 void UIChatEmoticonDialog::FUN_140bd28b0(int nEmoticonId)
 {
-    const CStringW& strTarget = FUN_141482e80()->FUN_1414829e0();
+    const CStringW& strTarget = ((class Unk_EdChat*)FUN_141482e80())->FUN_1414829e0();
     FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyChatEmoticonSelected(strTarget, nEmoticonId)));
 }
 MS2_REPLACE_METHOD(0x140BD28B0, UIChatEmoticonDialog, FUN_140bd28b0, 205, 0x4516C159);
@@ -573,9 +573,6 @@ void* FUN_14035cfa0(void* p);                                          // std::a
 void* FUN_14015f9d0(size_t n);
 size_t FUN_14017ba40(size_t n);
 void FUN_14015fc80(void* p, size_t nBytes);
-void FUN_14016ad80(void* pIt, void* pCont);
-const Unk_EdListVal* FUN_140a3e770(const Unk_EdListVal* pList);
-const Unk_EdListVal* FUN_140a3e7b0(const Unk_EdListVal* pList);
 Unk_EdNode** FUN_140bd6e20(Unk_EdListVal* pList);
 void FUN_140a3cfa0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 void FUN_140a3cfe0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
@@ -788,13 +785,13 @@ Unk_EdAlc* FUN_140bd6a00(Unk_EdListVal* pList)
 // @0x140bd6de0
 const Unk_EdListVal* FUN_140bd6de0(const Unk_EdListVal* pList)
 {
-    return FUN_140a3e770(pList);
+    return ((struct Unk_EdListVal const*)&((std::_List_alloc<std::_List_base_types<unsigned int, std::allocator<unsigned int>>>*)(struct Unk_EdListVal const*)(pList))->_Get_data());
 }
 
 // @0x140bd6e00
 const Unk_EdListVal* FUN_140bd6e00(const Unk_EdListVal* pList)
 {
-    return FUN_140a3e7b0(pList);
+    return ((struct Unk_EdListVal const*)&((std::_List_alloc<std::_List_base_types<MS2Ptr<ChatEmoticonGroupInfo>, std::allocator<MS2Ptr<ChatEmoticonGroupInfo>>>>*)(struct Unk_EdListVal const*)(pList))->_Get_data());
 }
 
 // @0x140bd6f70
@@ -874,7 +871,7 @@ Unk_EdListVal* FUN_140bd4d10(Unk_EdListVal* pList)
 Unk_EdIter* FUN_140bd4e50(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList)
 {
     pIt->m_pNode = pNode;
-    FUN_14016ad80(pIt, const_cast<Unk_EdListVal*>(pList));
+    ((std::_Iterator_base0*)(void*)(pIt))->_Adopt((void const*)(const_cast<Unk_EdListVal*>(pList)));
     return pIt;
 }
 
@@ -1012,7 +1009,7 @@ Unk_EdIter* FUN_140bd4dd0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVa
 Unk_EdIter* FUN_140bd4e10(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList)
 {
     pIt->m_pNode = pNode;
-    FUN_14016ad80(pIt, const_cast<Unk_EdListVal*>(pList));
+    ((std::_Iterator_base0*)(void*)(pIt))->_Adopt((void const*)(const_cast<Unk_EdListVal*>(pList)));
     return pIt;
 }
 

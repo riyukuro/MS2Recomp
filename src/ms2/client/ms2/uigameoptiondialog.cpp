@@ -55,7 +55,7 @@ struct Unk_GoTipPaths
     CString m_strHdr;                                           // +0xe0
     CString m_strShimmer;                                       // +0xe8
 };
-Unk_GoTipPaths* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The option settings object (TSingleton<CGameOption>::GetInstance).
 
@@ -71,14 +71,21 @@ Unk_GoPending* FUN_1409331f0();
 
 // The buff-like table of the simple (reduced) mode test.
 class Unk_GoBuffs;
-Unk_GoBuffs* FUN_1409331e0();
-int FUN_14138c900(Unk_GoBuffs* p, int n);
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
+class CGuideManager   // C3: member view for the former free stand-ins
+{
+public:
+    int IsRestricted(int);
+};
 
-CFeatureManager* FUN_140166410();
-CInputKeyHandler* FUN_14025e7c0();
-bool FUN_14116d840(CInputKeyHandler* p);
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 void* FUN_1408e57f0();
-int FUN_1422b9dc0(void*);                                       // the class id of the current map
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSceneId();
+};
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 bool FUN_140184310(const CString& str, const char* psz);        // str == psz
@@ -134,17 +141,17 @@ UIGameOptionDialog::UIGameOptionDialog()
     m_mapPages.SetAt(5, MS2Ptr<CBaseOption>(new CGameOptionCommunity(5, nOrder++)));
     m_mapPages.SetAt(6, MS2Ptr<CBaseOption>(new CGameOptionGraphicDefault(6, nOrder++)));
     m_mapPages.SetAt(7, MS2Ptr<CBaseOption>(new CGameOptionSoundDefault(7, nOrder++)));
-    if (FUN_140166410()->FUN_14036d570(0xb5) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == 1)
         m_mapPages.SetAt(8, MS2Ptr<CBaseOption>(new CGameOptionGamePad(8, nOrder++)));
     m_mapPages.SetAt(9, MS2Ptr<CBaseOption>(new CGameOptionInputDefault(9, nOrder++)));
     m_mapPages.SetAt(10, MS2Ptr<CBaseOption>(new CGameOptionInputDefault(10, nOrder++)));
     m_mapPages.SetAt(11, MS2Ptr<CBaseOption>(new CGameOptionInputDefault(11, nOrder++)));
-    if (FUN_140166410()->FUN_14036d570(0xb5) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == 1)
         m_mapPages.SetAt(12, MS2Ptr<CBaseOption>(new CGameOptionInputDefault(12, nOrder++)));
     m_mapPages.SetAt(13, MS2Ptr<CBaseOption>(new CGameOptionInputDefault(13, nOrder++)));
     m_mapPages.SetAt(14, MS2Ptr<CBaseOption>(new CGameOptionLanguage(14, nOrder++)));
     m_mapPages.SetAt(16, MS2Ptr<CBaseOption>(new CGameOptionAccount(16, nOrder++)));
-    if (FUN_140166410()->FUN_14036d570(0x117) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x117) == 1)
         m_mapPages.SetAt(15, MS2Ptr<CBaseOption>(new CGameOptionPersonalInfoAgreement(15, nOrder++)));
 }
 
@@ -167,7 +174,7 @@ void UIGameOptionDialog::OnLoadComplete()
     if (FUN_140ba28d0(&m_30, 0) != 0)
         return;
     int bNewBuild = (int)DAT_143ab2914 >= 0x32;
-    int bGamePad = FUN_140166410()->FUN_14036d570(0xb5);
+    int bGamePad = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5);
     FUN_141944590(bNewBuild);
     FUN_1409ee290(&m_30)->Invoke("initData", FUN_140651390(), bNewBuild, bGamePad);
     FUN_141943480();
@@ -199,7 +206,7 @@ int UIGameOptionDialog::vfunc_13()
         if (sp.get() != 0 && sp->vfunc_8() != 0)
             return 1;
     }
-    if (FUN_14116d840(FUN_14025e7c0()))
+    if (((class CInputKeyHandler*)(class CInputKeyHandler*)(((class CInputKeyHandler*)FUN_14025e7c0())))->FUN_14116d840())
     {
         OnCloseDialog();
         return 1;
@@ -330,7 +337,7 @@ void UIGameOptionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         obj.FUN_1409c0dc0("optionDesc", "$s_gameoption_tooltip_hdr");
         obj.FUN_1409c0dc0("optionOn", "$s_gameoption_tooltip_hdr_on");
         obj.FUN_1409c0dc0("optionOff", "$s_gameoption_tooltip_hdr_off");
-        obj.FUN_1407cba60("imgPath", FUN_1401d31f0()->m_strHdr);
+        obj.FUN_1407cba60("imgPath", ((struct Unk_GoTipPaths*)FUN_1401d31f0())->m_strHdr);
         FUN_1409b4bc0(pRetVal, obj.FUN_1422bb870());
     }
     else if (FUN_140184310(strName, "m_shimmer"))
@@ -340,7 +347,7 @@ void UIGameOptionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         obj.FUN_1409c0dc0("optionDesc", "$s_gameoption_tooltip_shimmer");
         obj.FUN_1409c0dc0("optionOn", "$s_gameoption_tooltip_shimmer_on");
         obj.FUN_1409c0dc0("optionOff", "$s_gameoption_tooltip_shimmer_off");
-        obj.FUN_1407cba60("imgPath", FUN_1401d31f0()->m_strShimmer);
+        obj.FUN_1407cba60("imgPath", ((struct Unk_GoTipPaths*)FUN_1401d31f0())->m_strShimmer);
         FUN_1409b4bc0(pRetVal, obj.FUN_1422bb870());
     }
 }
@@ -350,9 +357,9 @@ void UIGameOptionDialog::FUN_141943480()
 {
     if (FUN_140ba28d0(&m_30, 0) != 0)
         return;
-    int nMapClass = FUN_1422b9dc0(FUN_1408e57f0());
+    int nMapClass = ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId();
     m_bSimple = nMapClass == 0x620000d || nMapClass == 0x6200009 || nMapClass == 0x6200085
-        || FUN_14138c900(FUN_1409331e0(), 1) != 0;
+        || ((class CGuideManager*)(class Unk_GoBuffs*)(((class Unk_GoBuffs*)FUN_1409331e0())))->IsRestricted(1) != 0;
     if (m_bSimple)
         m_nTab = 6;
     for (POSITION pos = m_mapPages.GetStartPosition(); pos != 0; m_mapPages.GetNext(pos))

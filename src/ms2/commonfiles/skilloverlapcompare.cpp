@@ -88,21 +88,29 @@ void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& out
 int FUN_1406cfaa0(Unk_140165cf0* pElem, const char* pszName, std::vector<CString>& rOut);   // npcdata.cpp: list attribute
 const CString& FUN_14082efb0(int nStat);                // xml name of the nStat-th stat
 int FindStatByName(const CStringA& strName);            // stat name -> id (-1 when none)
-int FUN_140873710(Unk_140165cf0* pElem, const char* pszName, int* pnOut);  // int attribute (TinyXML query)
-int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);  // bool attribute (TinyXML query)
-int FUN_1408738d0(Unk_140165cf0* pElem, const char* pszName, int& nOut);   // int attribute (TinyXML query)
+int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
+int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
+int XmlQuery(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_1408738d0
 int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
 int FUN_140873b30(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);
-void* FUN_14086e000(void* pParent, const void* pChild);                     // InsertEndChild
-void FUN_140873bc0(void* pElem, const char* pszName, bool bValue);          // SetAttribute(name, bool)
-void FUN_140873ca0(void* pElem, const char* pszName, int nValue);           // SetAttribute(name, int)
-void FUN_140873ce0(void* pElem, const char* pszName, unsigned nValue);      // SetAttribute(name, unsigned)
+class TiXmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class TiXmlNode* InsertEndChild(class TiXmlNode const&);
+};
+void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
+void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
+void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
 void FUN_14086f970(void* pElem, const char* pszName, double fValue);        // SetDoubleAttribute
-unsigned short FUN_140644430(unsigned nSkillId);        // jobtable.cpp: the level cap of a sub skill (0: none)
+class JobData   // C3: member view for the former free stand-ins
+{
+public:
+    static unsigned short GetSkillMaxLevel(unsigned int);
+};
 
 // The skill flags of the additional effect table (FUN_140186320 is its accessor, inline in additionalactionadditional.cpp).
 class Unk_SkillFlags : public StanceTable { };
-Unk_SkillFlags* FUN_140186320();
+class Unk_AdditionalFlags* FUN_140186320();   // C3: was FUN_140186320
 
 // Unit-local view of the game's TiXmlElement (0x90 bytes; the writers only build it and insert it).
 class Unk_TiXmlElement
@@ -312,11 +320,11 @@ MS2_REPLACE_METHOD(0x1407e6250, SkillHasBuffCondition, Load, 165, 0xC7E39D3E);
 int SkillHasBuffCondition::Save(void* pElem)
 {
     static SkillHasBuffCondition s_default;
-    FUN_140873ce0(pElem, "hasBuffID", m_nHasBuffID);
-    FUN_140873bc0(pElem, "hasBuffOwner", m_bHasBuffOwner);
-    FUN_140873ce0(pElem, "hasBuffCount", m_nHasBuffCount);
-    FUN_140873ce0(pElem, "hasNotBuffID", m_nHasNotBuffID);
-    FUN_140873bc0(pElem, "hasNotBuffOwner", m_bHasNotBuffOwner);
+    XmlSetAttr((class TiXmlElement*)(pElem), "hasBuffID", m_nHasBuffID);
+    XmlSetAttr((class TiXmlElement*)(pElem), "hasBuffOwner", m_bHasBuffOwner);
+    XmlSetAttr((class TiXmlElement*)(pElem), "hasBuffCount", m_nHasBuffCount);
+    XmlSetAttr((class TiXmlElement*)(pElem), "hasNotBuffID", m_nHasNotBuffID);
+    XmlSetAttr((class TiXmlElement*)(pElem), "hasNotBuffOwner", m_bHasNotBuffOwner);
     return 1;
 }
 
@@ -372,9 +380,9 @@ int SkillBeginCondition::Load(Unk_140165cf0* pElem)
     if (pBegin != 0)
     {
         FUN_140873360(pBegin, "probability", m_fProbability);
-        FUN_140873710(pBegin, "useTargetCountFactor", &m_nUseTargetCountFactor);
-        FUN_140873710(pBegin, "allowBattleRidingState", &m_nAllowBattleRidingState);
-        FUN_140873710(pBegin, "onlyBattleRidingState", &m_nOnlyBattleRidingState);
+        XmlGetBool((class TiXmlElement*)(pBegin), "useTargetCountFactor", *(int*)(&m_nUseTargetCountFactor));
+        XmlGetBool((class TiXmlElement*)(pBegin), "allowBattleRidingState", *(int*)(&m_nAllowBattleRidingState));
+        XmlGetBool((class TiXmlElement*)(pBegin), "onlyBattleRidingState", *(int*)(&m_nOnlyBattleRidingState));
         Unk_140165cf0* pCaster = pBegin->FUN_140165cf0("caster");
         if (pCaster != 0 && m_caster.Load(pCaster) == 0)
             return 0;
@@ -396,26 +404,26 @@ int SkillBeginCondition::Save(void* pParent)
         if (0.0f < m_fProbability)
             FUN_14086f970(&elem, "probability", m_fProbability);
         if (m_nUseTargetCountFactor != s_default.m_nUseTargetCountFactor)
-            FUN_140873ca0(&elem, "useTargetCountFactor", m_nUseTargetCountFactor);
+            XmlSetAttr((class TiXmlElement*)(&elem), "useTargetCountFactor", m_nUseTargetCountFactor);
         if (m_nAllowBattleRidingState != s_default.m_nAllowBattleRidingState)
-            FUN_140873ca0(&elem, "allowBattleRidingState", m_nAllowBattleRidingState);
+            XmlSetAttr((class TiXmlElement*)(&elem), "allowBattleRidingState", m_nAllowBattleRidingState);
         if (m_nOnlyBattleRidingState != s_default.m_nOnlyBattleRidingState)
-            FUN_140873ca0(&elem, "onlyBattleRidingState", m_nOnlyBattleRidingState);
+            XmlSetAttr((class TiXmlElement*)(&elem), "onlyBattleRidingState", m_nOnlyBattleRidingState);
         if (m_caster.HasContent())
         {
             Unk_TiXmlElement caster("caster");
             if (m_caster.Save(&caster) == 0)
                 return 0;
-            FUN_14086e000(&elem, &caster);
+            ((void*)((class TiXmlNode*)(void*)(&elem))->InsertEndChild(*(class TiXmlNode const*)(&caster)));
         }
         if (m_target.HasContent())
         {
             Unk_TiXmlElement target("target");
             if (m_target.Save(&target) == 0)
                 return 0;
-            FUN_14086e000(&elem, &target);
+            ((void*)((class TiXmlNode*)(void*)(&elem))->InsertEndChild(*(class TiXmlNode const*)(&target)));
         }
-        FUN_14086e000(pParent, &elem);
+        ((void*)((class TiXmlNode*)(void*)(pParent))->InsertEndChild(*(class TiXmlNode const*)(&elem)));
     }
     return 1;
 }
@@ -507,11 +515,11 @@ int SkillCondition::Load(Unk_140165cf0* pElem)
     {
         FUN_140873360(pCondition, "invokeEffectFactor", m_fInvokeEffectFactor);
         FUN_140873360(pCondition, "defaultRechargingCooldownTime", m_fDefaultRechargingCooldownTime);
-        FUN_140873710(pCondition, "useCoolDownShowUI", &m_nUseCoolDownShowUI);
-        FUN_140873710(pCondition, "onlyShadowWorld", &m_nOnlyShadowWorld);
-        FUN_140873710(pCondition, "onlyFlyableMap", &m_nOnlyFlyableMap);
-        FUN_140873710(pCondition, "allowBattleRidingState", &m_nAllowBattleRidingState);
-        FUN_140873710(pCondition, "onlyBattleRidingState", &m_nOnlyBattleRidingState);
+        XmlGetBool((class TiXmlElement*)(pCondition), "useCoolDownShowUI", *(int*)(&m_nUseCoolDownShowUI));
+        XmlGetBool((class TiXmlElement*)(pCondition), "onlyShadowWorld", *(int*)(&m_nOnlyShadowWorld));
+        XmlGetBool((class TiXmlElement*)(pCondition), "onlyFlyableMap", *(int*)(&m_nOnlyFlyableMap));
+        XmlGetBool((class TiXmlElement*)(pCondition), "allowBattleRidingState", *(int*)(&m_nAllowBattleRidingState));
+        XmlGetBool((class TiXmlElement*)(pCondition), "onlyBattleRidingState", *(int*)(&m_nOnlyBattleRidingState));
         FUN_1408731e0(pCondition, "sp", m_nSp);
         for (Unk_140165cf0* p = pCondition->FUN_140165cf0("requireEffect"); p != 0; p = p->FUN_140168650("requireEffect"))
         {
@@ -557,23 +565,23 @@ int SkillCondition::Save(void* pParent)
         if (s_default.m_fDefaultRechargingCooldownTime != m_fDefaultRechargingCooldownTime)
             FUN_14086f970(&elem, "defaultRechargingCooldownTime", m_fDefaultRechargingCooldownTime);
         if (m_nUseCoolDownShowUI != s_default.m_nUseCoolDownShowUI)
-            FUN_140873ca0(&elem, "useCoolDownShowUI", m_nUseCoolDownShowUI);
+            XmlSetAttr((class TiXmlElement*)(&elem), "useCoolDownShowUI", m_nUseCoolDownShowUI);
         if (m_nOnlyShadowWorld != s_default.m_nOnlyShadowWorld)
-            FUN_140873ca0(&elem, "onlyShadowWorld", m_nOnlyShadowWorld);
+            XmlSetAttr((class TiXmlElement*)(&elem), "onlyShadowWorld", m_nOnlyShadowWorld);
         if (m_nOnlyFlyableMap != s_default.m_nOnlyFlyableMap)
-            FUN_140873ca0(&elem, "onlyFlyableMap", m_nOnlyFlyableMap);
+            XmlSetAttr((class TiXmlElement*)(&elem), "onlyFlyableMap", m_nOnlyFlyableMap);
         if (m_nAllowBattleRidingState != s_default.m_nAllowBattleRidingState)
-            FUN_140873ca0(&elem, "allowBattleRidingState", m_nAllowBattleRidingState);
+            XmlSetAttr((class TiXmlElement*)(&elem), "allowBattleRidingState", m_nAllowBattleRidingState);
         if (m_nOnlyBattleRidingState != s_default.m_nOnlyBattleRidingState)
-            FUN_140873ca0(&elem, "onlyBattleRidingState", m_nOnlyBattleRidingState);
+            XmlSetAttr((class TiXmlElement*)(&elem), "onlyBattleRidingState", m_nOnlyBattleRidingState);
         for (unsigned i = 0; i < m_arrRequireEffect.GetCount(); i++)
         {
             unsigned nCode = m_arrRequireEffect[i];
             if (nCode == 0)
                 continue;
             Unk_TiXmlElement child("requireEffect");
-            FUN_140873ce0(&child, "code", nCode);
-            FUN_14086e000(&elem, &child);
+            XmlSetAttr((class TiXmlElement*)(&child), "code", nCode);
+            ((void*)((class TiXmlNode*)(void*)(&elem))->InsertEndChild(*(class TiXmlNode const*)(&child)));
         }
         for (unsigned i = 0; i < m_arrRequireMapCodes.GetCount(); i++)
         {
@@ -581,8 +589,8 @@ int SkillCondition::Save(void* pParent)
             if (nCode == 0)
                 continue;
             Unk_TiXmlElement child("requireMapCodes");
-            FUN_140873ce0(&child, "code", nCode);
-            FUN_14086e000(&elem, &child);
+            XmlSetAttr((class TiXmlElement*)(&child), "code", nCode);
+            ((void*)((class TiXmlNode*)(void*)(&elem))->InsertEndChild(*(class TiXmlNode const*)(&child)));
         }
         for (unsigned i = 0; i < m_arrHasNotAdditionalEffectGroup.GetCount(); i++)
         {
@@ -590,8 +598,8 @@ int SkillCondition::Save(void* pParent)
             if (nId == 0)
                 continue;
             Unk_TiXmlElement child("hasNotAdditionalEffectGroup");
-            FUN_140873ca0(&child, "id", nId);
-            FUN_14086e000(&elem, &child);
+            XmlSetAttr((class TiXmlElement*)(&child), "id", nId);
+            ((void*)((class TiXmlNode*)(void*)(&elem))->InsertEndChild(*(class TiXmlNode const*)(&child)));
         }
         for (unsigned i = 0; i < m_arrWeapon.GetCount(); i++)
         {
@@ -600,11 +608,11 @@ int SkillCondition::Save(void* pParent)
             if (nLeftHand == 0 && nRightHand == 0)
                 continue;
             Unk_TiXmlElement child("weapon");
-            FUN_140873ca0(&child, "lh", nLeftHand);
-            FUN_140873ca0(&child, "rh", nRightHand);
-            FUN_14086e000(&elem, &child);
+            XmlSetAttr((class TiXmlElement*)(&child), "lh", nLeftHand);
+            XmlSetAttr((class TiXmlElement*)(&child), "rh", nRightHand);
+            ((void*)((class TiXmlNode*)(void*)(&elem))->InsertEndChild(*(class TiXmlNode const*)(&child)));
         }
-        FUN_14086e000(pParent, &elem);
+        ((void*)((class TiXmlNode*)(void*)(pParent))->InsertEndChild(*(class TiXmlNode const*)(&elem)));
     }
     return 1;
 }
@@ -807,9 +815,9 @@ void SkillData::Load(Unk_140165cf0* pElem)
     {
         FUN_140873ad0(pUi, "icon", m_strIcon);
         XmlValue(pUi, "attackType", m_eAttackType);
-        FUN_1408736d0(pUi, "disableChangeSkillIconEffect", m_bDisableChangeSkillIconEffect);
-        FUN_1408736d0(pUi, "showCastingBar", m_bShowCastingBar);
-        FUN_1408738d0(pUi, "tooltip", m_nTooltip);
+        XmlQuery((class TiXmlElement*)(pUi), "disableChangeSkillIconEffect", m_bDisableChangeSkillIconEffect);
+        XmlQuery((class TiXmlElement*)(pUi), "showCastingBar", m_bShowCastingBar);
+        XmlQuery((class TiXmlElement*)(pUi), "tooltip", *(unsigned int*)&static_cast<int&>(m_nTooltip));
         CStringW strParam;
         FUN_140873b30(pUi, "paramCastingBar", strParam);
         m_spParamCastingBar->FUN_14092c400(strParam);
@@ -827,7 +835,7 @@ void SkillData::Load(Unk_140165cf0* pElem)
         FUN_1408730a0(pKinds, "unrideOnUse", m_bUnrideOnUse);
         FUN_1408730a0(pKinds, "releaseObjectWeapon", m_bReleaseObjectWeapon);
         FUN_1408730a0(pKinds, "disableWater", m_bDisableWater);
-        FUN_1408736d0(pKinds, "holdAttack", m_bHoldAttack);
+        XmlQuery((class TiXmlElement*)(pKinds), "holdAttack", m_bHoldAttack);
         FUN_140873220(pKinds, "groupIDs", m_nGroupIDs);
     }
     Unk_140165cf0* pState = pBasic->FUN_140165cf0("stateAttr");
@@ -903,7 +911,7 @@ MS2_REPLACE_METHOD(0x1407e9aa0, SkillData, GetElement, 17, 0x3C396781);
 // @0x1407e9ac0
 unsigned short SkillData::FUN_1407e9ac0()
 {
-    unsigned short nCap = FUN_140644430(m_nId);
+    unsigned short nCap = JobData::GetSkillMaxLevel(m_nId);
     if (nCap != 0)
         return nCap;
     return m_nMaxLevel;
@@ -1324,7 +1332,7 @@ void SkillDataTable::IndexSensors(MS2Ptr<SkillData> spSkill)
 // @0x1407eec60
 void SkillDataTable::FUN_1407eec60(MS2Ptr<SkillData> spSkill)
 {
-    if (FUN_140186320()->HasFinishSkill(spSkill->GetId()))
+    if (((class Unk_SkillFlags*)FUN_140186320())->HasFinishSkill(spSkill->GetId()))
         spSkill->FUN_1407ea010();
     return;
 }

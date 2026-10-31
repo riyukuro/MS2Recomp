@@ -46,8 +46,8 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
-bool FUN_14028f710(Unk_140165cf0* pNode);                               // the row is for this client's region
-int FUN_1408733a0(Unk_140165cf0* pNode, const char* pszName, double& rOut);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlGetAttr(class TiXmlElement*, char const*, double&);   // C3: was FUN_1408733a0
 // The locale list test and the game rule block (the level limit slot at +0x5180).
 struct Unk_MaidLimitSlot { char m_pad[0x58]; };
 struct Unk_MaidRule
@@ -55,7 +55,7 @@ struct Unk_MaidRule
     char m_pad[0x5180];
     Unk_MaidLimitSlot m_limit;
 };
-Unk_MaidRule* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 unsigned* FUN_1402056b0(Unk_MaidLimitSlot* pSlot);   // the level limit
 void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* pszDelim);   // split into ints
 // The item string table (id <-> name).
@@ -99,17 +99,17 @@ int CMaidGradeJockpotTable::Load()
         int nGrade = 0;
         double dJackpot = 0;
         FUN_1408731e0(pNode, "Grade", nGrade);
-        FUN_1408733a0(pNode, "JackpotRate", dJackpot);
+        XmlGetAttr((class TiXmlElement*)(pNode), "JackpotRate", dJackpot);
         m_jackpotRates.SetAt(nGrade, dJackpot);
         TPtrValue<ATL::CAtlArray<double> > spRates(Unk_GrNewTag(0));
         double dNormal = 0;
-        FUN_1408733a0(pNode, "FeelNormalRate", dNormal);
+        XmlGetAttr((class TiXmlElement*)(pNode), "FeelNormalRate", dNormal);
         spRates->Add(dNormal);
         double dGood = 0;
-        FUN_1408733a0(pNode, "FeelGoodRate", dGood);
+        XmlGetAttr((class TiXmlElement*)(pNode), "FeelGoodRate", dGood);
         spRates->Add(dGood);
         double dVeryGood = 0;
-        FUN_1408733a0(pNode, "FeelVeryGoodRate", dVeryGood);
+        XmlGetAttr((class TiXmlElement*)(pNode), "FeelVeryGoodRate", dVeryGood);
         spRates->Add(dVeryGood);
         m_feelRates.SetAt(nGrade, spRates);
     }
@@ -203,7 +203,7 @@ int CMaidRecipeTable::Load()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("recipe"); pNode != 0; pNode = pNode->FUN_140168650("recipe"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strLocale;
         FUN_140873420(pNode, "locale", strLocale);
@@ -300,7 +300,7 @@ int CMaidRecipeGroupTable::Load()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("group"); pNode != 0; pNode = pNode->FUN_140168650("group"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strLocale;
         FUN_140873420(pNode, "locale", strLocale);
@@ -324,7 +324,7 @@ int CMaidRecipeGroupTable::Load()
         std::vector<TPtrValue<RecipeLevel> > sorted;
         for (size_t i = 0; i < recipeIds.GetCount(); i++)
         {
-            if ((unsigned)levels[i] > *FUN_1402056b0(&FUN_1401d3200()->m_limit))
+            if ((unsigned)levels[i] > *FUN_1402056b0(&((struct Unk_MaidRule*)FUN_1401d3200())->m_limit))
                 continue;
             TPtrValue<RecipeLevel> spLevel(Unk_GrNewTag(0));
             spLevel->recipeId = recipeIds[i];

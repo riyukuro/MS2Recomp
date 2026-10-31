@@ -147,34 +147,54 @@ class Unk_PetPlayerMgr { public: Unk_PetPlayer* FUN_141bd0cc0(); };
 
 // The equipment stats of the player (FUN_1416561a0(pc)); stat 0xad is the pet remake discount rate.
 class Unk_PetEquipSet;
-Unk_PetEquipSet* FUN_1416561a0(Unk_PetPlayer* pPlayer);
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_PCEquipSet* FUN_1416561a0();
+};
 float FUN_1411e1110(Unk_PetEquipSet* pSet, int nStat);
-void FUN_1411e7660(Unk_PetEquipSet* pSet);                              // refresh the equipment stats
+class CEquipment   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1411e7660();
+};
 
 // Feature flags (slot 0x4d turns the pet remake off).
 class Unk_PetFlag { public: int FUN_1402c4c90(int nFlag); };
 class Unk_PetFlags { public: void* p0; Unk_PetFlag flags; };
-Unk_PetFlags* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
 // Content switches (0x9b: option lock of pets).
 class Unk_PetFeatures;
-Unk_PetFeatures* FUN_140166410();
-bool FUN_14036d570(Unk_PetFeatures* pFeatures, int nFeature);
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
 
 // Locale/build switches (debug buttons).
 class Unk_PetLocale;
-Unk_PetLocale* FUN_14025e7c0();
-bool FUN_14116d720(Unk_PetLocale*);
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+class CInputKeyHandler   // C3: member view for the former free stand-ins
+{
+public:
+    bool IsDebugMode();
+};
 
-CPetDataTable* FUN_14052d210();                                         // TSingleton<CPetDataTable>::GetInstance
-CItemOptionTable* FUN_140166430();                                      // TSingleton<CItemOptionTable>::GetInstance
+class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
+class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 
 // The pet system dialog (window 0x4f38) and the pet socket page (0x2711).
 class UIPetSystemDialog : public UIDialog { public: void FUN_140e73590(int bEnable); };
 class Unk_PetUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
 class Unk_PetSocketPage;
-Unk_PetSocketPage* FUN_140938c30(int nId);
-void FUN_141a5a5c0(Unk_PetSocketPage* pPage);
+class UIMyInfoDialog* FUN_140938c30(int);   // C3: was FUN_140938c30
+class UIMyInfoDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141a5a5c0();
+};
 
 // The item of an uid in the inventory or the equipment.
 ItemPtr FUN_1419be700(unsigned __int64 uid);
@@ -410,7 +430,7 @@ void PetRemakeOptionBoard::vfunc_3()
             submit->FUN_1422cdfb0(GetStringCommonByKey(strKey));
         }
     }
-    bool bDebug = FUN_14116d720(FUN_14025e7c0());
+    bool bDebug = ((class CInputKeyHandler*)(class Unk_PetLocale*)(((class Unk_PetLocale*)FUN_14025e7c0())))->IsDebugMode();
     {
         if (MS2Ptr<Unk_PetButton> debug = board->FUN_140acce30<Unk_PetButton>("m_debug"))
             debug->vfunc_4(bDebug);
@@ -563,7 +583,7 @@ void PetRemakeOptionBoard::FUN_140b92da0()
     int nRemakeCount = pet->FUN_140527300();
     CStringW strCount = FUN_14062b4f0(CStringW(L"s_pet_remake_option_count"), &nRemakeCount);
     obj.FUN_1407cbb20("remakeCount", strCount);
-    unsigned nFrame = (FUN_140b937c0(obj, ItemPtr(pet)) != 0 || FUN_14116d720(FUN_14025e7c0()) != 0) ? 1 : 0;
+    unsigned nFrame = (FUN_140b937c0(obj, ItemPtr(pet)) != 0 || ((class CInputKeyHandler*)(class Unk_PetLocale*)(((class Unk_PetLocale*)FUN_14025e7c0())))->IsDebugMode() != 0) ? 1 : 0;
     {
         if (MS2Ptr<Unk_PetButton> submit = board->FUN_140acce30<Unk_PetButton>("m_submit"))
             submit->FUN_1422c1fe0(nFrame);
@@ -615,10 +635,10 @@ int PetRemakeOptionBoard::FUN_140b937c0(ASObj& obj, MS2Ptr<CItem> item)
     int nRemakeCount = item->FUN_140527300();
     CItemRemakeOptionIngredient ingredient;
     MS2Ptr<CItemData> data(item->FUN_140527840());
-    MS2Ptr<CPetData> pet = FUN_14052d210()->Find(item->FUN_140527840()->FUN_14053dc60());
+    MS2Ptr<CPetData> pet = ((class CPetDataTable*)FUN_14052d210())->Find(item->FUN_140527840()->FUN_14053dc60());
     if (pet == 0)
         return 0;
-    FUN_140166430()->FUN_1405f4bb0(nRemakeCount, item->FUN_140526bd0(), ingredient);
+    ((class CItemOptionTable*)FUN_140166430())->FUN_1405f4bb0(nRemakeCount, item->FUN_140526bd0(), ingredient);
     MS2SvrPtr<CIngredientContainer> container(
         static_cast<const MS2SvrPtr<CIngredientContainer>&>(ingredient.m_spContainer));
     if (container == 0)
@@ -630,7 +650,7 @@ int PetRemakeOptionBoard::FUN_140b937c0(ASObj& obj, MS2Ptr<CItem> item)
     unsigned nRate = 0;
     Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (player != 0)
-        nRate = (unsigned)(__int64)(FUN_1411e1110(FUN_1416561a0(player), 0xad) * 10000.0f);
+        nRate = (unsigned)(__int64)(FUN_1411e1110(((class Unk_PetEquipSet*)((class PC*)(class Unk_PetPlayer*)(player))->FUN_1416561a0()), 0xad) * 10000.0f);
     int nSale = FUN_140616c50(MS2Ptr<CItemData>(data), &nDiscount, nRate);
     __int64 nFee = 0;
     int bEnough = 1;
@@ -714,7 +734,7 @@ TabContentsPetRemakeOption::TabContentsPetRemakeOption()
       m_nState(0), m_ui(0)
 {
     m_parts.AddTail(new PetRemakeOptionPetCard(this));
-    if (FUN_14036d570(FUN_140166410(), 0x9b) == true)
+    if (((class CFeatureManager*)(class Unk_PetFeatures*)(((class Unk_PetFeatures*)FUN_140166410())))->FUN_14036d570(0x9b) == true)
         m_parts.AddTail(new PetRemakeOptionPetIngredient(this));
     m_board.AssignRaw(new PetRemakeOptionBoard(this));
     m_parts.AddTail(m_board);
@@ -950,7 +970,7 @@ void TabContentsPetRemakeOption::FUN_140b95280(int bUsePoint)
     Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (player == 0)
         return;
-    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x4d) != 0)
+    if (((class Unk_PetFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x4d) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
     }
@@ -1022,7 +1042,7 @@ void TabContentsPetRemakeOption::SendChangeAttributesMode7()
     Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (player == 0)
         return;
-    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x4d) != 0)
+    if (((class Unk_PetFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x4d) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
     }
@@ -1049,7 +1069,7 @@ void TabContentsPetRemakeOption::FUN_140b95db0(ASData* pData)
     Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (player == 0)
         return;
-    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x4d) != 0)
+    if (((class Unk_PetFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x4d) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
     }
@@ -1222,10 +1242,10 @@ void TabContentsPetRemakeOption::FUN_140b96960(MS2Ptr<CItem> item)
             player->FUN_141663400(ItemPtr(item));
     }
     m_pet = item;
-    FUN_1411e7660(FUN_1416561a0(player));
-    Unk_PetSocketPage* page = FUN_140938c30(0x2711);
+    ((class CEquipment*)(class Unk_PetEquipSet*)(((class Unk_PetEquipSet*)((class PC*)(class Unk_PetPlayer*)(player))->FUN_1416561a0())))->FUN_1411e7660();
+    Unk_PetSocketPage* page = ((class Unk_PetSocketPage*)FUN_140938c30(0x2711));
     if (page != 0)
-        FUN_141a5a5c0(page);
+        ((class UIMyInfoDialog*)(class Unk_PetSocketPage*)(page))->FUN_141a5a5c0();
 }
 MS2_REPLACE_METHOD(0x140B96960, TabContentsPetRemakeOption, FUN_140b96960, 491, 0x387E2EE7);
 
@@ -1256,7 +1276,7 @@ void TabContentsPetRemakeOption::FUN_140b96ca0()
         ItemPtr item = g_143ab2a90.FUN_140a5d680(ids[i]);
         if (item == 0)
             continue;
-        MS2Ptr<CPetData> pet = FUN_14052d210()->Find(item->FUN_140527840()->FUN_14053dc60());
+        MS2Ptr<CPetData> pet = ((class CPetDataTable*)FUN_14052d210())->Find(item->FUN_140527840()->FUN_14053dc60());
         if (pet == 0)
             continue;
         if (FUN_140526470(item.operator->(), 2) == 0)
@@ -1346,7 +1366,7 @@ void TabContentsPetRemakeOption::FUN_140b973b0(ASData* pData)
 {
     if (m_uidPet == 0)
         return;
-    if (!FUN_14036d570(FUN_140166410(), 0x9b))
+    if (!((class CFeatureManager*)(class Unk_PetFeatures*)(((class Unk_PetFeatures*)FUN_140166410())))->FUN_14036d570(0x9b))
         return;
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
     if (pet == 0)

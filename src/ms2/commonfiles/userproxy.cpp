@@ -62,7 +62,7 @@ class Unk_UserProxyItemData {
 public:
   int FUN_140599fd0(int);
 };
-unsigned FUN_140869420();
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/gameeventuservalue.h"
@@ -1914,7 +1914,7 @@ CString Unk_UserProxy::FUN_1408f1de0() const {
 
 // @0x1408f1e60
 void Unk_UserProxy::FUN_1408f1e60() {
-  m_8 = FUN_140869420();
+  m_8 = GetTickCountMs2();
   m_34 = 1;
   m_14 = rand() % 2 ? 1 : 0;
   MS2Ptr<CItem> item(new CItem());

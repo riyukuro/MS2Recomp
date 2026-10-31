@@ -49,7 +49,6 @@ void FUN_1405594b0(void* pTable, std::vector<unsigned int>* pOut);   // collect 
 CStringTable* GetStringTable();
 void* FUN_1422bb8b0(int nMovieId);                              // the movie of a UI layer
 // A GFx::Value that the string-value builder constructs itself (no ctor call); the dtor is Value's (0x140614800).
-void FUN_142575b00(void* pMovie, const Scaleform::GFx::Value& v);   // hand a value to the movie
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
@@ -145,7 +144,7 @@ int UITextPreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             reinterpret_cast<Unk_TpFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb3c0(strText);
             reinterpret_cast<Unk_TpFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb380(strText);
             reinterpret_cast<Unk_TpFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb340(strText);
-            FUN_142575b00(FUN_1422bb8b0(m_28), Scaleform::GFx::Value((const wchar_t*)strText));
+            ((Scaleform::GFx::Movie*)(void*)(FUN_1422bb8b0(m_28)))->SetExternalInterfaceRetVal(Scaleform::GFx::Value((const wchar_t*)strText));
         }
     }
     else if (_stricmp("OnDescriptionCheck", szMethod) == 0) {

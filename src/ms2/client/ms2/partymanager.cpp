@@ -508,8 +508,9 @@ MS2_REPLACE_METHOD(0x14162A480, CPartyManager, FUN_14162a480, 34, 0xDCF04E52);
 // @0x14162a4b0
 void CPartyManager::OnParty(CInPacket& packet)
 {
-    switch (packet.ReadUInt8()) {
-    case 0: FUN_14162f030(packet); break;
+    int nType = packet.ReadUInt8();
+    switch (nType) {
+    case 0xb: FUN_14162c8b0(packet); break;
     case 2: FUN_14162cc40(packet); break;
     case 3: FUN_14162cea0(packet); break;
     case 4: FUN_14162d070(packet); break;
@@ -518,13 +519,12 @@ void CPartyManager::OnParty(CInPacket& packet)
     case 7: FUN_14162d220(packet); break;
     case 8: FUN_14162d2b0(packet); break;
     case 9: FUN_14162d5b0(packet); break;
-    case 0xb: FUN_14162c8b0(packet); break;
-    case 0xc: FUN_14162e100(packet); break;
+    case 0x13: FUN_14162dfc0(packet); break;
     case 0xd: FUN_14162e100(packet); break;
+    case 0xc: FUN_14162e100(packet); break;
     case 0xe: FUN_14162e240(packet); break;
     case 0xf: FUN_14162e310(packet); break;
     case 0x12: FUN_14162e3d0(packet); break;
-    case 0x13: FUN_14162dfc0(packet); break;
     case 0x14: FUN_14162e5d0(packet); break;
     case 0x15: FUN_14162e730(packet); break;
     case 0x19: FUN_14162e820(packet); break;
@@ -532,13 +532,14 @@ void CPartyManager::OnParty(CInPacket& packet)
     case 0x1e: FUN_14162ea90(packet); break;
     case 0x1f: FUN_14162ed60(packet); break;
     case 0x23: FUN_14162ee10(packet); break;
+    case 0x37: FUN_141630790(packet); break;
     case 0x25: FUN_14162ee70(packet); break;
+    case 0: FUN_14162f030(packet); break;
     case 0x28: FUN_1416302f0(packet); break;
     case 0x2c: FUN_1416303b0(packet); break;
     case 0x2f: FUN_141630550(packet); break;
     case 0x30: FUN_141630670(packet); break;
     case 0x31: FUN_141630720(packet); break;
-    case 0x37: FUN_141630790(packet); break;
     case 0x38: FUN_141630a60(packet); break;
     }
 }
@@ -1754,40 +1755,37 @@ void CPartyManager::FUN_141631700(CInPacket& packet)
     int type = static_cast<CInputStream&>(packet).ReadUInt8();
     Unk_PartyRecruitError result = static_cast<Unk_PartyRecruitError>(static_cast<CInputStream&>(packet).ReadInt32());
     if (type == 0) recruitPending = 0;
-    if (result == 99) FUN_140f8ff40(0xb46, 1, 1);
-    else if (result == 0x65) FUN_140d73bc0(0xb47, 0, 0, L"");
-    else if (result == 0x6e) FUN_140d73bc0(0xb48, 0, 0, L"");
-    else if (result == 2) FUN_140d73bc0(0xb49, 0, 0, L"");
-    else if (result == 0xe || result == 0xc || result == 0xf) FUN_140d73bc0(0xb4a, 0, 0, L"");
-    else if (result == 0x6d) FUN_140f8ff40(0xb51, 1, 0);
-    else {
-        if (type == 0) {
-            if (result == 0x69) { FUN_140d73bc0(0xb4a, 0, 0, L""); return; }
-            if (result == 0x66) { FUN_140d73bc0(0xb4b, 0, 0, L""); return; }
-            if (result == 0x68) { FUN_140d73bc0(0xb4c, 0, 0, L""); return; }
-            if (result == 0x6c) {
-                void* ui = FUN_141632840(0x4edb);
-                if (ui != NULL) FUN_141321d30(ui);
-                FUN_140d73bc0(0xb4e, 0, 0, L"");
-                return;
-            }
-            if (result == 0x6f) { FUN_140d73bc0(0xb50, 0, 0, L""); return; }
-        } else if (type == 1) {
-            if (result == 0x67) { FUN_140d73bc0(0xb4d, 0, 0, L""); return; }
-            if (result == 0x6a) {
-                CStringW key(L"s_partysearch_err_server_not_find_recruit");
-                FUN_140d73aa0(GetStringCommonByKey(key), 0, 0, L"");
-                FUN_141631060();
-                return;
-            }
-        } else if (type == 2 && result == 0x6c) {
-            void* ui = ((void*)FUN_1413226d0(0x4eda));
-            if (ui != NULL) ((class UIPartySearchDialog*)(void*)(ui))->FUN_140f8dde0();
-            FUN_140d73bc0(0xb4f, 0, 0, L"");
+    if (result == 99) { FUN_140f8ff40(0xb46, 1, 1); return; }
+    else if (result == 0x65) { FUN_140d73bc0(0xb47, 0, 0, L""); return; }
+    else if (result == 0x6e) { FUN_140d73bc0(0xb48, 0, 0, L""); return; }
+    else if (result == 2) { FUN_140d73bc0(0xb49, 0, 0, L""); return; }
+    else if (result == 0xe || result == 0xc || result == 0xf) { FUN_140d73bc0(0xb4a, 0, 0, L""); return; }
+    else if (result == 0x6d) { FUN_140f8ff40(0xb51, 1, 0); return; }
+    else if (type == 0) {
+        if (result == 0x69) { FUN_140d73bc0(0xb4a, 0, 0, L""); return; }
+        else if (result == 0x66) { FUN_140d73bc0(0xb4b, 0, 0, L""); return; }
+        else if (result == 0x68) { FUN_140d73bc0(0xb4c, 0, 0, L""); return; }
+        else if (result == 0x6c) {
+            void* ui = FUN_141632840(0x4edb);
+            if (ui != NULL) FUN_141321d30(ui);
+            FUN_140d73bc0(0xb4e, 0, 0, L"");
             return;
         }
-        PartyRecruitMessage(0xb52, 1, 1, type, result);
+        else if (result == 0x6f) { FUN_140d73bc0(0xb50, 0, 0, L""); return; }
+    } else if (type == 1) {
+        if (result == 0x67) { FUN_140d73bc0(0xb4d, 0, 0, L""); return; }
+        else if (result == 0x6a) {
+            FUN_140d73aa0(GetStringCommonByKey(L"s_partysearch_err_server_not_find_recruit"), 0, 0, L"");
+            FUN_141631060();
+            return;
+        }
+    } else if (type == 2 && result == 0x6c) {
+        void* ui = ((void*)FUN_1413226d0(0x4eda));
+        if (ui != NULL) ((class UIPartySearchDialog*)(void*)(ui))->FUN_140f8dde0();
+        FUN_140d73bc0(0xb4f, 0, 0, L"");
+        return;
     }
+    PartyRecruitMessage(0xb52, 1, 1, type, result);
 }
 MS2_REPLACE_METHOD(0x141631700, CPartyManager, FUN_141631700, 1410, 0xCF636205);
 

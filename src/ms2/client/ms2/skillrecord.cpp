@@ -18,11 +18,15 @@
 // MS2-PINS-END tplpin
 
 extern Vector3 DAT_143b01a60;                       // the zero point
-unsigned FUN_141472bc0();                                   // the tick count
+int FUN_141472bc0();   // C3: was FUN_141472bc0
 
 bool FUN_14028d470(float fValue, float fTolerance);         // commonutil: nearly equal
 float FUN_14028d3a0(float fPercent);                        // commonutil: percent to rate
-int FUN_1409726e0(int nSuperArmor, ApplyFieldType eApplyField);  // PCBase: the super armor applies on this field
+class AdditionalCliList   // C3: member view for the former free stand-ins
+{
+public:
+    static int FUN_1409726e0(unsigned int, enum ApplyFieldType);
+};
 
 // A field object (FieldObject / Actor / PCBase; only the casts and the members below are used).
 class Unk_SrEntity;
@@ -428,7 +432,7 @@ float CSkillRecord::FUN_14175a1b0()
 // @0x14175a210
 int CSkillRecord::FUN_14175a210()
 {
-    if (FUN_1409726e0(m_spSkill->m_nSuperArmor, m_spSkill->m_eSuperArmorApplyFieldType))
+    if (AdditionalCliList::FUN_1409726e0(m_spSkill->m_nSuperArmor, m_spSkill->m_eSuperArmorApplyFieldType))
         return m_spSkill->m_nSuperArmor;
     return 0;
 }

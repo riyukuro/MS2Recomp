@@ -85,7 +85,7 @@ struct Unk_PgtConfig
     char m_pad_00[0xa0];
     CString m_strMarkServer;                                        // +0xa0 passed to the guild mark URL builder
 };
-Unk_PgtConfig* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 class Unk_140acd6e0 : public ASDisplayObject                        // the observe button
 {
@@ -97,7 +97,7 @@ public:
 class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, int, int); };
 
 class Unk_RewardOtherDialog : public UIDialog { public: void FUN_1419f6a70(int nType, CStringW strText, int nTime); };
-Unk_RewardOtherDialog* FUN_140e01890(int nUiId);                   // the result banner
+class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
 
 class Unk_PopupMenuInfo
 {
@@ -121,10 +121,9 @@ void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW 
 CStringW FUN_140719630(int n);                                      // the number as text
 CStringW GetStringCommon(int nStringId);
 void FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
-unsigned FUN_141472bc0();                                           // the current tick
+int FUN_141472bc0();   // C3: was FUN_141472bc0
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 bool FUN_141b70f50(const CStringW& a, const CStringW& b);           // the names are equal
-__int64 FUN_141656a80(PCBase* pPC);                                 // the character id
 CStringW* FUN_141656be0(PCBase* pPC);                               // the guild name
 int FUN_141654730(PCBase* pPC);                                     // the job level
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);
@@ -258,12 +257,12 @@ void UIPvPGuildTeamDialog::vfunc_79(void* pData)
     else if (nType == 't') {
         __int64 nWinner = ((CInPacket*)pData)->ReadInt64();
         if (nWinner == 0) {
-            Unk_RewardOtherDialog* pDlg = FUN_140e01890(0x4e4c);
+            Unk_RewardOtherDialog* pDlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
             if (pDlg != 0)
                 pDlg->FUN_1419f6a70(4, GetStringCommon(0x3fc), 4000);
         }
         else if (nWinner == reinterpret_cast<Unk_PgtGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccbd0()) {
-            Unk_RewardOtherDialog* pDlg = FUN_140e01890(0x4e4c);
+            Unk_RewardOtherDialog* pDlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
             if (pDlg != 0) {
                 pDlg->FUN_1419f6a70(2, GetStringCommon(0x3fd), 4000);
                 FUN_141276180(s_strWinGame, "");
@@ -271,7 +270,7 @@ void UIPvPGuildTeamDialog::vfunc_79(void* pData)
             }
         }
         else {
-            Unk_RewardOtherDialog* pDlg = FUN_140e01890(0x4e4c);
+            Unk_RewardOtherDialog* pDlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
             if (pDlg != 0) {
                 pDlg->FUN_1419f6a70(0, GetStringCommon(0x3fe), 4000);
                 FUN_141276180(s_strSemiLose, "");
@@ -337,7 +336,7 @@ void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
         __int64 nMyCharId = 0;
         efd::SmartPointer<MyPC> spPC = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (spPC.data() != 0)
-            nMyCharId = FUN_141656a80(spPC.operator->());
+            nMyCharId = ((class PCBase*)(class PCBase*)(spPC.operator->()))->FUN_141656a80();
         bool bPlaying = false;
         for (size_t i = 0; i < info.m_characters.size(); i++) {
             if (info.m_characters[i] != 0 && info.m_characters[i] == nMyCharId)
@@ -404,7 +403,7 @@ void UIPvPGuildTeamDialog::FUN_14133b0f0(__int64 nGuildId, const CStringW& strMa
     if (m_info.m_nGuildIdA != nGuildId && m_info.m_nGuildIdB != nGuildId)
         return;
     CStringW strUrl;
-    strUrl = FUN_14016a730(FUN_141029590(nGuildId, FUN_14016a600(strMark, 0), "", FUN_1401d31f0()->m_strMarkServer), 0);
+    strUrl = FUN_14016a730(FUN_141029590(nGuildId, FUN_14016a600(strMark, 0), "", ((struct Unk_PgtConfig*)FUN_1401d31f0())->m_strMarkServer), 0);
     if (FUN_14133b8c0(nGuildId))
         m_spComponent->Invoke("setLeftGuildMark", strUrl);
     else
@@ -501,7 +500,7 @@ MS2_REPLACE_METHOD(0x14133B900, UIPvPGuildTeamDialog, FUN_14133b900, 423, 0xE91E
 // @0x14133bab0
 void UIPvPGuildTeamDialog::FUN_14133bab0(MS2Ptr<ASUIComponent> spSlot, PCBase* pPC, bool bPlaying)
 {
-    m_slots[FUN_141656a80(pPC)] = spSlot;
+    m_slots[((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80()] = spSlot;
     const CStringW& strName = pPC->vfunc_77();
     int nLevel = FUN_141654730(pPC);
     __int64 nHp = pPC->FUN_141670a00(4);
@@ -561,7 +560,7 @@ void UIPvPGuildTeamDialog::FUN_14133bf60(PCBase* pTarget)
         MS2Ptr<Unk_140acd6e0> spButton = it->second->FUN_140acce30<Unk_140acd6e0>("m_observeButton");
         if (spButton == 0)
             continue;
-        if (pTarget != 0 && it->first == FUN_141656a80(pTarget))
+        if (pTarget != 0 && it->first == ((class PCBase*)(class PCBase*)(pTarget))->FUN_141656a80())
             spButton->FUN_1422ce090(1);
         else
             spButton->FUN_1422ce090(0);

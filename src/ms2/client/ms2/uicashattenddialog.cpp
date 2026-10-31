@@ -146,7 +146,7 @@ class Unk_140933220 { public:
     void FUN_140da5430(int,Delegate<void(GameEventVariable*)>);
     void FUN_140da5490(int,Delegate<void(GameEventVariable*)>);
 };
-Unk_140933220* FUN_140933220();
+class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 class Unk_CadReader { public:
     virtual ~Unk_CadReader();
     virtual unsigned char vfunc_1();
@@ -224,11 +224,7 @@ CStringW FUN_14083bdc0(const CMsTime& t,bool b,CStringW strSep,CStringW strSep2)
 void FUN_140cfee80(const Scaleform::GFx::Value&,CString,CStringW);
 void FUN_140cff840(const Scaleform::GFx::Value&,CString,int);
 void FUN_140d01780(const Scaleform::GFx::Value&,bool);
-void FUN_1422c6640(ASDisplayObjectContainer*,bool);
-void FUN_1422deb40(ASDisplayObjectContainer*,bool);
-int FUN_1409c17e0(const Scaleform::GFx::Value& v);
 int FUN_14053feb0(int);
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);
 template<class T> MS2Ptr<T> Unk_ASCreate(int nMovieId,const Scaleform::GFx::Value& v);
 // The slot and movie clip creators are earlier COMDATs (0x140bb4a60, 0x1409b40c0).
 template<> MS2Ptr<ASItemSlot> Unk_ASCreate<ASItemSlot>(int,const Scaleform::GFx::Value&);
@@ -289,7 +285,7 @@ UICashAttendGifList::UICashAttendGifList(UICashAttendDialog* pDialog,MS2Ptr<Unk_
     std::vector<MS2Ptr<Unk_CadCheck> >::const_iterator itEnd=vChecks.end();
     for(std::vector<MS2Ptr<Unk_CadCheck> >::const_iterator it=vChecks.begin();it!=itEnd;++it) {
         MS2Ptr<Unk_CadCheck> spCheck=*it;
-        FUN_1422deb40(spCheck.operator->(),false);
+        ((class ASInteractiveObject*)(class ASDisplayObjectContainer*)(spCheck.operator->()))->FUN_1422deb40(false);
     }
     m_disabled->vfunc_4(false);
     FUN_140d01780((*m_disabled).FUN_1422bb890(),true);
@@ -300,13 +296,13 @@ void UICashAttendGifList::FUN_140bc2620(const Scaleform::GFx::FunctionHandler::P
 {
     MS2Ptr<GameEventCashAttendCli> spEvent=m_pDialog->GetSelected();
     if(spEvent==NULL) return;
-    unsigned nDay=FUN_1409c17e0(params.pArgs[0]);
+    unsigned nDay=((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(params.pArgs[0]))->GetUInt();
     m_bg1->vfunc_4(nDay%2==0);
     m_bg2->vfunc_4(nDay%2==1);
     MS2Ptr<Unk_CadDay> spDay=spEvent->FUN_140ce3fc0(nDay);
     if(spDay==NULL) { FUN_140bc2b10(); return; }
     bool bPassed=nDay<spEvent->FUN_140ce3e90();
-    FUN_1422c6640(m_clip.operator->(),true);
+    ((class ASDisplayObjectContainer*)(class ASDisplayObjectContainer*)(m_clip.operator->()))->FUN_1422c6640(true);
     m_disabled->vfunc_4(bPassed);
     FUN_140cfee80((*m_clip).FUN_1422bb890(),"m_title",FUN_140938ae0(L"s_cashAttend_day_index",nDay+1));
     for(unsigned i=0;i<5;i++) {
@@ -341,15 +337,15 @@ UICashAttendDialog::UICashAttendDialog() : m_eventId(0)
     FUN_141924170(1);
     m_80=0;
     FUN_140bccd50()->FUN_140da5180(0xa4,Delegate<void(CInPacket&)>(this,&UICashAttendDialog::FUN_140bc5170));
-    FUN_140933220()->FUN_140da5430(0x69,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc43d0));
-    FUN_140933220()->FUN_140da5430(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
+    ((class Unk_140933220*)FUN_140933220())->FUN_140da5430(0x69,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc43d0));
+    ((class Unk_140933220*)FUN_140933220())->FUN_140da5430(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
 }
 // @0x140bc2f90
 UICashAttendDialog::~UICashAttendDialog()
 {
     FUN_140bccd50()->FUN_140da51e0(0xa4,Delegate<void(CInPacket&)>(this,&UICashAttendDialog::FUN_140bc5170));
-    FUN_140933220()->FUN_140da5490(0x69,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc43d0));
-    FUN_140933220()->FUN_140da5490(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
+    ((class Unk_140933220*)FUN_140933220())->FUN_140da5490(0x69,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc43d0));
+    ((class Unk_140933220*)FUN_140933220())->FUN_140da5490(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
 }
 // @0x140bc3250
 CString UICashAttendDialog::GetTypeName() { return "CashAttendGiftDialog"; }
@@ -715,7 +711,7 @@ template<class T> MS2Ptr<T> Unk_CadNode::FUN_140bc74a0(const Scaleform::GFx::Val
 // @0x140bc7a40 (item slots; 0x140bc7c10 movie clips)
 template<class T> bool FUN_140bc7a40(const Scaleform::GFx::Value& root,CString strName,unsigned nCount,std::vector<MS2Ptr<T> >& out,unsigned nStart)
 {
-    if(!FUN_1409b4d40(root))
+    if(!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return false;
     out.clear();
     out.reserve(nCount);

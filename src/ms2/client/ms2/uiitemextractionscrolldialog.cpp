@@ -27,6 +27,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
@@ -37,12 +38,7 @@ class ASDialog : public ASDisplayObject
 };
 
 // The game context (FUN_1403ed2d0): its FUN_141bd0cc0 returns the local player.
-class Unk_ExGameCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_ExGameCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 // The inventory's bag of items by uid.
 extern Unk_Inventory DAT_143ab2a90;
@@ -59,7 +55,7 @@ public:
     int m_nScrollId;                                    // +0x20
 };
 class Unk_ExtractionTable { public: MS2Ptr<Unk_ExtractionRow> FUN_140597580(int nItemId); };
-Unk_ExtractionTable* FUN_14052d1f0();
+void* FUN_14052d1f0();   // C3: was FUN_14052d1f0
 
 // The item data proxy has more slots than the shared header lists; slot 8 reads the item from a packet.
 class Unk_ExProxyData : public Unk_UserProxyItemData
@@ -82,12 +78,15 @@ UIInventoryDialog* FUN_1405344f0(int nUiId);
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
-void FUN_1422cc9e0(DragSlotBag* pBag);
 UIItemExtractionScrollDialog::SlotBag* FUN_140e4b840(NotifyContext::BindData* p);
 
 UIItemExtractionScrollDialog* FUN_140d27300(int nUiId);     // the open dialog with this UI id
 void* FUN_140a50b50(DragSlot* pSlot);                       // the item slot behind a drag source
-__int64 FUN_141405a10(void* pItemSlot);                     // its item uid
+class InvenSlot   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 GetItemUid();
+};
 int FUN_14053feb0(int nItemId);                             // the rarity of an item id
 void FUN_140710590(COutPacket&);                            // send
 CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
@@ -139,7 +138,7 @@ int UIItemExtractionScrollDialog::Slot::vfunc_18(void* p)
     {
         UIItemExtractionScrollDialog* pDlg = FUN_140d27300(0x4f49);
         if (pDlg != 0)
-            pDlg->FUN_140e4a920(FUN_141405a10(pItemSlot));
+            pDlg->FUN_140e4a920(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
     }
     return static_cast<DragSlot*>(p)->vfunc_10();
 }
@@ -192,7 +191,7 @@ void FUN_140e49c50(const CString& strName)
     UIItemExtractionScrollDialog::SlotBag* pBag = FUN_140e4b840(FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         FUN_1422c8f70(strName);
     }
 }
@@ -348,7 +347,7 @@ void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
         FUN_1412751f0(GetStringCommonByKey(L"s_itemextraction_cannot"), 1, 1);
         return;
     }
-    MS2Ptr<Unk_ExtractionRow> spRow = FUN_14052d1f0()->FUN_140597580(spItem->FUN_1405276c0());
+    MS2Ptr<Unk_ExtractionRow> spRow = ((class Unk_ExtractionTable*)FUN_14052d1f0())->FUN_140597580(spItem->FUN_1405276c0());
     if (spRow == 0)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_itemextraction_cannot"), 1, 1);
@@ -416,7 +415,7 @@ void UIItemExtractionScrollDialog::OnOk()
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nTargetUid);
     if (spItem == 0)
         return;
-    MS2Ptr<Unk_ExtractionRow> spRow = FUN_14052d1f0()->FUN_140597580(spItem->FUN_1405276c0());
+    MS2Ptr<Unk_ExtractionRow> spRow = ((class Unk_ExtractionTable*)FUN_14052d1f0())->FUN_140597580(spItem->FUN_1405276c0());
     if (spRow == 0)
         return;
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(

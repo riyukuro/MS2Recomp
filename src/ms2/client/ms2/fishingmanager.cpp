@@ -1219,15 +1219,13 @@ int CFishingManager::FUN_140cdc380(unsigned nFishId)
 }
 
 // @0x140cdc520
-// MS2-FUNCTIONAL: the exe adds Point3(0,0,10) straight to vfunc_18's efd::Point3 result; MyPC::vfunc_18 (shared pcbase.h) returns NiPoint3
 int CFishingManager::FUN_140cdc520()
 {
     Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     Unk_PCBaseRayHit kHit;
-    NiPoint3 kPos = pPC->vfunc_18();
-    efd::Point3 kFrom = efd::Point3(kPos.x, kPos.y, kPos.z) + efd::Point3(0.0f, 0.0f, 10.0f);
+    efd::Point3 kFrom = static_cast<const efd::Point3&>(pPC->vfunc_18()) + efd::Point3(0.0f, 0.0f, 10.0f);
     efd::Point3 kTo = DAT_143b01a60;
     if (((class Unk_FmPhysX*)FUN_1409f7ca0())->FUN_14168a310(kFrom, kTo, &kHit, 0.0f, 0, 0) && kHit.m_hitEntity)
     {

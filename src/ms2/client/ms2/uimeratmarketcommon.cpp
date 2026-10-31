@@ -986,7 +986,7 @@ struct Unk_McTimeKey
     void FUN_1409aff60();
     __int64 a;
     int b;
-    __int64 c;
+    void* c;                                                // a pointer-size id (a pointer member keeps /GS off, as in the exe)
     __int64 d;
 };
 extern __int64 DAT_143ab2820;
@@ -994,8 +994,6 @@ extern int DAT_143ab2830;
 extern __int64 DAT_143ab2838;
 extern int DAT_143ab2834;
 PaybackManagerClient* FUN_1409c1740();
-void FUN_1409ab940(ASMeratMarketBuyBillData* pBill, __int64 n);
-void FUN_1409b03d0(ASMeratMarketBuyBillData* pBill, __int64 n);
 bool FUN_140ebc630(MS2Ptr<CMeratMarketProduct> spProduct, int nPayType);
 void FUN_140ec07b0(ASArray* pArr, const CStringW& strLabel, int nSort, bool bUgc);
 void FUN_140ec0990(ASArray* pArr, int nTab);
@@ -1149,20 +1147,20 @@ void FUN_140ec0b50(MS2Ptr<CMeratMarketProduct> spProduct)
 }
 
 // Open the bill dialog for a single product after the checks.
-// MS2-FUNCTIONAL: not byte-matched (unrecovered callee signatures, temporaries)
 // @0x140ec0c70
-void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<TMeratMarketBillDataParam> spParam, __int64 n4, __int64 n5, int nPayType)
+void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<TMeratMarketBillDataParam> spParam, Scaleform::GFx::Value& vRow, __int64 nSeller, int nPayType)
 {
     if (spProduct == 0)
         return;
     if (spProduct->IsUgc())
     {
-        if (spProduct->m_ugc.m_n28 == 4)
+        int nState = spProduct->m_ugc.m_n28;
+        if (nState == 4)
         {
             FUN_140d73bc0(0xa15, 0, 0, CStringW(L""));
             return;
         }
-        if (spProduct->m_ugc.m_n28 == 3)
+        else if (nState == 3)
         {
             FUN_140d73bc0(0xa0e, 0, 0, CStringW(L""));
             return;
@@ -1171,7 +1169,7 @@ void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProdu
         key.FUN_1409aff60();
         key.a = DAT_143ab2820;
         key.b = DAT_143ab2830;
-        key.c = DAT_143ab2838;
+        key.c = (void*)DAT_143ab2838;
         key.d = DAT_143ab2834;
         if (((class CUgcMarketProduct*)(class CUgcMarketProduct*)(&spProduct->m_ugc))->FUN_140896230(*(class Unk_CommonOwner*)(&key)))
         {
@@ -1181,10 +1179,14 @@ void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProdu
     }
     else
     {
-        if (spProduct->HasLimit() != 0 && spProduct->m_premium.IsSoldOut())
+        if (spProduct->HasLimit() != 0)
         {
-            FUN_141275260(0xa17, 1, 1);
-            return;
+            bool bSoldOut = spProduct->m_premium.IsSoldOut();
+            if (bSoldOut)
+            {
+                FUN_141275260(0xa17, 1, 1);
+                return;
+            }
         }
     }
     if (!((CMeratMarketMan*)((class Unk_McMarket*)FUN_140939a00()))->FUN_140d5b1f0(spProduct, true))
@@ -1199,18 +1201,18 @@ void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProdu
     if (spParam == 0)
         return;
     int nCur = FUN_14069c3e0(nPayType);
-    int bUgc = spProduct->IsUgc();
+    bool bUgc = spProduct->IsUgc() ? true : false;
     ATL::CAtlArray<MS2Ptr<ASBillData> >& arrBills = spParam->m_bills;
     {
         MS2Ptr<ASMeratMarketBuyBillData> spBill = new ASMeratMarketBuyBillData();
-        FUN_1409ab940(spBill.get(), n4);
-        FUN_1409b03d0(spBill.get(), n5);
+        spBill->FUN_1409ab940(vRow);
+        spBill->FUN_1409b03d0(nSeller);
         spBill.get()->FUN_1409ac360(spProduct, 0, nCur);
         MS2Ptr<ASBillData> spRow(spBill);
         arrBills.Add(spRow);
         spParam->FUN_140eab940(spBill->FUN_140eacf60());
     }
-    spParam->SetGift(bUgc != 0);
+    spParam->SetGift(bUgc);
     MS2Ptr<TMarketBillDataParam> spShow(spParam);
     ((UIMarketBillDialog*)pDialog)->FUN_140ea7770(spShow);
     ((Unk_McUi*)reinterpret_cast<Unk_McUi*>(TSingleton<CUIService>::GetInstance()))->FUN_141adc530(0x4f17);

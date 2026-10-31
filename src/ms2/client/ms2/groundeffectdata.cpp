@@ -82,7 +82,6 @@ public:
 void* FUN_1408b6b20(Unk_ModelKeyCopy* pDst, const Unk_ModelKey* pSrc);
 void* FUN_141b6ef70(void* pKey);
 extern char DAT_143afa4d8;                      // shadow-node table
-void* FUN_1403ed280();                          // effect manager
 class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
@@ -299,7 +298,7 @@ void CGroundEffectDataManager::PlayEffects(GameObject* pObject, CString strActio
         for (unsigned int i = 0; i < files.GetCount(); i++)
         {
             query.m_strName = files[i];
-            ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a4a00(*(class Unk_EffectTarget*)(&query));
+            ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(class Unk_EffectTarget*)(&query));
         }
     }
 }

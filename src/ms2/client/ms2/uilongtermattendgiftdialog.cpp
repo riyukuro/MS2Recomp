@@ -111,7 +111,7 @@ class Unk_LtaEventMgr {
 public:
     MS2Ptr<Unk_LtaEvent> FUN_14047ce70();
 };
-Unk_LtaEventMgr* FUN_1401c0d90();
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 class Unk_LtaItem : public CPtred { public: CString FUN_14053fdd0(); };
 MS2Ptr<Unk_LtaItem> FUN_14053f870(int);
@@ -207,7 +207,7 @@ public:
     virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44();
     virtual void vfunc_45();
 };
-Unk_LtaWallet* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 
 class Unk_LtaPlayer { public: bool FUN_141bcb0a0(); };
 class Unk_LtaPlayerMgr : public WorldService { };
@@ -236,7 +236,6 @@ bool FUN_140184310(const CString&, const char*);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* sz);
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
-void FUN_14052b420(CItem* pItem, int n);               // CItem member (not yet in citem.h)
 
 // @0x140c6db60 (inline COMDAT)
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, CStringW a2, int a3, Scaleform::GFx::Value a4)
@@ -357,7 +356,7 @@ void UILongTermAttendGiftDialog::vfunc_45(Scaleform::GFx::Value* result, const C
                 return;
             if (!item->FUN_14052b130(id, rank, 0))
                 return;
-            FUN_14052b420(item.operator->(), 0);
+            ((class CItem*)(class CItem*)(item.operator->()))->FUN_14052b420(0);
             ASTooltip tooltip(owner, 0x20, 2);
             if (tooltip.FUN_1409e0d40(item))
                 *result = tooltip.FUN_1422bb870();
@@ -448,7 +447,7 @@ void UILongTermAttendGiftDialog::FUN_140c6bac0(int nType, CInPacket&)
 bool UILongTermAttendGiftDialog::SendEventRewardMode26(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0) {
-        Unk_LtaWallet* wallet = FUN_140d86260();
+        Unk_LtaWallet* wallet = ((class Unk_LtaWallet*)FUN_140d86260());
         if (wallet->vfunc_40(m_178->m_meratCost)) {
             COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
             packet.Encode1(0x1a);
@@ -470,7 +469,7 @@ bool UILongTermAttendGiftDialog::FUN_140c6bd40(int nResult, const CMsgBoxData&)
             FUN_140d73cd0();
             return true;
         }
-        FUN_140d86260()->vfunc_45();
+        ((class Unk_LtaWallet*)FUN_140d86260())->vfunc_45();
         return true;
     }
     return true;
@@ -567,7 +566,7 @@ void UILongTermAttendGiftDialog::FUN_140c6c920()
 // @0x140c6cbf0
 bool UILongTermAttendGiftDialog::FUN_140c6cbf0()
 {
-    m_178 = FUN_1401c0d90()->FUN_14047ce70();
+    m_178 = ((class Unk_LtaEventMgr*)FUN_1401c0d90())->FUN_14047ce70();
     return m_178.get() != 0;
 }
 

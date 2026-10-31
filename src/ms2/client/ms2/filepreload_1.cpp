@@ -558,7 +558,11 @@ class EffectDataManager   // C3: member view for the former free stand-ins
 public:
     void LoadEffectFiles();
 };
-void* FUN_140281980(); void FUN_140556f50(void*);// @0x141210e10
+void* FUN_140281980();class CItemDataTable   // C3: member view for the former free stand-ins
+{
+public:
+    void LoadAllItemData();
+};
 void CFilePreload::FUN_141210e10(bool notify) {
     CStopWatch watch("PreloadDataStep1");
     if(stopped==0) FUN_14051f2b0();
@@ -702,7 +706,7 @@ UINT CFilePreload::FUN_141211b80(void* context) {
         if(self->stopped==0) ((class EffectDataManager*)(class Unk_PreloadServiceD*)(((class Unk_PreloadServiceD*)TSingleton<EffectDataManager>::GetInstance())))->LoadEffectFiles();
         if(self->stopped==0) {
             self->FUN_141210e10(false);
-            FUN_140556f50(FUN_140281980());
+            ((class CItemDataTable*)(void*)(FUN_140281980()))->LoadAllItemData();
             if(self->stopped==0) ((class CQuestNavigationMap*)(class Unk_PreloadServiceB*)(((class Unk_PreloadServiceB*)FUN_140c9b8e0())))->FUN_140c909a0();
             self->FUN_141210f00(false);
         }

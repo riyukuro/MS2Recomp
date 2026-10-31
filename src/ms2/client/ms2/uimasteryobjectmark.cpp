@@ -32,11 +32,13 @@ public:
 };
 CFunctionCubeService* FUN_1409670b0();
 class Unk_CameraHousing;
-Unk_CameraHousing* FUN_1409670e0();
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoHouseSvc* GetInstance();
+};
 unsigned char FUN_1410c35c0(void* pHousing);                    // the camera housing mode is active
-CMasteryTable* FUN_1409670c0();
-__int64 FUN_141656ad0(PCBase* pActor);                          // the actor's account id
-unsigned FUN_141662750(PCBase* pActor, int nType);              // the actor's mastery exp of a type
+class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
 class Unk_McPc : public PC
 {
 };
@@ -47,8 +49,12 @@ public:
 };
 class Unk_QgCamera { public: bool FUN_140af0700(const Vector3& ptWorld, Vector3& rptScreen); };
 class Unk_QgUIScale;
-Unk_QgUIScale* FUN_14025e7a0();
-float FUN_1422afec0(Unk_QgUIScale* pScale, int nMovie);
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1422afec0(int);
+};
 int FUN_141277f40();
 float FUN_1412762d0(const Vector3& pt);                 // the screen y offset of a world point
 int FUN_1408a1360(Vector3 a, Vector3 b);        // the two points are on the same side
@@ -69,8 +75,7 @@ struct Unk_AuConfig
     Unk_AuCfgValue m_df88;
     Unk_AuCfgValue m_dfe0;              // +0xdfe0 the distance the tooltip shows within
 };
-Unk_AuConfig* FUN_1401d3200();
-bool FUN_1409b0390(Scaleform::GFx::Value* pValue);              // the value is undefined
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 CStringW GetStringCommonByKey(const CStringW& str);                    // the localized text of a string key
 CStringTable* GetStringTable();                                  // the string table
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
@@ -131,7 +136,7 @@ void UIMasteryObjectMark::FUN_140e59bb0(CInteractObject* pObject)
     {
         Vector3 pt = pObject->GetPos();
         Scaleform::GFx::Value v = m_30->FUN_140e5bfe0("create", pObject->GetName(), pt.x, pt.y);
-        if (!FUN_1409b0390(&v))
+        if (!((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined())
         {
             ASGameEntity* pEntity = new ASGameEntity(v, m_28);
             if (pEntity)
@@ -157,7 +162,7 @@ void UIMasteryObjectMark::FUN_140e59ea0(CFunctionCubeObject* pCube)
     {
         Vector3 pt = pCube->FUN_141226d00();
         Scaleform::GFx::Value v = m_30->FUN_140e5bfe0("create", pCube->FUN_141226bd0(), pt.x, pt.y);
-        if (!FUN_1409b0390(&v))
+        if (!((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined())
         {
             ASGameEntity* pEntity = new ASGameEntity(v, m_28);
             if (pEntity)
@@ -274,12 +279,12 @@ void UIMasteryObjectMark::FUN_140e5a600()
             }
             else
             {
-                ptScreen.FUN_140ad0c10(FUN_1422afec0(FUN_14025e7a0(), m_28));
+                ptScreen.FUN_140ad0c10(((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
                 ptScreen.y += FUN_1412762d0(pGather->GetPos());
-                ptScreen.x += FUN_1401d3200()->m_ddd0.FUN_140298f40();
-                ptScreen.y += FUN_1401d3200()->m_de28.FUN_140298f40();
+                ptScreen.x += ((struct Unk_AuConfig*)FUN_1401d3200())->m_ddd0.FUN_140298f40();
+                ptScreen.y += ((struct Unk_AuConfig*)FUN_1401d3200())->m_de28.FUN_140298f40();
                 spContext->m_spEntity->FUN_140e5bf20("setPosition", ptScreen.x, ptScreen.y);
-                int nShow = (fDist < FUN_1401d3200()->m_dfe0.FUN_140298f40() && pGather->FUN_141402b40() != 0) ? 1 : 0;
+                int nShow = (fDist < ((struct Unk_AuConfig*)FUN_1401d3200())->m_dfe0.FUN_140298f40() && pGather->FUN_141402b40() != 0) ? 1 : 0;
                 if (FUN_1408a1360(reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18(), pGather->GetPos()) == 0)
                     nShow = 0;
                 if (spContext->m_nShown != nShow)
@@ -307,7 +312,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
     PCBase* pPC = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pPC)
         return;
-    if (FUN_1410c35c0(FUN_1409670e0()) != 0)
+    if (FUN_1410c35c0(((class Unk_CameraHousing*)Unk_AkoHouseSvc::GetInstance())) != 0)
         return;
     POSITION pos = m_cubes.GetStartPosition();
     while (pos)
@@ -327,7 +332,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
         int nOwnerOk = 1;
         if (static_cast<CHomemadeCubeObject*>(spCube.operator->())->FUN_140e5cc00() == 1)
         {
-            if (static_cast<CHomemadeCubeObject*>(spCube.operator->())->FUN_140e5cbf0() != FUN_141656ad0(pPC))
+            if (static_cast<CHomemadeCubeObject*>(spCube.operator->())->FUN_140e5cbf0() != ((class PC*)(class PCBase*)(pPC))->FUN_141656ad0())
                 nOwnerOk = 0;
         }
         MS2Ptr<CHomemadeCubeObject> spHome(dynamic_cast<CHomemadeCubeObject*>(spCube.get()));
@@ -348,12 +353,12 @@ void UIMasteryObjectMark::FUN_140e5ac30()
             }
             else
             {
-                ptScreen.FUN_140ad0c10(FUN_1422afec0(FUN_14025e7a0(), m_28));
+                ptScreen.FUN_140ad0c10(((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
                 ptScreen.y += FUN_1412762d0(spHome->FUN_141226d00());
-                ptScreen.x += FUN_1401d3200()->m_de80.FUN_140298f40();
-                ptScreen.y += FUN_1401d3200()->m_ded8.FUN_140298f40();
+                ptScreen.x += ((struct Unk_AuConfig*)FUN_1401d3200())->m_de80.FUN_140298f40();
+                ptScreen.y += ((struct Unk_AuConfig*)FUN_1401d3200())->m_ded8.FUN_140298f40();
                 spContext->m_spEntity->FUN_140e5bf20("setPosition", ptScreen.x, ptScreen.y);
-                int nShow = (fDist < FUN_1401d3200()->m_dfe0.FUN_140298f40() && spHome->FUN_141229080() != 0) ? 1 : 0;
+                int nShow = (fDist < ((struct Unk_AuConfig*)FUN_1401d3200())->m_dfe0.FUN_140298f40() && spHome->FUN_141229080() != 0) ? 1 : 0;
                 if (FUN_1408a1360(reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18(), spHome->FUN_141226d00()) == 0)
                     nShow = 0;
                 if (spContext->m_nShown != nShow)
@@ -414,7 +419,7 @@ int UIMasteryObjectMark::FUN_140e5b620(CFunctionCubeObject* pCube, EntityContext
 // @0x140e5b720
 unsigned UIMasteryObjectMark::FUN_140e5b720(int nReceipeId, EntityContext* pContext)
 {
-    MS2Ptr<CMasteryReceipe> spReceipe = FUN_1409670c0()->Find(nReceipeId);
+    MS2Ptr<CMasteryReceipe> spReceipe = ((class CMasteryTable*)FUN_1409670c0())->Find(nReceipeId);
     if (spReceipe.IsNull())
         return 0;
     CStringW strType;
@@ -423,7 +428,7 @@ unsigned UIMasteryObjectMark::FUN_140e5b720(int nReceipeId, EntityContext* pCont
     int nEnabled = 1;
     if (CMasteryManager::GetInstance()->FUN_140b6d470(nReceipeId) == 0)
     {
-        int nLimit = FUN_1409670c0()->LimitState(nReceipeId);
+        int nLimit = ((class CMasteryTable*)FUN_1409670c0())->LimitState(nReceipeId);
         switch (nLimit)
         {
         case 0:
@@ -457,9 +462,9 @@ unsigned UIMasteryObjectMark::FUN_140e5b720(int nReceipeId, EntityContext* pCont
         PCBase* pPC = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPC)
         {
-            int nLevel = FUN_141662750(pPC, spReceipe->m_nType);
-            int nFactor = FUN_1409670c0()->Factor(nReceipeId, nLevel);
-            strStatus = FUN_1409670c0()->DifferentialName(nReceipeId, FUN_141662750(pPC, spReceipe->m_nType));
+            int nLevel = ((class PC*)(class PCBase*)(pPC))->FUN_141662750(spReceipe->m_nType);
+            int nFactor = ((class CMasteryTable*)FUN_1409670c0())->Factor(nReceipeId, nLevel);
+            strStatus = ((class CMasteryTable*)FUN_1409670c0())->DifferentialName(nReceipeId, ((class PC*)(class PCBase*)(pPC))->FUN_141662750(spReceipe->m_nType));
             if (nFactor == 0)
                 strStatus = "disable";
             nEnabled = (nFactor != 0 && nLimit != 3) ? 1 : 0;

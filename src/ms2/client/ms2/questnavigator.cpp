@@ -59,14 +59,18 @@ CFeatureManager* FUN_140166410();
 NotifySystem* FUN_140939a10();
 
 UIQuestEventDispatcher* FUN_140bfc4b0();
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
     class NiNode* FUN_1411a6b10();
 };
 void* FUN_1408e57f0();
-int FUN_1422b9e00(void* p);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSubSceneId();
+};
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_14062b4f0(CStringW strKey, const int& n);              // localized text with one number
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
@@ -89,7 +93,7 @@ extern const NiRTTI DAT_143afa4d8;                                  // NiNode::m
 // the loaded effect model (a smart pointer, dtor 0x1405a85c0) and the model loader
 struct Unk_QnModelRef { void* m_p; ~Unk_QnModelRef(); };
 class Unk_QnModelLoader { public: Unk_QnModelRef FUN_141551ea0(CString strPath, int a, int b, int c, int d); };
-Unk_QnModelLoader* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 NiObject* FUN_1409849b0(const Unk_QnModelRef& ref);
 
 // riding data (rows of the ride table)
@@ -264,7 +268,7 @@ void CQuestNavigator::OnCreateMyPC(NotifyObject* pNotify)
     m_18.Clear();
     m_18.m_18 = 0;
     int nQuestId = reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_30;
-    Unk_PayloadPtr<CQuest> spQuest = static_cast<CQuestManagerCommon&>(*FUN_140764020()).vfunc_o10_3(nQuestId);
+    Unk_PayloadPtr<CQuest> spQuest = static_cast<CQuestManagerCommon&>(*((class CQuestManager*)FUN_140764020())).vfunc_o10_3(nQuestId);
     if (spQuest.get() != 0 ? true : false)
     {
         if (spQuest->GetTrackingState() != 0)
@@ -281,7 +285,7 @@ void CQuestNavigator::OnCompleteMyPC(NotifyObject* pNotify)
     if (m_10 == 0)
     {
         CString strPath("./Data/Resource/Model/Effect/ETC/Eff_Quest_Navigation.nif");
-        m_10 = (NiNode*)NiObject::DynamicCast(&DAT_143afa4d8, (class NiObject const*)(FUN_1409849b0(FUN_140a0afd0()->FUN_141551ea0(strPath, 0, 5, 0, 0))));
+        m_10 = (NiNode*)NiObject::DynamicCast(&DAT_143afa4d8, (class NiObject const*)(FUN_1409849b0(((class Unk_QnModelLoader*)FUN_140a0afd0())->FUN_141551ea0(strPath, 0, 5, 0, 0))));
         if ((NiNode*)m_10 != 0)
         {
             NiNode* pScene = ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->FUN_1411a6b10();
@@ -352,7 +356,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
         if (WorldService::GetInstance()->FUN_141bd49d0(spContext->m_20, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
         {
             fBest = fDist;
-            if (static_cast<CQuestManagerCommon&>(*FUN_140764020()).FUN_1407456d0(pResult->m_18) != 0)
+            if (static_cast<CQuestManagerCommon&>(*((class CQuestManager*)FUN_140764020())).FUN_1407456d0(pResult->m_18) != 0)
                 pResult->m_1c = 2;
             else
                 pResult->m_1c = 1;
@@ -439,7 +443,7 @@ void CQuestNavigator::FUN_140c9ac80()
     m_70.m_40.clear();
     int nMapId = WorldService::GetInstance()->FUN_141bd3060();
     ATL::CAtlArray<Unk_PayloadPtr<CQuest> > aQuests;
-    FUN_140764020()->FUN_1416cb8b0(aQuests, 1, 0xb, -1);
+    ((class CQuestManager*)FUN_140764020())->FUN_1416cb8b0(aQuests, 1, 0xb, -1);
     for (size_t i = 0; i < aQuests.GetCount(); i++)
     {
         Unk_PayloadPtr<CQuest> spQuest = aQuests[i];
@@ -481,7 +485,7 @@ int CQuestNavigator::HasInteractObject(unsigned nObjectId)
 // @0x140c9af60
 bool CQuestNavigator::FUN_140c9af60()
 {
-    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
+    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
         return false;
     PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)

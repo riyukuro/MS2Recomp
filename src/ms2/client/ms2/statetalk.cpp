@@ -45,8 +45,6 @@
 void FUN_1409989e0(void* pOut, const char* psz);           // 0x1409989e0 efd::utf8string(const char*)
 void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
 void FUN_140ae18f0(void* pStr, const char* psz);           // 0x140ae18f0 efd::utf8string::operator=(const char*)
-bool FUN_14096ad40(const efd::utf8string& str);            // 0x14096ad40 the string is empty
-const char* FUN_1408ac310(const efd::utf8string& str);     // 0x1408ac310 the string's c string
 
 // The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes, as statefall.h's
 // StateFall::m_strAnim proves). The engine header inlines both, so the TU uses this plain-buffer view instead.
@@ -83,7 +81,11 @@ class Unk_CinTalk : public UITalkManager
 public:
     Unk_CinNpc* FUN_141b21350();                           // the talking npc
 };
-Unk_CinTalk* FUN_140967100();
+class Unk_AkoCutscene   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoCutscene* GetInstance();
+};
 
 class Unk_CinNpc : public PCBase
 {
@@ -102,7 +104,7 @@ class Unk_TalkAnimSvc
 public:
     int FUN_140999490(const Unk_TalkModelKey& kKey, const Unk_TalkString& strName);
 };
-Unk_TalkAnimSvc* FUN_1413f9b10();
+void* FUN_1413f9b10();   // C3: was FUN_1413f9b10
 // The owner as vfunc_4 calls it: the key by value and the animation name as the out-of-line string.
 class Unk_TalkActor
 {
@@ -136,7 +138,7 @@ public:
     int FUN_1411a49c0(Unk_TalkEffectReq* pRequest);        // spawn, returns the handle
     void FUN_1411a6060(int nHandle);                       // release
 };
-void* FUN_1401d31f0();                                     // the client configuration object
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // ---- StateTalk ----
 
@@ -156,8 +158,8 @@ StateTalk::~StateTalk()
 void StateTalk::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    Unk_TalkAnimSvc* pAnim = FUN_1413f9b10();
-    Unk_CinNpc* pNpc = FUN_140967100()->FUN_141b21350();
+    Unk_TalkAnimSvc* pAnim = ((class Unk_TalkAnimSvc*)FUN_1413f9b10());
+    Unk_CinNpc* pNpc = ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b21350();
     int bFirst = 0;
     int bSecond = 0;
     bool bTalk = pNpc != 0 && pNpc->FUN_141093270().FUN_140965990()->m_bTalkable != 0;
@@ -197,8 +199,8 @@ void StateTalk::vfunc_4(StateData* pData)
 void StateTalk::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    if (FUN_140967100()->GetTalking() && FUN_1417b8560())
-        FUN_140967100()->SendNpcTalkMode0();
+    if (((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->GetTalking() && FUN_1417b8560())
+        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
     if (m_n44 != 0)
         reinterpret_cast<Unk_TalkEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_n44);
 }
@@ -236,7 +238,7 @@ void StateTalk::vfunc_9(double fTime)
         if (m_n10 == 0x4a)
         {
             Unk_TalkEffectReq kReq;
-            kReq.m_strName = *(const CString*)((const char*)FUN_1401d31f0() + 0x290);
+            kReq.m_strName = *(const CString*)((const char*)((void*)FUN_1401d31f0()) + 0x290);
             kReq.m_nObject = 0;
             reinterpret_cast<NoticeMessage*>(&kReq)->SetActor(m_pOwner->FUN_14123c580());
             m_n44 = reinterpret_cast<Unk_TalkEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
@@ -244,7 +246,7 @@ void StateTalk::vfunc_9(double fTime)
         else if (m_n10 == 0x4b)
         {
             Unk_TalkEffectReq kReq;
-            kReq.m_strName = *(const CString*)((const char*)FUN_1401d31f0() + 0x298);
+            kReq.m_strName = *(const CString*)((const char*)((void*)FUN_1401d31f0()) + 0x298);
             kReq.m_nObject = 0;
             reinterpret_cast<NoticeMessage*>(&kReq)->SetActor(m_pOwner->FUN_14123c580());
             m_n44 = reinterpret_cast<Unk_TalkEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
@@ -256,8 +258,8 @@ void StateTalk::vfunc_9(double fTime)
 // @0x1417fc960
 void StateTalk::vfunc_6()
 {
-    if (FUN_140967100()->GetTalking() && FUN_1417b8560())
-        FUN_140967100()->SendNpcTalkMode0();
+    if (((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->GetTalking() && FUN_1417b8560())
+        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
 }
 
 // @0x1417fc9a0
@@ -320,11 +322,11 @@ StateTalkNpc::~StateTalkNpc()
 void StateTalkNpc::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    if (FUN_140967100()->GetTalking())
+    if (((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->GetTalking())
     {
         m_n10 = 0x48;
         Unk_TalkString strAnim(m_pOwner->vfunc_123(0x2e));
-        if (FUN_14096ad40(*(const efd::utf8string*)strAnim.m_buf) || !m_pOwner->FUN_141679220(FUN_1408ac310(*(const efd::utf8string*)strAnim.m_buf)))
+        if (((efd::utf8string*)&static_cast<class efd::utf8string const&>(*(const efd::utf8string*)strAnim.m_buf))->empty() || !m_pOwner->FUN_141679220(((efd::utf8string*)&static_cast<class efd::utf8string const&>(*(const efd::utf8string*)strAnim.m_buf))->c_str()))
             strAnim = m_pOwner->vfunc_123(0);
         m_pOwner->FUN_14166dd20(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
     }

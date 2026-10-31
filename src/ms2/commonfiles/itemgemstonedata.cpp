@@ -33,13 +33,17 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
-bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& nOut);
-int FUN_1408731a0(Unk_140165cf0* pElem, const char* pszName, unsigned short& nOut);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CStringA& strOut);
-void* FUN_1406aeee0();
-bool FUN_1406af060(void* p);
+class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions   // C3: member view for the former free stand-ins
+{
+public:
+    bool IsDisableValidate();
+};
 extern MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_140719210(long n);                                           // number text
 CString FUN_1401d2b10(const CString& a, const CString& b);               // a + b
@@ -114,19 +118,19 @@ int CItemGemStoneUpgradeTable::Load()
     const int nIngredients = 4;
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0(strKey); pNode != 0; pNode = pNode->FUN_140168650(strKey))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nItemId;
-        FUN_140873220(pNode, strItemId, nItemId);
+        XmlGetAttr((class TiXmlElement*)(pNode), strItemId, nItemId);
         if (nItemId == 0)
             continue;
         DataPtr data(new CItemGemStoneData);
         if (data == 0)
             continue;
-        FUN_1408731a0(pNode, strLevel, data->m_nSlot);
-        FUN_140873220(pNode, strNext, (unsigned&)data->m_nLinked);
+        XmlGetAttr((class TiXmlElement*)(pNode), strLevel, data->m_nSlot);
+        XmlGetAttr((class TiXmlElement*)(pNode), strNext, (unsigned&)data->m_nLinked);
         FUN_140873420(pNode, strIcon, data->m_strName);
-        if (!FUN_1406af060(FUN_1406aeee0()))
+        if (!((class Unk_LaunchOptions*)(void*)(((void*)FUN_1406aeee0())))->IsDisableValidate())
         {
             int nTransfer = 0;
             {
@@ -154,7 +158,7 @@ int CItemGemStoneUpgradeTable::Load()
             unsigned nAmount = 0;
             if (FUN_1408733e0(pNode, strIngredientAttr, strValue) == 0)
             {
-                if (FUN_140873220(pNode, strCountAttr, nAmount) == 0)
+                if (XmlGetAttr((class TiXmlElement*)(pNode), strCountAttr, nAmount) == 0)
                 {
                     int nId = 0;
                     int nTag = 0;

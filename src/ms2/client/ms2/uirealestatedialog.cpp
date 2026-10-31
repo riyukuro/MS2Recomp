@@ -54,7 +54,7 @@ public:
     void* m_00; void* m_08;
 };
 class Unk_TextFilterMgr { public: Unk_TextFilterPtr FUN_140229a50(); };
-Unk_TextFilterMgr* FUN_14025e7d0();
+class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 class Unk_RdPC : public MyPC { public: CStringW FUN_141528330(); int FUN_141527ed0(); };
 class Unk_ReWorld { public: MyPC* FUN_141bd0cc0(); };                // the local player
 
@@ -110,7 +110,7 @@ public:
     Unk_CubeOwners* FUN_1410d3360();                                // the owners of the plots
     CStringW FUN_1410d5d80(int nStringId);
 };
-Unk_HoService* FUN_1401cd040(Unk_EntityAppFramework* framework);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 class Unk_HoServicePtr
 {
 public:
@@ -123,7 +123,7 @@ private:
 };
 
 class Unk_ReTrophy { public: int FUN_1409365a0(int nId); };         // the trophy was earned
-Unk_ReTrophy* FUN_1406c7600();
+class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 class Unk_ReInv { public: int FUN_140a5f180(unsigned nItem, int n); };   // the count of an item
 extern Unk_ReInv DAT_143ab2a90;
 extern __int64 DAT_143ab2898;                                       // the money
@@ -136,7 +136,6 @@ public:
     Scaleform::GFx::Value FUN_141ab5a90(const char* szMethod, int a1);
 };
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);
 void* FUN_1422bb8b0(int nMovieId);                                  // the movie of a UI layer
 class Unk_ReObj : public ASObj { public: void FUN_141ab5b30(const char* szName, int n); };
 
@@ -148,7 +147,6 @@ int FUN_1408a09d0(unsigned* pnItem, __int64* pnPrice, int nMapId, int nGroup);
 int FUN_1408a0b80(unsigned* pnItem, __int64* pnPrice, int nMapId, int nGroup);
 int FUN_1408a0890(int nMapId, int nGroup, int* pnKind);
 Unk_CubeOwnerPtr FUN_1408a0fa0(Unk_CubeOwners& owners, int nMapId, int nBlockId);
-bool FUN_140a467d0(const MS2Ptr<AScript>*);
 __int64 GetServerTime();                                            // the server time
 int FUN_1406516a0();                                                // client language
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
@@ -167,14 +165,13 @@ CStringW FUN_140811740(int nId, const int& nA, const int& nB);
 CStringW FUN_1408116a0(int nId, const int& nA);
 CStringW FUN_140a228f0(int nId, const int& nA, const CStringW& strB);
 CStringW FUN_1412e7c20(int nId, const CStringW& strA, const int& nB);
-int FUN_1418fc760(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, void* a4);
+int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d74640(void* p, int nBit, int nIdA, int nIdB);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int, int, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_14151f200();
 UIMessageBox* FUN_14151f890();
-void FUN_1419f82b0(UIMessageBox* pBox, const CStringW& strText);
 int FUN_140d74e80(const CStringW& str);
 bool FUN_140841300(const CStringW& str, const char* psz);
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
@@ -253,7 +250,7 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 1;
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, 0) != 0)
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, 0) != 0)
         return 1;
     if (_stricmp("OnClose", szMethod) == 0)
     {
@@ -270,7 +267,7 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         {
             FUN_140d73aa0(GetStringCommon(0x7f5), 0, 0, CStringW(L""));
         }
-        else if (nTrophy > 0 && FUN_1406c7600()->FUN_1409365a0(nTrophy) == 0)
+        else if (nTrophy > 0 && ((class Unk_ReTrophy*)FUN_1406c7600())->FUN_1409365a0(nTrophy) == 0)
         {
             MS2Ptr<CAchieveData> spTrophy = GetAchieveData(nTrophy);
             if (spTrophy.get() != 0)
@@ -356,7 +353,7 @@ int UIRealEstateDialog::FUN_141ab3250(const CStringW& strName)
     MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 1;
-    if (Unk_TextFilter* pFilter = FUN_14025e7d0()->FUN_140229a50().FUN_14025cea0())
+    if (Unk_TextFilter* pFilter = ((class Unk_TextFilterMgr*)FUN_14025e7d0())->FUN_140229a50().FUN_14025cea0())
     {
         CStringW strError;
         if (FUN_1402252f0(pFilter, strName, strError) == 0)
@@ -372,7 +369,7 @@ int UIRealEstateDialog::FUN_141ab3250(const CStringW& strName)
                 FUN_141ab3760(static_cast<Unk_RdPC*>(pPC)->FUN_141528330());
             UIMessageBox* pBox = FUN_14151f890();
             if (pBox != 0)
-                FUN_1419f82b0(pBox, strError);
+                ((class UIMessageBox*)(class UIMessageBox*)(pBox))->FUN_1419f82b0(strError);
             return 0;
         }
     }
@@ -384,7 +381,7 @@ void UIRealEstateDialog::vfunc_ugc_7(int bRefresh)
 {
     if (vfunc_55() != 0)
         return;
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC != 0 && pPC->FUN_141527e00() == 0)
@@ -401,7 +398,7 @@ void UIRealEstateDialog::vfunc_ugc_7(int bRefresh)
             {
                 __int64 nTime = 0;
                 int nState = 0;
-                Unk_HoServicePtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+                Unk_HoServicePtr spSvc(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
                 if (spSvc.FUN_140885310() ? true : false)
                 {
                     if (spSvc.FUN_1401cd1a0()->FUN_1410c8470(m_nGroup, m_nMapId, &nState, &nTime) != 0)
@@ -418,7 +415,7 @@ void UIRealEstateDialog::vfunc_ugc_7(int bRefresh)
 // @0x141ab3760
 void UIRealEstateDialog::FUN_141ab3760(CStringW strName)
 {
-    if (FUN_140a467d0(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
     m_30->Invoke("setHomeName", CStringW(strName));
 }
@@ -426,7 +423,7 @@ void UIRealEstateDialog::FUN_141ab3760(CStringW strName)
 // @0x141ab3820
 void UIRealEstateDialog::FUN_141ab3820()
 {
-    if (FUN_140a467d0(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
     MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC != 0 && pPC->FUN_141527e00() == 0)
@@ -491,7 +488,7 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     {
                         if (DAT_143ab2898 < nPrice)
                         {
-                            Unk_HoServicePtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+                            Unk_HoServicePtr spSvc(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
                             FUN_140d73aa0(spSvc.FUN_1401cd1a0()->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
                             return 1;
                         }
@@ -506,7 +503,7 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     }
                     else if (DAT_143ab2a90.FUN_140a5f180(nItem, 0) < nPrice)
                     {
-                        Unk_HoServicePtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+                        Unk_HoServicePtr spSvc(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
                         FUN_140d73aa0(spSvc.FUN_1401cd1a0()->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
                         return 1;
                     }
@@ -548,7 +545,7 @@ void UIRealEstateDialog::FUN_141ab4000(int nGroup, int nMapId)
 // @0x141ab4040
 void UIRealEstateDialog::FUN_141ab4040(const __int64* pnTime)
 {
-    if (FUN_140a467d0(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
     if (*pnTime != 0)
     {
@@ -573,13 +570,13 @@ void UIRealEstateDialog::FUN_141ab42a0()
     MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
-    if (FUN_140a467d0(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
     void* pMovie = FUN_1422bb8b0(m_28);
     if (pMovie == 0)
         return;
     ASObj obj(2);
-    Unk_HoServicePtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+    Unk_HoServicePtr spSvc(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
     CStringW strMapName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_nMapId);
     Unk_UGCGroup group;
     if (FUN_1408a0d30(m_nGroup, group, m_nMapId) == 0)
@@ -758,7 +755,7 @@ void Unk_ReObj::FUN_141ab5b30(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc1af0-0x142cc1b60 .text$yd

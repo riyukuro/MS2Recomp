@@ -132,7 +132,7 @@ class Unk_BSDevSpawnMgr
 public:
     Unk_BSDevMotionLib* FUN_1411bf1b0();
 };
-Unk_BSDevSpawnMgr* FUN_140a50010();
+class Unk_CsoSpawnMgr* FUN_140a50010();   // C3: was FUN_140a50010
 
 // An element of a tile list's data provider, viewed as an object.
 class Unk_BSDevRow : public ASObj
@@ -151,16 +151,20 @@ public:
     void FUN_1419cae20(UIItemEventListener* pListener);
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
-Unk_BSDevItemEvents* FUN_140a6a840();
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 Unk_BSCamera* FUN_140cd47b0(int nId);
 class Unk_BSDevSound;
 Unk_BSDevSound* FUN_1408e57f0();
-void FUN_1422b9fd0(Unk_BSDevSound* p, int nEvent);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1422b9fd0(int);
+};
 
-NotifySystem* FUN_140939a10();
-CInputKeyHandler* FUN_14025e7c0();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 CStringTable* GetStringTable();
-CommonResource* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // Message boxes and strings.
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
@@ -174,7 +178,6 @@ CStringW FUN_141b71910(__int64 n);
 CStringW FUN_141b71990(unsigned n);
 CString FUN_14016a600(const wchar_t* sz, int n);
 CStringW FUN_14016a730(const char* sz, int n);
-int FUN_1409c17e0(const Scaleform::GFx::Value& v);
 void FUN_141275460(int nStringId, int nA, int nB, const fmt::ArgList& args);
 
 // The beauty shop helpers (uibeautyshopstyledialog.cpp and the item row builders).
@@ -252,7 +255,7 @@ CString UIBeautyShopDevDialog::GetTypeName()
 void UIBeautyShopDevDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_BSDevItemEvents*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     FUN_141920770();
     FUN_14191f9d0();
     PC* pPc = reinterpret_cast<Unk_BSDevWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
@@ -263,8 +266,8 @@ void UIBeautyShopDevDialog::vfunc_67()
     m_1a4 = 0;
     m_288 = 0;
     m_298 = 0;
-    FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
+    ((class Unk_BSDevItemEvents*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                       Delegate<void(NotifyObject*)>(this, &UIBeautyShopDevDialog::FUN_1419213f0));
 }
 
@@ -316,8 +319,8 @@ void UIBeautyShopDevDialog::OnLoadComplete()
     m_30->Invoke("initData");
     m_30->FUN_140bbe7c0<ASDropdownMenu>("m_colorIndexMenu", m_2b8);
     FUN_1419200c0(1);
-    FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
+    ((class Unk_BSDevItemEvents*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                     Delegate<void(NotifyObject*)>(this, &UIBeautyShopDevDialog::FUN_1419213f0));
 }
 
@@ -334,12 +337,12 @@ int UIBeautyShopDevDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d840())
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840())
     {
         FUN_14191fae0();
         return 1;
     }
-    else if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, false, 0))
     {
         if (m_30.get())
         {
@@ -540,8 +543,8 @@ int UIBeautyShopDevDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             int nIndex = data.FUN_1422b8a10();
             CString strName = data.FUN_1422b8d30();
             AScript obj(data.FUN_1422b9260(), 2);
-            int nColorSN = FUN_1409c17e0(obj.FUN_1422baa20("colorSN"));
-            int nPaletteId = FUN_1409c17e0(obj.FUN_1422baa20("paletteID"));
+            int nColorSN = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.FUN_1422baa20("colorSN")))->GetUInt();
+            int nPaletteId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.FUN_1422baa20("paletteID")))->GetUInt();
             vfunc_86(nPaletteId, nColorSN);
         }
         FUN_14191fc40(1);
@@ -755,7 +758,7 @@ void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& st
         if (pPc)
         {
             m_2a0.clear();
-            Unk_BSDevMotionLib* pLib = FUN_140a50010()->FUN_1411bf1b0();
+            Unk_BSDevMotionLib* pLib = ((class Unk_BSDevSpawnMgr*)FUN_140a50010())->FUN_1411bf1b0();
             MS2Ptr<Unk_BSDevMotionSet> spSet = pLib->FUN_1411bde10(pPc->vfunc_69());
             if (strSearch.IsEmpty())
             {
@@ -903,7 +906,7 @@ int UIBeautyShopDevDialog::FUN_14191fa30()
     Unk_BSDevField* pField = reinterpret_cast<Unk_BSDevWorld*>(WorldService::GetInstance())->FUN_141bd3620();
     if (pField)
         pField->vfunc_149();
-    FUN_1422b9fd0(FUN_1408e57f0(), 0x620001d);
+    ((class GFxSceneService*)(class Unk_BSDevSound*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001d);
     return 1;
 }
 
@@ -952,7 +955,7 @@ void UIBeautyShopDevDialog::FUN_14191fe00()
         pPc->vfunc_59(0xe, 0, 0, 0);
     pPc->FUN_14166cc40(0x50);
     Unk_EffectTarget target;
-    target.m_strName = FUN_1401d31f0()->m_strCustomizingFinish;
+    target.m_strName = ((class CommonResource*)FUN_1401d31f0())->m_strCustomizingFinish;
     target.m_nKind = 1;
     target.FUN_140a53190(pPc->FUN_14123c580());
     CEffectService::GetInstance()->FUN_1411a4a00(target);

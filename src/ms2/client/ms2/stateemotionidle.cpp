@@ -127,8 +127,12 @@ Unk_FNAnimSvc* FUN_141b6f910();
 const char* FUN_142087e50(const void* pFixed);
 
 // Casts of the actor class ids.
-void* FUN_141468360(PCBase* p);                          // owner as Ridee (class id 0x6200045)
-PCBase* FUN_141706540(void* pRidee);                     // the Ridee's rider
+struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
+class Ridee   // C3: member view for the former free stand-ins
+{
+public:
+    class PCBase* GetRider();
+};
 short FUN_141093510(PCBase* p);                          // CNpc animation key (+0xde8)
 
 // MyPC / PCBase non-virtual helpers (free-function form: `this` is the first argument).
@@ -156,21 +160,21 @@ public:
 };
 int FUN_14152c280(MyPC* p, RideOffAction* pAction);
 egf::Entity* FUN_141659af0(MyPC* p, int n);
-Unk_Skills* FUN_141523bc0(MyPC* p);
 void FUN_141657c80(PCBase* p, bool b);
 
 void* FUN_1401958b0();
 struct Unk_EmoTable { MS2Ptr<Unk_EmoRow> FUN_1407ee1d0(int nEmotion); };   // emotion table view
-unsigned FUN_140869420();
-void* FUN_1403ed2d0();
-PCBase* FUN_141bd1320(void* pMgr, int nNpc);
-Unk_IdleConsts* FUN_1401d3200();
-unsigned FUN_140768010(unsigned nMax, unsigned nMin);
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_WsC_GameObj* FUN_141bd1320(int);
+    static class WorldService* GetInstance();
+};
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+int FUN_140768010(int, int);   // C3: was FUN_140768010
 unsigned FUN_140767ff0();
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
-void FUN_1402c2890(ATL::CAtlArray<CStringA>&);                          // RemoveAll
-void FUN_14122e3e0(ATL::CAtlArray<CStringA>&, const ATL::CAtlArray<CStringA>&);   // Copy
-size_t FUN_1401662c0(ATL::CAtlArray<CStringA>&);                        // GetCount
 CStringA& FUN_140164930(ATL::CAtlArray<CStringA>&, size_t i);           // GetAt
 
 // ---- StateEmotionData ----
@@ -315,7 +319,7 @@ void StateEmotion::vfunc_3(double fTime)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC)
     {
-        if (FUN_141523bc0(pPC)->FUN_141768fb0(m_spData2->m_nEmotion, 1) == 0)
+        if (((class Unk_Skills*)((class MyPC*)(class MyPC*)(pPC))->FUN_141523bc0())->FUN_141768fb0(m_spData2->m_nEmotion, 1) == 0)
         {
             m_pOwner->vfunc_59(1, 0, 0, 0);
             return;
@@ -400,14 +404,14 @@ void StateTriggerEmotion::vfunc_4(StateData* pData)
         if (FUN_14165f100(pPC))
             FUN_14165f170(pPC);
     }
-    FUN_1402c2890(m_aEmotions);
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_aEmotions))->RemoveAll();
     m_nIndex = 0;
     m_spData2.AssignRaw(dynamic_cast<StateTriggerEmotionData*>(pData));
     if (m_spData2.get() != 0)
     {
         m_nMode = m_spData2->m_nMode;
         m_nDuration = m_spData2->m_nValue;
-        FUN_14122e3e0(m_aEmotions, m_spData2->m_aEmotions);
+        ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_aEmotions))->Copy(m_spData2->m_aEmotions);
         m_nFlag = m_spData2->m_nFlag;
     }
     if (m_nFlag != 0)
@@ -416,12 +420,12 @@ void StateTriggerEmotion::vfunc_4(StateData* pData)
         if (pPC2)
             FUN_141657c80(pPC2, true);
     }
-    if (FUN_1401662c0(m_aEmotions) != 0)
+    if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_aEmotions))->GetCount() != 0)
     {
         efd::utf8string kName(FUN_140164930(m_aEmotions, 0));
         static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, 1.0f, m_spData2->m_bLoop, false);
     }
-    m_nStart = FUN_140869420();
+    m_nStart = GetTickCountMs2();
 }
 
 // @0x1417c4770
@@ -443,13 +447,13 @@ void StateTriggerEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int 
 {
     if (m_nMode != 0)
     {
-        if (FUN_140869420() >= (unsigned)(m_nStart + m_nDuration))
+        if (GetTickCountMs2() >= (unsigned)(m_nStart + m_nDuration))
         {
             m_pOwner->vfunc_59(1, 0, 0, 0);
         }
         else
         {
-            if (FUN_1401662c0(m_aEmotions) != 0)
+            if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_aEmotions))->GetCount() != 0)
             {
                 efd::utf8string kName(FUN_140164930(m_aEmotions, 0));
                 static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, 1.0f, false, false);
@@ -459,7 +463,7 @@ void StateTriggerEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int 
     else
     {
         m_nIndex = m_nIndex + 1;
-        if (m_nIndex >= (int)FUN_1401662c0(m_aEmotions))
+        if (m_nIndex >= (int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_aEmotions))->GetCount())
         {
             m_pOwner->vfunc_59(1, 0, 0, 0);
         }
@@ -522,7 +526,7 @@ void StateTriggerFollowNpc::vfunc_4(StateData* pData)
     else
     {
         m_nAnim = 0;
-        PCBase* pNpc = FUN_141bd1320(FUN_1403ed2d0(), m_spData2->m_nNpc);
+        PCBase* pNpc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1320(m_spData2->m_nNpc));
         if (pNpc == 0)
             m_pOwner->vfunc_59(1, 0, 0, 0);
     }
@@ -535,10 +539,10 @@ void StateTriggerFollowNpc::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     PCBase* pActor = m_pOwner;
-    void* pRidee = FUN_141468360(m_pOwner);
+    void* pRidee = ((void*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner)));
     if (pRidee)
-        pActor = FUN_141706540(pRidee);
-    PCBase* pNpc = FUN_141bd1320(FUN_1403ed2d0(), m_spData2->m_nNpc);
+        pActor = ((class Ridee*)(void*)(pRidee))->GetRider();
+    PCBase* pNpc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1320(m_spData2->m_nNpc));
     if (pNpc == 0)
     {
         m_pOwner->vfunc_59(1, 0, 0, 0);
@@ -710,7 +714,7 @@ void StateEmotionIdle::vfunc_3(double fTime)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC)
     {
-        if (FUN_141523bc0(pPC)->FUN_141768fb0(m_spData2->m_nEmotion, 1) == 0)
+        if (((class Unk_Skills*)((class MyPC*)(class MyPC*)(pPC))->FUN_141523bc0())->FUN_141768fb0(m_spData2->m_nEmotion, 1) == 0)
         {
             m_pOwner->vfunc_59(1, 0, 0, 0);
             return;
@@ -791,7 +795,7 @@ void StateEmotionIdle::vfunc_8(double fTime)
     if (m_timer.FUN_140868c00() != 0)
     {
         m_timer.FUN_1408687f0();
-        static unsigned s_nChance = FUN_1401d3200()->m_chance.FUN_140536a30();
+        static unsigned s_nChance = ((class Unk_IdleConsts*)FUN_1401d3200())->m_chance.FUN_140536a30();
         if (s_nChance >= FUN_140768010(100, 0))
         {
             unsigned nCount = 0;
@@ -812,7 +816,7 @@ void StateEmotionIdle::vfunc_8(double fTime)
     }
     else if (m_timer.FUN_140868ba0() == 0)
     {
-        m_timer.FUN_140868750(FUN_1401d3200()->m_delay.FUN_14025a620());
+        m_timer.FUN_140868750(((class Unk_IdleConsts*)FUN_1401d3200())->m_delay.FUN_14025a620());
     }
 }
 

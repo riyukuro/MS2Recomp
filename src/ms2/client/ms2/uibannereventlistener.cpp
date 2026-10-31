@@ -108,11 +108,19 @@ public:
 };
 class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
 bool FUN_140b883c0();
-bool FUN_140b88470(Unk_Pos& posA, Unk_Pos& posB);
-bool FUN_140b884e0(Unk_Pos& pos);
+bool FUN_140b88470(struct Vector3 const&, struct Vector3 const&);   // C3: was FUN_140b88470
+bool FUN_140b884e0(struct Vector3&);   // C3: was FUN_140b884e0
 bool FUN_140b887b0(Unk_141bd0cc0* pPlayer);
-Unk_141bd0cc0* FUN_140b879d0(State* pState);                        // the opponent of the rps state
-Unk_141bd0cc0* FUN_140b89dd0(State* pState);                        // the partner of the couple dance state
+class StateMicroGameRps   // C3: member view for the former free stand-ins
+{
+public:
+    class PCBase* FUN_140b879d0();
+};
+class StateMicroGameCoupleDance   // C3: member view for the former free stand-ins
+{
+public:
+    class PCBase* FUN_140b89dd0();
+};
 
 // Message boxes (CMsgBoxData): the button index lives at +0x18 of the timer struct.
 struct Unk_MsgBoxTimer { int m_nSec; int m_nMs; int m_nShowFormat; void* m_strFormat; int m_nButton; int m_nArmed; };
@@ -191,12 +199,12 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
     }
     Unk_Pos posPlayer = pPlayer->vfunc_18();
     Unk_Pos posTarget = pTarget->vfunc_18();
-    if (!FUN_140b88470(posPlayer, posTarget))
+    if (!FUN_140b88470(*(struct Vector3 const*)&static_cast<struct Unk_Pos&>(posPlayer), *(struct Vector3 const*)&static_cast<struct Unk_Pos&>(posTarget)))
     {
         FUN_141275260(0xd01, 1, 1);
         return;
     }
-    if (!FUN_140b884e0(posPlayer))
+    if (!FUN_140b884e0(*(struct Vector3*)&static_cast<struct Unk_Pos&>(posPlayer)))
     {
         FUN_141275260(0xd02, 1, 1);
         return;
@@ -231,7 +239,7 @@ bool FUN_140bac700(int nResult, const Unk_CMsgBoxData& box)
         MS2_ASSERT_AT(0x69, 0);
         return true;
     }
-    Unk_141bd0cc0* pTarget = FUN_140b879d0(pState);
+    Unk_141bd0cc0* pTarget = ((class Unk_141bd0cc0*)((class StateMicroGameRps*)(class State*)(pState))->FUN_140b879d0());
     if (!pTarget)
         return true;
     COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
@@ -284,12 +292,12 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
     }
     Unk_Pos posPlayer = pPlayer->vfunc_18();
     Unk_Pos posTarget = pTarget->vfunc_18();
-    if (!FUN_140b88470(posPlayer, posTarget))
+    if (!FUN_140b88470(*(struct Vector3 const*)&static_cast<struct Unk_Pos&>(posPlayer), *(struct Vector3 const*)&static_cast<struct Unk_Pos&>(posTarget)))
     {
         FUN_1412752d0(L"s_microgame_couple_dance_request_failed_wrong_distance", 1);
         return;
     }
-    if (!FUN_140b884e0(posPlayer))
+    if (!FUN_140b884e0(*(struct Vector3*)&static_cast<struct Unk_Pos&>(posPlayer)))
     {
         FUN_1412752d0(L"s_microgame_couple_dance_request_failed_wrong_position", 1);
         return;
@@ -325,7 +333,7 @@ bool FUN_140bacda0(int nResult, const Unk_CMsgBoxData& box)
         MS2_ASSERT_AT(0xda, 0);
         return true;
     }
-    Unk_141bd0cc0* pTarget = FUN_140b89dd0(pState);
+    Unk_141bd0cc0* pTarget = ((class Unk_141bd0cc0*)((class StateMicroGameCoupleDance*)(class State*)(pState))->FUN_140b89dd0());
     if (!pTarget)
         return true;
     int nEventId = 0;

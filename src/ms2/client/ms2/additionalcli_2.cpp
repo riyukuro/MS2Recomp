@@ -134,7 +134,7 @@ __int64 FUN_140632990(__int64 nValue, float fRate);         // 0x140632990 scale
 float FUN_140768090();                                      // 0x140768090 random [0, 1)
 int FUN_14081d8a0(int nType);                               // 0x14081d8a0 the stat option applies to skills
 int FUN_14081d8e0(int nType);                               // 0x14081d8e0 the stat option applies to effects
-void FUN_1419f37f0(int nEvent);                             // 0x1419f37f0 notify the skill UIs
+void FUN_1419f37f0(unsigned int);   // C3: was FUN_1419f37f0
 
 // A UI object by class id, cast to its class.
 template <class T> T* Unk_AcFindUI(eUIClassID nId)

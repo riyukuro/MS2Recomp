@@ -46,6 +46,10 @@ class CReservedWordTable;
 // The OX quiz dialog itself (UI type 0x4f7d) lives in another unit; only the cast target and its button lookup are needed.
 class UIOxQuizDialog : public UIDialog
 {
+public:
+    void FUN_140e6e6c0(float, float);   // C3: was free FUN_140e6e6c0
+public:
+    static void FUN_140e6e8b0(bool);   // C3: was free FUN_140e6e8b0
 };
 
 // A child of the movie (a button): handle at +8, the dtor sits at 0x140acd6e0.
@@ -70,7 +74,7 @@ public:
 // The client config's blocked-action flag set.
 struct Unk_OxBanFlags { int FUN_1402c4c90(int nFlag); };
 struct Unk_OxConfig { char m_pad_00[8]; Unk_OxBanFlags m_8; };
-Unk_OxConfig* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
 // The key binds (singleton 0x1409331f0).
 class Unk_OxKeyBinds : public CKeyTable
@@ -84,8 +88,7 @@ class Unk_OxArgs : public Unk_CommandArgs
 {
 };
 
-WorldService* FUN_1403ed2d0();
-CTriggerService* FUN_140ad4b90();
+class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
 void FUN_1416fb300(void* p, const CStringW& str);                // remember the host's notice
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);     // str equals psz
 CStringW FUN_140298ea0(CStringW strKey);                         // localized string
@@ -101,8 +104,6 @@ __int64 FUN_140718320(const CStringW& str);
 CString FUN_140540050(const char* pszFormat, const CString& strArg);
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);
 CStringW FUN_140560c00(const wchar_t* pszFormat, const unsigned& nArg);
-void FUN_140e6e8b0(bool bOn);
-void FUN_140e6e6c0(UIOxQuizDialog* pDialog, float fA, float fB);
 void FUN_1402a9d70(void*, int, float, float, float, int);
 void FUN_142ca6130();                                            // the exe's atexit destructor of the marker
 extern __int64 DAT_143ab2820;                                    // the own account id
@@ -170,7 +171,7 @@ UIOxQuizDialog* FUN_140e01930(int nId);
 // @0x140dfef30
 void FUN_140dfef30(CInPacket& packet)
 {
-    MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMyPC == 0)
         return;
     CStringW strName = packet.ReadUnicodeString();
@@ -197,7 +198,7 @@ bool FUN_140dff210(int nResult, const CMsgBoxData& box)
     packet.WriteUInt8(10);
     packet.WriteUInt8(3);
     FUN_140710590(packet);
-    FUN_140e6e8b0(false);
+    UIOxQuizDialog::FUN_140e6e8b0(false);
     reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f7d);
     return true;
 }
@@ -205,14 +206,14 @@ bool FUN_140dff210(int nResult, const CMsgBoxData& box)
 // @0x140dff2b0
 void FUN_140dff2b0()
 {
-    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x3d) == 1)
+    if (((struct Unk_OxConfig*)FUN_14025e7b0())->m_8.FUN_1402c4c90(0x3d) == 1)
     {
         CStringW strMsg = FUN_140298ea0(CStringW(L"s_ugcox_create_fail_shutdown"));
         FUN_1412751f0(strMsg, 1, 1);
     }
     else
     {
-        MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pMyPC == 0)
             return;
         COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
@@ -286,7 +287,7 @@ void FUN_140dff600(CInPacket& packet)
 // @0x140dff700
 bool FUN_140dff700(int nResult, const CMsgBoxData& box)
 {
-    MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMyPC == 0)
         return true;
     if (nResult == 0)
@@ -311,7 +312,7 @@ bool FUN_140dff700(int nResult, const CMsgBoxData& box)
 // @0x140dff8d0
 bool FUN_140dff8d0(int nResult, const CMsgBoxData& box)
 {
-    MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMyPC == 0)
         return true;
     if (nResult == 0)
@@ -397,16 +398,16 @@ int FUN_140dffeb0(Unk_OxArgs* pArgs)
         int nObject = pArgs->FUN_1408d1f60(2, 0);
         if (0 < nObject)
         {
-            FUN_140ad4b90()->FUN_1418631c0();
+            ((class CTriggerService*)FUN_140ad4b90())->FUN_1418631c0();
             if (s_nCameraObject != nObject)
             {
                 s_nCameraObject = nObject;
-                FUN_140ad4b90()->FUN_1418631f0(nObject, 1);
+                ((class CTriggerService*)FUN_140ad4b90())->FUN_1418631f0(nObject, 1);
             }
             else
             {
                 s_nCameraObject = -1;
-                FUN_140ad4b90()->FUN_1418631f0(nObject, 0);
+                ((class CTriggerService*)FUN_140ad4b90())->FUN_1418631f0(nObject, 0);
             }
         }
     }
@@ -458,7 +459,7 @@ int FUN_140dffeb0(Unk_OxArgs* pArgs)
 // @0x140e00250
 void FUN_140e00250(CInPacket& packet)
 {
-    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x3d) == 1)
+    if (((struct Unk_OxConfig*)FUN_14025e7b0())->m_8.FUN_1402c4c90(0x3d) == 1)
     {
         CStringW strMsg = FUN_140298ea0(CStringW(L"s_ugcox_create_fail_shutdown"));
         FUN_1412751f0(strMsg, 1, 1);
@@ -481,7 +482,7 @@ void FUN_140e00250(CInPacket& packet)
 // @0x140e003b0
 void FUN_140e003b0(CInPacket& packet)
 {
-    FUN_140e6e8b0(true);
+    UIOxQuizDialog::FUN_140e6e8b0(true);
     reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f7d);
     reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f47);
     __int64 nFee = packet.ReadInt64();
@@ -520,7 +521,7 @@ void FUN_140e00690(CInPacket& packet)
     int nShareRate = packet.ReadInt32();
     if (nHostId == DAT_143ab2820)
     {
-        MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pMyPC != 0)
             pMyPC->SendRequestMoveFieldMode0(nMapId, nPortalId, 0, 0, CStringW(L""), CStringW(L""));
         return;
@@ -758,7 +759,7 @@ void FUN_140e01480(int nPromoted, unsigned nCooltime, int nTotal, unsigned nCool
             reinterpret_cast<Unk_OxButton*>(hButton.operator->())->FUN_1422c7cd0(tip.FUN_1422bb890());
             reinterpret_cast<Unk_OxButton*>(hButton.operator->())->FUN_1422c1fe0(nPromoted < nTotal);
             if (nPromoted < nTotal)
-                FUN_140e6e6c0(pQuiz, (float)nCooltime / 1000.0f, (float)s_nPromoteCooltime / 1000.0f);
+                ((class UIOxQuizDialog*)(class UIOxQuizDialog*)(pQuiz))->FUN_140e6e6c0((float)nCooltime / 1000.0f, (float)s_nPromoteCooltime / 1000.0f);
         }
     }
 }
@@ -898,7 +899,7 @@ void FUN_140dfee10(__int64 quizId, int first, int second)
 // @0x140dfeeb0
 void FUN_140dfeeb0()
 {
-    MyPC* player = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* player = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (player == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);

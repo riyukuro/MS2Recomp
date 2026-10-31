@@ -34,14 +34,18 @@ class Unk_SoundSink;
 // The world manager (FUN_1403ed2d0): only the local player.
 
 // The player inventory (global 0x143ab2a90).
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 // CItem::FUN_140527840's record (item.cpp owns the real one).
 class Unk_ItemEquipData : public CItemData { };
 
 // The equip holder of the player (PC::FUN_1416561a0).
 class Unk_GcEquipSet : public CEquipment { };
-Unk_GcEquipSet* FUN_1416561a0(void* pPC);
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_PCEquipSet* FUN_1416561a0();
+};
 int FUN_1405451c0(const CStringA& strSlotName);             // the equip slot of a slot name
 
 class Unk_GcKeyBinds { };                                   // the key / skill-slot binding table
@@ -49,12 +53,20 @@ Unk_SoundSink* FUN_1409331f0();
 int FUN_14142e090(Unk_GcKeyBinds* pBinds, int nSkill, int nFlag);   // the skill's slot, -1 = none
 
 class Unk_GcHome : public CubeMapInformationService { };         // the home state
-Unk_GcHome* FUN_1409670e0();
-int FUN_141527f60(void* pPC);                               // the cube-construct permission
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoHouseSvc* GetInstance();
+};
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141527f60();
+};
 
 void* FUN_1412bcec0(unsigned nUIId);                        // the dialog of a ui id
 void* FUN_140d61d50(unsigned nUIId);                        // the dialog of a ui id
-int FUN_1413b5610(void* pDialog);                           // the page / tab the dialog shows
+int Unk_GcState178(char*);   // C3: was FUN_1413b5610
 int FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 
 // The slot-55 dialog query (is the dialog hidden).
@@ -143,7 +155,7 @@ int CGuideConditionConstructable::vfunc_3()
     void* pPC = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    return FUN_1413a55a0(FUN_141527f60(pPC));
+    return FUN_1413a55a0(((class MyPC*)(void*)(pPC))->FUN_141527f60());
 }
 MS2_REPLACE_METHOD(0x1413A86A0, CGuideConditionConstructable, vfunc_3, 66, 0x5819452E);
 
@@ -165,7 +177,7 @@ MS2_REPLACE_METHOD(0x1413A8750, CGuideConditionIsMyHome, GetTypeName, 61, 0x3B53
 // @0x1413a87a0
 int CGuideConditionIsMyHome::vfunc_3()
 {
-    return FUN_1413a5600(FUN_1409670e0()->FUN_1410d5640());
+    return FUN_1413a5600(((class Unk_GcHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d5640());
 }
 MS2_REPLACE_METHOD(0x1413A87A0, CGuideConditionIsMyHome, vfunc_3, 40, 0xA195356B);
 
@@ -189,7 +201,7 @@ int CGuideConditionAchieveTab::vfunc_3()
 {
     void* pDialog = FUN_1412bcec0(0x4e73);
     if (pDialog != 0 && DialogSlot55(pDialog) == 0)
-        return FUN_1413a5600(m_n20 == FUN_1413b5610(pDialog));
+        return FUN_1413a5600(m_n20 == Unk_GcState178((char*)(pDialog)));
     return 0;
 }
 MS2_REPLACE_METHOD(0x1413A8880, CGuideConditionAchieveTab, vfunc_3, 111, 0xAD3B536C);
@@ -231,7 +243,7 @@ int CGuideConditionEquipItem::vfunc_3()
     void* pPC = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    MS2Ptr<CEquipItem> spEquip = FUN_1416561a0(pPC)->FUN_1411e1780(FUN_1405451c0(m_strSlotName), m_nSlotType);
+    MS2Ptr<CEquipItem> spEquip = ((class Unk_GcEquipSet*)((class PC*)(void*)(pPC))->FUN_1416561a0())->FUN_1411e1780(FUN_1405451c0(m_strSlotName), m_nSlotType);
     if (spEquip == 0)
         return FUN_1413a55a0(0);
     if (m_nItemID != 0 && spEquip->FUN_1411dc820() != (int)m_nItemID)
@@ -313,7 +325,7 @@ MS2_REPLACE_METHOD(0x1413A9070, CGuideConditionDesignItem, vfunc_2, 87, 0xE90182
 int CGuideConditionDesignItem::vfunc_3()
 {
     ATL::CAtlArray<MS2Ptr<CItem> > arrItems;
-    DAT_143ab2a90.FUN_140a60790(arrItems);
+    g_143ab2a90.FUN_140a60790(arrItems);
     for (size_t i = 0; i < arrItems.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem = arrItems.GetAt(i);
@@ -378,11 +390,11 @@ MS2_REPLACE_METHOD(0x1413A93D0, CGuideConditionExistItem, vfunc_2, 157, 0x5F8A74
 // @0x1413a9480
 int CGuideConditionExistItem::vfunc_3()
 {
-    if (m_nItemId != 0 && DAT_143ab2a90.FUN_140a5ece0(m_nItemId, 1) == 0)
+    if (m_nItemId != 0 && g_143ab2a90.FUN_140a5ece0(m_nItemId, 1) == 0)
         return FUN_1413a55a0(0);
-    if (m_nItemType != 0 && DAT_143ab2a90.FUN_140a60ad0(m_nItemType) == 0)
+    if (m_nItemType != 0 && g_143ab2a90.FUN_140a60ad0(m_nItemType) == 0)
         return FUN_1413a55a0(0);
-    if (m_nIconType != 0 && DAT_143ab2a90.FUN_140a60d70(m_nIconType) == 0)
+    if (m_nIconType != 0 && g_143ab2a90.FUN_140a60d70(m_nIconType) == 0)
         return FUN_1413a55a0(0);
     return FUN_1413a55a0(1);
 }
@@ -432,7 +444,7 @@ int CGuideConditionCountItem::vfunc_3()
     void* pPC = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    int nCount = DAT_143ab2a90.FUN_140a60c20(m_nItemType);
+    int nCount = g_143ab2a90.FUN_140a60c20(m_nItemType);
     if (m_nMin != -1 && m_nMin > nCount)
         return FUN_1413a55a0(0);
     if (m_nMax != -1 && m_nMax < nCount)

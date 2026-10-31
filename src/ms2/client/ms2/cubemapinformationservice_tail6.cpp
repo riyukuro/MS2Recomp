@@ -7,6 +7,20 @@
 // MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
+// Byte-identical MS2Ptr ctors: the copy ctors differ only in the AddRef they call (0x14112fa90/faf0/fb20), the default
+// ctors not at all, so the look-alike guess would pick their owners by name order.
+// MS2-PIN: ??0?$MS2Ptr@VAutomaticCreateCubeInfo@@@@QEAA@AEBV0@@Z 0x14111e680 ; sft: look-alike copy ctor, AddRef 0x14112fa90
+// MS2-PIN: ??0?$MS2Ptr@VCFunctionCubeObject@@@@QEAA@AEBV0@@Z 0x14111e730 ; sft: look-alike copy ctor, AddRef 0x14112faf0
+// MS2-PIN: ??0?$MS2Ptr@VUnk_CMISUidRecord@@@@QEAA@AEBV0@@Z 0x14111e7c0 ; sft: look-alike copy ctor, AddRef 0x14112fb20
+// MS2-PIN: ??0?$MS2Ptr@VAutomaticCreateCubeInfo@@@@QEAA@XZ 0x14111e6c0 ; sft: byte-identical default ctor
+// MS2-PIN: ??0?$MS2Ptr@VCFunctionCubeObject@@@@QEAA@XZ 0x14111e710 ; sft: byte-identical default ctor
+// MS2-PIN: ??0?$MS2Ptr@VCube@@@@QEAA@XZ 0x14111e7a0 ; sft: byte-identical default ctor
+// MS2-PIN: ??0?$MS2Ptr@VFittingDollData@@@@QEAA@XZ 0x14111e830 ; sft: byte-identical default ctor
+// MS2-PIN: ??0?$MS2Ptr@VSaleStateData@@@@QEAA@XZ 0x14111e8c0 ; sft: byte-identical default ctor
+// MS2-PIN: ??0?$MS2Ptr@VSalesInfo@@@@QEAA@XZ 0x14111e8e0 ; sft: byte-identical default ctor
+// MS2-PIN: ??0?$MS2Ptr@VSetItemEffectInfo@@@@QEAA@XZ 0x14111e940 ; sft: byte-identical default ctor
+// MS2-PIN: ??0?$MS2Ptr@VUICubeUGCHead@@@@QEAA@XZ 0x14111ea30 ; sft: byte-identical default ctor
+// MS2-PIN: ??0?$MS2Ptr@VUIHouseMarkEntity@@@@QEAA@XZ 0x14111ea80 ; sft: byte-identical default ctor
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\cubemapinformationservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/cubemapinformationservice_tail.h"

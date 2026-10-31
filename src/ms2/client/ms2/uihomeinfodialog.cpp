@@ -171,8 +171,6 @@ class Unk_HiWorld
 public:
     Unk_HiMapPtr FUN_141bd30a0();                                   // current map data
 };
-Unk_HiPc* FUN_141bd0cc0(Unk_HiWorld*);
-PCBase* FUN_141bd1640(Unk_HiWorld*, __int64 nId);
 
 // The constant table (cooldowns of the bank and the doctor).
 struct Unk_HiConstUInt { char m_pad_00[0x58]; };
@@ -185,7 +183,7 @@ struct Unk_HiConstTable
 };
 MS2_CHECK_OFFSET(Unk_HiConstTable, m_bank, 0x66d0);
 MS2_CHECK_OFFSET(Unk_HiConstTable, m_doctor, 0x67e0);
-Unk_HiConstTable* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 unsigned int* FUN_1401d7c10(Unk_HiConstUInt* pSlot);
 
 // The UI manager.
@@ -204,9 +202,13 @@ public:
 };
 
 class Unk_HiOptions;
-Unk_HiOptions* FUN_140166410();
-bool FUN_14036d570(Unk_HiOptions*, int nOption);
-bool FUN_14036d710(Unk_HiOptions*, int nOption);
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+    bool FUN_14036d710(int);
+};
 
 int FUN_1418fd130();
 int FUN_1418fcee0();
@@ -216,7 +218,7 @@ int FUN_140930190();
 bool FUN_140930c50();
 __int64 FUN_140930240();
 __int64 FUN_140930ae0();
-unsigned int FUN_14092f640();
+int FUN_14092f640();   // C3: was FUN_14092f640
 bool FUN_141902580(bool bMessage);
 __int64 GetServerTime();
 void FUN_141275260(int nId, int a, int b);
@@ -229,7 +231,6 @@ CStringW FUN_14062b4f0(CStringW strFormat, const int& n);
 int FUN_14028cb70(const CStringW& str, CAtlArray<CStringW>& arr, const wchar_t* szDelim, int nMax);
 int FUN_1412772f0(__int64 nValue, int bGrouped);
 UIHomeSaveSlotDialog* FUN_140c2b5c0(int nUiId);
-int FUN_141527ed0(Unk_HiPc* pPc);
 CStringW FUN_1409796e0(int a, int b, int c, CStringW strName);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
@@ -258,7 +259,6 @@ CString UIHomeInfoDialog::GetTypeName()
 }
 
 // @0x1412c4dc0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -267,8 +267,7 @@ void UIHomeInfoDialog::OnLoadComplete()
         if (MS2Ptr<Unk_HiCombo> spChannel = FUN_140c28560("m_channel"))
         {
             CStringW strLabel;
-            unsigned int nChannel = FUN_14092f640();
-            strLabel.Format(L"%s %d", (LPCWSTR)GetStringCommon(0x579), nChannel);
+            strLabel.Format(L"%s %d", (LPCWSTR)GetStringCommon(0x579), FUN_14092f640());
             ASObj obj(2);
             obj.FUN_1407cbb20("label", strLabel);
             spChannel->FUN_1422dfc70(obj);
@@ -349,7 +348,6 @@ int UIHomeInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 }
 
 // @0x1412c5330
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c5330(unsigned int nRemainMs)
 {
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
@@ -357,13 +355,12 @@ void UIHomeInfoDialog::FUN_1412c5330(unsigned int nRemainMs)
         if (MS2Ptr<Unk_HiButton> spBank = spPanel->FUN_140acce30<Unk_HiButton>("m_bank"))
         {
             float fRemain = (float)nRemainMs * 0.001f;
-            spBank->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*FUN_1401d7c10(&FUN_1401d3200()->m_bank) * 0.001f);
+            spBank->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*FUN_1401d7c10(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_bank) * 0.001f);
         }
     }
 }
 
 // @0x1412c54e0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c54e0(unsigned int nRemainMs)
 {
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
@@ -371,18 +368,17 @@ void UIHomeInfoDialog::FUN_1412c54e0(unsigned int nRemainMs)
         if (MS2Ptr<Unk_HiButton> spDoctor = spPanel->FUN_140acce30<Unk_HiButton>("m_doctor"))
         {
             float fRemain = (float)nRemainMs * 0.001f;
-            spDoctor->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*FUN_1401d7c10(&FUN_1401d3200()->m_doctor) * 0.001f);
+            spDoctor->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*FUN_1401d7c10(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_doctor) * 0.001f);
         }
     }
 }
 
 // @0x1412c5690
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c5690()
 {
     if (FUN_1418fd280() == 0)
         return;
-    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     Unk_HiMapPtr spMap = reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
@@ -411,7 +407,6 @@ void UIHomeInfoDialog::FUN_1412c5690()
 }
 
 // @0x1412c5c30
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c5c30()
 {
     if (vfunc_55())
@@ -424,7 +419,6 @@ void UIHomeInfoDialog::FUN_1412c5c30()
 }
 
 // @0x1412c5da0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c5da0()
 {
     if (vfunc_55())
@@ -437,7 +431,6 @@ void UIHomeInfoDialog::FUN_1412c5da0()
 }
 
 // @0x1412c5f00
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c5f00()
 {
     if (vfunc_55())
@@ -450,7 +443,6 @@ void UIHomeInfoDialog::FUN_1412c5f00()
 }
 
 // @0x1412c6070
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c6070()
 {
     if (vfunc_55())
@@ -468,7 +460,6 @@ void UIHomeInfoDialog::FUN_1412c6070()
 }
 
 // @0x1412c6220
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c6220()
 {
     if (vfunc_55())
@@ -480,7 +471,7 @@ void UIHomeInfoDialog::FUN_1412c6220()
     {
         if (MS2Ptr<Unk_HiConv> spConv = spPanel->FUN_140accfb0<Unk_HiConv>("m_homeConvenientPanel"))
         {
-            bool bMerat = FUN_14036d710(FUN_140166410(), 0x61);
+            bool bMerat = ((class CFeatureManager*)(class Unk_HiOptions*)(((class Unk_HiOptions*)FUN_140166410())))->FUN_14036d710(0x61);
             spConv->Invoke("setMeratIcon", bMerat);
             if (MS2Ptr<Unk_HiButton> spBalance = spConv->FUN_140acce30<Unk_HiButton>("m_balance"))
             {
@@ -497,7 +488,6 @@ void UIHomeInfoDialog::FUN_1412c6220()
 }
 
 // @0x1412c66c0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c66c0()
 {
     if (vfunc_55())
@@ -525,7 +515,7 @@ void UIHomeInfoDialog::FUN_1412c66c0()
                     for (std::set<__int64>::iterator it = ids.begin(); it != ids.end(); ++it)
                     {
                         __int64 nCharId = *it;
-                        PCBase* pPlayer = FUN_141bd1640(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()), nCharId);
+                        PCBase* pPlayer = ((class PCBase*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd1640(nCharId));
                         if (pPlayer != 0)
                         {
                             ASObj obj(2);
@@ -542,7 +532,6 @@ void UIHomeInfoDialog::FUN_1412c66c0()
 }
 
 // @0x1412c6b50
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c6b50()
 {
     if (vfunc_55())
@@ -567,7 +556,6 @@ void UIHomeInfoDialog::FUN_1412c6b50()
 }
 
 // @0x1412c6e70
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c6e70(const CStringW& strItemName, const CStringW& strCreator)
 {
     if (vfunc_55())
@@ -596,14 +584,13 @@ CStringW UIHomeInfoDialog::FUN_1412c7090()
 }
 
 // @0x1412c7140
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 CStringW UIHomeInfoDialog::FUN_1412c7140()
 {
     CStringW strAddress = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0();
-    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return strAddress;
-    if (FUN_141527ed0(pPc))
+    if (((class MyPC*)(class Unk_HiPc*)(pPc))->FUN_141527ed0())
     {
         int nA = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3140();
         int nB = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3100();
@@ -617,7 +604,7 @@ CStringW UIHomeInfoDialog::FUN_1412c7140()
 // @0x1412c72d0
 int UIHomeInfoDialog::FUN_1412c72d0()
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     if (FUN_1418fd2f0() != 0)
@@ -633,7 +620,7 @@ int UIHomeInfoDialog::FUN_1412c72d0()
             FUN_1412c5da0();
             FUN_1412c5f00();
             FUN_1412c6070();
-            int bBook = FUN_14036d570(FUN_140166410(), 0x3e);
+            int bBook = ((class CFeatureManager*)(class Unk_HiOptions*)(((class Unk_HiOptions*)FUN_140166410())))->FUN_14036d570(0x3e);
             if (MS2Ptr<Unk_HiPanelB> spPanel = FUN_140ede180("m_homeInfoPanel"))
             {
                 if (MS2Ptr<Unk_HiButton> spBook = spPanel->FUN_140acce30<Unk_HiButton>("m_visitorsBook"))
@@ -680,7 +667,7 @@ void UIHomeInfoDialog::OnNoticeModify()
 // @0x1412c7710
 void UIHomeInfoDialog::OnConstruct()
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (pPc->FUN_1416595d0() == 0)
@@ -692,7 +679,7 @@ void UIHomeInfoDialog::OnConstruct()
 // @0x1412c7770
 void UIHomeInfoDialog::OnBank()
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (FUN_1412c81d0() > 0)
@@ -703,7 +690,7 @@ void UIHomeInfoDialog::OnBank()
 // @0x1412c77c0
 void UIHomeInfoDialog::OnDoctor()
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (FUN_1412c8280() > 0)
@@ -712,21 +699,22 @@ void UIHomeInfoDialog::OnDoctor()
 }
 
 // @0x1412c7810
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::OnBalance()
 {
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(8, 0xbb9, 0, CStringW(L""));
     if (spBox.get() != 0)
     {
         unsigned int nMax = FUN_1412772f0(DAT_143ab2d80.Value4558(), 1);
-        spBox->FUN_141a01d30(1, CStringW(L""), nMax, 0, 0);
+        {
+            CStringW strText(L"");
+            spBox->FUN_141a01d30(1, strText, nMax, 0, 0);
+        }
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeInfoDialog::FUN_1412c7ff0));
         FUN_140d73c60(spBox);
     }
 }
 
 // @0x1412c79e0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::SendRequestCubeMode58(CStringW strName)
 {
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
@@ -738,7 +726,7 @@ void UIHomeInfoDialog::SendRequestCubeMode58(CStringW strName)
 // @0x1412c7aa0
 bool UIHomeInfoDialog::FUN_1412c7aa0(int nResult, const CMsgBoxData& data)
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
     if (nResult == 0)
@@ -791,7 +779,7 @@ bool UIHomeInfoDialog::FUN_1412c7af0(int nSlot, const CMsgBoxData& data)
 // @0x1412c7ef0
 bool UIHomeInfoDialog::FUN_1412c7ef0(int nResult, const CMsgBoxData& data)
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
     if (nResult == 0)
@@ -804,9 +792,9 @@ bool UIHomeInfoDialog::SendRequestCubeMode31(int nResult, const CMsgBoxData& dat
 {
     if (nResult == 0)
     {
-        if (FUN_14036d570(FUN_140166410(), 0xd4))
+        if (((class CFeatureManager*)(class Unk_HiOptions*)(((class Unk_HiOptions*)FUN_140166410())))->FUN_14036d570(0xd4))
         {
-            Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
+            Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
             if (pPc != 0)
                 pPc->FUN_14152f3c0();
         }
@@ -818,31 +806,33 @@ bool UIHomeInfoDialog::SendRequestCubeMode31(int nResult, const CMsgBoxData& dat
 }
 
 // @0x1412c7ff0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 bool UIHomeInfoDialog::FUN_1412c7ff0(int nResult, const CMsgBoxData& data)
 {
-    if (nResult != 0)
-        return true;
-    CStringW strInput = data.FUN_141a02d50();
-    strInput.Replace(L",", L"");
-    CAtlArray<CStringW> parts;
-    if (FUN_14028cb70(strInput, parts, L":", 2) != 0)
+    if (nResult == 0)
     {
-        __int64 nMeso = _wtoi64(parts[0]);
-        __int64 nMerat = _wtoi64(parts[1]);
-        if (nMeso <= DAT_143ab2898 && nMerat <= FUN_140930240() + FUN_140930ae0())
+        CStringW strInput = data.FUN_141a02d50();
+        strInput.Replace(L",", L"");
+        CAtlArray<CStringW> parts;
+        if (FUN_14028cb70(strInput, parts, L":", 2) != 0)
         {
-            COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-            packet.WriteUInt8(0x38);
-            packet.WriteInt64(nMeso);
-            packet.WriteInt64(nMerat);
-            FUN_140710590(packet);
-            return true;
+            __int64 nMeso = _wtoi64(parts[0]);
+            __int64 nMerat = _wtoi64(parts[1]);
+            if (nMeso <= DAT_143ab2898 && nMerat <= FUN_140930240() + FUN_140930ae0())
+            {
+                COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
+                packet.WriteUInt8(0x38);
+                packet.WriteInt64(nMeso);
+                packet.WriteInt64(nMerat);
+                FUN_140710590(packet);
+            }
+            else
+            {
+                if (nMeso > DAT_143ab2898)
+                    FUN_141275260(0xcb0, 1, 1);
+                if (nMerat > FUN_140930240() + FUN_140930ae0())
+                    FUN_141275260(0xcb1, 1, 1);
+            }
         }
-        if (DAT_143ab2898 < nMeso)
-            FUN_141275260(0xcb0, 1, 1);
-        if (FUN_140930240() + FUN_140930ae0() < nMerat)
-            FUN_141275260(0xcb1, 1, 1);
     }
     return true;
 }
@@ -850,13 +840,13 @@ bool UIHomeInfoDialog::FUN_1412c7ff0(int nResult, const CMsgBoxData& data)
 // @0x1412c81d0
 unsigned int UIHomeInfoDialog::FUN_1412c81d0()
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     if (pPc->FUN_141662830() == 0)
         return 0;
     __int64 nNow = GetServerTime();
-    int nLimit = *FUN_1401d7c10(&FUN_1401d3200()->m_bank) / 1000;
+    int nLimit = *FUN_1401d7c10(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_bank) / 1000;
     int nElapsed = (int)(nNow - pPc->FUN_141662830());
     if (nElapsed > nLimit)
         return 0;
@@ -866,13 +856,13 @@ unsigned int UIHomeInfoDialog::FUN_1412c81d0()
 // @0x1412c8280
 unsigned int UIHomeInfoDialog::FUN_1412c8280()
 {
-    Unk_HiPc* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance()));
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     if (pPc->FUN_141662870() == 0)
         return 0;
     __int64 nNow = GetServerTime();
-    int nLimit = *FUN_1401d7c10(&FUN_1401d3200()->m_doctor) / 1000;
+    int nLimit = *FUN_1401d7c10(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_doctor) / 1000;
     int nElapsed = (int)(nNow - pPc->FUN_141662870());
     if (nElapsed > nLimit)
         return 0;
@@ -903,7 +893,6 @@ inline Scaleform::GFx::Value Unk_HiScript::Invoke(const char* szMethod, int a1, 
 }
 
 // @0x1412c85f0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 inline Scaleform::GFx::Value Unk_HiScript::Invoke(const char* szMethod, CStringW a1, CStringW a2, CStringW a3, CStringW a4)
 {
     ASArgList args;

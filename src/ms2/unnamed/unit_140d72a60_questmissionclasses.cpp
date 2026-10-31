@@ -48,7 +48,7 @@ private:
 class Unk_QmGroupTable { public: Unk_QmGroupRewardPtr FUN_14037c3d0(int group); };
 Unk_QmGroupTable* FUN_140d738f0();
 class CQuestManager;
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 
 class Unk_QmGameEvent {
 public:
@@ -84,7 +84,11 @@ CStringW FUN_1405c2690(CStringW, const CStringW&);
 CStringW FUN_140c160b0(CStringW, const __int64*);
 void FUN_1412751b0(const CStringW&, int);
 void FUN_1412751f0(const CStringW&, int, int);
-int FUN_140b71580(void*);
+class CMentoringManager   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned int FUN_140b71580();
+};
 
 // ---- CQuest base virtuals ----
 
@@ -167,7 +171,7 @@ CFieldMission::~CFieldMission() {}
 void CFieldMission::Complete(CInPacket& packet)
 {
     CQuest::Complete(packet);
-    int nGroup = FUN_140764020()->FUN_1416d0150();
+    int nGroup = ((class CQuestManager*)FUN_140764020())->FUN_1416d0150();
     Unk_QmGroupRewardPtr row = FUN_140d738f0()->FUN_14037c3d0(nGroup);
     UIRewardNotify* notify;
     if (row.get() != 0 && (notify = FUN_140938cd0(0x4e5d)) != 0 && row.get() != 0) {
@@ -251,7 +255,7 @@ int CMentoringMission::FUN_1407447c0()
 {
     if (CQuestCommon::FUN_1407447c0()) return 1;
     if (reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->FUN_140424f20(FUN_140bfc580()) == 0) return 1;
-    if (FUN_140b71580(TSingleton<CMentoringManager>::GetInstance()) != 2) return 1;
+    if (((class CMentoringManager*)(void*)(TSingleton<CMentoringManager>::GetInstance()))->FUN_140b71580() != 2) return 1;
     return 0;
 }
 

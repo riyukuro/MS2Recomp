@@ -120,19 +120,21 @@ public:
     MS2Ptr<Unk_AdMarketItem> FUN_140d578d0(Unk_MeratOid oid);               // the record of a product id
 };
 
-Unk_LpWorld* FUN_140939a00();
+class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
 UIAdPushDialog* FUN_140d61c00(int nClass);
 CAdBannerManagerCli* GetAdBannerManagerCli();
-__int64 FUN_1406a4500(Unk_AdMarketItem* pItem);                             // a record's free-offer value
+class CMeratMarketProduct   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 GetSalePrice();
+};
 void FUN_1409bc4f0(ASMeratMarketProductBase* pProduct, MS2Ptr<ShopBannerInfo> spBanner);   // set the banner (the banner is the Unk_MeratBanner of the AS side)
 struct Unk_TdXY { float x, y; };                                            // efd::Point2 (POD copy)
 extern Unk_TdXY DAT_143b02320;                                              // efd::Point2::ZERO
-void FUN_1409e3190(ASTooltip* pTooltip, Unk_AdItemInfo* pInfo, bool b);      // fill the tooltip from an item info
 int FUN_14069c3e0(int nType);                                               // currency type -> payment flag
 int FUN_140ebf520(MS2Ptr<Unk_AdMarketItem> spItem, AScript* pBuyBtn);       // the price kind of a click
 void FUN_140ebf610(const CStringA& strMethod, MS2Ptr<Unk_AdMarketItem> spItem, MS2Ptr<TMeratMarketBillDataParam> spParam, int nPriceKind);   // open the bill dialog
 bool FUN_140ebcc20(ATL::CAtlArray<int>& arrIds);                            // check the sub items are available
-void FUN_1401855a0(ATL::CAtlArray<unsigned int>& arr, unsigned int n);      // append
 bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& mapPay);   // the bill dialog's buy
 bool FUN_140ebe990(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);    // the bill dialog's tooltip
 bool FUN_140acd940(const MS2Ptr<ASUIComponent>* p, int n);                  // MS2Ptr == 0 (the copy this dialog's badge test calls)
@@ -183,7 +185,7 @@ void UIAdPushLimitedDialog::OnLoadComplete()
             CStringW strTitle = reinterpret_cast<Unk_LpInfo*>(&spItem->m_info)->FUN_1406a00e0();
             if (strTitle.IsEmpty())
             {
-                if (FUN_1406a4500(spItem.operator->()) == 0)
+                if (((class CMeratMarketProduct*)(class Unk_AdMarketItem*)(spItem.operator->()))->GetSalePrice() == 0)
                     strTitle = L"$s_adpush_title_free";
                 else
                     strTitle = L"$s_adpush_title_default";
@@ -346,7 +348,7 @@ void UIAdPushLimitedDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pAr
         return;
     ASTooltip tip(4, 2);
     bool bCompare = false;
-    FUN_1409e3190(&tip, &spItem->m_info, bCompare);
+    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e3190((class CMeratMarketPremiumProduct*)(&spItem->m_info), bCompare);
     *pRetVal = tip.FUN_1422bb870();
 }
 
@@ -437,7 +439,6 @@ void UIAdPushLimitedDialog::FUN_140e03440(MS2Ptr<AdPushEntityLimitedBundle> spOw
     }
 }
 
-AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
 
 // @0x140e036e0
 void UIAdPushLimitedDialog::FUN_140e036e0(CStringA strA, CStringA strImgPath, bool bUnused)
@@ -453,7 +454,7 @@ void UIAdPushLimitedDialog::FUN_140e036e0(CStringA strA, CStringA strImgPath, bo
     }
     if (FUN_1422dc430() == 0)
         return;
-    if ((FUN_1409ee240(&m_30) ? true : false) && (m_spOwner->m_item.get() ? true : false) && m_spRenderer.get() != 0)
+    if ((((MS2Ptr<AScript>*)(void*)(&m_30))->get() ? true : false) && (m_spOwner->m_item.get() ? true : false) && m_spRenderer.get() != 0)
     {
         ASMeratMarketLimitedProduct product(FUN_1422db730());
         product.vfunc_3(reinterpret_cast<const MS2Ptr<Unk_MeratEquipEntry>&>(m_spOwner->m_item), strImgPath);
@@ -478,7 +479,7 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
     spProduct->FUN_1409bc6a0(&oid);
     unsigned char* pInfo = (unsigned char*)&spItem->m_info;
     if (*reinterpret_cast<int*>(pInfo + 0x18) != oid.m_nPremiumId)
-        spItem = FUN_140939a00()->FUN_140d578d0(oid);
+        spItem = ((class Unk_LpWorld*)FUN_140939a00())->FUN_140d578d0(oid);
     AScript* pBuyBtn = out.FUN_140ec2a90();
     int nPriceKind = FUN_140ebf520(spItem, pBuyBtn);
     if (*(pInfo + 0x108) != 0 && reinterpret_cast<Unk_LpInfo*>(pInfo)->FUN_1406a1be0(0) == 0)
@@ -490,7 +491,7 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
             MS2Ptr<Unk_LpSub> spSub = pList->FUN_1406aa910(pos);
             if (spSub == 0 || spSub->m_nId == 0)
                 continue;
-            FUN_1401855a0(ids, spSub->m_nId);
+            ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)&static_cast<class ATL::CAtlArray<unsigned int, class ATL::CElementTraits<unsigned int>>&>(ids))->Add(spSub->m_nId);
         }
         if (!FUN_140ebcc20(reinterpret_cast<ATL::CAtlArray<int>&>(ids)))
             return;
@@ -500,8 +501,8 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
             return;
         spBuy->FUN_140d60a80(spItem, nBuyType, FUN_14069c3e0(nPriceKind), 1);
         spBuy->FUN_140d60d60(0, 1);
-        FUN_140939a00()->FUN_140d59810(MS2Ptr<CPendingBuyBase>(spBuy.get()), true);
-        FUN_140939a00()->FUN_140d58650(nBuyType);
+        ((class Unk_LpWorld*)FUN_140939a00())->FUN_140d59810(MS2Ptr<CPendingBuyBase>(spBuy.get()), true);
+        ((class Unk_LpWorld*)FUN_140939a00())->FUN_140d58650(nBuyType);
     }
     else
     {

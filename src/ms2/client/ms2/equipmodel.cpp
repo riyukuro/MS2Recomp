@@ -166,7 +166,7 @@ void* FUN_1409a8b90(void* obj);   const char* FUN_142087e50(void* name);   bool 
 bool FUN_1401c0090(CString* a, CString* b);   void FUN_1401d3700(CString* s);
 char FUN_140184310(CString* a, void* psz);
    void* FUN_1405eb3b0(void* list, void* pos);
-void* FUN_14016a5c0(void* out, const char* psz, int n);   void* FUN_140298360(void* out, const char* psz, void* s);
+CString FUN_14016a5c0(const char* psz, int n);   CString FUN_140298360(const char* psz, const CString& s);
 // scene objects
 // Breadth-first walk over an object's subtree (0x30 bytes, like Unk_NodeWalker in uichaoslightdialog.h).
 class Unk_MeshWalker
@@ -190,7 +190,7 @@ public:
     float FUN_140968990();
 };
 void* FUN_140194470(void* dst, const void* src);
-void* FUN_141d18b90(void* node, void* fs);   void* FUN_14208a860(unsigned cb, unsigned n);   void* FUN_140876480(void* out, int n);
+void* FUN_141d18b90(void* node, const NiFixedString& fs);   void* FUN_14208a860(unsigned cb, unsigned n);   void* FUN_140876480(void* out, int n);
 void* FUN_141068d50p(void* a, const char* psz);
 double FUN_141473280(void* clock);   void* FUN_14086d260();
 // game
@@ -1174,55 +1174,47 @@ void FUN_141202ea0(CEquipModel* self, CString* pName)
         return;
     if (self->m_unk_20 == 0)
         return;
-    alignas(8) char kId[16];
-    FUN_1411dc7a0(OWNER(self), kId);
-    if (FUN_1401c0050(kId, 0) != 0) {
-        FUN_1401bfde0(kId);
+    MS2Ptr<CItem> kId = EQUIP(self->m_spOwner)->GetItem();
+    if (kId == 0)
         return;
-    }
     void* pRoot = FUN_1412008e0(self);
-    if (pRoot == 0) {
-        FUN_1401bfde0(kId);
+    if (pRoot == 0)
         return;
-    }
     NiNode* pModel = (NiNode*)FUN_1409f7cb0(pRoot);
-    if (pModel == 0) {
-        FUN_1401bfde0(kId);
+    if (pModel == 0)
         return;
+    NiNode* pHost;
+    {
+        NiFixedString fs(*pName);
+        pHost = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, pModel->GetObjectByName(fs));
     }
-    alignas(8) char fs[8];
-    FUN_140984450(fs, *pName);
-    NiNode* pHost = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, pModel->GetObjectByName(*(const NiFixedString*)fs));
-    FUN_1409845a0(fs);
-    if (pHost == 0) {
-        FUN_1401bfde0(kId);
+    if (pHost == 0)
         return;
-    }
-    int nType = ((class CItem*)(void*)(FUN_1401c0180(kId)))->FUN_140526c30();
+    int nType = ((class CItem*)(void*)(kId.operator->()))->FUN_140526c30();
     if (nType != 4 && nType != 5) {
-        CString kPre;
-        FUN_14016a5c0(&kPre, *pName, 0);
-        CString kTag;
-        FUN_140298360(&kTag, "Equip_Attach_Transform", &kPre);
+        CString kTag = FUN_140298360("Equip_Attach_Transform", FUN_14016a5c0(*pName, 0));
         alignas(8) char kPool[8];
-        void* pMem = FUN_14208a860(0x130, *(unsigned*)FUN_140876480(kPool, 0));
-        void* pNew = pMem ? FUN_141d19760(pMem, 0) : 0;
-        alignas(8) char fs2[8];
-        FUN_140984450(fs2, kTag);
-        FUN_141d18b90(pNew, fs2);
-        FUN_1409845a0(fs2);
+        unsigned* pCat = (unsigned*)FUN_140876480(kPool, 0);
+        void* pMem = FUN_14208a860(0x130, *pCat);
+        void* pNewTmp = pMem ? FUN_141d19760(pMem, 0) : 0;
+        void* pNew = pNewTmp;
+        {
+            NiFixedString fs2(kTag);
+            FUN_141d18b90(pNew, fs2);
+        }
         pHost->AttachChild((NiAVObject*)pNew, false);
         FUN_1409f76f0(NODE(self), pNew);
     } else {
-        const char* pszNode = (nType == 4) ? "Weapon_Attach_TransformLH" : "Weapon_Attach_TransformRH";
-        CString kNode(pszNode);
+        CString kNode((nType == 4) ? "Weapon_Attach_TransformLH" : "Weapon_Attach_TransformRH");
         alignas(8) char kPool[8];
-        void* pMem = FUN_14208a860(0x188, *(unsigned*)FUN_140876480(kPool, 0));
-        void* pNew = pMem ? FUN_141b76c30(pMem) : 0;
-        alignas(8) char fs2[8];
-        FUN_140984450(fs2, kNode);
-        FUN_141d18b90(pNew, fs2);
-        FUN_1409845a0(fs2);
+        unsigned* pCat = (unsigned*)FUN_140876480(kPool, 0);
+        void* pMem = FUN_14208a860(0x188, *pCat);
+        void* pNewTmp = pMem ? FUN_141b76c30(pMem) : 0;
+        void* pNew = pNewTmp;
+        {
+            NiFixedString fs2(kNode);
+            FUN_141d18b90(pNew, fs2);
+        }
         pHost->AttachChild((NiAVObject*)pNew, false);
         FUN_1409f76f0(NODE(self), pNew);
         void* pEnt = FUN_141200820(self);
@@ -1231,7 +1223,6 @@ void FUN_141202ea0(CEquipModel* self, CString* pName)
             FUN_141200390(self, kModel);
         }
     }
-    FUN_1401bfde0(kId);
 }
 
 // True when the model should be created for the local view: preview/cinematic scene types or the owner's own entity.

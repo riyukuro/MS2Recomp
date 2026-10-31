@@ -104,7 +104,7 @@ class Unk_Cursor
 public:
     void FUN_141b90e30(float* pfX, float* pfY);
 };
-Unk_Cursor* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
 // The scene graph node of a target entity (FUN_14123c410 -> FUN_141b6efc0 -> FUN_141024c90 = its world rotation).
 namespace egf { class Entity; }
@@ -121,7 +121,11 @@ Vector3 FUN_1420834e0(const Vector3& pt, const Unk_EfdMatrix3& m);
 
 // Camera tuning values of the camera xml (FUN_140ae8910 consumes its by-value CString key).
 float FUN_140ae8910(CString key);
-void FUN_140aec8a0(Unk_CameraManager* pMgr, bool b);
+class CameraMgr   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140aec8a0(bool);
+};
 
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
@@ -337,7 +341,7 @@ MS2_REPLACE_METHOD(0x14109ee10, CConsoleCameraMode, vfunc_8, 3644, 0x9E753221);
 void CConsoleCameraMode::vfunc_6(int n)
 {
     CCameraMode::vfunc_6(n);
-    FUN_140aec8a0(Unk_CameraManager::FUN_1409478c0(), true);
+    ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aec8a0(true);
     vfunc_31();
     m_68 = m_48;
     m_10c = m_68;
@@ -380,7 +384,7 @@ void CConsoleCameraMode::vfunc_30()
 {
     float fX;
     float fY;
-    FUN_140aadf80()->FUN_141b90e30(&fX, &fY);
+    ((class Unk_Cursor*)FUN_140aadf80())->FUN_141b90e30(&fX, &fY);
     Unk_PickListPtr pList = Unk_CameraManager::FUN_1409478c0()->FUN_140af0850(fX, fY, true, true, false, NULL);
     if (!pList.FUN_140a16c00())
         return;

@@ -112,7 +112,6 @@
 // MS2-PIN: ?max_size@?$_Tree@V?$_Tset_traits@V?$MS2Ptr@VUnk_Emotion@@@@UUnk_EmotionGreater@@V?$allocator@V?$MS2Ptr@VUnk_Emotion@@@@@std@@$0A@@std@@@std@@QEBA_KXZ 0x140bf5f70 ; prop
 // MS2-PINS-END tplpin
 // MS2-PIN: ??1UICoupleActionDialog@@UEAA@XZ 0x140bf1790
-// MS2-PIN: ?ceil@@YAMM@Z 0x140bf4fd0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicoupleactiondialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uicoupleactiondialog.h"
@@ -150,8 +149,12 @@ public:
     CStringW FUN_1422e0b00();                               // the text
     void FUN_1422e0920(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // text changed callback
 };
-int FUN_1422c76c0(Unk_CoupleInput* p);                      // the input has the focus
-void FUN_1422c7630(ASDisplayObject* p, int nFocus);         // set / clear the focus
+class ASUIComponent   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1422c7630(int);
+    int FUN_1422c76c0();
+};
 // "m_list": the page grid.
 class Unk_CoupleList : public ASDisplayObject
 {
@@ -174,22 +177,20 @@ MS2Ptr<Unk_EmotionKeywords> FUN_140347050(int nEmotion);
 
 // The skill system (emotion list, mode, reset) and the player.
 void FUN_1417691a0(CSkillSystem* p, ATL::CAtlArray<MS2Ptr<Unk_Emotion> >& list);
-int FUN_141765cf0(CSkillSystem* p, int nMode);
-void FUN_141769280(CSkillSystem* p);
 void FUN_14151f200();
-NotifySystem* FUN_140939a10();                              // the notify system
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 
 // Input state, the movie manager, the key binds.
 class Unk_CoupleInputState { public: bool FUN_14116d9c0(int a, int b, int c); };
-Unk_CoupleInputState* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_CoupleUiMgr { public: int FUN_1422d4e20(CString strKey); };
 Unk_CoupleUiMgr* FUN_140b632f0();
 class Unk_CoupleKeyBinds { public: void* FUN_14142d190(int nKey); int FUN_14142b250(int nKey, int a, unsigned __int64 nEmotion, int b, int c); void FUN_14142a8b0(unsigned __int64 nEmotion); };
-Unk_CoupleKeyBinds* FUN_1409331f0();
+class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 
 int FUN_1409e1b80(ASTooltip* p, int nId, int n);            // the learned skill tooltip
 CStringTable* GetStringTable();
-char FUN_1403b3c40(const CStringW& str, const wchar_t* szText);
+bool FUN_1403b3c40(const CStringW& str, const wchar_t* szText);
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);
 void FUN_140710590(COutPacket& packet);                     // send
 
@@ -228,7 +229,7 @@ void UICoupleActionDialog::vfunc_67()
     UIDialog::vfunc_67();
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer != 0)
-        FUN_141769280(pPlayer->FUN_141523bc0());
+        ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->FUN_141523bc0()))->FUN_141769280();
     m_180.clear();
 }
 MS2_REPLACE_METHOD(0x140BEC140, UICoupleActionDialog, vfunc_67, 87, 0xDB363257);
@@ -249,7 +250,7 @@ void UICoupleActionDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
     FUN_140becef0();
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &UICoupleActionDialog::FUN_140becea0));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &UICoupleActionDialog::FUN_140becea0));
 }
 MS2_REPLACE_METHOD(0x140BEC200, UICoupleActionDialog, OnLoadInit, 233, 0xC19CC640);
 
@@ -270,7 +271,7 @@ void UICoupleActionDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
     m_190.AssignRaw(0);
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &UICoupleActionDialog::FUN_140becea0));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &UICoupleActionDialog::FUN_140becea0));
 }
 MS2_REPLACE_METHOD(0x140BEC470, UICoupleActionDialog, vfunc_26, 244, 0x258ACD36);
 
@@ -281,14 +282,14 @@ int UICoupleActionDialog::vfunc_13()
         return 0;
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0) != 0) {
+    if (((class Unk_CoupleInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) != 0) {
         ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
         if (pDlg != 0 && FUN_140b632f0() != 0) {
             if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) != 0 && m_190.get() != 0) {
-                if (FUN_1422c76c0(m_190.operator->()) != 0) {
+                if (((class ASUIComponent*)(class Unk_CoupleInput*)(m_190.operator->()))->FUN_1422c76c0() != 0) {
                     FUN_140bede70(m_190->FUN_1422e0b00());
-                    FUN_1422c7630(pDlg, 1);
-                    FUN_1422c7630(m_190.operator->(), 0);
+                    ((class ASUIComponent*)(class ASDisplayObject*)(pDlg))->FUN_1422c7630(1);
+                    ((class ASUIComponent*)(class ASDisplayObject*)(m_190.operator->()))->FUN_1422c7630(0);
                     return 1;
                 }
             }
@@ -369,7 +370,8 @@ int UICoupleActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) == 0)
             return 0;
-        FUN_140bede70(CStringW(data.FUN_1422b8f40()));
+        CStringW strSearch = data.FUN_1422b8f40();
+        FUN_140bede70(strSearch);
     } else if (_stricmp(szMethod, "onFocusIn") == 0) {
     } else {
         _stricmp(szMethod, "onFocusOut");
@@ -401,8 +403,8 @@ void UICoupleActionDialog::FUN_140becef0()
     if (pPlayer == 0) return;
     ATL::CAtlArray<MS2Ptr<Unk_Emotion> > list;
     FUN_1417691a0(pPlayer->FUN_141523bc0(), list);
-    int nMode = FUN_141765cf0(pPlayer->FUN_141523bc0(), 0);
-    FUN_141765cf0(pPlayer->FUN_141523bc0(), nMode);
+    int nMode = ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->FUN_141523bc0()))->FUN_141765cf0(0);
+    ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->FUN_141523bc0()))->FUN_141765cf0(nMode);
     std::map<unsigned int, Unk_Emotion> unused;
     for (size_t i = 0; i < list.GetCount(); i++) {
         unsigned int nId = list[i]->m_id;
@@ -453,8 +455,8 @@ void UICoupleActionDialog::FUN_140bed2a0(unsigned __int64 nSelection)
 MS2_REPLACE_METHOD(0x140BED2A0, UICoupleActionDialog, FUN_140bed2a0, 28, 0x3CC3BB9E);
 
 // Sort orders of the emotion pages (the comparators live in the skill system unit).
-struct Unk_EmotionLess { bool operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const; };   // 0x141764410
-struct Unk_EmotionGreater { bool operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const; };   // 0x141764570
+struct Unk_EmotionLess { bool operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const; };   // 0x141764570
+struct Unk_EmotionGreater { bool operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const; };   // 0x141764410
 
 // @0x140bed2d0
 void UICoupleActionDialog::FUN_140bed2d0()
@@ -463,13 +465,13 @@ void UICoupleActionDialog::FUN_140bed2d0()
     if (pDlg == 0) return;
     ASArray actions(2);
     int nFocus = 0;
-    std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionLess> sorted;
+    std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionGreater> sorted;
     for (std::map<unsigned int, MS2Ptr<Unk_Emotion> >::iterator it = m_180.begin(); it != m_180.end(); ++it)
     {
         MS2Ptr<Unk_Emotion> spCopy(it->second);
         sorted.insert(spCopy);
     }
-    for (std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionLess>::iterator sit = sorted.begin(); sit != sorted.end(); ++sit) {
+    for (std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionGreater>::iterator sit = sorted.begin(); sit != sorted.end(); ++sit) {
         MS2Ptr<Unk_Emotion> spEmotion(*sit);
         int nId = spEmotion->m_id;
         int nNew = spEmotion->m_isNew;
@@ -483,8 +485,13 @@ void UICoupleActionDialog::FUN_140bed2d0()
             if (FUN_1403b3c40(m_1a8, L"/") != 0)
                 continue;
             bool bFound = false;
-            CStringW strName = GetStringTable()->FUN_141811980(4, nId);
-            if (strName.Find(m_1a8, 0) == -1) {
+            do {
+                CStringW strName = GetStringTable()->FUN_141811980(4, nId);
+                CStringW& rName = strName;
+                if (rName.Find(m_1a8, 0) != -1) {
+                    bFound = true;
+                    break;
+                }
                 std::vector<CStringW> words;
                 CStringW strKeywords = FUN_140bedf00(nId);
                 FUN_140988d60(strKeywords, words, L", ");
@@ -494,9 +501,7 @@ void UICoupleActionDialog::FUN_140bed2d0()
                         break;
                     }
                 }
-            } else {
-                bFound = true;
-            }
+            } while (0);
             if (!bFound)
                 continue;
         }
@@ -523,13 +528,13 @@ void UICoupleActionDialog::FUN_140bed8a0()
     if (pDlg == 0) return;
     ASArray actions(2);
     int nFocus = 0;
-    std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionGreater> sorted;
+    std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionLess> sorted;
     for (std::map<unsigned int, MS2Ptr<Unk_Emotion> >::iterator it = m_180.begin(); it != m_180.end(); ++it)
     {
         MS2Ptr<Unk_Emotion> spCopy(it->second);
         sorted.insert(spCopy);
     }
-    for (std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionGreater>::iterator sit = sorted.begin(); sit != sorted.end(); ++sit) {
+    for (std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionLess>::iterator sit = sorted.begin(); sit != sorted.end(); ++sit) {
         MS2Ptr<Unk_Emotion> spEmotion(*sit);
         int nId = spEmotion->m_id;
         int nNew = spEmotion->m_isNew;
@@ -543,8 +548,13 @@ void UICoupleActionDialog::FUN_140bed8a0()
             if (FUN_1403b3c40(m_1a8, L"/") != 0)
                 continue;
             bool bFound = false;
-            CStringW strName = GetStringTable()->FUN_141811980(4, nId);
-            if (strName.Find(m_1a8, 0) == -1) {
+            do {
+                CStringW strName = GetStringTable()->FUN_141811980(4, nId);
+                CStringW& rName = strName;
+                if (rName.Find(m_1a8, 0) != -1) {
+                    bFound = true;
+                    break;
+                }
                 std::vector<CStringW> words;
                 CStringW strKeywords = FUN_140bedf00(nId);
                 FUN_140988d60(strKeywords, words, L", ");
@@ -554,9 +564,7 @@ void UICoupleActionDialog::FUN_140bed8a0()
                         break;
                     }
                 }
-            } else {
-                bFound = true;
-            }
+            } while (0);
             if (!bFound)
                 continue;
         }
@@ -600,10 +608,19 @@ CStringW UICoupleActionDialog::FUN_140bedf00(unsigned int nEmotion)
 }
 MS2_REPLACE_METHOD(0x140BEDF00, UICoupleActionDialog, FUN_140bedf00, 311, 0x1F48382E);
 
+extern "C" float (__cdecl* __imp_ceilf)(float);   // the exe calls the IAT slot
+
+// The exe's float ceil overload.
+// @0x140bf4fd0
+float FUN_140bf4fd0(float f)
+{
+    return __imp_ceilf(f);
+}
+
 // @0x140bee040
 void UICoupleActionDialog::FUN_140bee040(ASArray& arr)
 {
-    int nRounded = (int)(std::ceil((float)arr.FUN_1422bc5d0() / 6.0f) * 6.0f);
+    int nRounded = (int)(FUN_140bf4fd0((float)arr.FUN_1422bc5d0() / 6.0f) * 6.0f);
     int nMissing = (nRounded > 0x1e ? nRounded : 0x1e) - arr.FUN_1422bc5d0();
     if (nMissing < 0)
         return;
@@ -647,16 +664,16 @@ MS2_REPLACE_METHOD(0x140BEE150, UICoupleActionDialog, FUN_140bee150, 1067, 0x98B
 // @0x140bee590
 int UICoupleActionDialog::FUN_140bee590(int nKey)
 {
-    return FUN_1409331f0()->FUN_14142d190(nKey) == 0;
+    return ((class Unk_CoupleKeyBinds*)FUN_1409331f0())->FUN_14142d190(nKey) == 0;
 }
 MS2_REPLACE_METHOD(0x140BEE590, UICoupleActionDialog, FUN_140bee590, 62, 0xC01866C2);
 
 // @0x140bee5e0
 int UICoupleActionDialog::FUN_140bee5e0(int nKey, unsigned __int64 nEmotion)
 {
-    if (FUN_1409331f0()->FUN_14142b250(nKey, 2, nEmotion, 0, 0) != 0) {
+    if (((class Unk_CoupleKeyBinds*)FUN_1409331f0())->FUN_14142b250(nKey, 2, nEmotion, 0, 0) != 0) {
         FUN_140becef0();
-        FUN_1409331f0()->FUN_14142a8b0(nEmotion);
+        ((class Unk_CoupleKeyBinds*)FUN_1409331f0())->FUN_14142a8b0(nEmotion);
         return 1;
     }
     return 0;

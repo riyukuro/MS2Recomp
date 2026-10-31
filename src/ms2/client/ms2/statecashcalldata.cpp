@@ -42,7 +42,7 @@ MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 
 CString FUN_1405a7e80(int n);                            // number -> text
 int FUN_140718170(const CString& str);                   // text -> number
-unsigned FUN_140869420();                                // millisecond clock
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_14028d260(float f);                              // seconds -> ms
 bool FUN_1401c0090(const CString& a, const CString& b);  // strings are equal
 void FUN_140710590(COutPacket& packet);
@@ -60,11 +60,15 @@ struct Unk_CcStrings
     CString m_str3b8;                                    // +0x3b8
 };
 MS2_CHECK_OFFSET(Unk_CcStrings, m_str3b8, 0x3b8);
-Unk_CcStrings* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // A Constants::Value<int> seen through its Read (the inline COMDAT 0x140ad5c50 lives in another unit).
 class Unk_CcConstValue { public: int FUN_140ad5c50(); };
-float* FUN_140298f40(void* pOption);
+class Unk_IntOptionEntry   // C3: member view for the former free stand-ins
+{
+public:
+    int& FUN_140298f40();
+};
 
 // The casting bar dialog (RTTI UICastingBar, found through FUN_140ac2270).
 class ICastingEventListener;
@@ -79,7 +83,6 @@ UICastingBar* FUN_140ac2270(int nId);
 
 // The actor's move-key state (PCBase::FUN_14166d240).
 class Unk_CcBuffMgr { public: efd::Point3 FUN_141683290(); };
-Unk_CcBuffMgr* FUN_14166d240(PCBase* p);
 
 // The player inventory (global 0x143ab2a90): item lookup by uid and the item's name.
 extern Unk_Inventory DAT_143ab2a90;
@@ -176,7 +179,7 @@ void StateCashCall::vfunc_4(StateData* pData)
     {
         m_n10 = 0x6b;
         m_pOwner->FUN_14166dd20(GetEffectName(), 1.0f, false, false);
-        unsigned nNow = FUN_140869420();
+        unsigned nNow = GetTickCountMs2();
         int nDuration = GetDuration();
         m_nStart = nNow;
         m_nElapsed = nNow;
@@ -272,7 +275,7 @@ void StateCashCall::vfunc_8(double fTime)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
         return;
-    Unk_CcBuffMgr* pMgr = FUN_14166d240(pRider);
+    Unk_CcBuffMgr* pMgr = ((class Unk_CcBuffMgr*)((class PCBase*)(class PCBase*)(pRider))->FUN_14166d240());
     pRider->vfunc_22(pMgr->FUN_141683290());
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0() != 0)
         pRider->vfunc_59(2, 0, 0, 0);
@@ -312,7 +315,7 @@ void StateCashCall::OnCastEnd(double fTime)
     {
         SpawnEffect(strEffect);
         int nWait = 0xc80;
-        if (FUN_1401c0090(strEffect, FUN_1401d31f0()->m_str3a0))
+        if (FUN_1401c0090(strEffect, ((struct Unk_CcStrings*)FUN_1401d31f0())->m_str3a0))
             nWait = 1000;
         SetPhase(0x6c, nWait);
     }
@@ -357,7 +360,7 @@ void StateCashCall::OnLeave(double fTime)
         nWait = 3000;
         break;
     case 5:
-        nWait = FUN_14028d260(*FUN_140298f40(&static_cast<Client::Constants*>(FUN_1401d3200())->CashCallMedicLeaveDelay));
+        nWait = FUN_14028d260(*((float*)&((class Unk_IntOptionEntry*)(void*)(&static_cast<Client::Constants*>(FUN_1401d3200())->CashCallMedicLeaveDelay))->FUN_140298f40()));
         if (FUN_1417b8560() != 0)
             FUN_1412751f0(GetStringCommon(0x98), 1, 1);
         break;
@@ -491,13 +494,13 @@ CString StateCashCall::GetStationName()
     switch (GetCallType()) {
     case 2:
     case 3:
-        return FUN_1401d31f0()->m_str3a0;
+        return ((struct Unk_CcStrings*)FUN_1401d31f0())->m_str3a0;
     case 1:
-        return FUN_1401d31f0()->m_str3a8;
+        return ((struct Unk_CcStrings*)FUN_1401d31f0())->m_str3a8;
     case 4:
-        return FUN_1401d31f0()->m_str3b8;
+        return ((struct Unk_CcStrings*)FUN_1401d31f0())->m_str3b8;
     case 5:
-        return FUN_1401d31f0()->m_str3b0;
+        return ((struct Unk_CcStrings*)FUN_1401d31f0())->m_str3b0;
     }
     return "";
 }

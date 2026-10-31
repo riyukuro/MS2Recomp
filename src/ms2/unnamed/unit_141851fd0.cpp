@@ -8,23 +8,39 @@
 #include "ms2/placeholder/cmainsystem.h"
 
 // ---- exe callees (types unrecovered; same helpers nifanimationcontroller.cpp uses) ----
-void* FUN_14098dc80(void* pObj);                    // first controller of the object
-void* FUN_14098de40(void* pCtrl);                   // next controller
-bool FUN_14098df90(const void* pRtti, void* pObj);  // IsKindOf
+class NiObjectNET   // C3: member view for the former free stand-ins
+{
+public:
+    class NiTimeController* GetControllers() const;
+};
+class NiTimeController   // C3: member view for the former free stand-ins
+{
+public:
+    float GetEndKeyTime() const;
+    class NiTimeController* GetNext() const;
+    void SetPhase(float);
+};
+class NiObject   // C3: member view for the former free stand-ins
+{
+public:
+    static bool IsKindOf(class NiRTTI const*, class NiObject const*);
+};
 void* FUN_14127cc40(void* pObj);                    // property list
 void* FUN_14098ddb0(void* pList);                   // list begin position
 void* FUN_14098de00(void* pList, void** ppPos);     // slot at position, advances it
 void* FUN_140993f00(void* pSlot);                   // slot -> property
 unsigned int FUN_14098daf0(void* pObj);             // child count
-void* FUN_14098db40(void* pObj, unsigned int i);    // child at
+class NiNode   // C3: member view for the former free stand-ins
+{
+public:
+    class NiAVObject* GetAt(unsigned int) const;
+};
 void* FUN_1413fc1d0(void* pObj);                    // child array
 void* FUN_1413fc1f0(void* pArr);                    // array begin position
 bool FUN_141546cb0(void* pList);
 bool FUN_141546c80(void* pArr);
 void* FUN_141546aa0(void* pArr, void** ppPos);      // element at position, advances it
-float FUN_140af7f50(void* pCtrl);                   // controller end time
 void FUN_14098e870(void* pCtrl, int nValue);
-void FUN_14098e9e0(void* pCtrl, float fValue);   // exe takes the value in xmm1
 void FUN_1416f18b0(void* pCtrl, unsigned int uValue);
 extern char DAT_143af8940;                          // NiRTTI: controller kind
 extern char DAT_143afa458;                          // NiRTTI: NiAVObject
@@ -110,14 +126,14 @@ void FUN_141852080(void* pRoot, Unk_CtrlValue* pArg)
 {
     if (pRoot == 0)
         return;
-    void* pCtrl = FUN_14098dc80(pRoot);
+    void* pCtrl = ((void*)((class NiObjectNET*)(void*)(pRoot))->GetControllers());
     while (pCtrl != 0)
     {
-        if (FUN_14098df90(&DAT_143af8940, pCtrl))
+        if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143af8940), (class NiObject const*)(pCtrl)))
             FUN_141852970(pArg, pCtrl);
-        pCtrl = FUN_14098de40(pCtrl);
+        pCtrl = ((void*)((class NiTimeController*)(void*)(pCtrl))->GetNext());
     }
-    if (FUN_14098df90(&DAT_143afa458, pRoot))
+    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa458), (class NiObject const*)(pRoot)))
     {
         void* pObj = pRoot;
         void* pList = FUN_14127cc40(pObj);
@@ -129,12 +145,12 @@ void FUN_141852080(void* pRoot, Unk_CtrlValue* pArg)
                 FUN_141852690(pProp, pArg);
         }
     }
-    if (FUN_14098df90(&DAT_143afa4d8, pRoot))
+    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(pRoot)))
     {
         void* pNode = pRoot;
         for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
         {
-            void* pChild = FUN_14098db40(pNode, i);
+            void* pChild = ((void*)((class NiNode*)(void*)(pNode))->GetAt(i));
             FUN_141852690(pChild, pArg);
         }
         void* pArr = FUN_1413fc1d0(pNode);
@@ -153,13 +169,13 @@ void FUN_141852290(void* pRoot, Unk_CtrlMax* pArg)
 {
     if (pRoot == 0)
         return;
-    void* pCtrl = FUN_14098dc80(pRoot);
+    void* pCtrl = ((void*)((class NiObjectNET*)(void*)(pRoot))->GetControllers());
     while (pCtrl != 0)
     {
         FUN_1418528f0(pArg, pCtrl);
-        pCtrl = FUN_14098de40(pCtrl);
+        pCtrl = ((void*)((class NiTimeController*)(void*)(pCtrl))->GetNext());
     }
-    if (FUN_14098df90(&DAT_143afa458, pRoot))
+    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa458), (class NiObject const*)(pRoot)))
     {
         void* pObj = pRoot;
         void* pList = FUN_14127cc40(pObj);
@@ -171,12 +187,12 @@ void FUN_141852290(void* pRoot, Unk_CtrlMax* pArg)
                 FUN_141852290(pProp, pArg);
         }
     }
-    if (FUN_14098df90(&DAT_143afa4d8, pRoot))
+    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(pRoot)))
     {
         void* pNode = pRoot;
         for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
         {
-            void* pChild = FUN_14098db40(pNode, i);
+            void* pChild = ((void*)((class NiNode*)(void*)(pNode))->GetAt(i));
             FUN_141852290(pChild, pArg);
         }
         void* pArr = FUN_1413fc1d0(pNode);
@@ -195,13 +211,13 @@ void FUN_141852490(void* pRoot, Unk_CtrlValueB* pArg)
 {
     if (pRoot == 0)
         return;
-    void* pCtrl = FUN_14098dc80(pRoot);
+    void* pCtrl = ((void*)((class NiObjectNET*)(void*)(pRoot))->GetControllers());
     while (pCtrl != 0)
     {
         FUN_141852930(pArg, pCtrl);
-        pCtrl = FUN_14098de40(pCtrl);
+        pCtrl = ((void*)((class NiTimeController*)(void*)(pCtrl))->GetNext());
     }
-    if (FUN_14098df90(&DAT_143afa458, pRoot))
+    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa458), (class NiObject const*)(pRoot)))
     {
         void* pObj = pRoot;
         void* pList = FUN_14127cc40(pObj);
@@ -213,12 +229,12 @@ void FUN_141852490(void* pRoot, Unk_CtrlValueB* pArg)
                 FUN_141852490(pProp, pArg);
         }
     }
-    if (FUN_14098df90(&DAT_143afa4d8, pRoot))
+    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(pRoot)))
     {
         void* pNode = pRoot;
         for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
         {
-            void* pChild = FUN_14098db40(pNode, i);
+            void* pChild = ((void*)((class NiNode*)(void*)(pNode))->GetAt(i));
             FUN_141852490(pChild, pArg);
         }
         void* pArr = FUN_1413fc1d0(pNode);
@@ -237,13 +253,13 @@ void FUN_141852690(void* pRoot, Unk_CtrlValue* pArg)
 {
     if (pRoot == 0)
         return;
-    void* pCtrl = FUN_14098dc80(pRoot);
+    void* pCtrl = ((void*)((class NiObjectNET*)(void*)(pRoot))->GetControllers());
     while (pCtrl != 0)
     {
         FUN_141852970(pArg, pCtrl);
-        pCtrl = FUN_14098de40(pCtrl);
+        pCtrl = ((void*)((class NiTimeController*)(void*)(pCtrl))->GetNext());
     }
-    if (FUN_14098df90(&DAT_143afa458, pRoot))
+    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa458), (class NiObject const*)(pRoot)))
     {
         void* pObj = pRoot;
         void* pList = FUN_14127cc40(pObj);
@@ -255,12 +271,12 @@ void FUN_141852690(void* pRoot, Unk_CtrlValue* pArg)
                 FUN_141852690(pProp, pArg);
         }
     }
-    if (FUN_14098df90(&DAT_143afa4d8, pRoot))
+    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(pRoot)))
     {
         void* pNode = pRoot;
         for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
         {
-            void* pChild = FUN_14098db40(pNode, i);
+            void* pChild = ((void*)((class NiNode*)(void*)(pNode))->GetAt(i));
             FUN_141852690(pChild, pArg);
         }
         void* pArr = FUN_1413fc1d0(pNode);
@@ -295,8 +311,8 @@ Unk_CtrlValue::Unk_CtrlValue(float fValue)
 // @0x1418528f0
 void FUN_1418528f0(Unk_CtrlMax* pMax, void* pCtrl)
 {
-    if (FUN_140af7f50(pCtrl) > pMax->m_fValue)
-        pMax->m_fValue = FUN_140af7f50(pCtrl);
+    if (((class NiTimeController*)(void*)(pCtrl))->GetEndKeyTime() > pMax->m_fValue)
+        pMax->m_fValue = ((class NiTimeController*)(void*)(pCtrl))->GetEndKeyTime();
 }
 
 // @0x141852930
@@ -311,5 +327,5 @@ void FUN_141852970(Unk_CtrlValue* pArg, void* pCtrl)
 {
     FUN_14098e870(pCtrl, 1);
     ((Unk_CtrlIface*)pCtrl)->vfunc_18((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280());
-    FUN_14098e9e0(pCtrl, pArg->m_fValue);
+    ((class NiTimeController*)(void*)(pCtrl))->SetPhase(pArg->m_fValue);
 }

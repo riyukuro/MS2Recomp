@@ -900,7 +900,6 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 }
 
 // @0x1418c5410
-// MS2-FUNCTIONAL: string temporaries differ
 void UIBeautyShopDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
     if (m_1b8 == 0)
@@ -915,26 +914,22 @@ void UIBeautyShopDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString&
     else if (_stricmp("getTooltip", strMethod) == 0)
     {
         Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
-        if (pPc)
-        {
-            int nIndex = pArgs->FUN_1422b8a10();
-            if (nIndex >= 0 && nIndex < (int)m_198.GetCount())
-            {
-                MS2Ptr<Unk_BSPriceRow> spRow(m_198.GetAt(nIndex));
-                if (!(spRow == 0))
-                {
-                    Unk_BSFee* pFee = &spRow->m_fee;
-                    if (m_290 == 2)
-                        *pFee = *m_1d0.FUN_1406e3dc0();
-                    unsigned __int64 nPrice = pFee->FUN_1406dc4f0();
-                    CStringW strPrice = FUN_14134a220(pFee, &nPrice);
-                    ASTooltip tip(1, 2);
-                    int nLevel = pPc->vfunc_78();
-                    if (FUN_140f01eb0(tip, spRow, nLevel, strPrice))
-                        *pRetVal = tip.FUN_1422bb870();
-                }
-            }
-        }
+        if (!pPc)
+            return;
+        int nIndex = pArgs->FUN_1422b8a10();
+        if (nIndex < 0 || nIndex >= (int)m_198.GetCount())
+            return;
+        MS2Ptr<Unk_BSPriceRow> spRow(m_198.GetAt(nIndex));
+        if (spRow == 0)
+            return;
+        Unk_BSFee* pFee = &spRow->m_fee;
+        if (m_290 == 2)
+            *pFee = *m_1d0.FUN_1406e3dc0();
+        unsigned __int64 nPrice = pFee->FUN_1406dc4f0();
+        CStringW strPrice = FUN_14134a220(pFee, &nPrice);
+        ASTooltip tip(1, 2);
+        if (FUN_140f01eb0(tip, spRow, (short)pPc->vfunc_78(), strPrice))
+            *pRetVal = tip.FUN_1422bb870();
     }
     else if (_stricmp("getTooltipColor", strMethod) == 0)
     {
@@ -1264,35 +1259,35 @@ void UIBeautyShopDialog::FUN_1418c6c80(int nValue)
 
 // Show the fee (and the sale price when an event applies).
 // @0x1418c6d40
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::FUN_1418c6d40(Unk_BSFee* pFee, unsigned* pPrice)
 {
-    if (!(m_30 == 0))
+    if (m_30 == 0)
+        return;
+    unsigned __int64 nBase;
+    int nLevel = FUN_140f01140();
+    int nEvent = FUN_1418ccb40();
+    int nRes = FUN_1401c0d90()->FUN_140476cf0(nEvent, nLevel);
+    bool bSale = nRes == 0;
+    if (pFee == 0)
     {
-        int nLevel = FUN_140f01140();
-        int nEvent = FUN_1418ccb40();
-        bool bSale = FUN_1401c0d90()->FUN_140476cf0(nEvent, nLevel) == 0;
-        if (pFee == 0)
+        CStringW strDefault = GetStringCommonByKey(L"s_beauty_fee_default");
+        m_30->Invoke("setFee", strDefault, strDefault, bSale, false);
+    }
+    else
+    {
+        nBase = *pPrice;
+        unsigned nSale = FUN_1401c0d90()->FUN_140476c70(nEvent, (unsigned)nBase, nLevel);
+        bool bDiscount = nBase != nSale;
+        if (bDiscount)
         {
-            CStringW strDefault = GetStringCommonByKey(CStringW(L"s_beauty_fee_default"));
-            m_30->Invoke("setFee", CStringW(strDefault), CStringW(strDefault), bSale, false);
+            unsigned __int64 nSalePrice = nSale;
+            CStringW strPrice = FUN_14134a220(pFee, &nSalePrice);
+            m_30->Invoke("setFee", FUN_1409404f0(nBase), strPrice, bSale, bDiscount);
         }
         else
         {
-            unsigned __int64 nBase = *pPrice;
-            unsigned nSale = FUN_1401c0d90()->FUN_140476c70(nEvent, *pPrice, nLevel);
-            bool bDiscount = nBase != nSale;
-            if (bDiscount)
-            {
-                unsigned __int64 nSalePrice = nSale;
-                CStringW strPrice = FUN_14134a220(pFee, &nSalePrice);
-                m_30->Invoke("setFee", FUN_1409404f0(nBase), CStringW(strPrice), bSale, bDiscount);
-            }
-            else
-            {
-                CStringW strPrice = FUN_14134a220(pFee, &nBase);
-                m_30->Invoke("setFee", FUN_1409eb450(nSale), CStringW(strPrice), bSale, bDiscount);
-            }
+            CStringW strPrice = FUN_14134a220(pFee, &nBase);
+            m_30->Invoke("setFee", strPrice, FUN_1409eb450(nSale), bSale, bDiscount);
         }
     }
 }
@@ -2137,13 +2132,13 @@ void UIBeautyShopDialog::FUN_1418cb6e0(int n)
 
 // The guide movie of the page (hair and makeup only).
 // @0x1418cb750
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::FUN_1418cb750(ASObj& out)
 {
     int nShopKind = FUN_1418cbbe0();
     bool bGuide = nShopKind == 1 || nShopKind == 2;
-    // exe: xor eax,eax; cmp eax,2 (an unfolded constant 0 compared with 2)
-    bool bMode = m_290 == 1 || false == 2;
+    // exe: xor eax,eax; cmp eax,2 = a bare constant 2 tested as a condition (`m_290 == 2` lost its left side), so
+    // bMode is always true
+    bool bMode = m_290 == 1 || 2;
     if (bGuide && bMode)
     {
         CString strCategory;
@@ -2407,38 +2402,37 @@ void UIBillDialog::vfunc_67()
 void UIBillDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
-    if (!(m_188 == 0) && !(m_30 == 0))
+    if (m_188 == 0 || m_30 == 0)
+        return;
+    ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30.get());
+    if (pDlg)
     {
-        ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30.get());
-        if (pDlg)
+        pDlg->FUN_140cbe3a0("initData", L"");
+        MS2Ptr<AScript> spRows(m_188->m_20);
+        if (spRows.get())
         {
-            pDlg->FUN_140cbe3a0("initData", L"");
-            MS2Ptr<AScript> spRows(m_188->m_20);
-            if (spRows.get())
+            CString strMode(m_188->m_50.GetLength() > 0 ? "checkbox" : "normal");
+            pDlg->vfunc_13(strMode);
+            CStringW& strCheck = m_188->m_50;
+            int bEnabled = m_188->m_60;
+            if (!strCheck.IsEmpty())
             {
-                CString strMode(m_188->m_50.GetLength() < 1 ? "normal" : "checkbox");
-                pDlg->vfunc_13(strMode);
-                CStringW& strCheck = m_188->m_50;
-                int bEnabled = m_188->m_60;
-                if (!strCheck.IsEmpty())
+                MS2Ptr<Unk_BSCheckBox> spCheck = FUN_140e52670("m_checkbox");
+                if (spCheck.get())
                 {
-                    MS2Ptr<Unk_BSCheckBox> spCheck = FUN_140e52670(CString("m_checkbox"));
-                    if (spCheck.get())
-                    {
-                        spCheck->FUN_1422cdfb0(strCheck);
-                        spCheck->FUN_1422c1fe0(bEnabled);
-                        spCheck->FUN_1422ce090(bEnabled);
-                        spCheck->vfunc_24(1);
-                    }
-                    MS2Ptr<ASTextField> spWarning = FUN_140bb4cf0(CString("m_warning"));
-                    if (spWarning.get())
-                        spWarning->FUN_1422c4cd0(m_188->m_58);
+                    spCheck->FUN_1422cdfb0(strCheck);
+                    spCheck->FUN_1422c1fe0(bEnabled);
+                    spCheck->FUN_1422ce090(bEnabled);
+                    spCheck->vfunc_24(1);
                 }
-                pDlg->Invoke("buildList", Scaleform::GFx::Value(spRows->FUN_1422bb870()), m_188->m_30, CString(strMode));
+                MS2Ptr<ASTextField> spWarning = FUN_140bb4cf0("m_warning");
+                if (spWarning.get())
+                    spWarning->FUN_1422c4cd0(m_188->m_58);
             }
+            pDlg->Invoke("buildList", Scaleform::GFx::Value(spRows->FUN_1422bb870()), m_188->m_30, CString(strMode));
         }
-        vfunc_8(1);
     }
+    vfunc_8(1);
 }
 
 // @0x1418cd740

@@ -85,7 +85,7 @@ public:
     CString m_str588;                                        // +0x588 leave effect of the ready state (cheap)
     CString m_str590;                                        // +0x590 leave effect of the ready state (expensive)
 };
-Unk_PiStrings* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The effect manager: plays an effect for a request (returns its id), stops it by id.
 class Unk_PiEffectMgr
@@ -125,11 +125,10 @@ Unk_PiUiRoot* FUN_1409f7c90();
 class Unk_PiCounter : public CInstrumentManager
 {
 };
-Unk_PiCounter* FUN_140c8dac0();
+struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
 
 int FUN_140768010(int nRange, int nBase);                    // random number in [nBase, nBase + nRange)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned nId);   // efd::ClassInfo::IsKindOf
 bool FUN_14212c720(egf::Entity* pEntity);                    // the entity has finished loading
 void FUN_140a38a50(egf::Entity* pEntity, unsigned nProp, const Vector3* pValue);   // SetProperty(point)
 void FUN_14098c6e0(egf::Entity* pEntity, unsigned nProp, bool* pValue);                    // SetProperty(bool)
@@ -139,6 +138,31 @@ CString FUN_1409a2360(const char* psz, int n);               // text conversion
 CString FUN_141b6ed00(const CString& str);                   // normalised copy of a model name
 CString FUN_140298360(const char* pszPrefix, const CString& str);   // prefix + str
 __int64 FUN_14028d0e0();                                     // the current time
+
+// The owner's position slot (vfunc_18) seen as returning the Vector3 placeholder.
+class Unk_SpiPos
+{
+public:
+    virtual void vfunc_0();
+    virtual void vfunc_1();
+    virtual void vfunc_2();
+    virtual void vfunc_3();
+    virtual void vfunc_4();
+    virtual void vfunc_5();
+    virtual void vfunc_6();
+    virtual void vfunc_7();
+    virtual void vfunc_8();
+    virtual void vfunc_9();
+    virtual void vfunc_10();
+    virtual void vfunc_11();
+    virtual void vfunc_12();
+    virtual void vfunc_13();
+    virtual void vfunc_14();
+    virtual void vfunc_15();
+    virtual void vfunc_16();
+    virtual void vfunc_17();
+    virtual Vector3 vfunc_18();
+};
 
 static inline Vector3 PiPoint(const NiPoint3& k) { return *reinterpret_cast<const Vector3*>(&k); }
 static inline efd::Point3 PiEfd(const NiPoint3& k) { return efd::Point3(k.x, k.y, k.z); }
@@ -322,11 +346,11 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
     }
     if (FUN_1417b8560() != 0)
     {
-        FUN_140c8dac0()->SetInstrument(m_spInstrumentData->FUN_140dde200(), m_spInstrumentData->m_n28);
+        ((class Unk_PiCounter*)FUN_140c8dac0())->SetInstrument(m_spInstrumentData->FUN_140dde200(), m_spInstrumentData->m_n28);
         m_vPos = PiPoint(m_pOwner->vfunc_18());
     }
     Unk_EffectQuery kQuery;
-    kQuery.m_strName = FUN_1401d31f0()->m_str588;
+    kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str588;
     kQuery.m_nObject = (FUN_1417b8560() == 0) ? 3 : 1;
     kQuery.SetActor(m_pOwner->FUN_14123c580());
     reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kQuery);
@@ -378,12 +402,12 @@ void StatePlayInstrument::vfunc_5(int n)
     m_nEffect68 = 0;
     m_nEffect6c = 0;
     Unk_EffectQuery kQuery;
-    kQuery.m_strName = FUN_1401d31f0()->m_str590;
+    kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str590;
     kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
     kQuery.SetActor(m_pOwner->FUN_14123c580());
     reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kQuery);
     if (FUN_1417b8560() != 0)
-        FUN_140c8dac0()->Stop();
+        ((class Unk_PiCounter*)FUN_140c8dac0())->Stop();
 }
 
 // @0x140ddf4b0
@@ -394,18 +418,18 @@ void StatePlayInstrument::vfunc_3(double fTime)
     if (m_nB0 != m_pOwner->vfunc_25())
     {
         m_nB0 = m_pOwner->vfunc_25();
-        if (!FUN_14087ddc0(m_pOwner ? m_pOwner->GetClassDesc() : 0, 0x6200044))
+        if (!efd::ClassInfo::IsKindOf(m_pOwner ? m_pOwner->GetClassDesc() : 0, 0x6200044))
         {
             if (((NiNode*)m_spEffect ? true : false) && FUN_1409f7c90()->FUN_140ddcc90() == 0)
-                static_cast<NiAVObject*>(m_spEffect)->SetAppCulled(m_nB0 != 0 ? true : false);
+                m_spEffect->SetAppCulled(m_nB0 != 0 ? true : false);
             if (((egf::Entity*)m_spEntity ? true : false) && FUN_1409f7c90()->FUN_140ddcc90() == 0)
             {
                 bool bShow = m_nB0 != 0 ? false : true;
-                FUN_14098c6e0(m_spEntity, 0xa0b6b179, &bShow);
+                FUN_14098c6e0(m_spEntity.operator->(), 0xa0b6b179, &bShow);
             }
         }
     }
-    if (!m_bB4 && ((egf::Entity*)m_spEntity ? true : false) && FUN_14212c720(m_spEntity))
+    if (!m_bB4 && ((egf::Entity*)m_spEntity ? true : false) && FUN_14212c720(m_spEntity.operator->()))
     {
         AvatarPC* pAvatar = FUN_140de0900(m_pOwner);
         if (pAvatar != 0)
@@ -413,29 +437,27 @@ void StatePlayInstrument::vfunc_3(double fTime)
             NiAVObject* pRoot = FUN_141b6efc0(m_spEntity);
             if (pRoot != 0)
             {
-                FUN_140a38a50(m_spEntity, 0xfd95ca52, &DAT_143b01a60);
-                FUN_140a38a50(m_spEntity, 0x68c7c29d, &DAT_143b01a60);
+                FUN_140a38a50(m_spEntity.operator->(), 0xfd95ca52, &DAT_143b01a60);
+                FUN_140a38a50(m_spEntity.operator->(), 0x68c7c29d, &DAT_143b01a60);
                 bool bShow = true;
-                FUN_14098c6e0(m_spEntity, 0xa0b6b179, &bShow);
-                pAvatar->FUN_1409f5560(static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, pRoot)));
+                FUN_14098c6e0(m_spEntity.operator->(), 0xa0b6b179, &bShow);
+                NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, pRoot));
+                pAvatar->FUN_1409f5560(pNode);
                 m_bB4 = true;
             }
         }
     }
     Vector3 kZero = DAT_143b01a60;
     m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
-    if (FUN_1417b8560() != 0)
+    if (FUN_1417b8560() == 0)
+        return;
+    if (m_pOwner->vfunc_99(0) != 0)
     {
-        if (m_pOwner->vfunc_99(0) != 0)
-        {
-            m_pOwner->vfunc_59(5, 0, 0, 0);
-        }
-        else
-        {
-            Vector3 kPos = PiPoint(m_pOwner->vfunc_18());
-            if (50.0f < kPos.FUN_140965c40(m_vPos).FUN_140967ac0())
-                m_pOwner->vfunc_59(1, 0, 0, 0);
-        }
+        m_pOwner->vfunc_59(5, 0, 0, 0);
+    }
+    else if (reinterpret_cast<Unk_SpiPos*>(m_pOwner)->vfunc_18().FUN_140965c40(m_vPos).FUN_140967ac0() > 50.0f)
+    {
+        m_pOwner->vfunc_59(1, 0, 0, 0);
     }
 }
 
@@ -501,9 +523,9 @@ void StatePlayInstrument::FUN_140ddfc00()
     {
         Unk_EffectQuery kQuery;
         if (bExpensive)
-            kQuery.m_strName = FUN_1401d31f0()->m_str550;
+            kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str550;
         else
-            kQuery.m_strName = FUN_1401d31f0()->m_str518;
+            kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str518;
         kQuery.m_nObject = FUN_1417b8560() != 0 ? 1 : 3;
         kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
         {
@@ -511,9 +533,9 @@ void StatePlayInstrument::FUN_140ddfc00()
             if (spBuddy.get() != 0 && spBuddy->FUN_1401cc5b0() != 0)
             {
                 if (bExpensive)
-                    kQuery.m_strName = FUN_1401d31f0()->m_str570;
+                    kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str570;
                 else
-                    kQuery.m_strName = FUN_1401d31f0()->m_str538;
+                    kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str538;
             }
         }
         m_nEffect68 = reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kQuery);
@@ -522,9 +544,9 @@ void StatePlayInstrument::FUN_140ddfc00()
     {
         Unk_EffectQuery kQuery;
         if (bExpensive)
-            kQuery.m_strName = FUN_1401d31f0()->m_str558;
+            kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str558;
         else
-            kQuery.m_strName = FUN_1401d31f0()->m_str520;
+            kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str520;
         kQuery.m_nObject = FUN_1417b8560() != 0 ? 1 : 3;
         kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
         {
@@ -532,9 +554,9 @@ void StatePlayInstrument::FUN_140ddfc00()
             if (spBuddy.get() != 0 && spBuddy->FUN_1401cc5b0() != 0)
             {
                 if (bExpensive)
-                    kQuery.m_strName = FUN_1401d31f0()->m_str578;
+                    kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str578;
                 else
-                    kQuery.m_strName = FUN_1401d31f0()->m_str540;
+                    kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str540;
             }
         }
         m_nEffect68 = reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kQuery);
@@ -543,9 +565,9 @@ void StatePlayInstrument::FUN_140ddfc00()
     {
         Unk_EffectQuery kQuery;
         if (bExpensive)
-            kQuery.m_strName = FUN_1401d31f0()->m_str560;
+            kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str560;
         else
-            kQuery.m_strName = FUN_1401d31f0()->m_str528;
+            kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str528;
         kQuery.m_nObject = FUN_1417b8560() != 0 ? 1 : 3;
         kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
         m_nEffect68 = reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kQuery);
@@ -554,9 +576,9 @@ void StatePlayInstrument::FUN_140ddfc00()
     {
         Unk_EffectQuery kQuery;
         if (bExpensive)
-            kQuery.m_strName = FUN_1401d31f0()->m_str568;
+            kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str568;
         else
-            kQuery.m_strName = FUN_1401d31f0()->m_str530;
+            kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str530;
         kQuery.m_nObject = FUN_1417b8560() != 0 ? 1 : 3;
         kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
         {
@@ -564,9 +586,9 @@ void StatePlayInstrument::FUN_140ddfc00()
             if (spBuddy.get() != 0 && spBuddy->FUN_1401cc5b0() != 0)
             {
                 if (bExpensive)
-                    kQuery.m_strName = FUN_1401d31f0()->m_str580;
+                    kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str580;
                 else
-                    kQuery.m_strName = FUN_1401d31f0()->m_str548;
+                    kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str548;
             }
         }
         m_nEffect68 = reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kQuery);
@@ -617,16 +639,22 @@ void StatePlayInstrument::FUN_140de04a0()
     PCBase* pPC = FUN_1417b8370();
     if (pPC == 0)
         return;
-    if (m_n10 == 0x7d || m_n10 == 0x80)
+    switch (m_n10)
     {
+    case 0x7d:
+    case 0x80:
         FUN_140de0780(m_spInstrument->m_strAnimationReady);
-    }
-    else if (m_n10 == 0x7e || m_n10 == 0x7f || m_n10 == 0x81)
-    {
-        if (!m_bA0)
-            FUN_140de05a0(FUN_140768010(10, 1));
-        else
+        break;
+    case 0x7e:
+    case 0x7f:
+    case 0x81:
+        if (m_bA0) {
             FUN_140de0780(m_strLastAnim);
+        } else {
+            int nLevel = FUN_140768010(10, 1);
+            FUN_140de05a0(nLevel);
+        }
+        break;
     }
 }
 

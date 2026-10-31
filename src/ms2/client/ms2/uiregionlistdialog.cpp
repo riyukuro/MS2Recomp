@@ -87,7 +87,7 @@ public:
     virtual void vfunc_56();
     virtual void vfunc_57(ATL::CAtlArray<Unk_RlPtr>* pOut);     // 57
 };
-Unk_RlServer* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 
 // The client settings: the entry that holds the chosen region id.
 class Unk_RlSettings;
@@ -96,8 +96,8 @@ void FUN_1412609c0(CStringW* pEntry, const CStringW& strValue);
 
 int FUN_1406c34c0();                                            // the Nexon platform is active
 extern CString g_strServerAddr;                                 // the login ip
-CInputKeyHandler* FUN_14025e7c0();
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned nArgs, UIDialog* pDialog);
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 CString FUN_14016a5c0(const char* sz, int n);
 CString FUN_140188f50(const char* sz, int n);
 CString FUN_140e819e0(CString strHost);
@@ -111,7 +111,7 @@ public:
 };
 Unk_RlSceneMgr* FUN_1408e57f0();
 class Unk_RlNetwork { public: void FUN_1415382c0(); };
-Unk_RlNetwork* FUN_140714f90();
+class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
 void FUN_141acfad0(UISceneLogin* pScene, const int& nUiId);     // UISceneLogin: hide the title and the dialogs
 
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& a);    // set a Value from an AS object
@@ -145,7 +145,7 @@ UIRegionListDialog::UIRegionListDialog()
     m_nUnused198 = 0;
     m_nSelected = 0;
     m_strSaved = L"";
-    FUN_140d86260()->vfunc_57(&m_regions);
+    ((class Unk_RlServer*)FUN_140d86260())->vfunc_57(&m_regions);
 }
 
 // @0x140e80330
@@ -172,7 +172,7 @@ int UIRegionListDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d890(false)) {
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d890(false)) {
         m_30->Invoke("onEnterKey");
         return 1;
     }
@@ -185,7 +185,7 @@ int UIRegionListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, this) != 0)
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, (void*)(this)) != 0)
         return 1;
     if (_stricmp("onSelectRegion", szMethod) == 0) {
         ASData data;
@@ -216,7 +216,7 @@ void UIRegionListDialog::FUN_140e80620()
         FUN_141924680();
         return;
     }
-    FUN_140714f90()->FUN_1415382c0();
+    ((class Unk_RlNetwork*)FUN_140714f90())->FUN_1415382c0();
     vfunc_67();
 }
 

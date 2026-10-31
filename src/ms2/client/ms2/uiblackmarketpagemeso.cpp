@@ -66,7 +66,7 @@ int FUN_1401bcd30();                                                // default c
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's html text
 void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMovieId);  // a tooltip on the target
-CBlockManager* FUN_140a6a830();                                     // the block manager
+class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);   // set a UInt
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);          // set a Boolean
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // assign a value
@@ -170,7 +170,7 @@ int BlackMarketPageMesoSearch::vfunc_4(const char* szMethod, const Scaleform::GF
         if (spProduct == 0)
             return 1;
         {
-            BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0x26);
+            BlockPtr spBlock = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(0x26);
             if (spBlock.get())
             {
                 FUN_140a2ff20(spBlock, 0x26, 0);
@@ -560,7 +560,7 @@ void BlackMarketPageMesoRegister::FUN_140f1c3b0(const Scaleform::GFx::FunctionHa
         return;
     }
     {
-        BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0x25);
+        BlockPtr spBlock = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(0x25);
         if (spBlock.get())
         {
             FUN_140a2ff20(spBlock, 0x25, 0);

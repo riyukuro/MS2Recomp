@@ -83,18 +83,21 @@ template<class T> MS2Ptr<T> AScript::FUN_140bc7280(const CString& strName)
 struct Unk_DmActor { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };   // the local player: only the level (slot 78, +0x270) is used
 #define Unk_DmActorLevel(pActor) static_cast<Unk_DmActor*>(pActor)->vfunc_78()
 
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 class Unk_DmSceneMgr;
 Unk_DmSceneMgr* FUN_1408e57f0();
-int FUN_1422b9e00(Unk_DmSceneMgr* pMgr);                                    // the current scene id
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSubSceneId();
+};
 class Unk_DmUIMgr { public: void FUN_141adc530(int nUiId); };
-WorldService* FUN_1403ed2d0();
 bool FUN_140930b40();
-NotifySystem* FUN_140939a10();
-PacketHandlerManager* FUN_140bccd50();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 UIQuestEventDispatcher* FUN_140bfc4b0();
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                  // has the AS object been released
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
@@ -119,17 +122,17 @@ UIDailyMissionDialog::UIDailyMissionDialog()
 {
     FUN_141924170(1);
     m_1b0 = 0;
-    FUN_140939a10()->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::FUN_140bffee0));
-    FUN_140939a10()->RegisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::FUN_140bfff70));
-    FUN_140bccd50()->RegisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIDailyMissionDialog::FUN_140bfff90));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::FUN_140bffee0));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::FUN_140bfff70));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIDailyMissionDialog::FUN_140bfff90));
 }
 
 // @0x140bff390
 UIDailyMissionDialog::~UIDailyMissionDialog()
 {
-    FUN_140939a10()->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::FUN_140bffee0));
-    FUN_140939a10()->UnregisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::FUN_140bfff70));
-    FUN_140bccd50()->UnregisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIDailyMissionDialog::FUN_140bfff90));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::FUN_140bffee0));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::FUN_140bfff70));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIDailyMissionDialog::FUN_140bfff90));
 }
 
 // @0x140bff660
@@ -225,7 +228,7 @@ int UIDailyMissionDialog::vfunc_48() { return 0x4f53; }
 void UIDailyMissionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     CStringW strType = pArgs->FUN_1422b8f40();
@@ -282,9 +285,9 @@ void UIDailyMissionDialog::vfunc_o178_8(void* pQuestPtr)
 // @0x140bffee0
 void UIDailyMissionDialog::FUN_140bffee0(NotifyObject* pNotify)
 {
-    if (FUN_1403ed2d0()->FUN_141bcb0a0())
+    if (WorldService::GetInstance()->FUN_141bcb0a0())
         return;
-    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
+    if (((class GFxSceneService*)(class Unk_DmSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
         return;
     if (!FUN_140bffff0())
         return;
@@ -316,9 +319,9 @@ void UIDailyMissionDialog::FUN_140bfff90(CInPacket& rPacket)
 // @0x140bffff0
 int UIDailyMissionDialog::FUN_140bffff0()
 {
-    if (!FUN_140166410()->FUN_14036d570(0x92))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x92))
         return 0;
-    Unk_DmActor* pPlayer = static_cast<Unk_DmActor*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    Unk_DmActor* pPlayer = static_cast<Unk_DmActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     return pPlayer->vfunc_78() >= 1;
@@ -328,7 +331,7 @@ int UIDailyMissionDialog::FUN_140bffff0()
 // @0x140c00070
 void UIDailyMissionDialog::SendQuest(int nQuestId)
 {
-    Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
+    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
     if (spQuest.IsNull())
         return;
     if (spQuest->IsComplete() == 0)
@@ -350,8 +353,8 @@ void UIDailyMissionDialog::FUN_140c001d0()
     {
         spList->FUN_1422dd1d0();
         ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
-        FUN_140764020()->FUN_1416cfc70(quests, 1, 0);
-        FUN_140764020()->FUN_1416cfc70(quests, 2, 0);
+        ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 1, 0);
+        ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 2, 0);
         for (size_t i = 0; i < quests.GetCount(); i++)
         {
             Unk_PayloadPtr<CQuest> spQuest = quests[i];
@@ -392,7 +395,7 @@ void UIDailyMissionDialog::FUN_140c00500()
                 FUN_1409ee290(&m_30)->Invoke("addLevelGuide", row);
         }
     }
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     int nCur = FUN_140c01f50();
@@ -413,7 +416,7 @@ void UIDailyMissionDialog::FUN_140c00500()
 // @0x140c009b0
 void UIDailyMissionDialog::FUN_140c009b0()
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (MS2Ptr<ASButtonBar> spTab = FUN_140c02870("m_groupTab"))
@@ -485,7 +488,7 @@ void UIDailyMissionDialog::FUN_140c01040(ASObj& rRow, CQuest* pQuest)
 {
     if (pQuest == 0)
         return;
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     CString strIcon = pQuest->GetData()->m_338.m_8;
@@ -509,10 +512,10 @@ int UIDailyMissionDialog::FUN_140c012d0(ASObj& rRow, unsigned nQuestId)
         return 0;
     if (m_30.IsNull())
         return 0;
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
+    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
     if (spQuest.IsNull())
         return 0;
     if (spQuest->GetState() == 3)
@@ -544,7 +547,7 @@ void UIDailyMissionDialog::FUN_140c01790(ASObj& rRow, unsigned nQuestId, int bNa
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
     if (spData.IsNull())
         return;
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     CQuestData::QuestRewardItem* pReward = 0;
@@ -579,7 +582,7 @@ void UIDailyMissionDialog::FUN_140c01790(ASObj& rRow, unsigned nQuestId, int bNa
 int UIDailyMissionDialog::FUN_140c01b50(int nGroup)
 {
     ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
-    FUN_140764020()->FUN_1416cfc70(quests, 2, 0);
+    ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 2, 0);
     int nCount = 0;
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
@@ -598,7 +601,7 @@ int UIDailyMissionDialog::FUN_140c01b50(int nGroup)
 int UIDailyMissionDialog::FUN_140c01d30(int nGroup)
 {
     ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
-    FUN_140764020()->FUN_1416cfc70(quests, 1, 0);
+    ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 1, 0);
     int nCount = 0;
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
@@ -619,7 +622,7 @@ int UIDailyMissionDialog::FUN_140c01d30(int nGroup)
 int UIDailyMissionDialog::FUN_140c01f50()
 {
     ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
-    FUN_140764020()->FUN_1416cfc70(quests, 4, 0);
+    ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 4, 0);
     int nBest = 0;
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
@@ -640,11 +643,11 @@ int UIDailyMissionDialog::FUN_140c01f50()
 // @0x140c020d0
 int UIDailyMissionDialog::FUN_140c020d0()
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
-    FUN_140764020()->FUN_1416cfc70(quests, 4, 5);
+    ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 4, 5);
     int nBest = 0;
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
@@ -667,7 +670,7 @@ int UIDailyMissionDialog::FUN_140c020d0()
 int UIDailyMissionDialog::FUN_140c02320(int nGroup)
 {
     ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
-    FUN_140764020()->FUN_1416cfc70(quests, 4, 0);
+    ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 4, 0);
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
         Unk_PayloadPtr<CQuest> spQuest = quests[i];

@@ -139,7 +139,11 @@ public:
 };
 extern Unk_GpDb* DAT_143abe318;                         // the menu table
 Unk_GpDb* FUN_140c1d2f0() { return DAT_143abe318; }     // 0x140c1d2f0
-bool FUN_140cf0bf0(Unk_GpNode* pNode);                  // the node is usable
+class CGameMenuItem   // C3: member view for the former free stand-ins
+{
+public:
+    bool IsVisible();
+};
 
 class ASDialog : public ASDisplayObject {};
 
@@ -171,8 +175,7 @@ CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // f
 CFeatureManager* FUN_140166410();
 class Unk_GpUi { public: void FUN_141adc750(int nUiId); };
 class Unk_14025e7c0 { public: bool FUN_14116d9c0(int nKey, int a, int b); bool FUN_14116dd30(int nKey, int a, int b); };
-Unk_14025e7c0* FUN_14025e7c0();
-bool FUN_140a467d0(const MS2Ptr<AScript>*);             // has the AS object been released
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int n);
 
@@ -273,20 +276,20 @@ int UIGamePadMenuDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (vfunc_55() != 0 || FUN_140a467d0(&m_30))
+    if (vfunc_55() != 0 || ((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        if (FUN_14025e7c0()->FUN_14116d9c0(0x92, 0, 0))
+        if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0x92, 0, 0))
             FUN_140c1c530(0x92);
-        else if (FUN_14025e7c0()->FUN_14116d9c0(0x93, 0, 0))
+        else if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0x93, 0, 0))
             FUN_140c1c530(0x93);
-        else if (FUN_14025e7c0()->FUN_14116d9c0(0x94, 0, 0))
+        else if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0x94, 0, 0))
             FUN_140c1c530(0x94);
-        else if (FUN_14025e7c0()->FUN_14116d9c0(0x95, 0, 0))
+        else if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0x95, 0, 0))
             FUN_140c1c530(0x95);
-        else if (FUN_14025e7c0()->FUN_14116dd30(0x493e2, 0, 0))
+        else if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0))
             FUN_1409ee290(&m_30)->Invoke("menuClick");
         else
             return 0;
@@ -323,7 +326,7 @@ void UIGamePadMenuDialog::vfunc_72()
 // @0x140c1b550
 void UIGamePadMenuDialog::FUN_140c1b550()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     FUN_140c1c010(m_menus);
     if (m_menus.GetCount() > 0)
@@ -342,7 +345,7 @@ void UIGamePadMenuDialog::FUN_140c1b620()
         ASObj obj(2);
         obj.FUN_1407cb9c0("row", spNode->m_nRow);
         obj.FUN_1407cb9c0("col", spNode->m_nCol);
-        if (!FUN_140cf0bf0(spNode.get()))
+        if (!((class CGameMenuItem*)(class Unk_GpNode*)(spNode.get()))->IsVisible())
             return;
         if (FUN_140c1c160(spNode->m_nId, &obj) == 0)
             return;
@@ -355,7 +358,7 @@ void UIGamePadMenuDialog::FUN_140c1b620()
                 for (size_t i = 0; i < spNode->m_children.GetCount(); i++)
                 {
                     MS2Ptr<Unk_GpNode> spChild(spNode->m_children[i]);
-                    if (!FUN_140cf0bf0(spChild.get()))
+                    if (!((class CGameMenuItem*)(class Unk_GpNode*)(spChild.get()))->IsVisible())
                         continue;
                     if (!FUN_140c1bf90(spChild->m_nId))
                         continue;

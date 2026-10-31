@@ -117,8 +117,14 @@ set(MS2_TOOLSET_vc9v_OPTIONS
 )
 set(MS2_UNIT_TOOLSETS vc9 vc9c vc9v vc11)
 
-# Apply the profiles to the sources of `srcvar` that declare one. Options only under real MSVC (clang-cl never
-# byte-matches and keeps the project's codegen); definitions for both compilers so the code is the same.
+# Profile options that change struct layout rather than codegen: clang-cl gets these too, so the hook DLL's structs have
+# the same size and offsets as the cl objects (without /Zp8 a clang sizeof static_assert can fail, or a layout mismatch
+# can hide, e.g. TreeCacheText 3a5e6cbdd).
+set(MS2_LAYOUT_OPTIONS "/Zp8")
+
+# Apply the profiles to the sources of `srcvar` that declare one. Codegen options only under real MSVC (clang-cl never
+# byte-matches and keeps the project's codegen); the layout options (MS2_LAYOUT_OPTIONS) and the definitions for both
+# compilers so the code and its data layout are the same.
 function(ms2_unit_profiles srcvar)
     foreach(f IN LISTS ${srcvar})
         file(STRINGS "${f}" hdr LIMIT_COUNT 1 REGEX "^[ \t]*//[ \t]*MS2-FLAGS:")
@@ -132,6 +138,16 @@ function(ms2_unit_profiles srcvar)
         set_property(SOURCE "${f}" APPEND PROPERTY COMPILE_DEFINITIONS ${MS2_PROFILE_${prof}_DEFINITIONS})
         if(MSVC AND NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
             set_property(SOURCE "${f}" APPEND PROPERTY COMPILE_OPTIONS ${MS2_PROFILE_${prof}_OPTIONS})
+        elseif(MSVC)
+            set(layout "")
+            foreach(o IN LISTS MS2_PROFILE_${prof}_OPTIONS)
+                if(o IN_LIST MS2_LAYOUT_OPTIONS)
+                    list(APPEND layout "${o}")
+                endif()
+            endforeach()
+            if(layout)
+                set_property(SOURCE "${f}" APPEND PROPERTY COMPILE_OPTIONS ${layout})
+            endif()
         endif()
     endforeach()
 endfunction()

@@ -126,7 +126,7 @@ class Unk_CubeWorld
 public:
 };
 class Unk_CubeService;
-Unk_CubeService* FUN_1410b27c0();
+class CubeMapInformationService* GetCubeMapService();   // C3: was FUN_1410b27c0
 Unk_CubeWorld* FUN_1410b9e70(Unk_CubeService* pService);
 
 int FUN_1408a13d0(Vector3 kPos);                            // column key of a position
@@ -140,7 +140,7 @@ struct Unk_RainPaths
     char m_pad_0000[0x100];
     CString m_strTexture;
 };
-Unk_RainPaths* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 CNifLoadingService* FUN_140a0afd0();
 
 // The scene registry: takes the list of nodes to draw, returns a handle.
@@ -204,7 +204,7 @@ static void FillColumns(const Vector3& kPos, ATL::CAtlArray<Unk_Int3>& arrCube)
 {
     const int nSpan = 20;
     const int nHalf = 10;
-    Unk_CubeService* pService = FUN_1410b27c0();
+    Unk_CubeService* pService = ((class Unk_CubeService*)GetCubeMapService());
     Unk_CubeWorld* pWorld = FUN_1410b9e70(pService);
     Unk_Int3 kCell = FUN_1408a1430(kPos);
     for (int dx = -nHalf; dx < nHalf; dx++)
@@ -385,7 +385,7 @@ void RainDropSystem::Create()
     for (unsigned int i = 0; i < 16; i++)
     {
         CString strName;
-        strName.Format("%sRainDrop%d.dds", (const char*)FUN_1401d31f0()->m_strTexture, i);
+        strName.Format("%sRainDrop%d.dds", (const char*)((struct Unk_RainPaths*)FUN_1401d31f0())->m_strTexture, i);
         m_arrTexture.Add(FUN_140a0afd0()->GetTexture(strName, 5));
     }
 

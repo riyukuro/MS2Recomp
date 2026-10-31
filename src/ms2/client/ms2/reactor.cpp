@@ -96,7 +96,7 @@ public:
 };
 Unk_RxAnimSvc* FUN_141b6f910();
 void FUN_141b71e70(egf::EntityID id, bool bFlag, int b, int c);
-void FUN_14098c6e0(egf::Entity* pEntity, unsigned nHash, const bool& bValue);
+void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 const char* FUN_1408ac310(efd::utf8string* p);
 void FUN_1409989e0(efd::utf8string* p, const char* psz);
 void FUN_1408a8900(efd::utf8string* p);
@@ -146,7 +146,7 @@ public:
     Unk_RxCond m_cond;                                          // +0x30
 };
 class Unk_RxEvtMgr { public: MS2Ptr<Unk_RxEvtRec> FUN_14047d230(); };
-Unk_RxEvtMgr* FUN_1401c0d90();
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // Placement check: field grid (service behind 0x143b059e8), map data of the world, actor helpers.
 struct Unk_EntityAppFramework { char m_pad[8]; };
@@ -175,7 +175,7 @@ public:
     Unk_RxGrid* FUN_1401cd1a0();                                // the grid
     Unk_RxGrid* m_p;
 };
-Unk_RxGrid* FUN_1401cd040(Unk_EntityAppFramework* p);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 void FUN_1401cd0b0(Unk_RxGridRef* p, Unk_RxGrid* pGrid);
 void FUN_1401cd150(Unk_RxGridRef* p);
 Unk_RxGridRef::Unk_RxGridRef(Unk_RxGrid* p) { FUN_1401cd0b0(this, p); }
@@ -187,7 +187,7 @@ public:
     int m_nKind;                                                // +0xc4
 };
 class Unk_RxPhys;
-Unk_RxPhys* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 int FUN_14168a450(Unk_RxPhys* p, Vector3* pPos, float* pOut, float fRange);
 Unk_Int3 FUN_1408a14c0(Vector3 pt);                     // cell of a point
 int FUN_1408a03c0(Unk_Int3 cell);                               // cell id
@@ -550,7 +550,7 @@ void CReactor::vfunc_9(void* p)
 {
     GameObject::vfunc_9(p);
     bool bValue = false;
-    FUN_14098c6e0((egf::Entity*)p, 0x2a7fd9f4, bValue);
+    FUN_14098c6e0((class Unk_CachedEntity*)((egf::Entity*)p), 0x2a7fd9f4, bValue);
 }
 
 // @0x140b7a1b0
@@ -607,7 +607,7 @@ int FUN_140b7a3d0(PCBase* pPc, int nReactorId)
     int nEvent = spData->m_nGameEventId;
     if (nEvent == 0)
         return 0;
-    MS2Ptr<Unk_RxEvtRec> spRec = FUN_1401c0d90()->FUN_14047d230();
+    MS2Ptr<Unk_RxEvtRec> spRec = ((class Unk_RxEvtMgr*)FUN_1401c0d90())->FUN_14047d230();
     if (spRec.IsNull())
         return 4;
     if (spRec->m_nEvtId != nEvent)
@@ -657,7 +657,7 @@ int FUN_140b7a650(PCBase* pPc)
     if (bBlocked)
         return 1;
 
-    Unk_RxGridRef grid(FUN_1401cd040(&DAT_143b059e8));
+    Unk_RxGridRef grid(((class Unk_RxGrid*)FUN_1401cd040(&DAT_143b059e8)));
     if (grid.FUN_140885310() == 0)
     {
         MS2_ASSERT_AT(0x21e, 0);
@@ -731,7 +731,7 @@ int FUN_140b7a650(PCBase* pPc)
         efd::Point3* pSample = &samples[i];
         pSample->z = pSample->z + 10.0f;
         float fHit = 0.0f;
-        if (FUN_14168a450(FUN_1409f7ca0(), reinterpret_cast<Vector3*>(pSample), &fHit, 50.0f) == 0)
+        if (FUN_14168a450(((class Unk_RxPhys*)FUN_1409f7ca0()), reinterpret_cast<Vector3*>(pSample), &fHit, 50.0f) == 0)
             return 1;
     }
     }
@@ -787,42 +787,43 @@ void FUN_140b7b7a0(int nError)
 {
     switch (nError)
     {
+        break;   // dead jmp-end after the exe dispatch
     case 1:
     {
         CStringW strKey(L"s_reactor_failed");
         FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
-        break;
     }
+        break;
     case 2:
     {
         CStringW strKey(L"s_reactor_create_failed_invalid_state");
         FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
-        break;
     }
+        break;
     case 3:
     {
         CStringW strKey(L"s_reactor_create_failed_invalid_position");
         FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
-        break;
     }
+        break;
     case 4:
     {
         CStringW strKey(L"s_reactor_create_failed_game_event_inactive");
         FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
-        break;
     }
+        break;
     case 5:
     {
         CStringW strKey(L"s_reactor_create_failed_invalid_field");
         FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
-        break;
     }
+        break;
     case 6:
     {
         CStringW strKey(L"s_reactor_create_failed_daily_reward_count");
         FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
-        break;
     }
+        break;
     }
 }
 

@@ -64,8 +64,12 @@ extern Unk_QgNavi* DAT_143abf7e8;                              // the quest navi
 Unk_QgNavi* FUN_140e7c990() { return DAT_143abf7e8; }           // 0x140e7c990
 class Unk_QgCamera { public: bool FUN_140af0700(const Vector3& ptWorld, Vector3& rptScreen); };
 class Unk_QgUIScale;
-Unk_QgUIScale* FUN_14025e7a0();
-float FUN_1422afec0(Unk_QgUIScale* pScale, int nMovie);
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1422afec0(int);
+};
 int FUN_141277f40();
 float FUN_1412762d0(const Vector3& pt);                 // the screen y offset of a world point
 class Unk_AuCfgValue
@@ -79,13 +83,22 @@ struct Unk_AuConfig
     char m_pad[0x5e0];
     Unk_AuCfgValue m_5e0;               // +0x5e0 the marker's screen y offset
 };
-Unk_AuConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 const Vector3& FUN_140947900(void* pNode);
-bool FUN_1409b0390(Scaleform::GFx::Value* pValue);              // the value is undefined
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 extern Vector3 DAT_143b01a60;                           // the zero point
+// GameObject's vtable as far as slot 18 (0x90): in the exe vfunc_18 returns the position in a Vector3 (pcbase.h and gameobject.h
+// declare NiPoint3), so the vfunc_7 overrides call it into their own return slot through this view.
+class Unk_QnPosView
+{
+public:
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5();
+    virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+    virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17();
+    virtual Vector3 vfunc_18();
+};
 
 // Out-of-unit instantiations the exe calls rather than inlines.
 template<> TraceContext* MS2Ptr<TraceContext>::operator->() const;
@@ -119,7 +132,7 @@ int NavigationEntity::vfunc_3(AScript* pParent)
     ASObj obj(FUN_141277f40());
     obj.FUN_1407cba60("id", vfunc_1());
     Scaleform::GFx::Value v = pParent->Invoke("create", vfunc_2(), obj);
-    if (!FUN_1409b0390(&v))
+    if (!((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined())
     {
         ASGameEntity* pEntity = new ASGameEntity(v, FUN_141277f40());
         if (pEntity)
@@ -139,7 +152,7 @@ void NavigationEntity::vfunc_4(const TraceResult* pResult)
     Vector3 pt;
     if (reinterpret_cast<Unk_QgCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(vfunc_7(), pt))
     {
-        pt.FUN_140ad0c10(FUN_1422afec0(FUN_14025e7a0(), FUN_141277f40()));
+        pt.FUN_140ad0c10(((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(FUN_141277f40()));
         pt.y += vfunc_8();
         m_20->FUN_1422c00f0(pt.x, pt.y);
         m_20->vfunc_3(1);
@@ -215,9 +228,8 @@ Vector3 PcHudNavigationEntity::vfunc_7()
     MyPC* pPC = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!pPC)
         return DAT_143b01a60;
-    NiPoint3 pt = pPC->vfunc_18();
-    return Vector3(pt.x, pt.y, pt.z);
-}   // MS2-FUNCTIONAL: the exe builds vfunc_18 straight into the return slot (pcbase.h declares it as NiPoint3)
+    return reinterpret_cast<Unk_QnPosView*>(pPC)->vfunc_18();
+}
 
 // @0x140e78cc0
 float PcHudNavigationEntity::vfunc_8()
@@ -290,16 +302,15 @@ Vector3 NpcNavigationEntity::vfunc_7()
         NiAVObject* pNode = pNpc->FUN_141675150("Eff_UI");
         if (pNode)
             return FUN_140947900(pNode);
-        NiPoint3 pt = pNpc->vfunc_18();
-        return Vector3(pt.x, pt.y, pt.z);
+        return reinterpret_cast<Unk_QnPosView*>(pNpc)->vfunc_18();
     }
     return DAT_143b01a60;
-}   // MS2-FUNCTIONAL: the exe builds vfunc_18 straight into the return slot (gameobject.h declares it as NiPoint3)
+}
 
 // @0x140e790f0
 float NpcNavigationEntity::vfunc_8()
 {
-    return NavigationEntity::vfunc_8() - (FUN_1401d3200()->m_5e0.FUN_140298f40() + 30.0f);
+    return NavigationEntity::vfunc_8() - (((struct Unk_AuConfig*)FUN_1401d3200())->m_5e0.FUN_140298f40() + 30.0f);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -494,23 +505,23 @@ UIQuestNavigation::UIQuestNavigation()
     m_2c = 0x1f;
     m_28 = FUN_141277f40();
     m_58 = 0;
-    FUN_140939a10()->RegisterNotify(L"NotifyAddNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7af90));
-    FUN_140939a10()->RegisterNotify(L"NotifyRemoveNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b130));
-    FUN_140939a10()->RegisterNotify(L"NotifyAddInteract", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b290));
-    FUN_140939a10()->RegisterNotify(L"NotifyAddLiftable", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b430));
-    FUN_140939a10()->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b640));
-    FUN_140939a10()->RegisterNotify(L"NotifyAddPortal", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b720));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyAddNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7af90));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyRemoveNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b130));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyAddInteract", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b290));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyAddLiftable", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b430));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b640));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyAddPortal", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b720));
 }
 
 // @0x140e7a530
 UIQuestNavigation::~UIQuestNavigation()
 {
-    FUN_140939a10()->UnregisterNotify(L"NotifyAddNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7af90));
-    FUN_140939a10()->UnregisterNotify(L"NotifyRemoveNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b130));
-    FUN_140939a10()->UnregisterNotify(L"NotifyAddInteract", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b290));
-    FUN_140939a10()->UnregisterNotify(L"NotifyAddLiftable", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b430));
-    FUN_140939a10()->UnregisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b640));
-    FUN_140939a10()->UnregisterNotify(L"NotifyAddPortal", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b720));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyAddNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7af90));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyRemoveNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b130));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyAddInteract", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b290));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyAddLiftable", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b430));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b640));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyAddPortal", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b720));
 }
 
 // @0x140e7aa40

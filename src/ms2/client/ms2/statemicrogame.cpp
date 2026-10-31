@@ -108,7 +108,7 @@ template <class T> T* Unk_MgGetDialog(int nId)
     return 0;
 }
 
-CGameRule* FUN_1401c0d90();                              // 0x1401c0d90
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // The animation registry: the default sequence of a model.
 class Unk_MgAnimSvc { public: unsigned FUN_140b7f6a0(const egf::EntityID& kId); };
@@ -145,7 +145,6 @@ Unk_MgGameService* FUN_140302b00();
 // Actor helpers (the bodies are in the earlier objs).
 class Unk_MgBuffMgr { public: efd::Point3 FUN_141683290(); };
 Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3& kUp);   // 0x140a0b080 look-at euler
-unsigned FUN_140869420();                                // 0x140869420 the clock
 bool FUN_1401647e0(const CString& strA, const CString& strB) noexcept;   // 0x1401647e0 the strings are equal
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);       // 0x1401d4330 wide to ansi
 CString FUN_1409a2360(const char* psz, int nCodePage);          // 0x1409a2360
@@ -153,9 +152,13 @@ CStringW FUN_140298ea0(CStringW str);                    // 0x140298ea0 string-t
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // 0x14052bd00 string table text with {0}
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg); // 0x1405c2690 the same by key
 void FUN_141275260(int nStringId, int nA, int nB);       // 0x141275260 notice by string id
-unsigned FUN_140768010(unsigned nMax, int nMin);         // 0x140768010 random index
-int FUN_140a5f180(const void* pTable, int nKey, int nDefault);   // 0x140a5f180
-void* FUN_140b769d0(int nId);                            // 0x140b769d0 the dock pane of a dialog
+int FUN_140768010(int, int);   // C3: was FUN_140768010
+class Unk_Inventory   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140a5f180(int, int);
+};
+class UICoupleDanceEventDialog* FUN_140b769d0(int);   // C3: was FUN_140b769d0
 
 // The scene-graph probes of the placement test (see statecoupleemotion.cpp: the same helper sits in that obj).
 class Unk_MgPhysics
@@ -165,7 +168,7 @@ public:
     bool FUN_14168a770(const efd::Point3* pPoint);
     int FUN_14168a310(const efd::Point3& ptFrom, efd::Point3& ptHit, void* pInfo, float fLen, Vector3* pNormal, int nA);
 };
-Unk_MgPhysics* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 class Unk_MgEntity { public: egf::FlatModel* FUN_1408a9bd0(); void FUN_1408a2060(unsigned nProp, efd::utf8string& s); };
 // The ray cast record FUN_14168a310 fills (0x68, ctor 0x140ad4440; as in state.cpp, physxhelper.h needs NOMINMAX).
 struct Unk_RayCastInfo
@@ -185,7 +188,6 @@ struct Unk_RayCastInfo
     efd::Point3 m_hitNormal;                            // +0x58
 };
 MS2_CHECK_SIZE(Unk_RayCastInfo, 0x68);
-const char* FUN_1408ac310(const efd::utf8string& s);
 int FUN_1408a01e0(CStringA s);
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
@@ -279,7 +281,7 @@ void StateMicroGameRps::EndOfSequence(NiActorManager*, unsigned int, NiControlle
         return;
     if (FUN_1401647e0(pRider->FUN_14166dc50(), strAnim))
         return;
-    MS2Ptr<RpsContext> spEvent = FUN_1401c0d90()->FUN_14047d140();
+    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->FUN_14047d140();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -417,7 +419,7 @@ void StateMicroGameRps::FUN_140b87310(int nMode, int nCard, int nPick)
         return;
     }
     pUI->FUN_140e663b0();
-    MS2Ptr<RpsContext> spEvent = FUN_1401c0d90()->FUN_14047d140();
+    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->FUN_14047d140();
     if (spEvent == 0)
     {
         MS2_ASSERT_AT(0xba, 0);
@@ -466,7 +468,7 @@ void StateMicroGameRps::FUN_140b877c0()
 {
     if (FUN_1417b8560() == 0)
         return;
-    MS2Ptr<RpsContext> spEvent = FUN_1401c0d90()->FUN_14047d140();
+    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->FUN_14047d140();
     if (spEvent == 0)
         return;
     MS2Ptr<RpsGameData> spGame = spEvent->m_spGameData;
@@ -558,7 +560,7 @@ bool StateMicroGameRps::FUN_140b87e00()
         MS2_ASSERT_AT(0x1a9, 0);
         return false;
     }
-    MS2Ptr<RpsContext> spEvent = FUN_1401c0d90()->FUN_14047d140();
+    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->FUN_14047d140();
     if (spEvent == 0)
         return false;
     if (m_spRps == 0)
@@ -631,10 +633,10 @@ void StateMicroGameRps::FUN_140b88290(double)
 // @0x140b883c0
 bool FUN_140b883c0()
 {
-    MS2Ptr<RpsContext> spEvent = FUN_1401c0d90()->FUN_14047d140();
+    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->FUN_14047d140();
     if (spEvent == 0)
         return false;
-    int nCount = FUN_140a5f180(&DAT_143ab2a90, spEvent->m_20, 0);
+    int nCount = ((class Unk_Inventory*)(void const*)(&DAT_143ab2a90))->FUN_140a5f180(spEvent->m_20, 0);
     if (nCount <= 0)
         return false;
     return true;
@@ -657,19 +659,19 @@ bool FUN_140b884e0(Vector3& kPoint)
 {
     kPoint.z += 5.0f;
     float fDist = 0.0f;
-    if (FUN_1409f7ca0()->FUN_14168a450((const efd::Point3&)kPoint, &fDist, 10.0f) == 0)
+    if (((class Unk_MgPhysics*)FUN_1409f7ca0())->FUN_14168a450((const efd::Point3&)kPoint, &fDist, 10.0f) == 0)
         return false;
-    if (FUN_1409f7ca0()->FUN_14168a770((const efd::Point3*)&kPoint))
+    if (((class Unk_MgPhysics*)FUN_1409f7ca0())->FUN_14168a770((const efd::Point3*)&kPoint))
         return false;
     Vector3 kDown = DAT_143b01a60;
     Unk_RayCastInfo kHit;           // 0x68: FUN_14168a310 fills it up to the hit normal (+0x64)
-    if (FUN_1409f7ca0()->FUN_14168a310((const efd::Point3&)kPoint, (efd::Point3&)kDown, &kHit, 0.0f, 0, 0) == 0)
+    if (((class Unk_MgPhysics*)FUN_1409f7ca0())->FUN_14168a310((const efd::Point3&)kPoint, (efd::Point3&)kDown, &kHit, 0.0f, 0, 0) == 0)
         return false;
     if (kHit.m_hitEntity == 0)
         return false;
     efd::utf8string strTag("None");
     ((Unk_MgEntity*)kHit.m_hitEntity)->FUN_1408a2060(0x15014205, strTag);
-    int nType = FUN_1408a01e0((const char*)FUN_1408ac310(strTag));
+    int nType = FUN_1408a01e0((const char*)((efd::utf8string*)&static_cast<class efd::utf8string const&>(strTag))->c_str());
     if (nType == 0x40)
         return false;
     if (((Unk_MgEntity*)kHit.m_hitEntity)->FUN_1408a9bd0()->ContainsModel(0xd3b04f05))
@@ -771,7 +773,7 @@ void StateMicroGameCoupleDance::vfunc_3(double fTime)
     pActor->FUN_14166d8b0(kLook.z);
     Vector3 kZero = DAT_143b01a60;
     pActor->vfunc_68(&kZero, fTime, 0, 0, 0);
-    if (m_nDeadline != 0 && FUN_140869420() >= (unsigned)m_nDeadline)
+    if (m_nDeadline != 0 && GetTickCountMs2() >= (unsigned)m_nDeadline)
         FUN_140b8a060();
 }
 
@@ -902,7 +904,7 @@ void StateMicroGameCoupleDance::FUN_140b89510(const std::vector<int>& aStages)
         pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
     m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
-    m_nDeadline = FUN_140869420() + 3000;
+    m_nDeadline = GetTickCountMs2() + 3000;
 }
 
 // @0x140b89880
@@ -960,7 +962,7 @@ void StateMicroGameCoupleDance::FUN_140b89880(int nStage, bool bGood, int nDance
         pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)spEvent->m_aDances[nDance];
     m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
-    m_nDeadline = FUN_140869420() + 3000;
+    m_nDeadline = GetTickCountMs2() + 3000;
     pRider->FUN_14166cc40(0xad);
 }
 
@@ -1060,7 +1062,7 @@ void StateMicroGameCoupleDance::FUN_140b8a060()
         break;
     case 0xb0:
         {
-            UIDialog* pPane = (UIDialog*)FUN_140b769d0(0x4f71);
+            UIDialog* pPane = (UIDialog*)((void*)FUN_140b769d0(0x4f71));
             if (pPane != 0 && pPane->FUN_141924630() == 0)
                 reinterpret_cast<UIDialog*>(pPane)->FUN_141924680();
             pRider->FUN_14166cc40(0xb1);
@@ -1099,7 +1101,7 @@ void StateMicroGameCoupleDance::FUN_140b8a290()
         pMessage->FUN_140e65ce0(m_nStage + 1, FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
     m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
-    m_nDeadline = FUN_140869420() + 3000;
+    m_nDeadline = GetTickCountMs2() + 3000;
 }
 
 // @0x140b8a5f0
@@ -1173,7 +1175,7 @@ void StateMicroGameCoupleDance::FUN_140b8a910()
         pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
     m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
-    m_nDeadline = FUN_140869420() + 3000;
+    m_nDeadline = GetTickCountMs2() + 3000;
 }
 
 // @0x140b8acc0
@@ -1205,7 +1207,7 @@ void StateMicroGameCoupleDance::FUN_140b8acc0()
         pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
     m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
-    m_nDeadline = FUN_140869420() + 3000;
+    m_nDeadline = GetTickCountMs2() + 3000;
 }
 
 // @0x140b8b020

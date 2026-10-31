@@ -154,7 +154,7 @@ struct Unk_UtilTransform
     float m_fScale;                                                 // +0x30
 };
 MS2_CHECK_SIZE(Unk_UtilTransform, 0x34);
-void* FUN_140876480(void* pOut, int nCategory);                    // memory hint for new
+efd::MemHint FUN_140876480(int nCategory);                          // memory hint for new (returned through a hidden slot)
 CStringA& FUN_140164930(CAtlArray<CStringA>& arr, size_t i);        // CAtlArray<CStringA> operator[]
 int FUN_14028c3e0(const CStringA& kText, CAtlArray<CStringA>& arrOut, const char* pszDelim, int nMax);
 egf::EntityManager* FUN_1409670f0();
@@ -709,22 +709,19 @@ bool FUN_141b6fa90(const egf::EntityID& id, const efd::utf8string& kName)
 MS2_REPLACE(0x141b6fa90, FUN_141b6fa90, 73, 0x30A74C77);
 
 // @0x141b6fae0
-// MS2-FUNCTIONAL: local slots (node / cast / extra-data temps) are allocated in a different order than the exe
 void FUN_141b6fae0(NiAVObject* pRoot, float fValue)
 {
     Unk_SceneWalker kWalker(pRoot);
     while (NiAVObject* pNode = kWalker.Next(true)) {
         NiRenderObject* pRender = (NiRenderObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode));
-        if (pRender == NULL)
-            continue;
-        NiFloatExtraData* pExtra = (NiFloatExtraData*)NiObject::DynamicCast(&NiFloatExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pRender))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae5140)))));
-        if (pExtra == NULL) {
-            void* pTmp;
-            efd::MemHint* pCat = (efd::MemHint*)FUN_140876480(&pTmp, 0);
-            NiFloatExtraData* pNew = new (*pCat) NiFloatExtraData(fValue);
-            pRender->AddExtraData(DAT_143ae5140, pNew);
-        } else {
-            pExtra->SetValue(fValue);
+        if (pRender != NULL) {
+            NiFloatExtraData* pExtra = (NiFloatExtraData*)NiObject::DynamicCast(&NiFloatExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pRender))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae5140)))));
+            if (pExtra == NULL) {
+                pExtra = new (FUN_140876480(0)) NiFloatExtraData(fValue);
+                pRender->AddExtraData(DAT_143ae5140, pExtra);
+            } else {
+                pExtra->SetValue(fValue);
+            }
         }
     }
     if (pRoot != NULL)
@@ -827,13 +824,12 @@ int FUN_141b6ffc0(NiSequenceData* pSeqData, const NiFixedString& kKey)
 MS2_REPLACE(0x141b6ffc0, FUN_141b6ffc0, 88, 0x5FA463E7);
 
 // @0x141b70020
-// MS2-FUNCTIONAL: temp/copy-ctor layout of Unk_UtilTransform math differs
 bool FUN_141b70020(egf::Entity* pEntity, Unk_UtilTransform* pOut)
 {
     Vector3 vTranslation;
     if (FUN_1409618c0(pEntity, 0xfd95ca52, &vTranslation) != 0)
         return false;
-    pOut->m_kTranslate = Unk_UtilNiPoint3(vTranslation);
+    pOut->m_kTranslate = vTranslation;
     Vector3 vEuler;
     if (FUN_1409618c0(pEntity, 0x68c7c29d, &vEuler) != 0)
         return false;
@@ -843,7 +839,8 @@ bool FUN_141b70020(egf::Entity* pEntity, Unk_UtilTransform* pOut)
     kX.FUN_142084b30(vEuler.x * -0.017453292f);
     kY.FUN_142084ba0(vEuler.y * -0.017453292f);
     kZ.FUN_142084c10(vEuler.z * -0.017453292f);
-    pOut->m_kRotate = Unk_NiMatrix3(kX.FUN_140a33480(kY).FUN_140a33480(kZ));
+    Unk_NiMatrix3 kRotate(kX.FUN_140a33480(kY).FUN_140a33480(kZ));
+    pOut->m_kRotate = kRotate;
     float fScale;
     if (FUN_140961880(pEntity, 0x2d7cad2d, &fScale) != 0)
         return false;
@@ -919,7 +916,6 @@ void FUN_141b70390()
 }
 
 // @0x141b70490
-// MS2-FUNCTIONAL: frame is 16 bytes larger than the exe's
 void FUN_141b70490(const CStringA& kBase)
 {
     int nMore = 1;
@@ -929,7 +925,7 @@ void FUN_141b70490(const CStringA& kBase)
     hFind = FindFirstFileA((LPCSTR)FUN_14038f6d0(kPath, "*.*"), &kFound);
     if (hFind != INVALID_HANDLE_VALUE) {
         while (nMore != 0) {
-            char szDrive[4];
+            char szDrive[3];
             char szDir[272];
             char szName[256];
             _splitpath((LPCSTR)kPath, szDrive, szDir, szName, NULL);
@@ -950,8 +946,8 @@ void FUN_141b70490(const CStringA& kBase)
             nMore = FindNextFileA(hFind, &kFound);
         }
         FindClose(hFind);
-        nMore = 1;
     }
+    nMore = 1;
 }
 
 // @0x141b706a0
@@ -1232,7 +1228,6 @@ float FUN_141b725e0(float fValue);
 float FUN_140993fe0(const Vector3& kA, const Vector3& kB);   // dot product
 
 // @0x141b71390
-// MS2-FUNCTIONAL: temp slot order of the two power terms differs
 Vector3 FUN_141b71390(const Vector3& kStart, const Vector3& kControl, const Vector3& kEnd, float fT)
 {
     if (kStart.FUN_140552690(kControl) || kEnd.FUN_140552690(kControl)) {
@@ -1243,7 +1238,7 @@ Vector3 FUN_141b71390(const Vector3& kStart, const Vector3& kControl, const Vect
         float fT2 = FUN_141b72560(fT, 2.0f);
         float fS2 = FUN_141b72560(fInverse, 2.0f);
         Vector3 kResult = kStart.FUN_14097fc90(fS2);
-        kResult.FUN_140a4e560(FUN_1409ab5c0(2.0f, kControl).FUN_14097fc90(fT).FUN_14097fc90(1.0f - fT));
+        kResult.FUN_140a4e560(FUN_1409ab5c0(2.0f, kControl).FUN_14097fc90(fT).FUN_14097fc90(fInverse));
         kResult.FUN_140a4e560(kEnd.FUN_14097fc90(fT2));
         return kResult;
     }

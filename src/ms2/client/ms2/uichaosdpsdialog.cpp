@@ -52,13 +52,21 @@ public:
     Unk_ChaosOpt m_opt;                                     // +0x18
 };
 
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 // The object registry (FUN_1403ed2d0) and the local player lookup.
 class Unk_ChaosWorld;
-Unk_ChaosWorld* FUN_1403ed2d0();
-PCBase* FUN_141bd0cc0(Unk_ChaosWorld* pWorld);
-__int64 FUN_141656a80(PCBase* pPC);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_141656a80();
+};
 
 // The AS root object of the dialog, with the invokes the exe instantiates for it.
 class Unk_ChaosAS : public AScript
@@ -76,9 +84,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
 CStringW FUN_140c2fcc0(CStringW strFormat, const int& nHour, const int& nMinute, const int& nSecond, const CStringW& strArg);
 void FUN_141b70810(unsigned nMs, CStringW& strOut);
-void FUN_1422b8160(ASData* pData, double d);
-void FUN_140bd0d90(ASObj* pObj, const char* szName, int n);
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);
 void FUN_1422bcda0(Scaleform::GFx::Value* pValue, double d);
 
 // The sort key shared by the ranking comparator and the rebuild (0x143ac5668).
@@ -114,7 +119,7 @@ int UIChaosDPSDialog::FUN_140e055b0(ASObj& obj, CPartyMember* pMember, unsigned 
     Unk_UserProxy& user = pMember->user;
     obj.FUN_1409c0d20("rank", nRank);
     obj.FUN_1409c48f0("level", user.m_34);
-    FUN_140bd0d90(&obj, "job", user.m_40);
+    ((class ASObj*)(class ASObj*)(&obj))->FUN_140bd0d90("job", user.m_40);
     obj.FUN_1407cbb20("name", user.FUN_1408f19e0());
     double dMeter = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(m_nGroup, pMember->FUN_141637bb0(), m_nMode));
     obj.FUN_140e06d60("meterValue", dMeter);
@@ -175,10 +180,10 @@ void UIChaosDPSDialog::FUN_140e05950()
         }
         do
         {
-            PCBase* pMe = FUN_141bd0cc0(FUN_1403ed2d0());
+            PCBase* pMe = ((class PCBase*)((class WorldService*)(class Unk_ChaosWorld*)(((class Unk_ChaosWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
             if (pMe == 0)
                 break;
-            if (FUN_141656a80(pMe) != spMember->user.m_8)
+            if (((class PCBase*)(class PCBase*)(pMe))->FUN_141656a80() != spMember->user.m_8)
                 break;
             ASObj objMy(2);
             if (!FUN_140e055b0(objMy, spMember.get(), i + 1))
@@ -275,7 +280,7 @@ void UIChaosDPSDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
     if (reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()->FUN_14125bbe0() == 0 || TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20() == 0
-        || FUN_140166410()->FUN_14036d570(0xbe) == 0)
+        || ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbe) == 0)
         vfunc_67();
     else {
         if (!m_30)
@@ -313,8 +318,8 @@ Scaleform::GFx::Value Unk_ChaosAS::FUN_140e06cc0(const char* szMethod, double d)
 void ASObj::FUN_140e06d60(const char* szName, double d)
 {
     ASData args;
-    FUN_1422b8160(&args, d);
-    FUN_1407cd930(&m_value, szName, args.FUN_1422b9260());
+    ((class ASData*)(class ASData*)(&args))->FUN_1422b8160(d);
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, args.FUN_1422b9260());
 }
 
 // @0x140e09150

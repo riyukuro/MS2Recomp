@@ -31,16 +31,13 @@ public:
     MyPC* FUN_141bd0cc0();                                      // the local player
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field data
 };
-Unk_CcWorld* FUN_1403ed2d0();
 class Unk_CcUi { public: int FUN_141adc890(int nClass); };    // a dialog of this class is open
 void FUN_140d73bc0(int nId, int a, void* b, CStringW strText);  // show a notice by id
-int FUN_141661aa0(MyPC* p);
-unsigned int FUN_141662de0(MyPC* p);                            // vip
 
 // the ids of the cash call items the player may use
 extern ATL::CAtlArray<unsigned int> DAT_143ab3058;
 class Unk_CcConfig { public: unsigned char FUN_14036d570(int nId); unsigned char FUN_14036e5b0(); };
-Unk_CcConfig* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CGameRule* FUN_1401c0d90();
 // A 16-byte item handle.
 struct Unk_CcHandle
@@ -56,9 +53,13 @@ unsigned char FUN_1401c0050(Unk_CcHandle* p, int n);
 void FUN_140692c90(Unk_CcHandle* pDst, const Unk_CcHandle& src);
 __int64 FUN_14052cd70(Unk_CcHandle* p);
 void* FUN_1401c0180(Unk_CcHandle* p);
-__int64 FUN_140526a50(void* p);
+class CItem   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_140526a50();
+};
 __int64 FUN_140930240();
-char* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 __int64* FUN_1402c05b0(char* p);
 unsigned char FUN_140930b10();
 extern int DAT_1439f4a7c;
@@ -76,7 +77,7 @@ CCashCallManager::~CCashCallManager()
 // @0x140b030b0
 int CCashCallManager::FUN_140b030b0(int nCallType)
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     if (pPC->FUN_14166ce30() != 0)
@@ -94,7 +95,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
     }
     __int64 nItemUid = 0;
     int nKind = 1;
-    if (FUN_141662de0(pPC) != 0 && FUN_140166410()->FUN_14036d570(0x57) != 0)
+    if (((class PC*)(class MyPC*)(pPC))->FUN_141662de0() != 0 && ((class Unk_CcConfig*)FUN_140166410())->FUN_14036d570(0x57) != 0)
     {
         nKind = 2;
     }
@@ -107,7 +108,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
                 FUN_140692c90(&hItem, DAT_143ab2a90.FUN_140a5e040(0xb));
             if (FUN_14052cd70(&hItem) != 0)
             {
-                nItemUid = FUN_140526a50(FUN_1401c0180(&hItem));
+                nItemUid = ((class CItem*)(void*)(FUN_1401c0180(&hItem)))->FUN_140526a50();
                 nKind = 2;
             }
         }
@@ -119,7 +120,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
     else
     {
         int nNeed = 3;
-        if (FUN_140166410()->FUN_14036e5b0() != 0)
+        if (((class Unk_CcConfig*)FUN_140166410())->FUN_14036e5b0() != 0)
             nNeed = 1;
         int nHave = DAT_143ab2a90.FUN_140a5f7b0(0xb, 0);
         if (nHave >= nNeed)
@@ -127,14 +128,14 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
             Unk_CcHandle hItem = DAT_143ab2a90.FUN_140a5e040(0xb);
             if (FUN_1401c0050(&hItem, 0) != 0)
                 return 0;
-            nItemUid = FUN_140526a50(FUN_1401c0180(&hItem));
+            nItemUid = ((class CItem*)(void*)(FUN_1401c0180(&hItem)))->FUN_140526a50();
             nKind = 2;
         }
         else
         {
-            if (FUN_140166410()->FUN_14036d570(0x83) != 0)
+            if (((class Unk_CcConfig*)FUN_140166410())->FUN_14036d570(0x83) != 0)
             {
-                if (FUN_140930240() < *FUN_1402c05b0(FUN_1401d3200() + 0x8aa8))
+                if (FUN_140930240() < *FUN_1402c05b0(((char*)FUN_1401d3200()) + 0x8aa8))
                     return 0;
                 nKind = 3;
             }
@@ -166,7 +167,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
 // @0x140b03590
 int CCashCallManager::FUN_140b03590(__int64 nItemUid)
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     if (pPC->FUN_14166ce30() != 0)
@@ -179,12 +180,12 @@ int CCashCallManager::FUN_140b03590(__int64 nItemUid)
         FUN_140d73bc0(0x95, 0, 0, CStringW(L""));
         return 0;
     }
-    if (FUN_141661aa0(pPC) <= 0)
+    if (((class PC*)(class MyPC*)(pPC))->FUN_141661aa0() <= 0)
     {
         FUN_140d73bc0(0x96, 0, 0, CStringW(L""));
         return 0;
     }
-    if (FUN_1403ed2d0()->FUN_141bd30a0()->FUN_140375410() == 0)
+    if (((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd30a0()->FUN_140375410() == 0)
     {
         FUN_140d73bc0(0x94, 0, 0, CStringW(L""));
         return 0;
@@ -219,7 +220,7 @@ int CCashCallManager::FUN_140b03980(__int64 nItemUid)
         FUN_140d73bc0(0x9c, 0, 0, CStringW(L""));
         return 0;
     }
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     if (pPC->FUN_14166ce30() != 0)
@@ -232,7 +233,7 @@ int CCashCallManager::FUN_140b03980(__int64 nItemUid)
         FUN_140d73bc0(0x9a, 0, 0, CStringW(L""));
         return 0;
     }
-    if (FUN_1403ed2d0()->FUN_141bd30a0()->FUN_140375450() == 0)
+    if (((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd30a0()->FUN_140375450() == 0)
     {
         FUN_140d73bc0(0x99, 0, 0, CStringW(L""));
         return 0;
@@ -267,7 +268,7 @@ int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
         FUN_140d73bc0(0x9e, 0, 0, CStringW(L""));
         return 0;
     }
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     if (pPC->FUN_14166ce30() != 0)
@@ -306,7 +307,7 @@ int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
 // @0x140b040a0
 int CCashCallManager::FUN_140b040a0(int nCount)
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     if (pPC->FUN_14166ce30() != 0)
@@ -334,16 +335,16 @@ int CCashCallManager::FUN_140b040a0(int nCount)
         FUN_140d73bc0(0xb58, 0, 0, CStringW(L""));
         return 0;
     }
-    if (FUN_1403ed2d0()->FUN_141bd30a0()->FUN_140375490() == 0)
+    if (((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd30a0()->FUN_140375490() == 0)
     {
         FUN_140d73bc0(0xb58, 0, 0, CStringW(L""));
         return 0;
     }
-    int nLimit = FUN_1403ed2d0()->FUN_141bd30a0()->vfunc_2();
+    int nLimit = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd30a0()->vfunc_2();
     if (nLimit > 0)
     {
-        int nA = FUN_1403ed2d0()->FUN_141bc2bc0();
-        if (FUN_1403ed2d0()->FUN_141bc2b30() + (nA + nCount) > nLimit)
+        int nA = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bc2bc0();
+        if (((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bc2b30() + (nA + nCount) > nLimit)
         {
             FUN_140d73bc0(0xb5f, 0, 0, CStringW(L""));
             return 0;
@@ -355,7 +356,7 @@ int CCashCallManager::FUN_140b040a0(int nCount)
 // @0x140b04430
 int CCashCallManager::FUN_140b04430(__int64 nTarget, int nCount)
 {
-    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPC = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     if (FUN_140b040a0(nCount) == 0)

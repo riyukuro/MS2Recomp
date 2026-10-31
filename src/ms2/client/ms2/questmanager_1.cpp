@@ -52,8 +52,9 @@ class WorldService   // C3: static member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
+public:
+    void* FUN_141bd0cc0();   // C3: was free FUN_141bd0cc0
 };
-PCBase* FUN_141bd0cc0(void*);
 class PC   // C3: member view for the former free stand-ins
 {
 public:
@@ -80,7 +81,7 @@ struct Unk_QuestRoom : CPtred {
 MS2_CHECK_OFFSET(Unk_QuestRoom, m_maxUsers, 0xf8);
 bool FUN_140e36ca0(const MS2Ptr<Unk_QuestRoom>&);
 class Unk_QuestRoomTable { public: MS2Ptr<Unk_QuestRoom> FUN_1403206b0(int); };
-void* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -119,7 +120,7 @@ struct Unk_QuestConstants {
     Unk_QuestIntConstant m_bonusLevel;
 };
 MS2_CHECK_OFFSET(Unk_QuestConstants, m_bonusLevel, 0x59c0);
-Unk_QuestConstants* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // @0x1416c6210
 CQuest::CQuest() : m_state(3), m_data(0), m_startTime(0), m_completeTime(0),
@@ -198,7 +199,7 @@ MS2_REPLACE_METHOD(0x1416C66F0, CQuest, IsConditionComplete, 231, 0xDACD67C9);
 int CQuest::CheckUserFind(PCBase* actor)
 {
     if (!actor) return 0;
-    PCBase* mine = FUN_141bd0cc0(((void*)WorldService::GetInstance()));
+    PCBase* mine = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (!mine) return 0;
     ConditionUserFindContext context;
     context.m_job = ((class PC*)(class PCBase*)(actor))->FUN_141654700();
@@ -259,7 +260,7 @@ void CQuest::SetTrackedValue(int value) { m_trackedValue = value; }
 // @0x1416c6cc0
 int CQuest::HasMultiUserRoom(int field)
 {
-    if (!((class CFeatureManager*)(void*)(FUN_140166410()))->FUN_14036d570(0xdc)) return 0;
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xdc)) return 0;
     if (FUN_1407443e0(field) == 0) return 0;
     int roomId = m_data->m_30c.m_roomId;
     if (roomId == 0) return 0;
@@ -346,7 +347,7 @@ MS2_REPLACE_METHOD(0x1416C7270, CQuest, PlayRewardSound, 152, 0x1390298C);
 // @0x1416c7310
 void CQuest::ShowRewards(int reward)
 {
-    PCBase* mine = FUN_141bd0cc0(((void*)WorldService::GetInstance()));
+    PCBase* mine = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (!mine) return;
     if (((MS2Ptr<CQuestData>*)&(m_data))->IsNull()) return;
     int id = FUN_140bfc580();
@@ -362,7 +363,7 @@ void CQuest::ShowRewards(int reward)
     UIRewardNotify* dialog = FUN_140938cd0(0x4e5d);
     if (dialog) {
         int useBonus = 1;
-        if (m_data->m_level < FUN_1401d3200()->m_bonusLevel.FUN_1402056b0()) useBonus = 0;
+        if (m_data->m_level < ((struct Unk_QuestConstants*)FUN_1401d3200())->m_bonusLevel.FUN_1402056b0()) useBonus = 0;
         __int64 experience = FUN_140761ba0(id, reward);
         if (experience != 0) {
             float multiplier = 0.0f;
@@ -386,7 +387,7 @@ void CQuest::ShowRewards(int reward)
             dialog->FUN_141abf450(money, extra);
         }
         if (reward != 0) {
-            PCBase* actor = FUN_141bd0cc0(((void*)WorldService::GetInstance()));
+            PCBase* actor = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
             if (actor) {
                 for (size_t i = 0; i < m_data->m_complete.m_choiceRewards.GetCount(); ++i) {
                     CQuestData::QuestRewardItem* item = &m_data->m_complete.m_choiceRewards[i];

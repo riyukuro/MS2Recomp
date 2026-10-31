@@ -19,12 +19,16 @@
 // ---- exe callees ----
 void* FUN_1409eed90();                                                      // the singleton of the own character
 __int64 GetServerTime();                                                    // the current time source
-void FUN_140fdc030(UIDialog* pDialog);
-void FUN_140fdbf70(UIDialog* pDialog);
-void FUN_140fdc130(UIDialog* pDialog, __int64 nTime);                       // tells the dialog the chosen time
+class UIWeddingHallReservationDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140fdbf70();
+    void FUN_140fdc030();
+    int GetHall();
+    void SetTime(__int64);
+};
 void FUN_140fdc160(UIDialog* pDialog, bool bPrivate);                       // tells the dialog the public/private choice
 void* FUN_140fdca40(UIDialog* pDialog);                                     // the reservation target
-int FUN_140fdca20(UIDialog* pDialog);
 void FUN_1412751f0(const CStringW& strText, int a, int b);                  // notice
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140b8e910(const CMsTime& time);                                // date text
@@ -42,7 +46,11 @@ struct Unk_SchedTarget
     int m_pad_24;
     __int64 m_nTime;                                                        // +0x28
 };
-Unk_SchedTarget* FUN_140d295d0(void* pCharacter);
+class WeddingManager   // C3: member view for the former free stand-ins
+{
+public:
+    class WeddingProxy* FUN_140d295d0();
+};
 
 // The hall table: is the hour taken?
 class Unk_SchedHallTable { public: bool FUN_140909870(unsigned nType, const CMsTime& time); };
@@ -57,9 +65,6 @@ public:
 };
 class Unk_SchedButton : public ASDisplayObject { public: void FUN_1422c1fe0(int bEnable); };
 
-void FUN_14015b020(CPtred*);
-int FUN_140159bc0(CPtred*);
-void FUN_140159ba0(CPtred*);
 // The smart pointer of the group wrapper (16 bytes, the pointer at +8).
 template <class T> class Unk_WedPtr
 {
@@ -73,10 +78,10 @@ public:
     operator T*() const { return p; }
 private:
     void AddRef() const { if (p) ReferenceImpl((void*)0); }
-    static void Reference(T* q) { FUN_14015b020(q); }
+    static void Reference(T* q) { CPtred::AddRefPtred(q); }
     void ReferenceImpl(void*) const { Reference(p); }
     void Release() { if (p) { ReleaseImpl((void*)0); p = 0; } }
-    void ReleaseImpl(void*) { if (FUN_140159bc0(p) == 0) { Reference(p); FUN_140159ba0(p); } }
+    void ReleaseImpl(void*) { if (CPtred::ReleasePtred(p) == 0) { Reference(p); CPtred::DeletePtred(p); } }
     void* m_0;
     T* p;
 };
@@ -184,13 +189,13 @@ bool UIWeddingHallReservationPageSchedule::vfunc_4(__int64 a1, __int64 a2, int a
             if (nHour == -1)
             {
                 m_nTime = 0;
-                FUN_140fdc130(m_pDialog, m_nTime);
+                ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SetTime(m_nTime);
                 return true;
             }
             CMsTime tTime(m_date);
             AddHours(tTime, nHour);
             m_nTime = tTime.Get();
-            FUN_140fdc130(m_pDialog, m_nTime);
+            ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SetTime(m_nTime);
         }
         return true;
     }
@@ -209,7 +214,7 @@ bool UIWeddingHallReservationPageSchedule::vfunc_4(__int64 a1, __int64 a2, int a
 // @0x140fe3950
 void UIWeddingHallReservationPageSchedule::vfunc_5()
 {
-    FUN_140fdbf70(m_pDialog);
+    ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdbf70();
 }
 
 // @0x140fe3980
@@ -222,7 +227,7 @@ void UIWeddingHallReservationPageSchedule::vfunc_6()
     }
     else
     {
-        FUN_140fdc030(m_pDialog);
+        ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdc030();
     }
 }
 
@@ -264,7 +269,7 @@ CStringW UIWeddingHallReservationPageSchedule::vfunc_10(bool bStart)
 // @0x140fe3c10
 bool UIWeddingHallReservationPageSchedule::vfunc_12()
 {
-    if (FUN_140fdca20(m_pDialog) == 0)
+    if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetHall() == 0)
         return false;
     return true;
 }
@@ -272,13 +277,13 @@ bool UIWeddingHallReservationPageSchedule::vfunc_12()
 // @0x140fe3c40 (refreshes the selectable hours, the day arrows and the date text)
 void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
 {
-    Unk_SchedTarget* pTarget = FUN_140d295d0(FUN_1409eed90());
+    Unk_SchedTarget* pTarget = ((struct Unk_SchedTarget*)((class WeddingManager*)(void*)(FUN_1409eed90()))->FUN_140d295d0());
     int nFrom = 0;
     int nTo = 0x18;
     if (pTarget->m_nKind == 1)
     {
         CMsTime tStart(GetServerTime());
-        CMsTime tEnd(FUN_140d295d0(FUN_1409eed90())->m_nTime);
+        CMsTime tEnd(((struct Unk_SchedTarget*)((class WeddingManager*)(void*)(FUN_1409eed90()))->FUN_140d295d0())->m_nTime);
         AddHours(tStart, 4);
         AddDays(tEnd, 7);
         if (!FUN_14086ab70(CMsTime(tStart), CMsTime(pPage->m_date), 0))

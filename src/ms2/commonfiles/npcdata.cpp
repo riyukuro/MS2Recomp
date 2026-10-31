@@ -1088,12 +1088,11 @@ CNpcDataTable::CNpcDataTable()
 }
 
 // @0x1406cd840
-// MS2-FUNCTIONAL: frame/temp order of the MS2Ptr and CString temps differs; callee ICF copies resolve to other VAs
 MS2Ptr<CRegionSpawnResult> CNpcDataTable::FindSpawnResult(CStringW strTags, int nMinDifficulty, int nMaxDifficulty)
 {
     {
         Unk_CriticalSectionLock lock(m_lock, 1);
-        for (int i = 0; i < (int)m_aResult.GetCount(); i++)
+        for (unsigned i = 0; i < m_aResult.GetCount(); i++)
         {
             MS2Ptr<CRegionSpawnResult> pResult = m_aResult[i];
             if (FUN_14025cd60(pResult->m_strTag, strTags) && pResult->m_nMaxDifficulty == nMaxDifficulty &&
@@ -1110,7 +1109,7 @@ MS2Ptr<CRegionSpawnResult> CNpcDataTable::FindSpawnResult(CStringW strTags, int 
     ATL::CRBMap<unsigned, Unk_RegionTagHit> mapHit(10);
     for (int nGroup = 0; nGroup < 2; nGroup++)
     {
-        for (int j = 0; j < (int)aTags.GetCount(); j++)
+        for (unsigned j = 0; j < aTags.GetCount(); j++)
         {
             Unk_BmBoxPtr<ATL::CAtlArray<unsigned> > pIds;
             {
@@ -1119,28 +1118,33 @@ MS2Ptr<CRegionSpawnResult> CNpcDataTable::FindSpawnResult(CStringW strTags, int 
             }
             if (pIds.get() != 0)
             {
-                for (int k = 0; k < (int)pIds->GetCount(); k++)
+                for (unsigned k = 0; k < pIds->GetCount(); k++)
                 {
-                    unsigned nNpcId = (*pIds)[k];
+                    unsigned nNpcId = pIds->operator[](k);
                     Unk_BmPtr<CNpcRegionSpawnData> pData = GetRegionSpawnData(nNpcId);
-                    if (!(pData == 0))
+                    if (pData == 0)
+                        continue;
+                    if (pData->m_nDifficulty > nMaxDifficulty)
+                        continue;
+                    if (pData->m_nDifficulty < nMinDifficulty)
+                        continue;
+                    ATL::CRBMap<unsigned, Unk_RegionTagHit>::CPair* pHit = mapHit.Lookup(nNpcId);
+                    if (pHit != 0)
                     {
-                        if (nMaxDifficulty < pData->m_nDifficulty)
-                            continue;
-                        if (pData->m_nDifficulty < nMinDifficulty)
-                            continue;
-                        ATL::CRBMap<unsigned, Unk_RegionTagHit>::CPair* pHit = mapHit.Lookup(nNpcId);
-                        if (pHit == 0)
-                        {
-                            Unk_RegionTagHit hit;
-                            hit.m_nMain = nGroup == 0;
-                            hit.m_nSub = nGroup != 0;
-                            mapHit.SetAt(nNpcId, hit);
-                        }
-                        else if (nGroup == 0)
+                        if (nGroup == 0)
                             pHit->m_value.m_nMain++;
                         else
                             pHit->m_value.m_nSub++;
+                    }
+                    else
+                    {
+                        Unk_RegionTagHit hit;
+                        hit.m_nMain = hit.m_nSub = 0;
+                        if (nGroup == 0)
+                            hit.m_nMain++;
+                        else
+                            hit.m_nSub++;
+                        mapHit.SetAt(nNpcId, hit);
                     }
                 }
             }
@@ -1157,22 +1161,20 @@ MS2Ptr<CRegionSpawnResult> CNpcDataTable::FindSpawnResult(CStringW strTags, int 
         unsigned nNpcId = mapHit.GetKeyAt(pos);
         Unk_RegionTagHit hit = mapHit.GetValueAt(pos);
         Unk_BmPtr<CNpcRegionSpawnData> pData = GetRegionSpawnData(nNpcId);
-        if (!(pData == 0))
-        {
-            if (hit.m_nMain == 0 && hit.m_nSub == 0)
-                continue;
-            if (hit.m_nMain == (int)pData->m_aTags[0].GetCount())
-            {
-                MS2Ptr<CRegionSpawnProb> pProb(new CRegionSpawnProb);
-                pProb->m_pSpawn = pData;
-                int nDiff = nMaxDifficulty - pData->m_nDifficulty;
-                pProb->m_fWeight = (float)FUN_1401c0db0()->CalcNpcSpawnWeight(hit.m_nMain, hit.m_nSub, pData->m_nRareDegree, nDiff);
-                nTotal += pProb->m_fWeight;
-                pResult->m_aProb.Add(pProb);
-            }
-        }
+        if (pData == 0)
+            continue;
+        if (hit.m_nMain == 0 && hit.m_nSub == 0)
+            continue;
+        if (hit.m_nMain != (int)pData->m_aTags[0].GetCount())
+            continue;
+        MS2Ptr<CRegionSpawnProb> pProb(new CRegionSpawnProb);
+        pProb->m_pSpawn = pData;
+        int nDiff = nMaxDifficulty - pData->m_nDifficulty;
+        pProb->m_fWeight = (float)FUN_1401c0db0()->CalcNpcSpawnWeight(hit.m_nMain, hit.m_nSub, pData->m_nRareDegree, nDiff);
+        nTotal += pProb->m_fWeight;
+        pResult->m_aProb.Add(pProb);
     }
-    for (int i = 0; i < (int)pResult->m_aProb.GetCount(); i++)
+    for (unsigned i = 0; i < pResult->m_aProb.GetCount(); i++)
         pResult->m_aProb[i]->m_fRate = pResult->m_aProb[i]->m_fWeight / nTotal;
     {
         Unk_CriticalSectionLock lock(m_lock, 1);
@@ -1229,10 +1231,9 @@ void CNpcDataTable::LoadNpcCache()
 }
 
 // @0x1406ce6d0
-// MS2-FUNCTIONAL: frame order of the xml string temps; ICF copies of the Unk_BmPtr glue resolve to other VAs
 void CNpcDataTable::LoadRegionSpawn()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("NpcRegionSpawnData.xml"));
+    CString strPath = FUN_14071a5b0("Table", "NpcRegionSpawnData.xml");
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
@@ -1252,16 +1253,16 @@ void CNpcDataTable::LoadRegionSpawn()
         CString strLocale;
         FUN_140873420(pNode, "feature", strFeature);
         FUN_1408733e0(pNode, "locale", strLocale);
-        bool bSkip = !strLocale.IsEmpty() && FUN_1401647e0(strLocale, reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d8e0());
+        bool bSkip = !strLocale.IsEmpty() && strLocale != reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d8e0();
         if (bSkip)
             continue;
         if (!FUN_14036d4b0(FUN_140166410(), strFeature))
             continue;
         Unk_BmPtr<CNpcRegionSpawnData> pData(Unk_BmNewTag(0));
         pData->m_nNpcId = atoi(FUN_14086f4b0(pNode, "npcID"));
-        CStringW strMain = FUN_1401bf530(pNode, "mainTags", CStringW(L""));
+        CStringW strMain = FUN_1401bf530(pNode, "mainTags", L"");
         FUN_14025a680(strMain, pData->m_aTags[0], L",");
-        CStringW strSub = FUN_1401bf530(pNode, "subTags", CStringW(L""));
+        CStringW strSub = FUN_1401bf530(pNode, "subTags", L"");
         FUN_14025a680(strSub, pData->m_aTags[1], L",");
         for (int nGroup = 0; nGroup < 2; nGroup++)
             for (int i = 0; i < (int)pData->m_aTags[nGroup].GetCount(); i++)

@@ -127,7 +127,6 @@ MS2Ptr<Unk_WpItemData> FUN_14053f870(int nItemId);
 extern Unk_Inventory DAT_143ab2a90;
 extern __int64 DAT_143ab2828;                                   // the own character id
 
-bool FUN_140a467d0(const MS2Ptr<AScript>& kScript);             // has the AS object been released
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);     // Value::IsNull
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 int FUN_141b89950(WeddingManager* pManager);                    // the wedding grade
@@ -144,7 +143,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CString
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);      // pRetVal = v
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 UIQuestEventDispatcher* FUN_140bfc4b0();
 
 WorldService* FUN_1403ed2d0();
@@ -156,14 +155,13 @@ static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 
 // @0x140fe95a0
 void ASObj::FUN_140fe95a0(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // ---- UIWeddingPage ----
@@ -182,7 +180,7 @@ UIWeddingPage::~UIWeddingPage()
 // @0x140fe7440
 bool UIWeddingPage::vfunc_1()
 {
-    if (FUN_140a467d0(m_28->FUN_1422dba00()))
+    if (((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_28->FUN_1422dba00()))->IsNull())
         return false;
     Scaleform::GFx::Value kPage = m_28->FUN_1422dba00()->FUN_1422baa20("m_currentPage");
     if (FUN_1409b0350(&kPage) != 0)
@@ -505,7 +503,7 @@ void UIWeddingPageMission::vfunc_o178_12(void* pQuest)
 // @0x140fe8e50
 void UIWeddingPageMission::SendQuest(int nQuestId)
 {
-    Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
+    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
     if (spQuest.IsNull())
         return;
     if (spQuest->IsComplete() == 0)
@@ -527,7 +525,7 @@ void UIWeddingPageMission::FUN_140fe8fb0()
         spList->FUN_1422dd1d0();
         m_binder.FUN_140d43990();
         ATL::CAtlArray<Unk_PayloadPtr<CQuest> > quests;
-        FUN_140764020()->FUN_1416d1060(quests);
+        ((class CQuestManager*)FUN_140764020())->FUN_1416d1060(quests);
         for (size_t i = 0; i < quests.GetCount(); i++)
         {
             Unk_PayloadPtr<CQuest> spQuest(quests[i]);

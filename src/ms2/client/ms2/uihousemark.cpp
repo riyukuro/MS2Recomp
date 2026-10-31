@@ -94,7 +94,6 @@ class Unk_UgcContractDialog : public UIRealEstateDialog
 Unk_UgcContractDialog* FUN_140961690(int nId);
 
 class Unk_HouseMarkUIMgr { public: void FUN_141adc750(int nId); };  // toggle the UI nId
-WorldService* FUN_1403ed2d0();
 
 // The client constants (0x58-byte value cells).
 struct Unk_HouseMarkCfgInt { int* FUN_1402056b0(); char m_pad[0x50]; };
@@ -116,11 +115,15 @@ MS2_CHECK_OFFSET(Unk_HouseMarkCfg, m_1298, 0x1298);
 MS2_CHECK_OFFSET(Unk_HouseMarkCfg, m_12f0, 0x12f0);
 MS2_CHECK_OFFSET(Unk_HouseMarkCfg, m_4180, 0x4180);
 MS2_CHECK_OFFSET(Unk_HouseMarkCfg, m_4390, 0x4390);
-Unk_HouseMarkCfg* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 class Unk_HouseMarkUIScale;
-Unk_HouseMarkUIScale* FUN_14025e7a0();
-float FUN_1422afec0(Unk_HouseMarkUIScale* pScale, int nLayer);     // the scale of a movie
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1422afec0(int);
+};
 class Unk_HouseMarkCamera { public: bool FUN_140af0700(const NiPoint3& ptWorld, NiPoint3& ptScreen); };
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                     // Point3 operator*=
 float FUN_140966f00(NiPoint3 a, NiPoint3 b);                        // distance
@@ -148,7 +151,6 @@ void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
 MS2Ptr<CMsgBoxData> FUN_140d74500(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-void FUN_141a015d0(CMsgBoxData* pBox, const CStringW& strTitle);   // set the title
 bool FUN_141900c80(int nResult, const CMsgBoxData& box);
 
 extern int DAT_143ae0fc0;                                           // debug switch
@@ -202,15 +204,15 @@ void UIHouseMarkEntity::FUN_14198b100()
             FUN_14198b340();
         return;
     }
-    if (FUN_1403ed2d0()->FUN_141bd3cd0() || FUN_1403ed2d0()->FUN_141bd3d50() != 0)
+    if (WorldService::GetInstance()->FUN_141bd3cd0() || WorldService::GetInstance()->FUN_141bd3d50() != 0)
     {
         FUN_14198c0d0(false);
         return;
     }
-    PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc != NULL && IsPopup() && FUN_1416595d0(pPc) != 0)
     {
-        if ((unsigned)(m_nPopupTick + *FUN_1401d3200()->m_4390.FUN_1402056b0()) < GetTickCountMs2())
+        if ((unsigned)(m_nPopupTick + *((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_4390.FUN_1402056b0()) < GetTickCountMs2())
             FUN_14198b320();
     }
     FUN_14198b340();
@@ -269,7 +271,7 @@ void UIHouseMarkEntity::FUN_14198b340()
 {
     if (m_clip == NULL)
         return;
-    PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == NULL)
         return;
     bool bShow = true;
@@ -279,18 +281,18 @@ void UIHouseMarkEntity::FUN_14198b340()
     float fHeight = FUN_14029d220(fPcZ - fMarkZ);
     if (fMarkZ > fPcZ)
     {
-        if (fHeight > FUN_1401d3200()->m_1298.FUN_1402bac70())
+        if (fHeight > ((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_1298.FUN_1402bac70())
             bShow = false;
     }
     else
     {
-        if (fHeight > FUN_1401d3200()->m_12f0.FUN_1402bac70())
+        if (fHeight > ((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_12f0.FUN_1402bac70())
             bShow = false;
     }
     if (bShow)
     {
         float fDistance = FUN_140966f00(m_pos, ptPc);
-        if (fDistance > (float)*FUN_1401d3200()->m_1240.FUN_1402056b0())
+        if (fDistance > (float)*((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_1240.FUN_1402056b0())
             bShow = false;
     }
     if (bShow)
@@ -299,7 +301,7 @@ void UIHouseMarkEntity::FUN_14198b340()
         if (reinterpret_cast<Unk_HouseMarkCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(m_pos, ptScreen))
         {
             FUN_14198c0d0(true);
-            FUN_140ad0c10(&ptScreen, FUN_1422afec0(FUN_14025e7a0(), m_clip->FUN_14198f250()));
+            FUN_140ad0c10(&ptScreen, ((class GFxManager*)(class Unk_HouseMarkUIScale*)(((class Unk_HouseMarkUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_clip->FUN_14198f250()));
             m_clip->FUN_1422c00f0(ptScreen.x, ptScreen.y);
         }
         else
@@ -335,10 +337,10 @@ void UIHouseMarkEntity::FUN_14198b5b0()
     {
         int nStatus;
         __int64 nStartTime;
-        if (spService->FUN_1410c8470(m_nId, FUN_1403ed2d0()->FUN_141bd3060(), &nStatus, &nStartTime) != 0 && nStatus == 4)
+        if (spService->FUN_1410c8470(m_nId, WorldService::GetInstance()->FUN_141bd3060(), &nStatus, &nStartTime) != 0 && nStatus == 4)
         {
             __int64 nNow = GetServerTime();
-            int nWaitTime = FUN_1401d3200()->m_4180.FUN_14025a620();
+            int nWaitTime = ((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_4180.FUN_14025a620();
             int nRemain = (int)(nStartTime + nWaitTime - nNow);
             int nProgress = 0;
             if (nWaitTime <= 0)
@@ -380,10 +382,10 @@ void UIHouseMarkEntity::FUN_14198b970()
 {
     if (m_clip == NULL)
         return;
-    PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == NULL)
         return;
-    int nMapId = FUN_1403ed2d0()->FUN_141bd3060();
+    int nMapId = WorldService::GetInstance()->FUN_141bd3060();
     int nGroup = FUN_14198b290();
     Unk_UGCGroup group;
     if (FUN_1408a0d30(nGroup, group, nMapId) == 0)
@@ -521,7 +523,7 @@ void UIHouseMarkEntity::FUN_14198c410()
                                                     Delegate<bool(int, const CMsgBoxData&)>(this, &UIHouseMarkEntity::FUN_14198c700));
             if (box.get() != NULL)
             {
-                FUN_141a015d0(box.operator->(), L"$s_msgbox_ugc_turms_title");
+                ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->SetTitle(L"$s_msgbox_ugc_turms_title");
                 FUN_140d73c60(box);
             }
             return;
@@ -536,7 +538,7 @@ void UIHouseMarkEntity::FUN_14198c5a0()
 {
     Unk_UgcContractDialog* pDlg = FUN_140961690(0x4e76);
     if (pDlg != NULL && pDlg->FUN_141924630() == 0)
-        pDlg->FUN_141ab4000(m_nId, FUN_1403ed2d0()->FUN_141bd3060());
+        pDlg->FUN_141ab4000(m_nId, WorldService::GetInstance()->FUN_141bd3060());
     reinterpret_cast<Unk_HouseMarkUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e76);
 }
 MS2_REPLACE_METHOD(0x14198C5A0, UIHouseMarkEntity, FUN_14198c5a0, 103, 0x92B76A5E);

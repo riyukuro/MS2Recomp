@@ -626,11 +626,10 @@ void PetEvolutionPetEnchant::FUN_140ac8a00()
         obj.FUN_1409c0dc0("frame", "select");
         obj.FUN_1407cbb20(s_itemName, reinterpret_cast<CItem*>(pet.operator->())->FUN_140528160());
         obj.FUN_1409c48f0(s_itemLevel, nPetClass);
-        int nZero = 0;
-        obj.FUN_1407cbb20(s_meso, FUN_1408116a0(0x986, nZero));
+        obj.FUN_1407cbb20(s_meso, FUN_1408116a0(0x986, 0));
         obj.FUN_1409c0d20("petEvolutionPoint", FUN_140528bd0(pet));
         obj.FUN_1407cba60("bagId", m_strTarget);
-        obj.FUN_1407cbb20("resultMsg", GetStringCommonByKey(CStringW(L"s_pet_evolution_notice")));
+        obj.FUN_1407cbb20("resultMsg", GetStringCommonByKey(L"s_pet_evolution_notice"));
         obj.FUN_1407cba60("bagId", m_strTarget);
         obj.FUN_1409c0d20("requirePoint", nNeed);
         if (nNeed <= FUN_140528bd0(pet))
@@ -641,7 +640,7 @@ void PetEvolutionPetEnchant::FUN_140ac8a00()
         FUN_140ac9e20(obj);
         ench->FUN_140acd1f0("selectPetCard", AScript(obj));
     }
-    FUN_141276180(CString("pet_Button_Click"), CString(""));
+    FUN_141276180("pet_Button_Click", "");
 }
 #endif
 
@@ -661,26 +660,29 @@ void PetEvolutionPetEnchant::FUN_140ac9140()
     __int64 nTotal = 0;
     for (unsigned i = 0; i < selected.GetCount(); i++)
     {
-        ItemPtr item = g_143ab2a90.FUN_140a5d680(selected[i].first);
-        if (!(item == 0))
-        {
-            __int64 nCost = 0;
-            if (((class CItem*)(class CItem*)(item))->FUN_140525640() != 0)
-                nCost = ((class Unk_PetRecipe*)FUN_1401c0db0())->CalcPetEvolutionCost(item->FUN_140526bd0());
-            nTotal += nCost;
-        }
+        IdCount& sel = selected[i];
+        __int64 nUid = sel.first;
+        ItemPtr item = g_143ab2a90.FUN_140a5d680(nUid);
+        if (item == 0)
+            continue;
+        __int64 nCost = 0;
+        if (((class CItem*)(class CItem*)(item))->FUN_140525640() != 0)
+            nCost = ((class Unk_PetRecipe*)FUN_1401c0db0())->CalcPetEvolutionCost(item->FUN_140526bd0());
+        nTotal += nCost;
     }
     ASObj obj(2);
     obj.FUN_1407cbb20(s_meso, FUN_14052bd00(0x986, FUN_1409404f0(nTotal)));
     ench->FUN_140acd1f0("selectPetIngredient", AScript(obj));
-    FUN_141276180(CString("pet_Button_Click"), CString(""));
+    FUN_141276180("pet_Button_Click", "");
 }
 
 // @0x140ac9520
 void PetEvolutionPetEnchant::FUN_140ac9520()
 {
     Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
-    if (player == 0 || m_pOwner == NULL)
+    if (player == 0)
+        return;
+    if (m_pOwner == NULL)
         return;
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
@@ -699,15 +701,14 @@ void PetEvolutionPetEnchant::FUN_140ac9520()
         obj.FUN_1407cbb20("evolutionMsg", strMax);
     obj.FUN_1407cba60("bagId", m_strTarget);
     ench->FUN_140acd1f0("resultEvolution", AScript(obj));
-    FUN_141276180(CString("pet_Evolution_Success02"), CString(""));
+    FUN_141276180("pet_Evolution_Success02", "");
     Unk_PetInventoryDialog* pInven = FUN_1405344f0(0x4e2d);
     if (pInven != 0)
         pInven->FUN_14199a3f0(m_pOwner->GetUidPet());
     ItemPtr equipped = player->FUN_141663450();
     if (equipped.get() != 0)
     {
-        __int64 idPet = pet->FUN_140526a50();
-        if (idPet == equipped->FUN_140526a50())
+        if (pet->FUN_140526a50() == equipped->FUN_140526a50())
             player->FUN_141663400(ItemPtr(pet));
     }
 }
@@ -716,7 +717,9 @@ void PetEvolutionPetEnchant::FUN_140ac9520()
 void PetEvolutionPetEnchant::FUN_140ac9a60()
 {
     Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
-    if (player == 0 || m_pOwner == NULL)
+    if (player == 0)
+        return;
+    if (m_pOwner == NULL)
         return;
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
@@ -729,12 +732,12 @@ void PetEvolutionPetEnchant::FUN_140ac9a60()
     CStringW strPointUp = FUN_140938ae0(CStringW(L"s_pet_evolution_pointup_success"), nState);
     CStringW strEnable = FUN_140298ea0(CStringW(L"s_pet_evolution_enable_evolution"));
     ASObj obj(2);
-    if (FUN_140528bd0(pet) < nNeed)
-        obj.FUN_1407cbb20("resultMsg", strPointUp);
-    else
+    if (nNeed <= FUN_140528bd0(pet))
         obj.FUN_1407cbb20("evolutionMsg", strEnable);
+    else
+        obj.FUN_1407cbb20("resultMsg", strPointUp);
     ench->FUN_140acd1f0("resultEvolutionPoint", AScript(obj));
-    FUN_141276180(CString("pet_Evolution_Success"), CString(""));
+    FUN_141276180("pet_Evolution_Success", "");
 }
 
 // @0x140ac9e20

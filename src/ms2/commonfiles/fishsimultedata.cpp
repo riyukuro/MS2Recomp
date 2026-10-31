@@ -27,7 +27,7 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "ms2/commonfiles/filesystem.h"
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
-bool FUN_14028f710(Unk_140165cf0* pElem);                   // the node is a usable element
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
@@ -35,7 +35,7 @@ CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class
 CStringTable* GetStringTable();                              // the string table singleton
 CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
 CStringW GetStringCommon(int nStringId);                      // string table text by id
-int FUN_14015f500(Unk_140165cf0* pElem, const char* pszName, int* pnOut);             // rank
+int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);        // string attribute
 int FUN_14015f480(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CStringW>& rOut);   // list of strings
 void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& rOut, const wchar_t* pszSep);    // split into numbers
@@ -89,7 +89,7 @@ int CFishData::Load(Unk_140165cf0* pNode)
 {
     FUN_140873220(pNode, "id", m_nId);
     FUN_140873220(pNode, "fishMastery", m_nMastery);
-    FUN_14015f500(pNode, "rank", &m_nRank);
+    Unk_ReadRank((class Unk_XmlNode*)(pNode), "rank", &m_nRank);
     FUN_1408731e0(pNode, "ignoreSpotMastery", m_nIgnoreSpotMastery);
     FUN_1408731e0(pNode, "fishingBook", m_nFishingBook);
     FUN_140873220(pNode, "companion", m_nCompanion);
@@ -335,7 +335,7 @@ int CFishingTable::LoadSpots()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("spot"); pNode != 0; pNode = pNode->FUN_140168650("spot"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nId = 0;
         FUN_140873220(pNode, "id", nId);
@@ -361,7 +361,7 @@ int CFishingTable::LoadFish()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("fish"); pNode != 0; pNode = pNode->FUN_140168650("fish"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nId = 0;
         FUN_140873220(pNode, "id", nId);
@@ -387,7 +387,7 @@ int CFishingTable::LoadRods()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("rod"); pNode != 0; pNode = pNode->FUN_140168650("rod"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nId = 0;
         FUN_140873220(pNode, "rodCode", nId);

@@ -467,19 +467,21 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
     return 1;
 }
 
-// MS2-FUNCTIONAL: needs Unk_ScriptPtr IsNull (14085a420) and CCinematicDistractor choice count (14078d3a0) in shared scriptcontent.h
+// MS2-PIN: ?IsNull@?$Unk_ScriptPtr@VCTalkScript@@@@QEBA_NXZ 0x14085a420 ; sfb: talk script Ptr null test
+// MS2-PIN: ?get@?$Unk_ScriptPtr@VCCinematicDistractor@@@@QEBAPEAVCCinematicDistractor@@XZ 0x14078f390 ; sfb: distractor Ptr get
+// MS2-PIN: ??C?$Unk_ScriptPtr@VCCinematicDistractor@@@@QEBAPEAVCCinematicDistractor@@XZ 0x14078f3b0 ; sfb: distractor Ptr operator->
 // @0x141a708e0
 int UINpcPreviewDialog::FUN_141a708e0(int nQuestId, int nTalkId, ATL::CAtlArray<int>& rOut)
 {
     rOut.Add(nTalkId);
     TalkPtr spTalk = FUN_1408564b0(nQuestId, nTalkId);
-    if (spTalk.get() == 0)
+    if (spTalk.IsNull())
         return 0;
     for (size_t i = 0; i < spTalk->m_contents.GetCount(); i++) {
         if (spTalk->m_contents[i]->vfunc_1() == 0) {
             CCinematicContent* pCine = static_cast<CCinematicContent*>(spTalk->m_contents[i].get());
             if (pCine->m_distractors.get() != 0) {
-                for (size_t j = 0; j < pCine->m_distractors->m_choices.GetCount(); j++) {
+                for (size_t j = 0; j < pCine->m_distractors->FUN_14078d3a0(); j++) {
                     ATL::CAtlArray<int> ids;
                     FUN_140177de0(pCine->m_distractors->m_choices.GetAt(j).m_goto, ids, ",");
                     for (size_t k = 0; k < FUN_140186260(ids); k++) {

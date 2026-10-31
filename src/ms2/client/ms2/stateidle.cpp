@@ -75,7 +75,6 @@ void FUN_1409989e0(void* pOut, const char* psz);           // 0x1409989e0 efd::u
 void FUN_1408a8700(void* pStr);                            // 0x1408a8700 efd::utf8string()
 void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
 void FUN_140ae18f0(void* pStr, const char* psz);           // 0x140ae18f0 efd::utf8string::operator=(const char*)
-bool FUN_14096ad40(const efd::utf8string& str);            // 0x14096ad40 the string is empty
 struct Unk_SiString
 {
     Unk_SiString() { FUN_1408a8700(m_buf); }
@@ -121,10 +120,10 @@ public:
 MS2_CHECK_OFFSET(Unk_SiConsts, m_delayBore, 0xa00);
 MS2_CHECK_OFFSET(Unk_SiConsts, m_intervalB, 0x7e90);
 MS2_CHECK_OFFSET(Unk_SiConsts, m_strSoundJob110, 0xe098);
-Unk_SiConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_PCBaseComp_aa8 : public CPtred { public: int FUN_140f48d40(); };     // the pet component
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);       // 0x1408a9bd0
-Ridee* FUN_141468360(PCBase* p);                           // 0x141468360 the ridee the actor sits on
+struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
 
 // The effect service and the player manager.
 class Unk_SiWorld { public: int FUN_141bd1a10(GameObject* pObject); };
@@ -132,24 +131,39 @@ class Unk_SiWorld { public: int FUN_141bd1a10(GameObject* pObject); };
 // Scene / mode queries of the bore timer.
 class Unk_SiScene;
 Unk_SiScene* FUN_1408e57f0();
-int FUN_1422b9ea0(Unk_SiScene* p);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1422b9ea0();
+};
 class Unk_SiMode;
-Unk_SiMode* FUN_14025e7a0();
-int FUN_1422ae940(Unk_SiMode* p);
-bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);     // 0x14087ddc0 the class (or a base) has the id
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1422ae940();
+};
 
 // The npc's pet bookkeeping (idle voices).
-PCBase* FUN_140b10360(PCBase* pNpc);                       // 0x140b10360 the pet of the npc
-void FUN_140b11180(PCBase* pNpc);                          // 0x140b11180
-void FUN_140b114e0(PCBase* pNpc, int nVoice);              // 0x140b114e0 say a voice
+class CPet   // C3: member view for the former free stand-ins
+{
+public:
+    class PCBase* FUN_140b10360();
+    int FUN_140b11180();
+    void FUN_140b114e0(int);
+};
 class Unk_SiPetRow : public CPtred { };
 class Unk_SiPetTable { public: MS2Ptr<Unk_SiPetRow> FUN_140c892c0(int nId); };
 class Unk_SiPetBook { public: int FUN_140b11e90(PCBase* pPet); };
 class Unk_SiPetData { public: char m_pad[0x68]; Unk_SiPetBook m_book; };
 class Unk_SiPetMgr;
-Unk_SiPetMgr* FUN_140535320();
+class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 Unk_SiPetData* FUN_140c8b450(Unk_SiPetMgr* p);
-Unk_SiPetTable* FUN_140c8b430(Unk_SiPetMgr* p);
+class CPetManager   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_PetManagerEmpty* FUN_140c8b430();
+};
 bool FUN_1401c0050(MS2Ptr<Unk_SiPetRow>* p, int n);      // MS2Ptr::operator==(T*)
 
 // ---- StateIdle ----
@@ -306,7 +320,7 @@ void StateIdle::vfunc_9(double fTime)
         pDesc = m_pOwner->GetClassDesc();
     else
         pDesc = 0;
-    if (!FUN_14087ddc0(pDesc, 0x6200044))
+    if (!efd::ClassInfo::IsKindOf(pDesc, 0x6200044))
     {
         int nWater = m_pOwner->FUN_141675ed0();
         if (nWater == 0 && m_pOwner->vfunc_99(0) != 0)
@@ -319,7 +333,7 @@ void StateIdle::vfunc_9(double fTime)
             PCBase* pPC = FUN_1417b8370();
             if (FUN_1417b84b0() != 0)
             {
-                efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+                efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
                 if (spRidee ? true : false)
                 {
                     if (spRidee->FUN_1417075e0() != 0)
@@ -490,7 +504,7 @@ void StateIdle::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
 // @0x1417ce5b0
 void StateIdle::vfunc_21(int n)
 {
-    m_timerLeave.FUN_140868750(FUN_1401d3200()->m_delayLeave.FUN_14025a620());
+    m_timerLeave.FUN_140868750(((class Unk_SiConsts*)FUN_1401d3200())->m_delayLeave.FUN_14025a620());
     vfunc_2(6);
 }
 
@@ -579,7 +593,7 @@ void StateIdle::FUN_1417ce9f0(unsigned nSeq)
 void StateIdle::FUN_1417ceab0(unsigned nSeq)
 {
     int nKey = 0x30;
-    efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+    efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
     if (spRidee ? true : false)
     {
         if (spRidee->FUN_1417075e0() != 0)
@@ -592,10 +606,10 @@ void StateIdle::FUN_1417ceab0(unsigned nSeq)
         if (pPC != 0)
             AsPC(pPC)->FUN_14165e2a0(kName.m_buf, nKey);
     }
-    if (FUN_14096ad40(SI_STR(kName)) && !m_pOwner->FUN_14166de90(nKey, nSeq))
+    if (((efd::utf8string*)&static_cast<class efd::utf8string const&>(SI_STR(kName)))->empty() && !m_pOwner->FUN_14166de90(nKey, nSeq))
         kName = m_pOwner->vfunc_123(nKey);
     bool bPlayed = false;
-    if (!FUN_14096ad40(SI_STR(kName)))
+    if (!((efd::utf8string*)&static_cast<class efd::utf8string const&>(SI_STR(kName)))->empty())
         bPlayed = m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
     if (bPlayed)
         FUN_1417cf210();
@@ -650,9 +664,9 @@ void StateIdle::FUN_1417cef60()
         return;
     if (m_pOwner->vfunc_65() != 0)
         m_timerBore.FUN_1408687f0();
-    bool bBusy = FUN_1422b9ea0(FUN_1408e57f0()) == 1;
+    bool bBusy = ((class GFxSceneService*)(class Unk_SiScene*)(FUN_1408e57f0()))->FUN_1422b9ea0() == 1;
     if (!bBusy)
-        bBusy = FUN_1422ae940(FUN_14025e7a0()) == 1;
+        bBusy = ((class GFxManager*)(class Unk_SiMode*)(((class Unk_SiMode*)FUN_14025e7a0())))->FUN_1422ae940() == 1;
     if (m_n10 == 1 && m_pOwner->vfunc_65() == 0 && !bBusy)
     {
         Unk_PCD88* pTarget = AsPC(pPC)->FUN_14165c2d0().get();
@@ -667,7 +681,7 @@ void StateIdle::FUN_1417cef60()
             m_timerBore.FUN_1408687f0();
         }
         if (m_timerBore.FUN_140868ba0() == 0)
-            m_timerBore.FUN_140868750(FUN_1401d3200()->m_delayBore.FUN_14025a620());
+            m_timerBore.FUN_140868750(((class Unk_SiConsts*)FUN_1401d3200())->m_delayBore.FUN_14025a620());
     }
     else
     {
@@ -711,11 +725,11 @@ void StateIdle::FUN_1417cf360()
         Unk_EffectTarget kTarget;
         if (AsPC(pPC)->FUN_141654700() == 0x32)
         {
-            kTarget.m_strName = *FUN_1401d3200()->m_strSoundJob50.FUN_140298f80();
+            kTarget.m_strName = *((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob50.FUN_140298f80();
         }
         else if (AsPC(pPC)->FUN_141654700() == 0x6e)
         {
-            kTarget.m_strName = *FUN_1401d3200()->m_strSoundJob110.FUN_140298f80();
+            kTarget.m_strName = *((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob110.FUN_140298f80();
         }
         else
         {
@@ -822,10 +836,10 @@ void StateIdlePet::vfunc_3(double fTime)
     PCBase* pNpc = FUN_1417b83a0();
     if (pNpc == 0)
         return;
-    PCBase* pPet = FUN_140b10360(pNpc);
+    PCBase* pPet = ((class CPet*)(class PCBase*)(pNpc))->FUN_140b10360();
     if (pPet == 0)
         return;
-    FUN_140b11180(pNpc);
+    ((class CPet*)(class PCBase*)(pNpc))->FUN_140b11180();
 }
 
 // @0x1417cfaf0
@@ -841,7 +855,7 @@ void StateIdlePet::vfunc_9(double fTime)
     PCBase* pNpc = FUN_1417b83a0();
     if (pNpc == 0)
         return;
-    PCBase* pPet = FUN_140b10360(pNpc);
+    PCBase* pPet = ((class CPet*)(class PCBase*)(pNpc))->FUN_140b10360();
     if (pPet == 0)
         return;
     if (pPet->FUN_14166ce30() != 0 && AsPC(pPet)->FUN_141661970() != 0)
@@ -915,17 +929,17 @@ void StateIdlePet::FUN_1417cfea0(unsigned nSeq)
     PCBase* pNpc = FUN_1417b83a0();
     if (pNpc == 0)
         return;
-    PCBase* pPet = FUN_140b10360(pNpc);
+    PCBase* pPet = ((class CPet*)(class PCBase*)(pNpc))->FUN_140b10360();
     if (pPet != 0)
     {
-        if (m_timerVoiceA.FUN_140268870(*FUN_1401d3200()->m_intervalA.FUN_1401d7c10()) != 0)
+        if (m_timerVoiceA.FUN_140268870(*((class Unk_SiConsts*)FUN_1401d3200())->m_intervalA.FUN_1401d7c10()) != 0)
             FUN_1417d0540(0x5a);
-        if (m_timerVoiceB.FUN_140268870(*FUN_1401d3200()->m_intervalB.FUN_1401d7c10()) != 0)
+        if (m_timerVoiceB.FUN_140268870(*((class Unk_SiConsts*)FUN_1401d3200())->m_intervalB.FUN_1401d7c10()) != 0)
         {
-            int nPetId = FUN_140c8b450(FUN_140535320())->m_book.FUN_140b11e90(pPet);
+            int nPetId = FUN_140c8b450(((class Unk_SiPetMgr*)FUN_140535320()))->m_book.FUN_140b11e90(pPet);
             if (nPetId != 0)
             {
-                MS2Ptr<Unk_SiPetRow> spRow = FUN_140c8b430(FUN_140535320())->FUN_140c892c0(nPetId);
+                MS2Ptr<Unk_SiPetRow> spRow = ((class Unk_SiPetTable*)((class CPetManager*)(class Unk_SiPetMgr*)(((class Unk_SiPetMgr*)FUN_140535320())))->FUN_140c8b430())->FUN_140c892c0(nPetId);
                 if (spRow == 0)
                     FUN_1417d0540(0x5f);
             }
@@ -1006,7 +1020,7 @@ void StateIdlePet::FUN_1417d0540(int nVoice)
         return;
     if (m_nVoiced != 0)
         return;
-    FUN_140b114e0(pNpc, nVoice);
+    ((class CPet*)(class PCBase*)(pNpc))->FUN_140b114e0(nVoice);
     m_nVoiced = 1;
 }
 

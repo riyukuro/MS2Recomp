@@ -76,7 +76,6 @@ class Unk_GalleryAS : public AScript
 {
 };
 
-WorldService* FUN_1403ed2d0();
 CStringW FUN_140763e10(int n);
 CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
 CStringW FUN_14062b4f0(CStringW key, const int& arg);
@@ -167,7 +166,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e39da0()
         m_upgradeButton->vfunc_4(bEnable);
         m_upgradeButton->FUN_1422cdf20(true);
         m_upgradeButton->FUN_1422cdfb0(strLabel);
-        bool bOk = FUN_14028d780((char)TSingleton<CGuildManager>::GetInstance()->FUN_1404d01b0(FUN_1403ed2d0()->FUN_141bd0d30()));
+        bool bOk = FUN_14028d780((char)TSingleton<CGuildManager>::GetInstance()->FUN_1404d01b0(WorldService::GetInstance()->FUN_141bd0d30()));
         if (!bOk)
             m_upgradeButton->FUN_1422c1fe0(0);
     }

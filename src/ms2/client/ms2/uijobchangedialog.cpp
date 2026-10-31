@@ -45,12 +45,11 @@ class ASDialog : public ASDisplayObject {};
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
 class Unk_JcFileSystem : public CFileSystem { };
-Unk_JcFileSystem* FUN_140166420();
 CStringA FUN_14071ae20(const CStringA& strFile);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 CStringW FUN_1401bf530(Unk_140165cf0* pNode, const char* pszName, CStringW strDefault);
-int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nValue);
-int FUN_140873220(Unk_140165cf0* pNode, const char* pszName, int& nValue);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // The skill table: the row of a skill id.
 struct Unk_JcSkillRow { char m_pad_00[0x48]; CString m_strIcon; };
@@ -72,7 +71,6 @@ Unk_JcUi* FUN_14025e7a0();
 UITalkCinematic* FUN_140a7b2b0(int nId);
 
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
-AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);   // GallerySet: 64-bit value
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 struct Unk_JcInvokeS { Scaleform::GFx::Value FUN_140e78470(const char* szMethod, CStringW a1, CStringW a2); };
@@ -198,7 +196,7 @@ void UIJobChangeDialog::vfunc_43()
         pDlg->vfunc_2(1, 0, n);
         return;
     }
-    if (FUN_1409ee240(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->get() != 0)
         reinterpret_cast<AScript*>(FUN_1409ee290(&m_30))->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8,
                       FUN_14025e7a0()->FUN_1422afec0(m_28));
 }
@@ -215,7 +213,7 @@ void UIJobChangeDialog::FUN_1419db600()
 void UIJobChangeDialog::LoadJobPreview()
 {
     TiXmlDocument doc;
-    bool bFailed = FUN_140166420()->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "jobPreview.xml"), 0, true, false) == 0;
+    bool bFailed = ((class Unk_JcFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "jobPreview.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
     Unk_140165cf0* root = ((Unk_140165cf0*)&doc)->FUN_140165cf0("ms2");
@@ -226,8 +224,8 @@ void UIJobChangeDialog::LoadJobPreview()
     {
         int nJob = 0;
         int nDifficulty = 0;
-        FUN_1408731e0(node, "code", nJob);
-        FUN_1408731e0(node, "difficulty", nDifficulty);
+        XmlGetAttr((class TiXmlElement*)(node), "code", nJob);
+        XmlGetAttr((class TiXmlElement*)(node), "difficulty", nDifficulty);
         MS2Ptr<JobPreview> sp(new JobPreview());
         sp->m_nDifficulty = nDifficulty;
         for (Unk_140165cf0* skill = node->FUN_140165cf0("skill"); skill != 0;
@@ -235,8 +233,8 @@ void UIJobChangeDialog::LoadJobPreview()
         {
             int nSkill = 0;
             int nLevel = 0;
-            FUN_140873220(skill, "id", nSkill);
-            FUN_1408731e0(skill, "level", nLevel);
+            XmlGetAttr((class TiXmlElement*)(skill), "id", *(unsigned int*)&static_cast<int&>(nSkill));
+            XmlGetAttr((class TiXmlElement*)(skill), "level", nLevel);
             sp->m_skills.Add(nSkill);
             sp->m_levels.Add((unsigned short)nLevel);
         }
@@ -248,7 +246,7 @@ void UIJobChangeDialog::LoadJobPreview()
 void UIJobChangeDialog::LoadJobDescription()
 {
     TiXmlDocument doc;
-    bool bFailed = FUN_140166420()->FUN_1403974b0(&doc, FUN_14071ae20("korJobDescription.xml"), 0, true, false) == 0;
+    bool bFailed = ((class Unk_JcFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, FUN_14071ae20("korJobDescription.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
     Unk_140165cf0* root = ((Unk_140165cf0*)&doc)->FUN_140165cf0("ms2");
@@ -258,7 +256,7 @@ void UIJobChangeDialog::LoadJobDescription()
          node = (Unk_140165cf0*)((Unk_140168650*)node)->FUN_140168650("job"))
     {
         int nJob = 0;
-        FUN_1408731e0(node, "code", nJob);
+        XmlGetAttr((class TiXmlElement*)(node), "code", nJob);
         MS2Ptr<JobDescription> sp(new JobDescription());
         sp->m_strMain = FUN_1401bf530(node, "mainJobName", L"");
         sp->m_strSub = FUN_1401bf530(node, "subJobName", L"");

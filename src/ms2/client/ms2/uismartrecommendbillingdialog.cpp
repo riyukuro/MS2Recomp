@@ -82,7 +82,6 @@ public:
 
 
 class Unk_SrClock;
-unsigned FUN_141473390(Unk_SrClock* p);                         // the service tick
 
 struct Unk_SrConstUInt { char m_pad_00[0x58]; };
 struct Unk_SrConstTable
@@ -91,7 +90,7 @@ struct Unk_SrConstTable
     Unk_SrConstUInt m_closeDelay;                               // +0xce80
 };
 MS2_CHECK_OFFSET(Unk_SrConstTable, m_closeDelay, 0xce80);
-Unk_SrConstTable* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 unsigned* FUN_1401d7c10(Unk_SrConstUInt* pSlot);
 
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, int n);
@@ -381,7 +380,7 @@ void UISmartRecommendNotifyDialog::vfunc_72()
     UIDialog::vfunc_72();
     if (m_nCloseTick != 0)
     {
-        if (FUN_141473390(reinterpret_cast<Unk_SrClock*>(TSingleton<CMainSystem>::GetInstance())) > m_nCloseTick)
+        if (((class CMainSystem*)(class Unk_SrClock*)(reinterpret_cast<Unk_SrClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473390() > m_nCloseTick)
         {
             ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
             if (pDialog != 0)
@@ -414,7 +413,7 @@ void UISmartRecommendNotifyDialog::FUN_14134dcc0()
                 FUN_141415450(m_strBagKey, spItem, 0, 0x415, 0);
                 pDialog->FUN_14134e200("Open", m_strBagKey, m_item->m_strDesc, m_item->m_strTitle, m_item->m_nTime);
                 FUN_141276180(s_strOpenSound, "");
-                m_nCloseTick = FUN_141473390(reinterpret_cast<Unk_SrClock*>(TSingleton<CMainSystem>::GetInstance())) + *FUN_1401d7c10(&FUN_1401d3200()->m_closeDelay);
+                m_nCloseTick = ((class CMainSystem*)(class Unk_SrClock*)(reinterpret_cast<Unk_SrClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473390() + *FUN_1401d7c10(&((struct Unk_SrConstTable*)FUN_1401d3200())->m_closeDelay);
                 if (m_item.get() != 0)
                 {
                     CString strValue = FUN_140513200("{0}", m_item->m_nId);

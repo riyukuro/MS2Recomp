@@ -130,7 +130,6 @@ class Unk_RankInput : public ASDisplayObject
 public:
     CStringW FUN_1422e0b00();                               // the text
 };
-int FUN_1422c76c0(Unk_RankInput* p);                        // the input has the focus
 
 // The AS array (ctor 0x1422deec0, dtor 0x1422df070) of the tab objects.
 class Unk_RankArray : public ASArray
@@ -147,7 +146,6 @@ public:
     void FUN_1422bbf00(const ASObj& obj);
     void FUN_1422bbc60(int n);
 };
-void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 
@@ -165,28 +163,31 @@ public:
 class ASDialog : public ASDisplayObject {};
 
 // The options / input state / flags singletons.
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_RankInputState { public: bool FUN_14116d9c0(int a, int b, int c); };
-Unk_RankInputState* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_RankFlag { public: int FUN_1402c4c90(int); };
 class Unk_RankFlags { public: void* p0; Unk_RankFlag flags; };
-Unk_RankFlags* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
 // The XML loader and the string table.
 CString FUN_14071a5b0(const CString&, const CString&);
 struct Unk_RankFiles { int FUN_1403974b0(TiXmlDocument&, const char*, int, bool, bool); };
-Unk_RankFiles* FUN_140166420();
+class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 struct Unk_RankLog { void FUN_14015eb90(int, int, const wchar_t*, const CString&); };
-Unk_RankLog* FUN_140166440();
-void* FUN_140165cf0(void*, const char*);
-void* FUN_140168650(void*, const char*);
-bool FUN_14028f710(void*);
-int FUN_1408731e0(void*, const char*, int&);
+class CLogString* GetLogString();   // C3: was FUN_140166440
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(void*, const char*, CString&);
 int FUN_140873420(void*, const char*, CStringW&);
 bool FUN_140184310(const CString& str, const char* psz);
 void FUN_140165270(ATL::CAtlArray<CString>&, CString&);                 // Add
-void FUN_1402c2890(ATL::CAtlArray<CString>&);                           // RemoveAll
 size_t FUN_1401662c0(ATL::CAtlArray<CString>&);                         // GetCount
 CString& FUN_140164930(ATL::CAtlArray<CString>&, size_t nIndex);        // operator[]
 
@@ -216,7 +217,6 @@ CStringW BlockFormat(int);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_141275260(int, int, int);
 __int64 FUN_141a02ed0(const CMsgBoxData* pData, int a, int b);
-int FUN_141a02e50(const CMsgBoxData* pData, int a, int b);
 int FUN_1418fd330(__int64 nOwner);
 int FUN_1418fd740(__int64 nParam, __int64 nId, int nType);
 typedef Delegate<bool(int, const CMsgBoxData&)> Unk_RankMsgCallback;
@@ -256,7 +256,6 @@ void* FUN_140302b00();
 Unk_RankMapTable* FUN_1403ecfe0(void*);
 class Unk_RankJobTable;
 int FUN_140644bb0(Unk_RankJobTable* p, int nId);
-void FUN_140bd0d90(ASObj* pObj, const char* szName, int n);
 
 class Unk_RankSeasonTable
 {
@@ -267,7 +266,7 @@ public:
 };
 int FUN_140b3f460(int nType);
 
-CGameRule* FUN_1401c0d90();                                // TSingleton<CGameRule>::GetInstance (exe copy)
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 class PC;
 class PCBase;
 CStringW* FUN_141656be0(PCBase* pPc);                       // guild name
@@ -331,7 +330,7 @@ void UIGameRankingDialog::vfunc_26()
 void UIGameRankingDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    if (!FUN_140166410()->FUN_14036d570(0x3f))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3f))
         return;
     LoadGameRankingCategory();
     FUN_140e2e540();
@@ -447,7 +446,7 @@ int UIGameRankingDialog::vfunc_13()
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
     if (pDlg != 0)
     {
-        if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+        if (((class Unk_RankInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
         {
             if (FUN_140b632f0() != 0)
             {
@@ -456,7 +455,7 @@ int UIGameRankingDialog::vfunc_13()
             }
             if (MS2Ptr<Unk_RankInput> spInput = FUN_140e35bd0("m_searchInput"))
             {
-                if (FUN_1422c76c0(spInput.operator->()) != 0)
+                if (((class ASUIComponent*)(class Unk_RankInput*)(spInput.operator->()))->FUN_1422c76c0() != 0)
                     FUN_140e34d50(spInput->FUN_1422e0b00());
             }
             return 1;
@@ -478,7 +477,7 @@ void UIGameRankingDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
 // @0x140e2dd00
 int UIGameRankingDialog::vfunc_73()
 {
-    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x32) != 0)
+    if (((class Unk_RankFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x32) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
@@ -563,23 +562,23 @@ void UIGameRankingDialog::LoadGameRankingCategory()
     CString strPath = FUN_14071a5b0("Table", "gameRankingCategory.xml");
     m_categories.RemoveAll();
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(doc, strPath, 0, true, false) == 0)
+    if (((struct Unk_RankFiles*)GetFileSystem())->FUN_1403974b0(doc, strPath, 0, true, false) == 0)
         return;
-    void* pRoot = FUN_140165cf0(&doc, "ms2");
+    void* pRoot = ((void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        ((struct Unk_RankLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (void* pNode = FUN_140165cf0(pRoot, "gameRankingCategory"); pNode != 0; pNode = FUN_140168650(pNode, "gameRankingCategory"))
+    for (void* pNode = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("gameRankingCategory")); pNode != 0; pNode = ((void*)((class Unk_XmlNode*)(void*)(pNode))->NextSibling("gameRankingCategory")))
     {
         CStringW strFeature;
         FUN_140873420(pNode, "feature", strFeature);
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         Unk_RankCatPtr spCategory((Unk_RankNewTag(0)));
-        FUN_1408731e0(pNode, "categoryid", spCategory->m_nId);
-        FUN_1408731e0(pNode, "type", spCategory->m_nType);
+        XmlGetAttr((class TiXmlElement*)(pNode), "categoryid", spCategory->m_nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "type", spCategory->m_nType);
         FUN_1408733e0(pNode, "url", spCategory->m_strUrl);
         spCategory->m_strUrl.MakeLower();
         spCategory->m_strLabel = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x34, spCategory->m_nType);
@@ -898,7 +897,7 @@ void UIGameRankingDialog::FUN_140e31b00()
     Unk_RankCatPtr spCat = FUN_140e350c0(m_nCategory);
     if (!spCat)
         return;
-    FUN_1402c2890(m_missingMarks);
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_missingMarks))->RemoveAll();
     for (size_t i = 0; i < m_rows.GetCount(); i++)
     {
         ASObj row(2);
@@ -1182,7 +1181,7 @@ void UIGameRankingDialog::FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, i
     Unk_RankInfoPtr info = CGameRankingCli::FUN_140b2e980()->FUN_140b2ac30(key, nFlag);
     int nRank = info.FUN_140b2e180() ? info.FUN_140b2e210()->vfunc_3() : 0;
     int nKeyType = key.FUN_140b357e0();
-    MS2Ptr<UgcMapCommendationGMEvent> spRec = FUN_1401c0d90()->FUN_1404786b0(1);
+    MS2Ptr<UgcMapCommendationGMEvent> spRec = ((class CGameRule*)FUN_1401c0d90())->FUN_1404786b0(1);
     if ((spRec.get() ? true : false) && nKeyType == 6)
     {
         obj.FUN_1407cbbe0("recommender", true);
@@ -1296,7 +1295,7 @@ void UIGameRankingDialog::FUN_140e34bb0(ASObj& obj, Unk_RankCatPtr spCategory)
     case 3:
     case 0xe:
     case 0x10:
-        FUN_140bd0d90(&obj, "jobImage", FUN_140644bb0(reinterpret_cast<Unk_RankJobTable*>(TSingleton<JobTable>::GetInstance()), spCategory->m_nSub));
+        ((class ASObj*)(class ASObj*)(&obj))->FUN_140bd0d90("jobImage", FUN_140644bb0(reinterpret_cast<Unk_RankJobTable*>(TSingleton<JobTable>::GetInstance()), spCategory->m_nSub));
         break;
     case 7:
     case 8:
@@ -1455,7 +1454,7 @@ bool UIGameRankingDialog::FUN_140e359e0(int nBtn, const CMsgBoxData& data)
     {
         __int64 nA = FUN_141a02ed0(&data, 0, 0);
         __int64 nB = FUN_141a02ed0(&data, 1, 0);
-        int nC = FUN_141a02e50(&data, 2, 0);
+        int nC = ((class CMsgBoxData*)(class CMsgBoxData const*)(&data))->FUN_141a02e50(2, 0);
         FUN_1418fd740(nA, nB, nC);
     }
     return true;
@@ -1485,7 +1484,7 @@ void ASObj::FUN_140e35d00(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x140e35da0
@@ -1493,7 +1492,7 @@ void ASObj::FUN_140e35da0(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x140e37aa0

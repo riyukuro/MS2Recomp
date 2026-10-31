@@ -140,7 +140,7 @@ public:
     Unk_UgcpEntryMap* FUN_141b978c0();                          // +0x18 the entries by map type
     std::set<int>* FUN_141b979b0();                             // +0x08 the remembered ids
 };
-Unk_UgcpMgr* FUN_140cb17d0();
+class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
 extern ATL::CAtlArray<unsigned int> DAT_143ab3058;              // ids already remembered
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);   // show a notice
@@ -350,8 +350,8 @@ void UIUGCPortalDialog::FUN_140fb1040()
         none.FUN_1409c0dc0("label", "$s_ugcportal_label_target_list_none");
         spCombo.operator->()->FUN_1422dfc70(none);
     }
-    std::set<int>* pRemembered = FUN_140cb17d0()->FUN_141b979b0();
-    Unk_UgcpEntryMap* pEntries = FUN_140cb17d0()->FUN_141b978c0();
+    std::set<int>* pRemembered = ((class Unk_UgcpMgr*)FUN_140cb17d0())->FUN_141b979b0();
+    Unk_UgcpEntryMap* pEntries = ((class Unk_UgcpMgr*)FUN_140cb17d0())->FUN_141b978c0();
     Unk_UgcpEntryMap::iterator it;
     std::vector<int> ids;
     for (it = pEntries->begin(); it != pEntries->end(); it++)

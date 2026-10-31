@@ -14,8 +14,8 @@
 // MS2-PIN: ??$_Emplace_reallocate@AEBK@?$vector@KV?$allocator@K@std@@@std@@QEAAPEAKQEAKAEBK@Z 0x14136f8e0
 // MS2-PIN: ??$_Insert_range@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@std@@@?$vector@KV?$allocator@K@std@@@std@@AEAAXV?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@K@std@@@std@@@1@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@1@1Uforward_iterator_tag@1@@Z 0x14136fc50
 // MS2-PIN: ??$_Range_construct_or_tidy@PEBK@?$vector@KV?$allocator@K@std@@@std@@AEAAXPEBK0Uforward_iterator_tag@1@@Z 0x141370100
-// MS2-PIN: ??$_Ucopy@PEBK@?$vector@KV?$allocator@K@std@@@std@@AEAAPEAKPEBK0PEAK@Z 0x141370190
-// MS2-PIN: ??$distance@PEBK@std@@YA_JPEBK0@Z 0x141370430
+// MS2-PIN: ??$_Ucopy@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@std@@@?$vector@KV?$allocator@K@std@@@std@@AEAAPEAKV?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@1@0PEAK@Z 0x141370190
+// MS2-PIN: ??$distance@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@std@@@std@@YA_JV?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@0@0@Z 0x141370430
 // MS2-PIN: ??$insert@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@std@@X@?$vector@KV?$allocator@K@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@K@std@@@std@@@1@V?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@K@std@@@std@@@1@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@1@1@Z 0x141370600
 // MS2-PIN: ??$_Distance1@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@std@@@std@@YA_JV?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@0@0Uinput_iterator_tag@0@@Z 0x14136f7c0
 // MS2-PIN: ??$_Uninitialized_copy_al_unchecked@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@std@@PEAKV?$allocator@K@2@@std@@YAPEAKV?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@0@V10@QEAKAEAV?$allocator@K@0@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z 0x1413702b0
@@ -42,7 +42,8 @@
 // MS2-PIN: ??$addressof@PEAU?$_List_node@HPEAX@std@@@std@@YAPEAPEAU?$_List_node@HPEAX@0@AEAPEAU10@@Z 0x141370360
 // MS2-PIN: ??$destroy@H@?$_Default_allocator_traits@V?$allocator@U?$_List_node@HPEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_List_node@HPEAX@std@@@1@QEAH@Z 0x141370400
 // MS2-PIN: ??0?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@std@@QEAA@PEAU?$_List_node@HPEAX@1@PEBV?$_List_val@U?$_List_simple_types@H@std@@@1@@Z 0x141370b10
-// MS2-PIN: ??1?$list@HV?$allocator@H@std@@@std@@QEAA@XZ 0x141370f80
+// MS2-PIN: ??1?$list@V?$list@HV?$allocator@H@std@@@std@@V?$allocator@V?$list@HV?$allocator@H@std@@@std@@@2@@std@@QEAA@XZ 0x141370f80
+// MS2-PIN: ??1?$_List_buy@V?$list@HV?$allocator@H@std@@@std@@V?$allocator@V?$list@HV?$allocator@H@std@@@std@@@2@@std@@QEAA@XZ 0x141370f60
 // MS2-PIN: ??8?$_List_unchecked_const_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@U_Iterator_base0@2@@std@@QEBA_NAEBV01@@Z 0x141371150
 // MS2-PIN: ??D?$_List_unchecked_const_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@U_Iterator_base0@2@@std@@QEBAAEBHXZ 0x141371290
 // MS2-PIN: ??E?$_List_unchecked_const_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x1413712f0
@@ -141,7 +142,7 @@ public:
 };
 bool FUN_14028f710(Unk_XmlElement *);  // C3: the definition's signature
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-int FUN_140873420(void*,const char*,CStringW&);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 void FUN_14025a680(const CStringW&,ATL::CAtlArray<CStringW>&,const wchar_t*);
 int FUN_14136f660(void*,const char*,int&);
@@ -201,7 +202,7 @@ public:
  void FUN_14138cce0(void*,int,int);
 CString FUN_14016a600(const wchar_t*,int); CString FUN_1401d4330(const wchar_t*,int);
 void FUN_14138d090(void*,CString);__int64 GetServerTime();
-void* FUN_1403ed280(); void FUN_1411a4f40(void*,CString,const Vector3&);
+ void FUN_1411a4f40(void*,CString,const Vector3&);
 void* FUN_140d13c40();class CSoundEventMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -472,12 +473,12 @@ class CReconnectionManagerCli   // C3: member view for the former free stand-ins
 public:
     void FUN_140aad9b0(int);
 };
-void* FUN_1409a8b00();class ApplyEffect   // C3: member view for the former free stand-ins
+class ApplyEffect   // C3: member view for the former free stand-ins
 {
 public:
     void ApplyFieldFogEnabled(bool);
 };
-void* FUN_14119f490();class EffectSkipMgr   // C3: member view for the former free stand-ins
+class EffectSkipMgr   // C3: member view for the former free stand-ins
 {
 public:
     void SetSuspended(bool);
@@ -613,7 +614,6 @@ CStringW BlockFormat(int);
 void FUN_140d73aa0(CStringW,int,void*,CStringW);   // the exe callee destroys both strings
 class Unk_HsInfo : public CPtred { public: int FUN_14050a6a0(); };
 struct Unk_HsPC { MS2Ptr<Unk_HsInfo> FUN_141664200(); };
-void* FUN_1409670d0();
 void FUN_14162ba50(void*,CStringW);
 class CPartyManager   // C3: member view for the former free stand-ins
 {
@@ -680,14 +680,12 @@ CStringW FUN_141b720b0(int,int);
 void* FUN_140764020();
 void FUN_140746fe0(CQuestManagerCommon *, int);  // C3: the definition's signature
 extern int DAT_143ab2a90;
-void* FUN_1401958b0();
 class SkillDataTableCli   // C3: member view for the former free stand-ins
 {
 public:
     void ReloadFiles();
 };
 extern bool DAT_143aac548;
-void FUN_141370b80(void*);
 UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
 // @0x141371d80
 inline int FUN_141371d80() { return 0x4e28; }
@@ -791,7 +789,7 @@ bool CUserCommandCli::Load() {
         FUN_14025a680(names,items,L"\n");
         if(items.IsEmpty()) continue;
         FUN_14136f660(node,"chatType",info->chatType);
-        FUN_140873420(node,"function",info->function);
+        XmlGetAttr((class TiXmlElement*)(node), "function", info->function);
         for(size_t i=0;i<items.GetCount();i++) {
             CStringW name=items[i].Trim();
             if(name.IsEmpty()) continue;
@@ -802,7 +800,7 @@ bool CUserCommandCli::Load() {
         XmlGetAttr((class TiXmlElement*)(node), "stringOrder", order);
         if(order>0) {
             CStringW suffix;
-            FUN_140873420(node,"stringSuffix",suffix);
+            XmlGetAttr((class TiXmlElement*)(node), "stringSuffix", suffix);
             if(!suffix.IsEmpty()) { info->suffix=suffix; ordered.SetAt(order,info); }
         }
     }
@@ -1031,7 +1029,7 @@ int CUserCommandCli::FUN_1413659d0(Unk_CommandArgs&) {
 // @0x141365b00
 int CUserCommandCli::FUN_141365b00(Unk_CommandArgs& args) {
     if(DAT_143ab2914<50) return 0;
-     FUN_1411a4f40(FUN_1403ed280(),FUN_1401d4330(args.FUN_1408d21c0(0,L""),0),DAT_143b01a60);
+     FUN_1411a4f40(((void*)TSingleton<CEffectService>::GetInstance()),FUN_1401d4330(args.FUN_1408d21c0(0,L""),0),DAT_143b01a60);
     return 1;
 }
 // @0x141365bf0
@@ -1083,7 +1081,7 @@ int CUserCommandCli::FUN_141365ff0(Unk_CommandArgs&) { ((class CNifLoadingServic
 // @0x141366060
 int CUserCommandCli::FUN_141366060(Unk_CommandArgs& args) {
     if(DAT_143ab2914<50) return 0;
-     { int weather=args.FUN_1408d1f60(0,0); ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a7e80(weather); FUN_1412751b0(StringFormat(L"Weather {0}",weather),20); }
+     { int weather=args.FUN_1408d1f60(0,0); ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->FUN_1411a7e80(weather); FUN_1412751b0(StringFormat(L"Weather {0}",weather),20); }
     return 1;
 }
 // @0x141366100
@@ -1094,10 +1092,10 @@ int CUserCommandCli::FUN_141366100(Unk_CommandArgs& args) {
 }
 // @0x1413661b0
 int CUserCommandCli::FUN_1413661b0(Unk_CommandArgs& args) {
-    CString name=FUN_14016a600(args.FUN_1408d21c0(0,L""),0); FUN_1411a8cb0(FUN_1403ed280(),name); return 1;
+    CString name=FUN_14016a600(args.FUN_1408d21c0(0,L""),0); FUN_1411a8cb0(((void*)TSingleton<CEffectService>::GetInstance()),name); return 1;
 }
 // @0x141366270
-int CUserCommandCli::FUN_141366270(Unk_CommandArgs&) { ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a8dc0(); return 1; }
+int CUserCommandCli::FUN_141366270(Unk_CommandArgs&) { ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->FUN_1411a8dc0(); return 1; }
 // @0x1413662a0
 int CUserCommandCli::FUN_1413662a0(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()==0) return 0;
@@ -1411,7 +1409,7 @@ int CUserCommandCli::FUN_1413687d0(Unk_CommandArgs&) {
         request.m_strName="Eff_AfterImage.xml";
         request.m_nObject=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(entry));
         request.SetActor(((class GameObject*)(void*)(entry))->FUN_14123c580());
-        ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a4a00(*(class Unk_EffectTarget*)(&request));
+        ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(class Unk_EffectTarget*)(&request));
     }
     return 1;
 }
@@ -1426,7 +1424,7 @@ int CUserCommandCli::FUN_1413688f0(Unk_CommandArgs& args) {
 // @0x141368990
 int CUserCommandCli::FUN_141368990(Unk_CommandArgs& args) {
     bool enabled=args.FUN_1408d2140(0,true);
-    ((class ApplyEffect*)(void*)(FUN_1409a8b00()))->ApplyFieldFogEnabled(enabled);
+    ((class ApplyEffect*)(void*)(((void*)TSingleton<ApplyEffect>::GetInstance())))->ApplyFieldFogEnabled(enabled);
     if(enabled!=false) FUN_1412751b0(StringFormat(L"Enable Fog"),20);
     else FUN_1412751b0(StringFormat(L"Disable Fog"),20);
     return 1;
@@ -1434,7 +1432,7 @@ int CUserCommandCli::FUN_141368990(Unk_CommandArgs& args) {
 // @0x141368a60
 int CUserCommandCli::FUN_141368a60(Unk_CommandArgs& args) {
     bool enabled=args.FUN_1408d2140(0,true);
-    ((class EffectSkipMgr*)(void*)(FUN_14119f490()))->SetSuspended(enabled==false);
+    ((class EffectSkipMgr*)(void*)(((void*)TSingleton<EffectSkipMgr>::GetInstance())))->SetSuspended(enabled==false);
     if(enabled!=false) FUN_1412751b0(StringFormat(L"Enable effect limit"),20);
     else FUN_1412751b0(StringFormat(L"Disable effect limit"),20);
     return 1;
@@ -1698,20 +1696,16 @@ int CUserCommandCli::FUN_14136a630(Unk_CommandArgs& args) {
     int trace = 0;
     int id = 0;
     int valid = 0;
-    int n = args.FUN_1408d2380();
-    if (n == 1) {
+    if (args.FUN_1408d2380() == 1) {
         CStringW s = args.FUN_1408d21c0(0,L"");
         id = _wtoi(s);
         valid = 1;
-    } else {
-        n = args.FUN_1408d2380();
-        if (n == 2) {
-            static CStringW s_trace(L"-trace");
-            CStringW s0 = args.FUN_1408d21c0(0,L"");
-            id = _wtoi(s0);
-            CStringW s1 = args.FUN_1408d21c0(1,L"");
-            if (FUN_14025cd60(s1,s_trace)) { trace = 1; valid = 1; }
-        }
+    } else if (args.FUN_1408d2380() == 2) {
+        static CStringW s_trace(L"-trace");
+        CStringW s0 = args.FUN_1408d21c0(0,L"");
+        id = _wtoi(s0);
+        CStringW s1 = args.FUN_1408d21c0(1,L"");
+        if (FUN_14025cd60(s1,s_trace)) { trace = 1; valid = 1; }
     }
     if (valid == 0 || id == 0) {
         FUN_1412751b0(CStringW(L"/CompleteEpicChapter [ChapterID] {-trace}"),20);
@@ -1751,20 +1745,16 @@ int CUserCommandCli::FUN_14136ac60(Unk_CommandArgs& args) {
     int trace = 0;
     int id = 0;
     int valid = 0;
-    int n = args.FUN_1408d2380();
-    if (n == 1) {
+    if (args.FUN_1408d2380() == 1) {
         CStringW s = args.FUN_1408d21c0(0,L"");
         id = _wtoi(s);
         valid = 1;
-    } else {
-        n = args.FUN_1408d2380();
-        if (n == 2) {
-            static CStringW s_trace(L"-trace");
-            CStringW s0 = args.FUN_1408d21c0(0,L"");
-            id = _wtoi(s0);
-            CStringW s1 = args.FUN_1408d21c0(1,L"");
-            if (FUN_14025cd60(s1,s_trace)) { trace = 1; valid = 1; }
-        }
+    } else if (args.FUN_1408d2380() == 2) {
+        static CStringW s_trace(L"-trace");
+        CStringW s0 = args.FUN_1408d21c0(0,L"");
+        id = _wtoi(s0);
+        CStringW s1 = args.FUN_1408d21c0(1,L"");
+        if (FUN_14025cd60(s1,s_trace)) { trace = 1; valid = 1; }
     }
     if (valid == 0 || id == 0) {
         FUN_1412751b0(CStringW(L"/CompleteEpicQuest [ChapterID] {-trace}"),20);
@@ -2071,7 +2061,7 @@ int CUserCommandCli::FUN_14136c940(Unk_CommandArgs& args) {
     MS2Ptr<Unk_HsInfo> spInfo=((Unk_HsPC*)actor)->FUN_141664200();
     if((bool)spInfo.get() && spInfo->FUN_14050a6a0()) return 1;
     if(args.FUN_1408d2380()==1) {
-        FUN_14162ba50(FUN_1409670d0(),args.FUN_1408d21c0(0,L""));
+        FUN_14162ba50(((void*)TSingleton<CPartyManager>::GetInstance()),args.FUN_1408d21c0(0,L""));
     }
     return 1;
 }
@@ -2081,13 +2071,13 @@ int CUserCommandCli::FUN_14136ca90(Unk_CommandArgs&) {
     if(!actor) return 1;
     MS2Ptr<Unk_HsInfo> spInfo=((Unk_HsPC*)actor)->FUN_141664200();
     if((bool)spInfo.get() && spInfo->FUN_14050a6a0()) return 1;
-    ((class CPartyManager*)(void*)(FUN_1409670d0()))->SendPartyMode3();
+    ((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->SendPartyMode3();
     return 1;
 }
 // @0x14136cb60
 int CUserCommandCli::FUN_14136cb60(Unk_CommandArgs&) {
-    if(((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162ab60()) {
-        ((class CPartyManager*)(void*)(FUN_1409670d0()))->SendPartyMode46();
+    if(((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->FUN_14162ab60()) {
+        ((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->SendPartyMode46();
     } else {
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_err_can_use_only_chief")),1,1);
     }
@@ -2253,7 +2243,7 @@ int CUserCommandCli::FUN_14136d9c0(Unk_CommandArgs& args) {
 // @0x14136da20
 int CUserCommandCli::FUN_14136da20(Unk_CommandArgs&) {
     { CStringW text(L"Start Client ReloadSKill"); FUN_1412751b0(text,20); }
-    ((class SkillDataTableCli*)(void*)(FUN_1401958b0()))->ReloadFiles();
+    ((class SkillDataTableCli*)(void*)(((void*)TSingleton<SkillDataTableCli>::GetInstance())))->ReloadFiles();
     { CStringW text(L"Complete Client ReloadSKill"); FUN_1412751b0(text,20); }
     return 1;
 }
@@ -2263,12 +2253,6 @@ int CUserCommandCli::FUN_14136dab0(Unk_CommandArgs& args) {
     CStringW mode(args.FUN_1408d21c0(1,CStringW(L"all")).MakeLower());
     DAT_143aac548=enabled ? true : false;
     return 1;
-}
-// @0x14136db90
-void* FUN_14136db90(void* p) {
-    FUN_141370b80(p);
-    ::new (p) std::_List_val<std::_List_simple_types<std::list<int> > >();     // 0x141370b50
-    return p;
 }
 // @0x14136f1f0
 void* FUN_14136f1f0(int id) {

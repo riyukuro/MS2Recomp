@@ -45,7 +45,7 @@ public:
     bool FUN_1410c35c0();                                       // construct mode
     void FUN_1410d5930(Unk_ChTree* pOut);                       // collect the visitors
 };
-Unk_HoService* FUN_1401cd040(Unk_EntityAppFramework* framework);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
 // The smart pointer to the service (8 bytes; its glue COMDATs live in the unit that first used it).
 class Unk_HoServicePtr
@@ -61,8 +61,7 @@ unsigned char FUN_140ef4cb0(Unk_HoServicePtr* pService, int n);
 
 WorldService* FUN_1403ed2d0();
 
-bool FUN_140a467d0(const MS2Ptr<AScript>*);                     // has the AS object been released
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, void* pUnused);
+int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 int FUN_1418fd280();
 void FUN_14151f200();
 
@@ -102,7 +101,7 @@ void UIConstructHelpDialog::vfunc_67()
 void UIConstructHelpDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_HoServicePtr spService(FUN_1401cd040(&DAT_143b059e8));
+    Unk_HoServicePtr spService(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
     if (FUN_140ef4cb0(&spService, 0))
         return;
     if (m_30.get() != 0)
@@ -113,7 +112,7 @@ void UIConstructHelpDialog::OnLoadComplete()
 void UIConstructHelpDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    vfunc_55() || FUN_140a467d0(&m_30);
+    vfunc_55() || ((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull();
 }
 
 // @0x141906140
@@ -121,7 +120,7 @@ int UIConstructHelpDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, 0) != 0)
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, 0) != 0)
     {
         return 1;
     }
@@ -132,7 +131,7 @@ int UIConstructHelpDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 void UIConstructHelpDialog::vfunc_43()
 {
     UIDialog::vfunc_43();
-    Unk_HoServicePtr spService(FUN_1401cd040(&DAT_143b059e8));
+    Unk_HoServicePtr spService(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
     if (FUN_140ef4cb0(&spService, 0))
         return;
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));

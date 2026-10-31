@@ -13,14 +13,22 @@
 
 int FUN_140873420(Unk_ScriptXmlNode* pNode, const char* pszName, CStringW& rOut);   // xml attribute -> wide string
 int FUN_1408733e0(Unk_ScriptXmlNode* pNode, const char* pszName, CStringA& rOut);   // xml attribute -> string
-int FUN_1408731e0(Unk_ScriptXmlNode* pNode, const char* pszName, int& rOut);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_140873220(Unk_ScriptXmlNode* pNode, const char* pszName, int& rOut);
 int FUN_140873220(Unk_ScriptXmlNode* pNode, const char* pszName, unsigned& rOut);
-int FUN_140873710(Unk_ScriptXmlNode* pNode, const char* pszName, int* pOut);
-int FUN_140873890(Unk_ScriptXmlNode* pNode, const char* pszName, int& rOut);
-const char* FUN_14086f4b0(Unk_ScriptXmlNode* pNode, const char* pszName);           // attribute text (null = absent)
-Unk_ScriptXmlNode* FUN_140165cf0(Unk_ScriptXmlNode* pNode, const char* pszName);    // first child
-Unk_ScriptXmlNode* FUN_140168650(Unk_ScriptXmlNode* pNode, const char* pszName);    // next sibling
+int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 CReservedWordTable* FUN_1403b4750();
 int FUN_140768010(int, int);  // C3: the definition's signature
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
@@ -106,9 +114,9 @@ CCinematicDistractor::~CCinematicDistractor()
 }
 
 // @0x14078d3a0
-void CCinematicDistractor::FUN_14078d3a0() const
+size_t CCinematicDistractor::FUN_14078d3a0() const
 {
-    m_choices.GetCount();
+    return m_choices.GetCount();
 }
 MS2_REPLACE_METHOD(0x14078D3A0, CCinematicDistractor, FUN_14078d3a0, 31, 0x99CA2EA9);
 
@@ -161,8 +169,8 @@ int CCinematicEventScript::LoadXml(Unk_ScriptXmlNode* pNode)
 {
     if (pNode == 0)
         return 0;
-    FUN_1408731e0(pNode, "id", m_nId);
-    for (Unk_ScriptXmlNode* pContent = FUN_140165cf0(pNode, "content"); pContent != 0; pContent = FUN_140168650(pContent, "content")) {
+    XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
+    for (Unk_ScriptXmlNode* pContent = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(pNode))->FirstChild("content")); pContent != 0; pContent = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(pContent))->NextSibling("content"))) {
         Unk_ScriptPtr<CScriptContent> spContent(new CScriptContent());
         if (spContent->vfunc_2(pContent) == 0)
             return 0;
@@ -229,7 +237,7 @@ static int FUN_14078ebd0(Unk_ScriptXmlNode* pNode, const char* pszName, int* pOu
         return 2;
     }
     int nValue = 0;
-    int nResult = FUN_140873890(pNode, pszName, nValue);
+    int nResult = XmlQuery((class TiXmlElement*)(pNode), pszName, nValue);
     if (nResult != 0)
         return nResult;
     *pOut = nValue;
@@ -241,13 +249,13 @@ int CCinematicContent::vfunc_2(Unk_ScriptXmlNode* pNode)
 {
     if (CScriptContent::vfunc_2(pNode) == 0)
         return 0;
-    if (FUN_14086f4b0(pNode, "buttonSet") != 0)
-        FUN_1408731e0(pNode, "buttonSet", m_buttonSet);
-    if (FUN_14086f4b0(pNode, "openTalkReward") != 0)
-        FUN_140873710(pNode, "openTalkReward", &m_openTalkReward);
-    if (FUN_14086f4b0(pNode, "functionID") != 0)
-        FUN_1408731e0(pNode, "functionID", m_functionId);
-    if (FUN_14086f4b0(pNode, "otherNpcTalk") != 0)
+    if (((class TiXmlElement*)(class Unk_ScriptXmlNode*)(pNode))->Attribute("buttonSet") != 0)
+        XmlGetAttr((class TiXmlElement*)(pNode), "buttonSet", m_buttonSet);
+    if (((class TiXmlElement*)(class Unk_ScriptXmlNode*)(pNode))->Attribute("openTalkReward") != 0)
+        XmlGetBool((class TiXmlElement*)(pNode), "openTalkReward", *(int*)(&m_openTalkReward));
+    if (((class TiXmlElement*)(class Unk_ScriptXmlNode*)(pNode))->Attribute("functionID") != 0)
+        XmlGetAttr((class TiXmlElement*)(pNode), "functionID", m_functionId);
+    if (((class TiXmlElement*)(class Unk_ScriptXmlNode*)(pNode))->Attribute("otherNpcTalk") != 0)
         FUN_140873220(pNode, "otherNpcTalk", m_otherNpcTalk);
     FUN_1408733e0(pNode, "leftIllust", m_leftIllust);
     FUN_1408733e0(pNode, "rightIllust", m_rightIllust);
@@ -256,12 +264,12 @@ int CCinematicContent::vfunc_2(Unk_ScriptXmlNode* pNode)
     FUN_1408733e0(pNode, "imagePlate", m_imagePlate);
     FUN_14078ebd0(pNode, "myTalk", &m_myTalk);
     FUN_1408733e0(pNode, "movie", m_movie);
-    FUN_1408731e0(pNode, "redirect", m_redirect);
+    XmlGetAttr((class TiXmlElement*)(pNode), "redirect", m_redirect);
     FUN_1408733e0(pNode, "screenEffectMovie", m_screenEffectMovie);
     FUN_1408733e0(pNode, "screenEffectAction", m_screenEffectAction);
     FUN_140873220(pNode, "screenEffectValue", m_screenEffectValue);
     Unk_ScriptPtr<CCinematicDistractor> spDistractor(0);
-    for (Unk_ScriptXmlNode* pChoice = FUN_140165cf0(pNode, "distractor"); pChoice != 0; pChoice = FUN_140168650(pChoice, "distractor")) {
+    for (Unk_ScriptXmlNode* pChoice = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(pNode))->FirstChild("distractor")); pChoice != 0; pChoice = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(pChoice))->NextSibling("distractor"))) {
         if (spDistractor == 0)
             spDistractor = new CCinematicDistractor();
         Unk_ScriptChoice choice;
@@ -272,7 +280,7 @@ int CCinematicContent::vfunc_2(Unk_ScriptXmlNode* pNode)
         spDistractor->m_choices.Add(choice);
     }
     m_distractors = spDistractor;
-    for (Unk_ScriptXmlNode* pEvent = FUN_140165cf0(pNode, "event"); pEvent != 0; pEvent = FUN_140168650(pEvent, "event")) {
+    for (Unk_ScriptXmlNode* pEvent = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(pNode))->FirstChild("event")); pEvent != 0; pEvent = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(pEvent))->NextSibling("event"))) {
         Unk_ScriptPtr<CCinematicEventScript> spEvent(new CCinematicEventScript());
         if (spEvent->LoadXml(pEvent) == 0)
             return 0;

@@ -101,15 +101,23 @@ public:
 
 // ---- exe callees ----
 void* FUN_1409eed90();                                                      // the singleton of the own character
-Unk_WeddingTicketView* FUN_141b87160(void* pCharacter);                     // the character's current wedding hall ticket
-bool FUN_140900f90(int nId, Unk_WeddingTicketView* pTicket);                // can the ticket be changed to this hall
+class WeddingManager   // C3: member view for the former free stand-ins
+{
+public:
+    class WeddingHallTicket const& GetTicket();
+};
+bool FUN_140900f90(int, class WeddingHallTicket*);   // C3: was FUN_140900f90
 int FUN_140fe2d20(UIDialog* pDialog);                                       // the selected hall id of the dialog
-int FUN_140fdca80(UIDialog* pDialog);                                       // reservation mode (1 = change)
+class UIWeddingHallReservationDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140fdbf70();
+    void FUN_140fdc030();
+    int GetHall();
+    int GetMode();
+    void SetHall(int);
+};
 void* FUN_140fdca40(UIDialog* pDialog);                                     // the reservation target
-int FUN_140fdca20(UIDialog* pDialog);
-void FUN_140fdc030(UIDialog* pDialog);
-void FUN_140fdbf70(UIDialog* pDialog);
-void FUN_140fdc110(UIDialog* pDialog, int nSlotId);
 unsigned char FUN_140900f30(void* pTarget);
 unsigned char FUN_140901fa0(RHall* p, int n);                               // handle is null
 Unk_HallRec* FUN_1409020f0(RHall* p);
@@ -189,9 +197,9 @@ bool UIWeddingHallReservationPageSelect::vfunc_1()
     if (FUN_140bcc0c0(&list, 0))
         return false;
     int nPackageSlot = -1;
-    if (FUN_140fdca80(m_pDialog) == 1)
+    if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetMode() == 1)
     {
-        Unk_WeddingTicketView* pTicket = FUN_141b87160(FUN_1409eed90());
+        Unk_WeddingTicketView* pTicket = ((struct Unk_WeddingTicketView*)&((class WeddingManager*)(void*)(FUN_1409eed90()))->GetTicket());
         nPackageSlot = reinterpret_cast<Unk_HallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909130(pTicket->m_nHallId, pTicket->m_nSlot);
     }
     FUN_140bcc3f0(&list)->FUN_1422dd1d0();
@@ -252,7 +260,7 @@ bool UIWeddingHallReservationPageSelect::vfunc_4(__int64 a1, __int64 a2, int a3)
         {
             m_nSelectedSlot = data.FUN_1422b8a10();
             FUN_140fe4fb0(this, m_nSelectedSlot);
-            FUN_140fdc110(m_pDialog, m_nSelectedSlot);
+            ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SetHall(m_nSelectedSlot);
         }
         return true;
     }
@@ -262,20 +270,20 @@ bool UIWeddingHallReservationPageSelect::vfunc_4(__int64 a1, __int64 a2, int a3)
 // @0x140fe4ca0
 void UIWeddingHallReservationPageSelect::vfunc_5()
 {
-    FUN_140fdbf70(m_pDialog);
+    ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdbf70();
 }
 
 // @0x140fe4cd0
 void UIWeddingHallReservationPageSelect::vfunc_6()
 {
-    if (FUN_140fdca20(m_pDialog) == 0)
+    if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetHall() == 0)
     {
         CStringW strKey(L"s_wedding_hall_reservation_select_hall");
         FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
     }
     else
     {
-        FUN_140fdc030(m_pDialog);
+        ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdc030();
     }
 }
 
@@ -321,8 +329,8 @@ bool UIWeddingHallReservationPageSelect::vfunc_11(bool a1)
 // @0x140fe4f50
 bool UIWeddingHallReservationPageSelect::vfunc_12()
 {
-    if (FUN_140fdca80(m_pDialog) == 1)
-        return FUN_140900f90(FUN_140fe2d20(m_pDialog), FUN_141b87160(FUN_1409eed90()));
+    if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetMode() == 1)
+        return FUN_140900f90(FUN_140fe2d20(m_pDialog), (class WeddingHallTicket*)(((struct Unk_WeddingTicketView*)&((class WeddingManager*)(void*)(FUN_1409eed90()))->GetTicket())));
     return true;
 }
 
@@ -365,13 +373,13 @@ void FUN_140fe4fb0(UIWeddingHallReservationPageSelect* pPage, int nSlotId)
 // @0x140fe5520
 __int64 FUN_140fe5520(UIWeddingHallReservationPageSelect* pPage, int nHallId, int nSlot)
 {
-    if (FUN_140fdca80(pPage->m_pDialog) == 0)
+    if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(pPage->m_pDialog))->GetMode() == 0)
     {
         return reinterpret_cast<Unk_HallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909220(nHallId, nSlot);
     }
     else
     {
-        Unk_WeddingTicketView* pTicket = FUN_141b87160(FUN_1409eed90());
+        Unk_WeddingTicketView* pTicket = ((struct Unk_WeddingTicketView*)&((class WeddingManager*)(void*)(FUN_1409eed90()))->GetTicket());
         __int64 nOld = reinterpret_cast<Unk_HallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909220(pTicket->m_nHallId, pTicket->m_nSlot);
         __int64 nNew = reinterpret_cast<Unk_HallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909220(nHallId, nSlot);
         return nNew - nOld;

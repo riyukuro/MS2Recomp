@@ -63,7 +63,7 @@
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
-bool FUN_14028f650(Unk_140165cf0* pElem);                   // the node is a usable element
+bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
@@ -74,8 +74,8 @@ template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& r
 class Unk_ItemEquipData : public CItemData {};
 class Unk_ItemEnchantData : public CItemStatus {};
 
-CItemOptionTable* FUN_140166430();                          // TSingleton<CItemOptionTable>::GetInstance
-CGameRule* FUN_1401c0d90();                                 // TSingleton<CGameRule>::GetInstance
+class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 CStringTable* GetStringTable();                              // TSingleton<CStringTable>::GetInstance
 unsigned FUN_1405575b0(Unk_IngTable*, int);                 // the lock item of an item
 const CString& FUN_14082efb0(int nStat);                    // the xml name of a stat
@@ -160,7 +160,7 @@ int CItemRemakeScrollTable::Load()
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("remakeScroll"); pNode != 0;
          pNode = pNode->FUN_140168650("remakeScroll"))
     {
-        if (!FUN_14028f650(pNode))
+        if (!FUN_14028f650((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId = 0;
         FUN_1408731e0(pNode, "id", nId);
@@ -241,7 +241,7 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
                 if (spBase == 0)
                     continue;
                 std::pair<int, int> range =
-                    FUN_140166430()->FUN_1405f64e0(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
+                    ((class CItemOptionTable*)FUN_140166430())->FUN_1405f64e0(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
                 if (range.second == spBase->GetValue())
                 {
                     MS2Ptr<CItemRemakeOptionUtil::TStatInfo> spInfo(new CItemRemakeOptionUtil::TStatInfo);
@@ -262,7 +262,7 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
                 if (spBase == 0)
                     continue;
                 std::pair<int, int> range =
-                    FUN_140166430()->FUN_1405f6650(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
+                    ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6650(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
                 if (range.second == spBase->GetValue())
                 {
                     MS2Ptr<CItemRemakeOptionUtil::TStatInfo> spInfo(new CItemRemakeOptionUtil::TStatInfo);
@@ -317,7 +317,7 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
         return 0xb;
     int bExclusive = spData->FUN_14053d600();
     {
-        MS2Ptr<ItemOptionRandom> spRandom = FUN_140166430()->FUN_1405f6010(spData->FUN_14053eff0(item->FUN_140526bd0()));
+        MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6010(spData->FUN_14053eff0(item->FUN_140526bd0()));
         Unk_SocketSpecialMap& specials = spOption->FUN_1405cb8d0(2);
         Unk_EnchantMap& stats = spOption->FUN_1405cb8a0(2);
         if (specials.IsEmpty() && stats.IsEmpty())
@@ -331,7 +331,7 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
             if (bExclusive)
             {
                 CString strName(FUN_14082efb0(nStat));
-                bool bFound = FUN_140166430()->FUN_1405f6e40(strName).get() != 0;
+                bool bFound = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6e40(strName).get() != 0;
                 if (bFound)
                     nExclusive++;
             }
@@ -344,7 +344,7 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
             if (bExclusive)
             {
                 CString strName(FUN_14081d380(nSpecial));
-                bool bFound = FUN_140166430()->FUN_1405f6e40(strName).get() != 0;
+                bool bFound = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6e40(strName).get() != 0;
                 if (bFound)
                     nExclusive++;
             }
@@ -359,7 +359,7 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
 // @0x140616b60
 int FUN_140616b60(MS2Ptr<CItemData> data, unsigned* pDiscount, unsigned nRate)
 {
-    unsigned nSale = FUN_1401c0d90()->FUN_140478cd0(data);
+    unsigned nSale = ((class CGameRule*)FUN_1401c0d90())->FUN_140478cd0(data);
     unsigned nDiscount = nSale > nRate ? nSale : nRate;
     *pDiscount = nDiscount;
     int nRet = 0;
@@ -377,7 +377,7 @@ int FUN_140616b60(MS2Ptr<CItemData> data, unsigned* pDiscount, unsigned nRate)
 // @0x140616c50
 int FUN_140616c50(MS2Ptr<CItemData> data, unsigned* pDiscount, unsigned nRate)
 {
-    unsigned nSale = FUN_1401c0d90()->FUN_140478cd0(data);
+    unsigned nSale = ((class CGameRule*)FUN_1401c0d90())->FUN_140478cd0(data);
     unsigned nDiscount = nSale > nRate ? nSale : nRate;
     *pDiscount = nDiscount;
     int nRet = 0;
@@ -754,7 +754,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
                 continue;
             CStringW strName = FUN_140631600(nStat, spBase.get());
             std::pair<int, int> range =
-                FUN_140166430()->FUN_1405f64e0(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
+                ((class CItemOptionTable*)FUN_140166430())->FUN_1405f64e0(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
             bBest = range.second == spBase->GetValue();
             if (bBest)
                 strName = FUN_1401e8510(strBest, strName);
@@ -772,7 +772,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
             }
             else
                 strValue = strName;
-            if (bBest == true || FUN_140166430()->FUN_1405f67e0(item, nStat, nGroup, spBase->GetValue()))
+            if (bBest == true || ((class CItemOptionTable*)FUN_140166430())->FUN_1405f67e0(item, nStat, nGroup, spBase->GetValue()))
                 strText.Append(FUN_1401e8510(strRowBest, strValue));
             else
                 strText.Append(FUN_1401e8510(strRow, strValue));
@@ -790,7 +790,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
                 continue;
             CStringW strName = FUN_140631830(nSpecial, spBase->GetValue(), item->FUN_140527840());
             std::pair<int, int> range =
-                FUN_140166430()->FUN_1405f6650(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
+                ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6650(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
             bBest = range.second == spBase->GetValue();
             if (bBest)
                 strName = FUN_1401e8510(strBest, strName);
@@ -808,7 +808,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
             }
             else
                 strValue = strName;
-            if (bBest == true || FUN_140166430()->FUN_1405f6a90(item, nSpecial, nGroup, spBase->GetValue()))
+            if (bBest == true || ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6a90(item, nSpecial, nGroup, spBase->GetValue()))
                 strText.Append(FUN_1401e8510(strRowBest, strValue));
             else
                 strText.Append(FUN_1401e8510(strRow, strValue));

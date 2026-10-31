@@ -38,14 +38,14 @@ public:
     char m_pad_0000[0x6b00];
     Unk_ExpCfg m_6b00;
 };
-Unk_ExpGlobals* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 class Unk_ExpUIMgr { public: void FUN_141adc750(int nUiId); };      // opens a ui
 struct Unk_ExpCfgData { char m_pad_00[8]; unsigned char m_bShowPoint; };
 class Unk_ExpCfgHolder { public: Unk_ExpCfgData* FUN_140b123b0(); };
 GFxManager* FUN_14025e7a0();
-CInputKeyHandler* FUN_14025e7c0();
-CExpTable* FUN_1404a1bb0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
 int FUN_1412755a0();
 bool FUN_140184310(const CString& str, const char* psz);            // str == psz
 CStringW FUN_1409404f0(__int64 n);                                  // the number as text
@@ -81,7 +81,6 @@ public:
 };
 class Unk_ExpActor : public PC { public: Unk_ExpHolder* FUN_1416764a0(); };
 class Unk_ExpWorld { };
-Unk_ExpActor* FUN_141bd0cc0(Unk_ExpWorld* pWorld);                  // the local player
 
 // The bar clip: ASGameEntity declares only slots 0..5; slot 25 is "validateNow".
 class Unk_ExpEntity : public ASGameEntity
@@ -155,7 +154,7 @@ void UIExpBar::FUN_141932080(const unsigned int& nFlags)
 // @0x1419322a0
 __int64 UIExpBar::FUN_1419322a0()
 {
-    Unk_ExpActor* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance()));
+    Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     return DAT_143ab28a0;
@@ -165,17 +164,17 @@ __int64 UIExpBar::FUN_1419322a0()
 // @0x1419322e0
 __int64 UIExpBar::FUN_1419322e0()
 {
-    Unk_ExpActor* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance()));
+    Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     unsigned short nLevel = pPlayer->vfunc_78();
-    return FUN_1404a1bb0()->GetNextExp(nLevel);
+    return ((class CExpTable*)FUN_1404a1bb0())->GetNextExp(nLevel);
 }
 
 // @0x141932340
 __int64 UIExpBar::FUN_141932340()
 {
-    Unk_ExpActor* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance()));
+    Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     return DAT_143ab28a8;
@@ -192,7 +191,7 @@ void UIExpBar::FUN_141932380(int nVisible)
 void UIExpBar::FUN_141932430()
 {
     int nVisible = 1;
-    Unk_ExpActor* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance()));
+    Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     Unk_ExpHolderRef spHolder(pPlayer->FUN_1416764a0());
@@ -238,18 +237,18 @@ void UIExpBar::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         strText = FUN_140632a60(0x769, FUN_1409404f0(FUN_1419322a0()), FUN_1409404f0(FUN_1419322e0()));
         if (0 < DAT_143ab28a8)
         {
-            Unk_ExpActor* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance()));
+            Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
             if (pPlayer == 0)
                 return;
             unsigned short nLevel = (unsigned short)pPlayer->vfunc_78();
-            __int64 nNeed = FUN_1404a1bb0()->GetNextExp(nLevel);
+            __int64 nNeed = ((class CExpTable*)FUN_1404a1bb0())->GetNextExp(nLevel);
             float fPct = (float)((DAT_143ab28a0 + DAT_143ab28a8) * 100) / (float)nNeed;
             float fShow = (std::min)(100.0f, fPct);
             if (DAT_143ab28a8 != 0)
                 fShow = (std::max)(0.01f, fShow);
-            unsigned int nUnit = *FUN_1401d3200()->m_6b00.FUN_1401d7c10() / 100;
+            unsigned int nUnit = *((class Unk_ExpGlobals*)FUN_1401d3200())->m_6b00.FUN_1401d7c10() / 100;
             strText += FUN_14028dfa0(CStringW(L"s_tooltip_rest_exp"), nLevel, fShow, nUnit);
-            if (FUN_14025e7c0()->IsDebugMode())
+            if (((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode())
                 strText += StringFormat(L"[{0}]", DAT_143ab28a8);
         }
         TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);

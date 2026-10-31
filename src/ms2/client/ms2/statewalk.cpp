@@ -29,8 +29,7 @@
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-const char* FUN_1408ac310(const efd::utf8string& str);     // 0x1408ac310 the string's c string
-Ridee* FUN_141468360(PCBase* p);                           // 0x141468360 the ridee the actor sits on
+struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
 float FUN_14059d930(float f);                              // 0x14059d930 fabs
 int FUN_14028d260(float f);                                // 0x14028d260 round to ms
 class Unk_CubeSelection;
@@ -48,11 +47,11 @@ Unk_WkAnimSvc* FUN_141b6f910();
 
 // The replay / spectator mode flag, the key-binding config and the controller input readings.
 class Unk_WkPlayback { public: bool FUN_1406af100(); };
-Unk_WkPlayback* FUN_1406aeee0();
-CFeatureManager* FUN_140166410();
+class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 MS2InputService* FUN_140a58540();
 class Unk_WkOption { public: char m_pad[0xc]; int m_n0c; };
-Unk_WkOption* FUN_140a58500(void* p);
+struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
 void* FUN_1409a8b10();
 
 // The actor's buff set: the movement direction and the buff tests.
@@ -109,7 +108,7 @@ void StateWalk::vfunc_4(StateData* pData)
 {
     m_fSpeed1 = m_pOwner->vfunc_96();
     m_fSpeed2 = m_pOwner->vfunc_97();
-    if (FUN_1406aeee0()->FUN_1406af100())
+    if (((class Unk_WkPlayback*)FUN_1406aeee0())->FUN_1406af100())
     {
         m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
     }
@@ -130,7 +129,7 @@ void StateWalk::vfunc_4(StateData* pData)
         {
             if (m_pOwner->GetClassID() == 0x6200045)
             {
-                efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+                efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
                 if (spRidee)
                     m_pOwner->FUN_141671960(spRidee->FUN_1417071d0());
             }
@@ -143,7 +142,7 @@ void StateWalk::vfunc_4(StateData* pData)
         {
             if (m_pOwner->GetClassID() == 0x6200045)
             {
-                efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+                efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
                 if (spRidee)
                     m_pOwner->FUN_141671960(spRidee->FUN_1417070a0());
             }
@@ -184,7 +183,7 @@ void StateWalk::vfunc_3(double fTime)
     {
         if (m_pOwner->GetClassID() == 0x6200045)
         {
-            efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+            efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
             if (spRidee)
                 m_pOwner->FUN_141671960(spRidee->FUN_1417071d0());
         }
@@ -197,7 +196,7 @@ void StateWalk::vfunc_3(double fTime)
     {
         if (m_pOwner->GetClassID() == 0x6200045)
         {
-            efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+            efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
             if (spRidee)
                 m_pOwner->FUN_141671960(spRidee->FUN_1417070a0());
         }
@@ -238,7 +237,7 @@ void StateWalk::vfunc_8(double fTime)
     {
         m_n10 = 0x1a;
     }
-    else if (FUN_140166410()->FUN_14036d570(0xd6))
+    else if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd6))
     {
         int nY = abs(FUN_140a58540()->FUN_140d8c450());
         int nX = abs(FUN_140a58540()->FUN_140d8c4d0());
@@ -246,7 +245,7 @@ void StateWalk::vfunc_8(double fTime)
         if (nStick > 0)
         {
             int nOld = m_n10;
-            if (nStick <= FUN_140a58500(FUN_1409a8b10())->m_n0c)
+            if (nStick <= ((class Unk_WkOption*)FUN_140a58500((class Unk_GpSettings*)(FUN_1409a8b10())))->m_n0c)
                 m_n10 = 0x19;
             else
                 m_n10 = 0x18;
@@ -367,7 +366,7 @@ void StateWalk::vfunc_9(double fTime)
         Unk_Vec4 kSpeed = *(Unk_Vec4*)m_pOwner->FUN_141671920();
         if (m_pOwner->GetClassID() == 0x6200045)
         {
-            efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+            efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
             if (spRidee)
                 kSpeed.m_z = spRidee->FUN_1417071d0();
         }
@@ -468,7 +467,7 @@ void StateWalkNPC::vfunc_9(double fTime)
         m_fSpeed1 = m_pOwner->vfunc_96();
         m_fSpeed2 = m_pOwner->vfunc_97();
         const efd::utf8string& strName = FUN_141b6f910()->FUN_141206030(m_pOwner->FUN_14123c460());
-        efd::utf8string strAnim(FUN_1408ac310(strName));
+        efd::utf8string strAnim(((efd::utf8string*)&static_cast<class efd::utf8string const&>(strName))->c_str());
         m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), bChanged, false);
     }
 }

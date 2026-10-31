@@ -66,7 +66,6 @@ public:
 // The AS root object of the movie: only the call by name is used here.
 class Unk_EsAS : public AScript { public: Scaleform::GFx::Value FUN_140ba4cc0(const char* szMethod, const ASObj& rArg); };
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
-AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
 
 class Unk_EsUiMgr { public: int FUN_141adc890(int uiId); void FUN_141adc530(int uiId); };
 
@@ -91,7 +90,6 @@ unsigned __int64 FUN_140718370(const CStringW& str);
 void FUN_140710590(COutPacket& packet);
 void FUN_141275260(int nId, int a, int b);                                          // system message by string id
 void FUN_141276180(const CString& strSound, const CString& strArg);
-void* FUN_14052cd70(const MS2Ptr<CItem>* pItem);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* pListener, CStringW strTag);
 class Unk_EsMsgBox : public CMsgBoxData
@@ -115,7 +113,6 @@ CStringW FUN_14028dee0(unsigned nId, const fmt::ArgList& args);
     }
 ES_ID_WRAP(3)
 
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 CStringW FUN_141b71910(__int64 n);
 
 typedef ATL::CAtlMap<int, Unk_EnchantPtr<BaseOption>, Unk_EnchantKeyTraits> Unk_EsOptionMap;
@@ -184,7 +181,7 @@ int UIEnchantScrollDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
             unsigned __int64 nItemUid = FUN_140718370(data.FUN_1422b8f40());
             MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
-            if (FUN_14052cd70(&spItem) != 0) {
+            if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0) {
                 COutPacket packet(static_cast<int>(SendOp::EnchantScroll), 0);
                 packet.Encode1(2);
                 packet.Encode8(m_nScrollUid);
@@ -251,7 +248,7 @@ void UIEnchantScrollDialog::FUN_140f3bd10(CInPacket& packet)
     int nType = (unsigned short)packet.ReadInt16();
     MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
-    if ((FUN_14052cd70(&spItem) ? true : false) && (FUN_14052cd70(&spScroll) ? true : false)) {
+    if ((((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) ? true : false) && (((void*)((MS2Ptr<CItem>*)(void*)(&spScroll))->get()) ? true : false)) {
         FUN_140cd74a0(GetTypeName());
         FUN_140cd73b0(GetTypeName(), m_nScrollUid, spItem);
         ASObj data(2);
@@ -330,7 +327,7 @@ void UIEnchantScrollDialog::FUN_140f3cb10()
     FUN_140cd74a0(GetTypeName());
     FUN_140cd73b0(GetTypeName(), m_nScrollUid, MS2Ptr<CItem>(0));
     MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
-    if ((FUN_1409ee240(&m_30) ? true : false) && (FUN_14052cd70(&spScroll) ? true : false)) {
+    if ((((MS2Ptr<AScript>*)(void*)(&m_30))->get() ? true : false) && (((void*)((MS2Ptr<CItem>*)(void*)(&spScroll))->get()) ? true : false)) {
         CStringW strLevel;
         CStringW strTypes;
         CStringW strRanks;
@@ -373,7 +370,7 @@ void UIEnchantScrollDialog::FUN_140f3d210()
     m_ranks.RemoveAll();
     m_nRandomMin = 0;
     m_nRandomMax = 0;
-    if (FUN_1409ee240(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->get() != 0)
         FUN_1409ee290(&m_30)->Invoke("clear");
 }
 
@@ -495,7 +492,7 @@ CStringW UIEnchantScrollDialog::FUN_140f3e390()
         return StringFormat(L"{0}~{1}", m_nRandomMin, m_nRandomMax);
     case 5: {
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
-        if (FUN_14052cd70(&spItem) != 0)
+        if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0)
             return StringFormat(L"{0}", spItem->FUN_140526fc0());
     }
     }
@@ -557,7 +554,7 @@ void ASObj::FUN_140f3f020(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca9410-0x142ca9560 .text$yd

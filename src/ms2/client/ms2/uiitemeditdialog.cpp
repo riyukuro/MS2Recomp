@@ -79,9 +79,13 @@ struct Unk_IEEffectRequest
 };
 MS2_CHECK_SIZE(Unk_IEEffectRequest, 0x70);
 class Unk_IEEffectMgr { public: void FUN_1411a4a00(Unk_IEEffectRequest* pRequest); };
-void FUN_140a53190(Unk_IEEffectRequest* p, int nObjectId);
+class NoticeMessage   // C3: member view for the former free stand-ins
+{
+public:
+    void SetActor(int);
+};
 struct Unk_IEEffectPaths { char m_pad_0[0x2e0]; CString m_hairApply; };   // +0x2e0
-Unk_IEEffectPaths* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // A client constant holding a string (0x58 bytes each).
 class Unk_IEConstStr
@@ -96,7 +100,7 @@ struct Unk_IEConstants
     Unk_IEConstStr m_cc50;                      // +0xcc50 the item edit guide
 };
 MS2_CHECK_OFFSET(Unk_IEConstants, m_cc50, 0xcc50);
-Unk_IEConstants* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The player and its equipment.
 class Unk_IEEquip : public CPtred
@@ -119,7 +123,11 @@ public:
     void FUN_14166cc40(int n);
     Unk_IEEquipPtr FUN_141655e10(int nSlot);    // the handle of the worn item of a slot
 };
-int FUN_14123c580(Unk_IEPlayer* pPc);           // object id
+class GameObject   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14123c580();
+};
 
 // The current field.
 class Unk_IEField
@@ -150,25 +158,37 @@ public:
 };
 
 // Misc singletons.
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_IEItemEvents
 {
 public:
     void FUN_1419cae20(UIItemEventListener* pListener);
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
-Unk_IEItemEvents* FUN_140a6a840();
-NotifySystem* FUN_140939a10();
-UITalkManager* FUN_140967100();
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
+class Unk_AkoCutscene   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoCutscene* GetInstance();
+};
 Unk_BSCamera* FUN_140cd47b0(int nId);
 class Unk_IESound;
 Unk_IESound* FUN_1408e57f0();
-void FUN_1422b9fd0(Unk_IESound* p, int nEvent);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1422b9fd0(int);
+};
 void FUN_14151f200();                           // no arguments
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
 void* FUN_1405a8e70(void* pHandle);
 void FUN_1405a85f0(void* pHandle);
-int FUN_1414124a0(void* pPart);                 // the item id of a part
+class CItemCustomizeController   // C3: member view for the former free stand-ins
+{
+public:
+    int GetEquipItemValue();
+};
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);
 CStringW FUN_140f09f90(int nId, const int& nArg);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
@@ -203,11 +223,11 @@ CString UIItemEditDialog::GetTypeName()
 void UIItemEditDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
+    ((class Unk_IEItemEvents*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                    Delegate<void(NotifyObject*)>(this, &UIItemEditDialog::FUN_1419bd530));
-    if (FUN_140967100()->GetTalking() != 0)
-        FUN_140967100()->SendNpcTalkMode0();
+    if (((class UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalking() != 0)
+        ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
     m_198 = 0;
     m_1a8 = 0;
     m_1b0 = 0;
@@ -218,21 +238,21 @@ void UIItemEditDialog::vfunc_67()
 void UIItemEditDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_IEItemEvents*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_1419bdb50(0);
     Unk_IEPlayer* pPc = reinterpret_cast<Unk_IEWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc)
     {
-        m_198.AssignRaw(new Customize(FUN_14123c580(pPc), static_cast<IItemCustomizeEventListener*>(this), 0));
+        m_198.AssignRaw(new Customize(((class GameObject*)(class Unk_IEPlayer*)(pPc))->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
         m_198->FUN_140cd25c0(6);
     }
     m_1a8 = FUN_140cd47b0(0x4ef2);
     if (m_30.get())
     {
-        CString strGuide = FUN_1401d3200()->m_cc50.FUN_1409f6f30();
+        CString strGuide = ((struct Unk_IEConstants*)FUN_1401d3200())->m_cc50.FUN_1409f6f30();
         m_30->Invoke("initData", strGuide);
     }
-    FUN_140939a10()->RegisterNotify(L"NotifyChangeActiveMyCodiTab",
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeActiveMyCodiTab",
                                    Delegate<void(NotifyObject*)>(this, &UIItemEditDialog::FUN_1419bd530));
 }
 
@@ -241,7 +261,7 @@ int UIItemEditDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d840())
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840())
     {
         FUN_1419bd9f0();
         return 1;
@@ -344,9 +364,9 @@ void UIItemEditDialog::vfunc_24(void* p)
         pPc->vfunc_59(0xe, 0, 0, 0);
     pPc->FUN_14166cc40(0x4c);
     Unk_IEEffectRequest effect;
-    effect.m_strName = FUN_1401d31f0()->m_hairApply;
+    effect.m_strName = ((struct Unk_IEEffectPaths*)FUN_1401d31f0())->m_hairApply;
     effect.m_n08 = 1;
-    FUN_140a53190(&effect, FUN_14123c580(pPc));
+    ((class NoticeMessage*)(struct Unk_IEEffectRequest*)(&effect))->SetActor(((class GameObject*)(class Unk_IEPlayer*)(pPc))->FUN_14123c580());
     reinterpret_cast<Unk_IEEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&effect);
     FUN_1419bdb50(0);
     m_1b0 = 0;
@@ -360,7 +380,7 @@ int UIItemEditDialog::vfunc_1(void* p)
         return 0;
     if (m_198 == 0)
         return 0;
-    if (m_198->FUN_140cd17e0() == FUN_1414124a0(p))
+    if (m_198->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         FUN_1419bdb50(1);
     return 1;
 }
@@ -372,7 +392,7 @@ int UIItemEditDialog::vfunc_3(void* p, float)
         return 0;
     if (m_198 == 0)
         return 0;
-    if (m_198->FUN_140cd17e0() == FUN_1414124a0(p))
+    if (m_198->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         FUN_1419bdb50(1);
     return 1;
 }
@@ -384,7 +404,7 @@ int UIItemEditDialog::vfunc_2(void* p, float, int)
         return 0;
     if (m_198 == 0)
         return 0;
-    if (m_198->FUN_140cd17e0() == FUN_1414124a0(p))
+    if (m_198->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         FUN_1419bdb50(1);
     return 1;
 }
@@ -458,7 +478,7 @@ BOOL UIItemEditDialog::FUN_1419bd860()
     Unk_IEField* pField = reinterpret_cast<Unk_IEWorld*>(WorldService::GetInstance())->FUN_141bd3620();
     if (pField)
         pField->vfunc_149();
-    FUN_1422b9fd0(FUN_1408e57f0(), 0x620001d);
+    ((class GFxSceneService*)(class Unk_IESound*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001d);
     return true;
 }
 

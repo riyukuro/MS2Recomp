@@ -142,8 +142,6 @@ public:
 Unk_EnSlot* FUN_140f6e830(const CString& name);
 void FUN_141415600(const CString& key);
 void FUN_141415450(const CString& key, MS2Ptr<CItem> item, int a, int b, int c);
-void FUN_140165270(CAtlArray<CString>& arr, const CString& s);
-void FUN_1402c2890(CAtlArray<CString>& arr);
 void FUN_141414e50(const CString& name);
 void FUN_141414d60(const CString& name, const CAtlArray<unsigned __int64>& uids);
 
@@ -157,14 +155,14 @@ unsigned __int64 FUN_140718350(const CString& s);
 void FUN_1412751f0(const CStringW& text, int a, int b);
 void FUN_141276180(const CString& a, const CString& b);
 void FUN_14151f460(int v);
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW text);
 void FUN_1412761e0(MS2Ptr<AScript> pScript, int bShow);
 class Unk_PetDialog : public UIDialog { public: };
 Unk_PetDialog* FUN_140b99ba0(int nId);
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The item event hub as the game's FUN_140a6a840 singleton accessor sees it (the same object as UIItemEventDispatcher).
 class Unk_ItemEventSystem
@@ -200,7 +198,11 @@ int FUN_140616d40(int a, unsigned b);
 CString FUN_140719530(unsigned __int64 uid);
 void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& out, bool* pFlag);
 void FUN_140f73320(CMsgBoxData* box, bool b);
-void FUN_1411e7660(Unk_PCItems* items);
+class CEquipment   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1411e7660();
+};
 void FUN_1412752d0(const CStringW& key, int a);
 void FUN_1412751b0(const CStringW& text, int a);
 void FUN_140d73aa0(CStringW text, int a, void* b, CStringW c);
@@ -208,7 +210,7 @@ CStringW FUN_140b99120(CStringW key, const unsigned& a, const int& b);
 CStringW FUN_14042cb90(CStringW key, const float& v);
 CStringW FUN_1419021b0(int a, int b);
 CStringW FUN_1409404f0(__int64 v);
-int FUN_14053feb0(unsigned itemId);
+int FUN_14053feb0(int);   // C3: was FUN_14053feb0
 float FUN_1411e1110(Unk_PCItems* items, int a);   // returns in xmm0
 extern __int64 DAT_143ab2898;
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid);
@@ -263,7 +265,7 @@ void UIItemRemakeOptionDialog::OnLoadComplete()
     SetState(0);
     FUN_14129dd50();
     reinterpret_cast<Unk_ItemEventSystem*>(FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
         Delegate<void(NotifyObject*)>(this, &UIItemRemakeOptionDialog::FUN_14129dc60));
     Unk_PetDialog* pane = FUN_140b99ba0(0x4f38);
     if (pane != 0) {
@@ -336,7 +338,7 @@ void UIItemRemakeOptionDialog::vfunc_67()
     m_cur = 0;
     m_new = 0;
     reinterpret_cast<Unk_ItemEventSystem*>(FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
         Delegate<void(NotifyObject*)>(this, &UIItemRemakeOptionDialog::FUN_14129dc60));
 }
 
@@ -368,7 +370,7 @@ int UIItemRemakeOptionDialog::vfunc_13()
 {
     if (m_enchantAni == 0)
         return 0;
-    if ((FUN_14025e7c0()->FUN_14116dd30(0x493e2, 0, 0) || FUN_14025e7c0()->FUN_14116d840()) && GetState() == 3)
+    if ((((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840()) && GetState() == 3)
         return 1;
     return 0;
 }
@@ -690,7 +692,7 @@ void UIItemRemakeOptionDialog::FUN_14129f940(CInPacket* pPacket)
         vfunc_85(100);
         FUN_141276180(s_itemChoice, "");
         if (MS2Ptr<ASMovieClip> info = m_enchantAni->FUN_1409b4560("remakeOptionInfo")) {
-            bool bDebugMode = FUN_14025e7c0()->IsDebugMode();
+            bool bDebugMode = ((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode();
             int bDebug = bDebugMode ? 1 : 0;
             m_debugBtnFillIngredientUnit = info->FUN_140acce30<Unk_EnButton>("m_debugBtnFillIngredientUnit");
             if (m_debugBtnFillIngredientUnit.get() != 0) {
@@ -767,7 +769,7 @@ CString UIItemRemakeOptionDialog::FUN_1412a0720(CItem* item, CString key, CAtlAr
     FUN_141415600(key);
     int nFlags = 0x2020;
     FUN_141415450(key, MS2Ptr<CItem>(item), 0, 0x405, nFlags);
-    FUN_140165270(names, key);
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(names))->Add(key);
     return CString(key);
 }
 
@@ -777,11 +779,11 @@ void UIItemRemakeOptionDialog::FUN_1412a0800()
     size_t count = m_names198.GetCount();
     for (size_t i = 0; i < count; ++i)
         FUN_141415600(m_names198[i]);
-    FUN_1402c2890(m_names198);
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_names198))->RemoveAll();
     count = m_names1b8.GetCount();
     for (size_t i = 0; i < count; ++i)
         FUN_141415600(m_names1b8[i]);
-    FUN_1402c2890(m_names1b8);
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_names1b8))->RemoveAll();
 }
 
 // @0x1412a0900
@@ -908,7 +910,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1650(MS2Ptr<CItem> item)
                 if (equip.get() != 0) {
                     equip->FUN_1411dd6d0(item.get());
                     equip->FUN_1411dd280();
-                    FUN_1411e7660(FUN_1416561a0(pc));
+                    ((class CEquipment*)(class Unk_PCItems*)(FUN_1416561a0(pc)))->FUN_1411e7660();
                 }
             }
         }

@@ -98,7 +98,6 @@ public:
 
 class Unk_PCBaseBuffs { public: int FUN_140970020(int nBuffId, unsigned short nLevel, int nOwner, int nStacks); };
 
-bool FUN_140a467d0(const MS2Ptr<AScript>* p);
 void* FUN_140bb9630(int n);                                     // int -> delegate user data
 int FUN_140bb9640(void* p);                                     // delegate user data -> int
 CString FUN_1402bb1c0(const char* szFormat, const int* pn);     // format one int
@@ -106,12 +105,16 @@ CStringW GetStringCommon(int nStringId);                          // string tabl
 CStringW FUN_1408116a0(int nStringId, const int& nArg);         // the same, one int argument
 void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW tag);   // notice
 unsigned int MsToMinutes(unsigned int nMilliSeconds);           // to minutes
-void FUN_1408741a0(void* pCfg, const char* szSection, const char* szKey, int* pnValue);
-void FUN_140874440(void* pCfg, const char* szSection, const char* szKey, int nValue, bool b);
-void* FUN_1403ed2d0();                                          // the world
-PCBase* FUN_141bd0cc0(void* pWorld);                            // the own player
-CFeatureManager* FUN_140166410();
-CGameRule* FUN_1401c0d90();
+int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, int&);   // C3: was FUN_1408741a0
+void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, int, bool);   // C3: was FUN_140874440
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
 void FUN_141415600(const CString& strName);
 void FUN_140710590(COutPacket&);
@@ -121,7 +124,6 @@ StringManager* GetStringManager();
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 class Unk_XmlFiles : public CFileSystem { };
-Unk_XmlFiles* FUN_140166420();
 CString FUN_14071ae20(const CString& strFile);
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszAttr, CStringW strDefault);
 
@@ -220,7 +222,7 @@ void UIIndividualPvPDialog::vfunc_26()
 int UIIndividualPvPDialog::vfunc_54(void* pCfg)
 {
     UIDialog::vfunc_54(pCfg);
-    FUN_1408741a0(pCfg, "Convenience", "lastPage", &m_nLastPage);
+    XmlGetChildAttr((class TiXmlElement*)(pCfg), "Convenience", "lastPage", *(int*)(&m_nLastPage));
     return 1;
 }
 
@@ -229,14 +231,14 @@ int UIIndividualPvPDialog::vfunc_53(void* pCfg)
 {
     m_nLastPage = m_nSelected;
     UIDialog::vfunc_53(pCfg);
-    FUN_140874440(pCfg, "Convenience", "lastPage", m_nLastPage, true);
+    XmlSetChildAttr((class TiXmlElement*)(pCfg), "Convenience", "lastPage", m_nLastPage, true);
     return 1;
 }
 
 // @0x1412cacc0
 void UIIndividualPvPDialog::FUN_1412cacc0()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     int nState = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818a0();
     int nArena = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818d0();
@@ -260,7 +262,7 @@ void UIIndividualPvPDialog::FUN_1412cacc0()
 // @0x1412cae10
 void UIIndividualPvPDialog::FUN_1412cae10(int nArena)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     if (nArena == 2)
         return;
@@ -291,10 +293,10 @@ void UIIndividualPvPDialog::FUN_1412cb220()
 // @0x1412cb240
 void UIIndividualPvPDialog::FUN_1412cb240()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     ATL::CAtlArray<std::pair<int, int> > counts;
-    FUN_1401c0d90()->FUN_140477ab0(counts);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_140477ab0(counts);
     for (unsigned int i = 0; i < counts.GetCount(); i++)
     {
         std::pair<int, int> count = counts[i];
@@ -328,7 +330,7 @@ void UIIndividualPvPDialog::FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler:
         FUN_140d73aa0(GetStringCommon(0x428), 0, 0, L"");
         return;
     }
-    PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     if (pPC->FUN_1416749a0()->FUN_140970020(0x5f5e107, 0, 0, 1) != 0)
@@ -336,7 +338,7 @@ void UIIndividualPvPDialog::FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler:
         FUN_140d73aa0(GetStringCommon(0x429), 0, 0, L"");
         return;
     }
-    if ((unsigned short)pPC->vfunc_78() < (unsigned short)FUN_140166410()->FUN_14036dc20())
+    if ((unsigned short)pPC->vfunc_78() < (unsigned short)((class CFeatureManager*)FUN_140166410())->FUN_14036dc20())
     {
         FUN_140d73aa0(GetStringCommon(0x42a), 0, 0, L"");
         return;
@@ -381,7 +383,7 @@ void UIIndividualPvPDialog::FUN_1412cb7e0(const Scaleform::GFx::FunctionHandler:
 // @0x1412cb8d0
 void UIIndividualPvPDialog::FUN_1412cb8d0(bool bPlay)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     int nState = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818a0();
     int nArena = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818d0();
@@ -475,7 +477,7 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
         CString strPath = FUN_14071ae20(m_path18);
         if (strPath.IsEmpty())
             break;
-        if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        if (((class Unk_XmlFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             break;
         pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     } while (0);

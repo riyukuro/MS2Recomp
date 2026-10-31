@@ -20,7 +20,7 @@ struct Unk_LiftSoundReq
     CString m_strName;                                              // +0x00
     int m_nType;                                                    // +0x08
     int m_nPad0c;                                                   // +0x0c
-    void* m_unk[13];                                                // +0x10 (constructed by FUN_1409fabf0)
+    void* m_unk[12];                                                // +0x10 node (assigned by FUN_1409fabf0) .. +0x68; 0x70 bytes (NoticeMessage)
 };
 class Unk_LiftFxMgr
 {
@@ -139,7 +139,6 @@ void FUN_140ae1e80(void* pComp, float fA, float fB, float fC, float fD, Unk_Lift
 void FUN_14098b3e0(void* pComp, float fA, int nB);
 void FUN_141567330(class NiAVObject*, bool);   // C3: was FUN_141567330
 int FUN_140ae1c10();
-void* FUN_140ae1c00();
 class CGraphicOptionTable   // C3: member view for the former free stand-ins
 {
 public:
@@ -444,7 +443,7 @@ void CLiftableObject::FUN_141448050(bool bActive)
         void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
         if (pComp != 0 && m_b108 != 0)
         {
-            bool bOn = FUN_140ae1c10() >= ((class CGraphicOptionTable*)(void*)(FUN_140ae1c00()))->GetShadowOption(5);
+            bool bOn = FUN_140ae1c10() >= ((class CGraphicOptionTable*)(void*)(((void*)TSingleton<CGraphicOptionTable>::GetInstance())))->GetShadowOption(5);
             FUN_141567330((class NiAVObject*)(pComp), bOn);
         }
     }

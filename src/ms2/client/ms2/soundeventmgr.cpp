@@ -961,25 +961,29 @@ MS2Ptr<CSoundEvent> CSoundEventMgr::FUN_14177b3d0(FMOD::EventGroup* pGroup, cons
 
     FMOD::Event* pEvent = 0;
     FMOD_RESULT nResult = pGroup->getEvent(pszName, FMOD_EVENT_DEFAULT, &pEvent);
-    if (nResult == FMOD_OK)
+    if (nResult != FMOD_OK)
     {
-        if (eUnits != 0)
-            pEvent->setPitch(fPitch, eUnits);
-        Unk_SoundLog(GetLogString(), 0xc, 0x12f, L"SoundID {0} pitch {1} pitchUnit {2}", pszName, fPitch, eUnits);
-        return MS2Ptr<CSoundEvent>(new CSoundEvent(pEvent, CString(pszName)));
+        switch (nResult)
+        {
+        case FMOD_ERR_EVENT_FAILED:
+            {
+                const char* pszError = FUN_141788f10(nResult);
+                Unk_SoundLog(GetLogString(), 0xc, 0x12f, L"SoundID:{0} Code:{1}({2})", pszName, nResult, pszError);
+            }
+            break;
+        default:
+            const char* pszError = FUN_141788f10(nResult);
+            Unk_SoundLog(GetLogString(), 1, 0x12f, L"SoundID:{0} Code:{1}({2})", pszName, nResult, pszError);
+        }
+        return MS2Ptr<CSoundEvent>(0);
     }
-    if (nResult == FMOD_ERR_EVENT_FAILED)
-    {
-        const char* pszError = FUN_141788f10(nResult);
-        Unk_SoundLog(GetLogString(), 0xc, 0x12f, L"SoundID:{0} Code:{1}({2})", pszName, nResult, pszError);
-    }
-    else
-    {
-        const char* pszError = FUN_141788f10(nResult);
-        Unk_SoundLog(GetLogString(), 1, 0x12f, L"SoundID:{0} Code:{1}({2})", pszName, nResult, pszError);
-    }
-    return MS2Ptr<CSoundEvent>(0);
+    if (eUnits != 0)
+        pEvent->setPitch(fPitch, eUnits);
+    Unk_SoundLog(GetLogString(), 0xc, 0x12f, L"SoundID {0} pitch {1} pitchUnit {2}", pszName, fPitch, eUnits);
+    return MS2Ptr<CSoundEvent>(new CSoundEvent(pEvent, CString(pszName)));
 }
+
+void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);  // the one-string log COMDAT the exe calls here
 
 // @0x14177b6a0
 MS2Ptr<CSoundEvent> CSoundEventMgr::FUN_14177b6a0(const char* pszName)
@@ -1007,7 +1011,7 @@ MS2Ptr<CSoundEvent> CSoundEventMgr::FUN_14177b6a0(const char* pszName)
         return MS2Ptr<CSoundEvent>(0);
     }
     if (GetLogString() != 0)
-        Unk_SoundLog(GetLogString(), 0xc, 0x12f, L"SoundID {0}", pszName);
+        FUN_1403a1280(GetLogString(), 0xc, 0x12f, L"SoundID {0}", pszName);
     return MS2Ptr<CSoundEvent>(new CSoundEvent(pEvent, CString(pszName)));
 }
 

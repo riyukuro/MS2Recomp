@@ -75,7 +75,6 @@ public:
     PCBase* FUN_141bd1200(int nId);                                 // actor by id
 };
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the scene root of an entity
-bool FUN_14098dad0(NiAVObject* pObject);                            // culled
 Unk_ActionKeyManager* FUN_140a7b810(MyPC* pPC);
 int FUN_141654700(PCBase* pPC);                                   // job
 int FUN_141658e60(PCBase* pPC);                                   // gender
@@ -103,7 +102,11 @@ class Unk_CscKeyGroups { public: void FUN_1422b9fd0(int nGroup); int FUN_1422b9e
 Unk_CscKeyGroups* FUN_1408e57f0();
 CFeatureManager* FUN_140166410();
 CInputKeyHandler* FUN_14025e7c0();
-UITalkManager* FUN_140967100();
+class Unk_AkoCutscene   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoCutscene* GetInstance();
+};
 class Unk_CscOption { public: unsigned char* FUN_140a58500(); };   // the gamepad state (first byte: a pad is in use)
 class Unk_CscKeyTable { public: CStringW FUN_14142d760(int nKey, int nKind); };   // the key name of a binding
 Unk_CscKeyTable* FUN_1409331f0();
@@ -117,7 +120,7 @@ CReservedWordTable* FUN_1403b4750();
 class CMsgBoxData : public CPtred {};                             // the message box (unit_1406125d0.h; only released here)
 MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW text);
 
-unsigned FUN_140869420();                                           // the tick
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);           // to narrow
 CStringW FUN_14016a730(const char* psz, int nCodePage);             // to wide
 CStringW FUN_1401aa6a0(int nNpcId);                                 // npc name
@@ -292,8 +295,8 @@ void UICutSceneCinematic::FUN_141908040(bool bOn)
 {
     if (bOn)
     {
-        if (FUN_140967100()->GetTalking())
-            FUN_140967100()->SendNpcTalkMode0();
+        if (((class UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalking())
+            ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
         FUN_1408e57f0()->FUN_1422b9fd0(0x6200041);
     }
     else
@@ -401,7 +404,7 @@ void UICutSceneCinematic::FUN_141908750()
 {
     if (m_30 == 0)
         return;
-    unsigned nTick = FUN_140869420();
+    unsigned nTick = GetTickCountMs2();
     if (m_spTalk.get())
     {
         if (nTick < m_nTalkEnd)
@@ -438,7 +441,7 @@ MS2_REPLACE_METHOD(0x141908750, UICutSceneCinematic, FUN_141908750, 1186, 0xFFB1
 // @0x141908c00
 void UICutSceneCinematic::FUN_141908c00()
 {
-    unsigned nTick = FUN_140869420();
+    unsigned nTick = GetTickCountMs2();
     for (POSITION pos = m_groups.GetStartPosition(); pos != 0; m_groups.GetNext(pos))
     {
         int nId = m_groups.GetKeyAt(pos);
@@ -446,7 +449,7 @@ void UICutSceneCinematic::FUN_141908c00()
         if (pActor == 0)
             continue;
         NiAVObject* pRoot = FUN_141b6efc0(pActor->FUN_14123c410());
-        if (pRoot == 0 || FUN_14098dad0(pRoot))
+        if (pRoot == 0 || ((class NiAVObject*)(class NiAVObject*)(pRoot))->GetAppCulled())
             continue;
         MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = pActor->vfunc_85();
         if (spBalloon == 0)
@@ -537,7 +540,7 @@ void UICutSceneCinematic::FUN_141909340(int nActorId)
     if (pActor == 0)
         return;
     NiAVObject* pRoot = FUN_141b6efc0(pActor->FUN_14123c410());
-    if (pRoot == 0 || FUN_14098dad0(pRoot))
+    if (pRoot == 0 || ((class NiAVObject*)(class NiAVObject*)(pRoot))->GetAppCulled())
         return;
     MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = pActor->vfunc_85();
     if (spBalloon == 0)
@@ -703,7 +706,7 @@ void UICutSceneCinematic::FUN_141909eb0(CInPacket& packet)
     MS2Ptr<BalloonTalk> spTalk(new BalloonTalk);
     spTalk->m_nActorId = nId;
     spTalk->m_strText = strText;
-    spTalk->m_nStart = FUN_140869420() + nDelay;
+    spTalk->m_nStart = GetTickCountMs2() + nDelay;
     spTalk->m_nEnd = spTalk->m_nStart + nDuration;
     spTalk->m_strSound = strSound;
     spGroup->m_talks.Add(spTalk);

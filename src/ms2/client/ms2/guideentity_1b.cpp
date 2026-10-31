@@ -858,8 +858,6 @@ void CGuideManager::RefreshEntities()
 }
 
 // @0x14138dc50
-// MS2-FUNCTIONAL: not byte-matched: calls and branches match the exe; the exe frame is 0x10 larger, and its m_all push_back COMDAT
-// (0x1413a27e0) is a separate copy of ours (0x1413a27b0).
 void CGuideManager::BuildOccurIndex()
 {
     m_byOccur.clear();
@@ -869,7 +867,7 @@ void CGuideManager::BuildOccurIndex()
         MS2Ptr<CGuideEntity> spEntity = m_entities.GetValueAt(pos);
         std::map<Occurrence, int> occurs;
         spEntity->CollectTriggerValues(reinterpret_cast<std::map<int, int>&>(occurs));   // MS2-FUNCTIONAL: the exe's map is keyed by Occurrence
-        for (std::map<Occurrence, int>::iterator it = occurs.begin(); it != occurs.end(); ++it)
+        for (std::map<Occurrence, int>::const_iterator it = occurs.begin(); it != occurs.end(); ++it)
         {
             Occurrence eKey = it->first;
             int nSub = it->second;
@@ -896,7 +894,7 @@ void CGuideManager::BuildOccurIndex()
             }
         }
     }
-    for (std::map<Occurrence, GuideOccurContainer>::iterator it = m_byOccur.begin(); it != m_byOccur.end(); ++it)
+    for (std::map<Occurrence, GuideOccurContainer>::const_iterator it = m_byOccur.begin(); it != m_byOccur.end(); ++it)
     {
         if (it->second.m_byValue.size() != 0)
             m_setIndexed.insert(it->first);
@@ -908,34 +906,31 @@ void CGuideManager::QueueSubkeyEntities()
 {
     if (m_vecSub.empty())
         return;
-    for (std::vector<std::pair<Occurrence, int> >::iterator it = m_vecSub.begin(); it != m_vecSub.end(); ++it)
+    for (std::vector<std::pair<Occurrence, int> >::const_iterator it = m_vecSub.begin(); it != m_vecSub.end(); ++it)
     {
         Occurrence eKey = it->first;
         int nSub = it->second;
-        if (m_setPlain.find(eKey) == m_setPlain.end())
+        if (m_setPlain.find(eKey) != m_setPlain.end())
+            continue;
+        std::map<Occurrence, GuideOccurContainer>::const_iterator itOcc = m_byOccur.find(eKey);
+        if (itOcc == m_byOccur.end())
+            continue;
+        const GuideOccurContainer& occ = itOcc->second;
+        const GmSubMap& groups = occ.m_byValue;
+        GmSubMap::const_iterator itGroup = groups.find(nSub);
+        if (itGroup == groups.end())
+            continue;
+        const GmEntVec& vec = itGroup->second;
+        for (GmEntVec::const_iterator itEnt = vec.begin(); itEnt != vec.end(); ++itEnt)
         {
-            std::map<Occurrence, GuideOccurContainer>::iterator itOcc = m_byOccur.find(eKey);
-            if (itOcc != m_byOccur.end())
+            unsigned int nId = (*itEnt)->m_nId;
+            if (m_setQueued.find(nId) != m_setQueued.end())
+                continue;
+            bool bOpen = false;
+            if ((*itEnt)->CheckStart(&bOpen, 0) == 1 || !bOpen)
             {
-                GmSubMap& groups = itOcc->second.m_byValue;
-                GmSubMap::iterator itGroup = groups.find(nSub);
-                if (itGroup != groups.end())
-                {
-                    GmEntVec& vec = itGroup->second;
-                    for (GmEntVec::iterator itEnt = vec.begin(); itEnt != vec.end(); ++itEnt)
-                    {
-                        unsigned int nId = (*itEnt)->m_nId;
-                        if (m_setQueued.find(nId) == m_setQueued.end())
-                        {
-                            bool bOpen = false;
-                            if ((*itEnt)->CheckStart(&bOpen, 0) == 1 || !bOpen)
-                            {
-                                m_setQueued.insert(nId);
-                                m_listQueued.push_back(*itEnt);
-                            }
-                        }
-                    }
-                }
+                m_setQueued.insert(nId);
+                m_listQueued.push_back(*itEnt);
             }
         }
     }
@@ -1152,16 +1147,16 @@ unsigned char* FUN_141396750(Unk_Bitset8* pBits, unsigned char nValue)
 class Unk_GeMgr
 {
 public:
-    char FUN_14138c210(int trigger, const Unk_GeRange& range);
+    bool FUN_14138c210(int trigger, const Unk_GeRange& range);
 };
 class Unk_PCBuffTable;
 
 // MS2-FUNCTIONAL: legacy range-check entry adapts the recovered two-int range and manager method.
-char Unk_GeMgr::FUN_14138c210(int trigger, const Unk_GeRange& range)
+bool Unk_GeMgr::FUN_14138c210(int trigger, const Unk_GeRange& range)
 {
     Unk_GameEventIntRange converted(range.m_nMin, range.m_nMax);
-    return static_cast<char>(reinterpret_cast<CGuideManager*>(this)->CheckTriggerRange(
-        static_cast<CGuideManager::TriggerType>(trigger), converted));
+    return reinterpret_cast<CGuideManager*>(this)->CheckTriggerRange(
+        static_cast<CGuideManager::TriggerType>(trigger), converted);
 }
 // MS2-FUNCTIONAL: generic caller spelling forwards to the recovered skill restriction check.
 int FUN_14138c930(Unk_PCBuffTable* self, int skillId)
@@ -1189,7 +1184,7 @@ void FUN_14138d460(void* self)
 // MS2-PIN: ?TestCondition@CGuideManager@@QEAAXV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x14138d090
 // MS2-PIN: ?ShowEntityState@CGuideManager@@QEAAXH@Z 0x14138d160
 // MS2-PIN: ?ToggleDebug@CGuideManager@@QEAAXXZ 0x14138d460
-// MS2-PIN: ?FUN_14138c210@Unk_GeMgr@@QEAADHAEBUUnk_GeRange@@@Z 0x14138c210
+// MS2-PIN: ?FUN_14138c210@Unk_GeMgr@@QEAA_NHAEBUUnk_GeRange@@@Z 0x14138c210
 // MS2-PIN: ?FUN_14138c930@@YAHPEAXH@Z 0x14138c930
 // MS2-PIN: ?FUN_14138c930@Unk_PCBuffTable@@YAHH@Z 0x14138c930
 // MS2-PIN: ?FUN_14138cce0@@YAXPEAXHH@Z 0x14138cce0

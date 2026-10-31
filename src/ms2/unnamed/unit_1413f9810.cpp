@@ -92,13 +92,14 @@ public:
 Unk_ServiceManager* FUN_140af8310(void* pHolder);
 void FUN_140a33240(Unk_NHXform* out, const void* pSrc);
 extern char DAT_143a09600;
-Unk_NHSvc* FUN_14098c5b0(void* pFramework);
+class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 extern char DAT_143b059e8;
-void FUN_1413d6ab0(Unk_NHSvc* p, bool b);
-ecr::RenderSurface* FUN_140af7da0(ecr::RenderService* p);
+class HardwareInstancingService   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1413d6ab0(bool);
+};
 bool FUN_140998dc0(const NiFixedString& s, const char* psz);
-void* FUN_14200aae0(ecr::CameraService* pService, ecr::RenderSurface* pTarget);
-void* FUN_142008b80(void* p);
 Unk_AnimSvc* FUN_1410a68d0();
 void* FUN_140999440(void* a, unsigned __int64 id);
 void* FUN_1411d14b0(Unk_ServiceManager* m);
@@ -115,20 +116,26 @@ class Unk_NHEntAccess;                                                   // prop
 void FUN_1411ce4c0(Unk_NHEntMgr* p, Unk_NHEntIter* it);
 bool FUN_1411ce510(Unk_NHEntMgr* p, Unk_NHEntIter* it, egf::Entity** ppOut);
 egf::Entity* FUN_1411cf440(Unk_NHEntMgr* p, unsigned __int64 id);
-bool FUN_142087f40(const NiFixedString& s, const char* psz);
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
-void FUN_140981100(NiProperty* p, bool b);
-void FUN_14098f4d0(NiAVObject* p, bool b);
+class NiZBufferProperty   // C3: member view for the former free stand-ins
+{
+public:
+    void SetZBufferWrite(bool);
+};
+class AlphaShellComposite   // C3: member view for the former free stand-ins
+{
+public:
+    static void MarkScene(class NiAVObject*, bool);
+};
 int FUN_1408a2060(egf::Entity* e, unsigned id, efd::utf8string* out);
 int FUN_1408a20a0(egf::Entity* e, unsigned id, bool* out);
 int FUN_140998250(egf::Entity* e, unsigned id, efd::AssetID* out);
 int FUN_1408a01e0(CStringA kText);
-void FUN_140b27ec0(Unk_NHEntAccess* e, unsigned id, efd::Point3* p);
+void FUN_140b27ec0(void*, unsigned int, void*);   // C3: was FUN_140b27ec0
 CStringW FUN_14016a730(const char* psz, unsigned cp);
 CStringA FUN_14016a600(const wchar_t* psz, unsigned cp);
 extern efd::AssetID DAT_143a0acf8;
 void FUN_14025a680(const CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
-size_t FUN_14015a000(ATL::CAtlArray<CStringW>&);
 CStringW& FUN_140159a00(ATL::CAtlArray<CStringW>&, size_t);
 
 // GetService<T>: the framework's service manager, asked for system service T (instances at 0x1413fb6e0 / 0x1413fb740, which
@@ -171,7 +178,7 @@ MS2_REPLACE(0x1413F9890, FUN_1413f9890, 14, 0x3083754C);
 ecr::SceneGraphService* FUN_1413f98b0() { return FUN_1413fb7c0(); }
 MS2_REPLACE(0x1413F98B0, FUN_1413f98b0, 14, 0x3083754C);
 // @0x1413f98d0
-ecr::RenderSurface* FUN_1413f98d0() { return FUN_140af7da0(FUN_1413f9890()); }
+ecr::RenderSurface* FUN_1413f98d0() { return ((ecr::RenderService*)(void*)(FUN_1413f9890()))->GetActiveRenderSurface(); }
 MS2_REPLACE(0x1413F98D0, FUN_1413f98d0, 22, 0xDB3697F6);
 // @0x1413f98f0
 void* FUN_1413f98f0() { return FUN_1413fb780(); }
@@ -188,9 +195,9 @@ void* FUN_1413f9950()
 {
     ecr::RenderSurface* pTarget = FUN_1413f98d0();
     if (pTarget != 0) {
-        void* pCamera = FUN_14200aae0(FUN_1413f9910(), pTarget);
+        void* pCamera = ((void*)((ecr::CameraService*)(void*)(FUN_1413f9910()))->GetActiveCamera(pTarget));
         if (pCamera != 0)
-            return FUN_142008b80(pCamera);
+            return ((void*)((ecr::CameraData*)(void*)(pCamera))->GetCamera());
     }
     return 0;
 }
@@ -201,7 +208,7 @@ MS2_REPLACE(0x1413F9950, FUN_1413f9950, 72, 0xBFE082CE);
 NiViewRenderClick* FUN_1413f99a0()
 {
     ecr::RenderService* pService = FUN_1413f9890();
-    NiDefaultClickRenderStep* pClickStep = NiDynamicCast(NiDefaultClickRenderStep, FUN_140af7da0(pService)->GetRenderStep());
+    NiDefaultClickRenderStep* pClickStep = NiDynamicCast(NiDefaultClickRenderStep, ((ecr::RenderService*)(void*)(pService))->GetActiveRenderSurface()->GetRenderStep());
     NiViewRenderClick* pResult = 0;
     NiTPointerList<NiRenderClickPtr>& kClicks = pClickStep->GetRenderClickList();
     NiTListIterator kPos = kClicks.GetHeadPos();
@@ -264,15 +271,14 @@ MS2_REPLACE(0x1413F9BA0, FUN_1413f9ba0, 151, 0xA4EE9233);
 // @0x1413f9c40
 void FUN_1413f9c40(bool bFlag)
 {
-    Unk_NHSvcPtr spSvc(FUN_14098c5b0(&DAT_143b059e8));
+    Unk_NHSvcPtr spSvc(((class Unk_NHSvc*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     if (spSvc.FUN_14098d090() != 0)
-        FUN_1413d6ab0(spSvc.FUN_14098d0e0(), bFlag);
+        ((class HardwareInstancingService*)(class Unk_NHSvc*)(spSvc.FUN_14098d0e0()))->FUN_1413d6ab0(bFlag);
 }
 MS2_REPLACE(0x1413F9C40, FUN_1413f9c40, 97, 0x864DB9EB);
 
 
 // ---- forward declarations (functions defined further down) ----------------------------------------------------------------
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);       // NiNode-checked dynamic cast through an NiRTTI
 NiNode* FUN_1413fa030(egf::Entity* pEntity);
 void FUN_1413fa580(std::string kIn, std::string* pOut);
 void FUN_1413fa8e0(std::string kIn, std::string* pOut);
@@ -295,7 +301,7 @@ NiNode* FUN_1413f9cb0(NiObject* pkObject, ecr::SceneGraphService::SceneGraphHand
     kCloning.m_eCopyType = NiObjectNET::COPY_EXACT;
     kCloning.m_eDynamicEffectRelationBehavior = NiCloningProcess::CLONE_RELATION_ALL;
     kCloning.m_eAffectedNodeRelationBehavior = NiCloningProcess::CLONE_RELATION_ALL;
-    NiNode* pkNode = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, pkObject->Clone(kCloning)));
+    NiNode* pkNode = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pkObject->Clone(kCloning))));
     for (unsigned int i = 0; i < pkNode->GetArrayCount(); ++i)
         pkNode->DetachChildAt(i);
     if (pHandle != 0) {
@@ -348,7 +354,7 @@ void FUN_1413f9e80(egf::Entity* pEntity, efd::vector<NiDynamicEffect*>* pEffects
 {
     NiAVObject* pkScene = FUN_1413f98b0()->GetSceneGraphFromEntity(pEntity);
     NiNode* pkNode;
-    if (pkScene != 0 && (pkNode = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, pkScene))) != 0) {
+    if (pkScene != 0 && (pkNode = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pkScene)))) != 0) {
         const NiDynamicEffectList& kList = pkNode->GetEffectList();
         if (kList.GetSize() != 0) {
             NiTListIterator kPos = kList.GetHeadPos();
@@ -379,8 +385,8 @@ NiNode* FUN_1413f9f90()
     while (FUN_1411ce510(reinterpret_cast<Unk_NHEntMgr*>(TSingleton<EntityWorldManager>::GetInstance()), &kIter, &pEntity)) {
         pkScene = FUN_1413f98b0()->GetSceneGraphFromEntity(pEntity);
         if (pkScene != 0) {
-            if (FUN_142087f40(pkScene->GetName(), "Scene Root"))
-                return static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, pkScene));
+            if (((efd::FixedString*)&static_cast<class NiFixedString const&>(pkScene->GetName()))->Equals("Scene Root"))
+                return static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pkScene)));
         }
     }
     return 0;
@@ -390,7 +396,7 @@ MS2_REPLACE(0x1413F9F90, FUN_1413f9f90, 152, 0x9962FE8E);
 // @0x1413fa030
 NiNode* FUN_1413fa030(egf::Entity* pEntity)
 {
-    return static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, FUN_1413f98b0()->GetSceneGraphFromEntity(pEntity)));
+    return static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_1413f98b0()->GetSceneGraphFromEntity(pEntity))));
 }
 MS2_REPLACE(0x1413FA030, FUN_1413fa030, 47, 0x82637247);
 
@@ -399,7 +405,7 @@ NiNode* FUN_1413fa070(unsigned __int64 id)
 {
     egf::Entity* pEntity = FUN_1411cf440(reinterpret_cast<Unk_NHEntMgr*>(TSingleton<EntityWorldManager>::GetInstance()), id);
     if (pEntity != 0) {
-        return static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, FUN_1413f98b0()->GetSceneGraphFromEntity(pEntity)));
+        return static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_1413f98b0()->GetSceneGraphFromEntity(pEntity))));
     } else {
         return 0;
     }
@@ -454,7 +460,7 @@ MS2_REPLACE(0x1413FA2E0, FUN_1413fa2e0, 44, 0x7EEE2184);
 efd::Point3 FUN_1413fa320(Unk_NHEntAccess* pEntity)
 {
     efd::Point3 kValue(0.70588237f, 0.70588237f, 0.70588237f);
-    FUN_140b27ec0(pEntity, 0x213f5f94, &kValue);
+    FUN_140b27ec0((void*)(pEntity), 0x213f5f94, (void*)(&kValue));
     return kValue;
 }
 MS2_REPLACE(0x1413FA320, FUN_1413fa320, 102, 0xE69C262A);
@@ -487,10 +493,10 @@ void FUN_1413fa4c0(egf::Entity* pEntity)
         NiProperty* pkProp = pkObject->GetProperty(0xb);
         if (pkProp == 0)
             continue;
-        FUN_140981100(pkProp, true);
+        ((class NiZBufferProperty*)(class NiProperty*)(pkProp))->SetZBufferWrite(true);
     }
     pkRoot->UpdateProperties();
-    FUN_14098f4d0(pkRoot, FUN_1413fa390(pEntity));
+    AlphaShellComposite::MarkScene(pkRoot, FUN_1413fa390(pEntity));
 }
 MS2_REPLACE(0x1413FA4C0, FUN_1413fa4c0, 186, 0x5DE9E22A);
 
@@ -614,7 +620,7 @@ CStringW FUN_1413fac10(CStringW kText, CStringW kWord)
         kToken.Remove(L'$');
         ATL::CAtlArray<CStringW> kParts;
         FUN_14025a680(kToken, kParts, L", ");
-        if (FUN_14015a000(kParts) != 2)
+        if (((ATL::CAtlArray<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraits<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>, class ATL::CElementTraits<class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>>>&>(kParts))->GetCount() != 2)
             return CStringW(L"");
         if (kWord.GetLength() == 0)
             return CStringW(L"");
@@ -758,7 +764,7 @@ void FUN_1413fb630(egf::Entity* pEntity, efd::vector<NiMesh*>* pMeshes)
         unsigned int uiCount = FUN_1413f98b0()->GetObjectCountFromEntity(pEntity);
         for (unsigned int i = 0; i < uiCount; ++i) {
             EntityHelper::SceneGraphMeshFunctor<NiMesh> kFunctor(*pMeshes);
-            NiAVObject* pkObject = static_cast<NiAVObject*>(FUN_14098d8d0(&NiAVObject::ms_RTTI, FUN_1413f98b0()->GetObjectFromEntity(pEntity, i)));
+            NiAVObject* pkObject = static_cast<NiAVObject*>(NiObject::DynamicCast(&NiAVObject::ms_RTTI, (class NiObject const*)(FUN_1413f98b0()->GetObjectFromEntity(pEntity, i))));
             if (pkObject != 0)
                 EntityHelper::Traverse(pkObject, kFunctor);
         }

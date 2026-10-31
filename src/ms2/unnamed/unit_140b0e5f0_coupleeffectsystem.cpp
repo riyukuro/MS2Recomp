@@ -92,8 +92,12 @@ struct Unk_CeConstTable
     Unk_CeConstUInt m_checkInterval;                    // +0xe1a8
     Unk_CeConstFloat m_maxDistance;                     // +0xe200
 };
-Unk_CeConstTable* FUN_1401d3200();
-float* FUN_140298f40(Unk_CeConstFloat* p);
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+class Unk_IntOptionEntry   // C3: member view for the former free stand-ins
+{
+public:
+    int& FUN_140298f40();
+};
 unsigned* FUN_140b0f480(Unk_CeConstUInt* pSlot);
 extern Vector3 DAT_143b01a60;              // checked value getter
 void FUN_1402b7560(void* pSlot, const char* pszMessage);
@@ -106,13 +110,15 @@ public:
     Unk_CeMapPtr FUN_141bd30a0();                       // current map data
 };
 void* FUN_1409613d0(PCBase* p);
-__int64 FUN_141656a80(PCBase* p);
 int FUN_141658e60(PCBase* p);
 int FUN_141663940(PCBase* p);
 __int64 FUN_141663990(PCBase* p);
-int FUN_14123c580(PCBase* p);                           // object id
 float FUN_140966f00(Vector3 a, Vector3 b);  // distance
-int FUN_140268870(Unk_CoupleTick* p, unsigned nInterval);   // true once the interval elapsed (re-arms)
+class Unk_IntervalTimer   // C3: member view for the former free stand-ins
+{
+public:
+    int Check(unsigned int);
+};
 
 // @0x140b0e5f0
 CoupleEffectSystem::CoupleEffectSystem(PCBase* pOwner, __int64 nPartnerId, int nCoupleType, int bLinked, CStringW strName,
@@ -142,19 +148,19 @@ void CoupleEffectSystem::FUN_140b0e7a0(float fDelta)
         return;
     if (!FUN_140b0ef20())
         return;
-    if (FUN_140268870(&m_tick, 1000) != 0)
+    if (((class Unk_IntervalTimer*)(struct Unk_CoupleTick*)(&m_tick))->Check(1000) != 0)
     {
         PCBase* pPartner = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPartnerId);
         if (pPartner == 0)
             return;
         if (m_nCoupleType == 0 || m_nCoupleType != FUN_141663940(pPartner))
             return;
-        if (FUN_141656a80(m_pOwner) != FUN_141663990(pPartner))
+        if (((class PCBase*)(class PCBase*)(m_pOwner))->FUN_141656a80() != FUN_141663990(pPartner))
             return;
         NiPoint3 ptPartner = pPartner->vfunc_18();
         NiPoint3 ptOwner = m_pOwner->vfunc_18();
         float fDistance = FUN_140966f00(reinterpret_cast<Vector3&>(ptOwner), reinterpret_cast<Vector3&>(ptPartner));
-        if (!(fDistance > *FUN_140298f40(&FUN_1401d3200()->m_maxDistance)))
+        if (!(fDistance > *((float*)&((class Unk_IntOptionEntry*)(struct Unk_CeConstFloat*)(&((struct Unk_CeConstTable*)FUN_1401d3200())->m_maxDistance))->FUN_140298f40())))
         {
             if (m_bInRange != 0)
             {
@@ -203,7 +209,7 @@ void CoupleEffectSystem::FUN_140b0ead0(__int64 nValue)
 void CoupleEffectSystem::FUN_140b0eba0(int nObjectId)
 {
     PCBase* pPartner = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPartnerId);
-    if (pPartner == 0 || FUN_14123c580(pPartner) == nObjectId)
+    if (pPartner == 0 || ((class GameObject*)(class PCBase*)(pPartner))->FUN_14123c580() == nObjectId)
     {
         FUN_140b0f3a0(1);
         m_bActive = 0;
@@ -228,7 +234,7 @@ __int64 CoupleEffectSystem::FUN_140b0ec80()
     if (m_pOwner == 0)
         return 0;
     if (m_bLinked != 0)
-        return FUN_141656a80(m_pOwner);
+        return ((class PCBase*)(class PCBase*)(m_pOwner))->FUN_141656a80();
     return m_nPartnerId;
 }
 
@@ -265,7 +271,7 @@ void CoupleEffectSystem::FUN_140b0ed30()
     request.m_nOwnerId = 0;
     request.m_pXform = &xf;
     m_nEffectId = reinterpret_cast<Unk_CeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&request);
-    m_timer.FUN_140868750(*FUN_140b0f480(&FUN_1401d3200()->m_checkInterval));
+    m_timer.FUN_140868750(*FUN_140b0f480(&((struct Unk_CeConstTable*)FUN_1401d3200())->m_checkInterval));
     FUN_1405a89e0(&request);
 }
 

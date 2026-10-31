@@ -2,3 +2,9 @@
         NiMemcpy((NiUInt8*)pvTempOldIndexData, uiSize, pvData, uiSize);  // MS2: sized form
 
 .
+668a
+        NiUInt32 uiSize = kRegion.ComputeSizeInBytes(uiStride);
+.
+664,665c
+        NiUInt32 uiStride = pkDataStream->GetStride();  // MS2: the exe multiplies after LockRegion
+.

@@ -131,9 +131,13 @@ Unk_ActionKeyManager* FUN_140a7b810(MyPC* pPC);             // the actor's actio
 void FUN_141274f50();
 NotifySystem* FUN_140939a10();
 CameraMgr* FUN_1409478c0();
-CInputKeyHandler* FUN_14025e7c0();
-unsigned FUN_140869420();                                   // millisecond clock
-void FUN_14152e0c0(void* pPC);
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_14152e0c0();
+};
 void FUN_140710590(COutPacket& packet);                     // send
 bool FUN_14025cd60(const CStringW& a, const CStringW& b);   // equal names
 // The NiPoint3 the owner hands out and the efd::Point3 it takes are the same three floats as Vector3 (read through reinterpret_cast).
@@ -326,7 +330,7 @@ void StateObserver::vfunc_3(double fTime)
 // @0x140ac3ff0
 void StateObserver::vfunc_8(double fTime)
 {
-    if (FUN_14025e7c0()->FUN_14116da30(0x39, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116da30(0x39, true, 0))
         FUN_140ac43e0();
 }
 
@@ -514,10 +518,10 @@ void StateObserver::FUN_140ac4c90(__int64 nTarget)
     }
     if (m_spObserve->m_nTarget == nTarget)
         return;
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = GetTickCountMs2();
     if (nNow - m_nSwitchTick < 300)
         return;
-    FUN_14152e0c0(pPC);
+    ((class MyPC*)(void*)(pPC))->FUN_14152e0c0();
     COutPacket packet(static_cast<int>(SendOp::SpectateMushtopia), 0);
     packet.WriteUInt8(2);
     packet.WriteInt64(nTarget);

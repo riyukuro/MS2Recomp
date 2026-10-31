@@ -51,8 +51,8 @@ public:
     Unk_140165cf0* FUN_140165cf0(const char* pszName);
 };
 const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
-int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
 CString FUN_140188f50(const char* psz, int n);                      // null-safe CString
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
@@ -138,8 +138,8 @@ void CRibbonEffectParam::vfunc_1(Unk_140165cf0* pNode)
     CEffectParam::vfunc_1(pNode);
     FUN_1408733e0(pNode, "texturePath", m_strTexturePath);
     FUN_1408733e0(pNode, "nifPath", m_strNifPath);
-    FUN_140873360(pNode, "width", m_fWidth);
-    FUN_1408731e0(pNode, "quality", m_nQuality);
+    XmlGetAttr((class TiXmlElement*)(pNode), "width", m_fWidth);
+    XmlGetAttr((class TiXmlElement*)(pNode), "quality", m_nQuality);
     CString strAlpha = FUN_140188f50(FUN_14086f4b0(pNode, "alphaMode"), 0);
     if (strAlpha.GetLength() > 0)
     {

@@ -56,7 +56,7 @@ public:
     char m_pad_6d68[0x6dd0 - 0x6d10 - sizeof(Unk_CaIntSlot)];
     Unk_CaIntSlot m_quest;                              // +0x6dd0 the quest that opens the dialog
 };
-Unk_CaConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int* FUN_1401d7c10(Unk_CaIntSlot* pSlot);
 __int64* FUN_1402c05b0(Unk_CaIntSlot* pSlot);
 extern __int64 DAT_143ab2898;                           // the meso of the player
@@ -66,7 +66,7 @@ extern void* DAT_143aac648;                             // the ability table
 // The quest state (holder + 0x10) and the quest rows.
 class Unk_CaQuestState { public: int FUN_140745590(int nQuest); };
 class Unk_CaQuestHolder { public: char m_pad_0[0x10]; Unk_CaQuestState m_state; };
-Unk_CaQuestHolder* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 struct Unk_CaQuestRow { int FUN_14074b050() const; char m_pad_0[0x1c]; int m_nType; char m_pad_20[8]; int m_28; char m_pad_2c[0x2c]; unsigned short m_58; };
 MS2_CHECK_OFFSET(Unk_CaQuestRow, m_nType, 0x1c);   // the exe reads it through 0x14074b050 ([rcx+0x1c])
 MS2_CHECK_OFFSET(Unk_CaQuestRow, m_28, 0x28);
@@ -110,11 +110,15 @@ class Unk_CaSkillTable { public: Unk_CaSkillRef FUN_140aafef0(int nSkillId, unsi
 
 // The level rules.
 int FUN_1401e0800(unsigned short nLevel);
-unsigned FUN_1401e0790(unsigned short nLevel, int nPoints);
+int FUN_1401e0790(unsigned short, int);   // C3: was FUN_1401e0790
 
 class Unk_CaUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-void* FUN_1403ed2d0();
-PCBase* FUN_141bd0cc0(void* pWorld);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 UIGameMenuDialog* FUN_140938b90(int nId);
 
 NotifySystem* FUN_140939a10();
@@ -134,8 +138,6 @@ MS2_CHECK_SIZE(NotifyChangeMyLevel, 0x20);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140d73aa0(CStringW text, int nType, IMessageListener* pListener, CStringW tag);
-void FUN_141a024a0(CMsgBoxData* pBox, int n);
-void FUN_141a01700(CMsgBoxData* pBox, int nStringId, int nA, int nB);
 void FUN_140710590(COutPacket& packet);
 
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
@@ -283,7 +285,7 @@ int CCharacterAbilityManager::FUN_140f29e00()
 // @0x140f29e40
 unsigned CCharacterAbilityManager::FUN_140f29e40()
 {
-    PCBase* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == NULL)
         return 0;
     return FUN_1401e0790((unsigned short)pPc->vfunc_78(), m_nPoints);
@@ -297,7 +299,7 @@ ATL::CTimeSpan CCharacterAbilityManager::FUN_140f29ea0()
     CMsTime tReset(m_nResetTime);
     CMsTime tNow(GetServerTime());
     ATL::CTimeSpan elapsed = tNow - tReset;
-    ATL::CTimeSpan cooldown((unsigned)(*FUN_1401d7c10(&FUN_1401d3200()->m_cooldown) * 0x3c));
+    ATL::CTimeSpan cooldown((unsigned)(*FUN_1401d7c10(&((class Unk_CaConfig*)FUN_1401d3200())->m_cooldown) * 0x3c));
     if (elapsed.GetTotalMinutes() >= cooldown.GetTotalMinutes())
         return ATL::CTimeSpan(0);
     return cooldown - elapsed;
@@ -308,7 +310,7 @@ int CCharacterAbilityManager::FUN_140f29f90(MS2Ptr<Unk_CaAbilityRow> ref)
 {
     if (FUN_140f29e00() == 0)
         return 0;
-    PCBase* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == NULL)
         return 0;
     if (ref->m_nRequireLevel != (unsigned short)pPc->vfunc_78())
@@ -330,7 +332,7 @@ int CCharacterAbilityManager::FUN_140f2a100(int nId)
     MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(nId);
     if (ref == NULL)
         return 1;
-    PCBase* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == NULL)
         return 1;
     if (ref->m_nRequireLevel > (unsigned short)pPc->vfunc_78())
@@ -399,12 +401,12 @@ void UICharacterAbilityDialog::OnLoadComplete()
     FUN_141925ec0(CString("m_close"));
     m_bBuilt = 0;
     FUN_140f2ba20();
-    PCBase* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == NULL)
         return;
     if (FUN_1401e0800((unsigned short)pPc->vfunc_78()) == 0)
         return;
-    if (FUN_140764020()->m_state.FUN_140745590(*FUN_1401d7c10(&FUN_1401d3200()->m_quest)) == 0)
+    if (((class Unk_CaQuestHolder*)FUN_140764020())->m_state.FUN_140745590(*FUN_1401d7c10(&((class Unk_CaConfig*)FUN_1401d3200())->m_quest)) == 0)
         return;
     UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
     if (pMenu)
@@ -417,7 +419,7 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
         return 1;
-    PCBase* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == NULL)
         return 0;
     if (_stricmp(szMethod, "onAddButton") == 0)
@@ -450,14 +452,14 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         }
         else
         {
-            ATL::CTimeSpan cooldown((unsigned)(*FUN_1401d7c10(&FUN_1401d3200()->m_cooldown) * 0x3c));
+            ATL::CTimeSpan cooldown((unsigned)(*FUN_1401d7c10(&((class Unk_CaConfig*)FUN_1401d3200())->m_cooldown) * 0x3c));
             __int64 nDays = cooldown.GetDays();
-            CStringW strText = FUN_14093fd30(0xc5b, &nDays, FUN_1402c05b0(&FUN_1401d3200()->m_meso));
+            CStringW strText = FUN_14093fd30(0xc5b, &nDays, FUN_1402c05b0(&((class Unk_CaConfig*)FUN_1401d3200())->m_meso));
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strText), static_cast<IMessageListener*>(this), CStringW(L"OnMesoReset"));
             if (box.get())
             {
-                FUN_141a024a0(box.operator->(), 0);
-                FUN_141a01700(box.operator->(), 0xc5c, 0x476, 0);
+                ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a024a0(0);
+                ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a01700(0xc5c, 0x476, 0);
                 FUN_140d73c60(box);
                 return 1;
             }
@@ -475,7 +477,7 @@ void UICharacterAbilityDialog::vfunc_15()
 void UICharacterAbilityDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    PCBase* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == NULL)
         return;
     CString strKind = pArgs->FUN_1422b8d30();
@@ -513,7 +515,7 @@ int UICharacterAbilityDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (strTag.Find(L"OnMesoReset", 0) == 0 && nResult == 0)
         {
-            if (DAT_143ab2898 < *FUN_1402c05b0(&FUN_1401d3200()->m_meso))
+            if (DAT_143ab2898 < *FUN_1402c05b0(&((class Unk_CaConfig*)FUN_1401d3200())->m_meso))
             {
                 FUN_141275260(0xc58, 1, 1);
                 return 1;
@@ -536,7 +538,7 @@ void UICharacterAbilityDialog::FUN_140f2b000(NotifyObject* pNotify)
         return;
     if (FUN_1401e0800(p->m_nLevel) == 0)
         return;
-    if (FUN_140764020()->m_state.FUN_140745590(*FUN_1401d7c10(&FUN_1401d3200()->m_quest)) == 0)
+    if (((class Unk_CaQuestHolder*)FUN_140764020())->m_state.FUN_140745590(*FUN_1401d7c10(&((class Unk_CaConfig*)FUN_1401d3200())->m_quest)) == 0)
         return;
     FUN_140f2bee0(p->m_nLevel);
     if (m_30 == NULL)
@@ -638,7 +640,7 @@ void UICharacterAbilityDialog::FUN_140f2ba20()
 {
     if (m_30 == NULL)
         return;
-    int nQuest = *FUN_1401d7c10(&FUN_1401d3200()->m_quest);
+    int nQuest = *FUN_1401d7c10(&((class Unk_CaConfig*)FUN_1401d3200())->m_quest);
     Unk_CaQuestRef quest = FUN_14074bc40(nQuest);
     if (quest.FUN_140747650(0))
         return;

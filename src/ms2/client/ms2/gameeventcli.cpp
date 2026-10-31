@@ -186,7 +186,6 @@ class UIDTAttendPopup : public UIDialog {};
 
 class Unk_CliStateObj : public StateBanner { };
 class Unk_CliPlayer : public PCBase { };   // view of WorldService::FUN_141bd0cc0's local player (slot 78 is the level)
-void* FUN_14041beb0();                                          // the DT context manager
 class CUserEventManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -343,7 +342,7 @@ void GameEventDTRewardCli::vfunc_6()
             Unk_CliPlayer* pPlayer = (Unk_CliPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
             if (pPlayer)
                 nLevel = pPlayer->vfunc_78();
-            if (((class CUserEventManager*)(void*)(FUN_14041beb0()))->HasDTReward(nLevel) == 0)
+            if (((class CUserEventManager*)(void*)(((void*)TSingleton<CUserEventManager>::GetInstance())))->HasDTReward(nLevel) == 0)
                 pDlg->vfunc_67();
         }
     }

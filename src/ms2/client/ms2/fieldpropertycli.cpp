@@ -70,15 +70,19 @@ void* FUN_1403ed280();
 void* FUN_1403ed2b0();
 void* FUN_1409478c0();
 void FUN_141bcad60(void* o, __int64 a, int b);
-void FUN_14166ca20(void* p, int n);
-void FUN_14166ca80(void* p, int n);
-void FUN_14166cce0(void* p, int n);
-void FUN_14166cd70(void* p, int n);
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
     class Ridee* FUN_1416764a0();
     void* FUN_141676a10();
+public:
+    void FUN_14166ca20(unsigned int);   // C3: was free FUN_14166ca20
+public:
+    void FUN_14166ca80(unsigned int);   // C3: was free FUN_14166ca80
+public:
+    void FUN_14166cce0(unsigned int);   // C3: was free FUN_14166cce0
+public:
+    void FUN_14166cd70(unsigned int);   // C3: was free FUN_14166cd70
 };
 class CEffectService   // C3: member view for the former free stand-ins
 {
@@ -145,13 +149,13 @@ void FieldPropertyHideMyPCCli::vfunc_4()
     void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!p)
         return;
-    FUN_14166ca20(p, 1);
+    ((class PCBase*)(void*)(p))->FUN_14166ca20(1);
     void* q = ((void*)((class PCBase*)(void*)(p))->FUN_1416764a0());
     if (q)
-        FUN_14166ca20(q, 1);
+        ((class PCBase*)(void*)(q))->FUN_14166ca20(1);
     void* r = ((class PCBase*)(void*)(p))->FUN_141676a10();
     if (r)
-        FUN_14166ca20(p, 1);            // sic: the exe passes p again
+        ((class PCBase*)(void*)(p))->FUN_14166ca20(1);            // sic: the exe passes p again
 }
 // @0x140b27790
 void FieldPropertyHideMyPCCli::vfunc_5()
@@ -159,13 +163,13 @@ void FieldPropertyHideMyPCCli::vfunc_5()
     void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!p)
         return;
-    FUN_14166ca80(p, 1);
+    ((class PCBase*)(void*)(p))->FUN_14166ca80(1);
     void* q = ((void*)((class PCBase*)(void*)(p))->FUN_1416764a0());
     if (q)
-        FUN_14166ca80(q, 1);
+        ((class PCBase*)(void*)(q))->FUN_14166ca80(1);
     void* r = ((class PCBase*)(void*)(p))->FUN_141676a10();
     if (r)
-        FUN_14166ca80(p, 1);            // sic: the exe passes p again
+        ((class PCBase*)(void*)(p))->FUN_14166ca80(1);            // sic: the exe passes p again
 }
 
 // @0x140b27820
@@ -174,7 +178,7 @@ void FieldPropertyLockMyPCCli::vfunc_4()
     void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!p)
         return;
-    FUN_14166cce0(p, 0x400);
+    ((class PCBase*)(void*)(p))->FUN_14166cce0(0x400);
 }
 // @0x140b27860
 void FieldPropertyLockMyPCCli::vfunc_5()
@@ -182,7 +186,7 @@ void FieldPropertyLockMyPCCli::vfunc_5()
     void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!p)
         return;
-    FUN_14166cd70(p, 0x400);
+    ((class PCBase*)(void*)(p))->FUN_14166cd70(0x400);
 }
 
 // @0x140b278a0

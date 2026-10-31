@@ -156,8 +156,6 @@
 class Unk_FameNpcData : public CPtred { public: int FUN_1406cd020(); };
 MS2Ptr<Unk_FameNpcData> FUN_1406cd330(int nNpcId);
 void* FUN_140204740(Unk_FameLogFilter* pFilter, unsigned nId, int nFlag);
-void FUN_1401854f0(ATL::CAtlArray<unsigned>& arr, unsigned nValue);                 // Add
-size_t FUN_140186260(ATL::CAtlArray<unsigned>& arr);                                  // GetCount
 unsigned* FUN_1401844d0(ATL::CAtlArray<unsigned>& arr, size_t nIndex);                // operator[]
 unsigned FUN_140767ff0();                                                             // random number
 
@@ -168,13 +166,13 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-bool FUN_14028f710(Unk_140165cf0*);                                     // the element is usable
-Unk_140165cf0* FUN_14028f8d0(Unk_140165cf0* pRoot);                     // the <environment> element of this locale
-void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
-void FUN_140873220(Unk_140165cf0*, const char*, unsigned&);
-void FUN_1408731a0(Unk_140165cf0*, const char*, unsigned short&);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int FUN_1408733e0(Unk_140165cf0*, const char*, CStringA&);
-int FUN_140873890(Unk_140165cf0*, const char*, int&);
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 void FUN_140178570(Unk_140165cf0*, const char*, ATL::CAtlArray<int>&);      // comma separated ints
 void FUN_1401788f0(Unk_140165cf0*, const char*, ATL::CAtlArray<CStringA>&);  // comma separated strings
 Unk_FameAlliance FUN_14021a330(const CStringA& str);     // alliance name -> id (0 when unknown)
@@ -204,7 +202,7 @@ int FUN_14035ba10(Unk_140165cf0* pElem, const char* pszName, int* pOut)
     }
     int nRet;
     int nValue = 0;
-    nRet = FUN_140873890(pElem, pszName, nValue);
+    nRet = XmlQuery((class TiXmlElement*)(pElem), pszName, nValue);
     if (nRet != 0)
         return nRet;
     *pOut = nValue;
@@ -293,10 +291,10 @@ CFameGradeData::~CFameGradeData()
 int CFameGradeData::Read(Unk_140165cf0* pElem)
 {
     FUN_14035bc20(pElem, "alliance", &m_nAlliance);
-    FUN_1408731e0(pElem, "grade", m_nGrade);
-    FUN_1408731e0(pElem, "requirePoint", m_nRequirePoint);
-    FUN_140873220(pElem, "additionalEffectID", m_nAdditionalEffectId);
-    FUN_1408731a0(pElem, "additionalEffectLevel", m_nAdditionalEffectLevel);
+    XmlGetAttr((class TiXmlElement*)(pElem), "grade", m_nGrade);
+    XmlGetAttr((class TiXmlElement*)(pElem), "requirePoint", m_nRequirePoint);
+    XmlGetAttr((class TiXmlElement*)(pElem), "additionalEffectID", m_nAdditionalEffectId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "additionalEffectLevel", m_nAdditionalEffectLevel);
     if (m_nAlliance <= 0 || m_nAlliance >= 10)
         return 0;
     return 1;
@@ -318,8 +316,8 @@ CFameLogData::~CFameLogData()
 // @0x140358ad0
 int CFameLogData::Read(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "id", m_nId);
-    FUN_1408731e0(pElem, "grade", m_nGrade);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "grade", m_nGrade);
     FUN_14035bc20(pElem, "alliance", &m_nAlliance);
     if (m_nAlliance <= 0 || m_nAlliance >= 10)
         return 0;
@@ -376,7 +374,7 @@ CFamePickAlliance::~CFamePickAlliance()
 int CFamePickAlliance::Read(Unk_140165cf0* pElem)
 {
     FUN_14035bc20(pElem, "id", &m_nAlliance);
-    FUN_1408731e0(pElem, "maxCount", m_nMaxCount);
+    XmlGetAttr((class TiXmlElement*)(pElem), "maxCount", m_nMaxCount);
     return m_nAlliance != 0;
 }
 
@@ -393,13 +391,13 @@ CFamePickMethod::~CFamePickMethod()
 // @0x140358ff0
 int CFamePickMethod::Read(Unk_140165cf0* pElem)
 {
-    if (!FUN_14028f710(pElem))
+    if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
         return 0;
     FUN_14035baa0(pElem, "type", &m_nType);
     FUN_140178570(pElem, "pickCountByRank", m_aPickCountByRank);
     FUN_14035ba10(pElem, "repeatType", &m_nRepeatType);
-    FUN_140873220(pElem, "reloadOnAccept", m_nReloadOnAccept);
-    FUN_140873220(pElem, "reloadOnComplete", m_nReloadOnComplete);
+    XmlGetAttr((class TiXmlElement*)(pElem), "reloadOnAccept", m_nReloadOnAccept);
+    XmlGetAttr((class TiXmlElement*)(pElem), "reloadOnComplete", m_nReloadOnComplete);
     for (Unk_140165cf0* pNode = pElem->FUN_140165cf0("alliance"); pNode != 0; pNode = pNode->FUN_140168650("alliance"))
     {
         AlliancePtr spAlliance(new CFamePickAlliance);
@@ -432,9 +430,9 @@ CFameDef::~CFameDef()
 int CFameDef::Read(Unk_140165cf0* pElem)
 {
     FUN_14035bc20(pElem, "alliance", &m_nAlliance);
-    FUN_1408731e0(pElem, "officerNpcKind", m_nOfficerNpcKind);
+    XmlGetAttr((class TiXmlElement*)(pElem), "officerNpcKind", m_nOfficerNpcKind);
     FUN_1408733e0(pElem, "symbol", m_strSymbol);
-    FUN_1408731e0(pElem, "isExped", m_nIsExped);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isExped", m_nIsExped);
     FUN_1401d3700(m_strSymbol);
     FUN_14035bb60(pElem, "season", &m_nSeason);
     return m_nAlliance != 10;
@@ -454,8 +452,8 @@ CFameSeasonDef::~CFameSeasonDef()
 int CFameSeasonDef::Read(Unk_140165cf0* pElem)
 {
     FUN_14035bb60(pElem, "name", &m_nSeason);
-    FUN_140873220(pElem, "requireQuest", m_nRequireQuest);
-    FUN_1408731a0(pElem, "requireLv", m_nRequireLv);
+    XmlGetAttr((class TiXmlElement*)(pElem), "requireQuest", m_nRequireQuest);
+    XmlGetAttr((class TiXmlElement*)(pElem), "requireLv", m_nRequireLv);
     FUN_1408733e0(pElem, "limitNpcScriptTag", m_strLimitNpcScriptTag);
     return 1;
 }
@@ -505,7 +503,7 @@ int CFameTable::LoadFame()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("fame"); pNode != 0; pNode = pNode->FUN_140168650("fame"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         GradePtr spGrade(new CFameGradeData);
         if (spGrade->Read(pNode) == 0)
@@ -532,7 +530,7 @@ int CFameTable::LoadFameLog()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("fame"); pNode != 0; pNode = pNode->FUN_140168650("fame"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         LogPtr spLog(new CFameLogData);
         if (spLog->Read(pNode) == 0)
@@ -557,7 +555,7 @@ int CFameTable::LoadFameLimit()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("condition"); pNode != 0; pNode = pNode->FUN_140168650("condition"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         LimitPtr spLimit(new CFameLimitData);
         if (spLimit->Read(pNode) == 0)
@@ -580,7 +578,7 @@ int CFameTable::LoadPickMethod()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    Unk_140165cf0* pEnv = FUN_14028f8d0(pRoot);
+    Unk_140165cf0* pEnv = ((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(pRoot)));
     if (pEnv == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -588,7 +586,7 @@ int CFameTable::LoadPickMethod()
     }
     for (Unk_140165cf0* pNode = pEnv->FUN_140165cf0("method"); pNode != 0; pNode = pNode->FUN_140168650("method"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         PickPtr spMethod(new CFamePickMethod);
         if (spMethod->Read(pNode) == 0)
@@ -617,7 +615,7 @@ int CFameTable::LoadFameDef()
     }
     for (Unk_140165cf0* pSeason = pRoot->FUN_140165cf0("season"); pSeason != 0; pSeason = pSeason->FUN_140168650("season"))
     {
-        if (!FUN_14028f710(pSeason))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pSeason)))
             continue;
         SeasonPtr spSeason(new CFameSeasonDef);
         if (spSeason->Read(pSeason) == 0)
@@ -726,12 +724,12 @@ unsigned CFameTable::PickRandomLog(Unk_FameAlliance nAlliance, int nGrade, Unk_F
             continue;
         if (FUN_140204740(pOwned, spLog->m_nId, 0) != 0)
             continue;
-        FUN_1401854f0(aCandidates, spLog->m_nId);
+        ((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)&static_cast<class ATL::CAtlArray<unsigned int, class ATL::CElementTraits<unsigned int>>&>(aCandidates))->Add(spLog->m_nId);
     }
-    if (FUN_140186260(aCandidates) == 0)
+    if (((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)&static_cast<class ATL::CAtlArray<unsigned int, class ATL::CElementTraits<unsigned int>>&>(aCandidates))->GetCount() == 0)
         return 0;
-    int nIndex = (int)(FUN_140767ff0() % FUN_140186260(aCandidates));
-    if (nIndex >= (int)FUN_140186260(aCandidates))
+    int nIndex = (int)(FUN_140767ff0() % ((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)&static_cast<class ATL::CAtlArray<unsigned int, class ATL::CElementTraits<unsigned int>>&>(aCandidates))->GetCount());
+    if (nIndex >= (int)((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)&static_cast<class ATL::CAtlArray<unsigned int, class ATL::CElementTraits<unsigned int>>&>(aCandidates))->GetCount())
         return 0;
     return *FUN_1401844d0(aCandidates, nIndex);
 }

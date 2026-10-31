@@ -93,13 +93,11 @@ Unk_PrItemPtr FUN_14053f870(int nItemId);
 // The AS root with the two-argument Invoke ("showLastResult").
 class Unk_PrScript : public AScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2); };
 
-bool FUN_140a467d0(const MS2Ptr<AScript>*);
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);
 CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount);   // formatted message
 const int* FUN_1402fbd20(const int* a, const int* b);               // std::min<int>
 const int* FUN_1404eb7e0(const int* a, const int* b);               // std::max<int>
 int FUN_141654730(PCBase* pPC);                                     // the job
-__int64 FUN_141656a80(PCBase* pPC);                                 // the character id
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void FUN_140710590(COutPacket& packet);
 
@@ -155,13 +153,13 @@ void UIPvPResultDialog::OnLoadComplete()
 void UIPvPResultDialog::vfunc_79(void* pData)
 {
     UIDialog::vfunc_79(pData);
-    vfunc_55() || FUN_140a467d0(&m_30);
+    vfunc_55() || ((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull();
 }
 
 // @0x141343c10
 void UIPvPResultDialog::FUN_141343c10(int nFrom, int nTo)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     int nFirst = *FUN_1402fbd20(&nFrom, &nTo);
     int nLast = *FUN_1404eb7e0(&nFrom, &nTo);
@@ -181,7 +179,7 @@ void UIPvPResultDialog::FUN_141343c10(int nFrom, int nTo)
 void UIPvPResultDialog::FUN_141343da0(int nRank)
 {
     m_180 = nRank;
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     CStringW strText(L"");
     if (0 < m_180)
@@ -232,7 +230,7 @@ bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PrEntry* pEntr
         pObj->FUN_1407cb9c0("death", pEntry->m_nDeath);
         pObj->FUN_1409c1180("damage", pEntry->m_nDamage);
         pObj->FUN_1407cbbe0("isOffline", pEntry->m_bOnline == 0);
-        pObj->FUN_1407cbbe0("isMe", FUN_141656a80(pPC) == pEntry->m_nCharId);
+        pObj->FUN_1407cbbe0("isMe", ((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80() == pEntry->m_nCharId);
         if (pOther)
             pObj->FUN_140bd0d90("job", FUN_141654730(pOther));
         else
@@ -273,7 +271,7 @@ bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PrEntry* pEntr
 // @0x141344780
 void UIPvPResultDialog::FUN_141344780(int nRank)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     int nCount = reinterpret_cast<Unk_PrService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141344a80();
     for (int n = 1; n <= nCount; n++)

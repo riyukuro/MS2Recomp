@@ -122,21 +122,21 @@ struct Unk_SmConsts
     Unk_SmSlot m_cfe0;
 };
 MS2_CHECK_OFFSET(Unk_SmConsts, m_cfe0, 0xcfe0);
-Unk_SmConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int* FUN_1402056b0(Unk_SmSlot* pSlot);
 
 class Unk_SmUiMgr { public: void FUN_141adc530(int nUiId); };
 CNetworkService* FUN_140714f90();
 
-UIServerEventDispatcher* FUN_140933230();
+class Unk_Hud* FUN_140933230();   // C3: was FUN_140933230
 void FUN_141274f50();
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned nArgs, UIDialog* pDialog);
+int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 int FUN_1418fd280();
 int FUN_14092f640();
-UIServerListDialog* FUN_14136f520(int nUiId);
+void* FUN_14136f520(int);   // C3: was FUN_14136f520
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
 void FUN_14151f200();
-void FUN_140dffb50(IMessageListener* pListener);                        // the leave request of a field
+void FUN_140dffb50(void*);   // C3: was FUN_140dffb50
 CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
@@ -171,7 +171,7 @@ int UISystemMenuDialog::vfunc_65()
     if (UIDialog::vfunc_65() == 0)
         return 0;
     FUN_141274f50();
-    FUN_140933230()->AddListener(static_cast<UIServerEventListener*>(this));
+    ((class UIServerEventDispatcher*)FUN_140933230())->AddListener(static_cast<UIServerEventListener*>(this));
     return 1;
 }
 
@@ -180,7 +180,7 @@ void UISystemMenuDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     m_180 = 0;
-    FUN_140933230()->RemoveListener(static_cast<UIServerEventListener*>(this));
+    ((class UIServerEventDispatcher*)FUN_140933230())->RemoveListener(static_cast<UIServerEventListener*>(this));
 }
 
 // @0x141b12d50
@@ -261,7 +261,7 @@ int UISystemMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, 0) != 0)
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, (void*)(0)) != 0)
         return 1;
     ASData data;
     if (_stricmp("OnGameOptionDialog", szMethod) == 0)
@@ -322,7 +322,7 @@ void UISystemMenuDialog::Notify()
     ASArray array(2);
     int nSelected = 0;
     m_180 = FUN_14092f640();
-    UIServerListDialog* pList = FUN_14136f520(0x4ef0);
+    UIServerListDialog* pList = ((class UIServerListDialog*)FUN_14136f520(0x4ef0));
     if (pList != 0)
         pList->FUN_141ad2f60(array, &nSelected, m_180);
     CStringW strName;
@@ -352,7 +352,7 @@ void UISystemMenuDialog::FUN_141b13880(const Scaleform::GFx::FunctionHandler::Pa
         return;
     if (spField->m_nFieldID == 0x3a2c94b)
     {
-        FUN_140dffb50(static_cast<IMessageListener*>(this));
+        FUN_140dffb50((void*)(static_cast<IMessageListener*>(this)));
         return;
     }
     CStringW strText = FUN_141b149d0(spField->m_nMapType);
@@ -360,7 +360,7 @@ void UISystemMenuDialog::FUN_141b13880(const Scaleform::GFx::FunctionHandler::Pa
     if (spBox.get() != 0)
     {
         spBox->FUN_141a01700(0x476, 0, 0);
-        spBox->FUN_141a01ca0(*FUN_1402056b0(&FUN_1401d3200()->m_cfe0), 1, GetStringCommon(0x2b8));
+        spBox->FUN_141a01ca0(*FUN_1402056b0(&((struct Unk_SmConsts*)FUN_1401d3200())->m_cfe0), 1, GetStringCommon(0x2b8));
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
     }
 }

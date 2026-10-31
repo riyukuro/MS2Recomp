@@ -24,7 +24,7 @@ void FUN_141bbbe40(void*, int, int, int);
 void* FUN_140aae430();
 void FUN_141489ff0(void*, NiColorA);                    // the app's clear colour
 extern int DAT_1439f4a78;
-void* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_140353fc0(void*, int, int, const wchar_t*, const int&);
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*)(int, const CMsgBoxData&));
 bool FUN_141902530(int, const CMsgBoxData&);
@@ -32,7 +32,11 @@ CStringW FUN_1408116a0(int, const int&);
 class Unk_MsgBoxData {};
 MS2Ptr<Unk_MsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
 void* FUN_140aa6d30();
-void FUN_1417e25a0(void*, int);
+class CStateService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1417e25a0(int);
+};
 struct Unk_1407a7d20 {
     Unk_1407a7d20(CInPacket&);
     ~Unk_1407a7d20();
@@ -42,11 +46,15 @@ struct Unk_1407a7d20 {
 };
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void* FUN_1409478c0();
-int FUN_140a18070(void*);
+class CameraMgr   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140a18070();
+    bool FUN_140aeb590(struct Unk_CameraSetting&);
+    void FUN_140aed720(struct Unk_CameraSetting const&);
+    void FUN_140aed750(int, int);
+};
 struct Unk_140ae7ce0 { Unk_140ae7ce0(); void *m_p0, *m_p1, *m_p2, *m_p3, *m_p4, *m_p5; };
-bool FUN_140aeb590(void*, Unk_140ae7ce0*);
-void FUN_140aed720(void*, Unk_140ae7ce0*);
-void FUN_140aed750(void*, int, int);
 void FUN_14174c520(CSceneStateLogin*, CInPacket&);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSceneStateLogin);
@@ -107,11 +115,11 @@ void CSceneStateLogin::OnPacket(CInPacket& packet)
         int result = packet.ReadUInt8();
         if (result > 0)
         {
-            FUN_1417e25a0(FUN_140aa6d30(), 0x620000d);
+            ((class CStateService*)(void*)(FUN_140aa6d30()))->FUN_1417e25a0(0x620000d);
         }
         else
         {
-            FUN_140353fc0(FUN_140166440(), 1, 0x20, L"SceneStateLogin::OnPacket {0}", result);
+            FUN_140353fc0(((void*)GetLogString()), 1, 0x20, L"SceneStateLogin::OnPacket {0}", result);
             FUN_140d74390(FUN_1408116a0(0x20e, 0), 0, FUN_140b76b10(FUN_141902530));
             FUN_140d86260()->vfunc_58(0x20e, 0);
         }
@@ -128,13 +136,13 @@ void CSceneStateLogin::OnPacket(CInPacket& packet)
 // @0x14174c4a0
 void CSceneStateLogin::vfunc_1(int)
 {
-    if (FUN_140a18070(FUN_1409478c0()) != 0)
+    if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140a18070() != 0)
     {
         Unk_140ae7ce0 tmp;
-        if (FUN_140aeb590(FUN_1409478c0(), &tmp))
+        if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aeb590(*(struct Unk_CameraSetting*)(&tmp)))
         {
-            FUN_140aed720(FUN_1409478c0(), &tmp);
-            FUN_140aed750(FUN_1409478c0(), 4, 1);
+            ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(&tmp));
+            ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed750(4, 1);
         }
     }
 }

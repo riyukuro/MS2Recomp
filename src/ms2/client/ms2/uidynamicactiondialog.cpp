@@ -110,7 +110,7 @@ Unk_DaUiMgr* FUN_140b632f0();
 
 int FUN_1409e1b80(ASTooltip* p, int nId, int n);            // the learned skill tooltip
 CStringTable* GetStringTable();
-char FUN_1403b3c40(const CStringW& str, const wchar_t* szText);
+bool FUN_1403b3c40(const CStringW& str, const wchar_t* szText);
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);
 void FUN_140710590(COutPacket& packet);                     // send
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
@@ -183,9 +183,11 @@ int UIDynamicActionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             int nResult = pMsg->FUN_1422b8a10();
             FUN_14151f200();
             if (nResult == 0) {
-                FUN_14192df00(m_178.m_8, (unsigned)m_178.m_4);
+                unsigned __int64 nAction = (unsigned)m_178.m_4;
+                FUN_14192df00(m_178.m_8, nAction);
             } else {
-                FUN_14192df00(m_184.m_8, (unsigned)m_184.m_4);
+                unsigned __int64 nAction = (unsigned)m_184.m_4;
+                FUN_14192df00(m_184.m_8, nAction);
                 if (MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list"))
                     spList->FUN_1422dcca0(-1);
             }
@@ -501,7 +503,6 @@ void UIDynamicActionDialog::FUN_14192ca10(int nAction)
 MS2_REPLACE_METHOD(0x14192CA10, UIDynamicActionDialog, FUN_14192ca10, 78, 0);
 
 // @0x14192ca70
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 void UIDynamicActionDialog::FUN_14192ca70()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
@@ -530,10 +531,12 @@ void UIDynamicActionDialog::FUN_14192ca70()
                 if (FUN_1403b3c40(m_1b8, L"/") != 0)
                     continue;
                 bool bFound = false;
-                CStringW strName = GetStringTable()->FUN_141811980(4, nId);
-                if (strName.Find(m_1b8, 0) != -1) {
-                    bFound = true;
-                } else {
+                do {
+                    const CStringW& strName = GetStringTable()->FUN_141811980(4, nId);
+                    if (strName.Find(m_1b8, 0) != -1) {
+                        bFound = true;
+                        break;
+                    }
                     std::vector<CStringW> words;
                     CStringW strKeywords = FUN_14192d820(nId);
                     FUN_140988d60(strKeywords, words, L", ");
@@ -543,13 +546,14 @@ void UIDynamicActionDialog::FUN_14192ca70()
                             break;
                         }
                     }
-                }
+                } while (0);
                 if (!bFound)
                     continue;
             }
             if (nNew != 0)
                 nFocus = nId;
-            CStringW strKey = FUN_1409331f0()->FUN_14142d220(FUN_1409331f0()->FUN_14142c940((unsigned)nId, 0));
+            int nKey = FUN_1409331f0()->FUN_14142c940((unsigned)nId, 0);
+            CStringW strKey = FUN_1409331f0()->FUN_14142d220(nKey);
             ASObj action(2);
             action.FUN_1409c0d20("id", nId);
             action.FUN_1407cbb20("key", strKey);
@@ -568,7 +572,6 @@ void UIDynamicActionDialog::FUN_14192ca70()
 MS2_REPLACE_METHOD(0x14192CA70, UIDynamicActionDialog, FUN_14192ca70, 1659, 0);
 
 // @0x14192d100
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 void UIDynamicActionDialog::FUN_14192d100()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
@@ -597,10 +600,12 @@ void UIDynamicActionDialog::FUN_14192d100()
                 if (FUN_1403b3c40(m_1b8, L"/") != 0)
                     continue;
                 bool bFound = false;
-                CStringW strName = GetStringTable()->FUN_141811980(4, nId);
-                if (strName.Find(m_1b8, 0) != -1) {
-                    bFound = true;
-                } else {
+                do {
+                    const CStringW& strName = GetStringTable()->FUN_141811980(4, nId);
+                    if (strName.Find(m_1b8, 0) != -1) {
+                        bFound = true;
+                        break;
+                    }
                     std::vector<CStringW> words;
                     CStringW strKeywords = FUN_14192d820(nId);
                     FUN_140988d60(strKeywords, words, L", ");
@@ -610,13 +615,14 @@ void UIDynamicActionDialog::FUN_14192d100()
                             break;
                         }
                     }
-                }
+                } while (0);
                 if (!bFound)
                     continue;
             }
             if (nNew != 0)
                 nFocus = nId;
-            CStringW strKey = FUN_1409331f0()->FUN_14142d220(FUN_1409331f0()->FUN_14142c940((unsigned)nId, 0));
+            int nKey = FUN_1409331f0()->FUN_14142c940((unsigned)nId, 0);
+            CStringW strKey = FUN_1409331f0()->FUN_14142d220(nKey);
             ASObj action(2);
             action.FUN_1409c0d20("id", nId);
             action.FUN_1407cbb20("key", strKey);

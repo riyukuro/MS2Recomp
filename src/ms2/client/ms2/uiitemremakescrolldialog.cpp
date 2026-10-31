@@ -40,6 +40,8 @@ static CStringW s_strBindPetTag(L"remakeOptionScrollBindPet");
 static UICommon::CMyPCKeyInputController s_keyInput;
 
 #include <algorithm>
+#include <sstream>
+#include "ms2/ms2format.h"
 #include "uiitemremakescrolldialog.h"
 #include "itemscrollslot.h"
 #include "inventory.h"
@@ -213,6 +215,7 @@ inline Scaleform::GFx::Value Unk_RmScript::FUN_140f5ff80(const char* szMethod, C
 // uiitemrepackingscrolldialog.cpp: the int goes through the closure {value, thunk}) ----
 typedef __int64 i64;
 struct Unk_RmFmtVal { i64 m_w0, m_w1; int m_type; };
+enum Unk_RmFmtEnum {};
 struct Unk_RmFmtArg { const void* m_value; void* m_fn; };
 struct Unk_RmFmtPack { i64 m_n; const Unk_RmFmtArg* m_args; };
 Unk_RmFmtArg* FUN_140163770(Unk_RmFmtArg* pOut, unsigned nValue);     // box an unsigned (type 2)
@@ -226,26 +229,37 @@ i64 FUN_1402da110(i64 ctx, i64* pOut, Unk_RmFmtVal* pVal);
 
 i64 FUN_140f60360(int*);
 i64 FUN_140f60340(int*);
-void FUN_140f60060(i64 ctx, i64* pOut, int* pValue);
+void FUN_140f60060(fmt::BasicFormatter<wchar_t>& f, const wchar_t*& format_str, const Unk_RmFmtEnum& value);
 void FUN_140f60180(i64 ctx, i64 value, i64 pOut);
 Unk_RmFmtArg* FUN_140f5f940(Unk_RmFmtArg* pOut, int* pValue);
 i64* FUN_140f5f970(i64* pOut, int* pValue);
 
 // @0x140f60060
-// MS2-FUNCTIONAL: the exe keeps the boxed value in an array local (security cookie); this keeps a plain struct
-void FUN_140f60060(i64 ctx, i64* pOut, int* pValue)
+// fmt::format_arg for an enum argument (the ostream fallback is dead but compiled at /Od)
+void FUN_140f60060(fmt::BasicFormatter<wchar_t>& f, const wchar_t*& format_str, const Unk_RmFmtEnum& value)
 {
-    Unk_RmFmtVal val;
-    Unk_RmFmtVal* pv = &val;
-    *(int*)pv = *pValue;
-    val.m_type = 1;
-    *pOut = FUN_1402da110(ctx, pOut, &val);
+    fmt::internal::Arg arg;
+    fmt::internal::Value& arg_value = arg;
+    if (std::is_enum<Unk_RmFmtEnum>::value)
+    {
+        arg.int_value = value;
+        arg.type = fmt::internal::Arg::INT;
+    }
+    else
+    {
+        std::basic_ostringstream<wchar_t> os;
+        os << value;
+        std::basic_string<wchar_t> str = os.str();
+        arg_value = fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(str);
+        arg.type = fmt::internal::Arg::STRING;
+    }
+    format_str = f.format(format_str, arg);
 }
 
 // @0x140f60180
 void FUN_140f60180(i64 ctx, i64 value, i64 pOut)
 {
-    FUN_140f60060(ctx, (i64*)pOut, (int*)value);
+    FUN_140f60060(*(fmt::BasicFormatter<wchar_t>*)ctx, *(const wchar_t**)pOut, *(const Unk_RmFmtEnum*)value);
 }
 
 // @0x140f5f940
@@ -330,7 +344,6 @@ CString UIItemRemakeScrollDialog::GetTypeName()
 }
 
 // @0x140f58430
-// MS2-FUNCTIONAL: behaviour-reviewed, same calls/args as the exe; only the pSlot local and the +0x1d1 flag temp stack slots differ
 void UIItemRemakeScrollDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -345,11 +358,11 @@ void UIItemRemakeScrollDialog::OnLoadComplete()
         FUN_140d42bc0(pSlot, RmRemoveFn(this, &UIItemRemakeScrollDialog::FUN_140f5e570));
         FUN_140d42b70(pSlot, RmDropFn(this, &UIItemRemakeScrollDialog::FUN_140f5e5f0));
     }
-    pSlot = FUN_140f5d0c0(CString(m_strIngredientSlot));
-    if (pSlot != 0)
+    ItemScrollSlot* pIngredientSlot = FUN_140f5d0c0(CString(m_strIngredientSlot));
+    if (pIngredientSlot != 0)
     {
-        FUN_140d42bc0(pSlot, RmRemoveFn(this, &UIItemRemakeScrollDialog::FUN_140f5ed50));
-        FUN_140d42b70(pSlot, RmDropFn(this, &UIItemRemakeScrollDialog::FUN_140f5ede0));
+        FUN_140d42bc0(pIngredientSlot, RmRemoveFn(this, &UIItemRemakeScrollDialog::FUN_140f5ed50));
+        FUN_140d42b70(pIngredientSlot, RmDropFn(this, &UIItemRemakeScrollDialog::FUN_140f5ede0));
     }
     CStringW strNotice;
     CStringW strDesc;

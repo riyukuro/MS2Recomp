@@ -416,8 +416,8 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSkillMagicControlGuide);
 
 // @0x1410a0e80
 CGuideObject::CGuideObject()
-    : m_nOwnerId(0)
 {
+    m_nOwnerId = 0;
     m_bLocal = false;
     m_bBusy = false;
     m_unk_180.m_z = 3.5f;
@@ -1143,7 +1143,8 @@ int CFishingGuideObject::vfunc_10()
 {
     if (PCBase::vfunc_10() == 0)
         return 0;
-    Unk_GuidePlayer* pPlayer = ((class Unk_GuidePlayer*)FUN_1405a7e30((class PC*)(FUN_1410a1310())));
+    PCBase* pOwner = FUN_1410a1310();
+    Unk_GuidePlayer* pPlayer = ((class Unk_GuidePlayer*)FUN_1405a7e30((class PC*)(pOwner)));
     if (pPlayer != 0)
     {
         NiPointer<NiNode> spRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
@@ -1666,7 +1667,7 @@ StatePcGuideObjectController::StatePcGuideObjectController()
 
 // The UCRT's `static __inline memcpy_s` of this TU (unreferenced copy, like memmove_s).
 // @0x1410a82e0
-// MS2-FUNCTIONAL: unreferenced CRT memcpy_s copy: frame saves rsi/rdi, source spelling differs
+#pragma function(memset, memcpy)
 static __inline errno_t ms2_memcpy_s_copy(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }
@@ -1681,6 +1682,7 @@ static __inline errno_t ms2_memcpy_s_copy(void* const d, size_t const dsz, void 
     memcpy(d, s, ssz);
     return 0;
 }
+#pragma intrinsic(memset, memcpy)
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy)(void*, size_t, const void*, size_t) = &ms2_memcpy_s_copy;
 
 MS2_EMIT_CRT_MEMMOVE_S();

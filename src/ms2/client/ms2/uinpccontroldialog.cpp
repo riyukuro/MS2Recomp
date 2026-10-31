@@ -74,7 +74,7 @@ template <> MS2Ptr<AiDebugDialog>::MS2Ptr(AiDebugDialog* p)
 
 // The key input state (singleton).
 class Unk_CtlKeys : public CInputKeyHandler { public: bool FUN_14116d9c0(int nKey, int a, int b);};
-Unk_CtlKeys* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The ui text service (singleton): the text of a "$s_..." key.
 class Unk_CtlText { public: CStringW FUN_1422b0570(const CString& strKey); };
@@ -92,8 +92,7 @@ public:
 // A game object that is an npc: the name of its data row.
 class Unk_CtlNpc : public CNpc { };
 PCBase* FUN_14099eef0(Unk_CtlObj* pObj);                // efd::DynamicCast<PC>
-Unk_CtlNpc* FUN_140a38a00(Unk_CtlObj* pObj);
-int FUN_141092fa0(PCBase* pActor);                      // the npc id of an actor
+class Unk_CameraTargetEntity* FUN_140a38a00(class Unk_BossObject*);   // C3: was FUN_140a38a00
 CStringW FUN_1401aa6a0(unsigned nNpc);                  // the name text of an npc id
 
 // Formatters instantiated by other units.
@@ -108,7 +107,7 @@ bool FUN_140184310(const CString& str, const char* psz);
 
 // The main window.
 class Unk_CtlScreen;
-Unk_CtlScreen* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 HWND FUN_14209c720(Unk_CtlScreen* pScreen);
 
 // std::vector<int> as the exe's helper units instantiate it.
@@ -125,8 +124,6 @@ private:
 MS2_CHECK_SIZE(Unk_CtlIntVec, 0x18);
 void FUN_141632630(const CStringW& str, Unk_CtlIntVec& out, const wchar_t* szDelim);   // split into numbers
 
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
-int FUN_1409c17e0(const Scaleform::GFx::Value& v);
 CStringTable* GetStringTable();
 
 void FUN_140988d60(CStringW& str, Unk_NpcFileList& out, const wchar_t* szDelim);    // split a text
@@ -141,7 +138,7 @@ CStringW FUN_141b6e360(const CStringW& strDir, const wchar_t* szFilter, const CS
 
 // The UCRT's `static __inline memcpy_s` copy of this TU (kept alive by the pointer below).
 // @0x141a6a350
-// MS2-FUNCTIONAL: CRT memcpy_s copy: source spelling differs
+#pragma function(memset, memcpy)
 static __inline errno_t ms2_nc_memcpy_s(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }
@@ -151,6 +148,7 @@ static __inline errno_t ms2_nc_memcpy_s(void* const d, size_t const dsz, void co
     memcpy(d, s, ssz);
     return 0;
 }
+#pragma intrinsic(memset, memcpy)
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnNcMemcpyS)(void*, size_t, const void*, size_t) = &ms2_nc_memcpy_s;
 
 // @0x141a65420
@@ -167,7 +165,7 @@ void ASObj::FUN_141a65c70(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x141a623e0
@@ -232,7 +230,7 @@ void UINpcControlDialog::vfunc_79(void* p)
                 if (pPc != 0) {
                     strTarget = pPc->vfunc_77();
                 } else {
-                    Unk_CtlNpc* pNpc = FUN_140a38a00(pObj);
+                    Unk_CtlNpc* pNpc = ((class Unk_CtlNpc*)FUN_140a38a00((class Unk_BossObject*)(pObj)));
                     if (pNpc != 0)
                         strTarget = pNpc->FUN_141093310();
                 }
@@ -263,7 +261,7 @@ void UINpcControlDialog::vfunc_79(void* p)
             m_spAi.AssignRaw(new AiDebugDialog(0));
             m_spAi->SetTarget(strFile, nId);
             AiDebugDialog* pAi = m_spAi.operator->();
-            pAi->Create(0xa5, CWnd::FromHandle(FUN_14209c720(FUN_140aadf80())));
+            pAi->Create(0xa5, CWnd::FromHandle(FUN_14209c720(((class Unk_CtlScreen*)FUN_140aadf80()))));
         } else if (nKind == 8) {
             int nId = static_cast<CInPacket*>(p)->ReadInt32();
             int nLine = static_cast<CInPacket*>(p)->ReadInt32();
@@ -299,15 +297,15 @@ int UINpcControlDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0)) {
+    if (((class Unk_CtlKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0)) {
         if (m_30.get() != 0)
             m_30->Invoke("onEnterKey");
         return 1;
-    } else if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0)) {
+    } else if (((class Unk_CtlKeys*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0)) {
         if (m_30.get() != 0)
             m_30->Invoke("onTabKey");
         return 1;
-    } else if (FUN_14025e7c0()->FUN_14116d840()) {
+    } else if (((class Unk_CtlKeys*)FUN_14025e7c0())->FUN_14116d840()) {
         vfunc_67();
         return 1;
     }
@@ -351,8 +349,8 @@ void UINpcControlDialog::FUN_141a63770()
     PCBase* pActor = reinterpret_cast<Unk_CtlWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
     if (pActor == 0)
         return;
-    CStringW strName = FUN_1401aa6a0(FUN_141092fa0(pActor));
-    int nNpc = FUN_141092fa0(pActor);
+    CStringW strName = FUN_1401aa6a0(((class CNpc*)(class PCBase*)(pActor))->FUN_141092fa0());
+    int nNpc = ((class CNpc*)(class PCBase*)(pActor))->FUN_141092fa0();
     CStringW strTitle = FUN_1409e8180(L"[{0}] [GameOID : {1}] [npcID : {2}]", strName, m_nNpcId, nNpc);
     if (MS2Ptr<ASTextField> spName = FUN_140bb4cf0("m_npcName"))
         spName->FUN_1422c4cd0(strTitle);
@@ -369,7 +367,7 @@ int UINpcControlDialog::FUN_141a638e0()
 {
     if (m_30.IsNull())
         return 0;
-    return FUN_1409c17e0(m_30->Invoke("GetLoopCount"));
+    return ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(m_30->Invoke("GetLoopCount")))->GetUInt();
 }
 
 // @0x141a63970

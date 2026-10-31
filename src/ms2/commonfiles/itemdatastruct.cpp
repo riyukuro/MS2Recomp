@@ -49,33 +49,41 @@
 #include "ms2/commonfiles/featuremanager.h"
 
 // Unrecovered helpers.
-const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);       // TiXmlElement::Attribute
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 int ReadSlotAttr(Unk_140165cf0* pElem, const char* pszName, int* pnOut);    // banktable.h: slot name attribute
 void FUN_1402c8940(const CString& str, std::vector<CString>& vec, const char* pszDelim);   // split into strings
 int FUN_14021bdc0(CString& strName);    // slot name -> slot type
 CString Name_14021c050(int nType);      // slot type -> slot name
 CString FUN_14016a5c0(const char* psz, int n);
 int FUN_1402227e0(int, int);  // C3: the definition's signature
-void* FUN_14086e000(void* pParent, const void* pChild);                     // InsertEndChild
-void FUN_140873bc0(void* pElem, const char* pszName, bool bValue);          // SetAttribute(name, bool)
-void FUN_140873ca0(void* pElem, const char* pszName, int nValue);           // SetAttribute(name, int)
-void FUN_140873ce0(void* pElem, const char* pszName, unsigned nValue);      // SetAttribute(name, unsigned)
+class TiXmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class TiXmlNode* InsertEndChild(class TiXmlNode const&);
+};
+void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
+void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
+void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
 void FUN_140874050(void* pElem, const char* pszName, const CString& strValue);  // SetAttribute(name, string)
 void FUN_1408740a0(void* pElem, const char* pszName, const CStringW& strValue); // SetAttribute(name, wide string)
-void FUN_140873e30(void* pElem, const char* pszName, float fValue);         // SetAttribute(name, float)
+void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
 void FUN_140874ad0(void* pElem, const char* pszName, const efd::Point3& kValue);    // SetAttribute(name, "x, y, z")
-void FUN_1408746f0(Unk_140165cf0* pElem, const char* pszName, efd::Point3& kOut);   // Point3 attribute
+int XmlGetAttr(class TiXmlElement*, char const*, class NiPoint3&);   // C3: was FUN_1408746f0
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& kOut);    // Point3 attribute (drop effect)
 CString FUN_140298360(const char* psz, const CString& str);                              // ATL operator+(const char*, const CString&) (commonutil.cpp)
 __int64 ParseInt64(const CString& str);                                    // 0x1402a4fe0
 CString FUN_1401d4330(const wchar_t* pszWide, int nCodePage);              // wide to ansi
 CString FUN_140188f50(const char* psz, int nCodePage);                     // string from an attribute value
 efd::Point3 FUN_14028f060(CString str);                                    // "x, y, z" -> point (ZERO when malformed)
-int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);  // bool attribute (TinyXML query)
-void FUN_140873c60(void* pElem, const char* pszName, unsigned short nValue);   // SetAttribute(name, unsigned short)
+int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
+void XmlSetAttr(class TiXmlElement*, char const*, unsigned short);   // C3: was FUN_140873c60
 int FUN_14053fa40(int nItemId);            // itemdata.cpp (written there as bool; the callers test eax)
 int FUN_141901d20(int, __int64, __int64);  // C3: the definition's signature
-int FUN_140873710(Unk_140165cf0* pElem, const char* pszName, int* pnOut);  // int attribute (TinyXML query)
+int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 
 // The item price table (commonfiles\pricetable.cpp).
 class Unk_PriceTable
@@ -306,7 +314,7 @@ int ModelPart::Load(Unk_140165cf0* pElem)
     for (Unk_140165cf0* pRotation = pElem->FUN_140165cf0("userrotation"); pRotation != 0;
          pRotation = pRotation->FUN_140168650("userrotation"))
     {
-        const char* pszAxis = FUN_14086f4b0(pRotation, "axis");
+        const char* pszAxis = ((class TiXmlElement*)(class Unk_140165cf0*)(pRotation))->Attribute("axis");
         if (pszAxis != 0)
         {
         if (_stricmp(pszAxis, "x") == 0)
@@ -350,7 +358,7 @@ int ModelPart::Load(Unk_140165cf0* pElem)
     {
         if (nJoint == 4)
             break;
-        const char* pszName = FUN_14086f4b0(pJoint, "name");
+        const char* pszName = ((class TiXmlElement*)(class Unk_140165cf0*)(pJoint))->Attribute("name");
         ModelNamedColor& color = colors[nJoint++];
         color.name = pszName;
         FUN_140873360(pJoint, "soft", color.soft);
@@ -557,7 +565,7 @@ int ItemLimit::Load(Unk_140165cf0* pElem)
         FUN_140873220(pLimit, "levelLimit", levelLimit);
         XmlValue(pLimit, "transferType", transferType);
         FUN_1408731e0(pLimit, "transferTypeVersion", transferTypeVersion);
-        if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && FUN_14086f4b0(pLimit, "globalTransferType") != 0)
+        if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class Unk_140165cf0*)(pLimit))->Attribute("globalTransferType") != 0)
             XmlValue(pLimit, "globalTransferType", transferType);
         FUN_1408730a0(pLimit, "shopSell", shopSell);
         XmlValue(pLimit, "enableBreak", enableBreak);
@@ -605,28 +613,28 @@ int ItemLimit::Save(void* pParent)
         FUN_140874050(&elem, "recommendJobs", FUN_14016a5c0(str, 0));
     }
     if (levelLimit != 1)
-        FUN_140873ce0(&elem, "levelLimit", levelLimit);
+        XmlSetAttr((class TiXmlElement*)(&elem), "levelLimit", levelLimit);
     if (genderLimit != 2)
-        FUN_140873ce0(&elem, "genderLimit", genderLimit);
+        XmlSetAttr((class TiXmlElement*)(&elem), "genderLimit", genderLimit);
     if (transferType != ItemTransferTypeNone)
-        FUN_140873ca0(&elem, "transferType", transferType);
+        XmlSetAttr((class TiXmlElement*)(&elem), "transferType", transferType);
     if (transferTypeVersion > 0)
-        FUN_140873ca0(&elem, "transferTypeVersion", transferTypeVersion);
+        XmlSetAttr((class TiXmlElement*)(&elem), "transferTypeVersion", transferTypeVersion);
     if (shopSell)
-        FUN_140873bc0(&elem, "shopSell", shopSell);
+        XmlSetAttr((class TiXmlElement*)(&elem), "shopSell", shopSell);
     if (enableBreak != ItemEnableBreakNone)
-        FUN_140873ca0(&elem, "enableBreak", enableBreak);
+        XmlSetAttr((class TiXmlElement*)(&elem), "enableBreak", enableBreak);
     if (enableRegisterMeratMarket)
-        FUN_140873bc0(&elem, "enableRegisterMeratMarket", enableRegisterMeratMarket);
+        XmlSetAttr((class TiXmlElement*)(&elem), "enableRegisterMeratMarket", enableRegisterMeratMarket);
     if (exceptEnchant)
-        FUN_140873bc0(&elem, "exceptEnchant", exceptEnchant);
+        XmlSetAttr((class TiXmlElement*)(&elem), "exceptEnchant", exceptEnchant);
     if (flag6a)
-        FUN_140873bc0(&elem, "vip", flag6a);
+        XmlSetAttr((class TiXmlElement*)(&elem), "vip", flag6a);
     if (wedding)
-        FUN_140873bc0(&elem, "wedding", wedding);
+        XmlSetAttr((class TiXmlElement*)(&elem), "wedding", wedding);
     if (vipLevel != 0)
-        FUN_140873ca0(&elem, "vipLevel", vipLevel);
-    FUN_14086e000(pParent, &elem);
+        XmlSetAttr((class TiXmlElement*)(&elem), "vipLevel", vipLevel);
+    ((void*)((class TiXmlNode*)(void*)(pParent))->InsertEndChild(*(class TiXmlNode const*)(&elem)));
     return 1;
 }
 
@@ -805,7 +813,7 @@ int ItemPeriod::Save(void* pParent)
         return 1;
     Unk_TiXmlElement elem("life");
     if (usePeriod > 0)
-        FUN_140873ca0(&elem, "usePeriod", usePeriod);
+        XmlSetAttr((class TiXmlElement*)(&elem), "usePeriod", usePeriod);
     CString strExpiration("");
     if (expiration.Get() > 0)
     {
@@ -815,12 +823,12 @@ int ItemPeriod::Save(void* pParent)
     if (!strExpiration.IsEmpty())
         FUN_140874050(&elem, "expirationPeriod", strExpiration);
     if (expirationType != ItemExpirationTypeNone)
-        FUN_140873ca0(&elem, "expirationType", expirationType);
+        XmlSetAttr((class TiXmlElement*)(&elem), "expirationType", expirationType);
     if (numberOfWeeksMonths != 0)
-        FUN_140873ce0(&elem, "numberOfWeeksMonths", numberOfWeeksMonths);
+        XmlSetAttr((class TiXmlElement*)(&elem), "numberOfWeeksMonths", numberOfWeeksMonths);
     if (!termTag.IsEmpty())
         FUN_1408740a0(&elem, "termTag", termTag);
-    FUN_14086e000(pParent, &elem);
+    ((void*)((class TiXmlNode*)(void*)(pParent))->InsertEndChild(*(class TiXmlNode const*)(&elem)));
     return 1;
 }
 
@@ -888,8 +896,8 @@ MsTransform::MsTransform()
 // @0x1405468d0
 void MsTransform::FUN_1405468d0(Unk_140165cf0* pElem)
 {
-    FUN_1408746f0(pElem, "position", position);
-    FUN_1408746f0(pElem, "rotation", rotation);
+    XmlGetAttr((class TiXmlElement*)(pElem), "position", *(class NiPoint3*)&static_cast<class efd::Point3&>(position));
+    XmlGetAttr((class TiXmlElement*)(pElem), "rotation", *(class NiPoint3*)&static_cast<class efd::Point3&>(rotation));
     FUN_140873360(pElem, "scale", scale);
 }
 
@@ -901,7 +909,7 @@ void MsTransform::FUN_140546940(void* pElem)
     if (rotation != efd::Point3::ZERO)
         FUN_140874ad0(pElem, "rotation", rotation);
     if (scale != 1.0f)
-        FUN_140873e30(pElem, "scale", scale);
+        XmlSetAttr((class TiXmlElement*)(pElem), "scale", scale);
 }
 
 // @0x140546a00
@@ -944,9 +952,9 @@ int ItemModelHead::Save(void* pParent)
 {
     Unk_TiXmlElement elem("customize");
     if (flag10)
-        FUN_140873ca0(&elem, "color", flag10 ? 1 : 0);
+        XmlSetAttr((class TiXmlElement*)(&elem), "color", flag10 ? 1 : 0);
     if (unknown14 != 0)
-        FUN_140873ce0(&elem, "colorPalette", unknown14);
+        XmlSetAttr((class TiXmlElement*)(&elem), "colorPalette", unknown14);
     if (ids.size() > 0 && ids[0] != -1)
     {
         CString str;
@@ -962,22 +970,22 @@ int ItemModelHead::Save(void* pParent)
         TrimCommas(str);
     }
     if (scale)
-        FUN_140873ca0(&elem, "scale", 1);
+        XmlSetAttr((class TiXmlElement*)(&elem), "scale", 1);
     if (rotation)
-        FUN_140873ca0(&elem, "rotation", 1);
+        XmlSetAttr((class TiXmlElement*)(&elem), "rotation", 1);
     if (translation)
-        FUN_140873ca0(&elem, "translation", 1);
+        XmlSetAttr((class TiXmlElement*)(&elem), "translation", 1);
     if (capAttach)
-        FUN_140873ca0(&elem, "capAttach", 1);
+        XmlSetAttr((class TiXmlElement*)(&elem), "capAttach", 1);
     if (handle.get() != 0)
     {
         Unk_TiXmlElement transform("transform");
         handle->FUN_140546940(&transform);
         if (transform.HasContent())
-            FUN_14086e000(&elem, &transform);
+            ((void*)((class TiXmlNode*)(void*)(&elem))->InsertEndChild(*(class TiXmlNode const*)(&transform)));
     }
     if (elem.HasContent())
-        FUN_14086e000(pParent, &elem);
+        ((void*)((class TiXmlNode*)(void*)(pParent))->InsertEndChild(*(class TiXmlNode const*)(&elem)));
     return 1;
 }
 
@@ -1123,15 +1131,15 @@ void ItemProperty::Load(Unk_140165cf0* pElem)
     FUN_1408731e0(pElem, "unlimitedEnchantMaxGrade", unlimitedEnchantMaxGrade);
     FUN_1408731e0(pElem, "rePackingLimitCount", rePackingLimitCount);
     FUN_1408731e0(pElem, "rePackingItemConsumeCount", rePackingItemConsumeCount);
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && FUN_14086f4b0(pElem, "globalRePackingLimitCount") != 0)
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("globalRePackingLimitCount") != 0)
         FUN_1408731e0(pElem, "globalRePackingLimitCount", rePackingLimitCount);
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && FUN_14086f4b0(pElem, "globalRePackingItemConsumeCount") != 0)
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("globalRePackingItemConsumeCount") != 0)
         FUN_1408731e0(pElem, "globalRePackingItemConsumeCount", rePackingItemConsumeCount);
     CString strScrollIds;
     FUN_1408733e0(pElem, "rePackingScrollID", strScrollIds);
     if (!strScrollIds.IsEmpty())
         XmlSplit(strScrollIds, rePackingScrollID, ",");
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && FUN_14086f4b0(pElem, "globalRePackingScrollID") != 0)
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("globalRePackingScrollID") != 0)
     {
         CString strGlobalScrollIds;
         FUN_1408733e0(pElem, "globalRePackingScrollID", strGlobalScrollIds);
@@ -1146,7 +1154,7 @@ void ItemProperty::Load(Unk_140165cf0* pElem)
 void ItemProperty::FUN_1405479a0(void* pElem)
 {
     if (slotMax != 1)
-        FUN_140873ce0(pElem, "slotMax", slotMax);
+        XmlSetAttr((class TiXmlElement*)(pElem), "slotMax", slotMax);
     if (!slotIcon.IsEmpty())
         FUN_140874050(pElem, "slotIcon", slotIcon);
     if (!category.IsEmpty())
@@ -1154,19 +1162,19 @@ void ItemProperty::FUN_1405479a0(void* pElem)
     if (!blackMarketCategory.IsEmpty())
         FUN_140874050(pElem, "blackMarketCategory", blackMarketCategory);
     if (remakeDisable)
-        FUN_140873bc0(pElem, "remakeDisable", remakeDisable);
+        XmlSetAttr((class TiXmlElement*)(pElem), "remakeDisable", remakeDisable);
     if (!movie.IsEmpty())
         FUN_140874050(pElem, "movie", movie);
     if (gearScore != 0)
-        FUN_140873ce0(pElem, "gearScore", gearScore);
+        XmlSetAttr((class TiXmlElement*)(pElem), "gearScore", gearScore);
     if (unlimitedEnchantMaxGrade > 0)
-        FUN_140873ca0(pElem, "unlimitedEnchantMaxGrade", unlimitedEnchantMaxGrade);
+        XmlSetAttr((class TiXmlElement*)(pElem), "unlimitedEnchantMaxGrade", unlimitedEnchantMaxGrade);
     if (tradableCountDeduction > 0)
-        FUN_140873ca0(pElem, "tradableCountDeduction", tradableCountDeduction);
+        XmlSetAttr((class TiXmlElement*)(pElem), "tradableCountDeduction", tradableCountDeduction);
     if (rePackingLimitCount != 0)
-        FUN_140873ca0(pElem, "rePackingLimitCount", rePackingLimitCount);
+        XmlSetAttr((class TiXmlElement*)(pElem), "rePackingLimitCount", rePackingLimitCount);
     if (rePackingItemConsumeCount != 0)
-        FUN_140873ca0(pElem, "rePackingItemConsumeCount", rePackingItemConsumeCount);
+        XmlSetAttr((class TiXmlElement*)(pElem), "rePackingItemConsumeCount", rePackingItemConsumeCount);
     if (!rePackingScrollID.IsEmpty())
     {
         CString str;
@@ -1176,15 +1184,15 @@ void ItemProperty::FUN_1405479a0(void* pElem)
         FUN_140874050(pElem, "rePackingScrollID", str);
     }
     if (moveDisable)
-        FUN_140873bc0(pElem, "moveDisable", moveDisable);
+        XmlSetAttr((class TiXmlElement*)(pElem), "moveDisable", moveDisable);
     if (collection != 0)
-        FUN_140873ca0(pElem, "collection", collection);
+        XmlSetAttr((class TiXmlElement*)(pElem), "collection", collection);
     if (doNotPreview != 0)
-        FUN_140873ca0(pElem, "doNotPreview", doNotPreview);
+        XmlSetAttr((class TiXmlElement*)(pElem), "doNotPreview", doNotPreview);
     if (socketDataId != 0)
-        FUN_140873ce0(pElem, "socketDataId", socketDataId);
+        XmlSetAttr((class TiXmlElement*)(pElem), "socketDataId", socketDataId);
     if (applyFatiguePenalty != 0)
-        FUN_140873ca0(pElem, "applyFatiguePenalty", applyFatiguePenalty);
+        XmlSetAttr((class TiXmlElement*)(pElem), "applyFatiguePenalty", applyFatiguePenalty);
     if (sellPrice.size() > 0)
     {
         CString str;
@@ -1196,7 +1204,7 @@ void ItemProperty::FUN_1405479a0(void* pElem)
             Unk_TiXmlElement sell("sell");
             if (!str.IsEmpty())
                 FUN_140874050(&sell, "price", str);
-            FUN_14086e000(pElem, &sell);
+            ((void*)((class TiXmlNode*)(void*)(pElem))->InsertEndChild(*(class TiXmlNode const*)(&sell)));
         }
     }
 }
@@ -1293,7 +1301,7 @@ int ItemInstallData::Load(Unk_140165cf0* pElem)
         FUN_1408733e0(pInstall, "mapAttribute", mapAttribute);
         FUN_1408731e0(pInstall, "propCollisionGroup", propCollisionGroup);
         FUN_1408730a0(pInstall, "useInstancing", useInstancing);
-        const char* pszDimension = FUN_14086f4b0(pInstall, "physXdimension");
+        const char* pszDimension = ((class TiXmlElement*)(class Unk_140165cf0*)(pInstall))->Attribute("physXdimension");
         if (pszDimension != 0)
             physXdimension = FUN_14028f060(FUN_140188f50(pszDimension, 0));
     }
@@ -1308,35 +1316,35 @@ int ItemInstallData::Save(void* pParent)
         return 1;
     Unk_TiXmlElement elem("install");
     if (placeable != 0)
-        FUN_140873ca0(&elem, "placeable", placeable);
+        XmlSetAttr((class TiXmlElement*)(&elem), "placeable", placeable);
     if (unchangeable != 0)
-        FUN_140873ca0(&elem, "unchangeable", unchangeable);
+        XmlSetAttr((class TiXmlElement*)(&elem), "unchangeable", unchangeable);
     if (cannotStackAttach != 0)
-        FUN_140873ca0(&elem, "cannotStackAttach", cannotStackAttach);
+        XmlSetAttr((class TiXmlElement*)(&elem), "cannotStackAttach", cannotStackAttach);
     if (stackable != 0)
-        FUN_140873ca0(&elem, "stackable", stackable);
+        XmlSetAttr((class TiXmlElement*)(&elem), "stackable", stackable);
     if (attachable != 0)
-        FUN_140873ca0(&elem, "attachable", attachable);
+        XmlSetAttr((class TiXmlElement*)(&elem), "attachable", attachable);
     if (wall != 0)
-        FUN_140873ca0(&elem, "wall", wall);
+        XmlSetAttr((class TiXmlElement*)(&elem), "wall", wall);
     if (generatePhysX != 0)
-        FUN_140873ca0(&elem, "generatePhysX", generatePhysX);
+        XmlSetAttr((class TiXmlElement*)(&elem), "generatePhysX", generatePhysX);
     if (cubeProp != 0)
-        FUN_140873ca0(&elem, "cubeProp", cubeProp);
+        XmlSetAttr((class TiXmlElement*)(&elem), "cubeProp", cubeProp);
     if (space != 0)
-        FUN_140873ca0(&elem, "space", space);
+        XmlSetAttr((class TiXmlElement*)(&elem), "space", space);
     if (animatable != 0)
-        FUN_140873ca0(&elem, "animatable", animatable);
+        XmlSetAttr((class TiXmlElement*)(&elem), "animatable", animatable);
     if (objCode != 0)
-        FUN_140873ce0(&elem, "objCode", objCode);
+        XmlSetAttr((class TiXmlElement*)(&elem), "objCode", objCode);
     if (staticAngle != 0)
-        FUN_140873e30(&elem, "staticAngle", staticAngle);
+        XmlSetAttr((class TiXmlElement*)(&elem), "staticAngle", staticAngle);
     if (!asset.IsEmpty())
         FUN_140874050(&elem, "asset", asset);
     if (!preset.IsEmpty())
         FUN_140874050(&elem, "preset", preset);
     if (!useInstancing)
-        FUN_140873bc0(&elem, "useInstancing", useInstancing);
+        XmlSetAttr((class TiXmlElement*)(&elem), "useInstancing", useInstancing);
     if (physXdimension != efd::Point3::ZERO)
     {
         CString str;
@@ -1346,8 +1354,8 @@ int ItemInstallData::Save(void* pParent)
     if (!mapAttribute.IsEmpty())
         FUN_140874050(&elem, "mapAttribute", mapAttribute);
     if (propCollisionGroup != 0)
-        FUN_140873ca0(&elem, "propCollisionGroup", propCollisionGroup);
-    FUN_14086e000(pParent, &elem);
+        XmlSetAttr((class TiXmlElement*)(&elem), "propCollisionGroup", propCollisionGroup);
+    ((void*)((class TiXmlNode*)(void*)(pParent))->InsertEndChild(*(class TiXmlNode const*)(&elem)));
     return 1;
 }
 
@@ -1448,7 +1456,7 @@ int ItemHousing::FUN_140548e50(Unk_140165cf0* pElem, int nItemId)
         FUN_1408731a0(pHousing, "interiorLevel", interiorLevel);
         FUN_140552df0()->FUN_140738d40(nItemId, &hasPrice, &price, &priceCount);
         FUN_140873220(pHousing, "setItemID", setItemID);
-        FUN_1408736d0(pHousing, "doNotInstallBlueprint", doNotInstallBlueprint);
+        XmlQuery((class TiXmlElement*)(pHousing), "doNotInstallBlueprint", doNotInstallBlueprint);
     }
     return 1;
 }
@@ -1466,7 +1474,7 @@ void ItemHousing::FUN_140548fe0(Unk_140165cf0* pElem, int nItemId)
     if (FUN_140552df0() != 0)
         FUN_140552df0()->FUN_140738d40(nItemId, &hasPrice, &price, &priceCount);
     FUN_140873220(pElem, "setItemID", setItemID);
-    FUN_1408736d0(pElem, "doNotInstallBlueprint", doNotInstallBlueprint);
+    XmlQuery((class TiXmlElement*)(pElem), "doNotInstallBlueprint", doNotInstallBlueprint);
 }
 
 // @0x140549160
@@ -1477,20 +1485,20 @@ int ItemHousing::Save(void* pParent)
     {
         Unk_TiXmlElement elem("housing");
         if (filter != ItemHousingFilterDefault)
-            FUN_140873ca0(&elem, "filter", filter);
+            XmlSetAttr((class TiXmlElement*)(&elem), "filter", filter);
         if (categoryIndex != ItemHousingCategoryDefault)
-            FUN_140873ca0(&elem, "categoryIndex", categoryIndex);
+            XmlSetAttr((class TiXmlElement*)(&elem), "categoryIndex", categoryIndex);
         if (trophyID != 0)
-            FUN_140873ce0(&elem, "trophyID", trophyID);
+            XmlSetAttr((class TiXmlElement*)(&elem), "trophyID", trophyID);
         if (trophyLevel != 1)
-            FUN_140873ce0(&elem, "trophyLevel", trophyLevel);
+            XmlSetAttr((class TiXmlElement*)(&elem), "trophyLevel", trophyLevel);
         if (interiorLevel != 1)
-            FUN_140873c60(&elem, "interiorLevel", interiorLevel);
+            XmlSetAttr((class TiXmlElement*)(&elem), "interiorLevel", interiorLevel);
         if (setItemID != 0)
-            FUN_140873ce0(&elem, "setItemID", setItemID);
+            XmlSetAttr((class TiXmlElement*)(&elem), "setItemID", setItemID);
         if (doNotInstallBlueprint)
-            FUN_140873bc0(&elem, "doNotInstallBlueprint", doNotInstallBlueprint);
-        FUN_14086e000(pParent, &elem);
+            XmlSetAttr((class TiXmlElement*)(&elem), "doNotInstallBlueprint", doNotInstallBlueprint);
+        ((void*)((class TiXmlNode*)(void*)(pParent))->InsertEndChild(*(class TiXmlNode const*)(&elem)));
     }
     return 1;
 }
@@ -1579,7 +1587,7 @@ int ItemUccMesh::FUN_140549630(void* pParent)
     {
         Unk_TiXmlElement elem("ucc");
         FUN_140874050(&elem, "mesh", mesh);
-        FUN_14086e000(pParent, &elem);
+        ((void*)((class TiXmlNode*)(void*)(pParent))->InsertEndChild(*(class TiXmlNode const*)(&elem)));
     }
     return 1;
 }
@@ -1615,7 +1623,7 @@ int ItemEffect::Save(void* pParent)
     {
         Unk_TiXmlElement elem("effect");
         if (enchantShape != 1)
-            FUN_140873ca0(&elem, "enchantShape", enchantShape);
+            XmlSetAttr((class TiXmlElement*)(&elem), "enchantShape", enchantShape);
         if (!idle.IsEmpty())
             FUN_140874050(&elem, "idle", idle);
         if (!battleIdle.IsEmpty())
@@ -1624,7 +1632,7 @@ int ItemEffect::Save(void* pParent)
             FUN_140874050(&elem, "characterIdle", characterIdle);
         if (!characterBattleIdle.IsEmpty())
             FUN_140874050(&elem, "characterBattleIdle", characterBattleIdle);
-        FUN_14086e000(pParent, &elem);
+        ((void*)((class TiXmlNode*)(void*)(pParent))->InsertEndChild(*(class TiXmlNode const*)(&elem)));
     }
     return 1;
 }
@@ -1677,7 +1685,7 @@ int ItemAdditionalEffect::FUN_140549c00(Unk_140165cf0* pElem)
         XmlSplit(strIds, ids, ",");
         CString strLevels = FUN_14015f710(pEffect, "level", "");
         XmlSplit(strLevels, levels, ",");
-        FUN_140873710(pEffect, "dropEffect", &dropEffect);
+        XmlGetBool((class TiXmlElement*)(pEffect), "dropEffect", *(int*)(&dropEffect));
     }
     return 1;
 }
@@ -1885,20 +1893,20 @@ int ItemMusicScore::Save(void* pParent)
     {
         Unk_TiXmlElement elem("MusicScore");
         if (playCount != 0)
-            FUN_140873ca0(&elem, "playCount", playCount);
+            XmlSetAttr((class TiXmlElement*)(&elem), "playCount", playCount);
         if (masteryValueMax != 0)
-            FUN_140873ca0(&elem, "masteryValueMax", masteryValueMax);
+            XmlSetAttr((class TiXmlElement*)(&elem), "masteryValueMax", masteryValueMax);
         if (isCustomNote)
-            FUN_140873bc0(&elem, "isCustomNote", isCustomNote);
+            XmlSetAttr((class TiXmlElement*)(&elem), "isCustomNote", isCustomNote);
         if (noteLengthMax != 0)
-            FUN_140873ca0(&elem, "noteLengthMax", noteLengthMax);
+            XmlSetAttr((class TiXmlElement*)(&elem), "noteLengthMax", noteLengthMax);
         if (!fileName.IsEmpty())
             FUN_140874050(&elem, "fileName", fileName);
         if (playTime != 0)
-            FUN_140873ca0(&elem, "playTime", playTime);
+            XmlSetAttr((class TiXmlElement*)(&elem), "playTime", playTime);
         if (recommendCategoryId != 0)
-            FUN_140873ca0(&elem, "recommendCategoryId", recommendCategoryId);
-        FUN_14086e000(pParent, &elem);
+            XmlSetAttr((class TiXmlElement*)(&elem), "recommendCategoryId", recommendCategoryId);
+        ((void*)((class TiXmlNode*)(void*)(pParent))->InsertEndChild(*(class TiXmlNode const*)(&elem)));
     }
     return 1;
 }

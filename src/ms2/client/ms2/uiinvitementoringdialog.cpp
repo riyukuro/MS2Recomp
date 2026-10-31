@@ -76,7 +76,7 @@ Unk_MentorScheduleHolder* FUN_140302b00();
 // The blocked-action flags.
 class Unk_MentorFlag { public: int FUN_1402c4c90(int); };
 class Unk_MentorFlags { public: void* p0; Unk_MentorFlag flags; };
-Unk_MentorFlags* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 void FUN_141275260(int, int, int);
 void FUN_1412751f0(const CStringW&, int, int);
 
@@ -90,7 +90,7 @@ public:
     void* m_00; void* m_08;
 };
 class Unk_TextFilterMgr { public: Unk_TextFilterPtr FUN_140229a50(); };
-Unk_TextFilterMgr* FUN_14025e7d0();
+class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
 // The buddy list entry of a character (see buddymanager.cpp).
 class Unk_GuildBuddyRef {
@@ -126,7 +126,7 @@ unsigned __int64 FUN_140718350(const CString& str);             // string -> id
 CString FUN_140719530(unsigned __int64 n);                      // number to string
 CStringW FUN_1409e9ed0(CStringW strKey, const CStringW& a1, const unsigned short& a2);
 class Unk_InvChat { public: unsigned char m_pad_0[0x48]; class UIMessengerBrowser* m_48; };
-Unk_InvChat* FUN_141482e80();
+struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 
 struct Unk_PickXY { float x, y; };                              // dialog offset
 extern Unk_PickXY DAT_143b02320;                                // zero offset
@@ -289,7 +289,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     }
     else if (_stricmp(szMethod, "OnAcceptMentoring") == 0)
     {
-        if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x42) != 0)
+        if (((class Unk_MentorFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x42) != 0)
         {
             FUN_141275260(0x2f7, 1, 1);
             return 1;
@@ -318,7 +318,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     }
     else if (_stricmp(szMethod, "OnRejectMentoring") == 0)
     {
-        if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x42) != 0)
+        if (((class Unk_MentorFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x42) != 0)
         {
             FUN_141275260(0x2f7, 1, 1);
             return 1;
@@ -370,8 +370,8 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
-            if (FUN_141482e80()->m_48 != 0)
-                FUN_141482e80()->m_48->FUN_141a252a0(strName);
+            if (((class Unk_InvChat*)FUN_141482e80())->m_48 != 0)
+                ((class Unk_InvChat*)FUN_141482e80())->m_48->FUN_141a252a0(strName);
         }
         return 1;
     }
@@ -471,12 +471,12 @@ void UIInviteMentoringDialog::FUN_140c2f490()
 // @0x140c2f860
 void UIInviteMentoringDialog::FUN_140c2f860(__int64 nMentor, const CStringW& strName)
 {
-    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x41) != 0)
+    if (((class Unk_MentorFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x41) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
         return;
     }
-    if (Unk_TextFilter* pFilter = FUN_14025e7d0()->FUN_140229a50().FUN_14025cea0())
+    if (Unk_TextFilter* pFilter = ((class Unk_TextFilterMgr*)FUN_14025e7d0())->FUN_140229a50().FUN_14025cea0())
     {
         CStringW strBad;
         if (FUN_140225210(pFilter, strName, strBad, 0) != 0)

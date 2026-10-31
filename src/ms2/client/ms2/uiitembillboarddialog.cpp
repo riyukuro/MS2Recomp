@@ -73,7 +73,7 @@ public:
 };
 
 class Unk_DTPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
-Unk_DTPackets* FUN_140bccd50();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 
 CStringW GetStringCommonByKey(const CStringW& str);                    // string table lookup
 void FUN_1412751f0(const CStringW& str, int a, int b);          // shows a notice
@@ -132,7 +132,7 @@ class Unk_TextFilter;
 // An MS2Ptr (16 bytes, m_p at +8): FUN_140229a50 returns it through a hidden pointer, the dtor 0x14025c670 writes 16.
 class Unk_TextFilterPtr { public: Unk_TextFilter* FUN_14025cea0() const; ~Unk_TextFilterPtr(); void* m_00; void* m_p; };
 class Unk_TextFilterMgr { public: Unk_TextFilterPtr FUN_140229a50(); };
-Unk_TextFilterMgr* FUN_14025e7d0();
+class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 int FUN_140226440(Unk_TextFilter* p, const CStringW& str, CStringW& strErr);
 int FUN_140226590(Unk_TextFilter* p, const CStringW& str, CStringW& strErr);
 
@@ -144,17 +144,24 @@ __int64 FUN_141a02ed0(const CMsgBoxData* pData, int a, int b);
 extern Unk_Inventory g_143ab2a90;
 
 // The local player and the placement checks (see reactor.cpp).
-WorldService* FUN_1403ed2d0();
-int FUN_14166c930(PCBase* pPc);                                 // action id
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14166c930();
+    int FUN_1416769d0();
+};
 void* FUN_1408e57f0();
-int FUN_1422b9e00(void* p);
-int FUN_1416769d0(PCBase* pPc);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSubSceneId();
+};
 bool FUN_140930b10();
 bool FUN_140930b70();
-int FUN_1409313b0();                                            // the level restriction of a spammer: 0 ok, 1 level, 2 adventure level
+unsigned int FUN_1409313b0();   // C3: was FUN_1409313b0
 void* FUN_140302b00();
 void* FUN_1403f31f0(void* p);
-bool FUN_1407d1d00(void* p);                                    // the billboard is shut down
+bool FUN_1407d1d00(class CShutdownEventBillboard*);   // C3: was FUN_1407d1d00
 struct Unk_EntityAppFramework { char m_pad[8]; };
 extern Unk_EntityAppFramework DAT_143b059e8;
 class Unk_RxCellInfo
@@ -180,7 +187,7 @@ public:
     Unk_RxGrid* FUN_1401cd1a0();                                // the grid
     void* m_p;
 };
-Unk_RxGrid* FUN_1401cd040(Unk_EntityAppFramework* p);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 class Unk_RxMapInfo : public CPtred
 {
 public:
@@ -210,13 +217,13 @@ UIItemBillBoardDialog::UIItemBillBoardDialog()
     m_nItemUid = 0;
     m_80 = 0;
     FUN_140c337c0();
-    FUN_140bccd50()->FUN_140da5180(0x105, Delegate<void(CInPacket&)>(this, &UIItemBillBoardDialog::FUN_140c32020));
+    ((class Unk_DTPackets*)FUN_140bccd50())->FUN_140da5180(0x105, Delegate<void(CInPacket&)>(this, &UIItemBillBoardDialog::FUN_140c32020));
 }
 
 // @0x140c30a70
 UIItemBillBoardDialog::~UIItemBillBoardDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0x105, Delegate<void(CInPacket&)>(this, &UIItemBillBoardDialog::FUN_140c32020));
+    ((class Unk_DTPackets*)FUN_140bccd50())->FUN_140da51e0(0x105, Delegate<void(CInPacket&)>(this, &UIItemBillBoardDialog::FUN_140c32020));
 }
 
 // @0x140c30bd0
@@ -387,10 +394,10 @@ MS2_REPLACE_METHOD(0x140C32360, UIItemBillBoardDialog, FUN_140c32360, 131, 0x2C1
 // MS2-FUNCTIONAL: the frame is 0x10 larger and most stack slots shift (local layout not found)
 bool UIItemBillBoardDialog::FUN_140c323f0()
 {
-    PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
-    if (FUN_1403ed2d0()->FUN_141bd30a0() == (Unk_WsPtred298*)0)
+    if (WorldService::GetInstance()->FUN_141bd30a0() == (Unk_WsPtred298*)0)
         return false;
     int nError = FUN_1409313b0();
     if (nError != 0) {
@@ -404,26 +411,26 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         return false;
     }
     if (FUN_140930b10() || !FUN_140930b70()
-        || reinterpret_cast<Unk_RxMapInfo*>(FUN_1403ed2d0()->FUN_141bd30a0().get())->m_nKind == 1) {
+        || reinterpret_cast<Unk_RxMapInfo*>(WorldService::GetInstance()->FUN_141bd30a0().get())->m_nKind == 1) {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
         return false;
     }
-    if (FUN_14166c930(pPc) != 1) {
+    if (((class PCBase*)(class PCBase*)(pPc))->FUN_14166c930() != 1) {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_invalid_state"), 1, 1);
         return false;
     }
-    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d) {
+    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d) {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_invalid_state"), 1, 1);
         return false;
     }
-    if (FUN_1407d1d00(FUN_1403f31f0(FUN_140302b00())) != 0) {
+    if (FUN_1407d1d00((class CShutdownEventBillboard*)(FUN_1403f31f0(FUN_140302b00()))) != 0) {
         FUN_1412751f0(GetStringCommonByKey(L"s_banner_billboard_shutdown"), 1, 1);
         return false;
     }
 
     float fRange = 230.0f;                                      // set but never read in the exe
     ATL::CAtlArray<MS2Ptr<Unk_WsPtred298> > arrNear;
-    FUN_1403ed2d0()->FUN_141bc5f10(&arrNear);
+    WorldService::GetInstance()->FUN_141bc5f10(&arrNear);
     NiPoint3 posPc = ((GameObject*)pPc)->vfunc_18();
     int nCellId = FUN_1408a03c0(FUN_1408a14c0(posPc));
     Unk_Int3 cell = FUN_1408a0400(nCellId);
@@ -444,23 +451,23 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     }
 
     ATL::CAtlArray<MS2Ptr<Unk_WsPtred298> > arrField;
-    FUN_1403ed2d0()->FUN_141bc2c90(ptCenter, &arrField);
+    WorldService::GetInstance()->FUN_141bc2c90(ptCenter, &arrField);
     if (arrField.GetCount() > 0) {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
         return false;
     }
 
-    ATL::CRBMap<unsigned, Unk_WsV148>* pActors = FUN_1403ed2d0()->FUN_141bd36d0();
+    ATL::CRBMap<unsigned, Unk_WsV148>* pActors = WorldService::GetInstance()->FUN_141bd36d0();
     for (POSITION pos = pActors->GetHeadPosition(); pos != 0; pActors->GetNext(pos)) {
         MS2Ptr<Unk_RxNpc> spActor(*reinterpret_cast<MS2Ptr<Unk_RxNpc>*>(&pActors->GetValueAt(pos)));
         if (spActor == (Unk_RxNpc*)0)
             continue;
-        if (FUN_14166c930((PCBase*)spActor.get()) == 2)
+        if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->FUN_14166c930() == 2)
             continue;
         bool bNotNpcKind = spActor->FUN_141093270()->FUN_1406ccfc0() != 2;
         if (bNotNpcKind)
             continue;
-        if (FUN_1416769d0((PCBase*)spActor.get()) != 0)
+        if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->FUN_1416769d0() != 0)
             continue;
         Vector3 pt;
         int nActorCell = FUN_1408a03c0(FUN_1408a14c0(((GameObject*)spActor.get())->vfunc_18()));
@@ -473,7 +480,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     }
 
     {
-        Unk_GmGridRef grid(FUN_1401cd040(&DAT_143b059e8));
+        Unk_GmGridRef grid(((class Unk_RxGrid*)FUN_1401cd040(&DAT_143b059e8)));
         Vector3 ptLow = ptCenter;
         ptLow.z = ptLow.z - 150.0f;
         Unk_RxCellInfo* pInfo = grid.FUN_1401cd1a0()->FUN_1410b8ab0(ptLow);
@@ -515,7 +522,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         arrIds.push_back(DAT_142e035dc);
         arrIds.push_back(DAT_142e0372c);
         for (size_t i = 0; i < arrIds.size(); ++i) {
-            egf::Entity* pEntity = FUN_1403ed2d0()->FUN_141bcfd30(arrIds[i], Vector3(ptCenter), 230.0f, 0, 0);
+            egf::Entity* pEntity = WorldService::GetInstance()->FUN_141bcfd30(arrIds[i], Vector3(ptCenter), 230.0f, 0, 0);
             if (pEntity != 0) {
                 FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
                 return false;
@@ -564,7 +571,7 @@ void UIItemBillBoardDialog::FUN_140c33840(const Scaleform::GFx::FunctionHandler:
         return;
     if (strDesc.GetLength() > 0x64)
         return;
-    if (Unk_TextFilter* pFilter = FUN_14025e7d0()->FUN_140229a50().FUN_14025cea0()) {
+    if (Unk_TextFilter* pFilter = ((class Unk_TextFilterMgr*)FUN_14025e7d0())->FUN_140229a50().FUN_14025cea0()) {
         CStringW strError;
         if (FUN_140226440(pFilter, strTitle, strError) != 0 || FUN_140226590(pFilter, strDesc, strError) != 0) {
             FUN_1412751f0(strError, 1, 1);

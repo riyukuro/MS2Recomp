@@ -60,7 +60,7 @@ class Unk_RpWorld
 public:
     void* FUN_141bd36d0();                              // npc tree
 };
-void* FUN_1406d6e90();
+class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 void FUN_140a7cbe0(void* p);
 void* FUN_140a7b840(void* pMap);
 void* FUN_140a7b9f0(void* pMap, void* pos);
@@ -68,8 +68,11 @@ PCBase* FUN_140a7b650(void* pEntry);
 Unk_RpExtent* FUN_140a0a600(Unk_RpExtent* pOut, float cx, float cy);
 class Unk_RpBody;
 void FUN_141670d50(PCBase* pNpc, Unk_RpExtent kExtent);
-Unk_RpBody* FUN_14166d220(PCBase* pNpc);
-void FUN_141240520(Unk_RpBody* pBody, float cx, float cy);
+class GameObjectController   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141240520(float, float);
+};
 void FUN_140159b70(long hr);                            // AtlThrow
 
 // @0x141346a40
@@ -145,7 +148,7 @@ void FUN_141346e00(UIRangePreviewDialog* pDialog, ASData* pArgs)
 // @0x141346e40
 void UIRangePreviewDialog::OnClickNpcExtentReload()
 {
-    FUN_140a7cbe0(FUN_1406d6e90());
+    FUN_140a7cbe0(((void*)FUN_1406d6e90()));
     void* pMap = reinterpret_cast<Unk_RpWorld*>(WorldService::GetInstance())->FUN_141bd36d0();
     for (void* pos = FUN_140a7b840(pMap); pos != 0; FUN_141347090(pMap, &pos))
     {
@@ -158,8 +161,7 @@ void UIRangePreviewDialog::OnClickNpcExtentReload()
             Unk_RpExtent kSize;
             FUN_141670d50(pNpc, *FUN_140a0a600(&kSize, *(float*)(kData.FUN_14035eb90() + 0x2d8),
                                                *(float*)(kData.FUN_14035eb90() + 0x2dc)));
-            FUN_141240520(FUN_14166d220(pNpc), *(float*)(kData.FUN_14035eb90() + 0x2d8),
-                          *(float*)(kData.FUN_14035eb90() + 0x2dc));
+            ((class GameObjectController*)(class Unk_RpBody*)(((class Unk_RpBody*)((class PCBase*)(class PCBase*)(pNpc))->FUN_14166d220())))->FUN_141240520(*(float*)(kData.FUN_14035eb90() + 0x2d8), *(float*)(kData.FUN_14035eb90() + 0x2dc));
             NiPoint3 kPos = pNpc->vfunc_18();
             kPos.z += *(float*)(kData.FUN_14035eb90() + 0x2dc);
             pNpc->vfunc_19(*reinterpret_cast<efd::Point3*>(&kPos));

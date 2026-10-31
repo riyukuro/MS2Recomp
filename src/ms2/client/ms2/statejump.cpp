@@ -33,14 +33,13 @@
 
 void FUN_1409989e0(void* pOut, const char* psz);           // 0x1409989e0 efd::utf8string(const char*)
 void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
-const char* FUN_1408ac310(const efd::utf8string& str);     // 0x1408ac310 the string's c string
 class Unk_CubeSelection;
         // the cube selection is in the craft mode
 float FUN_14059d930(float f);                              // 0x14059d930 fabs
 int FUN_14028d260(float f);                                // 0x14028d260 round to ms
-unsigned FUN_140869420();                                  // 0x140869420 the millisecond clock
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);       // 0x1408a9bd0 the flat model of the entity
-efd::Point3 FUN_140a0b080(efd::Point3 kDir, efd::Point3 kPos, const efd::Point3& kUp);   // 0x140a0b080 look-at angles
+efd::Point3 FUN_140a0b080(const efd::Point3& kFrom, const efd::Point3& kTo, const efd::Point3& kUp);   // 0x140a0b080 look-at angles
 extern efd::Point3 DAT_143a08cf8;                          // the up axis
 
 // The animation service: the sequence id of the model.
@@ -50,19 +49,13 @@ Unk_JpAnimSvc* FUN_141b6f910();
 // The efd::Point3 *.
 class Unk_JpConsts { public: char m_pad[0x48e8]; };
 class Unk_JpScale { public: float* FUN_140298f40(); };
-Unk_JpConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The actor's physics body.
-class Unk_JpBody
+class Unk_JpBody : public GameObjectController
 {
 public:
-    void FUN_141240700(efd::Point3 kVel);
-    void FUN_141240730();
-    void FUN_141240610(float f, efd::Point3 kDir, float fSpeed);
-    int FUN_141240780();
-    int FUN_1412407a0();
     unsigned FUN_141240ef0();
-    float FUN_141241090();
 };
 inline Unk_JpBody* JpBody(PCBase* p) { return reinterpret_cast<Unk_JpBody*>(p->FUN_14166d220()); }
 
@@ -74,13 +67,9 @@ public:
     bool FUN_141683100(int nBuff);
 };
 
-// The record reference of the actor (a 16-byte smart pointer: the record at +8).
-struct Unk_JpRef { void* m_00; void* m_08; void* FUN_141371260() const { return m_08; } };
-void FUN_141664200(MyPC* p, Unk_JpRef* pOut);              // 0x141664200 the actor's skill record ref
-void* FUN_140c207b0(Unk_JpRef* p);
-int FUN_14050a6a0(void* pRecord);
+// The hide and seek record of the actor (MS2Ptr<T> from PC::FUN_141664200).
+class Unk_HsInfo : public CPtred { public: int FUN_14050a6a0(); };
 void FUN_141276180(const CString& strCommand, const CString& strArg);   // 0x141276180 run a client command
-void FUN_140c20600(Unk_JpRef* p);
 
 // The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
 struct Unk_JpString
@@ -159,14 +148,12 @@ void StateJump::vfunc_4(StateData* pData)
     {
         pPC->FUN_141676060(m_pOwner->vfunc_18());
         pPC->FUN_14152e170(0, 6);
-        Unk_JpRef ref;
-        FUN_141664200(pPC, &ref);
-        if (ref.FUN_141371260() ? true : false)
+        MS2Ptr<Unk_HsInfo> spInfo = pPC->FUN_141664200();
+        if (spInfo.get() ? true : false)
         {
-            if (FUN_14050a6a0(FUN_140c207b0(&ref)) == 1)
+            if (spInfo->FUN_14050a6a0() == 1)
                 FUN_141276180(s_strHideSeekJump, "");
         }
-        FUN_140c20600(&ref);
     }
 }
 
@@ -201,12 +188,11 @@ void StateJump::vfunc_6()
 }
 
 // @0x1417d58d0
-// MS2-FUNCTIONAL: vfunc_18 returns NiPoint3 in the shared gameobject.h (efd::Point3 in the exe), so extra copies
 void StateJump::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     Unk_JpBody* pBody = JpBody(m_pOwner);
-    if (pBody->FUN_141240780() != 0)
+    if (pBody->IsJumping() != 0)
     {
         efd::Point3 kWorld = m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
         if (m_pOwner->FUN_14166dbb0() != efd::Point3::ZERO)
@@ -215,7 +201,7 @@ void StateJump::vfunc_3(double fTime)
             if (m_spJump)
             {
                 efd::Point3 kJump = m_spJump->m_pos;
-                efd::Point3 kRot = FUN_140a0b080(kJump, m_pOwner->vfunc_18(), DAT_143a08cf8);
+                efd::Point3 kRot = FUN_140a0b080(kJump, static_cast<const efd::Point3&>(m_pOwner->vfunc_18()), DAT_143a08cf8);
                 m_pOwner->FUN_14166d970(kRot);
             }
         }
@@ -232,9 +218,8 @@ void StateJump::vfunc_3(double fTime)
                 m_vDir = kWorld;
             }
         }
-        float fScale = *reinterpret_cast<Unk_JpScale*>(reinterpret_cast<char*>(FUN_1401d3200()) + 0x48e8)->FUN_140298f40();
-        efd::Point3 kVel = (m_vDir * m_pOwner->vfunc_95()) * fScale;
-        JpBody(m_pOwner)->FUN_141240700(kVel);
+        float fScale = *reinterpret_cast<Unk_JpScale*>(reinterpret_cast<char*>(((class Unk_JpConsts*)FUN_1401d3200())) + 0x48e8)->FUN_140298f40();
+        JpBody(m_pOwner)->SetKVelocity((m_vDir * m_pOwner->vfunc_95()) * fScale);
         efd::Point3 kMove = efd::Point3::ZERO;
         m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
     }
@@ -333,7 +318,7 @@ void StateJump::vfunc_9(double fTime)
         {
             bool bHas = true;
             efd::utf8string strSpecial(m_pOwner->vfunc_123(0x2a));
-            if (!m_pOwner->FUN_141679220(FUN_1408ac310(strSpecial)))
+            if (!m_pOwner->FUN_141679220(((efd::utf8string*)&static_cast<class efd::utf8string const&>(strSpecial))->c_str()))
                 bHas = false;
             if (bHas && (m_n10 == 0x22 || m_n10 == 0x24))
             {
@@ -351,7 +336,7 @@ void StateJump::vfunc_9(double fTime)
         {
             bool bHas = true;
             efd::utf8string strSpecial(m_pOwner->vfunc_123(0x2b));
-            if (!m_pOwner->FUN_141679220(FUN_1408ac310(strSpecial)))
+            if (!m_pOwner->FUN_141679220(((efd::utf8string*)&static_cast<class efd::utf8string const&>(strSpecial))->c_str()))
                 bHas = false;
             if (bHas && (m_n10 == 0x22 || m_n10 == 0x24))
             {
@@ -392,9 +377,10 @@ bool StateJump::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 // @0x1417d65d0
 bool StateJump::FUN_1417d65d0()
 {
-    int nStart = reinterpret_cast<Unk_IntervalTimer*>(&m_tick)->GetLast();
-    int nMin = m_n80;
-    return (unsigned)(nStart + nMin) < FUN_140869420();
+    int nEnd = reinterpret_cast<Unk_IntervalTimer*>(&m_tick)->GetLast() + m_n80;
+    if ((unsigned)nEnd < GetTickCountMs2())
+        return true;
+    return false;
 }
 
 // @0x1417d6620

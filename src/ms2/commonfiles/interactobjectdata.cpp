@@ -30,11 +30,11 @@
 #include "hook/ms2hook.h"
 
 // ---- helpers of other units ----
-int FUN_14015f500(Unk_140165cf0* pElem, const char* pszName, int* pnRank);   // item rank attribute
+int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);
 unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
 float FUN_1401973d0(Unk_140165cf0* pElem, const char* pszName, float fDefault);
-bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_14028c2d0(CString strText, Unk_PDVec3* pOut);                  // "x,y,z" -> point
 int FUN_140764310(const CStringA& strQuests, const CStringA& strStates, QuestMask* pMask);   // questmasktable.cpp
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);  // data file path
@@ -155,7 +155,7 @@ bool CInteractObjectData::Load(Unk_140165cf0* pElem)
     if (Unk_140165cf0* pItem = pElem->FUN_140165cf0("item"))
     {
         FUN_140873220(pItem, "code", m_item.m_nCode);
-        FUN_14015f500(pItem, "rank", &m_item.m_nRank);
+        Unk_ReadRank((class Unk_XmlNode*)(pItem), "rank", &m_item.m_nRank);
         FUN_140873220(pItem, "consume", m_item.m_nConsume);
         FUN_1408731e0(pItem, "checkCount", m_item.m_nCheckCount);
         MS2Ptr<CItemData> spItem = FUN_14053f870(m_item.m_nCode);
@@ -406,7 +406,7 @@ void CInteractObjectData::LoadAll()
         for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("interact"); pNode != 0;
              pNode = pNode->FUN_140168650("interact"))
         {
-            if (!FUN_14028f710(pNode))
+            if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;
             MS2Ptr<CInteractObjectData> spData(new CInteractObjectData);
             spData->FUN_1401d1160(CString(strPath));

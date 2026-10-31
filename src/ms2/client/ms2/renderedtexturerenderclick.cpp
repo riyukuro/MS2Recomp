@@ -79,14 +79,14 @@ void FUN_141d1a4f0(void* obj);
 void* FUN_14097fbe0(void* sp);   NiRenderTargetGroup* FUN_141480470(void* sp);   void FUN_1427e7520(void* p);
 NiRenderedTexture* FUN_14127c9b0(void* sp);   void* FUN_1416af8d0(void* sp);
 struct Unk_RtFormatPrefs { int a; int b; int c; Unk_RtFormatPrefs(); };   // NiTexture::FormatPrefs, ctor 0x140984420
-void* FUN_1409a8ba0(void* click);   void* FUN_142087e50(void* p);
+   void* FUN_142087e50(void* p);
 void* FUN_1409a8150(void* sp);   void* FUN_14127cc00(void* list, void* pos);   void* FUN_140c8f670(void* node);
-int FUN_140d89680(void* arr);class Unk_PtrArray   // C3: member view for the former free stand-ins
+class Unk_PtrArray   // C3: member view for the former free stand-ins
 {
 public:
     void RemoveAll();
 };
-void FUN_140c8f680(void* sp);
+void* FUN_140c8f680(void*);   // C3: was FUN_140c8f680
    void FUN_141474f50(void* o, void* p);   void FUN_1414747a0(void* out, void* p);   void FUN_141474ca0(void* sp);
 void FUN_1414978d0(void* p, void* q);   void FUN_1416fa360(void* view, void* cp);
 void FUN_14015b310(void* p, unsigned __int64 n);
@@ -343,7 +343,7 @@ void RenderedTextureRenderClick::PerformRendering(unsigned int uiFrameID)
 {
     extern void FUN_141d27bf0(void*, const char*, ...);
     for (;;) {
-        if (((void*)NiRenderer::GetRenderer())) FUN_141d27bf0(((void*)NiRenderer::GetRenderer()), "ViewRC(%s)", FUN_142087e50(FUN_1409a8ba0(this)));
+        if (((void*)NiRenderer::GetRenderer())) FUN_141d27bf0(((void*)NiRenderer::GetRenderer()), "ViewRC(%s)", FUN_142087e50(((void*)&((class NiRenderClick*)(void*)(this))->GetName())));
         break;
     }
     if (!FUN_1416fa2e0(&m_kRenderViews)) return;
@@ -360,12 +360,12 @@ void RenderedTextureRenderClick::PerformRendering(unsigned int uiFrameID)
         float t0 = FUN_1416fa2f0();
         NiVisibleArray* pv = (NiVisibleArray*)((void*)&((class NiRenderView*)(void*)(view))->GetPVGeometry(uiFrameID));
         m_fCullTime = m_fCullTime + (FUN_1416fa2f0() - t0);
-        m_uiNumObjectsDrawn = FUN_140d89680(pv) + m_uiNumObjectsDrawn;
-        if (FUN_1416fa2d0(&m_kProcessedGeometry) < (unsigned)FUN_140d89680(pv))
-            ((class NiVisibleArray*)(void*)(&m_kProcessedGeometry))->SetAllocatedSize(FUN_140d89680(pv));
+        m_uiNumObjectsDrawn = ((class NiVisibleArray*)(void*)(pv))->GetCount() + m_uiNumObjectsDrawn;
+        if (FUN_1416fa2d0(&m_kProcessedGeometry) < (unsigned)((class NiVisibleArray*)(void*)(pv))->GetCount())
+            ((class NiVisibleArray*)(void*)(&m_kProcessedGeometry))->SetAllocatedSize(((class NiVisibleArray*)(void*)(pv))->GetCount());
         t0 = FUN_1416fa2f0();
         proc->PreRenderProcessList(pv, m_kProcessedGeometry, m_pvProcessorData);
-        unsigned n = FUN_140d89680(&m_kProcessedGeometry);
+        unsigned n = ((class NiVisibleArray*)(void*)(&m_kProcessedGeometry))->GetCount();
         for (unsigned i = 0; i < n; i++) {
             NiRenderObject* g = (NiRenderObject*)((void*)&((class NiVisibleArray*)(void*)(&m_kProcessedGeometry))->GetAt(i));
             g->RenderImmediate(renderer);

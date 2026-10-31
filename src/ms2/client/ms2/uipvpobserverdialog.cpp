@@ -22,6 +22,8 @@
 #include "ms2/client/ms2/uidamagetext.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/mypc.h"
+#include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -33,12 +35,8 @@ public:
     unsigned FUN_1411a49c0(NoticeMessage& kRequest);            // start an effect
 };
 
-class Unk_PoMe : public PC                                      // the local player (MyPC)
+class Unk_PoMe : public MyPC                                      // the local player (MyPC)
 {
-public:
-    void FUN_14152a4a0(PCBase* pTarget);                        // observe pTarget
-    void FUN_14152a960();                                       // stop observing
-    void FUN_14152a640(int nTeam);                              // observe a guild team
 };
 
 class Unk_PoWorld                                               // the world service

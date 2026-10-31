@@ -42,18 +42,18 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
-void FUN_140873220(Unk_140165cf0*, const char*, int&);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 static CString FormatIconPath(const char* pszFormat, const CString& v0);
 int FUN_1405400f0(Unk_140165cf0*, const char*, int&);
 int FUN_140540180(Unk_140165cf0*, const char*, int&);
 int FUN_140540210(Unk_140165cf0*, const char*, int&);
 int FUN_1405402a0(Unk_140165cf0*, const char*, int&);
-void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
-void FUN_1408730a0(Unk_140165cf0*, const char*, bool&);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 int FUN_140873360(Unk_140165cf0*, const char*, float&);
-int FUN_140873890(Unk_140165cf0*, const char*, int&);
-int FUN_14015f500(void*, const char*, int*);
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
+int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 void FUN_140873ca0(void*, const char*, int);
 void FUN_140873ce0(void*, const char*, int);
 void* FUN_14086e000(void* pParent, const void* pChild);                   // InsertEndChild
@@ -75,7 +75,7 @@ class Unk_HandleNode { public: void* unknown0; void* pValue; };   // the row's M
 class Unk_PcBangTable { public: Unk_HandleNode* FUN_1403b7c40(Unk_TableHandle* pOut, int nMode, int nId); };
 Unk_PcBangTable* FUN_140541580();
 extern Unk_PcBangTable* g_pPcBangTable;      // 0x143aaecf8
-bool FUN_14028f710(Unk_140165cf0*);                                       // the element is usable
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 unsigned char FUN_1401d1320(CCacheData*);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
@@ -113,13 +113,25 @@ public:
     unsigned char unknown0[0xa020];
     ATL::CAtlArray<Unk_PriceRow*> prices;                   // +0xa020
 };
-Unk_PriceHolder* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 void* FUN_140302b10();
-float FUN_1404c1810(void* pThis, int a, int b);
-void* FUN_140166410();
-bool FUN_14036d570(void* pThis, int nId);
-ItemGachaBoxTable * FUN_14052d230(void);  // C3: the definition's signature
-bool FUN_14059eec0(void* pThis, int nItemId);
+class CGloabalFactor   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1404c1810(int, int);
+};
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
+class ItemGachaBoxTable* FUN_14052d230();   // C3: was FUN_14052d230
+class ItemGachaBoxTable   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14059eec0(int);
+};
 int FUN_1403ba790(unsigned int);  // C3: the definition's signature
 
 // Option-table lookups started by CItemData::FUN_14053ed00.
@@ -137,7 +149,7 @@ class Unk_OptionMgr
 public:
     Unk_PayloadPtr<Unk_OptionData> FUN_1405f4ff0(MS2Ptr<CItemData> pItem, int nRank, Unk_OptionKey& key);
 };
-Unk_OptionMgr* FUN_140166430();
+class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 
 // Free functions of this unit used before their definition.
 unsigned FUN_14053c690(unsigned nItemId);
@@ -190,10 +202,10 @@ bool CItemChangeBeautyTable::Load()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("beauty"); pNode != 0; pNode = pNode->FUN_140168650("beauty"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId;
-        FUN_140873220(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", *(unsigned int*)&static_cast<int&>(nId));
         if (nId == 0)
             continue;
         DataPtr data(new CChangeBeautyData);
@@ -203,10 +215,10 @@ bool CItemChangeBeautyTable::Load()
         data->FUN_14053a7c0(pNode);
         for (Unk_140165cf0* pItem = pNode->FUN_140165cf0("item"); pItem != 0; pItem = pItem->FUN_140168650("item"))
         {
-            if (!FUN_14028f710(pItem))
+            if (!FUN_14028f710((struct Unk_XmlElement*)(pItem)))
                 continue;
             int nItemId;
-            FUN_140873220(pItem, "itemID", nItemId);
+            XmlGetAttr((class TiXmlElement*)(pItem), "itemID", *(unsigned int*)&static_cast<int&>(nItemId));
             // The exe looks up item (nItemId == 0), i.e. item 0, not nItemId, and drops the result.
             bool bItem = nItemId == 0 || FUN_14053f870(nItemId == 0);
         }
@@ -318,7 +330,7 @@ bool CItemData::Load(Unk_140165cf0* pElem)
 {
     Unk_140165cf0* pBasic = pElem->FUN_140165cf0("basic");
     if (pBasic) {
-        FUN_140873220(pBasic, "originID", originID);
+        XmlGetAttr((class TiXmlElement*)(pBasic), "originID", *(unsigned int*)&static_cast<int&>(originID));
         CString strStringTag;
         FUN_1408733e0(pBasic, "stringTag", strStringTag);
         stringTag = FUN_140557640(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), &strStringTag);
@@ -326,13 +338,13 @@ bool CItemData::Load(Unk_140165cf0* pElem)
     Unk_140165cf0* pProperty = pElem->FUN_140165cf0("property");
     if (pProperty) {
         FUN_1405402a0(pProperty, "type", type);
-        FUN_1408731e0(pProperty, "subtype", subtype);
+        XmlGetAttr((class TiXmlElement*)(pProperty), "subtype", subtype);
         FUN_140540210(pProperty, "iconCode", iconCode);
         FUN_1405400f0(pProperty, "itemGroup", itemGroup);
         FUN_140540180(pProperty, "skinType", skinType);
-        FUN_14015f500(pProperty, "rank", &rank);
-        FUN_1408731e0(pProperty, "param1", param1);
-        FUN_1408731e0(pProperty, "param2", param2);
+        Unk_ReadRank((class Unk_XmlNode*)(pProperty), "rank", &rank);
+        XmlGetAttr((class TiXmlElement*)(pProperty), "param1", param1);
+        XmlGetAttr((class TiXmlElement*)(pProperty), "param2", param2);
         property.Load(pProperty);
     }
     if (!material.FUN_1405473c0(pElem)) return false;
@@ -347,18 +359,18 @@ bool CItemData::Load(Unk_140165cf0* pElem)
     if (!function.Load(pElem)) return false;
     Unk_140165cf0* pTool = pElem->FUN_140165cf0("tool");
     if (pTool) {
-        FUN_140873220(pTool, "itemPreset", itemPreset);
+        XmlGetAttr((class TiXmlElement*)(pTool), "itemPreset", *(unsigned int*)&static_cast<int&>(itemPreset));
     }
     Unk_140165cf0* pOption = pElem->FUN_140165cf0("option");
     if (pOption) {
-        FUN_140873220(pOption, "constantID", constantID);
-        FUN_140873220(pOption, "randomID", randomID);
-        FUN_1408731e0(pOption, "optionLevel", optionLevel);
-        FUN_1408731e0(pOption, "optionLevelFactor", optionLevelFactor);
+        XmlGetAttr((class TiXmlElement*)(pOption), "constantID", *(unsigned int*)&static_cast<int&>(constantID));
+        XmlGetAttr((class TiXmlElement*)(pOption), "randomID", *(unsigned int*)&static_cast<int&>(randomID));
+        XmlGetAttr((class TiXmlElement*)(pOption), "optionLevel", optionLevel);
+        XmlGetAttr((class TiXmlElement*)(pOption), "optionLevelFactor", optionLevelFactor);
     }
     Unk_140165cf0* pPCBang = pElem->FUN_140165cf0("PCBang");
     if (pPCBang) {
-        FUN_1408730a0(pPCBang, "PCBang", bPCBang);
+        XmlGetAttr((class TiXmlElement*)(pPCBang), "PCBang", bPCBang);
     }
     if (FUN_14053ec50()) {
         FUN_14053eb20();
@@ -368,7 +380,7 @@ bool CItemData::Load(Unk_140165cf0* pElem)
             FUN_1403d7960(GetLogString(), 2, 0x21, L"Not Found ItemID:{0} ItemModelID:{1}", nItemId, nModelId);
         }
     }
-    if (FUN_14036d570(FUN_140166410(), 0x2f) == 1 && FUN_140541580()) {
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2f) == 1 && FUN_140541580()) {
         Unk_TableHandle handle;
         Unk_HandleNode* pNode = FUN_140541580()->FUN_1403b7c40(&handle, 3, FUN_14053c510());
         Unk_HandleNode* pRow = pNode;
@@ -1061,8 +1073,8 @@ bool CItemData::FUN_14053d990()
 // @0x14053d9d0
 bool CItemData::FUN_14053d9d0()
 {
-    if (FUN_14052d230() != 0)
-        return FUN_14059eec0(FUN_14052d230(), FUN_14053c510());
+    if (((void*)FUN_14052d230()) != 0)
+        return ((class ItemGachaBoxTable*)(void*)(((void*)FUN_14052d230())))->FUN_14059eec0(FUN_14053c510());
     return false;
 }
 
@@ -1093,13 +1105,13 @@ int CItemData::FUN_14053db80()
 {
     if (FUN_14053d900())
     {
-        if (FUN_14036d570(FUN_140166410(), 0xec))
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xec))
             return limit.enableRegisterMeratMarket;
         return 0;
     }
     if (FUN_14053cd10())
     {
-        if (FUN_14036d570(FUN_140166410(), 0xa9))
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xa9))
             return limit.enableRegisterMeratMarket;
         return 0;
     }
@@ -1503,12 +1515,12 @@ unsigned long long CItemData::FUN_14053ea00(int nRank)
             unsigned short nLevel = (unsigned short)limit.levelLimit;
             if (nLevel >= 0x39)
             {
-                unsigned int nSellPrice = *FUN_1401d3200()->prices[nRank]->FUN_1401d7c10();
+                unsigned int nSellPrice = *((class Unk_PriceHolder*)FUN_1401d3200())->prices[nRank]->FUN_1401d7c10();
                 nPrice = nSellPrice;
                 (void)(nPrice != 0 || (_wassert(L"sellPrice", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemdata.cpp", 0x685), 0));
             }
         }
-        float fRate = FUN_1404c1810(FUN_140302b10(), 3, nRank);
+        float fRate = ((class CGloabalFactor*)(void*)(FUN_140302b10()))->FUN_1404c1810(3, nRank);
         nPrice = (long long)((float)nPrice * fRate);
     }
     return nPrice;
@@ -1563,12 +1575,12 @@ void CItemData::FUN_14053ed00()
         {
             for (int nRank = 1; nRank < 7; ++nRank)
             {
-                FUN_140166430()->FUN_1405f4ff0(MS2Ptr<CItemData>(this), nRank, key);
+                ((class Unk_OptionMgr*)FUN_140166430())->FUN_1405f4ff0(MS2Ptr<CItemData>(this), nRank, key);
             }
         }
         else
         {
-            FUN_140166430()->FUN_1405f4ff0(MS2Ptr<CItemData>(this), rank, key);
+            ((class Unk_OptionMgr*)FUN_140166430())->FUN_1405f4ff0(MS2Ptr<CItemData>(this), rank, key);
         }
     }
     if ((unsigned int)property.gearScore > 0)
@@ -2120,7 +2132,7 @@ int FUN_1405400f0(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
         return 2;
     }
     int nValue = 0;
-    int nResult = FUN_140873890(pElem, pszName, nValue);
+    int nResult = XmlQuery((class TiXmlElement*)(pElem), pszName, nValue);
     if (nResult != 0)
         return nResult;
     rnValue = nValue;
@@ -2137,7 +2149,7 @@ int FUN_140540180(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
         return 2;
     }
     int nValue = 0;
-    int nResult = FUN_140873890(pElem, pszName, nValue);
+    int nResult = XmlQuery((class TiXmlElement*)(pElem), pszName, nValue);
     if (nResult != 0)
         return nResult;
     rnValue = nValue;
@@ -2154,7 +2166,7 @@ int FUN_140540210(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
         return 2;
     }
     int nValue = 0;
-    int nResult = FUN_140873890(pElem, pszName, nValue);
+    int nResult = XmlQuery((class TiXmlElement*)(pElem), pszName, nValue);
     if (nResult != 0)
         return nResult;
     rnValue = nValue;
@@ -2171,7 +2183,7 @@ int FUN_1405402a0(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
         return 2;
     }
     int nValue = 0;
-    int nResult = FUN_140873890(pElem, pszName, nValue);
+    int nResult = XmlQuery((class TiXmlElement*)(pElem), pszName, nValue);
     if (nResult != 0)
         return nResult;
     rnValue = nValue;

@@ -18,12 +18,19 @@ class Unk_ScpSceneMgr;                      // the UI scene manager (FUN_1408e57
 
 Unk_ScpSceneCtl* FUN_1403ed2b0();
 Unk_ScpSceneMgr* FUN_1408e57f0();
-void FUN_141bd3c00(Unk_ScpWorld* pWorld, bool bOn);           // start/stop the cinematic world
-void FUN_141ad9e50(Unk_ScpSceneCtl* pCtl, int nScene);       // the scene's presentation, on
-void FUN_141ada6f0(Unk_ScpSceneCtl* pCtl, int nScene);
-void FUN_141ada610(Unk_ScpSceneCtl* pCtl, int nScene);       // the scene's presentation, off
-void FUN_141adad20(Unk_ScpSceneCtl* pCtl, int nScene);
-void FUN_1422b9fd0(Unk_ScpSceneMgr* pMgr, int nScene);       // the scene manager's presentation call
+class CUIService   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141ad9e50(int);
+    void FUN_141ada610(int);
+    void FUN_141ada6f0(int);
+    void FUN_141adad20(int);
+};
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1422b9fd0(int);
+};
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -54,9 +61,9 @@ bool UISceneGameCinematicPlay::vfunc_47()
 void UISceneGameCinematicPlay::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
-    FUN_141bd3c00(reinterpret_cast<Unk_ScpWorld*>(WorldService::GetInstance()), false);
-    FUN_141ad9e50(FUN_1403ed2b0(), m_6c);
-    FUN_141ada6f0(FUN_1403ed2b0(), m_6c);
+    ((class WorldService*)(class Unk_ScpWorld*)(reinterpret_cast<Unk_ScpWorld*>(WorldService::GetInstance())))->FUN_141bd3c00(false);
+    ((class CUIService*)(class Unk_ScpSceneCtl*)(FUN_1403ed2b0()))->FUN_141ad9e50(m_6c);
+    ((class CUIService*)(class Unk_ScpSceneCtl*)(FUN_1403ed2b0()))->FUN_141ada6f0(m_6c);
     FUN_1422e7950();
 }
 
@@ -64,16 +71,16 @@ void UISceneGameCinematicPlay::vfunc_48(int n)
 void UISceneGameCinematicPlay::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
-    FUN_141bd3c00(reinterpret_cast<Unk_ScpWorld*>(WorldService::GetInstance()), true);
-    FUN_141ada610(FUN_1403ed2b0(), m_6c);
-    FUN_141adad20(FUN_1403ed2b0(), m_6c);
+    ((class WorldService*)(class Unk_ScpWorld*)(reinterpret_cast<Unk_ScpWorld*>(WorldService::GetInstance())))->FUN_141bd3c00(true);
+    ((class CUIService*)(class Unk_ScpSceneCtl*)(FUN_1403ed2b0()))->FUN_141ada610(m_6c);
+    ((class CUIService*)(class Unk_ScpSceneCtl*)(FUN_1403ed2b0()))->FUN_141adad20(m_6c);
     FUN_1422e7950();
 }
 
 // @0x140e84ea0
 void UISceneGameCinematicPlay::vfunc_54()
 {
-    FUN_1422b9fd0(FUN_1408e57f0(), 0x620001d);
+    ((class GFxSceneService*)(class Unk_ScpSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001d);
 }
 
 // @0x140e84ed0

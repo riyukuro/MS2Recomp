@@ -751,7 +751,8 @@ void UIAvatarBase::FUN_1418b9e40()
         m_kPosBase = m_kPos;
         m_kPivotBase = m_kPos;
         float fBody = 0.0f;
-        NiAVObject* pBody = pNode->GetObjectByName("Eff_Body");
+        NiAVObject* pBody;
+        NiAVObject* pFound = pBody = pNode->GetObjectByName("Eff_Body");
         if (pBody)
             fBody = ((struct Vector3 const*)&((class NiAVObject*)(class NiAVObject*)(pBody))->GetWorldTranslate())->FUN_140965c40(m_kPos).FUN_140967ac0();
         void* pBound = ((void*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetWorldBound());
@@ -762,7 +763,7 @@ void UIAvatarBase::FUN_1418b9e40()
         m_kPivot = Vector3(0.0f, 0.0f, fHeight);
         NiPoint3 kAngle = pObj->vfunc_20();
         Unk_NiMatrix3* pRot = ((struct Unk_NiMatrix3*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate());
-        pRot->FUN_142085840(kAngle.x, kAngle.y, kAngle.z);
+        pRot->FUN_142085840(static_cast<efd::Point3&>(kAngle).x, static_cast<efd::Point3&>(kAngle).y, static_cast<efd::Point3&>(kAngle).z);
         kAngle.x = (kAngle.x * 180.0f) / 3.1415927f;
         kAngle.y = (kAngle.y * 180.0f) / 3.1415927f;
         kAngle.z = (kAngle.z * 180.0f) / 3.1415927f;
@@ -1065,9 +1066,7 @@ int UIAvatarPC::vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pArgs
         {
             int nColorA = kData.FUN_1422b8b10();
             int nColorB = kData.FUN_1422b8b10();
-            Unk_CharEquip kEquip1 = FUN_141b6dea0(nColorB);
-            Unk_CharEquip kEquip0 = FUN_141b6dea0(nColorA);
-            FUN_1418bca10(kEquip0, kEquip1);
+            FUN_1418bca10(FUN_141b6dea0(nColorA), FUN_141b6dea0(nColorB));
         }
         return 1;
     }

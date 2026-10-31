@@ -47,7 +47,7 @@ extern template class MS2Ptr<CProxyGameObject>;
 
 // The key input state (singleton).
 class Unk_14025e7c0 : public CInputKeyHandler { public: bool FUN_14116d9c0(int nKey, int a, int b);};
-Unk_14025e7c0* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The local player: the position (slot 18) and direction (slot 20) getters.
 class Unk_NcPlayer
@@ -80,7 +80,6 @@ public:
     MS2Ptr<CProxyGameObject> FUN_141bc9e70(int nId);
 };
 
-bool FUN_140ac5aa0(const MS2Ptr<CProxyGameObject>& sp);      // the actor is gone
 void FUN_1406c70a0(void* sp);                                // ~MS2Ptr<CProxyGameObject>
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
@@ -110,7 +109,7 @@ private:
 };
 MS2_CHECK_SIZE(Unk_NcHandle, 0x10);
 class Unk_NcMgr { public: Unk_NcHandle FUN_140a7cab0(unsigned nNpc); };
-Unk_NcMgr* FUN_1406d6e90();
+class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 MS2Ptr<CNpcData> FUN_1406cd330(unsigned nNpc);   // the npc row; FUN_141a6b800 discards it
 
 class Unk_NcWalk { public: int FUN_1406fb700(int nNpc, int* pField); };
@@ -118,7 +117,7 @@ CStringW GetStringCommon(int nId);                        // string table text
 void FUN_1412751f0(const CStringW& strText, int a, int b);
 
 class Unk_NcEvents { public: void FUN_1419308c0(UIEntityEventListener*); void FUN_141930950(UIEntityEventListener*); };
-Unk_NcEvents* FUN_140c607b0();
+class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
 
 unsigned FUN_140718200(const CStringW& str);          // the npc id of an id text
 CStringW FUN_1401aa6a0(unsigned nNpc);
@@ -128,10 +127,10 @@ CStringW FUN_140938ae0(CStringW strKey, const int& n);  // FUN_14028dfa0<int>
 
 // xml file helpers
 class Unk_NcFiles { public: int FUN_1403974b0(TiXmlDocument&, const char*, int, bool, bool); };
-Unk_NcFiles* FUN_140166420();
+class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 class Unk_NcNode { public: Unk_NcNode* FUN_140165cf0(const char* szTag); Unk_NcNode* FUN_140168650(const char* szTag); };
-void* FUN_140166440();
-void FUN_1401859c0(void* pLog, int a, int b, const wchar_t* szText);
+class CLogString* GetLogString();   // C3: was FUN_140166440
+void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
 void FUN_140399100(CString strPattern, CString strDir, void* pOutput, CString strExclude, bool bLocalOnly);
 CString FUN_14038f6d0(const CString&, const char*);
 CStringW FUN_1401bf530(Unk_NcNode* pNode, const char* szAttr, CStringW strDefault);
@@ -155,13 +154,13 @@ UINpcCreateDialog::UINpcCreateDialog()
     m_bFilesRead = false;
     m_bEntriesBuilt = false;
     FUN_1422dc3b0(1);
-    FUN_140c607b0()->FUN_1419308c0(this);
+    ((class Unk_NcEvents*)FUN_140c607b0())->FUN_1419308c0(this);
 }
 
 // @0x141a6a590
 UINpcCreateDialog::~UINpcCreateDialog()
 {
-    FUN_140c607b0()->FUN_141930950(this);
+    ((class Unk_NcEvents*)FUN_140c607b0())->FUN_141930950(this);
 }
 
 // @0x141a6a680
@@ -185,15 +184,15 @@ int UINpcCreateDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0)) {
+    if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0)) {
         if (m_30.get())
             m_30->Invoke("onEnterKey");
         return 1;
-    } else if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0)) {
+    } else if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0)) {
         if (m_30.get())
             m_30->Invoke("onTabKey");
         return 1;
-    } else if (FUN_14025e7c0()->FUN_14116d840()) {
+    } else if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d840()) {
         vfunc_67();
         return 1;
     }
@@ -309,7 +308,7 @@ void UINpcCreateDialog::vfunc_1(void* pEvt)
 // @0x141a6b1a0
 void UINpcCreateDialog::vfunc_3(MS2Ptr<CProxyGameObject> spActor)
 {
-    if (FUN_140ac5aa0(spActor)) {
+    if (((MS2Ptr<CProxyGameObject>*)&static_cast<class MS2Ptr<class CProxyGameObject> const&>(spActor))->IsNull()) {
         return;
     }
     if (m_nPendingNpc == 0) {
@@ -333,15 +332,15 @@ void UINpcCreateDialog::vfunc_3(MS2Ptr<CProxyGameObject> spActor)
 // @0x141a6b2e0
 void UINpcCreateDialog::ReadNpcFromFile()
 {
-    FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"ReadNpcFromFile");
-    m_files.FUN_141a6dd40();
+    Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xc, 0x13, L"ReadNpcFromFile");
+    m_files.m_v.clear();
     Unk_NcStrArray files[8];
     FUN_140163230(files);
     FUN_140399100(CString(".xml"), CString("./Data/Xml/NpcData/"), files, CString(""), false);
     for (unsigned __int64 i = 0; i < FUN_1401662c0(files); i++) {
         CString strFile = *FUN_140164930(files, i);
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_1403974b0(doc, (const char*)strFile, 0, true, false) == 0)
+        if (((class Unk_NcFiles*)GetFileSystem())->FUN_1403974b0(doc, (const char*)strFile, 0, true, false) == 0)
             continue;
         Unk_NcNode* pRoot = ((Unk_NcNode*)&doc)->FUN_140165cf0("ms2");
         for (Unk_NcNode* pNpc = pRoot->FUN_140165cf0("npc"); pNpc != 0; pNpc = pNpc->FUN_140168650("npc")) {
@@ -352,7 +351,7 @@ void UINpcCreateDialog::ReadNpcFromFile()
         }
     }
     m_bFilesRead = true;
-    FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"End ReadNpcFromFile");
+    Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xc, 0x13, L"End ReadNpcFromFile");
     FUN_141a6b800();
     FUN_1401641d0(files);
 }
@@ -379,13 +378,13 @@ CStringW UINpcCreateDialog::FUN_141a6b6a0(int nType, int bFriendly)
 // @0x141a6b800
 void UINpcCreateDialog::FUN_141a6b800()
 {
-    FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"ReadNpcAll");
+    Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xc, 0x13, L"ReadNpcAll");
     for (unsigned __int64 i = 0; i < m_files.FUN_14041af10(); i++) {
         CStringW strId = m_files.FUN_1405e99b0(i);
         unsigned nNpc = FUN_140718200(strId);
         FUN_1406cd330(nNpc);
     }
-    FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"End ReadNpcAll");
+    Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xc, 0x13, L"End ReadNpcAll");
 }
 
 // @0x141a6b8f0
@@ -396,7 +395,7 @@ void UINpcCreateDialog::FUN_141a6b8f0()
     for (unsigned __int64 i = 0; i < m_files.FUN_14041af10(); i++) {
         CStringW strId = m_files.FUN_1405e99b0(i);
         unsigned nNpc = FUN_140718200(strId);
-        Unk_NcHandle row = FUN_1406d6e90()->FUN_140a7cab0(nNpc);
+        Unk_NcHandle row = ((class Unk_NcMgr*)FUN_1406d6e90())->FUN_140a7cab0(nNpc);
         if (row.FUN_14109a230())
             continue;
         int bFriendly = row.FUN_140965990()->FUN_1406ccfc0();
@@ -452,11 +451,6 @@ void UINpcCreateDialog::FUN_141a6be40(CStringW& strFilter)
     m_strFilter = strFilter;
 }
 
-// @0x141a6dd40
-void Unk_NpcFileList::FUN_141a6dd40()
-{
-    m_v.clear();
-}
 
 // Anchor for the UCRT header-inline memmove_s the range ends with (no caller in the exe's range).
 void Unk_NcAnchor(void* pDst, const void* pSrc, size_t n)

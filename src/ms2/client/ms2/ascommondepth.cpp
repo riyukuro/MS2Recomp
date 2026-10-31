@@ -8,6 +8,9 @@
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@VValue@GFx@Scaleform@@@std@@V?$_Vector_val@U?$_Simple_types@VValue@GFx@Scaleform@@@std@@@2@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@VValue@GFx@Scaleform@@@std@@@2@XZ 0x1409b2330 ; prop
 // MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@VValue@GFx@Scaleform@@V?$allocator@VValue@GFx@Scaleform@@@std@@@std@@@std@@QEBAAEBQEAVValue@GFx@Scaleform@@XZ 0x1409b23b0 ; unique
 // MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@VValue@GFx@Scaleform@@V?$allocator@VValue@GFx@Scaleform@@@std@@@std@@@std@@QEBAAEBQEAVValue@GFx@Scaleform@@XZ 0x1409b2430 ; unique
+// MS2-PIN: ??0?$vector@VValue@GFx@Scaleform@@V?$allocator@VValue@GFx@Scaleform@@@std@@@std@@QEAA@XZ 0x1409b1e80 ; sfk: ASArgList is this vector
+// MS2-PIN: ?resize@?$vector@VValue@GFx@Scaleform@@V?$allocator@VValue@GFx@Scaleform@@@std@@@std@@QEAAX_K@Z 0x1409b2800 ; sfk: ASArgList is this vector
+// MS2-PIN: ??A?$vector@VValue@GFx@Scaleform@@V?$allocator@VValue@GFx@Scaleform@@@std@@@std@@QEAAAEAVValue@GFx@Scaleform@@_K@Z 0x1409b1f70 ; sfk: ASArgList is this vector
 // MS2-PINS-END tplpin
 // MS2-FUNCTIONAL: ASArgList is a std::vector<Value> (with the container proxy) whose instantiation helpers are pinned by hand.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ascommondepth.cpp"
@@ -45,7 +48,6 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 // ---- ASCommonDepth ----
 
 // @0x1409b0fd0
-// MS2-FUNCTIONAL: the exe keeps a discarded movzx eax,al after the FUN_1409b0390 call (source form of the unused result unknown).
 ASCommonDepth::ASCommonDepth(Scaleform::GFx::Value v, int nMovieId)
     : AScript(v, nMovieId)
 {
@@ -53,7 +55,7 @@ ASCommonDepth::ASCommonDepth(Scaleform::GFx::Value v, int nMovieId)
     if (pMovie == 0)
         return;
     FUN_14256e8e0(pMovie, &m_value, "scaleform.ms2.common.CommonDepth", 0, 0);
-    (int)FUN_1409b0390(&m_value);
+    if (FUN_1409b0390(&m_value)) {}
 }
 
 // @0x1409b1090
@@ -91,8 +93,9 @@ struct Unk_ArgVec
     std::vector<Scaleform::GFx::Value> v;
 };
 
-// MS2-FUNCTIONAL: ASArgList is really std::vector<GFx::Value>: the exe ctor is vector() (_Vector_alloc ctor 0x1409b1e00 under a noexcept EH frame); this wrapper placement-constructs the vector instead. Exact needs `typedef std::vector<Value> ASArgList` + editing ~750 call sites in 119 dependent units
-// @0x1409b1e80
+// ASArgList is really std::vector<GFx::Value>: the exe rows 0x1409b1e80 (vector()), 0x1409b2800 (resize(size_t))
+// and 0x1409b1f70 (operator[](size_t)) are the vector instantiations these wrappers call, pinned above.
+// The wrappers stay for the ~750 call sites in 119 units that use ASArgList.
 ASArgList::ASArgList()
 {
     new (this) Unk_ArgVec();
@@ -107,14 +110,11 @@ ASArgList::~ASArgList()
     FUN_1409b2530(this);
 }
 
-// MS2-FUNCTIONAL: ASArgList is really std::vector<GFx::Value>: the exe function is vector::resize(size_t) (lambda ctor 0x1409b1d50 + _Resize 0x1409b17a0); this wrapper takes an int and forwards (see the ctor)
-// @0x1409b2800
 void ASArgList::FUN_1409b2800(int nCount)
 {
     ((Unk_ArgVec*)this)->v.resize(nCount);
 }
 
-// @0x1409b1f70
 Scaleform::GFx::Value* ASArgList::FUN_1409b1f70(int nIndex)
 {
     return &((Unk_ArgVec*)this)->v[nIndex];

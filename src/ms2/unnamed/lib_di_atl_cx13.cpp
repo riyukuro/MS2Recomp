@@ -37,107 +37,112 @@ extern void FUN_142cc9a38();
 
 namespace
 {
-template <typename T>
-T* AtlExeAddress(std::uintptr_t address)
+// CComCriticalSection::Init; the copies differ in whether _AtlInitializeCriticalSectionEx took the Vista path.
+template <bool UseInitializeEx>
+__forceinline HRESULT AtlCsInit(LPCRITICAL_SECTION cs) throw()
 {
-    return reinterpret_cast<T*>(address);
+    HRESULT hRes = S_OK;
+    if (!(UseInitializeEx ? InitializeCriticalSectionEx(cs, 0, 0) : InitializeCriticalSectionAndSpinCount(cs, 0)))
+        hRes = HRESULT_FROM_WIN32(GetLastError());
+    return hRes;
 }
 
-void InitComModule(bool useInitializeEx, void (*terminate)())
+// CAtlComModule's inline constructor (atlbase.h) over its critical-section variant.
+template <bool UseInitializeEx>
+struct AtlComModuleCtor : ATL::_ATL_COM_MODULE
 {
-    auto* const com = reinterpret_cast<std::uint8_t*>(&ATL::_AtlComModule);
-    auto* const initFailed = reinterpret_cast<std::uint8_t*>(&ATL::CAtlBaseModule::m_bInitFailed);
-    *reinterpret_cast<std::uint64_t*>(com + 0x20) = 0;
-    *reinterpret_cast<std::uint64_t*>(com + 0x28) = 0;
-    *reinterpret_cast<std::uint64_t*>(com + 0x30) = 0;
-    *reinterpret_cast<std::uint64_t*>(com + 0x38) = 0;
-    *reinterpret_cast<std::uint64_t*>(com + 0x40) = 0;
-    *reinterpret_cast<std::uint64_t*>(com) = 0;
-    *reinterpret_cast<std::uintptr_t*>(com + 8) = reinterpret_cast<std::uintptr_t>(&__ImageBase);
-    *reinterpret_cast<std::uintptr_t*>(com + 0x10) = reinterpret_cast<std::uintptr_t>(&ATL::__pobjMapEntryLast);
-    *reinterpret_cast<std::uintptr_t*>(com + 0x18) = reinterpret_cast<std::uintptr_t>(&ATL::__pobjMapEntryLast);
-
-    const BOOL initialized = useInitializeEx
-        ? InitializeCriticalSectionEx(reinterpret_cast<LPCRITICAL_SECTION>(com + 0x20), 0, 0)
-        : InitializeCriticalSectionAndSpinCount(reinterpret_cast<LPCRITICAL_SECTION>(com + 0x20), 0);
-    if (!initialized)
+    __forceinline AtlComModuleCtor() throw()
     {
-        const DWORD error = GetLastError();
-        if (error != 0)
+        cbSize = 0;
+        m_hInstTypeLib = reinterpret_cast<HINSTANCE>(&__ImageBase);
+        m_ppAutoObjMapFirst = &ATL::__pobjMapEntryFirst + 1;
+        m_ppAutoObjMapLast = &ATL::__pobjMapEntryLast;
+        if (FAILED(AtlCsInit<UseInitializeEx>(&m_csObjMap.m_sec)))
         {
-            *initFailed = 1;
-            std::atexit(terminate);
+            ATL::CAtlBaseModule::m_bInitFailed = true;
+            return;
+        }
+        cbSize = sizeof(ATL::_ATL_COM_MODULE);
+    }
+};
+
+// CAtlWinModule's inline constructor with AtlWinModuleInit inlined.
+template <bool UseInitializeEx>
+struct AtlWinModuleCtor : ATL::_ATL_WIN_MODULE
+{
+    __forceinline AtlWinModuleCtor() throw()
+    {
+        cbSize = sizeof(ATL::_ATL_WIN_MODULE);
+        m_pCreateWndList = NULL;
+        HRESULT hr = AtlCsInit<UseInitializeEx>(&m_csWindowCreate.m_sec);
+        if (FAILED(hr))
+        {
+            ATL::CAtlBaseModule::m_bInitFailed = true;
+            cbSize = 0;
             return;
         }
     }
-    *reinterpret_cast<std::uint64_t*>(com) = 0x48;
+};
+
+template <bool UseInitializeEx>
+__forceinline void InitComModule(void (*terminate)())
+{
+    new (&ATL::_AtlComModule) AtlComModuleCtor<UseInitializeEx>();
     std::atexit(terminate);
 }
 
-void InitWinModule(bool useInitializeEx, void (*terminate)())
+template <bool UseInitializeEx>
+__forceinline void InitWinModule(void (*terminate)())
 {
-    auto* const win = reinterpret_cast<std::uint8_t*>(&ATL::_AtlWinModule);
-    auto* const initFailed = reinterpret_cast<std::uint8_t*>(&ATL::CAtlBaseModule::m_bInitFailed);
-    *reinterpret_cast<std::uint64_t*>(win) = 0x48;
-    for (unsigned offset = 8; offset <= 0x40; offset += 8)
-        *reinterpret_cast<std::uint64_t*>(win + offset) = 0;
-
-    const BOOL initialized = useInitializeEx
-        ? InitializeCriticalSectionEx(reinterpret_cast<LPCRITICAL_SECTION>(win + 8), 0, 0)
-        : InitializeCriticalSectionAndSpinCount(reinterpret_cast<LPCRITICAL_SECTION>(win + 8), 0);
-    if (!initialized && GetLastError() != 0)
-    {
-        *initFailed = 1;
-        *reinterpret_cast<std::uint64_t*>(win) = 0;
-    }
+    new (&ATL::_AtlWinModule) AtlWinModuleCtor<UseInitializeEx>();
     std::atexit(terminate);
 }
 }
 
 // Three linked ATL copies initialize the same selectany COM-module object.
-// MS2-FUNCTIONAL: clears the stored module fields, initializes its critical section, records failure and registers its matching exit routine.
+// clears the stored module fields, initializes its critical section, records failure and registers its matching exit routine.
 // @0x140122840
 void FUN_140122840()
 {
-    InitComModule(false, FUN_142cc4300);
+    InitComModule<false>(FUN_142cc4300);
 }
 
-// MS2-FUNCTIONAL: initializes the selectany Windows-module object and registers its matching exit routine.
+// initializes the selectany Windows-module object and registers its matching exit routine.
 // @0x140122900
 void FUN_140122900()
 {
-    InitWinModule(false, FUN_142cc4390);
+    InitWinModule<false>(FUN_142cc4390);
 }
 
-// MS2-FUNCTIONAL: duplicate ATL COM-module initialization emitted by another linked object.
+// duplicate ATL COM-module initialization emitted by another linked object.
 // @0x140122ee0
 void FUN_140122ee0()
 {
-    InitComModule(false, FUN_142cc4590);
+    InitComModule<false>(FUN_142cc4590);
 }
 
-// MS2-FUNCTIONAL: duplicate ATL Windows-module initialization emitted by another linked object.
+// duplicate ATL Windows-module initialization emitted by another linked object.
 // @0x140122fa0
 void FUN_140122fa0()
 {
-    InitWinModule(false, FUN_142cc4620);
+    InitWinModule<false>(FUN_142cc4620);
 }
 
-// MS2-FUNCTIONAL: initializes the selectany COM-module object with InitializeCriticalSectionEx.
+// initializes the selectany COM-module object with InitializeCriticalSectionEx.
 // @0x14012d520
 void FUN_14012d520()
 {
-    InitComModule(true, FUN_142cc5d00);
+    InitComModule<true>(FUN_142cc5d00);
 }
 
-// MS2-FUNCTIONAL: initializes the selectany Windows-module object with InitializeCriticalSectionEx.
+// initializes the selectany Windows-module object with InitializeCriticalSectionEx.
 // @0x14012d5e0
 void FUN_14012d5e0()
 {
-    InitWinModule(true, FUN_142cc5d90);
+    InitWinModule<true>(FUN_142cc5d90);
 }
 
-// MS2-FUNCTIONAL: calls ATL's CAtlComModule constructor on the executable global and installs its matching atexit cleanup.
+// calls ATL's CAtlComModule constructor on the executable global and installs its matching atexit cleanup.
 // @0x14014d124
 void FUN_14014d124()
 {
@@ -145,7 +150,7 @@ void FUN_14014d124()
     std::atexit(FUN_142cc99b4);
 }
 
-// MS2-FUNCTIONAL: calls ATL's CAtlWinModule constructor on the executable global and installs its matching atexit cleanup.
+// calls ATL's CAtlWinModule constructor on the executable global and installs its matching atexit cleanup.
 // @0x14014d144
 void FUN_14014d144()
 {
@@ -153,7 +158,7 @@ void FUN_14014d144()
     std::atexit(FUN_142cc99d4);
 }
 
-// MS2-FUNCTIONAL: duplicate CAtlComModule constructor initializer from another linked object.
+// duplicate CAtlComModule constructor initializer from another linked object.
 // @0x14014d16c
 void FUN_14014d16c()
 {
@@ -161,7 +166,7 @@ void FUN_14014d16c()
     std::atexit(FUN_142cc9a18);
 }
 
-// MS2-FUNCTIONAL: duplicate CAtlWinModule constructor initializer from another linked object.
+// duplicate CAtlWinModule constructor initializer from another linked object.
 // @0x14014d18c
 void FUN_14014d18c()
 {
@@ -169,7 +174,7 @@ void FUN_14014d18c()
     std::atexit(FUN_142cc9a38);
 }
 
-// MS2-FUNCTIONAL: calls ATL's CAtlBaseModule constructor on the executable global and registers its shutdown callback.
+// calls ATL's CAtlBaseModule constructor on the executable global and registers its shutdown callback.
 // @0x14014d1ac
 void FUN_14014d1ac()
 {

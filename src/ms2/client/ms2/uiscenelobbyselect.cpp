@@ -33,6 +33,11 @@ static CString s_stun5 = "stun";
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/buddymanager.h"
+#include "ms2/client/ms2/blockmanager.h"
+#include "ms2/client/ms2/homeblockmanager.h"
+#include "ms2/client/ms2/uicharacterlistdialog.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -53,14 +58,10 @@ public:
     int FUN_141adc940(int nUiId);
 };
 class Unk_LsWorld { public: void* FUN_141bd0cc0(); };
-class Unk_LsLogin
+class Unk_LsLogin : public CInputKeyHandler
 {
 public:
-    bool FUN_14116d9c0(int a, bool b, int c);
     bool FUN_14116dd30(int a, int b, int c);
-    bool FUN_14116d950(int a, bool b, int c);
-    bool FUN_14116d720();
-    void FUN_14116d5d0(bool b);
 };
 class Unk_LsPlayerState { public: int m_pad0; int m_pad4; int m_8; };
 class Unk_LsCamArg { public: Unk_LsCamArg(); int m_0, m_4, m_8, m_c, m_10, m_14, m_18, m_1c, m_20, m_24; };
@@ -75,19 +76,9 @@ public:
     void FUN_140aed750(int a, int b);
 };
 class Unk_LsWindow { public: static int FUN_141b712e0(); };
-class Unk_LsHud1 { public: void FUN_140ae5190(); };
-class Unk_LsHud2 { public: void FUN_140a2f700(); };
-class Unk_LsHud3 { public: void FUN_140a47940(); };
 class Unk_LsTutorial : public CPtred { public: int FUN_141986d30(); };
-class Unk_LsCharSelect
+class Unk_LsCharSelect : public UICharacterListDialog
 {
-public:
-    void FUN_1418f1fd0();
-    void FUN_1418f1f10();
-    int FUN_1418f1c20();
-    bool FUN_1418ed650();
-    int FUN_1418f1c70();
-    void FUN_1418f1af0();
 };
 class Unk_LsSceneId;
 class Unk_LsServerDlg : public UIDialog { public: void FUN_141ad2ef0(); };
@@ -174,9 +165,9 @@ Unk_LsLogin* FUN_14025e7c0();
 Unk_LsPlayerState* FUN_1409331f0();
 Unk_LsCamera* FUN_1409478c0();
 Unk_LsWindow* FUN_140aadf80();
-Unk_LsHud1* FUN_14097a780();
-Unk_LsHud2* FUN_140a6a830();
-Unk_LsHud3* FUN_1414a5830();
+CBuddyManager* FUN_14097a780();
+CBlockManager* FUN_140a6a830();
+HomeBlockManager* FUN_1414a5830();
 Unk_LsCharSelect* FUN_140b72de0(int nUiId);
 Unk_LsTutorial* FUN_140b624b0(int nUiId);
 extern int DAT_143ab0248;
@@ -189,7 +180,7 @@ Unk_LsSceneId* FUN_1408e57f0();
 int FUN_1422b9de0(Unk_LsSceneId* p);
 int FUN_140e85580(Unk_LsPlayerState* p);
 int FUN_141bcfbd0(Unk_LsWorld* pWorld);
-CStringW FUN_141850100(int a, int b);
+CStringW TakeScreenshotJpg(int a, int b);
 void FUN_140930150(int n);
 void FUN_14151f460(int n);
 void FUN_141b91b20(bool b);
@@ -237,7 +228,7 @@ void UISceneLobby::vfunc_48(int n)
     FUN_1403ed2b0()->FUN_141add6e0(0x3ef);
     FUN_1403ed2b0()->FUN_141ada6f0(m_6c);
     FUN_14097a780()->FUN_140ae5190();
-    FUN_140a6a830()->FUN_140a2f700();
+    FUN_140a6a830()->ClearBlocks();
     FUN_1414a5830()->FUN_140a47940();
     {
         MS2Ptr<Unk_LsTutorial> spTutorial(FUN_140b624b0(0x4e32));
@@ -262,12 +253,12 @@ MS2_REPLACE_METHOD(0x141ACDC20, UISceneLobby, vfunc_49, 63, 0x0F698270);
 int UISceneLobby::vfunc_13()
 {
     if (FUN_141acdeb0()) {
-        FUN_141850100(1, 0);
+        TakeScreenshotJpg(1, 0);
         return 1;
     }
     if (FUN_14025e7c0()->FUN_14116dd30(0x927c1, 0, 0)) {
         FUN_140930150(0x32);
-        FUN_14025e7c0()->FUN_14116d5d0(FUN_14025e7c0()->FUN_14116d720() == 0);
+        FUN_14025e7c0()->SetDebugMode(FUN_14025e7c0()->IsDebugMode() == 0);
     } else {
         if (FUN_14025e7c0()->FUN_14116d950(0x1d, 0, 0)) {
             if (FUN_14025e7c0()->FUN_14116d9c0(0x16, 1, 0)) {
@@ -294,7 +285,7 @@ int UISceneLobby::vfunc_14()
 {
     if (UISwfEntity::vfunc_14()) return 1;
     if (FUN_141acdeb0()) {
-        FUN_141850100(1, 0);
+        TakeScreenshotJpg(1, 0);
         return 1;
     }
     return 0;
@@ -495,7 +486,7 @@ MS2_REPLACE_METHOD(0x141ACE670, UISceneLobbySelect, vfunc_63, 59, 0xD99FC813);
 void UISceneLobbySelect::vfunc_64()
 {
     Unk_LsCharSelect* pSelect = FUN_140b72de0(0x4ef1);
-    if (pSelect != 0) pSelect->FUN_1418f1af0();
+    if (pSelect != 0) pSelect->ShowPopup();
 }
 MS2_REPLACE_METHOD(0x141ACE6C0, UISceneLobbySelect, vfunc_64, 47, 0x331A49C0);
 

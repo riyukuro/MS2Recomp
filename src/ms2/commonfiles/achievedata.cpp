@@ -384,14 +384,12 @@ inline CStringW FUN_14016a730(const char* psz, int nCodePage)
 }
 CString FUN_1407185b0(const CString& value);
 void FUN_14028faa0(Unk_XmlNode* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_XmlNode*>* pOut);
-int FUN_14029ea20(CConditionCommonData* pData, Unk_XmlNode* pNode, CStringW strTag, unsigned nId);
-bool FUN_14029e940(CConditionCommonData* pThis, CConditionCommonData* pOther);
-void FUN_140873220(Unk_XmlNode*, const char*, unsigned&);
-void FUN_1408731e0(Unk_XmlNode*, const char*, int&);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(Unk_XmlNode*, const char*, CString&);
 int FUN_140873420(Unk_XmlNode*, const char*, CStringW&);
-int FUN_140873710(Unk_XmlNode*, const char*, int*);
-int FUN_140873890(Unk_XmlNode*, const char*, int&);
+int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 void FUN_14086dd00(TiXmlDocument*) noexcept;          // ~TiXmlNode (base part)
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -569,7 +567,7 @@ inline int Unk_ReadRank(Unk_XmlNode* pNode, const char* pszName, int* pnOut)
     }
     int nRead;
     int nValue = 0;
-    nRead = FUN_140873890(pNode, pszName, nValue);
+    nRead = XmlQuery((class TiXmlElement*)(pNode), pszName, nValue);
     if (nRead != 0)
         return nRead;
     *pnOut = nValue;
@@ -724,7 +722,7 @@ bool CAchieveGradeData::operator!=(const CAchieveGradeData& o) const
         return true;
     if (m_reward != o.m_reward)
         return true;
-    if (FUN_14029e940(m_pCondition.get(), o.m_pCondition.get()))
+    if (((class CConditionCommonData*)(class CConditionCommonData*)(m_pCondition.get()))->IsDifferent(o.m_pCondition.get()))
         return true;
     return false;
 }
@@ -906,12 +904,12 @@ void CAchieveData::Load(CString strPath)
         Unk_XmlNode* pNode = nodes[i];
         MS2Ptr<CAchieveData> pData(new CAchieveData);
         pData->FUN_1401d1160(CString(strPath));
-        FUN_140873220(pNode, "id", pData->m_nId);
-        FUN_1408731e0(pNode, "noticePercent", pData->m_nNoticePercent);
-        FUN_140873710(pNode, "account", &pData->m_nAccount);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", pData->m_nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "noticePercent", pData->m_nNoticePercent);
+        XmlGetBool((class TiXmlElement*)(pNode), "account", *(int*)(&pData->m_nAccount));
         FUN_140873420(pNode, "feature", pData->m_strFeature);
         FUN_1408733e0(pNode, "locale", pData->m_strLocale);
-        FUN_1408731e0(pNode, "locking", pData->m_nLocking);
+        XmlGetAttr((class TiXmlElement*)(pNode), "locking", pData->m_nLocking);
         FUN_1408733e0(pNode, "contentsTag", pData->m_strContentsTag);
         FUN_1408733e0(pNode, "categoryTag", pData->m_strCategoryTag);
         Unk_ReadRequireType(pNode, "uiFilterType", &pData->m_nRequireType);
@@ -927,7 +925,7 @@ void CAchieveData::Load(CString strPath)
              pGradeNode = pGradeNode->NextSibling("grade"))
         {
             MS2Ptr<CAchieveGradeData> pGrade(new CAchieveGradeData);
-            FUN_1408731e0(pGradeNode, "value", pGrade->m_nGrade);
+            XmlGetAttr((class TiXmlElement*)(pGradeNode), "value", pGrade->m_nGrade);
             if (pGrade->m_nGrade > pData->m_nMaxGrade)
                 pData->m_nMaxGrade = pGrade->m_nGrade;
             if (pGrade->m_nGrade < pData->m_nFirstGrade)
@@ -935,18 +933,18 @@ void CAchieveData::Load(CString strPath)
             Unk_XmlNode* pCondition = pGradeNode->FirstChild("condition");
             if (pCondition != 0)
             {
-                if (FUN_14029ea20(pGrade->m_pCondition, pCondition, CStringW(L"AchieveData"), pData->m_nId) == 0)
+                if (((class CConditionCommonData*)(class CConditionCommonData*)(pGrade->m_pCondition))->Load((class Unk_ConditionXml*)(pCondition), CStringW(L"AchieveData"), pData->m_nId) == 0)
                     return;
             }
             Unk_XmlNode* pReward = pGradeNode->FirstChild("reward");
             if (pReward != 0)
             {
                 Unk_ReadRewardType(pReward, "type", &pGrade->m_reward.m_nType);
-                FUN_140873220(pReward, "code", pGrade->m_reward.m_nCode);
-                FUN_140873220(pReward, "value", pGrade->m_reward.m_nValue);
+                XmlGetAttr((class TiXmlElement*)(pReward), "code", pGrade->m_reward.m_nCode);
+                XmlGetAttr((class TiXmlElement*)(pReward), "value", pGrade->m_reward.m_nValue);
                 Unk_ReadRank(pReward, "rank", &pGrade->m_reward.m_nRank);
                 int nSubJob = 0;
-                FUN_1408731e0(pReward, "subJobLevel", nSubJob);
+                XmlGetAttr((class TiXmlElement*)(pReward), "subJobLevel", nSubJob);
                 if (nSubJob == 0)
                     pGrade->m_reward.m_nSubJob = 1;
                 else if (nSubJob == 1)
@@ -1008,12 +1006,12 @@ void CAchieveData::LoadClient(CString strPath, MS2Ptr<CAchieveData>& rOut)
         Unk_XmlNode* pNode = nodes[i];
         MS2Ptr<CAchieveData> pData(new CAchieveData);
         pData->FUN_1401d1160(CString(strPath));
-        FUN_140873220(pNode, "id", pData->m_nId);
-        FUN_1408731e0(pNode, "noticePercent", pData->m_nNoticePercent);
-        FUN_140873710(pNode, "account", &pData->m_nAccount);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", pData->m_nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "noticePercent", pData->m_nNoticePercent);
+        XmlGetBool((class TiXmlElement*)(pNode), "account", *(int*)(&pData->m_nAccount));
         FUN_140873420(pNode, "feature", pData->m_strFeature);
         FUN_1408733e0(pNode, "locale", pData->m_strLocale);
-        FUN_1408731e0(pNode, "locking", pData->m_nLocking);
+        XmlGetAttr((class TiXmlElement*)(pNode), "locking", pData->m_nLocking);
         FUN_1408733e0(pNode, "contentsTag", pData->m_strContentsTag);
         FUN_1408733e0(pNode, "categoryTag", pData->m_strCategoryTag);
         Unk_ReadRequireType(pNode, "uiFilterType", &pData->m_nRequireType);
@@ -1029,7 +1027,7 @@ void CAchieveData::LoadClient(CString strPath, MS2Ptr<CAchieveData>& rOut)
              pGradeNode = pGradeNode->NextSibling("grade"))
         {
             MS2Ptr<CAchieveGradeData> pGrade(new CAchieveGradeData);
-            FUN_1408731e0(pGradeNode, "value", pGrade->m_nGrade);
+            XmlGetAttr((class TiXmlElement*)(pGradeNode), "value", pGrade->m_nGrade);
             if (pGrade->m_nGrade > pData->m_nMaxGrade)
                 pData->m_nMaxGrade = pGrade->m_nGrade;
             if (pGrade->m_nGrade < pData->m_nFirstGrade)
@@ -1037,18 +1035,18 @@ void CAchieveData::LoadClient(CString strPath, MS2Ptr<CAchieveData>& rOut)
             Unk_XmlNode* pCondition = pGradeNode->FirstChild("condition");
             if (pCondition != 0)
             {
-                if (FUN_14029ea20(pGrade->m_pCondition, pCondition, CStringW(L"AchieveData"), pData->m_nId) == 0)
+                if (((class CConditionCommonData*)(class CConditionCommonData*)(pGrade->m_pCondition))->Load((class Unk_ConditionXml*)(pCondition), CStringW(L"AchieveData"), pData->m_nId) == 0)
                     return;
             }
             Unk_XmlNode* pReward = pGradeNode->FirstChild("reward");
             if (pReward != 0)
             {
                 Unk_ReadRewardType(pReward, "type", &pGrade->m_reward.m_nType);
-                FUN_140873220(pReward, "code", pGrade->m_reward.m_nCode);
-                FUN_140873220(pReward, "value", pGrade->m_reward.m_nValue);
+                XmlGetAttr((class TiXmlElement*)(pReward), "code", pGrade->m_reward.m_nCode);
+                XmlGetAttr((class TiXmlElement*)(pReward), "value", pGrade->m_reward.m_nValue);
                 Unk_ReadRank(pReward, "rank", &pGrade->m_reward.m_nRank);
                 int nSubJob = 0;
-                FUN_1408731e0(pReward, "subJobLevel", nSubJob);
+                XmlGetAttr((class TiXmlElement*)(pReward), "subJobLevel", nSubJob);
                 if (nSubJob == 0)
                     pGrade->m_reward.m_nSubJob = 1;
                 else if (nSubJob == 1)

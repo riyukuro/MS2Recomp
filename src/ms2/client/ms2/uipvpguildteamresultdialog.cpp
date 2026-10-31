@@ -46,7 +46,7 @@ struct Unk_PgtrConfig
     char m_pad_00[0xa0];
     CString m_strMarkServer;                                        // +0xa0 passed to the guild mark URL builder
 };
-Unk_PgtrConfig* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 class Unk_PgtrSound                                                 // the sound / cursor service
 {
@@ -86,7 +86,6 @@ CStringW FUN_14016a730(const char* sz, int nCodePage);
 CString FUN_141029590(unsigned __int64 nId, const CString& strKey, const CString& strName, CString strExtra);
 void FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
-bool FUN_140a467d0(const MS2Ptr<AScript>*);
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);              // has the AS object been released
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void FUN_140710590(COutPacket& packet);
@@ -250,13 +249,13 @@ void UIPvPGuildTeamResultDialog::FUN_141341220(CInPacket* pIn)
 // @0x1413415e0
 void UIPvPGuildTeamResultDialog::FUN_1413415e0(__int64 nGuildId, const CStringW& strMark)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     if (nGuildId == 0)
         return;
     if (m_guildA.m_nGuildId != nGuildId && m_guildB.m_nGuildId != nGuildId)
         return;
-    CStringW strUrl = FUN_14016a730(FUN_141029590(nGuildId, FUN_14016a600(strMark, 0), "", FUN_1401d31f0()->m_strMarkServer), 0);
+    CStringW strUrl = FUN_14016a730(FUN_141029590(nGuildId, FUN_14016a600(strMark, 0), "", ((struct Unk_PgtrConfig*)FUN_1401d31f0())->m_strMarkServer), 0);
     Unk_PgtrGuild* pLeft = FUN_141342040(true);
     if (pLeft->m_nGuildId == nGuildId)
         m_30->Invoke("setLeftGuildMark", strUrl);

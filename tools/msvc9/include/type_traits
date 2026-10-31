@@ -1,0 +1,6 @@
+/* VC9 stand-in: VS2008 has no <type_traits> in std (only what the shared SF headers use) */
+#pragma once
+namespace std {
+template<class T> struct remove_reference { typedef T type; };
+template<class T> struct remove_reference<T&> { typedef T type; };
+}

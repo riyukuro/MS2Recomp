@@ -44,11 +44,15 @@ public:
     void FUN_1422ce240(const ParamsDelegate& cb, void* pUser);
 };
 CBlackMarketTable* FUN_1401c0d80();
-void FUN_141b1feb0(void* p);
+class UITalkManager   // C3: member view for the former free stand-ins
+{
+public:
+    void SendNpcTalkMode0();
+};
 void* FUN_140967100();
 class Unk_BanFlags { public: int FUN_1402c4c90(int n); };
 class Unk_14025e7b0 { public: char m_pad[8]; Unk_BanFlags m_8; };
-Unk_14025e7b0* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class Unk_LocalPlayer : public PCBase { };
 class Unk_WorldSvc { public: Unk_LocalPlayer* FUN_141bd0cc0(); };
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -63,7 +67,7 @@ class Unk_Cfg { public: char m_pad[0x6078]; Unk_MesoCfg m_6078; char m_pad2[0x61
 Unk_Cfg* FUN_1401d3200();
 void FUN_1418fe1c0(const CString& str);
 class Unk_GmKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
-Unk_GmKeys* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_SwfMgr { public: UISwfEntity* FUN_1422d4980(int nLayer); };
 Unk_SwfMgr* FUN_140b632f0();
 __int64 FUN_141b71960(const char* sz);
@@ -71,16 +75,13 @@ unsigned __int64 FUN_140718350(const CString& str);
 void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);
 bool FUN_140184310(const CString& str, const char* sz);
 class Unk_Hotbar { public: int FUN_140d40670(); };
-Unk_Hotbar* FUN_1409bb9e0();
+class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
 int FUN_140d40670(Unk_Hotbar* p);
 void FUN_140d40120(Unk_Hotbar* p, MS2Ptr<CItem> spItem, int n);
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);
 void FUN_140d2cf00(unsigned __int64 nUid, MS2Ptr<CItem> spItem);
 void FUN_1413490b0(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool b, unsigned n1, unsigned n2);
 void FUN_141349ae0(MS2Ptr<CItem> spItem, int n, const CString& str);
-int FUN_1405276c0(CItem* p);
-int FUN_140526bd0(CItem* p);
-bool FUN_140a467d0(const MS2Ptr<AScript>* p);
 Scaleform::GFx::Value& FUN_1422dbc00();
 
 // @0x1418cf080
@@ -141,14 +142,14 @@ void UIBlackMarketDialog::vfunc_67()
     }
     if (m_spDetailButton.get())
         m_spDetailButton = 0;
-    FUN_141b1feb0(FUN_140967100());
+    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
     vfunc_47(1);
 }
 
 // @0x1418cf770
 int UIBlackMarketDialog::vfunc_73()
 {
-    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(7) != 0)
+    if (((class Unk_14025e7b0*)FUN_14025e7b0())->m_8.FUN_1402c4c90(7) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
@@ -275,9 +276,9 @@ int UIBlackMarketDialog::vfunc_13()
     if (vfunc_55() == 0 && (m_30.get() ? true : false) && FUN_140b632f0()->FUN_1422d4980(m_e0) == this)
     {
         CString strKey = "";
-        if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+        if (((class Unk_GmKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
             strKey = "onEnterKey";
-        else if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0))
+        else if (((class Unk_GmKeys*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0))
             strKey = "onTabKey";
         if (!strKey.IsEmpty())
         {
@@ -322,7 +323,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
     }
     else if (strMethod.CompareNoCase("OnRightClick") == 0)
     {
-        if (FUN_140d40670(FUN_1409bb9e0()) != 0)
+        if (FUN_140d40670(((class Unk_Hotbar*)FUN_1409bb9e0())) != 0)
         {
             MS2Ptr<CItem> spItem(0);
             CString strArg = pArgs->FUN_1422b8d30();
@@ -330,14 +331,14 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
             {
                 __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
                 MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
-                FUN_140d40120(FUN_1409bb9e0(), spItem, 0);
+                FUN_140d40120(((class Unk_Hotbar*)FUN_1409bb9e0()), spItem, 0);
             }
             else if (FUN_140184310(strArg, "MarketSN"))
             {
                 unsigned __int64 nUid = FUN_140718350(pArgs->FUN_1422b8d30());
                 MS2Ptr<Unk_BlackMarketEntry> spEntry = m_pCurPage->vfunc_6(nUid);
                 if (spEntry.get())
-                    FUN_140d40120(FUN_1409bb9e0(), spEntry->m_item, 0);
+                    FUN_140d40120(((class Unk_Hotbar*)FUN_1409bb9e0()), spEntry->m_item, 0);
             }
         }
         else
@@ -430,7 +431,7 @@ void UIBlackMarketDialog::FUN_1418d0f00(MS2Ptr<Unk_BlackMarketEntry> spEntry, in
 // @0x1418d0fc0
 void UIBlackMarketDialog::FUN_1418d0fc0(void* p2, void* p3)
 {
-    if (vfunc_55() != 0 || FUN_140a467d0(&m_30))
+    if (vfunc_55() != 0 || ((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     if (m_spItemRegister == 0 || m_pCurPage != m_spItemRegister.get())
         return;
@@ -446,7 +447,7 @@ void UIBlackMarketDialog::FUN_1418d1080(MS2Ptr<Unk_BlackMarketEntry> spEntry, in
     {
         MS2Ptr<CItem> spItem = spEntry->m_item;
         MS2Ptr<CItem> spNew = new CItem();
-        static_cast<CItem*>(spNew)->FUN_14052b2e0(FUN_1405276c0(spItem), FUN_140526bd0(spItem), 0, n);
+        static_cast<CItem*>(spNew)->FUN_14052b2e0(((class CItem*)(class CItem*)(spItem))->FUN_1405276c0(), ((class CItem*)(class CItem*)(spItem))->FUN_140526bd0(), 0, n);
         FUN_141349ae0(spNew, 0x945, "");
         m_spItemSearch->FUN_140f0db00(spEntry, (int)spEntry->GetState(false));
     }

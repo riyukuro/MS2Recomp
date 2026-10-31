@@ -27,19 +27,26 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-bool FUN_140a467d0(const MS2Ptr<AScript>*);                     // has the AS object been released
 void FUN_140710590(COutPacket&);                                // send
 void FUN_14141f970(const CString&);                             // drop an item bag
 void FUN_14141f860(const CString&, int, void*, MS2Ptr<ItemSlotBag::CreateParam>);   // news an item bag
 MS2Ptr<CItem> FUN_141420330(void*, int);                        // ItemSlotBag::CreateParam::GetItemFn: array element
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, void* pUnused);
-void* FUN_140166410();                                          // the game option / feature service
-bool FUN_14036d570(void* pService, int nFeature);               // is the feature on
-void* FUN_140b2d030(int nUiId);                                 // the open dialog with this UI id (ranking)
-void FUN_140e2dfc0(void* pDialog, int nTab, int nArg);
+int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
+class UIGameRankingDialog* FUN_140b2d030(int);   // C3: was FUN_140b2d030
+class UIGameRankingDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140e2dfc0(int, int);
+};
 void* FUN_1403ed2b0();                                          // the UI service
 void FUN_141adc530(void* pUI, int nUiId);                       // open a UI by id
-void* FUN_140c43790(int nUiId);                                 // the open dialog with this UI id (web page)
+class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
 void FUN_14135ec00(void* pDialog, const CString& strUrl, bool bFlag);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);
@@ -111,7 +118,7 @@ int UIDarkStreamResultDialog::vfunc_28(const char* szMethod, const Scaleform::GF
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, 0) != 0)
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, 0) != 0)
         return 1;
     if (_stricmp("OnOut", szMethod) == 0)
     {
@@ -120,18 +127,18 @@ int UIDarkStreamResultDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     }
     else if (_stricmp("OnViewRanking", szMethod) == 0)
     {
-        if (FUN_14036d570(FUN_140166410(), 0x3f) == true)
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x3f) == true)
         {
-            void* pRanking = FUN_140b2d030(0x4f24);
+            void* pRanking = ((void*)FUN_140b2d030(0x4f24));
             if (pRanking != 0)
             {
-                FUN_140e2dfc0(pRanking, 3, 0);
+                ((class UIGameRankingDialog*)(void*)(pRanking))->FUN_140e2dfc0(3, 0);
                 FUN_141adc530(FUN_1403ed2b0(), 0x4f24);
             }
         }
-        else if (FUN_14036d570(FUN_140166410(), 0x3b) == true)
+        else if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x3b) == true)
         {
-            void* pPage = FUN_140c43790(0x4e6a);
+            void* pPage = ((void*)FUN_140c43790(0x4e6a));
             if (pPage == 0)
                 return 1;
             FUN_14135ec00(pPage, m_strRankingUrl, true);
@@ -167,7 +174,7 @@ MS2_REPLACE_METHOD(0x140F34AB0, UIDarkStreamResultDialog, FUN_140f34ab0, 492, 0x
 void UIDarkStreamResultDialog::FUN_140f34cb0(bool bMode)
 {
     m_bMode = bMode;
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     int nMode = 0;
     if (m_bMode != false)
@@ -181,7 +188,7 @@ MS2_REPLACE_METHOD(0x140F34CB0, UIDarkStreamResultDialog, FUN_140f34cb0, 144, 0x
 // @0x140f34d50
 void UIDarkStreamResultDialog::FUN_140f34d50()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
     {
         m_bPending = true;
         return;

@@ -154,7 +154,7 @@ public:
     int FUN_1411dc0d0();
 };
    void FUN_1411dcc80(void* p, CAtlArray<MS2Ptr<CEquipModel> >* arr);
-unsigned __int64 FUN_141168120(CAtlArray<MS2Ptr<CEquipModel> >* arr);   void* FUN_1411f9020(CAtlArray<MS2Ptr<CEquipModel> >* arr, unsigned i);
+unsigned __int64 FUN_141168120(CAtlArray<MS2Ptr<CEquipModel> >* arr);   void* FUN_1411f9020(CAtlArray<MS2Ptr<CEquipModel> >* arr, unsigned __int64 i);
 void* FUN_140b02a50(void* p);void* FUN_141200ab0(class CEquipModel*);   // C3: was FUN_141200ab0
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class Unk_FsOptimizer   // C3: member view for the former free stand-ins
@@ -198,9 +198,10 @@ void* FUN_141d19760(void* mem, int n);                              // NiNode ct
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 void* FUN_140876480(void* out, int cat);   void* FUN_14208a860(unsigned __int64 size, unsigned cat);
 void FUN_14098e930(void* mat, char b);
-struct Unk_ShList { Unk_ShList(int blockSize); ~Unk_ShList(); void* m_a; void* m_b; void* m_c; void* m_d; void* m_e; void* m_f; void* m_g; };   // ctor 0x140963ae0, dtor 0x1409647c0 (0x38)
+struct Unk_ShList { Unk_ShList(int blockSize); ~Unk_ShList(); void* m_a; void* m_b; void* m_c; void* m_d; void* m_e; void* m_f; };   // ctor 0x140963ae0 (writes up to +0x28), dtor 0x1409647c0 (0x30)
 struct Unk_ShList2 { Unk_ShList2(int blockSize); ~Unk_ShList2(); void* m_a; void* m_b; void* m_c; void* m_d; void* m_e; void* m_f; };            // ctor 0x140884ed0, dtor 0x1408850d0 (0x30)
 struct Unk_ShadowXform { float r0, r1, r2, r3, r4, r5, r6, r7, r8; float tx, ty, tz; float scale; };   // NiTransform (0x34)
+struct Unk_ShadowPt3 { private: float x, y, z; };   // FUN_140a00e10 cross-product result slot
 struct Unk_ShadowMat3 { float r0, r1, r2, r3, r4, r5, r6, r7, r8; };
 
 #define MS2_SHADOW_NEW(dst, size, ctorcall) \
@@ -255,7 +256,7 @@ void FUN_14160fe70(CObjectShadow* self, bool v)
 }
 
 // @0x14160feb0   per-frame update: position/orient the shadow under the character, fade by distance, push LOD visibility to the owner's models
-// MS2-FUNCTIONAL: behaviour-checked against the exe (same calls, conditions and branch order); the frame is 0x10 smaller and a few temp slots differ
+// MS2-FUNCTIONAL: behaviour-checked against the exe (same calls, conditions and branch order); same code, but t8c/xf/t48 sit 8 bytes higher and the frame is 0x10 larger
 void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void* dir, float dt, bool force)
 {
     FUN_1416105c0(self);
@@ -264,15 +265,15 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         float fade;
         Unk_ShadowXform xf;
         Unk_ShadowMat3 t48;
-        char t98[16], t8c[16];
+        Unk_ShadowPt3 t98, t8c;
         FUN_140a332d0(&xf);
         Unk_NiPt3 p120(pos);
         *(Unk_Pt3c*)&xf.tx = *(Unk_Pt3c*)&p120;
         xf.tz = xf.tz + self->m_fZOffset;
         Unk_NiPt3 p110(&DAT_143a08cd8);
-        Unk_NiPt3 p148(FUN_140a00e10(dir, t98, &p110));
+        Unk_NiPt3 p148(FUN_140a00e10(dir, &t98, &p110));
         ((class Vector3*)(void*)(&p148))->FUN_140968990();
-        Unk_NiPt3 p130(FUN_140a00e10(&p148, t8c, dir));
+        Unk_NiPt3 p130(FUN_140a00e10(&p148, &t8c, dir));
         ((class Vector3*)(void*)(&p130))->FUN_140968990();
         Unk_NiPt3 p100(dir);
         *(Unk_ShadowMat3*)&xf = *(Unk_ShadowMat3*)FUN_140a0a480(&t48, &p130, &p148, &p100);
@@ -284,8 +285,7 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         float scale = fade;
         xf.scale = scale;
         ((class NiAVObject*)(void*)(FUN_1409475f0(&self->m_node)))->SetLocalFromWorldTransform(*(class NiTransform const*)(&xf));
-        float now = (float)((class CMainSystem*)(void*)(FUN_14086d260()))->FUN_141473280();
-        ((class NiAVObject*)(void*)(FUN_1409475f0(&self->m_node)))->Update(now, true);
+        ((class NiAVObject*)(void*)(FUN_1409475f0(&self->m_node)))->Update((float)((class CMainSystem*)(void*)(FUN_14086d260()))->FUN_141473280(), true);
         void* prop = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa608), (class NiObject const*)(((void*)((class NiAVObject*)(void*)(((void*)((class CMesh*)(class CObjectShadow*)(self))->GetMesh())))->GetProperty(3)))));   // material property
         if (prop != 0) {
             float alpha = DAT_1439f8204 * scale;
@@ -315,8 +315,7 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
                     unsigned i;
                     for (i = 0; i < FUN_141168120(&arr); ++i) {
                         void* e = FUN_1411f9020(&arr, i);
-                        void* m = FUN_140b02a50(e);
-                        if (*(int*)((char*)FUN_141200ab0((class CEquipModel*)(m)) + 0x20) == 0) {
+                        if (*(int*)((char*)FUN_141200ab0((class CEquipModel*)(FUN_140b02a50(e))) + 0x20) == 0) {
                             Unk_ShadowModel* model = (Unk_ShadowModel*)FUN_140b02a50(e);
                             FUN_141567540((class NiAVObject*)(model->vfunc_14()), self->m_bShown);
                         }
@@ -356,11 +355,12 @@ void FUN_141610490()
     level = FUN_140ae1c10();
     ((class MS2LightService*)(void*)(FUN_1413f9870()))->UpdateLightShadows();
     need = ((class CGraphicOptionTable*)(void*)(FUN_140ae1c00()))->GetShadowOption(5);
-    FUN_141bd30f0(((void*)WorldService::GetInstance()), need <= level);
+    FUN_141bd30f0(((void*)WorldService::GetInstance()), level >= need);
     Unk_ShList list(10);
     FUN_141bd2db0(((void*)WorldService::GetInstance()), &list, 0);
     for (pos = FUN_140967000(&list); pos != 0; FUN_1409671f0(&list, &pos)) {
-        Unk_ShadowIter* it = (Unk_ShadowIter*)FUN_1409658c0(FUN_140a01110(&list, pos));
+        void* pEntry = FUN_140a01110(&list, pos);
+        Unk_ShadowIter* it = (Unk_ShadowIter*)FUN_1409658c0(pEntry);
         it->vfunc_32(1);
     }
 }

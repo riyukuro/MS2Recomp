@@ -116,8 +116,12 @@ inline void Unk_MergeLog(CLogString* log, unsigned __int64 a, unsigned __int64 b
 // Option text helpers of the item tooltip (string table lookups and highlight).
 CStringTable* GetStringTable();                                        // FUN_1401a9d70
 class Unk_FeatureSet;
-void * FUN_14025e7c0(void);  // C3: the definition's signature
-bool FUN_14116d720(Unk_FeatureSet* p);                                  // the option ids are shown (debug)
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+class CInputKeyHandler   // C3: member view for the former free stand-ins
+{
+public:
+    bool IsDebugMode();
+};
 CStringW FUN_140631600(int nStat, BaseOption* pOption);                  // the text of a normal stat option
 CStringW FUN_140631830(int nStat, int nValue, Unk_ItemEquipData* pData);   // the text of a special stat option
 CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);           // a + b
@@ -126,7 +130,11 @@ bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup
 bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strText);
 int FUN_140408410(const ATL::CAtlArray<unsigned>& arr, const unsigned& nValue);   // the index of a value, -1 when absent
 bool FUN_1405c7ba0(const Unk_MergeRange* pRange);
-bool FUN_1403ef200(const Unk_MergeRange* pRange, int nValue);                    // the value lies in the range
+class Unk_GameEventIntRange   // C3: member view for the former free stand-ins
+{
+public:
+    bool IsInRange(int);
+};
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
 bool CItemMergeOptionTable::s_bInit;
@@ -522,7 +530,7 @@ int CItemMergeOptionTable::FUN_1405c0870(int nItemId, int nMaterialId, int nFlag
         {
             if (!FUN_1405c7ba0(&spData->m_aOptions[i]->m_kSecond.m_range))
                 continue;
-            return FUN_1403ef200(&spData->m_aOptions[i]->m_kSecond.m_range, spValue->GetValue());
+            return ((class Unk_GameEventIntRange*)(struct Unk_MergeRange const*)(&spData->m_aOptions[i]->m_kSecond.m_range))->IsInRange(spValue->GetValue());
         }
     }
     return 0;
@@ -542,7 +550,7 @@ int CItemMergeOptionTable::FUN_1405c0a70(int nItemId, int nMaterialId, int nFlag
         {
             if (!FUN_1405c7ba0(&spData->m_aOptions[i]->m_kSecond.m_range))
                 continue;
-            return FUN_1403ef200(&spData->m_aOptions[i]->m_kSecond.m_range, spValue->GetValue());
+            return ((class Unk_GameEventIntRange*)(struct Unk_MergeRange const*)(&spData->m_aOptions[i]->m_kSecond.m_range))->IsInRange(spValue->GetValue());
         }
     }
     return 0;
@@ -606,7 +614,7 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
         CStringW strLines;
         int nMergeId = spOption->FUN_1405cb380();
         CStringW strTag;
-        if (FUN_14116d720((Unk_FeatureSet *)(FUN_14025e7c0())) && nMergeId != 0)
+        if (((class CInputKeyHandler*)(class Unk_FeatureSet*)((Unk_FeatureSet *)(((class Unk_FeatureSet*)FUN_14025e7c0()))))->IsDebugMode() && nMergeId != 0)
             strTag = StringFormat(L"[{0}]", GetStringTable()->FUN_141811980(1, nMergeId));
         Unk_EnchantMap& rNormal = spOption->FUN_1405cb8a0(4);
         Unk_SocketSpecialMap& rSpecial = spOption->FUN_1405cb8d0(4);

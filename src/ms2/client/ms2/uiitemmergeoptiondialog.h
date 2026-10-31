@@ -22,6 +22,7 @@
 #include "ms2/placeholder/uistatuseventlistener.h"
 #include "ms2/placeholder/uiitemeventlistener.h"
 #include "ms2/placeholder/citemmergeoptionproxy.h"
+#include "ms2/commonfiles/itemoption.h"
 
 class CItem;
 class CInPacket;
@@ -66,11 +67,11 @@ public:
     {
     public:
         // @0x1419d6dc0
-        explicit OptionLess(std::map<std::pair<int, int>, int>* pOrder) : m_pOrder(pOrder) {}      // 0x1419d6dc0
-        bool operator()(const std::pair<int, int>& left, const std::pair<int, int>& right);         // 0x1419d7300
-        CStringW GetName(const std::pair<int, int>& option);                                        // 0x1419d7570
+        explicit OptionLess(std::map<std::pair<Unk_StatType, Unk_SocketSpecialStat>, int>* pOrder) : m_pOrder(pOrder) {}      // 0x1419d6dc0
+        bool operator()(const std::pair<Unk_StatType, Unk_SocketSpecialStat>& left, const std::pair<Unk_StatType, Unk_SocketSpecialStat>& right);         // 0x1419d7300
+        CStringW GetName(const std::pair<Unk_StatType, Unk_SocketSpecialStat>& option);                                        // 0x1419d7570
     private:
-        std::map<std::pair<int, int>, int>* m_pOrder;
+        std::map<std::pair<Unk_StatType, Unk_SocketSpecialStat>, int>* m_pOrder;
     };
 
 private:
@@ -106,7 +107,7 @@ private:
     unsigned int m_nTalkId;                                     // +0x1d0 npc talk id of the result
     int m_nPhase;                                               // +0x1d4
     bool m_bSpecial;                                            // +0x1d8 the item has special options
-    std::map<std::pair<int, int>, int> m_optionOrder;           // +0x1e0 (stat id, special id) -> display order
+    std::map<std::pair<Unk_StatType, Unk_SocketSpecialStat>, int> m_optionOrder;           // +0x1e0 (stat id, special id) -> display order
 };
 MS2_CHECK_SIZE(UIItemMergeOptionDialog, 0x1f0);
 MS2_CHECK_OFFSET(UIItemMergeOptionDialog, m_items190, 0x190);

@@ -188,7 +188,7 @@ MS2_CHECK_SIZE(Unk_ShaderColor, 0x10);
 
 void FUN_14135db70(const NiFixedString& kName, const Unk_ShaderColor* pkValues, int nCount);   // set a global shader constant array
 unsigned long GetTickCountMs2();
-void FUN_1409a5770(const NiFixedString& kName, const float* pfValues, int nCount);   // set a global float shader constant
+bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 extern "C" float (__cdecl* __imp_sqrtf)(float);
 extern "C" float (__cdecl* __imp_expf)(float);
 
@@ -724,7 +724,7 @@ bool FadeInOutRenderStep::FUN_1416a0cd0(NiRenderClick* pkClick, void* pvData)
         ms_iState = 0;
     }
     ms_fAlpha = ms_fAlpha * (ms_fAlpha * DAT_1439f8248);
-    FUN_1409a5770(DAT_143ae5320, &ms_fAlpha, 1);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5320), &ms_fAlpha, 1);
     return true;
 }
 
@@ -795,7 +795,7 @@ bool FadeInRenderStep::FUN_1416a1260(NiRenderClick* pkClick, void* pvData)
         ms_fAlpha = 1.0f;
     }
     ms_fAlpha = ms_fAlpha * ms_fAlpha;
-    FUN_1409a5770(DAT_143ae5320, &ms_fAlpha, 1);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5320), &ms_fAlpha, 1);
     return true;
 }
 
@@ -875,8 +875,8 @@ MS2_REPLACE_METHOD(0x1416a1870, GaussianBlurRenderStep, vfunc_16, 45, 0x99C977BC
 void GaussianBlurRenderStep::vfunc_22()
 {
     float fZero = 0.0f;
-    FUN_1409a5770(DAT_143ae5460, &fZero, 1);
-    FUN_1409a5770(DAT_143ae5468, &fZero, 1);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5460), &fZero, 1);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5468), &fZero, 1);
 }
 MS2_REPLACE_METHOD(0x1416a18b0, GaussianBlurRenderStep, vfunc_22, 69, 0x94FA78C6);
 
@@ -1231,7 +1231,11 @@ bool MotionBlurRenderStep::vfunc_13() { return false; }
 extern PostProcessingService* DAT_143ae4660;                // the service, set by the constructor
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);            // the entity's scene graph root
 Ni3DRenderView* FUN_1413f9a70();                            // the main 3D view
-void FUN_140d9dab0(NiDX9RenderState* pkState, bool bEnable);
+class Unk_DevCaps   // C3: member view for the former free stand-ins
+{
+public:
+    void SetEnabled(bool);
+};
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
 NiViewRenderClick* FUN_1413f99a0();                         // the main scene click
 void FUN_1411ab770(efd::IDependencyRegistrar* pRegistrar, int nFlags);     // AddDependency<ecr::RenderService> (0x07002001)
@@ -1287,8 +1291,11 @@ template<class T, class U> inline void Unk_PPLog2(CLogString* pLog, int nLevel, 
         fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(kSecond)};
     pLog->FUN_1406530d0(nLevel, nCategory, pwszFormat, fmt::ArgList(fmt::internal::make_type(kFirst, kSecond), akArgs));
 }
-PostProcessingService* FUN_1409a8b20();                                     // the post-processing service (other TU accessor)
-void FUN_1409a5770(const NiFixedString& kName, const float* pfValues, int nCount);   // set a global shader constant
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 extern NiFixedString DAT_143ae53f8;                                         // the view-projection constant name
 void FUN_1427e7520(Ni2DBuffer::RendererData* pkData);                       // NiDX92DBufferData: release the render-target references
 extern const efd::Matrix3 DAT_143a09600;                                    // the texture effect's rotation
@@ -1588,7 +1595,7 @@ bool PostProcessingService::FUN_1416a40c0(NiRenderStep* pkStep, void* pvData)
 {
     NiDX9RenderState* pkState = NiDX9Renderer::GetRenderer()->GetRenderState();
     pkState->SetRenderState(D3DRS_CLIPPLANEENABLE, 0);
-    FUN_140d9dab0(pkState, false);
+    ((class Unk_DevCaps*)(class NiDX9RenderState*)(pkState))->SetEnabled(false);
     return true;
 }
 
@@ -2240,7 +2247,7 @@ bool PostProcessingService::FUN_1416ac150(NiRenderClick* pkClick, void* pvData)
 {
     if (pvData == 0)
         return true;
-    PostProcessingService* pkService = FUN_1409a8b20();
+    PostProcessingService* pkService = ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20());
     NiRenderer* pkRenderer = NiRenderer::GetRenderer();
     NiColorA* pkColor = static_cast<NiColorA*>(pvData);
     pkRenderer->GetBackgroundColor(pkService->m_kBackground);
@@ -2251,7 +2258,7 @@ bool PostProcessingService::FUN_1416ac150(NiRenderClick* pkClick, void* pvData)
 // @0x1416ac1e0
 bool PostProcessingService::FUN_1416ac1e0(NiRenderClick* pkClick, void* pvData)
 {
-    PostProcessingService* pkService = FUN_1409a8b20();
+    PostProcessingService* pkService = ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20());
     NiRenderer* pkRenderer = NiRenderer::GetRenderer();
     pkRenderer->SetBackgroundColor(pkService->m_kBackground);
     return true;
@@ -2263,7 +2270,7 @@ bool PostProcessingService::FUN_1416ac240(NiRenderClick* pkClick, void* pvData)
 {
     if (DAT_143ae4660 == 0 || pkClick == 0)
         return false;
-    FUN_1409a5770(DAT_143ae53f8, (const float*)&DAT_143ae4be0, 16);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae53f8), (const float*)&DAT_143ae4be0, 16);
     DAT_143ae4660->m_iFrame = 1 - DAT_143ae4660->m_iFrame;
     pkClick->SetRenderTargetGroup(DAT_143ae4660->m_aspFrameTargets[DAT_143ae4660->m_iFrame]);
     return true;
@@ -2537,7 +2544,7 @@ MS2_REPLACE_METHOD(0x1416a7050, PostProcessingService, FUN_1416a7050, 1299, 0x55
 void PostProcessingService::FUN_1416ac440(unsigned int uiWidth, unsigned int uiHeight)
 {
     float afTexel[2] = { 1.0f / (float)uiWidth, 1.0f / (float)uiHeight };
-    FUN_1409a5770(DAT_143ae5328, afTexel, 2);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5328), afTexel, 2);
 
     const int iTaps = 9;
     float afOffsetsX[iTaps];
@@ -2548,8 +2555,8 @@ void PostProcessingService::FUN_1416ac440(unsigned int uiWidth, unsigned int uiH
         afOffsetsX[i] = (float)iOffset / (float)uiWidth;
         afOffsetsY[i] = (float)iOffset / (float)uiHeight;
     }
-    FUN_1409a5770(DAT_143ae5330, afOffsetsX, iTaps);
-    FUN_1409a5770(DAT_143ae5338, afOffsetsY, iTaps);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5330), afOffsetsX, iTaps);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5338), afOffsetsY, iTaps);
 }
 MS2_REPLACE(0x1416ac440, PostProcessingService::FUN_1416ac440, 306, 0x04D746FF);
 

@@ -541,7 +541,6 @@ Unk_HlBits& Unk_HlBits::FUN_140c26080()
 UIHighlightGameMenu::UIHighlightGameMenu()
     : m_actions(17, 0.75f, 0.25f, 2.25f, 10)
 {
-    m_timer.FUN_140517b00();
     m_nScrollItem = 0;
     m_nTargetItem = 0;
     m_nCount = 0;
@@ -659,7 +658,7 @@ int UIHighlightGameMenu::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 void UIHighlightGameMenu::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (m_timer.FUN_140268870(1000) != 0)
+    if (m_timer.Check(1000) != 0)
         FUN_140c22f50();
 }
 

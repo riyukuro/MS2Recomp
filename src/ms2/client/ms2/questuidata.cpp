@@ -48,16 +48,15 @@
 // ---- callees of other units -----------------------------------------------------------------------------------------
 
 class Unk_QuiLoader : public CFileSystem { };
-Unk_QuiLoader* FUN_140166420();
-void* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
 CString FUN_14071ae20(const CString& strFile);                          // the locale's string data path of <file>
 CString FUN_140651350();                                                // the locale code
 CString FUN_14028d3c0(CString strPath);                                 // the file name of a path
 void FUN_1401d3700(CString& str);                                       // lower case
 void FUN_140399100(CString strExt, CString strDir, ATL::CAtlArray<CString>& arrFiles, CString strPrefix, bool bRecursive);
-bool FUN_14028f650(Unk_140165cf0* pElem);                               // the element is valid
-bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is enabled
+bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);   // int attribute with default
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);   // wide string attribute
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
@@ -74,7 +73,7 @@ MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);                         // the q
 int FUN_14074bc90(int nQuestId);                                        // the quest type
 int FUN_14074b050(CQuestData* pData);
 int FUN_14074b070(CQuestData* pData);                                   // the repeat kind (1 daily, 2 weekly, 3 week repeat)
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
                   // the local player (NULL outside the field)
                   // the npc id of the open talk
 class Unk_AkoCutscene   // C3: static member view for the former free stand-ins
@@ -178,19 +177,19 @@ void FUN_1416e43d0()
 void FUN_1416e4590(CString strPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_QuiLoader*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
     MS2Ptr<CCacheData> spCache(new CCacheData);
     spCache->FUN_1401d1160(strPath);
     for (Unk_140165cf0* pQuest = pRoot->FUN_140165cf0("quest"); pQuest != 0; pQuest = pQuest->FUN_140168650("quest"))
     {
-        if (!FUN_14028f650(pQuest))
+        if (!FUN_14028f650((struct Unk_XmlElement*)(pQuest)))
             continue;
         MS2Ptr<CQuestUIData> spData(new CQuestUIData);
         spData->m_nQuestId = atoi(FUN_14015f710(pQuest, "questID", CString("")));
@@ -428,7 +427,7 @@ int FUN_1416e6100(int nQuestId, int bIgnoreNpc)
         if (!spData)
             return 0;
         int nNpcId = ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212f0();
-        if (FUN_140764020()->FUN_140745590(nQuestId))
+        if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuestId))
         {
             return 0x5dc;
         }
@@ -439,13 +438,13 @@ int FUN_1416e6100(int nQuestId, int bIgnoreNpc)
                 nStartNpc = nNpcId;
             else
                 nStartNpc = spData->m_2ec;
-            if (FUN_140764020()->FUN_140746ba0(nQuestId, nStartNpc, 0) == 0)
+            if (((class CQuestManager*)FUN_140764020())->FUN_140746ba0(nQuestId, nStartNpc, 0) == 0)
             {
                 return 0x5db;
             }
             else
             {
-                if (FUN_140764020()->FUN_140745630(nQuestId))
+                if (((class CQuestManager*)FUN_140764020())->FUN_140745630(nQuestId))
                 {
                     return 0x5da;
                 }
@@ -456,7 +455,7 @@ int FUN_1416e6100(int nQuestId, int bIgnoreNpc)
                         nEndNpc = nNpcId;
                     else
                         nEndNpc = spData->m_2e8;
-                    if (FUN_140764020()->vfunc_1(nQuestId, nEndNpc))
+                    if (((class CQuestManager*)FUN_140764020())->vfunc_1(nQuestId, nEndNpc))
                         return 0x5d9;
                     else
                         return 0x5d8;
@@ -547,7 +546,7 @@ CStringW CQuestUIData::FUN_1416e6900(int nIndex, const CStringW& strText)
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
-        Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(m_nQuestId);
+        Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(m_nQuestId);
         if (spQuest.get() != 0)
         {
             __int64 nGoal = spData->m_conditions[nIndex]->m_nGoal;
@@ -684,17 +683,17 @@ void LoadChapterDescriptions()
 void FUN_1416e7c00(CString strPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_QuiLoader*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
     for (Unk_140165cf0* pChapter = pRoot->FUN_140165cf0("chapter"); pChapter != 0; pChapter = pChapter->FUN_140168650("chapter"))
     {
-        if (!FUN_14028f710(pChapter))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pChapter)))
             continue;
         MS2Ptr<CChapterUIData> spChapter(new CChapterUIData);
         spChapter->m_nId = FUN_140197350(pChapter, "id", 0);

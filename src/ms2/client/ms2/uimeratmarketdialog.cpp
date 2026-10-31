@@ -3986,7 +3986,6 @@ void UIMeratMarketDialog::OnClickRandomSalePick(const CStringA& strName, ASData&
     FUN_140710590(pkt);
 }
 
-// MS2-FUNCTIONAL: the first-icon product test (&& with a temporary) is 0x15 bytes shorter than the exe's
 // @0x141300470
 void UIMeratMarketDialog::OnClickBuyEquipAll(const CStringA& strMovie)
 {
@@ -4005,8 +4004,8 @@ void UIMeratMarketDialog::OnClickBuyEquipAll(const CStringA& strMovie)
     MS2Ptr<ASEquipIcon> spFirst = pIcons->GetValueAt(posFirst);
     MS2Ptr<ASMeratMarketEquipData> spFirstEquip(
         dynamic_cast<ASMeratMarketEquipData*>(spFirst->FUN_1409b9330().operator AScript*()));
-    if (spFirstEquip.get() != 0 &&
-        reinterpret_cast<Unk_MmEquipDataView*>(spFirstEquip.operator->())->FUN_1409b9830().get() != 0) {
+    if ((spFirstEquip.get() ? true : false) &&
+        (reinterpret_cast<Unk_MmEquipDataView*>(spFirstEquip.operator->())->FUN_1409b9830().get() ? true : false)) {
         MS2Ptr<CMeratMarketProduct> spProduct =
             reinterpret_cast<Unk_MmEquipDataView*>(spFirstEquip.operator->())->FUN_1409b9830();
         int nCurrency = spProduct->GetCurrency();
@@ -4014,16 +4013,14 @@ void UIMeratMarketDialog::OnClickBuyEquipAll(const CStringA& strMovie)
             reinterpret_cast<Unk_MmEquipDataView*>(spFirstEquip.operator->())->FUN_1409b9830()->GetType() == 3;
         if (bLimited) {
             if (nCurrency == 3) {
-                CStringW strKey(L"s_meratmarket_error_buy_equipall_limited");
-                FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
+                FUN_140d73aa0(GetStringCommonByKey(L"s_meratmarket_error_buy_equipall_limited"), 0, 0, L"");
             }
             else
                 ShowBuyBill(strMovie, spProduct, nCurrency);
             return;
         }
-        if (nCurrency == 3 && spProduct->IsPremium() && (spProduct->m_premium.m_nCouponFlags & 1) != 0) {
-            CStringW strKey(L"s_meratmarket_error_buy_equipall_home");
-            FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
+        else if (nCurrency == 3 && spProduct->IsPremium() && (spProduct->m_premium.m_nCouponFlags & 1) > 0) {
+            FUN_140d73aa0(GetStringCommonByKey(L"s_meratmarket_error_buy_equipall_home"), 0, 0, L"");
             return;
         }
     }

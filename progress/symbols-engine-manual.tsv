@@ -540,3 +540,5 @@ atan2f	14280f28e	func
 _vswprintf_c_l	1402e1150	func
 # efd::map<uint,uint> _Erase (p5f 2026-10-29): NetService::OnShutdown and three other engine callers call 0x141136f50, the copy symbols.tsv names map<uint,int>::_Erase
 ?_Erase@?$_Tree@V?$_Tmap_traits@IIU?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBII@std@@@efd@@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBII@std@@PEAX@2@@Z	141136f50	func
+# efd std::string append(const char*) (sft 2026-10-31): symbols.tsv binds it to 0x14155fcd0 (CRBTree<Unk_NifTexKey>::RBDelete, merge 9 b266e9641); the 55-byte append is 0x14114d9b0 (unit_141148d70); EE_MS2_STR_APPEND_CSTR_CALL callers (917b8ef3e)
+?append@?$basic_string@DU?$char_traits@D@std@@V?$CustomAllocator@D@efd@@@std@@QEAAAEAV12@QEBD@Z	14114d9b0	func

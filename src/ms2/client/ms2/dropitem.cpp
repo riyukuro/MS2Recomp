@@ -91,7 +91,7 @@ class Unk_DropGuideMgr : public CGuideManager
 public:
     void FUN_14138bf00(int nGuide, int nItemId, int nA);
 };
-Unk_DropGuideMgr* FUN_1409331e0();
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 void FUN_141275260(int nSound, int a, int b);
 void FUN_141276180(const CString& strKey, const CString& strArg);   // system notice
 void FUN_1412751b0(const CStringW& strText, int nSeconds);          // center notice
@@ -100,7 +100,7 @@ void FUN_1412751b0(const CStringW& strText, int nSeconds);          // center no
 UIDamageText* FUN_140b624b0(int nUiId);
 class Unk_DropBagDlg { public: void FUN_141abfa10(MS2Ptr<CItem> spItem); };
 class UIRewardNotify* FUN_140938cd0(int);   // C3: was FUN_140938cd0
-void FUN_14098c6e0(egf::Entity* pEntity, unsigned int uiPropId, const bool& b);   // set an entity bool property
+void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                           // the scene root of an entity
 void FUN_141851f90(void* pRoot, float fWeight);
 void FUN_141852050(void* pRoot, unsigned int uValue);
@@ -117,7 +117,6 @@ bool FUN_14053f900(unsigned nItemId);                               // the item 
 void FUN_1401d3700(CString& str);
 extern char DAT_143afbbb0;                                          // NiMesh::ms_RTTI
 extern char DAT_143afa4f0;                                          // NiTexturingProperty::ms_RTTI
-void FUN_140981040(NiTexturingProperty::Map* pMap, NiTexture* pTex);   // Map::SetTexture
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 class Unk_DropPickTick                                              // 8-byte throttle (static of FUN_141190900)
 {
@@ -134,7 +133,11 @@ class Unk_GoAttachment { public: char m_pad[0xb4]; NxBox m_box; };     // +0xb4 
                       // the item kind
 class Unk_DropAnimSvc { public: NiActorManager* FUN_140999440(const egf::EntityID& kId); };
 Unk_DropAnimSvc* FUN_141b6f910();
-void FUN_1409fae00(NiActorManager* pMgr, bool b);
+class Unk_AvSeqCtl   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1409fae00(bool);
+};
 GameObject* FUN_14096e160(Unk_WsC_GameObj* pObj);                   // the object behind a world pointer
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 CString* FUN_140298f80(Common::Constants::Value<CString>* pValue);   // Value<CString>::Get as a free function
@@ -317,7 +320,7 @@ int CDropItem::vfunc_10()
     if (FUN_14118ffb0())
     {
         bool bValue = false;
-        FUN_14098c6e0(FUN_14123c410(), 0x2a7fd9f4, bValue);
+        FUN_14098c6e0((class Unk_CachedEntity*)(FUN_14123c410()), 0x2a7fd9f4, bValue);
         FUN_141851f90(FUN_141b6efc0(FUN_14123c410()), 0.0f);
         FUN_141b6efc0(FUN_14123c410())->Update((float)((class CMainSystem*)(void*)(((void*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
         FUN_141852050(FUN_141b6efc0(FUN_14123c410()), 0);
@@ -407,7 +410,7 @@ void CDropItem::FUN_14118d720(NiAVObject* pRoot)
                     FUN_1401d3700(strPath);
                     if (!strPath.IsEmpty())
                     {
-                        FUN_140981040(pMap, ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString(strPath), 5));
+                        ((NiTexturingProperty::Map*)(void*)(pMap))->SetTexture(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString(strPath), 5));
                     }
                 }
             }
@@ -683,7 +686,7 @@ void CDropItem::FUN_14118d9a0(int nState)
         NiPoint3 kPos = vfunc_18();
         m_arc.m_origin = reinterpret_cast<Vector3&>(kPos);
         if (FUN_141b6f910()->FUN_140999440(FUN_14123c460()))
-            FUN_1409fae00(FUN_141b6f910()->FUN_140999440(FUN_14123c460()), true);
+            ((class Unk_AvSeqCtl*)(class NiActorManager*)(FUN_141b6f910()->FUN_140999440(FUN_14123c460())))->FUN_1409fae00(true);
         if (FUN_14118fea0())
         {
             Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
@@ -804,46 +807,40 @@ int CDropItem::FUN_141190120(const efd::Point3& kPos, int nA, int nB)
 {
     if (!s_kPickTimer.FUN_140868c00() && nA)
         return 0;
-    if (!FUN_1411900d0() || !nA)
-    {
-        if (!m_nState || !nA)
-        {
-            if (!FUN_141191060())
-                return 0;
-            if (GetTickCountMs2() < m_nFadeTime)
-                return 0;
-            if (FUN_1409331e0()->IsRestricted(7))
-                return 0;
-            Vector3 kPlayer(reinterpret_cast<const Vector3&>(kPos));
-            NiPoint3 kSelf = vfunc_18();
-            Vector3 kDelta = kPlayer.FUN_140965c40(reinterpret_cast<Vector3&>(kSelf));
-            float fDistance = kDelta.FUN_140967ac0();
-            kPlayer.z += m_f218;
-            float fRange = m_f21c;
-            if (m_f27c > m_f21c)
-                fRange = m_f27c;
-            if (fDistance <= fRange)
-            {
-                if (!nB)
-                {
-                    bool bAllowed = false;
-                    if (m_nOwnerType == 2)
-                        bAllowed = true;
-                    else if (m_nOwnerType == 0 || m_nOwnerType == 1)
-                    {
-                        if (FUN_141190030() == 1)
-                            bAllowed = true;
-                    }
-                    if (!bAllowed)
-                        return 0;
-                }
-                return 1;
-            }
-            return 0;
-        }
+    if (FUN_1411900d0() && nA)
         return 0;
+    if (m_nState && nA)
+        return 0;
+    if (!FUN_141191060())
+        return 0;
+    if (GetTickCountMs2() < m_nFadeTime)
+        return 0;
+    if (((class Unk_DropGuideMgr*)FUN_1409331e0())->IsRestricted(7))
+        return 0;
+    Vector3 kPlayer(kPos);
+#ifdef __clang__
+    NiPoint3 kSelf = vfunc_18();
+    float fDistance = kPlayer.FUN_140965c40(reinterpret_cast<Vector3&>(kSelf)).FUN_140967ac0();
+#else
+    float fDistance = kPlayer.FUN_140965c40(reinterpret_cast<Vector3&>(vfunc_18())).FUN_140967ac0();
+#endif
+    kPlayer.z += m_f218;
+    if (fDistance > (m_f27c > m_f21c ? m_f27c : m_f21c))
+        return 0;
+    if (!nB)
+    {
+        int bAllowed = 0;
+        if (m_nOwnerType == 2)
+            bAllowed = 1;
+        else if (m_nOwnerType == 0 || m_nOwnerType == 1)
+        {
+            if (FUN_141190030() == 1)
+                bAllowed = 1;
+        }
+        if (!bAllowed)
+            return 0;
     }
-    return 0;
+    return 1;
 }
 
 // @0x141190320
@@ -865,44 +862,42 @@ int CDropItem::FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB)
         return 0;
     if (!s_kPickTimer.FUN_140868c00() && nA)
         return 0;
-    if (!FUN_1411900d0() || !nA)
-    {
-        if (!m_nState || !nA)
-        {
-            if (!FUN_141191060())
-                return 0;
-            if (GetTickCountMs2() < m_nFadeTime)
-                return 0;
-            if (FUN_1409331e0()->IsRestricted(7))
-                return 0;
-            NiPoint3 kActor = pActor->vfunc_18();
-            Vector3 kPlayer(reinterpret_cast<Vector3&>(kActor));
-            NiPoint3 kSelf = vfunc_18();
-            Vector3 kDelta = kPlayer.FUN_140965c40(reinterpret_cast<Vector3&>(kSelf));
-            float fDistance = kDelta.FUN_140967ac0();
-            kPlayer.z += m_f218;
-            if (fDistance <= fRange)
-            {
-                if (!nB)
-                {
-                    bool bAllowed = false;
-                    if (m_nOwnerType == 2)
-                        bAllowed = true;
-                    else if (m_nOwnerType == 0 || m_nOwnerType == 1)
-                    {
-                        if (FUN_141190030() == 1)
-                            bAllowed = true;
-                    }
-                    if (!bAllowed)
-                        return 0;
-                }
-                return 1;
-            }
-            return 0;
-        }
+    if (FUN_1411900d0() && nA)
         return 0;
+    if (m_nState && nA)
+        return 0;
+    if (!FUN_141191060())
+        return 0;
+    if (GetTickCountMs2() < m_nFadeTime)
+        return 0;
+    if (((class Unk_DropGuideMgr*)FUN_1409331e0())->IsRestricted(7))
+        return 0;
+#ifdef __clang__
+    NiPoint3 kActor = pActor->vfunc_18();
+    Vector3 kPlayer(reinterpret_cast<const efd::Point3&>(kActor));
+    NiPoint3 kSelf = vfunc_18();
+    float fDistance = kPlayer.FUN_140965c40(reinterpret_cast<Vector3&>(kSelf)).FUN_140967ac0();
+#else
+    Vector3 kPlayer(reinterpret_cast<const efd::Point3&>(pActor->vfunc_18()));
+    float fDistance = kPlayer.FUN_140965c40(reinterpret_cast<Vector3&>(vfunc_18())).FUN_140967ac0();
+#endif
+    kPlayer.z += m_f218;
+    if (fDistance > fRange)
+        return 0;
+    if (!nB)
+    {
+        int bAllowed = 0;
+        if (m_nOwnerType == 2)
+            bAllowed = 1;
+        else if (m_nOwnerType == 0 || m_nOwnerType == 1)
+        {
+            if (FUN_141190030() == 1)
+                bAllowed = 1;
+        }
+        if (!bAllowed)
+            return 0;
     }
-    return 0;
+    return 1;
 }
 
 // @0x1411905a0
@@ -1044,7 +1039,7 @@ void CDropItem::FUN_141190b70(int nPickerId)
             }
         }
         if (m_spItem->FUN_140528980())
-            FUN_1409331e0()->FUN_14138bf00(0xc, m_spItem->FUN_1405276c0(), 0);
+            ((class Unk_DropGuideMgr*)FUN_1409331e0())->FUN_14138bf00(0xc, m_spItem->FUN_1405276c0(), 0);
     }
     if (m_nState == 6)
     {

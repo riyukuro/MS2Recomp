@@ -576,3 +576,5 @@ void Unk_ALTreeAnchor(std::set<Unk_ALSetKey>& s, std::map<unsigned, Unk_ALValue>
     s.erase(s.begin());
     m.erase(m.begin());
 }
+// MS2-PIN: ??$destroy@U?$pair@$$CBIUCAdventureLevelMission@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIUCAdventureLevelMission@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIUCAdventureLevelMission@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBIUCAdventureLevelMission@@@1@@Z 0x14019b570 ; sfk: symbols.tsv binds this to 0x14019b580 with the Ability copy
+// MS2-PIN: ?end@?$_Tree@V?$_Tmap_traits@IUCAdventureLevelAbility@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUCAdventureLevelAbility@@@std@@@3@$0A@@std@@@std@@QEBA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUCAdventureLevelAbility@@@std@@@std@@@std@@@2@XZ 0x1401a1e20 ; sfk: byte-identical COMDAT fold (was the look-alike guess)

@@ -38,7 +38,7 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 
 // ---- Club::PacketInvite ----
 
@@ -1383,9 +1383,9 @@ CClubDataTable::ClubBuffData::ClubBuffData()
 // @0x140211280
 void CClubDataTable::ClubBuffData::FUN_140211280(Unk_140165cf0* pElem)
 {
-    FUN_1408731e0(pElem, "id", m_id);
-    FUN_1408731e0(pElem, "additionalEffectId", m_effectId);
-    FUN_1408731e0(pElem, "additionalEffectLevel", m_effectLevel);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", m_id);
+    XmlGetAttr((class TiXmlElement*)(pElem), "additionalEffectId", m_effectId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "additionalEffectLevel", m_effectLevel);
 }
 
 // @0x1402112f0

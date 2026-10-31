@@ -65,7 +65,11 @@ public:
     unsigned char FUN_1410c3470();                                      // width of the own indoor
     unsigned char FUN_1410c34b0();                                      // length of the own indoor
 };
-Unk_IbHome* FUN_1409670e0();
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoHouseSvc* GetInstance();
+};
 
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW tag);    // message box
 void FUN_14151f200();                                                   // close the current message box
@@ -74,7 +78,6 @@ CString FUN_14016a600(const wchar_t* sz, int n);                        // wide 
 CStringW BlockFormat(int nId);                                          // string table text
 CStringW FUN_14052bd00(int nStringId, const CStringW& arg);             // string table text with one argument
 void FUN_140177de0(const CString& str, ATL::CAtlArray<int>* pOut, const char* pszSep);   // split into numbers
-size_t FUN_140186260(ATL::CAtlArray<int>& arr);                         // GetCount
 int* FUN_1401844d0(ATL::CAtlArray<int>& arr, unsigned __int64 n);       // GetAt
 
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);              // string table text, formatted
@@ -213,7 +216,7 @@ void UIInteriorBuildDialog::OnUseItem()
         FUN_140d73bc0(0xb8f, 0, 0, CStringW(L""));
         return;
     }
-    if (FUN_1409670e0()->FUN_1410c3180() != DAT_143ab2820)
+    if (((class Unk_IbHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() != DAT_143ab2820)
     {
         FUN_140d73bc0(0xb90, 0, 0, CStringW(L""));
         return;
@@ -235,11 +238,11 @@ void UIInteriorBuildDialog::OnUseItem()
         FUN_140d73bc0(0xb93, 0, 0, CStringW(L""));
         return;
     }
-    unsigned char nWidth = FUN_1409670e0()->FUN_1410c3470();
-    unsigned char nLength = FUN_1409670e0()->FUN_1410c34b0();
+    unsigned char nWidth = ((class Unk_IbHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470();
+    unsigned char nLength = ((class Unk_IbHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0();
     ATL::CAtlArray<int> aSize;
     FUN_140177de0(spPackage->m_strIndoorSizeType, &aSize, "x");
-    if (FUN_140186260(aSize) < 3)
+    if (((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)&static_cast<class ATL::CAtlArray<int, class ATL::CElementTraits<int>>&>(aSize))->GetCount() < 3)
     {
         FUN_140d73bc0(0xb9d, 1, static_cast<IMessageListener*>(this), CStringW(L"indoorSizeDifferent"));
         return;
@@ -249,7 +252,7 @@ void UIInteriorBuildDialog::OnUseItem()
         FUN_140d73bc0(0xb9d, 1, static_cast<IMessageListener*>(this), CStringW(L"indoorSizeDifferent"));
         return;
     }
-    if (FUN_1409670e0()->FUN_1410d2ee0() == 0)
+    if (((class Unk_IbHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d2ee0() == 0)
     {
         FUN_140d73bc0(0xb9e, 1, static_cast<IMessageListener*>(this), CStringW(L"indoorEmpty"));
         return;

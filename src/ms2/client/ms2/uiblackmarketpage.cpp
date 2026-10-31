@@ -1216,8 +1216,7 @@ void BlackMarketPageItemRegister::OnInit()
     }
     m_30->Invoke("initData", data.FUN_1422bb870());
     m_spCounter = m_30->FUN_1409b4620("m_counter");
-    MS2Ptr<ASMovieClip> spControl = m_30->FUN_1409b4560("m_registerControl");
-    if (spControl)
+    if (MS2Ptr<ASMovieClip> spControl = m_30->FUN_1409b4560("m_registerControl"))
     {
         m_spTotalPrice = spControl->FUN_1409b4620("m_totalprice");
         MS2Ptr<ASTextField> spNumber = spControl->FUN_1409b4620("m_totalpriceNumberString");
@@ -1242,8 +1241,7 @@ void BlackMarketPageItemRegister::OnInit()
             }
         }
     }
-    CString strEvent("changeTotalPrice");
-    m_30->FUN_1422c3600(strEvent, Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageItemRegister::FUN_140f13610), 0, 0, 0, nullptr);   // pointer user data (the void* overload): the exe stores a qword 0
+    m_30->FUN_1422c3600("changeTotalPrice", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageItemRegister::FUN_140f13610), 0, 0, 0, nullptr);   // pointer user data (the void* overload): the exe stores a qword 0
 }
 
 // @0x140f12090

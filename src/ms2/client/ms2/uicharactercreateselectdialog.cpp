@@ -43,21 +43,19 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 
 // The TinyXML document loader of the file system singleton (as in datatable_impl.h).
 class Unk_CsLoader : public CFileSystem { };
-Unk_CsLoader* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-bool FUN_14028f710(Unk_140165cf0* pElem);                               // the row is for this client's region
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
 int FUN_140873b30(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);
-CFeatureManager* FUN_140166410();                                       // the content switches
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 bool FUN_14025cd60(const CStringW& a, const CStringW& b);               // equal
 int FUN_1406516b0();                                                    // current language id
-unsigned FUN_140768010(unsigned nCount, unsigned nBase);                // random index
+int FUN_140768010(int, int);   // C3: was FUN_140768010
 bool FUN_141900c80(int nButton, const CMsgBoxData& box);
 CStringTable* GetStringTable();
 extern NiPoint3 DAT_143b01a60;                                          // the zero point
 MS2Ptr<CMsgBoxData> FUN_140d74500(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-WorldService* FUN_1403ed2d0();
 
 // The hud object the character picker tells about the job (slot 14).
 class Unk_CsHud
@@ -257,7 +255,7 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
             m_spCache.operator->()->FUN_1401d1160(CString(strPath));
     }
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (((class Unk_CsLoader*)GetFileSystem())->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -284,7 +282,7 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
             {
                 CStringW strLocale;
                 FUN_140873b30(pGroup, "locale", strLocale);
-                if (!FUN_140166410()->FUN_14036d750(strLocale))
+                if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d750(strLocale))
                     continue;
                 if (strLocale.IsEmpty())
                     pDisplayAny = pGroup;
@@ -302,9 +300,9 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
         {
             CStringW strFeature;
             FUN_140873420(pRow, "feature", strFeature);
-            if (!FUN_140166410()->FUN_14036d4b0(strFeature))
+            if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d4b0(strFeature))
                 continue;
-            CStringW strMax = FUN_140166410()->FUN_14036de20(strBest, strFeature);
+            CStringW strMax = ((class CFeatureManager*)FUN_140166410())->FUN_14036de20(strBest, strFeature);
             if (FUN_14025cd60(strMax, strFeature))
             {
                 pSelected = pRow;
@@ -316,7 +314,7 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
     {
         for (Unk_140165cf0* pRow = pData; pRow != 0; pRow = pRow->FUN_140168650("list"))
         {
-            if (!FUN_14028f710(pRow))
+            if (!FUN_14028f710((struct Unk_XmlElement*)(pRow)))
                 continue;
             int nJobCode = 0;
             FUN_1408731e0(pRow, "jobCode", nJobCode);
@@ -483,7 +481,7 @@ void UICharacterCreateSelectDialog::FUN_140f30110()
     if (m_nBgm != 0)
     {
         m_nBgm = 0;
-        FUN_1403ed2d0()->FUN_141bc7b80(0);
+        WorldService::GetInstance()->FUN_141bc7b80(0);
     }
 }
 MS2_REPLACE_METHOD(0x140F30110, UICharacterCreateSelectDialog, FUN_140f30110, 58, 0xC3E3CD19);

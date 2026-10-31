@@ -120,7 +120,7 @@ public:
     void FUN_140da5180(int nOpcode, Delegate<void(CInPacket&)> handler);       // add
     void FUN_140da51e0(int nOpcode, Delegate<void(CInPacket&)> handler);       // remove
 };
-Unk_DsPacketManager* FUN_140bccd50();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 
 // The notification centre ("NotifyGameStart" ...).
 NotifySystem* FUN_140939a10();
@@ -162,20 +162,28 @@ class Unk_DsSession
 public:
     MS2Ptr<Unk_DsRecord> FUN_140d9f2c0();
 };
-Unk_DsSession* FUN_140931510();
+class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 
 // The search state of the party / solo mode (FUN_1409670d0).
 class Unk_DsSearchState
 {
 };
 void* FUN_1409670d0();
-bool FUN_14162ab20(void*);
+class CPartyManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14162ab20();
+    bool FUN_14162ac00(int);
+    bool FUN_14162ac70(int);
+    unsigned int FUN_14162c1e0();
+};
 bool FUN_14162ab70(void*);
-bool FUN_14162ac00(void*, int);
-bool FUN_14162ac70(void*, int);
 short FUN_14162c0b0(void*);
-int FUN_14162c1e0(void*);
-int FUN_14152ea50(void*);
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14152ea50();
+};
 
 // The player actor (vfunc 78 = level).
 class Unk_DsActor
@@ -275,15 +283,23 @@ Unk_DsHelperDialog* FUN_140961550(int nUIType);
 class Unk_DsUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
 void FUN_141adc750(void*, int);
 
-void* FUN_140166410();
-bool FUN_14036d570(void*, int);
-void* FUN_1403ed2d0();
-void* FUN_141bd0cc0(void*);
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 bool FUN_140e146a0();
 int FUN_140bb9640(void*);
 void FUN_140710590(COutPacket&);
 COutputStream& FUN_140c0dd90(COutputStream&, const std::set<unsigned>&);
-void FUN_14070f820(COutPacket&, bool);
+class COutputStream& FUN_14070f820(class COutputStream&, bool);   // C3: was FUN_14070f820
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nValue);
 void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140d01420(const Scaleform::GFx::Value& root, CString strName, int n);
@@ -310,7 +326,6 @@ private:
     void* m_pad[0x10];   // pointer array: no /GS cookie in the loaders
 };
 MS2_CHECK_SIZE(Unk_DsNode, 0x80);
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);
 bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_DsButton> >& out, unsigned nStart);
 bool FUN_140e1ce10(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_DsLabel> >& out, unsigned nStart);
 
@@ -442,7 +457,7 @@ bool UIDungeonSearchPage::FUN_140e194f0()
         FUN_140d73ff0(CStringW(L"s_dungeonMatch_error_notFoundDungeon"));
         return false;
     }
-    if (FUN_140931510()->FUN_140d9f2c0()->FUN_140b22290(0x3ee))
+    if (((class Unk_DsSession*)FUN_140931510())->FUN_140d9f2c0()->FUN_140b22290(0x3ee))
         return true;
     FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>(this, &UIDungeonSearchPage::FUN_140e19290),
                   CStringW(L"s_dungeonSearch_no_more_reward_dungeon"));
@@ -457,7 +472,7 @@ void UIDungeonSearchPage::SendPartyMode32(bool bStart)
     packet.Encode1(0x20);
     packet.Encode1(1);
     FUN_140c0dd90(packet, m_rooms);
-    FUN_14070f820(packet, bStart);
+    FUN_14070f820(*(class COutputStream*)&static_cast<class COutPacket&>(packet), bStart);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140e196e0, UIDungeonSearchPage, SendPartyMode32, 128, 0x4ECC7700);
@@ -465,7 +480,7 @@ MS2_REPLACE_METHOD(0x140e196e0, UIDungeonSearchPage, SendPartyMode32, 128, 0x4EC
 // @0x140e19770
 void UIDungeonSearchPage::FUN_140e19770()
 {
-    bool bSearching = FUN_14162ac00(FUN_1409670d0(), 1);
+    bool bSearching = ((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162ac00(1);
     FUN_140cff840((*m_movie).FUN_1422bb890(), "m_progressIcon", bSearching);
     FUN_140cff840((*m_movie).FUN_1422bb890(), "m_progressBg", bSearching);
     m_findButton->vfunc_4(!bSearching);
@@ -485,22 +500,22 @@ MS2_REPLACE_METHOD(0x140e19770, UIDungeonSearchPage, FUN_140e19770, 570, 0x3A42B
 void UIDungeonSearchPage::FUN_140e199b0(Unk_DsRoomVec& out)
 {
     out.clear();
-    Unk_DsActor* pActor = (Unk_DsActor*)FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_DsActor* pActor = (Unk_DsActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pActor == NULL)
         return;
     short nLevelMin = 0;
     int nLevelMax = 0;
-    if (FUN_14162ab20(FUN_1409670d0())) {
+    if (((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162ab20()) {
         nLevelMin = FUN_14162c0b0(FUN_1409670d0());
-        nLevelMax = FUN_14162c1e0(FUN_1409670d0());
+        nLevelMax = ((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162c1e0();
     } else {
         nLevelMin = pActor->vfunc_78();
-        nLevelMax = FUN_14152ea50(pActor);
+        nLevelMax = ((class MyPC*)(void*)(pActor))->FUN_14152ea50();
     }
     Unk_DsRoomVec rooms;
     reinterpret_cast<Unk_DsRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_140320da0(nLevelMin, nLevelMax, rooms);
     for (unsigned i = 0; i < rooms.size(); ++i) {
-        if (!FUN_14162ac70(FUN_1409670d0(), rooms[i]->FUN_14031ddd0()))
+        if (!((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162ac70(rooms[i]->FUN_14031ddd0()))
             continue;
         if (rooms[i]->m_bHidden)
             continue;
@@ -572,8 +587,8 @@ void UIDungeonSearchDialog::OnLoadComplete()
             m_pageRandom->FUN_140e18f90();
             m_unitedReward->FUN_140e13c00();
             FUN_140e1bb70();
-            FUN_140bccd50()->FUN_140da5180(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonSearchDialog::FUN_140e1b640));
-            FUN_140bccd50()->FUN_140da5180(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonSearchDialog::FUN_140e1b6f0));
+            ((class Unk_DsPacketManager*)FUN_140bccd50())->FUN_140da5180(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonSearchDialog::FUN_140e1b640));
+            ((class Unk_DsPacketManager*)FUN_140bccd50())->FUN_140da5180(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonSearchDialog::FUN_140e1b6f0));
         }
     }
 }
@@ -583,8 +598,8 @@ MS2_REPLACE_METHOD(0x140e19fb0, UIDungeonSearchDialog, OnLoadComplete, 5151, 0x7
 void UIDungeonSearchDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_140bccd50()->FUN_140da51e0(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonSearchDialog::FUN_140e1b640));
-    FUN_140bccd50()->FUN_140da51e0(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonSearchDialog::FUN_140e1b6f0));
+    ((class Unk_DsPacketManager*)FUN_140bccd50())->FUN_140da51e0(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonSearchDialog::FUN_140e1b640));
+    ((class Unk_DsPacketManager*)FUN_140bccd50())->FUN_140da51e0(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonSearchDialog::FUN_140e1b6f0));
     m_pageCustom->FUN_140e18f30();
     m_pageRandom->FUN_140e18f30();
     m_subButtons.clear();
@@ -733,7 +748,7 @@ MS2_REPLACE_METHOD(0x140e1bb70, UIDungeonSearchDialog, FUN_140e1bb70, 242, 0x831
 // @0x140e1bc70
 void UIDungeonSearchDialog::FUN_140e1bc70(int nContent, int nButton)
 {
-    if (FUN_14036d570(FUN_140166410(), nContent)) {
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(nContent)) {
         m_subButtons[nButton]->vfunc_4(true);
         m_subLabels[nButton]->vfunc_4(true);
     } else {
@@ -746,7 +761,7 @@ MS2_REPLACE_METHOD(0x140e1bc70, UIDungeonSearchDialog, FUN_140e1bc70, 273, 0x42F
 // @0x140e1bd90
 void UIDungeonSearchDialog::FUN_140e1bd90(int nContent, int nButton)
 {
-    if (FUN_14036d570(FUN_140166410(), nContent)) {
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(nContent)) {
         m_subButtons[nButton]->vfunc_4(false);
         m_subLabels[nButton]->vfunc_4(false);
     }
@@ -768,7 +783,7 @@ MS2_REPLACE(0x140e1cfe0, FUN_140e1cfe0, 147, 0xC7E55275);
 // @0x140e1cc40
 bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_DsButton> >& out, unsigned nStart)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return false;
     out.clear();
     out.reserve(nCount);
@@ -787,7 +802,7 @@ bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, unsigned 
 // @0x140e1ce10
 bool FUN_140e1ce10(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_DsLabel> >& out, unsigned nStart)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return false;
     out.clear();
     out.reserve(nCount);

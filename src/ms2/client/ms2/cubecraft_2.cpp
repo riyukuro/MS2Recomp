@@ -1700,7 +1700,7 @@ MS2_REPLACE(0x1410AF790, GetCubeMotionManager, 8, 0xEA0FC2F5);
 
 // The UCRT's `static __inline memcpy_s` of this TU (unreferenced copy).
 // @0x1410af7e0
-// MS2-FUNCTIONAL: unreferenced CRT memcpy_s copy: frame saves rsi/rdi, source spelling differs
+#pragma function(memset, memcpy)
 static __inline errno_t ms2_memcpy_s_copy(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }
@@ -1715,6 +1715,7 @@ static __inline errno_t ms2_memcpy_s_copy(void* const d, size_t const dsz, void 
     memcpy(d, s, ssz);
     return 0;
 }
+#pragma intrinsic(memset, memcpy)
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy)(void*, size_t, const void*, size_t) = &ms2_memcpy_s_copy;
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cabf10-0x142cabfe0 .text$yd

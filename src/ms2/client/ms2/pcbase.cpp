@@ -857,9 +857,9 @@ public:
     ~Unk_SceneWalker();                                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                                // 0x14098e0d0
 private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
+    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
-MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
+MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 extern NiFixedString DAT_143ae5470[9][30];
 float FUN_14059d930(float f);                                       // fabs
 class Unk_PCBaseCameraMgr : public CameraMgr
@@ -897,18 +897,15 @@ extern CString DAT_143ae32c8;
 
 // ---- PCBase ----
 
-// MS2-FUNCTIONAL 0x14166a650: m_pos920/m_posBF4(NiPoint3::ZERO) go through NiPoint3(const efd::Point3&) 0x14027dcf0
-//   (ZERO is efd::Point3's) where the exe copies a NiPoint3-typed zero trivially (rep movsb, rdi/rsi saved), and the comp
-//   MS2Ptr instantiations are the UI entity types (UIHpBar::Entity ...), not the Unk_PCBaseComp_ stand-ins. The ctor is
-//   pinned (the line table starts at the brace, below the initializer list).
+// The ctor is pinned (the line table starts at the brace, below the initializer list).
 PCBase::PCBase()
     : m_unk_150(0), m_unk_158(0), m_unk_15c(0), m_unk_160(0), m_unk_1bc(0), m_unk_620(25.0f, 105.0f),
-      m_unk_748(this), m_unk_8e8(10), m_pos920(NiPoint3::ZERO), m_f92c(1.0f), m_f930(1.0f), m_f934(0.0f),
+      m_unk_748(this), m_unk_8e8(10), m_pos920(reinterpret_cast<const NiPoint3&>(efd::Point3::ZERO)), m_f92c(1.0f), m_f930(1.0f), m_f934(0.0f),
       m_f938(1.0f), m_str940(""), m_str948(""), m_str958(""), m_str960(""), m_unk_968(0), m_unk_9a8(0),
       m_pos9ac(efd::Point3::ZERO), m_unk_9c4(0), m_f9c8(0.0f), m_b9d0(true), m_b9d1(true), m_unk_a50(1), m_spA58(0),
       m_spA78(0), m_spA88(0), m_spA98(0), m_spAA8(0), m_spAB8(0), m_unk_ad8(0), m_unk_af4(0x7fffffff), m_unk_af8(0),
       m_spB00(0), m_spB10(0), m_spB18(0), m_mapB28(17, .75f, .25f, 2.25f, 10), m_unk_b70(0), m_nUidB78(0),
-      m_unk_b80(0), m_unk_b88(10), m_unk_bb8(10), m_spBE8(0), m_fBF0(0.0f), m_posBF4(NiPoint3::ZERO), m_unk_c00(0),
+      m_unk_b80(0), m_unk_b88(10), m_unk_bb8(10), m_spBE8(0), m_fBF0(0.0f), m_posBF4(reinterpret_cast<const NiPoint3&>(efd::Point3::ZERO)), m_unk_c00(0),
       m_unk_c04(1), m_unk_c0c(0), m_posC10(efd::Point3::ZERO), m_spC38(0), m_spC40(0), m_unk_c48(5), m_unk_c50(0),
       m_unk_c60(0), m_unk_c64(0), m_unk_c68(0), m_mapCA8(17, .75f, .25f, 2.25f, 10), m_unk_d20(0)
 {
@@ -922,7 +919,7 @@ PCBase::PCBase()
     m_unk_190.m_x = 1800.0f;
     m_f9cc = 0.0f;
     m_unk_ae0 = egf::kENTITY_INVALID;
-    m_posAE8 = NiPoint3::ZERO;
+    m_posAE8 = reinterpret_cast<const NiPoint3&>(efd::Point3::ZERO);
     m_timerC70.FUN_140868750(1000);
     m_spBE8 = 0;
     m_mapB28.RemoveAll();
@@ -1115,7 +1112,6 @@ void PCBase::AnimActivated(NiActorManager* pkManager, NiActorManager::SequenceID
 }
 
 // @0x14166bf40
-// MS2-FUNCTIONAL: same calls and branches; the exe frame is 0x20 smaller (temporaries shared between the branches).
 void PCBase::TextKeyEvent(NiActorManager* pkManager, NiActorManager::SequenceID eSequenceID,
     const NiFixedString& kTextKey, const NiTextKeyMatch* pkMatchObject,
     NiControllerSequence* pkSeq, float fEventTime)
@@ -1129,7 +1125,7 @@ void PCBase::TextKeyEvent(NiActorManager* pkManager, NiActorManager::SequenceID 
             ((CGroundEffectDataManager*)(Unk_PCBaseSound*)(reinterpret_cast<Unk_PCBaseSound*>(TSingleton<CGroundEffectDataManager>::GetInstance())))->PlayEffects((GameObject*)(PCBase*)(this), CString(FUN_142087e50(kTextKey)));
     }
     else if (strncmp(FUN_142087e50(kTextKey), "effect_", 7) == 0) {
-        CString strName(FUN_142087e50(kTextKey) + 7);
+        CString strName(&FUN_142087e50(kTextKey)[7]);
         Unk_PCBaseFxQuery kQuery;
         kQuery.m_strName = strName;
         kQuery.m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
@@ -1138,7 +1134,7 @@ void PCBase::TextKeyEvent(NiActorManager* pkManager, NiActorManager::SequenceID 
         ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&kQuery));
     }
     else if (strncmp(FUN_142087e50(kTextKey), "ani_eff_", 8) == 0) {
-        CString strName(FUN_142087e50(kTextKey) + 8);
+        CString strName(&FUN_142087e50(kTextKey)[8]);
         Unk_PCBaseFxQuery kQuery;
         kQuery.m_strName = strName;
         kQuery.m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
@@ -1152,8 +1148,11 @@ void PCBase::TextKeyEvent(NiActorManager* pkManager, NiActorManager::SequenceID 
     }
     if (eSequenceID == ((class NiActorManager*)(class NiActorManager*)(pkManager))->GetTargetAnimation() && m_b9d1 && kTextKey.GetLength() > 4) {
         if (strncmp(FUN_142087e50(kTextKey), "emo_", 4) == 0) {
-            int nState = FUN_14166c930();
-            FUN_14166ef10(CString(FUN_142087e50(kTextKey) + 4), true, 0, nState == 0x35);
+            bool bEmotion = false;
+            if (FUN_14166c930() == 0x35)
+                bEmotion = true;
+            CString strEmotion(&FUN_142087e50(kTextKey)[4]);
+            FUN_14166ef10(strEmotion, true, 0, bEmotion);
         }
     }
     m_spStateMgr->FUN_1417dbf50(pkManager, eSequenceID, kTextKey, pkMatchObject, pkSeq, fEventTime);
@@ -3403,8 +3402,6 @@ MS2_REPLACE_METHOD(0x141676b00, PCBase, FUN_141676b00, 70, 0xA2EC986C);
 
 // Ride on: an unloaded actor only records the action; otherwise the ridee is created, bound to its riding row and
 // registered in the world, the rider's stats are copied over and the ride-on effect is played.
-// MS2-FUNCTIONAL: GameObject::vfunc_19/21 take efd::Point3 while vfunc_18/20 return NiPoint3 here (one slicing copy per
-// call); in the exe both are the same type.
 // @0x141676b90
 void PCBase::vfunc_120(MS2Ptr<RideOnAction> spAction)
 {
@@ -3428,8 +3425,8 @@ void PCBase::vfunc_120(MS2Ptr<RideOnAction> spAction)
     if (spRidee->FUN_1417043a0(spAction->m_n1c, spAction->m_n20, this) == 0)
         return;
     spRidee->m_unk_158 = m_unk_158;
-    spRidee->vfunc_19(vfunc_18());
-    spRidee->vfunc_21(vfunc_20());
+    spRidee->vfunc_19(static_cast<const efd::Point3&>(vfunc_18()));
+    spRidee->vfunc_21(static_cast<const efd::Point3&>(vfunc_20()));
     spRidee->SetRider(this);
     m_spB10 = spRidee;
     FUN_141676320(spAction);
@@ -3466,8 +3463,8 @@ MS2_REPLACE_METHOD(0x141676b90, PCBase, vfunc_120, 2127, 0x4D932F9C);
 
 // Ride off: the rider takes the ridee's place (or keeps its own platform anchor when the ridee stood on a moving field
 // object), the ridee is unregistered and released, and the rider falls or idles; then the ride-off effects.
-// MS2-FUNCTIONAL: NiPoint3 and efd::Point3 are distinct here (slicing copies / a converting ctor where the exe copies
-// the bytes); same calls, same order.
+// MS2-FUNCTIONAL: the frame is 0x20 smaller, and from the je at +0x4a7 the exe calls 0x14027dcf0, 0x140981070,
+// 0x141676020, 0x14123c460 and 0x141bd0fa0 where this body differs (not yet diffed past that point).
 // @0x1416773f0
 void PCBase::vfunc_121(MS2Ptr<RideOffAction> spAction)
 {
@@ -3477,7 +3474,7 @@ void PCBase::vfunc_121(MS2Ptr<RideOffAction> spAction)
         return;
     }
     m_spB10->FUN_1417058b0();
-    efd::Point3 kPos = m_spB10->vfunc_18();
+    NiPoint3 kPos = m_spB10->vfunc_18();
     NiPoint3 kDir = m_spB10->vfunc_20();
     int bFall = 1;
     FUN_141678300(m_spB10->FUN_1416782e0());
@@ -3491,15 +3488,15 @@ void PCBase::vfunc_121(MS2Ptr<RideOffAction> spAction)
                 if (m_spB10->FUN_141671a30() != 0)
                     kPos.z = spObj->FUN_140adf8e0().z + spObj->FUN_140ae0660().z + 10.0f;
                 egf::EntityID kId(egf::kENTITY_INVALID);
-                NiPoint3 kOffset = efd::Point3::ZERO;
-                m_spB10->FUN_141678240(kId, kOffset);
-                FUN_141678290(kId, kOffset);
+                efd::Point3 kOffset = efd::Point3::ZERO;
+                m_spB10->FUN_141678240(kId, reinterpret_cast<NiPoint3&>(kOffset));
+                FUN_141678290(kId, reinterpret_cast<NiPoint3&>(kOffset));
                 bFall = 0;
             }
         }
     }
-    vfunc_19(kPos);
-    vfunc_21(kDir);
+    vfunc_19(static_cast<const efd::Point3&>(kPos));
+    vfunc_21(static_cast<const efd::Point3&>(kDir));
     FUN_14166d8b0(kDir.z);
     NiAVObject* pNode = FUN_141b6ef70(FUN_14123c460());
     if (pNode != 0) {
@@ -4396,7 +4393,6 @@ void PCBase::FUN_141670fd0(efd::Point3 kSize, efd::Point3 kOffset)
 MS2_REPLACE_METHOD(0x141670fd0, PCBase, FUN_141670fd0, 332, 0x3365AEC9);
 
 // @0x141678ad0
-// MS2-FUNCTIONAL: the /GS frame puts the rotation matrix and cookie 8 bytes higher (0x110/0x138 vs 0x108/0x130); code otherwise identical.
 void PCBase::FUN_141678ad0(CString strName, bool bOutline, float fScale, float fAngle)
 {
     if (m_spC40)

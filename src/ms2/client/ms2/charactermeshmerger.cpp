@@ -1283,14 +1283,14 @@ NiMesh* FUN_14104ae20(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* 
     FUN_14104b530(pMerged, kBuckets);
     FUN_14104bbb0(pMerged, kInfo, kBuckets, kRootTransform);
 
-    if (kInfo.m_spSkin != 0)
+    if (kInfo.m_spSkin)
     {
-        unsigned int uiMaxBones = 0;
         unsigned int uiTotalBones = 0;
+        unsigned int uiMaxBones = 0;
         for (unsigned int i = 0; i < uiBucketCount; i++)
         {
             unsigned int uiBones = (unsigned int)kInfo.m_kBoneLists[i].size();
-            if (uiMaxBones < uiBones)
+            if (uiBones > uiMaxBones)
                 uiMaxBones = uiBones;
             uiTotalBones += uiBones;
         }
@@ -1320,7 +1320,7 @@ NiMesh* FUN_14104ae20(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* 
         }
     }
 
-    NiBound kBound = pFirst->GetModelBound();
+    NiBound kBound = kBuckets[0][0]->GetModelBound();
     for (unsigned int i = 0; i < kBuckets.size(); i++)
     {
         const MeshList& kList = kBuckets[i];
@@ -1330,20 +1330,22 @@ NiMesh* FUN_14104ae20(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* 
     pMerged->SetModelBound(kBound);
     pMerged->AddModifier(kInfo.m_spSkin, true);
     pMerged->AttachProperty(pFirst->GetProperty(8));
-    pMerged->SetName(NiFixedString("MergedMesh"));
+    pMerged->SetName("MergedMesh");
     for (unsigned int i = 0; i < 12; i++)
     {
-        if (i != 8)
-        {
-            NiProperty* pProperty = pFirst->GetProperty(i);
-            if (pProperty != 0)
-                pMerged->AttachProperty(pProperty);
-        }
+        if (i == 8)
+            continue;
+        NiProperty* pProperty = pFirst->GetProperty(i);
+        if (pProperty != 0)
+            pMerged->AttachProperty(pProperty);
     }
     pMerged->ApplyAndSetActiveMaterial(((class NiMaterial*)((class NiRenderObject*)(class NiMesh*)(pFirst))->GetActiveMaterial()), 0xffffffff);
     unsigned short usExtra = pFirst->GetExtraDataSize();
     for (unsigned short us = 0; us < usExtra; us++)
-        pMerged->AddExtraData(pFirst->GetExtraDataAt(us));
+    {
+        NiExtraData* pExtra = pFirst->GetExtraDataAt(us);
+        pMerged->AddExtraData(pExtra);
+    }
     pMerged->SetEffectState(pFirst->GetEffectState());
     pMerged->UpdateProperties();
     pMerged->CompleteUpdateModifiers();
@@ -1844,64 +1846,76 @@ void FUN_14104d450(NiAVObject* pRoot, MeshGroups& kGroups)
             continue;
         if (pObject->GetName() == "Bip01")
             continue;
-        if (NiDynamicCast(NiNode, pObject) != 0)
+        if (NiNode* pNode = NiDynamicCast(NiNode, pObject))
         {
-            kIter.FUN_14098d6d0((NiNode*)pObject);
+            kIter.FUN_14098d6d0(pNode);
             continue;
         }
         if (FUN_14098dfc0(pObject))
             continue;
         NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, pObject->GetProperty(8));
-        if (pTexturing == 0 || pTexturing->GetBaseTexture() == 0)
-            continue;
-        NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
-        if (pMesh == 0 || pObject->GetProperty(0) != 0)
-            continue;
-        if (NiDynamicCast(NiMorphMeshModifier, pMesh->GetModifierByType(&NiMorphMeshModifier::ms_RTTI)) != 0)
-            continue;
-        NiSkinningMeshModifier* pSkin = NiDynamicCast(NiSkinningMeshModifier, pMesh->GetModifierByType(&NiSkinningMeshModifier::ms_RTTI));
-        if (pSkin == 0 || pSkin->GetSoftwareSkinned())
-            continue;
-
-        bool bHasVertexColor = false;
-        unsigned int uiStreams = pMesh->GetStreamRefCount();
-        for (unsigned int i = 0; i < uiStreams; i++)
+        if (pTexturing != 0)
         {
-            NiDataStreamRef* pRef = pMesh->GetStreamRefAt(i);
-            if (pRef->GetUsage() == NiDataStream::USAGE_VERTEX)
+            NiTexture* pBase = pTexturing->GetBaseTexture();
+            if (pBase == 0)
+                continue;
+            NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
+            if (pMesh == 0)
+                continue;
+            if (pObject->GetProperty(0) != 0)
+                continue;
+            NiMorphMeshModifier* pMorph = NiDynamicCast(NiMorphMeshModifier, pMesh->GetModifierByType(&NiMorphMeshModifier::ms_RTTI));
+            if (pMorph != 0)
+                continue;
+            NiSkinningMeshModifier* pSkin = NiDynamicCast(NiSkinningMeshModifier, pMesh->GetModifierByType(&NiSkinningMeshModifier::ms_RTTI));
+            if (pSkin == 0)
+                continue;
+            if (pSkin->GetSoftwareSkinned())
+                continue;
+
+            bool bHasVertexColor = false;
+            unsigned int uiStreams = pMesh->GetStreamRefCount();
+            for (unsigned int i = 0; i < uiStreams; i++)
             {
-                if (pRef->FindElementDescIndex(NiCommonSemantics::COLOR(), 0) != 0xffffffff)
+                NiDataStreamRef* pRef = pMesh->GetStreamRefAt(i);
+                if (pRef->GetUsage() == NiDataStream::USAGE_VERTEX)
                 {
-                    EE_LOG_AT(1, 1, ("Mesh %s can't be merged : contains vertex color data", (const char*)pMesh->GetName()), MS2_THIS_FILE, 0x11c);
-                    bHasVertexColor = true;
-                    break;
+                    if (pRef->FindElementDescIndex(NiCommonSemantics::COLOR(), 0) != 0xffffffff)
+                    {
+                        EE_LOG_AT(1, 1, ("Mesh %s can't be merged : contains vertex color data", (const char*)pMesh->GetName()), MS2_THIS_FILE, 0x11c);
+                        bHasVertexColor = true;
+                        break;
+                    }
                 }
             }
-        }
-        if (bHasVertexColor)
-            continue;
+            if (bHasVertexColor)
+                continue;
 
-        const NiFixedString& kName = pMesh->GetName();
-        if (kName.Contains("FA") && kName != "FA_EA")
-            continue;
+            const NiFixedString& kName = pMesh->GetName();
+            if (kName.Contains("FA") && kName != "FA_EA")
+                continue;
 
-        Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), ((class NiMaterial*)((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial())));
-        if (pEntry != 0 && ((class Unk_CubeKind*)(struct Unk_MaterialEntry*)(pEntry))->FUN_140ef4dd0() == 2)
-        {
-            NiMaterialProperty* pMaterial = NiDynamicCast(NiMaterialProperty, pMesh->GetProperty(3));
-            const NiColor& kAmbient = pMaterial->GetAmbientColor();
-            const NiColor& kDiffuse = pMaterial->GetDiffuseColor();
-            if (FUN_140a56f50((struct Unk_Vec3Cli const*)(&kAmbient), (struct Unk_Vec3Cli const*)(&kDiffuse)))
-                EE_LOG_AT(1, 1, ("Mesh %s's material ambient and diffuse are not equal!", (const char*)pMesh->GetName()), MS2_THIS_FILE, 0x155);
-            if (kAmbient.g != kAmbient.r || kAmbient.b != kAmbient.r || kDiffuse.g != kDiffuse.r || kDiffuse.b != kDiffuse.r)
-                EE_LOG_AT(1, 1, ("Mesh %s's material color is not grayscale color!", (const char*)pMesh->GetName()), MS2_THIS_FILE, 0x159);
+            Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), ((class NiMaterial*)((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial())));
+            if (pEntry == 0)
+                continue;
+            if (((class Unk_CubeKind*)(struct Unk_MaterialEntry*)(pEntry))->FUN_140ef4dd0() != 2)
+                continue;
+            {
+                NiMaterialProperty* pMaterial = NiDynamicCast(NiMaterialProperty, pMesh->GetProperty(3));
+                const NiColor& kAmbient = pMaterial->GetAmbientColor();
+                const NiColor& kDiffuse = pMaterial->GetDiffuseColor();
+                if (FUN_140a56f50((struct Unk_Vec3Cli const*)(&kAmbient), (struct Unk_Vec3Cli const*)(&kDiffuse)))
+                    EE_LOG_AT(1, 1, ("Mesh %s's material ambient and diffuse are not equal!", (const char*)pMesh->GetName()), MS2_THIS_FILE, 0x155);
+                if (kAmbient.r != kAmbient.g || kAmbient.r != kAmbient.b || kDiffuse.r != kDiffuse.g || kDiffuse.r != kDiffuse.b)
+                    EE_LOG_AT(1, 1, ("Mesh %s's material color is not grayscale color!", (const char*)pMesh->GetName()), MS2_THIS_FILE, 0x159);
 
-            // The exe takes begin(), not find(): every mergeable mesh joins the first transform's list.
-            efd::map<NiTransform, MeshList, Unk_TransformLess>::iterator it = kByTransform.begin();
-            if (it != kByTransform.end())
-                it->second.push_back(pMesh);
-            else
-                kByTransform.insert(std::make_pair(pMesh->GetWorldTransform(), MeshList())).first->second.push_back(pMesh);
+                // The exe takes begin(), not find(): every mergeable mesh joins the first transform's list.
+                efd::map<NiTransform, MeshList, Unk_TransformLess>::iterator it = kByTransform.begin();
+                if (it != kByTransform.end())
+                    it->second.push_back(pMesh);
+                else
+                    kByTransform.insert(std::make_pair(pMesh->GetWorldTransform(), MeshList())).first->second.push_back(pMesh);
+            }
         }
     }
 

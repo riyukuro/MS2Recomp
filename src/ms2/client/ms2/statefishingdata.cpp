@@ -148,7 +148,7 @@ public:
 };
 
 // The model loader (singleton): loads a nif by path.
-CNifLoadingService* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 void* FUN_1409849b0(void* pHandle);                          // handle -> node pointer
 
 // The optimizer with the inline accessor of this unit.
@@ -157,7 +157,7 @@ class Unk_FsOptimizer : public COptimizer
 public:
     int FUN_140ddcc90() { return m_nMode; }                  // 0x140ddcc90
 };
-Unk_FsOptimizer* FUN_1409f7c90();
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 
 class Unk_FsWorld
 {
@@ -167,12 +167,11 @@ public:
 
 class Unk_PCBaseMoveTarget { public: efd::Point3 FUN_141683900(); };
 
-CPhysXHelper* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 UICastingBar* FUN_140ac2270(int nId);
-bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned nId);   // efd::ClassInfo::IsKindOf
 __int64 FUN_14028d0e0();                                     // the current time
 PCBase* FUN_140974230(PCBase* pPC);                          // the player of an actor
-ClonePC* FUN_1405a7e30(PCBase* pPC);                         // the mannequin of a player
+class ClonePC* FUN_1405a7e30(class PC*);   // C3: was FUN_1405a7e30
 class Unk_PCBaseBuffs { public: MS2Ptr<AdditionalCli> FUN_14096fd30(int nKind); };   // AdditionalCliList (FUN_1416749a0)
 efd::Point3 FUN_140a0b080(const efd::Point3& kA, const efd::Point3& kB, const efd::Point3& kC);
 void FUN_140b86230(const efd::Point3& kDir, NiMatrix3& kOut);   // rotation matrix of a direction
@@ -264,7 +263,7 @@ void StateFishing::vfunc_4(StateData* pData)
         FUN_140a94350()->vfunc_7(0x493e2, 0);
         return;
     }
-    if (FUN_14087ddc0(FUN_1417b8370() ? FUN_1417b8370()->GetClassDesc() : 0, 0x6200044))
+    if (efd::ClassInfo::IsKindOf(FUN_1417b8370() ? FUN_1417b8370()->GetClassDesc() : 0, 0x6200044))
         m_nA8 = 1;
 }
 
@@ -323,7 +322,7 @@ void StateFishing::vfunc_3(double fTime)
             m_nB0 = m_pOwner->vfunc_25();
             if (m_spEffect ? true : false)
             {
-                if (FUN_1409f7c90()->FUN_140ddcc90() == 0)
+                if (((class Unk_FsOptimizer*)FUN_1409f7c90())->FUN_140ddcc90() == 0)
                     m_spEffect->SetAppCulled(m_nB0 ? true : false);
             }
         }
@@ -386,7 +385,7 @@ void StateFishing::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
     }
     else
     {
-        ClonePC* pClone = FUN_1405a7e30(FUN_1417b8370());
+        ClonePC* pClone = FUN_1405a7e30((class PC*)(FUN_1417b8370()));
         if (pClone != 0)
         {
             if (FUN_1417b7e40() == 0x75)
@@ -529,7 +528,7 @@ void StateFishing::FUN_140ddb740(int nRod)
         {
             spNew->FUN_140526b30(m_pOwner->FUN_14123c580());
             spNew->FUN_140526a70(FUN_14028d0e0());
-            if (FUN_14087ddc0(pPC ? pPC->GetClassDesc() : 0, 0x6200044))
+            if (efd::ClassInfo::IsKindOf(pPC ? pPC->GetClassDesc() : 0, 0x6200044))
                 spNew->FUN_14052a130(3);
             else
                 spNew->FUN_14052a130(5);
@@ -548,11 +547,11 @@ void StateFishing::FUN_140ddb740(int nRod)
     }
     if (spRod->m_strChair.GetLength() > 0)
     {
-        m_spEffect = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, FUN_140a0afd0()->Load(CString(spRod->m_strChair), false, 5, 0, 0)));
+        m_spEffect = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, ((class CNifLoadingService*)FUN_140a0afd0())->Load(CString(spRod->m_strChair), false, 5, 0, 0)));
         if (m_spEffect)
         {
             NiNode* pRoot = reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10();
-            ClonePC* pClone = FUN_1405a7e30(pPC);
+            ClonePC* pClone = FUN_1405a7e30((class PC*)(pPC));
             if (pClone != 0)
                 static_cast<AvatarPC*>(pClone)->FUN_1409f5560(m_spEffect);
             else
@@ -568,7 +567,7 @@ void StateFishing::FUN_140ddb740(int nRod)
                 m_spEffect->UpdateProperties();
                 m_spEffect->Update(0.0f, true);
                 m_nB0 = m_pOwner->vfunc_25();
-                if (FUN_1409f7c90()->FUN_140ddcc90() == 0 && m_nB0 != 0)
+                if (((class Unk_FsOptimizer*)FUN_1409f7c90())->FUN_140ddcc90() == 0 && m_nB0 != 0)
                     m_spEffect->SetAppCulled(true);
             }
         }
@@ -687,7 +686,7 @@ int StateFishingFloat::FUN_140ddc4b0(efd::Point3 kDir)
     if (pGuide == 0)
         return 0;
     PCBase* pPC = pGuide->FUN_1410a1310();
-    if (!FUN_14087ddc0(pPC ? pPC->GetClassDesc() : 0, 0x6200004))
+    if (!efd::ClassInfo::IsKindOf(pPC ? pPC->GetClassDesc() : 0, 0x6200004))
         return 1;
     NiPoint3 kStart = m_pOwner->vfunc_18();
     kStart += kDir * 30.0f;
@@ -699,7 +698,7 @@ int StateFishingFloat::FUN_140ddc4b0(efd::Point3 kDir)
     kRay.m_groups = 0x301;
     efd::Point3 kFoot = m_pOwner->vfunc_18() + efd::Point3(0.0f, 0.0f, 5.0f);
     Unk_FsCell kCellA = FUN_140ddc3c0(kFoot);
-    if (FUN_1409f7ca0()->CastRay(&kRay, 0))
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kRay, 0))
     {
         if (kRay.m_hitEntity != 0)
         {

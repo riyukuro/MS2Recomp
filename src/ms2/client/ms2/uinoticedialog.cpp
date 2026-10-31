@@ -67,7 +67,7 @@ public:
 };
 CFeatureManager* FUN_140166410();
 class Unk_NdUIMgr { public: void FUN_141adc750(int nUiType); };             // open a dialog by its UI type
-unsigned FUN_140869420();                                                   // millisecond clock
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                      // has the AS object been released
 bool FUN_140e04c20(const MS2Ptr<ASDialog>* p, int n);                       // p == NULL
 bool FUN_140acd940(const MS2Ptr<ASUIComponent>* p, int n);                  // p == NULL
@@ -89,7 +89,6 @@ public:
 
 Unk_AasImage* FUN_140d03240(Unk_AasImagePtr* p);                            // operator->
 void FUN_1422e5530(Unk_AasImage* pImage, Unk_AasSourcePtr spSource);
-void FUN_1422e55c0(Unk_AasImage* pImage, bool b);
 
 // ---- AScript::FUN_141009c70 ----
 
@@ -182,7 +181,7 @@ void UINoticeDialog::vfunc_72()
     UIDialog::vfunc_72();
     if (FUN_140ba28d0(&m_30, 0))
         return;
-    if (m_nHideAt != 0 && FUN_140869420() > m_nHideAt)
+    if (m_nHideAt != 0 && GetTickCountMs2() > m_nHideAt)
         FUN_141009a60();
 }
 
@@ -203,7 +202,7 @@ void UINoticeDialog::vfunc_86()
 {
     if (m_spImage.get() != 0)
     {
-        FUN_1422e55c0(FUN_140d03240(&m_spImage), true);
+        ((class ASLoader*)(class Unk_AasImage*)(FUN_140d03240(&m_spImage)))->UnloadAndStop(true);
         m_renderTarget->FUN_1422c6b70(m_spImage->FUN_1422bb890());
         m_spImage = 0;
     }
@@ -313,7 +312,7 @@ void UINoticeDialog::FUN_141009870()
 // @0x141009950
 void UINoticeDialog::FUN_141009950(int nSeconds)
 {
-    m_nHideAt = FUN_140869420() + nSeconds;
+    m_nHideAt = GetTickCountMs2() + nSeconds;
 }
 
 // @0x141009980

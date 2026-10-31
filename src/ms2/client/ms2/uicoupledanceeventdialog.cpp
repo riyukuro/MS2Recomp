@@ -217,7 +217,7 @@ public:
     int FUN_14166c930();
 };
 class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
-bool FUN_140b884e0(Unk_Pos& pos);
+bool FUN_140b884e0(struct Vector3&);   // C3: was FUN_140b884e0
 
 // Message boxes (CMsgBoxData, 0x2a0 bytes).
 class Unk_CMsgBoxData { public: void FUN_141a01660(const CStringW& str); void FUN_141a024a0(int n); };
@@ -231,7 +231,7 @@ void FUN_14151f200();
 
 // The game menu dialog found by UI type (0x140938b90).
 class Unk_UIGameMenuDialog { public: void FUN_141938ae0(int nType, int n); };
-Unk_UIGameMenuDialog* FUN_140938b90(int nType);
+class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 
 void FUN_140178270(const CString& str, std::vector<int>& out, const char* szDelim);     // split into ints
 
@@ -308,7 +308,7 @@ int UICoupleDanceEventDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             return 1;
         }
         Unk_Pos pos = pPlayer->vfunc_18();
-        if (!FUN_140b884e0(pos)) {
+        if (!FUN_140b884e0(*(struct Vector3*)&static_cast<struct Unk_Pos&>(pos))) {
             FUN_1412752d0(L"s_microgame_couple_dance_request_failed_wrong_position", 1);
             return 1;
         }
@@ -466,7 +466,7 @@ void UICoupleDanceEventDialog::FUN_140bfdc00()
             }
         }
     }
-    Unk_UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
+    Unk_UIGameMenuDialog* pMenu = ((class Unk_UIGameMenuDialog*)FUN_140938b90(0x4e28));
     if (pMenu)
         pMenu->FUN_141938ae0(0x4f71, 0);
 }

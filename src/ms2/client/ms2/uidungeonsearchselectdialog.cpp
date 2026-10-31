@@ -68,10 +68,13 @@ class Unk_SdUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };
 
 UIDungeonSearchDialog* FUN_140e28d40(int nUIType);
 void* FUN_1409670d0();
-bool FUN_14162ac70(void*, int);
-unsigned FUN_140bd09c0(void* pUserData);
+class CPartyManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14162ac70(int);
+};
+int FUN_140bd09c0(void*);   // C3: was FUN_140bd09c0
 void* FUN_140bd09d0(unsigned n);
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);
 MS2Ptr<Unk_SdRadio> FUN_140a463d0(int nMovieId, const Scaleform::GFx::Value& v);   // the radio wrapper creator
 bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_SdRow> >& out, unsigned nStart);
 CStringW FUN_140e14bd0(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit);                 // the room's list text
@@ -116,7 +119,7 @@ template <> bool MS2Ptr<Unk_SdRadio>::operator==(Unk_SdRadio* p) const { return 
 template <> MS2Ptr<Unk_SdRadio> AScript::FUN_140e159f0<Unk_SdRadio>(const CString& strName)
 {
     Scaleform::GFx::Value v = FUN_1422baa20(strName);
-    if (FUN_1409b4d40(v))
+    if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
         return FUN_140a463d0(m_nMovieId, v);
     return MS2Ptr<Unk_SdRadio>(0);
 }
@@ -267,7 +270,7 @@ void UIDungeonSearchSelectDialog::FUN_140e28280(const Scaleform::GFx::FunctionHa
         return;
     }
     {
-        bool bOk = FUN_14162ac70(FUN_1409670d0(), m_rooms[nRoom]->GetDungeonRoomID());
+        bool bOk = ((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162ac70(m_rooms[nRoom]->GetDungeonRoomID());
         CStringW strName = FUN_140e14bd0(m_rooms[nRoom], true);
         int nColor;
         if (bOk)

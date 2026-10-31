@@ -29,18 +29,22 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-bool FUN_14028f710(Unk_140165cf0*);                                     // the element is usable
-void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
-void FUN_1408731a0(Unk_140165cf0*, const char*, unsigned short&);
-void FUN_1408730a0(Unk_140165cf0*, const char*, bool&);
-void FUN_1408732e0(Unk_140165cf0*, const char*, __int64&);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int FUN_1408733e0(Unk_140165cf0*, const char*, CStringA&);
 void FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
-int FUN_140873890(Unk_140165cf0*, const char*, int&);
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);
 Unk_EnchantItemPtr FUN_14053f870(int nItemId);
 void* FUN_140302b10();
-float FUN_1404c1810(void* pThis, int a, int b);
+class CGloabalFactor   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1404c1810(int, int);
+};
 int FUN_14034e730(Unk_140165cf0* pElem, const char* pszName, int* pnOut);
 
 // Sort names of the item list (header static of this unit).
@@ -64,18 +68,18 @@ CEnchantScrollData::~CEnchantScrollData()
 int CEnchantScrollData::Read(Unk_140165cf0* pElem)
 {
     FUN_14034e730(pElem, "scrollType", &m_nScrollType);
-    FUN_1408731a0(pElem, "minLv", m_nMinLv);
-    FUN_1408731a0(pElem, "maxLv", m_nMaxLv);
-    FUN_1408730a0(pElem, "isLockTrade", m_bLockTrade);
-    FUN_1408730a0(pElem, "disableBreak", m_bDisableBreak);
+    XmlGetAttr((class TiXmlElement*)(pElem), "minLv", m_nMinLv);
+    XmlGetAttr((class TiXmlElement*)(pElem), "maxLv", m_nMaxLv);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isLockTrade", m_bLockTrade);
+    XmlGetAttr((class TiXmlElement*)(pElem), "disableBreak", m_bDisableBreak);
     if (m_nScrollType == 0)
         return 0;
     if (m_nScrollType != 3)
-        FUN_1408731e0(pElem, "grade", m_nGrade);
+        XmlGetAttr((class TiXmlElement*)(pElem), "grade", m_nGrade);
     if (m_nScrollType == 4)
     {
-        FUN_1408731e0(pElem, "minGrade", m_nMinGrade);
-        FUN_1408731e0(pElem, "maxGrade", m_nMaxGrade);
+        XmlGetAttr((class TiXmlElement*)(pElem), "minGrade", m_nMinGrade);
+        XmlGetAttr((class TiXmlElement*)(pElem), "maxGrade", m_nMaxGrade);
     }
     CString strSlot;
     CString strRank;
@@ -140,9 +144,9 @@ CEnchantScrollRecipe::~CEnchantScrollRecipe()
 // @0x14034d660
 int CEnchantScrollRecipe::Read(Unk_140165cf0* pElem)
 {
-    FUN_1408731e0(pElem, "id", m_nId);
-    FUN_1408731e0(pElem, "recipeType", m_nRecipeType);
-    FUN_1408731e0(pElem, "slot", m_nSlot);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "recipeType", m_nRecipeType);
+    XmlGetAttr((class TiXmlElement*)(pElem), "slot", m_nSlot);
     CStringW strScroll;
     FUN_140873420(pElem, "rewardScroll", strScroll);
     m_scroll.vfunc_1(CStringW(strScroll));
@@ -161,10 +165,10 @@ int CEnchantScrollRecipe::Read(Unk_140165cf0* pElem)
     if (scroll.IsNull())
         return 0;
     m_nMaxLv = scroll->m_nMaxLv;
-    FUN_1408732e0(pElem, "requireMeso", m_nMeso);
-    if (FUN_1404c1810(FUN_140302b10(), 1, 0) != 1.0f)
+    XmlGetAttr((class TiXmlElement*)(pElem), "requireMeso", m_nMeso);
+    if (((class CGloabalFactor*)(void*)(FUN_140302b10()))->FUN_1404c1810(1, 0) != 1.0f)
     {
-        m_nMeso *= FUN_1404c1810(FUN_140302b10(), 1, 0);
+        m_nMeso *= ((class CGloabalFactor*)(void*)(FUN_140302b10()))->FUN_1404c1810(1, 0);
         m_nMeso = ((m_nMeso + 50) / 100) * 100;
     }
     for (unsigned __int64 i = 1; i <= 5; i++)
@@ -233,11 +237,11 @@ int CEnchantScrollTable::LoadScrolls()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("scroll"); pNode != 0; pNode = pNode->FUN_140168650("scroll"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         ScrollPtr data(new CEnchantScrollData);
         int nId = 0;
-        FUN_1408731e0(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         if (data->Read(pNode) == 0)
             continue;
         m_scrolls.SetAt(nId, data);
@@ -260,7 +264,7 @@ int CEnchantScrollTable::LoadRecipes()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("recipe"); pNode != 0; pNode = pNode->FUN_140168650("recipe"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         RecipePtr data(new CEnchantScrollRecipe);
         if (data->Read(pNode) == 0)
@@ -332,7 +336,7 @@ int FUN_14034e730(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
         return 2;
     }
     int nValue = 0;
-    int nRet = FUN_140873890(pElem, pszName, nValue);
+    int nRet = XmlQuery((class TiXmlElement*)(pElem), pszName, nValue);
     if (nRet != 0)
         return nRet;
     *pnOut = nValue;

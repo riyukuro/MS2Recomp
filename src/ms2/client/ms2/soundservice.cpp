@@ -40,51 +40,91 @@ struct Unk_SoundCfg
     CStringA m_strTarget;                                           // +0x78
     CStringA m_strSource;                                           // +0x80
 };
-Unk_SoundCfg* FUN_1401d31f0();                                      // client configuration singleton
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 CSoundService* FUN_140c9cb10();                                     // the sound service
 void* FUN_140d13c40();                                              // the channel volume manager
-void* FUN_140d13c70(void* p);
+class CGameOption   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_SoundState* FUN_140d13c70();
+};
 void* FUN_1409a8b10();
-void* FUN_14025e7a0();
-void* FUN_1422b0230(void* p);
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1422afe50();
+    void FUN_1422afe90();
+    class GFxVideo* GetVideo();
+};
 void* FUN_140aadf80();
 void* FUN_14209c720(void* p);
 void FUN_1422ec700(void* p, void* q);
-void FUN_14177dbe0(void* pMgr, int nChannel, unsigned int bVolume);
-void FUN_14177dc80(void* pMgr, int nValue);
+class CSoundEventMgr   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_14177ba30();
+    void FUN_14177bb70(float);
+    void FUN_14177bda0();
+    void FUN_14177bf20();
+    void FUN_14177dbe0(int, unsigned int);
+    void FUN_14177dc80(unsigned int);
+};
 void FUN_14177af40(void* pMgr, FMOD::EventSystem* pEvents, FMOD::System* pSystem);
-void FUN_14177bf20(void* pMgr);
-void FUN_14125fe20(void* p);
-void FUN_1422afe50(void* p);
-void FUN_1422afe90(void* p);
-void FUN_14177bda0(void* pMgr);
+void FUN_14125fe20(struct Unk_SoundState*);   // C3: was FUN_14125fe20
 void* FUN_1403ed280();                                              // the effect manager
-void FUN_1411a6160(void* pMgr);
-void FUN_14177ba30(void* pMgr);
-void FUN_14177bb70(void* pMgr, float fDelta);
+class CEffectService   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1411a6160();
+};
 void* FUN_1411b1de0();
-void FUN_141793450(void* p);
+class SoundPropertyMgr   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141793450();
+};
 void* FUN_14086d260();                                              // the time source
-float FUN_141473230(void* pTime);   // frame delta (s), cvtsd2ss xmm0
-double FUN_141473260(void* pTime);
-void* FUN_140994450();
-void* FUN_14098d8d0(const char* pClass, void* p);
+class CMainSystem   // C3: member view for the former free stand-ins
+{
+public:
+    double GetDeltaTime();
+    float GetLastGameTimeDelta();
+};
+class NiRenderer   // C3: member view for the former free stand-ins
+{
+public:
+    static class NiRenderer* GetRenderer();
+};
+class NiObject   // C3: member view for the former free stand-ins
+{
+public:
+    static class NiObject* DynamicCast(class NiRTTI const*, class NiObject const*);
+};
 void FUN_1411d7c70(void* pObj, bool (*pfn)(bool, void*), CSoundService* pOwner);
 void FUN_1411d7c10(void* pObj, bool (*pfn)(void*), CSoundService* pOwner);
 void FUN_1414fe370(void* pObj, bool (*pfn)(bool, void*));
 void FUN_1414fe240(void* pObj, bool (*pfn)(void*));
 class WorldService;
-WorldService* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 void FUN_141bdac80(WorldService* pWorld, CStringA strMessage);
 CStringA FUN_14016a600(const wchar_t* pszText, int nCodePage);
 void FUN_1412751b0(const CStringW& rText, int nSeconds);
 void FUN_141b6fc50(const CStringA& rText, const CStringA& rCaption, int nFlags);
 CStringA FUN_14038f6d0(const CStringA& rDir, const char* pszName);
-void FUN_140399620(CStringA strPattern, CStringA strDirectory, ATL::CAtlArray<CStringA>& rOut, CStringA strExclude, int nFlags);
+void FUN_140399620(CStringA strPattern, CStringA strDirectory, ATL::CAtlArray<CStringA>& rOut, CStringA strExclude, bool bFlag);
 void FUN_140165270(ATL::CAtlArray<CStringA>& rArray, const CStringA& rItem);
-void FUN_140166420();
+class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 void* FUN_1409478c0();                                              // the camera manager
-int FUN_140a18070(void* pCameras);
+class CameraMgr   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140a18070();
+};
 class Unk_AudioCam
 {
 public:
@@ -95,17 +135,14 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17();
     virtual void GetPosition(Vector3* pOut);                // slot 18
 };
-Unk_AudioCam* FUN_140a38d60(void* pCameras);
+class Unk_CameraManager   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_CameraTargetEntity* FUN_140a38d60();
+};
 // the camera manager's vectors return by value (member: this, hidden return pointer; exe 0x1417b0b1d / 0x1417b0b47)
 class Unk_SndCameras { public: Vector3 FUN_140af0340(); Vector3 FUN_140af0250(); };
 
-// the open-state strings of the voice streams: a vector<CStringA> of another unit, opaque here
-struct Unk_StrVec { void* m_p0; void* m_p1; void* m_p2; };
-Unk_StrVec* FUN_14027d6f0(Unk_StrVec* p);
-void FUN_14027e450(Unk_StrVec* p);
-void FUN_1403b0310(Unk_StrVec* p, const CStringA& rItem);
-size_t FUN_14028b4c0(Unk_StrVec* p);
-CStringA& FUN_14027f1c0(Unk_StrVec* p, size_t nIndex);
 
 // ---- the log with two arguments (in this unit) ----
 // @0x1417b1780
@@ -240,10 +277,9 @@ void** FUN_1417b4180(void** pThis, void* pNode)
     return pThis;
 }
 // @0x1417b71d0
-Unk_ListIt* FUN_1417b71d0(std::list<CStringW>* pList, Unk_ListIt* pOut)
+Unk_ListIt* FUN_1417b71d0(std::list<CStringW>* pList, Unk_ListIt* pOut) noexcept
 {
-    Unk_ListIt kEnd = pList->end();
-    FUN_1417b4180((void**)pOut, *(void**)&kEnd);
+    FUN_1417b4180((void**)pOut, pList->end()._Ptr);
     return pOut;
 }
 // @0x1417b4640
@@ -336,33 +372,33 @@ void CSoundService::FUN_1417ae840(int nFlag)
 {
     if (nFlag != 0)
     {
-        FUN_14177dc80(FUN_140d13c40(), 1);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dc80(1);
     }
     else
     {
-        unsigned int bVolume = *(unsigned char*)FUN_140d13c70(FUN_1409a8b10());
-        FUN_14177dbe0(FUN_140d13c40(), 0, bVolume);
-        FUN_14177dbe0(FUN_140d13c40(), 9, bVolume);
-        FUN_14177dbe0(FUN_140d13c40(), 1, bVolume);
-        FUN_14177dbe0(FUN_140d13c40(), 2, bVolume);
-        FUN_14177dbe0(FUN_140d13c40(), 3, bVolume);
-        FUN_14177dbe0(FUN_140d13c40(), 4, bVolume);
-        FUN_14177dbe0(FUN_140d13c40(), 7, bVolume);
-        FUN_14177dbe0(FUN_140d13c40(), 5, bVolume);
-        FUN_14177dbe0(FUN_140d13c40(), 8, bVolume);
-        FUN_14177dbe0(FUN_140d13c40(), 6, bVolume);
-        FUN_14177dbe0(FUN_140d13c40(), 10, bVolume);
+        unsigned int bVolume = *(unsigned char*)((void*)((class CGameOption*)(void*)(FUN_1409a8b10()))->FUN_140d13c70());
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(0, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(9, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(1, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(2, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(3, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(4, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(7, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(5, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(8, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(6, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(10, bVolume);
     }
 }
 
 // @0x1417ae990
 int CSoundService::FUN_1417ae990()
 {
-    if (FUN_14025e7a0() != 0)
+    if (((void*)FUN_14025e7a0()) != 0)
     {
-        if (FUN_1422b0230(FUN_14025e7a0()) != 0)
+        if (((void*)((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->GetVideo()) != 0)
         {
-            FUN_1422ec700(FUN_1422b0230(FUN_14025e7a0()), FUN_14209c720(FUN_140aadf80()));
+            FUN_1422ec700(((void*)((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->GetVideo()), FUN_14209c720(FUN_140aadf80()));
         }
     }
     if (GetSystem() != 0)
@@ -396,7 +432,7 @@ int CSoundService::FUN_1417aea70()
             pszLanguage = "Korea";
             break;
         }
-        return FUN_1417aee20(FUN_1401d31f0()->m_strTarget, pszLanguage);
+        return FUN_1417aee20(((struct Unk_SoundCfg*)FUN_1401d31f0())->m_strTarget, pszLanguage);
     }
     return 0;
 }
@@ -622,9 +658,9 @@ void CSoundService::FUN_1417af600()
 void FUN_1417af6e0()
 {
     if (FUN_140d13c40() != 0)
-        FUN_14177bda0(FUN_140d13c40());
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177bda0();
     if (FUN_1403ed280() != 0)
-        FUN_1411a6160(FUN_1403ed280());
+        ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a6160();
     if (FUN_140c9cb10() != 0)
         FUN_140c9cb10()->FUN_1417af340();
 }
@@ -658,20 +694,17 @@ int FUN_1417af7a0()
     FUN_1417af6e0();
     ATL::CAtlArray<CStringA> aSource;
     ATL::CAtlArray<CStringA> aTarget;
-    FUN_140166420();
-    FUN_140399620(CStringA("*.*"), CStringA(FUN_1401d31f0()->m_strSource), aSource, CStringA(""), 0);
+    GetFileSystem();
+    FUN_140399620(CStringA("*.*"), CStringA(((struct Unk_SoundCfg*)FUN_1401d31f0())->m_strSource), aSource, CStringA(""), false);
     for (unsigned i = 0; i < aSource.GetCount(); i++)
     {
         CStringA strFile(aSource[i]);
-        const char* pszTo = FUN_1401d31f0()->m_strTarget;
-        const char* pszFrom = FUN_1401d31f0()->m_strSource;
-        strFile.Replace(pszFrom, pszTo);
+        strFile.Replace(((struct Unk_SoundCfg*)FUN_1401d31f0())->m_strSource, ((struct Unk_SoundCfg*)FUN_1401d31f0())->m_strTarget);
         aTarget.Add(strFile);
     }
     for (unsigned i = 0; i < aSource.GetCount(); i++)
     {
-        const char* pszTarget = aTarget[i];
-        if (CopyFileA(aSource[i], pszTarget, 0) == 0)
+        if (CopyFileA(aSource[i], aTarget[i], 0) == 0)
         {
             CStringA strMessage;
             strMessage.Format("Fail copy : %s", (const char*)aSource[i]);
@@ -700,69 +733,69 @@ void FUN_1417afb20(void* pParam)
 // @0x1417afb50
 void CSoundService::FUN_1417afb50()
 {
-    if (m_vecBanks.size() != 0)
+    if (m_vecBanks.size() == 0)
+        return;
+    m_mapTags.clear();
+    for (size_t nBank = 0; nBank < m_vecBanks.size(); nBank++)
     {
-        m_mapTags.clear();
-        for (size_t nBank = 0; nBank < m_vecBanks.size(); nBank++)
+        FMOD::Sound* pBank = m_vecBanks[nBank];
+        if (pBank == 0)
+            continue;
+        FMOD_OPENSTATE nState;
+        do
         {
-            FMOD::Sound* pBank = m_vecBanks[nBank];
-            if (pBank != 0)
+            pBank->getOpenState(&nState, 0, 0, 0);
+        } while (nState != FMOD_OPENSTATE_READY);
+        int nSubSounds;
+        FMOD_RESULT nResult = pBank->getNumSubSounds(&nSubSounds);
+        if (FUN_1417b1430(nResult) == 0)
+            return;
+        CStringA strPrefix("");
+        switch (FUN_1406516c0())
+        {
+        case 1:
+            strPrefix = "jp_";
+            return;
+        case 2:
+            strPrefix = "en_";
+            break;
+        case 3:
+            strPrefix = "cn_";
+            break;
+        }
+        for (int nSub = 0; nSub < nSubSounds; nSub++)
+        {
+            FMOD::Sound* pSub = 0;
+            char szName[0x104] = {0};
+            nResult = pBank->getSubSound(nSub, &pSub);
+            do
             {
-                FMOD_OPENSTATE nState;
-                do
-                {
-                    pBank->getOpenState(&nState, 0, 0, 0);
-                } while (nState != FMOD_OPENSTATE_READY);
-                int nSubSounds;
-                FMOD_RESULT nResult = pBank->getNumSubSounds(&nSubSounds);
-                if (FUN_1417b1430(nResult) == 0)
-                    return;
-                CStringA strPrefix("");
-                int nLanguage = FUN_1406516c0();
-                if (nLanguage == 1)
-                {
-                    strPrefix = "jp_";
-                    return;
-                }
-                if (nLanguage == 2)
-                    strPrefix = "en_";
-                else if (nLanguage == 3)
-                    strPrefix = "cn_";
-                for (int nSub = 0; nSub < nSubSounds; nSub++)
-                {
-                    FMOD::Sound* pSub = 0;
-                    char szName[0x104] = {0};
-                    pBank->getSubSound(nSub, &pSub);
-                    do
-                    {
-                        pBank->getOpenState(&nState, 0, 0, 0);
-                    } while (nState != FMOD_OPENSTATE_READY);
-                    nResult = pSub->getName(szName, 0x104);
-                    if (FUN_1417b1430(nResult) == 0)
-                    {
-                        m_mapTags.clear();
-                        return;
-                    }
-                    unsigned uLength;
-                    nResult = pSub->getLength(&uLength, FMOD_TIMEUNIT_MS);
-                    if (FUN_1417b1430(nResult) == 0)
-                    {
-                        m_mapTags.clear();
-                        return;
-                    }
-                    Unk_SoundTag kTag;
-                    kTag.m_nSubSound = nSub;
-                    kTag.m_uLength = uLength;
-                    kTag.m_nBank = nBank;
-                    CStringA strKey(szName);
-                    if (!strPrefix.IsEmpty())
-                    {
-                        if (strKey.Find(strPrefix, 0) == 0)
-                            strKey = strKey.Mid(strPrefix.GetLength());
-                    }
-                    m_mapTags[strKey] = kTag;
-                }
+                pBank->getOpenState(&nState, 0, 0, 0);
+            } while (nState != FMOD_OPENSTATE_READY);
+            nResult = pSub->getName(szName, 0x104);
+            if (FUN_1417b1430(nResult) == 0)
+            {
+                m_mapTags.clear();
+                return;
             }
+            unsigned uLength;
+            nResult = pSub->getLength(&uLength, FMOD_TIMEUNIT_MS);
+            if (FUN_1417b1430(nResult) == 0)
+            {
+                m_mapTags.clear();
+                return;
+            }
+            Unk_SoundTag kTag;
+            kTag.m_nSubSound = nSub;
+            kTag.m_uLength = uLength;
+            kTag.m_nBank = nBank;
+            CStringA strKey(szName);
+            if (!strPrefix.IsEmpty())
+            {
+                if (strKey.Find(strPrefix, 0) == 0)
+                    strKey = strKey.Mid(strPrefix.GetLength());
+            }
+            m_mapTags[strKey] = kTag;
         }
     }
 }
@@ -772,60 +805,47 @@ void CSoundService::FUN_1417afb50()
 void CSoundService::FUN_1417aff20(CStringA strMediaPath)
 {
     CStringA strDir(strMediaPath);
-    Unk_StrVec aFiles;
-    FUN_14027d6f0(&aFiles);
+    std::vector<CStringA> aFiles;
     CStringA strFile("");
-    int nLanguage = FUN_1406516c0();
-    if (nLanguage == 0)
+    switch (FUN_1406516c0())
     {
+    case 1:
+        return;
+    case 2:
+        strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice8_en.fsb");
+        aFiles.push_back(strFile);
+        strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice9_en.fsb");
+        aFiles.push_back(strFile);
+        break;
+    case 3:
+        strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice8_cn.fsb");
+        aFiles.push_back(strFile);
+        strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice9_cn.fsb");
+        aFiles.push_back(strFile);
+        break;
+    case 0:
         strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice8_Kor_def.fsb");
-        FUN_1403b0310(&aFiles, strFile);
+        aFiles.push_back(strFile);
         strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice9_Kor_def.fsb");
-        FUN_1403b0310(&aFiles, strFile);
+        aFiles.push_back(strFile);
+        break;
+    default:
+        return;
     }
-    else
-    {
-        if (nLanguage == 1)
-        {
-            FUN_14027e450(&aFiles);
-            return;
-        }
-        if (nLanguage == 2)
-        {
-            strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice8_en.fsb");
-            FUN_1403b0310(&aFiles, strFile);
-            strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice9_en.fsb");
-            FUN_1403b0310(&aFiles, strFile);
-        }
-        else
-        {
-            if (nLanguage != 3)
-            {
-                FUN_14027e450(&aFiles);
-                return;
-            }
-            strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice8_cn.fsb");
-            FUN_1403b0310(&aFiles, strFile);
-            strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice9_cn.fsb");
-            FUN_1403b0310(&aFiles, strFile);
-        }
-    }
-    for (size_t i = 0; i < FUN_14028b4c0(&aFiles); i++)
+    for (size_t i = 0; i < aFiles.size(); i++)
     {
         FMOD::Sound* pSound = 0;
-        HANDLE hFile = CreateFileA(FUN_14027f1c0(&aFiles, i), GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
+        HANDLE hFile = CreateFileA(aFiles[i], GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
         if (hFile != INVALID_HANDLE_VALUE)
         {
             CloseHandle(hFile);
-            FMOD_RESULT nResult = m_pSystem->createStream(FUN_14027f1c0(&aFiles, i), 0x10048, 0, &pSound);
-            if (nResult == FMOD_OK)
-            {
-                FUN_1417b1430(nResult);
-                m_vecBanks.push_back(pSound);
-            }
+            FMOD_RESULT nResult = m_pSystem->createStream(aFiles[i], 0x10048, 0, &pSound);
+            if (nResult != FMOD_OK)
+                continue;
+            FUN_1417b1430(nResult);
+            m_vecBanks.push_back(pSound);
         }
     }
-    FUN_14027e450(&aFiles);
 }
 
 // @0x1417b03d0
@@ -896,7 +916,7 @@ efd::SyncResult CSoundService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
 // @0x1417b06b0
 efd::AsyncResult CSoundService::OnInit()
 {
-    void* pObj = FUN_14098d8d0(&DAT_143d6eb58, FUN_140994450());
+    void* pObj = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143d6eb58), (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
     if (pObj != 0)
     {
         FUN_1411d7c70(pObj, FUN_1417af740, this);
@@ -908,8 +928,8 @@ efd::AsyncResult CSoundService::OnInit()
 // @0x1417b0730
 efd::AsyncResult CSoundService::OnTick()
 {
-    FUN_141793450(FUN_1411b1de0());
-    float fDelta = FUN_141473230(FUN_14086d260());
+    ((class SoundPropertyMgr*)(void*)(FUN_1411b1de0()))->FUN_141793450();
+    float fDelta = ((class CMainSystem*)(void*)(FUN_14086d260()))->GetLastGameTimeDelta();
     if (s_nReload != 0)
     {
         if (s_nReload == 2)
@@ -917,15 +937,15 @@ efd::AsyncResult CSoundService::OnTick()
             FUN_1417aeb40();
             if (FUN_1417ae990() != 0)
             {
-                FUN_14177bf20(FUN_140d13c40());
-                FUN_14125fe20(FUN_140d13c70(FUN_1409a8b10()));
-                FUN_1422afe50(FUN_14025e7a0());
+                ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177bf20();
+                FUN_14125fe20((struct Unk_SoundState*)(((void*)((class CGameOption*)(void*)(FUN_1409a8b10()))->FUN_140d13c70())));
+                ((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->FUN_1422afe50();
             }
             s_nReload = 0;
         }
         else if (s_nReload == 1)
         {
-            FUN_1422afe90(FUN_14025e7a0());
+            ((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->FUN_1422afe90();
             FUN_1417af6e0();
             s_nReload = 2;
         }
@@ -938,7 +958,7 @@ efd::AsyncResult CSoundService::OnTick()
             delete m_pNetStream;
             m_pNetStream = 0;
         }
-        double dDelta = FUN_141473260(FUN_14086d260());
+        double dDelta = ((class CMainSystem*)(void*)(FUN_14086d260()))->GetDeltaTime();
         m_fMessageTimer = m_fMessageTimer + (float)dDelta;
         if (1.0 < m_fMessageTimer)
         {
@@ -947,16 +967,16 @@ efd::AsyncResult CSoundService::OnTick()
             {
                 Unk_ListIt kEnd;
                 CStringA strMessage = FUN_14016a600(*FUN_1417b4640(FUN_1417b71d0(&m_listMessages, &kEnd)), 0);
-                FUN_141bdac80(FUN_1403ed2d0(), CStringA(strMessage));
+                FUN_141bdac80(WorldService::GetInstance(), CStringA(strMessage));
             }
             for (std::list<CStringW>::iterator it = m_listMessages.begin(); it != m_listMessages.end(); ++it)
                 FUN_1412751b0(*it, 0x14);
             m_listMessages.clear();
         }
     }
-    if (FUN_140a18070(FUN_1409478c0()) != 0 && FUN_140a38d60(FUN_1409478c0()) != 0)
+    if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140a18070() != 0 && ((class Unk_AudioCam*)((class Unk_CameraManager*)(void*)(FUN_1409478c0()))->FUN_140a38d60()) != 0)
     {
-        Unk_AudioCam* pCam = FUN_140a38d60(FUN_1409478c0());
+        Unk_AudioCam* pCam = ((class Unk_AudioCam*)((class Unk_CameraManager*)(void*)(FUN_1409478c0()))->FUN_140a38d60());
         Vector3 kPos;
         pCam->GetPosition(&kPos);
         Vector3 kForward = static_cast<Unk_SndCameras*>(FUN_1409478c0())->FUN_140af0340();
@@ -974,7 +994,7 @@ efd::AsyncResult CSoundService::OnTick()
             nResult = pEvents->update();
             FUN_1417ae7c0(nResult);
         }
-        FUN_14177bb70(FUN_140d13c40(), fDelta);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177bb70(fDelta);
     }
     else if (GetEventSystem() != 0)
     {
@@ -994,14 +1014,14 @@ efd::AsyncResult CSoundService::OnTick()
 efd::AsyncResult CSoundService::OnShutdown()
 {
     FUN_1417af600();
-    void* pObj = FUN_14098d8d0(&DAT_143d6eb58, FUN_140994450());
+    void* pObj = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143d6eb58), (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
     if (pObj != 0)
     {
         FUN_1414fe370(pObj, FUN_1417af740);
         FUN_1414fe240(pObj, FUN_1417af780);
     }
-    FUN_1411a6160(FUN_1403ed280());
-    FUN_14177ba30(FUN_140d13c40());
+    ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a6160();
+    ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177ba30();
     FUN_1417af340();
     return efd::AsyncResult_Complete;
 }
@@ -1039,11 +1059,16 @@ int CNetStreamSound::vfunc_1(CSoundService* pService)
         m_nState = 1;
     }
     FMOD_TAG kTag;
-    FMOD_RESULT nTag = pSound->getTag(0, -1, &kTag);
-    if (nTag == FMOD_OK && kTag.datatype != FMOD_TAGDATATYPE_STRING && kTag.type == FMOD_TAGTYPE_FMOD)
+    if (pSound->getTag(0, -1, &kTag) == FMOD_OK)
     {
-        if (strcmp(kTag.name, "Sample Rate Change") == 0)
-            m_pChannel->setFrequency(*(float*)kTag.data);
+        if (kTag.datatype == FMOD_TAGDATATYPE_STRING)
+        {
+        }
+        else if (kTag.type == FMOD_TAGTYPE_FMOD)
+        {
+            if (strcmp(kTag.name, "Sample Rate Change") == 0)
+                m_pChannel->setFrequency(*(float*)kTag.data);
+        }
     }
     FMOD_OPENSTATE nState;
     nResult = pSound->getOpenState(&nState, &uPercent, &bStarving, 0);
@@ -1070,14 +1095,16 @@ int CNetStreamSound::vfunc_1(CSoundService* pService)
         }
         m_nState = 2;
     }
-    if (nState == FMOD_OPENSTATE_BUFFERING || nState == FMOD_OPENSTATE_CONNECTING || bPaused || bPlaying)
-        return 0;
-    CStringW strStopped;
-    strStopped.Format(L"Stopped NetStream");
-    pService->FUN_1417afad0(CStringW(strStopped));
-    m_uBuffered = 0;
-    m_nState = 3;
-    return -1;
+    if (nState != FMOD_OPENSTATE_BUFFERING && nState != FMOD_OPENSTATE_CONNECTING && !bPaused && !bPlaying)
+    {
+        CStringW strStopped;
+        strStopped.Format(L"Stopped NetStream");
+        pService->FUN_1417afad0(CStringW(strStopped));
+        m_uBuffered = 0;
+        m_nState = 3;
+        return -1;
+    }
+    return 0;
 }
 
 // @0x1417b4f40

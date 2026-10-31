@@ -1,11 +1,10 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CU name unknown: a block of video colour-space helpers
 // (3-plane to packed copies with an optional lookup, 3x3 double matrix multiply / inverse, YCbCr conversion tables).
 // MS2-UNIT: unit_14004c1d0
+// MS2-TOOLSET: vc9
 // MS2-RANGE: 0x14004c1d0-0x14004da40 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\unknown_14004c1d0.cpp"
-#include "ms2/placeholder/ms2stdafx.h"
-#include "ms2/ms2layout.h"
-#include "hook/ms2hook.h"
+#define MS2_CHECK_SIZE(T, n) typedef char T##_size_check[sizeof(T) == (n) ? 1 : -1]
 
 // Source planes: three data pointers followed by three pitches (names invented).
 struct Unk_PlaneSet
@@ -16,6 +15,9 @@ struct Unk_PlaneSet
     int m_nPitch0;              // +0x18
     int m_nPitch1;              // +0x1c
     int m_nPitch2;              // +0x20
+    int m_24;                   // +0x24 (never touched here; the exe frame holds a 0x30-byte set)
+    int m_28;
+    int m_2c;
 };
 
 // Destination plane description.
@@ -24,7 +26,9 @@ struct Unk_PlaneDst
     unsigned char* m_pBase;     // +0x00
     unsigned int m_nWidth;      // +0x08
     unsigned int m_nHeight;     // +0x0c
-    __int64 m_nStride;          // +0x10
+    int m_nStride;              // +0x10
+    int m_14;                   // +0x14 (never touched here; the exe frame holds a 0x20-byte description)
+    __int64 m_18;
 };
 
 // One entry of the frame's plane list (0x18 bytes each, starting at +8 in the frame).
@@ -68,11 +72,11 @@ extern double DAT_143a48790[9];
 void FUN_14004c1d0(Unk_PlaneSet* pSrc, Unk_PlaneDst* pDst, int nOffset)
 {
     unsigned int nWidth = pDst->m_nWidth;
-    __int64 nStride = pDst->m_nStride;
+    int nOutSkip = pDst->m_nStride - nWidth * 4;
     unsigned int nHeight = pDst->m_nHeight;
     unsigned char* pOut = pDst->m_pBase + nOffset;
     unsigned char* pIn = pSrc->m_pPlane0;
-    int nPitch = pSrc->m_nPitch0;
+    int nInSkip = pSrc->m_nPitch0 - nWidth;
     for (int y = 0; y < (int)nHeight; ++y)
     {
         for (int x = 0; x < (int)nWidth; ++x)
@@ -81,8 +85,8 @@ void FUN_14004c1d0(Unk_PlaneSet* pSrc, Unk_PlaneDst* pDst, int nOffset)
             pOut += 4;
             pIn += 1;
         }
-        pOut += (int)((int)nStride + nWidth * -4);
-        pIn += (int)(nPitch - nWidth);
+        pOut += nOutSkip;
+        pIn += nInSkip;
     }
 }
 
@@ -90,22 +94,21 @@ void FUN_14004c1d0(Unk_PlaneSet* pSrc, Unk_PlaneDst* pDst, int nOffset)
 void FUN_14004c250(Unk_PlaneSet* pSrc, Unk_PlaneDst* pDst, const unsigned char* pLut, int nOffset)
 {
     unsigned int nWidth = pDst->m_nWidth;
+    int nOutSkip = pDst->m_nStride - nWidth * 4;
     unsigned int nHeight = pDst->m_nHeight;
-    __int64 nStride = pDst->m_nStride;
     unsigned char* pOut = pDst->m_pBase + nOffset;
     unsigned char* pIn = pSrc->m_pPlane0;
-    int nPitch = pSrc->m_nPitch0;
+    int nInSkip = pSrc->m_nPitch0 - nWidth;
     for (int y = 0; y < (int)nHeight; ++y)
     {
         for (int x = 0; x < (int)nWidth; ++x)
         {
-            unsigned char b = *pIn;
+            *pOut = pLut[*pIn];
             pOut += 4;
             pIn += 1;
-            pOut[-4] = pLut[b];
         }
-        pOut += (int)((int)nStride + nWidth * -4);
-        pIn += (int)(nPitch - nWidth);
+        pOut += nOutSkip;
+        pIn += nInSkip;
     }
 }
 
@@ -155,11 +158,11 @@ void FUN_14004c370(void)
 // pOut = (pA * pB) / 64 (3x3 double matrices, row-major).
 void FUN_14004c590(double* pA, double* pB, double* pOut)
 {
-    double d0 = pA[0] * pB[0] + pB[3] * pA[1] + pA[2] * pB[6];
+    double d0 = pA[0] * pB[0] + pA[1] * pB[3] + pA[2] * pB[6];
     pOut[0] = d0;
-    double d1 = pB[4] * pA[1] + pB[1] * pA[0] + pB[7] * pA[2];
+    double d1 = pB[1] * pA[0] + pB[4] * pA[1] + pB[7] * pA[2];
     pOut[1] = d1;
-    double d2 = pB[5] * pA[1] + pB[2] * pA[0] + pB[8] * pA[2];
+    double d2 = pB[2] * pA[0] + pB[5] * pA[1] + pB[8] * pA[2];
     pOut[2] = d2;
     double d3 = pA[4] * pB[3] + pA[3] * pB[0] + pA[5] * pB[6];
     pOut[3] = d3;
@@ -167,7 +170,7 @@ void FUN_14004c590(double* pA, double* pB, double* pOut)
     pOut[4] = d4;
     double d5 = pA[4] * pB[5] + pA[3] * pB[2] + pB[8] * pA[5];
     pOut[5] = d5;
-    double d6 = pB[3] * pA[7] + pB[0] * pA[6] + pA[8] * pB[6];
+    double d6 = pB[0] * pA[6] + pB[3] * pA[7] + pA[8] * pB[6];
     pOut[6] = d6;
     double d7 = pB[4] * pA[7] + pB[1] * pA[6] + pB[7] * pA[8];
     pOut[7] = d7;
@@ -217,14 +220,14 @@ void FUN_14004ca60(Unk_YuvEntry* pTab1, Unk_YuvEntry* pTab2)
     int nStepB = 0x2000;
     for (int i = 0; i < 256; ++i)
     {
-        pTab1[i].v[2] = 0;
-        pTab1[i].v[3] = 0;
         pTab1[i].v[0] = (short)(int)(((float)nStepA * 1.772f * 255.0f) / 224.0f + 0.5f);
         pTab1[i].v[1] = (short)(int)(((float)nStepB * 0.344f * 255.0f) / 224.0f + 0.5f);
+        pTab1[i].v[2] = 0;
+        pTab1[i].v[3] = 0;
         pTab2[i].v[0] = 0;
-        pTab2[i].v[3] = 0;
         pTab2[i].v[1] = (short)(int)(((float)nStepB * 0.714f * 255.0f) / 224.0f + 0.5f);
         pTab2[i].v[2] = (short)(int)(((float)nStepA * 1.402f * 255.0f) / 224.0f + 0.5f);
+        pTab2[i].v[3] = 0;
         nStepA += 0x40;
         nStepB -= 0x40;
     }
@@ -333,7 +336,7 @@ void FUN_14004ccc0(int nMode, int nLow, int nHigh, Unk_YuvTables* pTab)
 }
 
 // @0x14004ce20
-void FUN_14004ce20(Unk_YuvTables* pTab, unsigned char nA, unsigned short nB, unsigned short nC)
+void FUN_14004ce20(Unk_YuvTables* pTab, unsigned char nA, unsigned char nB, unsigned char nC)
 {
     FUN_14004ca60(pTab->m_cb, pTab->m_cr);
     int i;
@@ -347,46 +350,40 @@ void FUN_14004ce20(Unk_YuvTables* pTab, unsigned char nA, unsigned short nB, uns
     for (i = 9; i < 0x86; ++i)
     {
         double d = (double)i - 16.0;
-        if (0.0 <= d)
-        {
-            if (255.0 < d)
-                d = 255.0;
-        }
-        else
+        if (0.0 > d)
             d = 0.0;
-        pTab->m_luma[i].v[3] = (nB & 0xff) << 6;
+        else if (d > 255.0)
+            d = 255.0;
         short s = (short)(int)(d * 64.0 * 2.3181818181818183 + 0.5);
         pTab->m_luma[i].v[0] = s;
         pTab->m_luma[i].v[1] = s;
         pTab->m_luma[i].v[2] = s;
+        pTab->m_luma[i].v[3] = nB << 6;
     }
     for (i = 0x86; i < 0x100; ++i)
     {
         double d = 251.0 - (double)i;
-        if (0.0 <= d)
-        {
-            if (255.0 < d)
-                d = 255.0;
-        }
-        else
+        if (0.0 > d)
             d = 0.0;
-        pTab->m_luma[i].v[3] = (nC & 0xff) << 6;
+        else if (d > 255.0)
+            d = 255.0;
         short s = (short)(int)(d * 64.0 * 2.3181818181818183 + 0.5);
         pTab->m_luma[i].v[0] = s;
         pTab->m_luma[i].v[1] = s;
         pTab->m_luma[i].v[2] = s;
+        pTab->m_luma[i].v[3] = nC << 6;
     }
 }
 
 // @0x14004cfd0
-void FUN_14004cfd0(Unk_YuvTables* pTab, unsigned char nA, unsigned short nB, unsigned char nC)
+void FUN_14004cfd0(Unk_YuvTables* pTab, unsigned char nA, unsigned char nB, unsigned char nC)
 {
     FUN_14004ca60(pTab->m_cb, pTab->m_cr);
     int i;
     for (i = 0; i < 0x30; ++i)
         pTab->m_luma[i].v[3] = (unsigned short)nA;
     for (i = 0x30; i < 0x30 + 0x52; ++i)
-        pTab->m_luma[i].v[3] = (nB & 0xff) << 6;
+        pTab->m_luma[i].v[3] = nB << 6;
     for (i = 0x30 + 0x52; i < 0x100; ++i)
         pTab->m_luma[i].v[3] = (unsigned short)nC << 6;
     for (i = 0; i < 0x40; ++i)
@@ -398,13 +395,10 @@ void FUN_14004cfd0(Unk_YuvTables* pTab, unsigned char nA, unsigned short nB, uns
     for (i = 0x40; i < 0x80; ++i)
     {
         double d = (double)i - 68.0;
-        if (0.0 <= d)
-        {
-            if (255.0 < d)
-                d = 255.0;
-        }
-        else
+        if (0.0 > d)
             d = 0.0;
+        else if (d > 255.0)
+            d = 255.0;
         short s = (short)(int)(d * 64.0 * 4.636363636363637 + 0.5);
         pTab->m_luma[i].v[0] = s;
         pTab->m_luma[i].v[1] = s;
@@ -413,13 +407,10 @@ void FUN_14004cfd0(Unk_YuvTables* pTab, unsigned char nA, unsigned short nB, uns
     for (i = 0x80; i < 0x100; ++i)
     {
         double d = 247.0 - (double)i;
-        if (0.0 <= d)
-        {
-            if (255.0 < d)
-                d = 255.0;
-        }
-        else
+        if (0.0 > d)
             d = 0.0;
+        else if (d > 255.0)
+            d = 255.0;
         short s = (short)(int)(d * 64.0 * 2.2972972972972974 + 0.5);
         pTab->m_luma[i].v[0] = s;
         pTab->m_luma[i].v[1] = s;

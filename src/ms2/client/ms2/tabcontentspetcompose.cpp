@@ -127,7 +127,6 @@ public:
 extern template class MS2Ptr<Unk_PetRow>;
 class Unk_PetRowTable { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nKey); };
 Unk_PetRowTable* FUN_14052d210();
-int FUN_14053dc60(Unk_ItemEquipData* pData);                            // key of the equip data
 
 // CItem::FUN_140527840's record (as commonfiles\item.cpp): the item data, of which this unit reads the type and the
 // function arguments (+0x2b0, the arguments of the item's <function>).
@@ -174,13 +173,13 @@ public:
     void FUN_140678e80(int nPetRank, int nItemRank, unsigned short nPetClass, __int64 nExp, int nCount, unsigned nMax,
                        unsigned short nItemClass, __int64* pBase, __int64* pBonus);   // exp of a pet ingredient
 };
-Unk_PetRecipe* FUN_1401c0db0();
-CGameRule* FUN_1401c0d90();                                             // TSingleton<CGameRule>::GetInstance
+class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // Feature flags (slot 0x37 turns the compose off).
 class Unk_PetFlag { public: int FUN_1402c4c90(int nFlag); };
 class Unk_PetFlags { public: void* p0; Unk_PetFlag flags; };
-Unk_PetFlags* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
 // Client configuration: the pet class that may be composed sits at +0x84c0, the compose bonus limit at +0x8d18.
 class Unk_PetUIntSlot { public: unsigned* FUN_1401d7c10(); };
@@ -192,7 +191,7 @@ public:
     unsigned char m_pad_84c4[0x8d18 - 0x84c0 - sizeof(Unk_PetUIntSlot)];
     Unk_PetUIntSlot m_bonusLimit;
 };
-Unk_PetConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 unsigned* FUN_1401d7c10(Unk_PetUIntSlot* pSlot);
 
 // The item picked in the inventory dialog.
@@ -204,23 +203,20 @@ class Unk_PetBind { public: int FUN_140635100(); int FUN_140635120(); };
 
 // CItem accessors the exe calls as free functions.
 unsigned short FUN_1405282d0(CItem* pItem);                             // item class
-unsigned short FUN_140528c20(CItem* pItem);                             // pet class
-__int64 FUN_140528b90(CItem* pItem);                                    // pet exp
-Unk_PetBind* FUN_140527930(CItem* pItem);
                     // item name (CItem member: this=rcx, hidden return=rdx)
-__int64 FUN_140528e00(CItem* pItem);                                    // item price
-int FUN_140528c60(CItem* pItem);
-int FUN_140528ca0(CItem* pItem);                                        // item lock state
-int FUN_140525640(CItem* pItem);                                        // is a pet
 __int64 GetServerTime();                                                // server time
 
 // Message box (same entry points as inventory.cpp).
 class CMsgBoxData;
 extern template class MS2Ptr<CMsgBoxData>;                              // the message box type is defined in another unit
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
-void FUN_141a01600(CMsgBoxData*, __int64);
+class CMsgBoxData   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141a01600(__int64);
+    void FUN_141a01700(int, int, int);
+};
 void FUN_141a01ee0(CMsgBoxData*, MS2Ptr<CItem>, const CStringW&, int, int, int, int, int);
-void FUN_141a01700(CMsgBoxData*, int, int, int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 
 // Item bag registry (the section's bag ids).
@@ -429,14 +425,14 @@ void PetComposePetEnchant::vfunc_3()
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
-    __int64 nExp = FUN_140528b90(pet);
-    unsigned short nPetClass = FUN_140528c20(pet);
+    __int64 nExp = ((class CItem*)(class CItem*)(pet))->FUN_140528b90();
+    unsigned short nPetClass = ((class CItem*)(class CItem*)(pet))->FUN_140528c20();
     {
         if (MS2Ptr<Unk_PetButton> submit = ench->FUN_140acce30<Unk_PetButton>("m_submit"))
         {
             ATL::CAtlArray<IdCount> selected;
             m_pOwner->FUN_140cb4860(selected);
-            if (nPetClass < *FUN_1401d7c10(&FUN_1401d3200()->m_petClass) && selected.GetCount() > 0)
+            if (nPetClass < *FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass) && selected.GetCount() > 0)
                 submit->FUN_1422c1fe0(1);
             else
                 submit->FUN_1422c1fe0(0);
@@ -445,7 +441,7 @@ void PetComposePetEnchant::vfunc_3()
     if (MS2Ptr<ASUIComponent> bar = ench->FUN_140accfb0<ASUIComponent>("m_expBar"))
     {
         m_pOwner->FUN_140cb5300(&nPetClass, &nExp);
-        if (nPetClass < *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
+        if (nPetClass < *FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass))
         {
             __int64 nNeed = FUN_1404a1bb0()->GetPetExp(nPetClass, pet->FUN_140526bd0(), FUN_1405282d0(pet));
             CStringW strLevel;
@@ -533,15 +529,15 @@ void PetComposePetEnchant::FUN_140cb2fb0()
     ids.Add(m_pOwner->GetUidPet());
     FUN_140b77500(&m_strBag);
     FUN_140b773a0(&m_strTarget, ids);
-    int nBonus = (int)*FUN_1401d7c10(&FUN_1401d3200()->m_bonusLimit) - player->FUN_141663a20() < 0
-        ? 0 : (int)*FUN_1401d7c10(&FUN_1401d3200()->m_bonusLimit) - player->FUN_141663a20();
+    int nBonus = (int)*FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_bonusLimit) - player->FUN_141663a20() < 0
+        ? 0 : (int)*FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_bonusLimit) - player->FUN_141663a20();
     ASObj obj(2);
     obj.FUN_1407cbb20(s_itemName, reinterpret_cast<CItem*>(pet.get())->FUN_140527b10());
-    obj.FUN_1409c48f0(s_itemLevel, FUN_140528c20(pet));
+    obj.FUN_1409c48f0(s_itemLevel, ((class CItem*)(class CItem*)(pet))->FUN_140528c20());
     obj.FUN_1409c0dc0("sale", "");
     obj.FUN_1407cbb20("bonus", FUN_14062b4f0(CStringW(L"s_pet_compose_exp_bonus"), &nBonus));
     obj.FUN_1407cbb20(s_meso, FUN_1408116a0(0x986, 0));
-    obj.FUN_1409c1180("petExp", FUN_140528b90(pet));
+    obj.FUN_1409c1180("petExp", ((class CItem*)(class CItem*)(pet))->FUN_140528b90());
     obj.FUN_1407cba60("bagId", m_strTarget);
     ench->FUN_140acd1f0("selectPetCard", AScript(obj));
     FUN_141276180("pet_Button_Click", "");
@@ -571,19 +567,19 @@ void PetComposePetEnchant::FUN_140cb34b0()
         if (item == 0)
             continue;
         __int64 nCost = 0;
-        if (FUN_140525640(item))
+        if (((class CItem*)(class CItem*)(item))->FUN_140525640())
         {
-            __int64 nExp = FUN_140528b90(item);
-            nCost = FUN_1401c0db0()->CalcPetEnchantCost(pet->FUN_140526bd0(), item->FUN_140526bd0(), FUN_140528c20(item), nExp);
+            __int64 nExp = ((class CItem*)(class CItem*)(item))->FUN_140528b90();
+            nCost = ((class Unk_PetRecipe*)FUN_1401c0db0())->CalcPetEnchantCost(pet->FUN_140526bd0(), item->FUN_140526bd0(), ((class CItem*)(class CItem*)(item))->FUN_140528c20(), nExp);
         }
         else
         {
-            nCost = FUN_1401c0db0()->CalcPetEnchantBookCost(pet->FUN_140526bd0());
+            nCost = ((class Unk_PetRecipe*)FUN_1401c0db0())->CalcPetEnchantBookCost(pet->FUN_140526bd0());
         }
-        nTotal += FUN_1401c0d90()->FUN_14047f670(nCost) * nCount;
+        nTotal += ((class CGameRule*)FUN_1401c0d90())->FUN_14047f670(nCost) * nCount;
     }
     ASObj obj(2);
-    unsigned nSale = (unsigned)((float)(FUN_1401c0d90()->FUN_14047f520() / 100) + 0.5f);
+    unsigned nSale = (unsigned)((float)(((class CGameRule*)FUN_1401c0d90())->FUN_14047f520() / 100) + 0.5f);
     if (nSale > 0)
         obj.FUN_1407cbb20("sale", FUN_140938ae0(CStringW(L"s_pet_compose_cost_sale"), nSale));
     obj.FUN_1407cbb20(s_meso, FUN_14052bd00(0x986, FUN_1409404f0(nTotal)));
@@ -605,8 +601,8 @@ void PetComposePetEnchant::FUN_140cb3a30()
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
-    int nBonus = (int)*FUN_1401d7c10(&FUN_1401d3200()->m_bonusLimit) - player->FUN_141663a20() < 0
-        ? 0 : (int)*FUN_1401d7c10(&FUN_1401d3200()->m_bonusLimit) - player->FUN_141663a20();
+    int nBonus = (int)*FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_bonusLimit) - player->FUN_141663a20() < 0
+        ? 0 : (int)*FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_bonusLimit) - player->FUN_141663a20();
     ASObj obj(2);
     obj.FUN_1407cbb20("bonus", FUN_14062b4f0(CStringW(L"s_pet_compose_exp_bonus"), &nBonus));
     obj.FUN_1407cbb20("successMsg", FUN_14028dfa0(CStringW(L"s_pet_compose_compose_success"), m_pOwner->m_nGainBase, m_pOwner->m_nGainBonus));
@@ -792,7 +788,7 @@ void TabContentsPetCompose::FUN_140cb48a0(int bUsePoint)
     Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (player == 0)
         return;
-    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x37) != 0)
+    if (((class Unk_PetFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x37) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
     }
@@ -800,15 +796,15 @@ void TabContentsPetCompose::FUN_140cb48a0(int bUsePoint)
     {
         if (bUsePoint == 0)
         {
-            if (FUN_140527930(pet)->FUN_140635100() != 0 && FUN_140527930(pet)->FUN_140635120() == 0)
+            if (((class Unk_PetBind*)((class CItem*)(class CItem*)(pet))->FUN_140527930())->FUN_140635100() != 0 && ((class Unk_PetBind*)((class CItem*)(class CItem*)(pet))->FUN_140527930())->FUN_140635120() == 0)
             {
                 CStringW strMsg = FUN_1405c2690(L"s_msg_transfer_bind_pet_compose", player->vfunc_77());
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, strMsg, 0, s_composeBindPet);
                 if (box.get() != 0)
                 {
-                    FUN_141a01600(box.operator->(), pet->FUN_140526a50());
+                    ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a01600(pet->FUN_140526a50());
                     FUN_141a01ee0(box.operator->(), ItemPtr(pet), reinterpret_cast<CItem*>(pet.get())->FUN_140527b10(), 1, 0, -1, -1, 1);
-                    FUN_141a01700(box.operator->(), 0x477, 0x478, 0);
+                    ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a01700(0x477, 0x478, 0);
                     FUN_140d73c60(box);
                     return;
                 }
@@ -853,7 +849,7 @@ void TabContentsPetCompose::FUN_140cb4ed0(__int64* pBase, __int64* pBonus)
     ATL::CAtlArray<IdCount> selected;
     FUN_140cb4860(selected);
     int nCounter = player->FUN_141663a20();
-    unsigned nLimit = *FUN_1401d7c10(&FUN_1401d3200()->m_bonusLimit);
+    unsigned nLimit = *FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_bonusLimit);
     for (size_t i = 0; i < selected.GetCount(); i++)
     {
         IdCount& entry = selected[i];
@@ -867,10 +863,10 @@ void TabContentsPetCompose::FUN_140cb4ed0(__int64* pBase, __int64* pBonus)
             continue;
         unsigned __int64 nBase = 0;
         __int64 nBonus = 0;
-        if (FUN_140525640(item))
+        if (((class CItem*)(class CItem*)(item))->FUN_140525640())
         {
             int nCount2 = nCounter;
-            FUN_1401c0db0()->FUN_140678e80(pet->FUN_140526bd0(), item->FUN_140526bd0(), FUN_140528c20(item), FUN_140528b90(item), nCount2, nLimit,
+            ((class Unk_PetRecipe*)FUN_1401c0db0())->FUN_140678e80(pet->FUN_140526bd0(), item->FUN_140526bd0(), ((class CItem*)(class CItem*)(item))->FUN_140528c20(), ((class CItem*)(class CItem*)(item))->FUN_140528b90(), nCount2, nLimit,
                 FUN_1405282d0(item), (__int64*)&nBase, &nBonus);
             nCounter = nCounter + 1;
         }
@@ -897,10 +893,10 @@ void TabContentsPetCompose::FUN_140cb5300(unsigned short* pClass, __int64* pExp)
     if (pet == 0)
         return;
     int bLevelUp = 0;
-    unsigned short nClass = FUN_140528c20(pet);
-    __int64 nExp = FUN_140528b90(pet);
+    unsigned short nClass = ((class CItem*)(class CItem*)(pet))->FUN_140528c20();
+    __int64 nExp = ((class CItem*)(class CItem*)(pet))->FUN_140528b90();
     int nRank = pet->FUN_140526bd0();
-    if (!(nClass < *FUN_1401d7c10(&FUN_1401d3200()->m_petClass)))
+    if (!(nClass < *FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass)))
         return;
     __int64 nBase = 0;
     __int64 nBonus = 0;
@@ -922,9 +918,9 @@ void TabContentsPetCompose::FUN_140cb5300(unsigned short* pClass, __int64* pExp)
     if (bLevelUp)
     {
         nClass += nUp;
-        if (nClass >= *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
+        if (nClass >= *FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass))
         {
-            nClass = (unsigned short)*FUN_1401d7c10(&FUN_1401d3200()->m_petClass);
+            nClass = (unsigned short)*FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass);
             nExp = 0;
         }
     }
@@ -946,7 +942,7 @@ void TabContentsPetCompose::FUN_140cb5600()
         ItemPtr item = g_143ab2a90.FUN_140a5d680(pets[i]);
         if (item == 0)
             continue;
-        MS2Ptr<Unk_PetRow> row = FUN_14052d210()->FUN_1407290f0(FUN_14053dc60(item->FUN_140527840()));
+        MS2Ptr<Unk_PetRow> row = FUN_14052d210()->FUN_1407290f0(((class CItemData*)(class Unk_ItemEquipData*)(item->FUN_140527840()))->FUN_14053dc60());
         if (row == 0)
             continue;
         if (row->m_nFlag == 0)
@@ -1026,30 +1022,30 @@ void TabContentsPetCompose::FUN_140cb5c90(int nIndex)
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
     if (pet == 0)
         return;
-    __int64 nExp = FUN_140528b90(pet);
-    unsigned short nPetClass = FUN_140528c20(pet);
+    __int64 nExp = ((class CItem*)(class CItem*)(pet))->FUN_140528b90();
+    unsigned short nPetClass = ((class CItem*)(class CItem*)(pet))->FUN_140528c20();
     FUN_140cb5300(&nPetClass, &nExp);
     IdCount& entry = m_pool[nIndex];
     unsigned __int64 id = entry.first;
     ItemPtr item = g_143ab2a90.FUN_140a5d680(id);
     if (item == 0)
         return;
-    __int64 nPrice = FUN_140528e00(item);
-    if (FUN_140528c60(item) != 0)
+    __int64 nPrice = ((class CItem*)(class CItem*)(item))->FUN_140528e00();
+    if (((class CItem*)(class CItem*)(item))->FUN_140528c60() != 0)
     {
         FUN_1412752d0(L"s_err_cannot_compose_petitem_hasitem", 1);
     }
-    else if (FUN_140528ca0(item) == 0 && nPrice > GetServerTime())
+    else if (((class CItem*)(class CItem*)(item))->FUN_140528ca0() == 0 && nPrice > GetServerTime())
     {
         FUN_1412752d0(L"s_itemlock_invalid_petcompose", 1);
     }
-    else if (FUN_140528ca0(item) == 1)
+    else if (((class CItem*)(class CItem*)(item))->FUN_140528ca0() == 1)
     {
         FUN_1412752d0(L"s_itemlock_invalid_petcompose", 1);
     }
     else
     {
-        if (nPetClass < *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
+        if (nPetClass < *FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass))
         {
             const int nMax = 12;
             if (m_selected.GetCount() >= nMax)

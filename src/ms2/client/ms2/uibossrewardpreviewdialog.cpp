@@ -85,13 +85,11 @@ MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 CStringW FUN_1401aa6a0(int nId);                        // npc name
 CStringW FUN_1409e9ed0(CStringW strKey, const CStringW& a1, const unsigned short& a2);
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
-int FUN_1409e13a0(ASTooltip* pTip, CItem* pCompare, CItem* pItem);   // item tooltip (the member in astooltip.h is declared void)
 
 // The slot registry (see unit_1400d2c20.cpp / itemlockslot.cpp).
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
-void FUN_1422cc9e0(DragSlotBag* pBag);
 UIBossRewardPreviewDialog::SlotBag* FUN_140f260d0(NotifyContext::BindData* p);
 void FUN_140f250b0(const CString& strName, int nCount, int nNpcId);
 void FUN_140f25170(const CString& strName);
@@ -129,7 +127,7 @@ int UIBossRewardPreviewDialog::Slot::vfunc_0(void* p)
     if (pPlayer == 0)
         return 0;
     ASTooltip tip(pPlayer, 0x800, 2);
-    if (FUN_1409e13a0(&tip, 0, m_spItem.get()) != 0)
+    if (((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e13a0(0, m_spItem.get()) != 0)
     {
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;
@@ -172,7 +170,7 @@ void FUN_140f25170(const CString& strName)
     UIBossRewardPreviewDialog::SlotBag* pBag = FUN_140f260d0(FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         FUN_1422c8f70(strName);
     }
 }

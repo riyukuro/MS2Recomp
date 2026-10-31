@@ -64,21 +64,25 @@ class Unk_SsDialog : public UIStoreDialog
 public:
 };
 Unk_SsDialog* FUN_1405344f0(int nId);
-Unk_SsDialog* FUN_140de48d0(int nId);
+class Unk_SSGDlg4e47* FUN_140de48d0(int);   // C3: was FUN_140de48d0
 
 // The quest event dispatcher (FUN_140bfc4b0) the slot registers with.
 UIQuestEventDispatcher* FUN_140bfc4b0();
 // The item event hub (FUN_140a6a840) the bag registers with.
 struct Unk_SsItemEvents;
-Unk_SsItemEvents* FUN_140a6a840();
-void FUN_1419cae20(Unk_SsItemEvents*, UIItemEventListener*);
-void FUN_1419caeb0(Unk_SsItemEvents*, UIItemEventListener*);
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419cae20(class UIItemEventListener*);
+    void FUN_1419caeb0(class UIItemEventListener*);
+};
 
 // The singleton that decides whether an item may be sold into the store.
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 
 // The input state (modifier keys).
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The names of the inventory tabs.
 
@@ -90,7 +94,7 @@ struct Unk_SsAccount
     bool FUN_140a6a0d0();
 };
 MS2_CHECK_SIZE(Unk_SsAccount, 0xa9d);
-Unk_SsAccount* FUN_1401c0d90();
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // The character map iterator (the constructor makes it come back through a hidden pointer).
 struct Unk_SsCharIter { Unk_SsCharIter(); void* node; };
@@ -107,7 +111,7 @@ bool FUN_140334210(const Unk_SsCharIter&, const Unk_SsCharIter&);
 
 bool FUN_1406344b0(MS2Ptr<CItem> spItem, const __int64* pCharacter, ItemUtilTransfer::TOutBindingParam* pOut);
 
-void* FUN_1409331e0();                                    // the game state manager
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 CStringW GetStringCommon(int nStringId);                    // a string table text
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
@@ -123,13 +127,11 @@ void* FUN_140a50b50(DragSlot* pSlot);                     // the item slot behin
 void FUN_140710590(COutPacket& packet);                   // send the packet
 CString FUN_140719530(unsigned __int64 v);                // "%I64u"
 CString FUN_140719210(long v);                            // "%ld"
-void FUN_140165270(void* pArr, const CString& str);       // append a string to the slot's data array
 void FUN_1414049c0(void* pArr, int nType);
 void FUN_141404ce0(int nType, void* pArr, Scaleform::GFx::Value* pValue);
 void FUN_1414050c0(int nType, void* pArr, Scaleform::GFx::Value* pValue);
 void FUN_1414043e0(__int64 nUid, int nCount, int nItemId, int bTake, int nSlot);   // request: buy
 void FUN_1414045d0(__int64 nUid, int nCount, int nItemId, int bTake, int nSlot);   // request: sell
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);
 CStringW FUN_1413fa9b0(const CStringW& kIn);
 bool FUN_14025cd60(const CStringW&, const CStringW&);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -201,13 +203,13 @@ int StoreSlot::FUN_141808910()
 // @0x1418089a0
 void StoreSlot::vfunc_6(void* p)
 {
-    FUN_140165270(p, FUN_140719530(m_nStoreItemId));
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(p))->Add(FUN_140719530(m_nStoreItemId));
     MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(m_nStoreItemId);
     if (spItem == NULL)
         return;
     int nType = spItem->FUN_1405276c0();
     if (spItem->FUN_140527840()->FUN_14053c5c0() == 2 || spItem->FUN_140527840()->FUN_14053c5c0() == 0x18)
-        FUN_140165270(p, FUN_140719210(nType));
+        ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(p))->Add(FUN_140719210(nType));
     FUN_1414049c0(p, FUN_141808910());
 }
 
@@ -217,7 +219,7 @@ int StoreSlot::FUN_141808b10(CStringW strSearch)
     MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(m_nStoreItemId);
     if (spItem == NULL)
         return -1;
-    if (FUN_1409b4d40(m_value18))
+    if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(m_value18))->IsObject())
     {
         CStringW strName = spItem->FUN_140527b10();
         CStringW strLower = FUN_1413fa9b0(strName);
@@ -268,7 +270,7 @@ int StoreSlot::vfunc_14()
     if (pDlg != 0 && pDlg->vfunc_55() == 0)
     {
         int nTab = g_143ab2a90.FUN_140a617f0(spItem);
-        BOOL bAll = FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0) || FUN_14025e7c0()->FUN_14116d950(0x36, false, 0);
+        BOOL bAll = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x36, false, 0);
         int nCount = bAll ? spItem->FUN_140526c50() : 1;
         int nSlot = g_143ab2a90.FUN_140a612b0(nTab, spItem, nCount);
         if (nSlot == -1)
@@ -424,7 +426,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
 {
     if (spItem.IsNull())
         return 0;
-    if (reinterpret_cast<CGuideManager*>(FUN_1409331e0())->IsRestricted(6) != 0)
+    if (reinterpret_cast<CGuideManager*>(((void*)FUN_1409331e0()))->IsRestricted(6) != 0)
     {
         FUN_141275260(0x88a, 1, 1);
         return 0;
@@ -447,7 +449,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
     if (!FUN_1406344b0(spItem, &nCharacter, &param))
     {
         CStringW strName(param.name);
-        bool bAllow = FUN_1401c0d90()->FUN_140a6a0d0() && spItem->FUN_1405258b0() != 0;
+        bool bAllow = ((struct Unk_SsAccount*)FUN_1401c0d90())->FUN_140a6a0d0() && spItem->FUN_1405258b0() != 0;
         bool bGem = spItem->FUN_1405279c0()->FUN_1406210e0();
         if (bAllow && bGem)
         {
@@ -585,7 +587,7 @@ void StoreSlot::FUN_14180ade0()
     MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(GetStoreItemId());
     if (spItem.IsNull())
         return;
-    if (FUN_140764020()->FUN_1416ce170(spItem) != 0)
+    if (((class CQuestManager*)FUN_140764020())->FUN_1416ce170(spItem) != 0)
         vfunc_10();
 }
 
@@ -596,7 +598,7 @@ bool StoreSlot::FUN_14180aea0()
     if (spItem == 0)
         return false;
     bool bResult = false;
-    Unk_SsDialog* pDlg = FUN_140de48d0(0x4e47);
+    Unk_SsDialog* pDlg = ((class Unk_SsDialog*)FUN_140de48d0(0x4e47));
     if (pDlg != 0)
     {
         if (pDlg->vfunc_55() == 0)
@@ -641,13 +643,13 @@ void FUN_14180b230(const CString& strName)
 StoreSlotBag::StoreSlotBag(const CString& strName, int nStoreId)
     : DragSlotBag(strName), m_nStoreId(nStoreId)
 {
-    FUN_1419cae20(FUN_140a6a840(), this);
+    ((class Unk_ItemEventSystem*)(struct Unk_SsItemEvents*)(((struct Unk_SsItemEvents*)FUN_140a6a840())))->FUN_1419cae20(this);
 }
 
 // @0x14180b340
 StoreSlotBag::~StoreSlotBag()
 {
-    FUN_1419caeb0(FUN_140a6a840(), this);
+    ((class Unk_ItemEventSystem*)(struct Unk_SsItemEvents*)(((struct Unk_SsItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(this);
 }
 
 // @0x14180b3e0
@@ -707,7 +709,7 @@ void StoreSlotBag::vfunc_il11(void* p)
 // @0x14180b6c0
 void StoreSlotBag::vfunc_12()
 {
-    Unk_SsDialog* pDlg = FUN_140de48d0(0x4e47);
+    Unk_SsDialog* pDlg = ((class Unk_SsDialog*)FUN_140de48d0(0x4e47));
     if (pDlg != 0)
     {
         if (pDlg->vfunc_55() == 0)

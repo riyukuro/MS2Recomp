@@ -96,25 +96,27 @@ public:
     int FUN_1411a49c0(Unk_DbgMarker* pRequest);                         // start the effect, returns its id
     void FUN_1411a6060(int nId);                                        // stop an effect
 };
-void FUN_140a53190(Unk_DbgMarker* p, int nTarget);
+class NoticeMessage   // C3: member view for the former free stand-ins
+{
+public:
+    void SetActor(int);
+};
 struct Unk_DbgConfig { char m_pad[0x2e8]; CString m_strMarkerEffect; };   // the client config
-Unk_DbgConfig* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 class Unk_DbgCameraMgr : public CameraMgr
 {
 public:
     bool FUN_140af0520(const efd::Point2& kScreen, Unk_NiPoint3* pOrigin, Unk_NiPoint3* pDir);   // screen point to ray
 };
 struct Unk_DbgApp : public CWindowService { };         // cursor position
-Unk_DbgApp* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 struct Unk_DbgView { void* FUN_1409a8a60(); };                          // the view's camera
-Unk_DbgView* FUN_1413f9a70();
-void* FUN_1413f9850();                                                  // the service manager
+class Ni3DRenderView* FUN_1413f9a70();   // C3: was FUN_1413f9a70
+class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
 void* FUN_140af2a30(void* pManager);
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
 efd::Point2 FUN_140a0a600(float fX, float fY);
 extern Vector3 DAT_143b01a60;                                   // the zero point
-void* FUN_140a7b840(void* pMap);                                        // npc tree iterator
-void* FUN_140a7b8e0(void* pMap, void* pos);
 PCBase* FUN_140a7b650(void* pEntry);
 void FUN_140a7b860(void* pMap, void** pPos);
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class, symbols-manual rows shared with util.cpp).
@@ -128,12 +130,9 @@ private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
 };
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
-void* FUN_14098d8d0(const void* pRtti, void* pObject);                  // dynamic cast through an NiRTTI
 extern char DAT_143afa7d0;                                              // NiRTTI of the mesh class
 void* FUN_140876480(void* pOut, int nCat);
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCat);
-void FUN_140980460(void* p);                                            // NiRefObject::IncRefCount
-void FUN_1405a93d0(void* p);                                            // NiRefObject::DecRefCount
 CStringW FUN_14016a730(const char* sz, int n);                          // narrow text -> CStringW
 // The model table entry the npc's data record names (state names and the like).
 struct Unk_DbgModelSet
@@ -147,7 +146,6 @@ public:
     Unk_DbgModelSet FUN_141206030(const egf::EntityID& kKey);           // the npc's model set
 };
 Unk_DbgModelTable* FUN_141b6f910();
-const char* FUN_1408ac310(Unk_DbgModelSet* p);                          // animation name
 float FUN_14028d3a0(float fValue);                                       // table value of a speed
 bool FUN_14028d470(float fValue, float fZero);                           // fValue == nZero
 // The npc record handle accessors.
@@ -160,14 +158,14 @@ Unk_UVPickerPtr::Unk_UVPickerPtr(CMeshUVPicker* p)
 {
     m_p = p;
     if (m_p != 0)
-        FUN_140980460(m_p);
+        ((class NiRefObject*)(void*)(m_p))->IncRefCount();
 }
 
 // @0x1412861b0
 Unk_UVPickerPtr::~Unk_UVPickerPtr()
 {
     if (m_p != 0)
-        FUN_1405a93d0(m_p);
+        ((class NiRefObject*)(void*)(m_p))->DecRefCount();
 }
 
 // @0x1412861e0
@@ -176,10 +174,10 @@ Unk_UVPickerPtr& Unk_UVPickerPtr::FUN_1412861e0(CMeshUVPicker* p)
     if (m_p != p)
     {
         if (m_p != 0)
-            FUN_1405a93d0(m_p);
+            ((class NiRefObject*)(void*)(m_p))->DecRefCount();
         m_p = p;
         if (m_p != 0)
-            FUN_140980460(m_p);
+            ((class NiRefObject*)(void*)(m_p))->IncRefCount();
     }
     return *this;
 }
@@ -255,7 +253,7 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
         return;
     if (m_bPicking != 0 && m_timer.FUN_140868c00() != 0 && reinterpret_cast<Unk_DbgCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
     {
-        void* pScene = FUN_1413f9850();
+        void* pScene = ((void*)FUN_1413f9850());
         if (pScene == 0)
             return;
         efd::Point2 kScreen = FUN_140a0a600(fX, fY);
@@ -263,15 +261,15 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
         Unk_NiPoint3 kDir(DAT_143b01a60);
         if (reinterpret_cast<Unk_DbgCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0520(kScreen, &kOrigin, &kDir))
         {
-            if (void* pSceneData = FUN_140af2a30(FUN_1413f9850()))
+            if (void* pSceneData = FUN_140af2a30(((void*)FUN_1413f9850())))
             {
                 void* pMap = reinterpret_cast<Unk_DbgWorld*>(WorldService::GetInstance())->FUN_141bd36d0();
                 bool bFound = false;
-                for (void* pos = FUN_140a7b840(pMap); pos != 0; FUN_140a7b860(pMap, &pos))
+                for (void* pos = ((void*)((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(pMap))->GetHeadPosition()); pos != 0; FUN_140a7b860(pMap, &pos))
                 {
                     if (bFound)
                         break;
-                    Unk_DbgNpc* pNpc = static_cast<Unk_DbgNpc*>(FUN_140a7b650(FUN_140a7b8e0(pMap, pos)));
+                    Unk_DbgNpc* pNpc = static_cast<Unk_DbgNpc*>(FUN_140a7b650(((void*)&((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(pMap))->GetValueAt((struct __POSITION*)(pos)))));
                     if (pNpc == 0)
                         continue;
                     Unk_DbgRecPtr spData = pNpc->FUN_141093270();
@@ -282,14 +280,14 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
                     Unk_SceneWalker walker(pRoot);
                     while (void* pNode = walker.Next(true))
                     {
-                        if (void* pMesh = FUN_14098d8d0(&DAT_143afa7d0, pNode))
+                        if (void* pMesh = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa7d0), (class NiObject const*)(pNode))))
                         {
-                            void* pView = FUN_1413f9a70();
+                            void* pView = ((struct Unk_DbgView*)FUN_1413f9a70());
                             Vector3 kHit;
                             Vector3 kNormal;
                             efd::Point2 kUV;
                             efd::Point2 kCursor;
-                            if (FUN_140aadf80()->GetCursorClientPos(&kCursor.x, &kCursor.x + 1) == 0)
+                            if (((struct Unk_DbgApp*)FUN_140aadf80())->GetCursorClientPos(&kCursor.x, &kCursor.x + 1) == 0)
                                 return;
                             unsigned nTri;
                             if (m_spPicker.FUN_141286290()->FUN_14147ea50(pMesh, static_cast<Unk_DbgView*>(pView)->FUN_1409a8a60(),
@@ -300,9 +298,9 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
                                     FUN_1412860c0();
                                 m_nTargetId = pNpc->FUN_14123c580();
                                 Unk_DbgMarker kMarker;
-                                reinterpret_cast<CString&>(kMarker.m_pName) = FUN_1401d31f0()->m_strMarkerEffect;
+                                reinterpret_cast<CString&>(kMarker.m_pName) = ((struct Unk_DbgConfig*)FUN_1401d31f0())->m_strMarkerEffect;
                                 kMarker.m_nType = pNpc->FUN_141092ff0() != 0 ? 6 : 5;
-                                FUN_140a53190(&kMarker, pNpc->FUN_14123c580());
+                                ((class NoticeMessage*)(struct Unk_DbgMarker*)(&kMarker))->SetActor(pNpc->FUN_14123c580());
                                 m_nMarkerId = reinterpret_cast<Unk_DbgEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kMarker);
                                 bFound = true;
                                 break;
@@ -338,7 +336,7 @@ void UIDebuggingDialog::vfunc_72()
             Unk_DbgModelSet kModel = FUN_141b6f910()->FUN_141206030(pNpc->FUN_14123c460());
             CStringW strNpcName = pNpc->vfunc_77().GetLength() == 0 ? L"Noname" : (LPCWSTR)pNpc->vfunc_77();
             FUN_141286050("m_npcName", strNpcName);
-            FUN_141286050("m_aniName", FUN_14016a730(FUN_1408ac310(&kModel), 0));
+            FUN_141286050("m_aniName", FUN_14016a730(((efd::utf8string*)(struct Unk_DbgModelSet*)(&kModel))->c_str(), 0));
             CStringW strState;
             strState.Format(L"%d", pNpc->FUN_14166c930());
             FUN_141286050("m_state", strState);

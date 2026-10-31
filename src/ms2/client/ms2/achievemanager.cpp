@@ -75,7 +75,9 @@
 class Unk_SingletonObj;
 class Unk_AmPC;
 class Unk_AmMainInfo;
-class UIMyInfoDialog : public UIObject {};                      // stand-in: the class is not recovered (dialog id 0x2711)
+class UIMyInfoDialog : public UIObject {public:
+    void FUN_141a5a560();   // C3: was free FUN_141a5a560
+};                      // stand-in: the class is not recovered (dialog id 0x2711)
 
 extern "C" _ACRTIMP void __cdecl _wassert(const wchar_t* pMsg, const wchar_t* pFile, unsigned nLine);
 
@@ -94,16 +96,18 @@ public:
     MS2Ptr<UIObject> FUN_141adcea0(int nId);
 };
 
-void FUN_141937ea0(UIGameMenuDialog* pDialog, CAchieve* pAchieve, int bCleared);   // the menu dialog's achievement refresh
 class UIMainPlayerInfo* FUN_140931900(int);   // C3: was FUN_140931900
 void FUN_1419f0bb0(Unk_AmMainInfo* pInfo, CAchieve* pAchieve);
-void FUN_141a5a560(UIMyInfoDialog* pDialog);
 
 // Notice plumbing.
-void FUN_140d5b880(Unk_SingletonObj* pOwner, unsigned nId, int nGrade);
+class CMeratMarketMan   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_140d5b880(unsigned int, int);
+};
 CStringW FUN_140d2d440(unsigned nId, int nGrade);               // the notice's title text
 class Unk_AmTrigCmdMgr { public: void FUN_14138bf00(int nCmd, int nArg1, int nArg2); };
-Unk_AmTrigCmdMgr* FUN_1409331e0();
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 void FUN_1412751b0(const CStringW& strMsg, int nType);          // system message line
 int ConditionKindOfType(int nConditionType);                    // ConditionKindOfType
 
@@ -185,7 +189,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 int FUN_140197350(Unk_140165cf0* pNode, const char* pszName, int nDefault);
 unsigned FUN_140197390(Unk_140165cf0* pNode, const char* pszName, unsigned nDefault);
 CStringW FUN_1401bf530(Unk_140165cf0* pNode, const char* pszName, CStringW strDefault);
-int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nValue);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CStringA& strValue);
 int FUN_140873420(Unk_140165cf0* pNode, const char* pszName, CStringW& strValue);
 
@@ -571,13 +575,13 @@ void CAchieveManager::OnPacket(CByteBuffer& rBuf)
                     NotifyReward(nId, nOldStart);
                 UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
                 if (pMenu != 0)
-                    FUN_141937ea0(pMenu, pAchieve.get(), bNotified);
+                    ((class UIGameMenuDialog*)(class UIGameMenuDialog*)(pMenu))->FUN_141937ea0((void*)(pAchieve.get()), bNotified);
                 Unk_AmMainInfo* pInfo = ((class Unk_AmMainInfo*)FUN_140931900(0x4e5f));
                 if (pInfo != 0)
                     FUN_1419f0bb0(pInfo, pAchieve.get());
                 UIMyInfoDialog* pMyInfo = FUN_140938c30(0x2711);
                 if (pMyInfo != 0)
-                    FUN_141a5a560(pMyInfo);
+                    ((class UIMyInfoDialog*)(class UIMyInfoDialog*)(pMyInfo))->FUN_141a5a560();
             }
         }
         DAT_143af0f30.SetAt(nId, 1);
@@ -592,7 +596,7 @@ void CAchieveManager::NotifyClear(CAchieve* pAchieve)
     int nState = pAchieve->GetState();
     int nGrade = ((nState != 3 ? pAchieve->GetCurGrade() - 1 : pAchieve->GetCurGrade()) < 1)
         ? 1 : (nState != 3 ? pAchieve->GetCurGrade() - 1 : pAchieve->GetCurGrade());
-    FUN_140d5b880(FUN_140939a00(), pAchieve->GetId(), nGrade);
+    ((class CMeratMarketMan*)(class Unk_SingletonObj*)(FUN_140939a00()))->FUN_140d5b880(pAchieve->GetId(), nGrade);
     if (pAchieve->GetType() == 8)
         return;
     UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
@@ -603,7 +607,7 @@ void CAchieveManager::NotifyClear(CAchieve* pAchieve)
         if (pData)
         {
             if (pData->GetGrade(nGrade)->m_reward.m_nType > 0)
-                FUN_1409331e0()->FUN_14138bf00(0x17, 0, 0);
+                ((class Unk_AmTrigCmdMgr*)FUN_1409331e0())->FUN_14138bf00(0x17, 0, 0);
         }
     }
     CStringW strTitle = FUN_140d2d440(pAchieve->GetId(), nGrade);
@@ -737,7 +741,7 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
         pNotify->FUN_141ac1580(strIcon, strMsg, 0);
         FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_auth_notify_manual"), FUN_14093ce70(nId, nGrade)), 0x1c);
     }
-    FUN_1409331e0()->FUN_14138bf00(3, pGrade->m_reward.m_nType, 0);
+    ((class Unk_AmTrigCmdMgr*)FUN_1409331e0())->FUN_14138bf00(3, pGrade->m_reward.m_nType, 0);
 }
 
 // @0x1409388a0
@@ -1325,7 +1329,7 @@ int CAchieveCategory::Load()
     {
         Unk_140165cf0* pElem = aElem.FUN_140164a30(i);
         MS2Ptr<CAchieveCategory> pCat(new CAchieveCategory);
-        FUN_1408731e0(pElem, "id", pCat->m_nId);
+        XmlGetAttr((class TiXmlElement*)(pElem), "id", pCat->m_nId);
         FUN_140940370(pElem, "tab", &pCat->m_nTab);
         FUN_140940430(pElem, "tree", &pCat->m_nTree);
         FUN_1408733e0(pElem, "categoryTag", pCat->m_strCategoryTag);
@@ -1334,7 +1338,7 @@ int CAchieveCategory::Load()
         for (Unk_140165cf0* pChildElem = pElem->FUN_140165cf0("child"); pChildElem != 0; pChildElem = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pChildElem)->FUN_140168650("child")))
         {
             MS2Ptr<CAchieveCategory> pChild(new CAchieveCategory);
-            FUN_1408731e0(pChildElem, "id", pChild->m_nId);
+            XmlGetAttr((class TiXmlElement*)(pChildElem), "id", pChild->m_nId);
             FUN_140940370(pElem, "tab", &pChild->m_nTab);
             FUN_1408733e0(pChildElem, "categoryTag", pChild->m_strCategoryTag);
             FUN_1408733e0(pChildElem, "contentsTag", pChild->m_strContentsTag);

@@ -27,7 +27,7 @@ struct Unk_FcPoint2 : public NiPoint2
 };
 
 void FUN_140a01250(Vector3 ptRot, Vector3* pForward, Vector3* pRight);   // basis from a z rotation (degrees)
-void FUN_140adc650(const void* pBox, Unk_FcNxVec3* pCorners);   // NxUtilLib::NxComputeBoxPoints
+bool NxComputeBoxPoints(class NxBox const&, class NxVec3*);   // C3: was FUN_140adc650
 struct Unk_FcRawPoint2 { float x, y; };                           // NiPoint2 storage, built in place below
 void FUN_140db9c80(Unk_FcRawPoint2* pDst, const Unk_FcPoint2& pt);   // NiPoint2::NiPoint2(const efd::Point2&)
 
@@ -121,7 +121,7 @@ int CFrustumCollision::ContainsPoint(const Vector3& pt) const
 int CFrustumCollision::IntersectsBox(const void* pBox) const
 {
     Unk_FcNxVec3 aBoxCorners[8];
-    FUN_140adc650(pBox, aBoxCorners);
+    NxComputeBoxPoints(*(class NxBox const*)(pBox), (class NxVec3*)(aBoxCorners));
 
     NiPoint2 akBoxEdge[8];
     akBoxEdge[0] = Unk_FcPoint2(aBoxCorners[0].x, aBoxCorners[0].y);

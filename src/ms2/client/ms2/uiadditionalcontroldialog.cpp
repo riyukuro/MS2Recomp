@@ -70,12 +70,11 @@ class Unk_AcSkillTable : public SkillDataTableCli
 public:
     MS2Ptr<AdditionalLevelData> FUN_140aafef0(unsigned nId, unsigned short nLevel);
 };
-Unk_AcSkillTable* FUN_1401958b0();
 
 class Unk_AcStringMgr { public: CStringW FUN_1422b0570(const CString& strKey); };
 Unk_AcStringMgr* FUN_14025e7a0();
 CStringTable* GetStringTable();
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 CStringW FUN_14083f330(const CStringW& str, wchar_t chBegin, wchar_t chEnd);      // the text between two characters
 int FUN_140718200(CStringW* text);                                                 // text to number
 
@@ -122,17 +121,17 @@ int UIAdditionalControlDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0)) {
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0)) {
         if (m_30.get() != 0)
             m_30->Invoke("onEnterKey");
         return 1;
     }
-    else if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0)) {
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0)) {
         if (m_30.get() != 0)
             m_30->Invoke("onTabKey");
         return 1;
     }
-    else if (FUN_14025e7c0()->FUN_14116d840()) {
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840()) {
         vfunc_67();
         return 1;
     }
@@ -155,7 +154,7 @@ int UIAdditionalControlDialog::vfunc_28(const char* szMethod, const Scaleform::G
             unsigned nId = data.FUN_1422b8b10();
             unsigned nLevel = data.FUN_1422b8b10();
             float fValue = data.FUN_1422b8ca0();
-            MS2Ptr<AdditionalLevelData> spLevel = FUN_1401958b0()->FUN_140aafef0(nId, nLevel);
+            MS2Ptr<AdditionalLevelData> spLevel = ((class Unk_AcSkillTable*)TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(nId, nLevel);
             if (spLevel.get() != 0) {
                 Unk_AcEffectReq req;
                 req.m_nId = nId;
@@ -214,7 +213,7 @@ void UIAdditionalControlDialog::FUN_1418b2e80(const CString& strGroup, const CSt
     if (!list)
         return;
     list->FUN_1422dd1d0();
-    std::vector<MS2Ptr<AdditionalData> > vecData = FUN_1401958b0()->GetAdditionals();
+    std::vector<MS2Ptr<AdditionalData> > vecData = ((class Unk_AcSkillTable*)TSingleton<SkillDataTableCli>::GetInstance())->GetAdditionals();
     std::sort(vecData.begin(), vecData.end(), [](const MS2Ptr<AdditionalData>& a, const MS2Ptr<AdditionalData>& b) {
         return a->GetID() < b->GetID();
     });

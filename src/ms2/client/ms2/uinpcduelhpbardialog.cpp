@@ -77,7 +77,11 @@ MS2_CHECK_OFFSET(Unk_NdBuff, m_18, 0x18);
 // the npc's table row (profile name at +0x90); refcounted
 struct Unk_NdNpcRow : public CPtred { char m_pad[0x78]; CString m_90; };
 MS2_CHECK_OFFSET(Unk_NdNpcRow, m_90, 0x90);
-int FUN_1406cd310(Unk_NdNpcRow* pRow);                          // string id of the npc name
+class CNpcData   // C3: member view for the former free stand-ins
+{
+public:
+    int GetRace() const;
+};
 // a fixed-size list of buffs (0x30 bytes, hash map bins = 10)
 // ATL::CAtlList<MS2Ptr<AdditionalCli> > (ctor 0x1409750c0, dtor 0x140975690).
 struct Unk_NdBuffList
@@ -90,17 +94,23 @@ POSITION FUN_140976550(Unk_NdBuffList* pList);
 MS2Ptr<Unk_NdBuff>& FUN_140976370(Unk_NdBuffList* pList, POSITION pos);
 void FUN_140976590(Unk_NdBuffList* pList, POSITION* pos);
 struct Unk_NdBuffSource { void FUN_1409725f0(Unk_NdBuffList* pList); };
-Unk_NdBuffSource* FUN_1416749a0(Unk_NdActor* pActor);
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_141656a80();
+    class Unk_PCBaseBuffs* FUN_1416749a0();
+};
 
 class Unk_NdWorld;
-Unk_NdActor* FUN_141bd0cc0(Unk_NdWorld* pWorld);                // the local player
-Unk_NdActor* FUN_141bd1320(Unk_NdWorld* pWorld, int nObjectId);
-unsigned int FUN_140869420();                                   // tick count (ms)
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 enum Unk_NdJobCode { Unk_NdJobCode_None = 0 };
 Unk_NdJobCode FUN_141654730(Unk_NdActor* pPc);                  // job id (an enum: the formatter takes it by reference)
-__int64 FUN_141656a80(Unk_NdActor* pPc);                        // account id
 bool FUN_140930110(int nBuffId);
-int FUN_14123c580(Unk_NdActor* pActor);                         // object id
+class GameObject   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14123c580();
+};
 CStringW FUN_1401aa6a0(int nId);
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
 CString FUN_141028be0(__int64 nAccountId, const CString& strPath, int nSize, CString strDefault);
@@ -188,7 +198,7 @@ void UINpcDuelHPBarDialog::OnLoadComplete()
 void UINpcDuelHPBarDialog::FUN_140e6bb70(int nObjectId, int nDurationMs, int nBarCount)
 {
     m_nObjectId = nObjectId;
-    m_nEndTick = FUN_140869420() + nDurationMs;
+    m_nEndTick = GetTickCountMs2() + nDurationMs;
     m_nBarCount = nBarCount;
     if (m_nBarCount == 0)
         m_nBarCount = 1;
@@ -202,20 +212,20 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
 {
     if (m_nObjectId == 0)
         return;
-    Unk_NdActor* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance()));
+    Unk_NdActor* pPc = ((class Unk_NdActor*)((class WorldService*)(class Unk_NdWorld*)(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc != 0) {
         FUN_140cfee80(FUN_1422dbc00(), "m_leftName", pPc->vfunc_77());
         Unk_NdJobCode nJob = FUN_141654730(pPc);
         CString strJobIcon = Unk_SocketFormat("_{0}", nJob);
         FUN_140cffca0(FUN_1422dbc00(), "m_leftJobIcon", strJobIcon);
-        CString strProfile = FUN_141028be0(FUN_141656a80(pPc), pPc->FUN_1416612e0(), 1, "");
+        CString strProfile = FUN_141028be0(((class PCBase*)(class Unk_NdActor*)(pPc))->FUN_141656a80(), pPc->FUN_1416612e0(), 1, "");
         ((Unk_NdScript*)m_30.operator->())->Invoke("setLeftProfile", strProfile);
         FUN_140e6c900();
     }
-    Unk_NdActor* pNpc = FUN_141bd1320(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance()), m_nObjectId);
+    Unk_NdActor* pNpc = ((class Unk_NdActor*)((class WorldService*)(class Unk_NdWorld*)(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance())))->FUN_141bd1320(m_nObjectId));
     if (pNpc != 0) {
         CStringW strName = FUN_1408f71a0(L"s_npc_duelhpbar_dialog_right_name", FUN_1401aa6a0(pNpc->FUN_141092fa0()),
-            TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, FUN_1406cd310(pNpc->FUN_141093270().operator->())));
+            TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, ((class CNpcData*)(struct Unk_NdNpcRow*)(pNpc->FUN_141093270().operator->()))->GetRace()));
         FUN_140cff1b0(FUN_1422dbc00(), "m_rightName", strName);
         FUN_140cfee80(FUN_1422dbc00(), "m_rightLevel", FUN_140719dc0(L"{0}", pNpc->vfunc_78()));
         CString strProfile(pNpc->FUN_141093270()->m_90);
@@ -223,7 +233,7 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
         FUN_140e6c9c0();
         m_effects->Clear();
         Unk_NdBuffList list(10);
-        FUN_1416749a0(pNpc)->FUN_1409725f0(&list);
+        ((struct Unk_NdBuffSource*)((class PCBase*)(class Unk_NdActor*)(pNpc))->FUN_1416749a0())->FUN_1409725f0(&list);
         for (POSITION pos = FUN_140976550(&list); pos != 0; FUN_140976590(&list, &pos)) {
             MS2Ptr<Unk_NdBuff> buff = FUN_140976370(&list, pos);
             if (buff == 0)
@@ -243,7 +253,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c440(MS2Ptr<Unk_NdBuff> buff)
         return;
     if (m_effects == 0)
         return;
-    if (FUN_14123c580(buff->FUN_14096d280()) != m_nObjectId)
+    if (((class GameObject*)(class Unk_NdActor*)(buff->FUN_14096d280()))->FUN_14123c580() != m_nObjectId)
         return;
     m_effects->FUN_1409b5940(buff);
 }
@@ -255,7 +265,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c540(MS2Ptr<Unk_NdBuff> buff)
         return;
     if (m_effects == 0)
         return;
-    if (FUN_14123c580(buff->FUN_14096d280()) != m_nObjectId)
+    if (((class GameObject*)(class Unk_NdActor*)(buff->FUN_14096d280()))->FUN_14123c580() != m_nObjectId)
         return;
     m_effects->FUN_1409b5aa0(buff);
 }
@@ -286,7 +296,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c7a0()
 {
     unsigned int nMinutes = 0;
     unsigned int nSeconds = 0;
-    unsigned int nNow = FUN_140869420();
+    unsigned int nNow = GetTickCountMs2();
     if (nNow < m_nEndTick) {
         unsigned int nLeft = m_nEndTick - nNow;
         nLeft /= 1000;
@@ -306,7 +316,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c900()
 {
     if (m_30 == 0)
         return;
-    Unk_NdActor* pPc = FUN_141bd0cc0(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance()));
+    Unk_NdActor* pPc = ((class Unk_NdActor*)((class WorldService*)(class Unk_NdWorld*)(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     __int64 nHp = pPc->FUN_141670a00(4);
@@ -321,7 +331,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c9c0()
         return;
     if (m_nBarCount == 0)
         return;
-    Unk_NdActor* pNpc = FUN_141bd1320(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance()), m_nObjectId);
+    Unk_NdActor* pNpc = ((class Unk_NdActor*)((class WorldService*)(class Unk_NdWorld*)(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance())))->FUN_141bd1320(m_nObjectId));
     if (pNpc == 0)
         return;
     const __int64& nHp = pNpc->FUN_141670a00(4);

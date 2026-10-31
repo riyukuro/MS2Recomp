@@ -38,7 +38,6 @@
 #include "hook/ms2hook.h"
 
 // @0x140a31af0
-// MS2-FUNCTIONAL: unreferenced CRT memcpy_s copy: source spelling differs
 static __inline errno_t ms2_memcpy_s_copy1(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }
@@ -55,7 +54,6 @@ static __inline errno_t ms2_memcpy_s_copy1(void* const d, size_t const dsz, void
 }
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy1)(void*, size_t, const void*, size_t) = &ms2_memcpy_s_copy1;
 // @0x140a34670
-// MS2-FUNCTIONAL: unreferenced CRT memcpy_s copy: source spelling differs
 static __inline errno_t ms2_memcpy_s_copy2(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }

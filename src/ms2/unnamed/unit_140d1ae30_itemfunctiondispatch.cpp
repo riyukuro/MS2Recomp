@@ -564,7 +564,6 @@ bool IsBoxNotAgainChecked(const CMsgBoxData& box)
 }
 
 // Would opening the box overflow a currency-like inventory tab? Returns the tab name and the overflow.
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1c550
 int UseItemCheckCapacity(CItem* pItem, CStringW& strTab, __int64* pnOver)
 {
@@ -586,29 +585,30 @@ int UseItemCheckCapacity(CItem* pItem, CStringW& strTab, __int64* pnOver)
             nBoxId = pRecord->function.parameter.FUN_1408d1fd0(5, 0);
         TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(nBoxId, context, drops, false);
     }
-    for (std::vector<ItemDropResult>::iterator it = drops.begin(); it != drops.end(); ++it)
+    for (std::vector<ItemDropResult>::const_iterator it = drops.begin(); it != drops.end(); ++it)
     {
-        ItemDropResult& entry = *it;
+        ItemDropResult& entry = const_cast<ItemDropResult&>(*it);
         MS2Ptr<CItemData> spData = FUN_14053f870(entry.m_itemId);
         if (spData == 0)
             continue;
         int nItemId = entry.vfunc_o18_0();
         unsigned nCount = entry.vfunc_o18_2();
         int nTab = FUN_1403bafd0(nItemId);
-        if (nTab == 0x11)
-            continue;
-        __int64 nAmount = 0;
-        __int64 nCap = 0;
-        if (!FUN_141900510(nTab, &nAmount, &nCap))
-            continue;
-        if (nTab == 0x10)
-            continue;
-        nCount = (std::max)(nCount, entry.m_maxCount);
-        if (nCount + nAmount > nCap)
+        if (nTab != 0x11)
         {
-            *pnOver = nCount + nAmount - nCap;
-            strTab = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
-            return 1;
+            __int64 nAmount = 0;
+            __int64 nCap = 0;
+            if (!FUN_141900510(nTab, &nAmount, &nCap))
+                continue;
+            if (nTab == 0x10)
+                continue;
+            nCount = (std::max)(nCount, entry.m_maxCount);
+            if (nCount + nAmount > nCap)
+            {
+                *pnOver = nCount + nAmount - nCap;
+                strTab = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
+                return 1;
+            }
         }
     }
     return 0;
@@ -1132,37 +1132,38 @@ int ItemMergeRevert(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The quest scroll: warn first when the item says so, else accept its quests.
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d21520
 int QuestScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     CStringW strWarn = spItem->FUN_140527840()->function.xml.FUN_14042cad0(L"warnMsg", L"");
-    if (strWarn.GetLength() == 0)
+    if (strWarn.GetLength() != 0)
     {
-        std::vector<int> quests = spItem->FUN_140527840()->function.xml.FUN_1409e8620(L"questID", std::vector<int>());
-        for (size_t i = 0; i < quests.size(); ++i)
         {
-            if (reinterpret_cast<Unk_IuQuestMgr*>(((class Unk_IuQuestMgr*)FUN_140764020()))->m_list.FUN_140745630(quests[i]) != 0)
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(strWarn), 0, L"");
+            if (spBox.get() != 0)
             {
-                FUN_140d73bc0(0x5f3, 0, 0, L"");
-                return 0;
-            }
-            if (reinterpret_cast<Unk_IuQuestMgr*>(((class Unk_IuQuestMgr*)FUN_140764020()))->vfunc_1(quests[i], 0) == 0)
-            {
-                FUN_140d73bc0(0x5f4, 0, 0, L"");
-                return 0;
+                spBox->FUN_1405340b0(spItem->FUN_140526a50());
+                spBox->FUN_141a027c0(Unk_IuBoxCallback(OnQuestScrollConfirm));
+                FUN_140d73c60(spBox);
             }
         }
-        return g_143ab2a90.FUN_140a63880(spItem.get(), L"");
+        return 1;
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(strWarn), 0, L"");
-    if (spBox.get() != 0)
+    std::vector<int> quests = spItem->FUN_140527840()->function.xml.FUN_1409e8620(L"questID", std::vector<int>());
+    for (size_t i = 0; i < quests.size(); ++i)
     {
-        spBox->FUN_1405340b0(spItem->FUN_140526a50());
-        spBox->FUN_141a027c0(Unk_IuBoxCallback(OnQuestScrollConfirm));
-        FUN_140d73c60(spBox);
+        if (reinterpret_cast<Unk_IuQuestMgr*>(((class Unk_IuQuestMgr*)FUN_140764020()))->m_list.FUN_140745630(quests[i]) != 0)
+        {
+            FUN_140d73bc0(0x5f3, 0, 0, L"");
+            return 0;
+        }
+        if (reinterpret_cast<Unk_IuQuestMgr*>(((class Unk_IuQuestMgr*)FUN_140764020()))->vfunc_1(quests[i], 0) == 0)
+        {
+            FUN_140d73bc0(0x5f4, 0, 0, L"");
+            return 0;
+        }
     }
-    return 1;
+    return g_143ab2a90.FUN_140a63880(spItem.get(), L"");
 }
 
 // @0x140d21a10
@@ -1428,7 +1429,6 @@ int ResetAbilityCoolTime(MS2Ptr<CItem> spItem, PC* pPlayer)
     return 0;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d22dd0
 int ChangeGender(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1436,31 +1436,39 @@ int ChangeGender(MS2Ptr<CItem> spItem, PC* pPlayer)
     {
         if (TSingleton<WeddingManager>::GetInstance() == 0)
         {
-            FUN_140d73aa0(BlockFormat(0x2f5), 0, 0, L"");
+            CStringW strMsg = BlockFormat(0x2f5);
+            FUN_140d73aa0(strMsg, 0, 0, L"");
             return 1;
         }
         int nState = TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0()->m_nState;
         bool bFree = nState == 0 || nState == 5;
         if (!bFree)
         {
-            FUN_140d73aa0(GetStringCommonByKey(L"s_change_gender_err_wedding"), 0, 0, L"");
+            CStringW strMsg = GetStringCommonByKey(L"s_change_gender_err_wedding");
+            FUN_140d73aa0(strMsg, 0, 0, L"");
             return 1;
         }
     }
     if (((class MyPC*)(class PC*)(pPlayer))->FUN_14152e7f0())
     {
-        FUN_140d73aa0(BlockFormat(0x2f3), 0, 0, L"");
+        CStringW strMsg = BlockFormat(0x2f3);
+        FUN_140d73aa0(strMsg, 0, 0, L"");
         return 1;
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, FUN_14052bd00(0x2f2, pPlayer->vfunc_77()), 0, s_strUseFunctionItem);
-    if (spBox.get() == 0)
-        return 0;
-    spBox->FUN_141a01600(spItem->FUN_140526a50());
-    spBox->FUN_141a024a0(0);
-    spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-    spBox->FUN_141a01700(0x477, 0x478, 0);
-    FUN_140d73c60(spBox);
-    return 1;
+    CStringW strText = FUN_14052bd00(0x2f2, pPlayer->vfunc_77());
+    {
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strText, 0, s_strUseFunctionItem);
+        if (spBox.get() != 0)
+        {
+            spBox->FUN_141a01600(spItem->FUN_140526a50());
+            spBox->FUN_141a024a0(0);
+            spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+            spBox->FUN_141a01700(0x477, 0x478, 0);
+            FUN_140d73c60(spBox);
+            return 1;
+        }
+    }
+    return 0;
 }
 
 // @0x140d233d0
@@ -1510,28 +1518,34 @@ int ChangeCharName(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The inventory expansion item: name the tab it expands.
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d23870
 int ExpandInven(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     CStringW strMsg = BlockFormat(0x29c);
     CStringW strTab;
-    if (!g_143ab2a90.FUN_140a5ce30(strTab))
+    if (g_143ab2a90.FUN_140a5ce30(strTab))
+    {
+        if (strTab.GetLength() != 0 && spItem->FUN_140527840()->function.parameter.FUN_1408d2380() == 1)
+            strMsg = FUN_14052bd00(0x2a6, strTab);
+    }
+    else
     {
         FUN_140d73bc0(0x2a3, 0, 0, L"");
         return 0;
     }
-    if (strTab.GetLength() != 0 && spItem->FUN_140527840()->function.parameter.FUN_1408d2380() == 1)
-        strMsg = FUN_14052bd00(0x2a6, strTab);
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strUseFunctionItem);
-    if (spBox.get() == 0)
-        return 0;
-    spBox->FUN_141a01600(spItem->FUN_140526a50());
-    spBox->FUN_141a024a0(0);
-    spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-    spBox->FUN_141a01700(0x477, 0x478, 0);
-    FUN_140d73c60(spBox);
-    return 1;
+    {
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strUseFunctionItem);
+        if (spBox.get() != 0)
+        {
+            spBox->FUN_141a01600(spItem->FUN_140526a50());
+            spBox->FUN_141a024a0(0);
+            spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+            spBox->FUN_141a01700(0x477, 0x478, 0);
+            FUN_140d73c60(spBox);
+            return 1;
+        }
+    }
+    return 0;
 }
 
 // @0x140d24cc0
@@ -1563,7 +1577,6 @@ int CallAirTaxi(MS2Ptr<CItem> spItem, PC* pPlayer)
     return 1;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d24900
 int LevelPotion(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1579,7 +1592,7 @@ int LevelPotion(MS2Ptr<CItem> spItem, PC* pPlayer)
     unsigned short nLevel = (unsigned short)spItem->FUN_140527840()->function.xml.GetInt(L"targetLevel", nDefault);
     if (nLevel == 0)
         return 0;
-    if ((int)(unsigned short)pPlayer->vfunc_78() >= (int)nLevel)
+    if ((int)nLevel <= (int)(unsigned short)pPlayer->vfunc_78())
     {
         FUN_140d73aa0(FUN_1409e8820(L"s_err_cannot_already_target_level_potion", nLevel), 0, 0, L"");
         return 0;

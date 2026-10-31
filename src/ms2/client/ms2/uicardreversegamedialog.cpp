@@ -53,18 +53,19 @@ void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CSt
 // Item slot bindings (the bound slot key -> the item).
 void FUN_141415600(const CString& strKey);                         // unbind
 void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind
-void FUN_140165270(ATL::CAtlArray<CString>& arr, const CString& str);    // CAtlArray<CString>::Add
-void FUN_1402c2890(ATL::CAtlArray<CString>& arr);                        // CAtlArray<CString>::RemoveAll
 
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);             // has the AS object been released
 class Unk_CRSceneMgr;
 Unk_CRSceneMgr* FUN_1408e57f0();
-void FUN_1422b9fd0(Unk_CRSceneMgr* pMgr, int nScene);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1422b9fd0(int);
+};
 void FUN_141901470(int n, int nTypeId);
 void FUN_14151f200();
 void FUN_140710590(COutPacket& packet);                            // send
 
-WorldService* FUN_1403ed2d0();
 
 class Unk_CRRawItem { public: char m_data[0x10]; };
 
@@ -138,19 +139,19 @@ void UICardReverseGameDialog::vfunc_67()
 {
     for (unsigned i = 0; i < m_180.GetCount(); ++i)
         FUN_141415600(m_180[i]);
-    FUN_1402c2890(m_180);
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->RemoveAll();
     FUN_141901470(1, 0x4f02);
     UIDialog::vfunc_67();
     TSingleton<CUIService>::GetInstance()->FUN_141ada610(0x6200022);
     TSingleton<CUIService>::GetInstance()->FUN_141adad20(0x6200022);
-    FUN_1422b9fd0(FUN_1408e57f0(), 0x620001d);
+    ((class GFxSceneService*)(class Unk_CRSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001d);
 }
 
 // @0x140f26cd0
 void UICardReverseGameDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    FUN_1422b9fd0(FUN_1408e57f0(), 0x6200022);
+    ((class GFxSceneService*)(class Unk_CRSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x6200022);
     TSingleton<CUIService>::GetInstance()->FUN_141ad9e50(0x6200022);
     TSingleton<CUIService>::GetInstance()->FUN_141ada6f0(0x6200022);
     m_1c8.RemoveAll();
@@ -184,7 +185,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
             m_1a8.RemoveAll();
             for (unsigned i = 0; i < m_180.GetCount(); ++i)
                 FUN_141415600(m_180[i]);
-            FUN_1402c2890(m_180);
+            ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->RemoveAll();
             m_1e8 = static_cast<CInPacket*>(p)->ReadInt32();
             m_1ec = static_cast<CInPacket*>(p)->ReadInt32();
             unsigned nCards = static_cast<CInPacket*>(p)->ReadInt32();
@@ -206,7 +207,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
                         int nSeq = m_1a0++;
                         strBind.Format("%s_%d", (const char*)GetTypeName(), nSeq);
                         FUN_141415450(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
-                        FUN_140165270(m_180, strBind);
+                        ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->Add(strBind);
                     }
                     spCard->m_strBindId = strBind;
                     obj.FUN_1409c0d20("index", nCard);
@@ -229,7 +230,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
             m_1c8.Copy(m_1a8);
             for (unsigned i = 0; i < m_180.GetCount(); ++i)
                 FUN_141415600(m_180[i]);
-            FUN_1402c2890(m_180);
+            ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->RemoveAll();
             FUN_140f28b30(m_1c8);
         }
         else if (nMode == 2)
@@ -320,7 +321,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                         int nSeq = m_1a0++;
                         strBind.Format("%s_%d", (const char*)GetTypeName(), nSeq);
                         FUN_141415450(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
-                        FUN_140165270(m_180, strBind);
+                        ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->Add(strBind);
                         m_1f8->m_strBindId = strBind;
                     }
                     obj.FUN_1407cba60("bindID", CString(m_1f8->m_strBindId));
@@ -348,7 +349,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                             int nSeq = m_1a0++;
                             strBind.Format("%s_%d", (const char*)GetTypeName(), nSeq);
                             FUN_141415450(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
-                            FUN_140165270(m_180, strBind);
+                            ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->Add(strBind);
                             spCard->m_strBindId = strBind;
                         }
                         obj.FUN_1407cba60("bindID", CString(spCard->m_strBindId));
@@ -386,7 +387,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
 void UICardReverseGameDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     int nItemId = pArgs->FUN_1422b8b10();

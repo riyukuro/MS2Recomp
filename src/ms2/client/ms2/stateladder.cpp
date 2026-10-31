@@ -29,9 +29,17 @@ bool FUN_140998dc0(const NiFixedString& kStr, const char* psz);                 
 bool FUN_14028d470(float a, float b);                                                      // approx equal
 float FUN_14059d930(float f);                                                              // fabsf
 bool FUN_1412410c0(Unk_PCBaseBody* pBody, const efd::Point3& kPos, float fHeight);                // blocked test of the body
-void FUN_141240730(Unk_PCBaseBody* pBody);
-void* FUN_141240f20(Unk_PCBaseBody* pBody);
-void FUN_140cfaf30(void* p);
+class GameObjectController   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141240730();
+    class GameObjectControllerHitReport* FUN_141240f20();
+};
+class GameObjectControllerHitReport   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140cfaf30();
+};
 // Physics: the ray cast record and the PhysX helper (physxhelper.h cannot be included here: it needs NOMINMAX).
 struct Unk_RayCastInfo
 {
@@ -57,9 +65,9 @@ public:
     bool CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);
     int FUN_14168a450(const efd::Point3& kPos, float* pfDist, float fMaxDist);     // ground below kPos
 };
-CPhysXHelper* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 int FUN_140961880(egf::Entity* pEntity, unsigned int nHash, float* pOut);                 // property read (float)
-void FUN_140291bc0(efd::Point3* pDegrees);                                                 // wrap the angles into 0..359
+void FUN_140291bc0(struct Unk_CommonVec3*);   // C3: was FUN_140291bc0
 extern efd::Point3 DAT_143a08cf8;                                                          // the up axis
 
 // The owner seen through its vftable: the exe returns slot 18's point straight into an efd::Point3 local, and slot 22
@@ -136,7 +144,7 @@ StateLadder::~StateLadder()
 void StateLadder::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    FUN_141240730(m_pOwner->FUN_14166d220());
+    ((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->FUN_14166d220()))->FUN_141240730();
     m_timerPos.FUN_140868750(100);
     m_timerUp.FUN_1408687f0();
     m_timerDown.FUN_1408687f0();
@@ -170,7 +178,7 @@ void StateLadder::vfunc_4(StateData* pData)
         FUN_1409618c0(pLadder, 0x68c7c29d, &kRot);
         FUN_140961880(pLadder, 0xf8b99313, &fDist);
         kRot.z = kRot.z + 180.0f;
-        FUN_140291bc0(&kRot);
+        FUN_140291bc0((struct Unk_CommonVec3*)(&kRot));
         pPC->FUN_14166d970(kRot);
         kBase = kBase + (-m_pOwner->FUN_14123cc20()) * fDist;
         kBase.z = FUN_1417d9880(pLadder);
@@ -203,11 +211,11 @@ void StateLadder::vfunc_5(int n)
 {
     State::vfunc_5(n);
     m_pOwner->FUN_14166d8b0(m_pOwner->vfunc_20().z);
-    FUN_141240730(m_pOwner->FUN_14166d220());
+    ((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->FUN_14166d220()))->FUN_141240730();
     m_pOwner->FUN_14123cb20(true);
     m_n10 = 0x2a;
     if (m_pOwner->FUN_14166d220() != 0)
-        FUN_140cfaf30(FUN_141240f20(m_pOwner->FUN_14166d220()));
+        ((class GameObjectControllerHitReport*)(void*)(((void*)((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->FUN_14166d220()))->FUN_141240f20())))->FUN_140cfaf30();
     m_pLadder = 0;
 }
 
@@ -376,7 +384,7 @@ float StateLadder::FUN_1417d8c00()
         {
             NiPoint3 kPos = pPC->vfunc_18();
             float fGround = 0.0f;
-            if (FUN_1409f7ca0()->FUN_14168a450(kPos, &fGround, 0.0f) != 0
+            if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450(kPos, &fGround, 0.0f) != 0
                 && fGround != FLT_MAX)
                 m_n10 = 0x32;
         }
@@ -432,7 +440,7 @@ float StateLadder::FUN_1417d8c00()
                 NiPoint3 kPos = pPC->vfunc_18();
                 efd::Point3 kProp = efd::Point3::ZERO;
                 float fGround = 0.0f;
-                if (FUN_1409f7ca0()->FUN_14168a450(kPos, &fGround, 0.0f) != 0)
+                if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450(kPos, &fGround, 0.0f) != 0)
                 {
                     float fHit = kPos.z - fGround;
                     FUN_1409618c0(m_pLadder, 0xfd95ca52, &kProp);
@@ -587,7 +595,7 @@ efd::Point3 StateLadder::FUN_1417d99e0()
     kInfo.m_20 = m_pOwner->FUN_14123c410();
     kInfo.m_28 = 0;
     efd::Point3 kUnused;                                    // the exe constructs a Point3 it never uses
-    if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, 0))
         return kInfo.m_hitPoint;
     return efd::Point3::ZERO;
 }

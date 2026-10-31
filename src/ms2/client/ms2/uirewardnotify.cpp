@@ -1024,7 +1024,7 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             reinterpret_cast<Unk_RLChat*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb300(strTitle);
             Unk_RLRewardUI* pUI = ((class Unk_RLRewardUI*)FUN_140a7b2b0(0x4e40));
             if (pUI != 0) {
-                if (items.GetCount() != 0)
+                if (items.GetCount() > 0)
                     pUI->FUN_141b1ac40(items, strTitle, 0, 0, 0);
                 pUI->FUN_141b1a8e0(strResult, "", "");
             }
@@ -1050,12 +1050,13 @@ void UIRouletteDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         return;
     CString strName = pArgs->FUN_1422b8d30();
     if (FUN_140184310(strName, "resultItem")) {
-        int nIndex = pArgs->FUN_1422b8b10() - 1;
+        int nSlot = pArgs->FUN_1422b8b10();
+        int nIndex = nSlot - 1;
         MS2Ptr<CItem> item(new CItem);
         if (item->FUN_14052b130(m_itemIds[nIndex], m_rarities[nIndex], 0)) {
             item->FUN_140526c70(m_counts[nIndex]);
             ASTooltip tooltip(pPlayer, 0x800, 2);
-            if (tooltip.FUN_1409e0d40(item.get())) {
+            if (tooltip.FUN_1409e0d40((CItem*)FUN_14052cd70(item))) {
                 *pRetVal = tooltip.FUN_1422bb870();
                 return;
             }
@@ -1068,7 +1069,7 @@ void UIRouletteDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         if (item->FUN_14052b130(m_itemIds[nIndex], m_rarities[nIndex], 0)) {
             item->FUN_140526c70(m_counts[nIndex]);
             ASTooltip tooltip(pPlayer, 0x800, 2);
-            if (tooltip.FUN_1409e0d40(item.get())) {
+            if (tooltip.FUN_1409e0d40((CItem*)FUN_14052cd70(item))) {
                 *pRetVal = tooltip.FUN_1422bb870();
                 return;
             }
@@ -1089,25 +1090,29 @@ MS2_REPLACE_METHOD(0x141ac5a00, UIRouletteDialog, FUN_141ac5a00, 33, 0x13EDAFA4)
 void UIRouletteDialog::FUN_141ac5a30()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDlg == 0)
-        return;
-    if (m_itemIds.GetCount() != m_rarities.GetCount() || m_rarities.GetCount() != m_counts.GetCount() || m_itemIds.GetCount() != 0xc)
-        return;
-    for (int i = 0; i < 0xc; i++) {
-        int nItemId = m_itemIds[i];
-        unsigned nRarity = m_rarities[i];
-        int nCount = m_counts[i];
-        MS2Ptr<CItem> item(new CItem);
-        if (item->FUN_140523c40(nItemId, nRarity, 0)) {
-            item->FUN_140526c70(nCount);
-            CString strBind;
-            strBind.Format("%s_%d", (const char*)GetTypeName(), i + 1);
-            FUN_141415450(strBind, item, i, 0x415, 0);
-            pDlg->FUN_141ac65b0("bind", strBind, i + 1, item->FUN_140528590(), nCount);
-            m_binds.Add(strBind);
+    if (pDlg != 0) {
+        if (m_itemIds.GetCount() != m_rarities.GetCount())
+            return;
+        if (m_rarities.GetCount() != m_counts.GetCount())
+            return;
+        if (m_itemIds.GetCount() != 0xc)
+            return;
+        for (size_t i = 0; i < 0xc; i++) {
+            int nItemId = m_itemIds[i];
+            unsigned nRarity = m_rarities[i];
+            int nCount = m_counts[i];
+            MS2Ptr<CItem> item(new CItem);
+            if (item->FUN_140523c40(nItemId, nRarity, 0)) {
+                item->FUN_140526c70(nCount);
+                CString strBind;
+                strBind.Format("%s_%d", (const char*)GetTypeName(), i + 1);
+                FUN_141415450(strBind, item, i, 0x415, 0);
+                pDlg->FUN_141ac65b0("bind", strBind, i + 1, item->FUN_140528590(), nCount);
+                m_binds.Add(strBind);
+            }
         }
+        pDlg->FUN_1407cb9c0("selectedIndex", 1);
     }
-    pDlg->FUN_1407cb9c0("selectedIndex", 1);
 }
 MS2_REPLACE_METHOD(0x141ac5a30, UIRouletteDialog, FUN_141ac5a30, 1071, 0x93B7D820);
 
@@ -1115,26 +1120,28 @@ MS2_REPLACE_METHOD(0x141ac5a30, UIRouletteDialog, FUN_141ac5a30, 1071, 0x93B7D82
 // @0x141ac5e70
 void UIRouletteDialog::FUN_141ac5e70(CInPacket& pkt)
 {
-    unsigned char nMode = pkt.ReadUInt8();
+    int nMode = pkt.ReadUInt8();
     if (nMode == 1) {
-        if (FUN_141924630() == 0) {
-            m_itemIds.RemoveAll();
-            m_rarities.RemoveAll();
-            m_counts.RemoveAll();
-            m_1e0 = pkt.ReadUInt8();
-            unsigned nCount = pkt.ReadInt32();
-            for (unsigned long long i = 0; i < nCount; i++) {
-                int nItemId = pkt.ReadInt32();
-                unsigned nRarity = pkt.ReadUInt8();
-                int nCnt = pkt.ReadInt32();
-                m_itemIds.Add(nItemId);
-                m_rarities.Add((Unk_VipItemRank)nRarity);
-                m_counts.Add(nCnt);
-            }
-            m_178 = pkt.ReadInt32();
-            ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b21ae0("RouletteDialog");
+        if (FUN_141924630() != 0)
+            return;
+        m_itemIds.RemoveAll();
+        m_rarities.RemoveAll();
+        m_counts.RemoveAll();
+        m_1e0 = pkt.ReadUInt8();
+        unsigned long long nCount = (unsigned)pkt.ReadInt32();
+        for (unsigned long long i = 0; i < nCount; i++) {
+            int nItemId = pkt.ReadInt32();
+            Unk_VipItemRank nRarity = (Unk_VipItemRank)pkt.ReadUInt8();
+            int nCnt = pkt.ReadInt32();
+            m_itemIds.Add(nItemId);
+            m_rarities.Add(nRarity);
+            m_counts.Add(nCnt);
         }
-    } else if (nMode == 2 && FUN_141924630() != 0) {
+        m_178 = pkt.ReadInt32();
+        ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b21ae0("RouletteDialog");
+    } else if (nMode == 2) {
+        if (FUN_141924630() == 0)
+            return;
         m_spinIndex = 0;
         m_spins.RemoveAll();
         int nCount = pkt.ReadInt32();
@@ -1147,15 +1154,15 @@ void UIRouletteDialog::FUN_141ac5e70(CInPacket& pkt)
             m_spins.Add(spin);
         }
         m_spinIndex = 0;
-        if (m_spins.GetCount() != 0) {
-            ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
-            if (pDlg != 0)
-                pDlg->FUN_140f356e0("spin", m_spins[m_spinIndex].m_slot + 1, FUN_14116d720(FUN_14025e7c0()));
-            if (m_spins.GetCount() == 1)
-                m_hSound = reinterpret_cast<Unk_RLSound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5a60(s_strSpinStart, "");
-            else
-                m_hSound = reinterpret_cast<Unk_RLSound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5a60(s_strSpinMultiStart, "");
-        }
+        if (m_spins.GetCount() == 0)
+            return;
+        ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
+        if (pDlg != 0)
+            pDlg->FUN_140f356e0("spin", m_spins[m_spinIndex].m_slot + 1, FUN_14116d720(FUN_14025e7c0()));
+        if (m_spins.GetCount() == 1)
+            m_hSound = reinterpret_cast<Unk_RLSound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5a60(s_strSpinStart, "");
+        else
+            m_hSound = reinterpret_cast<Unk_RLSound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5a60(s_strSpinMultiStart, "");
     }
 }
 #endif

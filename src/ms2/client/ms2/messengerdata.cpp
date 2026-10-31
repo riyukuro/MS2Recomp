@@ -18,6 +18,8 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/jobtable.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/userproxy.h"
+#include "ms2/commonfiles/guilddef_1.h"
 #include "ms2/client/ms2/buddymanager.h"
 
 // ---- out-of-unit callees (names describe uses) ----
@@ -34,7 +36,7 @@ public:
 };
 
 // The client feature switches: 0x56 = club chat, 0x93 = dungeon help.
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 // The chat window's name service (+0x48 of the state).
 
@@ -158,7 +160,7 @@ public:
 class Unk_MdPlayers { public: Unk_MdPlayer* FUN_141bd1530(__int64 nId); };
 
 // Source records of the chat entries (partial layouts: only what the entry builders read).
-class Unk_MdName { public: CString FUN_1408f1a60(); CStringW FUN_1408f19e0(); };   // a name box
+class Unk_MdName { };   // a name box (an Unk_UserProxy view)
 class Unk_MdSrcA : public CBuddy { public: const CString& FUN_1401cc530();
                    int FUN_1401cc210();};
 class Unk_MdSrcB
@@ -173,7 +175,7 @@ public:
     unsigned char m_pad_60[8];
     int m_nJob;                                                             // +0x68
 };
-class Unk_MdNameC { public: CString FUN_1404ca980(); CStringW FUN_1404ca890(); };   // the other name box
+class Unk_MdNameC { };   // the other name box (an Unk_GuildMemberData view)
 class Unk_MdSrcC
 {
 public:
@@ -520,10 +522,10 @@ int MessengerData::SubjectSetting::FUN_141481ab0(Unk_MdXml* pXml)
     pSubject->FUN_1408731e0("party", &m_nParty);
     pSubject->FUN_1408731e0("guild", &m_nGuild);
     pSubject->FUN_1408731e0("whisper", &m_nWhisper);
-    if (FUN_140166410()->FUN_14036d570(0x56) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x56) == 1)
         pSubject->FUN_1408731e0("club", &m_nClub);
     pSubject->FUN_1408731e0("partyInvite", &m_nPartyInvite);
-    if (FUN_140166410()->FUN_14036d570(0x93) != 0)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x93) != 0)
         pSubject->FUN_1408731e0("dungeonHelp", &m_nDungeonHelp);
     int nAll;
     if (m_nSuper == 0 && m_nWorld == 0 && m_nChannel == 0 && m_nSocial == 0 && m_nParty == 0 && m_nGuild == 0 && m_nWhisper == 0 && m_nClub == 0 && m_nPartyInvite == 0 && m_nDungeonHelp == 0)
@@ -550,10 +552,10 @@ int MessengerData::SubjectSetting::FUN_141481cf0(Unk_MdXml* pXml)
     pSubject->FUN_140873ca0("party", m_nParty);
     pSubject->FUN_140873ca0("guild", m_nGuild);
     pSubject->FUN_140873ca0("whisper", m_nWhisper);
-    if (FUN_140166410()->FUN_14036d570(0x56) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x56) == 1)
         pSubject->FUN_140873ca0("club", m_nClub);
     pSubject->FUN_140873ca0("partyInvite", m_nPartyInvite);
-    if (FUN_140166410()->FUN_14036d570(0x93) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x93) == 1)
         pSubject->FUN_140873ca0("dungeonHelp", m_nDungeonHelp);
         return 1;
     }
@@ -927,8 +929,8 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcB& src)
 {
     m_nKind = (src.FUN_141637c20() == 0);
     m_nId = src.m_nId;
-    m_strImage = (const char*)FUN_141028be0(m_nId, src.m_name.FUN_1408f1a60(), 1, "");
-    m_strName = src.m_name.FUN_1408f19e0();
+    m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f1a60(), 1, "");
+    m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f19e0();
     m_strInfo = FUN_140c348b0(0x20, src.m_time, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
 }
 
@@ -937,8 +939,8 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcC& src)
 {
     m_nKind = (src.m_nState == 0);
     m_nId = src.m_nId;
-    m_strImage = (const char*)FUN_141028be0(m_nId, src.m_name.FUN_1404ca980(), 1, "");
-    m_strName = src.m_name.FUN_1404ca890();
+    m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_GuildMemberData&>(src.m_name).FUN_1404ca980(), 1, "");
+    m_strName = reinterpret_cast<Unk_GuildMemberData&>(src.m_name).FUN_1404ca890();
     m_strInfo = FUN_140c348b0(0x20, src.m_time, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, FUN_140644bb0(reinterpret_cast<Unk_MdClassTable*>(TSingleton<JobTable>::GetInstance()), src.m_nClass)));
 }
 
@@ -947,8 +949,8 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcD& src)
 {
     m_nKind = src.FUN_14137b160();
     m_nId = src.m_nId;
-    m_strImage = (const char*)FUN_141028be0(m_nId, src.m_name.FUN_1408f1a60(), 1, "");
-    m_strName = src.m_name.FUN_1408f19e0();
+    m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f1a60(), 1, "");
+    m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f19e0();
     m_strInfo = FUN_140c348b0(0x20, src.m_time, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
 }
 
@@ -1054,7 +1056,7 @@ CString FUN_1414842b0(int nKind, CStringW strName)
     Unk_MdMemberPtr member = room.FUN_141381280()->FUN_14137ba10(CStringW(strName));
     if (member.FUN_14137c360(0) != 0)
         return CString("");
-    return FUN_141028be0(member.FUN_14137c3b0()->m_nOwner, member.FUN_14137c3b0()->m_name.FUN_1408f1a60(), 1, "");
+    return FUN_141028be0(member.FUN_14137c3b0()->m_nOwner, reinterpret_cast<Unk_UserProxy&>(member.FUN_14137c3b0()->m_name).FUN_1408f1a60(), 1, "");
 }
 
 // @0x141484720

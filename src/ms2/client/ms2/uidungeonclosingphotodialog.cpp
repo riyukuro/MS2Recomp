@@ -198,7 +198,7 @@ public:
 };
 class Unk_BuddyInput { public: virtual unsigned vfunc_0(); int FUN_14070fe80(); void FUN_140715280(unsigned); };
 class Unk_RewardOtherDialog : public UIDialog { public: void FUN_1419f6a70(int, CStringW, int); };
-Unk_RewardOtherDialog* FUN_140e01890(int);
+class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
 class Unk_140a94350
 {
 public:
@@ -217,7 +217,7 @@ CStringW FUN_14062b4f0(CStringW, const int*);
 void FUN_141275260(int, int, int);
 void FUN_140961010(int, int, int, const CStringW&);
 void FUN_141276180(const CString&, const CString&);
-unsigned FUN_140869420();
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_140718170(const CString&);
 
 // @0x140e0de40
@@ -252,14 +252,14 @@ void UIDungeonClosingPhotoDialog::vfunc_67()
 // @0x140e0e090
 void UIDungeonClosingPhotoDialog::vfunc_72()
 {
-    if (m_1b0 != 0 && m_1b0 < FUN_140869420()) {
+    if (m_1b0 != 0 && m_1b0 < GetTickCountMs2()) {
         m_1b0 = 0;
         if (reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd3060() == m_1bc)
             FUN_141924680();
     } else {
         if (m_1b4 == 0)
             return;
-        unsigned int nNow = FUN_140869420();
+        unsigned int nNow = GetTickCountMs2();
         if (m_1b4 < nNow) {
             m_1b4 = 0;
             vfunc_67();
@@ -298,7 +298,7 @@ void UIDungeonClosingPhotoDialog::OnLoadComplete()
     int delay = 5000;
     if (n >= 5)
         delay = 8000;
-    m_1b4 = FUN_140869420() + delay;
+    m_1b4 = GetTickCountMs2() + delay;
     m_1b8 = false;
 }
 
@@ -445,7 +445,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
     m_1bc = reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd3060();
     unsigned flag = 0;
     if (res == 1) {
-        Unk_RewardOtherDialog* dlg = FUN_140e01890(0x4e4c);
+        Unk_RewardOtherDialog* dlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
         if (dlg) {
             flag = 2000;
             FUN_140a94350()->vfunc_10(9);
@@ -453,7 +453,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
             FUN_141276180(s_winSound, "");
         }
     } else if (res == 2) {
-        Unk_RewardOtherDialog* dlg = FUN_140e01890(0x4e4c);
+        Unk_RewardOtherDialog* dlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
         if (dlg) {
             flag = 2000;
             dlg->FUN_1419f6a70(7, GetStringCommonByKey(CStringW(L"s_room_dungeon_fail")), 2000);
@@ -515,7 +515,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0f790()
 // @0x140e0fcf0
 void UIDungeonClosingPhotoDialog::FUN_140e0fcf0(int n)
 {
-    m_1b0 = FUN_140869420() + n;
+    m_1b0 = GetTickCountMs2() + n;
 }
 
 // @0x140e0fd20

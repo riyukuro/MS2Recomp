@@ -139,6 +139,15 @@ public:
     template <class T> MS2Ptr<T> FUN_140fe4370(const CString& strName);                      // child control by name (tab button group; uimeratmarketdialog.cpp)
     template <class T> MS2Ptr<T> FUN_140fafed0(const CString& strName);                      // child control by name (slider; uigroupmessenger.cpp, gameoptionstruct.cpp)
     AScript(const AScript& o);                                                               // 0x1409bb7b0 (inline COMDAT)
+    // The implicit assignment (inline COMDAT 0x1409edaf0, first emitted in astooltip.cpp). It copies the movie id dword
+    // only, as the copy ctor does; the implicit one also copied the union's pointer member.
+    AScript& operator=(const AScript& o)
+    {
+        CPtred::operator=(o);
+        m_nMovieId = o.m_nMovieId;
+        m_value = o.m_value;
+        return *this;
+    }
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1);                         // 0x140acd130 (inline COMDAT, tabcontentspetevolution.cpp)
     // 0x141917bf0 (inline COMDAT, defined in uidamagetext.cpp; all by value: the callee destroys them)
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, CString a2, CString a3, CString a4);

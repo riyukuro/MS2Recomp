@@ -70,9 +70,13 @@ static CString s_strSortTypeNamesLike2[] = {"None", "Buy", "Like", "PriceLow", "
 
 // The item event source the dialog listens to (a TSingleton; see uiitemeventlistener.h).
 class Unk_CigItemEvents;
-Unk_CigItemEvents* FUN_140a6a840();
-void FUN_1419cae20(Unk_CigItemEvents*, UIItemEventListener*);              // add a listener
-void FUN_1419caeb0(Unk_CigItemEvents*, UIItemEventListener*);              // remove it
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419cae20(class UIItemEventListener*);
+    void FUN_1419caeb0(class UIItemEventListener*);
+};
 
 // The game event hub: handlers per user value type.
 class Unk_CigEventHub
@@ -81,7 +85,7 @@ public:
     void FUN_140da5430(int nType, Delegate<void(GameEventVariable*)> handler);   // register
     void FUN_140da5490(int nType, Delegate<void(GameEventVariable*)> handler);   // unregister
 };
-Unk_CigEventHub* FUN_140933220();
+class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 
 // The condition panel clip: its "m_slot" item slot child (COMDAT of uibingoeventdialog.cpp).
 class Unk_CigClip : public ASMovieClip
@@ -155,8 +159,8 @@ void UICollectItemGroupEventDialog::OnLoadComplete()
     m_conditionItem->vfunc_4(false);
     RefreshEvents();
     SelectEvent(0);
-    FUN_140933220()->FUN_140da5430(0x898, Delegate<void(GameEventVariable*)>(this, &UICollectItemGroupEventDialog::OnGameEvent));
-    FUN_1419cae20(FUN_140a6a840(), this);
+    ((class Unk_CigEventHub*)FUN_140933220())->FUN_140da5430(0x898, Delegate<void(GameEventVariable*)>(this, &UICollectItemGroupEventDialog::OnGameEvent));
+    ((class Unk_ItemEventSystem*)(class Unk_CigItemEvents*)(((class Unk_CigItemEvents*)FUN_140a6a840())))->FUN_1419cae20(this);
 }
 MS2_REPLACE_METHOD(0x140BE7130, UICollectItemGroupEventDialog, OnLoadComplete, 1413, 0xAF19A091);
 
@@ -171,8 +175,8 @@ void UICollectItemGroupEventDialog::vfunc_26()
     m_conditionItem = 0;
     m_rewardPanel = 0;
     m_recieveItemButton = 0;
-    FUN_1419caeb0(FUN_140a6a840(), this);
-    FUN_140933220()->FUN_140da5490(0x898, Delegate<void(GameEventVariable*)>(this, &UICollectItemGroupEventDialog::OnGameEvent));
+    ((class Unk_ItemEventSystem*)(class Unk_CigItemEvents*)(((class Unk_CigItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(this);
+    ((class Unk_CigEventHub*)FUN_140933220())->FUN_140da5490(0x898, Delegate<void(GameEventVariable*)>(this, &UICollectItemGroupEventDialog::OnGameEvent));
 }
 MS2_REPLACE_METHOD(0x140BE76C0, UICollectItemGroupEventDialog, vfunc_26, 410, 0x0B19841C);
 

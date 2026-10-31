@@ -119,7 +119,6 @@ class ASUIComponentEx : public ASUIComponent
 {
 };
 MS2Ptr<ASDialog> FUN_140e43fe0(int nMovieId, const Scaleform::GFx::Value& v);    // new ASDialog(v, nMovieId)
-bool FUN_1409b0350(const Scaleform::GFx::Value& v);
 
 // ---- game singletons and helpers ----
 class Unk_140b632f0                                                 // the UI manager
@@ -139,27 +138,30 @@ public:
     virtual void vfunc_2(int nUIType);                              // MS2: slot 2 (0x10) a dialog closed
 };
 class Unk_1409331e0;
-Unk_1409331e0* FUN_1409331e0();
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 void FUN_14138d7e0(Unk_1409331e0* p, int a1, int a2);
 void FUN_141276180(const CString& strSound, const CString& strArg);   // play a system sound
 class Unk_140166440 { public: void FUN_14015eb90(int a1, int a2, const wchar_t* szFormat, const CString& a3); };
-Unk_140166440* FUN_140166440();                                     // debug log
+class CLogString* GetLogString();   // C3: was FUN_140166440
 int FUN_141383a70(CString strName);
-WorldService* FUN_1403ed2d0();
 void FUN_140d73cd0();
 void FUN_141275260(int nId, int a1, int a2);                        // system message by id
 void FUN_141a8a730();
 class Unk_14025e7a0 { public: void FUN_1422b0840(int nLayer, unsigned* pWidth, unsigned* pHeight); };
-Unk_14025e7a0* FUN_14025e7a0();
-CInputKeyHandler* FUN_14025e7c0();
-CFeatureManager* FUN_140166410();                                     // content options
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void* FUN_140bb9630(int n);                                         // int -> delegate user data
 int FUN_140bb9640(void* p);                                         // delegate user data -> int
 void FUN_140d01960(CString strKey);                                 // open the web guide page
 float FUN_141276490(float fWidth, float fHeight);                   // UI scale
 struct Unk_Info140e09150 { __int64 m_pad_00; float m_fValue; };
 void* FUN_1409a8b10();
-Unk_Info140e09150* FUN_140e09150(void* p);
+class Unk_ChaosSettings   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_ChaosOpt* FUN_140e09150();
+};
 extern unsigned DAT_143af62d4;                                      // client area width
 extern unsigned DAT_143af62d8;                                      // client area height
 extern int DAT_143af62dc;                                           // dialogs blocked
@@ -190,15 +192,23 @@ public:
 private:
     char m_pad[0x90];
 };
-void FUN_14086ddc0(TiXmlDocument* pDoc);                            // Clear
-void* FUN_14081b310(TiXmlDocument* pDoc);                           // RootElement
-void* FUN_14086e090(TiXmlDocument* pDoc, TiXmlElement* pChild);     // LinkEndChild
+class TiXmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    void Clear();
+    class TiXmlNode* LinkEndChild(class TiXmlNode*);
+};
+class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
 bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szPath);        // SaveFile
-void* FUN_140165cf0(TiXmlDocument* pDoc, const char* szName);       // FirstChildElement
-void FUN_140874440(void* pCfg, const char* szGroup, const char* szName, int n, bool bCreate);
-void FUN_1408744b0(void* pCfg, const char* szGroup, const char* szName, float f, bool bCreate);
-void FUN_1408741a0(void* pCfg, const char* szGroup, const char* szName, int* pn);
-void FUN_140874210(void* pCfg, const char* szGroup, const char* szName, float* pf);
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
+void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, int, bool);   // C3: was FUN_140874440
+void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, float, bool);   // C3: was FUN_1408744b0
+int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, int&);   // C3: was FUN_1408741a0
+int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, float&);   // C3: was FUN_140874210
 CString FUN_14038f6d0(const CString& str, const char* szExt);       // str + ext
 CString FUN_1412755f0();                                            // the UI settings directory
 CString FUN_140cc2a00(const CString& strRoot, const CString& strPath);    // path join
@@ -276,10 +286,10 @@ int UIDialog::vfunc_4()
         return 0;
     if (!m_4c)
         return 1;
-    FUN_14086ddc0(&m_e8);
-    if (!FUN_14081b310(&m_e8))
-        FUN_14086e090(&m_e8, new TiXmlElement(GetTypeName()));
-    void* pRoot = FUN_14081b310(&m_e8);
+    ((class TiXmlNode*)(class TiXmlDocument*)(&m_e8))->Clear();
+    if (!((void*)DocRootElement(&m_e8)))
+        ((void*)((class TiXmlNode*)(class TiXmlDocument*)(&m_e8))->LinkEndChild((class TiXmlNode*)(new TiXmlElement(GetTypeName()))));
+    void* pRoot = ((void*)DocRootElement(&m_e8));
     if (!pRoot)
         return 0;
     vfunc_53(pRoot);
@@ -292,10 +302,10 @@ int UIDialog::vfunc_5()
 {
     if (!m_80)
         return 0;
-    FUN_14086ddc0(&m_e8);
+    ((class TiXmlNode*)(class TiXmlDocument*)(&m_e8))->Clear();
     vfunc_83();
     if (m_e8.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), FUN_14038f6d0(GetTypeName(), ".xml")), 0)) {
-        void* pNode = FUN_140165cf0(&m_e8, GetTypeName());
+        void* pNode = ((void*)((class Unk_XmlNode*)(class TiXmlDocument*)(&m_e8))->FirstChild(GetTypeName()));
         if (!pNode)
             return 0;
         return m_78 = vfunc_54(pNode);
@@ -309,22 +319,22 @@ int UIDialog::vfunc_53(void* pCfg)
 {
     if (m_80) {
         if (vfunc_52())
-            FUN_140874440(pCfg, "transform", "editAlign", m_74, 1);
+            XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "editAlign", m_74, 1);
         ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDialog) {
             float x = 0.0f;
             float y = 0.0f;
             pDialog->FUN_1422c0f60(&x, &y);
-            FUN_1408744b0(pCfg, "transform", "x", x, 1);
-            FUN_1408744b0(pCfg, "transform", "y", y, 1);
+            XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "x", x, 1);
+            XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "y", y, 1);
             if (!m_7c) {
-                FUN_140874440(pCfg, "transform", "width", pDialog->FUN_1422c1340(), 1);
-                FUN_140874440(pCfg, "transform", "height", pDialog->FUN_1422c13b0(), 1);
+                XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "width", pDialog->FUN_1422c1340(), 1);
+                XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "height", pDialog->FUN_1422c13b0(), 1);
             }
             if (vfunc_52()) {
-                float fScale = FUN_141276490((float)DAT_143af62d4, FUN_140e09150(FUN_1409a8b10())->m_fValue);
-                FUN_1408744b0(pCfg, "transform", "rateX", x / ((float)DAT_143af62d4 * fScale), 1);
-                FUN_1408744b0(pCfg, "transform", "rateY", y / ((float)DAT_143af62d8 * fScale), 1);
+                float fScale = FUN_141276490((float)DAT_143af62d4, ((struct Unk_Info140e09150*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150())->m_fValue);
+                XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "rateX", x / ((float)DAT_143af62d4 * fScale), 1);
+                XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "rateY", y / ((float)DAT_143af62d8 * fScale), 1);
             }
         }
     }
@@ -337,23 +347,23 @@ int UIDialog::vfunc_54(void* pCfg)
 {
     if (m_80) {
         if (vfunc_52()) {
-            FUN_1408741a0(pCfg, "transform", "editAlign", &m_74);
+            XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", "editAlign", *(int*)(&m_74));
             int nWidth = 0;
             int nHeight = 0;
             float x = 0.0f;
             float y = 0.0f;
-            FUN_140874210(pCfg, "transform", "x", &x);
-            FUN_140874210(pCfg, "transform", "y", &y);
-            FUN_1408741a0(pCfg, "transform", "width", &nWidth);
-            FUN_1408741a0(pCfg, "transform", "height", &nHeight);
+            XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", "x", *(float*)(&x));
+            XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", "y", *(float*)(&y));
+            XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", "width", *(int*)(&nWidth));
+            XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", "height", *(int*)(&nHeight));
             ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
             if (pDialog) {
                 float fRateX = -1.0f;
                 float fRateY = -1.0f;
-                FUN_140874210(pCfg, "transform", "rateX", &fRateX);
-                FUN_140874210(pCfg, "transform", "rateY", &fRateY);
+                XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", "rateX", *(float*)(&fRateX));
+                XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", "rateY", *(float*)(&fRateY));
                 if (fRateX >= 0.0f || fRateY >= 0.0f) {
-                    float fScale = FUN_141276490((float)DAT_143af62d4, FUN_140e09150(FUN_1409a8b10())->m_fValue);
+                    float fScale = FUN_141276490((float)DAT_143af62d4, ((struct Unk_Info140e09150*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150())->m_fValue);
                     float fWidth = (float)DAT_143af62d4 * fScale;
                     float fHeight = (float)DAT_143af62d8 * fScale;
                     x = fRateX * fWidth;
@@ -384,13 +394,13 @@ void UIDialog::FUN_141924190()
     if (m_68)
         return;
     m_78 = 0;
-    FUN_14086ddc0(&m_e8);
+    ((class TiXmlNode*)(class TiXmlDocument*)(&m_e8))->Clear();
     FUN_141926890();
     vfunc_77();
     FUN_140b632f0()->FUN_1422d4840(this, m_e0);
     reinterpret_cast<Unk_14140ea40*>(TSingleton<UIDialogEventDispatcher>::GetInstance())->vfunc_2(vfunc_48());
-    if (FUN_1409331e0())
-        FUN_14138d7e0(FUN_1409331e0(), 3, 0);
+    if (((class Unk_1409331e0*)FUN_1409331e0()))
+        FUN_14138d7e0(((class Unk_1409331e0*)FUN_1409331e0()), 3, 0);
     if (!vfunc_56() && m_8c)
         FUN_141276180(m_d0, "");
     if (m_164) {
@@ -439,7 +449,7 @@ void UIDialog::FUN_141924510()
     if (m_90 == 0 || m_c4 == 0)
         return;
     if (m_c0 == 0) {
-        bool bNoTween = FUN_1409b0350(m_90->FUN_1422baa20("m_openTween")) == false;
+        bool bNoTween = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(m_90->FUN_1422baa20("m_openTween")))->IsNull() == false;
         if (bNoTween)
             m_30->Invoke("stopOpenTweens");
     }
@@ -456,7 +466,7 @@ MS2_REPLACE_METHOD(0x141924630, UIDialog, FUN_141924630, 59, 0x1ABB11BB);
 // @0x141924680
 void UIDialog::FUN_141924680()
 {
-    if (vfunc_58() && !FUN_1403ed2d0()->FUN_141bd0cc0())
+    if (vfunc_58() && !WorldService::GetInstance()->FUN_141bd0cc0())
         return;
     FUN_141a8a730();
     if (vfunc_65())
@@ -594,8 +604,8 @@ int UIDialog::vfunc_65()
     FUN_140b632f0()->FUN_1422d4780(this, m_e0);
     FUN_140b632f0()->FUN_1422d4dd0(m_20);
     reinterpret_cast<Unk_14140ea40*>(TSingleton<UIDialogEventDispatcher>::GetInstance())->vfunc_1(vfunc_48());
-    if (FUN_1409331e0())
-        FUN_14138d7e0(FUN_1409331e0(), 3, 0);
+    if (((class Unk_1409331e0*)FUN_1409331e0()))
+        FUN_14138d7e0(((class Unk_1409331e0*)FUN_1409331e0()), 3, 0);
     if (m_58 && !vfunc_56() && m_8c)
         FUN_141276180(m_c8, "");
     if (m_164)
@@ -640,8 +650,8 @@ void UIDialog::vfunc_68()
         vfunc_67();
         m_c4 = nTween;
     }
-    if (FUN_140166440())
-        FUN_140166440()->FUN_14015eb90(0xb, 0x131, L"Close Dialog [{0}]", GetTypeName());
+    if (((class Unk_140166440*)GetLogString()))
+        ((class Unk_140166440*)GetLogString())->FUN_14015eb90(0xb, 0x131, L"Close Dialog [{0}]", GetTypeName());
 }
 MS2_REPLACE_METHOD(0x141924df0, UIDialog, vfunc_68, 425, 0x36D99C6E);
 
@@ -677,7 +687,7 @@ MS2_REPLACE_METHOD(0x141925030, UIDialog, vfunc_72, 6, 0xA9AF6E37);
 // @0x141925040
 int UIDialog::vfunc_73()
 {
-    if (FUN_141383a70(GetTypeName()) || (FUN_1403ed2d0()->FUN_141bcb0a0() && !FUN_141926960())) {
+    if (FUN_141383a70(GetTypeName()) || (WorldService::GetInstance()->FUN_141bcb0a0() && !FUN_141926960())) {
         FUN_141275260(0x88b, 1, 1);
         return 0;
     }
@@ -756,7 +766,7 @@ void UIDialog::vfunc_18()
             pDialog->FUN_1422c0f60(&x, &y);
             unsigned nWidth = 0;
             unsigned nHeight = 0;
-            FUN_14025e7a0()->FUN_1422b0840(m_28, &nWidth, &nHeight);
+            ((class Unk_14025e7a0*)FUN_14025e7a0())->FUN_1422b0840(m_28, &nWidth, &nHeight);
             float fRateX = x / (float)nWidth;
             float fRateY = y / (float)nHeight;
             float fX = (float)pDialog->FUN_1422c1500() * fRateX;
@@ -785,7 +795,7 @@ bool UIDialog::vfunc_17()
             pDialog->FUN_1422c0f60(&x, &y);
             unsigned nWidth = 0;
             unsigned nHeight = 0;
-            FUN_14025e7a0()->FUN_1422b0840(m_28, &nWidth, &nHeight);
+            ((class Unk_14025e7a0*)FUN_14025e7a0())->FUN_1422b0840(m_28, &nWidth, &nHeight);
             float fRateX = x / (float)nWidth;
             float fRateY = y / (float)nHeight;
             pDialog->FUN_1422c00f0((float)pDialog->FUN_1422c1500() * fRateX, (float)pDialog->FUN_1422c1530() * fRateY);
@@ -857,7 +867,7 @@ int UIDialog::vfunc_13()
         return 0;
     if (vfunc_56())
         return 0;
-    if (FUN_14025e7c0()->FUN_14116d840() && !vfunc_64() && !FUN_1419244c0(1)) {
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840() && !vfunc_64() && !FUN_1419244c0(1)) {
         vfunc_69();
         return 1;
     }
@@ -906,8 +916,8 @@ int UIDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs,
     } else if (_stricmp("OnEndClose", szMethod) == 0) {
         if (m_c0 != 2) {
             m_c0 = 2;
-            if (FUN_1409331e0())
-                FUN_14138d7e0(FUN_1409331e0(), 3, 0);
+            if (((class Unk_1409331e0*)FUN_1409331e0()))
+                FUN_14138d7e0(((class Unk_1409331e0*)FUN_1409331e0()), 3, 0);
             FUN_1422dc0b0();
         }
         return 1;
@@ -1021,7 +1031,7 @@ void UIDialog::FUN_141926180(MS2Ptr<AScript> spRoot, CString strName, int n)
     MS2Ptr<Unk_140acd6e0> spButton = spRoot->FUN_140acce30<Unk_140acd6e0>(strName);
     if (spButton == 0)
         return;
-    if (!FUN_140166410()->FUN_14036d570(0x5f)) {
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5f)) {
         spButton->vfunc_4(false);
         return;
     }

@@ -40,7 +40,7 @@
 class Unk_ItemEquipData : public CItemData { };          // CItem::FUN_140527840's record
 
 extern Unk_Inventory g_143ab2a90;                       // the player's inventory
-CPetManager* FUN_140535320();                             // CPetManager::GetInstance
+class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 
 // The local player and its views.
 class Unk_PsSkills : public CSkillSystem
@@ -73,13 +73,13 @@ Unk_PsPetDialog* FUN_140b99ba0(int nId);
 class Unk_PsPane : public UIItemAutoUseOptionDialog
 {
 };
-Unk_PsPane* FUN_140cbe1c0(int nId);
+class UIItemAutoUseOptionDialog* FUN_140cbe1c0(int);   // C3: was FUN_140cbe1c0
 
 // The quest event dispatcher the slot registers with.
 UIQuestEventDispatcher* FUN_140bfc4b0();
 // The item event hub the bag registers with.
 struct Unk_PsItemEvents;
-Unk_PsItemEvents* FUN_140a6a840();
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -88,7 +88,7 @@ public:
 };
 
 // The singleton that decides whether an item may be handled.
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
 void FUN_141276180(const CString& strA, const CString& strB);
@@ -115,7 +115,6 @@ public:
     static void FUN_1422c8f10(CString const&, class NotifyContext::BindData*);
     static void FUN_1422c8f70(CString const&);
 };
-void FUN_1422cc9e0(DragSlotBag* pBag);
 
 PetSlot* FUN_140dbc0d0(DragSlot* p);
 PetSlotBag* FUN_140dbc9f0(NotifyContext::BindData* p);
@@ -161,7 +160,7 @@ float PetSlot::FUN_140dbaeb0()
 // @0x140dbaf10
 int PetSlot::FUN_140dbaf10()
 {
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
+    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
     if (spItem.get() != 0)
         return spItem->FUN_140527840()->FUN_14053dc20();
     return 0;
@@ -170,7 +169,7 @@ int PetSlot::FUN_140dbaf10()
 // @0x140dbafc0
 int PetSlot::FUN_140dbafc0()
 {
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
+    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
     if (spItem)
         return spItem->FUN_1405276c0();
     return 0;
@@ -194,7 +193,7 @@ void PetSlot::vfunc_6(void* p)
     CString str;
     str.Format("%d", GetPetItemUid());
     ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(p))->Add(str);
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
+    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
     if (spItem.get() ? true : false)
     {
         if (spItem->FUN_140527840()->FUN_14053c5c0() == 2)
@@ -217,7 +216,7 @@ int PetSlot::vfunc_11()
 // @0x140dbb240
 int PetSlot::vfunc_13()
 {
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
+    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
     if (spItem.get() ? true : false)
     {
         if (spItem->FUN_140527840()->FUN_14053d150())
@@ -232,10 +231,10 @@ int PetSlot::vfunc_13()
 // @0x140dbb340
 int PetSlot::vfunc_14()
 {
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
+    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
     if (spItem == 0)
         return 0;
-    Unk_PsPane* pPane = FUN_140cbe1c0(0x4ef4);
+    Unk_PsPane* pPane = ((class Unk_PsPane*)FUN_140cbe1c0(0x4ef4));
     if (pPane != 0 && pPane->FUN_141924630() != 0)
     {
         pPane->FUN_140f4fc40(FUN_140dbafc0());
@@ -252,7 +251,7 @@ int PetSlot::vfunc_14()
 // @0x140dbb4f0
 int PetSlot::vfunc_15()
 {
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(m_nPetItemUid);
+    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(m_nPetItemUid);
     if (spItem.get() != 0)
         FUN_140d2cfc0(spItem);
     return DragSlot::vfunc_15();
@@ -271,14 +270,14 @@ int PetSlot::vfunc_18(void* p)
     Unk_PsPlayer* pPlayer = ((Unk_PsPlayer*)((WorldService*)(Unk_PsWorld*)(reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return static_cast<DragSlot*>(p)->vfunc_10();
-    MS2Ptr<CItem> spPet = g_143ab2a90.FUN_140a5d680(FUN_140535320()->GetSummonUid());
+    MS2Ptr<CItem> spPet = g_143ab2a90.FUN_140a5d680(((class CPetManager*)FUN_140535320())->GetSummonUid());
     if (spPet == 0)
         return static_cast<DragSlot*>(p)->vfunc_10();
     PetSlot* pFrom = FUN_140dbc0d0(static_cast<DragSlot*>(p));
     if (pFrom != 0)
     {
         __int64 nUid = pFrom->GetPetItemUid();
-        FUN_140535320()->FUN_140c8b410()->SendRequestPetInventoryMode3(nUid, m_nIndex);
+        ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->SendRequestPetInventoryMode3(nUid, m_nIndex);
         FUN_141404930(nUid);
         return pFrom->vfunc_10();
     }
@@ -300,7 +299,7 @@ int PetSlot::vfunc_18(void* p)
 // @0x140dbb7e0
 MS2Ptr<CItem> PetSlot::vfunc_25()
 {
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(m_nPetItemUid);
+    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(m_nPetItemUid);
     return spItem;
 }
 
@@ -310,7 +309,7 @@ int PetSlot::vfunc_0(void* p)
     Unk_PsPlayer* pPlayer = ((Unk_PsPlayer*)((WorldService*)(Unk_PsWorld*)(reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(m_nPetItemUid);
+    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(m_nPetItemUid);
     if (FUN_140534e50(&spItem))
         return 0;
     MS2Ptr<CItem> spWorn = pPlayer->FUN_14152e2f0(spItem);
@@ -348,7 +347,7 @@ int PetSlot::vfunc_8(void* p)
     Unk_PsPlayer* pPlayer = ((Unk_PsPlayer*)((WorldService*)(Unk_PsWorld*)(reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(m_nPetItemUid);
+    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(m_nPetItemUid);
     if (spItem == 0)
         return 0;
     ASSlot slot(2);
@@ -393,10 +392,10 @@ void PetSlot::vfunc_o178_5(void*)
 // @0x140dbc010
 void PetSlot::FUN_140dbc010()
 {
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(m_nPetItemUid);
+    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(m_nPetItemUid);
     if (spItem == 0)
         return;
-    if (FUN_140764020()->FUN_1416ce170(spItem) != 0)
+    if (((class CQuestManager*)FUN_140764020())->FUN_1416ce170(spItem) != 0)
         vfunc_10();
 }
 
@@ -427,7 +426,7 @@ void FUN_140dbc420(const CString& strName)
     PetSlotBag* pBag = FUN_140dbc9f0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
@@ -436,13 +435,13 @@ void FUN_140dbc420(const CString& strName)
 PetSlotBag::PetSlotBag(const CString& strName)
     : DragSlotBag(strName)
 {
-    ((class Unk_ItemEventSystem*)(struct Unk_PsItemEvents*)(FUN_140a6a840()))->FUN_1419cae20(this);
+    ((class Unk_ItemEventSystem*)(struct Unk_PsItemEvents*)(((struct Unk_PsItemEvents*)FUN_140a6a840())))->FUN_1419cae20(this);
 }
 
 // @0x140dbc520
 PetSlotBag::~PetSlotBag()
 {
-    ((class Unk_ItemEventSystem*)(struct Unk_PsItemEvents*)(FUN_140a6a840()))->FUN_1419caeb0(this);
+    ((class Unk_ItemEventSystem*)(struct Unk_PsItemEvents*)(((struct Unk_PsItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(this);
 }
 
 // @0x140dbc5c0
@@ -505,7 +504,7 @@ DragSlot* PetSlotBag::vfunc_16(int nIndex)
 unsigned __int64 PetSlotBag::FUN_140dbc8b0(int nIndex)
 {
     ATL::CAtlArray<MS2Ptr<CItem> > items;
-    FUN_140535320()->FUN_140c8b410()->FUN_140c87ef0(items);
+    ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87ef0(items);
     for (unsigned i = 0; i < items.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem = items[i];

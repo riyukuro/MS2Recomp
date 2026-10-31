@@ -45,10 +45,10 @@ static MS2Ptr<SkillMotionData> s_spMotion(new SkillMotionData);
 
 // Unrecovered helpers.
 void FUN_140873dc0(void* pElem, const char* pszName, unsigned nTicks);     // SetAttribute(name, tick value)
-void FUN_140873e30(void* pElem, const char* pszName, float fValue);
+void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
 void FUN_140873ca0(void* pElem, const char* pszName, int nValue);          // SetAttribute(name, int)
 void FUN_140873ce0(void* pElem, const char* pszName, unsigned nValue);     // SetAttribute(name, unsigned)
-void FUN_140873c60(void* pElem, const char* pszName, unsigned short nValue);   // SetAttribute(name, unsigned short)
+void XmlSetAttr(class TiXmlElement*, char const*, unsigned short);   // C3: was FUN_140873c60
 void FUN_1408740a0(void* pElem, const char* pszName, const CStringW& strValue); // SetAttribute(name, wide string)
 void* FUN_14086e000(void* pParent, const void* pChild);                    // InsertEndChild
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);        // int attribute with a default
@@ -56,7 +56,7 @@ float FUN_1401973d0(Unk_140165cf0* pElem, const char* pszName, float fDefault); 
 bool FUN_1401647e0(const CString&, const CString&);                        // the strings differ
 bool FUN_1401c0090(const CString&, const CString&);                        // the strings are the same
 float FUN_14028d280(unsigned uMilliseconds);
-int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);
+int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 void FUN_14015f0b0(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);  // split into strings
 class Unk_LaunchOptions
 {
@@ -658,10 +658,10 @@ int Unk_SkillBlock150::Save(void* pParent)
         return 1;
     Unk_TiXmlElement elem("magicControl");
     FUN_140873ca0(&elem, "enable", m_eEnable);
-    FUN_140873e30(&elem, "moveSpeed", m_fMoveSpeed);
-    FUN_140873e30(&elem, "duration", m_fDuration);
+    XmlSetAttr((class TiXmlElement*)(&elem), "moveSpeed", m_fMoveSpeed);
+    XmlSetAttr((class TiXmlElement*)(&elem), "duration", m_fDuration);
     if (m_fMaxDistance != 0.0f)
-        FUN_140873e30(&elem, "maxDistance", m_fMaxDistance);
+        XmlSetAttr((class TiXmlElement*)(&elem), "maxDistance", m_fMaxDistance);
     FUN_14086e000(pParent, &elem);
     return 1;
 }
@@ -949,7 +949,7 @@ int SkillLevelData::Load(Unk_140165cf0* pElem)
 int SkillLevelData::FUN_140804ae0(void* pParent)
 {
     Unk_TiXmlElement elem("level");
-    FUN_140873c60(&elem, "value", m_nLevel);
+    XmlSetAttr((class TiXmlElement*)(&elem), "value", m_nLevel);
     if (!m_strStringParam.IsEmpty())
         FUN_1408740a0(&elem, "value", m_strStringParam);
     {
@@ -1158,8 +1158,8 @@ void SkillMotionData::Load(Unk_140165cf0* pElem)
         FUN_1408733e0(pElem, "loopKeepEffect", m_strLoopKeepEffect);
         FUN_1408733e0(pElem, "loopEndEffect", m_strLoopEndEffect);
         FUN_1408733e0(pElem, "splashDurationCastEffect", m_strSplashDurationCastEffect);
-        FUN_1408736d0(pElem, "IgnoreOptimalHideCastEffect", m_bA0);
-        FUN_1408736d0(pElem, "splashCastEffectStartDelay", m_bSplashCastEffectStartDelay);
+        XmlQuery((class TiXmlElement*)(pElem), "IgnoreOptimalHideCastEffect", m_bA0);
+        XmlQuery((class TiXmlElement*)(pElem), "splashCastEffectStartDelay", m_bSplashCastEffectStartDelay);
     }
     FUN_1408732a0(pElem, "splashLifeTick", m_nSplashLifeTick);
     FUN_1408732a0(pElem, "splashInvokeCoolTick", m_nSplashInvokeCoolTick);
@@ -1187,7 +1187,7 @@ void SkillMotionData::Load(Unk_140165cf0* pElem)
     FUN_140873360(pElem, "pushCylinderInner", m_fPushCylinderInner);
     FUN_140873360(pElem, "pushCylinderHeight", m_fPushCylinderHeight);
     FUN_1408731e0(pElem, "faceTarget", m_nFaceTarget);
-    FUN_1408736d0(pElem, "doesPlayIdleOnSkillEnd", m_bDoesPlayIdleOnSkillEnd);
+    XmlQuery((class TiXmlElement*)(pElem), "doesPlayIdleOnSkillEnd", m_bDoesPlayIdleOnSkillEnd);
     FUN_1408731e0(pElem, "startNoneBlendDelay", m_nStartNoneBlendDelay);
     FUN_140873360(pElem, "aniSkipTime", m_fAniSkipTime);
 }

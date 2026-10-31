@@ -42,7 +42,7 @@ public:
     int FUN_1410c3e80(int nRow);                                    // row level
     bool FUN_1410d5640();                                           // may change the options
 };
-Unk_HoService* FUN_1401cd040(Unk_EntityAppFramework* framework);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
 // The smart pointer to the service (8 bytes; its glue COMDATs live in the unit that first used it).
 class Unk_HoServicePtr
@@ -75,14 +75,13 @@ int* FUN_1404eb7e0(int* pnA, int* pnB);                             // the large
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
 bool FUN_140841300(const CStringW& str, const char* psz);
 
-void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);
 
 // @0x140fa9c90
 void FUN_140fa9c90(ASObj* pObj, const char* szName, unsigned char b)
 {
     ASData data;
     data.FUN_1422b7f70(b);
-    FUN_1407cd930(reinterpret_cast<Scaleform::GFx::Value*>(reinterpret_cast<char*>(pObj) + 0x20), szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(reinterpret_cast<Scaleform::GFx::Value*>(reinterpret_cast<char*>(pObj) + 0x20)))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x140fa8cc0
@@ -136,7 +135,7 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            Unk_HoServicePtr spService(FUN_1401cd040(&DAT_143b059e8));
+            Unk_HoServicePtr spService(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
             if (spService.FUN_140ef4cb0(0))
                 return 1;
             if (spService.FUN_1401cd1a0()->FUN_1410d5640() == 0)
@@ -212,7 +211,7 @@ void UIHomeOptionDialog::FUN_140fa97a0()
             FUN_140fa9c90(&obj, "opentype", spHouse->m_n40);
     }
     {
-        Unk_HoServicePtr spService(FUN_1401cd040(&DAT_143b059e8));
+        Unk_HoServicePtr spService(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
         if (spService.FUN_140885310() == 0)
             return;
         for (int i = 0; i < 9; ++i)

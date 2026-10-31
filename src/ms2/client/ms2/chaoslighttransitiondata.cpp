@@ -56,9 +56,9 @@ class TiXmlElement   // C3: member view for the former free stand-ins
 public:
     char const* Attribute(char const*) const;
 };
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
-int FUN_1408730a0(Unk_140165cf0* pNode, const char* pszName, bool& bOut);
-int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int* pnOut);
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
 CString FUN_140188f50(const char* psz, int n);                          // null-safe CString
 void FUN_14185f0b0(TransitionData* pData, Unk_140165cf0* pNode, float* pfTime);    // type / duration / start time
@@ -110,12 +110,12 @@ void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     FUN_1408733e0(pNode, "node", m_strNode);
-    FUN_140873360(pNode, "fresnelBoost", m_fFresnelBoost);
-    FUN_140873360(pNode, "fresnelExponent", m_fFresnelExponent);
-    FUN_140873360(pNode, "dimmer", m_fDimmer);
-    FUN_1408730a0(pNode, "blink", m_bBlink);
-    FUN_1408731e0(pNode, "blinkBoostStart", &m_nBlinkBoostStart);
-    FUN_1408731e0(pNode, "layer", &m_nLayer);
+    XmlGetAttr((class TiXmlElement*)(pNode), "fresnelBoost", m_fFresnelBoost);
+    XmlGetAttr((class TiXmlElement*)(pNode), "fresnelExponent", m_fFresnelExponent);
+    XmlGetAttr((class TiXmlElement*)(pNode), "dimmer", m_fDimmer);
+    XmlGetAttr((class TiXmlElement*)(pNode), "blink", m_bBlink);
+    XmlGetAttr((class TiXmlElement*)(pNode), "blinkBoostStart", *(int*)(&m_nBlinkBoostStart));
+    XmlGetAttr((class TiXmlElement*)(pNode), "layer", *(int*)(&m_nLayer));
     const char* pszRgb = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("rgb");
     if (pszRgb != 0)
     {
@@ -149,9 +149,9 @@ void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
         spData.operator->()->m_fRed = pPrev->m_fRed;
         spData.operator->()->m_fGreen = pPrev->m_fGreen;
         spData.operator->()->m_fBlue = pPrev->m_fBlue;
-        FUN_140873360(pKey, "fresnelBoost", spData.operator->()->m_fFresnelBoost);
-        FUN_140873360(pKey, "fresnelExponent", spData.operator->()->m_fFresnelExponent);
-        FUN_140873360(pKey, "dimmer", spData.operator->()->m_fDimmer);
+        XmlGetAttr((class TiXmlElement*)(pKey), "fresnelBoost", spData.operator->()->m_fFresnelBoost);
+        XmlGetAttr((class TiXmlElement*)(pKey), "fresnelExponent", spData.operator->()->m_fFresnelExponent);
+        XmlGetAttr((class TiXmlElement*)(pKey), "dimmer", spData.operator->()->m_fDimmer);
         const char* pszKeyRgb = ((class TiXmlElement*)(class Unk_140165cf0*)(pKey))->Attribute("rgb");
         if (pszKeyRgb != 0)
         {

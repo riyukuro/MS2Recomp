@@ -166,7 +166,7 @@ public:
     void FUN_140d09c10(Unk_WmScore* pScore);                                // send the composed score
     void FUN_140d09c80(unsigned __int64 nItemUid);                          // request a score's text
 };
-Unk_WmInstrumentMgr* FUN_140c8dac0();
+struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
 
 // The play bar "m_playBar" (a slider).
 class Unk_WmSlider : public ASUIComponent
@@ -208,7 +208,11 @@ extern __int64 DAT_143ab2820;
 extern unsigned DAT_143ab2830;
 extern __int64 DAT_143ab2838;
 extern int DAT_143ab2834;
-bool FUN_14026d4d0(const Unk_WmOwner* pOwner, int nServer, __int64 nCharacterId);
+class Unk_CommonOwner   // C3: member view for the former free stand-ins
+{
+public:
+    bool Matches(int, __int64);
+};
 
 // The player inventory (global at 0x143ab2a90): item lookup by uid.
 extern Unk_Inventory DAT_143ab2a90;
@@ -246,10 +250,8 @@ class Unk_WmBrowser { public: void FUN_141b794e0(CString* pstrOut, const char* s
 void FUN_1418fe1c0(const CString& strUrl);                                  // open the web page
 
 CommonString* FUN_14025e7d0();
-CInstrumentDataTable* FUN_14052d1d0();                                      // the instrument table singleton
+class Unk_MusicBookTable* FUN_14052d1d0();   // C3: was FUN_14052d1d0
 
-unsigned FUN_140869420();                                                   // the client clock (ms)
-bool FUN_140a467d0(const MS2Ptr<AScript>* p);                               // the AS object is released
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW GetStringCommon(int nId);                                            // string table text by id
 CStringW BlockFormat(int nId);                                              // system message text
@@ -263,12 +265,12 @@ int FUN_140d74e80(const CStringW& strTag);                                  // t
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);                 // equal (no case)
 void FUN_14151f200();
 void FUN_140d73cd0();                                                       // the keyboard writing guide
-void FUN_1401ffd60(Unk_WmScore* pScore);                                    // reset the score
+void FUN_1401ffd60(unsigned char*);   // C3: was FUN_1401ffd60
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bVisible);    // show a child
 
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a child's text
 void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, unsigned bEnable);   // enable a child
-void FUN_141b706a0(int nMs, int* pnMinutes, int* pnSeconds, int* pnCentis);  // split a time
+void FUN_141b706a0(unsigned int, unsigned int*, unsigned int*, unsigned int*);   // C3: was FUN_141b706a0
 std::string FUN_14083f9c0(unsigned long nColor);                            // the color as hex text
 CStringW FUN_1418fe4e0(const CStringW& strDir);                             // the full path
 CStringW FUN_141b6e360(const CStringW& strDir, const wchar_t* szFilter, const CStringW& strDefault);   // the open file box
@@ -299,6 +301,8 @@ public:
     ~TiXmlElement();                                                        // 0x14086f450
 private:
     void* m_pad[0x90 / sizeof(void*)];
+public:
+    void SetAttribute(char const*, int);   // C3: was free FUN_14086f920
 };
 class TiXmlText
 {
@@ -317,9 +321,13 @@ public:
 private:
     void* m_pad[0x68 / sizeof(void*)];
 };
-void* FUN_14086e000(void* pParent, const void* pChild);                     // InsertEndChild (a copy)
+class TiXmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class TiXmlNode* FirstChild();
+    class TiXmlNode* InsertEndChild(class TiXmlNode const&);
+};
 bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szPath);                // SaveFile
-void FUN_14086f920(TiXmlElement* pElem, const char* szName, int nValue);    // SetAttribute (int)
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* szName);      // FirstChildElement
 
 // A TinyXML node through its vtable (slot 11: ToText).
@@ -339,7 +347,6 @@ public:
     virtual void vfunc_10();
     virtual Unk_140165cf0* ToText();
 };
-Unk_WmXmlNode* FUN_140872a10(Unk_140165cf0* pElem);                         // FirstChild
 
 // The TiXmlDocument fields after the TiXmlNode part (tinyxml.h: error, errorId, errorDesc).
 struct Unk_WmXmlDocState
@@ -399,7 +406,7 @@ void UIWriteMusicDialog::OnLoadComplete()
         ASObj obj(2);
         obj.FUN_1407cb9c0("maxLength", nMax);
         std::vector<std::pair<int, CStringW> > list;
-        ATL::CAtlMap<int, CInstrumentDataTable::CategoryPtr>& categories = FUN_14052d1d0()->GetCategories();
+        ATL::CAtlMap<int, CInstrumentDataTable::CategoryPtr>& categories = ((class CInstrumentDataTable*)FUN_14052d1d0())->GetCategories();
         for (POSITION pos = categories.GetStartPosition(); pos != 0; categories.GetNext(pos))
         {
             CInstrumentDataTable::CategoryPtr spCategory = categories.GetValueAt(pos);
@@ -440,7 +447,7 @@ void UIWriteMusicDialog::OnLoadComplete()
         FUN_140cff840(FUN_1422dbb40(), "m_drumInfoText", 0);
         FUN_140ff1b10(0);
     }
-    FUN_140c8dac0()->AddFlags(1);
+    ((class Unk_WmInstrumentMgr*)FUN_140c8dac0())->AddFlags(1);
 }
 
 // @0x140fee700
@@ -466,7 +473,7 @@ void UIWriteMusicDialog::vfunc_67()
     if (m_bPlaying)
         FUN_140ff1a20();
     FUN_140ff3540();
-    FUN_1401ffd60(&m_score);
+    FUN_1401ffd60((unsigned char*)(&m_score));
     m_strPlayMml.Empty();
     m_strText.Empty();
     m_nMode = 0;
@@ -480,7 +487,7 @@ void UIWriteMusicDialog::vfunc_67()
     m_notes.clear();
     m_pages.clear();
     if (m_30.get())
-        FUN_140c8dac0()->RemoveFlags(1);
+        ((class Unk_WmInstrumentMgr*)FUN_140c8dac0())->RemoveFlags(1);
 }
 
 // @0x140fee900
@@ -583,7 +590,7 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             int nCategory = data.FUN_1422b8a10();
-            CInstrumentDataTable::CategoryPtr spCategory = FUN_14052d1d0()->GetCategory(nCategory);
+            CInstrumentDataTable::CategoryPtr spCategory = ((class CInstrumentDataTable*)FUN_14052d1d0())->GetCategory(nCategory);
             if (spCategory == 0)
                 return 1;
             if (spCategory->IsPercussion())
@@ -635,8 +642,8 @@ int UIWriteMusicDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         {
             if (FUN_140d74e80(strTag) != 0)
             {
-                FUN_140c8dac0()->FUN_140d09c10(&m_score);
-                FUN_1401ffd60(&m_score);
+                ((class Unk_WmInstrumentMgr*)FUN_140c8dac0())->FUN_140d09c10(&m_score);
+                FUN_1401ffd60((unsigned char*)(&m_score));
                 FUN_1412761e0(m_30, 0);
             }
             else if (FUN_1403b3c40(strTag, L"completeMakeScore"))
@@ -676,11 +683,11 @@ int UIWriteMusicDialog::vfunc_71()
 // @0x140fef6c0
 void UIWriteMusicDialog::vfunc_72()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     if (!m_bPlaying)
         return;
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = GetTickCountMs2();
     if (nNow < m_nEndTick)
     {
         int nTime = nNow - m_nStartTick;
@@ -743,7 +750,7 @@ bool UIWriteMusicDialog::FUN_140fef8f0(MS2Ptr<CItem> spItem)
     owner.m_n8 = DAT_143ab2830;
     owner.m_p10 = (void*)DAT_143ab2838;
     owner.m_n18 = DAT_143ab2834;
-    if (!FUN_14026d4d0(&owner, pScore->m_note.m_n00, pScore->m_note.m_n08))
+    if (!((class Unk_CommonOwner*)(struct Unk_WmOwner const*)(&owner))->Matches(pScore->m_note.m_n00, pScore->m_note.m_n08))
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_writemusic_error_not_write_myself"), 1, 1);
         return false;
@@ -843,7 +850,7 @@ void UIWriteMusicDialog::FUN_140ff03b0(ASData* pArgs)
         }
     }
     int nCategory = pArgs->FUN_1422b8a10();
-    CInstrumentDataTable::CategoryPtr spCategory = FUN_14052d1d0()->GetCategory(nCategory);
+    CInstrumentDataTable::CategoryPtr spCategory = ((class CInstrumentDataTable*)FUN_14052d1d0())->GetCategory(nCategory);
     if (spCategory == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_make_invalid_instrument_type"), 0, 0, L"");
@@ -861,7 +868,7 @@ void UIWriteMusicDialog::FUN_140ff03b0(ASData* pArgs)
     int nTabs = 0;
     Unk_WmTrack track;
     Unk_WmEvents events;
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = GetTickCountMs2();
     unsigned nEnd = nNow;
     for (unsigned i = 0; i < nCount; i++)
     {
@@ -884,7 +891,7 @@ void UIWriteMusicDialog::FUN_140ff03b0(ASData* pArgs)
                     strMml += Unk_WmConcat(":", strTab);
                 track.clear();
                 bool bFirst = i == 0;
-                unsigned nTabEnd = FUN_140c8dac0()->FUN_140d08660(0, spCategory->m_nGMId, spCategory->m_nPercussionId, &track,
+                unsigned nTabEnd = ((class Unk_WmInstrumentMgr*)FUN_140c8dac0())->FUN_140d08660(0, spCategory->m_nGMId, spCategory->m_nPercussionId, &track,
                                                                  &events, nNow, nNow, strTab, bFirst);
                 nEnd = (std::max)(nEnd, nTabEnd);
                 nTabs++;
@@ -942,7 +949,7 @@ void UIWriteMusicDialog::OnClickPlayGoFirstAndPause()
 void UIWriteMusicDialog::FUN_140ff12d0(ASData* pArgs)
 {
     int nCategory = pArgs->FUN_1422b8a10();
-    bool bInvalid = FUN_14052d1d0()->GetCategory(nCategory) == 0;
+    bool bInvalid = ((class CInstrumentDataTable*)FUN_14052d1d0())->GetCategory(nCategory) == 0;
     if (bInvalid)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_play_invalid_instrument_type"), 0, 0, CStringW(L""));
@@ -987,7 +994,7 @@ void UIWriteMusicDialog::FUN_140ff12d0(ASData* pArgs)
     }
     int nOffset = (int)DoubleSecondsToMs(pArgs->FUN_1422b8ca0());
     int nLength = 0;
-    bool bOk = FUN_140c8dac0()->PreviewScore(m_strPlayMml, nCategory, nOffset, &nLength);
+    bool bOk = ((class Unk_WmInstrumentMgr*)FUN_140c8dac0())->PreviewScore(m_strPlayMml, nCategory, nOffset, &nLength);
     if (bOk)
     {
         FUN_140ff35c0(nOffset, nLength);
@@ -1010,7 +1017,7 @@ void UIWriteMusicDialog::FUN_140ff12d0(ASData* pArgs)
 // @0x140ff1a20
 void UIWriteMusicDialog::FUN_140ff1a20()
 {
-    FUN_140c8dac0()->StopPreview();
+    ((class Unk_WmInstrumentMgr*)FUN_140c8dac0())->StopPreview();
     FUN_140ff3540();
     if (m_30.get())
         m_30->Invoke("stopPlayMusic");
@@ -1020,7 +1027,7 @@ void UIWriteMusicDialog::FUN_140ff1a20()
 // @0x140ff1aa0
 void UIWriteMusicDialog::FUN_140ff1aa0()
 {
-    FUN_140c8dac0()->StopPreview();
+    ((class Unk_WmInstrumentMgr*)FUN_140c8dac0())->StopPreview();
     FUN_140ff35a0();
     if (m_30.get())
         m_30->Invoke("pausePlayMusic");
@@ -1072,7 +1079,7 @@ void UIWriteMusicDialog::FUN_140ff1b10(int nPage)
 // @0x140ff1e40
 void UIWriteMusicDialog::OnClickSaveFile()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     if (!PathIsDirectoryW(L"./Custom/Music"))
         CreateDirectoryW(L"./Custom/Music", 0);
@@ -1093,7 +1100,7 @@ void UIWriteMusicDialog::OnClickSaveFile()
 // @0x140ff2060
 void UIWriteMusicDialog::OnClickLoadFile()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     if (FUN_140ff33c0())
     {
@@ -1110,10 +1117,10 @@ void UIWriteMusicDialog::OnClickLoadFile()
 // @0x140ff21a0
 void UIWriteMusicDialog::FUN_140ff21a0(ASData* pArgs)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     int nCategory = pArgs->FUN_1422b8a10();
-    bool bInvalid = FUN_14052d1d0()->GetCategory(nCategory) == 0;
+    bool bInvalid = ((class CInstrumentDataTable*)FUN_14052d1d0())->GetCategory(nCategory) == 0;
     if (bInvalid)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_play_invalid_instrument_type"), 0, 0, CStringW(L""));
@@ -1124,7 +1131,7 @@ void UIWriteMusicDialog::FUN_140ff21a0(ASData* pArgs)
     if (m_bPlaying)
     {
         int nLength = 0;
-        bool bOk = FUN_140c8dac0()->PreviewScore(m_strPlayMml, nCategory, nOffset, &nLength);
+        bool bOk = ((class Unk_WmInstrumentMgr*)FUN_140c8dac0())->PreviewScore(m_strPlayMml, nCategory, nOffset, &nLength);
         if (bOk)
         {
             FUN_140ff35c0(nOffset, nLength);
@@ -1146,7 +1153,7 @@ void UIWriteMusicDialog::FUN_140ff23b0(const Scaleform::GFx::FunctionHandler::Pa
     {
         int nMs = (int)DoubleSecondsToMs(dTime);
         int nMinutes, nSeconds, nCentis;
-        FUN_141b706a0(nMs, &nMinutes, &nSeconds, &nCentis);
+        FUN_141b706a0(nMs, (unsigned int*)(&nMinutes), (unsigned int*)(&nSeconds), (unsigned int*)(&nCentis));
         CStringW strText = StringFormat(m_strTimerFormat, nMinutes, nSeconds);
         Scaleform::GFx::Value v;
         v.SetStringW(strText);
@@ -1163,7 +1170,7 @@ void UIWriteMusicDialog::FUN_140ff2500(unsigned __int64 nItemUid)
     std::map<unsigned __int64, CString>::const_iterator it = m_texts.find(nItemUid);
     if (it == m_texts.end())
     {
-        FUN_140c8dac0()->FUN_140d09c80(nItemUid);
+        ((class Unk_WmInstrumentMgr*)FUN_140c8dac0())->FUN_140d09c80(nItemUid);
         return;
     }
     FUN_140ff0260(nItemUid, it->second);
@@ -1183,7 +1190,7 @@ void UIWriteMusicDialog::FUN_140ff2600()
 // @0x140ff2700
 void UIWriteMusicDialog::FUN_140ff2700(const CStringW& strPath)
 {
-    if (FUN_140a467d0(&m_30) || !m_spItem)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() || !m_spItem)
         return;
     if (strPath.IsEmpty())
         return;
@@ -1243,7 +1250,7 @@ void UIWriteMusicDialog::FUN_140ff2700(const CStringW& strPath)
 // @0x140ff2cf0
 void UIWriteMusicDialog::FUN_140ff2cf0(const CStringW& strPath)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     if (strPath.IsEmpty())
         return;
@@ -1258,7 +1265,7 @@ void UIWriteMusicDialog::FUN_140ff2cf0(const CStringW& strPath)
     }
         TiXmlDocument doc;
         TiXmlDeclaration decl("1.0", "utf-8", "");
-        FUN_14086e000(&doc, &decl);
+        ((void*)((class TiXmlNode*)(void*)(&doc))->InsertEndChild(*(class TiXmlNode const*)(&decl)));
         CString strFile = FUN_14016a600(strPath, 0);
         TiXmlElement root("ms2");
         unsigned nCount = spTabs->FUN_1422bc5d0();
@@ -1284,13 +1291,13 @@ void UIWriteMusicDialog::FUN_140ff2cf0(const CStringW& strPath)
                     TiXmlText text(strText);
                     text.SetCDATA(1);
                     if (!bMelody)
-                        FUN_14086f920(&element, "index", i);
-                    FUN_14086e000(&element, &text);
-                    FUN_14086e000(&root, &element);
+                        ((class TiXmlElement*)(class TiXmlElement*)(&element))->SetAttribute("index", i);
+                    ((void*)((class TiXmlNode*)(void*)(&element))->InsertEndChild(*(class TiXmlNode const*)(&text)));
+                    ((void*)((class TiXmlNode*)(void*)(&root))->InsertEndChild(*(class TiXmlNode const*)(&element)));
                 }
             }
         }
-        FUN_14086e000(&doc, &root);
+        ((void*)((class TiXmlNode*)(void*)(&doc))->InsertEndChild(*(class TiXmlNode const*)(&root)));
         FUN_1408710c0(&doc, strFile);
         FUN_140ff3450(false);
 }
@@ -1301,7 +1308,7 @@ bool UIWriteMusicDialog::FUN_140ff3230(Unk_140165cf0* pElem, int nMax, CString& 
     strOut.Empty();
     if (pElem == 0)
         return false;
-    Unk_WmXmlNode* pChild = FUN_140872a10(pElem);
+    Unk_WmXmlNode* pChild = ((class Unk_WmXmlNode*)((class TiXmlNode*)(class Unk_140165cf0*)(pElem))->FirstChild());
     if (pChild == 0)
         return false;
     Unk_140165cf0* pText = pChild->ToText();
@@ -1324,7 +1331,7 @@ bool UIWriteMusicDialog::FUN_140ff3230(Unk_140165cf0* pElem, int nMax, CString& 
 // @0x140ff3350
 void UIWriteMusicDialog::FUN_140ff3350(bool bVisible)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     m_30->Invoke("setPlayStartButtonVisible", bVisible);
 }
@@ -1332,7 +1339,7 @@ void UIWriteMusicDialog::FUN_140ff3350(bool bVisible)
 // @0x140ff33c0
 bool UIWriteMusicDialog::FUN_140ff33c0()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return false;
     return m_30->FUN_1422baa20("m_dirtyMusicScore").GetBool();
 }
@@ -1340,7 +1347,7 @@ bool UIWriteMusicDialog::FUN_140ff33c0()
 // @0x140ff3450
 void UIWriteMusicDialog::FUN_140ff3450(bool bDirty)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     static_cast<Unk_WmScript*>(m_30.operator->())->FUN_1407cbbe0("m_dirtyMusicScore", bDirty);
 }
@@ -1348,7 +1355,7 @@ void UIWriteMusicDialog::FUN_140ff3450(bool bDirty)
 // @0x140ff34b0
 int UIWriteMusicDialog::FUN_140ff34b0()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
     return m_30->FUN_1422baa20("m_totalLength").GetInt();
 }
@@ -1371,7 +1378,7 @@ void UIWriteMusicDialog::FUN_140ff35a0()
 // @0x140ff35c0
 void UIWriteMusicDialog::FUN_140ff35c0(int nOffset, int nLength)
 {
-    m_nStartTick = FUN_140869420() - nOffset;
+    m_nStartTick = GetTickCountMs2() - nOffset;
     m_nEndTick = m_nStartTick + nLength;
 }
 
@@ -1387,7 +1394,7 @@ void UIWriteMusicDialog::FUN_140ff3610(int nTime)
     if (m_spTimer)
     {
         int nMinutes, nSeconds, nCentis;
-        FUN_141b706a0(nTime, &nMinutes, &nSeconds, &nCentis);
+        FUN_141b706a0(nTime, (unsigned int*)(&nMinutes), (unsigned int*)(&nSeconds), (unsigned int*)(&nCentis));
         CStringW strText = StringFormat(m_strTimerFormat, nMinutes, nSeconds);
         m_spTimer->FUN_1422c4cd0(strText);
         if (m_spPlayBar)
@@ -1416,7 +1423,7 @@ void UIWriteMusicDialog::FUN_140ff38f0(int nLength)
     if (m_spTotalTimer)
     {
         int nMinutes, nSeconds, nCentis;
-        FUN_141b706a0(nLength, &nMinutes, &nSeconds, &nCentis);
+        FUN_141b706a0(nLength, (unsigned int*)(&nMinutes), (unsigned int*)(&nSeconds), (unsigned int*)(&nCentis));
         CStringW strText = FUN_14028dfa0(CStringW(L"s_writemusic_text_playtimer_total"), nMinutes, nSeconds);
         m_spTotalTimer->FUN_1422c4cd0(strText);
         if (m_spPlayBar)
@@ -1520,7 +1527,7 @@ void UIWriteMusicDialog::FUN_140ff41a0()
 // @0x140ff43a0
 void UIWriteMusicDialog::FUN_140ff43a0(const CString& strMelody, ASArray& chords, const CStringW& strTitle, int nInstrument)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     static_cast<Unk_WmScript*>(m_30.operator->())
         ->FUN_140ff70d0("setTabFromText", CString(strMelody), Scaleform::GFx::Value(chords.FUN_1422bb870()), CStringW(strTitle), nInstrument);
@@ -1603,7 +1610,6 @@ void UIWriteMusicDialog::FUN_140ff4610(std::map<int, CString>& tabs)
 }
 
 // @0x140ff4a80
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs: one temp hop after m_pages[m_nPage] and the colors[] stack slot
 void UIWriteMusicDialog::FUN_140ff4a80()
 {
     if (m_spPlayLine == 0)
@@ -1612,12 +1618,13 @@ void UIWriteMusicDialog::FUN_140ff4a80()
     const int nWidth = 0x4b0;
     const int nBottom = 0x197;
     MS2_FOR_EACH(auto spNote, m_notes)
-        m_spPlayLine->FUN_1422c6b70(Scaleform::GFx::Value(spNote->FUN_1422bb890()));
+        m_spPlayLine->FUN_1422c6b70(Scaleform::GFx::Value((*spNote).FUN_1422bb890()));
     m_notes.clear();
     if (m_pages.find(m_nPage) != m_pages.end())
     {
         int colors[10] = {0xffd200, 0xff7521, 0xdf0008, 0x8dc63f, 0x139224, 0x13b5f2, 0x2960ff, 0xd85aa5, 0x822eff, 0xffffff};
-        TabNotes& range = m_pages[m_nPage];
+        TabNotes* pRange = &m_pages[m_nPage];
+        TabNotes& range = *pRange;
         TabNotes::const_iterator itEnd = range.end();
         for (TabNotes::const_iterator it = range.begin(); it != itEnd; ++it)
         {
@@ -1654,7 +1661,7 @@ void UIWriteMusicDialog::FUN_140ff4a80()
                 MS2Ptr<ASUIComponent> spNote(new ASUIComponent(strName, 2));
                 if (spNote == 0)
                     break;
-                m_spPlayLine->FUN_1422c6900(Scaleform::GFx::Value(spNote->FUN_1422bb890()));
+                m_spPlayLine->FUN_1422c6900(Scaleform::GFx::Value((*spNote).FUN_1422bb890()));
                 spNote->FUN_1422bffe0(x, y);
                 spNote->FUN_1409ba0d0("setActualSize", w - 1, 3);
                 spNote->Invoke("setColor", colors[nTab]);

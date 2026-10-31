@@ -22,11 +22,15 @@ void FUN_141489ff0(void*, NiColorA);                    // the app's clear colou
 extern void* DAT_143ab8f48;
 void* FUN_140aae430();
 void* FUN_1409478c0();
-int FUN_140a18070(void*);
+class CameraMgr   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140a18070();
+    bool FUN_140aeb590(struct Unk_CameraSetting&);
+    void FUN_140aed720(struct Unk_CameraSetting const&);
+    void FUN_140aed750(int, int);
+};
 struct Unk_140ae7ce0 { Unk_140ae7ce0(); void *m_p0, *m_p1, *m_p2, *m_p3, *m_p4, *m_p5; };
-bool FUN_140aeb590(void*, Unk_140ae7ce0*);
-void FUN_140aed720(void*, Unk_140ae7ce0*);
-void FUN_140aed750(void*, int, int);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSceneStateModeSelect);
 
@@ -79,13 +83,13 @@ void CSceneStateModeSelect::OnPacket(CInPacket& packet)
 // @0x140aae230
 void CSceneStateModeSelect::vfunc_1(int)
 {
-    if (FUN_140a18070(FUN_1409478c0()) != 0)
+    if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140a18070() != 0)
     {
         Unk_140ae7ce0 tmp;
-        if (FUN_140aeb590(FUN_1409478c0(), &tmp))
+        if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aeb590(*(struct Unk_CameraSetting*)(&tmp)))
         {
-            FUN_140aed720(FUN_1409478c0(), &tmp);
-            FUN_140aed750(FUN_1409478c0(), 4, 1);
+            ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(&tmp));
+            ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed750(4, 1);
         }
     }
 }

@@ -234,7 +234,7 @@ public:
     void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;
 };
 MS2_CHECK_SIZE(Unk_AeSceneIter, 0x30);
-void FUN_141b70c50(NiRenderObject* pObject, float fValueA, float fValueB);
+void FUN_141b70c50(class NiAVObject*, float, float);   // C3: was FUN_141b70c50
 NiAVObject* FUN_141b6efc0(void* pOwner);
 
 // @0x1409a4020
@@ -795,7 +795,7 @@ void FUN_1409a5320(NiAVObject* pRoot, float fValueA, float fValueB, const char* 
             if (pcName != 0 && !pRenderObject->GetName().Equals(pcName)) {
                 continue;
             }
-            FUN_141b70c50(pRenderObject, fValueB, fValueA);
+            FUN_141b70c50((class NiAVObject*)(pRenderObject), fValueB, fValueA);
         }
     }
     pRoot->UpdateProperties();
@@ -819,7 +819,7 @@ void FUN_1409a51d0(void* pOwner, float fValueA, float fValueB, const char* pcNam
             if (pcName != 0 && !pRenderObject->GetName().Equals(pcName)) {
                 continue;
             }
-            FUN_141b70c50(pRenderObject, fValueB, fValueA);
+            FUN_141b70c50((class NiAVObject*)(pRenderObject), fValueB, fValueA);
         }
     }
     spRoot->UpdateProperties();

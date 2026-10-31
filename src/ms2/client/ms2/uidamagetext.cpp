@@ -58,7 +58,7 @@ public:
     efd::Point3 FUN_140a17e10();                                            // the camera position
 };
 struct Unk_DtCfgValue { float FUN_1402bac70(); const float& FUN_140298f40(); int* FUN_1402056b0(); char m_pad[0x58]; };
-int FUN_14025a620(Unk_DtCfgValue* pValue);
+int FUN_14025a620(class Unk_ConstVal*);   // C3: was FUN_14025a620
 struct Unk_DtCfg
 {
     char m_pad_0000[0x168];
@@ -70,24 +70,28 @@ struct Unk_DtCfg
     Unk_DtCfgValue m_c9d0;                  // diffScale
     Unk_DtCfgValue m_ca28;                  // diffAlpha
 };
-Unk_DtCfg* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_DtOption : public CGameOption { public: Unk_InterfaceState* FUN_140e09150(); };
 class Unk_DtUIScale;
-Unk_DtUIScale* FUN_14025e7a0();                                             // ui scale service
-float FUN_1422afec0(Unk_DtUIScale* pScale, int nLayer);                     // scale of a layer
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1422afec0(int);
+};
 class Unk_DtScene;
 Unk_DtScene* FUN_1408e57f0();
-int FUN_1422b9e00(Unk_DtScene* pScene);                                     // the scene state id
-unsigned int FUN_140869420();                                               // the time (ms)
-bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);          // IsKindOf
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSubSceneId();
+};
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 PCBase* FUN_1409ffd30(GameObject* p);                                       // the actor of a game object (0 otherwise)
 float FUN_1412762d0(const NiPoint3& pt);
-const NiPoint3* FUN_140947900(NiAVObject* pNode);                           // world translate
 NiNode* FUN_1413fa070(egf::EntityID id);                                    // entity id -> scene root
 float FUN_140a0fda0(float a, float b);                                      // max
 float FUN_140a0fde0(float a, float b);                                      // min
-bool FUN_1409c1720(const Scaleform::GFx::Value& v);                         // the value as a bool
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                         // the value is set
 // Call an AS function object (skillslot.cpp; a member: rcx = the function object, rdx = the returned value).
 class Unk_SsFn : public AScript
 {
@@ -416,12 +420,12 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
             {
                 if (!bMyDamage && (nFlags & 1) != 0 && !bMySummon)
                 {
-                    float fScale = FUN_1401d3200()->m_c9d0.FUN_1402bac70();
+                    float fScale = ((struct Unk_DtCfg*)FUN_1401d3200())->m_c9d0.FUN_1402bac70();
                     obj.FUN_1409c4a30("diffScale", fScale);
                 }
                 if (!bMyDamage && (nFlags & 2) != 0 && !bMySummon)
                 {
-                    float fAlpha = FUN_1401d3200()->m_ca28.FUN_1402bac70();
+                    float fAlpha = ((struct Unk_DtCfg*)FUN_1401d3200())->m_ca28.FUN_1402bac70();
                     obj.FUN_1409c4a30("diffAlpha", fAlpha);
                 }
             }
@@ -606,9 +610,9 @@ MS2_REPLACE_METHOD(0x1419139F0, UIDamageText, SetObservedId, 28, 0x4BB4D3D1);
 // @0x141913a20
 void UIDamageText::FUN_141913a20()
 {
-    m_nLineHeight = FUN_14025a620(&FUN_1401d3200()->m_c8c8);
-    m_nJumpCount = (std::max)(1, *FUN_1401d3200()->m_c920.FUN_1402056b0());
-    m_nMaxShown = (std::max)(1, *FUN_1401d3200()->m_c978.FUN_1402056b0());
+    m_nLineHeight = FUN_14025a620((class Unk_ConstVal*)(&((struct Unk_DtCfg*)FUN_1401d3200())->m_c8c8));
+    m_nJumpCount = (std::max)(1, *((struct Unk_DtCfg*)FUN_1401d3200())->m_c920.FUN_1402056b0());
+    m_nMaxShown = (std::max)(1, *((struct Unk_DtCfg*)FUN_1401d3200())->m_c978.FUN_1402056b0());
     m_nMaxList = m_nMaxShown + 10;
     m_nMaxIndex = 1000;
 }
@@ -719,7 +723,7 @@ int UIDamageText::FUN_141914020(GameObject* pTarget, NiPoint3& kPos, const CStri
     {
         NiAVObject* pNode = pActor->FUN_141675150(strNode);
         if (pNode != 0)
-            kPos = *FUN_140947900(pNode);
+            kPos = *((class NiPoint3 const*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetWorldTranslate());
     }
     return 1;
 }
@@ -749,13 +753,13 @@ int UIDamageText::FUN_1419141a0(GameObject* pTarget)
     {
         if (m_bObserver)
             return 1;
-        return pActor->FUN_140f4a450() <= FUN_1401d3200()->m_168.FUN_140298f40();
+        return pActor->FUN_140f4a450() <= ((struct Unk_DtCfg*)FUN_1401d3200())->m_168.FUN_140298f40();
     }
     else if (pTarget != 0)
     {
         GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer != 0)
-            return pTarget->FUN_140f4a450() <= FUN_1401d3200()->m_168.FUN_140298f40();
+            return pTarget->FUN_140f4a450() <= ((struct Unk_DtCfg*)FUN_1401d3200())->m_168.FUN_140298f40();
     }
     return 0;
 }
@@ -768,11 +772,11 @@ int UIDamageText::FUN_1419142a0(GameObject* pTarget)
     GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer != 0)
     {
-        if (FUN_14087ddc0(pTarget ? pTarget->GetClassDesc() : 0, 0x6200004))
+        if (efd::ClassInfo::IsKindOf(pTarget ? pTarget->GetClassDesc() : 0, 0x6200004))
             nKind = 0;
-        else if (FUN_14087ddc0(pTarget ? pTarget->GetClassDesc() : 0, 0x6200003))
+        else if (efd::ClassInfo::IsKindOf(pTarget ? pTarget->GetClassDesc() : 0, 0x6200003))
             nKind = 0;
-        else if (FUN_14087ddc0(pTarget ? pTarget->GetClassDesc() : 0, 0x6200011))
+        else if (efd::ClassInfo::IsKindOf(pTarget ? pTarget->GetClassDesc() : 0, 0x6200011))
             nKind = 0;
     }
     return nKind;
@@ -973,7 +977,7 @@ float UIDamageText::FUN_141914a90(const NiPoint3& kPos)
     NiPoint3 kPlayer = pPlayer->vfunc_18();
     efd::Point3 kCamera = Unk_DtCamera::FUN_1409478c0()->FUN_140a17e10();
     float fDistance = (kPos - kPlayer).Length();
-    float fRange = FUN_1401d3200()->m_168.FUN_1402bac70();
+    float fRange = ((struct Unk_DtCfg*)FUN_1401d3200())->m_168.FUN_1402bac70();
     float fToTarget = (kPos - kCamera).Length();
     if (fToTarget > (kPlayer - kCamera).Length())
     {
@@ -997,7 +1001,7 @@ float UIDamageText::FUN_141914c40(GameObject* pTarget)
         return 1.0f;
     NiNode* pRoot = FUN_1413fa070(pTarget->FUN_14123c460());
     if (pRoot != 0)
-        return FUN_141914a90(*FUN_140947900((NiAVObject*)pRoot));
+        return FUN_141914a90(*((class NiPoint3 const*)&((class NiAVObject*)(class NiAVObject*)((NiAVObject*)pRoot))->GetWorldTranslate()));
     return 1.0f;
 }
 MS2_REPLACE_METHOD(0x141914C40, UIDamageText, FUN_141914c40, 240, 0xC525D00F);
@@ -1007,7 +1011,7 @@ int UIDamageText::FUN_141914d40(GameObject* pTarget)
 {
     if (pTarget == 0)
         return 1;
-    if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001e)
+    if (((class GFxSceneService*)(class Unk_DtScene*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001e)
         return 1;
     if (!FUN_1419141a0(pTarget))
         return 1;
@@ -1131,8 +1135,8 @@ void UIDamageText::FUN_1419153d0()
         return;
     }
     {
-        unsigned int nNow = FUN_140869420();
-        float fUIScale = FUN_1422afec0(FUN_14025e7a0(), m_28);
+        unsigned int nNow = GetTickCountMs2();
+        float fUIScale = ((class GFxManager*)(class Unk_DtUIScale*)(((class Unk_DtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
         POSITION pos = m_ownerFollowers.GetHeadPosition();
         while (pos != 0)
         {
@@ -1235,11 +1239,11 @@ void UIDamageText::FUN_141915990()
             if ((m_pBattleOption->m_n10 & 1) != 0)
             {
                 float fLine = (float)m_nLineHeight;
-                nOtherLine = (int)(fLine * FUN_1401d3200()->m_c9d0.FUN_140298f40());
+                nOtherLine = (int)(fLine * ((struct Unk_DtCfg*)FUN_1401d3200())->m_c9d0.FUN_140298f40());
                 nOtherLine2 = nOtherLine << 1;
             }
-            float fUIScale = FUN_1422afec0(FUN_14025e7a0(), m_28);
-            unsigned int nNow = FUN_140869420();
+            float fUIScale = ((class GFxManager*)(class Unk_DtUIScale*)(((class Unk_DtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
+            unsigned int nNow = GetTickCountMs2();
             POSITION pos = m_normals.GetHeadPosition();
             while (pos != 0)
             {
@@ -1348,7 +1352,7 @@ MS2_REPLACE_METHOD(0x141915990, UIDamageText, FUN_141915990, 2469, 0xC5EF7552);
 // @0x141916340
 void UIDamageText::FUN_141916340()
 {
-    unsigned int nNow = FUN_140869420();
+    unsigned int nNow = GetTickCountMs2();
     if (nNow < m_nLastQueueTime + 200)
         return;
     MS2Ptr<DamageQueueParam> spParam = m_queue.RemoveHead();
@@ -1364,7 +1368,7 @@ void UIDamageText::FUN_141916430(MS2Ptr<ASGameEntity> spRoot)
 {
     if (spRoot == 0 || m_ownerFollowers.IsEmpty())
         return;
-    float fUIScale = FUN_1422afec0(FUN_14025e7a0(), m_28);
+    float fUIScale = ((class GFxManager*)(class Unk_DtUIScale*)(((class Unk_DtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
     bool bGarbageSeen = false;
     POSITION pos = m_ownerFollowers.GetHeadPosition();
     while (pos != 0)
@@ -1378,7 +1382,7 @@ void UIDamageText::FUN_141916430(MS2Ptr<ASGameEntity> spRoot)
         bool bRemove = false;
         unsigned __int64 nOwnerId = spInfo->m_nOwnerId;
         bool bMine = spInfo->m_bMyDamage;
-        bool bGarbage = bGarbageSeen || FUN_1409c1720(spClip->FUN_1422baa20(s_strGarbage));
+        bool bGarbage = bGarbageSeen || ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spClip->FUN_1422baa20(s_strGarbage)))->GetBool();
         if (bGarbage)
         {
             if (!bGarbageSeen && !bMine)
@@ -1387,7 +1391,7 @@ void UIDamageText::FUN_141916430(MS2Ptr<ASGameEntity> spRoot)
         }
         else
         {
-            if (FUN_1409c1720(spClip->FUN_1422baa20(s_strDecreaseCounter)))
+            if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spClip->FUN_1422baa20(s_strDecreaseCounter)))->GetBool())
             {
                 static_cast<Unk_DtClip*>(spClip.operator->())->FUN_1407cbbe0(s_strDecreaseCounter, false);
                 spInfo->m_bDecreased = true;
@@ -1464,7 +1468,7 @@ void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
     if ((m_pBattleOption->m_n10 & 1) != 0)
     {
         float fLine = (float)m_nLineHeight;
-        nOtherLine = (int)(fLine * FUN_1401d3200()->m_c9d0.FUN_140298f40());
+        nOtherLine = (int)(fLine * ((struct Unk_DtCfg*)FUN_1401d3200())->m_c9d0.FUN_140298f40());
         nOtherLine2 = nOtherLine << 1;
     }
     while (pos != 0)
@@ -1479,7 +1483,7 @@ void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
         {
             bool bMine = spInfo->m_bMyDamage;
             Scaleform::GFx::Value& clip = spClip->FUN_1422bb870();
-            bool bGarbage = bGarbageSeen || FUN_1409c1720(static_cast<Unk_SsFn*>(m_spDamageGarbage.operator->())->FUN_1417620b0(clip)) == true;
+            bool bGarbage = bGarbageSeen || ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(static_cast<Unk_SsFn*>(m_spDamageGarbage.operator->())->FUN_1417620b0(clip)))->GetBool() == true;
             if (bGarbage)
             {
                 if (!bGarbageSeen && !bMine)
@@ -1489,7 +1493,7 @@ void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
             else
             {
                 bool bCritical = spInfo->m_nGrade == 1;
-                bool bEnable = FUN_1409c1720(static_cast<Unk_SsFn*>(m_spDamageEnable.operator->())->FUN_1417620b0(clip));
+                bool bEnable = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(static_cast<Unk_SsFn*>(m_spDamageEnable.operator->())->FUN_1417620b0(clip)))->GetBool();
                 bool bOld = false;
                 bool bHide = false;
                 if (bEnable)
@@ -1523,7 +1527,7 @@ void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
                         {
                             nShown = (!bCritical && bEnable) ? nShown + 1 : nShown;
                             spClip->vfunc_4(true);
-                            kScreen *= FUN_1422afec0(FUN_14025e7a0(), m_28);
+                            kScreen *= ((class GFxManager*)(class Unk_DtUIScale*)(((class Unk_DtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
                             int nBehind = nNext - 1 - nIndex - nStacked;
                             if (bCritical && spInfo->m_nType == 0)
                             {
@@ -1576,7 +1580,7 @@ int UIDamageText::FUN_1419175c0(MS2Ptr<DamageInfo> spInfo, const NiPoint3& kPos,
 {
     if (spInfo == 0)
         return 0;
-    if (FUN_1409b4d40(clip))
+    if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(clip))->IsObject())
     {
         int nGrade = spInfo->m_nGrade;
         int bRecover = FUN_1419144b0(nGrade);

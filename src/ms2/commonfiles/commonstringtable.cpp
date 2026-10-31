@@ -98,7 +98,7 @@ template std::_Tree_node<std::pair<const unsigned, int>, void*>*& std::_Tree_val
 template std::_Tree_node<std::pair<const unsigned, int>, void*>*& std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned, int>>>::_Root() const;
 
 CStringW GetStringCommon(EBanStringId nStringId);
-bool FUN_14028f710(Unk_140165cf0* pNode);   // node is enabled for this client
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
@@ -112,14 +112,17 @@ unsigned FUN_14025ed00(const wchar_t* psz);                             // strin
 struct Unk_BanFlags { int FUN_1402c4c90(int nFlag); };                          // blocked-action flag set
 struct Unk_BanConfig { unsigned char m_pad_0[8]; Unk_BanFlags m_8; };
 Unk_BanConfig* FUN_14025e7b0();                                                 // global client config
-void* FUN_140166410();
-bool FUN_14036e560(void* pService);
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036e560();
+};
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument into the message
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);          // formats one number argument into the message
 bool FUN_14025fab0(CStringW& str);                                          // MakeLower
 extern int DAT_143ab2914;                                                   // client build / region level (below 50: checks active)
 extern int DAT_143ab0248;                                                   // client country (0..3)
-void FUN_140165320(Unk_BanWordList* pList, const CStringW& str);               // append a string to an array
 void FUN_14025a680(CStringW& src, ATL::CAtlArray<CStringW>& out, const wchar_t* pszSep);   // split into the pieces between separators
 
 // The game constants table (FUN_1401d3200()): only the 0x58-byte slots read here.
@@ -146,7 +149,7 @@ MS2_CHECK_OFFSET(Unk_BanConstTable, m_cNameMin, 0x9ec0);
 MS2_CHECK_OFFSET(Unk_BanConstTable, m_wideTextMax, 0x9f70);
 MS2_CHECK_OFFSET(Unk_BanConstTable, m_dNameMin, 0xa0c0);
 MS2_CHECK_OFFSET(Unk_BanConstTable, m_eNameMax, 0xa1c8);
-Unk_BanConstTable* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int* FUN_1402056b0(Unk_ConstVal* slot);
 // @0x14025a620
 int FUN_14025a620(Unk_ConstVal* slot) { return *FUN_1402056b0(slot); }
@@ -742,8 +745,8 @@ unsigned CBanTextChecker::ScanLimit(const CStringW& str, CheckerLimit& limit)
 // @0x140225120
 int CBanTextChecker::FUN_140225120(const CStringW& str, CStringW& message)
 {
-    int nMin = *FUN_1402056b0(&FUN_1401d3200()->m_nameMin);
-    int nMax = *FUN_1402056b0(&FUN_1401d3200()->m_nameMax);
+    int nMin = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_nameMin);
+    int nMax = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_nameMax);
     CheckerOption opt(0x91, true);
     CheckerLimit limit(nMin, nMax, true, false, false, true, true);
     return CheckTextWithLimit(str, opt, limit, message);
@@ -778,7 +781,7 @@ int CBanTextChecker::FUN_1402253b0(const CStringW& str, CStringW& message)
 int CBanTextChecker::FUN_140225470(const CStringW& str, CStringW& message)
 {
     CheckerOption opt(0xd9, true);
-    CheckerLimit limit(FUN_14025a620(&FUN_1401d3200()->m_dNameMin), FUN_14025a620(&FUN_1401d3200()->m_dNameMax), true, false, false, false, true);
+    CheckerLimit limit(FUN_14025a620(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_dNameMin), FUN_14025a620(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_dNameMax), true, false, false, false, true);
     return CheckTextWithLimit(str, opt, limit, message);
 }
 
@@ -786,15 +789,15 @@ int CBanTextChecker::FUN_140225470(const CStringW& str, CStringW& message)
 int CBanTextChecker::FUN_140225550(const CStringW& str, CStringW& message)
 {
     CheckerOption opt(0xd9, true);
-    CheckerLimit limit(FUN_14025a620(&FUN_1401d3200()->m_eNameMin), FUN_14025a620(&FUN_1401d3200()->m_eNameMax), true, false, true, false, true);
+    CheckerLimit limit(FUN_14025a620(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_eNameMin), FUN_14025a620(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_eNameMax), true, false, true, false, true);
     return CheckTextWithLimit(str, opt, limit, message);
 }
 
 // @0x140225630
 int CBanTextChecker::FUN_140225630(const CStringW& str, CStringW& message)
 {
-    int nMin = *FUN_1402056b0(&FUN_1401d3200()->m_cNameMin);
-    int nMax = *FUN_1402056b0(&FUN_1401d3200()->m_cNameMax);
+    int nMin = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_cNameMin);
+    int nMax = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_cNameMax);
     CheckerOption opt(0xf9, true);
     CheckerLimit limit(nMin, nMax, true, false, false, false, true);
     return CheckTextWithLimit(str, opt, limit, message);
@@ -803,8 +806,8 @@ int CBanTextChecker::FUN_140225630(const CStringW& str, CStringW& message)
 // @0x140225720
 int CBanTextChecker::FUN_140225720(const CStringW& str, CStringW& message)
 {
-    int nMin = *FUN_1402056b0(&FUN_1401d3200()->m_guildNameMin);
-    int nMax = *FUN_1402056b0(&FUN_1401d3200()->m_guildNameMax);
+    int nMin = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_guildNameMin);
+    int nMax = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_guildNameMax);
     CheckerOption opt(0xd9, true);
     CheckerLimit limit(nMin, nMax, true, false, false, false, true);
     return CheckTextWithLimit(str, opt, limit, message);
@@ -815,7 +818,7 @@ int CBanTextChecker::FUN_140225810(const CStringW& str, CStringW& message)
 {
     CheckerOption opt(0xd9, true);
     int nMax = 7;
-    if (FUN_14036e560(FUN_140166410())) nMax = 0xf;
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e560()) nMax = 0xf;
     CheckerLimit limit(1, nMax, true, false, false, false, true);
     return CheckTextWithLimit(str, opt, limit, message);
 }
@@ -990,7 +993,7 @@ int CBanTextChecker::FUN_140226100(const CStringW& str, CStringW& message)
 // @0x140226160
 int CBanTextChecker::FUN_140226160(const CStringW& str, CStringW& message)
 {
-    int nMax = *FUN_1402056b0(&FUN_1401d3200()->m_wideTextMax) * 3 + 10;
+    int nMax = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_wideTextMax) * 3 + 10;
     if (str.GetLength() > nMax) return 2;
     return CheckTypes(str, 0xf8, true, message);
 }
@@ -1130,7 +1133,7 @@ void CBanTextChecker::SetBanWords(unsigned nKey, Unk_BanWordList& words)
     for (unsigned i = 0; i < words.GetCount(); ++i)
     {
         const CStringW& strWord = words[i];
-        FUN_140165320(list.operator->(), strWord);
+        ((ATL::CAtlArray<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraits<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)(void*)(list.operator->()))->Add(strWord);
     }
     m_mapBanWords.SetAt(nKey, list);
 }
@@ -5042,7 +5045,7 @@ int CommonString::LoadCommon()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strId = FUN_1401bf530(pNode, "id", CStringW(L""));
         CStringW strValue = FUN_1401bf530(pNode, "value", CStringW(L""));
@@ -5107,7 +5110,7 @@ void CommonString::LoadStrings(Unk_140165cf0* pRoot)
     TextMap& map = m_maps[0];
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strId = FUN_1401bf530(pNode, "id", CStringW(L""));
         CStringW strValue = FUN_1401bf530(pNode, "value", CStringW(L""));

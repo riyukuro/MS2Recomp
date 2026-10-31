@@ -27,20 +27,32 @@ static CString s_sort7b[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "C
 
 // ---- exe callees ----
 void* FUN_1409eed90();                                                      // the singleton of the own character
-Unk_WeddingTicketView* FUN_141b87160(void* pCharacter);                     // the character's current wedding hall ticket
+class WeddingManager   // C3: member view for the former free stand-ins
+{
+public:
+    class WeddingHallTicket const& GetTicket();
+};
 void FUN_140fdac50(int nHallId, int nSlot, __int64 nTime, unsigned char bPrivate, ASObj* pData);
 void FUN_1412751f0(const CStringW& strText, int a, int b);                  // notice
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 int FUN_140fe2d20(UIDialog* pDialog);                                       // the selected hall id (uiweddinghallreservationpagechange.cpp)
-int FUN_140fdca20(UIDialog* pDialog);                                       // the selected slot
-__int64 FUN_140fdca40(UIDialog* pDialog);                                   // the selected time
-unsigned char FUN_140fdca60(UIDialog* pDialog);                             // private flag
-int FUN_140fdca80(UIDialog* pDialog);                                       // reservation mode (0 reserve, 1 change)
-void FUN_140fdbf70(UIDialog* pDialog);
-void FUN_140fdc180(UIDialog* pDialog);
-void FUN_140fdc970(UIDialog* pDialog);
+class UIWeddingHallReservationDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140fdbf70();
+    void FUN_140fdc180();
+    void FUN_140fdc970();
+    int GetHall();
+    int GetMode();
+    unsigned char GetNight();
+    __int64 GetTime();
+};
 void* FUN_1409023c0();                                                      // the hall price manager
-__int64 FUN_140909220(void* pManager, int nHallId, int nSlot);              // the price of a hall slot
+class WeddingTable   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_140909220(int, int);
+};
 CStringW FUN_1409404f0(__int64 n);                                          // a number as text
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 
@@ -77,12 +89,12 @@ bool UIWeddingHallReservationPageConfirm::vfunc_1()
     if (!UIWeddingHallReservationPage::vfunc_1())
         return false;
     ASObj kData(2);
-    FUN_140fdac50(FUN_140fe2d20(m_pDialog), FUN_140fdca20(m_pDialog), FUN_140fdca40(m_pDialog), FUN_140fdca60(m_pDialog), &kData);
-    if (FUN_140fdca80(m_pDialog) == 1)
+    FUN_140fdac50(FUN_140fe2d20(m_pDialog), ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetHall(), ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetTime(), ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetNight(), &kData);
+    if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetMode() == 1)
     {
-        Unk_WeddingTicketView* pTicket = FUN_141b87160(FUN_1409eed90());
-        __int64 nOld = FUN_140909220(FUN_1409023c0(), pTicket->m_nHallId, pTicket->m_nSlot);
-        __int64 nNew = FUN_140909220(FUN_1409023c0(), FUN_140fe2d20(m_pDialog), FUN_140fdca20(m_pDialog));
+        Unk_WeddingTicketView* pTicket = ((struct Unk_WeddingTicketView*)&((class WeddingManager*)(void*)(FUN_1409eed90()))->GetTicket());
+        __int64 nOld = ((class WeddingTable*)(void*)(FUN_1409023c0()))->FUN_140909220(pTicket->m_nHallId, pTicket->m_nSlot);
+        __int64 nNew = ((class WeddingTable*)(void*)(FUN_1409023c0()))->FUN_140909220(FUN_140fe2d20(m_pDialog), ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetHall());
         kData.FUN_1407cbb20("price", FUN_14052bd00(0x987, FUN_1409404f0(nNew - nOld)));
     }
     m_pScript->Invoke("setData", kData);
@@ -98,31 +110,31 @@ void UIWeddingHallReservationPageConfirm::vfunc_2()
 // @0x140fe3010
 void UIWeddingHallReservationPageConfirm::vfunc_5()
 {
-    FUN_140fdbf70(m_pDialog);
+    ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdbf70();
 }
 
 // @0x140fe3040
 void UIWeddingHallReservationPageConfirm::vfunc_6()
 {
-    if (FUN_140fdca40(m_pDialog) == 0)
+    if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetTime() == 0)
     {
         CStringW strKey(L"s_wedding_hall_reservation_select_time");
         FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
     }
-    else if (FUN_140fdca20(m_pDialog) == 0)
+    else if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetHall() == 0)
     {
         CStringW strKey(L"s_wedding_hall_reservation_select_hall");
         FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
     }
     else
     {
-        switch (FUN_140fdca80(m_pDialog))
+        switch (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetMode())
         {
         case 0:
-            FUN_140fdc180(m_pDialog);
+            ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdc180();
             break;
         case 1:
-            FUN_140fdc970(m_pDialog);
+            ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdc970();
             break;
         }
     }
@@ -156,9 +168,9 @@ CStringW UIWeddingHallReservationPageConfirm::vfunc_10(bool bStart)
 // @0x140fe3320
 bool UIWeddingHallReservationPageConfirm::vfunc_12()
 {
-    if (FUN_140fdca20(m_pDialog) == 0)
+    if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetHall() == 0)
         return false;
-    if (FUN_140fdca40(m_pDialog) == 0)
+    if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetTime() == 0)
         return false;
     return true;
 }

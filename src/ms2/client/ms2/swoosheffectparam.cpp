@@ -121,8 +121,8 @@
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
-int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
 int FUN_140ad02f0(int nValue, int nLimit);                          // upper clamp
 bool FUN_14028d470(float a, float b);                               // nearly equal
@@ -138,11 +138,9 @@ void FUN_1415672e0(NiAVObject* pObj, int n);
 // Time controller helpers.
 // Property list of an NiMesh (hash/list walk with a position cursor).
 class Unk_PropList;
-Unk_PropList* FUN_14127cc40(NiMesh* pMesh);
-void* FUN_14098ddb0(Unk_PropList* pList);                           // head position
 void* FUN_14098de00(Unk_PropList* pList, void** ppPos);             // slot at the position, advances it
 NiProperty* FUN_140993f00(void* pSlot);                             // slot -> property
-void* FUN_140166440();                                              // logger singleton
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_140b850d0(void* pLog, int nA, int nB, const wchar_t* pszFormat, const char*& pszArg, CString* pstrArg);
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
@@ -229,9 +227,9 @@ void CSwooshEffectParam::vfunc_1(Unk_140165cf0* pNode)
     FUN_1408733e0(pNode, "nifPath", m_strNifPath);
     FUN_1408733e0(pNode, "node1", m_strNode1);
     FUN_1408733e0(pNode, "node2", m_strNode2);
-    FUN_140873360(pNode, "length", m_fLength);
-    FUN_1408731e0(pNode, "quality", m_nQuality);
-    FUN_1408731e0(pNode, "sampling", m_nSampling);
+    XmlGetAttr((class TiXmlElement*)(pNode), "length", m_fLength);
+    XmlGetAttr((class TiXmlElement*)(pNode), "quality", m_nQuality);
+    XmlGetAttr((class TiXmlElement*)(pNode), "sampling", m_nSampling);
     m_nQuality = FUN_140ad02f0(m_nQuality, 4);
     m_nSampling = FUN_140ad02f0(m_nSampling, 0x3c);
     CString strAlpha(FUN_14086f4b0(pNode, "alphaMode"));
@@ -387,8 +385,8 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
             m_spMesh = new (efd::MemHint(efd::MemHint::NONE)) CMesh(false, true, m_nUVSets, nTris, nVerts, 0x15);
             NiAVObject* pMeshObj = m_spMesh->GetMesh();
             pMeshObj->SetName("SwooshEffect");
-            Unk_PropList* pList = FUN_14127cc40(pFound);
-            void* pPos = FUN_14098ddb0(pList);
+            Unk_PropList* pList = ((class Unk_PropList*)&((class NiAVObject*)(class NiMesh*)(pFound))->GetPropertyList());
+            void* pPos = ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiProperty>>*)(class Unk_PropList*)(pList))->GetHeadPos();
             while (pPos != 0)
             {
                 NiProperty* pProp = FUN_140993f00(FUN_14098de00(pList, &pPos));
@@ -524,7 +522,7 @@ void CSwooshEffect::vfunc_4()
             m_b2e = false;
             const char* pszName = m_strNode1;
             CString* pstrId = &m_str10;
-            FUN_140b850d0(FUN_140166440(), 1, 0x133, L"CSwooshEffect can't find TrailNode1 [{0}] effectID:{1}", pszName, pstrId);
+            FUN_140b850d0(((void*)GetLogString()), 1, 0x133, L"CSwooshEffect can't find TrailNode1 [{0}] effectID:{1}", pszName, pstrId);
         }
         {
             NiFixedString kName((const char*)m_strNode2);
@@ -536,7 +534,7 @@ void CSwooshEffect::vfunc_4()
             m_b2e = false;
             const char* pszName = m_strNode2;
             CString* pstrId = &m_str10;
-            FUN_140b850d0(FUN_140166440(), 1, 0x133, L"CSwooshEffect can't find TrailNode2 [{0}] effectID:{1}", pszName, pstrId);
+            FUN_140b850d0(((void*)GetLogString()), 1, 0x133, L"CSwooshEffect can't find TrailNode2 [{0}] effectID:{1}", pszName, pstrId);
         }
     }
 }

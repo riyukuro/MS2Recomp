@@ -67,7 +67,7 @@ public:
 MS2_CHECK_OFFSET(Unk_StampQuest, data, 0x18);
 
 CGameRule* FUN_1401c0d90();
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 UIQuestEventDispatcher* FUN_140bfc4b0();
 bool FUN_140184310(const CString&, const char*);
 CStringW FUN_1416e5660(int);
@@ -138,7 +138,7 @@ void UIStampEventDialog::vfunc_45(Scaleform::GFx::Value* pOut, const CString& st
     UIObject::vfunc_45(pOut, strMethod, pArgs);
     if (FUN_140184310(strMethod, "getTooltipQuest")) {
         int nQuest = pArgs->FUN_1422b8b10();
-        if (!FUN_140764020()->FUN_140745630(nQuest) && !FUN_140764020()->FUN_140745590(nQuest)) return;
+        if (!((class CQuestManager*)FUN_140764020())->FUN_140745630(nQuest) && !((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuest)) return;
         CStringW strText = FUN_1416e5660(nQuest);
         ASTooltip tip(1, 2);
         if (tip.FUN_1409e26b0(strText)) {
@@ -239,7 +239,7 @@ void UIStampEventDialog::FUN_140ed81a0(MS2Ptr<StampEventContext> spContext)
     for (size_t i = 0; i < spContext->m_stamps.GetCount(); ++i) {
         MS2Ptr<StampEventContext::Stamp> spStamp = spContext->m_stamps[i];
         CStringW strIcon;
-        if (FUN_140764020()->FUN_140745630(spStamp->m_id) || FUN_140764020()->FUN_140745590(spStamp->m_id)) {
+        if (((class CQuestManager*)FUN_140764020())->FUN_140745630(spStamp->m_id) || ((class CQuestManager*)FUN_140764020())->FUN_140745590(spStamp->m_id)) {
             strIcon = FUN_1416e4df0(spStamp->m_id);
         } else {
             strIcon = GetStringCommonByKey(L"s_stampevent_closed_stamp");
@@ -251,7 +251,7 @@ void UIStampEventDialog::FUN_140ed81a0(MS2Ptr<StampEventContext> spContext)
         row.FUN_1407cbb20("text", CStringW(strIcon));
         row.FUN_1407cb9c0("isSpecial", spStamp->m_bStamped);
         row.FUN_1407cb9c0("isNew", 0);
-        row.FUN_1407cb9c0("isComplete", FUN_140764020()->FUN_140745590(spStamp->m_id));
+        row.FUN_1407cb9c0("isComplete", ((class CQuestManager*)FUN_140764020())->FUN_140745590(spStamp->m_id));
         row.FUN_1407cba60("eventTag", CString(strTag));
         m_30->Invoke("addStamp", row);
     }
@@ -317,7 +317,7 @@ void UIStampEventDialog::FUN_140ed8c70()
     int nDone = 0;
     int nTotal = spContext->m_stamps.GetCount();
     for (int i = 0; i < nTotal; ++i) {
-        if (FUN_140764020()->FUN_140745590(spContext->m_stamps[i]->m_id)) ++nDone;
+        if (((class CQuestManager*)FUN_140764020())->FUN_140745590(spContext->m_stamps[i]->m_id)) ++nDone;
     }
     CStringW strText = FUN_1409e8970(CStringW(L"s_stampevent_count"), nDone, nTotal);
     if (MS2Ptr<ASTextField> spCount = FUN_140bb4cf0("m_count")) {
@@ -362,7 +362,7 @@ int UIStampEventDialog::FUN_140ed8fc0()
     if (pTable->FUN_1409617d0(0x4b0, spContext->m_eventId, nDefault) != 0) return 0;
     for (size_t i = 0; i < spContext->m_stamps.GetCount(); ++i) {
         MS2Ptr<StampEventContext::Stamp> spStamp = spContext->m_stamps[i];
-        if (FUN_140764020()->FUN_140745590(spStamp->m_id) == 0) return 0;
+        if (((class CQuestManager*)FUN_140764020())->FUN_140745590(spStamp->m_id) == 0) return 0;
     }
     return 1;
 }
@@ -388,7 +388,7 @@ int UIStampEventDialog::FUN_140ed9180(int nCount, int nSpecial)
     for (size_t i = 0; i < spContext->m_stamps.GetCount(); ++i) {
         MS2Ptr<StampEventContext::Stamp> spStamp = spContext->m_stamps[i];
         if (spStamp->m_bStamped != nSpecial) continue;
-        if (FUN_140764020()->FUN_140745590(spStamp->m_id) == 0) continue;
+        if (((class CQuestManager*)FUN_140764020())->FUN_140745590(spStamp->m_id) == 0) continue;
         ++nStamped;
     }
     if (nStamped < nCount) return 0;

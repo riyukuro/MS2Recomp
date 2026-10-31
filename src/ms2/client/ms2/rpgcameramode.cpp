@@ -99,7 +99,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-Unk_ClientConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The picked-object list returned by the camera manager's pick (FUN_140af0850).
 class Unk_PickEntry
@@ -138,7 +138,7 @@ class Unk_Cursor
 {
 public:
 };
-Unk_Cursor* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
@@ -341,9 +341,9 @@ void CRPGCameraMode::vfunc_6(int n)
         vfunc_3(Vector3(fX, fY, fZ));
         vfunc_4(ptRot);
     }
-    m_9c = FUN_1401d3200()->m_1a80.FUN_1402bac70();
-    m_a0 = FUN_1401d3200()->m_1ad8.FUN_1402bac70();
-    m_a4 = FUN_1401d3200()->m_1b30.FUN_1402bac70();
+    m_9c = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
+    m_a0 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
+    m_a4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
 }
 MS2_REPLACE_METHOD(0x14170a7c0, CRPGCameraMode, vfunc_6, 1104, 0x2FD1127B);
 
@@ -352,7 +352,7 @@ void CRPGCameraMode::vfunc_30()
 {
     float fX;
     float fY;
-    ((CWindowService*)(Unk_Cursor*)(FUN_140aadf80()))->GetCursorClientPos(&fX, &fY);
+    ((CWindowService*)(Unk_Cursor*)(((class Unk_Cursor*)FUN_140aadf80())))->GetCursorClientPos(&fX, &fY);
     Unk_PickListPtr pList = Unk_CameraManager::FUN_1409478c0()->FUN_140af0850(fX, fY, true, true, false, NULL);
     if (!pList.FUN_140a16c00())
         return;

@@ -28,12 +28,16 @@ struct Unk_WFTarget
     virtual __int64 vfunc_17();                 // slot 17 (+0x88): non-zero when the target is usable
 };
 Unk_WFTarget* FUN_1416a3ec0(unsigned __int64 p);
-char* FUN_1409a8b20();
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 void* FUN_140af8310(char* p);
 void* FUN_1411d15b0(void* p);
 NiRenderer* GetNiRenderer();   // NiRenderer::GetRenderer()
 NiRenderer* FUN_1414fd170(void* p);
-void FUN_1409a5770(void* obj, float* value, int n);
+bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 extern char DAT_143ae5320;
 extern int DAT_1439f823c;
 struct Unk_WFApp { void FUN_141473020(int a); };
@@ -201,7 +205,7 @@ bool FUN_1416bafb0(void* a, void* step)
         }
     }
     s_fade = s_fade * s_fade;
-    FUN_1409a5770(&DAT_143ae5320, &s_fade, 1);
+    FUN_1409a5770(*(class NiFixedString*)(&DAT_143ae5320), (float const*)(&s_fade), 1);
     return true;
 }
 #endif
@@ -212,7 +216,7 @@ void WorldFadeOutRenderStep::vfunc_19()
     if (FUN_1412642d0(this) == 1) {
         Unk_WFTarget* a = FUN_1416a3ec0(m_70);
         if (a->vfunc_17() != 0) {
-            void* h = FUN_1411d15b0(FUN_140af8310(FUN_1409a8b20() + 8));
+            void* h = FUN_1411d15b0(FUN_140af8310(((char*)Unk_AeFeatureMgr::FUN_1409a8b20()) + 8));
             NiRenderer* p = GetNiRenderer();
             NiRenderTargetGroup* q = p->GetDefaultRenderTargetGroup();
             int w = q->GetWidth(0);

@@ -156,11 +156,15 @@ class Unk_LoginDialog;
 int FUN_141b938f0(int);
 void FUN_141b93a20(unsigned);
 void FUN_141b93aa0();
-Unk_MessageHook* FUN_1414a56c0();
+class Unk_SingletonObj* FUN_1414a56c0();   // C3: was FUN_1414a56c0
 
 extern Unk_WorkerPtr g_workerPtr;       // 0x143ac2bd0
-void FUN_140d4a600(Unk_Worker*);
-void* FUN_14025e7a0();
+class CLoadingDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void Close();
+};
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 float FUN_14028aed0(float f);                                       // floor(float)
 struct Unk_WinMovieMgrView { Unk_HudPtr FUN_1422b0370(int nLayer); };   // member (this=rcx, hidden return=rdx)
 struct Unk_HudCursor : public ASMouseCursor { };   // ASMouseCursor (0x1422cec40)
@@ -180,17 +184,25 @@ CNetworkService* FUN_140714f90();
 CReconnectionManagerCli* FUN_140e800e0();
 void* FUN_140aadf80();
 CSoundService* FUN_140c9cb10();
-void* FUN_140c8dac0();
-void FUN_140d0a510(void*);
-void FUN_140d0a560(void*);
+struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
+class CInstrumentManager   // C3: member view for the former free stand-ins
+{
+public:
+    void Mute();
+    void Unmute();
+};
 void* FUN_140af8310(Unk_Holder*);
-Unk_ComObj* FUN_141296b50(void*);
-void* FUN_1403ed2d0();
-void FUN_141bc9fd0(void*, int);
+class Unk_DcService* FUN_141296b50(class Unk_DcHost*);   // C3: was FUN_141296b50
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141bc9fd0(int);
+    static class WorldService* GetInstance();
+};
 void* FUN_140aae430();
 int FUN_141489fb0(void*);
 void FUN_141489f40(void*);
-unsigned FUN_140869420();
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 __int64 FUN_141ade340(HWND, UINT, WPARAM, LPARAM);
 
 LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -395,7 +407,7 @@ void FUN_141b91a60()
 {
     if (g_workerPtr)
     {
-        FUN_140d4a600(g_workerPtr.operator->());
+        ((class CLoadingDialog*)(struct Unk_Worker*)(g_workerPtr.operator->()))->Close();
         g_workerPtr = 0;
         g_143af7d58 = 0;
     }
@@ -426,7 +438,7 @@ int FUN_141b91ab0()
 void FUN_141b91b20(bool bValue)
 {
     g_byteFlag1439faadc = bValue;
-    Unk_HudPtr hud = static_cast<Unk_WinMovieMgrView*>(FUN_14025e7a0())->FUN_1422b0370(6);
+    Unk_HudPtr hud = static_cast<Unk_WinMovieMgrView*>(((void*)FUN_14025e7a0()))->FUN_1422b0370(6);
     if (hud.FUN_140a58470())
         hud.FUN_140a584a0()->FUN_1422cec40(bValue);
 }
@@ -722,10 +734,10 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         if (wParam == 1000 && FUN_140aae430() != 0 && DAT_143af7d44 == 0)
         {
             unsigned nLastInput = FUN_141489fb0(FUN_140aae430());
-            unsigned nNow = FUN_140869420();
+            unsigned nNow = GetTickCountMs2();
             if (nLastInput + 500 < nNow)
                 FUN_141489f40(FUN_140aae430());
-            static unsigned s_nLastPowerTick = FUN_140869420();
+            static unsigned s_nLastPowerTick = GetTickCountMs2();
             unsigned nElapsed = nNow - s_nLastPowerTick;
             if (nElapsed >= 10000)
             {
@@ -745,7 +757,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         if (wParam == 0x47 && (GetAsyncKeyState(0x11) & 0x8000) != 0 && reinterpret_cast<Unk_GameCore*>(TSingleton<CMainSystem>::GetInstance()) != 0)
         {
             void* pHolder = FUN_140af8310(&reinterpret_cast<Unk_GameCore*>(TSingleton<CMainSystem>::GetInstance())->m_holder);
-            ATL::CComPtr<Unk_ComObj> spObj(FUN_141296b50(pHolder));
+            ATL::CComPtr<Unk_ComObj> spObj(((class Unk_ComObj*)FUN_141296b50((class Unk_DcHost*)(pHolder))));
             if (static_cast<Unk_ComObj*>(spObj) != 0)
             {
                 spObj->vfunc_16();
@@ -756,9 +768,9 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     case 0x101:
         if (wParam == 0x2c)
         {
-            if (g_bPrintScreenPending == 0 && FUN_1403ed2d0() != 0)
+            if (g_bPrintScreenPending == 0 && ((void*)WorldService::GetInstance()) != 0)
             {
-                FUN_141bc9fd0(FUN_1403ed2d0(), 0x75);
+                ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bc9fd0(0x75);
                 return 0;
             }
             g_bPrintScreenPending = 0;
@@ -767,8 +779,8 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     case 0x312:
         if ((wParam == (WPARAM)-2 || wParam == (WPARAM)-1) && g_bPrintScreenPending == 0)
         {
-            if (FUN_1403ed2d0() != 0)
-                FUN_141bc9fd0(FUN_1403ed2d0(), 0x75);
+            if (((void*)WorldService::GetInstance()) != 0)
+                ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bc9fd0(0x75);
             g_bPrintScreenPending = 1;
         }
         break;
@@ -815,8 +827,8 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                 if (TSingleton<CGameOption>::GetInstance() != 0 && FUN_140c9cb10() != 0 && TSingleton<CGameOption>::GetInstance()->FUN_140d13c70()->m_b01 == 0)
                 {
                     FUN_140c9cb10()->FUN_1417ae840(0);
-                    if (FUN_140c8dac0() != 0)
-                        FUN_140d0a560(FUN_140c8dac0());
+                    if (((void*)FUN_140c8dac0()) != 0)
+                        ((class CInstrumentManager*)(void*)(((void*)FUN_140c8dac0())))->Unmute();
                 }
                 g_143afa350 = 1;
                 if (g_bHotkeyPrintScreen == 0)
@@ -839,8 +851,8 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                 if (TSingleton<CGameOption>::GetInstance() != 0 && FUN_140c9cb10() != 0 && TSingleton<CGameOption>::GetInstance()->FUN_140d13c70()->m_b01 == 0)
                 {
                     FUN_140c9cb10()->FUN_1417ae840(1);
-                    if (FUN_140c8dac0() != 0)
-                        FUN_140d0a510(FUN_140c8dac0());
+                    if (((void*)FUN_140c8dac0()) != 0)
+                        ((class CInstrumentManager*)(void*)(((void*)FUN_140c8dac0())))->Mute();
                 }
                 if (g_bHotkeyPrintScreen != 0)
                     UnregisterHotKey(hWnd, -2);
@@ -872,9 +884,9 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     }
     if (FUN_141ade340(hWnd, uMsg, wParam, lParam) != 0)
         return 0;
-    if (FUN_1414a56c0() != 0)
+    if (((class Unk_MessageHook*)FUN_1414a56c0()) != 0)
     {
-        if (FUN_1414a56c0()->vfunc_18(hWnd, uMsg, wParam, lParam) != 0)
+        if (((class Unk_MessageHook*)FUN_1414a56c0())->vfunc_18(hWnd, uMsg, wParam, lParam) != 0)
             return 0;
     }
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);

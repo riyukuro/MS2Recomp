@@ -30,10 +30,10 @@ public:
 };
 
 class Unk_DpsApp { public: HWND FUN_14209c720(); };                     // the application window holder
-Unk_DpsApp* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
 class Unk_DpsKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); bool FUN_14116d950(int nKey, int a, int b); };
-Unk_DpsKeys* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The DPS meter system (dpsmetersystem.cpp): records the measurement window.
 class Unk_DpsMeter : public CDPSMeterSystem
@@ -46,11 +46,8 @@ public:
 
 // The tool dialog CDPSDialog (TSingleton<CDPSDialog>, a CToolBaseDialog; 0x350 bytes).
 extern CToolBaseDialog* DAT_143ad0d98;                                  // TSingleton<CDPSDialog>::s_instance
-void FUN_141178870(CToolBaseDialog* pDialog);                           // refresh
-void FUN_1411789e0(CToolBaseDialog* pDialog, unsigned nTime);           // end time
 
 class Unk_DpsWorld;
-PCBase* FUN_141bd0cc0(Unk_DpsWorld* pWorld);                            // the local player
 // An MS2Ptr (16 bytes, m_p at +8): FUN_140639bb0 returns it through a hidden pointer, the dtor 0x14063e530 writes 16.
 // The same type as uimainplayerinfo.cpp's Unk_MpState (its dtor has a symbols-manual row).
 class Unk_MpState { public: ~Unk_MpState(); bool FUN_14063e9f0(int n); void* m_00; void* m_p; };
@@ -58,7 +55,7 @@ class Unk_DpsActorStateHolder { public: Unk_MpState FUN_140639bb0(); };
 Unk_DpsActorStateHolder* FUN_1416546d0(PCBase* pPC);
 int FUN_141654730(PCBase* pPC);                                         // job code
 
-unsigned FUN_140869420();                                               // tick
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_141b70720(unsigned nMs, CString& strOut);                      // "mm:ss" text
 void FUN_140710590(COutPacket& packet);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);      // Value::SetString
@@ -96,7 +93,7 @@ int UIDPSDialog::vfunc_65()
         FUN_14192a260();
     FUN_14192a1e0();
     CToolBaseDialog* pTool = GetToolBaseDialog();
-    pTool->Create(0x91, CWnd::FromHandle(FUN_140aadf80()->FUN_14209c720()));
+    pTool->Create(0x91, CWnd::FromHandle(((class Unk_DpsApp*)FUN_140aadf80())->FUN_14209c720()));
     COutPacket packet(static_cast<int>(SendOp::DpsMode), 0);
     packet.WriteUInt8(1);
     FUN_140710590(packet);
@@ -106,7 +103,7 @@ int UIDPSDialog::vfunc_65()
 // @0x141928e80
 void UIDPSDialog::vfunc_67()
 {
-    reinterpret_cast<Unk_DpsMeter*>(TSingleton<CDPSMeterSystem>::GetInstance())->FUN_14117c7c0(FUN_140869420());
+    reinterpret_cast<Unk_DpsMeter*>(TSingleton<CDPSMeterSystem>::GetInstance())->FUN_14117c7c0(GetTickCountMs2());
     if (GetToolBaseDialog() != 0)
         FUN_14192a260();
     COutPacket packet(static_cast<int>(SendOp::DpsMode), 0);
@@ -120,13 +117,13 @@ void UIDPSDialog::vfunc_67()
 void UIDPSDialog::vfunc_72()
 {
     if (GetToolBaseDialog() != 0)
-        FUN_141178870(GetToolBaseDialog());
+        ((class CDPSDialog*)(class CToolBaseDialog*)(GetToolBaseDialog()))->Refresh();
     if (m_17c != 0)
     {
         ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDialog != 0)
         {
-            unsigned nNow = FUN_140869420();
+            unsigned nNow = GetTickCountMs2();
             unsigned nElapsed = 0;
             if (nNow < m_180)
             {
@@ -149,7 +146,7 @@ void UIDPSDialog::vfunc_72()
                     strDps.Format("%.2f", dDps);
                     pDialog->FUN_14192a060("setAttr", CString(strTime), m_188, CString(strDps));
                     if (GetToolBaseDialog() != 0)
-                        FUN_1411789e0(GetToolBaseDialog(), m_184);
+                        ((class CDPSDialog*)(class CToolBaseDialog*)(GetToolBaseDialog()))->OnStop(m_184);
                     reinterpret_cast<Unk_DpsMeter*>(TSingleton<CDPSMeterSystem>::GetInstance())->FUN_14117c7c0(m_184);
                     pDialog->Invoke("onStop");
                     return;
@@ -212,9 +209,9 @@ int UIDPSDialog::vfunc_13()
     {
         if (UIDialog::vfunc_13() != 0)
             return 1;
-        if (FUN_14025e7c0()->FUN_14116d9c0(0x39, 0, 0))
+        if (((class Unk_DpsKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x39, 0, 0))
         {
-            if (FUN_14025e7c0()->FUN_14116d950(0x1d, 0, 0))
+            if (((class Unk_DpsKeys*)FUN_14025e7c0())->FUN_14116d950(0x1d, 0, 0))
                 FUN_141929b70(m_17c == 0);
         }
     }
@@ -239,12 +236,12 @@ void UIDPSDialog::FUN_141929760()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        PCBase* pPC = FUN_141bd0cc0(reinterpret_cast<Unk_DpsWorld*>(WorldService::GetInstance()));
+        PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_DpsWorld*)(reinterpret_cast<Unk_DpsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC == 0)
             return;
         if (FUN_1416546d0(pPC)->FUN_140639bb0().FUN_14063e9f0(0))
             return;
-        double dSeconds = (unsigned)(FUN_140869420() - m_180);
+        double dSeconds = (unsigned)(GetTickCountMs2() - m_180);
         dSeconds /= 1000.0;
         double dDps = (double)m_188 / dSeconds;
         CStringW strLine = StringFormat(L"Lv.{0} {1}, {2:.2f}Second, total: {3}, {4:.2f} damage/sec\n",
@@ -274,7 +271,7 @@ void UIDPSDialog::FUN_141929a00(__int64 nDamage, int nType)
 void UIDPSDialog::FUN_141929a60(int nDelay, int nDuration)
 {
     m_17c = 1;
-    m_180 = FUN_140869420();
+    m_180 = GetTickCountMs2();
     m_180 = nDelay * 1000 + m_180;
     unsigned nEnd;
     if (nDuration > 0)
@@ -288,8 +285,8 @@ void UIDPSDialog::FUN_141929a60(int nDelay, int nDuration)
 void UIDPSDialog::OnStop()
 {
     if (GetToolBaseDialog() != 0)
-        FUN_1411789e0(GetToolBaseDialog(), FUN_140869420());
-    reinterpret_cast<Unk_DpsMeter*>(TSingleton<CDPSMeterSystem>::GetInstance())->FUN_14117c7c0(FUN_140869420());
+        ((class CDPSDialog*)(class CToolBaseDialog*)(GetToolBaseDialog()))->OnStop(GetTickCountMs2());
+    reinterpret_cast<Unk_DpsMeter*>(TSingleton<CDPSMeterSystem>::GetInstance())->FUN_14117c7c0(GetTickCountMs2());
     FUN_141929760();
     FUN_141929700();
 }

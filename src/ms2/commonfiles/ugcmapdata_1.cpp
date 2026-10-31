@@ -49,8 +49,12 @@ template<> Unk_PayloadPtr<CUGCMapData>::Unk_PayloadPtr(const Unk_PayloadPtr&);
 Unk_PayloadPtr<CFieldData> FUN_140374140(unsigned);
 void* FUN_1401c0d90();
 void FUN_14047ddd0(void*,int,int,__int64);
-unsigned FUN_140479720(void*);
-unsigned FUN_140479870(void*);
+class CGameRule   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned int FUN_140479720();
+    unsigned int FUN_140479870();
+};
 bool FUN_14053f8c0(unsigned);
 bool FUN_14053f940(unsigned);
 Unk_Int3* FUN_1408850a0(Unk_Int3*);
@@ -73,11 +77,14 @@ public:
 };
 Unk_Service6100017 * FUN_1401cd040(Unk_EntityAppFramework *);  // C3: the definition's signature
 class Unk_UgcWorld { public: PCBase* FUN_141bd0cc0(); };
-int FUN_1408b4f20(Cube*);
 MS2Ptr<CItemData> FUN_14053f870(int);
 void FUN_140194470(void*,const void*);
 void FUN_1402237c0(Unk_LevelArray *);  // C3: the definition's signature
-__int64 FUN_141656a80(PCBase*);
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_141656a80();
+};
 
 // @0x1408a0190
 unsigned FUN_1408a0190(int type) {
@@ -122,8 +129,8 @@ Unk_Int3 FUN_1408a0400(int packed) {
 MS2_REPLACE(0x1408a0400, FUN_1408a0400, 111, 0x0E4D8B28);
 // @0x1408a0480
 void FUN_1408a0480(Cube* cube) {
-    if(FUN_1408b4f20(cube)==0) return;
-    MS2Ptr<CItemData> item=FUN_14053f870(FUN_1408b4f20(cube));
+    if(((class Cube*)(class Cube*)(cube))->FUN_1408b4f20()==0) return;
+    MS2Ptr<CItemData> item=FUN_14053f870(((class Cube*)(class Cube*)(cube))->FUN_1408b4f20());
     if(item.get()!=0) {
         cube->field58=item->install.placeable;
         cube->field64=item->install.unchangeable;
@@ -186,7 +193,7 @@ int FUN_1408a09d0(unsigned* item,__int64* price,int mapID,int group) {
             *item=p->groups[group].contractPriceItemCode;
             *price=p->groups[group].contractPrice;
             if(FUN_14053f8c0(*item) || FUN_14053f940(*item)) {
-                __int64 nDiscount=*price*(unsigned __int64)FUN_140479720(FUN_1401c0d90());
+                __int64 nDiscount=*price*(unsigned __int64)((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_140479720();
                 nDiscount/=10000;
                 *price=*price-nDiscount;
             }
@@ -206,7 +213,7 @@ int FUN_1408a0b80(unsigned* item,__int64* price,int mapID,int group) {
             *item=p->groups[group].extensionPriceItemCode;
             *price=p->groups[group].extensionPrice;
             if(FUN_14053f8c0(*item) || FUN_14053f940(*item)) {
-                __int64 nDiscount=*price*(unsigned __int64)FUN_140479870(FUN_1401c0d90());
+                __int64 nDiscount=*price*(unsigned __int64)((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_140479870();
                 nDiscount/=10000;
                 *price=*price-nDiscount;
             }
@@ -335,7 +342,7 @@ int FUN_1408a18d0(__int64 charID) {
     int style=0;
     PCBase* player=reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if(player!=0) {
-        if(charID==FUN_141656a80(player)) {
+        if(charID==((class PCBase*)(class PCBase*)(player))->FUN_141656a80()) {
             std::vector<efd::SmartPointer<egf::Entity> > hits;
             MS2Color color(3);
             service.FUN_1401cd1a0()->FUN_1410bb610(3,player,(float)(unsigned)(FUN_1401d3200()->ConstructUgcDistance.Read()*color),hits);

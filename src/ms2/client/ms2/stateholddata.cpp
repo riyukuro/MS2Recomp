@@ -74,14 +74,14 @@ public:
     NiPoint3 FUN_141683290();                                            // knock-back velocity
     bool FUN_141683100(int nBuff);
 };
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_HoldConsts                                                     // the game's constants table
 {
 public:
     char m_pad_00[0x9a94];
     int m_nHoldSkill;                                                    // +0x9a94
 };
-Unk_HoldConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_HoldCamera { public: char m_pad[8]; };                         // the camera manager
 class Unk_HoldSkillTable { public: MS2Ptr<SkillData> FUN_1407ee1d0(int nSkillId); };
 void FUN_140ad0c10(efd::Point3* pAngles, float fScale);                    // 0x140ad0c10 scale the angles (radians -> degrees)
@@ -448,7 +448,7 @@ void StateHold::FUN_1417ccd50()
 // @0x1417cce10
 void StateHold::FUN_1417cce10()
 {
-    if (!FUN_140166410()->FUN_14036d570(0xae))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xae))
         return;
     Unk_HoldBuffs* pBuff = ((Unk_HoldBuffs*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     if (!pBuff->FUN_141683100(0x49401))
@@ -468,7 +468,7 @@ void StateHold::FUN_1417cce10()
         return;
     if (pTarget->GetClassID() != 0x6200028)
         return;
-    Unk_InventorySkillRequest kReq(FUN_1401d3200()->m_nHoldSkill, 1);
+    Unk_InventorySkillRequest kReq(((class Unk_HoldConsts*)FUN_1401d3200())->m_nHoldSkill, 1);
     MS2Ptr<CSkillRecord> spRecord = pPC->FUN_141523bc0()->FUN_141765570(kReq);
     if (spRecord == 0)
         return;

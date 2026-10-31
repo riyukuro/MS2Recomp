@@ -317,6 +317,7 @@ void UICameraEditDialog::vfunc_15()
     {
         switch (m_nState)
         {
+            break;
         case 4:
             FUN_1418de570();
             break;
@@ -516,13 +517,12 @@ void UICameraEditDialog::FUN_1418de7b0(const Vector3& vFrom, float fStep)
 {
     Vector3 vDirection = vFrom.FUN_140965c40(CameraMgr::GetInstance()->FUN_140a17e10());
     vDirection.FUN_140968990();
-    Vector3 vMove = vDirection.FUN_14097fc90(fStep);
-    Vector3 vNext = CameraMgr::GetInstance()->FUN_140a17e10().FUN_14097fd50(vMove);
+    Vector3 vNext = CameraMgr::GetInstance()->FUN_140a17e10().FUN_14097fd50(vDirection.FUN_14097fc90(fStep));
     float fLength = vFrom.FUN_140965c40(vNext).FUN_140967ac0();
-    if (fLength <= s_fArrive)
-        CameraMgrMoveTo(CameraMgr::GetInstance(), vNext);
-    else
+    if (fLength > s_fArrive)
         CameraMgrMoveTo(CameraMgr::GetInstance(), m_vMoveStart);
+    else
+        CameraMgrMoveTo(CameraMgr::GetInstance(), vNext);
 }
 
 // @0x1418de920

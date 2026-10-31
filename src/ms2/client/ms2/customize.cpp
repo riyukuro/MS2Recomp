@@ -56,13 +56,21 @@ class Unk_CustomizeWorld
 public:
     PC* FUN_141bd1290(int nObjectId);
 };
-Unk_CustomizeWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // The item event hub the Customize registers with (uiitemenchantdialog.h).
 class Unk_CustomizeItemEvents;
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
-void FUN_1419cae20(Unk_CustomizeItemEvents* pHub, UIItemEventListener* pListener);     // register
-void FUN_1419caeb0(Unk_CustomizeItemEvents* pHub, UIItemEventListener* pListener);     // unregister
+class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419cae20(class UIItemEventListener*);
+    void FUN_1419caeb0(class UIItemEventListener*);
+};
 
 // The palette table (FUN_140281980).
 class Unk_CustomizeColorTable : public CItemDataTable
@@ -78,12 +86,12 @@ void FUN_140f014b0(ATL::CAtlList<MS2Ptr<CEquipItem> >& out, Unk_PCEquipSet* pSet
 int FUN_141420f10(class CItemData*, class AvatarPC*);   // C3: was FUN_141420f10
 MS2Ptr<CEquipItem> FUN_1414211a0(int nSlot, PC* pPc);              // the worn item of a slot
 int FUN_141421690(CItem* pItem);                                    // the item is a real (owned) one
-int FUN_141423650(const int* pnColor, int nSlot, PC* pPc);          // set a body colour
-int FUN_1414239e0(int* pnColor, int nSlot, PC* pPc);                // get a body colour
+int FUN_141423650(unsigned int*, int, struct Unk_UgcPlayer*);   // C3: was FUN_141423650
+int FUN_1414239e0(unsigned int*, int, struct Unk_UgcPlayer*);   // C3: was FUN_1414239e0
 int FUN_141423760(const ItemColorEx& kColor, PC* pPc);              // dye the body
-int FUN_141423cf0(__int64 nUid, const ItemColorEx& kColor, PC* pPc, int n);    // dye a worn item
-int FUN_141423fb0(__int64 nUid, const int* pnColor, int nSlot, PC* pPc, int n);
-void FUN_141424230(__int64 nUid, PC* pPc);                          // undo the dye of a worn item
+int FUN_141423cf0(__int64, struct Unk_UgcExtra const&, struct Unk_UgcPlayer*, int);   // C3: was FUN_141423cf0
+int FUN_141423fb0(__int64, void*, int, struct Unk_UgcPlayer*, int);   // C3: was FUN_141423fb0
+int FUN_141424230(__int64, struct Unk_UgcPlayer*);   // C3: was FUN_141424230
 int FUN_141424760(MS2Ptr<CItem> spItem, int* pnColor, int nSlot, PC* pPc);
 NiPointer<CItemCustomizeController> FUN_1414131e0(MS2Ptr<CEquipItem> spEquip, PC* pPc, IItemCustomizeEventListener* pListener);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // CItemData of an item id
@@ -443,7 +451,7 @@ int Customize::EditItems::ApplyColor(int nIndex, int n)
         return 0;
     if (m_spData->FUN_14053cf00())
         return FUN_141423760(*spColor, pPc);
-    return FUN_141423cf0(GetItemUid(), *spColor, pPc, n);
+    return FUN_141423cf0(GetItemUid(), *(struct Unk_UgcExtra const*)&static_cast<class ItemColorEx const&>(*spColor), (struct Unk_UgcPlayer*)(pPc), n);
 }
 MS2_REPLACE_METHOD(0x140CCB8D0, Customize::EditItems, ApplyColor, 392, 0x58D78622);
 
@@ -464,7 +472,7 @@ int Customize::EditItems::ApplyPalette(int nPalette, int nIndex, int n)
         return 0;
     if (m_spData->FUN_14053cf00())
         return FUN_141423760(*spColor, pPc);
-    return FUN_141423cf0(GetItemUid(), *spColor, pPc, n);
+    return FUN_141423cf0(GetItemUid(), *(struct Unk_UgcExtra const*)&static_cast<class ItemColorEx const&>(*spColor), (struct Unk_UgcPlayer*)(pPc), n);
 }
 
 // @0x140ccbc00
@@ -476,8 +484,8 @@ int Customize::EditItems::SetColors(const int& nColor, int nSlot, int n)
     if (pPc == 0)
         return 0;
     if (m_spData->FUN_14053cf00())
-        return FUN_141423650(&nColor, nSlot, pPc);
-    return FUN_141423fb0(GetItemUid(), &nColor, nSlot, pPc, n);
+        return FUN_141423650((unsigned int*)(&nColor), nSlot, (struct Unk_UgcPlayer*)(pPc));
+    return FUN_141423fb0(GetItemUid(), (void*)(&nColor), nSlot, (struct Unk_UgcPlayer*)(pPc), n);
 }
 MS2_REPLACE_METHOD(0x140CCBC00, Customize::EditItems, SetColors, 180, 0x155EB85E);
 
@@ -490,7 +498,7 @@ int Customize::EditItems::GetColors(int* pnColor, int nSlot)
     if (pPc == 0)
         return 0;
     if (m_spData->FUN_14053cf00())
-        return FUN_1414239e0(pnColor, nSlot, pPc);
+        return FUN_1414239e0((unsigned int*)(pnColor), nSlot, (struct Unk_UgcPlayer*)(pPc));
     return FUN_141424760(m_spItem, pnColor, nSlot, pPc);
 }
 MS2_REPLACE_METHOD(0x140CCBCC0, Customize::EditItems, GetColors, 199, 0x8E4E989E);
@@ -499,7 +507,7 @@ MS2_REPLACE_METHOD(0x140CCBCC0, Customize::EditItems, GetColors, 199, 0x8E4E989E
 PC* Customize::EditItems::GetPC()
 {
     if (static_cast<unsigned>(m_nObjectId) > 0)
-        return FUN_1403ed2d0()->FUN_141bd1290(m_nObjectId);
+        return ((class Unk_CustomizeWorld*)WorldService::GetInstance())->FUN_141bd1290(m_nObjectId);
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CCBD90, Customize::EditItems, GetPC, 50, 0x78C562D6);
@@ -554,8 +562,8 @@ void Customize::CloneItems::Restore(ATL::CAtlList<Unk_InventoryEquipSlot>& slots
         }
     }
     m_mapItems.RemoveAll();
-    FUN_141423650(&m_anColor[0], 0, pPc);
-    FUN_141423650(&m_anColor[1], 1, pPc);
+    FUN_141423650((unsigned int*)(&m_anColor[0]), 0, (struct Unk_UgcPlayer*)(pPc));
+    FUN_141423650((unsigned int*)(&m_anColor[1]), 1, (struct Unk_UgcPlayer*)(pPc));
     FUN_140cd3fe0(pPc, 1);
 }
 
@@ -610,8 +618,8 @@ void Customize::CloneItems::RestoreSlot(Unk_InventoryEquipSlot eSlot)
     if (pPc == 0)
         return;
     if (eSlot == 0) {
-        FUN_141423650(&m_anColor[0], 0, pPc);
-        FUN_141423650(&m_anColor[1], 1, pPc);
+        FUN_141423650((unsigned int*)(&m_anColor[0]), 0, (struct Unk_UgcPlayer*)(pPc));
+        FUN_141423650((unsigned int*)(&m_anColor[1]), 1, (struct Unk_UgcPlayer*)(pPc));
         return;
     }
     for (POSITION pos = m_mapItems.GetStartPosition(); pos != 0;) {
@@ -719,8 +727,8 @@ int Customize::CloneItems::IsColorChanged()
     if (pPc == 0)
         return 0;
     int anColor[3];
-    FUN_1414239e0(&anColor[0], 0, pPc);
-    FUN_1414239e0(&anColor[1], 1, pPc);
+    FUN_1414239e0((unsigned int*)(&anColor[0]), 0, (struct Unk_UgcPlayer*)(pPc));
+    FUN_1414239e0((unsigned int*)(&anColor[1]), 1, (struct Unk_UgcPlayer*)(pPc));
     if (m_anColor[0] != anColor[0])
         return 1;
     if (m_anColor[1] != anColor[1])
@@ -1070,7 +1078,7 @@ void Customize::CloneItems::SaveColors()
     if (pPc == 0)
         return;
     for (int i = 0; i < 3; ++i)
-        FUN_1414239e0(&m_anColor[i], i, pPc);
+        FUN_1414239e0((unsigned int*)(&m_anColor[i]), i, (struct Unk_UgcPlayer*)(pPc));
 }
 MS2_REPLACE_METHOD(0x140CCEF20, Customize::CloneItems, SaveColors, 103, 0x637BC31D);
 
@@ -1078,7 +1086,7 @@ MS2_REPLACE_METHOD(0x140CCEF20, Customize::CloneItems, SaveColors, 103, 0x637BC3
 PC* Customize::CloneItems::GetPC()
 {
     if (static_cast<unsigned>(m_nObjectId) > 0)
-        return FUN_1403ed2d0()->FUN_141bd1290(m_nObjectId);
+        return ((class Unk_CustomizeWorld*)WorldService::GetInstance())->FUN_141bd1290(m_nObjectId);
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CCEF90, Customize::CloneItems, GetPC, 50, 0xF183C92F);
@@ -1423,7 +1431,7 @@ void Customize::Equipment::ResetEdit()
 PC* Customize::Equipment::GetPC()
 {
     if (static_cast<unsigned>(m_nObjectId) > 0)
-        return FUN_1403ed2d0()->FUN_141bd1290(m_nObjectId);
+        return ((class Unk_CustomizeWorld*)WorldService::GetInstance())->FUN_141bd1290(m_nObjectId);
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CD0AF0, Customize::Equipment, GetPC, 50, 0x900515B6);
@@ -1439,8 +1447,8 @@ void Customize::Equipment::SendColors()
     if (pPc == 0)
         return;
     int anColor[3];
-    FUN_1414239e0(&anColor[0], 0, pPc);
-    FUN_1414239e0(&anColor[1], 1, pPc);
+    FUN_1414239e0((unsigned int*)(&anColor[0]), 0, (struct Unk_UgcPlayer*)(pPc));
+    FUN_1414239e0((unsigned int*)(&anColor[1]), 1, (struct Unk_UgcPlayer*)(pPc));
     COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
     packet.WriteUInt8(6);
     packet.WriteUInt8(m_pListener->GetShopId());
@@ -1584,7 +1592,7 @@ Customize::Customize(int nObjectId, IItemCustomizeEventListener* pListener, bool
 {
     m_nObjectId = nObjectId;
     m_spEquipment.AssignRaw(new Equipment(nObjectId, this));
-    FUN_1419cae20(((class Unk_CustomizeItemEvents*)FUN_140a6a840()), this);
+    ((class Unk_ItemEventSystem*)(class Unk_CustomizeItemEvents*)(((class Unk_CustomizeItemEvents*)FUN_140a6a840())))->FUN_1419cae20(this);
 }
 
 // @0x140cd16e0
@@ -1593,7 +1601,7 @@ Customize::~Customize()
     m_nObjectId = 0;
     m_spEquipment = 0;
     m_pListener = 0;
-    FUN_1419caeb0(((class Unk_CustomizeItemEvents*)FUN_140a6a840()), this);
+    ((class Unk_ItemEventSystem*)(class Unk_CustomizeItemEvents*)(((class Unk_CustomizeItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(this);
 }
 
 // @0x140cd17e0
@@ -2084,7 +2092,7 @@ void Customize::FUN_140cd3480(int bApply, int nPalette)
             m_spEquipment->GetCloneItems()->GetAdded(items);
             if (!items.IsEmpty()) {
                 for (POSITION pos = items.GetStartPosition(); pos != 0; items.GetNext(pos))
-                    FUN_141423cf0(items.GetKeyAt(pos), *spColor, pPc, 0);
+                    FUN_141423cf0(items.GetKeyAt(pos), *(struct Unk_UgcExtra const*)&static_cast<class ItemColorEx const&>(*spColor), (struct Unk_UgcPlayer*)(pPc), 0);
             }
         }
     } else {
@@ -2092,7 +2100,7 @@ void Customize::FUN_140cd3480(int bApply, int nPalette)
         m_spEquipment->GetCloneItems()->GetAdded(items);
         if (!items.IsEmpty()) {
             for (POSITION pos = items.GetStartPosition(); pos != 0; items.GetNext(pos))
-                FUN_141424230(items.GetKeyAt(pos), pPc);
+                FUN_141424230(items.GetKeyAt(pos), (struct Unk_UgcPlayer*)(pPc));
         }
     }
 }
@@ -2241,7 +2249,7 @@ MS2_REPLACE_METHOD(0x140CD3D40, Customize, vfunc_25, 161, 0x36B7DD73);
 PC* Customize::FUN_140cd3df0()
 {
     if (static_cast<unsigned>(m_nObjectId) > 0)
-        return FUN_1403ed2d0()->FUN_141bd1290(m_nObjectId);
+        return ((class Unk_CustomizeWorld*)WorldService::GetInstance())->FUN_141bd1290(m_nObjectId);
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CD3DF0, Customize, FUN_140cd3df0, 50, 0x4666D5B3);

@@ -102,7 +102,7 @@
 static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);          // the item data of an item id
-CItemOptionTable* FUN_140166430();                      // the option table singleton
+class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 CString FUN_14016a5c0(const char* psz, int n);
 CLogString* GetLogString();                            // the log
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
@@ -112,7 +112,7 @@ void FUN_1401e0850(CLogString* pLog, int nLevel, int nCategory, const wchar_t* p
                    const unsigned& second);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028f5d0(Unk_140165cf0* pParent, const char* pszChild, std::vector<Unk_140165cf0*>& arrOut);
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int& nOut);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 const CString& FUN_14082efb0(int nStat);                // the xml name of a stat
 const CString& FUN_14081d380(int nStat);                // the xml name of a special stat
 unsigned FUN_140767ff0();                               // random number
@@ -121,7 +121,6 @@ bool FUN_14053fd10(int nItemId);
 bool FUN_14053fd50(int nItemId);
 int FUN_14053feb0(int nItemId);                         // the fixed rank of an item (0: none)
 int FUN_1406516b0();                                    // the language / region id
-float FUN_14028aaf0();                                  // FLT_EPSILON-like constant (2^-23)
 float FUN_14028aed0(float f);                           // floorf
 extern "C" float(__cdecl* __imp_powf)(float, float);
 
@@ -133,7 +132,7 @@ inline float Ms2PowFI(float _Xx, int _Yx)
         return (_Xx * _Xx);
     return (__imp_powf(_Xx, static_cast<float>(_Yx)));
 }
-CGameRule* FUN_1401c0d90();
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 class Unk_EnchantRates : public CItemEnchantUtil { };    // the remake cost rates (item.cpp)
 Unk_EnchantRates* FUN_14052d1e0();
 
@@ -199,7 +198,7 @@ bool CItemOptionTable::FUN_1405f4720()
 void CItemOptionTable::FUN_1405f47a0(int nItemId, int nLevel, int nRank, unsigned short nItemLevel,
                                      const CItemRemakeOptionIngredient& kIngredient)
 {
-    float fEpsilon = FUN_14028aaf0();
+    float fEpsilon = std::numeric_limits<float>::epsilon();
     int nStat = 0;
     if (FUN_14053fc90(nItemId))
         nStat = 0x5d;
@@ -288,7 +287,7 @@ void CItemOptionTable::FUN_1405f4bb0(int nLevel, int nRank, const CItemRemakeOpt
         nMeso *= 3;
         nSecond *= 5;
     }
-    nMeso = FUN_1401c0d90()->FUN_14047f720(nMeso);
+    nMeso = ((class CGameRule*)FUN_1401c0d90())->FUN_14047f720(nMeso);
     spContainer->FUN_14026bd10(0x5d, nStone);
     spContainer->FUN_14026bd10(0x60, nMeso);
     spContainer->FUN_14026bd10(0x5c, nSecond);
@@ -594,7 +593,7 @@ std::pair<int, int> CItemOptionTable::FUN_1405f6650(int nItemId, int nRank, unsi
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return kResult;
-    MS2Ptr<ItemOptionRandom> spRandom = FUN_140166430()->FUN_1405f6010(spItem->FUN_14053eff0(nRank));
+    MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6010(spItem->FUN_14053eff0(nRank));
     if (spRandom == 0)
         return kResult;
     kResult = FUN_1405f63e0(spRandom->FUN_1405d7710(nSpecial));
@@ -611,7 +610,7 @@ bool CItemOptionTable::FUN_1405f67e0(MS2Ptr<CItem> spItem, int nStat, int nUnuse
     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
     if (spData == 0)
         return false;
-    MS2Ptr<ItemOptionRandom> spRandom = FUN_140166430()->FUN_1405f6010(spData->FUN_14053eff0(spItem->FUN_140526bd0()));
+    MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6010(spData->FUN_14053eff0(spItem->FUN_140526bd0()));
     if (spRandom == 0)
         return false;
     int nId = spRandom->FUN_1405d7680(nStat);
@@ -636,7 +635,7 @@ bool CItemOptionTable::FUN_1405f6a90(MS2Ptr<CItem> spItem, unsigned nSpecial, in
     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
     if (spData == 0)
         return false;
-    MS2Ptr<ItemOptionRandom> spRandom = FUN_140166430()->FUN_1405f6010(spData->FUN_14053eff0(spItem->FUN_140526bd0()));
+    MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6010(spData->FUN_14053eff0(spItem->FUN_140526bd0()));
     if (spRandom == 0)
         return false;
     int nId = spRandom->FUN_1405d7710(nSpecial);
@@ -887,7 +886,7 @@ bool CItemOptionTable::LoadItemOptionConstant()
     // @0x140606110 (the lambda body)
     Concurrency::parallel_for_each(std::begin(elems), std::end(elems), [&lock, this](Unk_140165cf0* pElem) {
         int nCode = 0;
-        FUN_140873220(pElem, "code", nCode);
+        XmlGetAttr((class TiXmlElement*)(pElem), "code", *(unsigned int*)&static_cast<int&>(nCode));
         if (nCode == 0)
             return;
         std::vector<Unk_140165cf0*> children;

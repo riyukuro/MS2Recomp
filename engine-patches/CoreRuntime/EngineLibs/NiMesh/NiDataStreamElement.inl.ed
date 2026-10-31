@@ -1,0 +1,7 @@
+47a
+// MS2: the exe calls AddElement out of line (0x14106add0) from some engine TUs (NiPhysXScene SetDebug*Geometry);
+// those define the switch
+#if defined(EE_MS2_DSE_ADDELEMENT_CALL)
+__declspec(noinline)
+#endif
+.

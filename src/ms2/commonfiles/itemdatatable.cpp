@@ -205,10 +205,10 @@ CString GetItemModelPath(unsigned nFile);                               // the i
 CString FUN_14071ae20(const CString& strFile);                          // a string table file path
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-Unk_140165cf0* FUN_14028f8d0(Unk_140165cf0* pElem);                    // the <environment> child of an item row
+struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 unsigned FUN_14028c0d0(const char* psz);                                // a colour value of a "#rrggbb" style string
 Unk_ConstColor FUN_140718770(const CString& str);                       // a hex colour
-int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);
+int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>& out);
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly);  // filesystem.cpp
 unsigned FUN_14053c690(unsigned nItemId);                               // the itemData file of an item id
@@ -721,7 +721,7 @@ void CItemDataTable::LoadItemFile(const CString& strPath, std::vector<ItemDataPt
         unsigned nId = 0;
         FUN_140873220(pNode, "id", nId);
         spItem->FUN_14053c4f0(nId);
-        Unk_140165cf0* pEnv = FUN_14028f8d0(pNode);
+        Unk_140165cf0* pEnv = ((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(pNode)));
         if (pEnv == 0)
             continue;
         spItem->Load(pEnv);
@@ -751,7 +751,7 @@ void CItemDataTable::LoadItemDataFile(unsigned nFile)
         unsigned nId = 0;
         FUN_140873220(pNode, "id", nId);
         spItem->FUN_14053c4f0(nId);
-        Unk_140165cf0* pEnv = FUN_14028f8d0(pNode);
+        Unk_140165cf0* pEnv = ((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(pNode)));
         if (pEnv == 0)
             continue;
         spItem->Load(pEnv);
@@ -1157,7 +1157,7 @@ void CItemDataTable::LoadColorPalette(const CString& strPath)
             spColor->m_aValues[2] = Unk_ColorValue(FUN_140718770(str));
             str = FUN_14015f710(pColor, "palette", CString(""));
             spColor->m_n38 = Unk_ColorValue(str.GetLength() > 0 ? FUN_140718770(str) : Unk_ConstColor(spColor->m_aValues[0]));
-            FUN_1408736d0(pColor, "show2color", spColor->m_bFlag);
+            XmlQuery((class TiXmlElement*)(pColor), "show2color", spColor->m_bFlag);
             FUN_140873220(pColor, "achieveID", reinterpret_cast<unsigned&>(spColor->m_n24));
             FUN_1408731e0(pColor, "achieveGrade", spColor->m_n28);
             FUN_140873220(pColor, "stringKey", reinterpret_cast<unsigned&>(spColor->m_n2c));

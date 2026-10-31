@@ -295,18 +295,14 @@ void FUN_140b6bd30(void* pCamera)
 }
 
 // @0x140b6c680
-// MS2-FUNCTIONAL: CRT memcpy_s copy (library lane); same checks and errno values as the CRT
+#pragma function(memset, memcpy)
 unsigned __int64 FUN_140b6c680(void* pDst, unsigned __int64 nDstSize, const void* pSrc, unsigned __int64 nCount)
 {
-    if (nCount == 0)
-        return 0;
-    if (pDst == 0 || pSrc == 0 || nDstSize < nCount)
-    {
-        int nErr = (pDst == 0 || pSrc == 0) ? 22 : 34;
-        *_errno() = nErr;
-        _invalid_parameter_noinfo();
-        return nErr;
-    }
+    if (nCount == 0) { return 0; }
+    { int e = !!(pDst != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+    { int e = !!(pSrc != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+    { int e = !!(nDstSize >= nCount); if (!e) { errno = ERANGE; _invalid_parameter_noinfo(); return ERANGE; } }
     memmove(pDst, pSrc, nCount);
     return 0;
 }
+#pragma intrinsic(memset, memcpy)

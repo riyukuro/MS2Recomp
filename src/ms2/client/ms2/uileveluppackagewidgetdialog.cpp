@@ -65,7 +65,6 @@ class Unk_EwRoot : public AScript { public:
     Scaleform::GFx::Value FUN_140ba4cc0(const char*, const ASObj&);
 };
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
-bool FUN_140a467d0(const MS2Ptr<AScript>* p);                           // the movie root is gone
 
 // The widget's movie root as an ASDialog (RTTI .?AVASDialog@@).
 class ASDialog : public ASDisplayObjectContainer {
@@ -80,8 +79,12 @@ private:
 MS2_CHECK_SIZE(ASDialog, 0x88);
 
 // the local player: slot 78 is the level
-void* FUN_1403ed2d0();                                                  // the world service
-void* FUN_141bd0cc0(void* pWorld);                                      // its local player
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 class Unk_EwActorSlots
 {
 public:
@@ -104,7 +107,7 @@ UIQuestEventDispatcher* FUN_140bfc4b0();
 UIStatusEventDispatcher* FUN_140aa6d40();
 
 // quests
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pData);                                   // the quest id
 int FUN_140748050(void* pItem, int nJob);                               // the reward item suits the job
@@ -271,7 +274,7 @@ MS2_REPLACE_METHOD(0x140C59070, UIEventWidgetDialog, vfunc_43, 396, 0x1C3E6B57);
 // @0x140c59210
 void UIEventWidgetDialog::FUN_140c59210()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     ASObj data(2);
     if (!vfunc_85(data)) {
@@ -373,7 +376,7 @@ MS2_REPLACE_METHOD(0x140C597F0, UILevelUpPackageWidgetDialog, vfunc_84, 52, 0x9B
 int UILevelUpPackageWidgetDialog::vfunc_85(ASObj& rObj)
 {
     UIEventWidgetDialog::vfunc_85(rObj);
-    void* pSelf = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!pSelf)
         return 0;
     Unk_DcLevelRange range;
@@ -418,7 +421,7 @@ MS2_REPLACE_METHOD(0x140C59BA0, UILevelUpPackageWidgetDialog, vfunc_87, 32, 0x2A
 // @0x140c59bd0
 int UILevelUpPackageWidgetDialog::FUN_140c59bd0(Unk_DcLevelRange& rRange)
 {
-    void* pSelf = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!pSelf)
         return 0;
     unsigned short nLevel = Unk_EwActorLevel(pSelf);
@@ -435,7 +438,7 @@ int UILevelUpPackageWidgetDialog::FUN_140c59bd0(Unk_DcLevelRange& rRange)
         unsigned short nKey = byLevel.GetKeyAt(pos);
         MS2Ptr<CQuestData> spData = byLevel.GetValueAt(pos);
         if (nLevel >= nKey) {
-            if (FUN_140764020()->FUN_140745590(FUN_14074b030(spData.get())) == 0) {
+            if (((class CQuestManager*)FUN_140764020())->FUN_140745590(FUN_14074b030(spData.get())) == 0) {
                 posFound = pos;
                 break;
             }
@@ -507,7 +510,7 @@ void UIBurningEventWidgetDialog::vfunc_oa0_9(unsigned short nLevel)
 // @0x140c5a220
 int UIBurningEventWidgetDialog::vfunc_84()
 {
-    void* pSelf = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!pSelf)
         return 0;
     std::list<MS2Ptr<BurningLevelupContext> > contexts;
@@ -536,7 +539,7 @@ MS2_REPLACE_METHOD(0x140C5A220, UIBurningEventWidgetDialog, vfunc_84, 490, 0x6EA
 int UIBurningEventWidgetDialog::vfunc_85(ASObj& rObj)
 {
     UIEventWidgetDialog::vfunc_85(rObj);
-    void* pSelf = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!pSelf)
         return 0;
     std::list<MS2Ptr<BurningLevelupContext> > contexts;
@@ -576,7 +579,7 @@ MS2_REPLACE_METHOD(0x140C5A420, UIBurningEventWidgetDialog, vfunc_85, 1261, 0x59
 // @0x140c5a930
 void UIBurningEventWidgetDialog::vfunc_86()
 {
-    void* pSelf = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!pSelf)
         return;
     MS2Ptr<BurningLevelupContext> spContext = FUN_1403ed080(FUN_140302b00())->Get(m_190);

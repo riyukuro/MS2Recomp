@@ -115,9 +115,13 @@ public:
     CStringW m_strPath;                                         // +0x68 the mail's xml body path
 };
 MS2_CHECK_OFFSET(Unk_WeddingMail, m_strPath, 0x68);
-void* FUN_140165cf0(void*, const char*);
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 class Unk_WmDialog94 { public: void FUN_140fcd5b0(CInPacket& packet); };
-Unk_WmDialog94* FUN_140fe6700(int nId);
+class UIWeddingGuestDialog* FUN_140fe6700(int);   // C3: was FUN_140fe6700
 template <class T> T* Unk_UgcGetDialog(int nId);
 template <class T> T* Unk_GaGetUI(int nId);
 void FUN_140d73ff0(CStringW text);                              // screen notice
@@ -126,15 +130,19 @@ MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, c
 bool FUN_14092f660();                                           // in the wedding hall
 bool FUN_140900550();                                           // may send a wedding request
 __int64 GetServerTime();                                        // server time
-unsigned FUN_140900f00();                                            // max invitations
-unsigned FUN_140900d40();                                            // the propose item id
+unsigned int FUN_140900f00();   // C3: was FUN_140900f00
+unsigned int FUN_140900d40();   // C3: was FUN_140900d40
 CStringW FUN_141b71910(__int64 n);                     // u64 -> text
 unsigned __int64 FUN_140718370(const CStringW& str);            // text -> u64
 CStringW FUN_140298ea0(CStringW key);                           // system string
 bool FUN_140900f30(__int64 nTime);                              // is night time
 CStringW FUN_140b8e850(const CMsTime& time);                    // formatted date
 CStringW FUN_1409404f0(__int64 n);                              // formatted number
-int FUN_1406c75c0(void* pUser);                                 // level
+class Unk_NametagActor   // C3: member view for the former free stand-ins
+{
+public:
+    int GetGmGrade();
+};
 bool FUN_1409005c0(unsigned char nGenderA, unsigned char nGenderB);
 void AddMinutes(CMsTime& time, int minutes);                     // commonfiles/timeutil
 int XmlGetAttr(TiXmlElement* pElem, const char* pszName, CStringW& out);
@@ -142,7 +150,11 @@ int XmlGetAttr(TiXmlElement* pElem, const char* pszName, __int64& out);
 int XmlGetAttr(TiXmlElement* pElem, const char* pszName, int& out);
 int XmlGetAttr(TiXmlElement* pElem, const char* pszName, bool& out);
 void FUN_14166d2d0(PCBase* pUser, const efd::Point3& pos, int n);   // face towards a position
-int FUN_141527160(void* pUser, int nBuffId);                    // has a buff
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141527160(int);
+};
 class Unk_WmField { public: int FUN_1410d2f10(); bool FUN_1410c35c0(); };
 class Unk_WmFieldHolder { public: void* FUN_1401cd040(); };
 extern Unk_WmFieldHolder DAT_143b059e8;
@@ -280,7 +292,7 @@ void WeddingManager::OnInvitationClear(CInPacket& packet)
 // @0x141b84b80
 void WeddingManager::OnHallList(CInPacket& packet)
 {
-    Unk_WmDialog94* dialog = FUN_140fe6700(0x4f94);
+    Unk_WmDialog94* dialog = ((class Unk_WmDialog94*)FUN_140fe6700(0x4f94));
     if (dialog)
         dialog->FUN_140fcd5b0(packet);
 }
@@ -905,7 +917,7 @@ void WeddingManager::CollectTickets(std::map<unsigned __int64, WeddingHallTicket
         return;
     __int64 now = GetServerTime();
     for (; it != end; ++it) {
-        if (FUN_1406c75c0(user) < 50) {
+        if (((class Unk_NametagActor*)(void*)(user))->GetGmGrade() < 50) {
             int diff = (int)(now - it->second.m_nTime);
             if (abs(diff) > 1800)
                 continue;
@@ -1090,9 +1102,9 @@ void WeddingManager::ReadTicketMail(MS2Ptr<Unk_WeddingMail> mail, AScript* scrip
     WeddingHallTicket ticket;
     int loaded = GetFileSystem()->FUN_140397ab0(&doc, mail->FUN_141b8ecc0());
     if (loaded) {
-        void* root = FUN_140165cf0(&doc, "ms2");
+        void* root = ((void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
         if (root) {
-            void* node = FUN_140165cf0(root, "wedding");
+            void* node = ((void*)((class Unk_XmlNode*)(void*)(root))->FirstChild("wedding"));
             if (node) {
                 bool cancelMail = false;
                 XmlGetAttr((TiXmlElement*)node, "groom", ticket.m_strGroom);
@@ -1215,7 +1227,7 @@ bool WeddingManager::CanStartWedding(__int64 partnerId)
         FUN_141275260(0xbfc, 1, 0);
         return false;
     }
-    if (FUN_141527160(user, 0x27) == 0) {
+    if (((class MyPC*)(void*)(user))->FUN_141527160(0x27) == 0) {
         FUN_141275260(0xbfc, 1, 0);
         return false;
     }

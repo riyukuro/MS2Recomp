@@ -113,8 +113,12 @@ public:
     virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
 };
 CString FUN_1409a2360(const char* psz, int nCodePage);          // 0x1409a2360
-void FUN_140b78d90(PCBase* pActor, Unk_CastInfo* pInfo);           // fill the casting request from the actor
-void FUN_140b799a0(PCBase* pActor);                                // the actor reacts
+class CReactor   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140b78d90(struct Unk_ReactorInfo*);
+    void SendStateReact();
+};
 class Unk_ReactClips : public CPtred                                             // the animation table row of a reaction
 {
 public:
@@ -193,7 +197,7 @@ void StateReact::vfunc_4(StateData* pData)
                     m_pOwner->vfunc_59(1, 0, 0, 0);
                     return;
                 }
-                FUN_140b78d90(kRef.FUN_1409658b0(), &kInfo);
+                ((class CReactor*)(class PCBase*)(kRef.FUN_1409658b0()))->FUN_140b78d90((struct Unk_ReactorInfo*)(&kInfo));
                 UICastingBar* pBar = FUN_140ac2270(0x4e72);
                 if (pBar == 0)
                     return;
@@ -343,7 +347,7 @@ void StateReact::FUN_140b8dfd0(Unk_ReactRef kRef)
     {
         break;
     case 0x9f:
-        FUN_140b799a0(kRef.FUN_1409658b0());
+        ((class CReactor*)(class PCBase*)(kRef.FUN_1409658b0()))->SendStateReact();
         break;
     }
 }

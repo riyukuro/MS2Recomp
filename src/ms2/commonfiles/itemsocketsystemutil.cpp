@@ -75,6 +75,7 @@ static CString s_strSortNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHig
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/commonfiles/itemsocketscrolldata.h"
 #include "ms2/commonfiles/jobtable.h"
 static CString s_strSortNamesC[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
@@ -163,6 +164,7 @@ class CIngredientContainer;
 CItemGemStoneUpgradeTable* FUN_14062c280();
 int FUN_1406516b0();                                                // the language / region id
 int FUN_140408410(const ATL::CAtlArray<int>& a, const int& nValue);    // the index of a value in an array, else -1
+int FUN_140408410(const ATL::CAtlArray<unsigned int>& a, const unsigned int& nValue);
 class CGameRule   // C3: member view for the former free stand-ins
 {
 public:
@@ -182,21 +184,6 @@ public:
 CStringW FUN_141277410(int nType);                                  // the name of a slot type
 CStringW GetStringCommon(int nStringId);                              // a string table text
 
-// One row of the socket scroll table (names invented; layout read from the validators below).
-class Unk_ItemSocketScrollData : public CPtred
-{
-public:
-    int m_pad_18;
-    int m_nTargetMask;                      // +0x1c bit 1 / bit 2: the kind of item it can be used on
-    unsigned short m_nLevelMin;             // +0x20
-    unsigned short m_nLevelMax;             // +0x22 (0 = no upper bound)
-    int m_pad_24;
-    ATL::CAtlArray<int> m_aSlotKinds;       // +0x28 the item slot kinds it accepts
-    ATL::CAtlArray<int> m_aRanks;           // +0x48 the item ranks it accepts
-};
-MS2_CHECK_OFFSET(Unk_ItemSocketScrollData, m_nTargetMask, 0x1c);
-MS2_CHECK_OFFSET(Unk_ItemSocketScrollData, m_aSlotKinds, 0x28);
-MS2_CHECK_OFFSET(Unk_ItemSocketScrollData, m_aRanks, 0x48);
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
@@ -206,7 +193,7 @@ public:
 };
 bool FUN_140627d70(MS2Ptr<CItemData> spData);
 // The socket record of an item (CItemSocket, itemsocket.cpp): members not recovered yet.
-bool FUN_140627930(MS2Ptr<CItemData> spData, MS2Ptr<Unk_ItemSocketScrollData> spScroll);
+bool FUN_140627930(MS2Ptr<CItemData> spData, MS2Ptr<CItemSocketScrollData> spScroll);
 bool FUN_140627020(MS2Ptr<CItemGemStoneData> spRow);
 bool FUN_1406271b0(MS2Ptr<CItemGemStoneData> spRow, short* pMin, short* pMax, int* pError);
 int FUN_140627b80(int nA, unsigned nWanted);
@@ -303,9 +290,8 @@ CStringW FUN_140627390(unsigned nId)
 MS2_REPLACE(0x140627390, FUN_140627390, 174, 0x0188DA8B);
 
 // @0x140627450
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 // The socket scroll can be used on the item: 0 = yes, else the error code of the first rule that fails.
-int FUN_140627450(MS2Ptr<CItem> spItem, MS2Ptr<Unk_ItemSocketScrollData> spScroll)
+int FUN_140627450(MS2Ptr<CItem> spItem, MS2Ptr<CItemSocketScrollData> spScroll)
 {
     if (spItem == 0)
         return 1;
@@ -316,43 +302,42 @@ int FUN_140627450(MS2Ptr<CItem> spItem, MS2Ptr<Unk_ItemSocketScrollData> spScrol
         return 1;
     if (!FUN_140627930(spData, spScroll))
         return 8;
-    int nSlotKind = spData->FUN_14053c620();
-    if (FUN_140408410(spScroll->m_aSlotKinds, nSlotKind) == -1)
+    unsigned nSlotKind = spData->FUN_14053c620();
+    if (FUN_140408410(spScroll->m_arrSlot, nSlotKind) == -1)
         return 5;
-    int nRank = spItem->FUN_140526bd0();
-    if (FUN_140408410(spScroll->m_aRanks, nRank) == -1)
+    unsigned nRank = spItem->FUN_140526bd0();
+    if (FUN_140408410(spScroll->m_arrRank, nRank) == -1)
         return 6;
     int nLevel = spData->limit.levelLimit;
-    if (spScroll->m_nLevelMax == 0)
+    if (spScroll->m_nMaxLv == 0)
     {
-        if (nLevel < (int)spScroll->m_nLevelMin)
+        if (nLevel < (int)spScroll->m_nMinLv)
             return 7;
     }
     else
     {
-        if (nLevel < (int)spScroll->m_nLevelMin || (int)spScroll->m_nLevelMax < nLevel)
+        if (nLevel < (int)spScroll->m_nMinLv || nLevel > (int)spScroll->m_nMaxLv)
             return 7;
     }
-    if (spItem->FUN_1405279c0() != 0 && spItem->FUN_140529560() != 0)
-    {
-        CItemSocket* pSocket = spItem->FUN_1405279c0();
-        if (((class CItemSocket*)(void*)(pSocket))->GetMaxSlot() == 0)
-            return 3;
-        if (((class CItemSocket*)(void*)(pSocket))->FUN_140620a70() == 0)
-            return 4;
-        return 0;
-    }
-    return 3;
+    if (spItem->FUN_1405279c0() == 0 || spItem->FUN_140529560() == 0)
+        return 3;
+    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    if (pSocket->GetMaxSlot() == 0)
+        return 3;
+    int nLeft = pSocket->FUN_140620a70();
+    if (nLeft == 0)
+        return 4;
+    return 0;
 }
 MS2_REPLACE(0x140627450, FUN_140627450, 1234, 0xF69E6543);
 
 // @0x140627930
-bool FUN_140627930(MS2Ptr<CItemData> spData, MS2Ptr<Unk_ItemSocketScrollData> spScroll)
+bool FUN_140627930(MS2Ptr<CItemData> spData, MS2Ptr<CItemSocketScrollData> spScroll)
 {
     if (spData == 0 || spScroll == 0)
         return false;
     int nKind = spData->FUN_14053cf90() ? 2 : 1;
-    return (spScroll->m_nTargetMask & nKind) > 0;
+    return (spScroll->m_nUnk1c & nKind) > 0;
 }
 MS2_REPLACE(0x140627930, FUN_140627930, 226, 0xEA957CAF);
 
@@ -397,9 +382,9 @@ int FUN_140627ac0(int nFlag, unsigned* pOut, unsigned nWanted)
 MS2_REPLACE(0x140627AC0, FUN_140627ac0, 135, 0x81AC7E4E);
 
 // @0x140627b50
-void FUN_140627b50(int nA, Unk_ItemSocketScrollData* pScroll)
+void FUN_140627b50(int nA, CItemSocketScrollData* pScroll)
 {
-    FUN_140627b80(nA, pScroll->m_nTargetMask);
+    FUN_140627b80(nA, pScroll->m_nUnk1c);
 }
 MS2_REPLACE(0x140627B50, FUN_140627b50, 35, 0xCFF64D85);
 

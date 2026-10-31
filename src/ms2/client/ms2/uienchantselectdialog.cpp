@@ -54,13 +54,21 @@ class Unk_MyPCSurvival : public UITalkManager
 public:
     int FUN_141b213f0(Unk_MyPCTalkScriptPtr spScript, int nNpcId, int nMode, int n);
 };
-Unk_MyPCSurvival* FUN_140967100();
+class Unk_AkoCutscene   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoCutscene* GetInstance();
+};
 
 // The world / local player (FUN_1403ed2d0 / FUN_141bd0cc0); vfunc 65 (0x208) is "talk state".
 class Unk_EsWorld;
-Unk_EsWorld* FUN_1403ed2d0();
-PCBase* FUN_141bd0cc0(Unk_EsWorld* pWorld);
-char* FUN_1401d3200();                                                  // the constants table
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int* FUN_1402056b0(char* pEntry);
 CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& str, int a, int b);
@@ -135,7 +143,7 @@ void UIEnchantSelectDialog::FUN_140e29860(const Scaleform::GFx::FunctionHandler:
         strMode = "expMode";
         nNpcId = 0xa7dabe;
     }
-    PCBase* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPc = ((class PCBase*)((class WorldService*)(class Unk_EsWorld*)(((class Unk_EsWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc != 0 && pPc->vfunc_65() == 1)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_error_talk_battle_state_force_talk"), 1, 1);
@@ -143,10 +151,10 @@ void UIEnchantSelectDialog::FUN_140e29860(const Scaleform::GFx::FunctionHandler:
     }
     if (nNpcId > 0)
     {
-        if (Unk_MyPCTalkScript* pScript = FUN_140856820(nNpcId, *FUN_1402056b0(FUN_1401d3200() + 0x69a0)).FUN_14078f3a0())
+        if (Unk_MyPCTalkScript* pScript = FUN_140856820(nNpcId, *FUN_1402056b0(((char*)FUN_1401d3200()) + 0x69a0)).FUN_14078f3a0())
         {
-            FUN_140967100()->FUN_141b213f0(Unk_MyPCTalkScriptPtr(pScript), nNpcId, 2, 0);
-            FUN_140967100()->FUN_141b1eb90(CStringA("ItemEnchantDialog"), CStringA(strMode));
+            ((class Unk_MyPCSurvival*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(Unk_MyPCTalkScriptPtr(pScript), nNpcId, 2, 0);
+            ((class Unk_MyPCSurvival*)Unk_AkoCutscene::GetInstance())->FUN_141b1eb90(CStringA("ItemEnchantDialog"), CStringA(strMode));
         }
     }
     vfunc_67();

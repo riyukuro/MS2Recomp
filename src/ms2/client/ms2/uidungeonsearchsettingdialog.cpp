@@ -48,10 +48,13 @@ WorldService* FUN_1403ed2d0();
 class Unk_SsUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };
 
 void* FUN_1409670d0();
-bool FUN_14162ac70(void*, int);
-unsigned FUN_140bd09c0(void* pUserData);
+class CPartyManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14162ac70(int);
+};
+int FUN_140bd09c0(void*);   // C3: was FUN_140bd09c0
 void* FUN_140bd09d0(unsigned n);
-bool FUN_1409b4d40(const Scaleform::GFx::Value& v);
 MS2Ptr<ASCheckBox> FUN_140a57df0(int nMovieId, const Scaleform::GFx::Value& v);              // new ASCheckBox(v, n)
 MS2Ptr<ASItemRendererBase> FUN_140bc6120(int nMovieId, const Scaleform::GFx::Value& v);      // new ASItemRendererBase(v, n)
 MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
@@ -231,7 +234,7 @@ void UIDungeonSearchSettingDialog::FUN_140c11420(const Scaleform::GFx::FunctionH
             row->vfunc_3(0);
             return;
         }
-        bool bOk = FUN_14162ac70(FUN_1409670d0(), m_rooms[nRoom]->GetDungeonRoomID());
+        bool bOk = ((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162ac70(m_rooms[nRoom]->GetDungeonRoomID());
         CStringW strName = FUN_140e14bd0(m_rooms[nRoom], true);
         int nColor;
         if (bOk)
@@ -274,7 +277,7 @@ MS2_REPLACE_METHOD(0x140C11840, UIDungeonSearchSettingDialog, FUN_140c11840, 321
 template <> MS2Ptr<ASCheckBox> AScript::FUN_140c11f50<ASCheckBox>(const CString& strName)
 {
     Scaleform::GFx::Value v = FUN_1422baa20(strName);
-    if (FUN_1409b4d40(v))
+    if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
         return FUN_140a57df0(m_nMovieId, v);
     return MS2Ptr<ASCheckBox>(0);
 }
@@ -319,7 +322,7 @@ template <class T> MS2Ptr<T> Unk_SsNode::FUN_140c12120(const Scaleform::GFx::Val
 // @0x140c123f0: gfxutil.h, binds strName<nStart>..strName<nStart+nCount-1> into out.
 template <class T> bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<T> >& out, unsigned nStart)
 {
-    if (!FUN_1409b4d40(root))
+    if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return false;
     out.clear();
     out.reserve(nCount);

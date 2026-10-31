@@ -38,7 +38,6 @@ class Unk_DemolishPC : public PC
 public:
     Unk_DemolishCube* FUN_141530290();                          // the cube craft controller
 };
-__int64 FUN_141656ad0(Unk_DemolishPC* pPC);                     // the owner id of the player's plot
 
 // WorldService singleton (FUN_1403ed2d0).
 class Unk_DemolishWorld
@@ -47,7 +46,11 @@ public:
     Unk_DemolishPC* FUN_141bd0cc0();                            // the local player
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field data
 };
-Unk_DemolishWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // The housing manager (FUN_1409670e0).
 class Unk_DemolishHousing : public CubeMapInformationService
@@ -55,7 +58,11 @@ class Unk_DemolishHousing : public CubeMapInformationService
 public:
     bool FUN_1410d27c0(__int64 nOwner, int nMode, int* pCount, int* pLimit);   // building count and limit
 };
-Unk_DemolishHousing* FUN_1409670e0();
+class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoHouseSvc* GetInstance();
+};
 
 // The notice dispatcher (FUN_140939a10).
 NotifySystem* FUN_140939a10();
@@ -109,7 +116,7 @@ int UIHouseDemolishDialog::vfunc_84()
 {
     if (vfunc_55() != 0)
         return 0;
-    Unk_DemolishPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_DemolishPC* pPC = ((class Unk_DemolishWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     if (pPC->FUN_141659690() != 0)
@@ -117,7 +124,7 @@ int UIHouseDemolishDialog::vfunc_84()
     Unk_DemolishCube* pCube = pPC->FUN_141530290();
     if (pCube == 0)
         return 0;
-    if (FUN_1409670e0()->FUN_1410c3180() != 0)
+    if (((class Unk_DemolishHousing*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() != 0)
         return 0;
     return 1;
 }
@@ -219,17 +226,17 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
         return;
     if ((*pnFlags & 1) != 0)
     {
-        Unk_DemolishPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_DemolishPC* pPC = ((class Unk_DemolishWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPC != 0)
         {
-            MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+            MS2Ptr<CFieldDataCli> spField = ((class Unk_DemolishWorld*)WorldService::GetInstance())->FUN_141bd30a0();
             if (spField ? true : false)
             {
                 if (spField->FUN_140375130() == 0)
                 {
                     int nCount = 0;
                     int nLimit = 0;
-                    FUN_1409670e0()->FUN_1410d27c0(FUN_141656ad0(pPC), 0, &nCount, &nLimit);
+                    ((class Unk_DemolishHousing*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(((class PC*)(class Unk_DemolishPC*)(pPC))->FUN_141656ad0(), 0, &nCount, &nLimit);
                     MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_textField");
                     if (spText.get() != 0)
                     {

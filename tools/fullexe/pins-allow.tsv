@@ -115,7 +115,7 @@ pin already attributed	client/ms2/getexp.cpp: MS2-PIN ?Update@CGetExp@@QEAAXM@Z 
 pin already attributed	client/ms2/groundeffectdata.cpp: MS2-PIN ?PlayEffects@CGroundEffectDataManager@@QEAAXPEAVGameObject@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x141377420: already attributed (tag), ignored
 pin already attributed	client/ms2/groupchatmanager.cpp: MS2-PIN ?FUN_14137e160@CGroupChatManager@@QEAAXXZ 0x14137e160: already attributed (tag), ignored
 pin already attributed	client/ms2/guideentity_1b.cpp: MS2-PIN ?CheckTriggerRange@CGuideManager@@QEAA_NW4TriggerType@1@AEBUUnk_GameEventIntRange@@@Z 0x14138c210: already attributed (tag), ignored
-pin already attributed	client/ms2/guideentity_1b.cpp: MS2-PIN ?FUN_14138c210@Unk_GeMgr@@QEAADHAEBUUnk_GeRange@@@Z 0x14138c210: already attributed (tag), ignored
+pin already attributed	client/ms2/guideentity_1b.cpp: MS2-PIN ?FUN_14138c210@Unk_GeMgr@@QEAA_NHAEBUUnk_GeRange@@@Z 0x14138c210: already attributed (tag), ignored
 pin already attributed	client/ms2/guideentity_1b.cpp: MS2-PIN ?FUN_14138c930@@YAHPEAXH@Z 0x14138c930: already attributed (tag), ignored
 pin already attributed	client/ms2/guideentity_1b.cpp: MS2-PIN ?FUN_14138cce0@@YAXPEAXHH@Z 0x14138cce0: already attributed (tag), ignored
 pin already attributed	client/ms2/guideentity_1b.cpp: MS2-PIN ?FUN_14138d090@@YAXPEAXV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x14138d090: already attributed (tag), ignored
@@ -254,6 +254,9 @@ pin already attributed	client/ms2/uienchantscrolldialog.cpp: MS2-PIN ??0UIEnchan
 pin already attributed	client/ms2/uigamerankingdialog.cpp: MS2-PIN ??0?$Unk_RankBoxPtr@V?$CAtlArray@V?$Unk_RankPtr@VGameRankingTabData@@@@V?$CElementTraits@V?$Unk_RankPtr@VGameRankingTabData@@@@@ATL@@@ATL@@@@QEAA@H@Z 0x140e36510: already attributed (tag), ignored
 pin already attributed	client/ms2/uigamerankingdialog.cpp: MS2-PIN ??0?$Unk_RankPtr@VGameRankingCategory@@@@QEAA@$$QEAV0@@Z 0x140e36310: already attributed (tag), ignored
 pin already attributed	client/ms2/uigamerankingdialog.cpp: MS2-PIN ??0?$Unk_RankPtr@VGameRankingCategory@@@@QEAA@H@Z 0x140e363b0: already attributed (tag), ignored
+pin already attributed	client/ms2/uiitemmergeoptiondialog.cpp: MS2-PIN ??0OptionLess@UIItemMergeOptionDialog@@QEAA@PEAV?$map@U?$pair@W4Unk_StatType@@W4Unk_SocketSpecialStat@@@std@@HU?$less@U?$pair@W4Unk_StatType@@W4Unk_SocketSpecialStat@@@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@W4Unk_StatType@@W4Unk_SocketSpecialStat@@@std@@H@std@@@2@@std@@@Z 0x1419d6dc0: already attributed (tag), ignored
+pin already attributed	client/ms2/uiitemmergeoptiondialog.cpp: MS2-PIN ??ROptionLess@UIItemMergeOptionDialog@@QEAA_NAEBU?$pair@W4Unk_StatType@@W4Unk_SocketSpecialStat@@@std@@0@Z 0x1419d7300: already attributed (tag), ignored
+pin already attributed	client/ms2/uiitemmergeoptiondialog.cpp: MS2-PIN ?GetName@OptionLess@UIItemMergeOptionDialog@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@AEBU?$pair@W4Unk_StatType@@W4Unk_SocketSpecialStat@@@std@@@Z 0x1419d7570: already attributed (tag), ignored
 pin already attributed	client/ms2/uimaillistdialog.cpp: MS2-PIN ?IsNull@?$Unk_MailPtr@VCMailInfo@@@@QEBA_NXZ 0x1419ea470: already attributed (tag), ignored
 pin already attributed	client/ms2/uimentoringmenteeregisterpage.cpp: MS2-PIN ??$FUN_14028dfa0@HHHHHHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBH11111AEBV01@@Z 0x140c70b70: already attributed (tag), ignored
 pin already attributed	client/ms2/uimeratmarketdialog.cpp: MS2-PIN ??0?$MS2Ptr@VCMeratMarketSchCond@@@@QEAA@PEAVCMeratMarketSchCond@@@Z 0x141314120: already attributed (tag), ignored
@@ -374,6 +377,8 @@ pin already attributed	client/ms2/worldservice_3.cpp: MS2-PIN ??F?$_Tree_const_i
 pin already attributed	client/ms2/worldservice_3.cpp: MS2-PIN ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@_K@std@@@std@@@std@@QEAAAEAV01@XZ 0x141bf2170: already attributed (tag), ignored
 pin already attributed	client/ms2/worldservice_3.cpp: MS2-PIN ?_Adopt@_Iterator_base0@std@@QEAAXPEBX@Z 0x141bedc60: already attributed (tag), ignored
 pin already attributed	client/ms2/worldservice_3.cpp: MS2-PIN ?__empty_global_delete@@YAXPEAX_K@Z 0x141bedc60: already attributed (tag), ignored
+pin already attributed	client/ms2/worldservice_7.cpp: MS2-PIN ?SwapNode@?$CRBTree@IUUnk_WsObjectEntry@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsObjectEntry@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x141c1d680: already attributed (tag), ignored
+pin already attributed	client/ms2/worldservice_7.cpp: MS2-PIN ?SwapNode@?$CRBTree@PEAVEntity@egf@@V?$MS2Ptr@VUnk_WsMarker@@@@V?$CElementTraits@PEAVEntity@egf@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMarker@@@@@5@@ATL@@AEAAXPEAVCNode@12@0@Z 0x141c1dd60: already attributed (tag), ignored
 pin already attributed	commonfiles/achievedata.cpp: MS2-PIN ?FUN_14016a600@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEB_WH@Z 0x14016a600: already attributed (tag), ignored
 pin already attributed	commonfiles/achievedata.cpp: MS2-PIN ?FUN_14016a730@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEBDH@Z 0x14016a730: already attributed (tag), ignored
 pin already attributed	commonfiles/achievedata.cpp: MS2-PIN ?LoadAll@CAchieveData@@SAXXZ 0x14015c050: already attributed (tag), ignored
@@ -1187,6 +1192,8 @@ pin names no function	client/ms2/getexp.cpp: MS2-PIN ?FUN_141273b60@CGetExp@@QEA
 pin names no function	client/ms2/groundeffectdata.cpp: MS2-PIN ?FUN_141377420@Unk_LandSound@@QEAAXPEAVPCBase@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z: no such function in the obj
 pin names no function	client/ms2/groundeffectdata.cpp: MS2-PIN ?FUN_141377420@Unk_PCBaseSound@@QEAAXPEAVPCBase@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z: no such function in the obj
 pin names no function	client/ms2/groundeffectdata.cpp: MS2-PIN ?FUN_141377420@Unk_StSound@@QEAAXPEAVPCBase@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z: no such function in the obj
+pin names no function	client/ms2/guideentity_1b.cpp: MS2-PIN ??$_Const_cast@$$CBU?$pair@W4Occurrence@CGuideManager@@H@std@@@std@@YAPEAU?$pair@W4Occurrence@CGuideManager@@H@0@PEBU10@@Z: no such function in the obj
+pin names no function	client/ms2/guideentity_1b.cpp: MS2-PIN ??0?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@QEAA@PEAV?$MS2Ptr@VCGuideEntity@@@@PEBU_Container_base0@1@@Z: no such function in the obj
 pin names no function	client/ms2/guideentity_1b.cpp: MS2-PIN ?FUN_14138c930@Unk_PCBuffTable@@YAHH@Z: no such function in the obj
 pin names no function	client/ms2/itemslotbinder.cpp: MS2-PIN ??1?$MS2Ptr@VCItem@@@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/itemslotbinder.cpp: MS2-PIN ??C?$MS2Ptr@VCItem@@@@QEBAPEAVCItem@@XZ: no such function in the obj
@@ -1648,6 +1655,8 @@ pin names no function	client/ms2/uiworldmapdialog.cpp: MS2-PIN ?GetTypeName@?$De
 pin names no function	client/ms2/uiworldmapdialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIWorldMapDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uiwritemusicdialog.cpp: MS2-PIN ??D?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEBAAEBU?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@1@XZ: no such function in the obj
 pin names no function	client/ms2/uiwritemusicdialog.cpp: MS2-PIN ??D?$_Tree_unchecked_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@1@XZ: no such function in the obj
+pin names no function	client/ms2/usercommandcli.cpp: MS2-PIN ??__Fs_trace@?9??FUN_14136a630@CUserCommandCli@@QEAAHAEAUUnk_CommandArgs@@@Z@YAXXZ: no such function in the obj
+pin names no function	client/ms2/usercommandcli.cpp: MS2-PIN ??__Fs_trace@?9??FUN_14136ac60@CUserCommandCli@@QEAAHAEAUUnk_CommandArgs@@@Z@YAXXZ: no such function in the obj
 pin names no function	client/ms2/weddingmanager.cpp: MS2-PIN ?FUN_141b873c0@Unk_MlWedding@@QEAAXV?$Unk_MailPtr@VCMailInfo@@@@PEAVAScript@@@Z: no such function in the obj
 pin names no function	client/ms2/weddingmanager.cpp: MS2-PIN ?FUN_141b89950@@YAHPEAVWeddingManager@@@Z: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsA_BallRef@@QEAA@PEAX@Z: no such function in the obj
@@ -2069,6 +2078,9 @@ pin outside MS2-RANGEs	client/ms2/soundmusiceffectparam.cpp: MS2-PIN ??1CEffectP
 pin outside MS2-RANGEs	client/ms2/uibingoeventdialog.cpp: MS2-PIN ??C?$MS2Ptr@VASMovieClip@@@@QEBAPEAVASMovieClip@@XZ 0x1409b4c60: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/uibingoeventdialog.cpp: MS2-PIN ?GetCount@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEBA_KXZ 0x140186260: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/uibuddyeventlistener.cpp: MS2-PIN ?vfunc_buddy_10@UIBuddyEventListener@@UEAAX_JH@Z 0x140d13d50: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/uinpcpreviewdialog.cpp: MS2-PIN ??C?$Unk_ScriptPtr@VCCinematicDistractor@@@@QEBAPEAVCCinematicDistractor@@XZ 0x14078f3b0: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/uinpcpreviewdialog.cpp: MS2-PIN ?IsNull@?$Unk_ScriptPtr@VCTalkScript@@@@QEBA_NXZ 0x14085a420: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/uinpcpreviewdialog.cpp: MS2-PIN ?get@?$Unk_ScriptPtr@VCCinematicDistractor@@@@QEBAPEAVCCinematicDistractor@@XZ 0x14078f390: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/uiplayinstrumentdialog.cpp: MS2-PIN ?Clone@CAtlStringMgr@ATL@@UEAAPEAUIAtlStringMgr@2@XZ 0x14103c770: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/worldservice_1.cpp: MS2-PIN ??0?$MS2Ptr@VUnk_WsC_TargetGuide@@@@QEAA@AEBV0@@Z 0x141bf15b0: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/worldservice_1.cpp: MS2-PIN ??0?$MS2Ptr@VUnk_WsD_TipObj@@@@QEAA@AEBV0@@Z 0x141bf1870: outside the unit's MS2-RANGEs, ignored

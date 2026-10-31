@@ -58,13 +58,12 @@ public:
     CStringW m_strText;                                         // +0x18
 };
 class Unk_PnWorld { public: void* FUN_141bd0cc0(); };
-unsigned FUN_141bd3060(Unk_PnWorld* pWorld);                    // the map id
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_PnUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nType); };
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 Unk_PnScriptPtr FUN_1408564b0(int nQuestId, int n);
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 UIQuestEventDispatcher* FUN_140bfc4b0();
 CStringW FUN_1401aa6a0(int nId);                                // npc name
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
@@ -76,7 +75,7 @@ class Unk_PnActor { public: void vfunc_4(int, int, int); };
 UIFameContentsNotify* FUN_140e77d80(int nType);
 void FUN_140710590(COutPacket& rPacket);
 int FUN_1418dd0d0();
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 int FUN_140408410(ATL::CAtlArray<unsigned>* pArr, const unsigned* pn);   // index of the value (-1 when absent)
 
 // @0x140e76460
@@ -87,16 +86,16 @@ UIPopupNpcTalkDialog::UIPopupNpcTalkDialog()
     m_188.FUN_140e77f50(0);
     m_184 = 0;
     FUN_140bfc4b0()->FUN_141aa87c0(this);
-    FUN_140939a10()->RegisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UIPopupNpcTalkDialog::FUN_140e770a0));
-    FUN_140939a10()->RegisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UIPopupNpcTalkDialog::FUN_140e771b0));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UIPopupNpcTalkDialog::FUN_140e770a0));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UIPopupNpcTalkDialog::FUN_140e771b0));
 }
 
 // @0x140e76770
 UIPopupNpcTalkDialog::~UIPopupNpcTalkDialog()
 {
     FUN_140bfc4b0()->FUN_141aa8850(this);
-    FUN_140939a10()->UnregisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UIPopupNpcTalkDialog::FUN_140e770a0));
-    FUN_140939a10()->UnregisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UIPopupNpcTalkDialog::FUN_140e771b0));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UIPopupNpcTalkDialog::FUN_140e770a0));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UIPopupNpcTalkDialog::FUN_140e771b0));
 }
 
 // @0x140e769d0
@@ -135,7 +134,7 @@ int UIPopupNpcTalkDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         {
             if (nState == 2)
             {
-                if (FUN_140764020()->FUN_1407456d0(m_184) != 0)
+                if (((class CQuestManager*)FUN_140764020())->FUN_1407456d0(m_184) != 0)
                 {
                     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
                     packet.Encode1(4);
@@ -200,9 +199,9 @@ int UIPopupNpcTalkDialog::vfunc_13()
         return 0;
     if (vfunc_56() != 0)
         return 0;
-    if (FUN_14025e7c0()->FUN_14116d840())
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840())
     {
-        if (FUN_140764020()->FUN_1407456d0(m_184) == 0)
+        if (((class CQuestManager*)FUN_140764020())->FUN_1407456d0(m_184) == 0)
         {
             UIFameContentsNotify* pFame = FUN_140e77d80(0x4f5a);
             if (pFame != 0)
@@ -210,13 +209,13 @@ int UIPopupNpcTalkDialog::vfunc_13()
         }
         vfunc_69();
     }
-    else if (FUN_14025e7c0()->FUN_14116dd30(0x493e2, 0, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0))
     {
         m_180++;
         int nState = FUN_140e77330();
         if (nState != 1 && nState == 2)
         {
-            if (FUN_140764020()->FUN_1407456d0(m_184) != 0)
+            if (((class CQuestManager*)FUN_140764020())->FUN_1407456d0(m_184) != 0)
             {
                 COutPacket packet(static_cast<int>(SendOp::Quest), 0);
                 packet.Encode1(4);
@@ -241,11 +240,11 @@ int UIPopupNpcTalkDialog::vfunc_13()
 void UIPopupNpcTalkDialog::FUN_140e770a0(NotifyObject*)
 {
     ATL::CAtlArray<unsigned> quests;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d360(FUN_141bd3060(reinterpret_cast<Unk_PnWorld*>(WorldService::GetInstance())), quests);
+    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d360(((class WorldService*)(class Unk_PnWorld*)(reinterpret_cast<Unk_PnWorld*>(WorldService::GetInstance())))->FUN_141bd3060(), quests);
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
         unsigned nQuest = quests[i];
-        if (FUN_140764020()->FUN_140745630(nQuest) == 0)
+        if (((class CQuestManager*)FUN_140764020())->FUN_140745630(nQuest) == 0)
             continue;
         if (m_198.Lookup(nQuest) != 0)
             continue;
@@ -261,10 +260,10 @@ void UIPopupNpcTalkDialog::FUN_140e771b0(NotifyObject*) { FUN_140e77300(); }
 // @0x140e771e0
 void UIPopupNpcTalkDialog::FUN_140e771e0(int nQuest)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x95))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x95))
         return;
     int nStep = 0;
-    if (FUN_140764020()->FUN_1407456d0(nQuest) != 0)
+    if (((class CQuestManager*)FUN_140764020())->FUN_1407456d0(nQuest) != 0)
         nStep = 300;
     else
         nStep = 100;
@@ -292,7 +291,7 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
         return 0;
     if (m_180 >= (int)m_188.FUN_14085a610()->m_contents.FUN_14078fae0())
         return 2;
-    int nDone = FUN_140764020()->FUN_1407456d0(m_184);
+    int nDone = ((class CQuestManager*)FUN_140764020())->FUN_1407456d0(m_184);
     CCinematicContent* pCin = dynamic_cast<CCinematicContent*>((CScriptContent*)m_188.FUN_14085a610()->m_contents.FUN_14078f350(m_180).FUN_140e78000());
     if (pCin != 0)
         static_cast<Unk_PnRoot*>(FUN_1409ee290(&m_30))->Invoke("setPortrait", pCin->m_speakerIllust);
@@ -325,7 +324,7 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
         CStringW strKey(L"s_field_quest_talk_next");
         if (bLast)
         {
-            if (FUN_140764020()->FUN_1407456d0(m_184) != 0)
+            if (((class CQuestManager*)FUN_140764020())->FUN_1407456d0(m_184) != 0)
                 strKey = L"s_field_quest_talk_complete";
             else
                 strKey = L"s_field_quest_talk_ok";
@@ -342,7 +341,7 @@ int UIPopupNpcTalkDialog::FUN_140e77b80(int nQuest)
     MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuest);
     if (spQuest.IsNull())
         return 0;
-    unsigned nMap = FUN_141bd3060(reinterpret_cast<Unk_PnWorld*>(WorldService::GetInstance()));
+    unsigned nMap = ((class WorldService*)(class Unk_PnWorld*)(reinterpret_cast<Unk_PnWorld*>(WorldService::GetInstance())))->FUN_141bd3060();
     if (FUN_140408410(&spQuest->m_fields, &nMap) == -1)
         return 0;
     return 1;

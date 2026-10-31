@@ -21,14 +21,15 @@
 #include "ms2/client/ms2/uiservice.h"
 
 // ---- external surfaces (names invented; every callee is bound by its exe address) ---------------------------------
-class UIStoreDialog : public UIDialog {};                        // RTTI name; only the dynamic_cast target is used
+class UIStoreDialog : public UIDialog {public:
+    void FUN_141b109a0();   // C3: was free FUN_141b109a0
+};                        // RTTI name; only the dynamic_cast target is used
 class Unk_SSGDlg4e47 : public UIStoreDialog {};                  // GetDialog<T> result type of FUN_140de48d0
 struct Unk_StoreUIMgr : public CUIService
 {
     MS2Ptr<UIObject> FUN_141adcea0(int nId);
     void FUN_141adc530(int nId);
 };
-void FUN_141b109a0(Unk_SSGDlg4e47* pDlg);
 struct Unk_StoreEvents                                           // the item event hub (FUN_140a6a840), slots 8..12
 {
     virtual void vfunc_0() = 0; virtual void vfunc_1() = 0; virtual void vfunc_2() = 0; virtual void vfunc_3() = 0;
@@ -39,7 +40,7 @@ struct Unk_StoreEvents                                           // the item eve
     virtual void vfunc_11() = 0;                                 // list loaded
     virtual void vfunc_12() = 0;                                 // store ready
 };
-Unk_StoreEvents* FUN_140a6a840();
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 struct Unk_GuildConstInt { char m_b[0x58]; };
 struct Unk_AuConfig                                              // the account config; only four int constants are read
 {
@@ -47,21 +48,20 @@ struct Unk_AuConfig                                              // the account 
     Unk_GuildConstInt m_44a8, m_4500, m_4558, m_45b0;
 };
 MS2_CHECK_SIZE(Unk_AuConfig, 0x4608);
-Unk_AuConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int* FUN_1402056b0(Unk_GuildConstInt* p);
 int FUN_1408b6200(int nType);
 unsigned char FUN_140361ab0(void* pMap, int nKey, int* pValue);
 struct Unk_SsMap;
-void FUN_14016a050(Unk_SsMap* pMap, int nKey, int nValue);
 int FUN_14052a7e0(MS2Ptr<CItem> a, MS2Ptr<CItem> b);
 void FUN_140710590(COutPacket& packet);
 void FUN_1401fba60(unsigned char* pReq, COutputStream& rStream);
 void FUN_1401fbaf0(unsigned char* pReq, COutputStream& rStream);
 void FUN_1401fba60(unsigned char* pReq, COutputStream& rStream);
 struct Unk_KhCamera;
-Unk_KhCamera* FUN_140c8dac0();
-__int64 FUN_140c8dab0(Unk_KhCamera* p);
-CPetManager* FUN_140535320();
+struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
+__int64 FUN_140c8dab0(struct Unk_PmFixedItem*);   // C3: was FUN_140c8dab0
+class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 CStringW GetStringCommonByKey(const CStringW& rKey);
 void FUN_1412751f0(const CStringW& rText, int nA, int nB);
 void FUN_141275260(int nId, int nA, int nB);
@@ -74,7 +74,6 @@ template <class T> void Unk_AkoMessage(int nId, int nA, int nB, const T& rArg);
 void FUN_140961010(int nId, int nA, int nB, const CStringW& rArg);
 void FUN_140720e50(void* pDest, void* pSrc, unsigned __int64 nCount);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-void* FUN_1401b59c0();
 Unk_SSGDlg4e47* FUN_140de48d0(int nId);
 extern char DAT_143ab2a90;
 extern __int64 DAT_143ab2828;
@@ -385,7 +384,7 @@ int CStore::Allowed(int nType)
         MS2Ptr<CItemData> pData = FUN_14053f870(m_type);
         if (pData.get() != 0) {
             unsigned nBankId = pData->FUN_14053dce0();
-            MS2Ptr<CBankData> pBank = static_cast<CBankTable*>(FUN_1401b59c0())->GetBankData(nBankId);
+            MS2Ptr<CBankData> pBank = static_cast<CBankTable*>(((void*)TSingleton<CBankTable>::GetInstance()))->GetBankData(nBankId);
             if (pBank.get() != 0) {
                 return pBank->IsStorable(nType);
             }
@@ -420,7 +419,7 @@ int CStore::CanMerge()
             if (FUN_140361ab0(&seen, ((CItem*)pItem)->FUN_1405276c0(), &nOther)) {
                 return 1;
             } else {
-                FUN_14016a050(reinterpret_cast<Unk_SsMap*>(&seen), ((CItem*)pItem)->FUN_1405276c0(), i);
+                ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(struct Unk_SsMap*)(reinterpret_cast<Unk_SsMap*>(&seen)))->SetAt(((CItem*)pItem)->FUN_1405276c0(), i);
             }
         }
     }
@@ -487,7 +486,7 @@ int CStore::CurrentCapacity()
     if (m_id != 0) {
         return Capacity();
     }
-    return *FUN_1402056b0(&FUN_1401d3200()->m_44a8) + 0x24;
+    return *FUN_1402056b0(&((struct Unk_AuConfig*)FUN_1401d3200())->m_44a8) + 0x24;
 }
 
 // @0x140de2a00
@@ -507,19 +506,19 @@ void CStore::ResetId(__int64 nId, int nType)
 // @0x140de2a80
 __int64 CStore::Value4558()
 {
-    return *FUN_1402056b0(&FUN_1401d3200()->m_4558);
+    return *FUN_1402056b0(&((struct Unk_AuConfig*)FUN_1401d3200())->m_4558);
 }
 
 // @0x140de2ab0
 __int64 CStore::Value45b0()
 {
-    return *FUN_1402056b0(&FUN_1401d3200()->m_45b0);
+    return *FUN_1402056b0(&((struct Unk_AuConfig*)FUN_1401d3200())->m_45b0);
 }
 
 // @0x140de2ae0
 __int64 CStore::Value4500()
 {
-    return *FUN_1402056b0(&FUN_1401d3200()->m_4500);
+    return *FUN_1402056b0(&((struct Unk_AuConfig*)FUN_1401d3200())->m_4500);
 }
 
 // @0x140de2b10
@@ -595,13 +594,13 @@ void FUN_140de2dc0(void*, __int64 nId, int nSlot, int nCount, MS2Ptr<CItemData> 
         return;
     }
     if (((CItemData*)(static_cast<CItem*>(pItem)->FUN_140527840()))->FUN_14053cd10()) {
-        if (FUN_140c8dab0(FUN_140c8dac0()) == ((CItem*)pItem)->FUN_140526a50()) {
+        if (FUN_140c8dab0((struct Unk_PmFixedItem*)(((struct Unk_KhCamera*)FUN_140c8dac0()))) == ((CItem*)pItem)->FUN_140526a50()) {
             FUN_1412751f0(GetStringCommonByKey(L"s_item_err_binditem_by_playing_score"), 1, 1);
             return;
         }
     }
     if (((CItem*)pItem)->FUN_140525640() != 0) {
-        if (FUN_140535320()->GetSummonUid() == nId) {
+        if (((class CPetManager*)FUN_140535320())->GetSummonUid() == nId) {
             FUN_1412751f0(GetStringCommonByKey(L"s_item_err_binditem_by_summon_pet"), 1, 1);
             return;
         }
@@ -704,7 +703,7 @@ void CStore::OnBegin(CInPacket* pPacket)
     SetReceived(nCount);
     if (nCount == 0) {
         SetReady(1);
-        FUN_140a6a840()->vfunc_12();
+        ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_12();
     }
 }
 
@@ -723,7 +722,7 @@ void CStore::OnItems(CInPacket* pPacket)
     if (Count() == Received()) {
         SetReady(1);
         SetReceived(0);
-        FUN_140a6a840()->vfunc_12();
+        ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_12();
     }
 }
 
@@ -753,7 +752,7 @@ void CStore::OnRemove(CInPacket* pPacket)
         return;
     }
     Remove(nItemId);
-    FUN_140a6a840()->vfunc_9(pItem.get());
+    ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_9(pItem.get());
 }
 
 // @0x140de3a50
@@ -771,7 +770,7 @@ void CStore::OnCount(CInPacket* pPacket)
         return;
     }
     ((CItem*)pItem)->FUN_140526c70(nCount);
-    FUN_140a6a840()->vfunc_10(pItem.get());
+    ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_10(pItem.get());
 }
 
 // @0x140de3bc0
@@ -803,7 +802,7 @@ void CStore::OnClose(CInPacket*)
     Unk_SSGDlg4e47* pDlg = FUN_140de48d0(0x4e47);
     if (pDlg != 0) {
         if (pDlg->vfunc_55() == 0) {
-            FUN_141b109a0(pDlg);
+            ((class UIStoreDialog*)(class Unk_SSGDlg4e47*)(pDlg))->FUN_141b109a0();
         }
     }
 }
@@ -837,7 +836,7 @@ void CStore::OnSwap(CInPacket* pPacket)
     }
     for (unsigned i = 0; i < 2; i++) {
         if (items[i].get() != 0) {
-            FUN_140a6a840()->vfunc_10(items[i].get());
+            ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_10(items[i].get());
         }
     }
 }
@@ -865,7 +864,7 @@ void CStore::OnList(CInPacket* pPacket)
             Add(pItem.get());
         }
     }
-    FUN_140a6a840()->vfunc_11();
+    ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_11();
 }
 
 // @0x140de4320
@@ -939,7 +938,7 @@ void CStore::ReadItem(CInPacket* pPacket)
         ((CItem*)pItem)->FUN_140526b70((int)nSlot);
         ((CItem*)pItem)->FUN_140524eb0(*pPacket);
         Add(pItem.get());
-        FUN_140a6a840()->vfunc_8(pItem.get());
+        ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_8(pItem.get());
     }
 }
 

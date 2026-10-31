@@ -82,7 +82,6 @@ extern int DAT_143ab2a90;
 class Unk_SibDropTable { public: void FUN_1402eaf10(int nBoxId, ItemDropContext& params, Unk_PetBoxDropVec& out, bool b); };
 
 class Unk_SibPlayer : public PC { };               // the local player
-int FUN_141658e60(Unk_SibPlayer* pPlayer);                                       // the player's job
 class Unk_SibPlayers { public: Unk_SibPlayer* FUN_141bd0cc0(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -169,7 +168,7 @@ void UISelectItemBoxDialog::OnLoadComplete()
         return;
     ItemDropContext params;
     params.m_job = pPlayer->FUN_141654700();
-    params.m_gender = FUN_141658e60(pPlayer);
+    params.m_gender = ((class PC*)(class Unk_SibPlayer*)(pPlayer))->FUN_141658e60();
     reinterpret_cast<std::vector<ItemDropResult>&>(m_rewards).clear();
     ((class Unk_SibDropTable*)TSingleton<ItemDropTable>::GetInstance())->FUN_1402eaf10(nDropBoxId, params, m_rewards, false);
     m_binder.FUN_140d43990();

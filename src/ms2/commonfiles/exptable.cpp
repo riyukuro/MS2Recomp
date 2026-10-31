@@ -54,11 +54,11 @@ CString FUN_14016a5c0(const char* psz, int nCodePage);          // narrows a str
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
-bool FUN_14028f710(Unk_140165cf0* pElem);                                   // the node is an element
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_1408732e0(Unk_140165cf0* pElem, const char* pszName, __int64* pOut);
-int FUN_1408733a0(Unk_140165cf0* pElem, const char* pszName, double* pOut);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, double&);   // C3: was FUN_1408733a0
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CStringA* pOut);
 int FUN_14021af40(CStringA* pStr);                                          // the string as a number
 CStringA FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CStringA strDefault);
@@ -69,7 +69,7 @@ struct Unk_ExpIntAttrView
 {
     int FUN_140197350(const char* pszName, int nDefault);
 };
-CLua* FUN_1401c0db0();
+class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
 bool CExpTable::s_bInit;
@@ -104,7 +104,7 @@ int Unk_ExpGetInt(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 double Unk_ExpGetDouble(Unk_140165cf0* pElem, const char* pszName, double fDefault)
 {
     double fValue;
-    if (FUN_1408733a0(pElem, pszName, &fValue) != 0)
+    if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, *(double*)(&fValue)) != 0)
         return fDefault;
     return fValue;
 }
@@ -113,7 +113,7 @@ double Unk_ExpGetDouble(Unk_140165cf0* pElem, const char* pszName, double fDefau
 __int64 Unk_ExpGetInt64(Unk_140165cf0* pElem, const char* pszName, __int64 nDefault)
 {
     __int64 nValue;
-    if (FUN_1408732e0(pElem, pszName, &nValue) != 0)
+    if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, *(__int64*)(&nValue)) != 0)
         return nDefault;
     return nValue;
 }
@@ -238,7 +238,7 @@ bool CExpTable::LoadNextExp()
     }
     for (Unk_140165cf0* pExp = pRoot->FUN_140165cf0("exp"); pExp != 0; pExp = pExp->FUN_140168650("exp"))
     {
-        if (!FUN_14028f710(pExp))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pExp)))
             continue;
         int nLevel = 0;
         FUN_14086f500(pExp, "level", &nLevel);
@@ -275,13 +275,13 @@ bool CExpTable::LoadCommonExp()
     }
     for (Unk_140165cf0* pExp = pRoot->FUN_140165cf0("exp"); pExp != 0; pExp = pExp->FUN_140168650("exp"))
     {
-        if (!FUN_14028f710(pExp))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pExp)))
             continue;
         int nTableId = 0;
         int nType = -1;
         Unk_ExpGetInt(pExp, "expType", &nType);
         double fFactor = Unk_ExpGetDouble(pExp, "factor", 0);
-        FUN_140873220(pExp, "expTableID", &nTableId);
+        XmlGetAttr((class TiXmlElement*)(pExp), "expTableID", *(unsigned int*)(&nTableId));
         CStringA strTableType = FUN_14015f710(pExp, "tableType", CStringA(""));
         if (nType == -1 || nTableId == 0)
             continue;
@@ -305,23 +305,23 @@ bool CExpTable::LoadPetExp()
     }
     for (Unk_140165cf0* pExp = pRoot->FUN_140165cf0("exp"); pExp != 0; pExp = pExp->FUN_140168650("exp"))
     {
-        if (!FUN_14028f710(pExp))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pExp)))
             continue;
         int nLevel = 0;
         FUN_14086f500(pExp, "level", &nLevel);
         if (nLevel < 1 || nLevel > 99)
             continue;
-        if (FUN_1408732e0(pExp, "normal", &m_petExp[1][nLevel]) != 0)
+        if (XmlGetAttr((class TiXmlElement*)(pExp), "normal", *(__int64*)(&m_petExp[1][nLevel])) != 0)
             Unk_ExpLog(CLogString::GetInstance(), 1, 0x13, L"[Isn't normal EXP level : {0}]", nLevel);
-        if (FUN_1408732e0(pExp, "rare", &m_petExp[2][nLevel]) != 0)
+        if (XmlGetAttr((class TiXmlElement*)(pExp), "rare", *(__int64*)(&m_petExp[2][nLevel])) != 0)
             Unk_ExpLog(CLogString::GetInstance(), 1, 0x13, L"[Isn't normal EXP level : {0}]", nLevel);
-        if (FUN_1408732e0(pExp, "elite", &m_petExp[3][nLevel]) != 0)
+        if (XmlGetAttr((class TiXmlElement*)(pExp), "elite", *(__int64*)(&m_petExp[3][nLevel])) != 0)
             Unk_ExpLog(CLogString::GetInstance(), 1, 0x13, L"[Isn't normal EXP level : {0}]", nLevel);
-        if (FUN_1408732e0(pExp, "excellent", &m_petExp[4][nLevel]) != 0)
+        if (XmlGetAttr((class TiXmlElement*)(pExp), "excellent", *(__int64*)(&m_petExp[4][nLevel])) != 0)
             Unk_ExpLog(CLogString::GetInstance(), 1, 0x13, L"[Isn't normal EXP level : {0}]", nLevel);
-        if (FUN_1408732e0(pExp, "legendary", &m_petExp[5][nLevel]) != 0)
+        if (XmlGetAttr((class TiXmlElement*)(pExp), "legendary", *(__int64*)(&m_petExp[5][nLevel])) != 0)
             Unk_ExpLog(CLogString::GetInstance(), 1, 0x13, L"[Isn't normal EXP level : {0}]", nLevel);
-        if (FUN_1408732e0(pExp, "artifact", &m_petExp[6][nLevel]) != 0)
+        if (XmlGetAttr((class TiXmlElement*)(pExp), "artifact", *(__int64*)(&m_petExp[6][nLevel])) != 0)
             Unk_ExpLog(CLogString::GetInstance(), 1, 0x13, L"[Isn't normal EXP level : {0}]", nLevel);
     }
     return true;
@@ -343,7 +343,7 @@ bool CExpTable::LoadPetEvolution()
     }
     for (Unk_140165cf0* pEvo = pRoot->FUN_140165cf0("petEvolution"); pEvo != 0; pEvo = pEvo->FUN_140168650("petEvolution"))
     {
-        if (FUN_14028f710(pEvo) == 0)
+        if (FUN_14028f710((struct Unk_XmlElement*)(pEvo)) == 0)
             continue;
         unsigned short nItemLevel = FUN_140197350(pEvo, "requireItemLevel", 0);
         Unk_BmBoxPtr<Unk_PetGradeArray> spGrades((Unk_BmNewTag(0)));
@@ -377,7 +377,7 @@ bool CExpTable::ReadExpTable(const CString& strFile)
     for (Unk_140165cf0* pTable = pRoot->FUN_140165cf0("table"); pTable != 0; pTable = pTable->FUN_140168650("table"))
     {
         int nTableId = 0;
-        FUN_140873220(pTable, "expTableID", &nTableId);
+        XmlGetAttr((class TiXmlElement*)(pTable), "expTableID", *(unsigned int*)(&nTableId));
         if (nTableId == 0)
             continue;
         Unk_ExpCurve& curve = m_curves[reinterpret_cast<const unsigned&>(nTableId)];
@@ -388,7 +388,7 @@ bool CExpTable::ReadExpTable(const CString& strFile)
         }
         for (Unk_140165cf0* pBase = pTable->FUN_140165cf0("base"); pBase != 0; pBase = pBase->FUN_140168650("base"))
         {
-            if (FUN_14028f710(pBase) == 0)
+            if (FUN_14028f710((struct Unk_XmlElement*)(pBase)) == 0)
                 continue;
             int nLevel = reinterpret_cast<Unk_ExpIntAttrView*>(pBase)->FUN_140197350("level", 0);
             __int64 nExp = Unk_ExpGetInt64(pBase, "exp", 0);
@@ -471,7 +471,7 @@ __int64 CExpTable::GetPetExp(unsigned short nLevel, int nRow, unsigned short nAr
         return 0x7fffffffffffffffLL;
     if (nLevel > 0x32)
         return 0x7fffffffffffffffLL;
-    return FUN_1401c0db0()->CalcPetExp(m_petExp[nRow][nLevel], nArg);
+    return ((class CLua*)FUN_1401c0db0())->CalcPetExp(m_petExp[nRow][nLevel], nArg);
 }
 
 // @0x1403539d0

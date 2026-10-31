@@ -7,33 +7,54 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 
+namespace
+{
+// ~CAtlComModule (atlbase.h) with Term() kept out of line, as the exe inlines it into the atexit thunk.
+struct AtlComModuleDtor : ATL::_ATL_COM_MODULE
+{
+    __forceinline ~AtlComModuleDtor()
+    {
+        reinterpret_cast<ATL::CAtlComModule*>(this)->Term();
+    }
+};
+
+// ~CAtlWinModule (atlbase.h): Term() inlined to AtlWinModuleTerm, then the members' destructors.
+struct AtlWinModuleDtor : ATL::_ATL_WIN_MODULE
+{
+    __forceinline ~AtlWinModuleDtor()
+    {
+        ATL::AtlWinModuleTerm(this, ATL::_AtlBaseModule.GetModuleInstance());
+    }
+};
+}
+
 // ~CAtlComModule: Term() under an EH frame.
-// MS2-FUNCTIONAL: tail-calls the ATL 14.16 destructor out of line; the exe inlines it
 // @0x142cc99b4
 void FUN_142cc99b4()
 {
-    ATL::_AtlComModule.~CAtlComModule();
+    reinterpret_cast<AtlComModuleDtor&>(ATL::_AtlComModule).~AtlComModuleDtor();
 }
 
 // ~CAtlWinModule: AtlWinModuleTerm with the base module's instance, then the window-class atom array's RemoveAll.
-// MS2-FUNCTIONAL: tail-calls the ATL 14.16 destructor out of line; the exe inlines it
 // @0x142cc99d4
+#pragma optimize("s", on)                                       // cl builds ??__F atexit thunks for size: `and [m], 0` stores
 void FUN_142cc99d4()
 {
-    ATL::_AtlWinModule.~CAtlWinModule();
+    reinterpret_cast<AtlWinModuleDtor&>(ATL::_AtlWinModule).~AtlWinModuleDtor();
 }
+#pragma optimize("", on)
 
 // The second object's copies.
-// MS2-FUNCTIONAL: tail-calls the ATL 14.16 destructor out of line; the exe inlines it
 // @0x142cc9a18
 void FUN_142cc9a18()
 {
-    ATL::_AtlComModule.~CAtlComModule();
+    reinterpret_cast<AtlComModuleDtor&>(ATL::_AtlComModule).~AtlComModuleDtor();
 }
 
-// MS2-FUNCTIONAL: tail-calls the ATL 14.16 destructor out of line; the exe inlines it
 // @0x142cc9a38
+#pragma optimize("s", on)
 void FUN_142cc9a38()
 {
-    ATL::_AtlWinModule.~CAtlWinModule();
+    reinterpret_cast<AtlWinModuleDtor&>(ATL::_AtlWinModule).~AtlWinModuleDtor();
 }
+#pragma optimize("", on)

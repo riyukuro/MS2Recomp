@@ -80,14 +80,13 @@ class Unk_WbConsts { public:
     Unk_WbInt m_8728;
     Unk_WbBool m_8780;
 };
-Unk_WbConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int* FUN_1402056b0(Unk_WbInt* p);
 bool* FUN_140336990(Unk_WbBool* p);
 int FUN_140bb9640(void* pUserData);                                         // the button kind stored with the click handler
 float FUN_14028aed0(float f);
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                      // has the AS object been released
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
-int FUN_1409c17e0(const Scaleform::GFx::Value& v);
 AScript* FUN_140ba7c60(void* pRef);                                         // the movie root
 float FUN_1422b93f0(const Scaleform::GFx::Value& v);                        // the number of a value (asdata.cpp)
 
@@ -133,12 +132,12 @@ void UIWebBrowser::OnLoadInit()
     UIObject::OnLoadInit();
     if (FUN_140ba28d0(&m_30, 0))
         return;
-    m_nSmallSize = FUN_1409c17e0(FUN_1409ee290(&m_30)->FUN_1422baa20("m_textureSize"));
-    m_nMinWidth = *FUN_1402056b0(&FUN_1401d3200()->m_8620);
-    m_nMinHeight = *FUN_1402056b0(&FUN_1401d3200()->m_86d0);
-    m_nMaxWidth = *FUN_1402056b0(&FUN_1401d3200()->m_8678);
-    m_nMaxHeight = *FUN_1402056b0(&FUN_1401d3200()->m_8728);
-    m_bResizable = *FUN_140336990(&FUN_1401d3200()->m_8780);
+    m_nSmallSize = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(FUN_1409ee290(&m_30)->FUN_1422baa20("m_textureSize")))->GetUInt();
+    m_nMinWidth = *FUN_1402056b0(&((class Unk_WbConsts*)FUN_1401d3200())->m_8620);
+    m_nMinHeight = *FUN_1402056b0(&((class Unk_WbConsts*)FUN_1401d3200())->m_86d0);
+    m_nMaxWidth = *FUN_1402056b0(&((class Unk_WbConsts*)FUN_1401d3200())->m_8678);
+    m_nMaxHeight = *FUN_1402056b0(&((class Unk_WbConsts*)FUN_1401d3200())->m_8728);
+    m_bResizable = *FUN_140336990(&((class Unk_WbConsts*)FUN_1401d3200())->m_8780);
     if (m_nWidth == 0 && m_nHeight == 0)
     {
         m_nWidth = m_nMaxWidth;

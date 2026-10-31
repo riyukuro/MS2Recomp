@@ -39,13 +39,16 @@ private:
 MS2_CHECK_SIZE(Unk_HpActorPtr, 0x10);
 class Unk_HpMovie { public: Scaleform::GFx::Value FUN_140e0a8c0(const char* szMethod, CStringW strText, int nState); };
 
-Unk_HpActor* FUN_141bd0cc0(Unk_HpWorld* pWorld);
-Unk_HpActor* FUN_141523c50(Unk_HpActor* pActor);
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_MyPCComp1618* FUN_141523c50();
+};
 __int64 GetServerTime();                                        // server time
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1409e90c0(int nStringId, const int& nYear, const int& nMonth, const int& nDay, const int& nHour,
                        const int& nMinute);
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, void* pScene);
+int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 void FUN_140710590(COutPacket& packet);
 void FUN_140d73bc0(int nStringId, int a2, int a3, CStringW strText);
 void FUN_140d73aa0(CStringW strText, int a2, IMessageListener* pListener, CStringW strTag);
@@ -95,10 +98,10 @@ void UIHomePasswordDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (m_30.IsNull() != 0)
         return;
-    Unk_HpActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance()));
+    Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor != 0)
     {
-        Unk_HpActorPtr ref(FUN_141523c50(pActor));
+        Unk_HpActorPtr ref(((class Unk_HpActor*)((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50()));
         if (ref.FUN_140fa9d30() != 0)
         {
             __int64 nExpire = ref.FUN_14050dee0()->m_38;
@@ -130,7 +133,7 @@ int UIHomePasswordDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, 0))
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, 0))
         return 1;
     if (_stricmp("OnClose", szMethod) == 0)
     {
@@ -154,10 +157,10 @@ int UIHomePasswordDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     }
     else if (_stricmp("OnStop", szMethod) == 0)
     {
-        Unk_HpActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance()));
+        Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pActor != 0)
         {
-            Unk_HpActorPtr ref(FUN_141523c50(pActor));
+            Unk_HpActorPtr ref(((class Unk_HpActor*)((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50()));
             if (ref.FUN_140fa9d30() != 0)
             {
                 __int64 nExpire = ref.FUN_14050dee0()->m_38;
@@ -210,10 +213,10 @@ void UIHomePasswordDialog::FUN_1412c9680(CString strPassword)
 // @0x1412c96d0
 void UIHomePasswordDialog::SendRequestCube(int nMode, CStringW strPassword, int nUnused)
 {
-    Unk_HpActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance()));
+    Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor != 0)
     {
-        Unk_HpActorPtr ref(FUN_141523c50(pActor));
+        Unk_HpActorPtr ref(((class Unk_HpActor*)((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50()));
         if (ref.FUN_140fa9d30() != 0)
         {
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);

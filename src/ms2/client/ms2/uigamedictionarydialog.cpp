@@ -64,7 +64,6 @@ public:
     void FUN_1422e0ab0(const CStringW& str);                // set the text
     CStringW FUN_1422e0b00();                               // the text
 };
-int FUN_1422c76c0(Unk_DictInput* p);                        // the input has the focus
 class ASDialog : public ASDisplayObject {};
 
 // The dictionary data: GameDictionaryManager::GetAll (0x1403b7af0) returns a std::list of TPtrValue<GameDictionaryData>
@@ -84,7 +83,7 @@ public:
     virtual int vfunc_37(void* pRequest);
 #undef DC_V
 };
-Unk_DictPlatform* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 
 // The request (search box) objects.
 class Unk_DictRequest
@@ -111,7 +110,7 @@ struct Unk_DictRequestValue
 
 // Input state, the movie manager, the player and the text hooks.
 class Unk_DictInputState { public: unsigned char FUN_14116d9c0(int a, int b, int c); };
-Unk_DictInputState* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_DictUiMgr { public: int FUN_1422d4e20(CString strKey); };
 Unk_DictUiMgr* FUN_140b632f0();
 WorldService* FUN_1403ed2d0();
@@ -133,7 +132,6 @@ CStringW FUN_14052b9d0(CStringW strKey, const unsigned short& nLevel, const CStr
 CStringW FUN_1406cd420(int nKind);                          // the function name of an npc kind
 CStringW FUN_14083dc40(const wchar_t* szFormat, const int& a, const int& b);
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);
 
 // The AS object with its value member visible (the helpers below read it inline).
 struct Unk_GdScript : AScript
@@ -149,7 +147,7 @@ void FUN_140f47270(AScript* pScript, const char* szName, ASTooltip tooltip)
 {
     ASData data;
     data.FUN_1422b83f0(tooltip.FUN_1422bb890());
-    FUN_1407cd930(&static_cast<Unk_GdScript*>(pScript)->m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&static_cast<Unk_GdScript*>(pScript)->m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x140f47320
@@ -157,7 +155,7 @@ void FUN_140f47320(AScript* pScript, const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&static_cast<Unk_GdScript*>(pScript)->m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&static_cast<Unk_GdScript*>(pScript)->m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x140f48210
@@ -285,13 +283,13 @@ int UIGameDictionaryDialog::vfunc_13()
     if (vfunc_55() != 0 || m_30.IsNull())
         return 0;
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
-    if (pDlg != 0 && FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+    if (pDlg != 0 && ((class Unk_DictInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
     {
         if (FUN_140b632f0() != 0 && FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) == 0)
             return 0;
         if (MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0("m_inputSearch"))
         {
-            if (FUN_1422c76c0(spInput.operator->()) != 0)
+            if (((class ASUIComponent*)(class Unk_DictInput*)(spInput.operator->()))->FUN_1422c76c0() != 0)
                 FUN_140f46c90(spInput->FUN_1422e0b00());
         }
         return 1;
@@ -444,7 +442,7 @@ void UIGameDictionaryDialog::FUN_140f46c90(CStringW strSearch)
     }
     Unk_DictRequest request(0x4f0b);
     request.FUN_1401bac80("m_inputSearch", CStringW(strSearch), 0);
-    int nResult = FUN_140d86260()->vfunc_37(&request);
+    int nResult = ((class Unk_DictPlatform*)FUN_140d86260())->vfunc_37(&request);
     if (nResult == 1)
     {
         m_180 = strSearch;

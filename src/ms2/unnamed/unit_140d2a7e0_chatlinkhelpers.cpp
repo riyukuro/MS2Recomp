@@ -96,11 +96,10 @@ MS2_CHECK_OFFSET(Unk_ChatWindow, m_pMessenger, 0x50);
 
 // shared helpers of other units
 Unk_MdState* FUN_141482e80();
-void FUN_141a24fb0(Unk_ChatLog* pLog, CStringW strText);
 void FUN_141953660(Unk_ChatMessenger* pMessenger, CStringW strText);
 UIMessengerBrowser* FUN_140a3ab70(int nUiId);
-CAchieveManager* FUN_1406c7600();
-CPetManager* FUN_140535320();
+class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
+class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 CStringW FUN_14093e330(CAchieve* pAchieve, int nGrade);
 CStringW FUN_14093b9c0(int nAchieveId, int nGrade);
 CStringW FUN_141425950(int nItemId);                        // the item's name
@@ -124,8 +123,7 @@ unsigned __int64 FUN_140718370(const CStringW& str);
 bool FUN_14053f8c0(unsigned nUid);
 bool FUN_14053f940(unsigned nUid);
 void FUN_140615ca0(MS2Ptr<CItem> spItem, int nMode, ATL::CAtlArray<MS2Ptr<Unk_StatRow> >& rows);
-WorldService* FUN_1403ed2d0();
-extern Unk_Inventory DAT_143ab2a90;                         // the player's inventory
+extern Unk_Inventory g_143ab2a90;                           // the player's inventory
 void FUN_1402a9d70(void*, int, float, float, float, int);
 void FUN_142ca4bc0();                                       // the exe's atexit destructors of the string arrays / marker
 void FUN_142ca4bf0();
@@ -555,7 +553,7 @@ void FUN_140d2cca0(unsigned nId, unsigned nRank)
 {
     CStringW strLink = FUN_140d2d440(nId, nRank);
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
-        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
+        ((class UIMessengerBrowser*)(class Unk_ChatLog*)(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog))->FUN_141a24fb0(CStringW(strLink));
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
         FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
 }
@@ -566,7 +564,7 @@ void FUN_140d2cd80(MS2Ptr<CCashSaleProduct> spProduct)
 {
     CStringW strLink = FUN_140d2da30(spProduct);
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
-        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
+        ((class UIMessengerBrowser*)(class Unk_ChatLog*)(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog))->FUN_141a24fb0(CStringW(strLink));
 }
 
 // Post a chat line of a Merat Market product link.
@@ -575,7 +573,7 @@ void FUN_140d2ce40(MS2Ptr<CMeratMarketProduct> spProduct)
 {
     CStringW strLink = FUN_140d2dc70(spProduct);
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
-        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
+        ((class UIMessengerBrowser*)(class Unk_ChatLog*)(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog))->FUN_141a24fb0(CStringW(strLink));
 }
 
 // Post a chat line of an item link of a uid.
@@ -584,7 +582,7 @@ void FUN_140d2cf00(unsigned __int64 nUid, MS2Ptr<CItem> spItem)
 {
     CStringW strLink = FUN_140d2e090(nUid, spItem);
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
-        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
+        ((class UIMessengerBrowser*)(class Unk_ChatLog*)(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog))->FUN_141a24fb0(CStringW(strLink));
 }
 
 // Post the link of an item.
@@ -601,7 +599,7 @@ void FUN_140d2d060(int nItemId, int nGrade, __int64 nUid)
 {
     CStringW strLink = FUN_140d2e2b0(nItemId, nGrade, nUid);
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
-        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
+        ((class UIMessengerBrowser*)(class Unk_ChatLog*)(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog))->FUN_141a24fb0(CStringW(strLink));
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
         FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
 }
@@ -611,7 +609,7 @@ void FUN_140d2d150(int nItemId, int nGrade)
 {
     CStringW strLink = FUN_140d2e900(nItemId, nGrade);
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
-        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
+        ((class UIMessengerBrowser*)(class Unk_ChatLog*)(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog))->FUN_141a24fb0(CStringW(strLink));
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
         FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
 }
@@ -621,7 +619,7 @@ void FUN_140d2d230(int nNameId, int nGrade, unsigned nCount, int nUid)
 {
     CStringW strLink = FUN_140d2ea90(nNameId, nGrade, nCount, nUid);
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
-        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
+        ((class UIMessengerBrowser*)(class Unk_ChatLog*)(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog))->FUN_141a24fb0(CStringW(strLink));
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
         FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
 }
@@ -632,7 +630,7 @@ void FUN_140d2d330(MS2Ptr<CMeratMarketPremiumProduct> spProduct)
 {
     CStringW strLink = FUN_140d2ec30(spProduct);
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
-        FUN_141a24fb0(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog, CStringW(strLink));
+        ((class UIMessengerBrowser*)(class Unk_ChatLog*)(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog))->FUN_141a24fb0(CStringW(strLink));
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
         FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
 }
@@ -641,13 +639,13 @@ void FUN_140d2d330(MS2Ptr<CMeratMarketPremiumProduct> spProduct)
 // @0x140d2d440
 CStringW FUN_140d2d440(unsigned nId, int nGrade)
 {
-    MS2Ptr<CAchieve> spAchieve = FUN_1406c7600()->Find(nId);
+    MS2Ptr<CAchieve> spAchieve = ((class CAchieveManager*)FUN_1406c7600())->Find(nId);
     if (spAchieve.IsNull())
         return CStringW(L"");
 
     CStringW strDate;
     CStringW strText;
-    PCBase* pPC = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC != NULL)
     {
         int nKind = 2;
@@ -733,16 +731,16 @@ CStringW FUN_140d2e2b0(int nItemId, int nGrade, __int64 nUid)
     Unk_ChatLinkKind eKind = CHATLINK_ITEM_UID;
     CStringW strLink = StringFormat(L"'event:itemTooltip,{0},{1},{2},{3},{4}'", nLinkId, eKind, nUid, nItemId, nGrade);
     CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)nGrade);
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
     if (spItem == NULL)
     {
-        PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPC != NULL)
         {
             spItem = pPC->FUN_141655b80(nUid);
             if (spItem == NULL)
             {
-                spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(nUid);
+                spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(nUid);
             }
             if (spItem == NULL)
                 spItem = MS2_STORE_TABLE.Find(nUid);

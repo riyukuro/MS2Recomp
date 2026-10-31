@@ -100,8 +100,8 @@ struct Unk_DeadTexts
     CString m_strReviveEffect;                           // +0x278
     CString m_strDeathEffect;                            // +0x280
 };
-Unk_DeadConsts* FUN_1401d3200();
-Unk_DeadTexts* FUN_1401d31f0();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 int* FUN_1402056b0(Unk_DeadConstVal* pSlot);
 
 // The npc table row: the corpse effect name at +0x448; FUN_1406ccf20 is CNpcData::GetCorpseHitAble.
@@ -124,7 +124,7 @@ public:
 Unk_DeadNpc* FUN_14096e110(PCBase* pActor);              // as an npc (0 for a player)
 
 void FUN_140ef4330();
-void* FUN_1409331e0();
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 void FUN_1410943b0(PCBase* pActor, int n);
 bool FUN_140184310(const CString& str, const char* psz);   // str == psz
 CString FUN_1409a2360(const char* psz, int n);             // text conversion
@@ -165,7 +165,7 @@ void StateDead::vfunc_4(StateData* pData)
             if (kField.FUN_140885340()->FUN_140375570() != 0)
             {
                 bRevive = true;
-                nAnimId = *FUN_1402056b0(&FUN_1401d3200()->m_reviveAnim);
+                nAnimId = *FUN_1402056b0(&((struct Unk_DeadConsts*)FUN_1401d3200())->m_reviveAnim);
             }
         }
     }
@@ -198,7 +198,7 @@ void StateDead::vfunc_4(StateData* pData)
         if (bRevive == true)
         {
             Unk_EffectTarget kTarget;
-            kTarget.m_strName = FUN_1401d31f0()->m_strReviveEffect;
+            kTarget.m_strName = ((struct Unk_DeadTexts*)FUN_1401d31f0())->m_strReviveEffect;
             kTarget.m_nKind = 1;
             kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
             m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
@@ -206,13 +206,13 @@ void StateDead::vfunc_4(StateData* pData)
         else
         {
             Unk_EffectTarget kTarget;
-            kTarget.m_strName = FUN_1401d31f0()->m_strDeathEffect;
+            kTarget.m_strName = ((struct Unk_DeadTexts*)FUN_1401d31f0())->m_strDeathEffect;
             kTarget.m_nKind = 1;
             kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(kTarget);
         }
         if (reinterpret_cast<PC*>(FUN_1417b84b0())->FUN_141661970() != 0)
-            reinterpret_cast<CGuideManager*>(FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)(8), 0, 0);
+            reinterpret_cast<CGuideManager*>(((void*)FUN_1409331e0()))->AddTrigger((CGuideManager::TriggerType)(8), 0, 0);
     }
 }
 

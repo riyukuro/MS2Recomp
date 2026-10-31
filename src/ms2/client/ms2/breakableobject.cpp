@@ -48,7 +48,7 @@ extern int DAT_1439f8208;                   // shadow quality (graphic option)
 extern int DAT_143ae2960;                   // shadow quality (forced)
 
 // ---- exe functions outside this unit ----
-CPhysXHelper* FUN_1409f7ca0();                                      // TSingleton<CPhysXHelper>::GetInstance
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 efd::ServiceManager* FUN_1413f9850();                               // the framework's service manager
 ecr::SceneGraphService* GetSceneGraphService();                            // the scene graph service
 void FUN_1414f11d0(ecr::SceneGraphService* pService, egf::Entity* pEntity);    // attach the entity's scene graph
@@ -56,7 +56,6 @@ void FUN_1414f1240(ecr::SceneGraphService* pService, egf::Entity* pEntity);    /
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the entity's scene root
 void FUN_14098b3e0(NiAVObject* pRoot, float fAlpha, bool bRecurse); // set the model alpha
 void FUN_141567330(NiAVObject* pRoot, bool bOn);                    // the model's shadow on / off
-void FUN_1414737d0(egf::Entity* pEntity);                           // destroy a client-side entity
 void FUN_140997ab0(egf::EntityPtr spEntity, NiActorManager::CallbackObject* pCb);   // register the actor callback
 CString FUN_140188f50(const char* pszText, unsigned int nCodePage); // UTF-8 -> CString
 void FUN_1401d3700(CString& str);                                   // normalise an object name
@@ -175,7 +174,7 @@ CBreakableObject::~CBreakableObject()
     if (IsTombStone() != 0)
     {
         if (m_spEntity)
-            FUN_1414737d0(m_spEntity);
+            CMainSystem::FUN_1414737d0(m_spEntity);
     }
     m_spEntity = 0;
     FUN_140ae0b90();
@@ -439,9 +438,9 @@ void CBreakableObject::FUN_140adeaf0(int nNow)
         NxVec3 kPos(m_ptPos.x, m_ptPos.y, m_ptPos.z);
         kPos = kPos * 0.01f;
         kPos.z = kPos.z + m_ptSize.z * 0.01f * 0.5f;
-        FUN_1409f7ca0()->FUN_14168a540(0);
+        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
         m_pActor->setGlobalPosition(kPos);
-        FUN_1409f7ca0()->FUN_14168a570();
+        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
         m_bActorDirty = 0;
     }
 }
@@ -661,7 +660,7 @@ void CBreakableObject::MakeNxBoxController()
         return;
     if (m_pActor != 0)
         return;
-    NxScene* pScene = FUN_1409f7ca0()->FUN_14168a1c0();
+    NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
     if (pScene == 0)
         return;
     {
@@ -690,7 +689,7 @@ void CBreakableObject::MakeNxBoxController()
             kActorDesc.globalPose.t = kActorDesc.globalPose.t * 0.01f;
             kActorDesc.globalPose.t.z += kBoxDesc.dimensions.z;
             kActorDesc.globalPose.M.rotZ(m_ptRot.z * 3.1415927f / 180.0f);
-            FUN_1409f7ca0()->FUN_14168a540(0);
+            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
             m_pActor = pScene->createActor(kActorDesc);
             if (m_pActor != 0)
             {
@@ -704,7 +703,7 @@ void CBreakableObject::MakeNxBoxController()
                 }
                 m_pActor->userData = m_spActorData;
             }
-            FUN_1409f7ca0()->FUN_14168a570();
+            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
         }
     }
 }
@@ -741,13 +740,13 @@ void CBreakableObject::FUN_140ae0720()
         return;
     if (m_pActor != 0)
     {
-        NxScene* pScene = FUN_1409f7ca0()->FUN_14168a1c0();
+        NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
         if (pScene != 0)
         {
-            FUN_1409f7ca0()->FUN_14168a540(0);
+            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
             pScene->releaseActor(*m_pActor);
             WorldService::GetInstance()->FUN_141bc8e00();
-            FUN_1409f7ca0()->FUN_14168a570();
+            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
             m_pActor = 0;
         }
     }

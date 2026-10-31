@@ -11,11 +11,25 @@
 140026db0	140028360	sfr_cri_01c	none	44	text	vc9 10-29: split by toolset, CRI CriMv wrappers + CRI Heap (VS2008)
 140028360	14002a0e0	sfr_cri_01	none	65	text	vc9 10-29: split by toolset, Scaleform video player over the CRI easy player (VS2012)
 14002a0e0	14002e548	sfr_cri_02	none	107	text	vc9 10-29: split by toolset, Scaleform Video player, decoders and readers (VS2012)
-14002e548	1400356a0	sfr_cri_02c	none	93	text	vc9 10-29: split by toolset, CRI Movie internals: criMvPly, decoder and reader glue (VS2008)
-1400356a0	140035710	sfr_cri_02d	none	1	text	sfv 10-31: the two r11 rows of the /Od criMvPly objs, whose exe objs were compiled as C (/TC, VS2008)
+14002e548	140030cb0	sfr_cri_02c	none	26	text	vc9 10-29: split by toolset, CRI Movie internals: criMvPly, decoder and reader glue (VS2008)
+140030cb0	140030e50	sfr_cri_02d	none	1	text	sfv 10-31: the /Od criMvPly rows that only byte-match as C (/TC, VS2008): r11 reloads after a call
+140030e50	140031290	sfr_cri_02c	none	12	text	vc9 10-29: split by toolset, CRI Movie internals: criMvPly, decoder and reader glue (VS2008)
+140031290	1400313d0	sfr_cri_02d	none	1	text	sfv 10-31: the /Od criMvPly rows that only byte-match as C (/TC, VS2008): r11 reloads after a call
+1400313d0	140031990	sfr_cri_02c	none	8	text	vc9 10-29: split by toolset, CRI Movie internals: criMvPly, decoder and reader glue (VS2008)
+140031990	140031aa0	sfr_cri_02d	none	1	text	sfv 10-31: the /Od criMvPly rows that only byte-match as C (/TC, VS2008): r11 reloads after a call
+140031aa0	140034330	sfr_cri_02c	none	24	text	vc9 10-29: split by toolset, CRI Movie internals: criMvPly, decoder and reader glue (VS2008)
+140034330	1400344f0	sfr_cri_02d	none	1	text	sfv 10-31: the /Od criMvPly rows that only byte-match as C (/TC, VS2008): r11 reloads after a call
+1400344f0	140034d40	sfr_cri_02c	none	9	text	vc9 10-29: split by toolset, CRI Movie internals: criMvPly, decoder and reader glue (VS2008)
+140034d40	140034e70	sfr_cri_02d	none	1	text	sfv 10-31: the /Od criMvPly rows that only byte-match as C (/TC, VS2008): r11 reloads after a call
+140034e70	1400356a0	sfr_cri_02c	none	9	text	vc9 10-29: split by toolset, CRI Movie internals: criMvPly, decoder and reader glue (VS2008)
+1400356a0	140035710	sfr_cri_02d	none	1	text	sfv 10-31: the /Od criMvPly rows that only byte-match as C (/TC, VS2008): r11 reloads after a call
 140035710	140035800	sfr_cri_02c	none	1	text	vc9 10-29: split by toolset, CRI Movie internals: criMvPly, decoder and reader glue (VS2008)
-140035800	1400358d0	sfr_cri_02d	none	1	text	sfv 10-31: the two r11 rows of the /Od criMvPly objs, whose exe objs were compiled as C (/TC, VS2008)
-1400358d0	140039ea8	sfr_cri_02c	none	97	text	vc9 10-29: split by toolset, CRI Movie internals: criMvPly, decoder and reader glue (VS2008)
+140035800	1400359e0	sfr_cri_02d	none	2	text	sfv 10-31: the /Od criMvPly rows that only byte-match as C (/TC, VS2008): r11 reloads after a call
+1400359e0	140036470	sfr_cri_02c	none	19	text	vc9 10-29: split by toolset, CRI Movie internals: criMvPly, decoder and reader glue (VS2008)
+140036470	140036590	sfr_cri_02d	none	1	text	sfv 10-31: the /Od criMvPly rows that only byte-match as C (/TC, VS2008): r11 reloads after a call
+140036590	140036b80	sfr_cri_02c	none	4	text	vc9 10-29: split by toolset, CRI Movie internals: criMvPly, decoder and reader glue (VS2008)
+140036b80	140036d50	sfr_cri_02d	none	1	text	sfv 10-31: the /Od criMvPly rows that only byte-match as C (/TC, VS2008): r11 reloads after a call
+140036d50	140039ea8	sfr_cri_02c	none	71	text	vc9 10-29: split by toolset, CRI Movie internals: criMvPly, decoder and reader glue (VS2008)
 140039ea8	14003b6e0	sfr_cri_03a	none	40	text	vc9 10-30: split at the exe obj boundary, CRI base /Os objs: criCs, criAtomic, criUtf, criUsfCmn (VS2008)
 14003b6e0	14003ed40	sfr_cri_03	none	50	text	vc9 10-30: split at the exe obj boundaries, CRI /Od criMvPly/criVmpv/criVdec objs (VS2008)
 14003ed40	14003eeb0	sfr_cri_03d	none	1	text	vc9 10-30: the two r11 rows of the /Od criMvPly objs, whose exe objs were compiled as C (/TC, VS2008)

@@ -2,16 +2,14 @@
 // part 2: the sort-index table (create / free) with its qsort value comparator, and the stored-column size sum.
 // Names are invented from use.
 // MS2-UNIT: unit_140046a1c
-// MS2-RANGE: 0x140046a1c-0x140046e04 .text$mn
+// MS2-TOOLSET: vc9
+// MS2-RANGE: 0x140046a1c-0x140046e04 .text
 #define MS2_THIS_FILE ""
-#include "ms2/placeholder/ms2stdafx.h"
 #include <stdlib.h>
 #include <string.h>
-#include "ms2/ms2recover.h"
-#include "ms2/ms2layout.h"
-#include "hook/ms2hook.h"
-
-#pragma optimize("gsy", on)                                       // statically linked CRI library: built with /O2, not /Od
+#pragma function(memset, memcpy, strcmp)
+#pragma optimize("s", on)                                       // this exe CRI obj was built for size (/Os)
+#define MS2_CHECK_SIZE(T, n) typedef char T##_size_check[sizeof(T) == (n) ? 1 : -1]
 
 // ---- unit-local views (the full layouts live in unit_140046e04) ----------------------------------------------------------
 struct Unk_CriUtfColumn                                         // 0x30 bytes
@@ -74,7 +72,6 @@ unsigned FUN_140047158(unsigned type);
 
 // @0x140046a1c
 // qsort comparator over two row numbers: orders by the sort column's value, descending for numbers, ascending for text.
-// MS2-FUNCTIONAL: branch layout and flag reuse differ from the exe's signed-compare chains
 int FUN_140046a1c(const unsigned* pA, const unsigned* pB)
 {
     unsigned rowA = *pA;
@@ -87,26 +84,23 @@ int FUN_140046a1c(const unsigned* pA, const unsigned* pB)
     case 0:
         return a.v.u8 < b.v.u8 ? 1 : (b.v.u8 < a.v.u8 ? -1 : 0);
     case 1:
-        return a.v.s8 < b.v.s8 ? 1 : (a.v.s8 == b.v.s8 ? 0 : -1);
+        return a.v.s8 < b.v.s8 ? 1 : (a.v.s8 > b.v.s8 ? -1 : 0);
     case 2:
         return a.v.u16 < b.v.u16 ? 1 : (b.v.u16 < a.v.u16 ? -1 : 0);
     case 3:
-        return a.v.s16 < b.v.s16 ? 1 : (a.v.s16 == b.v.s16 ? 0 : -1);
+        return a.v.s16 < b.v.s16 ? 1 : (a.v.s16 > b.v.s16 ? -1 : 0);
     case 4:
         return a.v.u32 < b.v.u32 ? 1 : (b.v.u32 < a.v.u32 ? -1 : 0);
     case 5:
-        return a.v.s32 < b.v.s32 ? 1 : (a.v.s32 == b.v.s32 ? 0 : -1);
+        return a.v.s32 < b.v.s32 ? 1 : (a.v.s32 > b.v.s32 ? -1 : 0);
     case 6:
+        return a.v.s64 < b.v.s64 ? 1 : (a.v.s64 > b.v.s64 ? -1 : 0);
     case 7:
-        return a.v.s64 < b.v.s64 ? 1 : (a.v.s64 == b.v.s64 ? 0 : -1);
+        return a.v.s64 < b.v.s64 ? 1 : (a.v.s64 > b.v.s64 ? -1 : 0);
     case 8:
-        if (b.v.f32 > a.v.f32)
-            return 1;
-        return a.v.f32 > b.v.f32 ? -1 : 0;                         // unordered (NaN) compares equal
+        return a.v.f32 < b.v.f32 ? 1 : (a.v.f32 > b.v.f32 ? -1 : 0);   // unordered (NaN) compares equal
     case 9:
-        if (b.v.f64 > a.v.f64)
-            return 1;
-        return a.v.f64 > b.v.f64 ? -1 : 0;                         // unordered (NaN) compares equal
+        return a.v.f64 < b.v.f64 ? 1 : (a.v.f64 > b.v.f64 ? -1 : 0);   // unordered (NaN) compares equal
     case 10:
     {
         const char* strA = criUtfRtv_GetDataStr((struct CriUtfRtvView const*)(DAT_143ba9d40), rowA, DAT_143ba9d48);
@@ -119,8 +113,7 @@ int FUN_140046a1c(const unsigned* pA, const unsigned* pB)
 }
 
 // @0x140046c0c
-// MS2-FUNCTIONAL: same checks, allocation and sort as the exe; /Ox register allocation differs (r12/r14/r15 roles)
-unsigned long long FUN_140046c0c(Unk_CriUtfSortTable* table, unsigned slot, unsigned column)
+int FUN_140046c0c(Unk_CriUtfSortTable* table, unsigned slot, unsigned column)
 {
     if (table->m_heap == 0)
     {
@@ -153,31 +146,30 @@ unsigned long long FUN_140046c0c(Unk_CriUtfSortTable* table, unsigned slot, unsi
     table->m_slots[slot].key = column;
     for (unsigned i = 0; i < n; i++)
         table->m_slots[slot].value[i] = i;
+    unsigned* idx = table->m_slots[slot].value;
     DAT_143ba9d40 = table;
     DAT_143ba9d48 = column;
-    qsort(table->m_slots[slot].value, n, 4, (int (*)(const void*, const void*))FUN_140046a1c);
+    qsort(idx, n, 4, (int (*)(const void*, const void*))FUN_140046a1c);
     return 1;
 }
 
 // @0x140046d50
 void FUN_140046d50(Unk_CriUtfSortTable* table, unsigned slot)
 {
-    const char* err;
-    if (slot < 4)
+    if (slot >= 4)
     {
-        if (table->m_slots[slot].value != 0)
-        {
-            if (table->m_heap != 0)
-                FUN_14003a0ec(table->m_heap, table->m_slots[slot].value);
-            table->m_slots[slot].key = (unsigned)-1;
-            table->m_slots[slot].value = 0;
-            return;
-        }
-        err = "E08012805:Internal Error";
+        FUN_140038ddc(0, "E08012804:Invalid table no");
+        return;
     }
-    else
-        err = "E08012804:Invalid table no";
-    FUN_140038ddc(0, err);
+    if (table->m_slots[slot].value == 0)
+    {
+        FUN_140038ddc(0, "E08012805:Internal Error");
+        return;
+    }
+    if (table->m_heap != 0)
+        FUN_14003a0ec(table->m_heap, table->m_slots[slot].value);
+    table->m_slots[slot].key = (unsigned)-1;
+    table->m_slots[slot].value = 0;
 }
 
 // @0x140046dbc

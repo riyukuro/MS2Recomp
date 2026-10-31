@@ -166,14 +166,14 @@ template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wch
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_14028f5d0(Unk_140165cf0* pParent, const char* pszChild, std::vector<Unk_140165cf0*>& arrOut);
-int FUN_14015f500(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);
+int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
+int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 
 // The item option generator (FUN_140166430()): a random rank for an item.
 class Unk_OptionMgr { public: int FUN_1405f4d30(unsigned nItemId, int nArg, short nLevel, int nRandom, bool bAssist); };
-Unk_OptionMgr* FUN_140166430();
+class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
@@ -202,16 +202,16 @@ bool ItemDropData::Load(Unk_140165cf0* pElem)
     FUN_140873220(pElem, "itemID", m_itemID);
     FUN_140873220(pElem, "itemID2", m_itemID2);
     FUN_140873220(pElem, "weight", m_weight);
-    FUN_14015f500(pElem, "uiItemRank", &m_uiItemRank);
-    FUN_1408736d0(pElem, "assistBonus", m_assistBonus);
-    FUN_1408736d0(pElem, "constraintsQuest", m_constraintsQuest);
+    Unk_ReadRank((class Unk_XmlNode*)(pElem), "uiItemRank", &m_uiItemRank);
+    XmlQuery((class TiXmlElement*)(pElem), "assistBonus", m_assistBonus);
+    XmlQuery((class TiXmlElement*)(pElem), "constraintsQuest", m_constraintsQuest);
     FUN_1408731e0(pElem, "enchantLevel", m_enchantLevel);
     FUN_140873220(pElem, "socketDataID", m_socketDataID);
-    FUN_1408736d0(pElem, "tradableCountDeduction", m_tradableCountDeduction);
-    FUN_1408736d0(pElem, "rePackingLimitCountDeduction", m_rePackingLimitCountDeduction);
-    FUN_1408736d0(pElem, "disableBreak", m_disableBreak);
+    XmlQuery((class TiXmlElement*)(pElem), "tradableCountDeduction", m_tradableCountDeduction);
+    XmlQuery((class TiXmlElement*)(pElem), "rePackingLimitCountDeduction", m_rePackingLimitCountDeduction);
+    XmlQuery((class TiXmlElement*)(pElem), "disableBreak", m_disableBreak);
     FUN_1408730a0(pElem, "isBindCharacter", m_isBindCharacter);
-    FUN_1408736d0(pElem, "showIconOnGachaUI", m_showIconOnGachaUI);
+    XmlQuery((class TiXmlElement*)(pElem), "showIconOnGachaUI", m_showIconOnGachaUI);
     unsigned nMinCount = 1;
     unsigned nMaxCount = 0;
     FUN_140873220(pElem, "minCount", nMinCount);
@@ -424,7 +424,7 @@ int ItemDropData::GetDropRank(int nArg, int nLevel, bool bAssist)
 {
     if (m_grade.Remains())
         return PickGrade();
-    int nRank = FUN_140166430()->FUN_1405f4d30(GetItemId(), nArg, nLevel, rand(), bAssist);
+    int nRank = ((class Unk_OptionMgr*)FUN_140166430())->FUN_1405f4d30(GetItemId(), nArg, nLevel, rand(), bAssist);
     return nRank;
 }
 MS2_REPLACE_METHOD(0x1402E75D0, ItemDropData, GetDropRank, 149, 0xEF08F3AC);
@@ -502,7 +502,7 @@ bool ItemDropDataIndividual::Load(Unk_140165cf0* pElem)
         return false;
     FUN_140873220(pElem, "properJobWeight", m_properJobWeight);
     FUN_140873220(pElem, "imProperJobWeight", m_imProperJobWeight);
-    FUN_1408736d0(pElem, "isAnnounce", m_isAnnounce);
+    XmlQuery((class TiXmlElement*)(pElem), "isAnnounce", m_isAnnounce);
     XmlValue(pElem, "showTooltip", m_showTooltip);
     return true;
 }
@@ -554,7 +554,7 @@ bool ItemDropGlobalGroup::Load(Unk_140165cf0* pElem)
     FUN_140873220(pElem, "dropGroupID", m_dropGroupID);
     for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("v"))
     {
-        if (!FUN_14028f710(pChild))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
         MS2Ptr<ItemDropDataGlobal> pData(new ItemDropDataGlobal);
         if (!pData->Load(pChild))
@@ -741,7 +741,7 @@ bool ItemDropGlobalBoxGroup::Load(Unk_140165cf0* pElem)
     FUN_140873220(pElem, "dropBoxID", m_dropBoxID);
     for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("v"))
     {
-        if (!FUN_14028f710(pChild))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
         MS2Ptr<ItemDropGlobalBox> pBox(new ItemDropGlobalBox);
         if (!pBox->Load(pChild))
@@ -823,7 +823,7 @@ bool ItemDropIndividualGroup::Load(Unk_140165cf0* pElem)
     }
     for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("v"))
     {
-        if (!FUN_14028f710(pChild))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
         MS2Ptr<ItemDropDataIndividual> pData(new ItemDropDataIndividual);
         pData->Load(pChild);
@@ -879,7 +879,7 @@ bool ItemDropIndividualBox::Load(Unk_140165cf0* pElem)
     FUN_140873220(pElem, "probVer", m_probVer);
     for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("group"))
     {
-        if (!FUN_14028f710(pChild))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
         MS2Ptr<ItemDropIndividualGroup> pGroup(new ItemDropIndividualGroup);
         if (!pGroup->Load(pChild))
@@ -1504,7 +1504,7 @@ bool ItemDropTable::LoadGlobalGroups()
     }
     for (Unk_140165cf0* pElem : pRoot->FUN_140165cf0("dropBox"))
     {
-        if (!FUN_14028f710(pElem))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
             continue;
         MS2Ptr<ItemDropGlobalGroup> pGroup(new ItemDropGlobalGroup);
         if (!pGroup->Load(pElem))

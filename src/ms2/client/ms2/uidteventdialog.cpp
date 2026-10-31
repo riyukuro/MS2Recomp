@@ -189,9 +189,9 @@ class Unk_DTCtxMgr { public: void FUN_1408d7db0(ATL::CAtlArray<Unk_DTPtr<Unk_DTC
 
 // A sound / effect player (singleton 0x140e45740).
 class Unk_DTSound : public UIAlignWidgetManager { };
-Unk_DTSound* FUN_140e45740();
+class Unk_140e45740* FUN_140e45740();   // C3: was FUN_140e45740
 
-UISwfEntity* FUN_140c9b540(int nUIType);                        // a UI object by type id
+class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
 
 // CAtlArray<unsigned int> (32 bytes) with all members in earlier units.
 class Unk_DTUIntArray
@@ -369,7 +369,7 @@ void UIDTEventDialog::vfunc_43()
         } else
             bMove = true;
         UISwfEntity* pOwner;
-        if (bMove && (pOwner = FUN_140c9b540(0x4e29)) != NULL) {
+        if (bMove && (pOwner = ((class UISwfEntity*)FUN_140c9b540(0x4e29))) != NULL) {
             if (pOwner->FUN_1422dc430() == 0)
                 m_60 = 1;
             else {
@@ -484,7 +484,7 @@ int UIDTEventDialog::vfunc_84(Unk_DTPtr<RewardItem> pReward)
     obj.FUN_1407cb9c0("gaugeRate", nGauge);
     obj.FUN_1407cb9c0("vibrate", bVibrate);
     m_30->Invoke("addItem", obj.FUN_1422bb870());
-    FUN_140e45740()->FUN_1422e6d00(0);
+    ((class Unk_DTSound*)FUN_140e45740())->FUN_1422e6d00(0);
     return 1;
 }
 MS2_REPLACE_METHOD(0x140F36620, UIDTEventDialog, vfunc_84, 2429, 0x4EA48E5D);

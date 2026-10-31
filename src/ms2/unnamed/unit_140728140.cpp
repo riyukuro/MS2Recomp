@@ -32,12 +32,12 @@ void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* form
 void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* format, const CString& first,
                    const unsigned& second);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& rOut);
-int FUN_140873890(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_1408730a0(Unk_140165cf0* pElem, const char* pszName, bool& rOut);
-int FUN_1408731a0(Unk_140165cf0* pElem, const char* pszName, unsigned short* pOut);
-int FUN_140873360(Unk_140165cf0* pElem, const char* pszName, float* pOut);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
 CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);
 void FUN_14015f050(const CStringA& str, ATL::CAtlArray<CStringA>* pOut, const char* pszSep);   // split
@@ -72,7 +72,7 @@ static int FUN_140729460(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
         return 2;
     }
     int nValue = 0;
-    int nResult = FUN_140873890(pElem, pszName, &nValue);
+    int nResult = XmlQuery((class TiXmlElement*)(pElem), pszName, *(int*)(&nValue));
     if (nResult != 0)
         return nResult;
     *pnOut = nValue;
@@ -98,28 +98,28 @@ CPetData::~CPetData() {}
 // @0x140728320
 bool CPetData::Load(Unk_140165cf0* pNode)
 {
-    if (!FUN_14028f710(pNode))
+    if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
         return false;
-    FUN_140873220(pNode, "code", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "code", m_nId);
     FUN_140729460(pNode, "type", &m_nType);
-    FUN_140873220(pNode, "slotNum", m_nSlotNum);
-    FUN_140873220(pNode, "collectGroupId", m_nCollectGroupId);
-    FUN_1408730a0(pNode, "isCollectPreview", m_bCollectPreview);
-    FUN_140873220(pNode, "tamingGroupID", m_nTamingGroupId);
-    FUN_1408730a0(pNode, "enablePetExtraction", m_bEnablePetExtraction);
-    FUN_140873220(pNode, "itemIDs", m_nItemIds);
+    XmlGetAttr((class TiXmlElement*)(pNode), "slotNum", m_nSlotNum);
+    XmlGetAttr((class TiXmlElement*)(pNode), "collectGroupId", m_nCollectGroupId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "isCollectPreview", m_bCollectPreview);
+    XmlGetAttr((class TiXmlElement*)(pNode), "tamingGroupID", m_nTamingGroupId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "enablePetExtraction", m_bEnablePetExtraction);
+    XmlGetAttr((class TiXmlElement*)(pNode), "itemIDs", m_nItemIds);
     FUN_14015f050(FUN_14015f710(pNode, "tamingAiPresets", CString("")), &m_tamingAiPresets, ",");
     unsigned int nSkillId = 0;
     unsigned short nSkillLevel = 0;
-    FUN_140873220(pNode, "passiveSkillId", nSkillId);
-    FUN_1408731a0(pNode, "passiveSkillLevel", &nSkillLevel);
+    XmlGetAttr((class TiXmlElement*)(pNode), "passiveSkillId", nSkillId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "passiveSkillLevel", *(unsigned short*)(&nSkillLevel));
     m_passiveSkills.SetAt(nSkillId, nSkillLevel);
-    FUN_140873360(pNode, "warpDistance", &m_fWarpDistance);
-    FUN_140873360(pNode, "traceDistance", &m_fTraceDistance);
-    FUN_140873360(pNode, "battleTraceDistance", &m_fBattleTraceDistance);
-    FUN_140873360(pNode, "nameTagOffsetY", &m_fNameTagOffsetY);
-    FUN_1408731a0(pNode, "optionLevel", &m_nOptionLevel);
-    FUN_140873360(pNode, "constantOptionFactor", &m_fConstantOptionFactor);
+    XmlGetAttr((class TiXmlElement*)(pNode), "warpDistance", *(float*)(&m_fWarpDistance));
+    XmlGetAttr((class TiXmlElement*)(pNode), "traceDistance", *(float*)(&m_fTraceDistance));
+    XmlGetAttr((class TiXmlElement*)(pNode), "battleTraceDistance", *(float*)(&m_fBattleTraceDistance));
+    XmlGetAttr((class TiXmlElement*)(pNode), "nameTagOffsetY", *(float*)(&m_fNameTagOffsetY));
+    XmlGetAttr((class TiXmlElement*)(pNode), "optionLevel", *(unsigned short*)(&m_nOptionLevel));
+    XmlGetAttr((class TiXmlElement*)(pNode), "constantOptionFactor", *(float*)(&m_fConstantOptionFactor));
     {
         CStringW strIds;
         CStringW strLevels;

@@ -59,17 +59,29 @@ extern Unk_Inventory DAT_143ab2a90;
 MS2Ptr<Unk_RideeData> FUN_1407844b0(int nRideeId);                         // 0x1407844b0 the ridee row
 Unk_RideeData* FUN_1407895d0(MS2Ptr<Unk_RideeData>& refRow);               // 0x1407895d0 the row
 class Unk_SmPetTable { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nPetId); };   // 0x1407290f0 that pet row (member)
-Unk_SmPetTable* FUN_14052d210();                                           // 0x14052d210 the pet-data table
+class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 
 // The world service, its effect manager and the field objects it hands out.
-void* FUN_1403ed2d0();                                                     // 0x1403ed2d0 the world
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141bd1a10(class Unk_WsC_GameObj*);
+    class Unk_WsC_GameObj* FUN_141bd1a50(class Unk_WsC_GameObj*);
+    static class WorldService* GetInstance();
+};
 void* FUN_1403ed280();                                                     // 0x1403ed280 the effect manager
-int FUN_141bd1a10(void* pWorld, void* pOwner);                             // 0x141bd1a10 the field the actor is in
-void* FUN_141bd1a50(void* pWorld, void* pActor);                           // 0x141bd1a50 the field object
-void FUN_1411a4a00(void* pEffects, NoticeMessage& msg);                    // 0x1411a4a00 play an effect once
-void FUN_141191330(void* pField, int nId);                                 // 0x141191330
-void FUN_141190900(void* pField, int nId);                                 // 0x141190900
-void* FUN_140b12380(void* pField);                                         // 0x140b12380 the field's drop manager
+class CEffectService   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned int FUN_1411a4a00(class Unk_EffectTarget&);
+};
+class CDropItem   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141190900(int);
+    void FUN_141191330(int);
+};
+void* FUN_140b12380(class Unk_WsC_GameObj*);   // C3: was FUN_140b12380
 
 // The actor registry the pet state queries by entity id.
 void* FUN_141b6f910();                                                     // 0x141b6f910
@@ -77,19 +89,35 @@ int FUN_140b7f6a0(void* pRegistry, const egf::EntityID& kEntity);          // 0x
 
 // The client settings / skill services.
 void* FUN_1409a8b10();                                                     // 0x1409a8b10 the client-settings service
-void* FUN_140b123b0(void* pCfg);                                           // 0x140b123b0
-void* FUN_14124ab20(void* pCfg);                                           // 0x14124ab20
-void* FUN_140535320();                                                     // 0x140535320 the skill service
+class Unk_PetClientSettings   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_PetOptFlags* FUN_140b123b0();
+};
+class CGameOption   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_CommunityStateA* FUN_14124ab20();
+};
+class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 void* FUN_140c8b450(void* pSvc);                                           // 0x140c8b450
 class Unk_SmPetSkills { public: MS2Ptr<Unk_ItemEquipData> FUN_140c892c0(int nSkillId); };   // 0x140c892c0 (member)
-Unk_SmPetSkills* FUN_140c8b430(void* pSvc);                                // 0x140c8b430
+class CPetManager   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_PetManagerEmpty* FUN_140c8b430();
+};
 bool FUN_1401c0050(MS2Ptr<Unk_ItemEquipData>& ref, int n);                 // 0x1401c0050 the reference is set
 
 // The pet actor and its manager.
-void* FUN_140b10360(PCBase* pPet);                                         // 0x140b10360 the pet's manager
-int FUN_140b11e90(void* pList, void* pItem);                               // 0x140b11e90 index of the item
-void FUN_140b11180(void* pPet);                                            // 0x140b11180 update
-void FUN_140b114e0(PCBase* pPet, int nAnimId);                             // 0x140b114e0 play a pet animation
+class CPet   // C3: member view for the former free stand-ins
+{
+public:
+    class PCBase* FUN_140b10360();
+    int FUN_140b11180();
+    void FUN_140b114e0(int);
+};
+int FUN_140b11e90(struct Unk_PetFoodBook*, class PCBase*);   // C3: was FUN_140b11e90
 struct Unk_SmPet
 {
     MS2Ptr<Unk_PetRow> FUN_140b102b0();                                    // 0x140b102b0 CPet: the pet's row (by value)
@@ -98,8 +126,12 @@ struct Unk_SmPet
 int FUN_140f48d40(void* pComp);                                            // 0x140f48d40 the component's flag
 
 // The client constants table and its Value<T> accessors.
-void* FUN_1401d3200();                                                     // 0x1401d3200 the constants table
-int FUN_140ad5c50(const void* pValue);                                     // 0x140ad5c50 Value<int>::Read
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+class Unk_SSGConstValue   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140ad5c50();
+};
 const unsigned* FUN_1401d7c10(const void* pValue);                         // 0x1401d7c10 Value<unsigned>::Get
 
 // The casting bar (statehomeconvenient.cpp / statenurturing.cpp own the real dialog).
@@ -183,7 +215,7 @@ void StateSummon::vfunc_4(StateData* pData)
     m_n48 = 0;
     State::vfunc_4(pData);
 
-    int nDuration = FUN_140ad5c50(reinterpret_cast<const char*>(FUN_1401d3200()) + 0x33c0);
+    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x33c0))->FUN_140ad5c50();
     int nLabel = 0;
 
     m_spData.AssignRaw(dynamic_cast<StateSummonData*>(pData));
@@ -196,11 +228,11 @@ void StateSummon::vfunc_4(StateData* pData)
             if (spItem->FUN_140525640() != 0)
             {
                 int nPetId = spItem->FUN_140527840()->FUN_14053dc60();
-                MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(nPetId);
+                MS2Ptr<Unk_PetRow> spRow = ((class Unk_SmPetTable*)FUN_14052d210())->FUN_1407290f0(nPetId);
                 if (spRow.get() != 0)
                 {
                     nLabel = 0x64f;
-                    nDuration = *FUN_1401d7c10(reinterpret_cast<const char*>(FUN_1401d3200()) + 0x7d30);
+                    nDuration = *FUN_1401d7c10(reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x7d30);
                 }
                 m_n10 = 0x83;
             }
@@ -224,7 +256,7 @@ void StateSummon::vfunc_4(StateData* pData)
         BOOL bPreload = TRUE;
         if (FUN_1417b8560() == 0)
         {
-            if (*reinterpret_cast<unsigned char*>(static_cast<char*>(FUN_140b123b0(FUN_1409a8b10())) + 0x12) != 0)
+            if (*reinterpret_cast<unsigned char*>(static_cast<char*>(((void*)((class Unk_PetClientSettings*)(void*)(FUN_1409a8b10()))->FUN_140b123b0())) + 0x12) != 0)
                 bPreload = FALSE;
         }
         if (bPreload)
@@ -232,9 +264,9 @@ void StateSummon::vfunc_4(StateData* pData)
             // A NoticeMessage (0x70 bytes): the field id goes to m_nObject, the owner's object id to SetActor.
             NoticeMessage msg;
             msg.m_strName = "CH/Common/Eff_PetOn.xml";
-            msg.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), m_pOwner);
+            msg.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
             msg.SetActor(reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c580());
-            FUN_1411a4a00(FUN_1403ed280(), msg);
+            ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a4a00(*(class Unk_EffectTarget*)&static_cast<class NoticeMessage&>(msg));
         }
     }
 
@@ -294,7 +326,7 @@ void StateSummon::vfunc_8(double fTime)
                 if (spItem->FUN_140525640() != 0)
                 {
                     int nPetId = spItem->FUN_140527840()->FUN_14053dc60();
-                    MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(nPetId);
+                    MS2Ptr<Unk_PetRow> spRow = ((class Unk_SmPetTable*)FUN_14052d210())->FUN_1407290f0(nPetId);
                     if (spRow.get() != 0)
                     {
                         if (m_spData.get()->m_b18 != 0)
@@ -331,7 +363,7 @@ void StateSummon::vfunc_8(double fTime)
                         *reinterpret_cast<__int64*>(reinterpret_cast<char*>(spAction.operator->()) + 0x38) =
                             spItem->FUN_140526a50();
                         *(reinterpret_cast<char*>(spAction.operator->()) + 0x28) =
-                            *(static_cast<char*>(FUN_14124ab20(FUN_1409a8b10())) + 2);
+                            *(static_cast<char*>(((void*)((class CGameOption*)(void*)(FUN_1409a8b10()))->FUN_14124ab20())) + 2);
                         COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
                         packet.Encode1(0);
                         spAction->vfunc_1(reinterpret_cast<COutputStream*>(&packet));
@@ -406,7 +438,7 @@ void StateGoToHome::vfunc_4(StateData* pData)
             reinterpret_cast<PC*>(pRider)->SendRequestCube();
     }
 
-    int nDuration = FUN_140ad5c50(reinterpret_cast<const char*>(FUN_1401d3200()) + 0x35d0);
+    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x35d0))->FUN_140ad5c50();
     efd::utf8string strAnim("Object_React_A");
     m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
 
@@ -482,7 +514,7 @@ void StateRecall::vfunc_4(StateData* pData)
             reinterpret_cast<PC*>(pRider)->SendRequestCube();
     }
 
-    int nDuration = FUN_140ad5c50(reinterpret_cast<const char*>(FUN_1401d3200()) + 0x3628);
+    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x3628))->FUN_140ad5c50();
     efd::utf8string strAnim("Object_React_A");
     m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
 
@@ -594,10 +626,10 @@ void StateSummonIdle::vfunc_3(double fTime)
     PCBase* pPet = FUN_1417b83a0();
     if (pPet == 0)
         return;
-    void* pManager = FUN_140b10360(pPet);
+    void* pManager = ((void*)((class CPet*)(class PCBase*)(pPet))->FUN_140b10360());
     if (pManager == 0)
         return;
-    FUN_140b11180(pPet);
+    ((class CPet*)(void*)(pPet))->FUN_140b11180();
 }
 
 // @0x1417f8d50
@@ -691,20 +723,20 @@ void FUN_1417f9100(StateSummonIdle* pState, int nActorId)
     PCBase* pPet = pState->FUN_1417b83a0();
     if (pPet == 0)
         return;
-    void* pManager = FUN_140b10360(pPet);
+    void* pManager = ((void*)((class CPet*)(class PCBase*)(pPet))->FUN_140b10360());
     if (pManager != 0)
     {
         if (pState->m_t48.FUN_140268870(*FUN_1401d7c10(
-                reinterpret_cast<const char*>(FUN_1401d3200()) + 0x7de0)) != 0)
+                reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x7de0)) != 0)
             FUN_1417f94a0(pState, 0x5a);
 
         if (pState->m_t50.FUN_140268870(*FUN_1401d7c10(
-                reinterpret_cast<const char*>(FUN_1401d3200()) + 0x7e90)) != 0)
+                reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x7e90)) != 0)
         {
-            int nIndex = FUN_140b11e90(reinterpret_cast<char*>(FUN_140c8b450(FUN_140535320())) + 0x68, pManager);
+            int nIndex = FUN_140b11e90((struct Unk_PetFoodBook*)(reinterpret_cast<char*>(FUN_140c8b450(((void*)FUN_140535320()))) + 0x68), (class PCBase*)(pManager));
             if (nIndex != 0)
             {
-                MS2Ptr<Unk_ItemEquipData> refSkill = FUN_140c8b430(FUN_140535320())->FUN_140c892c0(nIndex);
+                MS2Ptr<Unk_ItemEquipData> refSkill = ((class Unk_SmPetSkills*)((class CPetManager*)(void*)(((void*)FUN_140535320())))->FUN_140c8b430())->FUN_140c892c0(nIndex);
                 if (FUN_1401c0050(refSkill, 0))
                     FUN_1417f94a0(pState, 0x5f);
             }
@@ -764,7 +796,7 @@ void FUN_1417f94a0(StateSummonIdle* pState, int nAnimId)
         return;
     if (pState->m_n40 != 0)
         return;
-    FUN_140b114e0(pPet, nAnimId);
+    ((class CPet*)(class PCBase*)(pPet))->FUN_140b114e0(nAnimId);
     pState->m_n40 = 1;
 }
 
@@ -853,8 +885,8 @@ void StateSummonExpire::vfunc_3(double fTime)
     MS2Ptr<Unk_PetRow> spRow = reinterpret_cast<Unk_SmPet*>(pPet)->FUN_140b102b0();
     if (spRow == 0)
         return;
-    if (m_t40.FUN_140268870(*FUN_1401d7c10(reinterpret_cast<const char*>(FUN_1401d3200()) + 0x7e38)) != 0)
-        FUN_140b114e0(pPet, 0x5b);
+    if (m_t40.FUN_140268870(*FUN_1401d7c10(reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x7e38)) != 0)
+        ((class CPet*)(class PCBase*)(pPet))->FUN_140b114e0(0x5b);
 }
 
 // @0x1417f99c0
@@ -883,14 +915,14 @@ void StateSummonItemPick::vfunc_3(double fTime)
     PCBase* pPet = FUN_1417b83a0();
     if (pPet != 0)
     {
-        void* pField = FUN_141bd1a50(FUN_1403ed2d0(), pPet);
+        void* pField = ((void*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a50((class Unk_WsC_GameObj*)(pPet)));
         if (pField == 0)
             return;
-        void* pDrop = FUN_140b12380(pField);
+        void* pDrop = FUN_140b12380((class Unk_WsC_GameObj*)(pField));
         if (pDrop == 0)
             return;
-        FUN_141191330(pField, reinterpret_cast<GameObject*>(pPet)->FUN_14123c580());
-        FUN_141190900(pField, reinterpret_cast<GameObject*>(pPet)->FUN_14123c580());
+        ((class CDropItem*)(void*)(pField))->FUN_141191330(reinterpret_cast<GameObject*>(pPet)->FUN_14123c580());
+        ((class CDropItem*)(void*)(pField))->FUN_141190900(reinterpret_cast<GameObject*>(pPet)->FUN_14123c580());
     }
 }
 

@@ -74,12 +74,16 @@ public:
     void ResetLifetime();
 };
 class Unk_OptGPU { public: void FUN_1413758b0(); void FUN_141375a80(); CStringW FUN_141245ab0(); };
-Unk_OptGPU* FUN_141245b20();
+class Unk_GoDeviceInfo* FUN_141245b20();   // C3: was FUN_141245b20
 class CrashManagerCli;
 template<> CrashManagerCli* TSingleton<CrashManagerCli>::GetInstance();
-void* FUN_14151e7e0();
-void* FUN_1414a56c0();
-int FUN_1422e9e50(void* pAllocator);
+struct IDirect3D9* GetIDirect3D9();   // C3: was FUN_14151e7e0
+class Unk_SingletonObj* FUN_1414a56c0();   // C3: was FUN_1414a56c0
+class GFxService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1422e9e50();
+};
 CString FUN_14016a600(const wchar_t* pszText, int nCodePage);
 CString FUN_1412755b0();
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);
@@ -94,7 +98,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 class CGameOption;
 template<> CGameOption* TSingleton<CGameOption>::GetInstance();
 struct Unk_OptSettings { unsigned char m_pad_0[0x10]; unsigned char m_bOptimize; };
-Unk_OptSettings* FUN_140c77560(void* pSettings);
+void* FUN_140c77560(void*);   // C3: was FUN_140c77560
 CLogString* GetLogString();
 
 // options of Optimization.xml (contiguous dwords) and the "loaded" flag
@@ -205,7 +209,7 @@ void COptimizer::FUN_14161bb60()
     {
         FUN_14161c990();
     }
-    FUN_141245b20()->FUN_1413758b0();
+    ((class Unk_OptGPU*)FUN_141245b20())->FUN_1413758b0();
 }
 
 // @0x14161bdc0
@@ -250,12 +254,12 @@ void COptimizer::FUN_14161bee0()
     RegQueryValueExA(hKey, "ProcessorNameString", 0, 0, szCpu, &dwLength);
     strText.Format("CPU : %s", szCpu);
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
-    if (FUN_14151e7e0() != 0)
+    if (((void*)GetIDirect3D9()) != 0)
     {
-        strText.Format("GPU : %s", (const char*)FUN_14016a600((const wchar_t*)FUN_141245b20()->FUN_141245ab0(), 0));
+        strText.Format("GPU : %s", (const char*)FUN_14016a600((const wchar_t*)((class Unk_OptGPU*)FUN_141245b20())->FUN_141245ab0(), 0));
         reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
     }
-    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFXSysAlloc : %d(MB)", FUN_1422e9e50(FUN_1414a56c0()) / 0x100000);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFXSysAlloc : %d(MB)", ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
     const char* pszMultiScene;
     if (DAT_143ae2b30 != 0)
     {
@@ -326,7 +330,7 @@ void COptimizer::FUN_14161bee0()
         pszKfm = "FALSE";
     }
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("bMS2KFM %s", pszKfm);
-    FUN_141245b20()->FUN_141375a80();
+    ((class Unk_OptGPU*)FUN_141245b20())->FUN_141375a80();
 }
 
 // @0x14161c360
@@ -407,7 +411,7 @@ void COptimizer::LoadOptimization()
         }
         else
         {
-            int nEnabled = FUN_140c77560(TSingleton<CGameOption>::GetInstance())->m_bOptimize;
+            int nEnabled = ((struct Unk_OptSettings*)FUN_140c77560(TSingleton<CGameOption>::GetInstance()))->m_bOptimize;
             DAT_143ae2b30 = nEnabled;
             DAT_143ae2b34 = nEnabled;
             DAT_143ae2b38 = nEnabled;

@@ -38,8 +38,8 @@ public:
     unsigned __int64 FUN_14041af10() const;             // count
     CStringW& FUN_1405e99b0(unsigned __int64 i);        // operator[]
     void FUN_14041ada0(const CStringW& str);            // push_back
-    void FUN_141a6dd40();                               // clear
 private:
+    friend class UINpcCreateDialog;                     // ReadNpcFromFile clears m_v directly (0x141a6dd40 = vector::clear)
     std::vector<CStringW> m_v;
 };
 MS2_CHECK_SIZE(Unk_NpcFileList, 0x18);

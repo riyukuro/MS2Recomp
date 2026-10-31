@@ -1208,7 +1208,7 @@ void UISkillBookTreeDialog::RequestTree(__int64 nTabId, int bKeep, int nRank)
             ATL::CAtlArray<unsigned> ids;
             ATL::CAtlArray<unsigned> points;
             spSim->GetUsedPoints(ids, points, nRank);
-            for (size_t i = 0; i < ids.GetCount(); i++)
+            for (unsigned int i = 0; i < ids.GetCount(); i++)
             {
                 unsigned nSkill = ids[i];
                 unsigned nPoint = points[i];
@@ -1510,16 +1510,16 @@ void UISkillBookTreeDialog::OnPointClick(const Scaleform::GFx::FunctionHandler::
             nLimit = *(unsigned short*)(((char*)FUN_1401d3200()) + 0x971a);
         unsigned nFirst = GetJobSkillPoint(1);
         unsigned nSecond = GetJobSkillPoint(2);
-        unsigned nTotal = nBase + nExtra;
-        nTotal += FUN_140ed47e0(pPlayer);
+        unsigned nSum = nBase + nExtra;
+        unsigned nTotal = nSum + FUN_140ed47e0(pPlayer);
         strText = FUN_14028dfa0(CStringW(L"s_msg_skillbook_skillpoint_tooltip_jobchange"), nTotal, nBase, nSecond, nFirst, nLimit);
     }
     else
     {
         unsigned nFirst = GetJobSkillPoint(1);
         unsigned nSecond = GetJobSkillPoint(2);
-        unsigned nTotal = nBase + nExtra;
-        nTotal += FUN_140ed47e0(pPlayer);
+        unsigned nSum = nBase + nExtra;
+        unsigned nTotal = nSum + FUN_140ed47e0(pPlayer);
         strText = FUN_14028dfa0(CStringW(L"s_msg_skillbook_skillpoint_tooltip"), nTotal, nBase, nSecond, nFirst);
     }
     ASTooltip tooltip(pPlayer, 1, 2);
@@ -1572,7 +1572,7 @@ void UISkillBookTreeDialog::RefreshPoints()
     MS2Ptr<CSkillBookTreeTabConfig> spTab = FindTab(m_nShownTabId);
     if (spTab.get() != 0)
     {
-        bool bCurrent = spTab->m_nId == m_nTabId;
+        int bCurrent = spTab->m_nId == m_nTabId;
         if (MS2Ptr<Unk_140acd6e0> spUse = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->FUN_140bb4b10("m_useCurrentTab"))
         {
             bool bNotCurrent = !bCurrent;

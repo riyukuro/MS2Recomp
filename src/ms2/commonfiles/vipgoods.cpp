@@ -29,12 +29,12 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Tabl
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 void FUN_14028fd90(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr1, const char* pszAttr2,
                    std::vector<Unk_140165cf0*>* pOut);
-void FUN_140873600(Unk_140165cf0*, const char*, CMsTime&);          // date attribute
+int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);           // string attribute
 int FUN_140873890(Unk_140165cf0*, const char*, int&);               // enum attribute
 int FUN_1406e8ac0(Unk_140165cf0*, const char*, int*);               // saleTag
 int FUN_1406e8a30(Unk_140165cf0*, const char*, int*);               // buyLimitResetType
-int FUN_14015f500(Unk_140165cf0*, const char*, int*);               // itemRank
+int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned>* pOut, const char* pszSep);   // split into numbers
 void FUN_1402a5010(const CString& str, ATL::CAtlArray<__int64>* pOut, const char* pszSep);
 unsigned char FUN_1401d1320(CCacheData*);
@@ -44,8 +44,7 @@ CStringW FUN_140b8ec90(const CMsTime& time);                               // da
 CStringW FUN_1418fec00(int nType, __int64 nValue, int);        // money text by pay type
 CStringW FUN_1418fef90(int nType, __int64 nValue);
 
-// The skill table (FUN_1401958b0): finds the skill of a VIP effect.
-SkillDataTableCli* FUN_1401958b0();
+// The skill table (TSingleton<SkillDataTableCli>::GetInstance): finds the skill of a VIP effect.
 
 void FUN_140177de0(const CString& str, ATL::CAtlArray<int>& rOut, const char* pszSep);
 
@@ -192,8 +191,8 @@ int CVIPTable::LoadGoods()
             continue;
         CVIPGoodsPtr spGoods(new CVIPGoods);
         FUN_140873220(pNode, "id", spGoods->m_nId);
-        FUN_140873600(pNode, "salesStartDate", spGoods->m_salesStartDate);
-        FUN_140873600(pNode, "salesEndDate", spGoods->m_salesEndDate);
+        XmlGetAttr((class TiXmlElement*)(pNode), "salesStartDate", spGoods->m_salesStartDate);
+        XmlGetAttr((class TiXmlElement*)(pNode), "salesEndDate", spGoods->m_salesEndDate);
         FUN_140873220(pNode, "displayOrder", reinterpret_cast<unsigned&>(spGoods->m_nDisplayOrder));
         FUN_1408732e0(pNode, "vipPeriod", spGoods->m_nVipPeriod);
         spGoods->m_nVipPeriod *= 3600;
@@ -269,7 +268,7 @@ int CVIPTable::LoadBenefitItems()
         FUN_140873220(pNode, "id", spItem->m_nId);
         FUN_140873220(pNode, "itemID", spItem->m_nItemId);
         FUN_140873220(pNode, "itemCount", spItem->m_nItemCount);
-        FUN_14015f500(pNode, "itemRank", &spItem->m_nItemRank);
+        Unk_ReadRank((class Unk_XmlNode*)(pNode), "itemRank", &spItem->m_nItemRank);
         FUN_1408732e0(pNode, "itemPeriod", spItem->m_nItemPeriod);
         m_benefitItems.SetAt(spItem->m_nId, spItem);
     }
@@ -399,7 +398,7 @@ MS2Ptr<AdditionalLevelData> CVIPTable::GetFirstEffect()
     GetBenefitEffects(effects);
     if (effects.IsEmpty())
         return MS2Ptr<AdditionalLevelData>(0);
-    return FUN_1401958b0()->FUN_140aafef0(effects[0]->m_nEffectId, effects[0]->m_nEffectLevel);
+    return TSingleton<SkillDataTableCli>::GetInstance()/*C3:TSingleton<SkillDataTableCli>::GetInstance*/->FUN_140aafef0(effects[0]->m_nEffectId, effects[0]->m_nEffectLevel);
 }
 
 // @0x1408f86b0

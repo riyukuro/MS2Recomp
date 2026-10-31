@@ -29,6 +29,7 @@ public:
     bool operator==(T* o) const { return p == o; }
     T* get() const { return p; }
     T* operator->() const { return p; }
+    bool IsNull() const { return p == 0; }                  // 0x14085a420 for CTalkScript
 private:
     void AddRef() const { if(p) AddRefImpl(0); }
     static void AddRefObject(T* value) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(value)); }
@@ -79,7 +80,7 @@ public:
     CCinematicDistractor();                                 // 0x14078d300
     virtual ~CCinematicDistractor();                        // 0x14078d350
     int FUN_14078d3d0() const;
-    void FUN_14078d3a0() const;
+    size_t FUN_14078d3a0() const;                           // m_choices.GetCount()
     void WriteTo(COutputStream& out);                       // 0x14078d410
     void ReadFrom(CByteBuffer& in);                         // 0x14078d540
 

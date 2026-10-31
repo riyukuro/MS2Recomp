@@ -174,7 +174,7 @@ struct Unk_SiQuestMgr
     char m_pad_00[0x10];
     void* m_pEvalVptr;
 };
-Unk_SiQuestMgr* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 
 
 // The equipment of a player: the worn item of a slot.
@@ -198,7 +198,7 @@ struct Unk_SiSyncRecord
     CString m_strAnim;
 };
 
-void* FUN_1409331e0();
+class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
 struct Unk_RegMarker {};
 
@@ -500,7 +500,7 @@ void StateInteraction::FUN_1417d2230(CInteractObject* pObject)
     }
     else
         pObject->vfunc_10();
-    reinterpret_cast<CGuideManager*>(FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)(9), pObject->GetRowId(), 0);
+    reinterpret_cast<CGuideManager*>(((void*)FUN_1409331e0()))->AddTrigger((CGuideManager::TriggerType)(9), pObject->GetRowId(), 0);
 }
 
 // @0x1417d22f0
@@ -511,7 +511,7 @@ void StateInteraction::FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow)
     {
         if (FUN_1417b8560() == 0)
             return;
-        if (reinterpret_cast<Unk_SiQuestEval*>(&FUN_140764020()->m_pEvalVptr)->CheckMask(SiRowMask(spRow.operator->())) != 0)
+        if (reinterpret_cast<Unk_SiQuestEval*>(&((struct Unk_SiQuestMgr*)FUN_140764020())->m_pEvalVptr)->CheckMask(SiRowMask(spRow.operator->())) != 0)
         {
             MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc6090(reinterpret_cast<Unk_SiPos*>(m_pOwner)->vfunc_18(), 1);
             if (spObject.get())

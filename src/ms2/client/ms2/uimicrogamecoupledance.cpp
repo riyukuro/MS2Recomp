@@ -843,7 +843,7 @@ public:
 MS2_CHECK_OFFSET(Unk_1401d3200, m_c768, 0xc768);
 MS2_CHECK_OFFSET(Unk_1401d3200, m_c7c0, 0xc7c0);
 MS2_CHECK_SIZE(Unk_1401d3200, 0xc7c8); // recovered prefix only
-Unk_1401d3200* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 
 // Unit-local event and state declarations; descriptive names are invented.
@@ -988,8 +988,8 @@ MS2_REPLACE_METHOD(0x140E64860, UIMicroGameCoupleDance, vfunc_41, 99, 0x54B24861
 void UIMicroGameCoupleDance::FUN_140e648d0() {
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity == NULL) return;
-    int nX = FUN_1401d3200()->m_c768.FUN_14025a620();
-    int nY = *FUN_1401d3200()->m_c7c0.FUN_1402056b0() - 0x32;
+    int nX = ((class Unk_1401d3200*)FUN_1401d3200())->m_c768.FUN_14025a620();
+    int nY = *((class Unk_1401d3200*)FUN_1401d3200())->m_c7c0.FUN_1402056b0() - 0x32;
     int nWidth = (int)(pEntity->FUN_1422c1500() * 0.5f + nX);
     int nHeight = (int)(pEntity->FUN_1422c1530() * 0.5f + nY);
     pEntity->FUN_1422bffe0(nWidth, nHeight);

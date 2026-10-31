@@ -25,14 +25,14 @@
 
 // Unrecovered helpers.
 class Unk_LuaFileSystem { public: char FUN_140398190(); int FUN_1403972f0(const char* pszPath, void** ppBuffer, int* pnSize, std::string* pstrActualPath); };
-Unk_LuaFileSystem* FUN_140166420();
+class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 class CLogString* GetLogString();
 void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*);
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14016a5c0(const char* psz, int n);
 CString FUN_140188f50(const char* psz, int n);
 void FUN_1412751b0(const CStringW&, int);                               // chat/system message
-CLua* FUN_1401c0db0();                                                  // the CLuaClient singleton
+class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 double FUN_1405e6d60(int nBase, int nExp);
 int FUN_14088da20(int nPriceType);                                      // the blueprint cost type -> the runtime enum
 unsigned FUN_140557640(Unk_IngTable*, const CString& strName);          // CItemDataTable::GetTagByName
@@ -216,7 +216,7 @@ void CLua::CLuaContext::Initialize()
         lua_setfield(m_pState, LUA_GLOBALSINDEX, "printWarn");
         lua_pushcclosure(m_pState, LuaPrintError, 0);
         lua_setfield(m_pState, LUA_GLOBALSINDEX, "printError");
-        FUN_1401c0db0()->LoadScripts(m_pState);
+        ((class CLua*)FUN_1401c0db0())->LoadScripts(m_pState);
         SetLocale();
     }
     else
@@ -238,7 +238,7 @@ void CLua::CLuaContext::End() { lua_settop(m_pState, m_nTop); }
 // @0x140673040
 void CLua::CLuaContext::Error()
 {
-    FUN_1401c0db0()->m_bError = true;
+    ((class CLua*)FUN_1401c0db0())->m_bError = true;
     CString strMessage;
     strMessage.Format("[Lua_Err] %s", (const char*)FUN_140188f50(lua_tolstring(m_pState, -1, 0), 0));
     MessageBoxA(0, strMessage, "Lua Error", 0);
@@ -346,7 +346,7 @@ CLua::ContextPtr CLua::GetContext()
 bool CLua::LoadScripts(lua_State* pLuaState)
 {
     MS2_ASSERT_AT(0x16b, pLuaState);
-    if (!FUN_140166420()->FUN_140398190())
+    if (!((class Unk_LuaFileSystem*)GetFileSystem())->FUN_140398190())
     {
         ATL::CAtlArray<CString> arrPaths;
         arrPaths.Add(CString("./data/lua/Common/common.lua"));
@@ -377,7 +377,7 @@ bool CLua::LoadScripts(lua_State* pLuaState)
         CString strName = FUN_14016a5c0(strPath, 0);
         void* pBuffer;
         int nSize[2];                                   // the callee writes a 64-bit size; only the low DWORD is read back
-        if (FUN_140166420()->FUN_1403972f0(strPath, &pBuffer, nSize, 0) == 0)
+        if (((class Unk_LuaFileSystem*)GetFileSystem())->FUN_1403972f0(strPath, &pBuffer, nSize, 0) == 0)
         {
             Unk_AchieveLog<CString>(GetLogString(), 1, 0x12d, L"파일을 읽을 수 없습니다[{0}]", strPath);
             return false;
@@ -1673,7 +1673,7 @@ void LuaPrint(lua_State* pState, int nLevel)
     CStringW strText(L"Lua:");
     strText += strMessage;
     Unk_AdditionalLog(GetLogString(), nLevel, 0xd, strText);
-    if (FUN_1401c0db0()->IsClient())
+    if (((class CLua*)FUN_1401c0db0())->IsClient())
     {
     }
     else

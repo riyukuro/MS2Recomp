@@ -60,7 +60,7 @@ std::string FUN_140dfb8b0(const std::string& strText);                       // 
 CString FUN_140dfbc70(const char* pszFormat, const void* pArg0, const void* pArg1, const void* pArg2);
 
 // 0x140dfc030: the index of a base64 character in the alphabet (char, as the exe truncates).
-char FUN_140dfc030(std::string& strAlphabet, char ch, unsigned nPos);
+size_t FUN_140dfc030(const std::string& strAlphabet, char ch, size_t nPos) noexcept;
 
 // 0x140dfc090: the bounds-checked memmove (memmove_s).
 int FUN_140dfc090(void* pDst, unsigned __int64 nDstSize, const void* pSrc, unsigned __int64 nCount);

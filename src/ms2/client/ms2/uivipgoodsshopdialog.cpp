@@ -106,13 +106,15 @@ class Unk_VgTable { public: Unk_VgEffectRef FUN_1408f70b0(); };   // CVIPTable::
 // The server config constants (the buy limit window in days).
 struct Unk_VgConstUInt;
 unsigned* FUN_1401d7c10(Unk_VgConstUInt* p);
-unsigned char* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 CVIPTable* FUN_140fb9980();                                     // CVIPTable::GetInstance
-void* FUN_1403ed2d0();                                          // the world
-PCBase* FUN_141bd0cc0(void* pWorld);                            // the local player
-int FUN_141662de0(PCBase* pPC);                                 // the player has VIP
-__int64 FUN_141662e90(PCBase* pPC);                             // the VIP end time
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 __int64 GetServerTime();                                        // the server time
 
 CStringW GetStringCommonByKey(const CStringW& strKey);
@@ -131,10 +133,6 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show
 
 void FUN_141415450(const CString& strBindId, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind the item to the id
 void FUN_141415600(const CString& strBindId);                                              // release the bind
-int FUN_1405276c0(CItem* pItem);                                // the item id
-int FUN_1409e13a0(ASTooltip* pTip, CItem* pCompare, CItem* pItem);   // item tooltip (the member in astooltip.h is declared void)
-void FUN_1409d6a40(ASTooltip* pTip, int nItemId, __int64 nPeriod);    // the period line of the tooltip
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);    // pRetVal = v
 
 class Unk_VgUiMgr { public: void FUN_141adc530(int uiId); };
@@ -209,7 +207,7 @@ void UIVIPGoodsShopDialog::vfunc_72()
 void UIVIPGoodsShopDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::PremiumClub), 0);
@@ -239,7 +237,7 @@ int UIVIPGoodsShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 void UIVIPGoodsShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     CStringW strType = pArgs->FUN_1422b8f40();
@@ -253,10 +251,10 @@ void UIVIPGoodsShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
         if (spItem->FUN_14052b130(spGoods->m_bonusItemIds[nIndex], spGoods->m_bonusItemRanks[nIndex], 0) != 0) {
             spItem->FUN_140526c70(spGoods->m_bonusItemCounts[nIndex]);
             MS2Ptr<CItem> spWorn = static_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
-            ASTooltip tip(FUN_141bd0cc0(FUN_1403ed2d0()), 4, 2);
-            if (FUN_1409e13a0(&tip, spWorn.get(), spItem.get()) != 0) {
+            ASTooltip tip(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()), 4, 2);
+            if (((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e13a0(spWorn.get(), spItem.get()) != 0) {
                 if (spGoods->m_bonusItemPeriods[nIndex] > 0)
-                    FUN_1409d6a40(&tip, FUN_1405276c0(spItem.operator->()), spGoods->m_bonusItemPeriods[nIndex]);
+                    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409d6a40(((class CItem*)(class CItem*)(spItem.operator->()))->FUN_1405276c0(), spGoods->m_bonusItemPeriods[nIndex]);
                 FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
             }
         }
@@ -343,7 +341,7 @@ void UIVIPGoodsShopDialog::FUN_140fbaca0()
 {
     if (!m_30)
         return;
-    PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     MS2Ptr<Unk_VgList> spList = GetChild<Unk_VgList>("m_goodsList");
@@ -448,14 +446,14 @@ void UIVIPGoodsShopDialog::FUN_140fbbae0(int nGoodsId)
     MS2Ptr<CVIPGoods> spGoods = FUN_140fb9980()->GetGoods(nGoodsId);
     if (spGoods == 0)
         return;
-    PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    if (FUN_141662de0(pPlayer) != 0) {
-        unsigned nDays = *FUN_1401d7c10((Unk_VgConstUInt*)(FUN_1401d3200() + 0x6f40));
-        __int64 nWindow = *FUN_1401d7c10((Unk_VgConstUInt*)(FUN_1401d3200() + 0x6f40)) * 60 * 60 * 24;
-        if (FUN_141662e90(pPlayer) - GetServerTime() > nWindow) {
-            CMsTime until(FUN_141662e90(pPlayer) - nWindow);
+    if (((class PC*)(class PCBase*)(pPlayer))->FUN_141662de0() != 0) {
+        unsigned nDays = *FUN_1401d7c10((Unk_VgConstUInt*)(((unsigned char*)FUN_1401d3200()) + 0x6f40));
+        __int64 nWindow = *FUN_1401d7c10((Unk_VgConstUInt*)(((unsigned char*)FUN_1401d3200()) + 0x6f40)) * 60 * 60 * 24;
+        if (((class PC*)(class PCBase*)(pPlayer))->FUN_141662e90() - GetServerTime() > nWindow) {
+            CMsTime until(((class PC*)(class PCBase*)(pPlayer))->FUN_141662e90() - nWindow);
             int nMinute = until.GetMinute();
             int nHour = until.GetHour();
             int nDay = until.GetDay();
@@ -486,7 +484,7 @@ int UIVIPGoodsShopDialog::FUN_140fbbe00(int nPriceType)
 // @0x140fbbe40
 void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
 {
-    PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (spGoods == 0)
@@ -529,7 +527,7 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
         spItemSlot->FUN_1409c2190(spGoods->m_bonusItemCounts[i]);
         MS2Ptr<ASBillData> spItemBill(new ASBillData(2));
         spItemBill->FUN_1409ab940(spItemSlot->FUN_1422bb870());
-        spItemBill->FUN_1409aba80(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1405276c0(spItem.operator->())));
+        spItemBill->FUN_1409aba80(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ((class CItem*)(class CItem*)(spItem.operator->()))->FUN_1405276c0()));
         spItemBill->FUN_1409abc90(0);
         spItemBill->FUN_1409abad0(CStringW(), 0);
         spItemBill->FUN_1409abcd0(nPayType);
@@ -576,7 +574,7 @@ bool UIVIPGoodsShopDialog::SendPremiumClubMode4(MS2Ptr<TMarketBillDataParam> spP
 // @0x140fbce80
 bool UIVIPGoodsShopDialog::FUN_140fbce80(Scaleform::GFx::Value* pRetVal, ASData& rData, MS2Ptr<TMarketBillDataParam> spParam)
 {
-    PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     if (m_30 == 0)
@@ -611,10 +609,10 @@ bool UIVIPGoodsShopDialog::FUN_140fbce80(Scaleform::GFx::Value* pRetVal, ASData&
             return false;
         spItem->FUN_140526c70(spGoods->m_bonusItemCounts[nItem]);
         MS2Ptr<CItem> spWorn = static_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
-        ASTooltip tip(FUN_141bd0cc0(FUN_1403ed2d0()), 4, 2);
-        if (FUN_1409e13a0(&tip, spWorn.get(), spItem.get()) != 0) {
+        ASTooltip tip(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()), 4, 2);
+        if (((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e13a0(spWorn.get(), spItem.get()) != 0) {
             if (spGoods->m_bonusItemPeriods[nItem] > 0)
-                FUN_1409d6a40(&tip, FUN_1405276c0(spItem.operator->()), spGoods->m_bonusItemPeriods[nItem]);
+                ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409d6a40(((class CItem*)(class CItem*)(spItem.operator->()))->FUN_1405276c0(), spGoods->m_bonusItemPeriods[nItem]);
             FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
         }
     }
@@ -626,7 +624,7 @@ void ASObj::FUN_140fbd930(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x140fbf740

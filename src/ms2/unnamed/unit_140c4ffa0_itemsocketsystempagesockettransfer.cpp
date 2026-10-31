@@ -53,11 +53,14 @@ class Unk_ItemEquipData : public CItemData {};   // CItem::FUN_140527840's recor
 class Unk_TrWorld;
 class Unk_TrPlayer;
 class Unk_TrInventory;
-Unk_TrPlayer* FUN_141bd0cc0(Unk_TrWorld*);
-Unk_TrInventory* FUN_1416561a0(Unk_TrPlayer*);
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_PCEquipSet* FUN_1416561a0();
+};
 void FUN_1411e1ce0(Unk_TrInventory*, CAtlList<MS2Ptr<CEquipItem>>&, int);
 // The player's inventory (global 0x143ab2a90).
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 extern int DAT_143ab2914;
 
 MS2Ptr<CItem> FUN_141425750(__int64 uid, bool* pbEquipped);
@@ -67,12 +70,19 @@ void FUN_141415600(const CString& name);
 void FUN_14141f970(const CString& name);
 void FUN_141415450(const CString& name, MS2Ptr<CItem> item, int a, int b, int c);
 void FUN_14141ff80(ItemSlotBag* bag, int count);
-void FUN_1422cf860(Unk_SocketPageBag* bag);
-void FUN_1422cc9e0(DragSlotBag* bag);
+class ASItemBag   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1422cf860();
+};
 NotifyContext::BindData* FUN_1422c8e90(const CString& name);
 class Unk_TrDebug;
 void* FUN_14025e7c0();
-bool FUN_14116d720(Unk_TrDebug*);
+class CInputKeyHandler   // C3: member view for the former free stand-ins
+{
+public:
+    bool IsDebugMode();
+};
 void FUN_1422ce240(Unk_SocketPageButton*, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, int);
 struct Unk_TrFindBag { MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString&); };
 struct Unk_TrFindButton { MS2Ptr<Unk_SocketPageButton> FUN_140acce30(const CString&); };
@@ -86,7 +96,6 @@ CStringW FUN_14062b310(MS2Ptr<TSocketGemStoneInfo> info);
 int FUN_140628200(MS2Ptr<CItem> source, MS2Ptr<CItem> target);
 int FUN_140627e80(MS2Ptr<CItem> item);
 void FUN_1406284a0(int level, int flag, int* itemId, int* price);
-void FUN_14026bd10(CIngredientContainer* cost, int count, int itemId);
 void FUN_140710590(COutPacket&);
 MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW text);
 DragSlotBag* FUN_140c54570(const CString& name);
@@ -119,7 +128,7 @@ MS2_CHECK_SIZE(CCItemSocketSystemPacket::ForceFillIngredient, 0x20);
 struct Unk_SockMsgIIL;
 void FUN_140629340(Unk_SockUidPair&, COutputStream&);
 void FUN_1406295b0(Unk_SockItemPair&, CInPacket&);
-void FUN_140629de0(CCItemSocketSystemPacket::ForceFillIngredient&, COutputStream&);
+void FUN_140629de0(struct Unk_SockMsgIIL&, class COutputStream&);   // C3: was FUN_140629de0
 
 // @0x140c4ffa0
 ItemSocketSystemPageSocketTransfer::ItemSocketSystemPageSocketTransfer()
@@ -160,7 +169,7 @@ void ItemSocketSystemPageSocketTransfer::vfunc_7(MS2Ptr<AScript> root)
         m_sourceControl = reinterpret_cast<Unk_TrFindBag*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
     if (MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots1"))
         m_targetControl = reinterpret_cast<Unk_TrFindBag*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
-    bool isDebug = FUN_14116d720(reinterpret_cast<Unk_TrDebug*>(FUN_14025e7c0()));
+    bool isDebug = ((class CInputKeyHandler*)(class Unk_TrDebug*)(reinterpret_cast<Unk_TrDebug*>(FUN_14025e7c0())))->IsDebugMode();
     int debug = isDebug ? 1 : 0;
     m_debugButton = reinterpret_cast<Unk_TrFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnAction");
     if (m_debugButton.get() != 0) {
@@ -239,7 +248,7 @@ int ItemSocketSystemPageSocketTransfer::vfunc_3(const char* event, const Scalefo
 // @0x140c51050
 void ItemSocketSystemPageSocketTransfer::FUN_140c51050()
 {
-    Unk_TrPlayer* player = FUN_141bd0cc0(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance()));
+    Unk_TrPlayer* player = ((class Unk_TrPlayer*)((class WorldService*)(class Unk_TrWorld*)(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (!player)
         return;
     m_sourceItems.RemoveAll();
@@ -261,7 +270,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51050()
         }
     }
     CAtlList<MS2Ptr<CEquipItem>> equipped(10);
-    Unk_TrInventory* inventory = FUN_1416561a0(player);
+    Unk_TrInventory* inventory = ((class Unk_TrInventory*)((class PC*)(class Unk_TrPlayer*)(player))->FUN_1416561a0());
     FUN_1411e1ce0(inventory, equipped, 1);
     for (POSITION pos = equipped.GetHeadPosition(); pos != 0; equipped.GetNext(pos)) {
         MS2Ptr<CEquipItem> equip(equipped.GetAt(pos));
@@ -285,7 +294,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51410()
 {
     if (m_source == 0 || !m_source->FUN_1405279c0())
         return;
-    Unk_TrPlayer* player = FUN_141bd0cc0(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance()));
+    Unk_TrPlayer* player = ((class Unk_TrPlayer*)((class WorldService*)(class Unk_TrWorld*)(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (!player)
         return;
     m_targetItems.RemoveAll();
@@ -306,7 +315,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51410()
     if (bag != 0) {
         FUN_14141ff80(bag, (int)m_targetItems.GetCount());
         if (m_targetControl.get() != 0)
-            FUN_1422cf860(m_targetControl.operator->());
+            ((class ASItemBag*)(class Unk_SocketPageBag*)(m_targetControl.operator->()))->FUN_1422cf860();
     }
 }
 
@@ -367,7 +376,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51a60(MS2Ptr<CItem> item)
     CItemSocket* targetSocket = item->FUN_1405279c0();
     if (targetSocket == 0 || targetSocket->GetMaxSlot() == 0)
         return;
-    Unk_TrPlayer* player = FUN_141bd0cc0(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance()));
+    Unk_TrPlayer* player = ((class Unk_TrPlayer*)((class WorldService*)(class Unk_TrWorld*)(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (player == 0)
         return;
     m_target = item;
@@ -400,7 +409,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
         return;
     }
     targetUid = m_target->FUN_140526a50();
-    if (DAT_143ab2a90.FUN_140a5d680(targetUid) == 0) {
+    if (g_143ab2a90.FUN_140a5d680(targetUid) == 0) {
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_transfer", 1);
         return;
     }
@@ -411,16 +420,16 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
     int price = 0;
     FUN_1406284a0(level, flag, &itemId, &price);
     CIngredientContainer cost;
-    FUN_14026bd10(&cost, itemId, price);
+    ((class CIngredientContainer*)(class CIngredientContainer*)(&cost))->FUN_14026bd10(itemId, price);
     Unk_IngVec* entries = cost.FUN_14026c230();
     size_t count = entries->FUN_14028b500();
     for (size_t i = 0; i < count; ++i) {
         Unk_IngRef ingredient(*entries->FUN_14028a0f0(i));
         if (ingredient == 0)
             continue;
-        int have = DAT_143ab2a90.FUN_140a5f180(ingredient->m_a, 0);
+        int have = g_143ab2a90.FUN_140a5f180(ingredient->m_a, 0);
         if (ingredient->m_b != 0)
-            have = DAT_143ab2a90.FUN_140a5f7b0(ingredient->m_b, 0);
+            have = g_143ab2a90.FUN_140a5f7b0(ingredient->m_b, 0);
         int need = ingredient->m_c;
         if (have < need) {
             FUN_1412752d0(L"s_itemsocketsystem_error_lack_price", 1);
@@ -523,7 +532,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52b20(ASObj& data)
     __int64 fee = 0;
     CIngredientContainer cost(1);
     price = price < 0 ? 0 : price;
-    FUN_14026bd10(&cost, itemId, price);
+    ((class CIngredientContainer*)(class CIngredientContainer*)(&cost))->FUN_14026bd10(itemId, price);
     FUN_140f6dc70(m_ingredientName, cost, data, m_ingredients, MS2Ptr<CItem>(m_source), &fee, MS2Ptr<SaleParam>(0));
     int slotFlags = 0x405;
     int slotSize = 0x20;
@@ -609,11 +618,11 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c533f0(CInPacket* packet)
     FUN_140c51050();
     DragSlotBag* bag = FUN_140c54570(m_slots0Name);
     if (bag != 0) {
-        FUN_1422cc9e0(bag);
+        ((class DragSlotBag*)(class DragSlotBag*)(bag))->FUN_1422cc9e0();
         bag->vfunc_10((int)m_sourceItems.GetCount());
     }
     if (m_sourceControl.get() != 0)
-        FUN_1422cf860(m_sourceControl.operator->());
+        ((class ASItemBag*)(class Unk_SocketPageBag*)(m_sourceControl.operator->()))->FUN_1422cf860();
     FUN_140c54100(uid);
 }
 
@@ -655,7 +664,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c53a70(const Scaleform::GFx::Fun
         return;
     }
     targetUid = m_target->FUN_140526a50();
-    if (DAT_143ab2a90.FUN_140a5d680(targetUid) == 0) {
+    if (g_143ab2a90.FUN_140a5d680(targetUid) == 0) {
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_transfer", 1);
         return;
     }
@@ -688,14 +697,14 @@ void ItemSocketSystemPageSocketTransfer::SendItemSocketSystemMode16(const Scalef
     fill.m_nUid = m_source->FUN_140526a50();
     COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(0x10);
-    FUN_140629de0(fill, out);
+    FUN_140629de0(*(struct Unk_SockMsgIIL*)&static_cast<class CCItemSocketSystemPacket::ForceFillIngredient&>(fill), out);
     FUN_140710590(out);
 }
 
 // @0x140c53f90
 void ItemSocketSystemPageSocketTransfer::FUN_140c53f90(CAtlArray<MS2Ptr<CItem>>& out)
 {
-    DAT_143ab2a90.FUN_140a60880(1, out);
+    g_143ab2a90.FUN_140a60880(1, out);
 }
 
 // @0x140c53fc0

@@ -345,41 +345,34 @@ static bool FUN_140dfb4f0(unsigned char ch)
 std::string FUN_140dfb540(const unsigned char* pData, int nLength)
 {
     std::string strOut;
-    unsigned char aTriple[4];
-    char aQuad[4];
-    int nIndex = 0;
-    int nRemain = 0;
+    int i = 0;
+    int j = 0;
+    unsigned char aTriple[3];
+    unsigned char aQuad[4];
 
-    while (nLength != 0) {
-        aTriple[nIndex] = *pData;
-        ++nIndex;
-        ++pData;
-        --nLength;
-        if (nIndex == 3) {
-            aQuad[0] = (char)((aTriple[0] & 0xfc) >> 2);
-            aQuad[1] = (char)((aTriple[0] & 3) * 0x10 + ((aTriple[1] & 0xf0) >> 4));
-            aQuad[2] = (char)(((aTriple[2] & 0xc0) >> 6) + (aTriple[1] & 0xf) * 4);
-            aQuad[3] = (char)(aTriple[2] & 0x3f);
-            for (nIndex = 0; nIndex < 4; ++nIndex) {
-                strOut += s_strBase64Alphabet[(unsigned char)aQuad[nIndex]];
-            }
-            nIndex = 0;
+    while (nLength--) {
+        aTriple[i++] = *(pData++);
+        if (i == 3) {
+            aQuad[0] = (aTriple[0] & 0xfc) >> 2;
+            aQuad[1] = ((aTriple[0] & 0x03) << 4) + ((aTriple[1] & 0xf0) >> 4);
+            aQuad[2] = ((aTriple[1] & 0x0f) << 2) + ((aTriple[2] & 0xc0) >> 6);
+            aQuad[3] = aTriple[2] & 0x3f;
+            for (i = 0; i < 4; i++)
+                strOut += s_strBase64Alphabet[aQuad[i]];
+            i = 0;
         }
     }
-    if (nIndex != 0) {
-        for (nRemain = nIndex; nRemain < 3; ++nRemain) {
-            aTriple[nRemain] = 0;
-        }
-        aQuad[0] = (char)((aTriple[0] & 0xfc) >> 2);
-        aQuad[1] = (char)((aTriple[0] & 3) * 0x10 + ((aTriple[1] & 0xf0) >> 4));
-        aQuad[2] = (char)(((aTriple[2] & 0xc0) >> 6) + (aTriple[1] & 0xf) * 4);
-        aQuad[3] = (char)(aTriple[2] & 0x3f);
-        for (nRemain = 0; nRemain < nIndex + 1; ++nRemain) {
-            strOut += s_strBase64Alphabet[(unsigned char)aQuad[nRemain]];
-        }
-        for (; nIndex < 3; ++nIndex) {
+    if (i) {
+        for (j = i; j < 3; j++)
+            aTriple[j] = '\0';
+        aQuad[0] = (aTriple[0] & 0xfc) >> 2;
+        aQuad[1] = ((aTriple[0] & 0x03) << 4) + ((aTriple[1] & 0xf0) >> 4);
+        aQuad[2] = ((aTriple[1] & 0x0f) << 2) + ((aTriple[2] & 0xc0) >> 6);
+        aQuad[3] = aTriple[2] & 0x3f;
+        for (j = 0; j < i + 1; j++)
+            strOut += s_strBase64Alphabet[aQuad[j]];
+        while (i++ < 3)
             strOut += '=';
-        }
     }
     return strOut;
 }
@@ -387,60 +380,46 @@ std::string FUN_140dfb540(const unsigned char* pData, int nLength)
 // @0x140dfb8b0
 std::string FUN_140dfb8b0(const std::string& strText)
 {
-    std::string strOut;
-    int nLength = (int)strText.length();
-    char aQuad[4];
-    char aTriple[4];
-    int nIndex = 0;
+    int nLength = (int)strText.size();
+    int i = 0;
+    int j = 0;
     int nPos = 0;
-    int nPad = 0;
+    unsigned char aQuad[4], aTriple[3];
+    std::string strOut;
 
-    while (true) {
-        int nRemain = nLength;
-        --nLength;
-        if (nRemain == 0 || strText[nPos] == '=') {
-            break;
-        }
-        if (FUN_140dfb4f0((unsigned char)strText[nPos]) == 0) {
-            break;
-        }
-        aQuad[nIndex] = strText[nPos];
-        ++nIndex;
-        ++nPos;
-        if (nIndex == 4) {
-            for (nIndex = 0; nIndex < 4; ++nIndex) {
-                aQuad[nIndex] = FUN_140dfc030(s_strBase64Alphabet, aQuad[nIndex], 0);
-            }
-            aTriple[0] = (char)(((aQuad[1] & 0x30) >> 4) + aQuad[0] * 4);
-            aTriple[1] = (char)(aQuad[1] * 0x10 + ((aQuad[2] & 0x3c) >> 2));
-            aTriple[2] = (char)(aQuad[2] * 0x40 + aQuad[3]);
-            for (nIndex = 0; nIndex < 3; ++nIndex) {
-                strOut += aTriple[nIndex];
-            }
-            nIndex = 0;
+    while (nLength-- && (strText[nPos] != '=') && FUN_140dfb4f0(strText[nPos])) {
+        aQuad[i++] = strText[nPos]; nPos++;
+        if (i == 4) {
+            for (i = 0; i < 4; i++)
+                aQuad[i] = (unsigned char)FUN_140dfc030(s_strBase64Alphabet, aQuad[i], 0);
+            aTriple[0] = (aQuad[0] << 2) + ((aQuad[1] & 0x30) >> 4);
+            aTriple[1] = ((aQuad[1] & 0xf) << 4) + ((aQuad[2] & 0x3c) >> 2);
+            aTriple[2] = ((aQuad[2] & 0x3) << 6) + aQuad[3];
+            for (i = 0; i < 3; i++)
+                strOut += aTriple[i];
+            i = 0;
         }
     }
-    if (nIndex != 0) {
-        for (nPad = nIndex; nPad < 4; ++nPad) {
-            aQuad[nPad] = 0;
-        }
-        for (nPad = 0; nPad < 4; ++nPad) {
-            aQuad[nPad] = FUN_140dfc030(s_strBase64Alphabet, aQuad[nPad], 0);
-        }
-        aTriple[0] = (char)(((aQuad[1] & 0x30) >> 4) + aQuad[0] * 4);
-        aTriple[1] = (char)(aQuad[1] * 0x10 + ((aQuad[2] & 0x3c) >> 2));
-        aTriple[2] = (char)(aQuad[2] * 0x40 + aQuad[3]);
-        for (nPad = 0; nPad < nIndex - 1; ++nPad) {
-            strOut += aTriple[nPad];
-        }
+    if (i) {
+        for (j = i; j < 4; j++)
+            aQuad[j] = 0;
+        for (j = 0; j < 4; j++)
+            aQuad[j] = (unsigned char)FUN_140dfc030(s_strBase64Alphabet, aQuad[j], 0);
+        aTriple[0] = (aQuad[0] << 2) + ((aQuad[1] & 0x30) >> 4);
+        aTriple[1] = ((aQuad[1] & 0xf) << 4) + ((aQuad[2] & 0x3c) >> 2);
+        aTriple[2] = ((aQuad[2] & 0x3) << 6) + aQuad[3];
+        for (j = 0; j < i - 1; j++)
+            strOut += aTriple[j];
     }
     return strOut;
 }
 
 // @0x140dfc030
-char FUN_140dfc030(std::string& strAlphabet, char ch, unsigned nPos)
+// std::string::find(char, size_type) body, a separate COMDAT copy in the exe.
+size_t FUN_140dfc030(const std::string& strAlphabet, char ch, size_t nPos) noexcept
 {
-    return (char)strAlphabet.find(ch, nPos);
+    auto& data = strAlphabet._Get_data();
+    return std::_Traits_find_ch<std::char_traits<char> >(data._Myptr(), data._Mysize, nPos, ch);
 }
 
 // @0x140dfc090

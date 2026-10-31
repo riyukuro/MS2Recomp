@@ -53,14 +53,13 @@ public:
     int FUN_140d40800();
     MS2Ptr<Unk_IpOutfit> FUN_140d40620();
 };
-Unk_IpPreview* FUN_1409bb9e0();
+class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
 
 class Unk_IpOutfitView : public CPtred { public: Unk_IpOutfitView(); };
 class Unk_IpOutfit : public CPtred { public: MS2Ptr<Unk_IpOutfitView> FUN_140d3cf00(); };
 class Unk_EquipOutfit : public CPtred { public: Unk_EquipOutfit(); };
 WorldService* FUN_1403ed2d0();
 CStringW GetStringCommon(int nStringId);
-CItemData* FUN_140527840(CItem* pItem);
 bool FUN_141b487f0(MS2Ptr<CItemData> spData);
 void FUN_1418bee30(ASObj* pObj, int n);
 void FUN_1419235d0();
@@ -94,7 +93,7 @@ MS2_REPLACE_METHOD(0x1412D59E0, UIItemPreviewDialog, vfunc_26, 55, 0x01783B9C);
 void UIItemPreviewDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_1409bb9e0()->FUN_140d407d0();
+    ((class Unk_IpPreview*)FUN_1409bb9e0())->FUN_140d407d0();
 }
 MS2_REPLACE_METHOD(0x1412D5A20, UIItemPreviewDialog, vfunc_67, 37, 0x2ACBE4B5);
 
@@ -130,7 +129,7 @@ MS2_REPLACE_METHOD(0x1412D5C10, UIItemPreviewDialog, vfunc_15, 33, 0x18A5D356);
 int UIItemPreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs)) return 1;
-    if (FUN_1409bb9e0()->FUN_140d409e0(szMethod, pArgs, nArgs)) return 1;
+    if (((class Unk_IpPreview*)FUN_1409bb9e0())->FUN_140d409e0(szMethod, pArgs, nArgs)) return 1;
     return 0;
 }
 MS2_REPLACE_METHOD(0x1412D5C40, UIItemPreviewDialog, vfunc_28, 106, 0x6E031EB7);
@@ -139,13 +138,13 @@ MS2_REPLACE_METHOD(0x1412D5C40, UIItemPreviewDialog, vfunc_28, 106, 0x6E031EB7);
 void UIItemPreviewDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4)
 {
     if (p2.get() == 0 || p3 == 0) return;
-    FUN_1409bb9e0()->FUN_140d40910(p1, p2, p3, p4);
+    ((class Unk_IpPreview*)FUN_1409bb9e0())->FUN_140d40910(p1, p2, p3, p4);
     if (MS2Ptr<ASTextField> spMessage = FUN_140bb4cf0("m_message")) {
         int bNoSlot = 0;
-        MS2Ptr<CItem> spItem = FUN_1409bb9e0()->FUN_140d40470();
+        MS2Ptr<CItem> spItem = ((class Unk_IpPreview*)FUN_1409bb9e0())->FUN_140d40470();
         if (spItem.get() ? true : false) {
-            if (FUN_1409bb9e0()->GetArg() != 0) {
-                MS2Ptr<CItemData> spData(FUN_140527840(spItem));
+            if (((class Unk_IpPreview*)FUN_1409bb9e0())->GetArg() != 0) {
+                MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem))->FUN_140527840()));
                 if (spData.get() != 0) {
                     if (spData->FUN_14053e260() != 0) {
                         if (spData->FUN_14053e2b0(0) == -1) bNoSlot = 1;
@@ -155,7 +154,7 @@ void UIItemPreviewDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* 
         }
         if (bNoSlot) spMessage->FUN_1422c4cd0(GetStringCommon(0x9b8));
         else spMessage->FUN_1422c4cd0(GetStringCommon(0));
-        MS2Ptr<CItem> spShown = FUN_1409bb9e0()->FUN_140d40500();
+        MS2Ptr<CItem> spShown = ((class Unk_IpPreview*)FUN_1409bb9e0())->FUN_140d40500();
         FUN_1412d6330(spShown);
     }
 }
@@ -188,7 +187,7 @@ int UIItemPreviewDialog::vfunc_o178_1(void* pAvatar)
     if (pPc != 0) {
         if (pPc->GetType() == 1) FUN_1418bee30(&data, 10000);
         bool bShowActions = true;
-        MS2Ptr<CItemData> spData = FUN_1409bb9e0()->FUN_140d40590();
+        MS2Ptr<CItemData> spData = ((class Unk_IpPreview*)FUN_1409bb9e0())->FUN_140d40590();
         if (spData.get() != 0) bShowActions = FUN_141b487f0(spData);
         data.FUN_1407cbbe0("showActionList", bShowActions);
     }
@@ -200,7 +199,7 @@ MS2_REPLACE_METHOD_VIA(0x1412D6060, UIItemPreviewDialog, IUIAvatarEventListener,
 // @0x1412d6220
 int UIItemPreviewDialog::vfunc_o178_0(void*)
 {
-    FUN_1409bb9e0()->FUN_140d40800();
+    ((class Unk_IpPreview*)FUN_1409bb9e0())->FUN_140d40800();
     return 1;
 }
 MS2_REPLACE_METHOD_VIA(0x1412D6220, UIItemPreviewDialog, IUIAvatarEventListener, vfunc_o178_0, 37, 0x840A456C);
@@ -229,7 +228,7 @@ ASSlot* FUN_1412d6c80(const MS2Ptr<ASSlot>& p);   // folded MS2Ptr<ASSlot>::oper
 void UIItemPreviewDialog::FUN_1412d6330(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0 || m_equip == 0) return;
-    MS2Ptr<Unk_IpOutfit> spOutfit = FUN_1409bb9e0()->FUN_140d40620();
+    MS2Ptr<Unk_IpOutfit> spOutfit = ((class Unk_IpPreview*)FUN_1409bb9e0())->FUN_140d40620();
     MS2Ptr<Unk_IpOutfitView> spView(0);
     if (spOutfit.get() != 0) spView = spOutfit->FUN_140d3cf00();
     MS2Ptr<ASSlot> spSlot(new ASSlot(2));
@@ -248,7 +247,7 @@ MS2_REPLACE_METHOD(0x1412D6330, UIItemPreviewDialog, FUN_1412d6330, 930, 0x67B54
 void UIItemPreviewDialog::FUN_1412d66e0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_equip == 0) return;
-    MS2Ptr<CItem> spItem = FUN_1409bb9e0()->FUN_140d40500();
+    MS2Ptr<CItem> spItem = ((class Unk_IpPreview*)FUN_1409bb9e0())->FUN_140d40500();
     if (spItem == 0) return;
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0) return;

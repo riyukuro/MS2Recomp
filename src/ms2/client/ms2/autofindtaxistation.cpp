@@ -113,10 +113,13 @@ class WorldService   // C3: member view for the former free stand-ins
 public:
     static class WorldService* GetInstance();
 };
-void FUN_14166cce0(Unk_TaxiPlayer* p, int flag);
-void FUN_14166cd70(Unk_TaxiPlayer* p, int flag);
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_14166cce0(unsigned int);
+    void FUN_14166cd70(unsigned int);
+};
 int FUN_140408410(Unk_TaxiIdArray* arr, int* id);       // CAtlArray<int>::Find
-unsigned __int64 FUN_1401855a0(Unk_TaxiIdArray* arr, int id);   // CAtlArray<int>::Add
 class CTaxiManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -137,12 +140,15 @@ public:
     int FUN_140aed440(struct Unk_CameraSetting&);
     float FUN_140af0c70();
     float FUN_140af0d30();
+public:
+    void FUN_140947980(int);   // C3: was free FUN_140947980
+public:
+    void FUN_140aed580(struct Unk_CameraFlyBy const*, int, float);   // C3: was free FUN_140aed580
+public:
+    void FUN_140aed750(int, int);   // C3: was free FUN_140aed750
 };
 struct Unk_TaxiCamMove { int m_nKind; int m_04; void* m_pad[15]; };
 void FUN_140aeffd0(Unk_CameraManager* cam, Unk_TaxiCamMove* out, float t, Unk_CameraSetting* setting);
-void FUN_140aed580(Unk_CameraManager* cam, Unk_TaxiCamMove* mv, int n, float fDuration);
-void FUN_140aed750(Unk_CameraManager* cam, int a, int b);
-void FUN_140947980(Unk_CameraManager* cam, int n);
 float FUN_14029cc60(float f);
 float FUN_14029dba0(float f);
 
@@ -209,7 +215,7 @@ void CAutoFindTaxiStation::FUN_1409f1240()
         FUN_140ca7230(FUN_1409f24b0(), 1000, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1450));
         Unk_TaxiPlayer* player = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (player != 0)
-            FUN_14166cce0(player, 0x100);
+            ((class PCBase*)(class Unk_TaxiPlayer*)(player))->FUN_14166cce0(0x100);
     }
 }
 
@@ -251,12 +257,12 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                                 Unk_TaxiCamMove mv;
                                 FUN_140aeffd0(Unk_CameraManager::FUN_1409478c0(), &mv, fSec, &setting);
                                 mv.m_nKind = 2;
-                                FUN_140aed580(Unk_CameraManager::FUN_1409478c0(), &mv, 1, 1.0f);
-                                FUN_140aed750(Unk_CameraManager::FUN_1409478c0(), 4, 0);
+                                ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed580((struct Unk_CameraFlyBy const*)(&mv), 1, 1.0f);
+                                ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed750(4, 0);
                                 FUN_140ca7230(FUN_1409f24b0(), (unsigned)(long long)fTime,
                                               Unk_TaxiCallback(this, &CAutoFindTaxiStation::SendRequestTaxiMode5));
                                 if (player != 0)
-                                    FUN_14166cce0(player, 0x100);
+                                    ((class PCBase*)(class Unk_TaxiPlayer*)(player))->FUN_14166cce0(0x100);
                             }
                             else
                             {
@@ -267,13 +273,13 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                     }
                 }
                 else if (player != 0)
-                    FUN_14166cd70(player, 0x100);
+                    ((class PCBase*)(class Unk_TaxiPlayer*)(player))->FUN_14166cd70(0x100);
             }
             else if (player != 0)
-                FUN_14166cd70(player, 0x100);
+                ((class PCBase*)(class Unk_TaxiPlayer*)(player))->FUN_14166cd70(0x100);
         }
         else if (player != 0)
-            FUN_14166cd70(player, 0x100);
+            ((class PCBase*)(class Unk_TaxiPlayer*)(player))->FUN_14166cd70(0x100);
     }
 }
 
@@ -282,7 +288,7 @@ void CAutoFindTaxiStation::SendRequestTaxiMode5()
 {
     if (m_nActive == 0)
         return;
-    FUN_1401855a0(&DAT_143ab3098, DAT_143ab2870);
+    ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(struct Unk_TaxiIdArray*)(&DAT_143ab3098))->Add(DAT_143ab2870);
     COutPacket packet(static_cast<int>(SendOp::RequestTaxi), 0);
     packet.WriteUInt8(5);
     FUN_140710590(&packet);
@@ -307,7 +313,7 @@ void CAutoFindTaxiStation::FUN_1409f1a00()
     if (FUN_140408410(&DAT_143ab3078, &DAT_143ab2870) < 0)
     {
         m_nDone = 1;
-        FUN_140947980(Unk_CameraManager::FUN_1409478c0(), 2);
+        ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140947980(2);
         FUN_1409f1a70();
     }
 }
@@ -319,7 +325,7 @@ void CAutoFindTaxiStation::FUN_1409f1a70()
         return;
     Unk_TaxiPlayer* player = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (player != 0)
-        FUN_14166cd70(player, 0x100);
+        ((class PCBase*)(class Unk_TaxiPlayer*)(player))->FUN_14166cd70(0x100);
     m_nActive = 0;
     m_nDone = 0;
     m_nPaused = 0;
@@ -338,14 +344,14 @@ void CAutoFindTaxiStation::FUN_1409f1af0()
         Unk_TaxiCamMove mv;
         FUN_140aeffd0(Unk_CameraManager::FUN_1409478c0(), &mv, fLen / 1000.0f, &setting);
         mv.m_nKind = 2;
-        FUN_140aed580(Unk_CameraManager::FUN_1409478c0(), &mv, 1, 1.0f);
-        FUN_140aed750(Unk_CameraManager::FUN_1409478c0(), 2, 1);
+        ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed580((struct Unk_CameraFlyBy const*)(&mv), 1, 1.0f);
+        ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed750(2, 1);
         FUN_140ca7230(FUN_1409f24b0(), (unsigned)fLen,
                       Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1a70));
     }
     else
     {
-        FUN_140947980(Unk_CameraManager::FUN_1409478c0(), 2);
+        ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140947980(2);
         FUN_1409f1a70();
     }
 }
@@ -363,7 +369,7 @@ int CAutoFindTaxiStation::FUN_1409f1cb0()
                 {
                     if (!((class CTaxiManager*)(class Unk_TaxiResTable*)(FUN_1409f24a0()))->FUN_14085f730(DAT_143ab2870))
                     {
-                        FUN_1401855a0(&DAT_143ab3098, DAT_143ab2870);
+                        ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(struct Unk_TaxiIdArray*)(&DAT_143ab3098))->Add(DAT_143ab2870);
                         COutPacket packet(static_cast<int>(SendOp::RequestTaxi), 0);
                         packet.WriteUInt8(5);
                         FUN_140710590(&packet);

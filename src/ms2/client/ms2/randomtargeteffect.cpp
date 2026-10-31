@@ -69,8 +69,39 @@ class Unk_UpperPlayer { public: void* FUN_141bd1180(int nId); };   // object by 
 Unk_RtePlayer* FUN_14099eef0(void* pObj);                   // object -> player
 Unk_UpperNpc* FUN_140a38a00(void* pObj);                    // object -> npc
 
-// MS2-FUNCTIONAL: the exe's map value assign / dtor (0x140aac1c0, 0x140aac2b0, 0x140aac150) are older inline forms of
-// CComPtr::operator= / ~CComPtrBase than the ATL we compile against (124 / 57 bytes vs our 97 / ..)
+// The exe's map value assign / dtor (0x140aac1c0, 0x140aac2b0, 0x140aac150) are older inline forms of
+// CComPtr::operator= / ~CComPtrBase than the ATL we compile against: the assign releases and addrefs in place
+// and hands back the CComPtr itself.
+template<> inline ATL::CComPtrBase<Unk_RtePlayer>::~CComPtrBase() throw()
+{
+    if (p)
+        p->Release();
+}
+template<> inline Unk_UpperNpc* ATL::CComPtr<Unk_UpperNpc>::operator=(const ATL::CComPtr<Unk_UpperNpc>& lp) throw()
+{
+    if (p != lp.p)
+    {
+        if (p)
+            p->Release();
+        p = lp.p;
+        if (p)
+            p->AddRef();
+    }
+    return reinterpret_cast<Unk_UpperNpc*>(this);
+}
+template<> inline Unk_RtePlayer* ATL::CComPtr<Unk_RtePlayer>::operator=(const ATL::CComPtr<Unk_RtePlayer>& lp) throw()
+{
+    if (p != lp.p)
+    {
+        if (p)
+            p->Release();
+        p = lp.p;
+        if (p)
+            p->AddRef();
+    }
+    return reinterpret_cast<Unk_RtePlayer*>(this);
+}
+
 typedef ATL::CRBMap<unsigned, ATL::CComPtr<Unk_RtePlayer> > RtePlayerMap;
 typedef ATL::CRBMap<unsigned, ATL::CComPtr<Unk_UpperNpc> > RteNpcMap;
 

@@ -354,7 +354,6 @@ void CLoadingImageTable::CheckInit()
 }
 
 // The UCRT's `static __inline memcpy_s` copy of this TU (kept alive by the pointer below).
-// MS2-FUNCTIONAL: CRT memcpy_s copy: source spelling may differ
 static __inline errno_t ms2_lit_memcpy_s(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }
@@ -370,3 +369,6 @@ static __inline errno_t ms2_lit_memcpy_s(void* const d, size_t const dsz, void c
     return 0;
 }
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnLitMemcpyS)(void*, size_t, const void*, size_t) = &ms2_lit_memcpy_s;
+
+// The exe's ATL container code (CAtlMap::InitHashTable / Rehash, CRBTree::NewNode) clears with the memset intrinsic.
+#pragma intrinsic(memset)

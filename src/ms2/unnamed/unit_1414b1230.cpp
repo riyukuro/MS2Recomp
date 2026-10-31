@@ -100,7 +100,9 @@ CString g_strNexonSn = "";
 CString g_strPassport = "";
 CString g_strSid = "";
 CString g_strCmdLine = "";
+// @0x1400f8af0
 static CString s_strSkill = "skill";
+// @0x1400f8b20
 static CString s_strStun = "stun";
 #else
 extern Unk_CmdArgMap g_args;
@@ -406,3 +408,5 @@ void Unk_CmdBitset::FUN_1414b2430()
 // MS2-RANGE: 0x142cb2d20-0x142cb2de0 .text$yd
 // Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
 // MS2-RANGE: 0x142cb2de0-0x142cb2e20 .text$yd
+// MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142cb2de0 ; sft: byte-identical atexit thunks, paired by VA order
+// MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142cb2e00 ; sft: byte-identical atexit thunks, paired by VA order

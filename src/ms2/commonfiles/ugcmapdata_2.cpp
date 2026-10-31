@@ -181,14 +181,18 @@ private:
 MS2_CHECK_SIZE(Unk_140163940,8);
 class Unk_140165cf0;
 class CLogString* GetLogString();
-Unk_140165cf0* FUN_140165cf0(void*,const char*);
-Unk_140165cf0* FUN_140168650(void*,const char*);
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-int FUN_1408731e0(void*,const char*,int*);
-int FUN_140873220(void*,const char*,unsigned*);
-int FUN_140873360(void*,const char*,float*);
-int FUN_1408736d0(void*,const char*,bool*);
-int FUN_140873710(void*,const char*,int*);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
+int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 const char* FUN_14086f4b0(void*,const char*);
 CString FUN_14015f710(class Unk_140165cf0*,const char*,CString);
 void FUN_1401782a0(const CString&,std::vector<unsigned>&,const char*);
@@ -230,31 +234,31 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
     TiXmlDocument document;
     if(GetFileSystem()->FUN_1403974b0(&document,path,0,false,false)==0) return Unk_UGCMapPtr(0);
     Unk_UGCMapPtr value(new CUGCMapData);
-    class Unk_140165cf0* root=FUN_140165cf0(&document,"ugcmap");
+    class Unk_140165cf0* root=((class Unk_140165cf0*)((class Unk_XmlNode*)(void*)(&document))->FirstChild("ugcmap"));
     if(root==0) {
         Unk_AchieveLog<CString>(GetLogString(),1,0x13,L"xml 형식이 잘못 되었습니다[<ugcmap> {0}]",path);
         return Unk_UGCMapPtr(0);
     }
-    for(auto* node=FUN_140165cf0(root,"group");node;node=FUN_140168650(node,"group")) {
-        int no=0; FUN_1408731e0(node,"no",&no);
-        int contractPrice=0; FUN_1408731e0(node,"contractPrice",&contractPrice);
+    for(auto* node=((class Unk_140165cf0*)((class Unk_XmlNode*)(void*)(root))->FirstChild("group"));node;node=((class Unk_140165cf0*)((class Unk_XmlNode*)(void*)(node))->NextSibling("group"))) {
+        int no=0; XmlGetAttr((class TiXmlElement*)(node), "no", *(int*)(&no));
+        int contractPrice=0; XmlGetAttr((class TiXmlElement*)(node), "contractPrice", *(int*)(&contractPrice));
         CString contractText(FUN_14086f4b0(node,"contractPriceItemCode"));
         long contractItemCode=atol(contractText);
-        int contractDays=0; FUN_1408731e0(node,"ugcHomeContractDate",&contractDays);
-        int extensionDays=0; FUN_1408731e0(node,"ugcHomeExtensionDate",&extensionDays);
-        int heightLimit=0; FUN_1408731e0(node,"heightLimit",&heightLimit);
-        int buildingCount=0; FUN_1408731e0(node,"installableBuildingCount",&buildingCount);
-        int returnPlaceId=0; FUN_1408731e0(node,"returnPlaceID",&returnPlaceId);
-        int sellType=0; FUN_1408731e0(node,"sellType",&sellType);
-        int buildingType=0; FUN_1408731e0(node,"builingType",&buildingType);
-        int area=0; FUN_1408731e0(node,"area",&area);
-        int indoorCount=0; FUN_1408731e0(node,"indoorCount",&indoorCount);
-        int extensionPrice=0; FUN_1408731e0(node,"extensionPrice",&extensionPrice);
+        int contractDays=0; XmlGetAttr((class TiXmlElement*)(node), "ugcHomeContractDate", *(int*)(&contractDays));
+        int extensionDays=0; XmlGetAttr((class TiXmlElement*)(node), "ugcHomeExtensionDate", *(int*)(&extensionDays));
+        int heightLimit=0; XmlGetAttr((class TiXmlElement*)(node), "heightLimit", *(int*)(&heightLimit));
+        int buildingCount=0; XmlGetAttr((class TiXmlElement*)(node), "installableBuildingCount", *(int*)(&buildingCount));
+        int returnPlaceId=0; XmlGetAttr((class TiXmlElement*)(node), "returnPlaceID", *(int*)(&returnPlaceId));
+        int sellType=0; XmlGetAttr((class TiXmlElement*)(node), "sellType", *(int*)(&sellType));
+        int buildingType=0; XmlGetAttr((class TiXmlElement*)(node), "builingType", *(int*)(&buildingType));
+        int area=0; XmlGetAttr((class TiXmlElement*)(node), "area", *(int*)(&area));
+        int indoorCount=0; XmlGetAttr((class TiXmlElement*)(node), "indoorCount", *(int*)(&indoorCount));
+        int extensionPrice=0; XmlGetAttr((class TiXmlElement*)(node), "extensionPrice", *(int*)(&extensionPrice));
         CString extensionText(FUN_14086f4b0(node,"extensionPriceItemCode"));
         long extensionItemCode=atol(extensionText);
-        int houseNumber=0; FUN_1408731e0(node,"houseNumber",&houseNumber);
+        int houseNumber=0; XmlGetAttr((class TiXmlElement*)(node), "houseNumber", *(int*)(&houseNumber));
         CString previewIcon=FUN_14015f710(node,"previewIcon",CString(""));
-        int blockCode=0; FUN_1408731e0(node,"blockCode",&blockCode);
+        int blockCode=0; XmlGetAttr((class TiXmlElement*)(node), "blockCode", *(int*)(&blockCode));
         std::vector<unsigned> npcs;
         CString npcText=FUN_14015f710(node,"privilegeNPC",CString(""));
         FUN_1401782a0(npcText,npcs,",");
@@ -264,15 +268,15 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
         std::vector<int> interact;
         CString interactText=FUN_14015f710(node,"privilegeInteract",CString(""));
         FUN_140178270(interactText,interact,",");
-        int maidCount=0; FUN_1408731e0(node,"maidCount",&maidCount);
-        int triggerCount=0; FUN_1408731e0(node,"triggerCount",&triggerCount);
-        int installNpcCount=0; FUN_1408731e0(node,"installNpcCount",&installNpcCount);
-        bool privilegeTaxi=false; FUN_1408736d0(node,"privilegeTaxi",&privilegeTaxi);
-        bool hideEmoticon=false; FUN_1408736d0(node,"hideEmoticon",&hideEmoticon);
-        unsigned trophyId=0; FUN_140873220(node,"trophyID",&trophyId);
-        bool adminOnly=false; FUN_1408736d0(node,"adminOnly",&adminOnly);
+        int maidCount=0; XmlGetAttr((class TiXmlElement*)(node), "maidCount", *(int*)(&maidCount));
+        int triggerCount=0; XmlGetAttr((class TiXmlElement*)(node), "triggerCount", *(int*)(&triggerCount));
+        int installNpcCount=0; XmlGetAttr((class TiXmlElement*)(node), "installNpcCount", *(int*)(&installNpcCount));
+        bool privilegeTaxi=false; XmlQuery((class TiXmlElement*)(node), "privilegeTaxi", *(bool*)(&privilegeTaxi));
+        bool hideEmoticon=false; XmlQuery((class TiXmlElement*)(node), "hideEmoticon", *(bool*)(&hideEmoticon));
+        unsigned trophyId=0; XmlGetAttr((class TiXmlElement*)(node), "trophyID", *(unsigned int*)(&trophyId));
+        bool adminOnly=false; XmlQuery((class TiXmlElement*)(node), "adminOnly", *(bool*)(&adminOnly));
         CString indoorSizeType=FUN_14015f710(node,"indoorSizeType",CString(""));
-        int useCouponEvent=0; FUN_140873710(node,"useCouponEvent",&useCouponEvent);
+        int useCouponEvent=0; XmlGetBool((class TiXmlElement*)(node), "useCouponEvent", *(int*)(&useCouponEvent));
         if(value->groups.find(no)==value->groups.end()) value->groups[no]=static_cast<const Unk_UGCGroup&>(Unk_UGCGroup());
         Unk_UGCGroup& group=value->groups[no];
         group.contractPrice=contractPrice; group.contractPriceItemCode=contractItemCode;
@@ -287,11 +291,11 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
         group.hideEmoticon=hideEmoticon;group.trophyID=trophyId;group.adminOnly=adminOnly;
         group.triggerCount=triggerCount;group.indoorSizeType=indoorSizeType;group.useCouponEvent=useCouponEvent;
     }
-    for(auto* node=FUN_140165cf0(root,"floor");node;node=FUN_140168650(node,"floor")) {
+    for(auto* node=((class Unk_140165cf0*)((class Unk_XmlNode*)(void*)(root))->FirstChild("floor"));node;node=((class Unk_140165cf0*)((class Unk_XmlNode*)(void*)(node))->NextSibling("floor"))) {
         Unk_UGCFloor floor;
-        int id=0;FUN_1408731e0(node,"id",&id);
-        FUN_140873360(node,"start_height",&floor.startHeight);
-        FUN_1408731e0(node,"step",&floor.field4);
+        int id=0;XmlGetAttr((class TiXmlElement*)(node), "id", *(int*)(&id));
+        XmlGetAttr((class TiXmlElement*)(node), "start_height", *(float*)(&floor.startHeight));
+        XmlGetAttr((class TiXmlElement*)(node), "step", *(int*)(&floor.field4));
         value->floors[id]=floor;
     }
     {

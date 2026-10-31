@@ -71,8 +71,7 @@ struct Unk_DcUiMgrCall { Unk_DcUiRef FUN_141adcea0(int nId); };
 UIObject* FUN_1403ed9e0(Unk_DcUiRef& ref);
 
 // The dialog of a ui id, and the value of a movie member.
-UIDialog* FUN_140c300a0(unsigned nDialogID);
-int FUN_1409c17e0(const Scaleform::GFx::Value& v);
+class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
 
 // The main window of the application.
 class Unk_DcApp { public: void* m_pad; char m_svc; };
@@ -102,7 +101,11 @@ public:
 
 // The log dialog singleton (0x1412976a0 returns the global) and its toggle.
 extern void* DAT_143ad6820;
-void FUN_1414515e0(void* pLog);
+class ClientLogManager   // C3: member view for the former free stand-ins
+{
+public:
+    void ToggleDialog();
+};
 
 // The movie of a ui layer and its object factory.
 void* FUN_1422bb8b0(int nMovieId);
@@ -330,7 +333,7 @@ void UIDialogCenterDialog::FUN_141295930(const Scaleform::GFx::FunctionHandler::
     ASObj evt(params.pArgs[0], 2);
     Scaleform::GFx::Value target = evt.FUN_1422baa20("target");
     Unk_140acd6e0 btn(target, m_28);
-    unsigned nId = FUN_1409c17e0(btn.FUN_1422baa20("dialogID"));
+    unsigned nId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(btn.FUN_1422baa20("dialogID")))->GetUInt();
     MS2Ptr<UIDialog> spDlg(FUN_140c300a0(nId));
     if (spDlg.get() != 0)
         spDlg->FUN_1419246f0();
@@ -349,7 +352,7 @@ void UIDialogCenterDialog::FUN_141295a70(const Scaleform::GFx::FunctionHandler::
 void UIDialogCenterDialog::FUN_141295ad0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (FUN_1412976a0() != 0)
-        FUN_1414515e0(FUN_1412976a0());
+        ((class ClientLogManager*)(void*)(FUN_1412976a0()))->ToggleDialog();
 }
 
 // @0x141295b00

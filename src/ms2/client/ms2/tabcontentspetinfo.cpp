@@ -222,7 +222,7 @@ public:
     unsigned char m_pad_84c1[0x9d08 - 0x84c1];
     Unk_PetIntSlot m_nameLimit;
 };
-Unk_PetConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 unsigned* FUN_1401d7c10(Unk_PetUIntSlot* pSlot);
 int* FUN_1402056b0(Unk_PetIntSlot* pSlot);
 
@@ -245,7 +245,7 @@ public:
     Unk_PiPetData* FUN_140c8b450();
     Unk_PiBag* FUN_140c8b410();
 };
-Unk_PetSelected* FUN_140535320();
+class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 
 // The text filter (see unit_141274d10.cpp).
 class Unk_TextFilter { public: };
@@ -259,7 +259,7 @@ public:
     void* m_00; void* m_08;
 };
 class Unk_TextFilterMgr { public: Unk_TextFilterPtr FUN_140229a50(); };
-Unk_TextFilterMgr* FUN_14025e7d0();
+class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
 // Strings and tables.
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -276,7 +276,7 @@ CStringW FUN_1409e34e0(MS2Ptr<CItem> item);                             // the i
 CString FUN_14038f6d0(const CString& a, const char* b);                 // a + b
 CStringTable* GetStringTable();
 bool FUN_140164830(const CStringW& a, const CStringW& b);
-CGameRule* FUN_1401c0d90();
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 void FUN_140710590(COutPacket& packet);                                 // send
 UIMessageBox* FUN_14151f890();
 void FUN_14151f200();
@@ -292,17 +292,20 @@ public:
 #undef NV
     virtual void vfunc_43(int a, int b, int c);
 };
-Unk_PiNetwork* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 
 // Bag registry (GFx bind data).
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
-void FUN_1422cc9e0(DragSlotBag* pBag);
 void FUN_140dbc420(CString* pBag);                                      // release the inventory bag
 void FUN_140dbc370(const CString& strBag, int nSlots);                      // fill the inventory bag
 void* FUN_140a50b50(DragSlot* pSlot);                                   // the item slot behind a drag source
-__int64 FUN_141405a10(void* pItemSlot);                                 // its item uid
+class InvenSlot   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 GetItemUid();
+};
 
 // Camera of the pet preview (see uiitempetboxdialog.cpp).
 struct Unk_PetBoxVector
@@ -429,7 +432,7 @@ Unk_PiPetData* FUN_140cbdba0(int nPet)
     if (pet == 0)
         return 0;
     if (nPet != 0)
-        return FUN_140535320()->FUN_140c8b450();
+        return ((class Unk_PetSelected*)FUN_140535320())->FUN_140c8b450();
     return 0;
 }
 
@@ -437,7 +440,7 @@ Unk_PiPetData* FUN_140cbdba0(int nPet)
 __int64 FUN_140cbdc40(int nPet)
 {
     if (nPet != 0)
-        return FUN_140535320()->FUN_140c8b410()->FUN_140c874f0();
+        return ((class Unk_PetSelected*)FUN_140535320())->FUN_140c8b410()->FUN_140c874f0();
     return 0;
 }
 
@@ -445,7 +448,7 @@ __int64 FUN_140cbdc40(int nPet)
 unsigned FUN_140cbdc80(int nPet)
 {
     if (nPet != 0)
-        return FUN_140535320()->FUN_140c8b410()->FUN_140c875e0();
+        return ((class Unk_PetSelected*)FUN_140535320())->FUN_140c8b410()->FUN_140c875e0();
     MS2Ptr<Unk_PetRow> row = FUN_140cbda70(nPet);
     if (row == 0)
         return 0;
@@ -515,7 +518,7 @@ void FUN_140cbcc50(const CString& strBag)
     TabContentsPetInfo::EquipSlotBag* pBag = FUN_140cbde60(FUN_1422c8e90(strBag));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         FUN_1422c8f70(strBag);
     }
 }
@@ -563,7 +566,7 @@ void PetInfoBasic::vfunc_3()
     }
     if (MS2Ptr<ASUIComponent> bar = basic->FUN_140accfb0<ASUIComponent>("m_expBar"))
     {
-        if (nPetClass < *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
+        if (nPetClass < *FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass))
         {
             __int64 nExp = pet->FUN_140528b90();
             __int64 nMax = FUN_1404a1bb0()->GetPetExp(nPetClass, nRank, pet->FUN_1405282d0());
@@ -666,18 +669,18 @@ void PetInfoBasic::OnChangeName()
     UIItemAutoUseOptionDialog* pAuto = FUN_140cbe1c0(0x4ef4);
     if (pAuto != 0 && pAuto->vfunc_55() == 0)
         return;
-    int nLimit = *FUN_1402056b0(&FUN_1401d3200()->m_nameLimit);
+    int nLimit = *FUN_1402056b0(&((class Unk_PetConfig*)FUN_1401d3200())->m_nameLimit);
     int nHalf = nLimit / 2;
     CStringW strText = FUN_140811740(0xc0a, nHalf, nLimit);
     if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, strText, 0, L""))
     {
-        unsigned nMax = *FUN_1402056b0(&FUN_1401d3200()->m_nameLimit);
+        unsigned nMax = *FUN_1402056b0(&((class Unk_PetConfig*)FUN_1401d3200())->m_nameLimit);
         CStringW strEmpty(L"");
         box->FUN_141a01d30(2, strEmpty, nMax, 0, 0);
         box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &PetInfoBasic::FUN_140cb9ba0));
         FUN_140d73c60(box);
     }
-    FUN_140d86260()->vfunc_43(2, 0, 1000);
+    ((class Unk_PiNetwork*)FUN_140d86260())->vfunc_43(2, 0, 1000);
 }
 MS2_REPLACE_METHOD(0x140cb9900, PetInfoBasic, OnChangeName, 651, 0x675FFFB5);
 
@@ -693,7 +696,7 @@ bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
         CStringW strName = box.FUN_141a02d50().Trim(L',');
         if (strName.IsEmpty() || strName.GetLength() >= 32)
             return false;
-        Unk_TextFilterPtr filter = FUN_14025e7d0()->FUN_140229a50();
+        Unk_TextFilterPtr filter = ((class Unk_TextFilterMgr*)FUN_14025e7d0())->FUN_140229a50();
         if (filter.FUN_14025cea0() != 0)
         {
             if (FUN_140225120(filter.FUN_14025cf10(), strName, strErr) == 0)
@@ -708,7 +711,7 @@ bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
                     if (pData->m_nState > 0)
                         strText = FUN_14052bd00(0xc19, strName);
                     else
-                        strText = FUN_14028dee0(0xc1a, FUN_1401c0d90()->FUN_140477330(), strName);
+                        strText = FUN_14028dee0(0xc1a, ((class CGameRule*)FUN_1401c0d90())->FUN_140477330(), strName);
                     if (MS2Ptr<CMsgBoxData> confirm = FUN_140d73d20(1, strText, 0, L""))
                     {
                         confirm->FUN_140b76940(strName);
@@ -1256,7 +1259,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_18(void* p)
         MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
         if (pet == 0)
             return static_cast<DragSlot*>(p)->vfunc_10();
-        pPlayer->FUN_14152b2d0(FUN_141405a10(pItemSlot));
+        pPlayer->FUN_14152b2d0(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
     }
     return static_cast<DragSlot*>(p)->vfunc_10();
 }

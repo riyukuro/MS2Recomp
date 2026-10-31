@@ -90,10 +90,10 @@ public:
     char m_pad_0[0xe608];
     int m_nReadySeconds;                                           // +0xe608
 };
-Unk_PartyConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 extern __int64 DAT_143ab2828;                                      // my character id
-unsigned FUN_140869420();                                          // tick count
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 __int64 GetServerTime();                                           // server time
 CStringW FUN_140b8fbc0(const ATL::CTimeSpan& span);                // "mm:ss" text
 CStringW GetStringCommon(int nId);
@@ -340,7 +340,7 @@ void PartyVoteReadyCli::vfunc_3()
     TSingleton<CPartyManager>::GetInstance()->FUN_14162c3a0();
     void* pDialog = FUN_140a8a720();
     if (pDialog != 0)
-        FUN_141a75a00(pDialog, (int)FUN_140869420() + FUN_1401d3200()->m_nReadySeconds * 1000);
+        FUN_141a75a00(pDialog, (int)GetTickCountMs2() + ((class Unk_PartyConsts*)FUN_1401d3200())->m_nReadySeconds * 1000);
 }
 
 // @0x140a8a040

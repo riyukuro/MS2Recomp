@@ -45,13 +45,16 @@ struct Unk_HpCfg
     char m_pad_0000[0x2c8];
     Unk_HpCfgFloat m_2c8;
 };
-Unk_HpCfg* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_HpUIScale;
-Unk_HpUIScale* FUN_14025e7a0();                                             // ui scale service
-float FUN_1422afec0(Unk_HpUIScale* pScale, int nLayer);                     // scale of a layer
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1422afec0(int);
+};
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 float FUN_1412762d0(const NiPoint3& pt);
-bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);
 CString FUN_1402bb1c0(const char* szFormat, const int& n);                  // StringFormat<int>
 const int& FUN_1404eb7e0(const int& a, const int& b);                       // max
 float FUN_140bf4fd0(float f);                                               // ceilf
@@ -109,7 +112,6 @@ public:
 struct Unk_HpCfgData { char m_pad[0xa]; bool m_a; char m_b; bool m_c; char m_d; bool m_e; };
 class Unk_HpCfgHolder { public: Unk_HpCfgData* FUN_140b123b0(); };
 class Unk_HpWorld;
-Unk_HpActor* FUN_141bd0cc0(Unk_HpWorld*);               // the local player's actor
 Unk_HpActor* FUN_140974230(PCBase* pActor);             // the actor as a player
 Unk_HpNpc* FUN_14096e110(PCBase* pActor);               // the actor as an npc
 Unk_HpPet* FUN_1409ffc60(PCBase* pActor);               // the actor as a pet
@@ -131,7 +133,7 @@ UIHpBar::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nActo
     m_bc = 0;
     m_c0 = 0;
     m_c4 = 100;
-    m_54 = FUN_1401d3200()->m_2c8.FUN_1402bac70();
+    m_54 = ((struct Unk_HpCfg*)FUN_1401d3200())->m_2c8.FUN_1402bac70();
     FUN_141992680();
     FUN_141992580();
 }
@@ -200,7 +202,7 @@ void UIHpBar::Entity::vfunc_6(NiPoint3* pPos)
                     szLabel = "hostile";
                 ((Unk_HpMovie*)render.operator->())->vfunc_15(szLabel);
             }
-            FUN_140ad0c10(pPos, FUN_1422afec0(FUN_14025e7a0(), m_18));
+            FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
             pPos->y = pPos->y + vfunc_9();
             pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
             ((Unk_HpClip*)m_38.operator->())->FUN_1422c00f0(pPos->x, pPos->y);
@@ -234,7 +236,7 @@ int UIHpBar::Entity::vfunc_8(int n)
     Unk_HpActor* pPc = FUN_140974230(pActor);
     if (pPc != 0)
     {
-        Unk_HpActor* pLocal = FUN_141bd0cc0(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance()));
+        Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pLocal != 0 && pLocal->vfunc_122(pPc) == 1 && pPc->FUN_141674bc0() != 0)
             return 1;
         Unk_HpMountHolder* pHolder = pActor->FUN_1416764a0();
@@ -320,7 +322,7 @@ void UIHpBar::Entity::FUN_141992230(__int64 nCur, __int64 nMax)
             pInfo = FUN_140f49330()->GetClassDesc();
         else
             pInfo = 0;
-        if (FUN_14087ddc0(pInfo, 0x6200003))
+        if (efd::ClassInfo::IsKindOf(pInfo, 0x6200003))
         {
             m_bc = 1;
             FUN_141992140(1);
@@ -347,7 +349,7 @@ void UIHpBar::Entity::FUN_1419923b0()
 // @0x1419923f0
 int UIHpBar::Entity::FUN_1419923f0()
 {
-    Unk_HpActor* pLocal = FUN_141bd0cc0(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance()));
+    Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pLocal == 0)
         return 0;
     Unk_HpActor* pActor = (Unk_HpActor*)FUN_140f49330();
@@ -358,7 +360,7 @@ int UIHpBar::Entity::FUN_1419923f0()
         pInfo = pActor->GetClassDesc();
     else
         pInfo = 0;
-    if (FUN_14087ddc0(pInfo, 0x6200004))
+    if (efd::ClassInfo::IsKindOf(pInfo, 0x6200004))
     {
         return reinterpret_cast<Unk_HpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_a;
     }
@@ -396,7 +398,7 @@ int UIHpBar::Entity::FUN_141992580()
     int nOld = m_b4;
     if (pActor != 0)
     {
-        Unk_HpActor* pLocal = FUN_141bd0cc0(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance()));
+        Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pLocal != 0)
         {
             if (pLocal->FUN_14123c580() == pActor->FUN_14123c580())
@@ -509,7 +511,7 @@ void UITombStoneBar::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (!m_38)
         return;
-    FUN_140ad0c10(pPos, FUN_1422afec0(FUN_14025e7a0(), m_18));
+    FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
     pPos->y = pPos->y + vfunc_9();
     pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
     ((Unk_HpClip*)m_38.operator->())->FUN_1422c00f0(pPos->x, pPos->y - 35.0f);
@@ -525,7 +527,7 @@ int UITombStoneBar::Entity::vfunc_8(int n)
         return 0;
     if (pPc->FUN_14166ce30() == 0)
         return 1;
-    Unk_HpActor* pLocal = FUN_141bd0cc0(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance()));
+    Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pLocal != 0 && pLocal->vfunc_122(pPc) != 0)
         return 1;
     if (pPc->FUN_141661970() != 0 || pPc->FUN_14165ca20() == 0)
@@ -647,7 +649,7 @@ void UISlimeEventBar::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (m_38.get())
     {
-        FUN_140ad0c10(pPos, FUN_1422afec0(FUN_14025e7a0(), m_18));
+        FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
         pPos->y = pPos->y + vfunc_9();
         pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
         ((Unk_HpClip*)m_38.operator->())->FUN_1422c00f0(pPos->x, pPos->y - 35.0f);

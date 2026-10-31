@@ -54,17 +54,17 @@ CInputKeyHandler* FUN_14025e7c0();
 class Unk_BmSceneCtl;
 class Unk_BmSceneMgr;
 Unk_BmSceneMgr* FUN_1408e57f0();
-void FUN_141ad9e50(Unk_BmSceneCtl* pCtl, int nScene);
-void FUN_141ada610(Unk_BmSceneCtl* pCtl, int nScene);
-void FUN_141ada6f0(Unk_BmSceneCtl* pCtl, int nScene);
-void FUN_141adad20(Unk_BmSceneCtl* pCtl, int nScene);
-void FUN_1422b9fd0(Unk_BmSceneMgr* pMgr, int nScene);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1422b9fd0(int);
+};
 void FUN_141901470(int n, int nType);                               // UIObject::vfunc_47's helper (UI type 0x4f15)
 
 // The chat output.
 class Unk_BmChat { public: void FUN_1416fb300(const CStringW& strText); };
 
-CGameRule* FUN_1401c0d90();                                         // TSingleton<CGameRule>::GetInstance
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringTable* GetStringTable();
 extern Unk_Inventory g_143ab2a90;                                   // the player inventory
@@ -172,9 +172,9 @@ void UIBlueMarbleGameDialog::vfunc_26()
 void UIBlueMarbleGameDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_141ada610(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance()), 0x6200022);
-    FUN_141adad20(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance()), 0x6200022);
-    FUN_1422b9fd0(FUN_1408e57f0(), 0x620001d);
+    ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141ada610(0x6200022);
+    ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141adad20(0x6200022);
+    ((class GFxSceneService*)(class Unk_BmSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001d);
 }
 
 // @0x140f217f0
@@ -194,9 +194,9 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
     if (BM_PKT->FUN_14070fe80() == 0xe5) {
         int nKind = BM_PKT->ReadUInt8();
         if (nKind == 0) {
-            FUN_1422b9fd0(FUN_1408e57f0(), 0x6200022);
-            FUN_141ad9e50(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance()), 0x6200022);
-            FUN_141ada6f0(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance()), 0x6200022);
+            ((class GFxSceneService*)(class Unk_BmSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x6200022);
+            ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141ad9e50(0x6200022);
+            ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141ada6f0(0x6200022);
             FUN_141901470(0, 0x4f15);
             m_nPosition = BM_PKT->ReadInt32();
             m_nFreeDice = BM_PKT->ReadInt32();
@@ -361,7 +361,7 @@ void UIBlueMarbleGameDialog::FUN_140f22bb0(int nPosition)
 {
     ASArray rewards(2);
     {
-        MS2Ptr<BlueMarbleEventContext> spContext = FUN_1401c0d90()->FUN_14047b940();
+        MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)FUN_1401c0d90())->FUN_14047b940();
         if (spContext.get()) {
             for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos; spContext->m_rewards.GetNext(pos)) {
                 MS2Ptr<ItemEntity> spReward = spContext->m_rewards.GetValueAt(pos);
@@ -460,7 +460,7 @@ void UIBlueMarbleGameDialog::FUN_140f237e0(int nPrevPosition, int nPosition)
     int nLap = nPosition / 0x1c;
     if (nPrevLap == nLap)
         return;
-    MS2Ptr<BlueMarbleEventContext> spContext = FUN_1401c0d90()->FUN_14047b940();
+    MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)FUN_1401c0d90())->FUN_14047b940();
     if (spContext.get()) {
         MS2Ptr<ItemEntity> spReward(0);
         if (spContext->m_rewards.Lookup(0, spReward))
@@ -503,7 +503,7 @@ void UIBlueMarbleGameDialog::FUN_140f23ca0()
 void UIBlueMarbleGameDialog::FUN_140f23da0()
 {
     ASArray flags(2);
-    if (MS2Ptr<BlueMarbleEventContext> spContext = FUN_1401c0d90()->FUN_14047b940()) {
+    if (MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)FUN_1401c0d90())->FUN_14047b940()) {
         for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != 0; spContext->m_rewards.GetNext(pos)) {
             int nRound = spContext->m_rewards.GetKeyAt(pos);
             bool bReceive = m_nPosition >= nRound * 0x1c && nRound != 0;

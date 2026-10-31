@@ -90,7 +90,11 @@ public:
 };
 Unk_UfAnimSvc* FUN_141b6f910();
 NiActorManager* FUN_140999440(Unk_UfAnimSvc* pSvc, const egf::EntityID& kId);   // cached actor manager
-float FUN_140a53fa0(NiControllerSequence* pSeq);             // NiControllerSequence::m_fOffset
+class Unk_SeqAccess   // C3: member view for the former free stand-ins
+{
+public:
+    static float FUN_140a53fa0(class NiControllerSequence*);
+};
 
 // The data row of a furniture cube (an inline copy of the exe at 0x140ca6580 in the homemade unit).
 class Unk_HmCube : public CFunctionCubeObject
@@ -108,7 +112,7 @@ struct Unk_UfUseInfo
     int m_nCount;                                            // +0x08
     int m_nPad0c;
 };
-void FUN_1401fc610(Unk_UfUseInfo* pInfo, COutPacket* pPacket);
+void FUN_1401fc610(unsigned char*, class COutputStream&);   // C3: was FUN_1401fc610
 
 // The scene graph of an entity and the NiNode helpers the exe calls out of line.
 NiAVObject* FUN_141b6efc0(void* pEntity);                    // the scene root of an entity
@@ -247,7 +251,7 @@ void StateUseFurniture::vfunc_3(double fTime)
                 NiControllerSequence* pSeq = pMgr->GetActiveSequence(static_cast<NiActorManager*>(pMgr)->GetCurAnimation(), true, true);
                 if (pSeq != 0)
                 {
-                    float fLen = FUN_140a53fa0(pSeq);
+                    float fLen = Unk_SeqAccess::FUN_140a53fa0(pSeq);
                     m_pOwner->FUN_14166de50(fLen);
                     m_n64 = 0;
                 }
@@ -372,7 +376,7 @@ void StateUseFurniture::vfunc_5(int n)
                 COutPacket packet(static_cast<int>(SendOp::FunctionCube), 0);
                 packet.Encode1(5);
                 packet.Encode4(1);
-                FUN_1401fc610(&kUse, &packet);
+                FUN_1401fc610((unsigned char*)(&kUse), *(class COutputStream*)(&packet));
                 FUN_140710590(packet);
             }
             pPC->vfunc_19(reinterpret_cast<const efd::Point3&>(m_vPos));

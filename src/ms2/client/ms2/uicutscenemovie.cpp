@@ -37,7 +37,7 @@ static UICommon::CMyPCKeyInputController s_keyInputController;     // header sta
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
 GFxManager* FUN_14025e7a0();
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 UISwfEntityManager* FUN_140b632f0();
 class Unk_140a94350
 {
@@ -50,21 +50,19 @@ public:
 Unk_140a94350* FUN_140a94350();
 class Unk_141529a50 { public: void FUN_141529a50(bool b); };
 class Unk_1403ed2d0 : public WorldService { public: Unk_141529a50* FUN_141bd0cc0();};
-CUIService* FUN_1403ed2b0();
 void FUN_14151f200();
 int FUN_14151f6e0();
 void FUN_141901390(int a1, int nUIType);
 class Unk_140d13c70 { public: bool m_bMute; void FUN_14125fe20(); float FUN_1412602e0(); };
 class Unk_1409a8b10 { public: Unk_140d13c70* FUN_140d13c70(); const bool& FUN_140a58500(); };
-CSoundEventMgr* FUN_140d13c40();
 class Unk_1414a5700 { public: CString FUN_140d44f90(int n1, int n2); };
 void FUN_140d73bc0(int nId, int n, IMessageListener* pListener, CStringW str);
 class Unk_140298f40 { public: const float& FUN_140298f40(); };
 class Unk_1401d3200 { public: char m_pad[0x3c00]; Unk_140298f40 m_3c00; };
-Unk_1401d3200* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 CKeyTable* FUN_1409331f0();
 class Unk_1419e04b0 : public UILoadingProgress { };
-Unk_1419e04b0* FUN_141540270(int n);
+class UIObject* FUN_141540270(int);   // C3: was FUN_141540270
 // "GfxError:{0} {1}({2}) function:{3}"-style formatter (probably a variadic template taking const T&...).
 CString FUN_140c05020(const char* szFormat, const char* a1, const char* a2, const int& a3, const char* a4);
 
@@ -115,7 +113,7 @@ MS2_REPLACE_METHOD(0x14190EC00, UICutSceneMovie, vfunc_52, 317, 0x6D3CA15C);
 int UICutSceneMovie::vfunc_53()
 {
     FUN_140b632f0()->FUN_1422d4840(this, 2);
-    FUN_1403ed2b0()->FUN_141adb7b0(1);
+    TSingleton<CUIService>::GetInstance()/*C3:TSingleton<CUIService>::GetInstance*/->FUN_141adb7b0(1);
     FUN_140a94350()->vfunc_10(0);
     if (m_30.get())
         m_30->Invoke("hide");
@@ -211,12 +209,12 @@ void UICutSceneMovie::SetSoundFade(bool bFade)
     const int nFadeTime = 1000;
     if (bFade) {
         reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70()->FUN_14125fe20();
-        FUN_140d13c40()->FUN_14177dea0(2, nFadeTime);
-        FUN_140d13c40()->FUN_14177dea0(1, nFadeTime);
+        TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->FUN_14177dea0(2, nFadeTime);
+        TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->FUN_14177dea0(1, nFadeTime);
     } else {
         reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70()->FUN_14125fe20();
-        FUN_140d13c40()->FUN_14177ddf0(2, nFadeTime);
-        FUN_140d13c40()->FUN_14177ddf0(1, nFadeTime);
+        TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->FUN_14177ddf0(2, nFadeTime);
+        TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->FUN_14177ddf0(1, nFadeTime);
     }
     m_bSoundFaded = bFade;
 }
@@ -252,7 +250,7 @@ MS2_REPLACE_METHOD(0x14190F400, UICutSceneMovie, OnLoadInit, 253, 0x31B35ED8);
 // @0x14190f510
 int UICutSceneMovie::vfunc_13()
 {
-    if (FUN_14025e7c0()->FUN_14116d840() && (m_pExit.get() ? true : false) && m_pExit->FUN_1422bfca0() &&
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840() && (m_pExit.get() ? true : false) && m_pExit->FUN_1422bfca0() &&
         FUN_14151f6e0()) {
         FUN_140d73bc0(0x88c, 1, this, L"");
         return 1;
@@ -269,7 +267,7 @@ void UICutSceneMovie::vfunc_15()
         return;
     if (m_bIntroStory && (m_pExit.get() ? true : false) && !m_pExit->FUN_1422bfca0()) {
         if (MS2Ptr<Unk_ASVideoPlayer> pPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
-            if (pPlayer->FUN_1422e9540() >= FUN_1401d3200()->m_3c00.FUN_140298f40())
+            if (pPlayer->FUN_1422e9540() >= ((class Unk_1401d3200*)FUN_1401d3200())->m_3c00.FUN_140298f40())
                 ShowSkipButton();
         }
     }
@@ -392,7 +390,7 @@ bool UICutSceneMovie::Play()
     else if (strExt == ".usm")
         bResult = PlayUsm();
     if (bResult)
-        FUN_1403ed2b0()->FUN_141adb7b0(0);
+        TSingleton<CUIService>::GetInstance()/*C3:TSingleton<CUIService>::GetInstance*/->FUN_141adb7b0(0);
     return bResult;
 }
 MS2_REPLACE_METHOD(0x14190FEF0, UICutSceneMovie, Play, 197, 0x9AC68545);
@@ -452,7 +450,7 @@ void UICutSceneMovie::PlayDefaultScene()
 {
     int nId = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd3060();
     int nScene = 0;
-    Unk_1419e04b0* p = FUN_141540270(FUN_1403ed2b0()->GetMode());
+    Unk_1419e04b0* p = ((class Unk_1419e04b0*)FUN_141540270(TSingleton<CUIService>::GetInstance()/*C3:TSingleton<CUIService>::GetInstance*/->GetMode()));
     if (p)
         nScene = p->FUN_1419e04b0();
     CString strPath = reinterpret_cast<Unk_1414a5700*>(TSingleton<CLoadingImageTable>::GetInstance())->FUN_140d44f90(nId, nScene);

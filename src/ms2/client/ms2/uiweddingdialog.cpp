@@ -69,14 +69,14 @@ class CUgcManager;
 
 extern __int64 DAT_143ab2828;                                   // the own character id
 
-Unk_McPackets* FUN_140bccd50();
-void* FUN_1403ed2d0();                                          // the own player
-PCBase* FUN_141bd0cc0(void* pPlayer);                           // its actor
-__int64 FUN_141656a80(PCBase*);                                 // the character id
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 bool FUN_140930b40();
-void FUN_141b87760(WeddingManager* pMgr, int n);                // the wedding message box of an id
-int FUN_140908f90(WeddingTable* pTable, __int64 nExp);          // the grade of an exp
-__int64 FUN_140909070(WeddingTable* pTable, int nGrade);        // the exp a grade starts at
 CStringW FUN_140b8e850(const CMsTime& kTime);                   // the date text
 int GetDayNumberDifference(__int64 nThen, __int64 nNow);        // days between two times
 __int64 GetServerTime();                                        // the current time
@@ -87,8 +87,12 @@ CString FUN_1410291d0(__int64 nCharacterId, const CString& strKey);   // a UGC p
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
-CUgcManager* FUN_14052d220();
-void FUN_14187fd80(CUgcManager* pUgc);                          // open the profile image editor
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
+class CUgcManager   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_14187fd80();
+};
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 void FUN_140710590(COutPacket&);
 
@@ -106,13 +110,13 @@ UIWeddingDialog::UIWeddingDialog()
     FUN_140fc83d0(PagePtr(new UIWeddingPageMessage(this)));
     FUN_140fc83d0(PagePtr(new UIWeddingPageSkill(this)));
     FUN_140fc83d0(PagePtr(new UIWeddingPageMission(this)));
-    FUN_140bccd50()->FUN_140da5180(0x10b, Delegate<void(CInPacket&)>(this, &UIWeddingDialog::FUN_140fc81a0));
+    ((class Unk_McPackets*)FUN_140bccd50())->FUN_140da5180(0x10b, Delegate<void(CInPacket&)>(this, &UIWeddingDialog::FUN_140fc81a0));
 }
 
 // @0x140fc72a0
 UIWeddingDialog::~UIWeddingDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0x10b, Delegate<void(CInPacket&)>(this, &UIWeddingDialog::FUN_140fc81a0));
+    ((class Unk_McPackets*)FUN_140bccd50())->FUN_140da51e0(0x10b, Delegate<void(CInPacket&)>(this, &UIWeddingDialog::FUN_140fc81a0));
 }
 
 // @0x140fc73a0
@@ -137,7 +141,7 @@ int UIWeddingDialog::vfunc_65()
     }
     if (!bMarried)
     {
-        FUN_141b87760(WeddingManager::GetInstance(), 0x32);
+        ((class WeddingManager*)(class WeddingManager*)(WeddingManager::GetInstance()))->ShowError(0x32);
         return 0;
     }
     return UIDialog::vfunc_65();
@@ -156,11 +160,11 @@ void UIWeddingDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_140fc8470();
-    PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (!pPC)
         return;
     WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
-    Unk_WeddingPartner* pPartner = pProxy->GetSelf(FUN_141656a80(pPC));
+    Unk_WeddingPartner* pPartner = pProxy->GetSelf(((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80());
     bool bDivorce = false;
     int nState = pProxy->m_nState;
     if (nState >= 3)
@@ -169,7 +173,7 @@ void UIWeddingDialog::OnLoadComplete()
         {
         }
         else
-            bDivorce = pProxy->IsPartner(FUN_141656a80(pPC)) == 0;
+            bDivorce = pProxy->IsPartner(((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80()) == 0;
     }
     ASObj data(2);
     data.FUN_1407cbb20("coupleName", FUN_1408f71a0(CStringW(L"s_wedding_dialog_couple_name"), pPC->vfunc_77(), pPartner->m_strName));
@@ -233,7 +237,7 @@ int UIWeddingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp(szMethod, "onChangeProfie") == 0)
     {
-        FUN_14187fd80(FUN_14052d220());
+        ((class CUgcManager*)(class CUgcManager*)(((class CUgcManager*)FUN_14052d220())))->FUN_14187fd80();
         return 1;
     }
     else if (_stricmp(szMethod, "onDivorce") == 0)
@@ -314,7 +318,7 @@ void UIWeddingDialog::FUN_140fc81a0(CInPacket& packet)
 {
     if (FUN_140930b40())
         return;
-    PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (!pPC)
         return;
     bool bMarried = false;
@@ -378,9 +382,9 @@ void UIWeddingDialog::FUN_140fc86c0(ASObj& data)
 {
     WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
     __int64 nExp = pProxy->GetExp();
-    int nGrade = FUN_140908f90(WeddingTable::GetInstance(), nExp);
-    __int64 nMin = FUN_140909070(WeddingTable::GetInstance(), nGrade);
-    __int64 nMax = FUN_140909070(WeddingTable::GetInstance(), nGrade + 1);
+    int nGrade = ((class WeddingTable*)(class WeddingTable*)(WeddingTable::GetInstance()))->GetGrade(nExp);
+    __int64 nMin = ((class WeddingTable*)(class WeddingTable*)(WeddingTable::GetInstance()))->GetExpValue(nGrade);
+    __int64 nMax = ((class WeddingTable*)(class WeddingTable*)(WeddingTable::GetInstance()))->GetExpValue(nGrade + 1);
     if (nMax == 0)
         nMax = nMin;
     __int64 nCurrent = nExp - nMin;

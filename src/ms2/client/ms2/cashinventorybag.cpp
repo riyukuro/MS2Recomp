@@ -81,11 +81,15 @@ class UICashShopDialog   // C3: member view for the former free stand-ins
 public:
     int FUN_141034dc0(int);
     int FUN_1410356a0();
+public:
+    void FUN_141034e00(int);   // C3: was free FUN_141034e00
+public:
+    void FUN_141034ef0(int, class CInPacket&);   // C3: was free FUN_141034ef0
+public:
+    void FUN_141035050();   // C3: was free FUN_141035050
+public:
+    void FUN_141035080(int);   // C3: was free FUN_141035080
 };
-void FUN_141035050(UICashShopDialog* pDlg);
-void FUN_141034e00(UICashShopDialog* pDlg, int n);
-void FUN_141035080(UICashShopDialog* pDlg, int n);
-void FUN_141034ef0(UICashShopDialog* pDlg, int n, CInPacket& packet);
 
 // The market bill dialog (id 0x4f17) and the handle it gives of its owner.
 class Unk_CashBillOwner { public: int m_pad[7]; int m_nId; };
@@ -146,8 +150,6 @@ MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nId, void* pListener, CStringW 
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 void FUN_141276180(const CString&, const CString&);
-void FUN_141a02750(CMsgBoxData* pBox, int n);
-void FUN_141a01c30(CMsgBoxData* pBox, const CString& strSound);
 CStringW GetStringCommon(int nId);                        // string table text by id
 void FUN_140710590(COutPacket& packet);                 // send the packet
 
@@ -155,7 +157,6 @@ void FUN_140710590(COutPacket& packet);                 // send the packet
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
-void FUN_1422cc9e0(DragSlotBag* pBag);
 
 CashInventoryBag* FUN_140b05ac0(NotifyContext::BindData* p);
 UIMarketBillDialog* FUN_140b09580(int nClass);
@@ -235,7 +236,7 @@ void FUN_140b05680(const CString& strName)
     CashInventoryBag* pBag = FUN_140b05ac0(FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         FUN_1422c8f70(strName);
     }
 }
@@ -622,7 +623,7 @@ void CCashMarketMan::FUN_140b07120(CInPacket& packet)
     {
         Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
         if (ref.FUN_140b051c0() != 0)
-            FUN_141035050(ref.FUN_140b051d0());
+            ((class UICashShopDialog*)(class UICashShopDialog*)(ref.FUN_140b051d0()))->FUN_141035050();
     }
 }
 
@@ -637,7 +638,7 @@ void CCashMarketMan::FUN_140b072d0(CInPacket& packet)
         {
             Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
             if (ref.FUN_140b051c0() != 0)
-                FUN_141034e00(ref.FUN_140b051d0(), nArg);
+                ((class UICashShopDialog*)(class UICashShopDialog*)(ref.FUN_140b051d0()))->FUN_141034e00(nArg);
         }
     }
     else
@@ -670,7 +671,7 @@ void CCashMarketMan::FUN_140b07490(CInPacket& packet)
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0, 0x9e0, 0, CStringW(L""));
             if (spBox.get() != 0)
-                FUN_141a01c30(spBox.operator->(), s_strCashBuy);
+                ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.operator->()))->SetSound(s_strCashBuy);
         }
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
         {
@@ -680,7 +681,7 @@ void CCashMarketMan::FUN_140b07490(CInPacket& packet)
                 {
                     if (((class UICashShopDialog*)(ref.FUN_140b051d0()))->FUN_1410356a0() == 0)
                         FUN_140d73bc0(0xa60, 0, 0, CStringW(L""));
-                    FUN_141034ef0(ref.FUN_140b051d0(), nArg, packet);
+                    ((class UICashShopDialog*)(class UICashShopDialog*)(ref.FUN_140b051d0()))->FUN_141034ef0(nArg, packet);
                 }
             }
             FUN_141276180(s_strCashBuy, "");
@@ -876,7 +877,7 @@ void CCashMarketMan::FUN_140b08760(CInPacket& packet)
         {
             Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
             if (ref.FUN_140b051c0() != 0)
-                FUN_141035080(ref.FUN_140b051d0(), nPage);
+                ((class UICashShopDialog*)(class UICashShopDialog*)(ref.FUN_140b051d0()))->FUN_141035080(nPage);
         }
         m_nPage = nPage;
         if (m_aInv.GetCount() > 0 && CashRegionSelectC() == 1)
@@ -1085,7 +1086,7 @@ void CashInventorySlot::FUN_140b0d440()
         if (spBox.get() != 0)
         {
             int bFlag = spProd->m_data.m_n50 != 0 && spProd->m_strA8.GetLength() == 0;
-            FUN_141a02750(spBox.operator->(), bFlag);
+            ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.operator->()))->SetRetraction(bFlag);
             spBox->FUN_141a01ee0(m_spItem, m_spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox->FUN_141a01800(1);
             FUN_140d73c60(spBox);

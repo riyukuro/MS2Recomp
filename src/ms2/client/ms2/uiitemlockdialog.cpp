@@ -80,9 +80,13 @@ inline Unk_LdLockMgr* FUN_140535310() { return DAT_143aaf308; }
 
 // The item event registry (FUN_140a6a840).
 class Unk_LdItemEvents;
-Unk_LdItemEvents* FUN_140a6a840();
-void FUN_1419cae20(Unk_LdItemEvents*, UIItemEventListener*);
-void FUN_1419caeb0(Unk_LdItemEvents*, UIItemEventListener*);
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419cae20(class UIItemEventListener*);
+    void FUN_1419caeb0(class UIItemEventListener*);
+};
 
 // The "openWindowPos" UI message.
 class Unk_LdUIMsg : public UIMsg
@@ -176,7 +180,7 @@ void UIItemLockDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_140f56c80();
-    FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_140f57f40(FUN_140535310(), 0);
     FUN_140535310()->FUN_1406126f0();
     UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
@@ -205,7 +209,7 @@ void UIItemLockDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     FUN_140f57e30();
-    FUN_1419caeb0(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     FUN_140535310()->FUN_140612780();
     CString strArg("item_lock");
     CString strEvent("dialog_close");

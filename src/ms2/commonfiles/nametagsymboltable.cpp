@@ -55,9 +55,17 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
-void* FUN_1403ed2d0();                                      // the own player
-Unk_NametagActor* FUN_141bd0cc0(void* pPlayer);             // its actor
-int FUN_14123c580(Unk_NametagActor* pActor);                // the actor's character id
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
+class GameObject   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14123c580();
+};
 
 class Unk_NametagTitles { public: int FUN_140408410(const unsigned int* pCode); };   // the owned titles
 extern Unk_NametagTitles DAT_143ab3268;
@@ -210,7 +218,7 @@ int CNametagSymbolTable::IsShown(unsigned short nId)
 unsigned int CNametagSymbolTable::CheckCondition(unsigned short nId)
 {
     CheckInit();
-    Unk_NametagActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_NametagActor* pActor = ((class Unk_NametagActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor == 0)
         return 0;
     CNametagSymbolDataPtr spData(0);
@@ -286,7 +294,7 @@ CStringW CNametagSymbolTable::GetIcon(unsigned short nId, Unk_NametagActor* pAct
     case NAMETAG_CONDITION_TROPHY_POINT:
     {
         CStringW strIcon(spData->m_strIcon);
-        MS2Ptr<Unk_NametagChar> spChar = reinterpret_cast<Unk_NtPlayer*>(FUN_1403ed2d0())->FUN_141bc9be0(FUN_14123c580(pActor));
+        MS2Ptr<Unk_NametagChar> spChar = reinterpret_cast<Unk_NtPlayer*>(((void*)WorldService::GetInstance()))->FUN_141bc9be0(((class GameObject*)(class Unk_NametagActor*)(pActor))->FUN_14123c580());
         if (spChar.get() != 0)
         {
             if (spChar->m_score.FUN_140267c10() < 2000)

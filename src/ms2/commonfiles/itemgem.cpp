@@ -89,14 +89,11 @@ struct Unk_BannerCfg
     char m_pad_00[0x3050];
     Unk_IdleChance m_slot0, m_slot1, m_slot2, m_slot3, m_slot4, m_slot5, m_slot6, m_slot7, m_slot8, m_slot9;    // +0x3050
 };
-Unk_BannerCfg* FUN_1401d3200();                                     // 0x1401d3200
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The cast of an actor to ClonePC (class id 0x6200044), NULL when it is none.
 ClonePC* FUN_1405a7e30(PC* pPC);                                    // 0x1405a7e30
 __int64 FUN_14028d0e0();                                            // 0x14028d0e0
-void FUN_140526b30(CItem* pItem, int nOwnerId);                     // 0x140526b30
-CItemData* FUN_140527840(CItem* pItem);                             // 0x140527840
-Unk_PCEquipSet* FUN_1416561a0(PC* pPC);                             // 0x1416561a0
 CString FUN_140719190(int nValue);                                  // 0x140719190
 
 // A view of the item data (CItemData +0x78: a flag the gem items set).
@@ -117,13 +114,12 @@ class Unk_GemPetTable
 public:
     MS2Ptr<Unk_GemPetRow> FUN_1407290f0(int nPetId);                // 0x1407290f0
 };
-Unk_GemPetTable* FUN_14052d210();                                   // 0x14052d210
+class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 template <> MS2Ptr<Unk_GemPetRow>::~MS2Ptr();                       // 0x14052c420
 template <> Unk_GemPetRow* MS2Ptr<Unk_GemPetRow>::operator->() const;   // 0x14052ceb0
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // 0x14053f870
 
-// The UI manager (FUN_1403ed2b0): a gem that shows an effect of its own registers with it.
-CUIService* FUN_1403ed2b0();                                        // 0x1403ed2b0
+// The UI manager (TSingleton<CUIService>::GetInstance): a gem that shows an effect of its own registers with it.
 
 // The effect manager (FUN_1403ed280).
 class Unk_RideeEffects
@@ -135,10 +131,6 @@ public:
 Unk_RideeEffects* FUN_1403ed280();                                  // 0x1403ed280
 
 // The actor's equipment (FUN_14165f460 hands it out as a void*): the gem items' worn-item calls.
-void* FUN_14165f460(PC* pPC);                                       // 0x14165f460
-int FUN_141658e60(PCBase* pPC);                                     // 0x141658e60 the partner gem id of an actor
-void FUN_1416636e0(PC* pPC, MS2Ptr<CItem> spItem, int nGemId);      // 0x1416636e0
-void FUN_141663870(PC* pPC);                                        // 0x141663870
 CString FUN_1405a7e80(int nValue);                                  // 0x1405a7e80
 
 int FUN_1405a46d0(int nSlot);                                        // 0x1405a46d0 the equip part constant of a slot
@@ -243,16 +235,16 @@ CGemTransparency::CGemTransparency(int nType, int nGemId) : CGemBase(nType, nGem
         m_aHidden[i] = 0;
     if (s_mapGemSlots.GetCount() == 0)
     {
-        s_mapGemSlots.SetAt(Unk_GemSlot_0, FUN_1401d3200()->m_slot0.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_1, FUN_1401d3200()->m_slot1.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_2, FUN_1401d3200()->m_slot2.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_3, FUN_1401d3200()->m_slot3.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_4, FUN_1401d3200()->m_slot4.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_5, FUN_1401d3200()->m_slot5.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_6, FUN_1401d3200()->m_slot6.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_7, FUN_1401d3200()->m_slot7.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_8, FUN_1401d3200()->m_slot8.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_9, FUN_1401d3200()->m_slot9.FUN_140536a30());
+        s_mapGemSlots.SetAt(Unk_GemSlot_0, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot0.FUN_140536a30());
+        s_mapGemSlots.SetAt(Unk_GemSlot_1, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot1.FUN_140536a30());
+        s_mapGemSlots.SetAt(Unk_GemSlot_2, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot2.FUN_140536a30());
+        s_mapGemSlots.SetAt(Unk_GemSlot_3, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot3.FUN_140536a30());
+        s_mapGemSlots.SetAt(Unk_GemSlot_4, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot4.FUN_140536a30());
+        s_mapGemSlots.SetAt(Unk_GemSlot_5, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot5.FUN_140536a30());
+        s_mapGemSlots.SetAt(Unk_GemSlot_6, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot6.FUN_140536a30());
+        s_mapGemSlots.SetAt(Unk_GemSlot_7, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot7.FUN_140536a30());
+        s_mapGemSlots.SetAt(Unk_GemSlot_8, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot8.FUN_140536a30());
+        s_mapGemSlots.SetAt(Unk_GemSlot_9, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot9.FUN_140536a30());
     }
 }
 
@@ -336,9 +328,9 @@ int CGemTransparency::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
         {
             spNew->FUN_140526a70(FUN_14028d0e0());
             spNew->FUN_140526c10(FUN_1405a46d0(nSlot));
-            FUN_140526b30(spNew.operator->(), pPC->FUN_14123c580());
+            ((class CItem*)(class CItem*)(spNew.operator->()))->FUN_140526b30(pPC->FUN_14123c580());
             {
-                MS2Ptr<CItemData> spData(FUN_140527840(spNew.operator->()));
+                MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spNew.operator->()))->FUN_140527840()));
                 if (spData.get() != 0)
                     ((Unk_GemItemDataFlags*)(void*)spData.operator->())->m_bGemItem = true;
             }
@@ -360,7 +352,7 @@ int CGemTransparency::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
     for (POSITION pos = s_mapGemSlots.GetStartPosition(); pos != 0; s_mapGemSlots.GetNext(pos))
     {
         Unk_GemSlot nSlot = s_mapGemSlots.GetKeyAt(pos);
-        MS2Ptr<CEquipItem> spEquip = FUN_1416561a0(pPC)->FUN_1411e1780(FUN_1405a46d0(nSlot), 3);
+        MS2Ptr<CEquipItem> spEquip = ((class PC*)(class PC*)(pPC))->FUN_1416561a0()->FUN_1411e1780(FUN_1405a46d0(nSlot), 3);
         if (spEquip != 0)
             pPC->vfunc_128(spEquip->GetItem().get(), 0);
     }
@@ -791,14 +783,14 @@ MS2_REPLACE_METHOD(0x1405A5820, CGemSwim, vfunc_8, 61, 0x98E575B3);
 // @0x1405a59f0
 void CGemDamageFont::vfunc_8()
 {
-    FUN_1403ed2b0()->FUN_141ad9d00(MS2Ptr<CGemBase>(this));
+    TSingleton<CUIService>::GetInstance()/*C3:TSingleton<CUIService>::GetInstance*/->FUN_141ad9d00(MS2Ptr<CGemBase>(this));
 }
 MS2_REPLACE_METHOD(0x1405A59F0, CGemDamageFont, vfunc_8, 82, 0x42733E07);
 
 // @0x1405a6f30
 void CGemMeta::vfunc_8()
 {
-    FUN_1403ed2b0()->FUN_141ad9d00(MS2Ptr<CGemBase>(this));
+    TSingleton<CUIService>::GetInstance()/*C3:TSingleton<CUIService>::GetInstance*/->FUN_141ad9d00(MS2Ptr<CGemBase>(this));
 }
 MS2_REPLACE_METHOD(0x1405A6F30, CGemMeta, vfunc_8, 82, 0xB0B4740A);
 
@@ -821,13 +813,13 @@ int CGemCharEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
     if (spData == 0)
         return 0;
     Unk_EffectQuery query;
-    query.m_strName = spData->FUN_1405acbd0(FUN_141658e60(pPC));
+    query.m_strName = spData->FUN_1405acbd0(((class PC*)(class PCBase*)(pPC))->FUN_141658e60());
     query.m_nObject = 0;
     query.SetActor(pPC->FUN_14123c580());
     unsigned int nHandle = FUN_1403ed280()->FUN_1411a49c0(&query);
     if (nHandle > 0)
         m_listEffects.AddTail(nHandle);
-    FUN_1416636e0(pPC, spItem, m_nDataId);
+    ((class PC*)(class PC*)(pPC))->FUN_1416636e0(spItem, m_nDataId);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1405A5E20, CGemCharEffect, vfunc_6, 597, 0x32DB2D2F);
@@ -846,7 +838,7 @@ int CGemCharEffect::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
         FUN_1403ed280()->FUN_1411a6060(nHandle);
     }
     m_listEffects.RemoveAll();
-    FUN_141663870(pPC);
+    ((class PC*)(class PC*)(pPC))->FUN_141663870();
     return 1;
 }
 MS2_REPLACE_METHOD(0x1405A6080, CGemCharEffect, vfunc_7, 350, 0x55D80C92);
@@ -870,7 +862,7 @@ int CGemEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
     MS2Ptr<CGemEffectData> spData = FUN_1405a68d0();
     if (spData == 0)
         return 0;
-    if (!((PCGemEquip*)FUN_14165f460(pPC))->FUN_141271090(spItem, spData->m_strEffect))
+    if (!((PCGemEquip*)((void*)((class PC*)(class PC*)(pPC))->FUN_14165f460()))->FUN_141271090(spItem, spData->m_strEffect))
         return 0;
     return 1;
 }
@@ -881,7 +873,7 @@ int CGemEffect::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
 {
     if (CGemBase::vfunc_7(pPC, spItem) == 0)
         return 0;
-    ((PCGemEquip*)FUN_14165f460(pPC))->FUN_1412711e0(spItem);
+    ((PCGemEquip*)((void*)((class PC*)(class PC*)(pPC))->FUN_14165f460()))->FUN_1412711e0(spItem);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1405A67E0, CGemEffect, vfunc_7, 224, 0x711888E0);
@@ -916,7 +908,7 @@ MS2_REPLACE_METHOD(0x1405A6BD0, CGemPetSkin, vfunc_3, 58, 0xB7D8DF08);
 // @0x1405a6c10
 CString CGemPetSkin::vfunc_10()
 {
-    MS2Ptr<Unk_GemPetRow> spPet = FUN_14052d210()->FUN_1407290f0(m_nPetId);
+    MS2Ptr<Unk_GemPetRow> spPet = ((class Unk_GemPetTable*)FUN_14052d210())->FUN_1407290f0(m_nPetId);
     if (spPet.IsNull())
         return "";
     unsigned int nItemId = spPet->FUN_1407287e0(1);

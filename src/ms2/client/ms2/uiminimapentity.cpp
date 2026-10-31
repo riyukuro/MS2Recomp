@@ -1645,7 +1645,6 @@ void UIMinimapDialog::vfunc_ugc_6()
 }
 MS2_REPLACE_METHOD_VIA(0x141a38570, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_6, 102, 0x9D9C5CC7);
 
-// MS2-FUNCTIONAL: frame 0x20 larger (temporaries of the by-value entity/buddy copies); 2 attempts
 // @0x141a385e0
 void UIMinimapDialog::vfunc_buddy_10(__int64 nId, int n)
 {
@@ -1663,16 +1662,16 @@ void UIMinimapDialog::vfunc_buddy_10(__int64 nId, int n)
                 FUN_141a3f930(spEntity);
             FUN_141a3e2d0(spBuddy);
         } else {
-            FUN_141a454d0(nField, nId);
+            FUN_141a454d0(nField, reinterpret_cast<const unsigned __int64&>(nId));
         }
         if (static_cast<unsigned int>(n) > 0)
-            FUN_141a455e0(n, nId);
+            FUN_141a455e0(n, reinterpret_cast<const unsigned __int64&>(nId));
     } else {
         EntityPtr spEntity(0);
         if (m_buddies.Lookup(nId, spEntity))
             FUN_141a3f930(spEntity);
         else if (static_cast<unsigned int>(n) > 0)
-            FUN_141a455e0(n, nId);
+            FUN_141a455e0(n, reinterpret_cast<const unsigned __int64&>(nId));
     }
 }
 MS2_REPLACE_METHOD_VIA(0x141a385e0, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_10, 666, 0xD25223C1);
@@ -3031,7 +3030,6 @@ void UIMinimapDialog::FUN_141a400d0(ProxyPtr spProxy, EntityPtr spEntity, int n)
 }
 
 // @0x141a402b0
-// MS2-FUNCTIONAL: the exe frame is 0x10 smaller (temporaries share slots).
 void UIMinimapDialog::FUN_141a402b0(EntityPtr spEntity)
 {
     if (spEntity == 0 || spEntity->m_clip == 0)
@@ -3054,15 +3052,16 @@ void UIMinimapDialog::FUN_141a402b0(EntityPtr spEntity)
         m_clip228->vfunc_4(true);
         m_clip228->FUN_1422c00f0(x, y);
     }
-    bool bAlive = pPC->FUN_14166c930() != 12;
-    CString strState(bAlive ? s_strIdle : s_strDie);
+    bool bDead = pPC->FUN_14166c930() == 12;
+    CString strState(bDead ? s_strDie : s_strIdle);
     if (strState != spEntity->m_state) {
         spEntity->m_state = strState;
         spClip->vfunc_15(strState);
     }
     if (m_clip238 == 0)
-        m_clip238 = spClip->FUN_1409b4560(CString("m_arrow"));
-    if (static_cast<ASMovieClip*>(m_clip238) ? true : false) {
+        m_clip238 = spClip->FUN_1409b4560("m_arrow");
+    if (static_cast<ASMovieClip*>(m_clip238) != 0) {
+        bool bAlive = !bDead;
         m_clip238->vfunc_4(bAlive);
         if (bAlive)
             m_clip238->FUN_1422bfef0(FUN_141a45920(pPC));

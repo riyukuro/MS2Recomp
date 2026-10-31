@@ -105,7 +105,7 @@ public:
     void FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<Unk_PsdProxy> spProxy, int nType);      // menu on a visible character
     void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, __int64 nChar, unsigned __int64 nAccount, int nType, int a);   // menu on a name
 };
-Unk_PsdMenu* FUN_140c30140(int nUiId);
+class Unk_PopupMenu* FUN_140c30140(int);   // C3: was FUN_140c30140
 
 // The chat window: the input line takes the whisper target.
 class Unk_PsdChatWindow
@@ -114,7 +114,7 @@ public:
     unsigned char m_pad_0[0x48];
     UIMessengerBrowser* m_48;
 };
-Unk_PsdChatWindow* FUN_141482e80();
+struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 
 // The text filter (bad words) of the search text.
 class Unk_PsdFilter : public CPtred
@@ -127,7 +127,7 @@ class Unk_PsdFilterMgr
 public:
     MS2Ptr<Unk_PsdFilter> FUN_140229a50();
 };
-Unk_PsdFilterMgr* FUN_14025e7d0();
+class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
 // The blocked-action flags and the keyboard state.
 class Unk_PsdFlags
@@ -141,13 +141,13 @@ public:
     unsigned char m_pad_0[8];
     Unk_PsdFlags m_8;
 };
-Unk_PsdConfig* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class Unk_PsdKeys
 {
 public:
     bool FUN_14116d9c0(int nKey, int a, int b);
 };
-Unk_PsdKeys* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The key event of vfunc_79: a base with the key code and a second base (+8) whose slot 1 tells "repeated".
 class Unk_PsdKeyBase
@@ -173,11 +173,14 @@ public:
 };
 Unk_PsdDialogMgr* FUN_140b632f0();
 
-int FUN_140695080(CMatchPartyRecruit* pRecruit);                         // recruitId == 0
-__int64 FUN_141656a80(PCBase* pPlayer);                                  // character id
-bool FUN_141527280(PCBase* pPlayer);                                     // in a party
+int FUN_140695080(class CMatchPartyRecruit const*);   // C3: was FUN_140695080
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_141527280();
+};
 // (0x1406943b0 is CMatchPartyRecruitSchCond's constructor, cmatchpartyrecruit.h)
-unsigned int FUN_140869420();                                           // tick count
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 unsigned __int64 FUN_140718350(const CString& str);                     // string -> id
 unsigned __int64 FUN_140718370(const CStringW& str);
 CStringW FUN_140719a80(unsigned __int64 n);
@@ -191,8 +194,6 @@ void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void FUN_14151f200();
 bool FUN_14025cd60(const CStringW& a, const CStringW& b);
 void FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
-bool FUN_1409c1720(const Scaleform::GFx::Value& v);
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
@@ -208,7 +209,7 @@ template unsigned __int64&& std::forward<unsigned __int64>(unsigned __int64&) no
 // @0x140f8f3b0
 void FUN_140f8f3b0(ASObj* pObj, CMatchPartyRecruit* pRecruit)
 {
-    bool bAlready = FUN_140695080(pRecruit) ? false : true;
+    bool bAlready = FUN_140695080((class CMatchPartyRecruit const*)(pRecruit)) ? false : true;
     pObj->FUN_1407cbbe0("alreadyRegisterMemberSearch", bAlready);
 }
 
@@ -223,7 +224,7 @@ void ASObj::FUN_140f8f970(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x140f8fa10
@@ -231,7 +232,7 @@ void ASObj::FUN_140f8fa10(const char* szName, unsigned int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x140f8f850
@@ -361,7 +362,7 @@ int UIPartySearchDialog::vfunc_65()
 // @0x140f8c650
 int UIPartySearchDialog::vfunc_73()
 {
-    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x1b) != 0)
+    if (((class Unk_PsdConfig*)FUN_14025e7b0())->m_8.FUN_1402c4c90(0x1b) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
@@ -424,7 +425,7 @@ void UIPartySearchDialog::vfunc_15()
         if (m_180.get())
         {
             TSingleton<CPartyManager>::GetInstance()->SendMatchPartyMode2(*m_180);
-            m_17c = FUN_140869420();
+            m_17c = GetTickCountMs2();
             m_178 = 0;
         }
     }
@@ -440,12 +441,12 @@ int UIPartySearchDialog::vfunc_13()
     if (FUN_140b632f0()->FUN_1422d4980(m_e0) == this)
     {
         CString strKey("");
-        if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+        if (((class Unk_PsdKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
             strKey = "onEnterKey";
         if (!strKey.IsEmpty())
         {
             Scaleform::GFx::Value ret = m_30->Invoke("onProcessKey", CString(strKey));
-            if (FUN_1409c1720(ret))
+            if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(ret))->GetBool())
                 return 1;
         }
     }
@@ -470,7 +471,7 @@ int UIPartySearchDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             MS2Ptr<CMatchPartyRecruit> recruit = TSingleton<CPartyManager>::GetInstance()->FUN_141631d40(nId);
             if (recruit.get())
             {
-                if (FUN_140695080(recruit.operator->()) == 0)
+                if (FUN_140695080((class CMatchPartyRecruit const*)(recruit.operator->())) == 0)
                 {
                     TSingleton<CPartyManager>::GetInstance()->FUN_14162bcc0(MS2Ptr<CMatchPartyRecruit>(recruit));
                 }
@@ -529,7 +530,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                 FUN_140f8e340(nStart, nCount);
             }
             Scaleform::GFx::Value vResult(bOk);
-            FUN_1407cd930(&ret, "result", vResult);
+            ((Scaleform::GFx::Value*)(void*)(&ret))->SetMember("result", vResult);
         }
         return 1;
     }
@@ -546,7 +547,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             if (bOk)
                 FUN_140f8e3f0(nPage);
             Scaleform::GFx::Value vResult(bOk);
-            FUN_1407cd930(&ret, "result", vResult);
+            ((Scaleform::GFx::Value*)(void*)(&ret))->SetMember("result", vResult);
         }
         return 1;
     }
@@ -598,7 +599,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         FUN_140f8ff40(0xb38, 1, 1);
                         return 1;
                     }
-                    if (FUN_141527280(pPlayer) && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+                    if (((class MyPC*)(class PCBase*)(pPlayer))->FUN_141527280() && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
                     {
                         FUN_140f8ff40(0xb39, 1, 1);
                         return 1;
@@ -623,17 +624,17 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                 PCBase* pPlayer = static_cast<PCBase*>(reinterpret_cast<Unk_PsdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
                 if (pPlayer != 0)
                 {
-                    if (recruit->created == FUN_141656a80(pPlayer))
+                    if (recruit->created == ((class PCBase*)(class PCBase*)(pPlayer))->FUN_141656a80())
                     {
                         FUN_140f8ff40(0xb35, 1, 1);
                         return 1;
                     }
-                    if (FUN_141527280(pPlayer))
+                    if (((class MyPC*)(class PCBase*)(pPlayer))->FUN_141527280())
                     {
                         FUN_140d73bc0(0xb36, 0, 0, CStringW(L""));
                         return 1;
                     }
-                    if (FUN_140695080(&TSingleton<CPartyManager>::GetInstance()->FUN_141631ce0()) == 0)
+                    if (FUN_140695080((class CMatchPartyRecruit const*)(&TSingleton<CPartyManager>::GetInstance()->FUN_141631ce0())) == 0)
                     {
                         CStringW strAsk = FUN_1406c6bd0(L"askPartyJoinByAlreadyMemberSearch,{0}", nId);
                         FUN_140d73bc0(0xb31, 1, static_cast<IMessageListener*>(this), CStringW(strAsk));
@@ -661,8 +662,8 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         FUN_140f8ff40(0xb34, 1, 1);
                         return 1;
                     }
-                    if (FUN_141482e80()->m_48 != 0)
-                        FUN_141482e80()->m_48->FUN_141a252a0(strName);
+                    if (((class Unk_PsdChatWindow*)FUN_141482e80())->m_48 != 0)
+                        ((class Unk_PsdChatWindow*)FUN_141482e80())->m_48->FUN_141a252a0(strName);
                 }
             }
         }
@@ -747,7 +748,7 @@ int UIPartySearchDialog::FUN_140f8e340(int nStart, int nCount)
 int UIPartySearchDialog::FUN_140f8e3a0()
 {
     const unsigned nDelay = 500;
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = GetTickCountMs2();
     if (nNow < m_17c + nDelay)
         return 0;
     return 1;
@@ -768,7 +769,7 @@ int UIPartySearchDialog::FUN_140f8e3f0(int nPage)
 int UIPartySearchDialog::FUN_140f8e480(const CStringW& strText)
 {
     {
-        MS2Ptr<Unk_PsdFilter> filter = FUN_14025e7d0()->FUN_140229a50();
+        MS2Ptr<Unk_PsdFilter> filter = ((class Unk_PsdFilterMgr*)FUN_14025e7d0())->FUN_140229a50();
         if (filter.get())
         {
             CStringW strBad;
@@ -822,9 +823,9 @@ void UIPartySearchDialog::FUN_140f8e790(float x, float y, unsigned __int64 nAcco
     void* pPlayer = reinterpret_cast<Unk_PsdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
-        if (FUN_141656a80(static_cast<PCBase*>(pPlayer)) == nChar)
+        if (((class PCBase*)(class PCBase*)(static_cast<PCBase*>(pPlayer)))->FUN_141656a80() == nChar)
         {
-            Unk_PsdMenu* pMenu = FUN_140c30140(0x4e39);
+            Unk_PsdMenu* pMenu = ((class Unk_PsdMenu*)FUN_140c30140(0x4e39));
             if (pMenu != 0)
             {
                 Unk_PopupMenuInfo info(x, y, 3, nFlag, 1, CString("partySearchSlot"), 0);
@@ -833,7 +834,7 @@ void UIPartySearchDialog::FUN_140f8e790(float x, float y, unsigned __int64 nAcco
         }
         else
         {
-            Unk_PsdMenu* pMenu = FUN_140c30140(0x4e39);
+            Unk_PsdMenu* pMenu = ((class Unk_PsdMenu*)FUN_140c30140(0x4e39));
             if (pMenu != 0)
             {
                 MS2Ptr<Unk_PsdProxy> ref = reinterpret_cast<Unk_PsdWorld*>(WorldService::GetInstance())->FUN_141bc9c60(nChar);
@@ -858,7 +859,7 @@ void UIPartySearchDialog::OnClickRegisterMemeberSearch()
     PCBase* pPlayer = static_cast<PCBase*>(reinterpret_cast<Unk_PsdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    if (FUN_141527280(pPlayer) && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+    if (((class MyPC*)(class PCBase*)(pPlayer))->FUN_141527280() && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
     {
         FUN_140d73bc0(0xb3a, 0, 0, L"");
         return;
@@ -877,12 +878,12 @@ void UIPartySearchDialog::OnClickRegisterMemeberSearchModify()
     PCBase* pPlayer = static_cast<PCBase*>(reinterpret_cast<Unk_PsdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    if (FUN_141527280(pPlayer) && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+    if (((class MyPC*)(class PCBase*)(pPlayer))->FUN_141527280() && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
     {
         FUN_140d73bc0(0xb3e, 0, 0, L"");
         return;
     }
-    if (FUN_140695080(&TSingleton<CPartyManager>::GetInstance()->FUN_141631ce0()) != 0)
+    if (FUN_140695080((class CMatchPartyRecruit const*)(&TSingleton<CPartyManager>::GetInstance()->FUN_141631ce0())) != 0)
         FUN_140d73bc0(0xb3f, 0, 0, L"");
     else
         reinterpret_cast<Unk_PsdUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4edb);

@@ -29,15 +29,15 @@
 class Unk_MentorInput {public:virtual bool vfunc_0();virtual unsigned char vfunc_1();};
 class CInPacket {public:void* p0;Unk_MentorInput stream;};
 class Unk_MentorPacketManager {public:void FUN_140da5180(int,Delegate<void(CInPacket&)>);void FUN_140da51e0(int,Delegate<void(CInPacket&)>);};
-Unk_MentorPacketManager* FUN_140bccd50();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_MentorUIManager {public:void FUN_141adc5d0(int);};
 class Unk_MentorActor : public PC { };
 class Unk_MentorWorld {public:Unk_MentorActor* FUN_141bd0cc0();};
 class Unk_MentorInfo {public:int FUN_140b71580();int FUN_140b715c0();bool FUN_140b71610();};Unk_MentorInfo* FUN_140c70240();
 class Unk_MentorStatus : public CGameEventValueMentoring { };class Unk_MentorConfig {public:Unk_MentorStatus* FUN_14041d160();};Unk_MentorConfig* FUN_140302b00();
-class Unk_MentorFlag {public:int FUN_1402c4c90(int);};class Unk_MentorFlags {public:void* p0;Unk_MentorFlag flags;};Unk_MentorFlags* FUN_14025e7b0();
-class Unk_MentorNotification {public:void FUN_141938ae0(int,int);};Unk_MentorNotification* FUN_140938b90(int);
-void FUN_1413499b0(int);
+class Unk_MentorFlag {public:int FUN_1402c4c90(int);};class Unk_MentorFlags {public:void* p0;Unk_MentorFlag flags;};struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
+class Unk_MentorNotification {public:void FUN_141938ae0(int,int);};class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
+int FUN_1413499b0(int);   // C3: was FUN_1413499b0
 class Unk_MentorTab:public ASDisplayObject {public:
  virtual void vfunc_6();virtual void vfunc_7();virtual void vfunc_8();virtual void vfunc_9();virtual void vfunc_10();virtual void vfunc_11();virtual void vfunc_12();virtual void vfunc_13();virtual void vfunc_14();virtual void vfunc_15();virtual void vfunc_16();virtual void vfunc_17();virtual void vfunc_18();virtual void vfunc_19();virtual void vfunc_20();virtual void vfunc_21();virtual void vfunc_22();virtual void vfunc_23();virtual void vfunc_24(bool);
  void FUN_1422e3460(const ASObj&);void FUN_1422e31e0(int);
@@ -45,7 +45,7 @@ class Unk_MentorTab:public ASDisplayObject {public:
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW LocalizedMentorFormat(const CStringW&,const fmt::ArgList&);
 FMT_VARIADIC_W(CStringW,LocalizedMentorFormat,CStringW)
-class Unk_MentorRewards : public MentoringDataTable { };Unk_MentorRewards* FUN_1406c7610();
+class Unk_MentorRewards : public MentoringDataTable { };struct Unk_NametagFlags* FUN_1406c7610();   // C3: was FUN_1406c7610
 int FUN_140324070(const int&,int,int);CString FUN_140b62550(int);
 void FUN_140cfee80(const Scaleform::GFx::Value&,CString,CStringW);
 // @0x140e5db70
@@ -53,11 +53,11 @@ UIMentoringDialog::UIMentoringDialog():m_page(0),m_pages(17,0.75f,0.25f,2.25f,10
  FUN_141924170(1);
  AddPage(new UIMentoringBuffPage(this));AddPage(new UIMentoringMenteePage(this));AddPage(new UIMentoringMentorPage(this));
  AddPage(new UIMentoringMenteeRegisterPage(this));AddPage(new UIMentoringMentorRegisterPage(this));AddPage(new Unk_MentorMission(this));AddPage(new UIMentoringRewardPage(this));
- FUN_140bccd50()->FUN_140da5180(0x10a,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnPacket));
- FUN_140bccd50()->FUN_140da5180(0x10b,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnUpdate));
+ ((class Unk_MentorPacketManager*)FUN_140bccd50())->FUN_140da5180(0x10a,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnPacket));
+ ((class Unk_MentorPacketManager*)FUN_140bccd50())->FUN_140da5180(0x10b,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnUpdate));
 }
 // @0x140e5e190
-UIMentoringDialog::~UIMentoringDialog(){FUN_140bccd50()->FUN_140da51e0(0x10a,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnPacket));FUN_140bccd50()->FUN_140da51e0(0x10b,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnUpdate));}
+UIMentoringDialog::~UIMentoringDialog(){((class Unk_MentorPacketManager*)FUN_140bccd50())->FUN_140da51e0(0x10a,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnPacket));((class Unk_MentorPacketManager*)FUN_140bccd50())->FUN_140da51e0(0x10b,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnUpdate));}
 // @0x140e5e330
 CString UIMentoringDialog::GetTypeName(){return "MentoringDialog";}
 MS2_REPLACE_METHOD(0x140E5E330, UIMentoringDialog, GetTypeName, 61, 0x24A44C72);
@@ -99,13 +99,13 @@ MS2_REPLACE_METHOD(0x140E5E940, UIMentoringDialog, Count, 257, 0x6E1D099F);
 void UIMentoringDialog::RefreshPage(){if(m_page.IsNull())return;if(m_page->vfunc_6()=="MentorPage"){UIMentoringPage* page=m_page;page->FUN_140c71ce0();}else if(m_page->vfunc_6()=="MenteePage"){UIMentoringPage* page=m_page;page->FUN_140c6f190();}}
 MS2_REPLACE_METHOD(0x140E5EA50, UIMentoringDialog, RefreshPage, 315, 0x575E7804);
 // @0x140e5eba0
-void UIMentoringDialog::Notify(){UpdateCounts();if(m_page.get())m_page->vfunc_9();Unk_MentorNotification* p=FUN_140938b90(0x4e28);if(p)p->FUN_141938ae0(0x4f4b,0);}
+void UIMentoringDialog::Notify(){UpdateCounts();if(m_page.get())m_page->vfunc_9();Unk_MentorNotification* p=((class Unk_MentorNotification*)FUN_140938b90(0x4e28));if(p)p->FUN_141938ae0(0x4f4b,0);}
 MS2_REPLACE_METHOD(0x140E5EBA0, UIMentoringDialog, Notify, 129, 0x15D26F72);
 // @0x140e5ec30
 void UIMentoringDialog::UpdateCounts(){if(m_30==0)return;for(size_t i=0;i<m_tabs.size();i++)m_30->Invoke("setTabCount",m_tabs[i]->vfunc_6(),m_tabs[i]->vfunc_8());}
 MS2_REPLACE_METHOD(0x140E5EC30, UIMentoringDialog, UpdateCounts, 352, 0x5ACF5D77);
 // @0x140e5eda0
-int UIMentoringDialog::IsAvailable(){Unk_MentorActor* actor=reinterpret_cast<Unk_MentorWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();if(!actor)return false;if(FUN_140302b00()->FUN_14041d160()->GetId()==0)return false;if(FUN_14025e7b0()->flags.FUN_1402c4c90(0x4a))return false;return true;}
+int UIMentoringDialog::IsAvailable(){Unk_MentorActor* actor=reinterpret_cast<Unk_MentorWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();if(!actor)return false;if(FUN_140302b00()->FUN_14041d160()->GetId()==0)return false;if(((class Unk_MentorFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x4a))return false;return true;}
 MS2_REPLACE_METHOD(0x140E5EDA0, UIMentoringDialog, IsAvailable, 108, 0x0726E828);
 // @0x140e5ee20
 void UIMentoringDialog::SetTabs(ATL::CAtlArray<CString>& tabs){m_tabs.clear();if(MS2Ptr<Unk_MentorTab> tab=GetChild<Unk_MentorTab>("m_tab")){for(size_t i=0;i<tabs.GetCount();i++){Unk_MentorPtr<UIMentoringPage> page(0);if(m_pages.Lookup(tabs.GetAt(i),page)){ASObj obj(2);obj.FUN_1407cba60("page",tabs.GetAt(i));obj.FUN_1407cbb20("label",page->vfunc_7());tab->FUN_1422e3460(obj);m_tabs.push_back(page);}}tab->vfunc_24(1);tab->FUN_1422e31e0(0);}UpdateCounts();}
@@ -141,8 +141,8 @@ void ASMentoringRewardPage::OnInit(){
 MS2_REPLACE_METHOD(0x140E62310, ASMentoringRewardPage, OnInit, 2312, 0x91C5FF3B);
 // @0x140e62cc0
 void ASMentoringRewardPage::Refresh(){
- if(!FUN_1406c7610())return;UIMentoringDialog* owner=m_owner->GetOwner();if(!owner)return;
- const size_t count=3;std::vector<unsigned> values;FUN_1406c7610()->GetAttendRewardCoins(values);if(values.size()!=count)return;
+ if(!((class Unk_MentorRewards*)FUN_1406c7610()))return;UIMentoringDialog* owner=m_owner->GetOwner();if(!owner)return;
+ const size_t count=3;std::vector<unsigned> values;((class Unk_MentorRewards*)FUN_1406c7610())->GetAttendRewardCoins(values);if(values.size()!=count)return;
  FUN_140cfee80((*m_script).FUN_1422bb890(),"m_benefitDesc",LocalizedMentorFormat(L"s_mentoring_reward_coin_desc",values[0],values[1],values[2]));
  bool available=FUN_140c70240()->FUN_140b71610();int level=FUN_140c70240()->FUN_140b715c0();unsigned index=FUN_140324070(level,0,2);
  m_coin->FUN_1422c4c80(FUN_140b62550(values[index]));m_button->FUN_1422c1fe0((unsigned)available);

@@ -115,13 +115,17 @@ extern NiFixedString DAT_143ae50d0;
 extern NiFixedString DAT_143ae50d8;
 const char* FUN_142087e50(const NiFixedString* pFixed);     // NiFixedString -> c string
 bool FUN_141068d50(const NiFixedString& kName, const char* psz);   // operator!=
-void FUN_1410479a0(NiAVObject* pObject, const NiFixedString& kName, const NiColor& kColor);   // set a colour extra data
+void FUN_1410479a0(class NiObjectNET*, class NiFixedString const&, class NiColor const&);   // C3: was FUN_1410479a0
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);            // the entity's scene graph
 void FUN_140a0b1f0(const NiMatrix3& kRot, efd::Point3& kEuler);   // rotation matrix to euler angles
 NiColor FUN_141b6dea0(unsigned nIndex);                     // a skin colour of the colour table
 void FUN_141662da0(PC* pPC, int n);
-void FUN_14123fbf0(Unk_PCBaseBody* pBody, unsigned short n);
+class GameObjectController   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_14123fbf0(unsigned short);
+};
 int FUN_141658e60(PC* pPC);
 int FUN_1405267d0(CItem* pItem, int n);                     // the item may be worn by the gender (CItem member; the result is tested here)
 
@@ -304,7 +308,7 @@ int FittingDollPC::vfunc_10()
     if (PC::vfunc_10() == 0)
         return 0;
     if (type == 2)
-        FUN_14123fbf0(m_unk_150, 4);
+        ((class GameObjectController*)(class Unk_PCBaseBody*)(m_unk_150))->FUN_14123fbf0(4);
     return 1;
 }
 MS2_REPLACE_METHOD(0x14121bec0, FittingDollPC, vfunc_10, 72, 0x539D3CE8);
@@ -423,17 +427,17 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
                         switch (nSlot)
                         {
                         case 0:
-                            FUN_1410479a0(pRender, DAT_143ae50c8, *reinterpret_cast<const NiColor*>(pColor));
+                            FUN_1410479a0((class NiObjectNET*)(pRender), DAT_143ae50c8, *reinterpret_cast<const NiColor*>(pColor));
                             break;
                         case 1:
-                            FUN_1410479a0(pRender, DAT_143ae50d0, *reinterpret_cast<const NiColor*>(pColor));
+                            FUN_1410479a0((class NiObjectNET*)(pRender), DAT_143ae50d0, *reinterpret_cast<const NiColor*>(pColor));
                             break;
                         default:
-                            FUN_1410479a0(pRender, DAT_143ae50d8, *reinterpret_cast<const NiColor*>(pColor));
+                            FUN_1410479a0((class NiObjectNET*)(pRender), DAT_143ae50d8, *reinterpret_cast<const NiColor*>(pColor));
                         }
                     }
                     else
-                        FUN_1410479a0(pRender, NiFixedString(pszKey), *reinterpret_cast<const NiColor*>(pColor));
+                        FUN_1410479a0((class NiObjectNET*)(pRender), NiFixedString(pszKey), *reinterpret_cast<const NiColor*>(pColor));
                 }
             }
         }

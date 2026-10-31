@@ -70,12 +70,14 @@ public:
 
 // The item / dialog event registries.
 class Unk_FdItemEvents;
-Unk_FdItemEvents* FUN_140a6a840();
-void FUN_1419cae20(Unk_FdItemEvents*, UIItemEventListener*);
-void FUN_1419caeb0(Unk_FdItemEvents*, UIItemEventListener*);
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419cae20(class UIItemEventListener*);
+    void FUN_1419caeb0(class UIItemEventListener*);
+};
 class Unk_FdDlgEvents;
-void FUN_141928050(Unk_FdDlgEvents*, UIDialogEventListener*);
-void FUN_1419280e0(Unk_FdDlgEvents*, UIDialogEventListener*);
 
 // The "openWindowPos" UI message.
 class Unk_LdUIMsg : public UIMsg
@@ -99,7 +101,11 @@ public:
 // The player's inventory (global 0x143ab2a90) and the item behind a drag source.
 extern Unk_Inventory DAT_143ab2a90;
 void* FUN_140a50b50(void* pSlot);                           // the item slot behind a drag source
-__int64 FUN_141405a10(void* pItemSlot);                     // its item uid
+class InvenSlot   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 GetItemUid();
+};
 
 // The data of the doll's plot (global registry 0x143b059e8): the doll's record and its owner.
 class Unk_FdPlot
@@ -111,19 +117,23 @@ public:
 };
 class Unk_FdPlotMgr {};
 extern char DAT_143b059e8;
-Unk_FdPlotMgr* FUN_1401cd040(void* pRegistry);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 struct Unk_FdKey { int a, b; Unk_FdKey(const Unk_FdKey&); Unk_FdKey& operator=(const Unk_FdKey&); };   // the doll's plot key (8 bytes, returned by value)
 struct Unk_FdDollView { Unk_FdKey FUN_14123c460(); };       // FittingDollPC: the plot key of the doll
 Unk_FdPlot* FUN_1410b8c90(Unk_FdPlotMgr* pMgr, Unk_FdKey key);   // by value (the exe builds the key in an argument temp)
-__int64 FUN_1410c8030(Unk_FdPlotMgr* pMgr, int nA, int nB);
+class CubeMapInformationService   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_1410c8030(int, int);
+};
 
 // The doll / player helpers.
-FittingDollPC* FUN_140884db0(void* pActor);                 // efd::DynamicCast<FittingDollPC>
-int FUN_140967160(FittingDollPC* pDoll);                    // the doll's item id
-int FUN_141658e60(PC* pPC);                                 // the player's gender / model
-__int64 FUN_141656ad0(PC* pPC);                             // the owner id of the player's plot
-int FUN_14123c580(PC* pPC);                                 // the player's home id
-int FUN_14166c930(PC* pPC);                                 // the action id
+class MyPC* FUN_140884db0(class Unk_QueryObj*);   // C3: was FUN_140884db0
+class Unk_AkoFittingDoll   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_140967160();
+};
 void FUN_14121e670(const CString& strDialog, int nHomeId, __int64 nDollId, bool bEquip);
 void FUN_14121e760(const CString& strDialog);
 void FUN_14121b840(int nError);                             // show the message of an error code
@@ -135,8 +145,6 @@ void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_PickXY offLeft, 
 typedef ATL::CAtlList<MS2Ptr<CEquipItem> > Unk_FdEquipList;
 void FUN_1411e1b80(Unk_PCEquipSet* pSet, Unk_FdEquipList* pList);
 void FUN_1411e22c0(Unk_PCEquipSet* pSet, Unk_FdEquipList* pList, int n);
-unsigned FUN_140635100(void* pItemTransfer);                // m_nRule & 8
-int FUN_140635120(void* pItemTransfer);                     // has a binding
 
 // The message box machinery.
 class CMsgBoxData : public CPtred
@@ -215,7 +223,7 @@ int UIFittingDollDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_141928050(reinterpret_cast<Unk_FdDlgEvents*>(TSingleton<UIDialogEventDispatcher>::GetInstance()), static_cast<UIDialogEventListener*>(this));
+    ((class UIDialogEventDispatcher*)(class Unk_FdDlgEvents*)(reinterpret_cast<Unk_FdDlgEvents*>(TSingleton<UIDialogEventDispatcher>::GetInstance())))->FUN_141928050(static_cast<UIDialogEventListener*>(this));
     return 1;
 }
 
@@ -224,8 +232,8 @@ void UIFittingDollDialog::vfunc_67()
 {
     DAT_143af25f0 = 0;
     FUN_14121e760(GetTypeName());
-    FUN_1419caeb0(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
-    FUN_1419280e0(reinterpret_cast<Unk_FdDlgEvents*>(TSingleton<UIDialogEventDispatcher>::GetInstance()), static_cast<UIDialogEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_FdItemEvents*)(((class Unk_FdItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class UIDialogEventDispatcher*)(class Unk_FdDlgEvents*)(reinterpret_cast<Unk_FdDlgEvents*>(TSingleton<UIDialogEventDispatcher>::GetInstance())))->FUN_1419280e0(static_cast<UIDialogEventListener*>(this));
     UIDialog::vfunc_67();
 }
 
@@ -241,7 +249,7 @@ void UIFittingDollDialog::vfunc_dl_3(void* pSlot)
     void* pItemSlot = FUN_140a50b50(pSlot);
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
         {
             ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -288,7 +296,7 @@ void UIFittingDollDialog::vfunc_66()
 void UIFittingDollDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_FdItemEvents*)(((class Unk_FdItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_141933b00();
     FUN_141934070();
     if (reinterpret_cast<Unk_FdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e2d) != 0)
@@ -344,10 +352,10 @@ void UIFittingDollDialog::vfunc_33(int nClassId, int n)
 // @0x141933b00
 void UIFittingDollDialog::FUN_141933b00()
 {
-    FittingDollPC* pDoll = FUN_140884db0(reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0));
+    FittingDollPC* pDoll = ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0))));
     if (pDoll == 0)
         return;
-    int nItemId = FUN_140967160(pDoll);
+    int nItemId = ((class Unk_AkoFittingDoll*)(class FittingDollPC*)(pDoll))->FUN_140967160();
 
     if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_name"))
         spName->FUN_1422c4cd0(GetStringTable()->FUN_141811980(1, nItemId));
@@ -358,7 +366,7 @@ void UIFittingDollDialog::FUN_141933b00()
     if (MS2Ptr<ASMovieClip> spCharacter = GetChild<ASMovieClip>("m_character"))
     {
         CString strFrame;
-        strFrame.AppendFormat("%s_%d", pDoll->FUN_14121c710() != 0 ? "skin" : "game", (unsigned)FUN_141658e60(pDoll));
+        strFrame.AppendFormat("%s_%d", pDoll->FUN_14121c710() != 0 ? "skin" : "game", (unsigned)((class PC*)(class PC*)(pDoll))->FUN_141658e60());
         spCharacter->vfunc_13(strFrame);
     }
 
@@ -372,7 +380,7 @@ void UIFittingDollDialog::FUN_141933b00()
     if (MS2Ptr<ASMovieClip> spEmblem = GetChild<ASMovieClip>("m_emblem"))
     {
         CString strFrame;
-        strFrame.AppendFormat("_%d", (unsigned)FUN_141658e60(pDoll));
+        strFrame.AppendFormat("_%d", (unsigned)((class PC*)(class PC*)(pDoll))->FUN_141658e60());
         spEmblem->vfunc_13(strFrame);
     }
 }
@@ -384,15 +392,15 @@ void UIFittingDollDialog::FUN_141934070()
     PC* pMe = reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return;
-    FittingDollPC* pDoll = FUN_140884db0(reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0));
+    FittingDollPC* pDoll = ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0))));
     if (pDoll == 0)
         return;
     int bOwner = 0;
-    Unk_FdPlotMgr* pMgr = FUN_1401cd040(&DAT_143b059e8);
+    Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
     Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, reinterpret_cast<Unk_FdDollView*>(pDoll)->FUN_14123c460());
     if (pPlot != 0)
-        bOwner = FUN_1410c8030(pMgr, pPlot->m_nKeyA, pPlot->m_nKeyB) == FUN_141656ad0(pMe);
-    FUN_14121e670(GetTypeName(), FUN_14123c580(pMe), DAT_143af25f0, pDoll->FUN_14121c710() == 1);
+        bOwner = ((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->FUN_1410c8030(pPlot->m_nKeyA, pPlot->m_nKeyB) == ((class PC*)(class PC*)(pMe))->FUN_141656ad0();
+    FUN_14121e670(GetTypeName(), ((class GameObject*)(class PC*)(pMe))->FUN_14123c580(), DAT_143af25f0, pDoll->FUN_14121c710() == 1);
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
     {
@@ -415,7 +423,7 @@ void UIFittingDollDialog::FUN_141934340()
     PC* pMe = reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return;
-    if (FUN_14166c930(pMe) == 0x22)
+    if (((class PCBase*)(class PC*)(pMe))->FUN_14166c930() == 0x22)
         return;
     if (MS2Ptr<Unk_LdButton> spButton = GetChild<Unk_LdButton>("m_transform"))
     {
@@ -427,17 +435,17 @@ void UIFittingDollDialog::FUN_141934340()
 // @0x141934430
 int UIFittingDollDialog::FUN_141934430()
 {
-    FittingDollPC* pDoll = FUN_140884db0(reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0));
+    FittingDollPC* pDoll = ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0))));
     if (pDoll == 0)
         return 0xd;
     PC* pMe = reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMe == 0)
         return 0xd;
-    Unk_FdPlotMgr* pMgr = FUN_1401cd040(&DAT_143b059e8);
+    Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
     Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, reinterpret_cast<Unk_FdDollView*>(pDoll)->FUN_14123c460());
     if (pPlot == 0)
         return 0xd;
-    if (FUN_1410c8030(pMgr, pPlot->m_nKeyA, pPlot->m_nKeyB) != FUN_141656ad0(pMe))
+    if (((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->FUN_1410c8030(pPlot->m_nKeyA, pPlot->m_nKeyB) != ((class PC*)(class PC*)(pMe))->FUN_141656ad0())
         return 2;
 
     Unk_FdEquipList list(10);
@@ -454,7 +462,7 @@ int UIFittingDollDialog::FUN_141934430()
             return nResult;
         void* pTransfer;
         void* pDead = pTransfer = spEquip->GetItem()->FUN_140527930();
-        if (pTransfer != 0 && FUN_140635100(pTransfer) != 0 && FUN_140635120(pTransfer) == 0)
+        if (pTransfer != 0 && ((class CItemTransfer*)(void*)(pTransfer))->FUN_140635100() != 0 && ((class CItemTransfer*)(void*)(pTransfer))->FUN_140635120() == 0)
             bBound = true;
     }
     list.RemoveAll();

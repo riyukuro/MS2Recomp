@@ -82,14 +82,13 @@ CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& nArg);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a1, const CStringW& a2);
 CStringW FUN_14183e930(const CStringW& str, int nColor);
 CString FUN_140513200(const char* szFormat, const unsigned int& nArg);
-unsigned int FUN_140869420();                                       // now (ms)
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
 void FUN_141415560(const CString& strName, ItemInfoSlot::CreateParam* pParam);
 void FUN_141415600(const CString& strName);
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 int FUN_14151f9c0();                                                // the modaless setting
 class Unk_MsgPopup : public UISwfEntity { };
-Unk_MsgPopup* FUN_14151fcb0(int nUiType);                           // a dialog by type
+class UIMessageBox* FUN_14151fcb0(int);   // C3: was FUN_14151fcb0
 class Unk_MsgColors { public: int FUN_1405569f0(int nColor); };
 
 CFeatureManager* FUN_140166410();
@@ -97,7 +96,7 @@ class Unk_MsgLocalizer { public: CStringW FUN_1422b0570(const CString& key); };
 Unk_MsgLocalizer* FUN_14025e7a0();
 class Unk_MsgOption { public: int* FUN_1402056b0(); char m_pad[0x58]; };
 class Unk_MsgGlobals { public: char m_pad_0[0xdf30]; Unk_MsgOption m_dfOption30; Unk_MsgOption m_dfOption88; };
-Unk_MsgGlobals* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_MsgPad { public: int FUN_140d8ee40(); };
 Unk_MsgPad* FUN_140a58540();
 
@@ -312,7 +311,7 @@ int CMsgBoxData::FUN_141a049d0() const
     if (FUN_141a049a0())
     {
         unsigned int nEnd = m_timer.m_nSec * 1000 + m_timer.m_nMs;
-        unsigned int nNow = FUN_140869420();
+        unsigned int nNow = GetTickCountMs2();
         if (nEnd <= nNow)
             return 1;
     }
@@ -400,7 +399,7 @@ void FUN_141a04f80(MS2Ptr<Unk_MsgDisplay> spBox)
 // @0x141a05070
 int FUN_141a05070(CMsgBoxData* pBox)
 {
-    Unk_MsgPopup* pPopup = FUN_14151fcb0(0x4e48);
+    Unk_MsgPopup* pPopup = ((class Unk_MsgPopup*)FUN_14151fcb0(0x4e48));
     if (pPopup != 0)
         return pPopup->FUN_1422db730();
     return 2;
@@ -557,8 +556,8 @@ void CMsgBoxData::FUN_141a05770(ASObj& obj)
 // @0x141a058c0
 void CMsgBoxData::FUN_141a058c0(ASObj& obj)
 {
-    obj.FUN_1407cb9c0("ugcAttention", *FUN_1401d3200()->m_dfOption30.FUN_1402056b0());
-    obj.FUN_1407cb9c0("ugcInfringementCenter", *FUN_1401d3200()->m_dfOption88.FUN_1402056b0());
+    obj.FUN_1407cb9c0("ugcAttention", *((class Unk_MsgGlobals*)FUN_1401d3200())->m_dfOption30.FUN_1402056b0());
+    obj.FUN_1407cb9c0("ugcInfringementCenter", *((class Unk_MsgGlobals*)FUN_1401d3200())->m_dfOption88.FUN_1402056b0());
 }
 
 // @0x141a05930
@@ -788,7 +787,7 @@ void Unk_MsgASObj::FUN_141a07250(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x141a07430

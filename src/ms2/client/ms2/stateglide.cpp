@@ -26,14 +26,14 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/gameobjectcontroller.h"
+#include "ms2/client/ms2/gameobjectcontrollerhitreport.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-void* FUN_1403ed280();                                     // effect manager
 class Unk_PCBaseBody;
-class Unk_GlideBody { public: void FUN_141240730(); };     // the actor body (+0x150)
+     // the actor body (+0x150)
 class Unk_PCBaseBodyDummy;
-class Unk_GlideHit { public: void FUN_140cfaf30(); };
+class Unk_GlideHit : public GameObjectControllerHitReport { };
 
 // The owner's vtable up to slot 68, which takes the move by value (the exe passes a pointer to a copy).
 class Unk_GlOwnerSlots
@@ -81,7 +81,7 @@ efd::Point3 FUN_1408a15b0(Unk_GlCell kCell, efd::Point3& kCentre);     // fills 
 
 // The PhysX helper (0x1409f7ca0): ground below a point.
 class CPhysXHelper;
-CPhysXHelper* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 class Unk_GlidePhys
 {
 public:
@@ -108,7 +108,7 @@ StateGlide::~StateGlide()
 {
     if (m_nEffect != 0)
     {
-        reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
+        reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
 }
@@ -135,12 +135,12 @@ void StateGlide::vfunc_4(StateData* pData)
         if (m_bTooHigh && m_pOwner->vfunc_108() != 0)
             FUN_1412751f0(GetStringCommonByKey(L"s_err_skill_maximum_Height"), 1, 1);
     }
-    ((Unk_GlideBody*)m_pOwner->FUN_14166d220())->FUN_141240730();
+    ((GameObjectController*)m_pOwner->FUN_14166d220())->FUN_141240730();
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
     {
         efd::Point3 kPos = reinterpret_cast<Unk_GlOwnerSlots*>(pPC)->vfunc_18();
-        if (((Unk_GlidePhys*)FUN_1409f7ca0())->FUN_14168a770(&kPos))
+        if (((Unk_GlidePhys*)((class CPhysXHelper*)FUN_1409f7ca0()))->FUN_14168a770(&kPos))
         {
             pPC->vfunc_59(1, 0, 0, 0);
             return;
@@ -154,7 +154,7 @@ void StateGlide::vfunc_4(StateData* pData)
     query.m_nObject = 0;
     query.SetActor(m_pOwner->FUN_14123c580());
     query.m_bFlag31 = true;
-    m_nEffect = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
+    m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     m_pOwner->vfunc_47(false);
     m_pOwner->FUN_141670330((float)m_spRow->m_nSpeedMul);
     m_pOwner->FUN_141670360((float)m_spRow->m_nSpeedMul);
@@ -182,7 +182,7 @@ void StateGlide::vfunc_3(double fTime)
         {
             efd::Point3 kPos = reinterpret_cast<Unk_GlOwnerSlots*>(m_pOwner)->vfunc_18();
             float fDist = 0.0f;
-            if (((Unk_GlidePhys*)FUN_1409f7ca0())->FUN_14168a450(kPos, &fDist, 200.0f) != 0 && fDist < 100.0f)
+            if (((Unk_GlidePhys*)((class CPhysXHelper*)FUN_1409f7ca0()))->FUN_14168a450(kPos, &fDist, 200.0f) != 0 && fDist < 100.0f)
                 bLand = 1;
         }
     }
@@ -196,15 +196,15 @@ void StateGlide::vfunc_3(double fTime)
 void StateGlide::vfunc_5(int n)
 {
     StateMoveSkill::vfunc_5(n);
-    ((Unk_GlideBody*)m_pOwner->FUN_14166d220())->FUN_141240730();
+    ((GameObjectController*)m_pOwner->FUN_14166d220())->FUN_141240730();
     m_pOwner->FUN_141670330(0);
     m_pOwner->FUN_141670360(0);
     m_pOwner->vfunc_47(true);
-    reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
+    reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
     m_nAnim = 99;
     if (m_nEffect != 0)
     {
-        reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
+        reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
     m_spRow.AssignRaw(0);
@@ -242,13 +242,13 @@ void StateGlide::vfunc_9(double fTime)
         {
             if (m_nEffect != 0)
             {
-                reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
+                reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
                 Unk_EffectQuery query;
                 query.m_strName = m_spRow->m_strEffectA;
                 query.m_nObject = 0;
                 query.SetActor(m_pOwner->FUN_14123c580());
                 query.m_bFlag31 = true;
-                m_nEffect = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
+                m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
             }
             efd::utf8string strAnim(m_spRow->m_strAnimA);
             m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
@@ -257,13 +257,13 @@ void StateGlide::vfunc_9(double fTime)
         {
             if (m_nEffect != 0)
             {
-                reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
+                reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
                 Unk_EffectQuery query;
                 query.m_strName = m_spRow->m_strEffectB;
                 query.m_nObject = 0;
                 query.SetActor(m_pOwner->FUN_14123c580());
                 query.m_bFlag31 = true;
-                m_nEffect = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
+                m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
             }
             efd::utf8string strAnim(m_spRow->m_strAnimB);
             m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);

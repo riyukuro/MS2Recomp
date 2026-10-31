@@ -15,18 +15,10 @@
 #include "ms2/ms2layout.h"
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/intervaltimer.h"
 #include "ms2/placeholder/uiitemeventlistener.h"
 
 class NotifyObject;
-
-// The timer the tick uses (one 8-byte time stamp; ctor 0x140517b00, FUN_140268870 asks whether the period elapsed).
-struct Unk_HlTimer
-{
-    void FUN_140517b00();
-    int FUN_140268870(int nMs);
-    __int64 m_tick;
-};
-MS2_CHECK_SIZE(Unk_HlTimer, 8);
 
 // A one-byte bit set (commonfiles\bitset.inl: this unit holds its own copies of the members, all with a single bit).
 struct Unk_HlBits;
@@ -86,7 +78,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_HlTimer m_timer;                                // +0x180
+    Unk_IntervalTimer m_timer;                          // +0x180 the tick throttle
     ATL::CAtlMap<CString, Action, ATL::CStringElementTraits<CString> > m_actions;   // +0x188 icon name -> predicate
     __int64 m_nScrollItem;                              // +0x1d0 the enchant scroll found
     __int64 m_nTargetItem;                              // +0x1d8 the item it can be used on

@@ -80,11 +80,18 @@ static UICommon::CMyPCKeyInputController s_keyController;
 
 // Services of the exe, bound by their FUN_<va> names.
 CStringTable* GetStringTable();
-bool FUN_14064d4e0(const MS2Ptr<CQuestData>&);
-void* FUN_140166410();
-bool FUN_14036d570(void*, int);
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
 void* FUN_1408e57f0();
-int FUN_1422b9e00(void*);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSubSceneId();
+};
 int FUN_14074b030(CQuestData*);
 int FUN_14074b840(int);
 int FUN_14074b950(int);
@@ -95,7 +102,7 @@ CStringW FUN_1405c2690(CStringW, const CStringW&);
 CStringW FUN_1401e8510(const wchar_t*, const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 CStringW GetStringCommonByKey(const CStringW& str);
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 UIRewardNotify* FUN_140938cd0(int);
 UIFameContentsNotify* FUN_140e77d80(int);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
@@ -114,10 +121,14 @@ private:
 };
 Unk_QmTalkScriptPtr FUN_1408564b0(int questId, int n);
 class Unk_StTalkManager { public: int FUN_141b213f0(Unk_QmTalkScriptPtr script, int npcId, int mode, int n); };
-Unk_StTalkManager* FUN_140967100();
+class Unk_AkoCutscene   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoCutscene* GetInstance();
+};
 
 class Unk_StRewardOtherDialog : public UIDialog { public: void FUN_1419f6a70(int nType, CStringW strText, int nTime); };
-Unk_StRewardOtherDialog* FUN_140e01890(int nUiId);
+class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
 
 // The UI manager and the dialog getter (GetDialog<T> instantiations of this unit).
 class Unk_StUiManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
@@ -168,7 +179,7 @@ CStoryQuest::~CStoryQuest()
 // @0x14180f0d0
 void CStoryQuest::DecodeStart(CInPacket& packet)
 {
-    if (FUN_14036d570(FUN_140166410(), 100))
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(100))
     {
         int nChapter = TSingleton<CChapterBookTable>::GetInstance()->FindIdByPrologue(FUN_140bfc580());
         if (nChapter != 0)
@@ -183,7 +194,7 @@ void CStoryQuest::DecodeStart(CInPacket& packet)
     }
     if (FUN_14074b840(FUN_140bfc580()) != 0)
     {
-        if (FUN_1422b9e00(FUN_1408e57f0()) == 0x6200031)
+        if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x6200031)
         {
             CStringW strMsg = FUN_1405c2690(CStringW(L"s_quest_redirect_accept"), FUN_1416e4df0(FUN_140bfc580()));
             FUN_1412751f0(strMsg, 3, 0);
@@ -205,16 +216,16 @@ void CStoryQuest::Complete(CInPacket& packet)
 {
     if (m_data->m_2d0.m_id != -1)
     {
-        Unk_StRewardOtherDialog* pDlg = FUN_140e01890(0x4e4c);
+        Unk_StRewardOtherDialog* pDlg = ((class Unk_StRewardOtherDialog*)FUN_140e01890(0x4e4c));
         if (pDlg)
         {
             CStringW strText = FUN_1405c2690(CStringW(L"s_quest_complete_ui_effect"), FUN_1416e7fb0(m_data->m_28));
             pDlg->FUN_1419f6a70(m_data->m_2d0.m_id, strText, 3000);
         }
     }
-    if (FUN_14036d570(FUN_140166410(), 100))
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(100))
     {
-        int nChapter = FUN_140764020()->FUN_1416d0f60(FUN_140bfc580());
+        int nChapter = ((class CQuestManager*)FUN_140764020())->FUN_1416d0f60(FUN_140bfc580());
         if (nChapter != 0)
         {
             UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
@@ -227,7 +238,7 @@ void CStoryQuest::Complete(CInPacket& packet)
     }
     if (FUN_14074b950(FUN_140bfc580()) != 0)
     {
-        if (FUN_1422b9e00(FUN_1408e57f0()) == 0x6200031)
+        if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x6200031)
         {
             CStringW strMsg = FUN_1405c2690(CStringW(L"s_quest_redirect_complete"), FUN_1416e4df0(FUN_140bfc580()));
             FUN_1412751f0(strMsg, 3, 0);
@@ -245,7 +256,7 @@ void CStoryQuest::FUN_140d73960()
     CQuest::FUN_140d73960();
     if (m_7c != 0)
     {
-        if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001d)
+        if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001d)
         {
             CStringW strWho = GetStringTable()->FUN_141811980(0x47, m_data->m_2f0.m_c);
             CStringW strText = FUN_1401e8510((const wchar_t*)strWho, GetStringTable()->FUN_141811980(3, m_data->m_2f0.m_4));
@@ -257,7 +268,7 @@ void CStoryQuest::FUN_140d73960()
                     spBox->FUN_140534050(FUN_14074b030(m_data.operator->()));
                     spBox->FUN_140533ff0(m_7c);
                     spBox->SetTitle(WorldService::GetInstance()->FUN_141bd0d30());
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(FUN_140764020(), &CQuestManager::SendQuestMode20));
+                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(((class CQuestManager*)FUN_140764020()), &CQuestManager::SendQuestMode20));
                     spBox->FUN_141a01690(GetStringCommonByKey(L"s_quest_dispatch_yes"), GetStringCommonByKey(L"s_quest_dispatch_no"), L"");
                     FUN_140d73c60(spBox);
                 }
@@ -284,7 +295,7 @@ int CStoryQuest::FUN_140d73970()
     if (script.IsNull())
         return 0;
     m_78 = 0;
-    FUN_140967100()->FUN_141b213f0(script, m_data->m_2ec, 4, 0);
+    ((class Unk_StTalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(script, m_data->m_2ec, 4, 0);
     return 1;
 }
 
@@ -318,7 +329,7 @@ int CStoryQuest::FUN_140d738d0()
 // @0x14180fc80
 int CStoryQuest::FUN_14180fc80()
 {
-    if (FUN_14064d4e0(m_data))
+    if (((MS2Ptr<CQuestData>*)&static_cast<class MS2Ptr<class CQuestData> const&>(m_data))->IsNull())
         return 0;
     if (m_data->m_32c.m_0 == 0)
         return 0;
@@ -336,7 +347,7 @@ int CStoryQuest::FUN_14180fc80()
     }
     if (m_data->m_32c.m_8 != 0)
     {
-        if (FUN_140764020()->FUN_1416d0760() == 0)
+        if (((class CQuestManager*)FUN_140764020())->FUN_1416d0760() == 0)
             return 0;
     }
     return 1;
@@ -463,24 +474,28 @@ bool CStringTable::s_bInit;
 extern int DAT_143ae0fc0;                                           // debug switch: append the ids to the texts
 
 // The xml helpers every table unit uses.
-void* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 CString FUN_14071ae20(const CString& strFile);                      // path of a Table file
 CString FUN_14016a5c0(const char* psz, int n);
 CString FUN_140536a50(const char* szFormat, const CString& strArg);
 unsigned FUN_14021c7c0(const CString& str);                         // the id of a string key
-int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
-bool FUN_14028f710(Unk_140165cf0*);                                 // the element is usable
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_14028fd90(Unk_140165cf0*, const char*, const char*, const char*, std::vector<Unk_140165cf0*>&);   // commonutil.cpp
 bool FUN_140184310(const CString& str, const char* psz);            // str equals psz
 unsigned char FUN_1401d1320(CCacheData*);
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* pszSep);
 CStringW GetStringCommon(int nId);                                    // the text of a string id
-void* FUN_14025e7a0();
-void FUN_1422b09a0(void*);
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1422b09a0();
+};
 
 // @0x1418178d0
 void CStringTable::CheckInit()
@@ -528,7 +543,7 @@ bool CGFxLanguage::LoadKorFlash(TiXmlDocument* pDoc)
 // @0x141815db0
 void FUN_141815db0(void* pThis)
 {
-    FUN_1422b09a0(FUN_14025e7a0());
+    ((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->FUN_1422b09a0();
 }
 
 // @0x1418176e0
@@ -599,18 +614,18 @@ BOOL CStringTable::Load()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, MS2_XML_FORMAT_ERROR, strPath);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, MS2_XML_FORMAT_ERROR, strPath);
         return FALSE;
     }
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
     {
-        if (!FUN_14028f710(pKey))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
         int nId = 0;
         CString strName;
         CString strParser;
         CString strParserValue;
-        FUN_1408731e0(pKey, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pKey), "id", nId);
         FUN_1408733e0(pKey, "name", strName);
         FUN_1408733e0(pKey, "parser", strParser);
         FUN_1408733e0(pKey, "parserValue", strParserValue);
@@ -1058,12 +1073,12 @@ int CStringTable::FUN_141813f10(CachePtr spCache)
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
+            FUN_14015eb90(((void*)GetLogString()), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
             return 0;
         }
         for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
         {
-            if (!FUN_14028f710(pKey))
+            if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
                 continue;
             CString strId;
             CStringW strText;
@@ -1094,16 +1109,16 @@ int CStringTable::FUN_141814310(CachePtr spCache, CString strAttr)
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
+            FUN_14015eb90(((void*)GetLogString()), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
             return 0;
         }
         for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
         {
-            if (!FUN_14028f710(pKey))
+            if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
                 continue;
             int nId = 0;
             CStringW strText;
-            FUN_1408731e0(pKey, "id", nId);
+            XmlGetAttr((class TiXmlElement*)(pKey), "id", nId);
             FUN_140873420(pKey, strAttr, strText);
             if (strText.IsEmpty())
                 continue;
@@ -1126,18 +1141,18 @@ int CStringTable::FUN_141814750(CString strFile, DescMap& rMap, CCacheData& rCac
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, MS2_XML_FORMAT_ERROR, strPath);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, MS2_XML_FORMAT_ERROR, strPath);
         return 0;
     }
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
     {
-        if (!FUN_14028f710(pKey))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
         DescPtr spDesc = FUN_1418154e0(pKey);
         if (spDesc == 0)
             continue;
         int nId = 0;
-        FUN_1408731e0(pKey, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pKey), "id", nId);
         rMap.SetAt(nId, spDesc);
     }
     rCache.FUN_1401d1160(CString(strPath));
@@ -1155,18 +1170,18 @@ int CStringTable::FUN_141814a20(CString strFile, DescMap& rMap, CCacheData& rCac
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, MS2_XML_FORMAT_ERROR, strPath);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, MS2_XML_FORMAT_ERROR, strPath);
         return 0;
     }
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
     {
-        if (!FUN_14028f710(pKey))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
         DescPtr spDesc = FUN_141815650(pKey, rTags);
         if (spDesc == 0)
             continue;
         int nId = 0;
-        FUN_1408731e0(pKey, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pKey), "id", nId);
         rMap.SetAt(nId, spDesc);
     }
     rCache.FUN_1401d1160(CString(strPath));
@@ -1188,7 +1203,7 @@ int CStringTable::FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache)
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
+            FUN_14015eb90(((void*)GetLogString()), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
             continue;
         }
         std::vector<Unk_140165cf0*> aNodes;
@@ -1199,9 +1214,9 @@ int CStringTable::FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache)
             if (pNode == 0)
                 continue;
             int nId = 0;
-            FUN_1408731e0(pNode, "id", nId);
+            XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
             int nLevel = 1;
-            FUN_1408731e0(pNode, "level", nLevel);
+            XmlGetAttr((class TiXmlElement*)(pNode), "level", nLevel);
             DescPtr spDesc = FUN_1418158b0(pNode);
             if (spDesc == 0)
             {
@@ -1309,13 +1324,13 @@ void CStringTable::FUN_141815a20(DescMap& rMap, Unk_140165cf0* pRoot)
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
     {
-        if (!FUN_14028f710(pKey))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
         DescPtr spDesc = FUN_1418154e0(pKey);
         if (spDesc == 0)
             continue;
         int nId = 0;
-        FUN_1408731e0(pKey, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pKey), "id", nId);
         rMap.SetAt(nId, spDesc);
     }
 }
@@ -1326,12 +1341,12 @@ void CStringTable::FUN_141815b30(LevelDescMap& rMap, Unk_140165cf0* pRoot)
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
     {
-        if (!FUN_14028f710(pKey))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
         int nId = 0;
-        FUN_1408731e0(pKey, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pKey), "id", nId);
         int nLevel = 1;
-        FUN_1408731e0(pKey, "level", nLevel);
+        XmlGetAttr((class TiXmlElement*)(pKey), "level", nLevel);
         DescPtr spDesc = FUN_1418158b0(pKey);
         if (spDesc == 0)
         {

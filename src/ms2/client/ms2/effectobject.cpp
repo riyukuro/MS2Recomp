@@ -76,11 +76,13 @@ CString FUN_140298360(const char* pszPrefix, const CString& str);   // prefix + 
 NiActorManager* FUN_140999440(void* pCache, const Unk_GoModelKey& kKey);   // cached actor manager (NULL if none)
 void* FUN_141b6f910();                                              // the model cache singleton
 const char* FUN_142087e50(const NiFixedString& kName);              // NiFixedString::operator const char*
-void FUN_1409a20a0(NiActorManager* pMgr, unsigned int uiSeqId, float fSpeed, bool bFlag);   // start the sequence
 void* FUN_14086d260();                                              // the game clock
-double FUN_141473280(void* pClock);                                 // seconds
+class CMainSystem   // C3: member view for the former free stand-ins
+{
+public:
+    double FUN_141473280();
+};
 float FUN_141b6fe90(NiControllerSequence* pSeq, const NiFixedString& kKey, float fDefault);   // text key time
-void FUN_1409a1f60(NiControllerSequence* pSeq, float fTime);        // seek the sequence
 
 // The exe's NiActorManager has a virtual Update(float) at slot 4 that the SDK header lacks (slots 0-3 not proven).
 // MS2: slot 4
@@ -164,15 +166,15 @@ void CEffectObject::FUN_140a539d0(const NiFixedString& kSeqName, float fSpeed, c
         if (uiSeqId == NiActorManager::INVALID_SEQUENCE_ID)
             return;
         {
-            FUN_1409a20a0(pMgr, uiSeqId, fSpeed, true);
-            reinterpret_cast<Unk_ActorManagerVt*>(pMgr)->Update((float)FUN_141473280(FUN_14086d260()));
+            ((class NiActorManager*)(class NiActorManager*)(pMgr))->SetTargetAnimation(uiSeqId, fSpeed, true);
+            reinterpret_cast<Unk_ActorManagerVt*>(pMgr)->Update((float)((class CMainSystem*)(void*)(FUN_14086d260()))->FUN_141473280());
             NiControllerSequence* pSeq = pMgr->GetActiveSequence(uiSeqId, true, true);
             if (pSeq != NULL)
             {
                 float fKeyTime = FUN_141b6fe90(pSeq, kTextKey, 1.0f);
                 float fOffset = Unk_SeqAccess::FUN_140a53fa0(pSeq);
                 float fTarget = fOffset + fKeyTime * (1.0f / Unk_SeqAccess::FUN_140a53f80(pSeq));
-                FUN_1409a1f60(pSeq, fTarget);
+                ((class NiControllerSequence*)(class NiControllerSequence*)(pSeq))->SetOffset(fTarget);
             }
         }
     }

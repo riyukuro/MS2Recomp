@@ -1,8 +1,8 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The out-of-line instances of the egfLua EntityLua property
 // dump helper behind egf::lua_DumpProperties (0x14224e2a0): one per property type, each writing "\n[name]" plus one
 // "\n-> key = value" line per key for an associative property, or "\nname = value" for a scalar one ("???" when the
-// value cannot be read). The engine-stage build inlines the helper into lua_DumpProperties, so these exe copies have
-// no engine-stage pair.
+// value cannot be read). The exe calls std::string::append(const basic_string&) (0x1409a2d10) out of line here, hence
+// EE_MS2_UTF8_APPEND_STR_CALL (efd/utf8string.inl), as for the engine-stage EntityLua.
 // MS2-UNIT: lib_egflua_tail
 // MS2-RANGE: 0x142249440-0x142249721 .text$mn
 // MS2-RANGE: 0x142249730-0x142249a11 .text$mn
@@ -28,6 +28,7 @@
 // MS2-PIN: ??$DumpEntityProperty@_K@lib_egflua_tail@@YAXPEAVEntity@egf@@AEBVutf8string@efd@@AEAV34@@Z 0x14224cc60
 // MS2-PIN: ??$DumpEntityProperty@_N@lib_egflua_tail@@YAXPEAVEntity@egf@@AEBVutf8string@efd@@AEAV34@@Z 0x14224cf40
 #define MS2_THIS_FILE ""
+#define EE_MS2_UTF8_APPEND_STR_CALL   // keep std::string::append(const basic_string&) out of line (0x1409a2d10)
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/utf8string.h>
 #include <efd/ParseHelper.h>
@@ -89,8 +90,6 @@ void DumpEntityProperty(egf::Entity* entity, const efd::utf8string& name, efd::u
 } // namespace lib_egflua_tail
 
 // The exe instances, pinned in the header block.
-// MS2-FUNCTIONAL: all 11 differ from the exe only in codegen: the exe keeps std::string::append(const basic_string&)
-// out of line (0x1409a2d10) and builds `text` with one movdqa store, where MSVC 14.16 inlines both; r14/r15 swapped.
 template void lib_egflua_tail::DumpEntityProperty<efd::SInt8>(egf::Entity*, const efd::utf8string&, efd::utf8string&);   // 0x142249440
 template void lib_egflua_tail::DumpEntityProperty<efd::UInt8>(egf::Entity*, const efd::utf8string&, efd::utf8string&);   // 0x142249730
 template void lib_egflua_tail::DumpEntityProperty<efd::SInt16>(egf::Entity*, const efd::utf8string&, efd::utf8string&);   // 0x142249a20

@@ -21,12 +21,20 @@
 int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, Vector3* pOut);   // read a Point3 property (0 = ok)
 float FUN_140968970(float f);                                                       // sqrtf
 
-void FUN_140add1a0(Unk_CtbBounds3* pSelf, float x0, float y0, float z0, float x1, float y1, float z1);   // set
-void FUN_140adca00(Unk_CtbMat33* pSelf);                                            // identity
-void FUN_140add040(Unk_CtbMat33* pSelf, float fAngle);                              // rotation about z
-void FUN_140adc690(Unk_CtbObb* pOut, const Unk_CtbBounds3* pBounds, const Unk_CtbMat34* pPose);   // NxBox from bounds + pose
+class NxBounds3   // C3: member view for the former free stand-ins
+{
+public:
+    void set(float, float, float, float, float, float);
+};
+class NxMat33   // C3: member view for the former free stand-ins
+{
+public:
+    void id();
+    void multiply(class NxVec3 const&, class NxVec3&) const;
+    void rotZ(float);
+};
+void NxCreateBox(class NxBox&, class NxBounds3 const&, class NxMat34 const&);   // C3: was FUN_140adc690
 bool NxBoxContainsPoint(class NxBox const&, class NxVec3 const&);   // C3: was FUN_140adc610
-void FUN_140adcdd0(const Unk_CtbMat33* pMat, const Unk_CtbVec3& vec, Unk_CtbVec3* pOut);   // pOut = mat * vec
 
 // @0x140afef30
 float CCameraTargetBounding::GetDistance(const Vector3& pt)
@@ -64,14 +72,14 @@ int CCameraTargetBoundingBox::InitFromEntity(egf::Entity* pEntity)
         return 0;
     m_entityId = pEntity->GetEntityIDValue();
     Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
-    FUN_140add1a0(&m_bounds, -ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
+    ((class NxBounds3*)(struct Unk_CtbBounds3*)(&m_bounds))->set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
     m_pose.m_pos.x = ptPos.x;
     m_pose.m_pos.y = ptPos.y;
     m_pose.m_pos.z = ptPos.z;
-    FUN_140adca00(&m_pose.m_rot);
-    FUN_140add040(&m_pose.m_rot, (ptRot.z * 3.1415927f) / 180.0f);
+    ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->id();
+    ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->rotZ((ptRot.z * 3.1415927f) / 180.0f);
     m_pose.FUN_140b00260(&m_inverse);
-    FUN_140adc690(&m_obb, &m_bounds, &m_pose);
+    NxCreateBox(*(class NxBox*)(&m_obb), *(class NxBounds3 const*)(&m_bounds), *(class NxMat34 const*)(&m_pose));
     return 1;
 }
 MS2_REPLACE_METHOD(0x140AFF0F0, CCameraTargetBoundingBox, InitFromEntity, 560, 0x6AA13F9C);
@@ -269,7 +277,7 @@ bool Unk_CtbMat33::FUN_140afff50(Unk_CtbMat33* pOut) const
     float fDet = c0 * m00 + c1 * m10 + c2 * m20;
     if (fDet == 0.0f)
     {
-        FUN_140adca00(pOut);
+        ((class NxMat33*)(struct Unk_CtbMat33*)(pOut))->id();
         return false;
     }
     fDet = 1.0f / fDet;
@@ -289,7 +297,7 @@ bool Unk_CtbMat33::FUN_140afff50(Unk_CtbMat33* pOut) const
 bool Unk_CtbMat34::FUN_140b00260(Unk_CtbMat34* pOut) const
 {
     bool bOk = m_rot.FUN_140afff50(&pOut->m_rot);
-    FUN_140adcdd0(&pOut->m_rot, m_pos.FUN_140adbd00(-1.0f), &pOut->m_pos);
+    ((class NxMat33*)(struct Unk_CtbMat33 const*)(&pOut->m_rot))->multiply(*(class NxVec3 const*)&static_cast<struct Unk_CtbVec3 const&>(m_pos.FUN_140adbd00(-1.0f)), *(class NxVec3*)(&pOut->m_pos));
     return bOk;
 }
 

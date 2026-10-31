@@ -160,8 +160,9 @@ void UITimeRunEventDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStrin
             CMsTime now(GetServerTime());
             CMsTime start(FUN_140ee4990(spContext));
             AddDays(start, nTab);
-            if (now.Get() < start.Get()) {
-                CStringW strRemain = FormatTimeSpan(start - now, true, true, true, true);
+            if (start.Get() > now.Get()) {
+                ATL::CTimeSpan span = start - now;
+                CStringW strRemain = FormatTimeSpan(span, true, true, true, true);
                 ASTooltip tip(2);
                 if (tip.FUN_1409e26b0(FUN_1405c2690(CStringW(L"s_timerun_remain_time_from_day"), strRemain)))
                     *pRetVal = tip.FUN_1422bb870();
@@ -173,7 +174,8 @@ void UITimeRunEventDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStrin
             int nQuest = pArgs->FUN_1422b8b10();
             MS2Ptr<CQuestData> data = FUN_14074bc40(nQuest);
             if (data.get() != 0) {
-                if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0) return;
+                void* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+                if (pMyPC == 0) return;
                 ASTooltip tip(2);
                 if (tip.FUN_1409e26b0(FUN_1409404f0(FUN_140761ba0(nQuest, 1)))) {
                     tip.FUN_1409c6dc0(1);
@@ -226,8 +228,7 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             if (spContext.get() != 0) {
                 int nDefault = 0;
                 int nTaken = g_trCounters.FUN_1409617d0(0x5dd, spContext->m_eventId, &nDefault);
-                int nNext = spContext->GetNextRewardKey(nTaken);
-                if (nKey == nNext) {
+                if (nKey == spContext->GetNextRewardKey(nTaken)) {
                     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
                     packet.Encode1(4);
                     packet.Encode4(nKey);
@@ -301,80 +302,80 @@ int UITimeRunEventDialog::FUN_140ee3290()
 void UITimeRunEventDialog::FUN_140ee3580()
 {
     MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
-    if (!spContext.IsNull()) {
-        unsigned nDistance = FUN_140ee4280(spContext);
-        int nDefault = 0;
-        unsigned nTaken = g_trCounters.FUN_1409617d0(0x5dd, spContext->m_eventId, &nDefault);
-        int nDefault2 = 0;
-        int nReceived = g_trCounters.FUN_1409617d0(0x5dc, spContext->m_eventId, &nDefault2);
-        unsigned nNext = spContext->GetNextRewardKey(nTaken);
-        TimeRunEventContext* pContext = spContext.operator->();
-        reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140acd070("setMapData", pContext->m_1c, nDistance);
-        m_mapBinder.FUN_140d43990();
-        ASArray rewards(2);
-        for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != NULL; spContext->m_rewards.GetNext(pos)) {
-            unsigned nKey = spContext->m_rewards.GetKeyAt(pos);
-            MS2Ptr<ItemEntity> spItem = spContext->m_rewards.GetValueAt(pos);
-            bool bReached = nKey <= nDistance;
-            bool bNext = nKey == nNext;
-            bool bTaken = nKey < nTaken;
-            ASObj row(2);
-            row.FUN_1409c0d20("distance", nKey);
-            ItemEntity* pItem = spItem.get();
-            row.FUN_1407cba60("binding", m_mapBinder.FUN_140d43510(pItem ? static_cast<ItemAble*>(pItem) : 0));
-            bool bEnabled;
-            if (!bReached || !bNext || bTaken) bEnabled = false; else bEnabled = true;
-            row.FUN_1407cbbe0("enabled", bEnabled);
-            row.FUN_1407cb9c0("visible", bReached);
-            rewards.FUN_1422bbf00(row);
-        }
-        reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140eba060("setRewardData", rewards, spContext->m_1c);
-        bool bFinal;
-        if (nDistance < (unsigned)spContext->m_1c || nReceived != 0) bFinal = false; else bFinal = true;
-        TimeRunEventContext* pFinal = spContext.operator->();
-        ItemEntity* pFinalItem = &pFinal->m_item;
-        CString strBind = m_mapBinder.FUN_140d43510(pFinalItem ? static_cast<ItemAble*>(pFinalItem) : 0);
-        reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140ee5060("setFinalReward", strBind, bFinal);
-        if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_totalDistance"))
-            spText->FUN_1422c4cd0(FUN_140938ae0(CStringW(L"s_timerun_total_distance"), nDistance));
+    if (spContext.IsNull())
+        return;
+    unsigned nDistance = FUN_140ee4280(spContext);
+    int nDefault = 0;
+    unsigned nTaken = g_trCounters.FUN_1409617d0(0x5dd, spContext->m_eventId, &nDefault);
+    int nDefault2 = 0;
+    int nReceived = g_trCounters.FUN_1409617d0(0x5dc, spContext->m_eventId, &nDefault2);
+    unsigned nNext = spContext->GetNextRewardKey(nTaken);
+    TimeRunEventContext* pContext = spContext.operator->();
+    reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140acd070("setMapData", pContext->m_1c, nDistance);
+    m_mapBinder.FUN_140d43990();
+    ASArray rewards(2);
+    for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != NULL; spContext->m_rewards.GetNext(pos)) {
+        unsigned nKey = spContext->m_rewards.GetKeyAt(pos);
+        MS2Ptr<ItemEntity> spItem = spContext->m_rewards.GetValueAt(pos);
+        bool bReached = nKey <= nDistance;
+        bool bNext = nKey == nNext;
+        bool bTaken = nKey < nTaken;
+        ASObj row(2);
+        row.FUN_1409c0d20("distance", nKey);
+        ItemEntity* pItem = spItem.get();
+        row.FUN_1407cba60("binding", m_mapBinder.FUN_140d43510(pItem ? static_cast<ItemAble*>(pItem) : 0));
+        bool bEnabled;
+        if (!bReached || !bNext || bTaken) bEnabled = false; else bEnabled = true;
+        row.FUN_1407cbbe0("enabled", bEnabled);
+        row.FUN_1407cb9c0("visible", bReached);
+        rewards.FUN_1422bbf00(row);
     }
+    reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140eba060("setRewardData", rewards, spContext->m_1c);
+    bool bFinal;
+    if (nDistance < (unsigned)spContext->m_1c || nReceived != 0) bFinal = false; else bFinal = true;
+    TimeRunEventContext* pFinal = spContext.operator->();
+    ItemEntity* pFinalItem = &pFinal->m_item;
+    CString strBind = m_mapBinder.FUN_140d43510(pFinalItem ? static_cast<ItemAble*>(pFinalItem) : 0);
+    reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140ee5060("setFinalReward", strBind, bFinal);
+    if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_totalDistance"))
+        spText->FUN_1422c4cd0(FUN_140938ae0(CStringW(L"s_timerun_total_distance"), nDistance));
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temp/frame layout differs from the exe (not byte-exact)
+// MS2-PIN: ??B?$MS2Ptr@VUnk_TrList@@@@QEBAPEAVUnk_TrList@@XZ 0x140ee51b0 ; sfb: m_list operator T*, byte-identical to the ASTextField copy
 // @0x140ee3c00
 void UITimeRunEventDialog::FUN_140ee3c00(int nDay)
 {
     MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
-    if (!spContext.IsNull()) {
-        m_missionBinder.FUN_140d43990();
-        if (MS2Ptr<Unk_TrList> spList = FUN_140c02900("m_list")) {
-            spList->FUN_1422dd1d0();
-            for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
-                MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
-                if (spQuest->m_20 == nDay) {
-                    Unk_PayloadPtr<CQuest> quest = FUN_140764020()->vfunc_o10_3(spQuest->m_questId);
-                    if (!quest.IsNull()) {
-                        if (quest->GetData()->m_complete.m_choiceRewards.GetCount() != 0) {
-                            const CQuestData::QuestRewardItem& reward = quest->GetData()->m_complete.m_choiceRewards[0];
-                            CStringW strDesc = FUN_1416e5350(quest->FUN_140bfc580(), 0);
-                            strDesc.Replace(L"#5c2b00", L"#ffffff");
-                            ASObj row(2);
-                            row.FUN_1409c0d20("id", spQuest->m_questId);
-                            row.FUN_1407cb9c0("completed", quest->IsRewarded());
-                            row.FUN_1407cb9c0("satisfied", quest->IsComplete());
-                            row.FUN_1407cbb20("label", FUN_140938ae0(CStringW(L"s_timerun_event_distance"), spQuest->m_1c));
-                            row.FUN_1407cbb20("desc", CStringW(strDesc));
-                            row.FUN_1407cba60("binding", m_missionBinder.FUN_140d43310(reward.m_itemId, reward.m_count, reward.m_job));
-                            row.FUN_1409c1180("exp", FUN_140761ba0(spQuest->m_questId, 1));
-                            spList->FUN_1422dd230(row);
-                        }
-                    }
-                }
-            }
-            spList->vfunc_24(true);
-        }
-    } else {
+    if (spContext.IsNull()) {
         vfunc_67();
+        return;
+    }
+    m_missionBinder.FUN_140d43990();
+    if (MS2Ptr<Unk_TrList> spList = FUN_140c02900("m_list")) {
+        spList->FUN_1422dd1d0();
+        for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
+            MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
+            if (spQuest->m_20 != nDay)
+                continue;
+            Unk_PayloadPtr<CQuest> quest = FUN_140764020()->vfunc_o10_3(spQuest->m_questId);
+            if (quest.IsNull())
+                continue;
+            if (quest->GetData()->m_complete.m_choiceRewards.GetCount() == 0)
+                continue;
+            const CQuestData::QuestRewardItem& reward = quest->GetData()->m_complete.m_choiceRewards[0];
+            CStringW strDesc = FUN_1416e5350(quest->FUN_140bfc580(), 0);
+            strDesc.Replace(L"#5c2b00", L"#ffffff");
+            ASObj row(2);
+            row.FUN_1409c0d20("id", spQuest->m_questId);
+            row.FUN_1407cb9c0("completed", quest->IsRewarded());
+            row.FUN_1407cb9c0("satisfied", quest->IsComplete());
+            row.FUN_1407cbb20("label", FUN_140938ae0(CStringW(L"s_timerun_event_distance"), spQuest->m_1c));
+            row.FUN_1407cbb20("desc", CStringW(strDesc));
+            row.FUN_1407cba60("binding", m_missionBinder.FUN_140d43310(reward.m_itemId, reward.m_count, reward.m_job));
+            row.FUN_1409c1180("exp", FUN_140761ba0(spQuest->m_questId, 1));
+            spList->FUN_1422dd230(row);
+        }
+        spList->vfunc_24(true);
     }
 }
 
@@ -493,31 +494,27 @@ int UITimeRunEventDialog::FUN_140ee4bb0(MS2Ptr<TimeRunEventContext> spContext)
 // @0x140ee4ca0
 void UITimeRunEventDialog::FUN_140ee4ca0()
 {
-    if (!m_30.IsNull()) {
-        MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
-        if (!spContext.IsNull()) {
-            std::map<int, int> counts;
-            for (unsigned __int64 i = 1; i < 8; ++i)
-                counts[(int)i] = 0;
-            CMsTime now(GetServerTime());
-            for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
-                MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
-                Unk_PayloadPtr<CQuest> quest = FUN_140764020()->vfunc_o10_3(spQuest->m_questId);
-                if (quest.get() != 0) {
-                    CMsTime start(quest->GetStartTime());
-                    AddDays(start, spQuest->m_20 - 1);
-                    if (FUN_140282020(now) >= FUN_140282020(start)) {
-                        if (quest->IsComplete() != 0)
-                            counts[spQuest->m_20] = counts[spQuest->m_20] + 1;
-                    }
-                }
-            }
-            for (std::map<int, int>::iterator it = counts.begin(); it != counts.end(); ++it) {
-                std::pair<const int, int>* pEntry = it.operator->();
-                int nTab = it->first - 1;
-                reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_1409ba0d0("setTabCount", nTab, pEntry->second);
-            }
+    if (m_30.IsNull()) return;
+    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
+    if (spContext.IsNull()) return;
+    std::map<int, int> counts;
+    for (unsigned __int64 i = 1; i <= 7; ++i)
+        counts[(int)i] = 0;
+    CMsTime now(GetServerTime());
+    for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
+        MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
+        Unk_PayloadPtr<CQuest> quest = FUN_140764020()->vfunc_o10_3(spQuest->m_questId);
+        if (quest.get() != 0) {
+            CMsTime start(quest->GetStartTime());
+            AddDays(start, spQuest->m_20 - 1);
+            if (FUN_140282020(now) < FUN_140282020(start)) continue;
+            if (quest->IsComplete() == 0) continue;
+            ++counts[spQuest->m_20];
         }
+    }
+    for (std::map<int, int>::iterator it = counts.begin(); it != counts.end(); ++it) {
+        std::pair<const int, int>* pEntry = it.operator->();
+        reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_1409ba0d0("setTabCount", it->first - 1, pEntry->second);
     }
 }
 

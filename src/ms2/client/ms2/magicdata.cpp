@@ -136,7 +136,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned long&);   // C3: was FUN_1408732a0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned char&);   // C3: was FUN_140873120
-int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 const char* FUN_14086f4b0(Unk_140165cf0*, const char*);
 CString FUN_14015f710(Unk_140165cf0*, const char*, CString);
 Vector3 FUN_14028f060(CString);
@@ -313,7 +313,7 @@ int LoadMagicPath()
             data->m_ptFireFixed = FUN_14028f060(CString(FUN_14086f4b0(pMove, "fireFixedPosition")));
             data->m_strFireNode = FUN_14015f710(pMove, "fireNode", CString(""));
             CString strDirection;
-            FUN_1408733e0(pMove, "direction", strDirection);
+            XmlGetAttr((class TiXmlElement*)(pMove), "direction", strDirection);
             if (!strDirection.IsEmpty())
                 data->m_ptDirection = FUN_14028f060(CString(strDirection));
             FUN_140deec40(&data->m_ptDirection);
@@ -626,7 +626,6 @@ int FUN_14028d260(float fMs);                                       // float -> 
 bool FUN_14028d470(float a, float b);                               // approx equal
 void FUN_140a90720(void* pArray, unsigned nIndex, unsigned nCount); // CAtlArray::RemoveAt
 void FUN_1410a7400(void* pArray, Vector3* pPoint);          // append a point
-void FUN_140981070(void* pNode, const Unk_NiPoint3& kPoint);              // NiAVObject::SetTranslate
 void FUN_140a0b300(void* pNode, char bCulled);                      // set app-culled
 void FUN_141467f60(const Vector3& ptPos, const Vector3* pDirection, Unk_MagicXform* pOut);
 const Unk_NiMatrix3& FUN_1410b23c0(void* pNode);                      // NiAVObject::GetRotate
@@ -645,7 +644,6 @@ public:
     void SetActor(int);
     void SetLookupId(int);
 };
-double FUN_141473280(Unk_MagicTime* pTime);                          // the frame time in seconds
 float FUN_140966f00(Vector3 a, Vector3 b);                 // distance
 bool FUN_1410a82b0(struct Unk_NullableFloat*);   // C3: was FUN_1410a82b0
 CMagicService* FUN_1410a7630();
@@ -1575,7 +1573,7 @@ void CMagic::FUN_141461720(int nFlag)
     matRotation.FUN_14109aa30(1, ptAxis);
     matRotation.FUN_14109aa30(2, ptUp);
     ((class NiAVObject*)(void*)(MS2_NODEPTR(m_spScene).operator->()))->SetRotate(*(class NiMatrix3 const*)&(matRotation));
-    static_cast<NiAVObject*>(MS2_NODEPTR(m_spScene).operator->())->Update((float)FUN_141473280(reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())), false);
+    static_cast<NiAVObject*>(MS2_NODEPTR(m_spScene).operator->())->Update((float)((class CMainSystem*)(class Unk_MagicTime*)(reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), false);
 }
 MS2_REPLACE_METHOD(0x141461720, CMagic, FUN_141461720, 852, 0x58FA7E4A);
 
@@ -1906,7 +1904,6 @@ void CMagic::FUN_141464d00(unsigned nNow, const Unk_MagicSkillRow* pRow)
 }
 
 // ---- callees of the box piercing pick (unit-local; names invented) ----
-void FUN_140188ca0(Unk_MagicUIntMap* pMap, unsigned nId, float fValue = 0.0f);   // insert / mark
 float FUN_141198810();                                              // random in [0, 1]
 Unk_MagicEntity* FUN_140961420(Unk_MagicHitRef* pRef);              // the hit entity (null when gone)
 Unk_MagicEntity* FUN_1409ffcb0(Unk_MagicHitRef* pRef);              // the hit entity
@@ -2002,8 +1999,8 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
             unsigned nId = ((class GameObject*)(struct Unk_MagicEntity*)(FUN_140965780(FUN_140a006a0(&spCtx->m_arr30, i))))->FUN_14123c580();
             packet.Encode4(nId);
             packet.Encode1((unsigned char)((ATL::CAtlMap<unsigned int, float, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<float>>*)(class Unk_MagicUIntMap*)(&m_map1D8))->GetCount());
-            FUN_140188ca0(&m_map1D8, nId, 0);
-            FUN_140188ca0(&m_map220, nId);
+            ((ATL::CAtlMap<unsigned int, float, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<float>>*)(class Unk_MagicUIntMap*)(&m_map1D8))->SetAt(nId, 0);
+            ((ATL::CAtlMap<unsigned int, float, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<float>>*)(class Unk_MagicUIntMap*)(&m_map220))->SetAt(nId, 0.0f);
         }
         FUN_140710590(packet);
     }
@@ -2215,8 +2212,8 @@ void CMagic::FUN_141461a80(Vector3 ptNew)
     m_ptLast = m_ptCurrent;
     m_ptCurrent = ptNew;
     FUN_1410a7400(&m_arr1A8, &ptNew);
-    FUN_140981070(MS2_NODEPTR(m_spScene).operator->(), ptNew);
-    static_cast<NiAVObject*>(MS2_NODEPTR(m_spScene).operator->())->Update((float)FUN_141473280(reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())), false);
+    ((class NiAVObject*)(void*)(MS2_NODEPTR(m_spScene).operator->()))->SetTranslate(*(class NiPoint3 const*)&static_cast<struct Unk_NiPoint3 const&>(ptNew));
+    static_cast<NiAVObject*>(MS2_NODEPTR(m_spScene).operator->())->Update((float)((class CMainSystem*)(class Unk_MagicTime*)(reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), false);
     FUN_141464160();
 }
 MS2_REPLACE_METHOD(0x141461A80, CMagic, FUN_141461a80, 210, 0x555ADF73);
@@ -2554,7 +2551,7 @@ MS2_REPLACE_METHOD(0x141467D50, CMagicModel, FUN_141467d50, 73, 0x85005B77);
 void CMagicModel::FUN_141467800()
 {
     if (!FUN_141467ae0()) {
-        m_spMagic->FUN_141460640((unsigned)(float)FUN_141473280(reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())));
+        m_spMagic->FUN_141460640((unsigned)(float)((class CMainSystem*)(class Unk_MagicTime*)(reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280());
     }
 }
 MS2_REPLACE_METHOD(0x141467800, CMagicModel, FUN_141467800, 82, 0xDAD81DAA);

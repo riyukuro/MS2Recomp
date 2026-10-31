@@ -204,11 +204,11 @@ public:
     char m_pad_91ec[0x9298 - 0x91ec];
     Unk_ALConstU16 m_stat;                                          // +0x9298
 };
-Unk_ALConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 unsigned short* FUN_1401d7c10(Unk_ALConstU16* p);
 unsigned int* FUN_1401d7c10(Unk_ALConstU32* p);
 class Unk_ALIdentity { public: char m_pad_0[0x1d0]; CString m_1d0; };
-Unk_ALIdentity* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 extern __int64 DAT_143ab2958;
 
 // The localized-string helpers.
@@ -442,7 +442,7 @@ void UIAdventureLevelDialog::FUN_140ba34b0()
     if (pPlayer == NULL)
         return;
     float fExp = (float)DAT_143ab2958;
-    float fRatio = fExp / FUN_140ba4b50(&FUN_1401d3200()->m_expMax);
+    float fRatio = fExp / FUN_140ba4b50(&((class Unk_ALConfig*)FUN_1401d3200())->m_expMax);
     m_30->Invoke("setLevelAndExp", pPlayer->vfunc_141(), fRatio);
 }
 
@@ -576,10 +576,10 @@ int UIAdventureLevelDialog::FUN_140ba4250(ASObj& obj, unsigned int nLevel)
         return 0;
     if (nLevel <= pPlayer->vfunc_141())
         obj.FUN_1409c0dc0("state", "inactive");
-    if (pPlayer->vfunc_78() < FUN_140ba4b30(&FUN_1401d3200()->m_stat))
+    if (pPlayer->vfunc_78() < FUN_140ba4b30(&((class Unk_ALConfig*)FUN_1401d3200())->m_stat))
         obj.FUN_1409c0dc0("state", "lock");
     ItemInfoSlot::CreateParam param;
-    param.m_strSlotText = FUN_1401d31f0()->m_1d0;
+    param.m_strSlotText = ((class Unk_ALIdentity*)FUN_1401d31f0())->m_1d0;
     param.m_strTip = FUN_14062b4f0(CStringW(L"s_adventure_level_stat_reward"), &pReward->m_c);
     param.m_nFlags = 1;
     param.m_nTipArg = 4;

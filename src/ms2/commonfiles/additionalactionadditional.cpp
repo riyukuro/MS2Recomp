@@ -361,7 +361,7 @@
 CLogString* GetLogString();                                                // the log singleton
 class Unk_AdditionalFlags : public StanceTable { };
 extern Unk_AdditionalFlags* DAT_143aac270;
-bool FUN_14028f650(Unk_140165cf0* pElem);                                   // the element is usable
+bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
 Unk_CompareOp FUN_140219400(const CString& str);
 Unk_DungeonGroupType FUN_140218c20(const CString& str);
 SAType FUN_14081dd80(const CString& str);
@@ -698,7 +698,7 @@ bool AdditionalData::Load(Unk_140165cf0* pElem)
     XmlValue(pElem, "skillGroupType", m_eSkillGroupType);
     for (Unk_140165cf0* pLevel : pElem->FUN_140165cf0("level"))
     {
-        if (!FUN_14028f650(pLevel))
+        if (!FUN_14028f650((struct Unk_XmlElement*)(pLevel)))
             continue;
         ReadLevel(pLevel);
     }

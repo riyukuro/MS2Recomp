@@ -534,7 +534,6 @@ void FUN_14028cd00(const CStringW& strText, CAtlArray<CStringW>& arrOut, const w
     }
 }
 
-// MS2-FUNCTIONAL: not yet byte-matched (std::string glue pairing / frame layout)
 // @0x14028cf00
 void FUN_14028cf00(const CStringW& strText, CAtlArray<CStringW>& arrOut, const CStringW& strOpen, const CStringW& strClose)
 {
@@ -1171,7 +1170,6 @@ void FUN_1401780b0(const CString& strText, CAtlArray<float>& arrOut, const char*
 void FUN_1402928e0(const CStringW& strText, CAtlArray<float>& arrOut, const wchar_t* pszDelim);
 
 // Parses "x,y,z"; anything else gives the zero vector.
-// MS2-FUNCTIONAL: not yet byte-matched (struct copy lowering)
 // @0x14028f060
 Unk_CommonVec3 FUN_14028f060(CString strText)
 {
@@ -1186,7 +1184,6 @@ Unk_CommonVec3 FUN_14028f060(CString strText)
     return vResult;
 }
 
-// MS2-FUNCTIONAL: not yet byte-matched (std::string glue pairing / frame layout)
 // @0x14028f190
 Unk_CommonVec3 FUN_14028f190(CStringW strText)
 {
@@ -1481,7 +1478,6 @@ int FUN_140291620(const std::string& strKey)
 // Time of the next reset: 1 = next midnight, 2 = server-defined, 3 = first of next month, else the far future.
 // The times are 16-byte CMsTime (0x1406c47a0/47d0 end in Init 0x1406c5270, which also stores the zone flag at +8);
 // 8-byte ATL::CTime locals had that byte written past them (rt1 stackovf.py).
-// MS2-FUNCTIONAL: not yet byte-matched
 // @0x1402916a0
 __int64 FUN_1402916a0(__int64 nTime, int nMode)
 {
@@ -1749,7 +1745,6 @@ typedef std::map<CStringW, Unk_XmlSlot> Unk_XmlSlotMap;
 typedef std::set<Unk_XmlSlot> Unk_XmlSlotSet;
 
 // Collects the passing children <pszChild>, one per pszKeyAttr value, in document order.
-// MS2-FUNCTIONAL: not yet byte-matched (inlined map/set code is a separate function in the exe)
 // @0x14028faa0
 void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszChild, const char* pszKeyAttr, std::vector<Unk_XmlElement*>& arrOut)
 {
@@ -1758,81 +1753,33 @@ void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszChild, const char* ps
     int nIndex = 0;
     for (Unk_XmlElement* pElem = FUN_140165cf0(pParent, pszChild); pElem; pElem = FUN_140168650(pElem, pszChild))
     {
-        if (FUN_14028f710(pElem))
+        if (!FUN_14028f710(pElem))
+            continue;
+        ++nIndex;
+        CStringW strKey;
+        FUN_140873420(pElem, pszKeyAttr, strKey);
+        if (mapByKey.find(strKey) != mapByKey.end())
         {
-            ++nIndex;
-            CStringW strKey;
-            FUN_140873420(pElem, pszKeyAttr, strKey);
-            if (mapByKey.find(strKey) != mapByKey.end())
+            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(FUN_14036e160(FUN_140166410(), reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second), pElem));
+            if (pPick == pElem)
             {
-                Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(FUN_14036e160(FUN_140166410(), reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second), pElem));
-                if (pPick == pElem)
-                {
-                    setOrdered.erase(mapByKey[strKey]);
-                    mapByKey[strKey] = Unk_XmlSlot(nIndex, pElem);
-                    setOrdered.insert(mapByKey[strKey]);
-                }
-            }
-            else
-            {
+                setOrdered.erase(mapByKey[strKey]);
                 mapByKey[strKey] = Unk_XmlSlot(nIndex, pElem);
                 setOrdered.insert(mapByKey[strKey]);
             }
         }
-    }
-    arrOut.reserve(setOrdered.size());
-    for (Unk_XmlSlotSet::iterator it = setOrdered.begin(); it != setOrdered.end(); ++it)
-        arrOut.push_back(it->second);
-}
-
-// Same, keyed by "<attr1>_<attr2>".
-// MS2-FUNCTIONAL: not yet byte-matched (inlined map/set code is a separate function in the exe)
-// @0x14028fd90
-void FUN_14028fd90(Unk_XmlElement* pParent, const char* pszChild, const char* pszKeyAttr1, const char* pszKeyAttr2, std::vector<Unk_XmlElement*>& arrOut)
-{
-    Unk_XmlSlotMap mapByKey;
-    Unk_XmlSlotSet setOrdered;
-    int nIndex = 0;
-    for (Unk_XmlElement* pElem = FUN_140165cf0(pParent, pszChild); pElem; pElem = FUN_140168650(pElem, pszChild))
-    {
-        if (FUN_14028f710(pElem))
+        else
         {
-            ++nIndex;
-            CStringW strKey1;
-            CStringW strKey2;
-            FUN_140873420(pElem, pszKeyAttr1, strKey1);
-            FUN_140873420(pElem, pszKeyAttr2, strKey2);
-#ifdef __clang__
-            CStringW strKey(strKey1); // clang would import MFC CopyChars for operator+
-            strKey.Append(L"_");
-            strKey.Append(strKey2);
-#else
-            CStringW strKey = (const wchar_t*)((const wchar_t*)strKey1 + CStringW(L"_")) + strKey2;
-#endif
-            if (mapByKey.find(strKey) != mapByKey.end())
-            {
-                Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(FUN_14036e160(FUN_140166410(), reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second), pElem));
-                if (pPick == pElem)
-                {
-                    setOrdered.erase(mapByKey[strKey]);
-                    mapByKey[strKey] = Unk_XmlSlot(nIndex, pElem);
-                    setOrdered.insert(mapByKey[strKey]);
-                }
-            }
-            else
-            {
-                mapByKey[strKey] = Unk_XmlSlot(nIndex, pElem);
-                setOrdered.insert(mapByKey[strKey]);
-            }
+            mapByKey[strKey] = Unk_XmlSlot(nIndex, pElem);
+            setOrdered.insert(mapByKey[strKey]);
         }
     }
     arrOut.reserve(setOrdered.size());
-    for (Unk_XmlSlotSet::iterator it = setOrdered.begin(); it != setOrdered.end(); ++it)
+    for (Unk_XmlSlotSet::iterator it = setOrdered.begin(), itEnd = setOrdered.end(); it != itEnd; ++it)
         arrOut.push_back(it->second);
 }
 
 // Same, keyed by an attribute of the sub-element <pszSub> of each child.
-// MS2-FUNCTIONAL: not yet byte-matched (inlined map/set code is a separate function in the exe)
 // @0x140290150
 void FUN_140290150(Unk_XmlElement* pParent, const char* pszChild, const char* pszSub, const char* pszKeyAttr, std::vector<Unk_XmlElement*>& arrOut)
 {
@@ -1866,7 +1813,7 @@ void FUN_140290150(Unk_XmlElement* pParent, const char* pszChild, const char* ps
         }
     }
     arrOut.reserve(setOrdered.size());
-    for (Unk_XmlSlotSet::iterator it = setOrdered.begin(); it != setOrdered.end(); ++it)
+    for (Unk_XmlSlotSet::iterator it = setOrdered.begin(), itEnd = setOrdered.end(); it != itEnd; ++it)
         arrOut.push_back(it->second);
 }
 
@@ -1998,6 +1945,7 @@ struct Unk_BindHostPtr
 {
     Unk_BindHost* m_pHost;
     Unk_BindHostPtr(const wchar_t* pszText);                    // 0x140297620
+    Unk_BindHostPtr(const char* pszText);                       // 0x140297590
     Unk_BindHostPtr(const Unk_BindHostPtr& other);              // 0x140297550
     ~Unk_BindHostPtr() noexcept(false);                         // 0x140297a20
     Unk_BindHostPtr& operator+=(const Unk_BindHostPtr& other);  // 0x140298560
@@ -2140,12 +2088,11 @@ Unk_BindHostPtr::Unk_BindHostPtr(const Unk_BindHostPtr& other)
 }
 
 // @0x140297590
-Unk_BstrBlock** FUN_140297590(Unk_BstrBlock** pp, void* pArg)
+Unk_BindHostPtr::Unk_BindHostPtr(const char* pszText)
 {
-    *pp = new Unk_BstrBlock(pArg);
-    if (*pp == NULL)
+    m_pHost = (Unk_BindHost*)new Unk_BstrBlock((void*)pszText);
+    if (m_pHost == NULL)
         _com_issue_error(E_OUTOFMEMORY);
-    return pp;
 }
 
 // @0x140297620
@@ -2178,6 +2125,50 @@ Unk_BindHostPtr FUN_1402982e0(const wchar_t* pszA, const Unk_BindHostPtr& b)
     Unk_BindHostPtr str(pszA);
     str += b;
     return str;
+}
+
+// Same, keyed by "<attr1>_<attr2>".
+// @0x14028fd90
+void FUN_14028fd90(Unk_XmlElement* pParent, const char* pszChild, const char* pszKeyAttr1, const char* pszKeyAttr2, std::vector<Unk_XmlElement*>& arrOut)
+{
+    Unk_XmlSlotMap mapByKey;
+    Unk_XmlSlotSet setOrdered;
+    int nIndex = 0;
+    for (Unk_XmlElement* pElem = FUN_140165cf0(pParent, pszChild); pElem; pElem = FUN_140168650(pElem, pszChild))
+    {
+        if (!FUN_14028f710(pElem))
+            continue;
+        ++nIndex;
+        CStringW strKey1;
+        CStringW strKey2;
+        FUN_140873420(pElem, pszKeyAttr1, strKey1);
+        FUN_140873420(pElem, pszKeyAttr2, strKey2);
+#ifdef __clang__
+        CStringW strKey(strKey1); // clang would import MFC CopyChars for operator+
+        strKey.Append(L"_");
+        strKey.Append(strKey2);
+#else
+        CStringW strKey = (const wchar_t*)FUN_140297d20((Unk_BstrHolderRef*)&(const Unk_BindHostPtr&)FUN_1402982e0(strKey1, "_")) + strKey2;
+#endif
+        if (mapByKey.find(strKey) != mapByKey.end())
+        {
+            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(FUN_14036e160(FUN_140166410(), reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second), pElem));
+            if (pPick == pElem)
+            {
+                setOrdered.erase(mapByKey[strKey]);
+                mapByKey[strKey] = Unk_XmlSlot(nIndex, pElem);
+                setOrdered.insert(mapByKey[strKey]);
+            }
+        }
+        else
+        {
+            mapByKey[strKey] = Unk_XmlSlot(nIndex, pElem);
+            setOrdered.insert(mapByKey[strKey]);
+        }
+    }
+    arrOut.reserve(setOrdered.size());
+    for (Unk_XmlSlotSet::iterator it = setOrdered.begin(), itEnd = setOrdered.end(); it != itEnd; ++it)
+        arrOut.push_back(it->second);
 }
 
 // @0x1402978a0

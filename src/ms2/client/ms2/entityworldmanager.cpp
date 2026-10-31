@@ -142,10 +142,13 @@
 
 class Unk_GameClock;
 class Unk_EntityDebugLog;
-void FUN_1401ce2b0(Unk_EntityDebugLog*, const char*);
 void FUN_1401ce2f0(Unk_EntityDebugLog*, const char*, int);
 void FUN_1414f1240(ecr::SceneGraphService*, egf::Entity*);
-void FUN_141503ef0(egfPhysX::SceneService*);
+class MS2SceneService   // C3: member view for the former free stand-ins
+{
+public:
+    void CacheNamedScenes();
+};
 bool FUN_1414b3f50(MS2EntityLoaderService*, const egf::BlockIdentification&, unsigned*, int*);
 struct Unk_EntityAppFramework;
 extern Unk_EntityAppFramework DAT_143b059e8;
@@ -376,7 +379,7 @@ bool EntityWorldManager::FUN_1411cf630(int map, const egf::BlockIdentification& 
     worlds[reinterpret_cast<const unsigned&>(map)].allEntities.clear();
     worlds[reinterpret_cast<const unsigned&>(map)].createdEntities.clear();
     egfPhysX::SceneService* pScene = m_pServiceManager->GetSystemServiceAs<egfPhysX::SceneService>();
-    FUN_141503ef0(pScene);
+    ((class MS2SceneService*)(void*)(pScene))->CacheNamedScenes();
     loader->FUN_1411d8980(true);
     efd::SmartPointer<egf::EntityLoadRequest> request(EE_NEW egf::EntityLoadRequest(
         egf::EntityLoadRequest::elo_Load, block, s_entityWorldChannel, 0,
@@ -420,7 +423,7 @@ bool FUN_1411cfcc0(void*) { s_entityFreeze = true; return true; }
 #endif
 // @0x1411cfce0
 void EntityWorldManager::FUN_1411cfce0() {
-    FUN_1401ce2b0(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance()), "\n--- EntityWorldManager Log---");
+    ((class CCrashManager*)(class Unk_EntityDebugLog*)(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())))->FUN_1401ce2b0("\n--- EntityWorldManager Log---");
     FUN_1401ce2f0(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance()), "LoadedMapCount %d", FUN_1411cfbe0());
 }
 // @0x1411cfd40

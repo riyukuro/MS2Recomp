@@ -96,7 +96,7 @@ public:
 
 // The npc map iterator and the npc size setters.
 struct Unk_DevExtent { float cx, cy; };
-void* FUN_1406d6e90();
+class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 void FUN_140a7cbe0(void* p);
 void* FUN_140a7b840(void* pMap);
 void* FUN_140a7b8e0(void* pMap, void* pos);
@@ -105,12 +105,19 @@ void FUN_140a7b860(void* pMap, void** pPos);
 Unk_DevExtent* FUN_140a0a600(Unk_DevExtent* pOut, float cx, float cy);
 class Unk_DevBody;
 void FUN_141670d50(PCBase* pNpc, Unk_DevExtent kExtent);
-Unk_DevBody* FUN_14166d220(PCBase* pNpc);
-void FUN_141240520(Unk_DevBody* pBody, float cx, float cy);
+class GameObjectController   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141240520(float, float);
+};
 
 class Unk_DevDebugInfo;
 extern Unk_DevDebugInfo* DAT_143ad03d0;
-void FUN_14116cd50(Unk_DevDebugInfo* p);
+class CDebugHelper   // C3: member view for the former free stand-ins
+{
+public:
+    void ClearMeshes();
+};
 
 // The 16-byte handle FUN_1409e7dc0 looks the movie root up with.
 MS2Ptr<AScript> FUN_1409e7dc0(int nLayer, const Scaleform::GFx::Value& v);
@@ -121,19 +128,20 @@ efd::ServiceManager* FUN_1413f9850();
 void* FUN_1401cd190(void* p);
 struct Unk_DvCell { char m_00; };                                       // the cell FUN_1412938c0 reads
 ecrPhysX::PropService* FUN_14120a240(efd::ServiceManager* pServices);
-HardwareInstancingService* FUN_14098c5b0(char*);
+class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 unsigned FUN_1413d7eb0(HardwareInstancingService*);
 MeshInstancing* FUN_1413d7ef0(HardwareInstancingService*, int nIndex, bool bOne);
 void FUN_1413f9c40(bool b);
 void* FUN_14086d260();
-void FUN_1414730a0(void* p, float f);
-void FUN_14123c280(void* pObj, float f);
-void FUN_14123c330(void* pObj, float f);
+class CMainSystem   // C3: member view for the former free stand-ins
+{
+public:
+    void SetTimeScale(float);
+};
 
 efd::utf8string FUN_1414d7990(const efd::utf8string& kName);
 CStringW FUN_1401ceea0(const wchar_t* sz, const int& n);
 CStringW FUN_14016a730(const char* sz, int n);
-const char* FUN_1408ac310(const efd::utf8string& s);
    // MeshInstancing member (this=rcx, hidden return=rdx)
 
 // ---- statics (the same header statics as header_statics_a.h, in another order) ----
@@ -223,7 +231,7 @@ void UIDevelopDialog::OnLoadComplete()
     obj.FUN_1407cbbe0("propertyVisualizer", m_bPropertyVisualizer);
     unsigned nInstancing = 1;
     {
-        efd::SmartPointer<HardwareInstancingService> spInstancing(FUN_14098c5b0(&DAT_143b059e8));
+        efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
         if ((HardwareInstancingService*)spInstancing != 0)
             nInstancing = FUN_1413d7eb0(spInstancing.operator->());
         obj.FUN_1407cb9c0("instancingMax", nInstancing);
@@ -350,7 +358,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
 // @0x141292d10
 void UIDevelopDialog::OnClickReloadNpcExtent()
 {
-    FUN_140a7cbe0(FUN_1406d6e90());
+    FUN_140a7cbe0(((void*)FUN_1406d6e90()));
     void* pMap = reinterpret_cast<Unk_DevWorld*>(WorldService::GetInstance())->FUN_141bd36d0();
     for (void* pos = FUN_140a7b840(pMap); pos != 0; FUN_140a7b860(pMap, &pos))
     {
@@ -363,8 +371,7 @@ void UIDevelopDialog::OnClickReloadNpcExtent()
             Unk_DevExtent kSize;
             FUN_141670d50(pNpc, *FUN_140a0a600(&kSize, *(float*)(kData.FUN_14035eb90() + 0x2d8),
                                                *(float*)(kData.FUN_14035eb90() + 0x2dc)));
-            FUN_141240520(FUN_14166d220(pNpc), *(float*)(kData.FUN_14035eb90() + 0x2d8),
-                          *(float*)(kData.FUN_14035eb90() + 0x2dc));
+            ((class GameObjectController*)(class Unk_DevBody*)(((class Unk_DevBody*)((class PCBase*)(class PCBase*)(pNpc))->FUN_14166d220())))->FUN_141240520(*(float*)(kData.FUN_14035eb90() + 0x2d8), *(float*)(kData.FUN_14035eb90() + 0x2dc));
             NiPoint3 kPos = pNpc->vfunc_18();
             kPos.z += *(float*)(kData.FUN_14035eb90() + 0x2dc);
             pNpc->vfunc_19(*reinterpret_cast<efd::Point3*>(&kPos));
@@ -381,7 +388,7 @@ Unk_DevDebugInfo* FUN_141293c30()
 // @0x141292f20
 void UIDevelopDialog::OnClickClearDebugInfo()
 {
-    FUN_14116cd50(FUN_141293c30());
+    ((class CDebugHelper*)(class Unk_DevDebugInfo*)(FUN_141293c30()))->ClearMeshes();
 }
 
 // @0x141292f50
@@ -440,7 +447,7 @@ void UIDevelopDialog::FUN_1412931c0(bool bOn)
 void UIDevelopDialog::FUN_141293210(bool bOn, int nIndex)
 {
     m_bOneInstancing = bOn;
-    efd::SmartPointer<HardwareInstancingService> spInstancing(FUN_14098c5b0(&DAT_143b059e8));
+    efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     if ((HardwareInstancingService*)spInstancing != 0)
         FUN_1413d7ef0(spInstancing.operator->(), nIndex, m_bOneInstancing);
 }
@@ -454,14 +461,14 @@ void UIDevelopDialog::FUN_1412932a0(float fScale)
     {
         Unk_DevObj* pObj = efd::DynamicCast<Unk_DevObj>(list.FUN_140a01110(pos));
         if (pObj != 0)
-            FUN_14123c280(pObj, fScale);
+            ((class GameObject*)(void*)(pObj))->FUN_14123c280(fScale);
     }
 }
 
 // @0x141293360
 void UIDevelopDialog::FUN_141293360(float fSpeed)
 {
-    FUN_1414730a0(FUN_14086d260(), fSpeed);
+    ((class CMainSystem*)(void*)(FUN_14086d260()))->SetTimeScale(fSpeed);
 }
 
 // @0x141293390
@@ -470,15 +477,15 @@ void UIDevelopDialog::FUN_141293390(float fScale)
     PCBase* pPlayer = reinterpret_cast<Unk_DevWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
-        FUN_14123c330(pPlayer, fScale);
-        FUN_14123c280(pPlayer, fScale);
+        ((class GameObject*)(void*)(pPlayer))->FUN_14123c330(fScale);
+        ((class GameObject*)(void*)(pPlayer))->FUN_14123c280(fScale);
     }
 }
 
 // @0x1412933f0
 void UIDevelopDialog::FUN_1412933f0(int nIndex)
 {
-    efd::SmartPointer<HardwareInstancingService> spInstancing(FUN_14098c5b0(&DAT_143b059e8));
+    efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     if ((HardwareInstancingService*)spInstancing != 0)
     {
         MeshInstancing* pInstancing = FUN_1413d7ef0(spInstancing.operator->(), nIndex, m_bOneInstancing);
@@ -487,7 +494,7 @@ void UIDevelopDialog::FUN_1412933f0(int nIndex)
             int nCount = 0;
             if (pInstancing != 0)
                 nCount = pInstancing->FUN_14147cf40();
-            FUN_141292ca0("m_modelName", FUN_14016a730(FUN_1408ac310(reinterpret_cast<MeshInstancing*>(pInstancing)->FUN_14147d2f0()), 0));
+            FUN_141292ca0("m_modelName", FUN_14016a730(((efd::utf8string*)&static_cast<class efd::utf8string const&>(reinterpret_cast<MeshInstancing*>(pInstancing)->FUN_14147d2f0()))->c_str(), 0));
             CStringW strCount = FUN_1401ceea0(L"{0}", nCount);
             FUN_141292ca0("m_modelCount", strCount);
         }

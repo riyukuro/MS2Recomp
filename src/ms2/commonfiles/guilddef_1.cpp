@@ -20,10 +20,9 @@ int IsNotRecentDayChange(__int64);
 // ---- helpers of the guild containers/smart pointers: defined in neighbouring chunks, reached by address ----
 void* FUN_1404f4540();
 // CGuildMember map (CGuildInfo+0x320, key = name)
-void* FUN_1404f4510(void* map); Unk_GuildRef* FUN_1404f4f70(void* map,void* pos); void FUN_1404f4700(void* map,void** pos);
+ void FUN_1404f4700(void* map,void** pos);
 unsigned FUN_1404f44b0(void* map);
 bool FUN_1404f6070(void* map,const wchar_t* key,Unk_GuildRef* out);
-void FUN_1404f91b0(void* map,const wchar_t* key);
 void FUN_1404f9ae0(void* map,const wchar_t* key,Unk_GuildRef* v);
 char FUN_1404f6070(void* map,const wchar_t* key,MS2Ptr<CGuildMember>& out);
 char FUN_1404f5f60(void* map,int key,MS2Ptr<CGuildSkill>& out);
@@ -38,24 +37,24 @@ bool FUN_1404f0020(Unk_GuildRef*,int);
 __int64 FUN_1404f0ab0(Unk_GuildRef*);
 void FUN_1404ef970(Unk_GuildRef* dst,Unk_GuildRef* src);
 // CGuildGrade array (CGuildInfo+0xa0)
-size_t FUN_1404f4440(void* arr); Unk_GuildRef* FUN_1404f0720(void* arr,__int64 index);
+ Unk_GuildRef* FUN_1404f0720(void* arr,__int64 index);
 void FUN_1404f86e0(void* arr); void FUN_1404f9b50(void* arr,unsigned count,unsigned grow);
 void FUN_1404f9730(void* arr,__int64 index,Unk_GuildRef* v); void FUN_1404f3110(void* arr,Unk_GuildRef* v);
 void FUN_1404ec4d0(Unk_GuildRef*,Unk_GuildRef*); void FUN_1404ec510(Unk_GuildRef*,int); void FUN_1404ec530(Unk_GuildRef*,CGuildGrade*);
 CGuildGrade* FUN_1404f0b70(Unk_GuildRef*); __int64 FUN_1404f0aa0(Unk_GuildRef*); char FUN_1404effe0(Unk_GuildRef*,int);
 // CGuildSkill map (+0x238, key = skill id)
-unsigned char FUN_1404f4480(void* map); void* FUN_1404f4cd0(void* map); Unk_GuildRef* FUN_1404f4e90(void* map,void* pos); void FUN_1404f4660(void* map,void** pos);
+unsigned char FUN_1404f4480(void* map); void FUN_1404f4660(void* map,void** pos);
 void FUN_1404f8920(void* map); void FUN_1404f98e0(void* map,int key,Unk_GuildRef* v); char FUN_1404f5f60(void* map,int key,Unk_GuildRef* out);
 void FUN_1404ec940(Unk_GuildRef*,CGuildSkill*); void FUN_1404ec920(Unk_GuildRef*,int); void FUN_1404ec8b0(Unk_GuildRef*,Unk_GuildRef*);
 void FUN_1404eeb90(Unk_GuildRef*); CGuildSkill* FUN_1404f0bc0(Unk_GuildRef*); char FUN_1404f0120(Unk_GuildRef*,int);
 // CGuildCustomEvent map (+0x280, key = event id)
-unsigned char FUN_1404f4470(void* map); void* FUN_1404f4c60(void* map); Unk_GuildRef* FUN_1404f4e20(void* map,void* pos); void FUN_1404f4610(void* map,void** pos);
+unsigned char FUN_1404f4470(void* map); void FUN_1404f4610(void* map,void** pos);
 void FUN_1404f8810(void* map); void FUN_1404f9830(void* map,int key,Unk_GuildRef* v); char FUN_1404f5ef0(void* map,int key,Unk_GuildRef* out);
 void FUN_1404ec480(Unk_GuildRef*,CGuildCustomEvent*); void FUN_1404ec460(Unk_GuildRef*,int); void FUN_1404ec420(Unk_GuildRef*,Unk_GuildRef*); void FUN_1404ec3f0(Unk_GuildRef*,Unk_GuildRef*);
 void FUN_1404eea70(Unk_GuildRef*); CGuildCustomEvent* FUN_1404f0b60(Unk_GuildRef*);
 // CGuildNpc map (+0x2c8, key = npc id)
-unsigned char FUN_1404f4490(void* map); void* FUN_1404f4d40(void* map); Unk_GuildRef* FUN_1404f4f00(void* map,void* pos); void FUN_1404f46b0(void* map,void** pos);
-void FUN_1404f8a30(void* map); void FUN_1404f9990(void* map,int* key,Unk_GuildRef* v); char FUN_1404f5fd0(void* map,int* key,Unk_GuildRef* out);
+unsigned char FUN_1404f4490(void* map); void FUN_1404f46b0(void* map,void** pos);
+ void FUN_1404f9990(void* map,int* key,Unk_GuildRef* v); char FUN_1404f5fd0(void* map,int* key,Unk_GuildRef* out);
 void FUN_1404ec6f0(Unk_GuildRef*,CGuildNpc*); void FUN_1404ec6d0(Unk_GuildRef*,int); void FUN_1404ec690(Unk_GuildRef*,Unk_GuildRef*); void FUN_1404ec660(Unk_GuildRef*,Unk_GuildRef*);
 void FUN_1404eeb00(Unk_GuildRef*); CGuildNpc* FUN_1404f0b90(Unk_GuildRef*); char FUN_1404f0060(Unk_GuildRef*,int);
 // Unk_GuildRef wrappers as the exe uses them: real smart-pointer locals (ctor call, EH state, dtor at scope end).
@@ -72,13 +71,12 @@ void* FUN_1404ee230(void* mem);   // CGuildNpcShopMgr::CGuildNpcShopMgr
 void FUN_1404d8d50(void* mgr,COutputStream* out); void FUN_1404d8e80(void* mgr,CInPacket* in); void FUN_1404d8ff0(void* mgr,int a,void* b); void FUN_1404d9060(void* mgr,int a,void* b);
 // guild xml data queries
 void FUN_1404d74e0(void* xml,Unk_GuildRef* out,int a,int b); void FUN_1404d7410(void* xml,Unk_GuildRef* out,int a); void FUN_1404d79b0(void* xml,Unk_GuildRef* out,int a,int b);
-int FUN_1404d7280(void* xml); int FUN_1404d7130(void* xml,int a);
 char FUN_1404effa0(Unk_GuildRef*,int); char FUN_1404eff60(Unk_GuildRef*,int); char FUN_1404eff20(Unk_GuildRef*,int);
 char* FUN_1404f0b50(Unk_GuildRef*); char* FUN_1404f0b30(Unk_GuildRef*); char* FUN_1404f0b10(Unk_GuildRef*);
 void FUN_1404eea40(Unk_GuildRef*); void FUN_1404ee9b0(Unk_GuildRef*); void FUN_1404ee950(Unk_GuildRef*);
 int* FUN_1404eb7e0(void* map,void* key);
 // ---- container/ctor helpers in neighbouring chunks (loose types) ----
-void FUN_140212bf0(void*,__int64); void FUN_1402fec60(void*); char FUN_1402ffdc0(void*,int); void* FUN_140300710(void*);
+ void FUN_1402fec60(void*); char FUN_1402ffdc0(void*,int); void* FUN_140300710(void*);
 void FUN_140374140(void*,__int64); char FUN_140375310(void*);
 Unk_GuildPair* FUN_140407ed0(Unk_GuildPair*,int*,int*); Unk_GuildPair* FUN_1404d9660(Unk_GuildPair*,int*,int*);
 void FUN_1404ebaf0(void*,int,float,float,float,int); void FUN_1404ebbe0(void*,int,float,float,float,int);
@@ -92,8 +90,7 @@ bool FUN_1404f0660(void*,void*); Unk_GuildRef* FUN_1404f0760(void*,__int64); voi
 void* FUN_1404f0ae0(Unk_GuildRef*); CGuildStorage::CGuildStroageHistory* FUN_1404f0bd0(Unk_GuildRef*); char* FUN_1404f0bf0(Unk_GuildRef*);
 void* FUN_1404f0ce0(void*); void FUN_1404f14c0(void*); void FUN_1404f31c0(void*,Unk_GuildRef*); void FUN_1404f3270(void*,Unk_GuildRef*);
 unsigned FUN_1404f4450(void*); size_t FUN_1404f44a0(void*); void FUN_1404f8b40(void*); void FUN_1404f8c50(void*);
-void FUN_1404f9a40(void*,__int64,__int64); void FUN_1405063e0(void*,void*); void FUN_140506ac0(void*); void FUN_140506ca0(void*);
-void* FUN_1405076d0(void*,void*); void FUN_1405085e0(void*,void*); void FUN_140508ed0(void*,void*,void*);
+void FUN_1404f9a40(void*,__int64,__int64); void FUN_1405063e0(void*,void*); void FUN_140506ac0(void*);void* FUN_1405076d0(void*,void*); void FUN_1405085e0(void*,void*); void FUN_140508ed0(void*,void*,void*);
 void FUN_1405098f0(void*); void FUN_1405099e0(void*,Unk_GuildRef*); void FUN_140509c90(void*,Unk_GuildRef*);
 unsigned FUN_14050a000(void*); int FUN_14050a040(void*); void* FUN_14025e7d0(); CString* FUN_1402295b0(void*,CString*,int);
 void FUN_140791e40(void*,Unk_GuildRef*,int);
@@ -1279,8 +1276,8 @@ void CGuildInfo::FUN_1404ce690(COutputStream& out)
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         int count=FUN_1404d0020();
         out.WriteUInt8(count);
-        for(void* pos=FUN_1404f4510(&f320);pos!=0;FUN_1404f4700(&f320,&pos)) {
-            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*FUN_1404f4f70(&f320,pos)));
+        for(void* pos=((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition());pos!=0;FUN_1404f4700(&f320,&pos)) {
+            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*((struct Unk_GuildRef*)&((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetValueAt((struct __POSITION*)(pos)))));
             ref->FUN_1404cb420((COutPacket*)&out);
         }
     }
@@ -1331,8 +1328,8 @@ void CGuildInfo::FUN_1404ceb90(COutputStream& out)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         out.WriteUInt8(FUN_1404f4480(&f238));
-        for(void* pos=FUN_1404f4cd0(&f238);pos!=0;FUN_1404f4660(&f238,&pos)) {
-            Unk_PayloadPtr<CGuildSkill> ref(reinterpret_cast<Unk_PayloadPtr<CGuildSkill>&>(*FUN_1404f4e90(&f238,pos)));
+        for(void* pos=((void*)((ATL::CAtlMap<int, Unk_PayloadPtr<CGuildSkill>, ATL::CElementTraits<int>, ATL::CElementTraits<Unk_PayloadPtr<CGuildSkill>>>*)(void*)(&f238))->GetStartPosition());pos!=0;FUN_1404f4660(&f238,&pos)) {
+            Unk_PayloadPtr<CGuildSkill> ref(reinterpret_cast<Unk_PayloadPtr<CGuildSkill>&>(*((struct Unk_GuildRef*)&((ATL::CAtlMap<int, Unk_PayloadPtr<CGuildSkill>, ATL::CElementTraits<int>, ATL::CElementTraits<Unk_PayloadPtr<CGuildSkill>>>*)(void*)(&f238))->GetValueAt((struct __POSITION*)(pos)))));
             ref->FUN_1404cb9f0(out);
         }
     }
@@ -1357,8 +1354,8 @@ void CGuildInfo::FUN_1404cee00(COutputStream& out)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         out.WriteUInt8(FUN_1404f4470(&f280));
-        for(void* pos=FUN_1404f4c60(&f280);pos!=0;FUN_1404f4610(&f280,&pos)) {
-            Unk_PayloadPtr<CGuildCustomEvent> ref(reinterpret_cast<Unk_PayloadPtr<CGuildCustomEvent>&>(*FUN_1404f4e20(&f280,pos)));
+        for(void* pos=((void*)((ATL::CAtlMap<int, Unk_PayloadPtr<CGuildCustomEvent>, ATL::CElementTraits<int>, ATL::CElementTraits<Unk_PayloadPtr<CGuildCustomEvent>>>*)(void*)(&f280))->GetStartPosition());pos!=0;FUN_1404f4610(&f280,&pos)) {
+            Unk_PayloadPtr<CGuildCustomEvent> ref(reinterpret_cast<Unk_PayloadPtr<CGuildCustomEvent>&>(*((struct Unk_GuildRef*)&((ATL::CAtlMap<int, Unk_PayloadPtr<CGuildCustomEvent>, ATL::CElementTraits<int>, ATL::CElementTraits<Unk_PayloadPtr<CGuildCustomEvent>>>*)(void*)(&f280))->GetValueAt((struct __POSITION*)(pos)))));
             ref->FUN_1404cbe20(out);
         }
     }
@@ -1414,8 +1411,8 @@ void CGuildInfo::FUN_1404cf390(COutputStream& out)
 {
     Unk_GuildMapLock guard(lock,1);
     out.WriteUInt8(FUN_1404f4490(&f2c8));
-    for(void* pos=FUN_1404f4d40(&f2c8);pos!=0;FUN_1404f46b0(&f2c8,&pos)) {
-        Unk_PayloadPtr<CGuildNpc> ref(reinterpret_cast<Unk_PayloadPtr<CGuildNpc>&>(*FUN_1404f4f00(&f2c8,pos)));
+    for(void* pos=((void*)((ATL::CAtlMap<Unk_GuildNpcKind, Unk_PayloadPtr<CGuildNpc>, ATL::CElementTraits<Unk_GuildNpcKind>, ATL::CElementTraits<Unk_PayloadPtr<CGuildNpc>>>*)(void*)(&f2c8))->GetStartPosition());pos!=0;FUN_1404f46b0(&f2c8,&pos)) {
+        Unk_PayloadPtr<CGuildNpc> ref(reinterpret_cast<Unk_PayloadPtr<CGuildNpc>&>(*((struct Unk_GuildRef*)&((ATL::CAtlMap<Unk_GuildNpcKind, Unk_PayloadPtr<CGuildNpc>, ATL::CElementTraits<Unk_GuildNpcKind>, ATL::CElementTraits<Unk_PayloadPtr<CGuildNpc>>>*)(void*)(&f2c8))->GetValueAt((struct __POSITION*)(pos)))));
         ref->FUN_1404cc3f0(out);
     }
 }
@@ -1424,7 +1421,7 @@ void CGuildInfo::FUN_1404cf390(COutputStream& out)
 void CGuildInfo::FUN_1404cf490(CInPacket& packet)
 {
     Unk_GuildMapLock guard(lock,1);
-    FUN_1404f8a30(&f2c8);
+    ((ATL::CAtlMap<Unk_GuildNpcKind, Unk_PayloadPtr<CGuildNpc>, ATL::CElementTraits<Unk_GuildNpcKind>, ATL::CElementTraits<Unk_PayloadPtr<CGuildNpc>>>*)(void*)(&f2c8))->RemoveAll();
     int count=packet.ReadUInt8();
     for(int i=0;i<count;++i) {
         Unk_GuildNpcRef ref(new CGuildNpc);
@@ -1471,7 +1468,7 @@ int CGuildInfo::vfunc_0(Unk_PayloadPtr<CGuildMember> member)
 void CGuildInfo::vfunc_1(CStringW name)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        FUN_1404f91b0(&f320,name);
+        ((ATL::CRBMap<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->RemoveKey(name);
     }
 }
 
@@ -1492,8 +1489,8 @@ MS2Ptr<CGuildMember> CGuildInfo::FUN_1404cfb00(__int64 id)
 {
     MS2Ptr<CGuildMember> found(0);
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        for(void* pos=FUN_1404f4510(&f320); pos!=0; FUN_1404f4700(&f320,&pos)) {
-            MS2Ptr<CGuildMember> member=reinterpret_cast<MS2Ptr<CGuildMember>&>(*FUN_1404f4f70(&f320,pos));
+        for(void* pos=((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos!=0; FUN_1404f4700(&f320,&pos)) {
+            MS2Ptr<CGuildMember> member=reinterpret_cast<MS2Ptr<CGuildMember>&>(*((struct Unk_GuildRef*)&((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetValueAt((struct __POSITION*)(pos))));
             if((member.get() ? true : false) && member->f18==id) {
                 found=member;
                 break;
@@ -1509,7 +1506,7 @@ void CGuildInfo::FUN_1404cfc70(const CStringW& oldName,const CStringW& newName)
     MS2Ptr<CGuildMember> ref(0);
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         if(FUN_1404f6070(&f320,oldName,(Unk_GuildRef*)&ref)==1) {
-            FUN_1404f91b0(&f320,oldName);
+            ((ATL::CRBMap<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->RemoveKey(oldName);
             ref->data.FUN_1404ca910(newName);
             FUN_1404f9ae0(&f320,newName,(Unk_GuildRef*)&ref);
         }
@@ -1580,9 +1577,9 @@ int CGuildInfo::FUN_1404d01b0(CStringW name)
 void CGuildInfo::FUN_1404d0330(void* out)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        for(void* pos=FUN_1404f4510(&f320);pos!=0;FUN_1404f4700(&f320,&pos)) {
-            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*FUN_1404f4f70(&f320,pos)));
-            if(ref->fb0==3) FUN_140212bf0(out,ref->data.f08);
+        for(void* pos=((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition());pos!=0;FUN_1404f4700(&f320,&pos)) {
+            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*((struct Unk_GuildRef*)&((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetValueAt((struct __POSITION*)(pos)))));
+            if(ref->fb0==3) ((ATL::CAtlArray<__int64, ATL::CElementTraits<__int64>>*)(void*)(out))->Add(ref->data.f08);
         }
     }
 }
@@ -1591,8 +1588,8 @@ void CGuildInfo::FUN_1404d0330(void* out)
 void CGuildInfo::FUN_1404d0420(void* out)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        for(void* pos=FUN_1404f4510(&f320);pos!=0;FUN_1404f4700(&f320,&pos)) {
-            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*FUN_1404f4f70(&f320,pos)));
+        for(void* pos=((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition());pos!=0;FUN_1404f4700(&f320,&pos)) {
+            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*((struct Unk_GuildRef*)&((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetValueAt((struct __POSITION*)(pos)))));
             if(ref->fb0==3) FUN_1404f31c0(out,(Unk_GuildRef*)&ref);
         }
     }
@@ -1607,7 +1604,7 @@ int CGuildInfo::FUN_1404d0510()
 // @0x1404d0580
 int CGuildInfo::FUN_1404d0580()
 {
-    if(Unk_LockGuard guard=lock) { __assume(0); } else { return (int)(FUN_1404f4440(&fa0)-1); }
+    if(Unk_LockGuard guard=lock) { __assume(0); } else { return (int)(((ATL::CAtlArray<Unk_PayloadPtr<CGuildGrade>, ATL::CElementTraits<Unk_PayloadPtr<CGuildGrade>>>*)(void*)(&fa0))->GetCount()-1); }
 }
 
 // @0x1404d0600
@@ -1677,8 +1674,8 @@ int CGuildInfo::FUN_1404d0c00()
 {
     int total=0;
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        for(void* pos=FUN_1404f4510(&f320);pos!=0;FUN_1404f4700(&f320,&pos)) {
-            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*FUN_1404f4f70(&f320,pos)));
+        for(void* pos=((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition());pos!=0;FUN_1404f4700(&f320,&pos)) {
+            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*((struct Unk_GuildRef*)&((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetValueAt((struct __POSITION*)(pos)))));
             total=total+ref->FUN_1404cb3b0();
         }
     }
@@ -1691,8 +1688,8 @@ int CGuildInfo::FUN_1404d0d00()
 {
     int total=0;
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        for(void* pos=FUN_1404f4510(&f320);pos!=0;FUN_1404f4700(&f320,&pos)) {
-            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*FUN_1404f4f70(&f320,pos)));
+        for(void* pos=((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition());pos!=0;FUN_1404f4700(&f320,&pos)) {
+            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*((struct Unk_GuildRef*)&((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetValueAt((struct __POSITION*)(pos)))));
             total=total+(unsigned)(unsigned short)ref->data.f1c;
         }
     }
@@ -1704,8 +1701,8 @@ int CGuildInfo::FUN_1404d0df0()
 {
     int total=0;
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        for(void* pos=FUN_1404f4510(&f320);pos!=0;FUN_1404f4700(&f320,&pos)) {
-            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*FUN_1404f4f70(&f320,pos)));
+        for(void* pos=((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition());pos!=0;FUN_1404f4700(&f320,&pos)) {
+            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*((struct Unk_GuildRef*)&((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetValueAt((struct __POSITION*)(pos)))));
             total=total+ref->data.f20;
         }
     }
@@ -1717,8 +1714,8 @@ int CGuildInfo::FUN_1404d0ee0()
 {
     int total=0;
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        for(void* pos=FUN_1404f4510(&f320);pos!=0;FUN_1404f4700(&f320,&pos)) {
-            Unk_GuildMemberRef ref(*FUN_1404f4f70(&f320,pos));
+        for(void* pos=((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition());pos!=0;FUN_1404f4700(&f320,&pos)) {
+            Unk_GuildMemberRef ref(*((struct Unk_GuildRef*)&((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetValueAt((struct __POSITION*)(pos))));
             if(FUN_1404f0020(&ref,0))
                 continue;
             total+=FUN_1404f0b80(&ref)->raid.FUN_1404cadc0();
@@ -1822,8 +1819,8 @@ int CGuildInfo::FUN_1404d16e0()
 {
     int total=0;
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        for(void* pos=FUN_1404f4510(&f320);pos!=0;FUN_1404f4700(&f320,&pos)) {
-            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*FUN_1404f4f70(&f320,pos)));
+        for(void* pos=((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition());pos!=0;FUN_1404f4700(&f320,&pos)) {
+            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*((struct Unk_GuildRef*)&((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetValueAt((struct __POSITION*)(pos)))));
             if(ref->fb0==3 && ref->f158==0) total=total+1;
         }
     }
@@ -1860,7 +1857,7 @@ bool CGuildInfo::FUN_1404d1990(int delta)
 {
     Unk_GuildMapLock guard(lock,1);
     int before=f15c;
-    int limit=FUN_1404d7280(TSingleton<CGuildXmlData>::GetInstance());
+    int limit=((class CGuildXmlData*)(void*)(TSingleton<CGuildXmlData>::GetInstance()))->FUN_1404d7280();
     f15c=f15c+delta;
     if(f15c<0) f15c=0;
     if(f15c>limit) f15c=limit;
@@ -1879,7 +1876,7 @@ int CGuildInfo::FUN_1404d1a80()
 int CGuildInfo::FUN_1404d1ad0()
 {
     Unk_GuildMapLock guard(lock,1);
-    return FUN_1404d7130(TSingleton<CGuildXmlData>::GetInstance(),f15c);
+    return ((class CGuildXmlData*)(void*)(TSingleton<CGuildXmlData>::GetInstance()))->FUN_1404d7130(f15c);
 }
 
 // @0x1404d1b40
@@ -2186,7 +2183,7 @@ void CGuildInfo::FUN_1404d2e90(const Unk_GuildHist* a,const Unk_GuildHist* b,con
 void CGuildInfo::FUN_1404d3050(void* list)
 {
     Unk_GuildMapLock guard(lock,1);
-    FUN_140506ca0((char*)&storage+0x38);
+    ((std::deque<Unk_PayloadPtr<CGuildStorage::CGuildStroageHistory>, std::allocator<Unk_PayloadPtr<CGuildStorage::CGuildStroageHistory>>>*)(void*)((char*)&storage+0x38))->clear();
     int n=FUN_1404f4450(list);
     for(int i=0;i<n;++i) {
         Unk_GuildRef* h=FUN_1404f0760(list,i);

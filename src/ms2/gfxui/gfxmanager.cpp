@@ -12,8 +12,8 @@
 #define SF_GFX_PLAYERIMPL                   // gfx_movieimpl.h: MovieImpl : Movie (the focused text field queries)
 #include "ms2/placeholder/ms2stdafx.h"
 #pragma float_control(precise, on)
-// The exe calls strcmp (SFstrcmp, pinned below) and wcslen (FUN_1422af5f0) out of line; /Oi would expand them inline.
-#pragma function(strcmp)
+// The exe calls strcmp (SFstrcmp, pinned below), wcslen (FUN_1422af5f0) and memset (CRBTree::NewNode) out of line; /Oi would expand them inline.
+#pragma function(strcmp, memset)
 #pragma function(wcslen)
 #include <afx.h>
 #include <atlcoll.h>
@@ -575,7 +575,8 @@ int GFxManager::FUN_1422af580(int nMovieId)
 }
 MS2_REPLACE_METHOD(0x1422AF580, GFxManager, FUN_1422af580, 97, 0xF47CE5A7);
 
-// MS2-FUNCTIONAL: the exe calls wcslen through the CRT import table; here it is a direct call (one instruction)
+extern "C" size_t (__cdecl* __imp_wcslen)(const wchar_t*);    // the exe calls the imported wcslen (`call [__imp_wcslen]`)
+
 // @0x1422af5f0
 CStringW GFxManager::FUN_1422af5f0(int nMovieId)
 {
@@ -588,7 +589,7 @@ CStringW GFxManager::FUN_1422af5f0(int nMovieId)
     IMEManagerBase* pIME = pGFxMovie->GetIMEManager();
     if (pIME && pIME->IsTextFieldFocused()) {
         const wchar_t* szComposition = pIME->GetCompositionString();
-        if (szComposition && wcslen(szComposition) > 0) {
+        if (szComposition && __imp_wcslen(szComposition) > 0) {
             CStringW strComposition(szComposition);
             return strComposition;
         }

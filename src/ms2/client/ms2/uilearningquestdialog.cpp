@@ -47,13 +47,21 @@ private:
 };
 class CFileSystem;
 CFileSystem* GetFileSystem();
-int FUN_1403974b0(CFileSystem* pFiles, TiXmlDocument* pDoc, const char* pszPath, int nFlags, bool bA, bool bB);   // load an xml file
+class CFileSystem   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1403974b0(class TiXmlDocument*, char const*, int, bool, bool);
+};
 TiXmlElement* FUN_140165cf0(TiXmlDocument* pParent, const char* pszName);   // FirstChildElement
 TiXmlElement* FUN_140165cf0(TiXmlElement* pParent, const char* pszName);
-void* FUN_14086e000(void* pParent, const void* pChild);                     // InsertEndChild
-void* FUN_14086e090(void* pParent, void* pChild);                           // LinkEndChild
+class TiXmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class TiXmlNode* InsertEndChild(class TiXmlNode const&);
+    class TiXmlNode* LinkEndChild(class TiXmlNode*);
+};
 bool FUN_1408710c0(TiXmlDocument* pDoc, const char* pszPath);               // SaveFile
-int FUN_1408731e0(TiXmlElement* pElem, const char* pszName, unsigned* pnOut);   // QueryIntAttribute
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 void XmlSetAttr(TiXmlElement* pElem, const char* pszName, int nValue);      // SetAttribute
 CString FUN_1412755f0();                                                    // the character save directory
 CString FUN_141275640();                                                    // the account save directory
@@ -75,7 +83,11 @@ class Unk_LqWorld { public: Unk_LqActor* FUN_141bd0cc0(); };
 class Unk_LqUIMgr { public: int FUN_141adc940(int nClass); void FUN_141adc530(int nClass); };
 class Unk_LqSceneMgr;
 Unk_LqSceneMgr* FUN_1408e57f0();
-int FUN_1422b9e00(Unk_LqSceneMgr* pMgr);                                    // the current scene id
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSubSceneId();
+};
 struct Unk_LqOptions { char m_pad_00[0x50]; unsigned char m_50; unsigned char* FUN_140ea41a0() { return &m_50; } };
 bool FUN_140930b70();
 UIStatusEventDispatcher* FUN_140aa6d40();
@@ -88,9 +100,9 @@ class Unk_LqRoot : public AScript { public:
     Scaleform::GFx::Value FUN_140ba4cc0(const char*, const ASObj&);         // Invoke(method, object)
 };
 int FUN_140408410(ATL::CAtlArray<unsigned>* pArr, const int* pn);           // index of the value (-1 when absent)
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 UIQuestEventDispatcher* FUN_140bfc4b0();
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 typedef MS2Ptr<CLearningQuestData> LqPtr;
 typedef ATL::CAtlArray<LqPtr> LqArray;
 int FUN_1402bacf0(ATL::CAtlArray<int>& rArr, const int& n);                 // index of the value (-1 when absent)
@@ -104,9 +116,9 @@ UILearningQuestDialog::UILearningQuestDialog() : m_1a8(GetTypeName())
     m_188 = 0;
     FUN_141925e70(3, 1);
     FUN_141924170(1);
-    FUN_140939a10()->RegisterNotify(L"NotifyChangeServer", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c00));
-    FUN_140939a10()->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c30));
-    FUN_140939a10()->RegisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1d70));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeServer", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c00));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c30));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1d70));
     FUN_140bfc4b0()->FUN_141aa87c0(this);
     FUN_140aa6d40()->FUN_141b0cd00(this);
 }
@@ -114,9 +126,9 @@ UILearningQuestDialog::UILearningQuestDialog() : m_1a8(GetTypeName())
 // @0x140ea0da0
 UILearningQuestDialog::~UILearningQuestDialog()
 {
-    FUN_140939a10()->UnregisterNotify(L"NotifyChangeServer", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c00));
-    FUN_140939a10()->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c30));
-    FUN_140939a10()->UnregisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1d70));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeServer", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c00));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c30));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1d70));
     FUN_140bfc4b0()->FUN_141aa8850(this);
     FUN_140aa6d40()->FUN_141b0cd90(this);
 }
@@ -248,7 +260,7 @@ void UILearningQuestDialog::FUN_140ea15d0(int bPickCategory)
         unsigned nState = 0;
         LqPtr spData = CLearningQuestTable::GetInstance()->Get(m_18c);
         if (spData.get() != 0)
-            nState = FUN_140764020()->FUN_1416d0260(spData, 0);
+            nState = ((class CQuestManager*)FUN_140764020())->FUN_1416d0260(spData, 0);
         spOk->FUN_1422c1fe0(nState);
     }
 }
@@ -269,7 +281,7 @@ void UILearningQuestDialog::FUN_140ea1c30(NotifyObject*)
         CLearningQuestTable::GetInstance()->GetAll(all);
     for (size_t i = 0; i < all.GetCount(); i++)
     {
-        m_310.SetAt(all[i]->m_nId, FUN_140764020()->FUN_1416d0260(all[i], 0) == 0);
+        m_310.SetAt(all[i]->m_nId, ((class CQuestManager*)FUN_140764020())->FUN_1416d0260(all[i], 0) == 0);
     }
 }
 
@@ -300,7 +312,7 @@ void UILearningQuestDialog::vfunc_12()
 // @0x140ea1e20
 int UILearningQuestDialog::FUN_140ea1e20(int bNew)
 {
-    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
+    if (((class GFxSceneService*)(class Unk_LqSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
         return 0;
     if (FUN_141924630() != 0)
         return 0;
@@ -318,7 +330,7 @@ int UILearningQuestDialog::FUN_140ea1e20(int bNew)
     for (size_t i = 0; i < all.GetCount(); i++)
     {
         LqPtr spItem(all[i]);
-        if (FUN_140764020()->FUN_1416d0260(LqPtr(spItem), bNew) == 0)
+        if (((class CQuestManager*)FUN_140764020())->FUN_1416d0260(LqPtr(spItem), bNew) == 0)
             continue;
         if (bNew != 0)
         {
@@ -353,7 +365,7 @@ void UILearningQuestDialog::LoadLearningQuest()
         CLearningQuestTable::GetInstance()->GetAll(all);
     for (size_t i = 0; i < all.GetCount(); i++)
         m_2c8.SetAt(all[i]->m_nId, 0);
-    int bCharacterLoaded = FUN_1403974b0(GetFileSystem(), &m_1e8, (const char*)FUN_140cc2a00(FUN_1412755f0(), "learningQuestCharacter.xml"), 0, true, false);
+    int bCharacterLoaded = ((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->FUN_1403974b0(&m_1e8, (const char*)FUN_140cc2a00(FUN_1412755f0(), "learningQuestCharacter.xml"), 0, true, false);
     if (bCharacterLoaded != 0)
     {
         TiXmlElement* pRoot = FUN_140165cf0(&m_1e8, "ms2");
@@ -368,14 +380,14 @@ void UILearningQuestDialog::LoadLearningQuest()
                     if (spItem->m_nQuestKind == 0)
                     {
                         unsigned nSeen = 0;
-                        FUN_1408731e0(pList, (const char*)FUN_1402bb1c0("learning{0}", spItem->m_nId), &nSeen);
+                        XmlGetAttr(pList, (const char*)FUN_1402bb1c0("learning{0}", spItem->m_nId), *(int*)(&nSeen));
                         m_2c8.SetAt(spItem->m_nId, nSeen);
                     }
                 }
             }
         }
     }
-    int bAccountLoaded = FUN_1403974b0(GetFileSystem(), &m_258, (const char*)FUN_140cc2a00(FUN_141275640(), "learningQuestAccount.xml"), 0, true, false);
+    int bAccountLoaded = ((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->FUN_1403974b0(&m_258, (const char*)FUN_140cc2a00(FUN_141275640(), "learningQuestAccount.xml"), 0, true, false);
     if (bAccountLoaded != 0)
     {
         TiXmlElement* pRoot = FUN_140165cf0(&m_258, "ms2");
@@ -390,7 +402,7 @@ void UILearningQuestDialog::LoadLearningQuest()
                     if (spItem->m_nQuestKind != 0)
                     {
                         unsigned nSeen = 0;
-                        FUN_1408731e0(pList, (const char*)FUN_1402bb1c0("learning{0}", spItem->m_nId), &nSeen);
+                        XmlGetAttr(pList, (const char*)FUN_1402bb1c0("learning{0}", spItem->m_nId), *(int*)(&nSeen));
                         m_2c8.SetAt(spItem->m_nId, nSeen);
                     }
                 }
@@ -406,15 +418,15 @@ void UILearningQuestDialog::SaveLearningQuest()
     if (pRoot == 0)
     {
         TiXmlDeclaration decl("1.0", "utf-8", "");
-        FUN_14086e000(&m_1e8, &decl);
+        ((void*)((class TiXmlNode*)(void*)(&m_1e8))->InsertEndChild(*(class TiXmlNode const*)(&decl)));
         pRoot = new TiXmlElement("ms2");
-        FUN_14086e090(&m_1e8, pRoot);
+        ((void*)((class TiXmlNode*)(void*)(&m_1e8))->LinkEndChild((class TiXmlNode*)(pRoot)));
     }
     TiXmlElement* pList = FUN_140165cf0(pRoot, "v1");
     if (pList == 0)
     {
         pList = new TiXmlElement("v1");
-        FUN_14086e090(pRoot, pList);
+        ((void*)((class TiXmlNode*)(void*)(pRoot))->LinkEndChild((class TiXmlNode*)(pList)));
     }
     for (POSITION pos = m_2c8.GetStartPosition(); pos != 0; m_2c8.GetNext(pos))
     {
@@ -429,15 +441,15 @@ void UILearningQuestDialog::SaveLearningQuest()
     if (pRoot2 == 0)
     {
         TiXmlDeclaration decl("1.0", "utf-8", "");
-        FUN_14086e000(&m_1e8, &decl);
+        ((void*)((class TiXmlNode*)(void*)(&m_1e8))->InsertEndChild(*(class TiXmlNode const*)(&decl)));
         pRoot2 = new TiXmlElement("ms2");
-        FUN_14086e090(&m_258, pRoot2);
+        ((void*)((class TiXmlNode*)(void*)(&m_258))->LinkEndChild((class TiXmlNode*)(pRoot2)));
     }
     TiXmlElement* pList2 = FUN_140165cf0(pRoot2, "v1");
     if (pList2 == 0)
     {
         pList2 = new TiXmlElement("v1");
-        FUN_14086e090(pRoot2, pList2);
+        ((void*)((class TiXmlNode*)(void*)(pRoot2))->LinkEndChild((class TiXmlNode*)(pList2)));
     }
     for (POSITION pos2 = m_2c8.GetStartPosition(); pos2 != 0; m_2c8.GetNext(pos2))
     {
@@ -482,9 +494,9 @@ void UILearningQuestDialog::FUN_140ea2e50(ASObj& rOut)
         TSingleton<QuestDataTable>::GetInstance()->FUN_14074cfd0(nChapter, quests);
         if (quests.GetCount() == 0)
             continue;
-        if (FUN_140764020()->FUN_1416ce3d0(nChapter) != 0)
+        if (((class CQuestManager*)FUN_140764020())->FUN_1416ce3d0(nChapter) != 0)
             continue;
-        if (FUN_140764020()->FUN_1416ce340(nChapter) == 0 && FUN_140764020()->FUN_1416ce260(nChapter) == 0)
+        if (((class CQuestManager*)FUN_140764020())->FUN_1416ce340(nChapter) == 0 && ((class CQuestManager*)FUN_140764020())->FUN_1416ce260(nChapter) == 0)
             continue;
         ASObj node(2);
         ASArray children(2);
@@ -502,7 +514,7 @@ void UILearningQuestDialog::FUN_140ea2e50(ASObj& rOut)
         nNode++;
         for (size_t k = 0; k < quests.GetCount(); k++)
         {
-            if (FUN_140764020()->FUN_140745590(quests[k]) != 0)
+            if (((class CQuestManager*)FUN_140764020())->FUN_140745590(quests[k]) != 0)
                 continue;
             ASObj leaf(2);
             leaf.FUN_1409c0d20("id", quests[k]);
@@ -549,7 +561,7 @@ void UILearningQuestDialog::FUN_140ea3910()
 {
     if (reinterpret_cast<Unk_LqWorld*>(WorldService::GetInstance())->FUN_141bd0cc0() == 0)
         return;
-    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
+    if (((class GFxSceneService*)(class Unk_LqSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
         return;
     if (m_2c8.GetCount() == 0)
         return;

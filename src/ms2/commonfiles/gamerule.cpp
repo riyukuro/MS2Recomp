@@ -305,9 +305,12 @@ struct Unk_GameRuleLock {
 MS2_CHECK_SIZE(Unk_GameRuleLock, 8);
 
 // Out-of-unit callees.
-bool FUN_14036e510(void* features);                     // the URL cache feature flag of CFeatureManager
 extern void* DAT_143aaeb00;                             // the pet table singleton (FUN_140353610 is its method)
-void FUN_140353610(void* p, unsigned short value);
+class CExpTable   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 GetNextExp(unsigned short);
+};
 __int64 GetServerTime();                                // the server time
 bool FUN_1407183f0(const CStringW& str);
 int FUN_140408410(ATL::CAtlArray<unsigned>* arr, const unsigned* value);    // the index of value, -1 if missing
@@ -408,7 +411,7 @@ CGameRule::CGameRule()
       m_bc0(0), m_c00(0), m_c10(0), m_c14(0), m_c60(false), m_d10(false),
       m_e98(0), m_ef8(0)
 {
-    if (FUN_14036e510(TSingleton<CFeatureManager>::GetInstance()))
+    if (((class CFeatureManager*)(void*)(TSingleton<CFeatureManager>::GetInstance()))->FUN_14036e510())
         m_a98 = 1;
     else
         m_a98 = 0;
@@ -506,7 +509,7 @@ MS2_REPLACE(0x1404A1BB0, FUN_1404a1bb0, 8, 0x01B1E857);
 // @0x140475ff0
 void FUN_140475ff0(unsigned short value)
 {
-    FUN_140353610(FUN_1404a1bb0(), value);
+    ((class CExpTable*)(void*)(FUN_1404a1bb0()))->GetNextExp(value);
 }
 MS2_REPLACE(0x140475FF0, FUN_140475ff0, 32, 0xDE57401C);
 

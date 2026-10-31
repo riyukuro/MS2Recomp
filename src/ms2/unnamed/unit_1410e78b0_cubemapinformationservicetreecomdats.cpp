@@ -89,7 +89,6 @@ void Unk_FnAnchor()
     Unk_FnFreeA<26>(0);
     Unk_FnFreeA<27>(0);
     Unk_FnFreeB<30>(0);
-    Unk_FnFreeB<31>(0);
     Unk_FnFreeB<32>(0);
     Unk_FnFreeB<33>(0);
     Unk_FnFreeB<34>(0);
@@ -105,3 +104,11 @@ void Unk_FnAnchor()
     (void)m.equal_range(0);
 }
 // MS2-PIN: ??$_Freenode0@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@@?$_Tree_node@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@SAXAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@PEAU01@@Z 0x1410e8b50 ; la1: the efd::map<long,MS2Ptr<Cube>> (column map, operator[] 0x141128350) chain
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$Unk_Fn@$0BO@@@PEAX@std@@@std@@@?$_Tree_node@U?$Unk_Fn@$0BO@@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$Unk_Fn@$0BO@@@PEAX@std@@@1@PEAU01@@Z 0x1410e8e10 ; ogt: identical std::allocator look-alikes, pinned by address order
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CB_KV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CB_KV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CB_KV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1410e8ea0 ; ogt: the map<unsigned __int64, Unk_PayloadPtr<CubeOwner>> node
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$Unk_Fn@$0CA@@@PEAX@std@@@std@@@?$_Tree_node@U?$Unk_Fn@$0CA@@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$Unk_Fn@$0CA@@@PEAX@std@@@1@PEAU01@@Z 0x1410e8f30 ; ogt
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$Unk_Fn@$0CB@@@PEAX@std@@@std@@@?$_Tree_node@U?$Unk_Fn@$0CB@@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$Unk_Fn@$0CB@@@PEAX@std@@@1@PEAU01@@Z 0x1410e8fc0 ; ogt
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$Unk_Fn@$0CC@@@PEAX@std@@@std@@@?$_Tree_node@U?$Unk_Fn@$0CC@@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$Unk_Fn@$0CC@@@PEAX@std@@@1@PEAU01@@Z 0x1410e9050 ; ogt
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$Unk_Fn@$0CD@@@PEAX@std@@@std@@@?$_Tree_node@U?$Unk_Fn@$0CD@@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$Unk_Fn@$0CD@@@PEAX@std@@@1@PEAU01@@Z 0x1410e90e0 ; ogt
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$Unk_Fn@$0CE@@@PEAX@std@@@std@@@?$_Tree_node@U?$Unk_Fn@$0CE@@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$Unk_Fn@$0CE@@@PEAX@std@@@1@PEAU01@@Z 0x1410e9170 ; ogt
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$Unk_Fn@$0CF@@@PEAX@std@@@std@@@?$_Tree_node@U?$Unk_Fn@$0CF@@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$Unk_Fn@$0CF@@@PEAX@std@@@1@PEAU01@@Z 0x1410e9200 ; ogt

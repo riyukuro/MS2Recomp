@@ -482,7 +482,6 @@ int Ridee::FUN_1417043a0(int nRideeId, int nObjectId, PCBase* pRider)
 MS2_REPLACE_METHOD(0x1417043a0, Ridee, FUN_1417043a0, 925, 0xFC8D7B99);
 
 // @0x141704750
-// MS2-FUNCTIONAL: vfunc_19(kPos) copies twice; in the exe vfunc_18 returns the same type vfunc_19 takes (see vfunc_53)
 int Ridee::vfunc_10()
 {
     PCBase::vfunc_10();
@@ -516,7 +515,7 @@ int Ridee::vfunc_10()
                 }
             }
             kPos.z += 25.0f;
-            vfunc_19(kPos);
+            vfunc_19(static_cast<const efd::Point3&>(kPos));
             ((class GameObjectController*)(class Unk_RideeBody*)(::FUN_14166d220(m_pRider)))->FUN_141240f20()->FUN_140cfaf30();
             m_pRider->FUN_141678290(s_kNoEntity, g_kCubeGuideZero);
             vfunc_24(0);
@@ -527,7 +526,6 @@ int Ridee::vfunc_10()
 }
 
 // @0x141704c80
-// MS2-FUNCTIONAL: vfunc_19(kPos) adds a 12-byte copy (NiPoint3 -> efd::Point3 parameter, see vfunc_53), which is the 0x10 frame difference
 void Ridee::vfunc_12()
 {
     PCBase::vfunc_12();
@@ -555,7 +553,7 @@ void Ridee::vfunc_12()
     if (m_pRider)
     {
         m_pRider->vfunc_59(0x21, 0, 0, 0);
-        vfunc_19(m_pRider->vfunc_18());
+        vfunc_19(static_cast<const efd::Point3&>(m_pRider->vfunc_18()));
         if (((Unk_FsOptimizer*)(Unk_RideeGameMode*)(FUN_1409f7c90()))->FUN_140ddcc90() == 0 && m_unk_40 != 0)
         {
             bool bValue = false;
@@ -1180,7 +1178,6 @@ float Ridee::FUN_141707960()
 MS2_REPLACE_METHOD(0x141707960, Ridee, FUN_141707960, 136, 0x6FC70E00);
 
 // @0x1417079f0
-// MS2-FUNCTIONAL: the exe passes the vfunc_18/vfunc_20 result straight to vfunc_19/vfunc_21 (same type); our NiPoint3 -> efd::Point3 parameter adds a copy
 void Ridee::vfunc_53(float f)
 {
     PCBase::vfunc_53(f);
@@ -1199,8 +1196,8 @@ void Ridee::vfunc_53(float f)
     }
     if (DAT_143ae2b30 == 0 && m_pRider)
     {
-        m_pRider->vfunc_19(vfunc_18());
-        m_pRider->vfunc_21(vfunc_20());
+        m_pRider->vfunc_19(static_cast<const efd::Point3&>(vfunc_18()));
+        m_pRider->vfunc_21(static_cast<const efd::Point3&>(vfunc_20()));
     }
     if (m_pBox && (bool)m_spData.get())
     {

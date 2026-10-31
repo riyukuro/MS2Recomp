@@ -140,9 +140,13 @@ class Unk_ItemEquipData : public CItemData {};                              // C
 
 // The item event source the dialog listens to.
 class Unk_LdItemEvents;
-Unk_LdItemEvents* FUN_140a6a840();
-void FUN_1419cae20(Unk_LdItemEvents*, UIItemEventListener*);               // add a listener
-void FUN_1419caeb0(Unk_LdItemEvents*, UIItemEventListener*);               // remove it
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419cae20(class UIItemEventListener*);
+    void FUN_1419caeb0(class UIItemEventListener*);
+};
 
 // The index event of a list / bar callback (Params wrapper).
 class Unk_ListEventBase
@@ -177,11 +181,11 @@ struct Unk_ClApplyRec { int m_nIndex; int m_nLayer; Unk_ClApplyRec() : m_nIndex(
 struct Unk_ClKeyRec { int m_nIndex; int m_nId; Unk_ClKeyRec() : m_nIndex(0), m_nId(0) {} };                      // 0x140be3170 key
 struct Unk_ClSaveRec { int m_nIndex; int m_nLayer; Unk_ClSaveRec() : m_nIndex(0), m_nLayer(0) {} };             // 0x140be31f0 save
 struct Unk_ClRenameRec { int m_nIndex; CStringW m_strName; Unk_ClRenameRec() : m_nIndex(0) {} };               // 0x140be32a0 rename (dtor 0x140be3720)
-void FUN_140201e50(Unk_ClSaveRec* pRec, COutputStream& out);
-void FUN_140201f10(Unk_ClApplyRec* pRec, COutputStream& out);
-void FUN_140202050(Unk_ClTabIndexRec* pRec, COutputStream& out);
-void FUN_1402020d0(Unk_ClKeyRec* pRec, COutputStream& out);
-void FUN_140202190(Unk_ClRenameRec* pRec, COutputStream& out);
+void FUN_140201e50(unsigned char*, class COutputStream&);   // C3: was FUN_140201e50
+void FUN_140201f10(unsigned char*, class COutputStream&);   // C3: was FUN_140201f10
+void FUN_140202050(unsigned char*, class COutputStream&);   // C3: was FUN_140202050
+void FUN_1402020d0(unsigned char*, class COutputStream&);   // C3: was FUN_1402020d0
+void FUN_140202190(unsigned char*, class COutputStream&);   // C3: was FUN_140202190
 void FUN_140710590(COutPacket& packet);                                     // send
 
 // The equip slot table (12-byte entries; +4: the slot's group).
@@ -198,18 +202,21 @@ void FUN_1412751f0(const CStringW& text, int nA, int nB);                    // 
 CStringW FUN_14052bd00(int nStrId, const CStringW& strArg);                  // formatted string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);                              // string table text
 void FUN_140d01340(const Scaleform::GFx::Value& v, unsigned nFont, int n);   // the key label's font
-void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 int FUN_1407181a0(const CStringW& str);                                      // _wtoi
 MS2Ptr<CItem> FUN_140ebc360(int nItemId, int nRarity);                       // a display item
 CString Name_14021c050(int nSlot);                                           // the slot type name
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);           // string table format, one arg
 CStringW FUN_14132ba90(const int& nLayer);                                   // the equip layer name
 int FUN_140222f60(int nLayer);                                               // the equip kind of a layer
-bool FUN_1412530e0(int* pKey);                                               // the key pressed
-bool FUN_1412532b0(int nKey);                                                // the key is free
-IClientPlatform* FUN_140d86260();
-PacketHandlerManager* FUN_140bccd50();
-CFeatureManager* FUN_140166410();                                           // TSingleton<CFeatureManager>::GetInstance
+class CGameOptionInputDefault   // C3: member view for the former free stand-ins
+{
+public:
+    static bool FUN_1412530e0(int*);
+    static bool FUN_1412532b0(int);
+};
+void* FUN_140d86260();   // C3: was FUN_140d86260
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 extern Unk_Inventory g_143ab2a90;
 
 #define Unk_ClPlayer() static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0())   // the local player
@@ -254,7 +261,7 @@ void ASObj::FUN_140be2660(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // ======== ItemCloset::TabInfo (ctor / dtor emitted here) ========
@@ -408,7 +415,7 @@ UIClosetDialog::UIClosetDialog()
     m_88 = 1;
     FUN_141924170(1);
 #ifndef MS2_HOOK_DLL
-    FUN_140bccd50()->RegisterHandler(0x123, Delegate<void(CInPacket&)>(this, &UIClosetDialog::OnPacket));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x123, Delegate<void(CInPacket&)>(this, &UIClosetDialog::OnPacket));
 #endif
 }
 
@@ -416,7 +423,7 @@ UIClosetDialog::UIClosetDialog()
 UIClosetDialog::~UIClosetDialog()
 {
 #ifndef MS2_HOOK_DLL
-    FUN_140bccd50()->UnregisterHandler(0x123, Delegate<void(CInPacket&)>(this, &UIClosetDialog::OnPacket));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x123, Delegate<void(CInPacket&)>(this, &UIClosetDialog::OnPacket));
 #endif
 }
 
@@ -469,7 +476,7 @@ int UIClosetDialog::vfunc_65()
 void UIClosetDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     m_pendingKey.AssignRaw(new UICloset::PendingKeyInput);
 
     do { m_30->FUN_140bbe640("m_save", m_save); if (m_save == 0) throw CL_SWF_ERROR(95); } while (0);
@@ -518,7 +525,7 @@ void UIClosetDialog::OnLoadComplete()
 void UIClosetDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_1419caeb0(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     m_save = 0;
     m_clear = 0;
     m_putOn = 0;
@@ -549,13 +556,13 @@ int UIClosetDialog::vfunc_13()
         if (nIndex < 0)
             return 0;
         int nKey = 0;
-        if (FUN_1412530e0(&nKey) == true)
+        if (CGameOptionInputDefault::FUN_1412530e0(&nKey) == true)
         {
             if (nKey != 0)
             {
                 if (FUN_1409331f0()->FUN_14142cc40(nKey))
                 {
-                    if (FUN_1412532b0(nKey))
+                    if (CGameOptionInputDefault::FUN_1412532b0(nKey))
                     {
                         if (AssignKey(reinterpret_cast<const unsigned&>(nKey), TabIdentifier(nIndex)))
                         {
@@ -608,7 +615,7 @@ int UIClosetDialog::vfunc_13()
 // @0x140bdb9d0
 bool UIClosetDialog::vfunc_75()
 {
-    return FUN_140166410()->FUN_14036d570(0xe3);
+    return ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe3);
 }
 
 // @0x140bdba00
@@ -807,7 +814,7 @@ void UIClosetDialog::BuildEquipProvider(ASArray& dp)
 {
     AddEquipRow(dp, FUN_14132ba90(0), 0);
     AddEquipRow(dp, FUN_14132ba90(1), 1);
-    bool bThirdLayer = FUN_140166410()->FUN_14036d570(0x8e);
+    bool bThirdLayer = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8e);
     if (bThirdLayer)
         AddEquipRow(dp, FUN_14132ba90(2), 2);
 }
@@ -1194,7 +1201,7 @@ bool UIClosetDialog::OnAddConfirmed(int nResult, const CMsgBoxData& box)
     Unk_BlockList blockList(0x4f76);
     blockList.Add(CString("AddTab"), strName, false);
     blockList.SetEnabled(true);
-    if (FUN_140d86260()->vfunc_37(&blockList) == 0)
+    if (((class IClientPlatform*)FUN_140d86260())->vfunc_37(&blockList) == 0)
         return true;
     MS2Ptr<UICloset::CTab> sp(new UICloset::CTab);
     if (sp == 0)
@@ -1233,14 +1240,14 @@ bool UIClosetDialog::OnRenameConfirmed(int nResult, const CMsgBoxData& box)
         Unk_BlockList blockList(0x4f76);
         blockList.Add(CString("renameTab"), strName, false);
         blockList.SetEnabled(true);
-        if (FUN_140d86260()->vfunc_37(&blockList) == 0)
+        if (((class IClientPlatform*)FUN_140d86260())->vfunc_37(&blockList) == 0)
             return true;
         COutPacket packet(static_cast<int>(SendOp::Wardrobe), 0);
         packet.WriteUInt8(6);
         Unk_ClRenameRec rec;
         rec.m_nIndex = sp->GetIndex();
         rec.m_strName = strName;
-        FUN_140202190(&rec, packet);
+        FUN_140202190((unsigned char*)(&rec), packet);
         FUN_140710590(packet);
         sp->SetName(strName);
         MS2Ptr<ASButton> spButton = m_tab->FUN_1422e32b0(nIndex);
@@ -1360,7 +1367,7 @@ bool UIClosetDialog::AssignKey(const unsigned& nKey, const __int64& nId)
             Unk_ClKeyRec rec;
             rec.m_nIndex = sp->GetIndex();
             rec.m_nId = static_cast<int>(nId);
-            FUN_1402020d0(&rec, packet);
+            FUN_1402020d0((unsigned char*)(&rec), packet);
             FUN_140710590(packet);
             sp->GetInfo()->m_20 = static_cast<int>(nId);
         }
@@ -1516,7 +1523,7 @@ bool UIClosetDialog::SendApply(MS2Ptr<UICloset::CTab> spTab)
     Unk_ClApplyRec rec;
     rec.m_nLayer = spInfo->m_1c;
     rec.m_nIndex = spInfo->m_18;
-    FUN_140201f10(&rec, packet);
+    FUN_140201f10((unsigned char*)(&rec), packet);
     FUN_140710590(packet);
     return true;
 }
@@ -1531,7 +1538,7 @@ bool UIClosetDialog::SendSave(int nLayer, MS2Ptr<UICloset::CTab> spTab)
     Unk_ClSaveRec rec;
     rec.m_nLayer = nLayer;
     rec.m_nIndex = spTab->GetIndex();
-    FUN_140201e50(&rec, packet);
+    FUN_140201e50((unsigned char*)(&rec), packet);
     FUN_140710590(packet);
     return true;
 }
@@ -1546,7 +1553,7 @@ bool UIClosetDialog::SendRename(MS2Ptr<UICloset::CTab> spTab)
     Unk_ClRenameRec rec;
     rec.m_nIndex = spTab->GetIndex();
     rec.m_strName = spTab->GetName();
-    FUN_140202190(&rec, packet);
+    FUN_140202190((unsigned char*)(&rec), packet);
     FUN_140710590(packet);
     return true;
 }
@@ -1560,7 +1567,7 @@ bool UIClosetDialog::SendClear(MS2Ptr<UICloset::CTab> spTab)
     packet.WriteUInt8(2);
     Unk_ClTabIndexRec rec;
     rec.m_nIndex = spTab->GetIndex();
-    FUN_140202050(&rec, packet);
+    FUN_140202050((unsigned char*)(&rec), packet);
     FUN_140710590(packet);
     return true;
 }

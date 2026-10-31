@@ -17307,3 +17307,15 @@ FUN_142747b30	142747b30	func
 ?SetDisplayMode@NiDX9Renderer@@QEAA_NII@Z	1427cb2a0	func
 ?RestoreDisplayMode@NiDX9Renderer@@QEAAXXZ	1427d5390	func
 ?Reset@?$AutoPtr@VVTable@AS3@GFx@Scaleform@@@Scaleform@@QEAAXPEAVVTable@AS3@GFx@2@_N@Z	142524290	func
+??_G?$RefCountBase@VGradientData@Render@Scaleform@@$0BAB@@Scaleform@@UEAAPEAXI@Z	1425e61c0	func
+?GetStyleSheet@AvmTextField@AS3@GFx@Scaleform@@UEBAPEBVStyleManager@Text@34@XZ	14250ef30	func
+?HasStyleSheet@AvmTextField@AS3@GFx@Scaleform@@UEBA_NXZ	1425113d0	func
+?IsTabable@AvmButton@AS3@GFx@Scaleform@@UEBA_NXZ	142514eb0	func
+?NotifyChanged@AvmTextField@AS3@GFx@Scaleform@@UEAAXXZ	142518360	func
+?OnCharEvent@AvmTextField@AS3@GFx@Scaleform@@UEAA_N_WI@Z	142518750	func
+?OnEventLoad@AvmButton@AS3@GFx@Scaleform@@UEAAXXZ	142518fe0	func
+?OnLinkEventEx@AvmTextField@AS3@GFx@Scaleform@@UEAAXW4LinkEvent@TextField@34@II@Z	14251a500	func
+?OnMouseEvent@AvmTextField@AS3@GFx@Scaleform@@UEAA_NAEBVEventId@34@@Z	14251a8a0	func
+?OnScroll@AvmTextField@AS3@GFx@Scaleform@@UEAAXXZ	14251ae60	func
+??$_Buy_if_not_node@AEAU?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@?$_Tree@V?$_Tmap_traits@HV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@4@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@1@@Z	140ff7250	func
+??_G?$RefCountBaseStatImpl@VRefCountImpl@Scaleform@@$0BAB@@Scaleform@@UEAAPEAXI@Z	1425e6220	func

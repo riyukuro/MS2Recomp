@@ -119,7 +119,7 @@ public:
 };
 ecrPhysX::PropService* FUN_14120a240(efd::ServiceManager* pServices);
 efd::utf8string FUN_1414d7990(const efd::utf8string& kName);
-CPhysXHelper* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 Unk_PhysRpgActor* FUN_1409ffd30(Unk_PhysGameObj* p);
 class PCBase   // C3: member view for the former free stand-ins
 {
@@ -209,7 +209,7 @@ bool CPhysXHelper::CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask)
         return false;
     NxActor* pIgnoreA = 0;
     NxActor* pIgnoreB = 0;
-    FUN_1409f7ca0()->FUN_14168a540(0);
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
     if (pInfo->m_20 != 0)
         pIgnoreA = FUN_1416897d0(pInfo->m_20);
     if (pInfo->m_28 != 0)
@@ -229,7 +229,7 @@ bool CPhysXHelper::CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask)
         NiPhysXTypes::NxVec3ToNiPoint3(vPoint, reinterpret_cast<NiPoint3&>(pInfo->m_hitPoint));
         NiPhysXTypes::NxVec3ToNiPoint3(pHit->worldNormal, reinterpret_cast<NiPoint3&>(pInfo->m_hitNormal));
     }
-    FUN_1409f7ca0()->FUN_14168a570();
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
     return pHit ? true : false;
 }
 #ifndef MS2_HOOK_DLL
@@ -437,7 +437,7 @@ int CPhysXHelper::FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, f
     kInfo.m_groups = nMask != 0 ? nMask : nDefaultGroups;
     kInfo.m_20 = 0;
     kInfo.m_28 = 0;
-    if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, 0))
     {
         ptHit = kInfo.m_hitPoint;
         return 1;
@@ -457,7 +457,7 @@ int CPhysXHelper::FUN_14168a310(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCa
     kInfo.m_groups = nMask != 0 ? nMask : nDefaultGroups;
     kInfo.m_20 = 0;
     kInfo.m_28 = 0;
-    if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, 0))
     {
         if (pInfo != 0)
             *pInfo = kInfo;
@@ -479,7 +479,7 @@ int CPhysXHelper::FUN_14168a450(Vector3 ptFrom, float* pDist, float fLen)
     kInfo.m_groups = 0x389;
     kInfo.m_20 = 0;
     kInfo.m_28 = 0;
-    if (FUN_1409f7ca0()->CastRay(&kInfo, 0) && pDist != 0)
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, 0) && pDist != 0)
     {
         *pDist = FUN_140a38cd0(kInfo.m_hitPoint.z - ptFrom.z);
         return 1;
@@ -533,7 +533,7 @@ bool CPhysXHelper::FUN_14168a770(const Vector3* pPoint)
             fHeight = 10.0f;
         fHeight = FUN_14028d3a0(fHeight);
         float fRadius = FUN_14028d3a0(25.0f);
-        FUN_1409f7ca0()->FUN_14168a540(0);
+        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
         NxVec3 vCenter;
         vCenter.x = FUN_14028d3a0(pPoint->x);
         vCenter.y = FUN_14028d3a0(pPoint->y);
@@ -549,7 +549,7 @@ bool CPhysXHelper::FUN_14168a770(const Vector3* pPoint)
         kCapsule.p1.z = kCapsule.p1.z + fHeight * 0.5f;
         kCapsule.radius = fRadius;
         bool bOverlap = FUN_14168a1c0()->checkOverlapCapsule(kCapsule, NX_ALL_SHAPES, 0x289, 0);
-        FUN_1409f7ca0()->FUN_14168a570();
+        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
         return bOverlap;
     }
     else
@@ -563,7 +563,7 @@ int CPhysXHelper::FUN_14168a9b0(void* pEntity, const Vector3& ptFrom)
 {
     Unk_RayCastInfo kInfo;
     Vector3 ptHit = g_143b01a60;
-    if (FUN_1409f7ca0()->FUN_14168a310(ptFrom, ptHit, &kInfo, 0, 0, 0))
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310(ptFrom, ptHit, &kInfo, 0, 0, 0))
         return kInfo.m_hitEntity == pEntity;
     return 0;
 }

@@ -133,21 +133,18 @@ private:
     void* m_40;
 };
 
-CUgcManager* FUN_14052d220();
-bool FUN_1418ffe80(int nFlags, int nBit);                       // nFlags & nBit
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
+bool FUN_1418ffe80(unsigned int, unsigned int);   // C3: was FUN_1418ffe80
 void FUN_1418ffef0(int& nFlags, int nBit);                      // nFlags &= ~nBit
-bool FUN_1409b0350(Scaleform::GFx::Value* pValue);              // undefined
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);     // null
-int FUN_1409c17e0(const Scaleform::GFx::Value& v);              // the value as an int
 Scaleform::GFx::Value FUN_1406146a0(const Scaleform::GFx::Value& v);   // copy a value
 void FUN_1409b4bc0(Scaleform::GFx::Value* pDst, Scaleform::GFx::Value& src);
 bool FUN_140184310(const CString& str, const char* psz);        // str == psz
 CStringW FUN_1409e8970(CStringW strFormat, const int& nA, const int& nB);   // a table string with two numbers
 void FUN_1418bee30(ASObj* pObj, int nSkinTable);                // skinColors of the skin colour table
-CItemData* FUN_140527840(CItem* pItem);                         // the item's data row
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                   // the item data row of an id
 CStringTable* GetStringTable();
-CGameRule* FUN_1401c0d90();
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 __int64 FUN_14088df20(unsigned int nA, unsigned int nB, __int64 nC);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_1418fec00(int nPriceType, __int64 nPrice, int nFlags);    // the price text of a currency
@@ -162,8 +159,6 @@ void FUN_140d73bc0(int nId, int nType, void* pOwner, CStringW strTitle);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_141275260(int nId, int nA, int nB);
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
-int FUN_1409c1750(const Scaleform::GFx::Value& v);
-bool FUN_1409c1720(const Scaleform::GFx::Value& v);
 Unk_UgcFileResult SaveRenderTargetImage(NiRect<unsigned int> kRect, NiRenderTargetGroup* pTarget);
 CStringW GetScreenshotDirectory(int nKind, unsigned int* pError);
 CStringW GetTimestampFileName(int nKind);
@@ -177,7 +172,7 @@ public:
     CString m_strUploadDir;                                     // +0xd8
 };
 MS2_CHECK_OFFSET(Unk_UgcPathConfig, m_strUploadDir, 0xd8);
-Unk_UgcPathConfig* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The inventory (DAT_143ab2a90), seen through the two calls of this unit.
 class Unk_UeInventory
@@ -191,9 +186,9 @@ NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 UGCItemSlot* FUN_141b46a20(const CString& strName);
 
 // The content switches (singleton 0x140166410).
-CFeatureManager* FUN_140166410();
-NotifySystem* FUN_140939a10();
-void FUN_1418ffec0(int* pnFlags, int nBit);                     // nFlags |= nBit
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
+void FUN_1418ffec0(unsigned int*, unsigned int);   // C3: was FUN_1418ffec0
 bool FUN_140ebcc20(ATL::CAtlArray<int>& arrItemIds);            // the items may be used
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);       // a table string with an argument
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
@@ -209,7 +204,6 @@ int FUN_140d74f70(CStringW& strTag);                                // the "term
 inline int FUN_140d74f70(CStringW&& strTag) { return FUN_140d74f70(strTag); }
 #endif
 void FUN_141276180(const CString& strSound, const CString& strArg);    // play a UI sound
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 Unk_NetworkCallbacks* FUN_140d86260();
 
 // ---- the ItemPreviewCommon obj ----
@@ -285,11 +279,11 @@ MS2_REPLACE_METHOD(0x141B3BC50, UIUGCItemEditDialog, GetTypeName, 61, 0xA930735B
 // @0x141b3bca0
 int UIUGCItemEditDialog::vfunc_73()
 {
-    if (!FUN_14052d220()->FUN_14187f3d0())
+    if (!((class CUgcManager*)FUN_14052d220())->FUN_14187f3d0())
         return 0;
     if (m_spEditItem.get() != 0)
     {
-        MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+        MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
         if (spUpload.get() != 0)
             spUpload->m_itemUid = m_spEditItem->FUN_140526a50();
     }
@@ -315,7 +309,7 @@ void UIUGCItemEditDialog::OnLoadComplete()
         obj.FUN_141b46a40("setDesignDataImpl", ASFunction(cb, 0, FUN_1422db730()));
     }
     int nDefaultSize = 0xb0;
-    if (FUN_140166410()->FUN_14036e510())
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036e510())
         nDefaultSize = 0x168;
     obj.FUN_1407cb9c0("defaultSize", nDefaultSize);
     int nMin = *FUN_1401d3200()->UgcNameLengthMin.Get();
@@ -323,17 +317,17 @@ void UIUGCItemEditDialog::OnLoadComplete()
     obj.FUN_1407cbb20("ugcNameDefaultText", FUN_1409e8970(CStringW(L"s_ugc_itemedit_input_name"), nMin, nMax));
     obj.FUN_1407cb9c0("ugcNameLengthMax", nMax);
     Scaleform::GFx::Value ret = m_30->Invoke("initData", FUN_1406146a0(obj.FUN_1422bb870()));
-    if (!FUN_1409b0350(&ret))
+    if (!((Scaleform::GFx::Value*)(void*)(&ret))->IsNull())
     {
         AScript root((const Scaleform::GFx::Value&)ret, 2);
-        m_nImagesPerPage = FUN_1409c17e0(root.FUN_1422baa20("imageListCountPerPage"));
+        m_nImagesPerPage = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root.FUN_1422baa20("imageListCountPerPage")))->GetUInt();
     }
     FUN_141b40c30();
-    FUN_14052d220()->m_str1b0 = "";
-    FUN_14052d220()->m_str1b8 = "";
+    ((class CUgcManager*)FUN_14052d220())->m_str1b0 = "";
+    ((class CUgcManager*)FUN_14052d220())->m_str1b8 = "";
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     UIUGCEventDispatcher::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
-    FUN_140939a10()->RegisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUGCItemEditDialog::FUN_141b44d50));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUGCItemEditDialog::FUN_141b44d50));
     FUN_140d86260()->vfunc_43(0xe, 0, 1000);
 }
 MS2_REPLACE_METHOD(0x141B3BD60, UIUGCItemEditDialog, OnLoadComplete, 1630, 0x928762AE);
@@ -354,7 +348,7 @@ int UIUGCItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("onClickOpenFolder", szMethod) == 0)
     {
-        FUN_14052d220()->FUN_1418829b0(m_nKind);
+        ((class CUgcManager*)FUN_14052d220())->FUN_1418829b0(m_nKind);
         return 1;
     }
     else if (_stricmp("onChangeIndexDesign", szMethod) == 0)
@@ -527,10 +521,10 @@ MS2_REPLACE_METHOD(0x141B3CE00, UIUGCItemEditDialog, vfunc_65, 154, 0xD4EC5A53);
 void UIUGCItemEditDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140939a10()->UnregisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUGCItemEditDialog::FUN_141b44d50));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUGCItemEditDialog::FUN_141b44d50));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIUGCEventDispatcher::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
-    FUN_14052d220()->FUN_141880ec0(vfunc_48());
+    ((class CUgcManager*)FUN_14052d220())->FUN_141880ec0(vfunc_48());
     FUN_141b3e370();
     m_nKind = 0;
     m_nRadioMode = 1;
@@ -593,16 +587,16 @@ void UIUGCItemEditDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     UIObject::vfunc_49(pRetVal, pArgs);
     CString strType = pArgs->FUN_1422b8d30();
     Scaleform::GFx::Value arg = pArgs->FUN_1422b9260();
-    if (FUN_1409b0390(&arg) || FUN_1409b0350(&arg))
+    if (FUN_1409b0390(&arg) || ((Scaleform::GFx::Value*)(void*)(&arg))->IsNull())
         return;
     AScript root((const Scaleform::GFx::Value&)arg, 2);
     if (FUN_140184310(strType, "design"))
     {
         Scaleform::GFx::Value data = root.FUN_1422baa20("data");
-        if (FUN_1409b0350(&data) || FUN_1409b0390(&data))
+        if (((Scaleform::GFx::Value*)(void*)(&data))->IsNull() || FUN_1409b0390(&data))
             return;
         AScript row((const Scaleform::GFx::Value&)data, 2);
-        int nItemId = FUN_1409c17e0(row.FUN_1422baa20("itemID"));
+        int nItemId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(row.FUN_1422baa20("itemID")))->GetUInt();
         MS2Ptr<CUGCDesignData> spDesign = CUGCDesignTable::GetInstance()->GetData(nItemId);
         if (spDesign.get() != 0)
         {
@@ -670,7 +664,7 @@ int UIUGCItemEditDialog::vfunc_o178_1(void* pAvatar)
         FUN_141b3e410(MS2Ptr<UIAvatarBase>(static_cast<UIAvatarBase*>(pAvatar)), true);
         if (m_spItem.get() ? true : false)
         {
-            if (FUN_140527840(m_spItem)->FUN_14053cbc0())
+            if (((class CItemData*)((class CItem*)(class CItem*)(m_spItem))->FUN_140527840())->FUN_14053cbc0())
                 FUN_141b401b0(m_spItem);
         }
     }
@@ -730,7 +724,7 @@ void UIUGCItemEditDialog::FUN_141b3da90(int nModel)
     }
     else if (nModel == 3)
     {
-        MS2Ptr<CItemData> spData(m_spItem.get() != 0 ? FUN_140527840(m_spItem) : 0);
+        MS2Ptr<CItemData> spData(m_spItem.get() != 0 ? ((class CItemData*)((class CItem*)(class CItem*)(m_spItem))->FUN_140527840()) : 0);
         MS2Ptr<UIAvatarCube> spAvatar(new UIAvatarCube(spData));
         if (spAvatar.get() != 0)
         {
@@ -741,7 +735,7 @@ void UIUGCItemEditDialog::FUN_141b3da90(int nModel)
     }
     else if (nModel == 4)
     {
-        MS2Ptr<CItemData> spData(m_spItem.get() != 0 ? FUN_140527840(m_spItem) : 0);
+        MS2Ptr<CItemData> spData(m_spItem.get() != 0 ? ((class CItemData*)((class CItem*)(class CItem*)(m_spItem))->FUN_140527840()) : 0);
         MS2Ptr<UIAvatarRidee> spAvatar(new UIAvatarRidee(spData));
         if (spAvatar.get() != 0)
         {
@@ -750,7 +744,7 @@ void UIUGCItemEditDialog::FUN_141b3da90(int nModel)
             m_avatars[4] = spAvatar;
         }
     }
-    FUN_1418ffec0(&m_nDirty, 1);
+    FUN_1418ffec0((unsigned int*)(&m_nDirty), 1);
     if (m_spView == 0)
         FUN_141b3cd10();
 }
@@ -809,7 +803,7 @@ void UIUGCItemEditDialog::FUN_141b3e780(MS2Ptr<UIAvatarBase> spAvatar, bool bUse
     float fAngle = 0;
     if (bUseItem && (m_spItem.get() != 0 ? true : false))
     {
-        MS2Ptr<CItemData> spData(FUN_140527840(m_spItem));
+        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(m_spItem))->FUN_140527840()));
         if (spData == 0)
             return;
         int nSlot = spData->FUN_14053eba0()->FUN_14054b400();
@@ -837,7 +831,7 @@ void UIUGCItemEditDialog::FUN_141b3e990()
     int nY = 0;
     int nZoom = 0;
     bool bDefault = !FUN_141b3ea70(&nY, &nZoom);
-    if (FUN_140166410()->FUN_14036e510() && !bDefault)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036e510() && !bDefault)
         return;
     m_30->Invoke("setCameraPosition", nY, nZoom, bDefault);
 }
@@ -995,7 +989,7 @@ bool UIUGCItemEditDialog::FUN_141b3f690(ASObj& obj, MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return false;
-    MS2Ptr<CItemData> spData(FUN_140527840(spItem));
+    MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem))->FUN_140527840()));
     if (spData == 0)
         return false;
     int nItemId = spItem->FUN_1405276c0();
@@ -1024,7 +1018,7 @@ void UIUGCItemEditDialog::FUN_141b3f960(ASObj& obj, MS2Ptr<CUGCDesignData> spDes
     if (m_spEditItem.get() != 0)
         return;
     __int64 nPrice = spDesign->m_nPrice;
-    int nRate = FUN_1401c0d90()->FUN_14047bab0();
+    int nRate = ((class CGameRule*)FUN_1401c0d90())->FUN_14047bab0();
     __int64 nSalePrice = FUN_14088df20(nRate, 10000, spDesign->m_nSalePrice);
     if (nPrice != nSalePrice)
         obj.FUN_1407cbb20("price", FUN_1409404f0(nPrice));
@@ -1053,7 +1047,7 @@ void UIUGCItemEditDialog::FUN_141b3fb60(MS2Ptr<CItem> spItem, bool* pbModelChang
     int nKind = m_spAvatar.get() != 0 ? m_spAvatar->GetKind() : 0;
     if (spItem.get() != 0)
     {
-        MS2Ptr<CItemData> spData(FUN_140527840(spItem));
+        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem))->FUN_140527840()));
         int nModel = FUN_141b42b20(spData, m_spAvatar);
         if (nModel != m_nModel)
         {
@@ -1073,7 +1067,7 @@ void UIUGCItemEditDialog::FUN_141b3fb60(MS2Ptr<CItem> spItem, bool* pbModelChang
                         spItem->FUN_140526b30(m_spAvatar->vfunc_25());
                         spPC->vfunc_2();
                         spPC->FUN_1418baf40(spItem.get());
-                        FUN_1418ffec0(&m_nDirty, 4);
+                        FUN_1418ffec0((unsigned int*)(&m_nDirty), 4);
                     }
                 }
             }
@@ -1167,7 +1161,7 @@ bool UIUGCItemEditDialog::FUN_141b40300(__int64 nPrice, int nMeret)
             return false;
     }
     CStringW strName = FUN_141b43140();
-    int nRet = FUN_14052d220()->FUN_141881b90(m_nKind, nCount, strName, nTotal, nMeret);
+    int nRet = ((class CUgcManager*)FUN_14052d220())->FUN_141881b90(m_nKind, nCount, strName, nTotal, nMeret);
     return nRet == 1 ? true : false;
 }
 MS2_REPLACE_METHOD(0x141B40300, UIUGCItemEditDialog, FUN_141b40300, 1394, 0x1A13C54A);
@@ -1199,7 +1193,7 @@ MS2_REPLACE_METHOD(0x141B40880, UIUGCItemEditDialog, FUN_141b40880, 546, 0x00982
 // @0x141b40ab0
 void UIUGCItemEditDialog::FUN_141b40ab0(int nKind, int nImage)
 {
-    FUN_14052d220()->FUN_141889ce0(nKind);
+    ((class CUgcManager*)FUN_14052d220())->FUN_141889ce0(nKind);
     FUN_141b40b00(0);
     FUN_141b41700(nImage);
 }
@@ -1211,8 +1205,8 @@ void UIUGCItemEditDialog::FUN_141b40b00(int nPage)
     if (m_30 == 0)
         return;
     ASDataProvider files(2);
-    int nTotal = FUN_14052d220()->FUN_14188a480();
-    FUN_14052d220()->FUN_14188a140(m_nImagesPerPage, nPage, &files);
+    int nTotal = ((class CUgcManager*)FUN_14052d220())->FUN_14188a480();
+    ((class CUgcManager*)FUN_14052d220())->FUN_14188a140(m_nImagesPerPage, nPage, &files);
     m_30->Invoke("buildImageFiles", nTotal, nPage, FUN_1406146a0(files.FUN_1422bb870()));
 }
 MS2_REPLACE_METHOD(0x141B40B00, UIUGCItemEditDialog, FUN_141b40b00, 291, 0x2667B9E7);
@@ -1241,7 +1235,7 @@ void UIUGCItemEditDialog::FUN_141b40c30()
         ATL::CAtlMap<unsigned int, CUGCDesignDataPtr>& map = CUGCDesignTable::GetInstance()->GetMap();
         if (map.IsEmpty())
             return;
-        m_bEventSale = (unsigned)FUN_1401c0d90()->FUN_14047bab0() > 0;
+        m_bEventSale = (unsigned)((class CGameRule*)FUN_1401c0d90())->FUN_14047bab0() > 0;
         ASDataProvider items(2);
         for (POSITION pos = map.GetStartPosition(); pos != 0; map.GetNext(pos))
         {
@@ -1322,10 +1316,10 @@ void UIUGCItemEditDialog::FUN_141b41700(int nIndex)
         return;
     if (nIndex != -1)
     {
-        MS2Ptr<CUploadFile> spFile = FUN_14052d220()->FUN_14188a4b0(nIndex);
+        MS2Ptr<CUploadFile> spFile = ((class CUgcManager*)FUN_14052d220())->FUN_14188a4b0(nIndex);
         if (spFile == 0)
             return;
-        FUN_14052d220()->FUN_141882a70(nIndex, 0);
+        ((class CUgcManager*)FUN_14052d220())->FUN_141882a70(nIndex, 0);
     }
     m_30->Invoke("selectImage", nIndex);
 }
@@ -1334,7 +1328,7 @@ MS2_REPLACE_METHOD(0x141B41700, UIUGCItemEditDialog, FUN_141b41700, 203, 0x72678
 // @0x141b417e0
 bool UIUGCItemEditDialog::FUN_141b417e0()
 {
-    MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spUpload == 0 || spUpload->m_spViewer == 0)
         return false;
     MS2Ptr<IUgcViewer> spViewer = spUpload->m_spViewer;
@@ -1388,7 +1382,7 @@ bool UIUGCItemEditDialog::FUN_141b41a80(const NiRect<unsigned int>& kRect)
     CString strPath;
     if (result.m_nResult == 0)
     {
-        strPath = FUN_1401d31f0()->m_strUploadDir;
+        strPath = ((class Unk_UgcPathConfig*)FUN_1401d31f0())->m_strUploadDir;
         bSaved = true;
     }
     m_30->Invoke("savedCapture", strPath);
@@ -1468,7 +1462,7 @@ void UIUGCItemEditDialog::FUN_141b420f0(int nKind, MS2Ptr<UIAvatarBase> spAvatar
 {
     if (spAvatar == 0)
         return;
-    MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spUpload == 0)
         return;
     if (spUpload->m_nKind != nKind)
@@ -1525,7 +1519,7 @@ void UIUGCItemEditDialog::FUN_141b420f0(int nKind, MS2Ptr<UIAvatarBase> spAvatar
 // @0x141b42800
 void UIUGCItemEditDialog::FUN_141b42800()
 {
-    MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spUpload == 0)
         return;
     if (spUpload->m_nKind != m_nKind || spUpload->m_spViewer == 0)
@@ -1549,8 +1543,8 @@ void UIUGCItemEditDialog::FUN_141b428d0(int nKind)
 #endif
         if (m_spView->FUN_141ab7870(strPath, 1) == true)
         {
-            FUN_14052d220()->m_str1b0 = FUN_141b43140();
-            FUN_14052d220()->m_str1b8 = strPath;
+            ((class CUgcManager*)FUN_14052d220())->m_str1b0 = FUN_141b43140();
+            ((class CUgcManager*)FUN_14052d220())->m_str1b8 = strPath;
             return;
         }
     }
@@ -1619,7 +1613,7 @@ int UIUGCItemEditDialog::FUN_141b430b0()
 {
     if (m_30 == 0)
         return 0;
-    return FUN_1409c1750(m_30->Invoke("getMakeCount"));
+    return ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(m_30->Invoke("getMakeCount")))->GetInt();
 }
 MS2_REPLACE_METHOD(0x141B430B0, UIUGCItemEditDialog, FUN_141b430b0, 133, 0xBA01D8DF);
 
@@ -1640,7 +1634,7 @@ __int64 UIUGCItemEditDialog::FUN_141b43240(MS2Ptr<CUGCDesignData> spDesign, int 
 {
     if (spDesign == 0)
         return 0;
-    int nRate = FUN_1401c0d90()->FUN_14047bab0();
+    int nRate = ((class CGameRule*)FUN_1401c0d90())->FUN_14047bab0();
     __int64 nUnit = FUN_14088df20(nRate, 10000, spDesign->m_nSalePrice);
     return nUnit * nCount;
 }
@@ -1698,13 +1692,13 @@ bool UIUGCItemEditDialog::FUN_141b43660(int nImage)
 {
     if (nImage >= 0)
     {
-        if (FUN_14052d220()->FUN_141881a40(nImage) == 0)
+        if (((class CUgcManager*)FUN_14052d220())->FUN_141881a40(nImage) == 0)
         {
             FUN_140d74390(GetStringCommon(0x2e2), 0,
                 Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b45980));
             return false;
         }
-        if (FUN_14052d220()->FUN_141881800(m_nKind, nImage) == 0)
+        if (((class CUgcManager*)FUN_14052d220())->FUN_141881800(m_nKind, nImage) == 0)
         {
             FUN_141275260(0x2e1, 1, 1);
             return false;
@@ -1719,7 +1713,7 @@ bool UIUGCItemEditDialog::FUN_141b437c0(ASData& args)
 {
     Scaleform::GFx::Value arg = args.FUN_1422b9260();
     AScript row((const Scaleform::GFx::Value&)arg, 2);
-    int nItemId = FUN_1409c17e0(row.FUN_1422baa20("itemID"));
+    int nItemId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(row.FUN_1422baa20("itemID")))->GetUInt();
     if (nItemId == 0)
         return false;
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
@@ -1749,7 +1743,7 @@ bool UIUGCItemEditDialog::FUN_141b43be0(int nImage)
         FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
         return false;
     }
-    if (FUN_14052d220()->FUN_141882a70(nImage, 1))
+    if (((class CUgcManager*)FUN_14052d220())->FUN_141882a70(nImage, 1))
         return true;
     return false;
 }
@@ -1802,7 +1796,7 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
                 return false;
         }
     }
-    int nUpload = FUN_14052d220()->FUN_141881890(nImage);
+    int nUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141881890(nImage);
     if (nUpload == 0)
     {
         FUN_140d74390(GetStringCommon(0x2e2), 0,
@@ -1842,7 +1836,7 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
 // @0x141b44910
 void UIUGCItemEditDialog::OnClickAddImage()
 {
-    int nRet = FUN_14052d220()->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
+    int nRet = ((class CUgcManager*)FUN_14052d220())->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
     if (nRet == 0)
         return;
     FUN_141b40ab0(m_nKind, 0);
@@ -1867,7 +1861,7 @@ MS2_REPLACE_METHOD(0x141B44990, UIUGCItemEditDialog, OnClickInitialize, 131, 0x5
 // @0x141b44a20
 void UIUGCItemEditDialog::OnClickNewDraw()
 {
-    if (FUN_14052d220()->FUN_141880fc0() == 0)
+    if (((class CUgcManager*)FUN_14052d220())->FUN_141880fc0() == 0)
         return;
     FUN_141b40ab0(m_nKind, 0);
 }
@@ -1905,10 +1899,10 @@ void UIUGCItemEditDialog::FUN_141b44b90(ASData& args)
     if (m_30 == 0)
         return;
     Scaleform::GFx::Value arg = args.FUN_1422b9260();
-    if (FUN_1409b0350(&arg))
+    if (((Scaleform::GFx::Value*)(void*)(&arg))->IsNull())
         return;
     AScript tab((const Scaleform::GFx::Value&)arg, 2);
-    bool bSortGender = FUN_1409c1720(tab.FUN_1422baa20("sortGender"));
+    bool bSortGender = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(tab.FUN_1422baa20("sortGender")))->GetBool();
     int nGender = 0;
     if (bSortGender)
     {
@@ -1938,10 +1932,10 @@ void UIUGCItemEditDialog::FUN_141b44d50(NotifyObject* pNotify)
     NotifyGameEventChanged* pEvent = dynamic_cast<NotifyGameEventChanged*>(pNotify);
     if (pEvent != 0 && FUN_140841300(pEvent->m_eventName, "SaleUgcDesign") && UISwfEntity::FUN_1422dc430() != 0)
     {
-        bool bSale = (unsigned)FUN_1401c0d90()->FUN_14047bab0() > 0;
+        bool bSale = (unsigned)((class CGameRule*)FUN_1401c0d90())->FUN_14047bab0() > 0;
         bool bChanged = m_bEventSale != bSale;
         if (bChanged)
-            FUN_1418ffec0(&m_nDirty, 2);
+            FUN_1418ffec0((unsigned int*)(&m_nDirty), 2);
         m_bEventSale = bSale;
     }
 }
@@ -1990,7 +1984,7 @@ void UIUGCItemEditDialog::FUN_141b450d0(int nResult)
     }
     else
     {
-        CStringW strError = FUN_14052d220()->FUN_14187f210(nResult);
+        CStringW strError = ((class CUgcManager*)FUN_14052d220())->FUN_14187f210(nResult);
         if (!strError.IsEmpty())
             FUN_1412751f0(strError, 1, 1);
     }
@@ -2004,7 +1998,7 @@ void UIUGCItemEditDialog::FUN_141b45180(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return;
-    MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spUpload == 0)
         return;
     if (spUpload->m_nKind != 1 && spUpload->m_nKind != 2 && spUpload->m_nKind != 7)
@@ -2013,7 +2007,7 @@ void UIUGCItemEditDialog::FUN_141b45180(MS2Ptr<CItem> spItem)
     if (spNext == 0)
         return;
     m_spMadeItem = spItem;
-    CString strDir = FUN_1401d31f0()->m_strUploadDir;
+    CString strDir = ((class Unk_UgcPathConfig*)FUN_1401d31f0())->m_strUploadDir;
     m_spMadeItem->SetName(strDir);
     CStringW strText = spUpload->m_nKind == 2 ? GetStringCommonByKey(L"s_msg_ugc_item_edit_complete_cube")
                                               : GetStringCommon(0x2ee);
@@ -2040,7 +2034,7 @@ void UIUGCItemEditDialog::FUN_141b45770(const CUgcItemProxy* pProxy, CItemUgc* p
     spItem->FUN_140523c40(nItemId, spDesign->m_nItemGrade, 0);
     spItem->FUN_140526c70(pProxy->m_nCount);
     spItem->FUN_1405278d0()->FUN_140632200(pUgc);
-    CString strDir = FUN_1401d31f0()->m_strUploadDir;
+    CString strDir = ((class Unk_UgcPathConfig*)FUN_1401d31f0())->m_strUploadDir;
     spItem->SetName(strDir);
     FUN_141b45180(spItem);
 }
@@ -2131,7 +2125,7 @@ bool UIUGCItemEditDialog::FUN_141b46070(int nResult, const CMsgBoxData& box)
         if (m_spMadeItem.get() != 0)
             m_spMadeItem->SetName(CString(""));
         m_spMadeItem = 0;
-        if (!FUN_14052d220()->FUN_14187f410())
+        if (!((class CUgcManager*)FUN_14052d220())->FUN_14187f410())
             TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
         if (m_spEditItem.get() != 0)
             TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
@@ -2157,7 +2151,7 @@ bool UIUGCItemEditDialog::FUN_141b461b0(int nResult, const CMsgBoxData& box)
     }
     if (nResult == 0)
     {
-        MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+        MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
         if (spUpload.get() != 0)
             FUN_141b428d0(spUpload->m_nKind);
     }
@@ -2181,7 +2175,7 @@ bool UIUGCItemEditDialog::FUN_141b462a0(int nResult, const CMsgBoxData& box)
     }
     if (nResult == 0)
     {
-        MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+        MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
         if (spUpload.get() != 0)
             FUN_141b428d0(spUpload->m_nKind);
     }
@@ -2209,7 +2203,7 @@ inline void ASObj::FUN_141b46a40(const char* szName, ASFunction fn)
 {
     ASData data;
     data.FUN_1422b83f0(fn.FUN_1422bb890());
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x141b46af0
@@ -2217,7 +2211,7 @@ inline void ASObj::FUN_141b46af0(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x141b46b90
@@ -2225,7 +2219,7 @@ inline void ASObj::FUN_141b46b90(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x141b47780
@@ -2355,7 +2349,7 @@ bool FUN_141b48950(MS2Ptr<CItem> spItem)
         return false;
     if (spItem->FUN_140528930() == true)
         return false;
-    return FUN_141b488c0(MS2Ptr<CItemData>(FUN_140527840(spItem.operator->())));
+    return FUN_141b488c0(MS2Ptr<CItemData>(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840())));
 }
 MS2_REPLACE_OVERLOAD(0x141B48950, bool(MS2Ptr<CItem>), FUN_141b48950, 187, 0x5E7FFF7D);
 

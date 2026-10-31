@@ -100,12 +100,12 @@ WorldService* FUN_1403ed2d0();
 
 class Unk_ClubFlag { public: int FUN_1402c4c90(int nFlag); };
 class Unk_ClubState { public: void* m_pad_00; Unk_ClubFlag m_flags; };
-Unk_ClubState* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 void FUN_141275260(int nMsgId, int a2, int a3);
 
 class Unk_ClubConstInt { public: int m_n; };
 class Unk_ClubConsts { public: char m_pad[0x9e68]; Unk_ClubConstInt m_nameChange; };
-Unk_ClubConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int* FUN_1402056b0(Unk_ClubConstInt* p);
 
 // The movie clip holding the lists.
@@ -210,7 +210,7 @@ MS2_REPLACE_METHOD(0x140E0AB60, UIClubDialog, vfunc_26, 24, 0x250F3EDA);
 // @0x140e0ab80
 int UIClubDialog::vfunc_73()
 {
-    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x31) != 0) {
+    if (((class Unk_ClubState*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(0x31) != 0) {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
     }
@@ -282,7 +282,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
             FUN_140d73c60(box);
         }
     } else if (_stricmp("onNameChange", szMethod) == 0) {
-        int nCost = *FUN_1402056b0(&FUN_1401d3200()->m_nameChange);
+        int nCost = *FUN_1402056b0(&((class Unk_ClubConsts*)FUN_1401d3200())->m_nameChange);
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, FUN_1409e8970(CStringW(L"s_party_change_name"), nCost / 2, nCost), 0, CStringW(L""));
         if (box.get() != 0) {
             box->FUN_141a01d30(2, L"", nCost, 0, 0);

@@ -46,6 +46,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uitalkcinematic.h"
 
 // The second copy of the notice board sort names (this unit's own static table).
 static CString s_sortNames[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
@@ -82,12 +83,6 @@ public:
     MS2Ptr<ASScrollingList> FUN_140bc7280(const CString& strName);   // 0x140bc7280 list child lookup
 };
 
-class Unk_UiDock
-{
-public:
-    int FUN_141b1d3d0();                                        // x
-    int FUN_141b1d460();                                        // y
-};
 
 // A found stranger as the search result hands it over: a sub-object at +8 describes the character.
 class Unk_GsFoundInfo
@@ -120,12 +115,10 @@ CStringW FUN_1409e94c0(CStringW strKey, const int& nLevel, const CStringW& strJo
 // takes eax as is).
 struct Unk_WgBuddyLevel { int FUN_1401cc210(); };
 CStringW FUN_14052b9d0(CStringW strKey, const unsigned short& nLevel, const CStringW& strJob);
-void FUN_142575b00(void* pMovie, const Scaleform::GFx::Value& v);   // hand a value to the movie
 void* FUN_1422bb8b0(int nMovieId);                              // the movie of a UI layer
-bool FUN_140a467d0(const MS2Ptr<AScript>& kScript);             // has the AS object been released
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);     // Value::IsNull
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
-Unk_UiDock* FUN_140a7b2b0(int nId);                             // a dialog's position record
+class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);        // the string table formatter
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
@@ -195,7 +188,7 @@ void UIWeddingGuestDialog::vfunc_43()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        Unk_UiDock* pRef = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* pRef = ((class UITalkCinematic*)FUN_140a7b2b0(0x4e40));
         if (pRef != 0)
         {
             int nX = pRef->FUN_141b1d3d0();
@@ -271,15 +264,15 @@ int UIWeddingGuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             if (nError != 0)
             {
                 WeddingManager::GetInstance()->ShowError(nError);
-                FUN_142575b00(FUN_1422bb8b0(m_28), Scaleform::GFx::Value(false));
+                ((Scaleform::GFx::Movie*)(void*)(FUN_1422bb8b0(m_28)))->SetExternalInterfaceRetVal(Scaleform::GFx::Value(false));
                 return 1;
             }
             if (!FUN_140fcdf30(strName))
             {
-                FUN_142575b00(FUN_1422bb8b0(m_28), Scaleform::GFx::Value(false));
+                ((Scaleform::GFx::Movie*)(void*)(FUN_1422bb8b0(m_28)))->SetExternalInterfaceRetVal(Scaleform::GFx::Value(false));
                 return 1;
             }
-            FUN_142575b00(FUN_1422bb8b0(m_28), Scaleform::GFx::Value(true));
+            ((Scaleform::GFx::Movie*)(void*)(FUN_1422bb8b0(m_28)))->SetExternalInterfaceRetVal(Scaleform::GFx::Value(true));
         }
         return 1;
     }
@@ -430,7 +423,7 @@ UIWeddingGuestPage::~UIWeddingGuestPage()
 // @0x140fd6c70
 bool UIWeddingGuestPage::vfunc_1()
 {
-    if (FUN_140a467d0(m_pDialog->FUN_1422dba00()))
+    if (((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_pDialog->FUN_1422dba00()))->IsNull())
         return false;
     Scaleform::GFx::Value kPage = m_pDialog->FUN_1422dba00()->FUN_1422baa20("m_currentPage");
     if (FUN_1409b0350(&kPage) != 0)

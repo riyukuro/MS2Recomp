@@ -42,17 +42,15 @@ public:
     Scaleform::GFx::Value FUN_140caf230(const char* szMethod, int a1);      // 0x140caf230 Invoke(name, int)
     Scaleform::GFx::Value FUN_1422bb330(const char* szMethod);              // Invoke(name)
 };
-bool FUN_1409c1720(const Scaleform::GFx::Value& v);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-bool FUN_140a467d0(const MS2Ptr<AScript>*);                     // has the AS object been released
 
 class Unk_StringTable { public: CStringW FUN_14142d760(int nId, int n); };
 Unk_StringTable* FUN_1409331f0();
 struct Unk_GpSettings;
 Unk_GpState* FUN_140a58500(Unk_GpSettings* p);
 class CFeatureManager { public: bool FUN_14036d570(int n); };
-CFeatureManager* FUN_140166410();
-CInputKeyHandler* FUN_14025e7c0();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The sound-state objects behind the three loops.
 class Unk_SoundParam
@@ -75,8 +73,11 @@ public:
 };
 void FUN_141276180(const CString&, const CString&);
 MS2InputService* FUN_140a58540();
-Unk_SoundMgr* FUN_141bd0cc0(Unk_SoundOwner*);
-int FUN_14123c580(Unk_SoundMgr*);
+class GameObject   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14123c580();
+};
 
 // The "fish info" message the size / rank are taken from, and the fish table it is resolved against.
 class Unk_FishPacket : public CPtred
@@ -143,7 +144,7 @@ void UIFishingFloatDialog::OnLoadComplete()
     }
     FUN_140f44520(0);
     FUN_141276180(s_143aca6e8, "");
-    if (FUN_140166410()->FUN_14036d570(0xc3))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
     {
         if (FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))->m_bVibration)
             FUN_140a58540()->FUN_140d8b3e0(1.7976931348623157e+308);
@@ -165,14 +166,14 @@ int UIFishingFloatDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
-    if (FUN_14025e7c0()->FUN_14116dd30(0x493e2, 0, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0))
     {
         reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_1422bb330("onFishUp");
         return 1;
     }
-    else if (FUN_14025e7c0()->FUN_14116ddb0(0x493e2, 0, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116ddb0(0x493e2, 0, 0))
     {
         reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_1422bb330("onFishUpRelease");
         return 1;
@@ -227,9 +228,9 @@ void UIFishingFloatDialog::FUN_140f443d0(MS2Ptr<Unk_FishPacket> spInfo)
 // @0x140f44490
 int UIFishingFloatDialog::FUN_140f44490()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
-    return FUN_1409c1720(reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_1422bb330("getResult"));
+    return ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_1422bb330("getResult")))->GetBool();
 }
 
 // @0x140f44520
@@ -237,7 +238,7 @@ void UIFishingFloatDialog::FUN_140f44520(int nSound)
 {
     if (m_180[nSound])
         FUN_140f44650(nSound);
-    Unk_SoundMgr* pOwner = FUN_141bd0cc0(reinterpret_cast<Unk_SoundOwner*>(WorldService::GetInstance()));
+    Unk_SoundMgr* pOwner = ((class Unk_SoundMgr*)((class WorldService*)(class Unk_SoundOwner*)(reinterpret_cast<Unk_SoundOwner*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pOwner == 0)
         return;
     Unk_SoundParam param;
@@ -248,7 +249,7 @@ void UIFishingFloatDialog::FUN_140f44520(int nSound)
     else if (nSound == 2)
         param.m_name = "ETC/Fishing/Sound_Fish_Action_Blue.xml";
     param.m_08 = 1;
-    param.FUN_140a53190(FUN_14123c580(pOwner));
+    param.FUN_140a53190(((class GameObject*)(class Unk_SoundMgr*)(pOwner))->FUN_14123c580());
     m_180[nSound] = reinterpret_cast<Unk_SoundMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(param);
 }
 

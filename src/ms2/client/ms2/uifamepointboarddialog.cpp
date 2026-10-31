@@ -48,8 +48,8 @@ public:
 };
 
 
-CFameTable* FUN_140764010();                                            // the fame table
-CQuestManager* FUN_140764020();                                         // the quest manager
+class Unk_EmoNpcTable* FUN_140764010();   // C3: was FUN_140764010
+void* FUN_140764020();   // C3: was FUN_140764020
 CReservedWordTable* FUN_1403b4750();                                    // the text filter
 __int64 GetServerTime();                                                // the server time
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
@@ -59,7 +59,6 @@ CString FUN_140762e90(int nAlliance);                                   // the a
 CStringW FUN_140762ee0(int nAlliance, int nGrade);                      // the grade's name
 int FUN_140931210(int nAlliance);                                       // the player's grade
 void FUN_140762fc0(int nAlliance, int* pnCurrent, int* pnMax, CStringW& strPoint);    // the fame points
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 
 extern ATL::CRBMap<__int64, int> DAT_143ab31e8;                         // time -> fame log id
 
@@ -118,11 +117,11 @@ int UIFamePointBoardDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 int UIFamePointBoardDialog::FUN_140c156d0()
 {
     int nResult = 0;
-    ATL::CAtlArray<Unk_FameAlliance>& ids = FUN_140764010()->GetAllianceIds();
+    ATL::CAtlArray<Unk_FameAlliance>& ids = ((class CFameTable*)FUN_140764010())->GetAllianceIds();
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
-        int nQuestId = FUN_140764010()->GetSeasonRequireQuest(ids[i]);
-        if (FUN_140764020()->FUN_140745590(nQuestId) != 0)
+        int nQuestId = ((class CFameTable*)FUN_140764010())->GetSeasonRequireQuest(ids[i]);
+        if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuestId) != 0)
         {
             nResult = 1;
             break;
@@ -137,12 +136,12 @@ void UIFamePointBoardDialog::FUN_140c15780()
     if (MS2Ptr<Unk_FpTab> spTab = FUN_140c02870("m_tab"))
     {
         spTab->FUN_1422e3400();
-        ATL::CAtlArray<Unk_FameAlliance>& ids = FUN_140764010()->GetAllianceIds();
+        ATL::CAtlArray<Unk_FameAlliance>& ids = ((class CFameTable*)FUN_140764010())->GetAllianceIds();
         for (size_t i = 0; i < ids.GetCount(); i++)
         {
             Unk_FameAlliance nAlliance = ids[i];
-            int nQuestId = FUN_140764010()->GetSeasonRequireQuest(nAlliance);
-            if (FUN_140764020()->FUN_140745590(nQuestId) == 0)
+            int nQuestId = ((class CFameTable*)FUN_140764010())->GetSeasonRequireQuest(nAlliance);
+            if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuestId) == 0)
                 continue;
             ASObj row(2);
             row.FUN_1407cbb20("label", FUN_140762de0(nAlliance));
@@ -176,7 +175,7 @@ void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
     {
         int nLogId = DAT_143ab31e8.GetValueAt(pos);
         __int64 nLogTime = DAT_143ab31e8.GetKeyAt(pos);
-        if (FUN_140764010()->IsLogOfAlliance(nLogId, (Unk_FameAlliance)nAlliance) == 0)
+        if (((class CFameTable*)FUN_140764010())->IsLogOfAlliance(nLogId, (Unk_FameAlliance)nAlliance) == 0)
             continue;
         CStringW strMsg = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x43, nLogId);
         FUN_1403b4750()->FUN_1416fb300(strMsg);
@@ -215,7 +214,7 @@ void ASObj::FUN_140c16160(const char* szName, ASArray arr)
 {
     ASData data;
     data.FUN_1422b83f0(arr.FUN_1422bb890());
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x140c164c0

@@ -116,7 +116,7 @@ struct Unk_TpsState
 };
 MS2_CHECK_OFFSET(Unk_TpsState, m_n38, 0x38);
 MS2_CHECK_OFFSET(Unk_TpsState, m_p48, 0x48);
-Unk_TpsState* FUN_141482e80();
+struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 
 // The platform request (the "OnKeyHandler" / "OnOk" / "eventApply" answers) and its value.
 class Unk_TpsRequest
@@ -145,12 +145,12 @@ MS2_CHECK_SIZE(Unk_TpsReqValue, 0x20);
 
 CFeatureManager* FUN_140166410();
 class Unk_TpsKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
-Unk_TpsKeys* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 CommonString* FUN_14025e7d0();
 CStringW BlockFormat(int nStringId);
 void FUN_140d73aa0(CStringW strText, int nA, int nB, CStringW strTag);
 void FUN_140d73bc0(int nStringId, int nA, void* p, CStringW strTag);
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);
+int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int n);
 void FUN_140d00860(const Scaleform::GFx::Value& root, CString strName, int n);
 void FUN_140d00960(const Scaleform::GFx::Value& root, CString strName, int* pOut);
@@ -185,15 +185,15 @@ void UITalkPanelSettingDialog::vfunc_69()
 {
     if (m_bApplied == 0)
     {
-        if (FUN_141482e80()->m_n38 == 2)
+        if (((struct Unk_TpsState*)FUN_141482e80())->m_n38 == 2)
         {
-            if (FUN_141482e80()->m_p40 != 0)
+            if (((struct Unk_TpsState*)FUN_141482e80())->m_p40 != 0)
             {
-                MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->FUN_141a0e050();
+                MessengerData::TalkTab* pTab = ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e050();
                 if (pTab != 0)
                 {
-                    FUN_141482e80()->m_p40->FUN_141a0e350(pTab->m_strName);
-                    FUN_141482e80()->m_p40->vfunc_4();
+                    ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e350(pTab->m_strName);
+                    ((struct Unk_TpsState*)FUN_141482e80())->m_p40->vfunc_4();
                 }
             }
         }
@@ -205,9 +205,9 @@ void UITalkPanelSettingDialog::vfunc_69()
 void UITalkPanelSettingDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_141482e80()->FUN_141482e50();
-    if (FUN_141482e80()->m_p48 != 0)
-        FUN_141482e80()->m_p48->FUN_141a25210(1);
+    ((struct Unk_TpsState*)FUN_141482e80())->FUN_141482e50();
+    if (((struct Unk_TpsState*)FUN_141482e80())->m_p48 != 0)
+        ((struct Unk_TpsState*)FUN_141482e80())->m_p48->FUN_141a25210(1);
     m_spRoot = 0;
 }
 
@@ -219,9 +219,9 @@ void UITalkPanelSettingDialog::OnLoadComplete()
     if (m_spRoot == 0)
         return;
     m_bApplied = 0;
-    if (FUN_141482e80()->m_p40 != 0)
+    if (((struct Unk_TpsState*)FUN_141482e80())->m_p40 != 0)
     {
-        MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->FUN_141a0e050();
+        MessengerData::TalkTab* pTab = ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e050();
         if (pTab != 0)
         {
             if (MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab"))
@@ -233,8 +233,8 @@ void UITalkPanelSettingDialog::OnLoadComplete()
             FUN_141b24ee0(&pTab->m_panel);
         }
     }
-    if (FUN_141482e80()->m_p48 != 0)
-        FUN_141482e80()->m_p48->FUN_141a25210(0);
+    if (((struct Unk_TpsState*)FUN_141482e80())->m_p48 != 0)
+        ((struct Unk_TpsState*)FUN_141482e80())->m_p48->FUN_141a25210(0);
 }
 
 // @0x141b22970
@@ -242,7 +242,7 @@ int UITalkPanelSettingDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+    if (((class Unk_TpsKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
     {
         if (MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab"))
         {
@@ -269,7 +269,7 @@ int UITalkPanelSettingDialog::vfunc_13()
 // @0x141b22c60
 int UITalkPanelSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, this) != 0)
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, (void*)(this)) != 0)
         return 1;
     if (_stricmp("OnOk", szMethod) == 0)
     {
@@ -302,13 +302,13 @@ int UITalkPanelSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     }
     else if (_stricmp("OnCloseDialog", szMethod) == 0)
     {
-        if (m_bApplied == 0 && FUN_141482e80()->m_n38 == 2 && FUN_141482e80()->m_p40 != 0)
+        if (m_bApplied == 0 && ((struct Unk_TpsState*)FUN_141482e80())->m_n38 == 2 && ((struct Unk_TpsState*)FUN_141482e80())->m_p40 != 0)
         {
-            MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->FUN_141a0e050();
+            MessengerData::TalkTab* pTab = ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e050();
             if (pTab != 0)
             {
-                FUN_141482e80()->m_p40->FUN_141a0e350(pTab->m_strName);
-                FUN_141482e80()->m_p40->vfunc_4();
+                ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e350(pTab->m_strName);
+                ((struct Unk_TpsState*)FUN_141482e80())->m_p40->vfunc_4();
             }
         }
         vfunc_67();
@@ -369,9 +369,9 @@ int UITalkPanelSettingDialog::EventInitialize()
 // @0x141b236c0
 int UITalkPanelSettingDialog::FUN_141b236c0(const CStringW& strName)
 {
-    if (FUN_141482e80()->m_p40 == 0)
+    if (((struct Unk_TpsState*)FUN_141482e80())->m_p40 == 0)
         return 0;
-    MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->FUN_141a0e050();
+    MessengerData::TalkTab* pTab = ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e050();
     if (pTab == 0)
         return 0;
     if (strName.IsEmpty())
@@ -395,12 +395,12 @@ int UITalkPanelSettingDialog::FUN_141b236c0(const CStringW& strName)
             CStringW strOldName(pTab->m_strName);
             CStringW strNewName(strName);
             FUN_141b23ab0(&pTab->m_panel);
-            FUN_141482e80()->m_p40->FUN_141a0e9f0(strOldName, strNewName);
-            FUN_141482e80()->m_p40->FUN_141a0e990();
+            ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e9f0(strOldName, strNewName);
+            ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e990();
             if (pTab->m_panel.FUN_141482150() != 0)
             {
-                FUN_141482e80()->m_p48->FUN_141a25130(pTab->m_panel.FUN_1414821b0()->m_nFontSize);
-                FUN_141482e80()->m_p48->FUN_141a25160(pTab->m_panel.FUN_1414821b0()->m_nBackgroundAlpha);
+                ((struct Unk_TpsState*)FUN_141482e80())->m_p48->FUN_141a25130(pTab->m_panel.FUN_1414821b0()->m_nFontSize);
+                ((struct Unk_TpsState*)FUN_141482e80())->m_p48->FUN_141a25160(pTab->m_panel.FUN_1414821b0()->m_nBackgroundAlpha);
             }
             return 1;
         }
@@ -415,9 +415,9 @@ int UITalkPanelSettingDialog::FUN_141b236c0(const CStringW& strName)
 // @0x141b23a40
 int UITalkPanelSettingDialog::FUN_141b23a40(const CStringW& strName)
 {
-    if (FUN_141482e80()->m_p40 != 0 && FUN_141482e80()->m_p48 != 0)
+    if (((struct Unk_TpsState*)FUN_141482e80())->m_p40 != 0 && ((struct Unk_TpsState*)FUN_141482e80())->m_p48 != 0)
     {
-        return FUN_141482e80()->m_p48->FUN_141a25410(FUN_141482e80()->m_p40->FUN_141a0e050(), strName);
+        return ((struct Unk_TpsState*)FUN_141482e80())->m_p48->FUN_141a25410(((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e050(), strName);
     }
     return 1;
 }

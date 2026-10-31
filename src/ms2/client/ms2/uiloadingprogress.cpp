@@ -23,27 +23,34 @@
           // the input service: (un)lock the mouse for the loading screen
 CInputKeyHandler* FUN_14025e7c0();
 void* FUN_1408e57f0();                                              // the scene manager
-int FUN_1422b9dc0(void* pSceneMgr);                                 // the current scene id
-void FUN_1422ba110(void* pSceneMgr);
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1422ba110();
+    int GetSceneId();
+};
 class Unk_LpPlayer { public: virtual void vfunc_0(); };             // the local player (slot 78 = the level)
 class Unk_LpConstants;
-Unk_LpConstants* FUN_1401d3200();                                   // the constants table
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 unsigned int* FUN_1401d7c10(void* pEntry);                          // &constant (throws "constants is not set")
 CString FUN_141900b70();
-UICutSceneMovie* FUN_14138fd50(int nId);
-int FUN_14190f1d0(UICutSceneMovie* p, int n);
+class Unk_GmMovie* FUN_14138fd50(unsigned int);   // C3: was FUN_14138fd50
 class Unk_LpMovie { public: Scaleform::GFx::Value FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3); };
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);
 class Unk_LpTexture;
 Unk_LpTexture* FUN_14127c9b0(Unk_PPSmartA* p);                      // smart pointer -> texture
-void* FUN_140994450();                                              // NiRenderer::GetRenderer
-NiRenderer* FUN_14098d8d0(void* pTable, void* pKey);
-bool FUN_1416b1d20(NiRenderer* p);
-bool FUN_141419be0(NiRenderer* p);
-void* FUN_14184e5d0(int n);
+class NiDX9Renderer   // C3: member view for the former free stand-ins
+{
+public:
+    bool IsDeviceLost() const;
+};
+class Ni2DBuffer* GetScreenshotBuffer(int);   // C3: was FUN_14184e5d0
 void FUN_14272b7f0(void* pTarget, void* pTexture);
-void* FUN_140980440(void* p);
-void* FUN_140980360(void* p);
+class NiDX9TextureData   // C3: member view for the former free stand-ins
+{
+public:
+    struct IDirect3DBaseTexture9* GetD3DTexture() const;
+};
 int FUN_141277f50();                                                // next UI layer
 WorldService* FUN_1403ed2d0();
 int FUN_1419e0b70(WorldService* pWorld);
@@ -85,7 +92,7 @@ void UILoadingProgress::FUN_1419dfa60(int nMap)
     if (pPlayer != 0)
     {
         bShowGuide = (unsigned int)(*reinterpret_cast<unsigned short (**)(void*)>(*reinterpret_cast<char**>(pPlayer) + 0x270))(pPlayer)
-            < *FUN_1401d7c10((char*)FUN_1401d3200() + 0x6e28);   // level below the guide limit
+            < *FUN_1401d7c10((char*)((class Unk_LpConstants*)FUN_1401d3200()) + 0x6e28);   // level below the guide limit
     }
     if (m_30.get() != 0)
     {
@@ -120,10 +127,10 @@ int UILoadingProgress::FUN_1419dfe70()
 {
     if (TSingleton<CLoadingImageTable>::GetInstance()->HasImage(FUN_1419e04f0()) == 0)
         return 0;
-    UICutSceneMovie* pCut = FUN_14138fd50(0x4e7e);
-    if (pCut != 0 && FUN_14190f1d0(pCut, FUN_1419e04b0()) != 0)
+    UICutSceneMovie* pCut = ((class UICutSceneMovie*)FUN_14138fd50(0x4e7e));
+    if (pCut != 0 && ((class UICutSceneMovie*)(class UICutSceneMovie*)(pCut))->HasSceneVideo(FUN_1419e04b0()) != 0)
         return 0;
-    if (FUN_1422b9dc0(FUN_1408e57f0()) == 0x620000d)
+    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId() == 0x620000d)
         return 1;
     int nMap = FUN_1419e04f0();
     int n = FUN_1419e04b0();
@@ -198,7 +205,7 @@ int UILoadingProgress::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     if (_stricmp("OnFadeInComplete", szMethod) == 0)
     {
-        FUN_1422ba110(FUN_1408e57f0());
+        ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422ba110();
         return 1;
     }
     return 0;
@@ -219,16 +226,16 @@ void UILoadingProgress::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3
     if (pChild != 0)
     {
         FUN_1419e07a0();
-        void* pTex = FUN_140980440(FUN_14127c9b0(&m_78));
+        void* pTex = ((void*)((class NiTexture*)(void*)(FUN_14127c9b0(&m_78)))->GetRendererData());
         if (pTex != 0)
-            FUN_14272b7f0(pChild, FUN_140980360(pTex));
+            FUN_14272b7f0(pChild, ((void*)((class NiDX9TextureData*)(void*)(pTex))->GetD3DTexture()));
     }
 }
 
 // @0x1419e04b0
 int UILoadingProgress::FUN_1419e04b0()
 {
-    if (FUN_1422b9dc0(FUN_1408e57f0()) == 0x620000d)
+    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId() == 0x620000d)
         return 0;
     return m_70;
 }
@@ -237,7 +244,7 @@ MS2_REPLACE_METHOD(0x1419E04B0, UILoadingProgress, FUN_1419e04b0, 46, 0x6FE3E137
 // @0x1419e04f0
 int UILoadingProgress::FUN_1419e04f0()
 {
-    if (FUN_1422b9dc0(FUN_1408e57f0()) == 0x620000d)
+    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId() == 0x620000d)
         return DAT_143ab2874;
     if (m_74 != 0)
     {
@@ -255,7 +262,7 @@ void UILoadingProgress::vfunc_41(const Scaleform::GFx::Value& root)
 // @0x1419e05c0
 bool UILoadingProgress::vfunc_52()
 {
-    int nScene = FUN_1422b9dc0(FUN_1408e57f0());
+    int nScene = ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId();
     if (nScene == 0x6200009 || nScene == 0x6200085)
         return false;
     return true;
@@ -301,14 +308,14 @@ void UILoadingProgress::FUN_1419e07a0()
         return;
     if (FUN_140c8f680(&m_78) == 0)
         return;
-    NiRenderer* pRenderer = FUN_14098d8d0(&DAT_143d6eb58, FUN_140994450());
+    NiRenderer* pRenderer = ((class NiRenderer*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143d6eb58), (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
     if (pRenderer == 0)
         return;
-    if (FUN_1416b1d20(pRenderer))
+    if (((class NiRenderer*)(class NiRenderer*)(pRenderer))->IsRenderTargetGroupActive())
         pRenderer->EndUsingRenderTargetGroup();
-    if (!FUN_141419be0(pRenderer))
+    if (!((class NiDX9Renderer*)(class NiRenderer*)(pRenderer))->IsDeviceLost())
     {
-        void* pBack = FUN_14184e5d0(1);
+        void* pBack = ((void*)GetScreenshotBuffer(1));
         if (pBack != 0)
         {
             Unk_LpTexture* pSrc = FUN_14127c9b0(&m_78);
@@ -324,7 +331,7 @@ void UILoadingProgress::FUN_1419e08b0(int nWidth, int nHeight)
 {
     Unk_PPFmt fmt;
     fmt.b = 3;
-    m_78.Assign(FUN_141d61a80(nWidth, nHeight, static_cast<NiRenderer*>(FUN_140994450()), &fmt, 0x100));
+    m_78.Assign(FUN_141d61a80(nWidth, nHeight, static_cast<NiRenderer*>(((void*)NiRenderer::GetRenderer())), &fmt, 0x100));
 }
 
 // @0x1419e0920

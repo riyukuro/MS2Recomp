@@ -9,21 +9,25 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "hook/ms2hook.h"
 
 // Unrecovered helpers.
-int FUN_1408732e0(Unk_140165cf0* pElem, const char* pszName, __int64* pnOut);   // 64 bit int attribute
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 void FUN_140873e30(void* pElem, const char* pszName, float fValue);
 void FUN_14086f970(void* pElem, const char* pszName, double fValue);       // SetDoubleAttribute
-void FUN_140873bc0(void* pElem, const char* pszName, bool bValue);         // SetAttribute(name, bool)
+void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
 void FUN_140873ca0(void* pElem, const char* pszName, int nValue);          // SetAttribute(name, int)
 void FUN_140873ce0(void* pElem, const char* pszName, unsigned nValue);     // SetAttribute(name, unsigned)
-void FUN_140873eb0(void* pElem, const char* pszName, const __int64& nValue);   // SetAttribute(name, int64)
+void XmlSetAttr(class TiXmlElement*, char const*, __int64 const&);   // C3: was FUN_140873eb0
 void FUN_140874050(void* pElem, const char* pszName, const CString& strValue); // SetAttribute(name, string)
 void* FUN_14086e000(void* pParent, const void* pChild);                    // InsertEndChild
 efd::Point3 FUN_14028f060(CString str);                                    // "x, y, z" -> point
 CString FUN_14028ef00(efd::Point3 kPoint);                                 // point -> "x, y, z"
 void FUN_140194470(efd::Point3* pDst, const efd::Point3& kSrc);            // efd::Point3 assignment
 bool FUN_14028d470(float a, float b);                                      // nearly equal
-bool FUN_1403744a0(int nState);
-bool FUN_140374410(int nState);
+class CFieldData   // C3: member view for the former free stand-ins
+{
+public:
+    static bool FUN_140374410(int);
+    static bool FUN_1403744a0(int);
+};
 bool IsSameStringArray(const ATL::CAtlArray<CString>& a, const ATL::CAtlArray<CString>& b);    // 0x1406cfe10
 template <class T> bool IsSameVector(const std::vector<T>& a, const std::vector<T>& b)
 {
@@ -255,15 +259,15 @@ int SkillDamage::Load(Unk_140165cf0* pElem)
     FUN_140873360(pDamage, "hitSpeedRate", m_fHitSpeedRate);
     FUN_140873360(pDamage, "hitPauseTime", m_fHitPauseTime);
     FUN_140873360(pDamage, "damagedVibrateRatio", m_fDamagedVibrateRatio);
-    FUN_1408732e0(pDamage, "value", &m_nValue);
+    XmlGetAttr((class TiXmlElement*)(pDamage), "value", *(__int64*)(&m_nValue));
     m_strEffectRemain = FUN_14015f710(pDamage, "effectRemain", CString(""));
     m_strEffectHit = FUN_14015f710(pDamage, "effectHit", CString(""));
     FUN_1408730a0(pDamage, "IgnoreOptimalHideDamageHitEffect", m_bIgnoreOptimalHideDamageHitEffect);
     FUN_1408730a0(pDamage, "IgnoreOptimalHideDamageRemainEffect", m_bIgnoreOptimalHideDamageRemainEffect);
     FUN_140873360(pDamage, "damageByTargetMaxHP", m_fDamageByTargetMaxHP);
     FUN_1408731e0(pDamage, "isConstDamageValue", m_nIsConstDamageValue);
-    FUN_1408732e0(pDamage, "constDamageByTargetHP", &m_nConstDamageByTargetHP);
-    FUN_1408732e0(pDamage, "constDamageByTargetSP", &m_nConstDamageByTargetSP);
+    XmlGetAttr((class TiXmlElement*)(pDamage), "constDamageByTargetHP", *(__int64*)(&m_nConstDamageByTargetHP));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "constDamageByTargetSP", *(__int64*)(&m_nConstDamageByTargetSP));
     XmlValue(pDamage, "push", m_ePush);
     FUN_140873360(pDamage, "pushdistance", m_fPushDistance);
     FUN_140873360(pDamage, "pushduration", m_fPushDuration);
@@ -308,23 +312,23 @@ void SkillDamage::Save(void* pParent)
         if (kDefault.m_fDamagedVibrateRatio != m_fDamagedVibrateRatio)
             FUN_14086f970(&elem, "damagedVibrateRatio", m_fDamagedVibrateRatio);
         if (m_nValue != kDefault.m_nValue)
-            FUN_140873eb0(&elem, "value", m_nValue);
+            XmlSetAttr((class TiXmlElement*)(&elem), "value", m_nValue);
         if (m_strEffectRemain != kDefault.m_strEffectRemain)
             FUN_140874050(&elem, "effectRemain", m_strEffectRemain);
         if (m_strEffectHit != kDefault.m_strEffectHit)
             FUN_140874050(&elem, "effectHit", m_strEffectHit);
         if (m_bIgnoreOptimalHideDamageHitEffect != kDefault.m_bIgnoreOptimalHideDamageHitEffect)
-            FUN_140873bc0(&elem, "IgnoreOptimalHideDamageHitEffect", m_bIgnoreOptimalHideDamageHitEffect);
+            XmlSetAttr((class TiXmlElement*)(&elem), "IgnoreOptimalHideDamageHitEffect", m_bIgnoreOptimalHideDamageHitEffect);
         if (m_bIgnoreOptimalHideDamageRemainEffect != kDefault.m_bIgnoreOptimalHideDamageRemainEffect)
-            FUN_140873bc0(&elem, "IgnoreOptimalHideDamageRemainEffect", m_bIgnoreOptimalHideDamageRemainEffect);
+            XmlSetAttr((class TiXmlElement*)(&elem), "IgnoreOptimalHideDamageRemainEffect", m_bIgnoreOptimalHideDamageRemainEffect);
         if (kDefault.m_fDamageByTargetMaxHP != m_fDamageByTargetMaxHP)
             FUN_14086f970(&elem, "damageByTargetMaxHP", m_fDamageByTargetMaxHP);
         if (m_nIsConstDamageValue != kDefault.m_nIsConstDamageValue)
             FUN_140873ca0(&elem, "isConstDamageValue", m_nIsConstDamageValue);
         if (0 < m_nConstDamageByTargetHP)
-            FUN_140873eb0(&elem, "constDamageByTargetHP", m_nConstDamageByTargetHP);
+            XmlSetAttr((class TiXmlElement*)(&elem), "constDamageByTargetHP", m_nConstDamageByTargetHP);
         if (0 < m_nConstDamageByTargetSP)
-            FUN_140873eb0(&elem, "constDamageByTargetSP", m_nConstDamageByTargetSP);
+            XmlSetAttr((class TiXmlElement*)(&elem), "constDamageByTargetSP", m_nConstDamageByTargetSP);
         if (m_ePush != kDefault.m_ePush)
             FUN_140873ca0(&elem, "push", m_ePush);
         if (kDefault.m_fPushDistance != m_fPushDistance)
@@ -388,7 +392,7 @@ MS2_REPLACE_METHOD(0x1407E0F40, SkillDamage, HasDamage, 67, 0x77822CDC);
 // @0x1407e0f90
 SkillPushType SkillDamage::GetPush(int nState) const
 {
-    int bGround = FUN_1403744a0(nState) || FUN_140374410(nState);
+    int bGround = CFieldData::FUN_1403744a0(nState) || CFieldData::FUN_140374410(nState);
     if (bGround == 1 && m_ePushApplyField == 1)
         return (SkillPushType)0;
     else if (bGround == 0 && m_ePushApplyField == 2)

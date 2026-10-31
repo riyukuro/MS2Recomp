@@ -73,7 +73,7 @@ UICastingBar* FUN_140ac2270(int nId);
 
 CStringW GetStringCommon(int nId);                         // string table text of an id
 int FUN_14028d260(float fSeconds);                       // seconds -> ms
-unsigned FUN_140869420();                                // server tick
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CString* FUN_140298f80(Common::Constants::Value<CString>* pValue);   // Value<CString>::Get as a free function
 unsigned FUN_140ac2250(Common::Constants::Value<unsigned int>* pValue);   // Value<uint>::Read as a free function
 
@@ -86,10 +86,12 @@ public:
 MS2Ptr<Unk_HcNpcScript> FUN_140856820(unsigned nNpcId, int nScriptId);   // by id and script (empty when unknown)
 MS2Ptr<Unk_HcNpcScript> FUN_140856c50(unsigned nNpcId, int nMode);
 class Unk_HcDialogMgr { public: int FUN_141b213f0(MS2Ptr<Unk_HcNpcScript> spScript, unsigned nNpcId, unsigned nMode, int nFlags); };
-Unk_HcDialogMgr* FUN_140967100();
-int FUN_141661aa0(MyPC* p);
+class Unk_AkoCutscene   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoCutscene* GetInstance();
+};
 class Unk_HcBuffMgr { public: Vector3 FUN_141683290(); };
-Unk_HcBuffMgr* FUN_14166d240(PCBase* p);
 // the owner's vtable seen with the by-value point parameters of vfunc_22 and vfunc_68
 class Unk_HcSlots
 {
@@ -107,9 +109,6 @@ public:
     virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67();
     virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
 };
-bool FUN_1416749c0(PCBase* p);
-void* FUN_14165f100(PCBase* p);
-void FUN_14165f170(PCBase* p);
 
 // ---- StateHomeConvenientData ----
 
@@ -222,16 +221,16 @@ void StateHomeConvenient::Finish(double fTime)
                 if (pBar)
                     pBar->FUN_1418e1390();
                 unsigned nNpc = *static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorNpcID.Get();
-                if (FUN_141661aa0(pRider) > 0)
+                if (((class PC*)(class MyPC*)(pRider))->FUN_141661aa0() > 0)
                 {
                     if (Unk_HcNpcScript* pScript = FUN_140856c50(nNpc, 1).get())
-                        FUN_140967100()->FUN_141b213f0(MS2Ptr<Unk_HcNpcScript>(pScript), nNpc, 1, 0x12);
+                        ((class Unk_HcDialogMgr*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<Unk_HcNpcScript>(pScript), nNpc, 1, 0x12);
                 }
                 else
                 {
                     int nScript = *static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorScriptID1.Get();
                     if (Unk_HcNpcScript* pScript = FUN_140856820(nNpc, nScript).get())
-                        FUN_140967100()->FUN_141b213f0(MS2Ptr<Unk_HcNpcScript>(pScript), nNpc, 2, 0);
+                        ((class Unk_HcDialogMgr*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<Unk_HcNpcScript>(pScript), nNpc, 2, 0);
                 }
                 m_n40 = 1;
             }
@@ -260,7 +259,7 @@ void StateHomeConvenient::vfunc_4(StateData* pData)
     }
     m_n10 = 0x88;
     m_pOwner->FUN_14166dd20(GetAnimation(), 1.0f, false, false);
-    int nStart = FUN_140869420();
+    int nStart = GetTickCountMs2();
     int nDuration = GetDuration();
     m_n44 = nStart;
     m_n48 = nStart + nDuration;
@@ -268,8 +267,8 @@ void StateHomeConvenient::vfunc_4(StateData* pData)
     if (pPC)
     {
         m_n48 += 100;
-        if (FUN_14165f100(pPC))
-            FUN_14165f170(pPC);
+        if (((void*)((class PC*)(class PCBase*)(pPC))->FUN_14165f100()))
+            ((class PC*)(class PCBase*)(pPC))->SendRequestCube();
     }
     if (FUN_1417b8560())
     {
@@ -340,9 +339,9 @@ void StateHomeConvenient::vfunc_8(double fTime)
     MyPC* pPC = FUN_1417b84b0();
     if (!pPC)
         return;
-    Unk_HcBuffMgr* pMgr = FUN_14166d240(pPC);
+    Unk_HcBuffMgr* pMgr = ((class Unk_HcBuffMgr*)((class PCBase*)(class PCBase*)(pPC))->FUN_14166d240());
     reinterpret_cast<Unk_HcSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pMgr->FUN_141683290())));
-    if (FUN_1416749c0(m_pOwner))
+    if (((class PCBase*)(class PCBase*)(m_pOwner))->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
     else
         FUN_1417b9460();

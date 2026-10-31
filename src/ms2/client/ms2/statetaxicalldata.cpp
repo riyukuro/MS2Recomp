@@ -42,7 +42,7 @@ MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 
 CString FUN_1405a7e80(int n);                            // number -> text
 float FUN_140768090();                                   // random 0..1
-unsigned FUN_140869420();                                // millisecond clock
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_14028d260(float f);                              // seconds -> ms
 void FUN_141276180(CString* pTarget, const CString& str);
 int FUN_141b71c00(unsigned short n);
@@ -60,11 +60,15 @@ struct Unk_TcStrings
     CString m_strBestLeave;                              // +0x398
 };
 MS2_CHECK_OFFSET(Unk_TcStrings, m_strBestLeave, 0x398);
-Unk_TcStrings* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // A Constants::Value<int> seen through its Read (the inline COMDAT 0x140ad5c50 lives in another unit).
 class Unk_TcConstValue { public: int FUN_140ad5c50(); };
-float* FUN_140298f40(void* pOption);
+class Unk_IntOptionEntry   // C3: member view for the former free stand-ins
+{
+public:
+    int& FUN_140298f40();
+};
 
 // The casting bar dialog (RTTI UICastingBar, found through FUN_140ac2270).
 class ICastingEventListener;
@@ -80,7 +84,6 @@ CStringW GetStringCommon(int nId);                         // string table text 
 
 // The actor's move-key state (PCBase::FUN_14166d240).
 class Unk_TcBuffMgr { public: Vector3 FUN_141683290(); };
-Unk_TcBuffMgr* FUN_14166d240(PCBase* p);
 // vtable-slot view: slot 22 takes the point by value (the exe copies 12 bytes into an arg slot)
 class Unk_TcSlots
 {
@@ -193,20 +196,20 @@ void StateTaxiCall::vfunc_4(StateData* pData)
             if (((void*)(reinterpret_cast<PC*>(pMyPC)->FUN_14165f100())) != 0)
                 reinterpret_cast<PC*>(pMyPC)->SendRequestCube();
         }
-        unsigned nNow = FUN_140869420();
+        unsigned nNow = GetTickCountMs2();
         efd::utf8string kName("Object_React_B");
         m_nStart = nNow;
         m_nElapsed = nNow;
-        m_strCall = FUN_1401d31f0()->m_strCall;
-        m_strArrive = FUN_1401d31f0()->m_strArrive;
-        m_strLeave = FUN_1401d31f0()->m_strLeave;
+        m_strCall = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strCall;
+        m_strArrive = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strArrive;
+        m_strLeave = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strLeave;
         int nDuration = reinterpret_cast<Unk_TcConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiCallDuration)->FUN_140ad5c50();
         if (FUN_141b71c00((unsigned short)m_pOwner->vfunc_78()) != 0)
         {
             nDuration = reinterpret_cast<Unk_TcConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiCallBestDriverDuration)->FUN_140ad5c50();
-            m_strCall = FUN_1401d31f0()->m_strBestCall;
-            m_strArrive = FUN_1401d31f0()->m_strBestArrive;
-            m_strLeave = FUN_1401d31f0()->m_strBestLeave;
+            m_strCall = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strBestCall;
+            m_strArrive = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strBestArrive;
+            m_strLeave = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strBestLeave;
         }
         m_nEnd = nNow + nDuration;
         m_bSurprise = 0.9f < FUN_140768090();
@@ -319,7 +322,7 @@ void StateTaxiCall::vfunc_8(double fTime)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
         return;
-    Unk_TcBuffMgr* pBuff = FUN_14166d240(pRider);
+    Unk_TcBuffMgr* pBuff = ((class Unk_TcBuffMgr*)((class PCBase*)(class PCBase*)(pRider))->FUN_14166d240());
     reinterpret_cast<Unk_TcSlots*>(pRider)->vfunc_22(pBuff->FUN_141683290());
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pRider->vfunc_59(2, 0, 0, 0);
@@ -362,7 +365,7 @@ void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
     PCBase* pPC = FUN_1417b8370();
     NiPoint3 kOwnerNi = pPC->vfunc_18();
     Vector3 kOwner = reinterpret_cast<Vector3&>(kOwnerNi);
-    float fRange = *FUN_140298f40(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiStationFindDistance) + 100.0f;
+    float fRange = *((float*)&((class Unk_IntOptionEntry*)(void*)(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiStationFindDistance))->FUN_140298f40()) + 100.0f;
     Unk_TcEntity* pStop = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bcfd30(0x85359406, kOwner, fRange, 1, 0);
     if (pStop == 0)
     {

@@ -44,14 +44,10 @@ class Unk_HsPC : public PC
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringW FUN_140b99450(CStringW strFormat, const CStringW& strArg, const int& nCount);
-WorldService* FUN_1403ed2d0();
-int FUN_141654730(PCBase* pPC);                             // job
-void FUN_140bd0d90(ASObj* pObj, const char* szName, int n);
 void FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
 void FUN_141415600(const CString& strName);
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 
@@ -74,7 +70,7 @@ void ASObj::FUN_140c1f8b0(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x140c1f740 Invoke(name, int, AS object, AS array): both by-value arguments are destroyed by the callee
@@ -176,7 +172,7 @@ void UIHideAndSeekResultDialog::FUN_140c1eb20()
         return;
     ASObj objMine(2);
     ASArray rows(2);
-    ATL::CRBMap<unsigned, Unk_WsV118>* pMap = FUN_1403ed2d0()->FUN_141bd36b0();
+    ATL::CRBMap<unsigned, Unk_WsV118>* pMap = WorldService::GetInstance()->FUN_141bd36b0();
     for (POSITION pos = pMap->GetHeadPosition(); pos != 0; pMap->GetNext(pos))
     {
         // the map element (Unk_WsV118, one pointer) is read as the TPtr<PCBase> it holds
@@ -188,7 +184,7 @@ void UIHideAndSeekResultDialog::FUN_140c1eb20()
             continue;
         if (spInfo->FUN_14050a6a0() == 0)
             continue;
-        bool bMine = (static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0()) == spActor.get());
+        bool bMine = (static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0()) == spActor.get());
         if (bMine)
             FUN_140c1eec0(objMine, spInfo);
         FUN_140c1f120(rows, spInfo, static_cast<PC*>(spActor.get()), bMine);
@@ -222,7 +218,7 @@ void UIHideAndSeekResultDialog::FUN_140c1f120(ASArray& rows, MS2Ptr<Unk_HsInfo> 
 {
     ASObj row(2);
     row.FUN_140c1f8b0("team", spInfo->FUN_14050a6a0());
-    FUN_140bd0d90(&row, "job", FUN_141654730(pPC));
+    ((class ASObj*)(class ASObj*)(&row))->FUN_140bd0d90("job", ((class PC*)(class PCBase*)(pPC))->FUN_141654730());
     row.FUN_1407cbb20("charName", pPC->vfunc_77());
     row.FUN_1409c0d20("kill", spInfo->FUN_14050a660());
     row.FUN_1407cb9c0("death", spInfo->FUN_14050a4d0() != 0);

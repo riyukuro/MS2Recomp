@@ -113,7 +113,7 @@ private:
 };
 class Unk_PopupMenu { public: void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nSerial, void* p, int b, int c); };
 Unk_PopupMenu* FUN_140c30140(int nId);                              // the open popup menu dialog
-CBlockManager* FUN_140a6a830();
+class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void FUN_140a30ad0(const BlockPtr& spBlock, int nAction, unsigned __int64 n);     // the "blocked" notice
 
 
@@ -137,7 +137,6 @@ MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* pListener, CStrin
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                        // show it
 void FUN_141275260(int nStrId, int nA, int nB);                     // system notice
 float FUN_140bf4fd0(float f);                                       // ceil
-const char* FUN_140b63540(const Scaleform::GFx::Value& v);          // Value::GetString
 void FUN_1414728e0(const CStringA& strKey);                         // drop a registered item tooltip
 void FUN_1414727e0(const CStringA& strKey, MS2Ptr<CItem> spItem, int nCount, int nSlot);   // register an item tooltip
 CStringW FUN_1409404f0(__int64 n);                                  // an amount as text
@@ -147,7 +146,11 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item 
 CStringTable* GetStringTable();                                      // the string table singleton
 UIMarketBillDialog* FUN_140b09580(int nUiType);                     // the open dialog of a UI id
 // FUN_1403ed2d0 (the world) is declared by usermail.h as Unk_MailSession*.
-PCBase* FUN_141bd0cc0(Unk_MailSession* pWorld);                     // the local player
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+};
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);    // pRetVal = v
 __int64 GetServerTime();                                            // the server time
 CStringW FormatStringId(int nId, const fmt::ArgList& args);         // 0x14028dee0
@@ -182,7 +185,7 @@ struct Unk_MailSendInfo
 };
 // CommonString as the send dialog calls it: the ban word checker.
 CommonString* FUN_14025e7d0();                                     // TSingleton<CommonString>::GetInstance
-CInputKeyHandler* FUN_14025e7c0();                                  // TSingleton<CInputKeyHandler>::GetInstance
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 int FUN_1418fccc0(int nMsg, unsigned __int64 wParam, unsigned __int64 lParam, CStringW* pStr);   // the key edits the text
 CStringW FUN_1413fa9b0(const CStringW& str);                        // lower case
 CStringW XmlWide(const char* psz);                            // UTF-8 -> wide
@@ -662,7 +665,7 @@ __int64 UIMailListDialog::FUN_1419e6c30()
 {
     if (m_30 == 0)
         return 0;
-    CStringA strId = FUN_140b63540(m_30->Invoke("getMailID"));
+    CStringA strId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(m_30->Invoke("getMailID")))->GetString();
     if (strId.GetLength() != 0)
         return atoi(strId);
     return 0;
@@ -800,7 +803,7 @@ bool UIMailListDialog::FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& dat
     MS2Ptr<CMailAdItem> spAd = pMail->FUN_140692480(spAdBill->vfunc_5());
     if (spAd == 0)
         return false;
-    PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(class Unk_MailSession*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
     ASTooltip tip(pPlayer, 0x20, 2);
     if (tip.FUN_1409e1770(spAd->m_n18, spAd->m_n20) != 0)
         FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
@@ -838,7 +841,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("onSendMail", szMethod) == 0)
     {
         {
-            BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0xb);
+            BlockPtr spBlock = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(0xb);
             if (spBlock.get() != 0)
             {
                 FUN_140a30ad0(spBlock, 0xb, 0);
@@ -1413,12 +1416,12 @@ int UIMailSendDialog::vfunc_13()
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg)
     {
-        if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+        if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
         {
             pDlg->Invoke("onEnterKey");
             return 1;
         }
-        else if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0))
+        else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0))
         {
             pDlg->Invoke("onTabKey");
             return 1;
@@ -1658,7 +1661,7 @@ void UIMailSendDialog::FUN_1419ed6b0(CStringW& strContent)
 {
     if (m_30.IsNull())
         return;
-    strContent = XmlWide(FUN_140b63540(m_30->Invoke("getContent")));
+    strContent = XmlWide(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(m_30->Invoke("getContent")))->GetString());
     CBanTextChecker* pChecker;
     CBanTextChecker* pDead = pChecker = FUN_14025e7d0()->GetChecker();
     if (pChecker != 0)

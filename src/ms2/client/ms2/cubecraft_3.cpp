@@ -92,8 +92,9 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
+public:
+    void FUN_141bbb7f0(class GameObject*, int);   // C3: was free FUN_141bbb7f0
 };
-void FUN_141bbb7f0(void*, GameObject*, int);
 void* FUN_1409670f0();
 bool FUN_1411cf0b0(void*, efd::utf8string, efd::AssetID*, bool*);
 struct Vector3 { float x, y, z; };
@@ -106,7 +107,7 @@ public:
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 void FUN_140a38a50(egf::Entity*, unsigned, const NiPoint3&);
 void FUN_1409618c0(egf::Entity*, unsigned, NiPoint3&);
-void FUN_14098c6e0(egf::Entity*, unsigned, const bool&);
+void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 void FUN_1408a20a0(egf::Entity*, unsigned, bool&);
 void FUN_1409457c0(egf::Entity*, unsigned, const float&);
 void FUN_1411cf570(void*, egf::Entity*);
@@ -312,7 +313,7 @@ void CFittingDollCubeGuide::vfunc_10(NiNode* parent, int attachName) {
 }
 MS2_REPLACE_METHOD(0x1410b0f10, CFittingDollCubeGuide, vfunc_10, 119, 0x619129BF);
 // @0x1410b0f90
-void CFittingDollCubeGuide::vfunc_11() { doll->vfunc_23(1); FUN_141bbb7f0(((void*)WorldService::GetInstance()), doll, 1); }
+void CFittingDollCubeGuide::vfunc_11() { doll->vfunc_23(1); ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bbb7f0(doll, 1); }
 MS2_REPLACE_METHOD(0x1410b0f90, CFittingDollCubeGuide, vfunc_11, 109, 0xC273D985);
 
 // @0x1410b1010
@@ -414,7 +415,7 @@ void CKfmCubeGuide::vfunc_8(float value) {
     } else { pendingAlpha = 1; alpha = value; }
 }
 // @0x1410b1ce0
-void CKfmCubeGuide::vfunc_6(int visible) { bool hidden = visible ? false : true; FUN_14098c6e0(entity.operator->(), 0xa0b6b179, hidden); }
+void CKfmCubeGuide::vfunc_6(int visible) { bool hidden = visible ? false : true; FUN_14098c6e0((class Unk_CachedEntity*)(entity.operator->()), 0xa0b6b179, hidden); }
 MS2_REPLACE_METHOD(0x1410b1ce0, CKfmCubeGuide, vfunc_6, 81, 0x4D8BA781);
 // @0x1410b1d40
 int CKfmCubeGuide::vfunc_7() { bool hidden; FUN_1408a20a0(entity.operator->(), 0xa0b6b179, hidden); return hidden ? false : true; }

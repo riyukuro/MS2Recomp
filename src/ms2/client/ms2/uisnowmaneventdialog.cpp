@@ -40,12 +40,12 @@ public:
     void FUN_140da5430(int id, Delegate<void(GameEventVariable*)> handler);
     void FUN_140da5490(int id, Delegate<void(GameEventVariable*)> handler);
 };
-Unk_SnowmanEventManager* FUN_140933220();
+class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 class Unk_SnowmanContextManager {
 public:
     MS2Ptr<Unk_SnowmanContext> FUN_14047d050();
 };
-Unk_SnowmanContextManager* FUN_1401c0d90();
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 class ASDialog : public AScript {
 public:
@@ -140,10 +140,10 @@ class Unk_SnowmanDisplay { public: virtual void vfunc_0(); virtual void vfunc_1(
 
 int FUN_140d01040(CString&);
 int FUN_1408733e0(void*, const char*, CString*);
-int FUN_1408731e0(void*, const char*, int*);
-void* FUN_140166420();
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 int FUN_140397ab0(void*, TiXmlDocument*, const CStringW&);
-void* FUN_140345b40(const void*);
+class Unk_140165cf0* FUN_140345b40(class TiXmlDocument*);   // C3: was FUN_140345b40
 
 // @0x140e943b0
 UISnowmanEventDialog::UISnowmanEventDialog()
@@ -183,10 +183,10 @@ MS2_REPLACE_METHOD(0x140E945B0, UISnowmanEventDialog, vfunc_65, 37, 0xACC9F404);
 void UISnowmanEventDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140933220()->FUN_140da5490(0x6a4, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96ed0));
-    FUN_140933220()->FUN_140da5490(0x6a5, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f00));
-    FUN_140933220()->FUN_140da5490(0x6a6, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f30));
-    FUN_140933220()->FUN_140da5490(0x6a7, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f60));
+    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5490(0x6a4, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96ed0));
+    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5490(0x6a5, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f00));
+    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5490(0x6a6, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f30));
+    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5490(0x6a7, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f60));
 }
 MS2_REPLACE_METHOD(0x140E945E0, UISnowmanEventDialog, vfunc_67, 645, 0x4676E7F6);
 
@@ -194,11 +194,11 @@ MS2_REPLACE_METHOD(0x140E945E0, UISnowmanEventDialog, vfunc_67, 645, 0x4676E7F6)
 void UISnowmanEventDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140933220()->FUN_140da5430(0x6a4, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96ed0));
-    FUN_140933220()->FUN_140da5430(0x6a5, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f00));
-    FUN_140933220()->FUN_140da5430(0x6a6, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f30));
-    FUN_140933220()->FUN_140da5430(0x6a7, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f60));
-    MS2Ptr<Unk_SnowmanContext> context = FUN_1401c0d90()->FUN_14047d050();
+    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5430(0x6a4, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96ed0));
+    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5430(0x6a5, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f00));
+    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5430(0x6a6, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f30));
+    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5430(0x6a7, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f60));
+    MS2Ptr<Unk_SnowmanContext> context = ((class Unk_SnowmanContextManager*)FUN_1401c0d90())->FUN_14047d050();
     if (context == NULL)
         return;
     m_timer.FUN_140268840();
@@ -228,7 +228,7 @@ int UISnowmanEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Val
 {
     if (UIDialog::vfunc_28(method, args, count))
         return 1;
-    MS2Ptr<Unk_SnowmanContext> context = FUN_1401c0d90()->FUN_14047d050();
+    MS2Ptr<Unk_SnowmanContext> context = ((class Unk_SnowmanContextManager*)FUN_1401c0d90())->FUN_14047d050();
     if (context == NULL)
         return 0;
     if (!_stricmp("OnDailyCompleteReward", method)) {
@@ -393,7 +393,7 @@ MS2_REPLACE_METHOD(0x140E954B0, UISnowmanEventDialog, FUN_140e954b0, 1819, 0x913
 // @0x140e95be0
 void UISnowmanEventDialog::SendEventRewardMode12(int index)
 {
-    MS2Ptr<Unk_SnowmanContext> context = FUN_1401c0d90()->FUN_14047d050();
+    MS2Ptr<Unk_SnowmanContext> context = ((class Unk_SnowmanContextManager*)FUN_1401c0d90())->FUN_14047d050();
     if (context == NULL)
         return;
     if (index < 0 || index > (int)context->m_snowmans.FUN_140412ea0() - 1) {
@@ -415,7 +415,7 @@ MS2_REPLACE_METHOD(0x140E95BE0, UISnowmanEventDialog, SendEventRewardMode12, 425
 // @0x140e95d90
 void UISnowmanEventDialog::SendEventRewardMode13(int index)
 {
-    MS2Ptr<Unk_SnowmanContext> context = FUN_1401c0d90()->FUN_14047d050();
+    MS2Ptr<Unk_SnowmanContext> context = ((class Unk_SnowmanContextManager*)FUN_1401c0d90())->FUN_14047d050();
     if (context == NULL)
         return;
     if (index < 0 || index > (int)context->m_snowmans.FUN_140412ea0() - 1) {
@@ -437,7 +437,7 @@ MS2_REPLACE_METHOD(0x140E95D90, UISnowmanEventDialog, SendEventRewardMode13, 425
 // @0x140e95f40
 int UISnowmanEventDialog::FUN_140e95f40(int index)
 {
-    MS2Ptr<Unk_SnowmanContext> context = FUN_1401c0d90()->FUN_14047d050();
+    MS2Ptr<Unk_SnowmanContext> context = ((class Unk_SnowmanContextManager*)FUN_1401c0d90())->FUN_14047d050();
     if (context == NULL)
         return 0;
     CStringW values = g_snowmanStrings.FUN_140c6d980(0x6a4, context->m_id, L"");
@@ -457,7 +457,7 @@ MS2_REPLACE_METHOD(0x140E95F40, UISnowmanEventDialog, FUN_140e95f40, 379, 0x8CE8
 // @0x140e960d0
 int UISnowmanEventDialog::FUN_140e960d0(int index)
 {
-    MS2Ptr<Unk_SnowmanContext> context = FUN_1401c0d90()->FUN_14047d050();
+    MS2Ptr<Unk_SnowmanContext> context = ((class Unk_SnowmanContextManager*)FUN_1401c0d90())->FUN_14047d050();
     if (context == NULL)
         return 0;
     CStringW values = g_snowmanStrings.FUN_140c6d980(0x6a5, context->m_id, L"");
@@ -477,7 +477,7 @@ MS2_REPLACE_METHOD(0x140E960D0, UISnowmanEventDialog, FUN_140e960d0, 379, 0x012A
 // @0x140e96260
 int UISnowmanEventDialog::FUN_140e96260(int index)
 {
-    MS2Ptr<Unk_SnowmanContext> context = FUN_1401c0d90()->FUN_14047d050();
+    MS2Ptr<Unk_SnowmanContext> context = ((class Unk_SnowmanContextManager*)FUN_1401c0d90())->FUN_14047d050();
     if (context == NULL)
         return 0;
     CStringW values = g_snowmanStrings.FUN_140c6d980(0x6a6, context->m_id, L"");
@@ -497,7 +497,7 @@ MS2_REPLACE_METHOD(0x140E96260, UISnowmanEventDialog, FUN_140e96260, 379, 0xA99A
 // @0x140e963f0
 bool UISnowmanEventDialog::FUN_140e963f0(int index)
 {
-    MS2Ptr<Unk_SnowmanContext> context = FUN_1401c0d90()->FUN_14047d050();
+    MS2Ptr<Unk_SnowmanContext> context = ((class Unk_SnowmanContextManager*)FUN_1401c0d90())->FUN_14047d050();
     if (context == NULL)
         return false;
     ATL::CAtlArray<int> ints;
@@ -526,7 +526,7 @@ void UISnowmanEventDialog::FUN_140e965e0()
         MS2_ASSERT_AT(234, "m_ascript" && 0);
         return;
     }
-    MS2Ptr<Unk_SnowmanContext> context = FUN_1401c0d90()->FUN_14047d050();
+    MS2Ptr<Unk_SnowmanContext> context = ((class Unk_SnowmanContextManager*)FUN_1401c0d90())->FUN_14047d050();
     if (context == NULL)
         return;
     ASObj info(2);
@@ -577,16 +577,16 @@ MS2_REPLACE_METHOD(0x140E969A0, UISnowmanEventDialog, FUN_140e969a0, 223, 0x4877
 void UISnowmanEventDialog::FUN_140e96a90(const CStringW& path)
 {
     TiXmlDocument doc;
-    if (!FUN_140397ab0(FUN_140166420(), &doc, path)) {
+    if (!FUN_140397ab0(((void*)GetFileSystem()), &doc, path)) {
         MS2_ASSERT_AT(160, FALSE);
         return;
     }
-    void* root = FUN_140345b40(&doc);
+    void* root = ((void*)FUN_140345b40((class TiXmlDocument*)(&doc)));
     if (!root) {
         MS2_ASSERT_AT(167, FALSE);
         return;
     }
-    void* node = FUN_140345b40(root);
+    void* node = ((void*)FUN_140345b40((class TiXmlDocument*)(root)));
     if (!node) {
         MS2_ASSERT_AT(174, FALSE);
         return;
@@ -594,8 +594,8 @@ void UISnowmanEventDialog::FUN_140e96a90(const CStringW& path)
     CString align;
     FUN_1408733e0(node, "align", &align);
     m_alignment = FUN_140d01040(align);
-    FUN_1408731e0(node, "offsetX", &m_offsetX);
-    FUN_1408731e0(node, "offsetY", &m_offsetY);
+    XmlGetAttr((class TiXmlElement*)(node), "offsetX", *(int*)(&m_offsetX));
+    XmlGetAttr((class TiXmlElement*)(node), "offsetY", *(int*)(&m_offsetY));
     m_60 = 1;
 }
 MS2_REPLACE_METHOD(0x140E96A90, UISnowmanEventDialog, FUN_140e96a90, 431, 0x570BF6B3);

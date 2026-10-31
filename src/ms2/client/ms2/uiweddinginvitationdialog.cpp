@@ -73,20 +73,27 @@ public:
 class Unk_WiMsgOwner { };
 
 void* FUN_1409eed90();                                          // the singleton of the own character
-Unk_WiTicket* FUN_141b87160(void* pCharacter);                  // the character's current wedding hall ticket
+class WeddingManager   // C3: member view for the former free stand-ins
+{
+public:
+    class WeddingHallTicket const& GetTicket();
+};
 bool FUN_140900f30(__int64 nTime);                              // the time is at night
 CStringW FUN_140b8e850(const CMsTime& kTime);                   // the date text
 CStringTable* GetStringTable();
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 __int64 FUN_140900da0();                                        // the price of one invitation
 UITalkCinematic* FUN_140a7b2b0(int nId);                           // a dialog's position record
-void FUN_141b1feb0(void* p);
+class UITalkManager   // C3: member view for the former free stand-ins
+{
+public:
+    void SendNpcTalkMode0();
+};
 void* FUN_140967100();
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 __int64 GetServerTime();                                        // the current time
 void AddMinutes(CMsTime& kTime, int nMinutes);
-__int64 FUN_140282020(const CMsTime& kTime);
 
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);        // the string table formatter
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
@@ -128,7 +135,7 @@ void UIWeddingInvitationDialog::vfunc_67()
     UIWeddingGuestDialog* pGuest = FUN_140fe6700(0x4f94);
     if (pGuest != 0)
         pGuest->FUN_140fcdba0();
-    FUN_141b1feb0(FUN_140967100());
+    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
 }
 
 // @0x140fe5940
@@ -158,7 +165,7 @@ void UIWeddingInvitationDialog::vfunc_43()
 void UIWeddingInvitationDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_WiTicket* pTicket = FUN_141b87160(FUN_1409eed90());
+    Unk_WiTicket* pTicket = ((struct Unk_WiTicket*)&((class WeddingManager*)(void*)(FUN_1409eed90()))->GetTicket());
     ASObj obj(2);
     obj.FUN_1407cbb20("invitation", GetStringCommonByKey(L"s_wedding_invitation_message"));
     obj.FUN_1407cbb20("groom", CStringW(pTicket->m_strGroom));
@@ -221,10 +228,10 @@ bool UIWeddingInvitationDialog::FUN_140fe60d0(int nResult, const CMsgBoxData& bo
 {
     if (nResult != 0)
         return true;
-    Unk_WiTicket* pTicket = FUN_141b87160(FUN_1409eed90());
+    Unk_WiTicket* pTicket = ((struct Unk_WiTicket*)&((class WeddingManager*)(void*)(FUN_1409eed90()))->GetTicket());
     CMsTime kLimit(pTicket->m_nTime);
     AddMinutes(kLimit, -10);
-    if (GetServerTime() >= FUN_140282020(kLimit))
+    if (GetServerTime() >= ((class CMsTime*)&static_cast<class CMsTime const&>(kLimit))->Get())
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_wedding_result_invitation_send_late"), 1, 1);
         return true;

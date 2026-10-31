@@ -156,7 +156,11 @@ template<class Constraint>float Unk_ReadFloat(void* packet,Constraint constraint
     return value;
 }
 Unk_140166410* FUN_140166410();
-bool FUN_14036d570(void*,int);
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
 Unk_SingletonObj1* FUN_1401d3200();
 void FUN_1402b7560(void*,const char*);
 template<class T>struct Unk_PayloadConstant {
@@ -609,7 +613,7 @@ bool FUN_1401fb870(unsigned char* payload,int mode)
         *reinterpret_cast<int*>(payload+12)=1;
         return true;
     case 2:
-        if(FUN_14036d570(FUN_140166410(),142)==1)*reinterpret_cast<int*>(payload+12)=2;
+        if(((class CFeatureManager*)(void*)(FUN_140166410()))->FUN_14036d570(142)==1)*reinterpret_cast<int*>(payload+12)=2;
         else *reinterpret_cast<int*>(payload+12)=1;
         return true;
     }
@@ -1092,7 +1096,7 @@ void FUN_1401fd510(unsigned char* payload, COutputStream& stream)
     reinterpret_cast<Unk_PointWriter*>(&stream)->WritePoint(*reinterpret_cast<Unk_PayloadPoint*>(payload+44));
     stream.WriteFloat(*reinterpret_cast<float*>(payload+56));stream.WriteInt32(*reinterpret_cast<int*>(payload + 60));
     stream.WriteBool(*reinterpret_cast<bool*>(payload+64));stream.WriteInt64(*reinterpret_cast<__int64*>(payload + 72));stream.WriteInt64(*reinterpret_cast<__int64*>(payload + 96));
-    if(FUN_14036d570(FUN_140166410(),174)){
+    if(((class CFeatureManager*)(void*)(FUN_140166410()))->FUN_14036d570(174)){
         stream.WriteBool(*reinterpret_cast<bool*>(payload+80));
         if(*reinterpret_cast<unsigned char*>(payload + 80)){stream.WriteInt32(*reinterpret_cast<int*>(payload + 84));stream.WriteUnicodeStringA(*reinterpret_cast<CString*>(payload + 88));}
     }
@@ -1109,7 +1113,7 @@ void FUN_1401fd6e0(unsigned char* payload, void* inputPacket)
     *reinterpret_cast<Unk_PayloadPoint*>(payload+44)=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadPoint<Unk_PayloadPoint>();
     *reinterpret_cast<float*>(payload+56)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadFloat();*reinterpret_cast<int*>(payload + 60)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt32();
     *reinterpret_cast<bool*>(payload+64)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadBool();*reinterpret_cast<__int64*>(payload + 72)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt64();*reinterpret_cast<__int64*>(payload + 96)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt64();
-    if(FUN_14036d570(FUN_140166410(),174)){
+    if(((class CFeatureManager*)(void*)(FUN_140166410()))->FUN_14036d570(174)){
         *reinterpret_cast<bool*>(payload+80)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadBool();
         if(*reinterpret_cast<unsigned char*>(payload + 80)){*reinterpret_cast<int*>(payload + 84)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt32();*reinterpret_cast<CString*>(payload + 88)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadUnicodeStringA();}
     }

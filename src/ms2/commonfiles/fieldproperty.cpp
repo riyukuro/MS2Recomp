@@ -22,11 +22,15 @@ COutputStream & FUN_14070f920(COutputStream &, int);  // C3: the definition's si
 void FUN_1406c3700(Unk_Rgb3b*);                          // Unk_Rgb3b default init (zero)
 void FUN_14070fae0(Unk_PktOut*, CStringW*);             // write wide string
 void FUN_1406c38b0(Unk_PktOut*, Unk_Rgb3b*);            // write rgb
-void FUN_14070f540(Unk_PktStream*, float*);             // read float
-void FUN_14070f300(Unk_PktStream*, unsigned char*);     // read byte
-void FUN_14070f340(Unk_PktStream*, unsigned char*);     // read byte (second flavour)
-void FUN_14070f4c0(Unk_PktStream*, __int64*);           // read int64
-void FUN_14070f400(Unk_PktStream*, int*);               // read int
+class Unk_OSInput   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_OSInput& Read0(bool&);
+    class Unk_OSInput& Read1(unsigned char&);
+    class Unk_OSInput& Read4(int&);
+    class Unk_OSInput& Read7(__int64&);
+    class Unk_OSInput& Read9(float&);
+};
 void FUN_14070f5f0(Unk_PktStream*, CStringW*);          // read wide string
 void FUN_1406c3850(Unk_PktStream*, Unk_Rgb3b*);         // read rgb
 
@@ -62,7 +66,7 @@ void FieldPropertyGravity::vfunc_1(Unk_PktOut* out)
 void FieldPropertyGravity::vfunc_2(Unk_PktIn* in)
 {
     FieldProperty::vfunc_2(in);
-    FUN_14070f540(&in->m_stream, &m_fGravity);
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read9(*(float*)(&m_fGravity));
 }
 
 // @0x140380a00
@@ -86,8 +90,8 @@ void FieldPropertyMusicConcert::vfunc_1(Unk_PktOut* out)
 void FieldPropertyMusicConcert::vfunc_2(Unk_PktIn* in)
 {
     FieldProperty::vfunc_2(in);
-    FUN_14070f4c0(&in->m_stream, &m_i64);
-    FUN_14070f400(&in->m_stream, &m_n);
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read7(*(__int64*)(&m_i64));
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read4(*(int*)(&m_n));
 }
 
 // @0x140380b80
@@ -195,13 +199,13 @@ void FieldPropertySightRange::vfunc_1(Unk_PktOut* out)
 void FieldPropertySightRange::vfunc_2(Unk_PktIn* in)
 {
     FieldProperty::vfunc_2(in);
-    FUN_14070f540(&in->m_stream, &m_f18);
-    FUN_14070f540(&in->m_stream, &m_f1c);
-    FUN_14070f540(&in->m_stream, &m_f20);
-    FUN_14070f540(&in->m_stream, &m_f24);
-    FUN_14070f300(&in->m_stream, &m_b28);
-    FUN_14070f340(&in->m_stream, &m_b29);
-    FUN_14070f300(&in->m_stream, &m_b2a);
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read9(*(float*)(&m_f18));
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read9(*(float*)(&m_f1c));
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read9(*(float*)(&m_f20));
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read9(*(float*)(&m_f24));
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read0(*(bool*)(&m_b28));
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read1(*(unsigned char*)(&m_b29));
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read0(*(bool*)(&m_b2a));
 }
 
 // @0x140381280
@@ -273,8 +277,8 @@ void FieldPropertyAmbientLight::vfunc_2(Unk_PktIn* in)
 {
     FieldProperty::vfunc_2(in);
     FUN_1406c3850(&in->m_stream, &m_color);
-    FUN_14070f300(&in->m_stream, (unsigned char*)&m_bFlag);
-    FUN_14070f540(&in->m_stream, &m_fValue);
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read0(*(bool*)((unsigned char*)&m_bFlag));
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read9(*(float*)(&m_fValue));
 }
 
 // @0x1403816f0
@@ -314,8 +318,8 @@ void FieldPropertyDirectionalLight::vfunc_2(Unk_PktIn* in)
     FieldProperty::vfunc_2(in);
     FUN_1406c3850(&in->m_stream, &m_color1);
     FUN_1406c3850(&in->m_stream, &m_color2);
-    FUN_14070f300(&in->m_stream, (unsigned char*)&m_bFlag);
-    FUN_14070f540(&in->m_stream, &m_fValue);
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read0(*(bool*)((unsigned char*)&m_bFlag));
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read9(*(float*)(&m_fValue));
 }
 
 // @0x140381970
@@ -344,7 +348,7 @@ void FieldPropertyEnableLocalCamera::vfunc_1(Unk_PktOut* out)
 void FieldPropertyEnableLocalCamera::vfunc_2(Unk_PktIn* in)
 {
     FieldProperty::vfunc_2(in);
-    FUN_14070f300(&in->m_stream, (unsigned char*)&m_b);
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read0(*(bool*)((unsigned char*)&m_b));
 }
 
 // @0x140381af0
@@ -367,7 +371,7 @@ void FieldPropertyPhotoStudio::vfunc_1(Unk_PktOut* out)
 void FieldPropertyPhotoStudio::vfunc_2(Unk_PktIn* in)
 {
     FieldProperty::vfunc_2(in);
-    FUN_14070f300(&in->m_stream, (unsigned char*)&m_b);
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read0(*(bool*)((unsigned char*)&m_b));
 }
 
 // @0x140381c30

@@ -51,7 +51,6 @@
 #include "ms2/client/ms2/windowservice.h"
 
 // ---- services reached through globals ----
-WorldService* FUN_1403ed2d0();
 // FUN_141bbbc60 (destroy the object of an entity id) as these callers see it: the id is a by-value argument temp.
 // worldservice.h declares it const egf::EntityID& for its other callers.
 struct Unk_DecoWorld : WorldService { void FUN_141bbbc60(egf::EntityID kId, int bImmediate); };
@@ -67,7 +66,7 @@ public:
     virtual void vfunc_16();  virtual void vfunc_17();  virtual void vfunc_18();
     virtual void vfunc_19(Unk_NodePtr spNode, egf::EntityID kId);
 };
-Unk_DecoSceneSvc* FUN_1413f9870();
+void* FUN_1413f9870();   // C3: was FUN_1413f9870
 void* FUN_14086d260();                                              // the clock
 class CMainSystem   // C3: member view for the former free stand-ins
 {
@@ -109,8 +108,6 @@ private:
 };
 MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 void FUN_140aacb60(NiAVObject* pObject, const NiTransform& xf);     // SetLocalTransform
-void FUN_140a0b300(NiAVObject* pObject, bool bCulled);              // SetAppCulled
-void FUN_141d591d0(NiAVObject* pObject);                            // refresh the dynamic effects of an object
 class NiSkinningMeshModifier   // C3: member view for the former free stand-ins
 {
 public:
@@ -140,8 +137,8 @@ public:
 };
 int FUN_1408733e0(void* pElement, const char* pszName, CString& rValue);
 void FUN_140874050(void* pElement, const char* pszName, const CString& strValue);
-void FUN_140874730(void* pElement, NiTransform* pXf);               // read the transform attributes
-void FUN_140874b10(void* pElement, const NiTransform& xf);          // write them
+int XmlGetAttr(class TiXmlElement*, class NiTransform&);   // C3: was FUN_140874730
+void XmlSetAttr(class TiXmlElement*, class NiTransform const&);   // C3: was FUN_140874b10
 bool FUN_1408710c0(void* pDocument, const char* pszFile);           // SaveFile
 
 // ---- cursor ray ----
@@ -238,7 +235,7 @@ MS2_REPLACE_METHOD(0x14116F900, DecoEditService, SetBrush, 127, 0xD9372A8C);
 CString DecoEditService::GetXmlPath()
 {
     CString strFile;
-    strFile.Format("%08d_deco.xml", ((class WorldService*)(FUN_1403ed2d0()))->FUN_141bd3060());
+    strFile.Format("%08d_deco.xml", ((class WorldService*)(WorldService::GetInstance()))->FUN_141bd3060());
     CString strPath;
     strPath.Format("./Data/Xml/Map/%s", (const char*)strFile);
     return strPath;
@@ -336,7 +333,7 @@ void DecoEditService::LoadXml()
                         for (void* pGrass = ((void*)((class Unk_XmlNode*)(void*)(pItemXml))->FirstChild("grass")); pGrass != 0; pGrass = ((void*)((class Unk_XmlNode*)(void*)(pGrass))->NextSibling("grass")))
                         {
                             NiTransform xf;
-                            FUN_140874730(pGrass, &xf);
+                            XmlGetAttr((class TiXmlElement*)(pGrass), *(class NiTransform*)(&xf));
                             pItem->AddTransform(xf);
                         }
                     }
@@ -419,7 +416,7 @@ efd::AsyncResult DecoEditService::OnInit()
     m_mapBrushes.SetAt(0, new PaintBrush);
     m_mapBrushes.SetAt(1, new NoiseBrush);
     FUN_1413f9830()->Subscribe(this, s_cat, 0, false);
-    FUN_1403ed2d0()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
+    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
     return efd::AsyncResult_Complete;
 }
 
@@ -526,7 +523,7 @@ bool DecoItem::SaveXml(Unk_TiXmlElement* pParent)
         {
             Unk_TiXmlElement* pGrass = new Unk_TiXmlElement("grass");
             FUN_14086e090(pParent, pGrass);
-            FUN_140874b10(pGrass, aXf[i]);
+            XmlSetAttr((class TiXmlElement*)(pGrass), aXf[i]);
         }
     }
     return true;
@@ -543,7 +540,7 @@ void DecoItem::Refresh()
         pRoot->UpdateNodeBound();
         pRoot->UpdateProperties();
         pRoot->UpdateEffects();
-        FUN_1413f9870()->vfunc_19(Unk_NodePtr(pRoot), FUN_14123c460());
+        ((class Unk_DecoSceneSvc*)FUN_1413f9870())->vfunc_19(Unk_NodePtr(pRoot), FUN_14123c460());
     }
 }
 
@@ -559,7 +556,7 @@ void DecoItem::SetCulled(int bVisible)
         {
             NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
             if (pMesh != 0)
-                FUN_140a0b300(pMesh, bVisible == 0);
+                ((class NiAVObject*)(class NiAVObject*)(pMesh))->SetAppCulled(bVisible == 0);
         }
     }
 }
@@ -642,7 +639,7 @@ bool DecoItem::LoadNif(CString strAsset)
     m_bKfm = false;
     m_str88 = "DecoItemNIF";
     SetModel(FUN_140298360("urn:gamebryo-scenegraph:", FUN_141b6ed00(strAsset)));
-    if (!FUN_1403ed2d0()->FUN_141bbb1e0(this, 0, 1))
+    if (!WorldService::GetInstance()->FUN_141bbb1e0(this, 0, 1))
         return false;
     return false;
 }
@@ -655,7 +652,7 @@ bool DecoItem::LoadKfm(CString strAsset)
     m_bKfm = true;
     m_str88 = "DecoItemKFM";
     FUN_14123bb80(FUN_140298360("urn:gamebryo-animation:", FUN_141b6ed00(strAsset)));
-    if (!FUN_1403ed2d0()->FUN_141bbb1e0(this, 0, 1))
+    if (!WorldService::GetInstance()->FUN_141bbb1e0(this, 0, 1))
         return false;
     return false;
 }
@@ -855,7 +852,7 @@ void DecoItem::UpdateEffects(NiNode* pRoot)
         NiDynamicEffect* pEffect = NiDynamicCast(NiDynamicEffect, pObject);
         if (pEffect != 0)
         {
-            FUN_141d591d0(pEffect);
+            ((class NiDynamicEffect*)(class NiAVObject*)(pEffect))->DetachAllAffectedNodes();
             pEffect->UpdateEffects();
         }
     }
@@ -876,7 +873,7 @@ DecoLayer::~DecoLayer()
 {
     for (unsigned i = 0; i < m_aItems.GetCount(); i++)
     {
-        static_cast<Unk_DecoWorld*>(FUN_1403ed2d0())->FUN_141bbbc60(m_aItems[i]->FUN_14123c460(), 0);
+        static_cast<Unk_DecoWorld*>(WorldService::GetInstance())->FUN_141bbbc60(m_aItems[i]->FUN_14123c460(), 0);
     }
     m_aItems.RemoveAll();
 }
@@ -986,7 +983,7 @@ bool DecoLayer::ChangeAsset(CString strAsset)
         {
             ATL::CAtlArray<NiTransform> aXf;
             aOld[i]->CollectTransforms(aXf);
-            static_cast<Unk_DecoWorld*>(FUN_1403ed2d0())->FUN_141bbbc60(aOld[i]->FUN_14123c460(), 0);
+            static_cast<Unk_DecoWorld*>(WorldService::GetInstance())->FUN_141bbbc60(aOld[i]->FUN_14123c460(), 0);
             DecoItem* pItem = AddItem(aXf);
             if (pItem != 0)
                 IsKfm(GetAsset()) ? pItem->LoadKfm(GetAsset()) : pItem->LoadNif(GetAsset());

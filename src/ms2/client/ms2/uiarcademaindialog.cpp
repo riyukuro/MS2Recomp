@@ -144,7 +144,7 @@ void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, unsigned 
 void* FUN_140bb9630(int n);                                                 // the callback data of a button index
 int FUN_140bd09c0(void* pUserData);                                         // the button index of a callback
 
-CArcadeDataTable* FUN_140e37aa0();                                          // the arcade table singleton
+class Unk_RankArcadeTable* FUN_140e37aa0();   // C3: was FUN_140e37aa0
 
 class Unk_ArcGameRule { public: CGameEventValueArcadeOpen* FUN_1403ecfe0(); };
 Unk_ArcGameRule* FUN_140302b00();
@@ -161,7 +161,7 @@ void FUN_1407105c0(COutPacket& packet, int nA, int nB);                     // s
 CFeatureManager* FUN_140166410();
 class Unk_ArcConfig { public: int FUN_1402c4c90(int nFlag); };
 struct Unk_ArcConfigRoot { char m_pad_00[8]; Unk_ArcConfig m_config; };
-Unk_ArcConfigRoot* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 // Unk_RankDataPtr seen through its own row getter (the exe's COMDAT at 0x140efcde0; returns the boxed row).
 struct Unk_ArcRankDataView
 {
@@ -169,7 +169,6 @@ struct Unk_ArcRankDataView
     void* m_00;
     Unk_RankData* m_p;
 };
-unsigned FUN_140869420();                                                   // the client clock (ms)
 class Unk_ArcRegionSvc { public: int FUN_140791f50(int nWhat); };
 
 // the xml helpers (TinyXML element: 0x90 bytes, ctor 0x14086f2f0, dtor 0x14086f450)
@@ -182,9 +181,13 @@ private:
     void* m_unknown[0x90 / sizeof(void*)];
 };
 void* FUN_1408782b0(Unk_TiXmlElement* pElement, const char* pszXml, void* pData, int nEncoding);   // Parse
-void* FUN_140165cf0(void* pNode, const char* szName = 0);               // first child element
-void* FUN_140168650(void* pNode, const char* szName = 0);               // next sibling element
-int FUN_1408731e0(void* pNode, const char* szName, int* pnValue);       // int attribute
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_140873420(void* pNode, const char* szName, CStringW* pstrValue);   // wide string attribute
 
 void* FUN_140cc18a0();                                                  // the url service
@@ -274,7 +277,7 @@ void UIArcadeMainDialog::OnLoadComplete()
     if (m_enter.get() != 0)
         m_enter->FUN_1422ce240(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6a60), 0);
     std::vector<MS2SvrPtr<CArcadeMainData> > games;
-    FUN_140e37aa0()->GetMainDataList(games);
+    ((class CArcadeDataTable*)FUN_140e37aa0())->GetMainDataList(games);
     m_games.clear();
     m_games.reserve(games.size());
     int nButton = 0;
@@ -446,7 +449,7 @@ void UIArcadeMainDialog::FUN_140ef6dd0()
     scratch.reserve(10);
     {
         std::vector<Unk_ArcadeRecord> records;
-        FUN_140e37aa0()->GetRecords(spGame->m_nId, records);
+        ((class CArcadeDataTable*)FUN_140e37aa0())->GetRecords(spGame->m_nId, records);
         if (!records.empty())
         {
             int nNpcScore = records.rbegin()->first;
@@ -538,7 +541,7 @@ bool UIArcadeMainDialog::FUN_140ef7ab0(int nResult, const CMsgBoxData& box)
 // @0x140ef7b00
 bool UIArcadeMainDialog::FUN_140ef7b00(int nArcadeId)
 {
-    MS2SvrPtr<CArcadeMainData> spGame = FUN_140e37aa0()->GetMainData(nArcadeId);
+    MS2SvrPtr<CArcadeMainData> spGame = ((class CArcadeDataTable*)FUN_140e37aa0())->GetMainData(nArcadeId);
     if (spGame == (CArcadeMainData*)0)
         return false;
     efd::SmartPointer<MyPC> spPC = reinterpret_cast<Unk_ArcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
@@ -595,13 +598,13 @@ void UIArcadeMainDialog::FUN_140ef7e70()
 // @0x140ef7ea0
 void UIArcadeMainDialog::FUN_140ef7ea0()
 {
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = GetTickCountMs2();
     if (nNow < m_nRequestTick + 600000U)
         return;
     if (m_strUrl.GetLength() < 1)
         return;
-    m_nRequestTick = FUN_140869420();
-    if (FUN_14025e7b0()->m_config.FUN_1402c4c90(0x32) == 0)
+    m_nRequestTick = GetTickCountMs2();
+    if (((struct Unk_ArcConfigRoot*)FUN_14025e7b0())->m_config.FUN_1402c4c90(0x32) == 0)
     {
         if (FUN_140166410()->FUN_14036d570(0x3f) == true)
         {
@@ -636,20 +639,20 @@ void UIArcadeMainDialog::FUN_140ef80f0(CStringW strXml)
     if (pDoc == 0)
         return;
     FUN_140ef7e70();
-    for (void* pArcade = FUN_140165cf0(&root, "arcade"); pArcade != 0; pArcade = FUN_140168650(pArcade, "arcade"))
+    for (void* pArcade = ((void*)((class Unk_XmlNode*)(void*)(&root))->FirstChild("arcade")); pArcade != 0; pArcade = ((void*)((class Unk_XmlNode*)(void*)(pArcade))->NextSibling("arcade")))
     {
         int nId = 0;
-        FUN_1408731e0(pArcade, "id", &nId);
+        XmlGetAttr((class TiXmlElement*)(pArcade), "id", *(int*)(&nId));
         if (nId >= 6 || nId <= 0)
             continue;
-        for (void* pInfo = FUN_140165cf0(pArcade, "info"); pInfo != 0; pInfo = FUN_140168650(pInfo, "info"))
+        for (void* pInfo = ((void*)((class Unk_XmlNode*)(void*)(pArcade))->FirstChild("info")); pInfo != 0; pInfo = ((void*)((class Unk_XmlNode*)(void*)(pInfo))->NextSibling("info")))
         {
             CStringW strName((const wchar_t*)0);
             int nScore = 0;
             int nRank = 0;
             FUN_140873420(pInfo, "name", &strName);
-            FUN_1408731e0(pInfo, "score", &nScore);
-            FUN_1408731e0(pInfo, "rank", &nRank);
+            XmlGetAttr((class TiXmlElement*)(pInfo), "score", *(int*)(&nScore));
+            XmlGetAttr((class TiXmlElement*)(pInfo), "rank", *(int*)(&nRank));
             if (nRank <= 0 || 0)    // the exe keeps a constant-false operand here (xor eax,eax; test eax,eax)
                 continue;
             m_ranks[nId].m_rows[nRank - 1].first = nScore;

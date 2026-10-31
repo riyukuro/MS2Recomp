@@ -20,6 +20,19 @@
 // MS2-PIN: ??4?$MS2Ptr@VMentoringContext@@@@QEAAAEAV0@AEBV0@@Z 0x1404474a0
 // MS2-PIN: ??4?$MS2Ptr@VFestivalContext@@@@QEAAAEAV0@AEBV0@@Z 0x1404472e0
 // MS2-PIN: ??1?$MS2Ptr@VEventShopNpcContext@@@@QEAA@XZ 0x140446470
+// The CNode / CPair / MS2Ptr dtors below are byte-identical look-alikes. Each CNode calls its CPair, each CPair its
+// ~MS2Ptr, each ~MS2Ptr the Release its type's operator= calls (IDIP 0x140465da0, CNpcShop 0x140465c20); the pins keep
+// those chains on one type.
+// MS2-PIN: ??1?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@QEAA@XZ 0x140446500
+// MS2-PIN: ??1?$MS2Ptr@VCNpcShopGivePointContextBase@@@@QEAA@XZ 0x1404463e0
+// MS2-PIN: ??1CNode@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@QEAA@XZ 0x140446e20
+// MS2-PIN: ??1CPair@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@QEAA@XZ 0x140446f80
+// MS2-PIN: ??1CNode@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAA@XZ 0x140446e60
+// MS2-PIN: ??1CPair@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAA@XZ 0x140446fc0
+// MS2-PIN: ??1CNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEAA@XZ 0x140446e80
+// MS2-PIN: ??1CNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAA@XZ 0x140446ec0
+// MS2-PIN: ??1CPair@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAA@XZ 0x140447020
+// MS2-PIN: ??1CNode@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@QEAA@XZ 0x140446ee0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\gameeventvalue.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <afx.h>

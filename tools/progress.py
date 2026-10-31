@@ -577,6 +577,16 @@ def vftable_va(sym, bases, vft, siblings=()):
 _va_names = {}             # exe VA -> function identifiers the symbol table names there (look-alike guess, 2c)
 
 
+def load_table(path):
+    """bm.load_symbols + MS2_VA_NAMES_RESET=1: drop _va_names, which is built lazily from the table loaded at the first
+    process_unit. Unset (old behaviour), a merge's in-process gate pass reuses the symbols-manual one and so lets look-alike
+    guesses through that the unit's own gate (committed table) rejects (200-unit slice, 10-31: tail9 kept 24 more
+    auto-guess pairs and 0 instead of 1 stub; MS2_MATCH_J>1 workers fork with it empty, i.e. already behave like 1)."""
+    bm.load_symbols(path)
+    if os.environ.get("MS2_VA_NAMES_RESET"):
+        _va_names.clear()
+
+
 def _fn_ident(sym):
     """the function's own identifier in a mangled name (Successor, GetNext, FUN_141bff030; ??0 / ??1 / ??4 for ctor,
     dtor, operator=), without its class or template arguments"""
@@ -1272,7 +1282,7 @@ def match_units(units, ctx, verbose, label="matching"):
     them in N forked workers (the table loaded at fork time); default (unset) and -v: one by one in this process.
     Parallel results equal a one-by-one run whose earlier stage was cached; one-by-one after an in-process main match can
     differ in look-alike pairs (lazy state carried from the manual-table match: charactermeshmerger gate pass, 1562 vs
-    1539 res2 pairs, same exact count and symbols.tsv)"""
+    1539 res2 pairs, same exact count and symbols.tsv; the _va_names guess veto, see load_table: MS2_VA_NAMES_RESET=1)"""
     global _MATCH_CTX
     try:
         j = 0 if verbose else int(os.environ.get("MS2_MATCH_J") or 0)
@@ -1369,7 +1379,7 @@ def main():
     manual_tsv = os.path.join(ROOT, "progress", "symbols-manual.tsv")
     # merge mode: the table is rebuilt from scratch (hand-written symbols-manual.tsv + the harvest of fully matched
     # units); stale entries of the previous table never win. Report mode checks against the committed table.
-    bm.load_symbols(manual_tsv if merge_mode else bm.SYMBOLS_TSV)
+    load_table(manual_tsv if merge_mode else bm.SYMBOLS_TSV)
 
     ctx = (exe, starts, finfo, bases, vft)
     mtodo = []
@@ -1419,7 +1429,7 @@ def main():
                 c["key2"] = [c["key"], stamp]
         if gate_todo:
             print(f"gate pass: re-matching {len(gate_todo)} unit(s) against the committed symbols.tsv ...", flush=True)
-            bm.load_symbols(bm.SYMBOLS_TSV)
+            load_table(bm.SYMBOLS_TSV)
             kept = 0
             for u, res2 in match_units(gate_todo, ctx, False, None):
                 c = cache[u.rel]
@@ -1430,7 +1440,7 @@ def main():
                     if s2 < s1:
                         print(f"gate pass: {u.rel}: stubs {s1[0]} -> {s2[0]}, exact {-s1[1]} -> {-s2[1]}")
                 c["key2"] = [c["key"], mergekey.rows_stamp(u.obj, bm.SYMBOLS_TSV)]
-            bm.load_symbols(manual_tsv)
+            load_table(manual_tsv)
             print(f"gate pass: {kept} of {len(gate_todo)} unit(s) keep their gate pairing", flush=True)
     # drop cache entries of units that no longer exist
     live = {u.rel for u in all_units}

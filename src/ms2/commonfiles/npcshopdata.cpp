@@ -1516,23 +1516,17 @@ void CNpcShopData::FUN_1406e2bc0(MS2Ptr<CNpcShopItemNew> spItem)
 __int64 FUN_1406e2c10(unsigned nShopId, int nDay)
 {
     __int64 nValue = 0;
-    if (nDay < 1 || nDay > 6)
-        nValue = 0;
+    if (nDay < 1 || nDay >= 7)
+        return nValue;
+    if (Unk_LockGuard guard = s_npcShopLock)
+    {
+    }
     else
     {
-        if (Unk_LockGuard guard = s_npcShopLock)
-        {
-        }
-        else
-        {
-            Unk_ShopLimitArrayPtr spLimits(0);
-            s_shopLimits.Lookup(nShopId, spLimits);
-            if (spLimits != 0 && nDay < (int)spLimits->GetCount())
-            {
-                __int64 nIndex = nDay;
-                nValue = (*spLimits)[nIndex];
-            }
-        }
+        Unk_ShopLimitArrayPtr spLimits(0);
+        s_shopLimits.Lookup(nShopId, spLimits);
+        if ((spLimits != 0 ? true : false) && nDay < (int)spLimits->GetCount())
+            nValue = (*spLimits)[nDay];
     }
     return nValue;
 }
@@ -2223,7 +2217,7 @@ bool FUN_1406e5a40()
     if (Unk_LockGuard guard = s_couponLock)
     {
     }
-    else if (s_spCouponCache != 0)
+    else if (s_spCouponCache != 0 ? true : false)
     {
         if (FUN_1401d1320(s_spCouponCache.operator->()))
         {
@@ -2268,42 +2262,40 @@ bool FUN_1406e5bc0(Unk_140165cf0* pElem)
 }
 
 // Parses a partTime list ("hh:mm:ss-hh:mm:ss,...").
-// MS2-FUNCTIONAL: written from the decompile; the exe's temporaries differ.
 // @0x1406e5bf0
 bool FUN_1406e5bf0(const CStringW& str, ATL::CAtlArray<Unk_DayTimeRange>& out)
 {
     out.RemoveAll();
-    if (!str.IsEmpty())
+    if (str.IsEmpty())
+        return true;
+    Unk_DayTime midnight(0, 0, 0);
+    ATL::CAtlArray<CStringW> ranges;
+    FUN_14025a680(str, ranges, L",");
+    for (int i = 0; i < (int)ranges.GetCount(); i++)
     {
-        Unk_DayTime midnight(0, 0, 0);
-        ATL::CAtlArray<CStringW> ranges;
-        FUN_14025a680(str, ranges, L",");
-        for (int i = 0; i < (int)ranges.GetCount(); i++)
+        const CStringW& strRange = ranges[i];
+        ATL::CAtlArray<CStringW> bounds;
+        FUN_14025a680(strRange, bounds, L"-");
+        if (bounds.GetCount() != 2)
         {
-            const CStringW& strRange = ranges[i];
-            ATL::CAtlArray<CStringW> bounds;
-            FUN_14025a680(strRange, bounds, L"-");
-            if (bounds.GetCount() != 2)
-            {
-                MS2_ASSERT_AT(0x49, FALSE);
-                return false;
-            }
-            const CStringW& strStart = bounds[0];
-            const CStringW& strEnd = bounds[1];
-            Unk_DayTime start;
-            Unk_DayTime end;
-            if (!start.Parse(strStart) || !end.Parse(strEnd))
-            {
-                MS2_ASSERT_AT(0x55, FALSE);
-                return false;
-            }
-            if (start > end || start < midnight)
-            {
-                MS2_ASSERT_AT(0x5b, FALSE);
-                return false;
-            }
-            out.Add(Unk_DayTimeRange(start, end));
+            MS2_ASSERT_AT(0x49, FALSE);
+            return false;
         }
+        const CStringW& strStart = bounds[0];
+        const CStringW& strEnd = bounds[1];
+        Unk_DayTime start;
+        Unk_DayTime end;
+        if (!start.Parse(strStart) || !end.Parse(strEnd))
+        {
+            MS2_ASSERT_AT(0x55, FALSE);
+            return false;
+        }
+        if (start > end || start < midnight)
+        {
+            MS2_ASSERT_AT(0x5b, FALSE);
+            return false;
+        }
+        out.Add(Unk_DayTimeRange(start, end));
     }
     return true;
 }
@@ -2339,13 +2331,11 @@ bool FUN_1406e5ea0(const CStringW& str, std::set<int>& out)
 bool FUN_1406e8b50(const ATL::CAtlArray<MS2Ptr<CNpcShopItemNew> >& a,
                           const ATL::CAtlArray<MS2Ptr<CNpcShopItemNew> >& b)
 {
-    size_t nCount = a.GetCount();
-    if (nCount != b.GetCount())
+    if (a.GetCount() != b.GetCount())
         return false;
     for (unsigned i = 0; i < a.GetCount(); i++)
     {
-        const CNpcShopItemNew* pB = b[i];
-        if (*a[i] != *pB)
+        if (*a[i] != *b[i])
             return false;
     }
     return true;

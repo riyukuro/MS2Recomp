@@ -80,7 +80,6 @@ static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "Pric
 typedef Delegate<void(ItemScrollSlot&)> SsRemoveFn;
 typedef Delegate<void(ItemScrollSlot&, DragSlot*)> SsDropFn;
 typedef Delegate<bool(int, const CMsgBoxData&)> SsMsgBoxFn;
-void FUN_140d428a0(ItemScrollSlot* pSlot, MS2Ptr<CItem> spItem);   // ItemScrollSlot::SetItem
 void FUN_140d42bc0(ItemScrollSlot* pSlot, SsRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
 void FUN_140d42b70(ItemScrollSlot* pSlot, SsDropFn fn);        // ItemScrollSlot::SetDropFn
 
@@ -92,7 +91,7 @@ public:
     void FUN_140da5180(int nPacket, Delegate<void(CInPacket&)> fn);     // register a packet handler
     void FUN_140da51e0(int nPacket, Delegate<void(CInPacket&)> fn);     // unregister it
 };
-Unk_SsPackets* FUN_140bccd50();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 CFeatureManager* FUN_140166410();
 extern CStringTable* GetStringTable();                          // FUN_1401a9d70
 
@@ -128,9 +127,9 @@ inline CStringW Unk_SsFormatKey(CStringW strKey, const T0& v0, const T1& v1)
                                                     fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(v1)};
     return FUN_14028dfa0(strKey, fmt::ArgList(fmt::internal::wc_make_type(v0, v1), array));
 }
-void FUN_140629fa0(Unk_SsdUidIntByte& v, CInPacket& in);
-void FUN_14062a040(Unk_SsdUidPair& v, COutPacket& out);
-void FUN_14062a230(Unk_SsdItemOne& v, CInPacket& in);
+void FUN_140629fa0(struct Unk_SockUidIntByte&, class CInPacket&);   // C3: was FUN_140629fa0
+void FUN_14062a040(struct Unk_SockUidPair&, class COutputStream&);   // C3: was FUN_14062a040
+void FUN_14062a230(struct Unk_SockItemOne&, class CInPacket&);   // C3: was FUN_14062a230
 int FUN_140627450(MS2Ptr<CItem> spItem, CItemSocketScrollDataPtr spRow);   // 0 = the scroll can be used on the item
 
 
@@ -157,10 +156,12 @@ ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);
 void FUN_140d42630(const CString& strName);
 MS2DragSlot* FUN_140a50b50(DragSlot* p);
-__int64 FUN_141405a10(MS2DragSlot* pSlot);
+class InvenSlot   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 GetItemUid();
+};
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
-void* FUN_14052cd70(const MS2Ptr<CItem>* pItem);                // the item of a handle
-void* FUN_1403ed2b0();                                          // the ui manager
 void FUN_141adc530(void* pManager, int nUiId);                  // open a dialog
 void FUN_140710590(COutPacket& packet);                         // send
 
@@ -171,13 +172,13 @@ UIItemSocketScrollDialog::UIItemSocketScrollDialog()
     FUN_141924170(1);
     m_164 = 1;
     m_strSlot = FUN_140540050("{0}.slot", GetTypeName());
-    FUN_140bccd50()->FUN_140da5180(0xe3, Delegate<void(CInPacket&)>(this, &UIItemSocketScrollDialog::FUN_140f64a20));
+    ((class Unk_SsPackets*)FUN_140bccd50())->FUN_140da5180(0xe3, Delegate<void(CInPacket&)>(this, &UIItemSocketScrollDialog::FUN_140f64a20));
 }
 
 // @0x140f64840
 UIItemSocketScrollDialog::~UIItemSocketScrollDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0xe3, Delegate<void(CInPacket&)>(this, &UIItemSocketScrollDialog::FUN_140f64a20));
+    ((class Unk_SsPackets*)FUN_140bccd50())->FUN_140da51e0(0xe3, Delegate<void(CInPacket&)>(this, &UIItemSocketScrollDialog::FUN_140f64a20));
 }
 
 // @0x140f64940
@@ -229,7 +230,7 @@ void UIItemSocketScrollDialog::OnLoadComplete()
     CStringW strNotice;
     CStringW strDesc;
     MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
-    if (FUN_14052cd70(&spScroll) ? true : false)
+    if (((void*)((MS2Ptr<CItem>*)(void*)(&spScroll))->get()) ? true : false)
     {
         if (spScroll->FUN_140527840() != 0)
         {
@@ -281,7 +282,7 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
     MS2DragSlot* pSrc = FUN_140a50b50(pDrag);
     if (pSrc != 0)
     {
-        MS2Ptr<CItem> spTarget = g_143ab2a90.FUN_140a5d680(FUN_141405a10(pSrc));
+        MS2Ptr<CItem> spTarget = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
         if (spTarget == 0)
         {
             FUN_140d73aa0(GetStringCommonByKey(L"s_itemsocket_scroll_error_have_not_item"), 0, 0, CStringW(L""));
@@ -301,7 +302,7 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
             return;
         }
         m_spItem = spTarget;
-        FUN_140d428a0(&slot, MS2Ptr<CItem>(spTarget));
+        ((class ItemScrollSlot*)(class ItemScrollSlot*)(&slot))->SetItem(MS2Ptr<CItem>(spTarget));
         slot.vfunc_10();
         CStringW strName = spTarget->FUN_140528160();
         CStringW strProb;
@@ -530,7 +531,7 @@ void UIItemSocketScrollDialog::SendItemSocketScroll(__int64 nTargetUid)
     pair.m_nSecond = m_nScrollUid;
     COutPacket packet(static_cast<int>(SendOp::ItemSocketScroll), 0);
     packet.WriteUInt8(1);
-    FUN_14062a040(pair, packet);
+    FUN_14062a040(*(struct Unk_SockUidPair*)&static_cast<struct Unk_SsdUidPair&>(pair), *(class COutputStream*)&static_cast<class COutPacket&>(packet));
     FUN_140710590(packet);
 }
 
@@ -540,14 +541,14 @@ void UIItemSocketScrollDialog::FUN_140f67170(CInPacket& packet)
     if (vfunc_55() == 0)
         return;
     Unk_SsdUidIntByte data;
-    FUN_140629fa0(data, packet);
+    FUN_140629fa0(*(struct Unk_SockUidIntByte*)&static_cast<struct Unk_SsdUidIntByte&>(data), packet);
     __int64 nUid = data.m_nUid;
     if (g_143ab2a90.FUN_140a5d680(nUid) == 0)
         return;
     m_nScrollUid = nUid;
     m_nCount = data.m_nByte;
     m_nProb = data.m_nValue / 100;
-    FUN_141adc530(FUN_1403ed2b0(), vfunc_48());
+    FUN_141adc530(((void*)TSingleton<CUIService>::GetInstance()), vfunc_48());
 }
 
 // @0x140f672a0
@@ -555,7 +556,7 @@ void UIItemSocketScrollDialog::FUN_140f672a0(CInPacket& packet)
 {
     Unk_SsdItemOne one;
     one.m_spItem = m_spItem;
-    FUN_14062a230(one, packet);
+    FUN_14062a230(*(struct Unk_SockItemOne*)&static_cast<struct Unk_SsdItemOne&>(one), packet);
     __int64 nUid = one.m_nUid;
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
     if (spItem == 0)

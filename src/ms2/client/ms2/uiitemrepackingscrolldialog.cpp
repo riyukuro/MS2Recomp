@@ -67,7 +67,6 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 
 typedef Delegate<void(ItemScrollSlot&)> RpRemoveFn;
 typedef Delegate<void(ItemScrollSlot&, DragSlot*)> RpDropFn;
-void FUN_140d428a0(ItemScrollSlot* pSlot, MS2Ptr<CItem> spItem);   // ItemScrollSlot::SetItem
 void FUN_140d42bc0(ItemScrollSlot* pSlot, RpRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
 void FUN_140d42b70(ItemScrollSlot* pSlot, RpDropFn fn);        // ItemScrollSlot::SetDropFn
 
@@ -79,7 +78,7 @@ public:
     void FUN_140da5180(int nPacket, Delegate<void(CInPacket&)> fn);     // register a packet handler
     void FUN_140da51e0(int nPacket, Delegate<void(CInPacket&)> fn);     // unregister it
 };
-Unk_RpPackets* FUN_140bccd50();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 
 // The repacking scroll's row: level range, kind (0 item, 1 pet), the allowed ranks and the limiting item types.
 class Unk_RpArray
@@ -145,7 +144,11 @@ ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);
 void FUN_140d42630(const CString& strName);
 MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);
-__int64 FUN_141405a10(MS2DragSlot* pSlot);
+class InvenSlot   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 GetItemUid();
+};
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
 void FUN_14151f200();
 class Unk_RpWorld { public: void FUN_1416fb300(const CStringW& text); };
@@ -209,13 +212,13 @@ UIItemRePackingScrollDialog::UIItemRePackingScrollDialog()
 {
     FUN_141924170(1);
     m_164 = 1;
-    FUN_140bccd50()->FUN_140da5180(0xe4, Delegate<void(CInPacket&)>(this, &UIItemRePackingScrollDialog::FUN_140f62020));
+    ((class Unk_RpPackets*)FUN_140bccd50())->FUN_140da5180(0xe4, Delegate<void(CInPacket&)>(this, &UIItemRePackingScrollDialog::FUN_140f62020));
 }
 
 // @0x140f60f50
 UIItemRePackingScrollDialog::~UIItemRePackingScrollDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0xe4, Delegate<void(CInPacket&)>(this, &UIItemRePackingScrollDialog::FUN_140f62020));
+    ((class Unk_RpPackets*)FUN_140bccd50())->FUN_140da51e0(0xe4, Delegate<void(CInPacket&)>(this, &UIItemRePackingScrollDialog::FUN_140f62020));
 }
 
 // @0x140f61050
@@ -487,7 +490,7 @@ bool UIItemRePackingScrollDialog::FUN_140f629b0(MS2Ptr<CItem> spItem)
     ItemScrollSlot* pSlot = FUN_140f62930(CString(m_strSlot));
     if (pSlot != 0)
     {
-        FUN_140d428a0(pSlot, spItem);
+        ((class ItemScrollSlot*)(class ItemScrollSlot*)(pSlot))->SetItem(spItem);
         pSlot->vfunc_10();
         return true;
     }
@@ -521,7 +524,7 @@ void UIItemRePackingScrollDialog::FUN_140f62be0(ItemScrollSlot& slot, DragSlot* 
         return;
     if (MS2DragSlot* pSrc = FUN_140a50b50(pDrag))
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(FUN_141405a10(pSrc));
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
         if (spItem == 0)
             return;
         MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nOwner);
@@ -534,7 +537,7 @@ void UIItemRePackingScrollDialog::FUN_140f62be0(ItemScrollSlot& slot, DragSlot* 
             FUN_140f62710(nError);
             return;
         }
-        FUN_140d428a0(&slot, spItem);
+        ((class ItemScrollSlot*)(class ItemScrollSlot*)(&slot))->SetItem(spItem);
         slot.vfunc_10();
         CStringW strName = static_cast<CItem*>(spItem)->FUN_140528160();
         int nNeed = static_cast<CItem*>(spItem)->FUN_140527530();

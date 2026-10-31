@@ -586,7 +586,7 @@ int UIManufactureStatus::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         vfunc_67();
         return 1;
     }
-    if (_stricmp("OnRecipe", szMethod) == 0)
+    else if (_stricmp("OnRecipe", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
@@ -600,10 +600,10 @@ int UIManufactureStatus::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                 if (pList != 0)
                 {
                     pList->FUN_1412db660(nBook, fX, fY);
-                    if (reinterpret_cast<Unk_MdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ecb) == 0)
-                        reinterpret_cast<Unk_MdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ecb);
-                    else
+                    if (reinterpret_cast<Unk_MdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ecb) != 0)
                         pList->FUN_1412db6c0();
+                    else
+                        reinterpret_cast<Unk_MdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ecb);
                 }
             }
         }
@@ -1446,17 +1446,22 @@ int FUN_1412e1080(int nMode, AScript* pData)
     Scaleform::GFx::Value vPremium = pData->FUN_1422baa20("premiumHome");
     Scaleform::GFx::Value vDesigners = pData->FUN_1422baa20("designersHome");
     Unk_MdHomeDocs docs;
+    TiXmlDocument* pDocMerat = &docs.m_docMerat;
     CString strPath = FUN_1406a4a00();
-    FUN_1412e06f0(strPath, nMode, reinterpret_cast<AScript*>(&vMerat), &docs.m_snsMerat, &docs.m_docMerat);
+    FUN_1412e06f0(strPath, nMode, reinterpret_cast<AScript*>(&vMerat), &docs.m_snsMerat, pDocMerat);
+    TiXmlDocument* pDocPremium = &docs.m_docPremium;
     strPath = FUN_1406a4a70();
-    FUN_1412e06f0(strPath, nMode, reinterpret_cast<AScript*>(&vPremium), &docs.m_snsPremium, &docs.m_docPremium);
+    FUN_1412e06f0(strPath, nMode, reinterpret_cast<AScript*>(&vPremium), &docs.m_snsPremium, pDocPremium);
+    TiXmlDocument* pDocDesigners = &docs.m_docDesigners;
     strPath = FUN_1406a4ae0();
-    FUN_1412e06f0(strPath, nMode, reinterpret_cast<AScript*>(&vDesigners), 0, &docs.m_docDesigners);
+    FUN_1412e06f0(strPath, nMode, reinterpret_cast<AScript*>(&vDesigners), 0, pDocDesigners);
     CString strSql;
-    if (FUN_1406a4fc0(strSql, &docs) == 0)
-        return 0;
-    FUN_14083d890(CStringW(strSql));
-    return 1;
+    if (FUN_1406a4fc0(strSql, &docs) != 0)
+    {
+        FUN_14083d890(CStringW(strSql));
+        return 1;
+    }
+    return 0;
 }
 
 // @0x1412dea90

@@ -48,8 +48,8 @@ public:
     void id();
     void rotZ(float);
 };
-void FUN_140adc690(Unk_CtbObb* pOut, const Unk_CtbBounds3* pBounds, const Unk_CtbMat34* pPose);   // box from bounds + pose
-bool FUN_140adc610(const Unk_CtbObb* pObb, const Unk_CtbVec3& pt);  // point inside the box
+void NxCreateBox(class NxBox&, class NxBounds3 const&, class NxMat34 const&);   // C3: was FUN_140adc690
+bool NxBoxContainsPoint(class NxBox const&, class NxVec3 const&);   // C3: was FUN_140adc610
 void FUN_140adbf00(Unk_CtbObb* pObb, const Unk_CtbVec3& pt);        // set the box centre
 
 // The quest-npc table (singleton): lookups by portal.
@@ -65,7 +65,7 @@ void FUN_140764310(const CString& strA, const CString& strB, QuestMask* pOut);
 const char* FUN_14099ad40(efd::AssetID* pAsset);         // the AssetID's URN text
 
 // The content switch table.
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 // The command string table (singleton).
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string by key
@@ -76,11 +76,10 @@ float FUN_14028d280(unsigned uMilliseconds);                        // ms -> sec
 
 // The clock and tick count.
 struct Unk_PortalClockOwner;
-unsigned FUN_141472bc0();                                           // tick count
+int FUN_141472bc0();   // C3: was FUN_141472bc0
 
 // The field world and the portal table.
 class Unk_PortalWorld { };
-unsigned FUN_141bd3060(Unk_PortalWorld* pWorld);                    // the current map id
 class Unk_PortalTableHolder { public:  };   // CPortalTable::GetName
 
 // The dungeon room table and a room row.
@@ -107,7 +106,7 @@ NiAVObject* FUN_141b6ef70(egf::EntityID kId);                       // scene roo
 void FUN_140ae1e80(NiAVObject* pObject, float a, float b, float c, float d, egf::EntityID kId);
 extern char DAT_143afbbb0;                                          // NiMesh::ms_RTTI
 extern char DAT_143afa4f0;                                          // NiTexturingProperty::ms_RTTI
-void* FUN_140a0afd0();                                              // texture manager
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 void FUN_141552f90(void* pMgr, void* pOutTexture, CString strPath, int nFlags);   // load a texture
 void* FUN_14097fbf0(void* pTexture);                                // texture pointer
 void FUN_14097f4a0(void* pTexture);                                 // release
@@ -167,7 +166,7 @@ int Unk_PortalBox::FUN_14169b080(egf::Entity* pEntity)
     m_pose.m_pos.z = ptPos.z;
     ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->id();
     ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->rotZ((ptRot.z * 3.1415927f) / 180.0f);
-    FUN_140adc690(&m_obb, &m_bounds, &m_pose);
+    NxCreateBox(*(class NxBox*)(&m_obb), *(class NxBounds3 const*)(&m_bounds), *(class NxMat34 const*)(&m_pose));
     Unk_CtbVec3 vCenter(ptCenter.x, ptCenter.y, ptCenter.z);
     FUN_140adbf00(&m_obb, vCenter);
     return 1;
@@ -176,7 +175,7 @@ int Unk_PortalBox::FUN_14169b080(egf::Entity* pEntity)
 // @0x14169b2e0
 int Unk_PortalBox::FUN_14169b2e0(const Vector3* pPoint)
 {
-    return FUN_140adc610(&m_obb, Unk_CtbVec3(pPoint->x, pPoint->y, pPoint->z)) != 0;
+    return NxBoxContainsPoint(*(class NxBox const*)(&m_obb), *(class NxVec3 const*)&static_cast<struct Unk_CtbVec3 const&>(Unk_CtbVec3(pPoint->x, pPoint->y, pPoint->z))) != 0;
 }
 
 // @0x14169b350
@@ -265,7 +264,7 @@ bool CPortal::FUN_14169ba90()
                         {
                             CString strLoad(strPath);
                             void* spTex[2];
-                            FUN_141552f90(FUN_140a0afd0(), spTex, strLoad, 5);
+                            FUN_141552f90(((void*)FUN_140a0afd0()), spTex, strLoad, 5);
                             if (FUN_14097fbf0(spTex) != 0)
                                 ((NiTexturingProperty::Map*)(class NiTexturingProperty::Map*)(pMap))->SetTexture((class NiTexture*)(FUN_14097fbf0(spTex)));
                             FUN_14097f4a0(spTex);
@@ -361,9 +360,9 @@ void CPortal::FUN_14169c280()
 // @0x14169c330
 int CPortal::FUN_14169c330()
 {
-    if (!FUN_140166410()->FUN_14036d4b0(m_strFeature))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d4b0(m_strFeature))
         return false;
-    if (!FUN_140166410()->FUN_14036d750(m_strLocale))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d750(m_strLocale))
         return false;
     return true;
 }
@@ -432,7 +431,7 @@ CStringW CPortal::FUN_14169cae0()
     unsigned nName = FUN_14169d280();
     if (nName > 0)
         return TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nName);
-    unsigned nMapId = FUN_141bd3060(reinterpret_cast<Unk_PortalWorld*>(WorldService::GetInstance()));
+    unsigned nMapId = ((class WorldService*)(class Unk_PortalWorld*)(reinterpret_cast<Unk_PortalWorld*>(WorldService::GetInstance())))->FUN_141bd3060();
     CStringW strName = ((CPortalTable*)(Unk_PortalTableHolder*)(reinterpret_cast<Unk_PortalTableHolder*>(TSingleton<CPortalTable>::GetInstance())))->GetName(nMapId, m_nId);
     if (!strName.IsEmpty())
         return strName;
@@ -521,7 +520,7 @@ void CPortal::FUN_14169d0e0()
         int nState = FUN_14169cc40();
         FUN_14169cd50(nState, nState);
     }
-    if (FUN_141bd3060(reinterpret_cast<Unk_PortalWorld*>(WorldService::GetInstance())) == 0x1e8673 && m_nId == 2)
+    if (((class WorldService*)(class Unk_PortalWorld*)(reinterpret_cast<Unk_PortalWorld*>(WorldService::GetInstance())))->FUN_141bd3060() == 0x1e8673 && m_nId == 2)
         FUN_14169cd50(1, 1);
 }
 

@@ -159,3 +159,43 @@ EE_MS2_UTF8_CHAR_CTOR_INLINE utf8string::utf8string(const char* src_sz)
 #endif
 
 .
+14a
+// MS2: std::string::append(const string&) 0x1409a2d10 (game /Od copy): the exe calls it out of line from
+// utf8string::append(const utf8string&) in some engine TUs (EntityLua DumpProperty); those define the switch
+#if defined(EE_MS2_UTF8_APPEND_STR_CALL)
+namespace std
+{
+typedef efd::utf8string::internal_string ms2_utf8_internal_string;
+template<> inline __declspec(noinline) ms2_utf8_internal_string& ms2_utf8_internal_string::append(
+    const ms2_utf8_internal_string& _Right)
+{
+    return append(_Right.c_str(), _Right.size());
+}
+}
+#endif
+// MS2: std::string::operator=(const char*) 0x140ae18c0 (game /Od copy): the exe calls it out of line from
+// NiImageConverter's wchar_t overloads (kExt = ATL::CW2A(...)); that TU defines the switch
+#if defined(EE_MS2_STR_ASSIGN_CSTR_CALL)
+namespace std
+{
+template<> inline __declspec(noinline) efd::string& efd::string::operator=(const char* const _Ptr)
+{
+    return assign(_Ptr);
+}
+}
+#endif
+
+// MS2: std::string::append(const char*) 0x14114d9b0 (game /Od copy): the exe calls it out of line from
+// utf8string::append(const char*) in NiTerrainSurfacePackageFileVersion1 (kBinaryFilename += ".tmpkgb"); that TU
+// defines the switch
+#if defined(EE_MS2_STR_APPEND_CSTR_CALL)
+namespace std
+{
+template<> inline __declspec(noinline) efd::string& efd::string::append(const char* const _Ptr)
+{
+    return append(_Ptr, traits_type::length(_Ptr));
+}
+}
+#endif
+
+.

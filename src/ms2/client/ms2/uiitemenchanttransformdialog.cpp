@@ -104,7 +104,6 @@ class Unk_TransformTable
 public:
     MS2Ptr<Unk_TransformRow> FUN_1405924d0(MS2Ptr<CItem> item);     // the row of an item (NULL: not transformable)
 };
-int FUN_140592110(MS2Ptr<CItem> item);                              // the item can be transformed
 
 // The player's item inventory (global object).
 class Unk_TfInventory : public Unk_Inventory
@@ -278,7 +277,7 @@ void UIItemEnchantTransformDialog::FUN_140c3d5a0()
         MS2Ptr<CItem> item = ((Unk_TfInventory*)&DAT_143ab2a90)->FUN_140a5d680(uids[i]);
         if (item == 0)
             continue;
-        if (FUN_140592110(item) == 0)
+        if (CItemEnchantTransformTable::FUN_140592110(item) == 0)
             continue;
         m_targets.Add(item);
     }
@@ -306,7 +305,7 @@ void UIItemEnchantTransformDialog::FUN_140c3d960(int nIndex)
     if (nIndex < 0 || nIndex >= (int)m_targets.GetCount())
         return;
     MS2Ptr<CItem> item = m_targets[nIndex];
-    if (FUN_140592110(item) == 0)
+    if (CItemEnchantTransformTable::FUN_140592110(item) == 0)
         return;
     CStringW strOption;
     bool bHighSa = false;
@@ -340,7 +339,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
     if (nIndex < 0 || nIndex >= (int)m_targets.GetCount())
         return;
     MS2Ptr<CItem> item = m_targets[nIndex];
-    if (FUN_140592110(item) == 0)
+    if (CItemEnchantTransformTable::FUN_140592110(item) == 0)
         return;
     MS2Ptr<Unk_TransformRow> row = reinterpret_cast<Unk_TransformTable*>(TSingleton<CItemEnchantTransformTable>::GetInstance())->FUN_1405924d0(item);
     if (row == 0)

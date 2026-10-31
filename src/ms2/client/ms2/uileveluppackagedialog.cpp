@@ -48,11 +48,15 @@ private:
     char m_pad_178[0x1a0 - 0x178];
     int m_nDirty;
 };
-Unk_SSGDlg4e28* FUN_140938b90(int nId);
+class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 
 // the local player (PCBase; vfunc_78 is the level)
-void* FUN_1403ed2d0();                                          // the world service
-void* FUN_141bd0cc0(void* pWorld);                              // its local player
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
 
 // listener registries
 UIQuestEventDispatcher* FUN_140bfc4b0();
@@ -64,7 +68,7 @@ void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, 
 
 // quests: the ids of the package quests come from the game rule table
 CGameRule* FUN_1401c0d90();
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pData);                           // the quest id
 #define LgQuestLevel(pData) ((unsigned short)(pData)->m_conditions[0]->m_target.GetFirstValue())
@@ -98,7 +102,6 @@ class Unk_PetBoxDropTable { public: void FUN_1402ea4c0(int, Unk_PetBoxDropVec&);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
 // the root of the movie
-bool FUN_140a467d0(const MS2Ptr<AScript>* pAS);
 
 // ---- UILevelUpPackageDialog ----
 
@@ -138,7 +141,7 @@ void UILevelUpPackageDialog::vfunc_67()
 void UILevelUpPackageDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     FUN_140ea4d00();
@@ -170,7 +173,7 @@ int UILevelUpPackageDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 // @0x140ea49e0 level changed
 void UILevelUpPackageDialog::vfunc_oa0_9(unsigned short nLevel)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     LG_ROOT(m_30)->FUN_140ea5e70("setPC", nLevel);
     FUN_140ea4d00();
@@ -179,7 +182,7 @@ void UILevelUpPackageDialog::vfunc_oa0_9(unsigned short nLevel)
 // @0x140ea4a60 a quest was updated
 void UILevelUpPackageDialog::vfunc_o178_10(void* pQuestRaw)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     MS2Ptr<CQuestData> spData = static_cast<CQuest*>(pQuestRaw)->GetData();
     if (spData->m_350.m_value != 1)
@@ -187,7 +190,7 @@ void UILevelUpPackageDialog::vfunc_o178_10(void* pQuestRaw)
     FUN_140ea4d00();
     if (FUN_140ea4b70() == 0) {
         vfunc_67();
-        if (Unk_SSGDlg4e28* pMenu = FUN_140938b90(0x4e28))
+        if (Unk_SSGDlg4e28* pMenu = ((class Unk_SSGDlg4e28*)FUN_140938b90(0x4e28)))
             pMenu->FUN_140ea5f80();
     }
 }
@@ -201,7 +204,7 @@ int UILevelUpPackageDialog::FUN_140ea4b70()
         return 0;
     BOOL bAllIdle = TRUE;
     for (size_t i = 0; i < ids.GetCount(); i++) {
-        Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(ids[i]);
+        Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(ids[i]);
         if (spQuest.IsNull())
             return 0;
         if (spQuest->IsActive() != 0)
@@ -215,7 +218,7 @@ int UILevelUpPackageDialog::FUN_140ea4b70()
 // @0x140ea4d00
 void UILevelUpPackageDialog::FUN_140ea4d00()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     ATL::CAtlArray<unsigned> ids;
     FUN_1401c0d90()->FUN_14047c870(ids);
@@ -229,7 +232,7 @@ void UILevelUpPackageDialog::FUN_140ea4d00()
             m_30->Invoke("addLevelGuide", obj);
         }
     }
-    PCBase* pPlayer = (PCBase*)FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPlayer = (PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     LG_ROOT(m_30)->FUN_140ea5e70("setPC", pPlayer->vfunc_78());
@@ -268,7 +271,7 @@ void UILevelUpPackageDialog::FUN_140ea4f10(unsigned short nLevel)
 // @0x140ea52d0
 void UILevelUpPackageDialog::SendQuest(int nQuest)
 {
-    Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuest);
+    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
     if (spQuest.IsNull())
         return;
     if (spQuest->IsComplete() == 0)
@@ -276,7 +279,7 @@ void UILevelUpPackageDialog::SendQuest(int nQuest)
     MS2Ptr<CQuestData> spData = spQuest->GetData();
     if (!spData)
         return;
-    void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
@@ -291,9 +294,9 @@ void UILevelUpPackageDialog::FUN_140ea5460(ASObj& rObj, int nQuest)
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
     if (!spData)
         return;
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuest);
+    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
     CString strState;
     if ((bool)spQuest.get() && spQuest->IsComplete() != 0)
         strState = "active";
@@ -318,7 +321,7 @@ void UILevelUpPackageDialog::FUN_140ea57d0(ASObj& rObj, int nQuest)
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
     if (!spData)
         return;
-    void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     CQuestData::QuestRewardItem* pReward = 0;
@@ -346,7 +349,7 @@ void UILevelUpPackageDialog::FUN_140ea57d0(ASObj& rObj, int nQuest)
 // @0x140ea5b50
 unsigned UILevelUpPackageDialog::FUN_140ea5b50(unsigned short nLevel)
 {
-    void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ATL::CAtlArray<unsigned> ids;
@@ -368,7 +371,7 @@ unsigned UILevelUpPackageDialog::FUN_140ea5b50(unsigned short nLevel)
 // @0x140ea5d10
 unsigned short UILevelUpPackageDialog::FUN_140ea5d10()
 {
-    PCBase* pPlayer = (PCBase*)FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pPlayer = (PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ATL::CAtlArray<unsigned> ids;

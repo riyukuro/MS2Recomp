@@ -129,6 +129,12 @@ set_target_properties(dinput8 PROPERTIES OUTPUT_NAME dinput8 PREFIX "")
 # instead of misbehaving. Not 0x100000000: Wine 11 places relocatable images bottom-up from there before the exe's
 # imports load (DINPUT8.dll then failed with c0000018, 2026-10-28).
 target_link_options(dinput8 PRIVATE /DEBUG /OPT:REF /OPT:ICF /BASE:0x120000000 /DYNAMICBASE:NO /FIXED)
+# tools/merge.sh MS2_MERGE_FASTLINK=1: no PDB (the last /DEBUG option wins). Nothing reads the merge DLL's PDB; link.exe
+# 14.16 spends nearly all its time in pass 1 anyway (merge 45 objects, 10-31: /DEBUG 1395 s, /DEBUG:NONE 1138 s).
+option(MS2HOOK_FASTLINK "link dinput8.dll without a PDB (merge DLL)" OFF)
+if(MS2HOOK_FASTLINK)
+    target_link_options(dinput8 PRIVATE /DEBUG:NONE)
+endif()
 # NiRendererSettings.h pulls NiD3D10Headers.h, whose #pragma comment(lib) asks for the June 2010 DX SDK import libs.
 # Mixed-case symlinks, since lld-link on Linux is case-sensitive and the pragma asks for D3DX9.lib / D3DX10.lib.
 set(MS2_DXLIB_DIR "${CMAKE_BINARY_DIR}/dxsdk-lib")

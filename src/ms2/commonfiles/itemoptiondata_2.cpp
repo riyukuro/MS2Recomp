@@ -198,10 +198,10 @@ bool IsStatKindOne(int nStat);
 bool FUN_14081dc50(int nStat);
 int FUN_14081d830(int nStat);                           // the special stat is a special ability
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int& nOut);
-int FUN_14015f500(Unk_140165cf0* pElem, const char* pszName, int* pOut);
+int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 void FUN_14028f5d0(Unk_140165cf0* pParent, const char* pszChild, std::vector<Unk_140165cf0*>& arrOut);
 extern "C" double (__cdecl* __imp_floor)(double);
-CItemOptionTable* FUN_140166430();                      // the option table singleton
+class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 CLogString* GetLogString();                            // the log
 // The log's two-argument call (FMT_VARIADIC instantiation outside this unit).
 void FUN_1401e0850(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CString& first,
@@ -1478,7 +1478,7 @@ int ItemOptionConstant::GetGrade()
 // @0x1405d2a90
 bool ItemOptionConstant::FUN_1405d2a90(Unk_140165cf0* pElem)
 {
-    FUN_14015f500(pElem, "grade", &m_nGrade);
+    Unk_ReadRank((class Unk_XmlNode*)(pElem), "grade", &m_nGrade);
     int nCreateType = 0;
     FUN_140873220(pElem, "createType", nCreateType);
     if (nCreateType == 3)
@@ -2097,7 +2097,7 @@ void ItemOptionRandom::FUN_1405d68f0(unsigned nItemId, int nRank, unsigned& nPic
         kInfo.second = spValue->GetStatId();
         vInfo.push_back(std::make_pair(strName, kInfo));
         bool bArmor = spContext->FUN_1405d9e00() == 2 &&
-                      FUN_140166430()->FUN_1405f6e40(spValue->FUN_1405d26c0()).get() != 0;
+                      ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6e40(spValue->FUN_1405d26c0()).get() != 0;
         if (bArmor)
         {
             nArmor += nWeight;
@@ -2288,7 +2288,7 @@ bool ItemOptionRandom::FUN_1405d7bf0(std::vector<ItemOptionValueRandom*>& vOut, 
         if (spValue == 0)
             continue;
         if (spContext->FUN_1405d9e00() == 2 &&
-            FUN_140166430()->FUN_1405f6e40(spValue->FUN_1405d26c0()).get() != 0)
+            ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6e40(spValue->FUN_1405d26c0()).get() != 0)
         {
             spLockedArmor = spValue;
             continue;
@@ -2304,7 +2304,7 @@ bool ItemOptionRandom::FUN_1405d7bf0(std::vector<ItemOptionValueRandom*>& vOut, 
     {
         CString strName = spValue->FUN_1405d26c0();
         int nWeight = spValue->GetWeight();
-        if (spContext->FUN_1405d9e00() == 2 && FUN_140166430()->FUN_1405f6e40(strName).get() != 0)
+        if (spContext->FUN_1405d9e00() == 2 && ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6e40(strName).get() != 0)
         {
             pickerArmor.Register(nWeight, spValue.get());
             continue;
@@ -2382,7 +2382,7 @@ void ItemOptionRandom::FUN_1405d8880(MS2Ptr<Unk_ItemOptionPreset> spPreset, std:
     for (auto& spValue : m_vValues)
     {
         CString strName = spValue->FUN_1405d26c0();
-        if (spContext->FUN_1405d9e00() == 2 && FUN_140166430()->FUN_1405f6e40(strName).get() != 0)
+        if (spContext->FUN_1405d9e00() == 2 && ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6e40(strName).get() != 0)
         {
             arrArmor.Add(spValue.get());
             continue;
@@ -2465,7 +2465,7 @@ MS2Ptr<ItemOptionValueRandom> ItemOptionRandom::FUN_1405d8f30(MS2Ptr<ItemOptionR
         for (auto& pValue : vHeld)
         {
             CString strName = pValue->FUN_1405d26c0();
-            if (spContext->FUN_1405d9e00() == 2 && FUN_140166430()->FUN_1405f6e40(strName).get() != 0)
+            if (spContext->FUN_1405d9e00() == 2 && ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6e40(strName).get() != 0)
             {
                 spHeldArmor.AssignRaw(pValue);
                 continue;
@@ -2483,7 +2483,7 @@ MS2Ptr<ItemOptionValueRandom> ItemOptionRandom::FUN_1405d8f30(MS2Ptr<ItemOptionR
         int nWeight = spValue->GetWeight();
         if (!vHeld.empty() && std::find(vHeld.begin(), vHeld.end(), spValue) != vHeld.end())
             continue;
-        if (spContext->FUN_1405d9e00() == 2 && FUN_140166430()->FUN_1405f6e40(strName).get() != 0)
+        if (spContext->FUN_1405d9e00() == 2 && ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6e40(strName).get() != 0)
         {
             pickerArmor.Register(nWeight, spValue.get());
             continue;
@@ -2569,25 +2569,25 @@ ItemOptionRandomContext::ItemOptionRandomContext(MS2Ptr<CItemOption> spOption, i
 // @0x1405d9b10
 int ItemOptionRandomContext::FUN_1405d9b10(int nStatId)
 {
-    return FUN_140166430()->FUN_1405f6100(nStatId);
+    return ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6100(nStatId);
 }
 
 // @0x1405d9b40
 int ItemOptionRandomContext::FUN_1405d9b40(int nStatId, Unk_Random* pRandom)
 {
-    return FUN_140166430()->FUN_1405f6190(nStatId, pRandom);
+    return ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6190(nStatId, pRandom);
 }
 
 // @0x1405d9b80
 int ItemOptionRandomContext::FUN_1405d9b80(int nStatId)
 {
-    return FUN_140166430()->FUN_1405f6230(nStatId);
+    return ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6230(nStatId);
 }
 
 // @0x1405d9bb0
 int ItemOptionRandomContext::FUN_1405d9bb0(int nStatId)
 {
-    return FUN_140166430()->FUN_1405f62c0(nStatId);
+    return ((class CItemOptionTable*)FUN_140166430())->FUN_1405f62c0(nStatId);
 }
 
 // @0x1405d9be0
@@ -2771,7 +2771,7 @@ int ItemOptionRandomContext::FUN_1405daad0(MS2Ptr<ItemOptionValueRandom> spValue
 // The option holds a stat of the name's exclusive group.
 BOOL ItemOptionRandomContext::FUN_1405db0b0(MS2Ptr<CItemOption> spOption, CString strName)
 {
-    Unk_OptionNameListPtr spNames = FUN_140166430()->FUN_1405f6e40(strName);
+    Unk_OptionNameListPtr spNames = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6e40(strName);
     if (spNames.get() != 0)
     {
         POSITION pos = spNames->GetHeadPosition();

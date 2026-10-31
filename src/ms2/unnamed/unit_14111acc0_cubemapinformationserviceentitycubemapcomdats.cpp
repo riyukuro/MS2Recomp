@@ -255,49 +255,14 @@ void Unk_CMISFwdAnchor(void* p)
     ((std::set<unsigned>*)p)->insert(*(const unsigned*)p);
     // 14111d3f0
     ((Unk_CMISAutoSet*)p)->insert(*(const MS2Ptr<AutomaticCreateCubeInfo>*)p);
+    ((Unk_CMISFuncCubeSet*)p)->insert(*(const MS2Ptr<CFunctionCubeObject>*)p);
 }
 
-// The set insert(const&) wrappers cubemapinformationservice_3 calls by address. Its tree/iterator stand-ins are opaque
-// here: <267> = efd::set<int>, <284> = std::set<MS2Ptr<CFunctionCubeObject>>, <295> = efd::set<MS2Ptr<
-// AutomaticCreateCubeInfo>>, <256> = efd::set<EntityID> (by the clear/find instances of the same call sites). The exe
-// returns pair<iterator, bool> into the caller's slot; the callers keep only the iterator.
-template <unsigned __int64 N> struct Unk_CMISTree;
-template <unsigned __int64 N> struct Unk_CMISIter;
-struct Unk_CMISSlot;
-struct Unk_CMISEntityRef;
-class CPtred;
-
-// MS2-FUNCTIONAL: insert inline instead of through _Insert_nohint 0x14110e910; stores only the iterator
-// @0x14111d290
-void FUN_14111d290(Unk_CMISTree<267>* pSet, Unk_CMISIter<267>* pOut, const int* pKey)
-{
-    *(void**)pOut = reinterpret_cast<Unk_CMISIntSet*>(pSet)->insert(*pKey).first._Ptr;
-}
-
-// MS2-FUNCTIONAL: insert inline instead of through _Insert_nohint 0x14110ed20; stores only the iterator
-// @0x14111d370
-Unk_CMISIter<295>* FUN_14111d370(Unk_CMISTree<295>* pSet, Unk_CMISIter<295>* pOut, const MS2Ptr<CPtred>* pVal)
-{
-    *(void**)pOut = reinterpret_cast<Unk_CMISAutoSet*>(pSet)->insert(
-        *reinterpret_cast<const MS2Ptr<AutomaticCreateCubeInfo>*>(pVal)).first._Ptr;
-    return pOut;
-}
-
-// MS2-FUNCTIONAL: insert inline instead of through _Insert_nohint 0x14110f130; stores only the iterator
-// @0x14111d3b0
-void FUN_14111d3b0(Unk_CMISTree<284>* pSet, Unk_CMISIter<284>* pOut, Unk_CMISSlot* pVal)
-{
-    *(void**)pOut = reinterpret_cast<Unk_CMISFuncCubeSet*>(pSet)->insert(
-        *reinterpret_cast<const MS2Ptr<CFunctionCubeObject>*>(pVal)).first._Ptr;
-}
-
-// MS2-FUNCTIONAL: insert inline instead of through _Insert_nohint 0x14110f540; stores only the iterator
-// @0x14111d3f0
-Unk_CMISIter<256>* FUN_14111d3f0(Unk_CMISTree<256>* pSet, Unk_CMISIter<256>* pOut, const Unk_CMISEntityRef* pId)
-{
-    *(void**)pOut = reinterpret_cast<Unk_CMISEntityIdSet*>(pSet)->insert(
-        *reinterpret_cast<const egf::EntityID*>(pId)).first._Ptr;
-    return pOut;
-}
+// The set insert(const&) instances cubemapinformationservice_3 calls by address (FUN_14111d290/d370/d3b0/d3f0); each is
+// return _Insert_nohint(false, val, _Not_a_node_tag()) and is emitted by the force-instantiation block above.
+// MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$CustomAllocator@H@efd@@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@std@@_N@1@AEBH@Z 0x14111d290 ; sft: efd::set<int> insert(const&)
+// MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@U?$less@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@std@@V?$CustomAllocator@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@efd@@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@std@@@std@@@std@@_N@1@AEBV?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@Z 0x14111d370 ; sft: efd::set<MS2Ptr<AutomaticCreateCubeInfo>> insert(const&)
+// MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@V?$MS2Ptr@VCFunctionCubeObject@@@@U?$less@V?$MS2Ptr@VCFunctionCubeObject@@@@@std@@V?$allocator@V?$MS2Ptr@VCFunctionCubeObject@@@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VCFunctionCubeObject@@@@@std@@@std@@@std@@_N@1@AEBV?$MS2Ptr@VCFunctionCubeObject@@@@@Z 0x14111d3b0 ; sft: std::set<MS2Ptr<CFunctionCubeObject>> insert(const&)
+// MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@VEntityID@egf@@@efd@@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@std@@_N@1@AEBVEntityID@egf@@@Z 0x14111d3f0 ; sft: efd::set<EntityID> insert(const&)
 
 // MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBJ@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@JV?$MS2Ptr@VCube@@@@U?$less@J@std@@V?$CustomAllocator@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBJ@1@$$QEAV?$tuple@$$V@1@@Z 0x14111c650 ; la1: the efd::map<long,MS2Ptr<Cube>> (column map, operator[] 0x141128350) chain

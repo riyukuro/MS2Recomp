@@ -38,7 +38,7 @@ int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut)
 int FUN_1413b1fc0(Unk_140165cf0* pElem, const char* pszName, int& nOut);
 void FUN_1412751b0(const CStringW& text, int a);                        // the debug log
 
-char FUN_1405c7ba0(const Unk_GeRange* pRange);                          // is set
+bool FUN_1405c7ba0(const Unk_GeRange* pRange);                          // is set
 int FUN_1413b1d60(class Unk_140165cf0*, char const*, void*);   // C3: was FUN_1413b1d60
 class Unk_ImNullableInt   // C3: member view for the former free stand-ins
 {
@@ -60,8 +60,8 @@ class Unk_GeMgr
 {
 public:
     void FUN_14138d7e0(int nId, int nValue);
-    char FUN_14138c0d0(int nTrigger, Unk_GcOptInt oValue, Unk_GcOptInt oSubValue);
-    char FUN_14138c210(int nTrigger, const Unk_GeRange& range);
+    bool FUN_14138c0d0(int nTrigger, Unk_GcOptInt oValue, Unk_GcOptInt oSubValue);
+    bool FUN_14138c210(int nTrigger, const Unk_GeRange& range);
 };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
@@ -446,9 +446,9 @@ void CGuideConditionTrigger::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413a5bb0
 int CGuideConditionTrigger::vfunc_3()
 {
-    if (FUN_1405c7ba0(&m_range) == 0)
-        return FUN_1413a55a0(((class Unk_GeMgr*)FUN_1409331e0())->FUN_14138c0d0(m_n28, m_a, m_b) != 0);
-    return FUN_1413a55a0(((class Unk_GeMgr*)FUN_1409331e0())->FUN_14138c210(m_n28, m_range) != 0);
+    if (FUN_1405c7ba0(&m_range))
+        return FUN_1413a55a0(((class Unk_GeMgr*)FUN_1409331e0())->FUN_14138c210(m_n28, m_range) != 0);
+    return FUN_1413a55a0(((class Unk_GeMgr*)FUN_1409331e0())->FUN_14138c0d0(m_n28, m_a, m_b) != 0);
 }
 
 // @0x1413a5c80
@@ -586,15 +586,17 @@ int CGuideEntity::CheckCancel(unsigned* pnFailed)
 // @0x1413a2f30
 void CGuideEntity::GetFailedText(CStringW& strOut, bool bTrigger, unsigned nIdx)
 {
-    if (!bTrigger)
+    if (bTrigger)
     {
-        if (nIdx < m_condOpen.FUN_1413886d0())
-            strOut = m_condOpen.FUN_141387b40(nIdx).FUN_141387bb0()->vfunc_7();
+        if (nIdx >= m_condTrigger.FUN_1413886d0())
+            return;
+        strOut = m_condTrigger.FUN_141387b40(nIdx).FUN_141387bb0()->vfunc_7();
     }
     else
     {
-        if (nIdx < m_condTrigger.FUN_1413886d0())
-            strOut = m_condTrigger.FUN_141387b40(nIdx).FUN_141387bb0()->vfunc_7();
+        if (nIdx >= m_condOpen.FUN_1413886d0())
+            return;
+        strOut = m_condOpen.FUN_141387b40(nIdx).FUN_141387bb0()->vfunc_7();
     }
 }
 
@@ -704,10 +706,10 @@ void CGuideEntity::MoveStartedConditions()
     Unk_GcCondList keep;
     for (unsigned i = 0; i < m_condOpen.FUN_1413886d0(); ++i)
     {
-        if (m_condOpen.FUN_141387b40(i).FUN_141387bb0()->m_n18 == 0)
-            keep.FUN_141388460(m_condOpen.FUN_141387b40(i));
-        else
+        if (m_condOpen.FUN_141387b40(i).FUN_141387bb0()->m_n18 != 0)
             m_condTrigger.FUN_141388460(m_condOpen.FUN_141387b40(i));
+        else
+            keep.FUN_141388460(m_condOpen.FUN_141387b40(i));
     }
     GE_REFS(m_condOpen).RemoveAll();
     GE_REFS(m_condOpen).Append(GE_REFS(keep));
@@ -765,8 +767,8 @@ void CGuideEntity::PruneConditions(Unk_GcCondList& list)
         if (!list.FUN_141387b40(i).FUN_141387bb0()->vfunc_6(&keep))
             keep.FUN_141388460(list.FUN_141387b40(i));
     }
-    GE_REFS(list).RemoveAll();
-    GE_REFS(list).Append(GE_REFS(keep));
+    reinterpret_cast<ATL::CAtlArray<Unk_GcCondRef>&>(list).RemoveAll();
+    reinterpret_cast<ATL::CAtlArray<Unk_GcCondRef>&>(list).Append(GE_REFS(keep));
 }
 
 // @0x1413a3be0

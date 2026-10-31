@@ -1252,7 +1252,6 @@ class Unk_FeatureFlags;
 Unk_FeatureFlags* FUN_140166410();
 unsigned char FUN_14036d570(Unk_FeatureFlags* pFlags, int nFeature);
 
-// MS2-FUNCTIONAL: stack temporaries of the XML loader (default-string and condition-loop slots) differ.
 // @0x1407495d0
 bool CQuestData::Load(Unk_140165cf0* pElem)
 {
@@ -1358,8 +1357,7 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
     for (Unk_140165cf0* pCond = pElem->FUN_140165cf0("condition"); pCond != 0; pCond = pCond->FUN_140168650("condition"))
     {
         MS2Ptr<CConditionCommonData> spCond(new CConditionCommonData());
-        unsigned nQuestId = FUN_14074b030(this);
-        if (spCond->Load(reinterpret_cast<Unk_ConditionXml*>(pCond), CStringW(L"QuestData"), nQuestId) == 0)
+        if (spCond->Load(reinterpret_cast<Unk_ConditionXml*>(pCond), L"QuestData", FUN_14074b030(this)) == 0)
             continue;
         unsigned nIndex = (unsigned)m_conditions.GetCount();
         m_conditions.Add(spCond);

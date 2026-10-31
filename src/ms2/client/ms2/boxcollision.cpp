@@ -195,5 +195,4 @@ void CBoxCollision::vfunc_5()
 MS2_REPLACE_METHOD(0x140ADAE20, CBoxCollision, vfunc_5, 2545, 0xD923878B);
 
 // The UCRT's `static __inline memmove_s` of this TU (0x140add440, no caller left in the exe; kept alive by the pointer below).
-// MS2-FUNCTIONAL memmove_s: CRT memmove_s copy: source spelling may differ
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnBoxCollisionMemmoveS)(void*, size_t, const void*, size_t) = &memmove_s;

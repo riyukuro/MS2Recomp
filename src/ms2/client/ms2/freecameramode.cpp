@@ -62,14 +62,18 @@ public:
 private:
     char m_pad_00[0x90];
 };
-void* FUN_14086e090(void* pParent, Unk_TiXmlElement* pChild);       // LinkEndChild
+class TiXmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class TiXmlNode* LinkEndChild(class TiXmlNode*);
+};
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
-void FUN_140873e30(Unk_TiXmlElement* pElem, const char* pszName, float fValue);   // SetFloatAttribute
-void FUN_140873ca0(Unk_TiXmlElement* pElem, const char* pszName, int nValue);     // SetAttribute
+void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
+void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 // The exe writes NiPoint3 attributes: each efd::Point3 converts through the out-of-line NiPoint3(const efd::Point3&).
 struct Unk_FcNiPoint3 : public Vector3
 {
@@ -146,7 +150,7 @@ void CFreeCameraMode::vfunc_8(double fTime)
                     TiXmlDocument doc;
                     if (!doc.FUN_140870fc0("./data/xml/camera/customize.xml", 0))
                     {
-                        FUN_14086e090(&doc, new Unk_TiXmlElement("ms2"));
+                        ((void*)((class TiXmlNode*)(void*)(&doc))->LinkEndChild((class TiXmlNode*)(new Unk_TiXmlElement("ms2"))));
                     }
                     Unk_TiXmlElement* pMs2 = ((class Unk_TiXmlElement*)((class Unk_XmlNode*)(class TiXmlDocument*)(&doc))->FirstChild("ms2"));
                     if (pMs2 != 0)
@@ -154,11 +158,11 @@ void CFreeCameraMode::vfunc_8(double fTime)
                         Vector3 ptDir = FUN_1409f2540().FUN_140965c40(pActor->vfunc_18());
                         float fDist = ptDir.FUN_140968990();
                         Unk_TiXmlElement* pCamera = new Unk_TiXmlElement("camera");
-                        FUN_14086e090(pMs2, pCamera);
-                        FUN_140873e30(pCamera, "fov", spOption.FUN_140885340()->m_1f4);
-                        FUN_140873e30(pCamera, "distance", fDist);
-                        FUN_140873ca0(pCamera, "zoomIn", 50);
-                        FUN_140873ca0(pCamera, "zoomOut", 150);
+                        ((void*)((class TiXmlNode*)(void*)(pMs2))->LinkEndChild((class TiXmlNode*)(pCamera)));
+                        XmlSetAttr((class TiXmlElement*)(pCamera), "fov", spOption.FUN_140885340()->m_1f4);
+                        XmlSetAttr((class TiXmlElement*)(pCamera), "distance", fDist);
+                        XmlSetAttr((class TiXmlElement*)(pCamera), "zoomIn", 50);
+                        XmlSetAttr((class TiXmlElement*)(pCamera), "zoomOut", 150);
                         FUN_140874ad0(pCamera, "direction", ptDir);
                         FUN_140874ad0(pCamera, "rotation", FUN_140af8260());
                         FUN_140870f90(&doc);

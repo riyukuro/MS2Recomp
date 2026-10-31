@@ -13,7 +13,6 @@
 #include "hook/ms2hook.h"
 
 // ---- unrecovered neighbours -------------------------------------------------------------------------------------
-typedef unsigned char Unk_Bytes;                 // opaque
 void* FUN_1402bcfa0(void* out, unsigned long v);        // Unk_Hex32::Unk_Hex32(ulong)
 void* FUN_1402bd000(void* out, int v);                  // Unk_Fixed32::Unk_Fixed32(int)
 __int64 FUN_14028d260(float v);                             // float -> fixed
@@ -24,22 +23,16 @@ const int* FUN_1402fbd20(const int* a, const int* b);   // std::min<int>
 CString* FUN_140164930(void* arr, __int64 i);           // operator[]
 void* FUN_1406c4730(void* out);                         // Unk_DateTime default
 void* FUN_1406c47d0(void* out, int y, int m, int d, int h, int mi, int s);   // CMsTime(y,m,d,h,mi,s) (6 ints; no DST arg, sb2)
-void* FUN_140182ea0(void* s);   void FUN_140183b60(void* s);   void FUN_140178270(const CString* in, void* tmp, const char* sep);
-void* FUN_140182ed0(void* s);   void FUN_140183b90(void* s);   void FUN_1401783d0(const CString* in, void* tmp, const char* sep);
+void FUN_140178270(const CString* in, void* tmp, const char* sep);
+void FUN_1401783d0(const CString* in, void* tmp, const char* sep);
 void FUN_1402929a0(const CStringW* in, void* tmp, const wchar_t* sep);   // wide (commonutil.cpp)
 CStringA FUN_14016a600(const wchar_t* s, int nCodePage);
 CStringW FUN_14016a730(const char* s, int nCodePage);
-void* FUN_14050dba0(void* dst, void* alloc);
-void FUN_1403b9f30(void* dst, void* src);
 char FUN_1402c12b0(void* arr, unsigned __int64 n);
 void FUN_140159b70(long hr);
 void* FUN_140159860(unsigned __int64 n, void* p);
 
 // ---- in this unit (declarations for forward use) -------------------------------------------------------------------
-void* FUN_14071a200(void* p);
-void* FUN_14071a210(void* p);
-void FUN_14071a3f0(void* dst, void* src, char tag);
-void FUN_14071a4d0(void* dst, void* src);
 void* FUN_14071a2c0(void* p);
 void* FUN_14071a2e0(void* p);
 unsigned __int64 FUN_14071a340(void* arr, int v);
@@ -48,7 +41,6 @@ void FUN_140719c30(const CString* s, void* arr, const char* sep);
 void FUN_140719c60(const CString* s, void* arr, const char* sep);
 CMsTime FUN_140718920(const CString& s);
 ATL::CTimeSpan FUN_140718cd0(const CString& s);
-void* FUN_14071a240(void* dst, void* src);
 
 // @0x1407186f0
 MS2Colors FUN_1407186f0(const CString& s) {
@@ -141,31 +133,24 @@ ATL::CTimeSpan FUN_140718d00(const CString& s) {
 }
 
 // @0x140718f90
-void* FUN_140718f90(void* ret, const CString* s) {
-    Unk_Bytes tmp[0x28];
-    FUN_140182ea0(tmp);
-    FUN_140178270(s, tmp, ",");
-    FUN_14071a240(ret, tmp);
-    FUN_140183b60(tmp);
-    return ret;
+std::vector<int> FUN_140718f90(const CString& s) {
+    std::vector<int> v;
+    FUN_140178270(&s, &v, ",");
+    return v;
 }
 // @0x140719010
-void* FUN_140719010(void* ret, const CString* s) {
-    Unk_Bytes tmp[0x28];
-    FUN_140182ed0(tmp);
-    FUN_1401783d0(s, tmp, ",");
-    FUN_14071a240(ret, tmp);
-    FUN_140183b90(tmp);
-    return ret;
+std::vector<unsigned int> FUN_140719010(const CString& s) {
+    std::vector<unsigned int> v;
+    FUN_1401783d0(&s, &v, ",");
+    return v;
 }
+// The exe parses into a std::vector<unsigned int> and returns it through the move ctor the linker folded with
+// vector<int>'s (0x14071a240); astooltip declares it as returning std::vector<int>.
 // @0x140719090
-void* FUN_140719090(void* ret, const CStringW* s) {
-    Unk_Bytes tmp[0x28];
-    FUN_140182ed0(tmp);
-    FUN_1402929a0(s, tmp, L",");
-    FUN_14071a240(ret, tmp);
-    FUN_140183b90(tmp);
-    return ret;
+std::vector<int> FUN_140719090(const CStringW& s) {
+    std::vector<unsigned int> v;
+    FUN_1402929a0(&s, &v, L",");
+    return reinterpret_cast<std::vector<int>&&>(v);
 }
 
 // ---- number / bool / float -> text (narrow) -------------------------------------------------------------------------
@@ -240,19 +225,10 @@ void FUN_140719c60(const CString* s, void* arr, const char* sep) {
 }
 
 // @0x14071a1e0 ... small helpers
-// @0x14071a200
-void* FUN_14071a200(void* p) { return p; }
-// @0x14071a210
-void* FUN_14071a210(void* p) { return p; }
-// vector(vector&&): allocator copy, then steal the three pointers
-// @0x14071a240
-void* FUN_14071a240(void* dst, void* src) {
-    void* al = FUN_14071a200(((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Getal()));
-    FUN_14050dba0(dst, al);
-    char tag = 0;
-    FUN_14071a3f0(dst, FUN_14071a210(src), tag);
-    return dst;
-}
+// std::vector<int>(vector&&) and its helpers, emitted by FUN_140718f90's return.
+// MS2-PIN: ??$move@AEAV?$allocator@H@std@@@std@@YA$$QEAV?$allocator@H@0@AEAV10@@Z 0x14071a200 ; sfb: std::move<allocator<int>&>
+// MS2-PIN: ??$move@AEAV?$vector@HV?$allocator@H@std@@@std@@@std@@YA$$QEAV?$vector@HV?$allocator@H@std@@@0@AEAV10@@Z 0x14071a210 ; sfb: std::move<vector<int>&>
+// MS2-PIN: ??0?$vector@HV?$allocator@H@std@@@std@@QEAA@$$QEAV01@@Z 0x14071a240 ; sfb: vector<int>(vector&&)
 // @0x14071a2c0
 void* FUN_14071a2c0(void* p) { *(__int64*)p = 0; return p; }
 // @0x14071a2e0
@@ -273,21 +249,8 @@ unsigned __int64 FUN_14071a340(void* arr, int v) {
     ((Unk_IntAtlArray*)arr)->m_nSize++;
     return idx;
 }
-// vector move: takes the three pointers of src
-// @0x14071a3f0
-void FUN_14071a3f0(void* dst, void* src, char tag) {
-    FUN_14071a4d0(dst, src);
-    *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(dst))->_Myfirst()) = *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Myfirst());
-    *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(dst))->_Mylast()) = *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Mylast());
-    *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(dst))->_Myend()) = *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Myend());
-    *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Myfirst()) = 0;
-    *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Mylast()) = 0;
-    *(void**)((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Myend()) = 0;
-}
-// @0x14071a4d0
-void FUN_14071a4d0(void* dst, void* src) {
-    FUN_1403b9f30(((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(dst))->_Get_data()), ((void*)&((std::_Vector_alloc<std::_Vec_base_types<int, std::allocator<int>>>*)(void*)(src))->_Get_data()));
-}
+// MS2-PIN: ?_Move_from@?$vector@HV?$allocator@H@std@@@std@@AEAAX$$QEAV12@U?$integral_constant@_N$00@2@@Z 0x14071a3f0 ; sfb: vector<int>::_Move_from
+// MS2-PIN: ?_Swap_all@?$_Vector_alloc@U?$_Vec_base_types@HV?$allocator@H@std@@@std@@@std@@QEAAXAEAV12@@Z 0x14071a4d0 ; sfb: _Vector_alloc<int>::_Swap_all
 // @0x14071a520
 CString FUN_14071a520(const CStringA& name) {
     CString s;

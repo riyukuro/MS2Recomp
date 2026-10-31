@@ -42,10 +42,14 @@ public:
     void* FUN_1416a3a90(int nId);
     void FUN_1416a3920(int nId, bool bOn);
 };
-Unk_PostProcessSvc* FUN_1409a8b20();
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
 
 // Global shader constant setters (validate, then NiShaderFactory::UpdateGlobalShaderConstant). The float one lives in
@@ -123,7 +127,7 @@ void FUN_140c8f490(Unk_PPSmartC spTexture)
 {
     if (s_pkShimmerProp != 0)
     {
-        void* pStep = FUN_1409a8b20()->FUN_1416a3a90(0x12);
+        void* pStep = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3a90(0x12);
         if (pStep != 0)
         {
             s_shimmerTexture = spTexture;
@@ -220,10 +224,10 @@ PostShimmerEffectParam::PostShimmerEffectParam()
 void PostShimmerEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CPostEffectParam::vfunc_1(pNode);
-    FUN_140873360(pNode, "blendingMin", m_fBlendingMin);
-    FUN_140873360(pNode, "blendingMax", m_fBlendingMax);
-    FUN_140873360(pNode, "moveX", m_fMoveX);
-    FUN_140873360(pNode, "moveY", m_fMoveY);
+    XmlGetAttr((class TiXmlElement*)(pNode), "blendingMin", m_fBlendingMin);
+    XmlGetAttr((class TiXmlElement*)(pNode), "blendingMax", m_fBlendingMax);
+    XmlGetAttr((class TiXmlElement*)(pNode), "moveX", m_fMoveX);
+    XmlGetAttr((class TiXmlElement*)(pNode), "moveY", m_fMoveY);
     FUN_1408733e0(pNode, "texture", m_strTexture);
 }
 MS2_REPLACE_METHOD(0x140c8fa20, PostShimmerEffectParam, vfunc_1, 179, 0xCCA48F6B);
@@ -257,7 +261,7 @@ void PostShimmerEffect::vfunc_1()
 {
     CScreenEffectBase::vfunc_1();
     m_dStart = m_dStartTime;
-    FUN_1409a8b20()->FUN_1416a3920(0x12, true);
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(0x12, true);
     float fBlend = 0.0f;
     CString strPath;
     strPath.Format("%s/Image/ScreenMask/%s", (const char*)FUN_14086d260()->GetDataPath(), (const char*)m_strTexture);
@@ -286,7 +290,7 @@ MS2_REPLACE_METHOD(0x140c8fdf0, PostShimmerEffect, vfunc_2, 139, 0x7171511D);
 void PostShimmerEffect::vfunc_4()
 {
     CScreenEffectBase::vfunc_4();
-    FUN_1409a8b20()->FUN_1416a3920(0x12, false);
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(0x12, false);
 }
 MS2_REPLACE_METHOD(0x140c8fe90, PostShimmerEffect, vfunc_4, 45, 0xB9116348);
 

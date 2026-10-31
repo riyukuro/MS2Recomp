@@ -118,3 +118,8 @@ void* FUN_141145120(const Unk_ContA& o)
 {
     return (void*)&o;
 }
+// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@PEAVCube@@V?$CustomAllocator@PEAVCube@@@efd@@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@PEAVCube@@@std@@@2@XZ 0x141142f90 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
+// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@PEAVCube@@V?$CustomAllocator@PEAVCube@@@efd@@@std@@@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@PEAVCube@@@std@@@2@XZ 0x141142fb0 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
+// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@VNiTransform@@V?$CustomAllocator@VNiTransform@@@efd@@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@VNiTransform@@@std@@@2@XZ 0x141143010 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
+// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@VNiTransform@@V?$CustomAllocator@VNiTransform@@@efd@@@std@@@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@VNiTransform@@@std@@@2@XZ 0x141143030 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
+// MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@U?$less@_K@std@@V?$CustomAllocator@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@@efd@@$0A@@std@@@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@@std@@@2@XZ 0x1411444b0 ; sfk: byte-identical COMDAT fold (was the look-alike guess)

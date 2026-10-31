@@ -23,11 +23,11 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 
 // ---- out-of-unit callees (bound to the exe by name) ----
 const char* FUN_14086f4b0(Unk_140165cf0*, const char*);                  // Attribute(name)
-int FUN_140873220(Unk_140165cf0*, const char*, unsigned&);
-int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
-int FUN_140873260(Unk_140165cf0*, const char*, int&);
-int FUN_140873360(Unk_140165cf0*, const char*, float&);
-int FUN_1408730a0(Unk_140165cf0*, const char*, bool&);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, long&);   // C3: was FUN_140873260
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 CString FUN_140188f50(Unk_140165cf0*, int);                              // node text
@@ -207,52 +207,52 @@ bool CFieldDataCli::vfunc_1(Unk_140165cf0* node)
     Unk_140165cf0* pUi = node->FUN_140165cf0("ui");
     if (pUi) {
         FUN_1408733e0(pUi, "bgMask", m_strBgMask);
-        FUN_1408731e0(pUi, "vscroll", m_nVScroll);
-        FUN_1408731e0(pUi, "hscroll", m_nHScroll);
-        FUN_1408731e0(pUi, "useEffLight", m_nUseEffLight);
-        FUN_1408731e0(pUi, "fieldName", m_nFieldName);
-        FUN_1408731e0(pUi, "effectLOD", m_nEffectLOD);
-        FUN_140873260(pUi, "instancingGrid", m_nInstancingGrid);
-        FUN_1408731e0(pUi, "fallDamage", m_nFallDamage);
-        FUN_1408731e0(pUi, "useEPSkill", m_nUseEPSkill);
-        FUN_1408731e0(pUi, "useRidee", m_nUseRidee);
-        FUN_1408731e0(pUi, "usePet", m_nUsePet);
-        FUN_1408731e0(pUi, "globalNameTag", m_nGlobalNameTag);
-        FUN_1408731e0(pUi, "useOptimalHide", m_nUseOptimalHide);
-        FUN_1408731e0(pUi, "showHitEffect", m_nShowHitEffect);
-        FUN_1408731e0(pUi, "applyCameraOption", m_nApplyCameraOption);
-        FUN_140873360(pUi, "cameraExtraDistance", m_fCameraExtraDistance);
-        FUN_1408730a0(pUi, "isNoSkipFrame", m_bNoSkipFrame);
-        FUN_1408731e0(pUi, "autoFindTaxiStation", m_nAutoFindTaxiStation);
+        XmlGetAttr((class TiXmlElement*)(pUi), "vscroll", m_nVScroll);
+        XmlGetAttr((class TiXmlElement*)(pUi), "hscroll", m_nHScroll);
+        XmlGetAttr((class TiXmlElement*)(pUi), "useEffLight", m_nUseEffLight);
+        XmlGetAttr((class TiXmlElement*)(pUi), "fieldName", m_nFieldName);
+        XmlGetAttr((class TiXmlElement*)(pUi), "effectLOD", m_nEffectLOD);
+        XmlGetAttr((class TiXmlElement*)(pUi), "instancingGrid", *(long*)&static_cast<int&>(m_nInstancingGrid));
+        XmlGetAttr((class TiXmlElement*)(pUi), "fallDamage", m_nFallDamage);
+        XmlGetAttr((class TiXmlElement*)(pUi), "useEPSkill", m_nUseEPSkill);
+        XmlGetAttr((class TiXmlElement*)(pUi), "useRidee", m_nUseRidee);
+        XmlGetAttr((class TiXmlElement*)(pUi), "usePet", m_nUsePet);
+        XmlGetAttr((class TiXmlElement*)(pUi), "globalNameTag", m_nGlobalNameTag);
+        XmlGetAttr((class TiXmlElement*)(pUi), "useOptimalHide", m_nUseOptimalHide);
+        XmlGetAttr((class TiXmlElement*)(pUi), "showHitEffect", m_nShowHitEffect);
+        XmlGetAttr((class TiXmlElement*)(pUi), "applyCameraOption", m_nApplyCameraOption);
+        XmlGetAttr((class TiXmlElement*)(pUi), "cameraExtraDistance", m_fCameraExtraDistance);
+        XmlGetAttr((class TiXmlElement*)(pUi), "isNoSkipFrame", m_bNoSkipFrame);
+        XmlGetAttr((class TiXmlElement*)(pUi), "autoFindTaxiStation", m_nAutoFindTaxiStation);
         FUN_1408733e0(pUi, "mapEffectId", m_strMapEffectId);
     }
     Unk_140165cf0* pBgm = node->FUN_140165cf0("bgm");
     if (pBgm) {
-        FUN_140873220(pBgm, "id", m_nBgmId);
-        FUN_140873220(pBgm, "param", m_nBgmParam);
-        FUN_140873360(pBgm, "value", m_fBgmValue);
-        FUN_140873220(pBgm, "boss", m_nBossBgmId);
-        FUN_140873220(pBgm, "bossParam", m_nBossBgmParam);
-        FUN_140873360(pBgm, "bossValue", m_fBossBgmValue);
+        XmlGetAttr((class TiXmlElement*)(pBgm), "id", m_nBgmId);
+        XmlGetAttr((class TiXmlElement*)(pBgm), "param", m_nBgmParam);
+        XmlGetAttr((class TiXmlElement*)(pBgm), "value", m_fBgmValue);
+        XmlGetAttr((class TiXmlElement*)(pBgm), "boss", m_nBossBgmId);
+        XmlGetAttr((class TiXmlElement*)(pBgm), "bossParam", m_nBossBgmParam);
+        XmlGetAttr((class TiXmlElement*)(pBgm), "bossValue", m_fBossBgmValue);
         FUN_1408733e0(pBgm, "enterSystemSound", m_strEnterSystemSound);
     }
     Unk_140165cf0* pHdr = node->FUN_140165cf0("hdr");
     if (pHdr) {
         m_bHdr = true;
-        FUN_140873360(pHdr, "threshold", m_fHdrThreshold);
-        FUN_140873360(pHdr, "offset", m_fHdrOffset);
-        FUN_140873360(pHdr, "middlegray", m_fHdrMiddleGray);
-        FUN_140873360(pHdr, "bloomscale", m_fHdrBloomScale);
-        FUN_140873360(pHdr, "glowscale", m_fHdrGlowScale);
+        XmlGetAttr((class TiXmlElement*)(pHdr), "threshold", m_fHdrThreshold);
+        XmlGetAttr((class TiXmlElement*)(pHdr), "offset", m_fHdrOffset);
+        XmlGetAttr((class TiXmlElement*)(pHdr), "middlegray", m_fHdrMiddleGray);
+        XmlGetAttr((class TiXmlElement*)(pHdr), "bloomscale", m_fHdrBloomScale);
+        XmlGetAttr((class TiXmlElement*)(pHdr), "glowscale", m_fHdrGlowScale);
     }
     Unk_140165cf0* pCamera = node->FUN_140165cf0("camera");
     if (pCamera) {
-        FUN_140873360(pCamera, "distance", m_fCameraDistance);
-        FUN_140873360(pCamera, "hangle", m_fCameraHAngle);
-        FUN_140873360(pCamera, "vangle", m_fCameraVAngle);
-        FUN_140873360(pCamera, "zoomOutHeightOffset", m_fZoomOutHeightOffset);
-        FUN_140873360(pCamera, "zoomInHeightOffset", m_fZoomInHeightOffset);
-        FUN_1408730a0(pCamera, "useFileSetting", m_bUseFileSetting);
+        XmlGetAttr((class TiXmlElement*)(pCamera), "distance", m_fCameraDistance);
+        XmlGetAttr((class TiXmlElement*)(pCamera), "hangle", m_fCameraHAngle);
+        XmlGetAttr((class TiXmlElement*)(pCamera), "vangle", m_fCameraVAngle);
+        XmlGetAttr((class TiXmlElement*)(pCamera), "zoomOutHeightOffset", m_fZoomOutHeightOffset);
+        XmlGetAttr((class TiXmlElement*)(pCamera), "zoomInHeightOffset", m_fZoomInHeightOffset);
+        XmlGetAttr((class TiXmlElement*)(pCamera), "useFileSetting", m_bUseFileSetting);
         Unk_140165cf0* t = (Unk_140165cf0*)FUN_14086f4b0(pCamera, "dummyTargetPos");
         if (t) {
             FUN_141b6ed40(FUN_140188f50(t, 0), &m_vecDummyTargetPos);
@@ -264,18 +264,18 @@ bool CFieldDataCli::vfunc_1(Unk_140165cf0* node)
     }
     Unk_140165cf0* pShadow = node->FUN_140165cf0("shadow");
     if (pShadow) {
-        FUN_140873360(pShadow, "intensity", m_fShadowIntensity);
-        FUN_140873360(pShadow, "simpleshadow", m_fShadowSimple);
+        XmlGetAttr((class TiXmlElement*)(pShadow), "intensity", m_fShadowIntensity);
+        XmlGetAttr((class TiXmlElement*)(pShadow), "simpleshadow", m_fShadowSimple);
         FUN_140a56ad0(pShadow, "optionHighLevel", m_nShadowOptionHighLevel);
     }
     Unk_140165cf0* pFov = node->FUN_140165cf0("fov");
     if (pFov) {
-        FUN_140873360(pFov, "value", m_fFov);
+        XmlGetAttr((class TiXmlElement*)(pFov), "value", m_fFov);
     }
     Unk_140165cf0* pOptimize = node->FUN_140165cf0("optimize");
     if (pOptimize) {
-        FUN_1408730a0(pOptimize, "fastglow", m_bFastGlow);
-        FUN_1408731e0(pOptimize, "fastshimmer", m_nFastShimmer);
+        XmlGetAttr((class TiXmlElement*)(pOptimize), "fastglow", m_bFastGlow);
+        XmlGetAttr((class TiXmlElement*)(pOptimize), "fastshimmer", m_nFastShimmer);
     }
     LoadXBlock();
     return true;
@@ -323,12 +323,12 @@ int FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli> sp)
         }
         Unk_140165cf0* fr = node->FUN_140165cf0("frustum");
         if (fr) {
-            FUN_140873360(fr, "left", spMM->m_frustum.l);
-            FUN_140873360(fr, "right", spMM->m_frustum.r);
-            FUN_140873360(fr, "top", spMM->m_frustum.t);
-            FUN_140873360(fr, "bottom", spMM->m_frustum.b);
-            FUN_140873360(fr, "near", spMM->m_frustum.n);
-            FUN_140873360(fr, "far", spMM->m_frustum.f);
+            XmlGetAttr((class TiXmlElement*)(fr), "left", spMM->m_frustum.l);
+            XmlGetAttr((class TiXmlElement*)(fr), "right", spMM->m_frustum.r);
+            XmlGetAttr((class TiXmlElement*)(fr), "top", spMM->m_frustum.t);
+            XmlGetAttr((class TiXmlElement*)(fr), "bottom", spMM->m_frustum.b);
+            XmlGetAttr((class TiXmlElement*)(fr), "near", spMM->m_frustum.n);
+            XmlGetAttr((class TiXmlElement*)(fr), "far", spMM->m_frustum.f);
             const char* s = FUN_14086f4b0(fr, "ortho");
             if (s) {
                 if (strcmp(s, "true") == 0)
@@ -337,10 +337,10 @@ int FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli> sp)
         }
         Unk_140165cf0* sc = node->FUN_140165cf0("screen");
         if (sc) {
-            FUN_140873360(sc, "left", spMM->m_rcScreen.l);
-            FUN_140873360(sc, "right", spMM->m_rcScreen.r);
-            FUN_140873360(sc, "top", spMM->m_rcScreen.t);
-            FUN_140873360(sc, "bottom", spMM->m_rcScreen.b);
+            XmlGetAttr((class TiXmlElement*)(sc), "left", spMM->m_rcScreen.l);
+            XmlGetAttr((class TiXmlElement*)(sc), "right", spMM->m_rcScreen.r);
+            XmlGetAttr((class TiXmlElement*)(sc), "top", spMM->m_rcScreen.t);
+            XmlGetAttr((class TiXmlElement*)(sc), "bottom", spMM->m_rcScreen.b);
         }
         Unk_140165cf0* im = node->FUN_140165cf0("image");
         if (im) {
@@ -348,10 +348,10 @@ int FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli> sp)
                 spMM->m_strImageIcon = FUN_14086f4b0(im, "icon");
                 spMM->m_strImageName = FUN_14086f4b0(im, "name");
             }
-            FUN_140873360(im, "left", spMM->m_rcImage.l);
-            FUN_140873360(im, "right", spMM->m_rcImage.r);
-            FUN_140873360(im, "top", spMM->m_rcImage.t);
-            FUN_140873360(im, "bottom", spMM->m_rcImage.b);
+            XmlGetAttr((class TiXmlElement*)(im), "left", spMM->m_rcImage.l);
+            XmlGetAttr((class TiXmlElement*)(im), "right", spMM->m_rcImage.r);
+            XmlGetAttr((class TiXmlElement*)(im), "top", spMM->m_rcImage.t);
+            XmlGetAttr((class TiXmlElement*)(im), "bottom", spMM->m_rcImage.b);
         }
         Unk_140165cf0* vis = node->FUN_140165cf0("visible");
         if (vis) {
@@ -371,7 +371,7 @@ int FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli> sp)
         }
         Unk_140165cf0* zm = node->FUN_140165cf0("edit");
         if (zm) {
-            FUN_140873360(zm, "zoomfactor", spMM->m_fZoomFactor);
+            XmlGetAttr((class TiXmlElement*)(zm), "zoomfactor", spMM->m_fZoomFactor);
         }
         return 1;
     }
@@ -396,8 +396,8 @@ bool CFieldDataCli::LoadXBlock()
         if (c) {
             m_nFogColor = FUN_14028c0d0(CString(c));
         }
-        FUN_140873360(fog, "near", m_fFogNear);
-        FUN_140873360(fog, "far", m_fFogFar);
+        XmlGetAttr((class TiXmlElement*)(fog), "near", m_fFogNear);
+        XmlGetAttr((class TiXmlElement*)(fog), "far", m_fFogFar);
     }
     Unk_140165cf0* hf = root->FUN_140165cf0("heightfog");
     if (hf) {
@@ -406,9 +406,9 @@ bool CFieldDataCli::LoadXBlock()
         if (c) {
             m_nHeightFogColor = FUN_14028c0d0(CString(c));
         }
-        FUN_140873360(hf, "upper", m_fHeightFogUpper);
-        FUN_140873360(hf, "lower", m_fHeightFogLower);
-        FUN_140873360(hf, "percentage", m_fHeightFogPercentage);
+        XmlGetAttr((class TiXmlElement*)(hf), "upper", m_fHeightFogUpper);
+        XmlGetAttr((class TiXmlElement*)(hf), "lower", m_fHeightFogLower);
+        XmlGetAttr((class TiXmlElement*)(hf), "percentage", m_fHeightFogPercentage);
     } else {
         m_bHeightFog = false;
         m_nHeightFogColor = 0;

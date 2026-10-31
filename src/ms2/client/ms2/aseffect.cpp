@@ -55,7 +55,6 @@ class Unk_AsBuffInfo : public AdditionalLevelData
 {
 };
 MS2Ptr<ASMovieClip> FUN_1409b6610(int nMovieId, CString strClass, __int64 a1, int a2);   // new flash class object as a clip
-int FUN_1409e2750(ASTooltip* pTip, Unk_AsBuffInfo* pInfo, int nOwnerLevel, unsigned nRemain);    // fill the buff tooltip
 
 // ---- Delegate<void(const Params&)>: the out-of-line pieces (first used here) ----
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> Unk_AsDelegate;
@@ -233,7 +232,7 @@ MS2_REPLACE_METHOD(0x1409B3930, ASEffect, GetE4, 17, 0x798679FF);
 void ASEffect::GetTooltip(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ASTooltip tip(2);
-    FUN_1409e2750(&tip, m_buff->FUN_14096d810(), m_e0, m_buff->FUN_14096d2e0());
+    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e2750((void*)(m_buff->FUN_14096d810()), m_e0, m_buff->FUN_14096d2e0());
     *params.pRetVal = tip.FUN_1422bb870();
 }
 

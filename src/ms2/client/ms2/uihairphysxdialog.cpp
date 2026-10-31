@@ -95,8 +95,11 @@ public:
     void FUN_141adc5d0(int nId);                                // close
 };
 class Unk_HpxEquipSet : public CEquipment { };
-Unk_HpxEquipSet* FUN_1416561a0(PCBase* pPc);
-int FUN_14123c580(PCBase* pPc);                                 // object id
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    struct Unk_PCEquipSet* FUN_1416561a0();
+};
 void FUN_141901390(int bRelease, int nLayer);                   // the player key input layer
 void FUN_141695f10(PCBase* pPlayer, Unk_PickTarget** ppFirst, Unk_PickTarget** ppSecond);   // the two pony parts
 CKfmModel* FUN_1411de170(Unk_PickTarget* pPart);                // the part's model as a .kfm model
@@ -113,7 +116,7 @@ public:
     void* FUN_1416892a0(int nScene);                            // the scene
     void FUN_14168a570();                                       // unlock
 };
-CPhysXHelper* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);       // narrow a wide string
 CStringW FUN_14016a730(const char* psz, int nCodePage);         // widen a narrow string
 
@@ -202,7 +205,7 @@ void UIHairPhysxDialog::OnLoadComplete()
     pPc->FUN_14166d8e0(efd::Point3(0.0f, -1.0f, 0.0f));
     pPc->vfunc_59(0xe, 0, 0, 0);
     FUN_141901390(0, 0x3eb);
-    m_2c0.AssignRaw(new Customize(FUN_14123c580(pPc), static_cast<IItemCustomizeEventListener*>(this), 0));
+    m_2c0.AssignRaw(new Customize(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
     m_2c0->FUN_140cd2530(6);
     m_2c0->FUN_140cd25c0(1);
     reinterpret_cast<Unk_HpxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ef2);
@@ -364,15 +367,15 @@ void UIHairPhysxDialog::FUN_1419821d0(int nDebug)
         efd::utf8string strScene("PhysXItemSceneName");
         strScene = FUN_1414d7990(strScene);
         pService->SetDebugRender(strScene, bActive);
-        FUN_1409f7ca0()->FUN_14168a540(1);
-        void* pScene = FUN_1409f7ca0()->FUN_1416892a0(1);
+        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(1);
+        void* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_1416892a0(1);
         if (pScene != 0)
         {
             NxPhysicsSDK* pSDK = efdPhysX::PhysXSDKManager::GetManager()->m_pPhysXSDK;
             if (pSDK != 0)
                 pSDK->setParameter(NX_VISUALIZATION_SCALE, bActive ? 0.3f : 0.0f);
         }
-        FUN_1409f7ca0()->FUN_14168a570();
+        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
     }
 }
 MS2_REPLACE_METHOD(0x1419821D0, UIHairPhysxDialog, FUN_1419821d0, 377, 0x16028B66);
@@ -384,9 +387,9 @@ void UIHairPhysxDialog::FUN_141982350(int nOnly)
     if (!pPc)
         return;
     if (nOnly)
-        FUN_1416561a0(pPc)->FUN_1411e9190(1);
+        ((class Unk_HpxEquipSet*)((class PC*)(class PCBase*)(pPc))->FUN_1416561a0())->FUN_1411e9190(1);
     else
-        FUN_1416561a0(pPc)->FUN_1411e9190(0);
+        ((class Unk_HpxEquipSet*)((class PC*)(class PCBase*)(pPc))->FUN_1416561a0())->FUN_1411e9190(0);
 }
 MS2_REPLACE_METHOD(0x141982350, UIHairPhysxDialog, FUN_141982350, 98, 0xDC50BC62);
 
