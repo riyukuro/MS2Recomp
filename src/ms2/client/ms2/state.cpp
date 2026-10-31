@@ -101,6 +101,11 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/unnamed/unit_140ad1860.h"
+#include "ms2/client/ms2/groundeffectdata.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit statics (.text$di): the shared sort-name / skill / stun / condition header statics, included five times ----
 
@@ -193,14 +198,7 @@ public:
 void FUN_140710590(COutPacket& packet);
 extern unsigned char DAT_143ab2856;
 int FUN_141472bc0();
-class Unk_StClock
-{
-public:
-    int FUN_141473610();
-    float FUN_141473230();
-    double FUN_141473280();
-};
-Unk_StClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 class Unk_StPlayback { public: bool FUN_1406af100(); };     // replay / spectator mode
 Unk_StPlayback* FUN_1406aeee0();
 class Unk_StTraffic { public: unsigned FUN_14087d2f0(PCBase* pOwner); };
@@ -215,11 +213,10 @@ public:
 template <> MS2Ptr<Unk_RideeFieldObj>::~MS2Ptr();
 template <> Unk_RideeFieldObj* MS2Ptr<Unk_RideeFieldObj>::get() const;
 template <> Unk_RideeFieldObj* MS2Ptr<Unk_RideeFieldObj>::operator->() const;
-class Unk_StWorld
+class Unk_StWorld : public WorldService
 {
 public:
     MS2Ptr<Unk_RideeFieldObj> FUN_141bc4f10(egf::Entity* pEntity);
-    void* FUN_141bd0cc0();                              // the local player
     int FUN_141bd1a10(PCBase* pActor);
 };
 Unk_StWorld* FUN_1403ed2d0();
@@ -243,7 +240,6 @@ public:
     void FUN_1411a6060(int nHandle);                    // release
 };
 Unk_StEffects* FUN_1403ed280();
-StateEffectMgr* FUN_1414a5870();
 
 // Config tables.
 class Unk_StCfgValue { public: float FUN_1402bac70(); };
@@ -356,9 +352,6 @@ Unk_StAnimSvc* FUN_141b6f910();
 // PCBase non-virtuals that return structs (member form) and the free-function helpers.
 class Unk_StPC : public PCBase
 {
-public:
-    CString FUN_14166dc50();                            // current animation name
-    efd::Point3 FUN_141674b60(efd::Point3 kInput);      // input -> world direction
 };
 // A NiPoint3 (often the temporary returned by vfunc_18) viewed as the efd::Point3 the callee takes: cl binds the
 // temporary straight to the parameter, as in the exe. clang-cl refuses an rvalue reinterpret_cast, so it goes through a
@@ -427,13 +420,8 @@ egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
 int FUN_14028d260(float f);                             // round to ms
 egf::Entity* FUN_1408a9090(const void* pspEntity);      // SmartPointer<Entity> get
 float FUN_14028d3a0(float fDeg);
-float FUN_14096b1c0(float f);
-class Unk_StCamera { public: void FUN_140aeb880(float a, float b, float c); };
-Unk_StCamera* FUN_1409478c0();
-class Unk_StInput { public: int FUN_140ad21f0(); };
-Unk_StInput* FUN_140953f30();
+CameraMgr* FUN_1409478c0();
 class Unk_StSound { public: void FUN_141377420(PCBase* pOwner, CString strKey); };
-Unk_StSound* FUN_141475cf0();
 int FUN_140718170(const CStringA& str);
 
 template <> MS2Ptr<CSkillRecord>::MS2Ptr(const MS2Ptr& o);                               // 0x1409f71b0
@@ -549,7 +537,7 @@ void StateLocalController::vfunc_0()
     COutPacket packet(static_cast<int>(SendOp::UserSync), 0);
     packet.WriteUInt8(DAT_143ab2856);
     packet.WriteInt32(FUN_141472bc0());
-    packet.WriteInt32(FUN_14086d260()->FUN_141473610());
+    packet.WriteInt32(FUN_14086d260()->GetElapsedTime());
     packet.WriteUInt8((unsigned char)static_cast<View*>(this)->m_records.GetCount());
     for (POSITION pos = static_cast<View*>(this)->m_records.GetHeadPosition(); pos;
         static_cast<View*>(this)->m_records.GetNext(pos)) {
@@ -605,7 +593,7 @@ void StateRideeController::vfunc_0()
     COutPacket packet(static_cast<int>(SendOp::RideSync), 0);
     packet.WriteUInt8(DAT_143ab2856);
     packet.WriteInt32(FUN_141472bc0());
-    packet.WriteInt32(FUN_14086d260()->FUN_141473610());
+    packet.WriteInt32(FUN_14086d260()->GetElapsedTime());
     packet.WriteUInt8((unsigned char)static_cast<View*>(static_cast<StateLocalController*>(this))->m_records.GetCount());
     for (POSITION pos = static_cast<View*>(static_cast<StateLocalController*>(this))->m_records.GetHeadPosition(); pos;
         static_cast<View*>(static_cast<StateLocalController*>(this))->m_records.GetNext(pos)) {
@@ -993,7 +981,7 @@ int FUN_1417b90f0(CString strName)
 void State::FUN_1417b92a0()
 {
     FUN_1417b9310();
-    FUN_1414a5870()->GetEffects(m_pOwner, vfunc_1(), reinterpret_cast<Unk_StateEffectIdList*>(&m_ids));
+    TSingleton<StateEffectMgr>::GetInstance()->GetEffects(m_pOwner, vfunc_1(), reinterpret_cast<Unk_StateEffectIdList*>(&m_ids));
 }
 MS2_REPLACE_METHOD(0x1417b92a0, State, FUN_1417b92a0, 105, 0x48BDACAF);
 
@@ -1209,7 +1197,7 @@ void StateClimb::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceI
 {
     if (FUN_14166de90(m_pOwner, 0x18, eSequenceID) && kTextKey == "upLanding") {
         efd::Point3 kFacing = m_pOwner->FUN_14123cc20();
-        float fNow = FUN_14086d260()->FUN_141473230();
+        float fNow = FUN_14086d260()->GetLastGameTimeDelta();
         reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kFacing * 0.02f, fNow, 0, 0, 1);
     }
 }
@@ -1599,7 +1587,7 @@ MS2_REPLACE_METHOD(0x1417be880, StateClimb, FUN_1417be880, 258, 0x8A0801F8);
 // @0x1417be990
 int StateClimb::FUN_1417be990(double fTime)
 {
-    if (FUN_140953f30()->FUN_140ad21f0() == 0)
+    if (TSingleton<CMouseController>::GetInstance()->FUN_140ad21f0() == 0)
         return 0;
     switch (m_n10) {
     case 0x57:
@@ -1757,7 +1745,7 @@ void StateCrawl::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     int bFalling = FUN_141675ed0(m_pOwner);
-    static int s_nFallDelay = FUN_14028d260(FUN_14096b1c0(3.0f / FUN_14059d930(FUN_141240c40(true))));
+    static int s_nFallDelay = FUN_14028d260(sqrt(3.0f / FUN_14059d930(FUN_141240c40(true))));
     if (bFalling) {
         m_pOwner->vfunc_59(0x1b, 0, 0, 0);
     } else if (m_pOwner->vfunc_99(s_nFallDelay)) {
@@ -1917,7 +1905,7 @@ void StateDash::vfunc_9(double fTime)
         if (!FUN_14166de90(m_pOwner, 7, nSeq)) {
             FUN_14166dda0(m_pOwner, 7);
             m_pOwner->vfunc_93(true);
-            FUN_141475cf0()->FUN_141377420(m_pOwner, CString("land"));
+            reinterpret_cast<Unk_StSound*>(TSingleton<CGroundEffectDataManager>::GetInstance())->FUN_141377420(m_pOwner, CString("land"));
         }
         break;
     case 0x1d:

@@ -17,7 +17,7 @@
 // ---- unit-local views of callees emitted in other units ----
 
 CLogString* GetLogString();                                        // the log singleton
-void FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat);
+void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat);
 template<class T> inline void Unk_FileLog(CLogString* log, int level, int category, const wchar_t* format, const T& value) {
     const fmt::internal::ArgArray<1>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(value)};
     log->FUN_1406530d0(level, category, format, fmt::ArgList(fmt::internal::make_type(value), args));
@@ -84,7 +84,7 @@ bool CIgnoreFile::FUN_14050e4c0(std::string strPath, int nMode)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_1401859c0(GetLogString(), 1, 0x13, L"[IgnoreFile] xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4.\r\n");
+        Unk_AdditionalLog(GetLogString(), 1, 0x13, L"[IgnoreFile] xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4.\r\n");
         return false;
     }
     for (Unk_140165cf0* pExcept = pRoot->FUN_140165cf0("except"); pExcept != 0; pExcept = pExcept->FUN_140168650("except"))

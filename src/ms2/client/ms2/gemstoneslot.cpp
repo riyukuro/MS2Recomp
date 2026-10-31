@@ -26,17 +26,13 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
 // Game context: FUN_141bd0cc0 returns the local player.
-class Unk_GemGameCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_GemGameCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 // The gemstone confirm box (itemsocketsystemutil.cpp).
 bool FUN_14062a3d0(MS2Ptr<CItem> spItem, int nSlot, MS2Ptr<CItem> spGem, Delegate<bool(int, const CMsgBoxData&)> cb);

@@ -46,6 +46,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -89,7 +90,6 @@ void FUN_14097faa0(NiPoint3* pDst, const Unk_NiPoint3& kSrc);
 class Unk_GaCamera { public: int FUN_140af7e30(); };       // CameraMgr: the kind of the active camera mode (2: trigger)
 Unk_GaCamera* FUN_1409478c0();
 class Unk_GaOption { public: const unsigned char* FUN_140a58500(); };   // CGameOption: the gamepad block (+0 the gamepad mode)
-Unk_GaOption* FUN_1409a8b10();
 class Unk_GaSound { public: void FUN_1422b9fd0(int nScene); };  // the sound scene manager
 Unk_GaSound* FUN_1408e57f0();
 class Unk_GaKeyTable { public: CStringW FUN_14142d760(int nBind, int n); };   // CKeyTable: the key name of a binding
@@ -683,9 +683,9 @@ bool CGuideActionUITextBase::FUN_141384200()
     switch (m_controllerType)
     {
     case GuideController_Keyboard:
-        return *FUN_1409a8b10()->FUN_140a58500() == 0;
+        return *reinterpret_cast<Unk_GaOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500() == 0;
     case GuideController_GamePad:
-        return *FUN_1409a8b10()->FUN_140a58500() == 1;
+        return *reinterpret_cast<Unk_GaOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500() == 1;
     }
     return true;
 }
@@ -1130,7 +1130,7 @@ void CGuideActionSequenceCamera::vfunc_3()
         if (UICutSceneCinematic* pCinematic = FUN_14136f290(0x4e52))
         {
             CStringW strKey = GetStringCommon(0x666);
-            if (*FUN_1409a8b10()->FUN_140a58500() != 0)
+            if (*reinterpret_cast<Unk_GaOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500() != 0)
                 strKey = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
             pCinematic->FUN_141907f80(3, strEmpty);
             pCinematic->FUN_141907d60(3, strKey, GetStringCommon(0x667));

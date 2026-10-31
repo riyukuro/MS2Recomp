@@ -13,7 +13,7 @@
 #include "hook/ms2hook.h"
 
 Unk_EventTime FUN_140718950(const CString&);   // "YYYY-MM-DD hh:mm:ss" text -> time
-__int64 FUN_140869440();                        // the current time
+__int64 GetServerTime();                        // the current time
 void AddDays(CMsTime& time, long days);         // 0x14086a7e0 (commonfiles/timeutil.cpp)
 
 // Unk_EventTime is the 16-byte CMsTime (usereventcontext.h only needs its assignment and Get).
@@ -113,7 +113,7 @@ CMsTime Unk_EventCore::FUN_1408d53f0() const
 {
     if (mode != 0)
     {
-        CMsTime now(FUN_140869440());
+        CMsTime now(GetServerTime());
         AddDays(now, mode);
         return now;
     }

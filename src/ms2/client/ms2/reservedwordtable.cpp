@@ -30,6 +30,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cgameoption.h"
 
 typedef ATL::CAtlArray<CStringW> CStrArray;
 
@@ -59,16 +62,13 @@ public:
     PC* FUN_141bd0cc0();                                    // the local player
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                  // the field data of the player
 };
-Unk_RwWorld* FUN_1403ed2d0();
 struct Unk_RwLevelView { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };   // the local player: the level (slot 78, +0x270) returns a word
 int FUN_1403754f0(void* pCode);
 __int64 FUN_141670a00(PC* pPc, int nStat);                  // PCBase stat
-class Unk_RwTaxi { public: int FUN_140675730(unsigned short nLevel, int nPvp, int nMapKind); };
-Unk_RwTaxi* FUN_1401c0db0();
+CLua* FUN_1401c0db0();
 
 // Locale switch of the name tables ("npcNamePlural" differs by locale).
 class Unk_RwLocale { public: };
-Unk_RwLocale* FUN_1409a8b10();
 int* FUN_140cfd280(Unk_RwLocale* pLocale);
 
 // A map name with its world map entry.
@@ -77,7 +77,6 @@ Unk_RwMapTable* FUN_140cb17d0();
 int FUN_141b98380(Unk_RwMapTable* pTable, int nMapId);
 
 class Unk_RwUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-Unk_RwUIManager* FUN_1403ed2b0();
 UIRouletteDialog* FUN_1416ffcb0(int nId);
 class CScriptTable;
 CScriptTable* FUN_141371b30();
@@ -516,7 +515,7 @@ void CReservedWordTable::FUN_1416fc710(CStringW& str, int nCount)
 // @0x1416fc9c0
 static void Rw_MyPCHp(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPc = reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
     {
         strOut = L"";
@@ -528,7 +527,7 @@ static void Rw_MyPCHp(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fca60
 static void Rw_MyPCName(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPc = reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
     {
         strOut = L"";
@@ -540,7 +539,7 @@ static void Rw_MyPCName(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fcb10
 static void Rw_MyPCLevel(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPc = reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
     {
         strOut = L"";
@@ -571,7 +570,7 @@ static void Rw_NpcName(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fcd70
 static void Rw_NpcPlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    switch (*FUN_140cfd280(FUN_1409a8b10()))
+    switch (*FUN_140cfd280(reinterpret_cast<Unk_RwLocale*>(TSingleton<CGameOption>::GetInstance())))
     {
     case 0:
     case 1:
@@ -586,7 +585,7 @@ static void Rw_NpcPlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fce70
 static void Rw_NpcNamePlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    switch (*FUN_140cfd280(FUN_1409a8b10()))
+    switch (*FUN_140cfd280(reinterpret_cast<Unk_RwLocale*>(TSingleton<CGameOption>::GetInstance())))
     {
     case 0:
     case 1:
@@ -613,7 +612,7 @@ static void Rw_Item(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fd0f0
 static void Rw_ItemPlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    switch (*FUN_140cfd280(FUN_1409a8b10()))
+    switch (*FUN_140cfd280(reinterpret_cast<Unk_RwLocale*>(TSingleton<CGameOption>::GetInstance())))
     {
     case 0:
     case 1:
@@ -640,19 +639,19 @@ static void Rw_Key(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fd360
 static void Rw_PenaltyPrice(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPc = reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
     {
         strOut = L"";
         return;
     }
-    if (!FUN_1403ed2d0()->FUN_141bd30a0())
+    if (!reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd30a0())
     {
         strOut = L"";
         return;
     }
-    unsigned int nPrice = FUN_1401c0db0()->FUN_140675730(((Unk_RwLevelView*)pPc)->vfunc_78(), pPc->FUN_141661aa0(),
-                                                          FUN_1403754f0(FUN_1403ed2d0()->FUN_141bd30a0().operator->()));
+    unsigned int nPrice = FUN_1401c0db0()->CalcResolvePaneltyPrice(((Unk_RwLevelView*)pPc)->vfunc_78(), pPc->FUN_141661aa0(),
+                                                          FUN_1403754f0(reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd30a0().operator->()));
     strOut.Format(L"%d", nPrice);
 }
 
@@ -799,7 +798,7 @@ static void Rw_RoulettePrev(CStringW& strOut, CStringW strArg, CStringW& strWhol
 // @0x1416fdfd0
 static void Rw_Gender(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPc = reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
     {
         strOut = L"";
@@ -861,7 +860,7 @@ static void Rw_GenderOf(CStringW& strToken, PC* pPc)
     int nGender = 0;
     if (pPc == 0)
     {
-        PC* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
+        PC* pLocal = reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pLocal == 0)
         {
             strToken = L"";
@@ -895,7 +894,7 @@ static void Rw_GenderOf(CStringW& strToken, PC* pPc)
 // @0x1416fe660
 static void Rw_GenderId(CStringW& strToken, int nGender)
 {
-    PC* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pLocal = reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pLocal == 0)
         strToken = L"";
     else
@@ -1142,9 +1141,9 @@ CStringW FUN_1416ff950(int nId)
 // @0x1416ffcb0
 UIRouletteDialog* FUN_1416ffcb0(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_RwUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> spDialog = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> spDialog = reinterpret_cast<Unk_RwUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (spDialog.get())
             return dynamic_cast<UIRouletteDialog*>((UIObject*)spDialog);
     }

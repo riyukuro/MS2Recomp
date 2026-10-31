@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <efd/MemoryDefines.h>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
 
 // Unrecovered helpers.
 class Unk_LuaFileSystem { public: char FUN_140398190(); int FUN_1403972f0(const char* pszPath, void** ppBuffer, int* pnSize, std::string* pstrActualPath); };
@@ -32,8 +33,7 @@ CString FUN_14016a5c0(const char* psz, int n);
 CString FUN_140188f50(const char* psz, int n);
 void FUN_1412751b0(const CStringW&, int);                               // chat/system message
 CLua* FUN_1401c0db0();                                                  // the CLuaClient singleton
-class Unk_LuaSettings { public: CString FUN_14036d8e0(); };
-Unk_LuaSettings* FUN_140166410();
+CFeatureManager* FUN_140166410();
 double FUN_1405e6d60(int nBase, int nExp);
 int FUN_14088da20(int nPriceType);                                      // the blueprint cost type -> the runtime enum
 unsigned FUN_140557640(Unk_IngTable*, const CString& strName);          // CItemDataTable::GetTagByName

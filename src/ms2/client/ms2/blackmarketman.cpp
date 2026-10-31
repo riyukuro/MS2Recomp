@@ -15,6 +15,8 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uiservice.h"
 #include <sstream>
 
 static CString s_strBlackMarketSell = "BlackMarket_Sell";
@@ -22,14 +24,11 @@ static CString s_strBlackMarketSell = "BlackMarket_Sell";
 // ---- out-of-unit callees ----
 // UI service: handle to a registered UI object.
 class Unk_BmUIService { public: int FUN_141adc890(int nClass); void FUN_141adc530(int nClass); MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
-Unk_BmUIService* FUN_1403ed2b0();
 
 // The table of text strings and the message helpers.
-class Unk_BmStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_BmStrings* FUN_1401a9d70();
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text of a key
 CStringW GetStringCommon(int nId);                        // string table text by id
-CStringW FUN_1409eec40(int nId);
+CStringW BlockFormat(int nId);
 CStringW FUN_1408116a0(int nId, const int& nValue);     // text of an id with one number
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strExtra);
@@ -91,9 +90,9 @@ template <> inline void fmt::format_arg(BasicFormatter<wchar_t>& f, const wchar_
 // @0x140a22f10
 UIBlackMarketDialog* FUN_140a22f10(int nClass)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_BmUIService*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = FUN_1403ed2b0()->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_BmUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIBlackMarketDialog*>(spObj.operator->());
     }
@@ -145,8 +144,8 @@ void CBlackMarketMan::OnBlackMarket(CInPacket& packet)
     }
     else if (cSub == 9)
     {
-        if (FUN_1403ed2b0()->FUN_141adc890(0x4e97) == 0)
-            FUN_1403ed2b0()->FUN_141adc530(0x4e97);
+        if (reinterpret_cast<Unk_BmUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e97) == 0)
+            reinterpret_cast<Unk_BmUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e97);
     }
     else if (cSub == 8)
         FUN_140a21be0(packet);
@@ -490,7 +489,7 @@ void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
         FUN_140d73bc0(0x8b7, 0, 0, CStringW(L""));
         break;
     case 37:
-        FUN_140d73aa0(FUN_14028dee0(0x688, FUN_1401d3200()->m_nRegisterFee.FUN_1402056b0(), FUN_1409eec40(0x5a5)), 0, 0,
+        FUN_140d73aa0(FUN_14028dee0(0x688, FUN_1401d3200()->m_nRegisterFee.FUN_1402056b0(), BlockFormat(0x5a5)), 0, 0,
                       CStringW(L""));
         break;
     case 38:
@@ -511,10 +510,10 @@ void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
         FUN_140d73aa0(GetStringCommonByKey(L"s_blackmarket_error_purchase_count"), 0, 0, CStringW(L""));
         break;
     case 43:
-        FUN_140d73aa0(FUN_14028dee0(0x93d, FUN_1401a9d70()->FUN_141811980(1, nA), nB), 0, 0, CStringW(L""));
+        FUN_140d73aa0(FUN_14028dee0(0x93d, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nA), nB), 0, 0, CStringW(L""));
         break;
     case 44:
-        FUN_140d73aa0(FUN_14028dee0(0x93e, FUN_1401a9d70()->FUN_141811980(1, nA), nB), 0, 0, CStringW(L""));
+        FUN_140d73aa0(FUN_14028dee0(0x93e, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nA), nB), 0, 0, CStringW(L""));
         break;
     default:
         Unk_BmMessage(0x92b, 1, 1, nResult);

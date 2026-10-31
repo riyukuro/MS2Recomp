@@ -35,6 +35,7 @@
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/placeholder/ms2color.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/worldservice.h"
 
 static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 // Earlier objects own these shared bodies.
@@ -69,7 +70,6 @@ public:
 };
 Unk_UgcPhysSvc* FUN_1401cd040(char*);
 class Unk_UgcWorld { public: PCBase* FUN_141bd0cc0(); };
-Unk_UgcWorld* FUN_1403ed2d0();
 int FUN_1408b4f20(Cube*);
 MS2Ptr<CItemData> FUN_14053f870(int);
 void FUN_140194470(void*,const void*);
@@ -330,7 +330,7 @@ MS2_REPLACE(0x1408a1640, FUN_1408a1640, 640, 0x80A95CB0);
 int FUN_1408a18d0(__int64 charID) {
     Unk_Ptr1401cd040 service(FUN_1401cd040(&DAT_143b059e8));
     int style=0;
-    PCBase* player=FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* player=reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if(player!=0) {
         if(charID==FUN_141656a80(player)) {
             std::vector<efd::SmartPointer<egf::Entity> > hits;

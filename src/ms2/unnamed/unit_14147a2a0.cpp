@@ -24,7 +24,7 @@ Vector3 FUN_141192780(Vector3 kFrom, Vector3 kTo, bool bFlag);  // direction of 
 float FUN_141403f20(Vector3 kA, Vector3 kB);                // horizontal distance (z cleared on the copies)
 float FUN_140968970(float fValue);                                          // sqrtf wrapper
 CPhysXHelper* FUN_1409f7ca0();
-Vector3* FUN_14097faa0(Vector3* pDst, const Unk_NiPoint3* pSrc);    // NiPoint3 assignment
+Vector3* FUN_14097faa0(Vector3* pDst, const Unk_NiPoint3& src);    // NiPoint3 assignment
 Vector3* FUN_14097fad0(Vector3* pDst, const Unk_NiPoint3* pSrc);    // NiPoint3 assignment
 extern float FUN_1407680d0(void* pRandom);                                  // random float in [0, 1)
 void FUN_140e69330(float fAngle, float* pSin, float* pCos);                 // sin and cos of the angle
@@ -101,7 +101,7 @@ bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, flo
             if (!bProbe)
             {
                 Unk_NiPoint3 kPoint(kInfo.m_hitPoint);
-                FUN_14097faa0(pOut, &kPoint);
+                FUN_14097faa0(pOut, kPoint);
                 return true;
             }
             kInfo.m_origin = kInfo.m_hitPoint.FUN_140965c40(kInfo.m_dir.FUN_14097fc90(30.0f));
@@ -157,7 +157,6 @@ bool FUN_14147a850(const Unk_Pt2& kOrigin, const Unk_Pt2& kDir, const Unk_Pt2& k
 }
 
 // @0x14147aa60
-// MS2-FUNCTIONAL: the hit-branch point sits at 0x90 (exe packs it at 0x8c), shifting the call temporaries by 8
 // Ray against a sphere; writes the first hit point (or the closest point on the sphere when the ray misses) to pHit.
 char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& kCenter, float fRadius, Vector3* pHit)
 {
@@ -178,9 +177,8 @@ char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& k
         Unk_NiPoint3 kNear(kOrigin.FUN_14097fd50(FUN_1409ab5c0(fProj, kUnit)));
         Unk_NiPoint3 kNormal(kCenter.FUN_140965c40(reinterpret_cast<const Vector3&>(kNear)));
         reinterpret_cast<Vector3&>(kNormal).FUN_140968990();
-        Unk_NiPoint3 kPoint(reinterpret_cast<const Vector3&>(kNear).FUN_14097fd50(
+        FUN_14097faa0(pHit, reinterpret_cast<const Vector3&>(kNear).FUN_14097fd50(
             reinterpret_cast<const Vector3&>(kNormal).FUN_14097fc90(FUN_140968970(fPerp) - fRadius)));
-        FUN_14097faa0(pHit, &kPoint);
     }
     else
     {
@@ -190,8 +188,7 @@ char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& k
             fT = fProj - fHalf;
         else
             fT = fProj + fHalf;
-        Unk_NiPoint3 kPoint(kOrigin.FUN_14097fd50(FUN_1409ab5c0(fT, kUnit)));
-        FUN_14097faa0(pHit, &kPoint);
+        FUN_14097faa0(pHit, kOrigin.FUN_14097fd50(FUN_1409ab5c0(fT, kUnit)));
         bHit = 1;
     }
     return bHit;

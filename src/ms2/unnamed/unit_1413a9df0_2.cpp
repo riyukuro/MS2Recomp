@@ -19,6 +19,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
+#include "ms2/client/ms2/guildmanager.h"
 
 // ---- unit-local views and unrecovered callees ------------------------------------------------------------------------------
 
@@ -38,7 +39,6 @@ extern __int64 DAT_143ab28e0;
 __int64 FUN_140930240();                                // the merat
 
 struct Unk_G9Holder { void* m_p0; void* m_p8; };
-Unk_G9Holder* FUN_1403ed290();                          // the guild manager holder
 void* FUN_1404d3180(void* pHolder);
 bool FUN_1404c6160(void* pGuildPvp);
 struct Unk_G9Rec { void* m_p[6]; unsigned __int64 m_nExpire; };
@@ -261,7 +261,7 @@ CStringW CGuideConditionGuildPvpPeriod::GetTypeName()
 // @0x1413ad460
 int CGuideConditionGuildPvpPeriod::vfunc_3()
 {
-    return FUN_1413a55a0(FUN_1404c6160(FUN_1404d3180(&FUN_1403ed290()->m_p8)) ? 1 : 0);
+    return FUN_1413a55a0(FUN_1404c6160(FUN_1404d3180(&reinterpret_cast<Unk_G9Holder*>(TSingleton<CGuildManager>::GetInstance())->m_p8)) ? 1 : 0);
 }
 
 // @0x1413ad4c0
@@ -460,7 +460,7 @@ CStringW CGuideConditionJoinGuild::GetTypeName()
 // @0x1413ade20
 int CGuideConditionJoinGuild::vfunc_3()
 {
-    return FUN_1413a55a0(FUN_1413b6160(FUN_1403ed290()));
+    return FUN_1413a55a0(FUN_1413b6160(reinterpret_cast<Unk_G9Holder*>(TSingleton<CGuildManager>::GetInstance())));
 }
 
 // @0x1413ade50

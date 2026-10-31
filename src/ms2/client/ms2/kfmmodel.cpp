@@ -23,6 +23,8 @@
 #include "kfmmodel.h"
 #include "kfmmodel_actor.h"
 #include "ms2/placeholder/effectquery.h"
+#include "ms2/client/ms2/equipitem.h"
+#include "ms2/client/ms2/equipmodel.h"
 #include <egmAnimation/AnimationService.h>
 #include <egf/EntityManager.h>
 #include <efd/Category.h>
@@ -85,7 +87,7 @@ void* FUN_141200850(CEquipModel* p);
 
 // ---- out-of-unit callees ----
 void* FUN_1405a8ed0(void* sp);   void FUN_1405a85c0(void* sp);   void* FUN_1409849b0(void* sp);
-void* FUN_1411dc7a0(void* owner, void* out);   void* FUN_14052cd70(void* p);   void FUN_1401bfde0(void* p);
+void* GetItem(void* owner, void* out);   void* FUN_14052cd70(void* p);   void FUN_1401bfde0(void* p);
 void* FUN_1401c0180(void* p);   int FUN_140527a20(void* p);   void* FUN_1411dc7f0(void* owner);   bool FUN_14053cfd0(void* p);
 void FUN_141200e30(void* self, int n);   void FUN_141200ca0(void* self);
 void* FUN_141200820(void* self);   void* FUN_1412008e0(void* self);   void* FUN_1412009d0(void* self);
@@ -449,7 +451,7 @@ void CKfmModel::vfunc_10()
 }
 
 class CItem;
-struct Unk_KfmEquipItem { MS2Ptr<CItem> FUN_1411dc7a0(); };   // CEquipItem::GetItem
+   // CEquipItem::GetItem
 struct Unk_KfmColor : efd::Color
 {
     using efd::Color::operator=;
@@ -463,7 +465,7 @@ void CKfmModel::vfunc_11()
     m_nUpdateTransform = (vfunc_9() == 0);
     if (m_nUpdateTransform != 0)
         return;
-    void* pPartList = FUN_140527870(((Unk_KfmEquipItem*)FUN_1405a8ed0(&m_spOwner))->FUN_1411dc7a0().operator->());
+    void* pPartList = FUN_140527870(((CEquipItem*)FUN_1405a8ed0(&m_spOwner))->GetItem().operator->());
     if (pPartList == 0)
         return;
     for (int i = 0; i < 3; ++i) {
@@ -493,13 +495,13 @@ void CKfmModel::vfunc_11()
 
 // @0x14143e670
 class CItemData;
-struct Unk_KfmPartSelf { CString FUN_1412029d0(); };   // the part name (by value)
+   // the part name (by value)
 void CKfmModel::vfunc_12()
 {
     MS2Ptr<CItemData> spItem((CItemData*)FUN_1412009d0(this));
     if (spItem == 0)
         return;
-    const CString& strName = ((Unk_KfmPartSelf*)this)->FUN_1412029d0();
+    const CString& strName = ((CEquipModel*)this)->FUN_1412029d0();
     if (strName.IsEmpty())
         return;
     FUN_141202ea0(this, (CString*)&strName);
@@ -539,11 +541,11 @@ void CKfmModel::vfunc_13()
     Unk_ModelActor* pActor = (Unk_ModelActor*)FUN_141200820(this);
     if (pActor == 0)
         return;
-    MS2Ptr<CItem> spItem = ((Unk_KfmEquipItem*)FUN_1405a8ed0(&m_spOwner))->FUN_1411dc7a0();
+    MS2Ptr<CItem> spItem = ((CEquipItem*)FUN_1405a8ed0(&m_spOwner))->GetItem();
     if (FUN_140534e50(&spItem) != 0)
         return;
     int nResult = FUN_1411e99a0(FUN_1416561a0(pActor), FUN_140527a20(spItem.operator->()),
-                                ((Unk_KfmPartSelf*)this)->FUN_1412029d0(), FUN_1405258b0(spItem.operator->()),
+                                ((CEquipModel*)this)->FUN_1412029d0(), FUN_1405258b0(spItem.operator->()),
                                 FUN_14053d2b0(FUN_140527840(spItem.operator->())));
     if (nResult != 0) {
         NiNode* pTarget;
@@ -943,7 +945,7 @@ void CKfmModel::FUN_141440bc0()
 {
     if (CFG->m_bPhysics == 0) return;
     if (FUN_14053cfd0(FUN_1411dc7f0(FUN_1405a8ed0(&m_spOwner)))) {
-        void* pData = FUN_140527870(((Unk_KfmEquipItem*)FUN_1405a8ed0(&m_spOwner))->FUN_1411dc7a0().operator->());
+        void* pData = FUN_140527870(((CEquipItem*)FUN_1405a8ed0(&m_spOwner))->GetItem().operator->());
         if (pData != 0) {
             float fScale = ((float*)((char*)pData + 0x58))[0];
             efd::Point3 kPos = ((efd::Point3*)((char*)pData + 0x60))[CFG->m_nIndex];

@@ -21,18 +21,15 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/inventory.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uiservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-class Unk_GameCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_GameCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
-extern Unk_Inventory DAT_143ab2a90;                     // the player's inventory
+extern Unk_Inventory g_143ab2a90;                       // the player's inventory
 
 // The item enchant scroll dialog (id 0x4ee0).
 class UIEnchantScrollDialog : public UIDialog
@@ -43,7 +40,6 @@ public:
 
 // UI service: handle to a registered UI object.
 class Unk_EnchantUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
-Unk_EnchantUIManager* FUN_1403ed2b0();
 
 void* FUN_140a50b50(DragSlot* pSlot);                   // the item slot behind a drag source
 __int64 FUN_141405a10(void* pItemSlot);                 // its item uid
@@ -98,7 +94,7 @@ int EnchantScrollSlot::vfunc_18(void* p)
     void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
         if (spItem.get() != 0)
         {
             if (FUN_141902660(spItem) != 0)
@@ -177,9 +173,9 @@ EnchantScrollSlot* FUN_140cd7a50(NotifyContext::BindData* p)
 // @0x140cd7aa0
 UIEnchantScrollDialog* FUN_140cd7aa0(int nClass)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_EnchantUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = FUN_1403ed2b0()->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_EnchantUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIEnchantScrollDialog*>(spObj.operator->());
     }

@@ -20,14 +20,13 @@
 #include "ms2/ms2recover.h"
 
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/crashmanagercli.h"
 
 // CRBTree::NewNode (0x1422ca8a0 / 0x1422cab10) zeroes its nil node with a CRT memset call, not the intrinsic.
 #pragma function(memset)
 
 using NotifyContext::BindData;
 using Scaleform::GFx::Value;
-
-CCrashManager* FUN_140a44830();         // the crash manager singleton (its log)
 
 // Registry definitions and dynamic initializers live in unit_140135ac0.cpp.
 // The hook DLL binds the exe objects through symbols-manual rows.
@@ -165,9 +164,9 @@ void Unk_NotifyContext::FUN_1422c8de0()
 {
     if (ms_mapBindings.GetCount() != 0)
     {
-        FUN_140a44830()->FUN_1401ce2b0("\n--- NotifyContext Log ---");
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- NotifyContext Log ---");
         for (POSITION pos = ms_mapBindings.GetHeadPosition(); pos != NULL; ms_mapBindings.GetNext(pos))
-            FUN_140a44830()->FUN_1401ce2f0("Unremoved binding slot : %s", (const char*)ms_mapBindings.GetKeyAt(pos));
+            reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Unremoved binding slot : %s", (const char*)ms_mapBindings.GetKeyAt(pos));
     }
     FUN_1422c9010();
 }

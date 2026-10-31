@@ -20,6 +20,7 @@
 #include "ms2/client/ms2/mypc.h"
 #include "hook/ms2hook.h"
 #include "ms2/ms2format.h"
+#include "ms2/commonfiles/itemlapensharddata.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 #ifdef __clang__
@@ -66,12 +67,11 @@ public:
 int FUN_140c62520();                                    // the window may be used (not in battle / disabled field)
 
 // The item table (FUN_1409c4b30).
-class Unk_LsItemTable
+class Unk_LsItemTable : public CItemLapenshardTable
 {
 public:
     int FUN_1405b5810(int nSlot);                       // the kind of a free slot
     int FUN_1405b5890(int nItemId);                     // the kind of an item
-    int FUN_1405b59d0(int nItemId);                     // the equip group of an item
 };
 Unk_LsItemTable* FUN_1409c4b30();
 
@@ -175,8 +175,8 @@ int LapenshardSlot::vfunc_18(void* p)
     int nCurrent = pPc->FUN_14152f770((Unk_MyPCLapenSlot)GetSlot());
     if (pPc->FUN_14152f8b0(nItemId) != 0)
     {
-        int nCurrentGroup = FUN_1409c4b30()->FUN_1405b59d0(nCurrent);
-        int nGroup = FUN_1409c4b30()->FUN_1405b59d0(nItemId);
+        int nCurrentGroup = FUN_1409c4b30()->GetGroup(nCurrent);
+        int nGroup = FUN_1409c4b30()->GetGroup(nItemId);
         if (nCurrentGroup == 0 || nCurrentGroup != nGroup || nItemId == nCurrent)
         {
             FUN_1412751f0(GetStringCommonByKey(L"s_msg_shortcutkey_invalid_already_same_lapenshard"), 1, 1);
@@ -207,8 +207,8 @@ int LapenshardSlot::vfunc_14()
         int nCurrent = pPc->FUN_14152f770((Unk_MyPCLapenSlot)nSlot);
         if (pPc->FUN_14152f8b0(nItemId) != 0)
         {
-            int nGroup = FUN_1409c4b30()->FUN_1405b59d0(nItemId);
-            int nCurrentGroup = FUN_1409c4b30()->FUN_1405b59d0(nCurrent);
+            int nGroup = FUN_1409c4b30()->GetGroup(nItemId);
+            int nCurrentGroup = FUN_1409c4b30()->GetGroup(nCurrent);
             if (nCurrentGroup == 0 || nCurrentGroup != nGroup || nItemId == nCurrent)
             {
                 FUN_1412751f0(GetStringCommonByKey(L"s_msg_shortcutkey_invalid_already_same_lapenshard"), 1, 1);

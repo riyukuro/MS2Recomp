@@ -26,6 +26,9 @@
 // MS2-PIN: ?Release@?$MS2Ptr@VNpcShopTabInfo@@@@AEAAXXZ 0x14134c4e0 ; manual
 // MS2-PIN: ?Release@?$MS2Ptr@VCNpcShopProductBase@@@@AEAAXXZ 0x14134c520 ; manual: called by ~MS2Ptr<CNpcShopProductBase> 0x14134ab80
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCNpcShopProductBase@@@@AEAAXPEAX@Z 0x14134c5b0 ; manual
+// MS2-PIN: ??C?$MS2Ptr@VCEquipItem@@@@QEBAPEAVCEquipItem@@XZ 0x14134adc0 ; manual: own copy, called by FUN_1413487e0
+// MS2-PIN: ??C?$MS2Ptr@VCExchangeItemInfo@@@@QEBAPEAVCExchangeItemInfo@@XZ 0x14134b490 ; manual: own copy, called by FUN_1413487e0
+// MS2-PIN: ??C?$MS2Ptr@VCNpcShopProductBase@@@@QEBAPEAVCNpcShopProductBase@@XZ 0x14134b4a0 ; manual: own copy, called by FUN_1413487e0
 // MS2-PIN: ??A?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@1@_K@Z 0x14134b380 ; manual: the product categories in FUN_1413487e0
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
@@ -52,6 +55,7 @@
 #include "ms2/placeholder/cshopeventmanager.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/shopcategorytable.h"
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> Unk_ClickDelegate;
 
@@ -67,11 +71,7 @@ class Unk_SbShopDialog : public UIDialog { public: int FUN_141afb740(); };   // 
 CString FUN_14016a600(const wchar_t* psz, int n);                // wide -> narrow
 CString FUN_14102a0b0(int nType, const CString& strName, const CString& strUrl, CString strKey);   // banner image path
 void FUN_1418fe1c0(const CString& strUrl);                       // open a url
-CShopCategoryTable* FUN_1406aa4b0();
-CShopEventManager* FUN_1403ed2a0();
 Unk_SbWorld* FUN_1403ed2d0();
-CUIService* FUN_1403ed2b0();
-CItemExchangeScrollTable* FUN_140f56960();
 CFeatureManager* FUN_140166410();
 CNetworkService* FUN_140714f90();
 Unk_SbShopDialog* FUN_140534780(int nUIType);
@@ -88,7 +88,7 @@ bool FUN_1418ff1f0(int nCurrency, __int64 nAmount, int nItemId);
 __int64 FUN_1418ff5a0(int nCurrency, __int64 nAmount, int nItemId);
 void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt);
 int FUN_1403baee0(int value);
-void FUN_140657820();                                            // 'invalid call' of an empty Delegate
+void Unk_140657820();                                            // 'invalid call' of an empty Delegate
 
 // ---- header statics (.text$di) ----
 static CString s_strSortTypeNames1[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
@@ -108,7 +108,7 @@ template <>
 void Delegate<void(AScript&)>::operator()(AScript& a1) const
 {
     if (m_pImpl == 0)
-        FUN_140657820();
+        Unk_140657820();
     m_pImpl->vfunc_2(a1);
 }
 
@@ -233,8 +233,9 @@ int FUN_1413482e0(const Unk_ShopTabArray& arr, MS2Ptr<CShopCategoryTable::TabInf
 }
 MS2_REPLACE(0x1413482e0, FUN_1413482e0, 213, 0x5B7DB259);
 
+namespace efd { int Stricmp(const char* s1, const char* s2); }
+
 // @0x1413483c0
-// MS2-FUNCTIONAL: code-identical except EH: the exe gives strToken an EH state (nop after Tokenize, a handler, frame 0x68), so its _stricmp counted as throwing there; ours sees the extern "C" _stricmp as nothrow under /EHsc
 // Is strCategory one of the comma separated entries of strList (case-insensitive)?
 int FUN_1413483c0(const CString& strCategory, const CString& strList)
 {
@@ -246,7 +247,7 @@ int FUN_1413483c0(const CString& strCategory, const CString& strList)
         if (nPrev == 0 || strList.GetAt(nPrev) == ',')
         {
             CString strToken = strList.Tokenize(",", nPos);
-            if (_stricmp(strCategory, strToken) == 0)
+            if (efd::Stricmp(strCategory, strToken) == 0)
                 return 1;
         }
         strList.Tokenize(",", nPos);
@@ -259,7 +260,7 @@ int FUN_1413483c0(const CString& strCategory, const CString& strList)
 void FUN_141348530(int nShop, Unk_ShopTabArray& arr)
 {
     arr.RemoveAll();
-    CShopCategoryTable::TabListPtr spTabs = FUN_1406aa4b0()->GetTabs(nShop);
+    CShopCategoryTable::TabListPtr spTabs = TSingleton<CShopCategoryTable>::GetInstance()->GetTabs(nShop);
     if ((spTabs.get() ? true : false) && !spTabs->IsEmpty())
         FUN_1413487e0(arr, *spTabs, MS2Ptr<CNpcShopProductBase>(0), 0);
 }
@@ -268,7 +269,7 @@ void FUN_141348530(int nShop, Unk_ShopTabArray& arr)
 void FUN_141348610(int nShop, Unk_ShopTabArray& arr, std::map<int, MS2Ptr<CNpcShopProductBase> >& products)
 {
     arr.RemoveAll();
-    CShopCategoryTable::TabListPtr spTabs = FUN_1406aa4b0()->GetTabs(nShop);
+    CShopCategoryTable::TabListPtr spTabs = TSingleton<CShopCategoryTable>::GetInstance()->GetTabs(nShop);
     if ((spTabs.get() ? true : false) && !spTabs->IsEmpty())
     {
         if (!products.empty())
@@ -287,7 +288,6 @@ void FUN_141348610(int nShop, Unk_ShopTabArray& arr, std::map<int, MS2Ptr<CNpcSh
 }
 
 // @0x1413487e0
-// MS2-FUNCTIONAL: recursive tab tree builder; temp layout / EH states differ
 // Adds the tabs of the list (and, recursively, their sub tabs) that list the product (or are static) to arr.
 void FUN_1413487e0(Unk_ShopTabArray& arr, CShopCategoryTable::TabList& list, MS2Ptr<CNpcShopProductBase> spProduct,
                    int nDepth)
@@ -299,23 +299,20 @@ void FUN_1413487e0(Unk_ShopTabArray& arr, CShopCategoryTable::TabList& list, MS2
         MS2Ptr<CShopCategoryTable::TabInfo> spTab = list.GetAt(pos);
         if (spTab == 0)
             continue;
-        bool bMatch;
-        if (spProduct.get() == 0 || !spTab->m_strCategory.IsEmpty() || spTab->m_subTabs.IsEmpty())
-            bMatch = false;
-        else
-            bMatch = true;
-        if (spProduct.get() != 0 && !bMatch)
+        int bMatch = (spProduct.get() ? true : false) && spTab->m_strCategory.IsEmpty() && !spTab->m_subTabs.IsEmpty();
+        int bFound = 0;
+        if ((spProduct.get() ? true : false) && !bMatch)
         {
             CAtlArray<CString>* pCategories = spProduct->FUN_140db5f00();
-            bMatch = false;
             for (size_t i = 0; i < pCategories->GetCount(); i++)
             {
-                bMatch = bMatch || FUN_1413483c0((*pCategories)[i], spTab->m_strCategory) != 0;
-                if (bMatch)
+                bFound = bFound || FUN_1413483c0((*pCategories)[i], spTab->m_strCategory);
+                if (bFound)
                     break;
             }
+            bMatch = bMatch || bFound;
         }
-        int bAdd = bMatch || spTab->m_nStatic != 0 ? 1 : 0;
+        int bAdd = bMatch || spTab->m_nStatic;
         if (bAdd)
         {
             MS2Ptr<NpcShopTabInfo> spInfo(0);
@@ -323,7 +320,8 @@ void FUN_1413487e0(Unk_ShopTabArray& arr, CShopCategoryTable::TabList& list, MS2
             if (nIndex < 0)
             {
                 spInfo.AssignRaw(new NpcShopTabInfo(spTab));
-                arr.Add(MS2Ptr<ShopTabInfo>(spInfo.get()));
+                MS2Ptr<ShopTabInfo> spNew(spInfo.get());
+                arr.Add(spNew);
             }
             else
             {
@@ -371,7 +369,7 @@ void FUN_141348dd0(const Unk_ShopTabArray& arr, ASArray& out, int* pMaxDepth, in
         *pMaxDepth = (*pMaxDepth > nDepth) ? *pMaxDepth : nDepth;
         obj.FUN_140e846b0("tabindex", i);
         int nId = spTab->GetId();
-        if ((unsigned)nSale > 0 && FUN_1403ed2a0()->FUN_1407ce690(nId, nSale))
+        if ((unsigned)nSale > 0 && TSingleton<CShopEventManager>::GetInstance()->FUN_1407ce690(nId, nSale))
             obj.FUN_1407cbbe0("saleTag", true);
         obj.FUN_1407cb9c0("space", 1);
         if (pfnEach != 0 && !pfnEach->IsNull())
@@ -397,28 +395,62 @@ void FUN_1413490b0(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
 MS2_REPLACE(0x1413490b0, FUN_1413490b0, 332, 0xD664891F);
 
 // @0x141349210
-// MS2-FUNCTIONAL: comparison tooltip; EH state numbering / temp ordering differs from the exe
 void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCaption, ASTooltip* pLhs, ASTooltip* pRhs)
 {
-    if (spItem.IsNull())
-        return;
-    if (spItem->FUN_140527840() == 0)
+    if (spItem.IsNull() || spItem->FUN_140527840() == 0)
         return;
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     MS2Ptr<CItem> spEquipped(0);
-    bool bAlt = spItem->FUN_1405258b0() != 0;
+    int bAlt = spItem->FUN_1405258b0() != 0;
     MS2Ptr<CEquipItem> spEquip(0);
-    if (!reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053d510())
-        spEquip = static_cast<PC*>(pPlayer)->FUN_1416561a0()->FUN_1411e1780(spItem->FUN_140527a20(), bAlt);
-    else if (FUN_1403ed2b0()->FUN_141adcb40() == 0)
-        spEquip = static_cast<PC*>(pPlayer)->FUN_1416561a0()->FUN_1411e1780(5, bAlt);
+    if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053d510())
+    {
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adcb40())
+            spEquip = static_cast<PC*>(pPlayer)->FUN_1416561a0()->FUN_1411e1780(4, bAlt);
+        else
+            spEquip = static_cast<PC*>(pPlayer)->FUN_1416561a0()->FUN_1411e1780(5, bAlt);
+    }
     else
-        spEquip = static_cast<PC*>(pPlayer)->FUN_1416561a0()->FUN_1411e1780(4, bAlt);
+    {
+        spEquip = static_cast<PC*>(pPlayer)->FUN_1416561a0()->FUN_1411e1780(spItem->FUN_140527a20(), bAlt);
+    }
     if (spEquip.get())
         spEquipped = spEquip->GetItem();
-    if (!FUN_1403b3c40(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->function.name, L"ItemExchangeScroll"))
+    if (FUN_1403b3c40(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->function.name, L"ItemExchangeScroll"))
+    {
+        MS2Ptr<CExchangeItemInfo> spInfo = TSingleton<CItemExchangeScrollTable>::GetInstance()->GetData(spItem->FUN_1405276c0());
+        if (spInfo.get())
+        {
+            MS2Ptr<CItem> spResult(new CItem);
+            if (spResult.get())
+            {
+                spResult->FUN_14052b130(spInfo->m_exchange.m_nId, spInfo->m_exchange.m_nRank, 0);
+                ASTooltip* pTip = pLhs;
+                if (pTip->FUN_1409e13f0(spResult.get(), spItem.get(), 0x800, 0x80))
+                {
+                    {
+                        CStringW strEmpty1(L"");
+                        CStringW strEmpty2(L"");
+                        pTip->FUN_1409c6640(strEmpty2, strEmpty1);
+                    }
+                    {
+                        CStringW strEmpty(L"");
+                        CStringW strKey(L"s_word_compose_result");
+                        pTip->FUN_1409c7060(GetStringCommonByKey(strKey), strEmpty);
+                    }
+                    if (bCaption)
+                    {
+                        CStringW strEmpty(L"");
+                        pTip->FUN_1409c6a20(strEmpty, GetStringCommon(0x758));
+                    }
+                    *pOut = pTip->FUN_1422bb870();
+                }
+            }
+        }
+    }
+    else
     {
         ASTooltip tip(pPlayer, pLhs->FUN_1409c6560(), 2);
         if (pRhs->FUN_1409c6560() == 0)
@@ -433,37 +465,6 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
             *pOut = tip.FUN_1422bb870();
         }
     }
-    else
-    {
-        MS2Ptr<CExchangeItemInfo> spInfo = FUN_140f56960()->GetData(spItem->FUN_1405276c0());
-        if (spInfo.get())
-        {
-            MS2Ptr<CItem> spResult(new CItem);
-            if (spResult.get())
-            {
-                spResult->FUN_14052b130(spInfo->m_exchange.m_nId, spInfo->m_exchange.m_nRank, 0);
-                if (pLhs->FUN_1409e13f0(spResult.get(), spItem.get(), 0x800, 0x80))
-                {
-                    {
-                        CStringW strEmpty1(L"");
-                        CStringW strEmpty2(L"");
-                        pLhs->FUN_1409c6640(strEmpty2, strEmpty1);
-                    }
-                    {
-                        CStringW strEmpty(L"");
-                        CStringW strKey(L"s_word_compose_result");
-                        pLhs->FUN_1409c7060(GetStringCommonByKey(strKey), strEmpty);
-                    }
-                    if (bCaption)
-                    {
-                        CStringW strEmpty(L"");
-                        pLhs->FUN_1409c6a20(strEmpty, GetStringCommon(0x758));
-                    }
-                    *pOut = pLhs->FUN_1422bb870();
-                }
-            }
-        }
-    }
 }
 
 // ---- shop open / message boxes ----
@@ -471,7 +472,7 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
 // @0x1413499b0
 int FUN_1413499b0(int nTab)
 {
-    if (FUN_1403ed2b0()->FUN_141adc7f0((eUIClassID)0x4e3b) == 0)
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adc7f0((eUIClassID)0x4e3b) == 0)
         return 0;
     Unk_SbShopDialog* pDlg = FUN_140534780(0x4e3b);
     if (pDlg != 0)
@@ -485,8 +486,8 @@ int FUN_1413499b0(int nTab)
             }
             else
             {
-                FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4e3b);
-                FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4e2d);
+                TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4e3b);
+                TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4e2d);
             }
         }
         if (bOpen)
@@ -496,8 +497,8 @@ int FUN_1413499b0(int nTab)
         }
         else
         {
-            FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4e3b);
-            FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4e2d);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e3b);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e2d);
         }
         return bOpen;
     }

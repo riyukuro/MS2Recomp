@@ -177,3 +177,4 @@
 1439f87f4	?s_color19@@3KA	texttohtml.cpp chat colour 19; astooltip/uimessenger read it as DAT_1439f87f4
 1439f87f8	?s_color20@@3KA	texttohtml.cpp chat colour 20; astooltip/uimessenger read it as DAT_1439f87f8
 1439f880c	?s_color25@@3KA	texttohtml.cpp chat colour 25; astooltip/uimessenger read it as DAT_1439f880c
+141bf6cb0	?AssignRaw@?$MS2Ptr@VUnk_GoField@@@@QEAAAEAV1@PEAVUnk_GoField@@@Z	Unk_WsA_GoFieldRef::operator= returns a reference: take the matched MS2Ptr<Unk_GoField>::AssignRaw (returns *this), not a free FUN_141bf6cb0 overload (a void one used to be picked by set order)

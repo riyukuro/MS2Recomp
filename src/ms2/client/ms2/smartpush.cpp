@@ -114,6 +114,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uisystemshopdialog.h"
+#include "ms2/client/ms2/instrumentmanager.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
 
 // The ridee data handle (not a CPtred): its members are the exe's out-of-line instances.
 template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0
@@ -157,17 +160,11 @@ class Unk_SpRideMaps { public: bool FUN_1401955f0(int nMapId); };
 Unk_SpRideMaps* FUN_140ba4fa0();
 
 // The play instrument manager (FUN_140c8dac0).
-class Unk_SpInstrument
+class Unk_SpInstrument : public CInstrumentManager
 {
-public:
-    int FUN_140d071b0();                                                // the auto play can not run (0: it can)
-    bool FUN_140d07350();                                               // a score is playing
-    bool FUN_140d07370();                                               // remote controlled
-    int FUN_140d0b0c0();                                                // the auto play count left
-    void FUN_140d0b0e0(int nCount);                                     // set it
 };
 Unk_SpInstrument* FUN_140c8dac0();
-class UIAutoFishingDialog : public UIDialog { public: void FUN_140fa5ba0(int nMode); };
+class UIAutoFishingDialog : public UISystemShopDialog { };
 UIAutoFishingDialog* FUN_140cdee10(eUIClassID nId);                    // GetDialog<UIAutoFishingDialog>
 UIPlayInstrumentDialog* FUN_140d0c040(eUIClassID nId);                 // GetDialog<UIPlayInstrumentDialog>
 
@@ -236,7 +233,6 @@ class Unk_SpSkillLevelPtr { public: ~Unk_SpSkillLevelPtr() { FUN_1407eb950(this)
     void* m_p0; void* m_p8; };
 class Unk_SpSkillTable { public: Unk_SpBuffLevelPtr FUN_140aafef0(int nId, unsigned short nLevel);
     Unk_SpSkillLevelPtr FUN_1407ee2f0(int nSkillId, short nLevel); };
-Unk_SpSkillTable* FUN_1401958b0();
 
 // CMsgBoxData::SetValue<T> (the COMDATs 0x140dd6030..0x140dd63d0): a named GFx value of the box.
 void Unk_SetBoxInt(CMsgBoxData* pBox, const char* szName, int n)
@@ -682,16 +678,16 @@ void CSmartPushAutoPlayInstrument::vfunc_2()
     if (pMy->FUN_14166c930() != 0x2f)
         return;
     unsigned nCount;
-    int nBlocked = FUN_140c8dac0()->FUN_140d071b0();
+    int nBlocked = FUN_140c8dac0()->CanPlayEnsemble();
     if (m_bPlaying != 0 && nBlocked == 0)
     {
-        nCount = FUN_140c8dac0()->FUN_140d0b0c0();
+        nCount = FUN_140c8dac0()->GetVolume();
         if (nCount > 0)
         {
             if (FUN_140dd1ba0())
             {
                 --nCount;
-                FUN_140c8dac0()->FUN_140d0b0e0(nCount);
+                FUN_140c8dac0()->SetVolume(nCount);
                 vfunc_5(true);
                 CStringW strTime = CSmartPushTable::GetInstance()->GetPackageDurationText(m_data->m_strContent, m_n1c);
                 FUN_1412751f0(FUN_1405c2690(CStringW(L"s_msg_auto_play_instrument_extend_complete"), strTime), 1, 1);
@@ -700,7 +696,7 @@ void CSmartPushAutoPlayInstrument::vfunc_2()
             {
                 if (FUN_140dd1aa0() == 2)
                 {
-                    FUN_140c8dac0()->FUN_140d0b0e0(0);
+                    FUN_140c8dac0()->SetVolume(0);
                     CUIService::GetInstance()->FUN_141add1f0();
                 }
                 else
@@ -712,7 +708,7 @@ void CSmartPushAutoPlayInstrument::vfunc_2()
     }
     else if (m_bPlaying == 0 && nBlocked == 0)
     {
-        if (FUN_140c8dac0()->FUN_140d0b0c0() == 0 && CUIService::GetInstance()->FUN_141adc890((eUIClassID)0x4f07) != 0)
+        if (FUN_140c8dac0()->GetVolume() == 0 && CUIService::GetInstance()->FUN_141adc890((eUIClassID)0x4f07) != 0)
         {
             CUIService::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f07);
             CStringW strKey(L"s_msg_auto_play_instrument_end");
@@ -721,13 +717,13 @@ void CSmartPushAutoPlayInstrument::vfunc_2()
     }
     else if (m_bPlaying != 0 && nBlocked != 0)
     {
-        if (FUN_140c8dac0()->FUN_140d07350() && !FUN_140c8dac0()->FUN_140d07370())
+        if (FUN_140c8dac0()->IsPerforming() && !FUN_140c8dac0()->IsRemote())
         {
             UIAutoFishingDialog* pAuto = FUN_140cdee10((eUIClassID)0x4f07);
             UIPlayInstrumentDialog* pPlay = FUN_140d0c040((eUIClassID)0x4eec);
             if (pPlay != 0 && pAuto != 0 && pAuto->FUN_141924630() == 0 && pPlay->GetAutoPlay() != 0)
             {
-                pAuto->FUN_140fa5ba0(5);
+                pAuto->SetMode(5);
                 pAuto->FUN_141924680();
             }
         }
@@ -785,11 +781,11 @@ int CSmartPushAutoPlayInstrument::vfunc_6()
         return 0;
     if (pMy->FUN_14166c930() != 0x2f)
         return 0;
-    if (!FUN_140c8dac0()->FUN_140d07350())
+    if (!FUN_140c8dac0()->IsPerforming())
         return 0;
-    if (FUN_140c8dac0()->FUN_140d07370())
+    if (FUN_140c8dac0()->IsRemote())
         return 0;
-    if (FUN_140c8dac0()->FUN_140d071b0())
+    if (FUN_140c8dac0()->CanPlayEnsemble())
         return 2;
     return 1;
 }
@@ -890,9 +886,9 @@ bool CSmartPushAutoPlayInstrument::FUN_140dd1df0(int nResult, const CMsgBoxData&
             vfunc_5(false);
         }
         if (bRedMerat && nOk != 0)
-            FUN_140c8dac0()->FUN_140d0b0e0(*Client::Constants::GetInstance()->extendAutoPlayInstrumentMaxCount.Get());
+            FUN_140c8dac0()->SetVolume(*Client::Constants::GetInstance()->extendAutoPlayInstrumentMaxCount.Get());
         else
-            FUN_140c8dac0()->FUN_140d0b0e0(0);
+            FUN_140c8dac0()->SetVolume(0);
     }
     else if (nResult == 1)
     {
@@ -1555,14 +1551,14 @@ int FUN_140dd5340(int nAbility)
             continue;
         if (FUN_140527840(spItem)->FUN_14053dc20() == 0)
             continue;
-        Unk_SpSkillLevelPtr spSkill = FUN_1401958b0()->FUN_1407ee2f0(FUN_140527840(spItem)->FUN_14053dc20(), FUN_140527840(spItem)->FUN_14053dc40());
+        Unk_SpSkillLevelPtr spSkill = reinterpret_cast<Unk_SpSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(FUN_140527840(spItem)->FUN_14053dc20(), FUN_140527840(spItem)->FUN_14053dc40());
         if (spSkill.FUN_140932d90())
         {
             Unk_SpSkillEffects& effects = spSkill.FUN_1407ebbf0()->m_effects;
             for (char *p = effects.FUN_140aba700(), *pEnd = effects.FUN_140aba7f0(); p != pEnd; p += 0x10)
             {
                 char& effect = *p;
-                Unk_SpBuffLevelPtr spBuff = FUN_1401958b0()->FUN_140aafef0(FUN_1407e4770(&effect)->m_nId, FUN_1407e4770(&effect)->m_nLevel);
+                Unk_SpBuffLevelPtr spBuff = reinterpret_cast<Unk_SpSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(FUN_1407e4770(&effect)->m_nId, FUN_1407e4770(&effect)->m_nLevel);
                 if (spBuff.FUN_14096e7e0(0))
                     continue;
                 if (spBuff.FUN_140184880()->FUN_140175790(nAbility) && nBest < spBuff.FUN_140184880()->m_nValue)

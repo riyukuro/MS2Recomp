@@ -33,11 +33,12 @@
 #include "ms2/client/ms2/entityinstancing.h"
 #include "ms2/ms2layout.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // ---- unit-local placeholders (names invented) --------------------------------------------------------------------------
 class EntityWorldManager;
 struct Unk_NHEntIter { void* m_a; void* m_b; };                            // iterator over the world's entities (16 bytes)
-struct Unk_NHFramework { void* m_0; void* m_svc; };                       // object at FUN_14086d260(); +8 holds the service manager pointer
+struct Unk_NHFramework { void* m_0; void* m_svc; }; // object at reinterpret_cast<Unk_NHFramework*>(TSingleton<CMainSystem>::GetInstance()); +8 holds the service manager pointer
 class Unk_NHSvc;                                                          // service returned from the framework (FUN_14098c5b0)
 
 // smart pointer to a framework service (ctor 0x14098c7d0, dtor 0x14098cc60)
@@ -84,7 +85,6 @@ public:
 };
 
 // ---- externs (unrecovered exe code; names are the exe addresses) ---------------------------------------------------------
-Unk_NHFramework* FUN_14086d260();
 Unk_ServiceManager* FUN_140af8310(void* pHolder);
 void FUN_140a33240(Unk_NHXform* out, const void* pSrc);
 extern char DAT_143a09600;
@@ -156,7 +156,7 @@ MS2_REPLACE(0x1413F9810, FUN_1413f9810, 14, 0xE0176E0C);
 efd::MessageService* FUN_1413f9830() { return FUN_1413fb760(); }
 MS2_REPLACE(0x1413F9830, FUN_1413f9830, 14, 0x11E32E6C);
 // @0x1413f9850
-Unk_ServiceManager* FUN_1413f9850() { return FUN_140af8310(&FUN_14086d260()->m_svc); }
+Unk_ServiceManager* FUN_1413f9850() { return FUN_140af8310(&reinterpret_cast<Unk_NHFramework*>(TSingleton<CMainSystem>::GetInstance())->m_svc); }
 MS2_REPLACE(0x1413F9850, FUN_1413f9850, 26, 0xC8CC15AE);
 // @0x1413f9870
 void* FUN_1413f9870() { return FUN_1413fb720(); }

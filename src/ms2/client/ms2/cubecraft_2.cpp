@@ -22,6 +22,9 @@
 #include "ms2/client/ms2/questmanager_1.h"
 #include "ms2/placeholder/questdata.h"
 #include "ms2/placeholder/cconditioncommon.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <io.h>
 #include <NiNode.h>
 #include <efd/ServiceManager.h>
@@ -29,14 +32,11 @@
 // ---- unit-local placeholders and externals ----
 
 // The world service singleton: the local player and the scene.
-class Unk_C2World
+class Unk_C2World : public WorldService
 {
 public:
     PC* FUN_141bd0cc0();                                            // the local player
-    void FUN_141bd3920();                                           // refresh after a build mode change
-    void FUN_141bc5980(void* pOut);                                 // copy the lift list into *pOut (std::vector<MS2Ptr<Unk_C2LiftObj>>)
 };
-Unk_C2World* FUN_1403ed2d0();
 
 // A liftable object standing in the world (mirror of Unk_WsB_Lift in actionkeyobject.cpp).
 class Unk_C2LiftObj : public CPtred
@@ -52,12 +52,7 @@ class CQuestManager;
 CQuestManager* FUN_140764020();
 void FUN_1416cb8b0(CQuestManager* pMgr, ATL::CAtlArray<Unk_PayloadPtr<CQuest>>& out, int nState, int nType, int nChapter);
 
-class Unk_C2SceneMgr
-{
-public:
-    NiNode* FUN_1411a6b10();                                        // the scene root
-};
-Unk_C2SceneMgr* FUN_1403ed280();
+CEffectService* FUN_1403ed280();
 
 class Unk_C2Log;
 Unk_C2Log* FUN_140166440();
@@ -129,8 +124,7 @@ void FUN_140b86230(const efd::Point3& kDegrees, NiMatrix3& out);
 
 __int64 FUN_14028d0e0();
 // The feature-flag holder and the UI manager (a flag at +10 is the shift key state).
-class Unk_C2Features { public: bool FUN_14036e510(); };
-Unk_C2Features* FUN_140166410();
+CFeatureManager* FUN_140166410();
 class Unk_C2UiMgr
 {
 public:
@@ -395,7 +389,7 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
         m_tPulse.FUN_1408687f0();
         m_tSlide.FUN_1408687f0();
         m_bFirstMove = false;
-        PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+        PC* pPC = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPC != 0 && pPC == m_pOwner)
         {
             m_fLift = 0.0f;
@@ -456,14 +450,14 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
             FUN_14115b1e0(GetCubeMotionManager(), *FUN_1408b76f0(spCube->entity), fScale, m_fScale, 200);
         }
         FUN_1410add30();
-        PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+        PC* pPC = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPC != 0 && pPC == m_pOwner)
         {
             int nValue = 0;
             m_svc->FUN_1410ce1e0(0, &nValue);
         }
     }
-    FUN_1403ed2d0()->FUN_141bd3920();
+    reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd3920();
 }
 
 // Creates the placement guide (a NIF model) for the local player.
@@ -471,7 +465,7 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
 void Unk_PCCubeCraft::FUN_1410a92c0()
 {
     FUN_1410a9d60();
-    PC* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pLocal = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pLocal == 0)
         return;
     if (m_pOwner != pLocal)
@@ -616,7 +610,7 @@ MS2_REPLACE_METHOD(0x1410A9E70, Unk_PCCubeCraft, FUN_1410a9e70, 103, 0xEEC9DFD1)
 // @0x1410a9ee0
 void Unk_PCCubeCraft::FUN_1410a9ee0()
 {
-    PC* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pLocal = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pLocal == 0)
         return;
     if (m_spGuide.get() != 0)
@@ -767,7 +761,7 @@ void Unk_PCCubeCraft::FUN_1410aa5c0(CubeItemInfo* pInfo)
         return;
     m_spItem->FUN_1408b3700(pInfo);
     FUN_1410a9cc0();
-    PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPC = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC != 0 && pPC == m_pOwner)
         FUN_140ef0b20()->FUN_1410b5280(m_spItem);
 }
@@ -985,7 +979,7 @@ void Unk_PCCubeCraft::FUN_1410aa6f0(Vector3 kPos, bool bNoUpdate)
 // @0x1410aad50
 void Unk_PCCubeCraft::FUN_1410aad50()
 {
-    PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPC = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (FUN_141659610(pPC) != 0 && FUN_1416625b0(pPC) == 0)
@@ -1111,7 +1105,7 @@ MS2_REPLACE_METHOD(0x1410AB5A0, Unk_PCCubeCraft, FUN_1410ab5a0, 26, 0x3243A98E);
 // @0x1410ab5c0
 void Unk_PCCubeCraft::FUN_1410ab5c0(bool bNotice)
 {
-    PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPC = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     Vector3 kCell = m_ptCell;
@@ -1163,7 +1157,7 @@ void Unk_PCCubeCraft::FUN_1410abb40()
 {
     if (GetMode() == 2)
         return;
-    PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPC = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     Vector3 kCell = m_ptCell;
@@ -1227,7 +1221,7 @@ void Unk_PCCubeCraft::FUN_1410abb40()
 // @0x1410ac1c0
 void Unk_PCCubeCraft::FUN_1410ac1c0()
 {
-    PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPC = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     unsigned nFirst = 0;
@@ -1255,7 +1249,7 @@ MS2_REPLACE_METHOD(0x1410AC1C0, Unk_PCCubeCraft, FUN_1410ac1c0, 438, 0x354524C7)
 // @0x1410ac380
 void Unk_PCCubeCraft::FUN_1410ac380()
 {
-    PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPC = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     unsigned nFirst = 0;
@@ -1290,7 +1284,7 @@ MS2_REPLACE(0x1410AF7A0, FUN_1410af7a0, 51, 0xD550EB77);
 // @0x1410ac540
 void Unk_PCCubeCraft::FUN_1410ac540()
 {
-    PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPC = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (FUN_1416595d0(pPC) == 0)
@@ -1334,7 +1328,7 @@ void Unk_PCCubeCraft::FUN_1410ac540()
 // MS2-FUNCTIONAL: behaviour-equivalent; frame layout / local order and temporaries differ from the exe
 void Unk_PCCubeCraft::FUN_1410aded0()
 {
-    PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPC = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     MS2Ptr<Cube> spCube(m_svc->FUN_1410b8ab0(m_ptCell));
@@ -1386,7 +1380,7 @@ void Unk_PCCubeCraft::FUN_1410aded0()
 // @0x1410ae380
 void Unk_PCCubeCraft::FUN_1410ae380(Vector3 kPos)
 {
-    PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPC = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (m_nMode == 2)
@@ -1459,7 +1453,7 @@ void Unk_PCCubeCraft::FUN_1410ae960(unsigned* pLeft, unsigned* pRight)
 {
     *pRight = 0;
     *pLeft = 0;
-    PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPC = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     Vector3 kFloor;
@@ -1536,7 +1530,7 @@ MS2_REPLACE_METHOD(0x1410AEEC0, Unk_PCCubeCraft, FUN_1410aeec0, 494, 0x9CC59312)
 // @0x1410af1f0
 void Unk_PCCubeCraft::FUN_1410af1f0()
 {
-    PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPC = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return;
     if (pPC != m_pOwner)
@@ -1566,7 +1560,7 @@ void Unk_PCCubeCraft::FUN_1410af1f0()
     if (nLiftId == 0)
         return;
     std::vector<MS2Ptr<Unk_C2LiftObj>> aLifts;
-    FUN_1403ed2d0()->FUN_141bc5980(&aLifts);
+    reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bc5980(&aLifts);
     for (size_t k = 0; k < aLifts.size(); ++k)
     {
         MS2Ptr<Unk_C2LiftObj> spLift = aLifts[k];
@@ -1585,7 +1579,7 @@ void Unk_PCCubeCraft::FUN_1410ac9b0()
     m_spGuide->vfunc_1();
     if (m_spGuide3.get() != 0)
         m_spGuide3->vfunc_1();
-    PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PC* pPC = reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == m_pOwner)
     {
         if (FUN_14166c930(pPC) == 0x10)

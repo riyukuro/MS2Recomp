@@ -53,6 +53,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/equipmodel.h"
 
 // ---- out-of-unit callees ----
 class CLogString;
@@ -74,7 +75,6 @@ class Unk_IsModel : public CEquipModel
 public:
     PC* FUN_141200820();                                            // the owner PC (0 when none)
     MS2Ptr<CEquipItem> FUN_141200a40() const;                       // the equip item of the model
-    efd::utf8string FUN_141201780();                                // the model's name (for the log)
 };
 class Unk_IsEquipItem
 {

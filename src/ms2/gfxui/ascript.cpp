@@ -14,7 +14,7 @@
 
 #include "hook/ms2hook.h"
 
-CStringW FUN_1408767c0(const char* sz);                  // UTF-8 -> wide
+CStringW XmlWide(const char* sz);                  // UTF-8 -> wide
 CString FUN_14016a600(const wchar_t* wsz, int nCodePage); // wide -> narrow
 
 extern Scaleform::GFx::Value DAT_143b0ae18;              // the undefined value returned by failed invokes
@@ -96,7 +96,7 @@ bool AScript::FUN_1422baad0(const char* szMember, CStringW& strOut)
     Scaleform::GFx::Value v;
     if (m_value.GetMember(szMember, &v))
     {
-        strOut = v.IsStringW() ? v.GetStringW() : (LPCWSTR)FUN_1408767c0(v.GetString());
+        strOut = v.IsStringW() ? v.GetStringW() : (LPCWSTR)XmlWide(v.GetString());
         return true;
     }
     return false;

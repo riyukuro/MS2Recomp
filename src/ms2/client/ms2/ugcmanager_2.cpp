@@ -67,12 +67,22 @@ static CString s_strTabIndex = "tabIndex";
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/gamerule.h"
+#include "ms2/client/ms2/uiugccubepalettedialog.h"
+#include "ms2/client/ms2/guildmanager.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/client/ms2/uipvpguildteamdialog.h"
+#include "ms2/client/ms2/uipvpguildteamresultdialog.h"
+#include "ms2/client/ms2/dropitem.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/ridee.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/uiugceventdispatcher.h"
 
 // ---- callees ------------------------------------------------------------------------------------------------------
 
 CLogString* GetLogString();                                // the log singleton
-CUgcDownloadDown* FUN_1414a57f0();
-CUgcDownloadLoad* FUN_1414a5800();
 CUgcManager* FUN_14052d220();
 
 // UGC file names and paths.
@@ -95,15 +105,9 @@ class Unk_UgcGameRules
 public:
     Unk_UgcContentRule* FUN_14046d0d0(int nRule);
 };
-Unk_UgcGameRules* FUN_140302b00();
 
 // The client options; mode 1 bypasses the URL cache.
-class Unk_UgcClientOptions
-{
-public:
-    int FUN_140478a60();
-};
-Unk_UgcClientOptions* FUN_1401c0d90();
+CGameRule* FUN_1401c0d90();
 unsigned int FUN_140869420();                               // the tick count (ms)
 
 // The start handshake of CThread::vfunc_1.
@@ -111,7 +115,7 @@ class Unk_140659080
 {
 public:
     void FUN_1401d42d0();                                   // the thread is running
-    int FUN_140659080(int nResult);                         // the thread failed to start
+    int Fail(int nResult);                                  // the thread failed to start
 };
 
 // The thread profiler scope of a worker thread (client\ms2\util.cpp).
@@ -132,17 +136,15 @@ class Unk_UgcEquipItem : public CPtred
 public:
     void FUN_1411dc900(int bReload);                        // reload the UGC texture
 };
-class Unk_UgcItemIconOwner
+class Unk_UgcItemIconOwner : public CDropItem
 {
 public:
-    void FUN_1411911f0();
 };
-class Unk_UgcPlayer
+class Unk_UgcPlayer : public PC
 {
 public:
     MS2Ptr<Unk_UgcEquipItem> FUN_141655c30(__int64 nItemUid);   // a worn item by uid
     Unk_UgcItemIconOwner* FUN_1417411e0();
-    void FUN_1416611b0(CString strPath);                    // set the profile image
 };
 __int64 FUN_141656a80(Unk_UgcPlayer* pPlayer);              // the character id
 int FUN_14123c580(Unk_UgcPlayer* pPlayer);                  // the object id
@@ -152,10 +154,9 @@ public:
     char m_pad[0x50 - sizeof(CPtred)];
     CString m_strProfileImage;                              // +0x50
 };
-class Unk_UgcRidee
+class Unk_UgcRidee : public Ridee
 {
 public:
-    void FUN_1417072b0();                                   // reload the UGC texture
 };
 Unk_UgcRidee* FUN_1409ffd80(void* pEntity);
 class Unk_UgcWorld
@@ -200,15 +201,9 @@ public:
     virtual void OnItemIcon(__int64 itemUid, CString strPath);                 // 2
     virtual void OnCallBackIcon(UgcItemIcon::CallBackData* pData, const CString& strPath);   // 3
 };
-Unk_UgcEventDispatcher* FUN_140bc09f0();
 
 // The notification center.
-class Unk_UgcNotifyCenter
-{
-public:
-    void FUN_140da4fe0(MS2Ptr<NotifyObject> spNotify);
-};
-Unk_UgcNotifyCenter* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 // Dialogs.
 class Unk_UgcUIManager
@@ -216,34 +211,26 @@ class Unk_UgcUIManager
 public:
     MS2Ptr<UIObject> FUN_141adcea0(int nId);
 };
-Unk_UgcUIManager* FUN_1403ed2b0();
 class UIWeddingDialog : public UIDialog
 {
 public:
     void FUN_140fc7f30();                                   // refresh the profile images
 };
-class Unk_UgcCubePaletteDialog
-{
-public:
-    void FUN_140eec480();
-};
-Unk_UgcCubePaletteDialog* FUN_140ef4a50(int nId);
+UIUGCCubePaletteDialog* FUN_140ef4a50(int nId);
 class Unk_UgcGuildDialog : public UIDialog
 {
 public:
     void FUN_1419764f0(__int64 guildId, const CString& strPath);
 };
 Unk_UgcGuildDialog* FUN_14136f480(int nId);
-class Unk_UgcGuildPvpDialog : public UIDialog
+class Unk_UgcGuildPvpDialog : public UIPvPGuildTeamDialog
 {
 public:
-    void FUN_14133b0f0(__int64 guildId, const CStringW& strPath);
 };
 Unk_UgcGuildPvpDialog* FUN_141531be0(int nId);
-class Unk_UgcGuildRankDialog : public UIDialog
+class Unk_UgcGuildRankDialog : public UIPvPGuildTeamResultDialog
 {
 public:
-    void FUN_1413415e0(__int64 guildId, const CStringW& strPath);
 };
 Unk_UgcGuildRankDialog* FUN_1413c87c0(int nId);
 class Unk_UgcShopDialog
@@ -264,14 +251,9 @@ public:
     virtual void SetShopBanner(CString strKey, CString strPath);   // 47
 };
 Unk_UgcPlatform* FUN_140d86260();
-class Unk_UgcGuildManager
-{
-public:
-    void FUN_1413baef0(int nPosterId, unsigned char bShow);
-};
-Unk_UgcGuildManager* FUN_1403ed290();
+CGuildManager* FUN_1403ed290();
 
-void FUN_1401859c0(CLogString* log, int level, int category, const wchar_t* psz);   // a plain log line
+void Unk_AdditionalLog(CLogString* log, int level, int category, const wchar_t* psz); // a plain log line
 
 // An ActionScript call.
 class Unk_UgcUIMsg : public UIMsg
@@ -295,9 +277,9 @@ template <class T> inline void Unk_UgcLog(CLogString* log, int level, int catego
 // A dialog by id (the template the UI units inline).
 template <class T> T* Unk_UgcGetDialog(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_UgcUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_UgcUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -433,8 +415,8 @@ void CUgcDownloadCtrl::OnSuccess()
 {
     if (OnDownloaded() == 1)
     {
-        if (FUN_1414a57f0())
-            FUN_1414a57f0()->Finish(GetUrl(), 0);
+        if (TSingleton<CUgcDownloadDown>::GetInstance())
+            TSingleton<CUgcDownloadDown>::GetInstance()->Finish(GetUrl(), 0);
     }
 }
 MS2_REPLACE_METHOD(0x14186f5d0, CUgcDownloadCtrl, OnSuccess, 116, 0xD303C032);
@@ -450,8 +432,8 @@ void CUgcDownloadCtrl::OnFailure(HRESULT hr)
             return;
         }
     }
-    if (FUN_1414a57f0())
-        FUN_1414a57f0()->Finish(GetUrl(), 0x1f);
+    if (TSingleton<CUgcDownloadDown>::GetInstance())
+        TSingleton<CUgcDownloadDown>::GetInstance()->Finish(GetUrl(), 0x1f);
 }
 MS2_REPLACE_METHOD(0x14186f650, CUgcDownloadCtrl, OnFailure, 220, 0xEFDFEA66);
 
@@ -472,7 +454,7 @@ UINT CUgcDownloadCtrl::Downloading(LPVOID pParam)
     CUgcDownloadCtrl* pCtrl = static_cast<CUgcDownloadCtrl*>(pParam);
     CStringW strUrl = FUN_14016a730(pCtrl->GetUrl(), 0);
     CStringW strPath = FUN_14016a730(pCtrl->GetPath(), 0);
-    Unk_UgcClientOptions* pOptions = FUN_1401c0d90();
+    CGameRule* pOptions = FUN_1401c0d90();
     if (pOptions && pOptions->FUN_140478a60() == 1)
         DeleteUrlCacheEntryW(strUrl);
     HRESULT hr = URLDownloadToFileW(NULL, strUrl, strPath, 0, &pCtrl->m_callback);
@@ -549,7 +531,7 @@ MS2_REPLACE_METHOD(0x14186fc80, CUgcDownloadEquip, ProcessResult, 447, 0xE108C4A
 // @0x14186fe50
 int CUgcDownloadEquip::OnDownloaded()
 {
-    FUN_1414a5800()->Push(m_strUrl, m_strPath, m_param.m_nType, m_param.m_upload.m_uid);
+    TSingleton<CUgcDownloadLoad>::GetInstance()->Push(m_strUrl, m_strPath, m_param.m_nType, m_param.m_upload.m_uid);
     return 0;
 }
 MS2_REPLACE_METHOD(0x14186fe50, CUgcDownloadEquip, OnDownloaded, 193, 0xA6BFCA79);
@@ -607,7 +589,7 @@ void CUgcDownloadCube::ProcessResult()
             else
                 FUN_14052d220()->FUN_141886cc0(sp.get(), m_strPath, m_param.m_upload.m_uid);
         }
-        Unk_UgcCubePaletteDialog* pDialog = FUN_140ef4a50(0x4f16);
+        UIUGCCubePaletteDialog* pDialog = FUN_140ef4a50(0x4f16);
         if (pDialog)
             pDialog->FUN_140eec480();
     }
@@ -618,7 +600,7 @@ MS2_REPLACE_METHOD(0x141870220, CUgcDownloadCube, ProcessResult, 574, 0x6AF398CE
 // @0x141870470
 int CUgcDownloadCube::OnDownloaded()
 {
-    FUN_1414a5800()->Push(m_strUrl, m_strPath, m_param.m_nType, m_param.m_upload.m_uid);
+    TSingleton<CUgcDownloadLoad>::GetInstance()->Push(m_strUrl, m_strPath, m_param.m_nType, m_param.m_upload.m_uid);
     return 0;
 }
 MS2_REPLACE_METHOD(0x141870470, CUgcDownloadCube, OnDownloaded, 193, 0xFD8002C8);
@@ -683,11 +665,11 @@ void CUgcDownloadItemIcon::ProcessResult()
             }
             else if (sp->m_nKind == 2)
             {
-                FUN_140bc09f0()->OnItemIcon(sp->m_itemUid, strUrl);
+                reinterpret_cast<Unk_UgcEventDispatcher*>(TSingleton<UIUGCEventDispatcher>::GetInstance())->OnItemIcon(sp->m_itemUid, strUrl);
             }
             else if (sp->m_nKind == 3)
             {
-                FUN_140bc09f0()->OnCallBackIcon(&sp->m_callBack, m_strPath);
+                reinterpret_cast<Unk_UgcEventDispatcher*>(TSingleton<UIUGCEventDispatcher>::GetInstance())->OnCallBackIcon(&sp->m_callBack, m_strPath);
             }
         }
     }
@@ -755,7 +737,7 @@ MS2_REPLACE_METHOD(0x141870e80, CUgcDownloadBanner, ProcessResult, 592, 0xBAA0BF
 // @0x1418710e0
 int CUgcDownloadBanner::OnDownloaded()
 {
-    FUN_1414a5800()->Push(m_strUrl, m_strPath, m_param.m_nType, m_param.m_upload.m_uid);
+    TSingleton<CUgcDownloadLoad>::GetInstance()->Push(m_strUrl, m_strPath, m_param.m_nType, m_param.m_upload.m_uid);
     return 0;
 }
 MS2_REPLACE_METHOD(0x1418710e0, CUgcDownloadBanner, OnDownloaded, 193, 0x6428784E);
@@ -845,7 +827,7 @@ void CUgcDownloadProfile::ProcessResult()
                             spTag->m_strProfileImage = strUrl;
                     }
                 }
-                FUN_140bc09f0()->OnProfileImage(sp->m_characterId, strUrl);
+                reinterpret_cast<Unk_UgcEventDispatcher*>(TSingleton<UIUGCEventDispatcher>::GetInstance())->OnProfileImage(sp->m_characterId, strUrl);
             }
         }
     }
@@ -1014,7 +996,7 @@ void CUgcDownloadGuildPoster::ProcessResult()
 {
     if (m_nResult == 0 && m_spPoster.get())
         FUN_1403ed290()->FUN_1413baef0(m_spPoster->m_nIndex, 0);
-    FUN_1401859c0(GetLogString(), 0xc, 0x13, L"[CUgcDownloadGuildPoster::ProcessResult]");
+    Unk_AdditionalLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadGuildPoster::ProcessResult]");
 }
 MS2_REPLACE_METHOD(0x141872730, CUgcDownloadGuildPoster, ProcessResult, 131, 0xC7FB1C84);
 
@@ -1078,7 +1060,7 @@ MS2_REPLACE_METHOD(0x141872ac0, CUgcDownloadRidee, ProcessResult, 495, 0x511D51F
 // @0x141872cc0
 int CUgcDownloadRidee::OnDownloaded()
 {
-    FUN_1414a5800()->Push(m_strUrl, m_strPath, m_param.m_nType, m_param.m_upload.m_uid);
+    TSingleton<CUgcDownloadLoad>::GetInstance()->Push(m_strUrl, m_strPath, m_param.m_nType, m_param.m_upload.m_uid);
     return 0;
 }
 MS2_REPLACE_METHOD(0x141872cc0, CUgcDownloadRidee, OnDownloaded, 193, 0x7824E7C8);
@@ -1228,7 +1210,7 @@ MS2_REPLACE_METHOD(0x1418737e0, CUgcDownloadAdBanner, MakePath, 195, 0x1DDC5225)
 void CUgcDownloadAdBanner::ProcessResult()
 {
     if (m_nResult == 0)
-        FUN_140939a10()->FUN_140da4fe0(
+        FUN_140939a10()->Post(
             MS2Ptr<NotifyObject>(new NotifyUgcDownloadComplete(m_param.m_nType, m_strUrl, m_strPath)));
 }
 MS2_REPLACE_METHOD(0x1418738b0, CUgcDownloadAdBanner, ProcessResult, 298, 0xBD917E27);
@@ -1335,7 +1317,7 @@ void CUgcDownloadBlueprintImage::ProcessResult()
             NotifyUgcDownloadComplete* pNotify = new NotifyUgcDownloadComplete(9, m_strUrl, m_strPath);
             if (pNotify)
                 pNotify->m_uid = sp->m_n18;
-            FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(pNotify));
+            FUN_140939a10()->Post(MS2Ptr<NotifyObject>(pNotify));
         }
     }
     Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadBlueprintImage::ProcessResult] proxy count = {0}",
@@ -1346,7 +1328,7 @@ MS2_REPLACE_METHOD(0x1418740f0, CUgcDownloadBlueprintImage, ProcessResult, 717, 
 // @0x1418743d0
 int CUgcDownloadBlueprintImage::OnDownloaded()
 {
-    FUN_1414a5800()->Push(m_strUrl, m_strPath, m_param.m_nType, m_param.m_upload.m_uid);
+    TSingleton<CUgcDownloadLoad>::GetInstance()->Push(m_strUrl, m_strPath, m_param.m_nType, m_param.m_upload.m_uid);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1418743d0, CUgcDownloadBlueprintImage, OnDownloaded, 196, 0x874239FC);
@@ -1403,9 +1385,9 @@ void CUgcDownloadBlueprintIcon::ProcessResult()
             if (sp == 0)
                 continue;
             if (sp->m_nKind == 2)
-                FUN_140bc09f0()->OnItemIcon(sp->m_itemUid, strUrl);
+                reinterpret_cast<Unk_UgcEventDispatcher*>(TSingleton<UIUGCEventDispatcher>::GetInstance())->OnItemIcon(sp->m_itemUid, strUrl);
             else if (sp->m_nKind == 3)
-                FUN_140bc09f0()->OnCallBackIcon(&sp->m_callBack, m_strPath);
+                reinterpret_cast<Unk_UgcEventDispatcher*>(TSingleton<UIUGCEventDispatcher>::GetInstance())->OnCallBackIcon(&sp->m_callBack, m_strPath);
         }
     }
     Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadBlueprintIcon::ProcessResult] proxy count = {0}",
@@ -1436,7 +1418,7 @@ unsigned int CUgcDownloadDown::vfunc_1(void* pParam, Unk_140659080& start)
     m_hEvent = CreateEventA(NULL, FALSE, FALSE, NULL);
     if (m_hEvent == NULL)
     {
-        start.FUN_140659080(E_FAIL);
+        start.Fail(E_FAIL);
         return -1;
     }
     start.FUN_1401d42d0();
@@ -1486,10 +1468,10 @@ unsigned int CUgcDownloadDown::vfunc_1(void* pParam, Unk_140659080& start)
                 }
                 else
                 {
-                    if (FUN_140302b00() && FUN_140302b00()->FUN_14046d0d0(0xb)->FUN_1407d1210(sp->m_param.m_nType))
+                    if (reinterpret_cast<Unk_UgcGameRules*>(TSingleton<CGameEventValueManager>::GetInstance()) && reinterpret_cast<Unk_UgcGameRules*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14046d0d0(0xb)->FUN_1407d1210(sp->m_param.m_nType))
                         continue;
                     sp->MakePath();
-                    FUN_1414a5800()->Push(sp->m_param.m_strUrl, sp->GetPath(), sp->m_param.m_nType,
+                    TSingleton<CUgcDownloadLoad>::GetInstance()->Push(sp->m_param.m_strUrl, sp->GetPath(), sp->m_param.m_nType,
                                           sp->m_param.m_upload.m_uid);
                 }
             }
@@ -1537,7 +1519,7 @@ int CUgcDownloadDown::Push(CUgcDownloadParam* pParam, IUgcProxy* pProxy)
     int bNew = 0;
     if (strUrl.GetLength() == 0)
         return 0;
-    if (FUN_140302b00() && FUN_140302b00()->FUN_14046d0d0(0xb)->FUN_1407d1210(nType))
+    if (reinterpret_cast<Unk_UgcGameRules*>(TSingleton<CGameEventValueManager>::GetInstance()) && reinterpret_cast<Unk_UgcGameRules*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14046d0d0(0xb)->FUN_1407d1210(nType))
         return 0;
     if (nType == 1 || nType == 2 || nType == 0xc9 || nType == 3 || nType == 5 || nType == 6 || nType == 8 ||
         nType == 7 || nType == 0xce || nType == 9 || nType == 0xd1 || nType == 10)

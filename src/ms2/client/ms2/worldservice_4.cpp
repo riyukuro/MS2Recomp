@@ -511,11 +511,12 @@ Unk_WsI_BoundRef* FUN_141bf6cb0(Unk_WsI_BoundRef* self, Unk_WsI_Bound* p)
 {
     return static_cast<Unk_WsI_BoundRef*>(WsAssignPtred(self, reinterpret_cast<CPtred*>(p)));
 }
-// MS2-FUNCTIONAL: this is the same assignment body through the generic 16-byte pointer view.
+// MS2-FUNCTIONAL: this is the same assignment body through the generic 16-byte pointer view. It returns self like the
+// exe body: alias.py may pick it for Unk_WsA_GoFieldRef::operator= (returns a reference) at this VA.
 // @0x141bf6cb0
-void FUN_141bf6cb0(Unk_WsP16* self, Unk_WsD_FieldObj* p)
+Unk_WsP16* FUN_141bf6cb0(Unk_WsP16* self, Unk_WsD_FieldObj* p)
 {
-    WsAssignPtred(self, reinterpret_cast<CPtred*>(p));
+    return static_cast<Unk_WsP16*>(WsAssignPtred(self, reinterpret_cast<CPtred*>(p)));
 }
 
 // MS2-PIN: ??1ActorRemovedMessage@egmAnimation@@UEAA@XZ 0x141bf5fb0 ; stores ??_7ActorRemovedMessage (0x142ffeb08); ~ActorAddedMessage is its look-alike

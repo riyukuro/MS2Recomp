@@ -29,6 +29,8 @@
 #include "ms2/client/ms2/networkservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/maid.h"
 
 // Singleton getters of the systems whose tables are reloaded after the patch.
 class Unk_PatchTextFilter;
@@ -37,12 +39,10 @@ class Unk_PatchTableB;
 class Unk_PatchTableC;
 void LoadQuestDescription();
 void FUN_14093af30();
-Unk_PatchTableA* FUN_1409eed20();
 void FUN_14067ee90(Unk_PatchTableA* p);
 void LoadSystemMailContent();
 void LoadTalkScripts();
 bool FUN_14087ea50(Unk_PatchTextFilter* p);                // reloads the word filter
-Unk_PatchTableB* FUN_1401a9d70();
 bool FUN_141811960(Unk_PatchTableB* p);
 void* FUN_14025e7d0();
 void FUN_140259930(void* p);
@@ -275,11 +275,11 @@ void COnlinePatchManagerCli::ReloadTables()
 {
     LoadQuestDescription();
     FUN_14093af30();
-    FUN_14067ee90(FUN_1409eed20());
+    FUN_14067ee90(reinterpret_cast<Unk_PatchTableA*>(TSingleton<CMaidInfoTable>::GetInstance()));
     LoadSystemMailContent();
     LoadTalkScripts();
     FUN_14087ea50(FUN_140a87680()->FUN_140a87690());
-    FUN_141811960(FUN_1401a9d70());
+    FUN_141811960(reinterpret_cast<Unk_PatchTableB*>(TSingleton<CStringTable>::GetInstance()));
     FUN_140259930(FUN_14025e7d0());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

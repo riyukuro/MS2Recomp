@@ -22,6 +22,8 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Header statics: the market sort name arrays, one copy per including unit.
 #ifndef MS2_HOOK_DLL
@@ -31,9 +33,9 @@ static CString s_sortNames7b[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh"
 #endif
 
 // Out-of-unit callees.
-class Unk_140166410 { public: bool FUN_14036d4b0(const CStringW& strFeature); };   // the content switches
-Unk_140166410* FUN_140166410();
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+   // the content switches
+CFeatureManager* FUN_140166410();
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 CString FUN_14016a5c0(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)

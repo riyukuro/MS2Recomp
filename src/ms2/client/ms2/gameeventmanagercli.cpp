@@ -33,6 +33,8 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // Namespace-scope statics of a shared game header (see ms2/placeholder/header_statics_a.h; this unit has only these).
 static CString s_strSkill = "skill";
@@ -40,11 +42,8 @@ static CString s_strStun = "stun";
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 
 NotifySystem* FUN_140939a10();                                  // TSingleton<NotifySystem>::GetInstance
-GameEventManagerCli* FUN_14015a050();                           // TSingleton<GameEventManagerCli>::GetInstance
 CFeatureManager* FUN_140166410();                               // TSingleton<CFeatureManager>::GetInstance
 CMeratMarketMan* FUN_140939a00();                               // TSingleton<CMeratMarketMan>::GetInstance
-CSeasonDataTable* FUN_1404f4540();                              // TSingleton<CSeasonDataTable>::GetInstance
-CUIService* FUN_1403ed2b0();                                    // TSingleton<CUIService>::GetInstance
 UIGameMenuDialog* FUN_140938b90(int nUiId);                     // the dialog lookups of other units (same template)
 UIMentoringDialog* FUN_140b72e80(int nUiId);
 UIPaybackDialog* FUN_140a8c5f0(int nUiId);
@@ -54,7 +53,7 @@ int Parse_14021b830(const CStringA& value);                     // a game menu e
 int FUN_140718200(const CStringW& str);                         // _wtoi
 bool FUN_14028f710(Unk_140165cf0* pElem);                       // the element is enabled for this build
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-class Unk_GmFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* szPath, int nEncoding, bool bWarn, bool bLocalOnly); };
+class Unk_GmFiles : public CFileSystem { };
 Unk_GmFiles* FUN_140166420();                                   // CFileSystem
 class Unk_GmLog;
 Unk_GmLog* FUN_140166440();                                     // CLogString
@@ -272,9 +271,9 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 // The dialog lookup behind the four COMDATs at 0x140cf81a0..0x140cf8380 (CUIService object by class id, then a cast).
 template <class T> T* FindUIDialog(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -332,11 +331,11 @@ bool CGameMenuItem::IsVisible()
     switch (m_eFilterType)
     {
     case GAMEMENU_FILTER_EVENT_ID:
-        if (FUN_14015a050()->Find(m_nFilterEventId).get() != 0)
+        if (TSingleton<GameEventManagerCli>::GetInstance()->Find(m_nFilterEventId).get() != 0)
             return true;
         break;
     case GAMEMENU_FILTER_EVENT_TYPE:
-        if (FUN_14015a050()->IsEnabled(m_strFilterValue))
+        if (TSingleton<GameEventManagerCli>::GetInstance()->IsEnabled(m_strFilterValue))
             return true;
         break;
     case GAMEMENU_FILTER_ATTEND_GIFT:
@@ -354,7 +353,7 @@ bool CGameMenuItem::IsVisible()
         break;
     }
     case GAMEMENU_FILTER_SEASON:
-        if (FUN_1404f4540()->GetCurrent(FUN_1404f4540()->GetType(CStringA(m_strFilterValue))).get() != 0)
+        if (TSingleton<CSeasonDataTable>::GetInstance()->GetCurrent(TSingleton<CSeasonDataTable>::GetInstance()->GetType(CStringA(m_strFilterValue))).get() != 0)
             return true;
         break;
     }

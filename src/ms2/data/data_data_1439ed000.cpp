@@ -11,7 +11,15 @@
 
 #ifndef MS2_HOOK_DLL
 
-extern unsigned char DAT_143ab89f8[];
+// Functions and objects the tables below point at (static members, free functions and globals defined in other
+// units), declared here so the slots name them directly; the owning classes are reduced to those members.
+namespace ChromaSDK {
+class ChromaManagerDummy;
+}
+namespace ChromaSDK {
+extern ChromaSDK::ChromaManagerDummy g_chromaManagerDummy;
+}
+
 
 #pragma pack(push, 1)
 struct Sd_1439f4910 {
@@ -2059,7 +2067,7 @@ int DAT_1439f4a88 = 1;                                          // 0x1439f4a88
 int DAT_1439f4a8c = 2147483647;                                 // 0x1439f4a8c
 // 0x1439f4d68
 alignas(8) Sd_1439f4d68 DAT_1439f4d68 = {
-    DAT_143ab89f8,
+    (const void*)&ChromaSDK::g_chromaManagerDummy,
     {
         0x00, 0x01, 0x01, 0x02, 0x01, 0x02, 0x02, 0x03, 0x01, 0x02, 0x02, 0x03, 0x02, 0x03, 0x03, 0x04,
         0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
@@ -2706,6 +2714,5 @@ alignas(16) unsigned char DAT_1439fc800[0x20] = {
 #pragma comment(linker, "/alternatename:?DAT_1439fb040@@3VNiPixelFormat@@B=?DAT_1439fb040@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_1439fc800@@3DA=?DAT_1439fc800@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_1439fc800@@3VFormatPrefs@NiTexture@@A=?DAT_1439fc800@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab89f8@@3PAEA=?g_chromaManagerDummy@ChromaSDK@@3VChromaManagerDummy@1@A")
 
 #endif // MS2_HOOK_DLL

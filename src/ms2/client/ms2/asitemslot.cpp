@@ -163,6 +163,13 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/questmanager_2.h"
+#include "ms2/commonfiles/itemgachaboxtable.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/cpetmanager.h"
+#include "ms2/client/ms2/skillsystem.h"
 
 // ---- statics, in the exe's initializer order (.text$di) ----
 // The ASItemSlot TU.
@@ -236,9 +243,9 @@ void* FUN_141bd0cc0(void*);                                     // the local pla
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                   // the item table row
 CStringW FUN_14016a730(const char* sz, int nCodePage);          // multibyte -> wide
 CStringW GetStringCommon(int nStringId);
-__int64 FUN_140869440();                                        // server time
+__int64 GetServerTime();                                        // server time
 unsigned short FUN_140626f20(unsigned nItemId);                 // fixed enchant level of an item
-CString FUN_14021c050(int nTag);                                // ugc tag name
+CString Name_14021c050(int nTag);                                // ugc tag name
 CStringW FUN_141b71910(__int64 nUid);                           // item uid text
 CStringW FUN_1409e5320(const int& nSeason);                     // season number text
 
@@ -585,10 +592,8 @@ public:
     virtual void vfunc_0();
     virtual MS2Ptr<Unk_SlotSkillLevel> vfunc_1(int nSkillId);   // 1 the learned level of a skill
 };
-class Unk_SlotSkillCooldowns
+class Unk_SlotSkillCooldowns : public CSkillSystem
 {
-public:
-    float FUN_141765fe0(int nSkillId, int n);                   // the cooldown left
 };
 class Unk_SlotPc
 {
@@ -613,11 +618,6 @@ public:
     MS2Ptr<CEquipItem> FUN_1411e1780(int nSlot, int nKind);
 };
 Unk_SlotEquipSet* FUN_1416561a0(void* pPc);
-class Unk_SlotMyPc
-{
-public:
-    MS2Ptr<CEquipItem> FUN_141655c30(__int64 nItemUid);        // a worn item by uid
-};
 
 // A skill entry (the skill window rows).
 class Unk_SlotSkillInfo : public CPtred
@@ -687,16 +687,7 @@ class Unk_ItemPlusInfo
 public:
     int FUN_1408bbc50();                                        // unlimited enchant level
 };
-class Unk_SlotSeasonTable
-{
-public:
-    bool FUN_14059eec0(int nItemId);
-    int FUN_14059ebb0(int nItemId);
-    bool FUN_14059ef70(int nSeason);
-    int FUN_14059e6a0(int nCoinShopId);                         // the coin shop is open (merat home products)
-    int FUN_14059ed00(int nSeasonId);                           // the season of an item season id
-};
-Unk_SlotSeasonTable* FUN_14052d230();
+ItemGachaBoxTable* FUN_14052d230();
 class Unk_SlotLapenTable
 {
 public:
@@ -727,31 +718,9 @@ public:
     int FUN_140613430(MS2Ptr<CItem> spItem);
 };
 Unk_SlotLockManager* FUN_140535310();
-class Unk_SlotQuestManager
-{
-public:
-    int FUN_1416ce6a0(MS2Ptr<CItem> spItem);
-};
-Unk_SlotQuestManager* FUN_140764020();
-class Unk_SlotFeatures
-{
-public:
-    bool FUN_14036d570(int nFeature);
-};
-Unk_SlotFeatures* FUN_140166410();
-class Unk_SlotStrings
-{
-public:
-    CStringW FUN_141811980(int nTable, int nId);
-    CStringW FUN_141812f60(int nId);
-};
-Unk_SlotStrings* FUN_1401a9d70();
-class Unk_SlotUidSource
-{
-public:
-    __int64 FUN_140c8b2e0();
-};
-Unk_SlotUidSource* FUN_140535320();
+CQuestManager* FUN_140764020();
+CFeatureManager* FUN_140166410();
+CPetManager* FUN_140535320();
 // The inventory dialog's break/lock mode (UIInventoryDialog +0x1a4).
 class Unk_SlotInventoryDialog : public UIDialog
 {
@@ -864,7 +833,7 @@ void ASSlot::FUN_1409c1f40(CItem* pItem)
 {
     int nLock = pItem->FUN_140528ca0();
     __int64 tUnlock = pItem->FUN_140528e00();
-    if (nLock == 0 && tUnlock > FUN_140869440())
+    if (nLock == 0 && tUnlock > GetServerTime())
     {
         FUN_1407cbbe0(s_strItemIconLock, false);
         FUN_1407cbbe0(s_strItemIconUnLock, true);
@@ -1199,7 +1168,7 @@ void ASSlot::FUN_1409c3290(MS2Ptr<CItemData> spData)
         return;
     int nItemId = spData->FUN_14053c510();
     int nSeason = spData->FUN_14053dec0();
-    Unk_SlotSeasonTable* pTable = FUN_14052d230();
+    ItemGachaBoxTable* pTable = FUN_14052d230();
     if (pTable != NULL && pTable->FUN_14059eec0(nItemId) == true)
         nSeason = pTable->FUN_14059ebb0(nItemId);
     if (nSeason == 0)
@@ -1362,7 +1331,7 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
             BOOL bEquipped = FALSE;
             if (pItem->FUN_140527840()->FUN_14053cbc0())
             {
-                MS2Ptr<CEquipItem> spEquip = reinterpret_cast<Unk_SlotMyPc*>(pPc)->FUN_141655c30(pItem->FUN_140526a50());
+                MS2Ptr<CEquipItem> spEquip = reinterpret_cast<PC*>(pPc)->FUN_141655c30(pItem->FUN_140526a50());
                 if (spEquip.get() != NULL)
                     bEquipped = TRUE;
             }
@@ -1372,7 +1341,7 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
     }
     if ((nFlags & 0x10000) && pItem->FUN_140525640() != 0)
     {
-        if (pItem->FUN_140526a50() == FUN_140535320()->FUN_140c8b2e0())
+        if (pItem->FUN_140526a50() == FUN_140535320()->GetSummonUid())
             FUN_1409c2150(1);
     }
     if (nFlags & 2)
@@ -1408,7 +1377,7 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
     if (nFlags & 0x10)
         FUN_1409c2200(pItem);
     if (nFlags & 0x80)
-        FUN_1409c2820(FUN_14021c050(pItem->FUN_140526c30()));
+        FUN_1409c2820(Name_14021c050(pItem->FUN_140526c30()));
     if (nFlags & 0x100)
     {
         CStringW strGuid = FUN_141b71910(pItem->FUN_140526a50());
@@ -1416,7 +1385,7 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
     }
     if (nFlags & 0x1000)
     {
-        FUN_1409c2990(FUN_1401a9d70()->FUN_141812f60(pItem->FUN_1405276c0()));
+        FUN_1409c2990(TSingleton<CStringTable>::GetInstance()->FUN_141812f60(pItem->FUN_1405276c0()));
     }
     if ((nFlags & 0x200) && pItem->FUN_140526970() != 0)
         FUN_1409c2570(1);
@@ -1499,7 +1468,7 @@ int ASSlot::FUN_1409c4510(int nItemId, int nRarity, int nCount)
     FUN_1409c1e00(spData->FUN_14053d1f0());
     FUN_1409c1e40(spData->FUN_14053d210());
     FUN_1409c2750(spData->FUN_14053fdd0());
-    FUN_1409c25b0(FUN_1401a9d70()->FUN_141811980(1, nItemId));
+    FUN_1409c25b0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
     FUN_1409c2190(nCount);
     FUN_1409c2650();
     FUN_1409c3040(spData);
@@ -2062,7 +2031,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
             {
                 CStringW strFunction = spData->function.name;
                 FUN_1407cba60("iconPath", spData->FUN_14053fdd0());
-                FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, nItemId));
+                FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
                 if (spFilter.get() != NULL)
                 {
                     bool bDisable = !spFilter->FUN_140ebb780(nJob, nLevel, spData) ? TRUE : FALSE;
@@ -2648,7 +2617,7 @@ void ASMeratMarketHomeProduct::vfunc_8(Unk_MeratPremium& premium)
 {
     if (premium.m_nType == 6)
     {
-        CMsTime tNow(FUN_140869440());
+        CMsTime tNow(GetServerTime());
         if (tNow < premium.m_tSaleStart)
         {
             FUN_1409c1180("startNextSaleRemainTime", premium.m_tSaleStart.Get() - tNow.Get());

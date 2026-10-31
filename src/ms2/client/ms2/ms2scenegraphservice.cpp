@@ -56,6 +56,9 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/ridee.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/crashmanagercli.h"
 
 using efd::UInt32;
 using efd::utf8string;
@@ -86,7 +89,7 @@ Unk_SgOptions* FUN_1411b1db0();
 
 // The world objects (WorldService::m_118, an ATL::CRBMap<unsigned, Unk_WsV118> in worldservice.h) and the rider seat
 // update run between the buckets.
-class Unk_SgRidee { public: void FUN_1417074c0(); };                   // Ridee: seat the rider
+class Unk_SgRidee : public Ridee { };                   // Ridee: seat the rider
 class Unk_SgRider { public: Unk_SgRidee* FUN_1416764a0(); };           // PCBase: the ridee this actor rides
 struct Unk_SgWorldObjectRef;                                            // map value: intrusive pointer to the object
 Unk_SgRider* FUN_140aac420(Unk_SgWorldObjectRef* pRef);
@@ -95,9 +98,7 @@ POSITION FUN_140c20a10(Unk_SgWorldObjects* pMap);                       // GetHe
 Unk_SgWorldObjectRef* FUN_140c20a80(Unk_SgWorldObjects* pMap, POSITION pos);   // GetValueAt
 void FUN_140c20a30(Unk_SgWorldObjects* pMap, POSITION* pPos);           // GetNext
 class Unk_SgWorld { public: Unk_SgWorldObjects* FUN_141bd36b0(); };
-Unk_SgWorld* FUN_1403ed2d0();
 
-CCrashManager* FUN_140a44830();
 MS2AnimationService* FUN_1413f9b10();
 unsigned FUN_140d868f0(egf::FlatModelManager* pFlatModels);     // the loaded flat model count
 
@@ -229,7 +230,7 @@ efd::AsyncResult MS2SceneGraphService::OnInit()
         pkRenderer->AddResetNotificationFunc(FUN_1414f3690, this);
         pkRenderer->AddLostDeviceNotificationFunc(FUN_1414f36b0, this);
     }
-    FUN_140a44830()->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &MS2SceneGraphService::FUN_1414f3700));
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &MS2SceneGraphService::FUN_1414f3700));
     if (DAT_143ae2b30 != 0)
     {
         m_uiThreadCount = FUN_1411b1db0()->FUN_14070f0a0();
@@ -323,7 +324,7 @@ void MS2SceneGraphService::UpdateDynamicEntities(bool advanceUpdateTime, bool pe
             FUN_1414f1f50(0);
             FUN_1414f1f50(4);
             FUN_1414f1f50(5);
-            Unk_SgWorldObjects* pObjects = FUN_1403ed2d0()->FUN_141bd36b0();
+            Unk_SgWorldObjects* pObjects = reinterpret_cast<Unk_SgWorld*>(WorldService::GetInstance())->FUN_141bd36b0();
             for (POSITION pos = FUN_140c20a10(pObjects); pos != NULL; FUN_140c20a30(pObjects, &pos))
             {
                 Unk_SgRider* pRider = FUN_140aac420(FUN_140c20a80(pObjects, pos));
@@ -902,7 +903,7 @@ bool MS2SceneGraphService::FUN_1414f36b0(void* pvData)
     MS2SceneGraphService* pService = static_cast<MS2SceneGraphService*>(pvData);
     if (pService)
     {
-        FUN_140a44830()->FUN_1401ce2f0("\n *Lost device - ClearAllCachedShaders()");
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("\n *Lost device - ClearAllCachedShaders()");
         pService->ClearAllCachedShaders();
     }
     return true;
@@ -912,20 +913,20 @@ MS2_REPLACE(0x1414F36B0, MS2SceneGraphService::FUN_1414f36b0, 64, 0xDE91E682);
 // @0x1414f3700
 void MS2SceneGraphService::FUN_1414f3700()
 {
-    FUN_140a44830()->FUN_1401ce2b0("\n--- SceneGraphService Log---");
-    FUN_140a44830()->FUN_1401ce2f0("SceneGraphCached count: %d", FUN_1414f3660());
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- SceneGraphService Log---");
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("SceneGraphCached count: %d", FUN_1414f3660());
     egf::FlatModelManager* pFlatModels;
     MS2AnimationService* pAnimation;
     pFlatModels =
         EE_DYNAMIC_CAST(egf::FlatModelManager, m_pServiceManager->GetSystemServiceAs<egf::FlatModelManager>());
     if (pFlatModels)
-        FUN_140a44830()->FUN_1401ce2f0("FlatModel count: %d", FUN_140d868f0(pFlatModels));
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("FlatModel count: %d", FUN_140d868f0(pFlatModels));
     pAnimation = FUN_1413f9b10();
     if (pAnimation)
     {
-        FUN_140a44830()->FUN_1401ce2f0("Asset count: %d", pAnimation->GetAssetCount());
-        FUN_140a44830()->FUN_1401ce2f0("Actor count: %d", pAnimation->GetActorCount());
-        FUN_140a44830()->FUN_1401ce2f0("KFMCached count: %d", pAnimation->GetKFMCacheCount());
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Asset count: %d", pAnimation->GetAssetCount());
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Actor count: %d", pAnimation->GetActorCount());
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("KFMCached count: %d", pAnimation->GetKFMCacheCount());
     }
 }
 MS2_REPLACE_METHOD(0x1414F3700, MS2SceneGraphService, FUN_1414f3700, 292, 0xF2EAAB3D);

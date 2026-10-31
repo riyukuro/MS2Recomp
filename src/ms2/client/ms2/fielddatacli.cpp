@@ -16,6 +16,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
+#include "ms2/commonfiles/filesystem.h"
 #include <new>
 
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
@@ -41,7 +42,7 @@ bool FUN_140164830(const CStringW&, const CStringW&);
 bool FUN_1401932b0(const std::vector<unsigned>&, const std::vector<unsigned>&);
 bool FUN_1406cf9e0(const std::vector<short>&, const std::vector<short>&);
 bool FUN_140552700(const Unk_GVec3&, const Unk_GVec3&);
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 bool FUN_140a56ee0(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
 bool FUN_140a56f50(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
@@ -287,12 +288,12 @@ int FUN_140a55d20(CFieldDataCli* self, CStringW* out)
     extern void* FUN_14025e7c0();
     extern bool FUN_14116d720(void*);
     extern CStringW GetStringCommon(int id);
-    extern CStringW FUN_1402a61e0(const wchar_t*);
+    extern CStringW StringFormat(const wchar_t*);
     if (FUN_14116d720(FUN_14025e7c0()))
         return 1;
     if (self->m_nEnterAdminLevel > 0)
     {
-        *out = FUN_1402a61e0(GetStringCommon(0x99d));
+        *out = StringFormat(GetStringCommon(0x99d));
         return 0;
     }
     return 1;

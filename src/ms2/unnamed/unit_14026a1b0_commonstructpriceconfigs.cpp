@@ -12,7 +12,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-__int64 FUN_140869440();                                            // the current server time
+__int64 GetServerTime();                                            // the current server time
 __int64 FUN_14028d0e0();                                            // a new tab id
 void FUN_140274fc0(CStringW& str, ATL::CAtlArray<unsigned>& out, const wchar_t* pszSep);   // split into numbers
 
@@ -35,7 +35,7 @@ bool Unk_CommonPriceRecord::MarkUsed()
 {
     if (m_usedTime != 0)
         return false;
-    m_usedTime = FUN_140869440();
+    m_usedTime = GetServerTime();
     return true;
 }
 

@@ -32,10 +32,12 @@
 #include "ms2/ms2recover.h"
 #include <typeinfo>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/cstringtable.h"
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CStringA&);
@@ -47,9 +49,8 @@ CStringW FUN_1401bf530(Unk_140165cf0*, const char* pszName, CStringW strDefault)
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& arg0, const CStringW& arg1);
 
-// The string tables (unit_1401a9d70 region): FUN_1401a9d70() is their singleton.
+// The string tables (unit_1401a9d70 region): reinterpret_cast<Unk_AddressStrings*>(TSingleton<CStringTable>::GetInstance()) is their singleton.
 class Unk_AddressStrings { public: CStringW FUN_141811980(int nTable, int nId, int nFlag); };
-Unk_AddressStrings* FUN_1401a9d70();
 
 // A row of the lookup table that FUN_1408a0d30 fills (0xc0 bytes).
 struct Unk_AddressRow
@@ -190,7 +191,7 @@ void CAddressTable::SetInit(bool b)
 // @0x140979570
 CStringW CAddressTable::GetText(int nId)
 {
-    CStringW strText = FUN_1401a9d70()->FUN_141811980(3, nId, 0);
+    CStringW strText = reinterpret_cast<Unk_AddressStrings*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(3, nId, 0);
     return strText;
 }
 

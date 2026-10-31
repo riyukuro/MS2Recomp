@@ -58,7 +58,56 @@ per-unit cache), `plan`, `implibs`, `asm`, `link0` (open link), `defsyms`, `anal
 glue), `link1`, `analyze1`, `shim` and `rsrc` (generated stubs, ABI adapters, resources), `crtinit`, `initorder`, and
 `link2` (the closed link). `cmake --build build/fullexe --target <stage>` runs the chain up to that stage.
 
+## Resources
+
+By default the `rsrc` stage builds `shim/exe.res` straight from your exe's `.rsrc` tree (`tools/fullexe/rsrc.py`).
+`tools/extract_resources.py` turns the same resources into an ordinary resource script for a plain Visual Studio build:
+
+```
+python tools/extract_resources.py [MapleStory2.exe]     # -> resources/MapleStory2.rc + one file per resource
+python tools/extract_resources.py --compile             # rc.exe (14.16 toolchain) -> resources/MapleStory2.res
+```
+
+It checks the exe first (the `tools/check_exe.py` hash and TimeDateStamp 0x62568C46). Icons become real `.ico` files
+(`2000 ICON "...ico"`) and bitmaps real `.bmp` files. Dialogs (DIALOGEX), menus and VERSIONINFO are decompiled to `.rc`
+text. String tables, HTML, DLGINIT, AFX_DIALOG_LAYOUT and the manifest (`1 24`) are raw includes. Every entry keeps its
+LANGUAGE. Compiled with rc.exe, the result has the same entries (type, name, language, data bytes) as `rsrc.py`'s
+exe.res: `python tools/extract_resources.py --compare a.res b.res` checks this. To link that .res instead of reading the
+exe, pass `-DMS2_RESOURCES_RES=<path>/MapleStory2.res`.
+
+`resources/` holds Nexon's data. It is gitignored, and the publish script refuses any resource file.
+
+## Committed lists instead of exe reads
+
+These options are off by default. Each one replaces an exe read with a committed list of names or addresses (no exe
+bytes), and gives the same stage output:
+
+- `-DMS2_IMPORTS_FROM_LIST=ON`: the `implibs` stage builds the import libs from `data/fullexe/imports.tsv` (the exe's
+  import names, the shipped `libcef.dll` export names and the extra imports), so it needs neither the exe nor
+  `libcef.dll`. `tools/fullexe/implibs.py --write-imports <file>` regenerates the list.
+- `-DMS2_CRTINIT_FROM_LIST=ON`: the `crtinit` stage reads the exe's static-initializer table (the `.CRT$XC*`/`.CRT$XI*`
+  pointers, in order) from `data/fullexe/crtinit-exe.tsv`; `initorder` then gives the same `--before` list.
+  `tools/fullexe/crtinit.py --write-exe-table <file>` regenerates it.
+
 ## How much glue is left
 
 `tools/fullexe/gluecount.py` appends a dated row to `progress/glue-metrics.tsv` (alias pairs, ABI adapters, trap
 stubs, duplicate symbols, unresolved symbols before the shim, `/FORCE` flags, boot patch files, signature clashes).
+
+## Plain link (prototype)
+
+`cmake/fullexe-plain/` links the exe once and runs no Python at build time. It writes the import-lib `.def` files from
+`data/fullexe/imports.tsv`, assembles the CryptoPP MASM objs and compiles `shim_runtime.cpp` itself. Everything else
+comes from glue files: the obj list in link order, the `/alternatename` lines and the `/ORDER` list.
+`tools/fullexe/plainglue.py write <dir>` writes them from a finished `cmake/fullexe` build. The objs come from that
+build's compile cache (`MS2_PLAIN_OBJ_ROOT`), so the compile is not covered yet. The one remaining data stub is
+extracted once from your exe with `plainglue.py stubs <exe> <dir>/stubs.tsv <obj>`:
+
+```
+cmake -S cmake/fullexe-plain -B build/fullexe-plain -G Ninja -DMS2_PLAIN_GLUE=<dir> -DMS2_PLAIN_OBJ_ROOT=build/progress-<tag> \
+      -DMS2_PLAIN_STUBS_OBJ=<obj> -DMS2_RESOURCES_RES=<res> && cmake --build build/fullexe-plain
+```
+
+The result is `build/fullexe-plain/out/fullexe-plain.exe`. With `-DMS2_PLAIN_NAME=fullexe3` and the same objs and glue,
+it is byte-identical to `link2`'s `fullexe3.exe` except for the link timestamp. The exe's export directory records
+the output name, so the default name shifts some `.rdata` bytes.

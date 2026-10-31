@@ -33,6 +33,8 @@
 #include <NiTransform.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/gameobject.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- exe callees (recovered elsewhere / not yet) ----
 extern char DAT_143afa4d8;                                  // NiNode::ms_RTTI
@@ -40,7 +42,6 @@ unsigned FUN_140869420();                                   // GetTickCount-like
 bool FUN_14028d470(float a, float b);                       // nearly equal
 int FUN_14123c580(void* pOwner);                            // owner -> object id
 // The owner game object: its entity id (by value) and the scene object of an entity id.
-class Unk_RteOwner { public: egf::EntityID FUN_14123c460(); };
 void* FUN_141b6ef70(egf::EntityID kId);
 void* FUN_14098d8d0(void* pRtti, void* pObject);            // NiObject::DynamicCast
 void FUN_140a0b2a0(void* pNode);                            // detach the node from its parent
@@ -56,7 +57,6 @@ public:
     void FUN_1411a6060(int nHandle);                        // release
     void FUN_1411a68f0(int nHandle, bool bVisible);
 };
-Unk_1403ed280* FUN_1403ed280();
 
 
 // The world service singleton (0x1403ed2d0, typed Unk_AttendAvatarMgr in the symbol table) and its object maps.
@@ -110,14 +110,14 @@ void CRandomTargetEffect::Create(CString strName)
         Destroy();
 
     Unk_NodePtr spNode(NiNew NiNode(0));
-    NiNode* pRoot = static_cast<NiNode*>(FUN_1403ed280()->FUN_1411a6b10());
+    NiNode* pRoot = static_cast<NiNode*>(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10());
     pRoot->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&spNode)), false);
     NoticeMessage kRequest;
     kRequest.m_strName = strName;
     kRequest.m_nObject = 0;
     kRequest.SetActor(FUN_14123c580(m_pOwner));
     kRequest.m_spNode = static_cast<NiAVObject*>(FUN_1409475d0(&spNode));
-    m_nEffectId = FUN_1403ed280()->FUN_1411a49c0(&kRequest);
+    m_nEffectId = reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kRequest);
     m_spNode = spNode;
     FUN_14098b3e0(FUN_1409475d0(&spNode), m_fScale, 0);
     UpdatePosition();
@@ -128,7 +128,7 @@ void CRandomTargetEffect::Create(CString strName)
 void CRandomTargetEffect::Destroy()
 {
     Hide();
-    FUN_1403ed280()->FUN_1411a6060(m_nEffectId);
+    reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nEffectId);
     FUN_140a0b2a0(FUN_1409475d0(&m_spNode));
     m_nEffectId = 0;
     FUN_1409f76f0(&m_spNode, 0);
@@ -142,7 +142,7 @@ void CRandomTargetEffect::UpdatePosition()
     if (m_spNode.FUN_1409f77a0(0))
         return;
 
-    Unk_NodePtr spTarget(FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6ef70(static_cast<Unk_RteOwner*>(m_pOwner)->FUN_14123c460())));
+    Unk_NodePtr spTarget(FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6ef70(static_cast<GameObject*>(m_pOwner)->FUN_14123c460())));
     if (spTarget.FUN_1409f77a0(0))
         return;
 
@@ -171,7 +171,7 @@ void CRandomTargetEffect::Show()
     if (m_nEffectId == 0)
         return;
     m_bVisible = true;
-    FUN_1403ed280()->FUN_1411a68f0(m_nEffectId, m_bVisible);
+    reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(m_nEffectId, m_bVisible);
 }
 
 // @0x140aab370
@@ -180,7 +180,7 @@ void CRandomTargetEffect::Hide()
     if (m_nEffectId == 0)
         return;
     m_bVisible = false;
-    FUN_1403ed280()->FUN_1411a68f0(m_nEffectId, m_bVisible);
+    reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(m_nEffectId, m_bVisible);
 }
 
 // @0x140aab3c0

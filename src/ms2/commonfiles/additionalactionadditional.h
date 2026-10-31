@@ -99,7 +99,7 @@ class AdditionalActionSkill : public CPtred
 {
 public:
     AdditionalActionSkill();                            // 0x140170830
-    virtual ~AdditionalActionSkill() {}                 // ??_G 0x140185380, dtor 0x140183d20
+                                                        // implicit dtor: 0x140183d20 has no vftable store, ??_G 0x140185380
 
     bool IsDifferent(const AdditionalActionSkill& o);   // 0x1401708f0
     int Load(Unk_140165cf0* pElem);                     // 0x140170a10

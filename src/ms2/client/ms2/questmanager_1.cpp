@@ -15,6 +15,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uimainplayerinfo.h"
+#include "ms2/client/ms2/uirewardnotify.h"
+#include "ms2/commonfiles/dungeonroom.h"
 
 // This object's header statics omit the sort-name array in header_statics_a.h.
 class Unk_QuestHeaderMap
@@ -36,8 +39,8 @@ static CString s_reward = "quest_reward";
 MS2Ptr<CQuestData> FUN_14074bc40(int);
 bool FUN_14064d4e0(const MS2Ptr<CQuestData>&);
 int FUN_14074b790(int);
-int FUN_14029f3b0(int);
-__int64 FUN_140869440();
+int IsConditionTypeCounted(int);
+__int64 GetServerTime();
 bool FUN_140930b70();
 bool FUN_1409312f0();
 extern int DAT_143ab2880;
@@ -66,7 +69,6 @@ struct Unk_QuestRoom : CPtred {
 MS2_CHECK_OFFSET(Unk_QuestRoom, m_maxUsers, 0xf8);
 bool FUN_140e36ca0(const MS2Ptr<Unk_QuestRoom>&);
 class Unk_QuestRoomTable { public: MS2Ptr<Unk_QuestRoom> FUN_1403206b0(int); };
-Unk_QuestRoomTable* FUN_14031c2a0();
 void* FUN_140166410();
 bool FUN_14036d570(void*, int);
 
@@ -75,17 +77,9 @@ CStringW FUN_1416e57d0(int, int);
 void FUN_14083d2b0(CStringW&);
 void FUN_14025a680(const CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
 extern const wchar_t DAT_142f5515c[];
-class Unk_QuestProgressDialog { public: void FUN_1419f0ef0(const CStringW&, const CString&); };
-Unk_QuestProgressDialog* FUN_140931900(int);
+UIMainPlayerInfo* FUN_140931900(int);
 
-class Unk_QuestRewardDialog
-{
-public:
-    void FUN_141abf230(__int64 experience, __int64 bonus);
-    void FUN_141abf450(__int64 money, __int64 bonus);
-    void FUN_141abf6e0(int item, int count);
-};
-Unk_QuestRewardDialog* FUN_140938cd0(int);
+UIRewardNotify* FUN_140938cd0(int);
 void* FUN_1401c0d90();
 unsigned FUN_14047ea00(void*, int, int, int);
 int FUN_14047eb30(void*, int, int, int);
@@ -251,7 +245,7 @@ int CQuest::HasMultiUserRoom(int field)
     if (FUN_1407443e0(field) == 0) return 0;
     int roomId = m_data->m_30c.m_roomId;
     if (roomId == 0) return 0;
-    MS2Ptr<Unk_QuestRoom> room = FUN_14031c2a0()->FUN_1403206b0(roomId);
+    MS2Ptr<Unk_QuestRoom> room = reinterpret_cast<Unk_QuestRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(roomId);
     if (FUN_140e36ca0(room)) return 0;
     if (room->m_maxUsers <= 1) return 0;
     return 1;
@@ -299,7 +293,7 @@ void CQuest::ShowProgress(int index)
         break;
     }
     FUN_14083d2b0(text);
-    Unk_QuestProgressDialog* dialog = FUN_140931900(0x4e5f);
+    UIMainPlayerInfo* dialog = FUN_140931900(0x4e5f);
     if (dialog) {
         ATL::CAtlArray<CStringW> lines;
         FUN_14025a680(text, lines, DAT_142f5515c);
@@ -347,7 +341,7 @@ void CQuest::ShowRewards(int reward)
             break;
         }
     }
-    Unk_QuestRewardDialog* dialog = FUN_140938cd0(0x4e5d);
+    UIRewardNotify* dialog = FUN_140938cd0(0x4e5d);
     if (dialog) {
         int useBonus = 1;
         if (m_data->m_level < FUN_1401d3200()->m_bonusLevel.FUN_1402056b0()) useBonus = 0;
@@ -411,7 +405,7 @@ void CQuest::DecodeStart(CInPacket& packet)
         int value = packet.ReadInt32();
         SetProgress((int)i, value);
     }
-    m_startTime = FUN_140869440();
+    m_startTime = GetServerTime();
     ShowRewards(0);
     PlayAcceptSound();
 }
@@ -424,7 +418,7 @@ void CQuest::DecodeProgress(CInPacket& packet)
         int value = packet.ReadInt32();
         int changed = 0;
         if (i >= m_data->m_conditions.GetCount()) continue;
-        if (FUN_14029f3b0(m_data->m_conditions[i]->m_nType) != 0) {
+        if (IsConditionTypeCounted(m_data->m_conditions[i]->m_nType) != 0) {
             if (value != GetProgress((int)i)) changed = 1;
             SetProgress((int)i, value);
         }
@@ -437,7 +431,7 @@ MS2_REPLACE_METHOD(0x1416C7A60, CQuest, DecodeProgress, 354, 0xAA353D3D);
 void CQuest::Complete(CInPacket& packet)
 {
     if (m_data == (CQuestData*)0) return;
-    m_completeTime = FUN_140869440();
+    m_completeTime = GetServerTime();
     ShowRewards(1);
     PlayRewardSound();
 }

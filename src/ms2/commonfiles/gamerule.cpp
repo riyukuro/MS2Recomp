@@ -309,7 +309,7 @@ CFeatureManager* FUN_140166410();                       // the CFeatureManager s
 bool FUN_14036e510(void* features);                     // the URL cache feature flag of CFeatureManager
 extern void* DAT_143aaeb00;                             // the pet table singleton (FUN_140353610 is its method)
 void FUN_140353610(void* p, unsigned short value);
-__int64 FUN_140869440();                                // the server time
+__int64 GetServerTime();                                // the server time
 bool FUN_1407183f0(const CStringW& str);
 int FUN_140408410(ATL::CAtlArray<unsigned>* arr, const unsigned* value);    // the index of value, -1 if missing
 void FUN_140274fc0(const CStringW& str, ATL::CAtlArray<unsigned>* out, const wchar_t* sep);
@@ -339,7 +339,7 @@ public:
     // @0x1404822b0
     bool FUN_1404822b0(const bool& bDefault) const
     {
-        CMsTime now(FUN_140869440());
+        CMsTime now(GetServerTime());
         if (m_28 <= now)
             return bDefault;
         return FUN_1407183f0(m_20);
@@ -1567,7 +1567,7 @@ MS2_REPLACE_METHOD(0x1404A4160, Unk_DayTimeRange, Contains, 82, 0x68C590E9);
 bool CGameRule::FUN_140479e10(unsigned dungeonId)
 {
     Unk_CriticalSectionLock lock(m_790, 1);
-    Unk_DayTime now(FUN_140869440());
+    Unk_DayTime now(GetServerTime());
     typedef std::multimap<unsigned, MS2Ptr<EventTimeLimitDungeonContext> >::iterator Iter;
     std::pair<Iter, Iter> range = m_7c0.equal_range(dungeonId);
     for (; range.first != range.second; range.first++) {

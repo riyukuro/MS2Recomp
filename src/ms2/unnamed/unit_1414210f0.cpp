@@ -13,12 +13,12 @@
 #include "ms2/placeholder/pcinfo.h"
 #include "ms2/placeholder/cequipitem.h"
 #include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/worldservice.h"
 
 class AvatarPC;
 class Unk_AvPlayers;
 
 class Unk_AvPlayers { public: AvatarPC* FUN_141bd0cc0(); };
-Unk_AvPlayers* FUN_1403ed2d0();
 MS2Ptr<CEquipItem> FUN_1414211a0(int nSlot, AvatarPC* pAvatar);
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);    // pop the system message nTable
 
@@ -38,7 +38,7 @@ MS2Ptr<CEquipItem> FUN_1414211a0(int nSlot, AvatarPC* pAvatar)
 {
     if (pAvatar == 0)
     {
-        pAvatar = FUN_1403ed2d0()->FUN_141bd0cc0();
+        pAvatar = reinterpret_cast<Unk_AvPlayers*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pAvatar == 0)
             return MS2Ptr<CEquipItem>(0);
     }

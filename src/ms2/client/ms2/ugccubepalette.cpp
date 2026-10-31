@@ -53,6 +53,10 @@ typedef ATL::CAtlMap<unsigned, Unk_FieldIdListPtr, ATL::CDefaultElementTraits<un
 static Unk_BoxMap s_mapBoxes(17, 0.75f, 0.25f, 2.25f, 10);                         // @0x1400d6940
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/ugccubepalette_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/maid.h"
+#include "ms2/commonfiles/ugccubecategorytable.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                                       // @0x1400d6b20
 
@@ -119,11 +123,8 @@ public:
     unsigned FUN_1408867f0(CStringW strName, int nArg);
     void FUN_140886920(unsigned nBox);
 };
-Unk_BoxRegistry* FUN_1409eed80();
 
 // Names of the npc / strings tables.
-class Unk_CubeStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_CubeStrings* FUN_1401a9d70();
 
 struct Unk_NpcData { char m_pad[0x90]; CString m_strName; };
 class Unk_NpcDataPtr
@@ -150,10 +151,8 @@ public:
     Unk_NpcRef* m_p;
 };
 class Unk_NpcSvc { public: Unk_NpcRefPtr FUN_14067f180(int nKey); };
-Unk_NpcSvc* FUN_1409eed20();
 
-class Unk_Features { public: bool FUN_14036d710(int nFeature); };
-Unk_Features* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 class Unk_GEMgr { public: __int64 FUN_14047bc50(int nA, int nB, __int64 nC); };
 Unk_GEMgr* FUN_1401c0d90();
@@ -175,6 +174,7 @@ public:
 };
 
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
+#include "ms2/client/ms2/worldservice.h"
 
 class Unk_CubeStock
 {
@@ -191,7 +191,6 @@ public:
     PCBase* FUN_141bd0cc0();
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();
 };
-Unk_CubeWorld* FUN_1403ed2d0();
 int FUN_141663080(PCBase* pPC);
 bool FUN_1415302e0(PCBase* pPC, int nItemId);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -253,7 +252,7 @@ bool UGCCube::FUN_140def420()                                                   
 {
     if (itemData == 0)
         return true;
-    PCBase* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPC = reinterpret_cast<Unk_CubeWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return true;
     if (0 < itemData->FUN_14053fdb0())
@@ -311,7 +310,7 @@ CStringW UGCCube::FUN_140def710()                                               
             return strTitle;
     }
     if (itemData.get() != 0)
-        return FUN_1401a9d70()->FUN_141811980(1, itemData->FUN_14053c510());
+        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, itemData->FUN_14053c510());
     return L"";
 }
 
@@ -326,7 +325,7 @@ CStringW UGCCube::FUN_140def880()                                               
     }
     if (itemData->FUN_14053cde0() && FUN_140defe70() > 0)
     {
-        Unk_NpcRefPtr spNpc = FUN_1409eed20()->FUN_14067f180(itemData->FUN_14053dd30());
+        Unk_NpcRefPtr spNpc = reinterpret_cast<Unk_NpcSvc*>(TSingleton<CMaidInfoTable>::GetInstance())->FUN_14067f180(itemData->FUN_14053dd30());
         if (spNpc.get() != 0)
         {
             Unk_NpcDataPtr spData = FUN_1406cd330(spNpc.FUN_1406810e0()->m_nNpcId);
@@ -403,7 +402,7 @@ bool UGCCube::FUN_140deff30()                                                   
 {
     if (itemData == 0)
         return false;
-    PCBase* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPC = reinterpret_cast<Unk_CubeWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return false;
     if (!(FUN_141663080(pPC) > 0))
@@ -737,7 +736,7 @@ unsigned UGCCubePalette::FUN_140df1a40(CubeArray& out, Unk_CubePaletteFilter& fi
             if (mapItems.Lookup(spCube->FUN_140def5a0(), spData))
             {
                 MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405566e0(spData->FUN_14053c510());
-                if (spIng && FUN_1409eed80()->FUN_140886a40(&spIng->m_ids))
+                if (spIng && reinterpret_cast<Unk_BoxRegistry*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_140886a40(&spIng->m_ids))
                     continue;
             }
         }
@@ -814,7 +813,7 @@ unsigned FUN_140df20a0(unsigned nArgA, unsigned nArgB);
 #ifndef MS2_HOOK_DLL
 unsigned FUN_140df20a0(unsigned nArgA, unsigned nArgB)                                         // @0x140df20a0
 {
-    unsigned nBox = FUN_1409eed80()->FUN_140886790(nArgA, nArgB);
+    unsigned nBox = reinterpret_cast<Unk_BoxRegistry*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_140886790(nArgA, nArgB);
     s_mapBoxes.SetAt(nBox, Unk_FieldIdListPtr(Unk_FieldNewTag(0)));
     return nBox;
 }
@@ -824,7 +823,7 @@ unsigned FUN_140df2130(CStringW strName, unsigned nArg);
 #ifndef MS2_HOOK_DLL
 unsigned FUN_140df2130(CStringW strName, unsigned nArg)                                        // @0x140df2130
 {
-    unsigned nBox = FUN_1409eed80()->FUN_1408867f0(strName, nArg);
+    unsigned nBox = reinterpret_cast<Unk_BoxRegistry*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_1408867f0(strName, nArg);
     s_mapBoxes.SetAt(nBox, Unk_FieldIdListPtr(Unk_FieldNewTag(0)));
     return nBox;
 }
@@ -834,7 +833,7 @@ void FUN_140df2210(unsigned nBox);
 #ifndef MS2_HOOK_DLL
 void FUN_140df2210(unsigned nBox)                                                              // @0x140df2210
 {
-    FUN_1409eed80()->FUN_140886920(nBox);
+    reinterpret_cast<Unk_BoxRegistry*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_140886920(nBox);
     s_mapBoxes.RemoveKey(nBox);
 }
 #endif
@@ -862,7 +861,7 @@ void UGCCubePalette::FUN_140df2250()                                            
 // MS2-FUNCTIONAL: the exe CAtlArray::Add takes the stock-branch CubePtr temporary by const&; ours copies it by value (shared header)
 void UGCCubePalette::FUN_140df23f0(CubeArray& out, Unk_CubePaletteFilter* pFilter)             // @0x140df23f0
 {
-    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_CubeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spField == 0)
         return;
     Unk_CubeUsage usage;
@@ -929,7 +928,7 @@ void UGCCubePalette::FUN_140df23f0(CubeArray& out, Unk_CubePaletteFilter* pFilte
 // MS2-FUNCTIONAL: the exe CAtlArray::Add takes the stock-branch CubePtr temporary by const&; ours copies it by value (shared header)
 void UGCCubePalette::FUN_140df2bc0(CubeArray& out, Unk_CubePaletteFilter* pFilter)             // @0x140df2bc0
 {
-    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_CubeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spField == 0)
         return;
     Unk_FieldIdListPtr spList;

@@ -193,7 +193,8 @@ Unk_GeIter* FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, bool bLeft, Unk_GeNode* 
 // @0x1413a4620
 void FUN_1413a4620(void* pAlloc, std::pair<int, int>* pDst, const std::pair<int, int>& rVal)
 {
-    FUN_1413a3d00(static_cast<std::pair<int, int>*>(::operator new(8, pDst)), &rVal);
+    void* pNew = ::operator new(8, pDst);
+    FUN_1413a3d00(static_cast<std::pair<int, int>*>(pNew), &std::forward<const std::pair<int, int>&>(rVal));
 }
 
 // @0x1413a4750

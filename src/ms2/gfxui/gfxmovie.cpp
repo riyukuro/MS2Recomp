@@ -23,6 +23,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/scaleform/include/gfx/gfx_rendertree.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/gfxmanager.h"
 
 extern char DAT_143b059e8;                                      // the entity app framework
 void* FUN_14127bf80(void* pFramework);                          // its render service (null if none)
@@ -30,12 +31,7 @@ ecr::RenderSurface* FUN_140af7da0(ecr::RenderService* pService);  // the service
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);   // set a String value
 
 // The GFx UI manager singleton (0x14025e7a0; its class lives in the library's first obj, 0x1422b0060-0x1422b7f20).
-class Unk_GFxUIManager
-{
-public:
-    int FUN_1422ae940();                                        // nonzero: advance in one step (no frame catch-up split)
-};
-Unk_GFxUIManager* FUN_14025e7a0();
+GFxManager* FUN_14025e7a0();
 
 // The two Ptr<> arguments of vfunc_9/10 (gfxmovie.h): the Render HAL and the Renderer2D. Only the release functions
 // are needed here (GFxMovieBackground's unit spells out more of it).

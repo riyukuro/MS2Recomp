@@ -10,6 +10,8 @@
 #include "itempickinghelper.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/windowservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 #include <NiPoint2.h>
@@ -36,7 +38,7 @@ public:
 };
 MS2_CHECK_SIZE(CMeshUVPicker, 0x98);
 
-struct Unk_PickApp { int FUN_141b90e30(float* pX, float* pY); };        // cursor position
+struct Unk_PickApp : public CWindowService { };        // cursor position
 Unk_PickApp* FUN_140aadf80();
 struct Unk_PickRenderer
 {
@@ -50,8 +52,7 @@ NiCamera* FUN_1409a8a60(void* pMgr);                                    // activ
 const NiPoint3* FUN_1411b1f60(NiCamera* pCam);                          // camera world position
 Unk_PickRenderer* FUN_14098d8d0(char* pRtti, void* pObj);               // checked cast
 NiRenderObject* FUN_14098d8d0(char* pRtti, NiAVObject* pObj);
-struct Unk_PickGame { void* FUN_141bd0cc0(); };
-Unk_PickGame* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 struct Unk_PickItemData { bool FUN_14053cfd0() const; };
 class CItem : public CPtred { public: Unk_PickItemData* FUN_140527840(); };                         // item -> item data
 void* FUN_14123c410(void* pObj);                                        // the game object's entity
@@ -209,7 +210,7 @@ int CItemPickingHelper::PickMesh(NiAVObject* pMesh, CAtlArray<NiRenderObject*>& 
     if (pMesh == 0)
         return 0;
     Unk_PickXY xy = DAT_143b02320;
-    if (FUN_140aadf80()->FUN_141b90e30(&xy.x, &xy.y) == 0)
+    if (FUN_140aadf80()->GetCursorClientPos(&xy.x, &xy.y) == 0)
         return 0;
     Unk_PickRenderer* pRenderer = FUN_14098d8d0(&DAT_143d6eb58, FUN_140994450());
     if (pRenderer == 0)

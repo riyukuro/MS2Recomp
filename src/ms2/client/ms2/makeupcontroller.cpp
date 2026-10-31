@@ -19,6 +19,9 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/windowservice.h"
+#include "ms2/client/ms2/gameobject.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- exe data ----
 extern char DAT_143afafe0;      // NiFloatsExtraData::ms_RTTI
@@ -90,9 +93,8 @@ int FUN_14059a210(Unk_MakeupProxyData* pData);                  // reads it
 
 // The local player.
 namespace egf { class Entity; }
-struct Unk_MakeupPlayer { egf::Entity* FUN_14123c410(); };
+struct Unk_MakeupPlayer : public GameObject { };
 struct Unk_MakeupWorld { Unk_MakeupPlayer* FUN_141bd0cc0(); };
-Unk_MakeupWorld* FUN_1403ed2d0();
 void* FUN_1416561a0(Unk_MakeupPlayer* pPlayer);                 // the player's customize state
 void FUN_1411ea2e0(void* pState, bool bOn);                     // enables / disables the customize preview
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                // the entity's scene root
@@ -104,7 +106,7 @@ void FUN_141d580c0(NiFloatsExtraData* pExtra, int nIndex, float fValue);   // se
 float FUN_140768090();                                          // random float in [0, 1]
 float FUN_140a17940(float fValue, float fMin, float fMax);      // clamp
 
-struct Unk_MakeupCursor { int FUN_141b90e30(float* pX, float* pY); };   // cursor position in pixels
+struct Unk_MakeupCursor : public CWindowService { };   // cursor position in pixels
 Unk_MakeupCursor* FUN_140aadf80();
 
 struct Unk_MakeupConfigFloat { float FUN_1402bac70(); char m_pad[0x58]; };
@@ -459,7 +461,7 @@ void CMakeupController::vfunc_44(float fX, float fY, NiFloatsExtraData* pExtra)
 void CMakeupController::vfunc_34(const NiPoint3& kPos)
 {
     float fY;
-    FUN_140aadf80()->FUN_141b90e30(&m_fDragStartX, &fY);
+    FUN_140aadf80()->GetCursorClientPos(&m_fDragStartX, &fY);
     NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
     if (pExtra != 0)
     {
@@ -475,7 +477,7 @@ void CMakeupController::vfunc_35()
     float fScaled;
     float fAngle;
     float fY;
-    FUN_140aadf80()->FUN_141b90e30(&fX, &fY);
+    FUN_140aadf80()->GetCursorClientPos(&fX, &fY);
     fDelta = fX - m_fDragStartX;
     fScaled = fDelta * m_fDragScale;
     NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
@@ -491,7 +493,7 @@ void CMakeupController::vfunc_36()
 // @0x141477730
 void CMakeupController::SetPreviewApply(bool bOn)
 {
-    Unk_MakeupPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MakeupPlayer* pPlayer = reinterpret_cast<Unk_MakeupWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
         FUN_1411ea2e0(FUN_1416561a0(pPlayer), bOn);
 }
@@ -550,7 +552,7 @@ void CMakeupController::UpdateScaleAnimation()
 void CMakeupController::FindFaceMesh()
 {
     m_spFaceMesh.FUN_141418a00(0);
-    Unk_MakeupPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MakeupPlayer* pPlayer = reinterpret_cast<Unk_MakeupWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
         SetPreviewApply(false);

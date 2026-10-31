@@ -16,6 +16,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/inventory.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -23,8 +24,7 @@
 class Unk_ItemEquipData : public CItemData { };
 
 // The player inventory (global 0x143ab2a90): the items of one inventory tab.
-class Unk_GuideInvMgr { public: void FUN_140a60880(int nTab, ATL::CAtlArray<MS2Ptr<CItem> >& arrOut); };
-extern Unk_GuideInvMgr DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 
 // The world manager: the id of the map the player is in.
 class Unk_GuideWorld { public: unsigned FUN_141bd3060(); };

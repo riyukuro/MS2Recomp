@@ -195,11 +195,12 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
 
 // Unrecovered helpers.
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Data/Xml/<dir>/<file>
-CString FUN_14071a840(const CString& strDir, const CString& strFile);   // the item model path of a dir and file
-CString FUN_14071a940(unsigned nFile);                                  // the item model file of a model file number
+CString GetItemPresetPath(const CString& strDir, const CString& strFile); // the item model path of a dir and file
+CString GetItemModelPath(unsigned nFile);                               // the item model file of a model file number
 CString FUN_14071ae20(const CString& strFile);                          // a string table file path
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
 Unk_140166420* FUN_140166420();
@@ -214,8 +215,6 @@ void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& out
 unsigned FUN_14053c690(unsigned nItemId);                               // the itemData file of an item id
 
 // The client string tables (singleton at 0x143aac298): FUN_141811980(table, id) is the string of id in table.
-class Unk_1401a9d70 { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_1401a9d70* FUN_1401a9d70();
 
 // The empty-delegate error (the implicit default ctor 0x14056be40: `throw InvalidCallException()` value-initialises).
 class InvalidCallException : public std::exception
@@ -504,7 +503,7 @@ void CItemDataTable::LoadBlackMarketSearchable()
     {
         unsigned nId = 0;
         FUN_140873220(pNode, "id", nId);
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nId);
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nId);
         if (strName.IsEmpty())
             continue;
         m_mapBlackMarketSearchable.SetAt(strName, nId);
@@ -1536,7 +1535,7 @@ bool CItemDataTable::LoadModel(unsigned nPreset)
     unsigned nSub = nFile % 100;
     unsigned nDir = nFile / 100;
     CString strDir = Unk_SocketFormat("{0}/{1:02d}/", nDir, nSub);
-    CString strPath = FUN_14071a840(strDir, Unk_SocketFormat("{0:08d}", nPreset));
+    CString strPath = GetItemPresetPath(strDir, Unk_SocketFormat("{0:08d}", nPreset));
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return false;
@@ -1563,7 +1562,7 @@ bool CItemDataTable::LoadModelFile(unsigned nFile)
     Unk_CriticalSectionLock lock(m_csModel, 1);
     if (m_setModelFile.find(nFile) != m_setModelFile.end())
         return true;
-    CString strPath = FUN_14071a940(nFile);
+    CString strPath = GetItemModelPath(nFile);
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return false;

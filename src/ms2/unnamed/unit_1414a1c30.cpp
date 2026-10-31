@@ -12,6 +12,58 @@
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/gameeventmanagercli.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/jobtable.h"
+#include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/cshopeventmanager.h"
+#include "ms2/placeholder/cusereventmanager.h"
+#include "ms2/commonfiles/seasondatatable.h"
+#include "ms2/commonfiles/maid.h"
+#include "ms2/commonfiles/shopcategorytable.h"
+#include "ms2/commonfiles/ugcdesigntable.h"
+#include "ms2/placeholder/paybacktable.h"
+#include "ms2/commonfiles/reactordata.h"
+#include "ms2/client/ms2/commoneffectdummy.h"
+#include "ms2/placeholder/setitemtable.h"
+#include "ms2/placeholder/weddingtable.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/unnamed/unit_140ad1860.h"
+#include "ms2/commonfiles/specialeffectfunctionmanager.h"
+#include "ms2/commonfiles/maidgradejockpottable.h"
+#include "ms2/placeholder/cmanufacturemanager.h"
+#include "ms2/commonfiles/ugcmapsetiteminfo.h"
+#include "ms2/placeholder/cusermaidmanager.h"
+#include "ms2/placeholder/termtagmanagercli.h"
+#include "ms2/commonfiles/ugccubecategorytable.h"
+#include "ms2/placeholder/ctaximanager.h"
+#include "ms2/placeholder/oncecallbacktimer.h"
+#include "ms2/placeholder/crashmanagercli.h"
+#include "ms2/placeholder/uibuddyeventdispatcher.h"
+#include "ms2/placeholder/cserverstring.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/commonfiles/taileffectdatatable.h"
+#include "ms2/placeholder/costumesettable.h"
+#include "ms2/commonfiles/dungeonmissiondatatable.h"
+#include "ms2/placeholder/csoapclient.h"
+#include "ms2/client/ms2/ugchomebgdata.h"
+#include "ms2/placeholder/uiugceventdispatcher.h"
+#include "ms2/client/ms2/uidungeoncategory.h"
+#include "ms2/client/ms2/npsman.h"
+#include "ms2/placeholder/recodemgr.h"
+#include "ms2/commonfiles/trafficoptimizer.h"
+#include "ms2/placeholder/cmasterymanager.h"
+#include "ms2/placeholder/uiworldshareinfoeventdispatcher.h"
+#include "ms2/commonfiles/learningquesttable.h"
+#include "ms2/client/ms2/effectskipmgr.h"
+#include "ms2/commonfiles/os.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/soundproperty.h"
+#include "ms2/placeholder/clientlogmanager.h"
+#include "ms2/client/ms2/usercommandcli.h"
+#include "ms2/placeholder/uidialogeventdispatcher.h"
 
 // Typed prefixes for the otherwise opaque getter objects and hash-chain nodes.
 struct Unk_ShutdownValue30 { void* m_opaque[6]; int m_value; };
@@ -188,22 +240,13 @@ extern Unk_SingletonObj* DAT_143ae07a0;
 extern Unk_SingletonObj80* DAT_143ae07a8;
 extern Unk_SingletonObj* DAT_143b05988;
 
-Unk_SingletonObj* FUN_14015a050();
 Unk_SingletonObj* FUN_140166440();
 Unk_SingletonObj* FUN_140186320();
-Unk_SingletonObj140* FUN_1401958b0();
-Unk_SingletonObj* FUN_1401a9d70();
 Unk_SingletonObj* FUN_1401c0da0();
 Unk_SingletonObj* FUN_1401c0db0();
 Unk_SingletonObj* FUN_1401d31f0();
 Unk_SingletonObj1* FUN_1401d3200();
-Unk_SingletonObj* FUN_1401d7a50();
 Unk_SingletonObj* FUN_14025e7d0();
-Unk_SingletonObj* FUN_14031c2a0();
-Unk_SingletonObj* FUN_1403b4750();
-Unk_SingletonObj* FUN_1403ed2a0();
-Unk_SingletonObj* FUN_14041beb0();
-Unk_SingletonObj* FUN_1404f4540();
 Unk_SingletonObj* FUN_14052d210();
 Unk_SingletonObj* FUN_14052d220();
 Unk_SingletonObj* FUN_14052d230();
@@ -211,20 +254,12 @@ Unk_SingletonObj* FUN_140535320();
 Unk_SingletonObj* FUN_140541580();
 Unk_SingletonObj* FUN_140552df0();
 Unk_SingletonObj* FUN_1405a1fd0();
-Unk_SingletonObj* FUN_14067e910();
-Unk_SingletonObj* FUN_1406aa4b0();
-Unk_SingletonObj* FUN_1406aa4c0();
 Unk_SingletonObj* FUN_1406c7610();
 Unk_SingletonObj* FUN_1406d6e90();
 Unk_SingletonObj* FUN_1406f2370();
-Unk_SingletonObj* FUN_14071d7d0();
 Unk_SingletonObj* FUN_1407476c0();
 Unk_SingletonObj* FUN_140764020();
 Unk_SingletonObj* FUN_140764030();
-Unk_SingletonObj* FUN_14076dcd0();
-Unk_SingletonObj* FUN_140789c40();
-Unk_SingletonObj* FUN_1407b75e0();
-Unk_SingletonObj* FUN_1409023c0();
 Unk_SingletonObj* FUN_1409331f0();
 Unk_SingletonObj* FUN_140933200();
 Unk_SingletonObj* FUN_140933210();
@@ -232,62 +267,31 @@ Unk_SingletonObj* FUN_140933220();
 Unk_SingletonObj* FUN_140933230();
 Unk_SingletonObj* FUN_140939a00();
 Unk_SingletonObj* FUN_140939a10();
-Unk_SingletonObj* FUN_1409478c0();
-Unk_SingletonObj* FUN_140953f30();
 Unk_SingletonObj* FUN_1409670c0();
 Unk_SingletonObj* FUN_1409670d0();
 Unk_SingletonObj* FUN_140967100();
-Unk_SingletonObj* FUN_140976580();
 Unk_SingletonObj* FUN_1409bb9e0();
 Unk_SingletonObj* FUN_1409c1740();
-Unk_SingletonObj* FUN_1409eed10();
-Unk_SingletonObj* FUN_1409eed20();
-Unk_SingletonObj* FUN_1409eed30();
-Unk_SingletonObj* FUN_1409eed40();
-Unk_SingletonObj* FUN_1409eed50();
-Unk_SingletonObj* FUN_1409eed60();
-Unk_SingletonObj* FUN_1409eed70();
-Unk_SingletonObj* FUN_1409eed80();
 Unk_SingletonObj* FUN_1409eed90();
-Unk_SingletonObj* FUN_1409f24a0();
-Unk_SingletonObj* FUN_1409f24b0();
 Unk_SingletonObj* FUN_1409f7c90();
 Unk_SingletonObj* FUN_1409f7ca0();
-Unk_SingletonObj* FUN_140a44830();
-Unk_SingletonObj* FUN_140a4a7b0();
 Unk_SingletonObj* FUN_140a6a840();
-Unk_SingletonObj* FUN_140a87680();
-Unk_SingletonObj* FUN_140aa6d40();
 Unk_SingletonObj* FUN_140aadf70();
 Unk_SingletonObj* FUN_140ac74e0();
-Unk_SingletonObj* FUN_140ad0da0();
-Unk_SingletonObj* FUN_140b1db00();
-Unk_SingletonObj* FUN_140b20590();
-Unk_SingletonObj* FUN_140b2e990();
-Unk_SingletonObj* FUN_140b6a040();
 Unk_SingletonObj* FUN_140b702a0();
-Unk_SingletonObj* FUN_140bc09f0();
 Unk_SingletonObj* FUN_140bccd50();
 Unk_SingletonObj* FUN_140bfc4b0();
-Unk_SingletonObj* FUN_140c0e750();
 Unk_SingletonObj* FUN_140c24ef0();
 Unk_SingletonObj* FUN_140c607b0();
 Unk_SingletonObj* FUN_140c70240();
-Unk_SingletonObj* FUN_140c7a250();
 Unk_SingletonObj* FUN_140c9b8e0();
-Unk_SingletonObj* FUN_140c9cb20();
 Unk_SingletonObj* FUN_140cb17d0();
 Unk_SingletonObj* FUN_140cea070();
-Unk_SingletonObj* FUN_140cea080();
 Unk_SingletonObj* FUN_140d13c40();
-Unk_SingletonObj* FUN_140d52030();
 Unk_SingletonObj* FUN_140dc19b0();
 Unk_SingletonObj* FUN_140dd7910();
-Unk_SingletonObj* FUN_140e5ca20();
 Unk_SingletonObj* FUN_140e7c990();
 Unk_SingletonObj* FUN_140e800e0();
-Unk_SingletonObj* FUN_140e898d0();
-Unk_SingletonObj* FUN_140ea4060();
 Unk_SingletonObj* FUN_140ec3940();
 Unk_SingletonObj* FUN_140ef0b20();
 Unk_SingletonObj* FUN_140f17d50();
@@ -296,20 +300,13 @@ Unk_SingletonObj* FUN_140f97ef0();
 Unk_SingletonObj* FUN_140fb9980();
 Unk_SingletonObj* FUN_141025b70();
 Unk_SingletonObj* FUN_14109a710();
-Unk_SingletonObj* FUN_14119f490();
-Unk_SingletonObj* FUN_1411b1db0();
 Unk_SingletonObj* FUN_1411b1dc0();
-Unk_SingletonObj* FUN_1411b1dd0();
-Unk_SingletonObj* FUN_1411b1de0();
 Unk_SingletonObj* FUN_141245b20();
-Unk_SingletonObj* FUN_1412976a0();
 Unk_SingletonObj* FUN_1412db940();
 Unk_SingletonObj* FUN_14131e120();
 Unk_SingletonObj* FUN_14134e430();
-Unk_SingletonObj* FUN_14135a4d0();
 Unk_SingletonObj* FUN_141371b30();
 Unk_SingletonObj* FUN_14140ea30();
-Unk_SingletonObj* FUN_14140ea40();
 // ---- in-unit getters (defined below)
 Unk_SingletonObj* FUN_1414a56c0();
 Unk_SingletonObj* FUN_1414a56d0();
@@ -408,7 +405,7 @@ MS2_REPLACE(0x1414A1C90, FUN_1414a1c90, 94, 0x5F0E2522);
 void FUN_1414a1cf0()
 {
     if (DAT_143ab0200 != 0) {
-        delete FUN_140ea4060();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CLearningQuestTable>::GetInstance());
         DAT_143ab0200 = 0;
     }
 }
@@ -471,7 +468,7 @@ MS2_REPLACE(0x1414A1F30, FUN_1414a1f30, 94, 0xE0475430);
 void FUN_1414a1f90()
 {
     if (DAT_143ab0398 != 0) {
-        delete FUN_1409eed10();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CMaidDescTable>::GetInstance());
         DAT_143ab0398 = 0;
     }
 }
@@ -480,7 +477,7 @@ MS2_REPLACE(0x1414A1F90, FUN_1414a1f90, 94, 0x9A1392E9);
 void FUN_1414a1ff0()
 {
     if (DAT_143ab0340 != 0) {
-        delete FUN_14067e910();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CMaidExpTable>::GetInstance());
         DAT_143ab0340 = 0;
     }
 }
@@ -489,7 +486,7 @@ MS2_REPLACE(0x1414A1FF0, FUN_1414a1ff0, 94, 0xCAB7A503);
 void FUN_1414a2050()
 {
     if (DAT_143ab0388 != 0) {
-        delete FUN_1409eed20();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CMaidInfoTable>::GetInstance());
         DAT_143ab0388 = 0;
     }
 }
@@ -498,7 +495,7 @@ MS2_REPLACE(0x1414A2050, FUN_1414a2050, 94, 0x5C9BCF69);
 void FUN_1414a20b0()
 {
     if (DAT_143ab03a8 != 0) {
-        delete FUN_140d52030();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CMaidManufactureMsgTable>::GetInstance());
         DAT_143ab03a8 = 0;
     }
 }
@@ -516,7 +513,7 @@ MS2_REPLACE(0x1414A2110, FUN_1414a2110, 94, 0xA6232421);
 void FUN_1414a2170()
 {
     if (DAT_143ab03c8 != 0) {
-        delete FUN_1409eed30();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CMaidRecipeTable>::GetInstance());
         DAT_143ab03c8 = 0;
     }
 }
@@ -525,7 +522,7 @@ MS2_REPLACE(0x1414A2170, FUN_1414a2170, 94, 0x27944BBC);
 void FUN_1414a21d0()
 {
     if (DAT_143ab4618 != 0) {
-        delete FUN_1409eed40();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CManufactureManager>::GetInstance());
         DAT_143ab4618 = 0;
     }
 }
@@ -543,7 +540,7 @@ MS2_REPLACE(0x1414A2230, FUN_1414a2230, 94, 0xD5C92767);
 void FUN_1414a2290()
 {
     if (DAT_143abb5f8 != 0) {
-        delete FUN_140e5ca20();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CMasteryManager>::GetInstance());
         DAT_143abb5f8 = 0;
     }
 }
@@ -615,7 +612,7 @@ MS2_REPLACE(0x1414A2530, FUN_1414a2530, 94, 0xCDA6DDFA);
 void FUN_1414a2590()
 {
     if (DAT_143ab3850 != 0) {
-        delete FUN_140953f30();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CMouseController>::GetInstance());
         DAT_143ab3850 = 0;
     }
 }
@@ -624,7 +621,7 @@ MS2_REPLACE(0x1414A2590, FUN_1414a2590, 94, 0x21B5BA98);
 void FUN_1414a25f0()
 {
     if (DAT_143abf520 != 0) {
-        delete FUN_140c7a250();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CNPSMan>::GetInstance());
         DAT_143abf520 = 0;
     }
 }
@@ -651,7 +648,7 @@ MS2_REPLACE(0x1414A26B0, FUN_1414a26b0, 94, 0xF4B59DEF);
 void FUN_1414a2710()
 {
     if (DAT_143ab0aa8 != 0) {
-        delete FUN_1411b1db0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<COSInfo>::GetInstance());
         DAT_143ab0aa8 = 0;
     }
 }
@@ -822,7 +819,7 @@ MS2_REPLACE(0x1414A2DD0, FUN_1414a2dd0, 94, 0xEDF53850);
 void FUN_1414a2e30()
 {
     if (DAT_143ab0e68 != 0) {
-        delete FUN_14076dcd0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CReactorDataTable>::GetInstance());
         DAT_143ab0e68 = 0;
     }
 }
@@ -840,7 +837,7 @@ MS2_REPLACE(0x1414A2E90, FUN_1414a2e90, 94, 0x32132896);
 void FUN_1414a2ef0()
 {
     if (DAT_143aaecf0 != 0) {
-        delete FUN_1403b4750();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CReservedWordTable>::GetInstance());
         DAT_143aaecf0 = 0;
     }
 }
@@ -867,7 +864,7 @@ MS2_REPLACE(0x1414A2FB0, FUN_1414a2fb0, 94, 0xDB010B03);
 void FUN_1414a3010()
 {
     if (DAT_143aaef68 != 0) {
-        delete FUN_1404f4540();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CSeasonDataTable>::GetInstance());
         DAT_143aaef68 = 0;
     }
 }
@@ -885,7 +882,7 @@ MS2_REPLACE(0x1414A3070, FUN_1414a3070, 94, 0xAB9DE9C9);
 void FUN_1414a30d0()
 {
     if (DAT_143ab2080 != 0) {
-        delete FUN_140a87680();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CServerString>::GetInstance());
         DAT_143ab2080 = 0;
     }
 }
@@ -894,7 +891,7 @@ MS2_REPLACE(0x1414A30D0, FUN_1414a30d0, 94, 0xAD0A4637);
 void FUN_1414a3130()
 {
     if (DAT_143ab0470 != 0) {
-        delete FUN_1406aa4b0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CShopCategoryTable>::GetInstance());
         DAT_143ab0470 = 0;
     }
 }
@@ -903,7 +900,7 @@ MS2_REPLACE(0x1414A3130, FUN_1414a3130, 94, 0x05CC0E62);
 void FUN_1414a3190()
 {
     if (DAT_143aaedf0 != 0) {
-        delete FUN_1403ed2a0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CShopEventManager>::GetInstance());
         DAT_143aaedf0 = 0;
     }
 }
@@ -957,7 +954,7 @@ MS2_REPLACE(0x1414A3370, FUN_1414a3370, 94, 0xD98601C2);
 void FUN_1414a33d0()
 {
     if (DAT_143abb018 != 0) {
-        delete FUN_140b2e990();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CSoapClient>::GetInstance());
         DAT_143abb018 = 0;
     }
 }
@@ -993,7 +990,7 @@ MS2_REPLACE(0x1414A34F0, FUN_1414a34f0, 94, 0x702DF741);
 void FUN_1414a3550()
 {
     if (DAT_143ab1b18 != 0) {
-        delete FUN_140976580();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CSpecialEffectFunctionManager>::GetInstance());
         DAT_143ab1b18 = 0;
     }
 }
@@ -1011,7 +1008,7 @@ MS2_REPLACE(0x1414A35B0, FUN_1414a35b0, 94, 0x44476E8D);
 void FUN_1414a3610()
 {
     if (DAT_143aac298 != 0) {
-        delete FUN_1401a9d70();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CStringTable>::GetInstance());
         DAT_143aac298 = 0;
     }
 }
@@ -1020,7 +1017,7 @@ MS2_REPLACE(0x1414A3610, FUN_1414a3610, 94, 0x88FFB246);
 void FUN_1414a3670()
 {
     if (DAT_143ab1d28 != 0) {
-        delete FUN_140ad0da0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CTailEffectDataTable>::GetInstance());
         DAT_143ab1d28 = 0;
     }
 }
@@ -1029,7 +1026,7 @@ MS2_REPLACE(0x1414A3670, FUN_1414a3670, 94, 0x4F112A91);
 void FUN_1414a36d0()
 {
     if (DAT_143ab1f30 != 0) {
-        delete FUN_1409f24a0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CTaxiManager>::GetInstance());
         DAT_143ab1f30 = 0;
     }
 }
@@ -1056,7 +1053,7 @@ MS2_REPLACE(0x1414A3790, FUN_1414a3790, 94, 0xC59A7510);
 void FUN_1414a37f0()
 {
     if (DAT_143ab1fd0 != 0) {
-        delete FUN_140cea080();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CTrafficOptimizer>::GetInstance());
         DAT_143ab1fd0 = 0;
     }
 }
@@ -1065,7 +1062,7 @@ MS2_REPLACE(0x1414A37F0, FUN_1414a37f0, 94, 0xE084A75C);
 void FUN_1414a3850()
 {
     if (DAT_143ab0548 != 0) {
-        delete FUN_1406aa4c0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CUGCDesignTable>::GetInstance());
         DAT_143ab0548 = 0;
     }
 }
@@ -1074,7 +1071,7 @@ MS2_REPLACE(0x1414A3850, FUN_1414a3850, 94, 0xF2260634);
 void FUN_1414a38b0()
 {
     if (DAT_143ab4620 != 0) {
-        delete FUN_1409eed50();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CUGCMapSetItemTable>::GetInstance());
         DAT_143ab4620 = 0;
     }
 }
@@ -1119,7 +1116,7 @@ MS2_REPLACE(0x1414A3A30, FUN_1414a3a30, 94, 0x8581D2D7);
 void FUN_1414a3a90()
 {
     if (DAT_143ad86c8 != 0) {
-        delete FUN_14135a4d0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CUserCommandCli>::GetInstance());
         DAT_143ad86c8 = 0;
     }
 }
@@ -1128,7 +1125,7 @@ MS2_REPLACE(0x1414A3A90, FUN_1414a3a90, 94, 0x43C76F10);
 void FUN_1414a3af0()
 {
     if (DAT_143aaeeb8 != 0) {
-        delete FUN_14041beb0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CUserEventManager>::GetInstance());
         DAT_143aaeeb8 = 0;
     }
 }
@@ -1137,7 +1134,7 @@ MS2_REPLACE(0x1414A3AF0, FUN_1414a3af0, 94, 0x98C9C077);
 void FUN_1414a3b50()
 {
     if (DAT_143ab4610 != 0) {
-        delete FUN_1409eed60();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CUserMaidManager>::GetInstance());
         DAT_143ab4610 = 0;
     }
 }
@@ -1155,7 +1152,7 @@ MS2_REPLACE(0x1414A3BB0, FUN_1414a3bb0, 94, 0xA273971A);
 void FUN_1414a3c10()
 {
     if (DAT_143ab3700 != 0) {
-        delete FUN_1409478c0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CameraMgr>::GetInstance());
         DAT_143ab3700 = 0;
     }
 }
@@ -1164,7 +1161,7 @@ MS2_REPLACE(0x1414A3C10, FUN_1414a3c10, 94, 0x7EC97F36);
 void FUN_1414a3c70()
 {
     if (DAT_143ad6820 != 0) {
-        delete FUN_1412976a0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<ClientLogManager>::GetInstance());
         DAT_143ad6820 = 0;
     }
 }
@@ -1173,7 +1170,7 @@ MS2_REPLACE(0x1414A3C70, FUN_1414a3c70, 94, 0x10A5FB83);
 void FUN_1414a3cd0()
 {
     if (DAT_143ab0f28 != 0) {
-        delete FUN_140789c40();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CommonEffectDummy>::GetInstance());
         DAT_143ab0f28 = 0;
     }
 }
@@ -1218,7 +1215,7 @@ MS2_REPLACE(0x1414A3E50, FUN_1414a3e50, 94, 0x3CD3859F);
 void FUN_1414a3eb0()
 {
     if (DAT_143aaf318 != 0) {
-        delete FUN_140b1db00();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CostumeSetTable>::GetInstance());
         DAT_143aaf318 = 0;
     }
 }
@@ -1227,7 +1224,7 @@ MS2_REPLACE(0x1414A3EB0, FUN_1414a3eb0, 94, 0x994256D1);
 void FUN_1414a3f10()
 {
     if (DAT_143ab6730 != 0) {
-        delete FUN_140a44830();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CrashManagerCli>::GetInstance());
         DAT_143ab6730 = 0;
     }
 }
@@ -1245,7 +1242,7 @@ MS2_REPLACE(0x1414A3F70, FUN_1414a3f70, 94, 0x128A9E27);
 void FUN_1414a3fd0()
 {
     if (DAT_143aad1f0 != 0) {
-        delete FUN_140b20590();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<DungeonMissionDataTable>::GetInstance());
         DAT_143aad1f0 = 0;
     }
 }
@@ -1254,7 +1251,7 @@ MS2_REPLACE(0x1414A3FD0, FUN_1414a3fd0, 94, 0xBC1EF21F);
 void FUN_1414a4030()
 {
     if (DAT_143aad1f8 != 0) {
-        delete FUN_14031c2a0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<DungeonRoomTable>::GetInstance());
         DAT_143aad1f8 = 0;
     }
 }
@@ -1263,7 +1260,7 @@ MS2_REPLACE(0x1414A4030, FUN_1414a4030, 94, 0xF4AA19C6);
 void FUN_1414a4090()
 {
     if (DAT_143ad1580 != 0) {
-        delete FUN_1411b1dd0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<EffectDataManager>::GetInstance());
         DAT_143ad1580 = 0;
     }
 }
@@ -1272,7 +1269,7 @@ MS2_REPLACE(0x1414A4090, FUN_1414a4090, 94, 0x4134B3DD);
 void FUN_1414a40f0()
 {
     if (DAT_143ad1578 != 0) {
-        delete FUN_14119f490();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<EffectSkipMgr>::GetInstance());
         DAT_143ad1578 = 0;
     }
 }
@@ -1317,7 +1314,7 @@ MS2_REPLACE(0x1414A4270, FUN_1414a4270, 94, 0xC6F92785);
 void FUN_1414a42d0()
 {
     if (DAT_143aab380 != 0) {
-        delete FUN_14015a050();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<GameEventManagerCli>::GetInstance());
         DAT_143aab380 = 0;
     }
 }
@@ -1371,7 +1368,7 @@ MS2_REPLACE(0x1414A44B0, FUN_1414a44b0, 94, 0x23986293);
 void FUN_1414a4510()
 {
     if (DAT_143aac638 != 0) {
-        delete FUN_1401d7a50();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<JobTable>::GetInstance());
         DAT_143aac638 = 0;
     }
 }
@@ -1425,7 +1422,7 @@ MS2_REPLACE(0x1414A46F0, FUN_1414a46f0, 94, 0x6E73979E);
 void FUN_1414a4750()
 {
     if (DAT_143ab47a0 != 0) {
-        delete FUN_1409f24b0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<OnceCallbackTimer>::GetInstance());
         DAT_143ab47a0 = 0;
     }
 }
@@ -1461,7 +1458,7 @@ MS2_REPLACE(0x1414A4870, FUN_1414a4870, 94, 0x655019B1);
 void FUN_1414a48d0()
 {
     if (DAT_143ab0ac8 != 0) {
-        delete FUN_14071d7d0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<PaybackTable>::GetInstance());
         DAT_143ab0ac8 = 0;
     }
 }
@@ -1479,7 +1476,7 @@ MS2_REPLACE(0x1414A4930, FUN_1414a4930, 94, 0xD3DA3822);
 void FUN_1414a4990()
 {
     if (DAT_143abf888 != 0) {
-        delete FUN_140c9cb20();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<RecodeMgr>::GetInstance());
         DAT_143abf888 = 0;
     }
 }
@@ -1497,7 +1494,7 @@ MS2_REPLACE(0x1414A49F0, FUN_1414a49f0, 94, 0x331AAB1F);
 void FUN_1414a4a50()
 {
     if (DAT_143ab0f68 != 0) {
-        delete FUN_1407b75e0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<SetItemTable>::GetInstance());
         DAT_143ab0f68 = 0;
     }
 }
@@ -1506,7 +1503,7 @@ MS2_REPLACE(0x1414A4A50, FUN_1414a4a50, 94, 0xD90BC029);
 void FUN_1414a4ab0()
 {
     if (DAT_143aac288 != 0) {
-        delete FUN_1401958b0();
+        delete reinterpret_cast<Unk_SingletonObj140*>(TSingleton<SkillDataTableCli>::GetInstance());
         DAT_143aac288 = 0;
     }
 }
@@ -1515,7 +1512,7 @@ MS2_REPLACE(0x1414A4AB0, FUN_1414a4ab0, 117, 0x313028D3);
 void FUN_1414a4b30()
 {
     if (DAT_143ad1ac8 != 0) {
-        delete FUN_1411b1de0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<SoundPropertyMgr>::GetInstance());
         DAT_143ad1ac8 = 0;
     }
 }
@@ -1551,7 +1548,7 @@ MS2_REPLACE(0x1414A4C50, FUN_1414a4c50, 94, 0xDB996F1C);
 void FUN_1414a4cb0()
 {
     if (DAT_143ab4630 != 0) {
-        delete FUN_1409eed70();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<TermTagManagerCli>::GetInstance());
         DAT_143ab4630 = 0;
     }
 }
@@ -1560,7 +1557,7 @@ MS2_REPLACE(0x1414A4CB0, FUN_1414a4cb0, 94, 0x1D473DD0);
 void FUN_1414a4d10()
 {
     if (DAT_143ab2128 != 0) {
-        delete FUN_1409eed80();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<UGCCubeCategoryTable>::GetInstance());
         DAT_143ab2128 = 0;
     }
 }
@@ -1578,7 +1575,7 @@ MS2_REPLACE(0x1414A4D70, FUN_1414a4d70, 94, 0xDE9241E5);
 void FUN_1414a4dd0()
 {
     if (DAT_143ab6878 != 0) {
-        delete FUN_140a4a7b0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<UIBuddyEventDispatcher>::GetInstance());
         DAT_143ab6878 = 0;
     }
 }
@@ -1587,7 +1584,7 @@ MS2_REPLACE(0x1414A4DD0, FUN_1414a4dd0, 94, 0x709ABCE7);
 void FUN_1414a4e30()
 {
     if (DAT_143ad9d70 != 0) {
-        delete FUN_14140ea40();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<UIDialogEventDispatcher>::GetInstance());
         DAT_143ad9d70 = 0;
     }
 }
@@ -1596,7 +1593,7 @@ MS2_REPLACE(0x1414A4E30, FUN_1414a4e30, 94, 0xCEEF069C);
 void FUN_1414a4e90()
 {
     if (DAT_143abdfe8 != 0) {
-        delete FUN_140c0e750();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<UIDungeonCategoryTable>::GetInstance());
         DAT_143abdfe8 = 0;
     }
 }
@@ -1641,7 +1638,7 @@ MS2_REPLACE(0x1414A5010, FUN_1414a5010, 94, 0x51DCA32B);
 void FUN_1414a5070()
 {
     if (DAT_143ab89f0 != 0) {
-        delete FUN_140aa6d40();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<UIStatusEventDispatcher>::GetInstance());
         DAT_143ab89f0 = 0;
     }
 }
@@ -1659,7 +1656,7 @@ MS2_REPLACE(0x1414A50D0, FUN_1414a50d0, 94, 0xDBE27E7F);
 void FUN_1414a5130()
 {
     if (DAT_143abd548 != 0) {
-        delete FUN_140bc09f0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<UIUGCEventDispatcher>::GetInstance());
         DAT_143abd548 = 0;
     }
 }
@@ -1668,7 +1665,7 @@ MS2_REPLACE(0x1414A5130, FUN_1414a5130, 94, 0xAFBAF998);
 void FUN_1414a5190()
 {
     if (DAT_143ac8008 != 0) {
-        delete FUN_140e898d0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<UIWorldShareInfoEventDispatcher>::GetInstance());
         DAT_143ac8008 = 0;
     }
 }
@@ -1677,7 +1674,7 @@ MS2_REPLACE(0x1414A5190, FUN_1414a5190, 94, 0xE9B3A445);
 void FUN_1414a51f0()
 {
     if (DAT_143abb148 != 0) {
-        delete FUN_140b6a040();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<UgcHomeOptionData>::GetInstance());
         DAT_143abb148 = 0;
     }
 }
@@ -1713,7 +1710,7 @@ MS2_REPLACE(0x1414A5330, FUN_1414a5330, 94, 0xCF0DEAAA);
 void FUN_1414a5390()
 {
     if (DAT_143ab26c0 != 0) {
-        delete FUN_1409023c0();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<WeddingTable>::GetInstance());
         DAT_143ab26c0 = 0;
     }
 }

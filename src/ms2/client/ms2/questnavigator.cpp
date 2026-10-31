@@ -29,6 +29,10 @@
 #include "ms2/client/ms2/uiquesteventlistener.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/ms2recover.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cgameoption.h"
 
 class NotifyObject;
 // The minimap dialog (UI type 0x4e29) lives in another unit; only the cast target is needed.
@@ -48,18 +52,10 @@ public:
     char m_pad_00[0x160];
     Unk_QnTracking m_160;
 };
-Unk_QnState* FUN_1409a8b10();
 
-class Unk_QnFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_QnFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
-class Unk_QnNotices
-{
-public:
-    void FUN_140da4e40(CStringW name, Delegate<void(NotifyObject*)> cb);   // register
-    void FUN_140da4eb0(CStringW name, Delegate<void(NotifyObject*)> cb);   // unregister
-};
-Unk_QnNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 UIQuestEventDispatcher* FUN_140bfc4b0();
 WorldService* FUN_1403ed2d0();
@@ -77,7 +73,6 @@ UIMinimapDialog* FUN_140c9b540(int nId);
 
 // the minimap dialog (UI type 0x4e29) and the UI manager
 class Unk_QnUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-Unk_QnUIMgr* FUN_1403ed2b0();
 void FUN_141a3ada0(UIMinimapDialog* pDialog);                       // refresh the minimap's quest marker
 
 // engine helpers (non-inlined in the exe)
@@ -145,16 +140,16 @@ void FUN_142ca3a50() { FUN_1402aa1d0(s_marker); }
 // @0x140c99700
 CQuestNavigator::CQuestNavigator()
 {
-    FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyCompleteMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCompleteMyPC));
-    FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyCreateMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCreateMyPC));
+    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyCompleteMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCompleteMyPC));
+    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyCreateMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCreateMyPC));
     FUN_140bfc4b0()->FUN_141aa87c0(this);
 }
 
 // @0x140c99990
 CQuestNavigator::~CQuestNavigator()
 {
-    FUN_140939a10()->FUN_140da4eb0(CStringW(L"NotifyCompleteMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCompleteMyPC));
-    FUN_140939a10()->FUN_140da4eb0(CStringW(L"NotifyCreateMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCreateMyPC));
+    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyCompleteMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCompleteMyPC));
+    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyCreateMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCreateMyPC));
     FUN_140bfc4b0()->FUN_141aa8850(this);
 }
 
@@ -267,7 +262,7 @@ void CQuestNavigator::OnCreateMyPC(NotifyObject* pNotify)
 {
     m_18.Clear();
     m_18.m_18 = 0;
-    int nQuestId = FUN_1409a8b10()->FUN_140c9b8b0()->m_30;
+    int nQuestId = reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_30;
     Unk_PayloadPtr<CQuest> spQuest = static_cast<CQuestManagerCommon&>(*FUN_140764020()).vfunc_o10_3(nQuestId);
     if (spQuest.get() != 0 ? true : false)
     {
@@ -310,10 +305,10 @@ void CQuestNavigator::SelectQuest(int nQuestId)
 {
     m_18.Clear();
     m_18.m_18 = nQuestId;
-    if (FUN_1409a8b10()->FUN_140c9b8b0()->m_30 != nQuestId)
+    if (reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_30 != nQuestId)
     {
-        FUN_1409a8b10()->FUN_140c9b8b0()->m_30 = nQuestId;
-        FUN_1409a8b10()->FUN_141243540();
+        reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_30 = nQuestId;
+        reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_141243540();
     }
 }
 
@@ -543,9 +538,9 @@ CStringW CQuestNavigator::FUN_140c9b150(const Vector3& pos)
 // @0x140c9b540
 UIMinimapDialog* FUN_140c9b540(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_QnUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_QnUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<UIMinimapDialog*>((UIObject*)p);
     }

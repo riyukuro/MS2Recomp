@@ -32,6 +32,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/pcgemequip.h"
 
 // ---- unit-local placeholders ----
 
@@ -115,7 +116,7 @@ class Unk_HmGatherMgr { public: int FUN_14066bc40(int nId); };
 Unk_HmGatherMgr* FUN_1409670c0();
 
 // The equipment of a player: the worn item of a slot.
-class Unk_HmEquip { public: MS2Ptr<CGemBase> FUN_141270740(int nSlot); };
+class Unk_HmEquip : public PCGemEquip { };
 Unk_HmEquip* FUN_14165f460(PCBase* p);
 
 void* FUN_14165f100(PCBase* p);

@@ -77,6 +77,10 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/soundproperty.h"
+#include "ms2/client/ms2/soundeventmgr.h"
+#include "ms2/commonfiles/itemdatatable.h"
 
 // Unrecovered helpers.
 class Unk_ExportLog;                                            // the editor progress log window
@@ -86,24 +90,15 @@ void FUN_141168580(Unk_ExportLog*, int);
 void FUN_1411682d0(Unk_ExportLog*);
 void FUN_1411683e0(Unk_ExportLog*, const char*);                // append a line
 int FUN_1406516c0();                                            // current language id
-CSoundDataTable* FUN_1414a57c0();
 CSoundService* FUN_140c9cb10();
 
-class Unk_SoundMgr
+class Unk_SoundMgr : public CSoundEventMgr
 {
 public:
-    FMOD::EventGroup* FUN_14177d6e0(const char* pszGroup, int bLoad);
     void FUN_14177d9b0(const char* pszGroup, Unk_StrVec& rNames);   // event names of a group
 };
-Unk_SoundMgr* FUN_140d13c40();
 
 typedef std::map<CString, std::set<CString> > Unk_VoiceGroupMap;   // trigger voice group -> sub sound names
-class Unk_VoiceMgr
-{
-public:
-    void FUN_141793210(Unk_VoiceGroupMap& rOut);
-};
-Unk_VoiceMgr* FUN_1411b1de0();
 
 class Unk_140165cf0;
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
@@ -121,7 +116,6 @@ CString FUN_1401d2b10(const CString& a, const CString& b);      // a + b
 enum Unk_BmLanguage { Unk_BmLanguage_None = 0 };
 CLocaleLanguage* FUN_1401c0da0();
 void FUN_1405594b0(Unk_IngTable*, std::vector<unsigned int>& rIds);     // all item ids
-Unk_IngTable* FUN_140281980();
 HRESULT FUN_140299dc0(ATL::CAtlFile* pFile, const void* pBuf, DWORD nLen, DWORD* pWritten = 0);
 CString FUN_140540050(const char* pszFmt, const CString& str);
 CString FUN_140390ea0(const wchar_t* psz, int n);
@@ -252,7 +246,7 @@ void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>& rOut, const
 void FUN_14015eb90(void* pLogger, int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
 void* FUN_140166440();                                                  // logger
 CString FUN_1409a2360(const char* psz, int n);                          // text conversion
-struct Unk_TeLangView { CString FUN_14036d8e0(); };                       // language directory name (member: this=rcx, hidden return=rdx)
+                       // language directory name (member: this=rcx, hidden return=rdx)
 void* FUN_140166410();
 bool FUN_1408710c0(TiXmlDocument* pDoc, const char* pszPath);           // SaveFile
 bool FUN_140184310(const CString& str, const char* psz);                // str == psz
@@ -334,7 +328,7 @@ static const Unk_SoundTagMap& Unk_GetSoundTags(CSoundService* pService)
 }
 
 int FUN_141827210(ATL::CAtlArray<CString>& rArray, const CString& str);
-CString FUN_1402bf9a0(const char* pszFormat, const fmt::ArgList& args);
+CString Unk_SocketFormat(const char* pszFormat, const fmt::ArgList& args);
 CString FUN_141827280(const char* pszFormat, const unsigned long long& nIndex, const CString& strName);
 
 // Removes the named <property> children from every xblock / block entity whose model the model manager knows.
@@ -449,13 +443,13 @@ int FUN_141827210(ATL::CAtlArray<CString>& rArray, const CString& str)
 // @0x141825f60
 void FUN_141825f60(const CString& strGroup, CSoundDataTable::SoundList& rOut)
 {
-    FMOD::EventGroup* pGroup = FUN_140d13c40()->FUN_14177d6e0(strGroup, 1);
+    FMOD::EventGroup* pGroup = reinterpret_cast<Unk_SoundMgr*>(TSingleton<CSoundEventMgr>::GetInstance())->FUN_14177d6e0(strGroup, 1);
     if (pGroup == NULL) {
         MS2_ASSERT_AT(0x3d4, 0);
         return;
     }
     Unk_StrVec names;
-    FUN_140d13c40()->FUN_14177d9b0(strGroup, names);
+    reinterpret_cast<Unk_SoundMgr*>(TSingleton<CSoundEventMgr>::GetInstance())->FUN_14177d9b0(strGroup, names);
     int nCount = (int)names.FUN_14028b4c0();
     for (int i = 0; i < nCount; i++) {
         CString& strName = *names.FUN_14027f1c0(i);
@@ -508,7 +502,7 @@ void FUN_141826260(CSoundDataTable::SoundList& rOut)
 void FUN_141826360(CSoundDataTable::SoundList& rOut)
 {
     Unk_VoiceGroupMap groups;
-    FUN_1411b1de0()->FUN_141793210(groups);
+    TSingleton<SoundPropertyMgr>::GetInstance()->FUN_141793210(groups);
     Unk_VoiceGroupMap& range = groups;
     Unk_VoiceGroupMap::const_iterator itEnd = range.end();
     for (Unk_VoiceGroupMap::const_iterator it = range.begin(); it != itEnd; ++it) {
@@ -543,7 +537,7 @@ bool FUN_141825610(CString strPath, bool bMessageBox)
     ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> > languages;
     FUN_1401c0da0()->FUN_14064f290(languages);
     std::vector<unsigned int> ids;
-    FUN_1405594b0(FUN_140281980(), ids);
+    FUN_1405594b0(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), ids);
     ATL::CAtlFile file;
     file.Create(strPath, GENERIC_WRITE, 3, 2, 0x80, 0, 0);
     CString strHeader("USE [ms2_market]\n\nDELETE FROM dbo.tb_item_info\n");
@@ -596,26 +590,26 @@ bool FUN_141825d60(bool bMessageBox)
 {
     bool bOk = true;
     int nLanguage = FUN_1406516c0();
-    FUN_1414a57c0()->SetLanguage(nLanguage);
+    TSingleton<CSoundDataTable>::GetInstance()->SetLanguage(nLanguage);
     FUN_1411683e0(FUN_141168200(), "Export SoundDataTable");
     {
         CSoundDataTable::SoundList events;
         FUN_141825f60("ms2sound/sound/voice", events);
-        FUN_1414a57c0()->SetEventSounds(events);
+        TSingleton<CSoundDataTable>::GetInstance()->SetEventSounds(events);
     }
     {
         CSoundDataTable::SoundList programmer;
         FUN_141826260(programmer);
-        FUN_1414a57c0()->SetProgrammerSounds(programmer);
+        TSingleton<CSoundDataTable>::GetInstance()->SetProgrammerSounds(programmer);
     }
     {
         CSoundDataTable::SoundList triggerVoice;
         FUN_141826360(triggerVoice);
-        FUN_1414a57c0()->SetTriggerVoiceSounds(triggerVoice);
+        TSingleton<CSoundDataTable>::GetInstance()->SetTriggerVoiceSounds(triggerVoice);
     }
-    CString strPath = FUN_1414a57c0()->GetPath();
+    CString strPath = TSingleton<CSoundDataTable>::GetInstance()->GetPath();
     CString strResult;
-    if (FUN_1414a57c0()->Save() == 0)
+    if (TSingleton<CSoundDataTable>::GetInstance()->Save() == 0)
         bOk = false;
     if (bOk)
         strResult.Format("saved [%s]", (const char*)strPath);
@@ -693,7 +687,7 @@ bool FUN_1418270c0(unsigned int nNpc, _NpcInfo info, Unk_NpcMap& rMap)
 CString FUN_141827280(const char* pszFormat, const unsigned long long& nIndex, const CString& strName)
 {
     const fmt::internal::ArgArray<2>::Type array = {fmt::internal::MakeValue< fmt::BasicFormatter<char> >(nIndex), fmt::internal::MakeValue< fmt::BasicFormatter<char> >(strName)};
-    return FUN_1402bf9a0(pszFormat, fmt::ArgList(fmt::internal::make_type(nIndex, strName), array));
+    return Unk_SocketFormat(pszFormat, fmt::ArgList(fmt::internal::make_type(nIndex, strName), array));
 }
 
 // Scans fieldData.xml, every xblock and the time / game event tables, and writes Table/<language>/FieldMetaData.xml.
@@ -1115,9 +1109,9 @@ bool FUN_1418226b0(bool bLog)
     if (bLog)
         FUN_1411683e0(FUN_141168200(), "Write FieldMetaTable Complete.");
     FUN_14086e000(&docOut, &elemRoot);
-    CString strLang = static_cast<Unk_TeLangView*>(FUN_140166410())->FUN_14036d8e0();
+    CString strLang = static_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d8e0();
     const fmt::internal::ArgArray<1>::Type arrOut = {fmt::internal::MakeValue< fmt::BasicFormatter<char> >(strLang)};
-    CString strOut = FUN_1402bf9a0("./Data/Xml/Table/{0}/FieldMetaData.xml", fmt::ArgList(fmt::internal::make_type(strLang), arrOut));
+    CString strOut = Unk_SocketFormat("./Data/Xml/Table/{0}/FieldMetaData.xml", fmt::ArgList(fmt::internal::make_type(strLang), arrOut));
     if (!FUN_1408710c0(&docOut, strOut))
         return false;
     if (bLog && FUN_141168200() != NULL)

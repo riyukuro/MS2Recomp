@@ -311,6 +311,11 @@ CFilePreload* TSingleton<CFilePreload>::s_instance=0;
 // Pure constant tables: these do not register with the executable.
 static CString s_chartNames[]={"None","Buy","PriceLow","PriceHigh","Create","ChartOrder","BuyTotal","EnumEnd"};
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/nifeffectparam.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/commonfiles/reactordata.h"
+#include "ms2/commonfiles/learningquesttable.h"
+#include "ms2/commonfiles/questdatatable.h"
 extern bool DAT_1439f7068;
 COptimizer* FUN_1409f7c90();
 void* FUN_1403ed2d0();
@@ -497,11 +502,9 @@ MS2_REPLACE_METHOD(0x141210da0, CFilePreload, FUN_141210da0, 91, 0x9EA0C72E);
 class CReactorDataTable; class CNifLoadingService; class SkillDataTableCli; class SkillData;
 class Unk_PreloadServiceA; class Unk_PreloadServiceB; class Unk_PreloadServiceC; class Unk_PreloadServiceD;
 void FUN_14051f2b0();
-CReactorDataTable* FUN_14076dcd0();
 void FUN_14076b7d0(CReactorDataTable*);
 extern CLearningQuestTable* DAT_143ab0200;
 extern CMeratMarketPremium* DAT_143ab0540;
-CLearningQuestTable* FUN_140ea4060();
 CMeratMarketPremium* FUN_1406f2370();
 CLearningQuestTable* FUN_141215480();
 CMeratMarketPremium* FUN_141215500();
@@ -513,7 +516,6 @@ void FUN_140a7cbf0(void*);
 void FUN_1411a49a0(CString);
 CNifLoadingService* FUN_140a0afd0();
 void FUN_141551c10(CNifLoadingService*);
-Unk_PreloadServiceA* FUN_1407476c0();
 void FUN_14074c320(Unk_PreloadServiceA*);
 Unk_PreloadServiceB* FUN_140c9b8e0();
 void FUN_140c91690(Unk_PreloadServiceB*);
@@ -522,12 +524,10 @@ void FUN_14034dde0(Unk_PreloadServiceC*);
 void LoadQuestDescription(); void LoadTalkScripts(); void FUN_14093af30(); void FUN_14015c050();
 void FUN_14064cc80(CLearningQuestTable*);
 void FUN_1410917a0(unsigned);
-SkillDataTableCli* FUN_1401958b0();
 void FUN_140aae720(SkillDataTableCli*,unsigned,unsigned short,int);
 void FUN_1411a4800(const CString&,int);
 // Explicit result-storage forms preserve the member hidden-result ABI.
 // The NIF service's texture load and the skill table lookup return by value (views over the exe types).
-struct Unk_PreloadNifService { efd::SmartPointer<NiTexture> FUN_141552f90(CString,int); };
 void FUN_1415525d0(CNifLoadingService*,CString,int,int);
 struct Unk_PreloadSkillTable { Unk_PayloadPtr<SkillData> FUN_140aafd60(unsigned); };
 Unk_PreloadServiceD* FUN_1411b1dd0(); void FUN_14119fa60(Unk_PreloadServiceD*);
@@ -537,7 +537,7 @@ void CFilePreload::FUN_141210e10(bool notify) {
     CStopWatch watch("PreloadDataStep1");
     if(stopped==0) FUN_14051f2b0();
     watch.vfunc_1("CInteractObjectData::ReadAll");
-    if(stopped==0) FUN_14076b7d0(FUN_14076dcd0());
+    if(stopped==0) FUN_14076b7d0(TSingleton<CReactorDataTable>::GetInstance());
     watch.vfunc_1("CReactorDataTable::GetInstance()->Init");
     if(notify) FUN_141211b30(0x40);
     if(stopped==0) FUN_1406a27b0(FUN_141215500());
@@ -576,7 +576,7 @@ MS2_REPLACE_METHOD(0x141210f00, CFilePreload, FUN_141210f00, 826, 0xAF9D15C6);
 // @0x141211240
 void CFilePreload::FUN_141211240(void*) {
     dataReady=0;
-    if(stopped==0) FUN_14074c320(FUN_1407476c0());
+    if(stopped==0) FUN_14074c320(reinterpret_cast<Unk_PreloadServiceA*>(TSingleton<QuestDataTable>::GetInstance()));
     if(stopped==0) FUN_140c91690(FUN_140c9b8e0());
     FUN_141211b30(2);
     if(stopped==0) FUN_14034dde0(FUN_14034f780());
@@ -609,7 +609,7 @@ void CFilePreload::FUN_141211480(void*) {
     std::set<Unk_PreloadId> pending;
     { if(Unk_LockGuard guard=itemLock) { __assume(0); } else { pending=itemRequests; itemRequests.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
-        if(stopped==0) { FUN_140aae720(FUN_1401958b0(),it->key.first,it->key.second,it->priority); }
+        if(stopped==0) { FUN_140aae720(TSingleton<SkillDataTableCli>::GetInstance(),it->key.first,it->key.second,it->priority); }
         else return;
     }
 }
@@ -631,7 +631,7 @@ void CFilePreload::FUN_141211700(void*) {
     { if(Unk_LockGuard guard=nifLock) { __assume(0); } else { pending=nifRequests; nifRequests.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
         if(stopped==0 && FUN_140a0afd0()!=0) {
-            ((Unk_PreloadNifService*)FUN_140a0afd0())->FUN_141552f90(CString(it->path),it->priority);
+            ((CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString(it->path),it->priority);
         }
         else return;
     }
@@ -655,8 +655,8 @@ void CFilePreload::FUN_1412119e0(void*) {
     { if(Unk_LockGuard guard=itemIdsLock) { __assume(0); } else { pending=itemIds; itemIds.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
         if(stopped==0 && FUN_140a0afd0()!=0) {
-            if(FUN_1401958b0()!=0) {
-                ((Unk_PreloadSkillTable*)FUN_1401958b0())->FUN_140aafd60(*it);
+            if(TSingleton<SkillDataTableCli>::GetInstance()!=0) {
+                ((Unk_PreloadSkillTable*)TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafd60(*it);
             }
         }
         else return;
@@ -737,7 +737,7 @@ MS2_REPLACE_METHOD(0x141215220, CThread, Start, 594, 0x0FE72BCD);
 // Unhooked: these allocate using executable constructors and expose singletons.
 // @0x141215480
 CLearningQuestTable* FUN_141215480() {
-    return DAT_143ab0200!=0 ? FUN_140ea4060() : new CLearningQuestTable;
+    return DAT_143ab0200!=0 ? TSingleton<CLearningQuestTable>::GetInstance() : new CLearningQuestTable;
 }
 // @0x141215500
 CMeratMarketPremium* FUN_141215500() {

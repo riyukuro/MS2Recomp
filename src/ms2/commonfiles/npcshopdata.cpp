@@ -134,7 +134,6 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 
 CFeatureManager* FUN_140166410();
 MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);                       // the item table row (null: unknown id)
-CGloabalFactor* FUN_140302b10();
 bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszKey,
                    std::vector<Unk_140165cf0*>& out);                    // the elements with the overrides merged
@@ -151,11 +150,11 @@ int FUN_140557640(Unk_IngTable* pTable, const CString& strName);
 void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned>& out, const char* pszDelim);
 void FUN_140177de0(const CString& str, ATL::CAtlArray<unsigned>& out, const char* pszDelim);
 void FUN_14015f080(const CString& str, ATL::CAtlArray<CStringW>& out, const char* pszDelim);
-int FUN_14021a030(const CStringW& str);
+int Parse_14021a030(const CStringW& str);
 int FUN_1407181a0(const CStringW& str);
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
 void FUN_1401d9a30(const CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDelim);
-void FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszText);
+void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszText);
 void FUN_1402804e0(CLogString* pLog, unsigned __int64 a, unsigned __int64 b, int nCategory, const wchar_t* pszText);
 #ifdef __clang__
 // clang emits an unavailable MFC CopyChars import for operator+ (hook DLL); use the exe's copy of
@@ -1059,14 +1058,14 @@ int FUN_1406df690()
         for (unsigned nId : diffIds)
             strIds = StringFormat(L"{0},{1}", strIds, nId);
         if (CLogString::GetInstance() != 0)
-            FUN_1401859c0(CLogString::GetInstance(), 0xb, 0x13, strIds);
+            Unk_AdditionalLog(CLogString::GetInstance(), 0xb, 0x13, strIds);
         return 0;
     }
     for (Unk_NpcShopMap::iterator it = oldShops.begin(); it != oldShops.end(); ++it)
     {
         Unk_NpcShopMap::iterator other = newShops.find(it->first);
         if (*other->second.operator->() != *it->second.operator->() && CLogString::GetInstance() != 0)
-            FUN_1401859c0(CLogString::GetInstance(), 0xb, 0x13, StringFormat(L"Diff in ShopID : {0}", it->first));
+            Unk_AdditionalLog(CLogString::GetInstance(), 0xb, 0x13, StringFormat(L"Diff in ShopID : {0}", it->first));
     }
     return 0;
 }
@@ -1257,7 +1256,7 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
                 FUN_14015f080(strValue, parts, ",");
                 if (parts.GetCount() == 2)
                 {
-                    spItem->m_nRequireGuildNpcType = FUN_14021a030(parts[0]);
+                    spItem->m_nRequireGuildNpcType = Parse_14021a030(parts[0]);
                     spItem->m_nRequireGuildNpcLevel = FUN_1407181a0(parts[1]);
                 }
             }
@@ -1734,7 +1733,7 @@ int CBeautyShopItem::FUN_1406e3900(CString& strError)
     __int64 nPrice = spItem->property.FUN_1405480f0(1);
     if (spItem->FUN_14053cbc0())
     {
-        float fFactor = FUN_140302b10()->FUN_1404c1810(3, 1);
+        float fFactor = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c1810(3, 1);
         nPrice = (__int64)((float)nPrice * fFactor);
     }
     if ((__int64)nShopPrice < nPrice)

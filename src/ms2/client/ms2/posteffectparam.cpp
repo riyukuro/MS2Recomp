@@ -6,6 +6,8 @@
 #include "posteffectparam.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/applyeffect.h"
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
 void FUN_1408730a0(void* pNode, const char* pszName, bool& bOut);
@@ -13,26 +15,14 @@ void FUN_140873360(void* pNode, const char* pszName, float& fOut);
 const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
 
 // Game clock (commonfiles singleton 0x14086d260, mainsystem.cpp 0x141473280: current time in seconds).
-class Unk_GameClock
-{
-public:
-    double FUN_141473280();
-};
-Unk_GameClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 
 bool FUN_14028d470(float a, float b);                   // nearly equal
 float FUN_140a17940(float f, float fMin, float fMax);   // clamp
 float FUN_141b6fe40(float t, int nInterpolator);        // 1 linear, 2 log, 3 exp
 
 // Post-process effect manager (?\applyeffect.cpp, singleton 0x1409a8b00).
-class Unk_PostEffectMgr
-{
-public:
-    void FUN_1409a3ee0(int nType, int nId);
-    void FUN_1409a3f80(int nType, int nId);
-    bool FUN_1409a4020(int nId, CScreenEffectBase* pEffect);
-};
-Unk_PostEffectMgr* FUN_1409a8b00();
+ApplyEffect* FUN_1409a8b00();
 
 // The concrete screen effects (own units; only the constructors are used here).
 #include "monochromeeffectparam.h"

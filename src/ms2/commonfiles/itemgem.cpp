@@ -69,6 +69,9 @@ enum Unk_GemSlot { Unk_GemSlot_0, Unk_GemSlot_1, Unk_GemSlot_2, Unk_GemSlot_3, U
 static ATL::CAtlMap<Unk_GemSlot, unsigned> s_mapGemSlots;                                      // 0x143aafcc0
 // The statics of the common header, constructed after the map.
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/pcgemequip.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // The actor components behind PCBase slots 82 / 85 (see pcbase.h): the name tag and chat balloon entities.
 class Unk_PCBaseComp_a78 : public CPtred {};
@@ -120,18 +123,7 @@ template <> Unk_GemPetRow* MS2Ptr<Unk_GemPetRow>::operator->() const;   // 0x140
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // 0x14053f870
 
 // The UI manager (FUN_1403ed2b0): a gem that shows an effect of its own registers with it.
-class Unk_UiManager
-{
-public:
-    void FUN_141ad9d00(MS2Ptr<CGemBase> spGem);                     // 0x141ad9d00
-};
-Unk_UiManager* FUN_1403ed2b0();                                     // 0x1403ed2b0
-class Unk_StringTable
-{
-public:
-    CStringW FUN_141811980(int nTable, int nId);                    // 0x141811980
-};
-Unk_StringTable* FUN_1401a9d70();                                   // 0x1401a9d70
+CUIService* FUN_1403ed2b0();                                        // 0x1403ed2b0
 
 // The effect manager (FUN_1403ed280).
 class Unk_RideeEffects
@@ -143,12 +135,6 @@ public:
 Unk_RideeEffects* FUN_1403ed280();                                  // 0x1403ed280
 
 // The actor's equipment (FUN_14165f460 hands it out as a void*): the gem items' worn-item calls.
-class Unk_GemEquipment
-{
-public:
-    bool FUN_141271090(MS2Ptr<CItem> spItem, const CString& strEffect);     // 0x141271090 equip an effect item
-    void FUN_1412711e0(MS2Ptr<CItem> spItem);                       // 0x1412711e0
-};
 void* FUN_14165f460(PC* pPC);                                       // 0x14165f460
 int FUN_141658e60(PCBase* pPC);                                     // 0x141658e60 the partner gem id of an actor
 void FUN_1416636e0(PC* pPC, MS2Ptr<CItem> spItem, int nGemId);      // 0x1416636e0
@@ -884,7 +870,7 @@ int CGemEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
     MS2Ptr<CGemEffectData> spData = FUN_1405a68d0();
     if (spData == 0)
         return 0;
-    if (!((Unk_GemEquipment*)FUN_14165f460(pPC))->FUN_141271090(spItem, spData->m_strEffect))
+    if (!((PCGemEquip*)FUN_14165f460(pPC))->FUN_141271090(spItem, spData->m_strEffect))
         return 0;
     return 1;
 }
@@ -895,7 +881,7 @@ int CGemEffect::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
 {
     if (CGemBase::vfunc_7(pPC, spItem) == 0)
         return 0;
-    ((Unk_GemEquipment*)FUN_14165f460(pPC))->FUN_1412711e0(spItem);
+    ((PCGemEquip*)FUN_14165f460(pPC))->FUN_1412711e0(spItem);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1405A67E0, CGemEffect, vfunc_7, 224, 0x711888E0);
@@ -944,7 +930,7 @@ MS2_REPLACE_METHOD(0x1405A6C10, CGemPetSkin, vfunc_10, 306, 0x1CD343BD);
 // @0x1405a6d50
 CStringW CGemPetSkin::vfunc_11()
 {
-    return FUN_1401a9d70()->FUN_141811980(0x3b, m_nPetId);
+    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3b, m_nPetId);
 }
 MS2_REPLACE_METHOD(0x1405A6D50, CGemPetSkin, vfunc_11, 76, 0x48325474);
 

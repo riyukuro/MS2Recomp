@@ -16,13 +16,16 @@
 class PostProcessingService;
 class Unk_SingletonObj;
 
-Unk_SingletonObj* DAT_143ae0748;                                // 0x143ae0748
+class GFxService;
+template<class T> class SingletonClass { public: static T* ms_pSingleton; };
+class COptimizer { public: static int ms_nModelCulling; };
+template<> GFxService* SingletonClass<GFxService>::ms_pSingleton{};                                // 0x143ae0748
 bool DAT_143ae0ac0;                                             // 0x143ae0ac0
 unsigned __int64 DAT_143ae0bd0 = 0x0ull;                        // 0x143ae0bd0
 int DAT_143ae0dd0;                                              // 0x143ae0dd0
-int DAT_143ae0fb0;                                              // 0x143ae0fb0
+unsigned int DAT_143ae0fb0;                                              // 0x143ae0fb0
 int DAT_143ae0fb4;                                              // 0x143ae0fb4
-int DAT_143ae0fb8;                                              // 0x143ae0fb8
+unsigned int DAT_143ae0fb8;                                              // 0x143ae0fb8
 int DAT_143ae0fbc;                                              // 0x143ae0fbc
 int g_nDebugUI;                                                 // 0x143ae0fc0
 int DAT_143ae1f20;                                              // 0x143ae1f20
@@ -40,7 +43,7 @@ int DAT_143ae2b34;                                              // 0x143ae2b34
 alignas(8) unsigned char DAT_143ae2b38[0x4];                    // 0x143ae2b38
 int DAT_143ae2b3c;                                              // 0x143ae2b3c
 int DAT_143ae2b40;                                              // 0x143ae2b40
-int DAT_143ae2b44;                                              // 0x143ae2b44
+int COptimizer::ms_nModelCulling;                                              // 0x143ae2b44
 int DAT_143ae2b48;                                              // 0x143ae2b48
 int DAT_143ae2b4c;                                              // 0x143ae2b4c
 int DAT_143ae2b50;                                              // 0x143ae2b50
@@ -49,19 +52,16 @@ int DAT_143ae2b58;                                              // 0x143ae2b58
 int DAT_143ae2bf8;                                              // 0x143ae2bf8
 alignas(16) unsigned char DAT_143ae37d0[0x1d0];                 // 0x143ae37d0
 PostProcessingService* DAT_143ae4660;                           // 0x143ae4660
-char DAT_143ae53d8;                                             // 0x143ae53d8
 
-#pragma comment(linker, "/alternatename:?DAT_143ae2848@@3DB=?DAT_143ae2848@@3DA")
-#pragma comment(linker, "/alternatename:?DAT_143ae2849@@3DB=?DAT_143ae2849@@3DA")
-#pragma comment(linker, "/alternatename:?ms_pSingleton@?$SingletonClass@VGFxService@@@@2PEAVGFxService@@EA=?DAT_143ae0748@@3PEAVUnk_SingletonObj@@EA")
-#pragma comment(linker, "/alternatename:?DAT_143ae0fb0@@3IA=?DAT_143ae0fb0@@3HA")
-#pragma comment(linker, "/alternatename:?DAT_143ae0fb8@@3IA=?DAT_143ae0fb8@@3HA")
+#pragma comment(linker, "/alternatename:?DAT_143ae0748@@3PEAVUnk_SingletonObj@@EA=?ms_pSingleton@?$SingletonClass@VGFxService@@@@2PEAVGFxService@@EA")
+#pragma comment(linker, "/alternatename:?DAT_143ae0fb0@@3HA=?DAT_143ae0fb0@@3IA")
+#pragma comment(linker, "/alternatename:?DAT_143ae0fb8@@3HA=?DAT_143ae0fb8@@3IA")
 #pragma comment(linker, "/alternatename:?DAT_143ae0fc0@@3HA=?g_nDebugUI@@3HA")
 #pragma comment(linker, "/alternatename:?DAT_143ae2b34@@3DA=?DAT_143ae2b34@@3HA")
 #pragma comment(linker, "/alternatename:?DAT_143ae2b38@@3DA=?DAT_143ae2b38@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143ae2b38@@3HA=?DAT_143ae2b38@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_143ae2b38=?DAT_143ae2b38@@3PAEA")
-#pragma comment(linker, "/alternatename:?ms_nModelCulling@COptimizer@@2HA=?DAT_143ae2b44@@3HA")
+#pragma comment(linker, "/alternatename:?DAT_143ae2b44@@3HA=?ms_nModelCulling@COptimizer@@2HA")
 #pragma comment(linker, "/alternatename:?DAT_143ae37d0@@3PADA=?DAT_143ae37d0@@3PAEA")
 
 #endif // MS2_HOOK_DLL

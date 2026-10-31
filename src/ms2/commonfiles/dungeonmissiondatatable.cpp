@@ -12,17 +12,18 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // The common log (FUN_140166440()).
 class Unk_CommonLog
 {
 public:
-    void FUN_1402804e0(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
+    void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
     void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg);
 };
 Unk_CommonLog* FUN_140166440();
 
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
@@ -69,7 +70,7 @@ BOOL DungeonMissionDataTable::ReadFromXml()
         MS2Ptr<DungeonMissionData> pData = DungeonMissionData::Create(pElem);
         if (pData == 0 || pData->GetId() == 0)
         {
-            FUN_140166440()->FUN_1402804e0(0, 0, 0x13, L"Create Error DungeonMissionData On DungeonMissionDataTable::ReadFromXml");
+            FUN_140166440()->Log(0, 0, 0x13, L"Create Error DungeonMissionData On DungeonMissionDataTable::ReadFromXml");
             continue;
         }
         m_missions.insert(std::make_pair(pData->GetId(), pData));

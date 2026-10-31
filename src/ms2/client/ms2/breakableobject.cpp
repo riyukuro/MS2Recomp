@@ -49,8 +49,6 @@ extern int DAT_143ae2960;                   // shadow quality (forced)
 
 // ---- exe functions outside this unit ----
 CPhysXHelper* FUN_1409f7ca0();                                      // TSingleton<CPhysXHelper>::GetInstance
-CEffectService* FUN_1403ed280();                                    // TSingleton<CEffectService>::GetInstance
-CMainSystem* FUN_14086d260();                                       // TSingleton<CMainSystem>::GetInstance
 efd::ServiceManager* FUN_1413f9850();                               // the framework's service manager
 ecr::SceneGraphService* GetSceneGraphService();                            // the scene graph service
 void FUN_1414f11d0(ecr::SceneGraphService* pService, egf::Entity* pEntity);    // attach the entity's scene graph
@@ -81,7 +79,7 @@ public:
     void FUN_1411a6f00(egf::EntityID id);                           // drop the kept object of an entity
     unsigned FUN_1411a5580(int nA, int nB, int nKind, efd::Point3 kPos, float fVolume);    // play a hit sound (the point by value)
 };
-bool FUN_140a33ff0(const efd::Point3& pt);                          // all three coordinates are finite
+bool Unk_IsFinite(const efd::Point3& pt);                           // all three coordinates are finite
 
 // ---- inline helpers (COMDATs this obj instantiated first) ----
 // The entity manager service.
@@ -186,7 +184,7 @@ CBreakableObject::~CBreakableObject()
     {
         size_t nCount = m_aEffects.GetCount();
         for (size_t i = 0; i < nCount; i++)
-            FUN_1403ed280()->FUN_1411a6060(m_aEffects[i]);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_aEffects[i]);
     }
     m_aEffects.RemoveAll();
 }
@@ -241,7 +239,7 @@ void CBreakableObject::FUN_140ade030(int nHitter, int nKind)
         ? &static_cast<Client::Constants*>(FUN_1401d3200())->VolumeMyPcToBreakableObject
         : &static_cast<Client::Constants*>(FUN_1401d3200())->VolumePcToBreakableObject;
     float fVolume = pVolume->Read();
-    reinterpret_cast<Unk_BoEffectService*>(FUN_1403ed280())->FUN_1411a5580(nHitter, m_nHitSound, nKind, m_ptPos, fVolume);
+    reinterpret_cast<Unk_BoEffectService*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(nHitter, m_nHitSound, nKind, m_ptPos, fVolume);
     m_kHitTimer.FUN_140868750(1000);
 }
 
@@ -381,7 +379,7 @@ void CBreakableObject::FUN_140adeaf0(int nNow)
     {
         if (m_nPhase == 0)
         {
-            m_nPhaseTime = FUN_14086d260()->FUN_141473410(nNow);
+            m_nPhaseTime = TSingleton<CMainSystem>::GetInstance()->FUN_141473410(nNow);
             m_nPhaseStart = nNow;
         }
         unsigned int nTime = m_nPhaseTime + (nNow - m_nPhaseStart) + FUN_14028d260(m_fMoveDelay) + m_nSyncB;
@@ -544,7 +542,7 @@ void CBreakableObject::FUN_140adf770(efd::Point3 ptPos)
 {
     if ((egf::Entity*)m_spEntity != 0 && m_ptPos != ptPos)
     {
-        if (!FUN_140a33ff0(ptPos))
+        if (!Unk_IsFinite(ptPos))
             return;
         m_ptPos = ptPos;
         m_spEntity->SetPropertyValue(0xfd95ca52, m_ptPos);
@@ -557,7 +555,7 @@ void CBreakableObject::FUN_140adf830(efd::Point3 ptRot)
 {
     if ((egf::Entity*)m_spEntity != 0 && m_ptRot != ptRot)
     {
-        if (!FUN_140a33ff0(ptRot))
+        if (!Unk_IsFinite(ptRot))
             return;
         m_ptRot = ptRot;
         m_spEntity->SetPropertyValue(0x68c7c29d, m_ptRot);
@@ -649,9 +647,9 @@ MS2_REPLACE_METHOD(0x140ae0150, CBreakableObject, GetPtVelocity, 0, 0);
 // @0x140ae0190
 void CBreakableObject::FUN_140ae0190()
 {
-    if ((double)m_fTimeScale == FUN_14086d260()->FUN_141473280())
+    if ((double)m_fTimeScale == TSingleton<CMainSystem>::GetInstance()->FUN_141473280())
         return;
-    m_fTimeScale = (float)FUN_14086d260()->FUN_141473280();
+    m_fTimeScale = (float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
     FUN_140ae0720();
     MakeNxBoxController();
 }
@@ -722,7 +720,7 @@ MS2_REPLACE_METHOD(0x140ae0660, CBreakableObject, GetPtSize, 0, 0);
 // @0x140ae06a0
 void CBreakableObject::FUN_140ae06a0(int nPhase, int nNow)
 {
-    m_nPhaseTime = FUN_14086d260()->FUN_141473410(nNow);
+    m_nPhaseTime = TSingleton<CMainSystem>::GetInstance()->FUN_141473410(nNow);
     m_nPhaseStart = nNow;
     m_nPhase = nPhase;
 }
@@ -764,7 +762,7 @@ void CBreakableObject::FUN_140ae07d0(int bShow)
         bool bFade = true;
         m_spEntity->SetPropertyValue(0xa0b6b179, bFade);
         m_kFadeTimer.FUN_1408687f0();
-        reinterpret_cast<Unk_BoEffectService*>(FUN_1403ed280())->FUN_1411a6f00(m_spEntity->GetEntityID());
+        reinterpret_cast<Unk_BoEffectService*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6f00(m_spEntity->GetEntityID());
         NiAVObject* pRoot = FUN_141b6efc0(m_spEntity);
         if (pRoot != 0)
             FUN_14098b3e0(pRoot, 1.0f, false);
@@ -808,7 +806,7 @@ void CBreakableObject::FUN_140ae0a90(const CString& strEffect)
     kTarget.m_strName = strEffect;
     kTarget.m_nKind = 1;
     kTarget.m_spObject = NiDynamicCast(NiNode, FUN_141b6efc0(m_spEntity));
-    unsigned int nId = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+    unsigned int nId = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
     if (nId != 0)
         m_aEffects.Add(nId);
 }
@@ -877,12 +875,6 @@ void CBreakableObject::FUN_140ae0ec0(int nDelay)
 // ---- CGlobalKeyTextCallback: inline ctor / dtor (first instantiated here) ----
 // @0x140ae13d0
 CGlobalKeyTextCallback::CGlobalKeyTextCallback()
-{
-}
-
-// MS2-FUNCTIONAL: the exe dtor (inline in the original header) has no vftable store; the declared out-of-line body adds one
-// @0x140ae16e0
-CGlobalKeyTextCallback::~CGlobalKeyTextCallback()
 {
 }
 

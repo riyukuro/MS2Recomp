@@ -12,12 +12,12 @@
 #include "seasondatatable.h"
 #include "fielddata.h"
 #include "commonstringtable.h"
+#include "ms2/placeholder/cguildxmldata.h"
 #include <algorithm>
 #define MS2_ASSERT_MSG_AT(line, msg, cond) (void)((!!(cond)) || (_wassert(msg, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
-__time64_t FUN_140869440();
-int FUN_14086ace0(__int64);
+__time64_t GetServerTime();
+int IsNotRecentDayChange(__int64);
 // ---- helpers of the guild containers/smart pointers: defined in neighbouring chunks, reached by address ----
-CGuildXmlData* FUN_1404f4530();   // CGuildXmlData::GetInstance
 void* FUN_1404f4540();
 // CGuildMember map (CGuildInfo+0x320, key = name)
 void* FUN_1404f4510(void* map); Unk_GuildRef* FUN_1404f4f70(void* map,void* pos); void FUN_1404f4700(void* map,void** pos);
@@ -150,7 +150,7 @@ int Unk_GuildSeason::FUN_1404c6110(int score)
 // @0x1404c6160
 bool Unk_GuildSeason::FUN_1404c6160()
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (begin < now && end > now)
         return true;
     return false;
@@ -833,7 +833,7 @@ int CGuildMember::FUN_1404cb3b0()
 // @0x1404cb3e0
 int CGuildMember::FUN_1404cb3e0()
 {
-    if(FUN_14086ace0(ff8)==1) return 0;
+    if(IsNotRecentDayChange(ff8)==1) return 0;
     return ff0;
 }
 
@@ -894,9 +894,9 @@ void CGuildSkill::FUN_1404cba60(CInPacket& packet)
 int CGuildSkill::FUN_1404cbb00()
 {
     if(f20==0) return 0;
-    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=FUN_1404f4530()->FUN_1404d74e0(f18,f1c);
+    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d74e0(f18,f1c);
     if(skill==0) return 0;
-    __int64 now=FUN_140869440(); __int64 until=(__int64)skill->f2c+f20;
+    __int64 now=GetServerTime(); __int64 until=(__int64)skill->f2c+f20;
     if(until<now) return 0;
     return (int)(until-now);
 }
@@ -904,9 +904,9 @@ int CGuildSkill::FUN_1404cbb00()
 // @0x1404cbbf0
 int CGuildSkill::FUN_1404cbbf0()
 {
-    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=FUN_1404f4530()->FUN_1404d74e0(f18,f1c);
+    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d74e0(f18,f1c);
     if(skill==0) return 0x7fffffff;
-    __int64 now=FUN_140869440(); __int64 until=(__int64)skill->f30+f20;
+    __int64 now=GetServerTime(); __int64 until=(__int64)skill->f30+f20;
     if(now>until) return 0;
     return (int)(until-now);
 }
@@ -923,7 +923,7 @@ bool CGuildSkill::FUN_1404cbcd0()
 bool CGuildSkill::FUN_1404cbd20()
 {
     if(!FUN_1404cbcd0()) return false;
-    f20=FUN_140869440();
+    f20=GetServerTime();
     return true;
 }
 
@@ -959,7 +959,7 @@ void CGuildCustomEvent::FUN_1404cbe70(CInPacket& packet)
 // @0x1404cbee0
 bool CGuildCustomEvent::FUN_1404cbee0()
 {
-    __int64 now=FUN_140869440();
+    __int64 now=GetServerTime();
     if(f20+0x1e>now) return true;
     return false;
 }
@@ -1139,7 +1139,7 @@ void CGuildInfo::FUN_1404cd140(CStringW v)
 int CGuildInfo::FUN_1404cd1c0()
 {
     Unk_GuildMapLock guard(lock,1);
-    Unk_PayloadPtr<CGuildXmlData::GuildProperty> prop=FUN_1404f4530()->FUN_1404d7410(FUN_1404d1ad0());
+    Unk_PayloadPtr<CGuildXmlData::GuildProperty> prop=TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7410(FUN_1404d1ad0());
     if(prop==0) return f50;
     return (std::max)(prop->f20,f50);
 }
@@ -1860,7 +1860,7 @@ bool CGuildInfo::FUN_1404d1990(int delta)
 {
     Unk_GuildMapLock guard(lock,1);
     int before=f15c;
-    int limit=FUN_1404d7280(FUN_1404f4530());
+    int limit=FUN_1404d7280(TSingleton<CGuildXmlData>::GetInstance());
     f15c=f15c+delta;
     if(f15c<0) f15c=0;
     if(f15c>limit) f15c=limit;
@@ -1879,7 +1879,7 @@ int CGuildInfo::FUN_1404d1a80()
 int CGuildInfo::FUN_1404d1ad0()
 {
     Unk_GuildMapLock guard(lock,1);
-    return FUN_1404d7130(FUN_1404f4530(),f15c);
+    return FUN_1404d7130(TSingleton<CGuildXmlData>::GetInstance(),f15c);
 }
 
 // @0x1404d1b40
@@ -1942,7 +1942,7 @@ int CGuildInfo::FUN_1404d1e40()
 int CGuildInfo::FUN_1404d1e90()
 {
     int level=FUN_1404d1ad0();
-    Unk_PayloadPtr<CGuildXmlData::GuildProperty> prop=FUN_1404f4530()->FUN_1404d7410(level);
+    Unk_PayloadPtr<CGuildXmlData::GuildProperty> prop=TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7410(level);
     if(prop==0) return 0;
     return (int)prop->f28;
 }
@@ -1985,7 +1985,7 @@ int CGuildInfo::FUN_1404d2030()
 int CGuildInfo::FUN_1404d2080()
 {
     Unk_GuildMapLock guard(lock,1);
-    Unk_PayloadPtr<CGuildXmlData::GuildHouse> house=FUN_1404f4530()->FUN_1404d79b0(f168,f16c);
+    Unk_PayloadPtr<CGuildXmlData::GuildHouse> house=TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d79b0(f168,f16c);
     if(house==0) return 0;
     return house->f50;
 }
@@ -2040,7 +2040,7 @@ CStringW CGuildInfo::FUN_1404d2400(int key)
 // @0x1404d2510
 int CGuildInfo::FUN_1404d2510(int a,int b)
 {
-    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=FUN_1404f4530()->FUN_1404d74e0(a,b);
+    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d74e0(a,b);
     if(skill==0) return 0x7fffffff;
     return skill->f28;
 }
@@ -2303,7 +2303,7 @@ void CGuildInfo::FUN_1404d3b80()
     f238.RemoveAll();
     {
         std::vector<int> v1;
-        FUN_1404f4530()->FUN_1404d7630(v1);
+        TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7630(v1);
         for(unsigned __int64 i=0;i<v1.size();++i) {
             Unk_PayloadPtr<CGuildSkill> ref(new CGuildSkill);
             ref->f18=v1[i];
@@ -2313,7 +2313,7 @@ void CGuildInfo::FUN_1404d3b80()
     }
     {
         std::vector<int> v2;
-        FUN_1404f4530()->FUN_1404d7730(v2);
+        TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7730(v2);
         for(unsigned __int64 i=0;i<v2.size();++i) {
             Unk_PayloadPtr<CGuildSkill> ref(new CGuildSkill);
             ref->f18=v2[i];
@@ -2329,7 +2329,7 @@ void CGuildInfo::FUN_1404d3e70()
     Unk_GuildMapLock guard(lock,1);
     f280.RemoveAll();
     std::vector<int> v;
-    FUN_1404f4530()->FUN_1404d7900(v);
+    TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7900(v);
     for(unsigned __int64 i=0;i<v.size();++i) {
         Unk_PayloadPtr<CGuildCustomEvent> ref(new CGuildCustomEvent);
         ref->f18=v[i];

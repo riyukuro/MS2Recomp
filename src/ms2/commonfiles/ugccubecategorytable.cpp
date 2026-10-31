@@ -47,6 +47,8 @@
 #include "ms2/ms2recover.h"
 #include <typeinfo>
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0
@@ -55,15 +57,13 @@ public:
     Unk_140165cf0* FUN_140165cf0(const char* pszName);              // FirstChildElement
     Unk_140165cf0* FUN_140168650(const char* pszName);              // NextSiblingElement
 };
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
 void FUN_140873220(Unk_140165cf0*, const char*, int&);
 void FUN_1408731a0(Unk_140165cf0*, const char*, unsigned short&);
 bool FUN_14028f710(Unk_140165cf0*);                                 // the element is usable
-class Unk_1401a9d70 { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_1401a9d70* FUN_1401a9d70();
 
 // The statics of this unit: two enum name tables around a name -> id map.
 static CString s_strSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -171,7 +171,7 @@ UGCCubeCategoryTable::MenuPtr UGCCubeCategoryTable::FindMenu(int nCategory)
 // @0x140886790
 int UGCCubeCategoryTable::AddMenuById(int nNameId, int nOrder)
 {
-    return AddMenu(FUN_1401a9d70()->FUN_141811980(0x32, nNameId), nOrder);
+    return AddMenu(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x32, nNameId), nOrder);
 }
 
 // @0x1408867f0
@@ -241,7 +241,7 @@ void UGCCubeCategoryTable::LoadMenus()
                     int nDelegator = 1;
                     FUN_1408731e0(pMenu, "delegator", nDelegator);
                     MenuPtr menu((Unk_CubeNewTag(0)));
-                    menu->m_strName = FUN_1401a9d70()->FUN_141811980(0x32, nName);
+                    menu->m_strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x32, nName);
                     menu->m_nCategory = nCategory;
                     menu->m_nFilter = nFilter;
                     menu->m_nDelegator = nDelegator;
@@ -258,7 +258,7 @@ void UGCCubeCategoryTable::LoadMenus()
                     int nOrder = 0;
                     FUN_140873220(pSort, "order", nOrder);
                     SortPtr sort((Unk_CubeNewTag(0)));
-                    sort->m_strName = FUN_1401a9d70()->FUN_141811980(0x32, nName);
+                    sort->m_strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x32, nName);
                     sort->m_nOrder = nOrder;
                     m_sorts->Add(sort);
                 }
@@ -347,7 +347,7 @@ UGCCubeCategoryTable::TabPtr UGCCubeCategoryTable::ReadTab(Unk_140165cf0* pElem)
     FUN_140873220(pElem, "name", nName);
     FUN_1408731e0(pElem, "delegator", tab->m_nDelegator);
     FUN_140873220(pElem, "category", reinterpret_cast<int&>(tab->m_nCategory));
-    tab->m_strName = FUN_1401a9d70()->FUN_141811980(0x32, nName);
+    tab->m_strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x32, nName);
     return tab;
 }
 

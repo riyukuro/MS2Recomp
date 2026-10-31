@@ -17,6 +17,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/skilloverlapcompare.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local placeholders ----
 
@@ -38,12 +40,10 @@ MS2_CHECK_OFFSET(Unk_ColInfo, m_ptOffset, 0x20);
 class Unk_ColCfg { public: char m_pad[0x1a0]; int m_n1a0; };
 
 // A skill source: its shape description by (level, index), its id / level.
-class Unk_SkillSrc
+class Unk_SkillSrc : public SkillLevelData
 {
 public:
     Unk_ColInfo* FUN_1408040d0(int nLevel, int nIndex);
-    unsigned short FUN_140803df0();
-    unsigned FUN_140803dc0();
     Unk_ColCfg* FUN_140803f60(int nLevel, int nIndex);
 };
 
@@ -111,7 +111,6 @@ __int64 FUN_14028d0e0();                // next shape handle
 Unk_EmoPlayer* FUN_14096e110(PCBase* p);
 PCBase* FUN_140974230(PCBase* p);
 void* FUN_141468360(PCBase* p);
-Unk_1403ed2d0* FUN_1403ed2d0();
 void FUN_141bc49c0(Unk_1403ed2d0* p);
 
 typedef CSkillCollisionManager::CollisionPtr CollisionPtr;
@@ -140,7 +139,7 @@ CollisionPtr CSkillCollisionManager::GetCached(Unk_SkillSrc* pSrc, int nLevel, i
         return CollisionPtr(0);
     CollisionPtr spShape(0);
     CStringA strKey;
-    strKey.Format("%x,%d,%d,%d,%d", pSrc, pSrc->FUN_140803dc0(), pSrc->FUN_140803df0(), nLevel, nIndex);
+    strKey.Format("%x,%d,%d,%d,%d", pSrc, pSrc->FUN_140803dc0(), pSrc->GetLevel(), nLevel, nIndex);
     const int& nShape = pInfo->m_nShape;
     if (m_mapCache.Lookup(strKey, spShape))
     {
@@ -244,7 +243,7 @@ void CSkillCollisionManager::Tick()
         Remove(aExpired.GetAt(posExpired));
     }
     if (DAT_143ae95e0 != 0 || DAT_143ae95e1 != 0)
-        FUN_141bc49c0(FUN_1403ed2d0());
+        FUN_141bc49c0(reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance()));
 }
 
 // @0x1417551b0

@@ -21,6 +21,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/additionalclilist.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -65,17 +68,14 @@ Unk_GlideTable* FUN_1401958b0();
 
 // The world service (0x1403ed2d0): the upper bound of the map.
 class Unk_GlideWorld { public: efd::Point3 FUN_141bd3820(); };
-Unk_GlideWorld* FUN_1403ed2d0();
 
 // The actor's buff set: the airborne check.
-class Unk_GlideBuffs { public: int FUN_140970a00(); };
 
 // The actor's buff view: the movement direction.
 class Unk_GlideBuff { public: efd::Point3 FUN_141683900(); };
 
 // The actor's player character (+ the buff based speed bonus).
-class Unk_GlideActor { public: float FUN_141662930(int nKey); };
-Unk_GlideActor* FUN_140974230(PCBase* p);
+PC* FUN_140974230(PCBase* p);
 
 // The cube grid: the cell of a cube key and the centre point of a cell.
 struct Unk_GlCell { Unk_GlCell(); int x, y, z; };
@@ -191,7 +191,7 @@ void StateGlide::vfunc_3(double fTime)
     }
     if (m_pOwner->GetClassID() == 0x6200044)
         bLand = 0;
-    if (((Unk_GlideBuffs*)m_pOwner->FUN_1416749a0())->FUN_140970a00() != 0 || bLand)
+    if (((AdditionalCliList*)m_pOwner->FUN_1416749a0())->FUN_140970a00() != 0 || bLand)
         m_pOwner->vfunc_59(1, 0, 0, 0);
 }
 
@@ -337,7 +337,7 @@ float StateGlide::FUN_1417c99f0()
 float StateGlide::FUN_1417c9ad0()
 {
     float fBonus = 0.0f;
-    Unk_GlideActor* pActor = FUN_140974230(m_pOwner);
+    PC* pActor = FUN_140974230(m_pOwner);
     if (pActor != 0)
     {
         fBonus += pActor->FUN_141662930(0x73);
@@ -395,7 +395,7 @@ efd::Point3 StateGlide::FUN_1417c9ee0()
 int StateGlide::FUN_1417ca000()
 {
     const efd::Point3& kPos = static_cast<const efd::Point3&>(m_pOwner->vfunc_18());
-    if (FUN_1403ed2d0()->FUN_141bd3820().z - 300.0f < kPos.z)
+    if (reinterpret_cast<Unk_GlideWorld*>(WorldService::GetInstance())->FUN_141bd3820().z - 300.0f < kPos.z)
         return 0;
     if (0.0f < m_spRow->m_f20 && m_spRow->m_f20 < m_pOwner->vfunc_18().z - m_fStartZ)
         return 0;

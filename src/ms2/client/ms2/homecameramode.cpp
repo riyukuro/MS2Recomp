@@ -11,6 +11,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local placeholders ----
 
@@ -53,13 +54,11 @@ public:
 };
 
 // The game context (FUN_1403ed2d0).
-class Unk_GameContext
+class Unk_GameContext : public WorldService
 {
 public:
-    float FUN_141bd4120();                          // extra zoom range
     Unk_LocalPlayer* FUN_141bd0cc0();
     Unk_CameraOptionPtr FUN_141bd30a0();            // copy of +0x298
-    float FUN_141bcfc50();                          // default zoom
 };
 Unk_GameContext* FUN_1403ed2d0();
 

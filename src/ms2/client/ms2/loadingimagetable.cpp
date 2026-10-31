@@ -32,9 +32,10 @@
 #include <typeinfo>
 #include <vector>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
@@ -44,7 +45,7 @@ CString FUN_14016a5c0(const char* psz, int nCodePage);                   // narr
 bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
 void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* pszDelim);   // split into ints
 int FUN_140873600(Unk_140165cf0* pElem, const char* pszName, CMsTime& tOut);   // time attribute
-__int64 FUN_140869440();                                                 // the server time
+__int64 GetServerTime();                                                 // the server time
 unsigned FUN_140768010(unsigned nMax, int nMin);                         // random index
 int FUN_1407181d0(CString* pStr);                                        // string to int
 
@@ -118,7 +119,7 @@ int CLoadingImageTable::LoadingImage::IsInPeriod() const
 {
     if (m_strFile.GetLength() == 0)
         return 0;
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (m_startTime.Get() != 0)
     {
         if (now.Get() < m_startTime.Get())

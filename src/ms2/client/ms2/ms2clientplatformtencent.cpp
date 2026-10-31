@@ -19,6 +19,8 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uirewardnotify.h"
+#include "ms2/client/ms2/additionalclilist.h"
 
 using namespace TencentUserReport;
 
@@ -44,29 +46,22 @@ void FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_1412751b0(const CStringW& strText, int nKind);
 CStringW FUN_1409404f0(__int64 nValue);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
-CStringW FUN_1409eec40(int nStringId);
+CStringW BlockFormat(int nStringId);
 CFeatureManager* FUN_140166410();
 void FUN_1409304d0(__int64 nValue, int a, int b, int c);
 void FUN_140930af0(__int64 nValue);
 void* FUN_140aa6d40();
 void FUN_141b0ce20(void* pObject, int nKind, int nValue);
-CUIService* FUN_1403ed2b0();                                        // the UI service
 void FUN_140200e40(Unk_ReportData* pData);                          // the report struct's ctor
 
-class Unk_TcRewardNotify
-{
-public:
-    void FUN_141ac0860(__int64 nValue);                             // "merat"
-    void FUN_141ac0990(__int64 nValue);                             // "merat_red"
-};
-Unk_TcRewardNotify* FUN_140938cd0(int nUiType);
+UIRewardNotify* FUN_140938cd0(int nUiType);
 
 bool FUN_140c7e3d0(CClientPlatformTencent* pThis, unsigned char nKind, bool bOn, int nParam);
 UITencentUserReportDialog* FUN_140c7e460(int nId);
 Unk_ReportData* FUN_140c7e6c0(Unk_ReportData* pTo, const Unk_ReportData* pFrom);
 void FUN_140c7ee40(UITencentUserReportDialog* pDialog, const Unk_ReportData* pData);
 
-class Unk_TcValueApi { public: int FUN_140971260(int nKey); };
+class Unk_TcValueApi : public AdditionalCliList { };
 class Unk_TcObject { public: Unk_TcValueApi* FUN_1416749a0(); };
 class Unk_TcContext { public: Unk_TcObject* FUN_141bd0cc0(); };
 Unk_TcContext* FUN_1403ed2d0();
@@ -169,7 +164,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         FUN_1409304d0(nBalance, 0, 0, 0);
         FUN_141b0ce20(FUN_140aa6d40(), 0xb, 0);
         if (nDelta > 0) {
-            Unk_TcRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
+            UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
             if (pNotify != 0)
                 pNotify->FUN_141ac0860(nDelta);
             FUN_141276180("Merat_Get", "");
@@ -180,7 +175,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
             CStringW strDelta = FUN_1409404f0(-nDelta);
             FUN_1412751b0(FUN_14052bd00(0x2d9, strDelta), 6);
             if (FUN_140166410()->FUN_14036d570(0xba))
-                FUN_1412751b0(FUN_1409eec40(0x2db), 6);
+                FUN_1412751b0(BlockFormat(0x2db), 6);
         }
         break;
     }
@@ -191,7 +186,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         FUN_140930af0(nBalance);
         FUN_141b0ce20(FUN_140aa6d40(), 0xd, 0);
         if (nDelta > 0) {
-            Unk_TcRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
+            UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
             if (pNotify != 0)
                 pNotify->FUN_141ac0990(nDelta);
             FUN_141276180("Merat_Get", "");
@@ -202,7 +197,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
             CStringW strDelta = FUN_1409404f0(-nDelta);
             FUN_1412751b0(FUN_14052bd00(0x2da, strDelta), 6);
             if (FUN_140166410()->FUN_14036d570(0xba))
-                FUN_1412751b0(FUN_1409eec40(0x2db), 6);
+                FUN_1412751b0(BlockFormat(0x2db), 6);
         }
         break;
     }
@@ -223,7 +218,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         break;
     case 5: {
         int nId = static_cast<CInPacket*>(a1)->ReadInt32();
-        FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)nId);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)nId);
         break;
     }
     default:
@@ -378,8 +373,8 @@ bool FUN_140c7e3d0(CClientPlatformTencent*, unsigned char nKind, bool bOn, int n
 // @0x140c7e460 the open dialog of the given ui class id as a Tencent report dialog
 UITencentUserReportDialog* FUN_140c7e460(int nId)
 {
-    if (FUN_1403ed2b0() != 0) {
-        MS2Ptr<UIObject> spObject = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nId);
+    if (TSingleton<CUIService>::GetInstance() != 0) {
+        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (spObject.get() != 0)
             return dynamic_cast<UITencentUserReportDialog*>((UIObject*)spObject);
     }

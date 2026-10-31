@@ -70,6 +70,7 @@
 #include "ms2/placeholder/cspecialeffectctx.h"
 #include "ms2/commonfiles/specialeffectfunctionmanager.h"
 #include "ms2/ms2recover.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
 
 // The shield bar entity behind PCBase vfunc_81 and the buff balloon entity behind vfunc_84.
 class Unk_PCBaseComp_a68 : public UIShieldBar::Entity {};
@@ -135,7 +136,6 @@ float FUN_140768090();                                      // 0x140768090 rando
 int FUN_14081d8a0(int nType);                               // 0x14081d8a0 the stat option applies to skills
 int FUN_14081d8e0(int nType);                               // 0x14081d8e0 the stat option applies to effects
 void FUN_1419f37f0(int nEvent);                             // 0x1419f37f0 notify the skill UIs
-Unk_AclSkillTable* FUN_1401958b0();                         // 0x1401958b0 the skill table
 
 // A UI object by class id, cast to its class.
 template <class T> T* Unk_AcFindUI(eUIClassID nId)
@@ -904,7 +904,7 @@ void AdditionalCliList::FUN_140971720(StatMap& skills, StatMap& effects)
                 if (FUN_14081d8a0(nType) == 0)
                     continue;
                 std::set<unsigned>* pGroup =
-                    FUN_1401958b0()->GetGroupSkills(sp->FUN_14096d810()->m_invokeEffect.m_nSkillGroupID);
+                    reinterpret_cast<Unk_AclSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetGroupSkills(sp->FUN_14096d810()->m_invokeEffect.m_nSkillGroupID);
                 if (!pGroup)
                     continue;
                 for (unsigned nId : *pGroup)
@@ -923,7 +923,7 @@ void AdditionalCliList::FUN_140971720(StatMap& skills, StatMap& effects)
                 if (FUN_14081d8e0(nType) == 0)
                     continue;
                 const std::set<unsigned>* pGroup =
-                    FUN_1401958b0()->FUN_140aaffb0(sp->FUN_14096d810()->m_invokeEffect.m_nEffectGroupID);
+                    reinterpret_cast<Unk_AclSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aaffb0(sp->FUN_14096d810()->m_invokeEffect.m_nEffectGroupID);
                 if (!pGroup)
                     continue;
                 for (unsigned nId : *pGroup)

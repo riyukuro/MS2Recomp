@@ -28,6 +28,10 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiquesteventlistener.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/uiitemautouseoptiondialog.h"
+#include "ms2/client/ms2/uipetsystemdialog.h"
+#include "ms2/client/ms2/skillsystem.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
@@ -38,16 +42,14 @@ extern Unk_Inventory g_143ab2a90;                       // the player's inventor
 CPetManager* FUN_140535320();                             // CPetManager::GetInstance
 
 // The local player and its views.
-class Unk_PsSkills
+class Unk_PsSkills : public CSkillSystem
 {
-public:
-    float FUN_141765fe0(int nSkillId, int n);             // the cooldown left of nSkillId
 };
 // The equipped item of a player slot (CPtred, held in MS2Ptr; ?\equipitem.cpp). Only the member this unit calls.
 class CEquipItem : public CPtred
 {
 public:
-    MS2Ptr<CItem> FUN_1411dc7a0();                        // the item
+    MS2Ptr<CItem> GetItem();                              // the item
 };
 class Unk_PsPlayer
 {
@@ -61,25 +63,18 @@ class Unk_PsWorld
 public:
     Unk_PsPlayer* FUN_141bd0cc0();                        // the local player
 };
-Unk_PsWorld* FUN_1403ed2d0();
 
           // 0: the compare view is off
-CUIService* FUN_1403ed2b0();
 
 bool FUN_140534e50(MS2Ptr<CItem>* pItem);                 // the item is expired / unusable
 
 // A dialog of the dialog registry.
-class Unk_PsPetDialog : public UIDialog
+class Unk_PsPetDialog : public UIPetSystemDialog
 {
-public:
-    void FUN_140e74640(int nPage);                        // select a page
 };
 Unk_PsPetDialog* FUN_140b99ba0(int nId);
-class Unk_PsPane
+class Unk_PsPane : public UIItemAutoUseOptionDialog
 {
-public:
-    int FUN_141924630();                                  // is floating
-    void FUN_140f4fc40(int nItemId);
 };
 Unk_PsPane* FUN_140cbe1c0(int nId);
 
@@ -151,7 +146,7 @@ PetSlot::~PetSlot()
 // @0x140dbaeb0
 float PetSlot::FUN_140dbaeb0()
 {
-    Unk_PsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PsPlayer* pPlayer = reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     return pPlayer->FUN_141523bc0()->FUN_141765fe0(FUN_140dbaf10(), 0);
@@ -267,7 +262,7 @@ int PetSlot::vfunc_17()
 // @0x140dbb5c0
 int PetSlot::vfunc_18(void* p)
 {
-    Unk_PsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PsPlayer* pPlayer = reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return static_cast<DragSlot*>(p)->vfunc_10();
     MS2Ptr<CItem> spPet = g_143ab2a90.FUN_140a5d680(FUN_140535320()->GetSummonUid());
@@ -306,7 +301,7 @@ MS2Ptr<CItem> PetSlot::vfunc_25()
 // @0x140dbb860 (ITooltip::vfunc_0)
 int PetSlot::vfunc_0(void* p)
 {
-    Unk_PsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PsPlayer* pPlayer = reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(m_nPetItemUid);
@@ -326,10 +321,10 @@ int PetSlot::vfunc_0(void* p)
             tip.FUN_1409c6a20(L"", L"");
         else
             tip.FUN_1409c6a20(L"", strName);
-        if (FUN_1403ed2b0()->FUN_141adcb40() != 0 && spItem->FUN_140527840()->FUN_14053d510())
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adcb40() != 0 && spItem->FUN_140527840()->FUN_14053d510())
         {
             MS2Ptr<CEquipItem> spEquip = pPlayer->FUN_141655e10(4);
-            bool bSame = (spEquip.get() ? true : false) && spEquip->FUN_1411dc7a0() == spWorn.get();
+            bool bSame = (spEquip.get() ? true : false) && spEquip->GetItem() == spWorn.get();
             if (bSame)
                 FUN_141276180(s_strChangeDagger, "");
         }
@@ -344,7 +339,7 @@ int PetSlot::vfunc_0(void* p)
 // @0x140dbbda0
 int PetSlot::vfunc_8(void* p)
 {
-    Unk_PsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PsPlayer* pPlayer = reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(m_nPetItemUid);

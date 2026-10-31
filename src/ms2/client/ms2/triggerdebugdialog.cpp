@@ -16,7 +16,7 @@
 
 // ---- unit-local views of callees emitted in other units ----
 
-__int64 FUN_140869440();                                // server time
+__int64 GetServerTime();                                // server time
 CStringW FUN_1408767c0(void* pszUtf8);                  // utf8 -> wide
 CString FUN_1401d4330(const wchar_t* psz, int nFlag);   // wide -> narrow
 CFileSystem* GetFileSystem();                           // the file system singleton
@@ -81,7 +81,7 @@ void TriggerDebugDialog::SetFile(CString strFile)
 void TriggerDebugDialog::AddLine(int nLine)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    __int64 nTime = FUN_140869440();
+    __int64 nTime = GetServerTime();
     m_vecLines.push_back(std::make_pair(nLine, nTime));
 }
 

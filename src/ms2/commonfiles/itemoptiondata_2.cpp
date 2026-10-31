@@ -190,11 +190,11 @@
 static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);          // the item data of an item id
-int FUN_14082ee80(const CStringA& strName);             // stat name -> id (-1 when none)
+int FindStatByName(const CStringA& strName);            // stat name -> id (-1 when none)
 int FUN_14081d260(const CStringA& strName);             // special option name -> id (0 when none)
 const CString& FUN_14082efb0(int nStat);                // the xml name of a stat
 const CString& FUN_14081d380(int nStat);                // the xml name of a special stat
-bool FUN_14082f1d0(int nStat);
+bool IsStatKindOne(int nStat);
 bool FUN_14081dc50(int nStat);
 int FUN_14081d830(int nStat);                           // the special stat is a special ability
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int& nOut);
@@ -263,7 +263,7 @@ bool ItemOptionValue::HasValue()
 bool ItemOptionValue::FUN_1405ce3f0()
 {
     if (GetStat() != -1)
-        return FUN_14082f1d0(GetStat());
+        return IsStatKindOne(GetStat());
     else if (GetSpecial() != 0)
         return FUN_14081dc50(GetSpecial());
     MS2_ASSERT_AT(0x3b, 0);
@@ -1369,7 +1369,7 @@ bool ItemOptionValueRandom::FUN_1405d2590(Unk_140165cf0* pElem)
     FUN_140873220(pElem, "statID", m_nStatId);
     if (strName.IsEmpty())
         return false;
-    int nStat = FUN_14082ee80(strName);
+    int nStat = FindStatByName(strName);
     if (nStat != -1)
     {
         m_nStat = nStat;
@@ -1494,7 +1494,7 @@ bool ItemOptionConstant::FUN_1405d2a90(Unk_140165cf0* pElem)
         FUN_1408733e0(pChild, "name", strName);
         if (strName.IsEmpty())
             continue;
-        int nStat = FUN_14082ee80(strName);
+        int nStat = FindStatByName(strName);
         if (nStat != -1)
         {
             MS2Ptr<ItemOptionValue> spValue(new ItemOptionValue(nStat));
@@ -1585,7 +1585,7 @@ void ItemOptionConstant::FUN_1405d3490(Unk_140165cf0* pElem)
     {
         CString strName;
         FUN_1408733e0(pChild, "name", strName);
-        int nStat = FUN_14082ee80(strName);
+        int nStat = FindStatByName(strName);
         if (nStat != -1)
         {
             MS2Ptr<ItemOptionValueRef> spValue(new ItemOptionValueRef(nStat));
@@ -2784,7 +2784,7 @@ BOOL ItemOptionRandomContext::FUN_1405db0b0(MS2Ptr<CItemOption> spOption, CStrin
                 if (spOption->FUN_1405cb800(2, nSpecial).get() != 0)
                     return 1;
             }
-            int nStat = FUN_14082ee80(strOther);
+            int nStat = FindStatByName(strOther);
             if (nStat != -1)
             {
                 if (spOption->FUN_1405cb760(2, nStat).get() != 0)

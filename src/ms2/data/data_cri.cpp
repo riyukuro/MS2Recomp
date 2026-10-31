@@ -21,6 +21,177 @@
 
 #ifndef MS2_HOOK_DLL
 
+// Functions the tables below point at (defined in the CRI and Scaleform video units), declared with their
+// definitions' signatures so the slots name them directly.
+class CriMvSoundInterface;
+class CriMvSystemTimerInterface;
+struct cri01_cbhost;
+struct cri01_sizerhost;
+struct cri01_cbhost2;
+struct cri02_flaghost;
+struct CriMvReaderThreadConfigView;
+namespace Scaleform { namespace GFx { namespace Video { class VideoReader; } } }
+struct CriMvRequestManagerView;
+struct cri03_host20;
+struct cri06_block;
+struct cri_any;
+struct cri07_pelctx;
+void * DeleteCriMvSoundInterface(CriMvSoundInterface *, unsigned int);
+void * DeleteCriMvSystemTimerInterface(CriMvSystemTimerInterface *, unsigned int);
+void * FUN_140029240(cri01_cbhost *, void *, void *, void *);
+void * FUN_140029260(cri01_cbhost *, void *, void *, void *);
+void * FUN_140029ec0(char *, unsigned __int64);
+void FUN_140029f20(void *);
+void FUN_140029f40(void *);
+void FUN_140029f60(void *, int);
+void FUN_140029f80(cri01_sizerhost *, unsigned __int64 *, unsigned __int64 *);
+void * FUN_140029fa0(void *, unsigned __int64);
+void FUN_14002a060(cri01_cbhost2 *, void *, void *);
+void FUN_14002a070(cri01_cbhost2 *, void *, void *);
+void * FUN_14002a080(char *, unsigned long);
+void * FUN_14002a0e0(void *, unsigned long);
+void * FUN_14002a2b0(void *, unsigned __int64);
+void * FUN_14002ac70(void *, unsigned __int64);
+void FUN_14002b0d0(void *);
+void FUN_14002b0e0(cri02_flaghost *, unsigned char);
+void * FUN_14002b0f0(void *, unsigned long);
+void * FUN_14002b200(void *, unsigned long);
+void FUN_14002d6d0(CriMvReaderThreadConfigView *, unsigned char);
+void FUN_14002d750(CriMvReaderThreadConfigView *, void *);
+unsigned __int64 FUN_14002d7b0(void *, __int64, long);
+void * FUN_14002d840(void *, unsigned __int64);
+void FUN_14002e1e0(void *, void *);
+void FUN_14002e230(void *);
+void FUN_14002e260(void *, void *, void *);
+void FUN_14002e370(CriMvRequestManagerView *, void *);
+void * FUN_14002e510(void *, unsigned __int64);
+long FUN_140041220(void *, void *, unsigned long, unsigned long);
+void FUN_140041250(void *);
+void FUN_1400412a0(void *);
+void FUN_1400412c0(void *);
+void FUN_1400412e0(void *, long);
+unsigned long FUN_140041300(void *);
+void FUN_140041340(void *);
+void * FUN_140041360(cri03_host20 *, __int64, __int64, __int64);
+long FUN_1400415f0(void *, void *);
+void * FUN_140041910(void **, void **);
+void FUN_140041a60(void *);
+void FUN_140041aa0(void *);
+void FUN_140041ad0(void *, unsigned char);
+void FUN_140041b50(void *, __int64 *, unsigned __int64 *);
+void FUN_140041c50(void *);
+void * FUN_140041c60(void *, unsigned long);
+void FUN_1400590c0(cri06_block const *);
+void FUN_140059170(cri_any);
+void FUN_1400592c0(unsigned char const *, unsigned char *, int, int, int);
+void FUN_140059340(unsigned char const *, unsigned char *, int, int, int);
+void FUN_1400593b0(unsigned char const *, unsigned char *, int, int, int);
+void FUN_1400593f0(cri_any, cri_any, cri_any, cri_any, cri_any);
+void FUN_140059570(unsigned char const *, unsigned char *, int, int, int);
+void FUN_140059700(unsigned char const *, unsigned char *, int, int, int);
+void FUN_1400597b0(unsigned char const *, unsigned char *, int, int, int);
+void FUN_140059810(cri_any, cri_any, cri_any, cri_any, cri_any);
+void FUN_140059ac0(unsigned char const *, unsigned char *, int, int, int);
+void FUN_140059b80(unsigned char const *, unsigned char *, int, int, int);
+void FUN_140059c10(unsigned char const *, unsigned char *, int, int, int);
+void FUN_140059c40(cri_any, cri_any, cri_any, cri_any, cri_any);
+void FUN_140059dd0(unsigned char const *, unsigned char *, int, int, int);
+void FUN_14005a070(unsigned char const *, unsigned char *, int, int, int);
+void FUN_14005a140(unsigned char const *, unsigned char *, int, int, int);
+void FUN_14005a1b0(cri_any, cri_any, cri_any, cri_any, cri_any);
+void FUN_140062c10(cri_any, cri_any);
+void FUN_140066450(void *);
+void FUN_140066d80(unsigned __int64);
+void FUN_140066da0(unsigned __int64);
+void FUN_140066de0(unsigned __int64);
+void FUN_140068510(cri07_pelctx *);
+void FUN_140068520(cri07_pelctx *);
+void FUN_140068540(cri07_pelctx *);
+void FUN_140068560(cri07_pelctx *);
+void FUN_14008c880(void *);
+void FUN_14008d220(unsigned __int64);
+void FUN_14008d240(unsigned __int64);
+void FUN_14008d280(unsigned __int64);
+unsigned int FUN_140095b40(__int64, unsigned int *);
+unsigned int FUN_14009a3d0(__int64, unsigned int *);
+unsigned int FUN_14009ec40(__int64, unsigned int *);
+unsigned int FUN_1400a3920(__int64, unsigned int *);
+unsigned int FUN_1400a8ad0(__int64, unsigned int *);
+unsigned int FUN_1400adc50(__int64, unsigned int *);
+namespace Scaleform { namespace GFx { namespace Video {
+    void * FUN_14002d9e0(Scaleform::GFx::Video::VideoReader *, unsigned long);
+    void * FUN_14002de50(char *, unsigned long);
+    void * FUN_14002dec0(Scaleform::GFx::Video::VideoReader *, unsigned long);
+}}}
+namespace Scaleform { namespace GFx {
+    void * FUN_14274397c(void *, unsigned int);
+    void * FUN_142743988(void *, unsigned int);
+    void * FUN_142743994(void *, unsigned int);
+    void * FUN_1427439a0(void *, unsigned int);
+    void * FUN_1427439ac(void *, unsigned int);
+    void * FUN_1427439b8(void *, unsigned int);
+    void * FUN_1427439c4(void *, unsigned int);
+    void * FUN_1427439d0(void *, unsigned int);
+    void * FUN_142743a30(void *, unsigned int);
+    void * FUN_142743a60(void *, unsigned int);
+    void * FUN_142743ac0(void *, unsigned int);
+    void * FUN_142743b60(void *, unsigned int);
+    void * FUN_142743c10(void *, unsigned int);
+    void * FUN_142743c80(void *, unsigned int);
+    void * FUN_142743cf0(void *, unsigned int);
+    void * FUN_142743db0(void *, unsigned int);
+    void * FUN_142743e00(void *, unsigned int);
+    void * FUN_142743e60(void *, unsigned int);
+    void * FUN_142743f00(void *, unsigned int);
+    void * FUN_142743fa0(void *, unsigned int);
+    int FUN_1427447e0(void *);
+    void FUN_142745620(void *);
+    void * FUN_142745830(void *);
+    bool FUN_142745a90(void *, unsigned int *);
+    void * FUN_142745ab0(void *);
+    void * FUN_142745b70(void *);
+    void * FUN_142745b80(void *);
+    bool FUN_142745c30(void *);
+    void FUN_142745ea0(void *, bool);
+    int FUN_142745f30(void *, void *, bool);
+    void FUN_142746220(void *);
+    void FUN_1427464c0(void *, float);
+    void FUN_142746500(void *, float);
+    void FUN_142746510(void *, float);
+    void FUN_142746560(void *, float);
+    bool FUN_142746640(void *, float);
+    void FUN_1427466c0(void *, void const *);
+    void FUN_1427466d0(void *, unsigned __int64 const *);
+    void FUN_142746a30(void *, float);
+    void * FUN_142746a40(void *, bool);
+    void * FUN_142746bd0(void *, bool);
+    void FUN_142746da0(void *);
+    float FUN_1427471a0(void *);
+}}
+namespace Scaleform {
+    void * CreateBufferedAudioRequest(void *, void *, unsigned int, unsigned int, bool);
+    void * FUN_1427449f0(void *, void *);
+    void * CreateAudioRequest(void *, char const *, bool);
+    unsigned int QuerySoundLength(void *);
+    unsigned int QuerySoundLengthCopy(void *);
+    float QuerySoundDuration(void *);
+    float QueryMasterVolume(void *);
+    unsigned int ReadSoundData(void *, void *, unsigned int);
+    float QueryChannelPan(void *);
+    float QueryChannelTime(void *);
+    float QueryAudioElapsedSeconds(void *);
+    float QueryChannelVolume(void *);
+    bool InitializeAudioSystem(void *, void *, unsigned char, unsigned char);
+    bool QueryChannelPlaying(void *);
+    void ConfigureAudioLoop(void *, int, float, float);
+    void SetMasterMuted(void *, bool);
+    void SetAudioPaused(void *, bool);
+    void DetachChannelNode(void *);
+    void ReleaseAudioRequestRecord(void *);
+    void ClearPlayerSoundRecord(void *);
+}
+extern "C" void FUN_142746d70(void*);
+
 extern unsigned char DAT_14001d720[];
 extern unsigned char DAT_1400284b0[];
 extern unsigned char DAT_140029280[];
@@ -58,79 +229,12 @@ extern unsigned char DAT_14257dc40[];
 extern unsigned char DAT_14257dcf0[];
 extern unsigned char DAT_14280ef52[];
 extern unsigned char DAT_143224848[];
-void FUN_1400283a0();
-void FUN_1400283e0();
-void FUN_140029240();
-void FUN_140029260();
 void FUN_140029970();
 void FUN_1400299d0();
 void FUN_140029a50();
 void FUN_140029ab0();
-void FUN_140029ec0();
-void FUN_140029f20();
-void FUN_140029f40();
-void FUN_140029f60();
-void FUN_140029f80();
-void FUN_140029fa0();
-void FUN_14002a060();
-void FUN_14002a070();
-void FUN_14002a080();
-void FUN_14002a0e0();
-void FUN_14002a2b0();
-void FUN_14002ac70();
-void FUN_14002b0d0();
-void FUN_14002b0e0();
-void FUN_14002b0f0();
-void FUN_14002b200();
-void FUN_14002d6d0();
-void FUN_14002d750();
-void FUN_14002d7b0();
-void FUN_14002d840();
-void FUN_14002d9e0();
-void FUN_14002de50();
-void FUN_14002dec0();
 void FUN_14002df50();
 void FUN_14002e050();
-void FUN_14002e1e0();
-void FUN_14002e230();
-void FUN_14002e260();
-void FUN_14002e370();
-void FUN_14002e510();
-void FUN_140041220();
-void FUN_140041250();
-void FUN_1400412a0();
-void FUN_1400412c0();
-void FUN_1400412e0();
-void FUN_140041300();
-void FUN_140041340();
-void FUN_140041360();
-void FUN_1400415f0();
-void FUN_140041910();
-void FUN_140041a60();
-void FUN_140041aa0();
-void FUN_140041ad0();
-void FUN_140041b50();
-void FUN_140041c50();
-void FUN_140041c60();
-void FUN_1400590c0();
-void FUN_140059170();
-void FUN_1400592c0();
-void FUN_140059340();
-void FUN_1400593b0();
-void FUN_1400593f0();
-void FUN_140059570();
-void FUN_140059700();
-void FUN_1400597b0();
-void FUN_140059810();
-void FUN_140059ac0();
-void FUN_140059b80();
-void FUN_140059c10();
-void FUN_140059c40();
-void FUN_140059dd0();
-void FUN_14005a070();
-void FUN_14005a140();
-void FUN_14005a1b0();
-void FUN_140062c10();
 long FUN_142ccb000(void*, void*);
 long FUN_142ccb710(void*, void*);
 long FUN_142ccbe90(void*, void*);
@@ -138,88 +242,6 @@ long FUN_142cccba0(void*);
 long FUN_142cccd80(void*);
 long FUN_142cccef0(void*);
 long FUN_142ccd080(void*);
-void FUN_140066450();
-void FUN_140066d80();
-void FUN_140066da0();
-void FUN_140066de0();
-void FUN_140068510();
-void FUN_140068520();
-void FUN_140068540();
-void FUN_140068560();
-void FUN_14008c880();
-void FUN_14008d220();
-void FUN_14008d240();
-void FUN_14008d280();
-void FUN_140095b40();
-void FUN_14009a3d0();
-void FUN_14009ec40();
-void FUN_1400a3920();
-void FUN_1400a8ad0();
-void FUN_1400adc50();
-void FUN_14274397c();
-void FUN_142743988();
-void FUN_142743994();
-void FUN_1427439a0();
-void FUN_1427439ac();
-void FUN_1427439b8();
-void FUN_1427439c4();
-void FUN_1427439d0();
-void FUN_142743a30();
-void FUN_142743a60();
-void FUN_142743ac0();
-void FUN_142743b60();
-void FUN_142743c10();
-void FUN_142743c80();
-void FUN_142743cf0();
-void FUN_142743db0();
-void FUN_142743e00();
-void FUN_142743e60();
-void FUN_142743f00();
-void FUN_142743fa0();
-void FUN_1427447e0();
-void FUN_1427447f0();
-void FUN_1427449f0();
-void FUN_142744ea0();
-void FUN_142745620();
-void FUN_142745760();
-void FUN_1427457a0();
-void FUN_1427457e0();
-void FUN_142745830();
-void FUN_142745840();
-void FUN_142745880();
-void FUN_1427458b0();
-void FUN_1427458e0();
-void FUN_142745980();
-void FUN_142745a90();
-void FUN_142745ab0();
-void FUN_142745b70();
-void FUN_142745b80();
-void FUN_142745b90();
-void FUN_142745bc0();
-void FUN_142745c30();
-void FUN_142745c40();
-void FUN_142745c80();
-void FUN_142745e70();
-void FUN_142745ea0();
-void FUN_142745eb0();
-void FUN_142745f30();
-void FUN_142746220();
-void FUN_142746230();
-void FUN_1427462b0();
-void FUN_142746380();
-void FUN_1427464c0();
-void FUN_142746500();
-void FUN_142746510();
-void FUN_142746560();
-void FUN_142746640();
-void FUN_1427466c0();
-void FUN_1427466d0();
-void FUN_142746a30();
-void FUN_142746a40();
-void FUN_142746bd0();
-void FUN_142746d70();
-void FUN_142746da0();
-void FUN_1427471a0();
 
 // the CRI error table entry (natural layout, outside the pack(1) block: 4 bytes of padding before text)
 struct CriErrorText {
@@ -617,7 +639,7 @@ alignas(16) Sd_1431b8db0 DAT_1431b8db0 = {
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
-    (const void*)&FUN_1400283a0,
+    (const void*)&DeleteCriMvSoundInterface,
 };
 // 0x1431b8e08
 alignas(8) Sd_1431b8e08 DAT_1431b8e08 = {
@@ -625,7 +647,7 @@ alignas(8) Sd_1431b8e08 DAT_1431b8e08 = {
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
-    (const void*)&FUN_1400283e0,
+    (const void*)&DeleteCriMvSystemTimerInterface,
 };
 // 0x1431b8f18
 alignas(8) Sd_1431b8f18 DAT_1431b8f18 = {
@@ -730,7 +752,7 @@ alignas(8) Sd_1431b91d8 DAT_1431b91d8 = {
 };
 // 0x1431b93b0
 alignas(16) Sd_1431b93b0 DAT_1431b93b0 = {
-    (const void*)&FUN_14002d9e0,
+    (const void*)&Scaleform::GFx::Video::FUN_14002d9e0,
     (const void*)&FUN_14002d840,
 };
 // 0x1431b93c0
@@ -744,11 +766,11 @@ alignas(16) Sd_1431b93c0 DAT_1431b93c0 = {
     DAT_14002d4a0,
     (const void*)&FUN_14002d7b0,
     DAT_14002d490,
-    (const void*)&FUN_14002de50,
+    (const void*)&Scaleform::GFx::Video::FUN_14002de50,
 };
 // 0x1431b9410
 alignas(16) Sd_1431b9410 DAT_1431b9410 = {
-    (const void*)&FUN_14002dec0,
+    (const void*)&Scaleform::GFx::Video::FUN_14002dec0,
 };
 // 0x1431b9430
 alignas(16) Sd_1431b9430 DAT_1431b9430 = {
@@ -1439,31 +1461,31 @@ alignas(8) Sd_1431bc6d8 DAT_1431bc6d8 = {
 };
 // 0x1431bcbb0
 alignas(16) Sd_1431bcbb0 DAT_1431bcbb0 = {
-    (const void*)&FUN_142743db0,
+    (const void*)&Scaleform::GFx::FUN_142743db0,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
-    (const void*)&FUN_1427439d0,
+    (const void*)&Scaleform::GFx::FUN_1427439d0,
 };
 // 0x1431bcbe8
 alignas(8) Sd_1431bcbe8 DAT_1431bcbe8 = {
-    (const void*)&FUN_142743c10,
+    (const void*)&Scaleform::GFx::FUN_142743c10,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
-    (const void*)&FUN_1427447e0,
+    (const void*)&Scaleform::GFx::FUN_1427447e0,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
-    (const void*)&FUN_142743c80,
+    (const void*)&Scaleform::GFx::FUN_142743c80,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
-    (const void*)&FUN_1427447e0,
+    (const void*)&Scaleform::GFx::FUN_1427447e0,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
@@ -1475,12 +1497,12 @@ alignas(8) Sd_1431bcbe8 DAT_1431bcbe8 = {
 };
 // 0x1431bec40
 alignas(16) Sd_1431bec40 DAT_1431bec40 = {
-    (const void*)&FUN_142743a30,
-    (const void*)&FUN_142746220,
+    (const void*)&Scaleform::GFx::FUN_142743a30,
+    (const void*)&Scaleform::GFx::FUN_142746220,
 };
 // 0x1431bec50
 alignas(16) Sd_1431bec50 DAT_1431bec50 = {
-    (const void*)&FUN_142743f00,
+    (const void*)&Scaleform::GFx::FUN_142743f00,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
@@ -1489,12 +1511,12 @@ alignas(16) Sd_1431bec50 DAT_1431bec50 = {
 };
 // 0x1431bec80
 alignas(16) Sd_1431bec80 DAT_1431bec80 = {
-    (const void*)&FUN_1427439b8,
-    (const void*)&FUN_142746220,
+    (const void*)&Scaleform::GFx::FUN_1427439b8,
+    (const void*)&Scaleform::GFx::FUN_142746220,
 };
 // 0x1431bec90
 alignas(16) Sd_1431bec90 DAT_1431bec90 = {
-    (const void*)&FUN_142743b60,
+    (const void*)&Scaleform::GFx::FUN_142743b60,
     DAT_14280ef52,
     DAT_14280ef52,
     DAT_14280ef52,
@@ -1512,111 +1534,111 @@ alignas(16) Sd_1431bec90 DAT_1431bec90 = {
 };
 // 0x1431bed08
 alignas(8) Sd_1431bed08 DAT_1431bed08 = {
-    (const void*)&FUN_142743994,
-    (const void*)&FUN_142746220,
+    (const void*)&Scaleform::GFx::FUN_142743994,
+    (const void*)&Scaleform::GFx::FUN_142746220,
 };
 // 0x1431bed18
 alignas(8) Sd_1431bed18 DAT_1431bed18 = {
-    (const void*)&FUN_142743e00,
-    (const void*)&FUN_142745b80,
-    (const void*)&FUN_142745c30,
-    (const void*)&FUN_1427457e0,
-    (const void*)&FUN_1427457a0,
-    (const void*)&FUN_142745760,
-    (const void*)&FUN_142746a40,
+    (const void*)&Scaleform::GFx::FUN_142743e00,
+    (const void*)&Scaleform::GFx::FUN_142745b80,
+    (const void*)&Scaleform::GFx::FUN_142745c30,
+    (const void*)&Scaleform::QuerySoundDuration,
+    (const void*)&Scaleform::QuerySoundLengthCopy,
+    (const void*)&Scaleform::QuerySoundLength,
+    (const void*)&Scaleform::GFx::FUN_142746a40,
 };
 // 0x1431bed50
 alignas(16) Sd_1431bed50 DAT_1431bed50 = {
-    (const void*)&FUN_1427439a0,
-    (const void*)&FUN_1427462b0,
+    (const void*)&Scaleform::GFx::FUN_1427439a0,
+    (const void*)&Scaleform::ReleaseAudioRequestRecord,
 };
 // 0x1431bed60
 alignas(16) Sd_1431bed60 DAT_1431bed60 = {
-    (const void*)&FUN_142743a60,
-    (const void*)&FUN_142745b70,
-    (const void*)&FUN_142745ab0,
+    (const void*)&Scaleform::GFx::FUN_142743a60,
+    (const void*)&Scaleform::GFx::FUN_142745b70,
+    (const void*)&Scaleform::GFx::FUN_142745ab0,
     (const void*)&FUN_142746d70,
-    (const void*)&FUN_142745ea0,
-    (const void*)&FUN_142745c40,
-    (const void*)&FUN_142746510,
-    (const void*)&FUN_1427458e0,
-    (const void*)&FUN_142745c80,
-    (const void*)&FUN_142745b90,
-    (const void*)&FUN_142746a30,
-    (const void*)&FUN_1427458b0,
-    (const void*)&FUN_142746500,
-    (const void*)&FUN_1427466d0,
-    (const void*)&FUN_1427466c0,
+    (const void*)&Scaleform::GFx::FUN_142745ea0,
+    (const void*)&Scaleform::QueryChannelPlaying,
+    (const void*)&Scaleform::GFx::FUN_142746510,
+    (const void*)&Scaleform::QueryChannelTime,
+    (const void*)&Scaleform::ConfigureAudioLoop,
+    (const void*)&Scaleform::QueryChannelVolume,
+    (const void*)&Scaleform::GFx::FUN_142746a30,
+    (const void*)&Scaleform::QueryChannelPan,
+    (const void*)&Scaleform::GFx::FUN_142746500,
+    (const void*)&Scaleform::GFx::FUN_1427466d0,
+    (const void*)&Scaleform::GFx::FUN_1427466c0,
 };
 // 0x1431bedd8
 alignas(8) Sd_1431bedd8 DAT_1431bedd8 = {
-    (const void*)&FUN_14274397c,
-    (const void*)&FUN_142746230,
+    (const void*)&Scaleform::GFx::FUN_14274397c,
+    (const void*)&Scaleform::DetachChannelNode,
 };
 // 0x1431bede8
 alignas(8) Sd_1431bede8 DAT_1431bede8 = {
-    (const void*)&FUN_142743cf0,
-    (const void*)&FUN_142745a90,
-    (const void*)&FUN_142744ea0,
-    (const void*)&FUN_1427449f0,
-    (const void*)&FUN_1427447f0,
-    (const void*)&FUN_142745f30,
-    (const void*)&FUN_142745840,
-    (const void*)&FUN_1427464c0,
-    (const void*)&FUN_1427471a0,
-    (const void*)&FUN_142745e70,
-    (const void*)&FUN_142745830,
-    (const void*)&FUN_142745bc0,
-    (const void*)&FUN_142745620,
+    (const void*)&Scaleform::GFx::FUN_142743cf0,
+    (const void*)&Scaleform::GFx::FUN_142745a90,
+    (const void*)&Scaleform::CreateAudioRequest,
+    (const void*)&Scaleform::FUN_1427449f0,
+    (const void*)&Scaleform::CreateBufferedAudioRequest,
+    (const void*)&Scaleform::GFx::FUN_142745f30,
+    (const void*)&Scaleform::QueryMasterVolume,
+    (const void*)&Scaleform::GFx::FUN_1427464c0,
+    (const void*)&Scaleform::GFx::FUN_1427471a0,
+    (const void*)&Scaleform::SetMasterMuted,
+    (const void*)&Scaleform::GFx::FUN_142745830,
+    (const void*)&Scaleform::InitializeAudioSystem,
+    (const void*)&Scaleform::GFx::FUN_142745620,
 };
 // 0x1431bee50
 alignas(16) Sd_1431bee50 DAT_1431bee50 = {
-    (const void*)&FUN_142743fa0,
-    (const void*)&FUN_142745880,
-    (const void*)&FUN_142746640,
+    (const void*)&Scaleform::GFx::FUN_142743fa0,
+    (const void*)&Scaleform::ReadSoundData,
+    (const void*)&Scaleform::GFx::FUN_142746640,
 };
 // 0x1431bee68
 alignas(8) Sd_1431bee68 DAT_1431bee68 = {
-    (const void*)&FUN_1427439c4,
-    (const void*)&FUN_142746380,
+    (const void*)&Scaleform::GFx::FUN_1427439c4,
+    (const void*)&Scaleform::ClearPlayerSoundRecord,
 };
 // 0x1431bee78
 alignas(8) Sd_1431bee78 DAT_1431bee78 = {
-    (const void*)&FUN_142743ac0,
-    (const void*)&FUN_142745b70,
-    (const void*)&FUN_142745ab0,
-    (const void*)&FUN_142746da0,
-    (const void*)&FUN_142745eb0,
-    (const void*)&FUN_142745c40,
-    (const void*)&FUN_142746560,
-    (const void*)&FUN_142745980,
-    (const void*)&FUN_142745c80,
-    (const void*)&FUN_142745b90,
-    (const void*)&FUN_142746a30,
-    (const void*)&FUN_1427458b0,
-    (const void*)&FUN_142746500,
-    (const void*)&FUN_1427466d0,
-    (const void*)&FUN_1427466c0,
+    (const void*)&Scaleform::GFx::FUN_142743ac0,
+    (const void*)&Scaleform::GFx::FUN_142745b70,
+    (const void*)&Scaleform::GFx::FUN_142745ab0,
+    (const void*)&Scaleform::GFx::FUN_142746da0,
+    (const void*)&Scaleform::SetAudioPaused,
+    (const void*)&Scaleform::QueryChannelPlaying,
+    (const void*)&Scaleform::GFx::FUN_142746560,
+    (const void*)&Scaleform::QueryAudioElapsedSeconds,
+    (const void*)&Scaleform::ConfigureAudioLoop,
+    (const void*)&Scaleform::QueryChannelVolume,
+    (const void*)&Scaleform::GFx::FUN_142746a30,
+    (const void*)&Scaleform::QueryChannelPan,
+    (const void*)&Scaleform::GFx::FUN_142746500,
+    (const void*)&Scaleform::GFx::FUN_1427466d0,
+    (const void*)&Scaleform::GFx::FUN_1427466c0,
 };
 // 0x1431beef0
 alignas(16) Sd_1431beef0 DAT_1431beef0 = {
-    (const void*)&FUN_142743988,
-    (const void*)&FUN_142746230,
+    (const void*)&Scaleform::GFx::FUN_142743988,
+    (const void*)&Scaleform::DetachChannelNode,
 };
 // 0x1431bef00
 alignas(16) Sd_1431bef00 DAT_1431bef00 = {
-    (const void*)&FUN_142743e60,
-    (const void*)&FUN_142745b80,
-    (const void*)&FUN_142745c30,
-    (const void*)&FUN_1427457e0,
-    (const void*)&FUN_1427457a0,
-    (const void*)&FUN_142745760,
-    (const void*)&FUN_142746bd0,
+    (const void*)&Scaleform::GFx::FUN_142743e60,
+    (const void*)&Scaleform::GFx::FUN_142745b80,
+    (const void*)&Scaleform::GFx::FUN_142745c30,
+    (const void*)&Scaleform::QuerySoundDuration,
+    (const void*)&Scaleform::QuerySoundLengthCopy,
+    (const void*)&Scaleform::QuerySoundLength,
+    (const void*)&Scaleform::GFx::FUN_142746bd0,
 };
 // 0x1431bef38
 alignas(8) Sd_1431bef38 DAT_1431bef38 = {
-    (const void*)&FUN_1427439ac,
-    (const void*)&FUN_1427462b0,
+    (const void*)&Scaleform::GFx::FUN_1427439ac,
+    (const void*)&Scaleform::ReleaseAudioRequestRecord,
 };
 // The .bss blocks below are CRI/video state the code walks as larger objects than the per-address names
 // (stride tables, pair/decode tables, ...). The compiler does not keep .bss globals in source order, so

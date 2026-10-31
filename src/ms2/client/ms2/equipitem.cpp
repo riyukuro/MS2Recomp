@@ -50,7 +50,6 @@ public:
     int FUN_141200c50(const CString& strTag);                       // HasTag
     void FUN_141200230();                                           // ApplyPointEffect
     void FUN_141201180(const CString& strName);                     // show the meshes named strName
-    NiNodePtr FUN_141201bd0(const CString& strName);                // the node of that name
     int FUN_141202940();                                            // the model kind
     void FUN_141202dc0(int nSlot);                                  // RemoveEffect
 };

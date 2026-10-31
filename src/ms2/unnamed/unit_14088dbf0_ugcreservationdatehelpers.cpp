@@ -37,7 +37,7 @@ struct Unk_DateParts
 MS2_CHECK_SIZE(Unk_DateParts, 0x30);
 
 CStringW FUN_140b8e760(int nDayOfWeek);     // the weekday name
-__int64 FUN_140869440();                    // current time
+__int64 GetServerTime();                    // current time
 unsigned __int64 FUN_14088dbf0(int nDate, int nHour);
 Unk_DateParts* FUN_14088dfa0(Unk_DateParts* pOut, __int64 t, int nHourOffset);
 void FUN_14088e170(Unk_DateParts* pOut, __int64 t);
@@ -55,7 +55,7 @@ unsigned __int64 FUN_14088dbf0(int nDate, int nHour)
 __int64 FUN_14088dcc0()
 {
     Unk_DateParts now;
-    FUN_14088dfa0(&now, FUN_140869440(), 0);
+    FUN_14088dfa0(&now, GetServerTime(), 0);
     return (__int64)now.m_nPacked;
 }
 

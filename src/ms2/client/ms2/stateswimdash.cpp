@@ -19,6 +19,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -56,8 +57,7 @@ public:
 };
 
 // The input / skill tables of the dash check.
-class Unk_SwimInput { public: bool FUN_14116dcb0(int nSetting, bool bDebugOnly, int nLevel); };
-Unk_SwimInput* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 class Unk_SwimSkillTbl { public: int FUN_14142c0c0(int nSkill); };
 Unk_SwimSkillTbl* FUN_1409331f0();
 

@@ -23,6 +23,7 @@
 #include <NiTransform.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- exe callees (recovered elsewhere / not yet) ----
 extern char DAT_143afa4d8;                                  // shadow-node table (see FUN_14098d8d0)
@@ -66,7 +67,6 @@ public:
     void FUN_1411a6060(int nHandle);                        // release
     void FUN_1411a68f0(int nHandle, bool bVisible);
 };
-Unk_TeEffectMgr* FUN_1403ed280();
 
 // The tail table singleton accessor (0x140ad0da0).
 // @0x140ad0da0
@@ -171,7 +171,7 @@ void CTailEffectObject::FUN_140acee90()
     }
     else
     {
-        NiNode* pRoot = static_cast<NiNode*>(FUN_1403ed280()->FUN_1411a6b10());
+        NiNode* pRoot = static_cast<NiNode*>(reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10());
         pRoot->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&spNode)), false);
     }
 
@@ -180,8 +180,8 @@ void CTailEffectObject::FUN_140acee90()
     kRequest.m_nOwnerId = 0;
     FUN_140a53190(&kRequest, m_pOwner->FUN_14123c580());
     FUN_1409fabf0(&kRequest.m_spNode, FUN_1409475d0(&spNode));
-    int nHandle = FUN_1403ed280()->FUN_1411a49c0(&kRequest);
-    FUN_1403ed280()->FUN_1411a68f0(nHandle, m_bVisible);
+    int nHandle = reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kRequest);
+    reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(nHandle, m_bVisible);
 
     MS2Ptr<TailEffectInfo> spInfo;
     FUN_140ad0d30(spInfo, Unk_BmNewTag(0));
@@ -236,7 +236,7 @@ void CTailEffectObject::FUN_140acf570()
     if (spInfo.IsNull())
         return;
 
-    FUN_1403ed280()->FUN_1411a6060(spInfo->m_nEffectId);
+    reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(spInfo->m_nEffectId);
     do
     {
         if (m_bDestroyed)
@@ -253,7 +253,7 @@ void CTailEffectObject::FUN_140acf570()
         kRequest.m_strName = m_spData->m_strEndEffectPath;
         kRequest.m_pTransform = &kXform;
         kRequest.m_nOwnerId = 0;
-        FUN_1403ed280()->FUN_1411a4a00(&kRequest);
+        reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kRequest);
     } while (0);
     FUN_140a0b2a0(FUN_1409475d0(&spInfo->m_spNode));
     m_listInfo.pop_back();
@@ -349,7 +349,7 @@ void CTailEffectObject::FUN_140acfda0()
         MS2Ptr<TailEffectInfo> spInfo(*it);
         if (spInfo.IsNull())
             continue;
-        FUN_1403ed280()->FUN_1411a68f0(spInfo->m_nEffectId, true);
+        reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(spInfo->m_nEffectId, true);
     }
 }
 
@@ -365,7 +365,7 @@ void CTailEffectObject::FUN_140acfeb0()
         MS2Ptr<TailEffectInfo> spInfo(*it);
         if (spInfo.IsNull())
             continue;
-        FUN_1403ed280()->FUN_1411a68f0(spInfo->m_nEffectId, false);
+        reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(spInfo->m_nEffectId, false);
     }
 }
 

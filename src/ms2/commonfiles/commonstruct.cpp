@@ -19,7 +19,7 @@ static CString s_commonSortNames[]={"None","Buy","Like","PriceLow","PriceHigh","
 // This formatter constructor belongs to 0x14020a410 in an earlier unit.
 template<> fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>::MakeValue(const wchar_t*);
 
-__int64 FUN_140869440();
+__int64 GetServerTime();
 COutputStream& FUN_14070fa20(COutputStream&,__int64);
 COutputStream& FUN_14070f9a0(COutputStream&,int);
 COutputStream& FUN_14070fa60(COutputStream&,float);
@@ -109,7 +109,7 @@ bool Unk_CommonTimedMap::Active() {
     if(selected==0) return 0;
     __int64 until=0;
     times.Lookup(selected,until);
-    if(until>FUN_140869440()) return 1;
+    if(until>GetServerTime()) return 1;
     return 0;
 }
 MS2_REPLACE_METHOD(0x14026D880, Unk_CommonTimedMap, Active, 84, 0x5F451E98);
@@ -163,7 +163,7 @@ PacketLogQueue::PacketLogQueue(int count) { m_entries.SetCount(count); }
 void PacketLogQueue::Add(int type,int loopback) {
     int index=InterlockedIncrement(&m_cursor);
     index=(int)((size_t)(__int64)index%m_entries.GetCount());
-    m_entries[index].Set(type,loopback,FUN_140869440());
+    m_entries[index].Set(type,loopback,GetServerTime());
 }
 MS2_REPLACE_METHOD(0x14026DD80, PacketLogQueue, Add, 166, 0xA0B2824F);
 // @0x14026de30

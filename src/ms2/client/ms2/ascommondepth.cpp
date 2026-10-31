@@ -22,14 +22,13 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/gfxmovie.h"
 
 // ---- unit-local placeholders ----
 
 // The Scaleform movie of a UI movie id (GFx movie view wrapper).
-class Unk_AsMovie
+class Unk_AsMovie : public GFxMovie
 {
-public:
-    Scaleform::GFx::Value FUN_1422bd120(CString strClass);          // creates an AS object of the given class
 };
 class Unk_AsManager
 {
@@ -99,11 +98,13 @@ ASArgList::ASArgList()
     new (this) Unk_ArgVec();
 }
 
-// MS2-FUNCTIONAL: ASArgList is really std::vector<GFx::Value>: the exe dtor is ~vector() (_Tidy 0x1409b2530 under a noexcept EH frame); this wrapper calls the vector dtor (see the ctor)
+// ASArgList is really std::vector<GFx::Value>: the exe dtor is ~vector(), _Tidy 0x1409b2530 under the noexcept frame.
+void FUN_1409b2530(void* pVec);     // vector<Value>::_Tidy, private
+template std::vector<Scaleform::GFx::Value>::~vector();     // emits _Tidy; not a row of its own
 // @0x1409b1f20
 ASArgList::~ASArgList()
 {
-    ((Unk_ArgVec*)this)->~Unk_ArgVec();
+    FUN_1409b2530(this);
 }
 
 // MS2-FUNCTIONAL: ASArgList is really std::vector<GFx::Value>: the exe function is vector::resize(size_t) (lambda ctor 0x1409b1d50 + _Resize 0x1409b17a0); this wrapper takes an int and forwards (see the ctor)

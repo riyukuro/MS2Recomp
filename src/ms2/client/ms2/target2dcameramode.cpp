@@ -13,19 +13,14 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 
 // ---- unit-local placeholders ----
 
 extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 
 // The input state (FUN_14025e7c0).
-class Unk_InputState
-{
-public:
-    bool FUN_14116d950(int nKey, bool b, int n);     // key held
-    bool FUN_14116d9c0(int nKey, bool b, int n);     // key pressed
-};
-Unk_InputState* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 
 class Unk_BuffContainer
 {

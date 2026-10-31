@@ -37,6 +37,7 @@ static CString s_strWillUpdatePos = "WillUpdatePos";
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/itemdatatable.h"
 
 // CItem::FUN_140527840's record is the item's CItemData (citem.h names it Unk_ItemEquipData).
 class Unk_ItemEquipData : public CItemData {};
@@ -57,7 +58,6 @@ public:
 };
 Unk_CustomizeWorld* FUN_1403ed2d0();
 int FUN_14123c580(PCBase* pPc);                                     // the object id of a player
-CUIService* FUN_1403ed2b0();
 
 // The item event hub the Customize registers with (uiitemenchantdialog.h).
 class Unk_CustomizeItemEvents;
@@ -66,11 +66,10 @@ void FUN_1419cae20(Unk_CustomizeItemEvents* pHub, UIItemEventListener* pListener
 void FUN_1419caeb0(Unk_CustomizeItemEvents* pHub, UIItemEventListener* pListener);     // unregister
 
 // The palette table (FUN_140281980).
-class Unk_CustomizeColorTable
+class Unk_CustomizeColorTable : public CItemDataTable
 {
 public:
     MS2Ptr<ItemColorEx> FUN_1405587f0(int nPalette, int nIndex);
-    MS2Ptr<ItemColorEx> FUN_140558960(int nPalette, int nColorSN);    // CItemDataTable::GetPaletteColorBySN
 };
 Unk_CustomizeColorTable* FUN_140281980();
 MS2Ptr<ItemColorEx> FUN_140f022f0(int nPalette, unsigned nIndex);   // a colour of a palette (uibeautyshopstyledialog.cpp)
@@ -238,8 +237,8 @@ inline bool FUN_140cd46e0(MS2Ptr<CItem> spItem, bool bPreview)
 // @0x140cd47b0 the camera dialog
 inline UICameraEditDialog* FUN_140cd47b0(eUIClassID nClass)
 {
-    if (FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> spObject = FUN_1403ed2b0()->FUN_141adcea0(nClass);
+    if (TSingleton<CUIService>::GetInstance()) {
+        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FUN_141adcea0(nClass);
         if (spObject.get())
             return dynamic_cast<UICameraEditDialog*>(spObject.operator->());
     }
@@ -339,7 +338,7 @@ MS2_REPLACE_METHOD(0x140CCB1E0, Customize::EditItems, GetController, 65, 0x3E32A
 // MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 void Customize::EditItems::Update()
 {
-    if (FUN_1403ed2b0()->FUN_141adbd10() != 0)
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adbd10() != 0)
         return;
     if (m_spController) {
         int bDragging = 0;
@@ -463,7 +462,7 @@ int Customize::EditItems::ApplyPalette(int nPalette, int nIndex, int n)
     int nUsePalette = nPalette;
     if (m_pOwner && m_pOwner->GetPalette() > 0 && nUsePalette != FUN_140f02bc0())
         nUsePalette = m_pOwner->GetPalette();
-    MS2Ptr<ItemColorEx> spColor = FUN_140281980()->FUN_140558960(nUsePalette, nIndex);   // nIndex is the colour's serial number here (by-SN lookup, as in the exe)
+    MS2Ptr<ItemColorEx> spColor = FUN_140281980()->GetPaletteColorBySN(nUsePalette, nIndex); // nIndex is the colour's serial number here (by-SN lookup, as in the exe)
     if (spColor == 0)
         return 0;
     if (m_spData->FUN_14053cf00())

@@ -26,6 +26,7 @@
 #include "ms2/commonfiles/filebuffer_2.h"
 #include "ms2/commonfiles/timeutil.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
 
 // @0x1401d02a0
 CStringW StringFormat(const wchar_t* format, const fmt::ArgList& args)
@@ -58,8 +59,7 @@ extern "C" void (__cdecl* __imp_CrashReporter_SetStrInfoA)(const wchar_t*, const
 extern "C" void (__cdecl* __imp_CrashReporter_SetClientExit)(int);
 
 // The feature-flag holder; FUN_14036e510 tells whether the full-dump mode is switched on.
-class Unk_FeatureHolder { public: bool FUN_14036e510(); };
-Unk_FeatureHolder* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 // The CrashManagerCli singleton (client\ms2\ms2.cpp), seen from its CCrashManager base.
 class Unk_CrashSingleton

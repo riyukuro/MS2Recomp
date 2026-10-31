@@ -18,17 +18,16 @@
 #include "ms2/placeholder/cpetmanager.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- external surfaces (names invented; every callee is bound by its exe address) ---------------------------------
 class UIStoreDialog : public UIDialog {};                        // RTTI name; only the dynamic_cast target is used
 class Unk_SSGDlg4e47 : public UIStoreDialog {};                  // GetDialog<T> result type of FUN_140de48d0
-struct Unk_StoreUIMgr
+struct Unk_StoreUIMgr : public CUIService
 {
     MS2Ptr<UIObject> FUN_141adcea0(int nId);
     void FUN_141adc530(int nId);
-    void FUN_141add1f0();
 };
-Unk_StoreUIMgr* FUN_1403ed2b0();
 void FUN_141b109a0(Unk_SSGDlg4e47* pDlg);
 struct Unk_StoreEvents                                           // the item event hub (FUN_140a6a840), slots 8..12
 {
@@ -51,7 +50,6 @@ MS2_CHECK_SIZE(Unk_AuConfig, 0x4608);
 Unk_AuConfig* FUN_1401d3200();
 int* FUN_1402056b0(Unk_GuildConstInt* p);
 int FUN_1408b6200(int nType);
-UIStatusEventDispatcher* FUN_140aa6d40();
 unsigned char FUN_140361ab0(void* pMap, int nKey, int* pValue);
 struct Unk_SsMap;
 void FUN_14016a050(Unk_SsMap* pMap, int nKey, int nValue);
@@ -75,7 +73,6 @@ CStringW FUN_1409e97f0(int nId, const int& rArg);
 CStringW FUN_140763e10(int nValue);
 template <class T> void Unk_AkoMessage(int nId, int nA, int nB, const T& rArg);
 void FUN_140961010(int nId, int nA, int nB, const CStringW& rArg);
-CEffectService* FUN_1403ed280();
 void FUN_140720e50(void* pDest, void* pSrc, unsigned __int64 nCount);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void* FUN_1401b59c0();
@@ -623,7 +620,7 @@ void FUN_140de2dc0(void*, __int64 nId, int nSlot, int nCount, MS2Ptr<CItemData> 
     FUN_1401fbaf0(reinterpret_cast<unsigned char*>(&request), packet);
     FUN_140710590(packet);
     if (pSound.get() != 0) {
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"), pSound->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"), pSound->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
     }
 }
 
@@ -650,7 +647,7 @@ void FUN_140de31f0(CStore* pStore, __int64 nId, int nSlot, int nCount, MS2Ptr<CI
     packet.WriteInt32(nCount);
     FUN_140710590(packet);
     if (pSound.get() != 0) {
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"), pSound->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"), pSound->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
     }
 }
 
@@ -702,7 +699,7 @@ void CStore::OnBegin(CInPacket* pPacket)
         return;
     }
     if (nId == 0) {
-        FUN_1403ed2b0()->FUN_141adc530(0x4e47);
+        reinterpret_cast<Unk_StoreUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e47);
     }
     int nCount = (unsigned short)pPacket->ReadInt16();
     SetReceived(nCount);
@@ -787,7 +784,7 @@ void CStore::OnCurrency(CInPacket* pPacket)
     }
     __int64 nCurrency = pPacket->ReadInt64();
     DAT_143ab28f8 = nCurrency;
-    FUN_140aa6d40()->FUN_141b0ce20(10, 0);
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0ce20(10, 0);
 }
 
 // @0x140de3c60
@@ -876,7 +873,7 @@ void CStore::OnList(CInPacket* pPacket)
 void CStore::OnReset(CInPacket*)
 {
     Reset();
-    FUN_1403ed2b0()->FUN_141adc530(0x4e47);
+    reinterpret_cast<Unk_StoreUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e47);
 }
 
 // @0x140de4360
@@ -900,7 +897,7 @@ void CStore::OnError(CInPacket* pPacket)
         FUN_140d73aa0(strText, 0, 0, L"");
     }   break;
     case 0xf:
-        FUN_1403ed2b0()->FUN_141add1f0();
+        reinterpret_cast<Unk_StoreUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141add1f0();
         break;
     case 0x10:
         FUN_141275260(0xfb, 1, 1);
@@ -950,8 +947,8 @@ void CStore::ReadItem(CInPacket* pPacket)
 // @0x140de48d0
 Unk_SSGDlg4e47* FUN_140de48d0(int nId)
 {
-    if (FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+    if (reinterpret_cast<Unk_StoreUIMgr*>(TSingleton<CUIService>::GetInstance())) {
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_StoreUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get()) {
             return static_cast<Unk_SSGDlg4e47*>(dynamic_cast<UIStoreDialog*>(p.operator->()));
         }

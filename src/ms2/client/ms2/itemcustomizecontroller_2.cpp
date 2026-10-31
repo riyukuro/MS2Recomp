@@ -27,6 +27,8 @@
 #include "ms2/placeholder/asslot.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/itemexchangescrolltable.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 #include <exception>
@@ -42,12 +44,7 @@ public:
 Unk_ItemDataX* FUN_140527840(CItem* pItem);             // CItem::GetItemData
 
 // Game context: FUN_141bd0cc0 returns the local player (the tooltip owner).
-class Unk_GameCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_GameCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 // Exchange-scroll records: the singleton hands out a ref-counted record by item id.
 class Unk_ExchangeData : public CPtred
@@ -62,7 +59,6 @@ class Unk_ExchangeMgr
 public:
     MS2Ptr<Unk_ExchangeData> FUN_140595750(int nItemId);
 };
-Unk_ExchangeMgr* FUN_140f56960();
 
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid);               // find an item by uid
 CStringW FUN_1419021b0(int a, int b);                   // format "a/b"
@@ -72,7 +68,7 @@ void FUN_140d2d150(int nItemId, int nAmount);           // show the item's popup
 void FUN_140cff1b0(const Scaleform::GFx::Value&, CString, CStringW);   // set a member of the movie to a string
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
 float FUN_140bf4fd0(float f);                           // ceilf
-void FUN_140657820();                                   // 'invalid call' of an empty Delegate (shared)
+void Unk_140657820();                                   // 'invalid call' of an empty Delegate (shared)
 
 // Registry of named bags/slots (GFx bind data).
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
@@ -92,13 +88,13 @@ public:
 template<> inline void ItemInfoSlotSlotFn::operator()(ItemInfoSlot* a1, ASSlot* a2) const
 {
     if (m_pImpl == 0)
-        FUN_140657820();
+        Unk_140657820();
     m_pImpl->Invoke(a1, a2);
 }
 template<> inline void ItemInfoSlotTipFn::operator()(ItemInfoSlot* a1, ASTooltip* a2) const
 {
     if (m_pImpl == 0)
-        FUN_140657820();
+        Unk_140657820();
     m_pImpl->Invoke(a1, a2);
 }
 
@@ -373,7 +369,7 @@ int ItemInfoSlot::vfunc_0(void* p)
                 void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
                 if (pPlayer == 0)
                     return 0;
-                MS2Ptr<Unk_ExchangeData> spData = FUN_140f56960()->FUN_140595750(m_spItem->FUN_1405276c0());
+                MS2Ptr<Unk_ExchangeData> spData = reinterpret_cast<Unk_ExchangeMgr*>(TSingleton<CItemExchangeScrollTable>::GetInstance())->FUN_140595750(m_spItem->FUN_1405276c0());
                 if (spData.get())
                 {
                     MS2Ptr<CItem> spCmp(new CItem);

@@ -9,17 +9,13 @@
 #include "transitioneffectparam.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 bool FUN_14028d470(float a, float b);                   // nearly equal
 float FUN_1409f25a0(float f);                           // sine
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
-class Unk_GameClock
-{
-public:
-    double FUN_141473280();
-};
-Unk_GameClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 
 // Interpolation functors (empty; t in [0, 1]). 0 and 3 were emitted here, 1 and 2 elsewhere.
 struct Unk_InterpLinear

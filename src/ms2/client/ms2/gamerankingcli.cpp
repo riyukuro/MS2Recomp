@@ -28,6 +28,8 @@
 #include "ms2/commonfiles/guilddef_1.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/guildmanager.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- out-of-unit callees and data (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 
@@ -53,10 +55,8 @@ private:
     CStringA m_kTag;
 };
 class Unk_GrUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
-Unk_GrUIManager* FUN_1403ed2b0();                                           // the UI service
                 // the guild id
 class Unk_GrGuildManager { public: int FUN_1413b6160(); char m_pad[8]; CGuildInfo m_8; };
-Unk_GrGuildManager* FUN_1403ed290();                                        // the guild manager (+8: the own guild)
 CStringW FUN_140811740(int nId, const int& n0, const int& n1);              // a string table text with two numbers
 CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strSep, CStringW strSep2);    // date + time text
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);                   // narrows a string
@@ -781,9 +781,9 @@ __int64 CGameRankingCli::OwnerId(int nBoard)
 {
     __int64 nId = 0;
     if (nBoard == 1 || nBoard == 5) {
-        if (FUN_1403ed290()->FUN_1413b6160() == 0)
+        if (reinterpret_cast<Unk_GrGuildManager*>(TSingleton<CGuildManager>::GetInstance())->FUN_1413b6160() == 0)
             return 0;
-        nId = FUN_1403ed290()->m_8.FUN_1404ccbd0();
+        nId = reinterpret_cast<Unk_GrGuildManager*>(TSingleton<CGuildManager>::GetInstance())->m_8.FUN_1404ccbd0();
     }
     else if (nBoard == 2 || nBoard == 3 || nBoard == 4 || nBoard == 7 || nBoard == 8 || nBoard == 9 || nBoard == 0xf ||
              nBoard == 0x11 || nBoard == 0xb || nBoard == 0xc || nBoard == 10 || nBoard == 0xe || nBoard == 0x10)
@@ -833,8 +833,8 @@ MS2_REPLACE_METHOD(0x140b2c9d0, CGameRankingCli, RemoveParam, 100, 0xB2407F34);
 // @0x140b2d030
 UIGameRankingDialog* FUN_140b2d030(int nClass)
 {
-    if (FUN_1403ed2b0() != 0) {
-        MS2Ptr<UIObject> spObj = FUN_1403ed2b0()->FUN_141adcea0(nClass);
+    if (reinterpret_cast<Unk_GrUIManager*>(TSingleton<CUIService>::GetInstance()) != 0) {
+        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_GrUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIGameRankingDialog*>(spObj.operator->());
     }

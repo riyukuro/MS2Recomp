@@ -27,6 +27,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local placeholders ----
 
@@ -106,7 +107,6 @@ private:
 };
 MS2_CHECK_SIZE(Unk_NuUiRef, 0x10);
 class Unk_NuUiMgr { public: Unk_NuUiRef FUN_141adcea0(int nId); };
-Unk_NuUiMgr* FUN_1403ed2b0();
 UIObject* FUN_1403ed9e0(Unk_NuUiRef& ref);
 UICastingBar* FUN_140ac2270(int nId);
 
@@ -135,9 +135,9 @@ CFunctionCubeService* FUN_1409670b0();
 // @0x140ac2270
 UICastingBar* FUN_140ac2270(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_NuUiMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        Unk_NuUiRef ref = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        Unk_NuUiRef ref = reinterpret_cast<Unk_NuUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70())
             return dynamic_cast<UICastingBar*>(FUN_1403ed9e0(ref));
     }

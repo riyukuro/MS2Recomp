@@ -33,7 +33,7 @@ CString FUN_140695240(const char* psz);                      // hash of a string
 CString FUN_1401d2b10(const CString& a, const CString& b);   // ATL operator+(CString, CString)
 CString FUN_1409a2360(const char* psz, int nCodePage);       // CString from a narrow string (0 = default code page)
 std::string FUN_14083fa60(const char* pData, unsigned nLen); // string from a buffer
-__int64 FUN_140869440();                                     // GetServerTime
+__int64 GetServerTime();                                     // GetServerTime
 
 // The cipher context (0xbc bytes).
 struct Unk_SeedCbc {
@@ -425,7 +425,7 @@ CString FUN_140c85310(const CString& strPlain);
 // @0x140c84fc0 - the cash-shop pay URL for a Nexon id
 CString FUN_140c84fc0(u64 nNxId)
 {
-    CMsTime time(FUN_140869440());
+    CMsTime time(GetServerTime());
     CString strChannel = FUN_140c85110();
     CString strNxId = FUN_140c85150(nNxId);
     int nType = FUN_140c851a0();

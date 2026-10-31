@@ -48,7 +48,7 @@ CLogString* GetLogString();                                                     
 void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);       // split into strings
 void FUN_140177de0(const CString& str, ATL::CAtlArray<int>& rOut, const char* pszSep);           // split into ints
 void FUN_1401782a0(const CString& str, std::vector<unsigned int>& rOut, const char* pszSep);
-void FUN_14015f2b0(CString strBody, CConditionDict* pDict);                                 // "k=v,k=v" into a dictionary
+void Unk_ParseExtra(CString strBody, CConditionDict* pDict);                                // "k=v,k=v" into a dictionary
 int FUN_140718170(const CString& str);
 int FUN_1407181d0(const CString& str);
 bool FUN_140718390(const CString& str);
@@ -134,7 +134,7 @@ int CConditionParam::Parse(CString strText)
     {
         CString strBody = m_strText.Mid(strDict.GetLength());
         m_dict = Unk_FieldNewTag(0);
-        FUN_14015f2b0(CString(strBody), m_dict.get());
+        Unk_ParseExtra(CString(strBody), m_dict.get());
         m_flags.set(3, true);
         return 1;
     }

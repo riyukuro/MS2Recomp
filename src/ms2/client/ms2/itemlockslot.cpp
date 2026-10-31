@@ -19,16 +19,13 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/inventory.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-class Unk_GameCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_GameCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 // The item lock manager (CItemLockManager, unit_1406125d0.h; not included: its ATL trace statics would join this unit's
 // .text$di).
@@ -39,12 +36,7 @@ public:
     int FUN_140612e90(MS2Ptr<CItem> item);
     int FUN_1406130e0(__int64 nItemUid);
 };
-class Unk_LockInventory
-{
-public:
-    MS2Ptr<CItem> FUN_140a5d680(__int64 nItemUid);
-};
-extern Unk_LockInventory DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 
 CItemLockManager* FUN_140535310();                      // the item lock manager singleton
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for the item

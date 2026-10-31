@@ -33,17 +33,18 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-class Unk_MaidLoader { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_MaidLoader : public CFileSystem { };
 Unk_MaidLoader* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14071ae20(const CString& strFile);                          // the locale's string table path of <file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
-__int64 FUN_140869440();                                                // the server time
+__int64 GetServerTime();                                                // the server time
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                           // the item data of an id
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flags (symbols-manual.tsv); local copies stay false
@@ -120,7 +121,7 @@ CMaid::CMaid(__int64 n18, unsigned __int64 nId, __int64 n28, int nItemId, __int6
     : m_n18(n18), m_nId(nId), m_n28(n28), m_nItemId(nItemId), m_nMode(0), m_nMood(0), m_nExp(0),
       m_nExpireTime(nExpireTime)
 {
-    m_t58 = m_t38 = m_t40 = FUN_140869440();
+    m_t58 = m_t38 = m_t40 = GetServerTime();
     m_n4c = 1;
     m_nOrder = 1;
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
@@ -225,7 +226,7 @@ MS2_REPLACE_METHOD(0x14067D730, CMaid, FUN_14067d730, 867, 0x307ABCDA);
 int CMaid::GetRemainDays()
 {
     CMsTime expire(m_nExpireTime);
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (expire > now)
     {
         ATL::CTimeSpan span = expire - now;
@@ -239,7 +240,7 @@ MS2_REPLACE_METHOD(0x14067DAA0, CMaid, GetRemainDays, 113, 0x2771DFCF);
 int CMaid::GetOverDays()
 {
     CMsTime expire(m_nExpireTime);
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (now > expire)
     {
         ATL::CTimeSpan span = now - expire;
@@ -253,14 +254,14 @@ MS2_REPLACE_METHOD(0x14067DB20, CMaid, GetOverDays, 142, 0xEE875E39);
 // @0x14067dbc0
 int CMaid::IsExpired()
 {
-    return m_nExpireTime < FUN_140869440();
+    return m_nExpireTime < GetServerTime();
 }
 MS2_REPLACE_METHOD(0x14067DBC0, CMaid, IsExpired, 55, 0x88BFE212);
 
 // @0x14067dc00
 int CMaid::IsTime38Over(int nSeconds)
 {
-    __int64 now = FUN_140869440();
+    __int64 now = GetServerTime();
     return (__int64)nSeconds + m_t38 < now;
 }
 MS2_REPLACE_METHOD(0x14067DC00, CMaid, IsTime38Over, 71, 0xEB8B66A2);
@@ -268,7 +269,7 @@ MS2_REPLACE_METHOD(0x14067DC00, CMaid, IsTime38Over, 71, 0xEB8B66A2);
 // @0x14067dc50
 int CMaid::IsTime40Over(int nSeconds)
 {
-    __int64 now = FUN_140869440();
+    __int64 now = GetServerTime();
     return (__int64)nSeconds + m_t40 < now;
 }
 MS2_REPLACE_METHOD(0x14067DC50, CMaid, IsTime40Over, 71, 0xB40A8361);

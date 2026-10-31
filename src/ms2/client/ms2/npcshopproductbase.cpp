@@ -33,13 +33,13 @@ CStringW FUN_140b8f230(int nDay);                               // the name of a
 CStringW FUN_14086cc00(const wchar_t* pszFormat, const int& a, const int& b, const int& c, const int& d);
 void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);   // split into strings
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
-__int64 FUN_140869440();                                        // the server time
+__int64 GetServerTime();                                        // the server time
 bool FUN_1406a5930();                                           // the star point event runs
 int FUN_14053feb0(int nItemId);                                 // the fixed rank of an item (0: none)
 __int64 FUN_141349ef0(int nKind, int nA, unsigned nB);          // the amount of a currency
 bool FUN_14134a030(int nKind, int nA, int nAmount);             // the currency can pay nAmount
 void FUN_14134a120(int nKind, int nA, int nAmount);             // tell the player the currency is missing
-extern Unk_Inventory DAT_143ab2a90;                             // the player inventory
+extern Unk_Inventory g_143ab2a90;                               // the player inventory
 
 // The merat product record: two ints written by CNpcShopMeratItemCli::vfunc_2.
 struct Unk_ProdPremium
@@ -312,7 +312,7 @@ bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
 {
     if (m_c8.get() != 0)
     {
-        CMsTime tmNow(FUN_140869440());
+        CMsTime tmNow(GetServerTime());
         if (!m_c8->FUN_1406ddc90(tmNow))
         {
             CMsTime& tmStart = m_c8->m_tmStart;
@@ -407,7 +407,7 @@ bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
     }
     if (m_d8.m_p != 0)
     {
-        CMsTime tmNow(FUN_140869440());
+        CMsTime tmNow(GetServerTime());
         if (!m_d8.operator->()->FUN_14026f080(tmNow))
         {
             strError = GetStringCommonByKey(L"s_blackmarket_error_buy_expired");
@@ -445,7 +445,7 @@ int CNpcShopProductCli::FUN_140db8210()
         if (spItem.get() != 0)
         {
             if ((spItem.get() ? true : false) && spItem->FUN_140525f10() != 0 && spItem->FUN_1405281e0() == 1)
-                return DAT_143ab2a90.FUN_140a615d0(0);
+                return g_143ab2a90.FUN_140a615d0(0);
             int bStackable = static_cast<Unk_ItemEquipData*>(spItem->FUN_140527840())->FUN_14053c7c0();
             if (bStackable)
             {
@@ -475,9 +475,9 @@ int CNpcShopProductCli::FUN_140db8400()
     {
     case 1:
     {
-        int nHave = DAT_143ab2a90.FUN_140a5f180(m_8c, FUN_14053feb0(m_8c));
+        int nHave = g_143ab2a90.FUN_140a5f180(m_8c, FUN_14053feb0(m_8c));
         if (m_90 != 0)
-            nHave = DAT_143ab2a90.FUN_140a5f7b0(m_90, 0);
+            nHave = g_143ab2a90.FUN_140a5f7b0(m_90, 0);
         nResult = (int)(nHave / nPrice < FUN_140db8210() ? nHave / nPrice : FUN_140db8210());
         break;
     }

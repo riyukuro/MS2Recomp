@@ -165,12 +165,12 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 bool FUN_14028d470(float a, float b);                               // nearly equal
 bool FUN_14028d530(const Vector3& a, const Vector3& b);   // the two end points coincide
-class Unk_GameClock { public: double FUN_141473280(); };
-Unk_GameClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
 const Vector3& FUN_140947900(void* pNode);                  // world translate

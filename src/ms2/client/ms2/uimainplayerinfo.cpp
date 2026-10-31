@@ -37,6 +37,11 @@ static Unk_AsTimer s_refreshTimer;                                              
 #include "ms2/placeholder/cguidemanager.h"
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/cubecraft_2.h"
+#include "ms2/client/ms2/skillslot.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cgameoption.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                                       // @0x140116510
 static CString s_strNotThisPlace = "system_notice_error_warningNotThisPlace";              // @0x140116540
@@ -93,14 +98,12 @@ public:
     void FUN_14175f200();                                               // use the slot
     CStringW FUN_14175fe60();                                           // the bound skill / item name
 };
-class Unk_MpSlotBar
+class Unk_MpSlotBar : public SkillSlotBag
 {
 public:
     Unk_MpWnd* FUN_1422cd070(int nIndex);
     Unk_MpSlot* FUN_141763710(int nItemId);
     void FUN_141763640(unsigned int nFlags);
-    void FUN_141763b00(int n);
-    void FUN_141763bd0(int a1, int a2);
 };
 class Unk_MpSlotBox
 {
@@ -173,11 +176,8 @@ class Unk_MpKeyInput { public: bool FUN_14116dd30(int nKey, int a2, int a3); };
 Unk_MpKeyInput* FUN_14025e7c0();
 struct Unk_MpCfgData { bool m_bExpand; bool m_bShowSkillName; };
 class Unk_MpCfg { public: Unk_MpCfgData* FUN_140a58500(); };
-Unk_MpCfg* FUN_1409a8b10();
 class Unk_MpPad { public: int FUN_140d8ee40(); };
 Unk_MpPad* FUN_140a58540();
-class Unk_MpStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_MpStrings* FUN_1401a9d70();
 class Unk_MpTitles { public: bool FUN_140d9f5d0(int nIndex); CStringW FUN_140d9f600(int nIndex); };
 Unk_MpTitles* FUN_140931510();
 CGuideManager* FUN_1409331e0();
@@ -191,7 +191,6 @@ public:
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
 Unk_MpItemEvents* FUN_140a6a840();
-UIStatusEventDispatcher* FUN_140aa6d40();
 
 // The mount of the player.
 struct Unk_AdvMountRow;
@@ -275,12 +274,10 @@ class Unk_MpRideOff { public: Unk_MpRideOff(int n); char m_pad_00[0x28]; };
 
 // The ridee controller of the player ("remove" / "create" messages).
 struct Unk_MpRideeKey { Unk_MpRideeKey(); int m_0, m_4, m_8; };
-class Unk_MpRideeCtl
+class Unk_MpRideeCtl : public Unk_PCCubeCraft
 {
 public:
     Unk_MpRideeKey FUN_1410aa520();
-    void FUN_1410aad50();
-    void FUN_1410abb40();
 };
 struct Unk_MpWeaponRow { char m_pad_00[0x18]; __int64 m_18; };
 class Unk_MpWeaponPtr
@@ -337,8 +334,7 @@ public:
     void FUN_14152f140(__int64 nId);
     Unk_MpRideeCtl* FUN_141530290();
 };
-class Unk_MpWorld { public: Unk_MpPC* FUN_141bd0cc0(); int FUN_141bdb660(int n); };
-Unk_MpWorld* FUN_1403ed2d0();
+class Unk_MpWorld : public WorldService { public: Unk_MpPC* FUN_141bd0cc0();};
 
 // The buff object behind MS2Ptr<Unk_AsBuff> (AdditionalCustomCli, new 0x78).
 class AdditionalCustomCli : public Unk_AsBuff
@@ -486,7 +482,7 @@ UIMainPlayerInfo::~UIMainPlayerInfo()
     m_playerInfo = 0;
     m_pending.RemoveAll();
     m_ridee = 0;
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     FUN_140939a10()->UnregisterNotify(L"NotifyDebugState", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14b0));
     FUN_140939a10()->UnregisterNotify(L"NotifyShortkeyPage", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14e0));
@@ -544,7 +540,7 @@ void UIMainPlayerInfo::vfunc_67()
 {
     UIBuiltInDialog::vfunc_67();
     FUN_1417634a0(FUN_1419f31f0());
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     m_effectManager = 0;
     m_playerInfo = 0;
@@ -557,7 +553,7 @@ void UIMainPlayerInfo::vfunc_67()
 void UIMainPlayerInfo::OnLoadInit()
 {
     UIBuiltInDialog::OnLoadInit();
-    Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MpPC* pPc = reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     m_nEP[0] = pPc->FUN_141670a00(10);
@@ -581,7 +577,7 @@ void UIMainPlayerInfo::OnLoadInit()
         m_pending.RemoveAll();
     }
     FUN_1419f13b0(!pPc->FUN_1416749a0()->FUN_140970d70() ? 1 : 0, 1);
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
 }
 
@@ -589,12 +585,12 @@ void UIMainPlayerInfo::OnLoadInit()
 void UIMainPlayerInfo::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MpPC* pPc = reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     m_nSlotMode = 0;
     m_playerInfo = GetChild<ASUIComponent>("m_playerInfo");
-    FUN_1419f1da0(FUN_1409a8b10()->FUN_140a58500()->m_bExpand);
+    FUN_1419f1da0(reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bExpand);
     FUN_1419f2eb0();
     FUN_1419f19c0();
     vfunc_oa0_20(pPc->FUN_1416764d0());
@@ -643,7 +639,7 @@ int UIMainPlayerInfo::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                             Unk_MpWeaponPtr weapon(phys.FUN_1401cd1a0()->FUN_1410b8ab0(pCtl->FUN_1410aa520()));
                             if (weapon.FUN_140885330() != 0)
                             {
-                                if (Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0())
+                                if (Unk_MpPC* pPc = reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0())
                                     pPc->FUN_14152f140(weapon.FUN_140885350()->m_18);
                             }
                         }
@@ -703,7 +699,7 @@ void UIMainPlayerInfo::vfunc_15()
 {
     if (FUN_1422dc2d0() == 0)
         return;
-    Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MpPC* pPc = reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     m_effectManager->Update();
@@ -727,14 +723,14 @@ void UIMainPlayerInfo::vfunc_15()
 // @0x1419ef930
 int UIMainPlayerInfo::vfunc_13()
 {
-    Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MpPC* pPc = reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     if (pPc->FUN_141659690() != 0)
         return 0;
     if (pPc->FUN_141659610() != 0)
         return 0;
-    if (FUN_14025e7c0()->FUN_14116dd30(0x493e1, 0, 0) && FUN_1403ed2d0()->FUN_141bdb660(0) != 0)
+    if (FUN_14025e7c0()->FUN_14116dd30(0x493e1, 0, 0) && reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bdb660(0) != 0)
     {
         FUN_1412751f0(BlockFormat(0x60), 1, 1);
         FUN_141276180(s_strNotThisPlace, "");
@@ -812,7 +808,7 @@ void UIMainPlayerInfo::vfunc_oa0_3(int nCur, int nMax)
         m_nHP[0] = nCur;
         m_nHP[1] = nMax;
     }
-    if (Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0())
+    if (Unk_MpPC* pPc = reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0())
     {
         if (!FUN_14028d470(pPc->FUN_1416749a0()->FUN_140970fb0(), 0.0f))
             FUN_1419f37f0(1);
@@ -880,7 +876,7 @@ void UIMainPlayerInfo::vfunc_oa0_20(int bRiding)
 {
     if (m_playerInfo == 0)
         return;
-    Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MpPC* pPc = reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (FUN_1419f16b0() == 0)
@@ -906,7 +902,7 @@ void UIMainPlayerInfo::vfunc_oa0_20(int bRiding)
             break;
         nMode = 1;
         obj.FUN_1407cb9c0("rideOff", MP_ROW(holder.FUN_140975bc0()->FUN_141707750())->m_64);
-        obj.FUN_1407cbb20("rideeName", FUN_1401a9d70()->FUN_141811980(0x31, MP_ROW(holder.FUN_140975bc0()->FUN_141707750())->m_30));
+        obj.FUN_1407cbb20("rideeName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x31, MP_ROW(holder.FUN_140975bc0()->FUN_141707750())->m_30));
         m_ridee.AssignRaw(new UIAvatarRidee(holder.FUN_140975bc0()->FUN_141707750()));
         m_ridee->vfunc_1(0);
     } while (0);
@@ -1036,7 +1032,7 @@ void UIMainPlayerInfo::FUN_1419f1180(int nBuffId)
 // @0x1419f1200
 void UIMainPlayerInfo::FUN_1419f1200(int nId, int nLevel)
 {
-    Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MpPC* pPc = reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     FUN_1419f1370(nId);
@@ -1108,7 +1104,7 @@ void UIMainPlayerInfo::FUN_1419f1600()
 // @0x1419f16b0
 int UIMainPlayerInfo::FUN_1419f16b0()
 {
-    Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MpPC* pPc = reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     int bVisible = 1;
@@ -1157,8 +1153,8 @@ void UIMainPlayerInfo::FUN_1419f19c0()
     FUN_1417634a0(FUN_1419f31f0());
     FUN_1417633f0(FUN_1419f31f0(), 0x19);
     if (MS2Ptr<ASUIComponent> spSlot = GetChild<ASUIComponent>("m_slot"))
-        spSlot->Invoke("updateBindSlot", FUN_1409a8b10()->FUN_140a58500()->m_bExpand);
-    Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+        spSlot->Invoke("updateBindSlot", reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bExpand);
+    Unk_MpPC* pPc = reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     Unk_MpSkillSetPtr spSet = pPc->FUN_141523bc0()->FUN_141768380();
@@ -1218,7 +1214,7 @@ void UIMainPlayerInfo::FUN_1419f1e60()
 {
     if (m_30 == 0)
         return;
-    if (FUN_1409a8b10()->FUN_140a58500()->m_bExpand)
+    if (reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bExpand)
     {
         int nKey1 = FUN_1409331f0()->FUN_14142c940(800001, 2);
         int nKey2 = FUN_1409331f0()->FUN_14142c940(800002, 2);
@@ -1241,7 +1237,7 @@ void UIMainPlayerInfo::FUN_1419f21b0()
         return;
     int x = -395;
     int y = -12;
-    if (FUN_1409a8b10()->FUN_140a58500()->m_bExpand)
+    if (reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bExpand)
     {
         x = -478;
         y = -60;
@@ -1249,7 +1245,7 @@ void UIMainPlayerInfo::FUN_1419f21b0()
     m_effectManager->SetPosA(x, y);
     x = 0x48;
     y = -12;
-    if (FUN_1409a8b10()->FUN_140a58500()->m_bExpand)
+    if (reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bExpand)
     {
         x = 0x5d;
         y = -60;
@@ -1268,7 +1264,7 @@ void UIMainPlayerInfo::FUN_1419f22a0(int nKey, int bPress)
     ASObj obj(2);
     obj.FUN_1407cb9c0("index", nIndex);
     obj.FUN_1407cb9c0("bPress", bPress);
-    obj.FUN_1407cbbe0("showSkillName", FUN_1409a8b10()->FUN_140a58500()->m_bShowSkillName);
+    obj.FUN_1407cbbe0("showSkillName", reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bShowSkillName);
     ASArray names(2);
     for (int i = nFirst; i < nFirst + 8; i++)
     {
@@ -1475,7 +1471,7 @@ void UIMainPlayerInfo::FUN_1419f2e60(CItem* pItem)
 // @0x1419f2eb0
 void UIMainPlayerInfo::FUN_1419f2eb0()
 {
-    Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MpPC* pPc = reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (pPc->FUN_1416546d0()->FUN_140639bb0().FUN_14063e9f0(0))
@@ -1487,7 +1483,7 @@ void UIMainPlayerInfo::FUN_1419f2eb0()
         obj.FUN_1407cb9c0("riding", pPc->FUN_1416764d0());
         obj.FUN_1409c48f0("level", pPc->vfunc_78());
         obj.FUN_140bd0d90("jobCode", pPc->FUN_141654730());
-        obj.FUN_1407cbb20("jobName", FUN_1401a9d70()->FUN_141811980(6, pPc->FUN_141654730()));
+        obj.FUN_1407cbb20("jobName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pPc->FUN_141654730()));
         obj.FUN_1407cbb20("name", FUN_1419f3420());
         obj.FUN_1409c1180("curHP", pPc->FUN_141670a00(4));
         obj.FUN_1409c1180("curSP", pPc->FUN_141670a00(7));
@@ -1529,7 +1525,7 @@ void UIMainPlayerInfo::FUN_1419f32f0()
 // @0x1419f3370
 void UIMainPlayerInfo::OnRideOff()
 {
-    Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MpPC* pPc = reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     pPc->FUN_14152c280(new Unk_MpRideOff(0));
@@ -1544,7 +1540,7 @@ int UIMainPlayerInfo::FUN_1419f3400(int nId)
 // @0x1419f3420
 CStringW UIMainPlayerInfo::FUN_1419f3420()
 {
-    Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MpPC* pPc = reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return L"";
     CStringW strName = pPc->vfunc_77();
@@ -1616,7 +1612,7 @@ void FUN_1419f37f0(unsigned int nFlags)
 // @0x1419f3810
 Unk_MpRideeCtl* FUN_1419f3810()
 {
-    Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MpPC* pPc = reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     return pPc->FUN_141530290();

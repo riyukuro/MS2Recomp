@@ -10,8 +10,8 @@
 #include <NiInstancingUtilities.h>
 #include <ecr/RenderService.h>
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/entityworldmanager.h"
 
-EntityWorldManager* FUN_1409670f0();
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 void FUN_14098c6e0(egf::Entity*, unsigned, const bool&);
 void FUN_1408a20a0(egf::Entity*, unsigned, bool*);
@@ -65,8 +65,8 @@ void MeshInstancing::FUN_14147c010(egf::Entity* entity, unsigned cap, unsigned c
         root = NiNew NiNode(0);
         root->GrowChildArray(cap);
         root->SetLocalTransform(identity);
-        id18 = FUN_1409670f0()->FUN_1411ce760(FUN_14112e120(entity), config.asset, bFlag);
-        source = FUN_1409670f0()->FUN_1411cf440(id18);
+        id18 = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce760(FUN_14112e120(entity), config.asset, bFlag);
+        source = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id18);
         FUN_141568ac0(source, FUN_1413fa320(entity));
         FUN_14098c6e0(source.operator->(), 0x2a7fd9f4, flag2a);
         FUN_14098c6e0(source.operator->(), 0xd89e9b12, config.flags30);
@@ -98,7 +98,7 @@ void MeshInstancing::vfunc_1() {
         NiInstancingUtilities::DisableMeshInstancing(mesh);
     }
     if (FUN_1408a9090(&source) != NULL) {
-        FUN_1409670f0()->FUN_1411cf570(source);
+        TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf570(source);
         source = NULL;
     }
     entries.clear();

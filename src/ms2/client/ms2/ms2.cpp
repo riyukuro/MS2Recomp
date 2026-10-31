@@ -445,7 +445,6 @@ MS2_CHECK_SIZE(UISceneLogin, 0xf8);
 class Unk_Ms2Window { public: HWND FUN_14209c720(); };                       // efd::Win32PlatformService::GetWindowRef
 Unk_Ms2Window* FUN_140aadf80();
 class Unk_Ms2SceneState { public: void FUN_1417e25a0(int nScene); };
-Unk_Ms2SceneState* FUN_140aa6d30();
 CNetworkService* FUN_140714f90();
 COptimizer* FUN_1409f7c90();
 void FUN_14161c360(COptimizer* pOptimizer);
@@ -459,7 +458,7 @@ Unk_Ms2PrecacheOption* FUN_1406aeee0();
 bool FUN_1406af0a0(Unk_Ms2PrecacheOption* p);
 ecr::RenderService* FUN_1413f9890();
 NiCullingProcess* FUN_141753990();                              // the shadow culling process factory
-void FUN_14150baf0(NiAVObject* pkObject);                       // excludes an object from the shadow casters
+void MS2ExcludeFromShadows(NiAVObject* pkObject);               // excludes an object from the shadow casters
 extern void (*DAT_143afbfc8)(NiAVObject*);
 extern const NiFixedString DAT_143ae5290, DAT_143ae5298, DAT_143ae52a0;   // the dir / point / spot shadow materials
 extern char DAT_143afc8d0, DAT_143afc898, DAT_143afc8e8, DAT_143afc900, DAT_143afcb90, DAT_143afcba8, DAT_143b08a3c;
@@ -753,7 +752,7 @@ private:
     void* m_data[0xa];
 };
 MS2_CHECK_SIZE(Unk_TiXmlComment, 0x50);
-Unk_140165cf0* FUN_14081b310(TiXmlDocument* pDoc);              // the root element
+Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc);             // the root element
 void* FUN_14086e000(void* pParent, const void* pChild);         // InsertEndChild
 void FUN_140873ca0(void* pElem, const char* pszName, int nValue);   // SetAttribute(name, int)
 bool FUN_1408710c0(TiXmlDocument* pDoc, const char* pszPath);   // SaveFile
@@ -780,7 +779,7 @@ void MS2::PrepareShaderCache()
     {
         Unk_140165cf0* pRoot;
         Unk_140165cf0* pShader;
-        if (CreateDirectoryA(strCurrent, NULL) == 0 && (pRoot = FUN_14081b310(&kDoc)) != NULL &&
+        if (CreateDirectoryA(strCurrent, NULL) == 0 && (pRoot = DocRootElement(&kDoc)) != NULL &&
             (pShader = pRoot->FUN_140165cf0("shader")) != NULL)
         {
             FUN_1408731e0(pShader, "ver", nVersion);
@@ -845,8 +844,8 @@ void MS2::Shutdown()
 {
     if (FUN_140aadf80() && FUN_140aadf80()->FUN_14209c720())
         KillTimer(FUN_140aadf80()->FUN_14209c720(), 1000);
-    if (FUN_140aa6d30())
-        FUN_140aa6d30()->FUN_1417e25a0(0);
+    if (reinterpret_cast<Unk_Ms2SceneState*>(TSingleton<CStateService>::GetInstance()))
+        reinterpret_cast<Unk_Ms2SceneState*>(TSingleton<CStateService>::GetInstance())->FUN_1417e25a0(0);
     if (CrashManagerCli::GetInstance())
         CrashManagerCli::GetInstance()->FUN_1401ce420();
     if (m_spServiceManager) {
@@ -1118,7 +1117,7 @@ efd::AsyncResult MS2::OnInit()
     NiShadowManager::SetShadowRenderCullingProcessFactory(FUN_141753990);
     NiShadowManager::SetShadowVisitorFactory(MS2ShadowVisitor::CreateMS2ShadowVisitor);
     NiShadowManager::SetShadowRenderClickValidatorFactory(MS2ShadowClickValidator::CreateMS2ShadowClickValidator);
-    DAT_143afbfc8 = FUN_14150baf0;
+    DAT_143afbfc8 = MS2ExcludeFromShadows;
 
     NiMaterialSwapProcessorPtr spSwapProcessor = NiShadowManager::GetMaterialSwapProcessor(NiStandardMaterial::LIGHT_DIR);
     if (spSwapProcessor) {
@@ -1186,7 +1185,7 @@ extern CStringW g_143ac2fe8;                                    // the command l
 extern int DAT_143ac2fd4;                                       // the client requires a minimum OS (checked with FUN_1406c34b0)
 extern int DAT_143ac2fd0;                                       // the platform auth was cancelled
 extern int DAT_1439f7de4;                                       // the configured log level
-extern int DAT_143ae08fc;                                       // the pack file mode (> 0: packed)
+extern int g_nIgnorePack;                                       // the pack file mode (> 0: packed)
 extern int DAT_143ae2b30;                                       // the multi-scene updater is enabled
 extern int DAT_143af7d58;                                       // the loading dialog is up
 extern void (*DAT_143b023c0)();                                 // the out-of-memory handlers of two allocators
@@ -1215,7 +1214,7 @@ void FUN_1401a2e40(CArcadeDataTable* p);
 void FUN_1401ae2f0(AttendGiftDataTable* p);
 void FUN_1401c06d0();
 void FUN_1401d6550(CChangeJobTable* p);
-void FUN_14029f3f0();
+void RegisterConditionTypes();
 void FUN_1402c6f50(CCoupleEmotionTable* p);
 void FUN_1402e9ad0(ItemDropTable* p);
 void FUN_140347180();
@@ -1250,7 +1249,7 @@ void FUN_14067f320(CMaidDescTable* p);
 void FUN_14067f920(CMaidManufactureMsgTable* p);
 void FUN_140684ea0(CMaidRecipeTable* p);
 void FUN_140685760(CMaidRecipeGroupTable* p);
-void FUN_140698b10();
+void MD5Unknown0();
 void FUN_14069bd60(MentoringDataTable* p);
 void FUN_1406a9940();
 void FUN_1406c54d0(CNametagSymbolTable* p);
@@ -1527,11 +1526,11 @@ void FUN_1416841f0(CPCEffectDummy* p);
 void FUN_1416bb2e0();
 void FUN_1416bb5f0();
 void FUN_1416bc0f0();
-void FUN_1416bc380();
-void FUN_1416be6d0();
-void FUN_1416bea60();
-void FUN_1416bf750();
-void FUN_1416bf8a0();
+void ResetMaterialNames();
+void InitShaderConstantNames();
+void ResetShaderConstantNames();
+void InitDummyNames();
+void ResetDummyNames();
 void FUN_141791940(SoundPropertyMgr* p);
 void FUN_141810f70(CStringTable* p);
 void FUN_14183e690();
@@ -1742,9 +1741,9 @@ BOOL CGameApp::InitInstance()
     pInitOptions->SetUseUnhandledExceptionFilter(false);
     NiStaticDataManager::Init(pInitOptions, true);
     Unk_SingletonCreator<COnlinePatchManagerCli>::CreateInstance();
-    FUN_140698b10();
+    MD5Unknown0();
     Unk_SingletonCreator<CFileSystem>::CreateInstance();
-    if (TSingleton<CFileSystem>::GetInstance()->FUN_140396770(DAT_143ae08fc > 0, DAT_143ae08fc) == 0)
+    if (TSingleton<CFileSystem>::GetInstance()->FUN_140396770(g_nIgnorePack > 0, g_nIgnorePack) == 0)
     {
         FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x29).GetStr(), CStringW(L""), 0);
         return FALSE;
@@ -1766,8 +1765,8 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CFilePreload>::CreateInstance();
     FUN_1416bc0f0();
     FUN_1416bb2e0();
-    FUN_1416be6d0();
-    FUN_1416bf750();
+    InitShaderConstantNames();
+    InitDummyNames();
     Unk_SingletonCreator<CFeatureManager>::CreateInstance();
     if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036ccb0())
     {
@@ -1802,7 +1801,7 @@ BOOL CGameApp::InitInstance()
     TSingleton<CommonEffectDummy>::GetInstance()->Load();
     Unk_SingletonCreator<NpcDataTableCli>::CreateInstance();
     CFieldData::LoadFieldData();
-    FUN_14029f3f0();
+    RegisterConditionTypes();
     Unk_SingletonCreator<CItemEnchantUtil>::CreateInstance();
     Unk_SingletonCreator<ItemDropTable>::CreateInstance();
     Unk_SingletonCreator<CItemOptionTable>::CreateInstance();
@@ -2296,10 +2295,10 @@ BOOL CGameApp::InitInstance()
     FUN_1414a0600();
     FUN_1414a0900();
     FUN_1414a3d30();
-    FUN_1416bf8a0();
-    FUN_1416bea60();
+    ResetDummyNames();
+    ResetShaderConstantNames();
     FUN_1416bb5f0();
-    FUN_1416bc380();
+    ResetMaterialNames();
     FUN_1414a1140();
     FUN_1414a1990();
     FUN_1414a09c0();

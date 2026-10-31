@@ -17,7 +17,7 @@
 
 #include "hook/ms2hook.h"
 
-CStringW FUN_1408767c0(const char* sz);                                 // CStringW from a narrow string
+CStringW XmlWide(const char* sz);                                 // CStringW from a narrow string
 CString FUN_14016a600(const wchar_t* sz, int n);                        // wide -> narrow
 CString FUN_1409a23d0(const char* sz, int n);                           // CString from a narrow string
 
@@ -310,7 +310,7 @@ CStringW ASData::FUN_1422b8f40()
     CStringW str(L"");
     if (m_args.GetCount() > 0) {
         if (m_args.GetHead().IsString())
-            str = FUN_1408767c0(m_args.RemoveHead().GetString());
+            str = XmlWide(m_args.RemoveHead().GetString());
         else if (m_args.GetHead().IsStringW())
             str = m_args.RemoveHead().GetStringW();
         else
@@ -410,7 +410,7 @@ MS2_REPLACE(0x1422B9440, FUN_1422b9440, 69, 0xE66ABB60);
 CStringW FUN_1422b9490(const Scaleform::GFx::Value& v)
 {
     if (v.IsString())
-        return FUN_1408767c0(v.GetString());
+        return XmlWide(v.GetString());
     else if (v.IsStringW())
         return CStringW(v.GetStringW());
     return CStringW(L"");

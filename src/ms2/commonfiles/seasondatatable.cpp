@@ -94,13 +94,14 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 #ifdef __clang__
 CStringA FUN_140298360(const char*, const CStringA&);
 CStringA FUN_14038f6d0(const CStringA&, const char*);
 #endif
 
 // Unrecovered helpers.
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
@@ -110,7 +111,7 @@ int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);    /
 CString FUN_140651390();                                                        // the language suffix of a text table
 CString FUN_14071ae20(const CString& strFile);                                  // path of a string table file
 bool FUN_1406c5200();
-__int64 FUN_140869440();                                                       // the server time
+__int64 GetServerTime();                                                       // the server time
 CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);                       // string table format
 CStringA FUN_140536a50(const char* pszFormat, const CStringA& str);
 CStringA FUN_1402bb1c0(const char* pszFormat, const int& n);
@@ -333,7 +334,7 @@ void CSeasonDataTable::Tick()
     }
     if (!CMsTime::IsTimeZoneSet())
         return;
-    __int64 nNow = FUN_140869440();
+    __int64 nNow = GetServerTime();
     if (m_nLastUpdate != 0) {
         __int64 nDiff = nNow - m_nLastUpdate;
         if (nDiff < 60)
@@ -535,7 +536,7 @@ void CSeasonDataTable::Refresh(SeasonRankType type, int nMode)
 {
     if (!FUN_1406c5200())
         return;
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     int nState = 0;
     POSITION posNext = 0;
     int bAdvance = (nMode == 1) ? 0 : 1;
@@ -658,7 +659,7 @@ MS2Ptr<CSeasonDataCurrent> CSeasonDataTable::GetCurrentRecord(SeasonRankType typ
 // @0x140793750
 POSITION CSeasonDataTable::GetRecentPosition(SeasonRankType type)
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     TPtrValue<Seasons> spSeasons;
     m_seasons.Lookup(type, spSeasons);
     for (POSITION pos = spSeasons->GetTailPosition(); pos != 0; spSeasons->GetPrev(pos)) {
@@ -750,7 +751,7 @@ int CSeasonDataTable::ReadRewards()
 // @0x140794310
 MS2Ptr<CSeasonReward> CSeasonDataTable::GetReward(SeasonRankType type)
 {
-    __int64 nNow = FUN_140869440();
+    __int64 nNow = GetServerTime();
     TPtrValue<Rewards> spRewards(0);
     m_rewards.Lookup(type, spRewards);
     if (spRewards == static_cast<Rewards*>(0))

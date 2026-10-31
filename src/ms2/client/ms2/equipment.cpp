@@ -120,6 +120,8 @@
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // @0x1411f0e30 (a rate multiply with the epsilon, as FUN_1406198a0 for floats)
 inline float FUN_1411f0e30(float fValue, float fRate)
@@ -181,7 +183,7 @@ int FUN_14028d260(float fSeconds);                  // seconds -> ms
 int FUN_141421690(CItem* pItem);                    // the item kind
 bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);   // is of the class id
 bool FUN_14028d470(float a, float b);               // a == b (epsilon)
-CString FUN_14021c050(int nSlot);                   // the slot name
+CString Name_14021c050(int nSlot);                  // the slot name
 void FUN_141653f00(PC* pPC);                        // refresh the PC's look
 void FUN_1411a6060(CEffectService* pService, unsigned nEffect);   // remove an effect
 std::set<NiAVObjectPtr>* FUN_141201c90(CEquipModel* pModel);      // the model's root nodes
@@ -202,7 +204,6 @@ struct Unk_EqWorld
     PCBase* FUN_141bd3620();                        // the local player
     int FUN_141bd1a10(GameObject* pObject);         // the object's actor id
 };
-Unk_EqWorld* FUN_1403ed2d0();
 PCBase* FUN_141bd0cc0(Unk_EqWorld* pWorld);         // the local player
 CString FUN_1414253b0(const CString& strPath, int bDiffuse);   // the face model path of a variant (the exe passes it by reference)
 CString FUN_141425220(const CString& strPath, int bDiffuse);  // the ear model path of a variant
@@ -231,15 +232,12 @@ struct Unk_EqApp
     void* m_00;
     Unk_EqSvcHolder m_spServiceManager;                 // +0x08
 };
-Unk_EqApp* FUN_14086d260();
 double FUN_141473280(Unk_EqApp* pApp);
 int FUN_141424d00(MS2Ptr<CEquipItem> spHair, const NiPoint3& kOrigin, const NiPoint3& kDir, NiPick& kPick, int* pnResult);   // pick the hair
 void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue);   // (unit_1411673f0)
 // The item's status (CItemStatus) as the update sums it: the PvP option value returns int.
 class Unk_EqItemStatus : public CItemStatus
 {
-public:
-    int FUN_14062ff70(unsigned nType);                  // the PvP special ability value (item.h declares it void)
 };
 class Unk_EqItem : public CItem
 {
@@ -249,8 +247,6 @@ public:
 #define EQITEM(sp) static_cast<Unk_EqItem*>((sp).operator->())
 class Unk_EqPC : public PC
 {
-public:
-    MS2Ptr<CItem> FUN_141663450();                      // the summoned pet's item
 };
 // The pet row's stat growth rate (+0xa8, past cpet.h's Unk_PetRow).
 class Unk_EqPetRow : public Unk_PetRow
@@ -372,12 +368,8 @@ class Unk_EquipModelCalls : public CEquipModel
 public:
     ModelPart* FUN_141200ab0();                                     // the <asset> record
     MS2Ptr<CEquipItem> FUN_141200a40();                             // the owner item
-    NiPoint3 FUN_1412000d0();                                       // the rotation (degrees)
     void FUN_141200100(NiPoint3 kRot);
-    NiPoint3 FUN_141200130();                                       // the position
     void FUN_141200160(NiPoint3 kPos);
-    CString FUN_1412028f0();                                        // the loaded file
-    CString FUN_1412029d0();                                        // the attach node name
     NiAVObject* FUN_1412018c0();                                    // the first root
     bool FUN_141200bb0(const CString& strTag);                      // add a tag
     char FUN_141200c10(const CString& strTag);                      // remove a tag
@@ -1563,7 +1555,7 @@ void CEquipment::FUN_1411e5940(MS2Ptr<CEquipItem> spItem)
                     bShown = 1;
             }
             if (!bShown)
-                FUN_1411e9530(nSlot, FUN_14021c050(spData->FUN_140527a20()));
+                FUN_1411e9530(nSlot, Name_14021c050(spData->FUN_140527a20()));
         }
     }
 }
@@ -2076,7 +2068,7 @@ void CEquipment::FUN_1411ea7c0()
     if (m_spLayerInfo == 0)
         return;
     if (FUN_14087ddc0(m_pPC != 0 ? m_pPC->GetClassDesc() : 0, 0x6200004)) {
-        PCBase* pMyPC = FUN_1403ed2d0()->FUN_141bd3620();
+        PCBase* pMyPC = reinterpret_cast<Unk_EqWorld*>(WorldService::GetInstance())->FUN_141bd3620();
         if (pMyPC != NULL)
             static_cast<PC*>(pMyPC)->FUN_1416561a0()->FUN_1411ea620(m_spLayerInfo->m_start, m_spLayerInfo->m_end);
     }
@@ -2088,7 +2080,7 @@ void CEquipment::FUN_1411ea8c0()
 {
     if (m_spLayerInfo == 0)
         return;
-    PCBase* pMyPC = FUN_141bd0cc0(FUN_1403ed2d0());
+    PCBase* pMyPC = FUN_141bd0cc0(reinterpret_cast<Unk_EqWorld*>(WorldService::GetInstance()));
     if (pMyPC != NULL && m_pPC != 0 && m_pPC->FUN_14123c580() == pMyPC->FUN_14123c580())
         NotifySystem::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyChangeActiveMyCodiTab(m_spLayerInfo->IsActive())));
 }
@@ -2101,7 +2093,7 @@ void CEquipment::FUN_1411eaa00(MS2Ptr<Equipment::SetEffectInfo> spInfo)
         return;
     NoticeMessage msg;
     msg.m_strName = spInfo->m_strName;
-    msg.m_nObject = FUN_1403ed2d0()->FUN_141bd1a10(m_pPC);
+    msg.m_nObject = reinterpret_cast<Unk_EqWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pPC);
     msg.SetActor(m_pPC->FUN_14123c580());
     static_cast<Unk_EqNotice&>(msg).FUN_140a531f0(Delegate<void(unsigned, CString, bool)>(this, &CEquipment::FUN_1411efcb0));
     msg.SetMode48(spInfo->m_nGroup);
@@ -2445,7 +2437,7 @@ int CEquipment::FUN_1411eb550(CString strName)
                 return 1;
         }
     } else {
-        Unk_EqAssetSvc* pAssets = FUN_140998330(FUN_140af8310(&FUN_14086d260()->m_spServiceManager));
+        Unk_EqAssetSvc* pAssets = FUN_140998330(FUN_140af8310(&reinterpret_cast<Unk_EqApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager));
         if (pAssets == NULL)
             return 1;
         if (!pAssets->vfunc_21((const char*)strPath)) {
@@ -2506,7 +2498,7 @@ void CEquipment::FUN_1411ef2e0(CEquipModel* pModel, const NiPoint3& kPos, const 
     if (pProxy == NULL)
         return;
     NiPoint3 kOldPos = static_cast<Unk_EquipModelCalls*>(pModel)->FUN_141200130();
-    NiPoint3 kOldRot = static_cast<Unk_EquipModelCalls*>(pModel)->FUN_1412000d0();
+    NiPoint3 kOldRot = static_cast<Unk_EquipModelCalls*>(pModel)->GetPos6c();
     NiMatrix3 kNew;
     NiMatrix3 kOld;
     kNew.FromEulerAnglesXYZ(kRot.x * 3.1415927f / 180.0f, kRot.y * 3.1415927f / 180.0f, kRot.z * 3.1415927f / 180.0f);
@@ -2619,7 +2611,7 @@ void CEquipment::FUN_1411ed270()
     }
     if (pCapNode == NULL)
         return;
-    float fTime = (float)FUN_141473280(FUN_14086d260());
+    float fTime = (float)FUN_141473280(reinterpret_cast<Unk_EqApp*>(TSingleton<CMainSystem>::GetInstance()));
     Unk_EqAnimSvc* pAnim = FUN_141b6f910();
     pCapNode->Update(fTime, true);
     for (size_t i = 1; i < hairModels.GetCount(); i++) {
@@ -2966,7 +2958,7 @@ void CEquipment::FUN_1411e76c0(double fTime)
     int bExpired = 0;
     int bGems = 0;
     int bStats = 0;
-    bool bPvp = CFieldData::FUN_1403744a0(FUN_1403ed2d0()->FUN_141bd3060());
+    bool bPvp = CFieldData::FUN_1403744a0(reinterpret_cast<Unk_EqWorld*>(WorldService::GetInstance())->FUN_141bd3060());
     if (m_50 != 0) {
         m_skillStats.RemoveAll();
         m_effectStats.RemoveAll();

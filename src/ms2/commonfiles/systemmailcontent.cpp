@@ -20,12 +20,14 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 typedef ATL::CAtlMap<unsigned int, CSystemMailContent::Ptr> Unk_SystemMailMap;
 
 // ---- unrecovered helpers ----
 
-class Unk_SmLoader { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_SmLoader : public CFileSystem { };
 Unk_SmLoader* FUN_140166420();
 CString FUN_140651390();                                        // the language directory
 CString FUN_140298360(const char* pszName, const CString& strDir);   // locale file name
@@ -33,7 +35,6 @@ CString FUN_14038f6d0(const CString& strA, const char* pszB);   // string concat
 CString FUN_14071ae20(const CString& strFile);                  // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);         // undecorated class name
 class Unk_SmTextMgr;
-Unk_SmTextMgr* FUN_1403b4750();
 void FUN_1416fb380(Unk_SmTextMgr* pMgr, CStringW* pStr);        // post-process a loaded text
 extern CLockCriticalSection g_cacheLock;                        // 0x143aac550
 extern int DAT_1439ed00c;
@@ -93,9 +94,9 @@ void LoadSystemMailContent()
         FUN_140873420(pNode, "sender", spMail->m_strSender);
         FUN_140873420(pNode, "subject", spMail->m_strSubject);
         FUN_140873420(pNode, "content", spMail->m_strContent);
-        FUN_1416fb380(FUN_1403b4750(), &spMail->m_strSender);
-        FUN_1416fb380(FUN_1403b4750(), &spMail->m_strSubject);
-        FUN_1416fb380(FUN_1403b4750(), &spMail->m_strContent);
+        FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strSender);
+        FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strSubject);
+        FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strContent);
         if (Unk_LockGuard guard = g_cacheLock)
         {
         }
@@ -119,9 +120,9 @@ void FUN_140851c40(Unk_140165cf0* pRoot)
         FUN_140873420(pNode, "sender", spMail->m_strSender);
         FUN_140873420(pNode, "subject", spMail->m_strSubject);
         FUN_140873420(pNode, "content", spMail->m_strContent);
-        FUN_1416fb380(FUN_1403b4750(), &spMail->m_strSender);
-        FUN_1416fb380(FUN_1403b4750(), &spMail->m_strSubject);
-        FUN_1416fb380(FUN_1403b4750(), &spMail->m_strContent);
+        FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strSender);
+        FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strSubject);
+        FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strContent);
         if (Unk_LockGuard guard = g_cacheLock)
         {
         }

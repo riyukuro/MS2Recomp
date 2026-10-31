@@ -17,6 +17,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
 
 // ---- callees ------------------------------------------------------------------------------------------------------
 
@@ -32,7 +33,6 @@ void FUN_14015f050(const CString& str, ATL::CAtlArray<CString>& parts, const cha
 void FUN_140165270(ATL::CAtlArray<CString>& arr, const CString& str);
 void FUN_140165320(ATL::CAtlArray<CStringW>* pArr, const CStringW& str);
 CUgcManager* FUN_14052d220();
-CBuddyManager* FUN_14097a780();
 
 // The placeholder images of the config singleton (DAT_143aac5c0).
 class Unk_SingletonObj
@@ -60,7 +60,6 @@ class Unk_UgcGameRules
 public:
     Unk_UgcContentRule* FUN_14046d0d0(int nRule);
 };
-Unk_UgcGameRules* FUN_140302b00();
 
 // The client feature flags.
 class Unk_SettingsHolder;
@@ -338,9 +337,9 @@ CString FUN_141027d30(int nKind)
 // @0x1410280d0
 CString FUN_1410280d0(int nKind, CString strName)
 {
-    if (FUN_140302b00() != 0)
+    if (reinterpret_cast<Unk_UgcGameRules*>(TSingleton<CGameEventValueManager>::GetInstance()) != 0)
     {
-        if (FUN_140302b00()->FUN_14046d0d0(0xb)->FUN_1407d1210(nKind))
+        if (reinterpret_cast<Unk_UgcGameRules*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14046d0d0(0xb)->FUN_1407d1210(nKind))
             return CString("");
     }
     CString strPath;
@@ -424,7 +423,7 @@ CString FUN_141028a90(CString strId, int bDefault)
 CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CString strUrl)
 {
     {
-        CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4880(nId);
+        CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(nId);
         if (spBuddy.get() != 0)
         {
             if (spBuddy->FUN_1401cc5b0() != 0)

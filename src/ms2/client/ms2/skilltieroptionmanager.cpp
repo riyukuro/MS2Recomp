@@ -24,9 +24,10 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);

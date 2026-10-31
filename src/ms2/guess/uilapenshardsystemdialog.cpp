@@ -111,6 +111,7 @@ template <> inline TPtr<Unk_UISwfEntity_25>::TPtr(const TPtr& o)
 }
 
 #include "ms2/placeholder/unk_1402a9d70.h"
+#include "ms2/commonfiles/itemlapensharddata.h"
 // ---- statics of the headers this unit includes (three translation units folded into one: the .di of each constructs them
 // in this order; the third and fourth sets also carry a CMyPCKeyInputController) ----
 
@@ -432,7 +433,7 @@ public:
 };
 Unk_LsBagReg* FUN_140a703d0(CString* pstrBag);                          // the bag of a name
 class Unk_LsRecord;
-class Unk_LsTable { public: int FUN_1405b5810(unsigned nSlot); MS2Ptr<Unk_LsRecord> FUN_1405b56a0(unsigned nItemId); unsigned FUN_1405b5af0(int nKind); };   // lapenshard slot -> equip kind; item id -> record
+class Unk_LsTable : public CItemLapenshardTable { public: int FUN_1405b5810(unsigned nSlot); MS2Ptr<Unk_LsRecord> FUN_1405b56a0(unsigned nItemId);};   // lapenshard slot -> equip kind; item id -> record
 Unk_LsTable* FUN_1409c4b30();
 struct Unk_LsSlotArg { unsigned m_n; Unk_LsSlotArg() : m_n(0) {} };      // 0x140c5e480
 void FUN_1405b5e40(Unk_LsSlotArg* pArg, COutPacket* pPacket);            // write it
@@ -890,6 +891,7 @@ class UIRewardNotify;
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/commonfiles/commonstruct_wa.h"
+#include "ms2/placeholder/cstringtable.h"
 #ifdef __clang__
 // FUN_140c60920 passes the address of the temporary CStringW from vfunc_77 (an MSVC extension).
 #pragma clang diagnostic ignored "-Waddress-of-temporary"
@@ -2269,7 +2271,6 @@ private:
 };
 
 class Unk_LsSkillNames { public: CStringW FUN_141811980(int nKind, unsigned nId); };
-Unk_LsSkillNames* FUN_1401a9d70();
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 
 // @0x140c5fbd0
@@ -2297,7 +2298,7 @@ void UILapenshardShieldBar::FUN_140c5fbd0()
         if (!FUN_14096d810(m_spBuff.operator->())->m_skills.FUN_140311670())
         {
             unsigned nSkillId = *FUN_14096d810(m_spBuff.operator->())->m_skills.FUN_14018ee60().FUN_1403e8d90();
-            CStringW strMsg = FUN_1405c2690(CStringW(L"s_lapenshard_skill_possible_msg"), FUN_1401a9d70()->FUN_141811980(4, nSkillId));
+            CStringW strMsg = FUN_1405c2690(CStringW(L"s_lapenshard_skill_possible_msg"), reinterpret_cast<Unk_LsSkillNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(4, nSkillId));
             pReward->FUN_141ac05d0(nSkillId, strMsg, 1);
         }
     }
@@ -2383,7 +2384,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c65540(CString& strBag, MS2Ptr<Unk_LsRec
     int bNeed = spRec->m_nNeed > 0;
     if (bNeed != 0)
     {
-        unsigned nItemId = FUN_1409c4b30()->FUN_1405b5af0(spRec->m_nKind);
+        unsigned nItemId = FUN_1409c4b30()->GetFirstItem(spRec->m_nKind);
         int nGrade = FUN_14053feb0(nItemId);
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_14052b2e0(nItemId, nGrade, 0, spRec->m_nNeed) != 0)
@@ -2475,7 +2476,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c664e0()
                     ASObj obj(2);
                     obj.FUN_1407cba60("bindID", m_strSource);
                     spSourceSlot->FUN_140acd1f0("setData", AScript(obj));
-                    strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
+                    strName = FUN_14183e9c0(reinterpret_cast<Unk_LsSkillNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
                 }
             }
         }
@@ -2506,7 +2507,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c664e0()
                     ASObj obj(2);
                     obj.FUN_1407cba60("bindID", m_strResult);
                     spResultSlot->FUN_140acd1f0("setData", AScript(obj));
-                    strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
+                    strName = FUN_14183e9c0(reinterpret_cast<Unk_LsSkillNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
                 }
             }
         }
@@ -2598,7 +2599,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c67440(bool bSuccess)
             if (pBag != 0)
                 FUN_1414166a0(pBag, Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
         }
-        CStringW strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
+        CStringW strName = FUN_14183e9c0(reinterpret_cast<Unk_LsSkillNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
         obj.FUN_1407cba60("successSlotBindID", strSuccess);
         obj.FUN_1407cbb20("successItemName", strName);
     }
@@ -2622,7 +2623,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c67440(bool bSuccess)
             if (pBag != 0)
                 FUN_1414166a0(pBag, Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
         }
-        CStringW strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
+        CStringW strName = FUN_14183e9c0(reinterpret_cast<Unk_LsSkillNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
         obj.FUN_1407cba60("failSlotBindID", strFail);
         obj.FUN_1407cbb20("failItemName", strName);
     }

@@ -46,13 +46,14 @@
 #include <typeinfo>
 #include <algorithm>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
 
 // Unrecovered helpers.
 const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);       // TiXmlElement::Attribute
 int ReadSlotAttr(Unk_140165cf0* pElem, const char* pszName, int* pnOut);    // banktable.h: slot name attribute
 void FUN_1402c8940(const CString& str, std::vector<CString>& vec, const char* pszDelim);   // split into strings
 int FUN_14021bdc0(CString& strName);    // slot name -> slot type
-CString FUN_14021c050(int nType);       // slot type -> slot name
+CString Name_14021c050(int nType);      // slot type -> slot name
 CString FUN_14016a5c0(const char* psz, int n);
 unsigned FUN_1402227e0(int nJob, int n);    // job -> job flag
 void* FUN_14086e000(void* pParent, const void* pChild);                     // InsertEndChild
@@ -128,12 +129,7 @@ template <> void XmlSplitImpl(const CString& str, std::vector<__int64>& vec, con
 }
 
 // The game settings: feature switches by number.
-class Unk_GameFeatures
-{
-public:
-    bool FUN_14036d570(int nFeature);   // the feature is enabled
-};
-Unk_GameFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 // Unit-local view of the game's TiXmlElement (0x90 bytes).
 // TinyXML attribute (only the sentinel of an element's attribute set is touched here).
@@ -541,7 +537,7 @@ int FUN_1405451c0(CString& strName)
 // @0x1405451e0
 CString FUN_1405451e0(int nType)
 {
-    return FUN_14021c050(nType);
+    return Name_14021c050(nType);
 }
 
 // @0x140545220

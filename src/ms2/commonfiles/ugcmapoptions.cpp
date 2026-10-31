@@ -29,9 +29,7 @@
 #include "hook/ms2hook.h"
 
 CFeatureManager* FUN_140166410();                           // TSingleton<CFeatureManager>::GetInstance
-CItemDataTable* FUN_140281980();                            // TSingleton<CItemDataTable>::GetInstance
 CPriceTable* FUN_140552df0();                               // TSingleton<CPriceTable>::GetInstance
-CBankTable* FUN_1401b59c0();                                // TSingleton<CBankTable>::GetInstance
 CUgcManager* FUN_14052d220();                               // TSingleton<CUgcManager>::GetInstance
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item table record
 CStringA FUN_1410280d0(int nPathType, CStringA strName);    // a local resource path
@@ -547,7 +545,7 @@ int FUN_1408b53d0(int nItemId)
 {
     if (nItemId == 0)
         return 0;
-    MS2Ptr<ItemHousing> spHousing = FUN_140281980()->GetHousing(nItemId);
+    MS2Ptr<ItemHousing> spHousing = TSingleton<CItemDataTable>::GetInstance()->GetHousing(nItemId);
     if (spHousing == 0)
         return 0;
     if (spHousing->doNotInstallBlueprint)
@@ -829,7 +827,7 @@ MS2_REPLACE(0x1408B6020, FUN_1408b6020, 246, 0xDB54E2DE);
 // @0x1408b6120
 int FUN_1408b6120(unsigned nItemId)
 {
-    MS2Ptr<ItemHousing> spHousing = FUN_140281980()->GetHousing(nItemId);
+    MS2Ptr<ItemHousing> spHousing = TSingleton<CItemDataTable>::GetInstance()->GetHousing(nItemId);
     if (spHousing == 0)
         return 0;
     if (spHousing->trophyID > 0)
@@ -860,7 +858,7 @@ int FUN_1408b6200(int nItemId)
     if (!spItem)
         return 0;
     unsigned nBankId = spItem->FUN_14053dce0();
-    MS2Ptr<CBankData> spBank = FUN_1401b59c0()->GetBankData(nBankId);
+    MS2Ptr<CBankData> spBank = TSingleton<CBankTable>::GetInstance()->GetBankData(nBankId);
     if (spBank == 0)
         return 0;
     return spBank->m_nSlotCount;

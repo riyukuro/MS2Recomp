@@ -132,17 +132,15 @@ static CString s_strStun = "stun";                                              
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);                                         // @0x1400bc380
 #endif
 
-__int64 FUN_140869440();                                    // server time
-__int64 FUN_14086b190(int nWeekday, __int64 tFrom);         // NextWeekdayStart
-int FUN_140869470(int nDays);                               // DaysToSeconds
-__int64 FUN_14086b590(int nYear, int nMonth, int nDay);
+__int64 GetServerTime();                                    // server time
+__int64 NextWeekdayStart(int nWeekday, __int64 tFrom);      // NextWeekdayStart
+int DaysToSeconds(int nDays);                               // DaysToSeconds
+__int64 GetWeekOfYear(int nYear, int nMonth, int nDay);
 const __int64& FUN_1402e49a0(const __int64& a, const __int64& b);   // the smaller of the two
-CFieldMetaTable* FUN_140700390();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
 void* FUN_140166440();
 int ConditionHasTarget(int nType);                          // 0x14029f330
-CGuildXmlData* FUN_1404f4530();
 
 // The game random generator (0x40 bytes; defined in randomeffectparam.h of the client unit). Seeded ctor 0x140768210.
 class Unk_Random
@@ -225,7 +223,7 @@ int CQuestCommon::FUN_1407447c0()
     if (!FUN_14074b090(data.operator->()))
         return false;
     __int64 tEnd = FUN_1407448a0();
-    return FUN_140869440() >= tEnd;
+    return GetServerTime() >= tEnd;
 }
 
 // @0x1407448a0
@@ -240,14 +238,14 @@ __int64 CQuestCommon::FUN_1407448a0()
     {
         __int64 tStart = GetStartTime();
         if (tStart == 0)
-            tStart = FUN_140869440();
-        tPeriod = FUN_14086b190(data->m_resetType, tStart);
+            tStart = GetServerTime();
+        tPeriod = NextWeekdayStart(data->m_resetType, tStart);
     }
     else if (data->m_durationMinutes != 0)
     {
         __int64 tStart = GetStartTime();
         if (tStart == 0)
-            tStart = FUN_140869440();
+            tStart = GetServerTime();
         tPeriod = tStart + data->m_durationMinutes * 60;
     }
     if (data->m_schedule.GetLength() != 0)
@@ -281,7 +279,7 @@ int CQuestCommon::FUN_140744b90(int field)
     if (nWant != field)
     {
         unsigned nHave = 0;
-        if (FUN_140700390()->FUN_1406fc110(field, &nHave) == 0)
+        if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(field, &nHave) == 0)
             return 0;
         if (nWant != (int)nHave)
             return 0;
@@ -308,7 +306,7 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
         return 0;
     if (npcId != 0 && data->m_2e8 != npcId)
         return 0;
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (data->m_require.m_groupId != 0)
     {
         int nSeed = FUN_140747000(questId);
@@ -369,7 +367,7 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
     case 3:
         if (nState == 2)
         {
-            CMsTime reset(FUN_14086b190(data->m_resetType, tStart));
+            CMsTime reset(NextWeekdayStart(data->m_resetType, tStart));
             if (now.Get() < reset.Get())
                 return 0;
         }
@@ -379,13 +377,13 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
     {
         if (FUN_14074b070(data.operator->()) == 2)
         {
-            __int64 tUntil = vfunc_o10_12() + FUN_140869470(1);
+            __int64 tUntil = vfunc_o10_12() + DaysToSeconds(1);
             if (now.Get() < tUntil)
                 return 0;
         }
         else if (FUN_14074b070(data.operator->()) == 3)
         {
-            __int64 tUntil = vfunc_o10_12() + FUN_140869470(7);
+            __int64 tUntil = vfunc_o10_12() + DaysToSeconds(7);
             if (now.Get() < tUntil)
                 return 0;
         }
@@ -540,7 +538,7 @@ int CQuestManagerCommon::FUN_140745820(int questId, int flag)
             {
                 if (vfunc_o10_9() == 0)
                     return 0;
-                int nGuildLevel = FUN_1404f4530()->FUN_1404d7130(vfunc_o10_10());
+                int nGuildLevel = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7130(vfunc_o10_10());
                 if (nGuildLevel < data->m_require.m_guildLevel)
                     return 0;
             }
@@ -793,9 +791,6 @@ inline CQuestData::QuestRewardItem::QuestRewardItem()
     : m_itemId(0), m_count(1), m_job(0)
 {
 }
-inline CQuestData::QuestRewardItem::~QuestRewardItem()
-{
-}
 inline CQuestData::CompleteReward::~CompleteReward()
 {
 }
@@ -888,7 +883,6 @@ bool CQuestData::QuestRewardItem::LoadXml(Unk_140165cf0* pElem)
 }
 
 // The job restriction of an item (the "recommended jobs" set of its ItemLimit, 0x140545da0).
-class Unk_ItemLimitJobs { public: bool FUN_140545da0(int nJob); };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 // @0x140748050
@@ -897,7 +891,7 @@ int FUN_140748050(CQuestData::QuestRewardItem* pItem, int nJob)
     MS2Ptr<CItemData> item = FUN_14053f870(pItem->m_itemId);
     if (!item)
         return 0;
-    if (!reinterpret_cast<Unk_ItemLimitJobs*>(&item->limit)->FUN_140545da0(nJob))
+    if (!reinterpret_cast<ItemLimit*>(&item->limit)->FUN_140545da0(nJob))
         return 0;
     return 1;
 }
@@ -1235,7 +1229,7 @@ bool CQuestData::operator!=(const CQuestData& o) const
 int FUN_14035ba10(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int FUN_14035bc20(Unk_140165cf0* pElem, const char* pszName, Unk_FameAlliance* pOut);
 int FUN_14051fd20(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_140354050(Unk_140165cf0* pElem, const char* pszName, int* pOut);
+int Unk_ExpGetInt(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);
 int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
 int FUN_140873b30(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);
@@ -1405,7 +1399,7 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         FUN_1408731e0(pCompleteReward, "useMainFamePoint", m_complete.m_useMainFamePoint);
         FUN_140873220(pCompleteReward, "fameLog", m_complete.m_fameLog);
         FUN_1408731e0(pCompleteReward, "rewardExpExtra", m_complete.m_rewardExpExtra);
-        FUN_140354050(pCompleteReward, "relativeExp", &m_complete.m_relativeExp);
+        Unk_ExpGetInt(pCompleteReward, "relativeExp", &m_complete.m_relativeExp);
         FUN_140752270(pCompleteReward, "relativeMeso", &m_complete.m_relativeMeso);
         FUN_1408732e0(pCompleteReward, "weddingExp", m_complete.m_weddingExp);
         FUN_1408731e0(pCompleteReward, "karma", m_complete.m_karma);
@@ -2234,7 +2228,7 @@ void QuestDataTable::FUN_14074e6c0(int nGroupId, int nSelector, int nSeed, ATL::
     MS2Ptr<CQuestData> spFirst = FUN_14074c9d0(nFirstId);
     if (spFirst.IsNull())
         return;
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     int nRandSeed = 0;
     if (nSelector != 0)
         nRandSeed = nSelector;
@@ -2249,9 +2243,9 @@ void QuestDataTable::FUN_14074e6c0(int nGroupId, int nSelector, int nSeed, ATL::
         }
         else if (FUN_14074b070(spFirst.operator->()) == 3)
         {
-            __int64 tWeek = FUN_14086b190(6, now.Get());
+            __int64 tWeek = NextWeekdayStart(6, now.Get());
             CMsTime weekStart(tWeek);
-            int nDayNo = (int)FUN_14086b590(weekStart.GetYear(), weekStart.GetMonth(), weekStart.GetDay());
+            int nDayNo = (int)GetWeekOfYear(weekStart.GetYear(), weekStart.GetMonth(), weekStart.GetDay());
             nRandSeed = (weekStart.GetYear() * 10000 + nDayNo) * nGroupId;
             nRandSeed = nRandSeed + nSeed;
         }
@@ -2498,7 +2492,7 @@ void QuestDataTable::FUN_14074fee0()
             if (spData.IsNull())
                 continue;
             unsigned nFieldId;
-            if (FUN_140700390()->FUN_1406fb700(spData->m_2e8, &nFieldId) != 0)
+            if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb700(spData->m_2e8, &nFieldId) != 0)
             {
                 MS2Ptr<CFieldData> spField = CFieldData::FUN_140374140(nFieldId);
                 if (spField.IsNull())
@@ -2853,13 +2847,13 @@ int __cdecl FUN_140751770(const void* pA, const void* pB)
     return nResult;
 }
 
-int FUN_140219300(const CString& str);
-int FUN_140217cd0(const CString& str);
-int FUN_140217a00(const CString& str);
-int FUN_140217bd0(const CString& str);
-int FUN_140217ad0(const CString& str);
-int FUN_14021a570(const CString& str);
-int FUN_14021a1f0(const CString& str);
+int Parse_140219300(const CString& str);
+int Parse_140217cd0(const CString& str);
+int Parse_140217a00(const CString& str);
+int Parse_140217bd0(const CString& str);
+int Parse_140217ad0(const CString& str);
+int Parse_14021a570(const CString& str);
+int Parse_14021a1f0(const CString& str);
 
 // @0x140751e50
 int FUN_140751e50(Unk_140165cf0* pElem, const char* pszName, int* pOut)
@@ -2953,7 +2947,7 @@ int FUN_1407521b0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
     int nResult = FUN_1408733e0(pElem, pszName, str);
     if (nResult != 0)
         return nResult;
-    *pOut = FUN_140219300(str);
+    *pOut = Parse_140219300(str);
     return nResult;
 }
 
@@ -2969,7 +2963,7 @@ int FUN_140752270(Unk_140165cf0* pElem, const char* pszName, int* pOut)
     int nResult = FUN_1408733e0(pElem, pszName, str);
     if (nResult != 0)
         return nResult;
-    *pOut = FUN_140217cd0(str);
+    *pOut = Parse_140217cd0(str);
     return nResult;
 }
 
@@ -2985,7 +2979,7 @@ int FUN_140752330(Unk_140165cf0* pElem, const char* pszName, int* pOut)
     int nResult = FUN_1408733e0(pElem, pszName, str);
     if (nResult != 0)
         return nResult;
-    *pOut = FUN_140217a00(str);
+    *pOut = Parse_140217a00(str);
     return nResult;
 }
 
@@ -3001,7 +2995,7 @@ int FUN_1407523f0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
     int nResult = FUN_1408733e0(pElem, pszName, str);
     if (nResult != 0)
         return nResult;
-    *pOut = FUN_140217bd0(str);
+    *pOut = Parse_140217bd0(str);
     return nResult;
 }
 
@@ -3017,7 +3011,7 @@ int FUN_1407524b0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
     int nResult = FUN_1408733e0(pElem, pszName, str);
     if (nResult != 0)
         return nResult;
-    *pOut = FUN_140217ad0(str);
+    *pOut = Parse_140217ad0(str);
     return nResult;
 }
 
@@ -3033,7 +3027,7 @@ int FUN_140752570(Unk_140165cf0* pElem, const char* pszName, int* pOut)
     int nResult = FUN_1408733e0(pElem, pszName, str);
     if (nResult != 0)
         return nResult;
-    *pOut = FUN_14021a570(str);
+    *pOut = Parse_14021a570(str);
     return nResult;
 }
 
@@ -3049,7 +3043,7 @@ int FUN_140752630(Unk_140165cf0* pElem, const char* pszName, int* pOut)
     int nResult = FUN_1408733e0(pElem, pszName, str);
     if (nResult != 0)
         return nResult;
-    *pOut = FUN_14021a1f0(str);
+    *pOut = Parse_14021a1f0(str);
     return nResult;
 }
 

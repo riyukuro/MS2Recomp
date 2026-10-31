@@ -61,11 +61,18 @@
 #include <efd/ServiceManager.h>
 #include "ms2/placeholder/tfunctor.h"
 #include "ms2/commonfiles/logstring.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/cgraphicoptiontable.h"
+#include "ms2/placeholder/coptimizer.h"
+#include "ms2/commonfiles/crashmanager.h"
+#include "ms2/placeholder/cgameoption.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/crashmanagercli.h"
 #include <NiStudioShaderContext.h>
 
 // ---- out-of-unit callees and data (bound to the exe by name) ----
 CLogString* GetLogString();                                                 // the game log, or 0
-void FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszMessage);
+void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszMessage);
 CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);                  // ANSI -> wide
 CStringA FUN_14016a600(const wchar_t* pszWide, int nCodePage);               // wide -> ANSI
 CStringW GetStringCommon(int nStringId);                                       // UI string table (wide)
@@ -102,17 +109,15 @@ NiDX9Renderer* FUN_140d89bc0();                                              // 
 const char* FUN_1427cf790(const NiDX9Renderer* pRenderer);                   // NiDX9Renderer::GetDriverName: the adapter's driver dll ("%s" of D3DADAPTER_IDENTIFIER9::Driver)
 
 // Debug log (console) of the game.
-class Unk_RsDebugLog
+class Unk_RsDebugLog : public CCrashManager
 {
 public:
-    void FUN_1401ce2b0(const char* pszText);
     void FUN_1401ce2f0(const char* pszFormat, unsigned int a, unsigned int b);
     void FUN_1401ce2f0(const char* pszFormat, unsigned int a);
     void FUN_1401ce2f0(const char* pszFormat, ecr::RenderContext* a, unsigned int b);
     void FUN_1401ce2f0(const char* pszFormat, unsigned int a, unsigned int b, const char* c);
     void FUN_1401ce2f0(const char* pszFormat, const char* a);
 };
-Unk_RsDebugLog* FUN_140a44830();
 void FUN_1401ce3d0(Unk_RsDebugLog* pLog, TFunctor<void, EmptyParam> kFunctor);   // registers a dump command
 
 // Last renderer creation failure code.
@@ -144,8 +149,7 @@ inline bool Unk_RsGetShaderSource(NiString& kNifPath, NiString& kNodeName)
     return NiGetStudioShaderContext().GetCurrentNifPath(kNifPath, kNodeName);
 }
 // Effect manager: remembers the last executed effect / map effect names.
-class Unk_RsEffectMgr { public: CStringA FUN_1411aad50(); CStringA FUN_1411aaeb0(); };
-Unk_RsEffectMgr* FUN_1403ed280();
+CEffectService* FUN_1403ed280();
 
 // ---- game singletons used while creating the renderer ----
 // Video options (the stored resolution and flags).
@@ -171,15 +175,12 @@ public:
 MS2_CHECK_OFFSET(Unk_RsVideoOptions, m_nMode, 0x8);
 MS2_CHECK_OFFSET(Unk_RsVideoOptions, m_bVSync, 0x16);
 MS2_CHECK_OFFSET(Unk_RsVideoOptions, m_nBufferFormat, 0x2c);
-class Unk_RsOptions
+class Unk_RsOptions : public CGameOption
 {
 public:
     Unk_RsVideoOptions* FUN_1409a8ac0();
     int FUN_141243f50(int nWhich);
-    int FUN_1412438f0();
-    void FUN_1412432d0();
 };
-Unk_RsOptions* FUN_1409a8b10();
 // Application window manager.
 class Unk_RsApp
 {
@@ -203,10 +204,7 @@ public:
     void FUN_141375390(CStringW kName);
 };
 Unk_RsGpuInfo* FUN_141245b20();
-class Unk_RsVSync { public: void FUN_14161c3f0(); };
-Unk_RsVSync* FUN_1409f7c90();
-class Unk_RsFbFormats { public: int FUN_141376790(int nIndex); };
-Unk_RsFbFormats* FUN_140ae1c00();
+COptimizer* FUN_1409f7c90();
 int FUN_141b91ab0();
 // UI front end: slot 23 shows a message dialog.
 class Unk_RsUI
@@ -295,7 +293,6 @@ public:
     void FUN_141bd8660(unsigned int uiWidth);
     void FUN_141bd8680(unsigned int uiHeight);
 };
-Unk_RsWorldService* FUN_1403ed2d0();
 void FUN_141bbae40(Unk_RsWorldService* pWorld, IWorldServiceCallback* pCallback);
 void FUN_1414f0700(NiPick* pPick);
 
@@ -322,7 +319,7 @@ void CRenderCallback::Message(const char* pText)
     if (GetLogString() != 0) {
         CStringA text(pText);
         text.Trim();
-        FUN_1401859c0(GetLogString(), 0xb, 0x13, FUN_14016a730(text, 0));
+        Unk_AdditionalLog(GetLogString(), 0xb, 0x13, FUN_14016a730(text, 0));
     }
 }
 MS2_REPLACE_METHOD(0x1414EA3D0, CRenderCallback, Message, 184, 0x559ACDD4);
@@ -333,7 +330,7 @@ void CRenderCallback::Warning(const char* pText)
     if (GetLogString() != 0) {
         CStringA text(pText);
         text.Trim();
-        FUN_1401859c0(GetLogString(), 2, 0x13, FUN_14016a730(text, 0));
+        Unk_AdditionalLog(GetLogString(), 2, 0x13, FUN_14016a730(text, 0));
     }
 }
 MS2_REPLACE_METHOD(0x1414EA490, CRenderCallback, Warning, 184, 0xC0005629);
@@ -344,10 +341,10 @@ void CRenderCallback::Error(const char* pText)
     if (GetLogString() != 0) {
         CStringA text(pText);
         text.Trim();
-        FUN_1401859c0(GetLogString(), 1, 0x13, FUN_14016a730(text, 0));
+        Unk_AdditionalLog(GetLogString(), 1, 0x13, FUN_14016a730(text, 0));
     }
-    if (FUN_140a44830() != 0) {
-        FUN_140a44830()->FUN_1401ce2f0("Renderer: %s", pText);
+    if (reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance()) != 0) {
+        reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Renderer: %s", pText);
     }
 }
 MS2_REPLACE_METHOD(0x1414EA550, CRenderCallback, Error, 219, 0x9B8E5B6C);
@@ -384,7 +381,7 @@ efd::SyncResult MS2RenderService::OnPreInit(efd::IDependencyRegistrar* pDependen
     DAT_143afb020 = Unk_RsCollectFade;
     Unk_RsSetHookA(Unk_RsLockHook);
     Unk_RsSetHookB(Unk_RsUnlockHook);
-    FUN_1401ce3d0(FUN_140a44830(), TFunctor<void, EmptyParam>(this, &MS2RenderService::LogState));
+    FUN_1401ce3d0(reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance()), TFunctor<void, EmptyParam>(this, &MS2RenderService::LogState));
     return result;
 }
 
@@ -404,11 +401,11 @@ void MS2RenderService::CheckRenderState()
     }
     DWORD deviceValue = 0;
     unsigned int niValue = 0;
-    FUN_140a44830()->FUN_1401ce2b0("Check render state Start!!");
+    reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("Check render state Start!!");
 #define CHECK_RS(state) \
     niValue = pRenderState->GetRenderState(state); \
     pDevice->GetRenderState(state, &deviceValue); \
-    FUN_140a44830()->FUN_1401ce2f0("CheckRenderState " #state " : Device [%d] NiState[%d]", deviceValue, niValue)
+    reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("CheckRenderState " #state " : Device [%d] NiState[%d]", deviceValue, niValue)
         CHECK_RS(D3DRS_ZENABLE);
         CHECK_RS(D3DRS_FILLMODE);
         CHECK_RS(D3DRS_SHADEMODE);
@@ -498,11 +495,11 @@ void MS2RenderService::CheckRenderState()
         CHECK_RS(D3DRS_BLENDOPALPHA);
 #undef CHECK_RS
     for (int stage = 0; stage < 8; stage = stage + 1) {
-        FUN_140a44830()->FUN_1401ce2f0("TextureStageState %d", stage);
+        reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("TextureStageState %d", stage);
 #define CHECK_TSS(type) \
         niValue = pRenderState->GetTextureStageState(stage, type); \
         pDevice->GetTextureStageState(stage, type, &deviceValue); \
-        FUN_140a44830()->FUN_1401ce2f0("CheckTextureStageState " #type " : Device [%d] NiState[%d]", deviceValue, niValue)
+        reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("CheckTextureStageState " #type " : Device [%d] NiState[%d]", deviceValue, niValue)
             CHECK_TSS(D3DTSS_COLOROP);
             CHECK_TSS(D3DTSS_COLORARG1);
             CHECK_TSS(D3DTSS_COLORARG2);
@@ -523,7 +520,7 @@ void MS2RenderService::CheckRenderState()
             CHECK_TSS(D3DTSS_RESULTARG);
 #undef CHECK_TSS
     }
-    FUN_140a44830()->FUN_1401ce2b0("Check render state End!!");
+    reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("Check render state End!!");
 }
 
 
@@ -559,7 +556,7 @@ void MS2RenderService::SetValidateFrames(bool bValidate)
 MS2_REPLACE_METHOD(0x1414ECBA0, MS2RenderService, SetValidateFrames, 79, 0x779F6C4C);
 
 // The exe instantiates this 3-argument form against its own copy of the formatter (the one the socket code uses).
-CStringA FUN_1402bf9a0(const char* format, const fmt::ArgList& args);
+CStringA Unk_SocketFormat(const char* format, const fmt::ArgList& args);
 // @0x1414eede0
 template<> CStringA StringFormat<const char*, const char*, const char*>(const char* format, const char* const& first,
                                                                         const char* const& second, const char* const& third)
@@ -567,7 +564,7 @@ template<> CStringA StringFormat<const char*, const char*, const char*>(const ch
     const fmt::internal::ArgArray<3>::Type array = {fmt::internal::MakeValue<fmt::BasicFormatter<char>>(first),
                                                   fmt::internal::MakeValue<fmt::BasicFormatter<char>>(second),
                                                   fmt::internal::MakeValue<fmt::BasicFormatter<char>>(third)};
-    return FUN_1402bf9a0(format, fmt::ArgList(fmt::internal::make_type(first, second, third), array));
+    return Unk_SocketFormat(format, fmt::ArgList(fmt::internal::make_type(first, second, third), array));
 }
 
 // Shader factory error callback: logs, asks whether to keep going, and throws on "yes".
@@ -584,7 +581,7 @@ static unsigned int Unk_RsShaderError(const char* pcMsg, NiShaderError eErr, boo
     }
     Unk_RsLog3(GetLogString(), 1, 0x133, L"Code:{0:X} bRecoverable:{1} {2}", eErr, bRecoverable, pcMsg);
     if (MessageBoxA(0, text, "Shader error", 4) == 6) {
-        FUN_140a44830()->FUN_1401ce2f0("[%x][bRecoverable %d] %s", eErr, (unsigned int)bRecoverable, pcMsg);
+        reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("[%x][bRecoverable %d] %s", eErr, (unsigned int)bRecoverable, pcMsg);
         throw 0xd;
     }
     return 0;
@@ -611,8 +608,8 @@ static void Unk_RsUnlockHook()
 // @0x1414ecf20
 void MS2RenderService::LogState()
 {
-    FUN_140a44830()->FUN_1401ce2b0("\n--- MS2RenderService Log---");
-    FUN_140a44830()->FUN_1401ce2f0("Current Context %x %d", m_pCurrentContext, m_uiCurrentIndex);
+    reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- MS2RenderService Log---");
+    reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Current Context %x %d", m_pCurrentContext, m_uiCurrentIndex);
 }
 MS2_REPLACE_METHOD(0x1414ECF20, MS2RenderService, LogState, 78, 0x102BBE40);
 
@@ -627,9 +624,9 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
     NiRendererSettings settings;
     efd::IConfigManager* pConfig = m_pServiceManager->GetSystemServiceAs<efd::IConfigManager>();
     settings.LoadFromConfigManager(pConfig);
-    settings.m_bVSync = FUN_1409a8b10()->FUN_1409a8ac0()->m_bVSync;
-    settings.m_eDX9FBFormat = (NiDX9Renderer::FramebufferMode)FUN_140ae1c00()->FUN_141376790(
-        FUN_1409a8b10()->FUN_1409a8ac0()->m_nBufferFormat);
+    settings.m_bVSync = reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bVSync;
+    settings.m_eDX9FBFormat = (NiDX9Renderer::FramebufferMode)TSingleton<CGraphicOptionTable>::GetInstance()->GetMultisampleValue(
+        reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_nBufferFormat);
     settings.m_bFullscreen = bFullscreen;
     settings.m_uiScreenWidth = width;
     settings.m_uiScreenHeight = height;
@@ -668,7 +665,7 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
                 CStringA driver(FUN_1427cf790(pDX9Renderer));
                 FUN_1401d3700(driver);
                 if (driver == "mctu.dll") {
-                    FUN_140a44830()->FUN_1401ce2b0("!!! mctu.dll !!!");
+                    reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("!!! mctu.dll !!!");
                 }
             }
             pDX9Renderer->AddLostDeviceNotificationFunc(&ecr::RenderService::OnDeviceLost, this);
@@ -724,18 +721,18 @@ efd::AsyncResult MS2RenderService::OnInit()
         }
         FUN_141245b20()->FUN_141375390(adapterName);
     }
-    int fullscreenMode = FUN_1409a8b10()->FUN_141243f50(0);
-    bool bFullscreenFlag = fullscreenMode != 0 ? false : FUN_1409a8b10()->FUN_1409a8ac0()->GetMode() == 0;
-    bool bBorderless = fullscreenMode != 0 ? true : FUN_1409a8b10()->FUN_1409a8ac0()->GetMode() == 2;
-    int width = fullscreenMode != 0 ? GetSystemMetrics(SM_CXSCREEN) : FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8ab0();
-    int height = fullscreenMode != 0 ? GetSystemMetrics(SM_CYSCREEN) : FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8aa0();
+    int fullscreenMode = reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_141243f50(0);
+    bool bFullscreenFlag = fullscreenMode != 0 ? false : reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->GetMode() == 0;
+    bool bBorderless = fullscreenMode != 0 ? true : reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->GetMode() == 2;
+    int width = fullscreenMode != 0 ? GetSystemMetrics(SM_CXSCREEN) : reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8ab0();
+    int height = fullscreenMode != 0 ? GetSystemMetrics(SM_CYSCREEN) : reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8aa0();
     FUN_140aadf80()->FUN_1412642e0(bBorderless);
     if (bBorderless) {
         bFullscreenFlag = true;
     }
     if (fullscreenMode != 0) {
-        int mode = FUN_1409a8b10()->FUN_1412438f0();
-        FUN_1409a8b10()->FUN_1409a8ac0()->FUN_14125e1f0(mode, 1);
+        int mode = reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1412438f0();
+        reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_14125e1f0(mode, 1);
     }
     bool bBasicDriver = FUN_141245b20()->FUN_141245ab0() == L"Microsoft Basic Display Driver";
     if (bBasicDriver) {
@@ -759,7 +756,7 @@ efd::AsyncResult MS2RenderService::OnInit()
             return efd::AsyncResult_Failure;
         }
     }
-    if (!FUN_1409a8b10()->FUN_1409a8ac0()->FUN_14125e820(width, height)) {
+    if (!reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_14125e820(width, height)) {
         width = 0x400;
         height = 0x300;
         if (!FUN_140aadf80()->FUN_141b91010(bFullscreenFlag, 0x400, 0x300)) {
@@ -772,9 +769,9 @@ efd::AsyncResult MS2RenderService::OnInit()
         }
     }
     if (fullscreenMode != 0) {
-        FUN_1409a8b10()->FUN_1409a8ac0()->m_nMode = 2;
-        FUN_1409a8b10()->FUN_1409a8ac0()->FUN_14125eb00(width, height);
-        FUN_1409a8b10()->FUN_1412432d0();
+        reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_nMode = 2;
+        reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_14125eb00(width, height);
+        reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1412432d0();
     }
     FUN_140aadf80();
     if (DAT_143af7d58 == 0) {
@@ -842,7 +839,7 @@ static void Unk_RsNoopHook(void* pUnused)
 // @0x1414ee4d0
 static void Unk_RsResetHook(Unk_RsRendererSize* pRenderer)
 {
-    Unk_RsWorldService* pWorld = FUN_1403ed2d0();
+    Unk_RsWorldService* pWorld = reinterpret_cast<Unk_RsWorldService*>(WorldService::GetInstance());
     if (pWorld != 0 && pRenderer != 0) {
         Unk_RsRendererSize* pSize = pRenderer;
         pWorld->FUN_141bd8660(pSize->GetWidth());
@@ -899,7 +896,7 @@ MS2_REPLACE_METHOD(0x1414EE750, MS2PickService, OnPreInit, 85, 0x1608DFF5);
 // @0x1414ee7b0
 efd::AsyncResult MS2PickService::OnInit()
 {
-    FUN_141bbae40(FUN_1403ed2d0(), this);
+    FUN_141bbae40(reinterpret_cast<Unk_RsWorldService*>(WorldService::GetInstance()), this);
     return ecr::PickService::OnInit();
 }
 MS2_REPLACE_METHOD(0x1414EE7B0, MS2PickService, OnInit, 77, 0x1B2425B2);

@@ -41,6 +41,9 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/uimessagebox.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/client/ms2/uicharacterlistdialog.h"
+#include "ms2/placeholder/cserverstring.h"
 #include <efd/SmartPointer.h>
 #include <efd/Helpers.h>
 #include <efd/MemHint.h>
@@ -97,13 +100,10 @@ public:
     unsigned FUN_141ad1010();
 };
 UIServerListDialog* FUN_14136f520(int nId);
-class Unk_CharSelectDialog : public UIDialog
+class Unk_CharSelectDialog : public UICharacterListDialog
 {
 public:
-    void FUN_1418f13f0();
     unsigned FUN_1418f1b90();
-    void FUN_1418f1cb0();
-    void FUN_1418ed6b0(CInPacket&);
 };
 Unk_CharSelectDialog* FUN_140b72de0(int nId);
 extern int DAT_1439f4a78;
@@ -127,8 +127,7 @@ void FUN_141b6fcf0(const CStringW&, const CStringW&, int);
 
 // Notify registry (as uidtattendpopup.cpp)
 typedef Delegate<void(NotifyObject*)> Unk_NotifyDelegate;
-class Unk_DTNotices { public: void FUN_140da4e40(CStringW, Unk_NotifyDelegate); void FUN_140da4eb0(CStringW, Unk_NotifyDelegate); };
-Unk_DTNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 // lobbyField.xml reading (as usercommandcli.cpp)
 CString FUN_14071a5b0(const CString&, const CString&);
@@ -184,8 +183,7 @@ struct Unk_1407a7d20
     int m_value;
     void *m_p1, *m_p2, *m_p3, *m_p4;
 };
-class Unk_TextFilter { public: CStringW FUN_14087ede0(const CStringW&); };
-Unk_TextFilter* FUN_140a87680();
+class Unk_TextFilter : public CServerStringGroup { };
 Unk_TextFilter* FUN_140a87690(Unk_TextFilter*);
 CStringW FUN_14083d340(CStringW);
 void FUN_141275400(CStringW&, int);
@@ -219,7 +217,9 @@ Unk_Settings* FUN_1401d3200();
 void* FUN_1401c0d90();
 unsigned FUN_14047b9b0(void*);
 #include "ms2/placeholder/mstime.h"
-__int64 FUN_140869440();
+#include "ms2/placeholder/cgameoption.h"
+#include "ms2/client/ms2/camera.h"
+__int64 GetServerTime();
 // ---- the actor search (FUN_14174f0f0) ----
 class Unk_LobbyScanner { public: void FUN_141b90e30(float* pfX, float* pfY); };   // cursor position inside the window
 Unk_LobbyScanner* FUN_140aadf80();
@@ -234,23 +234,19 @@ public:
     void* m_p0;                                             // +0x00 the exe object is 8 bytes (FUN_140af0850 writes it through the sret slot)
 };
 struct Unk_140ae7ce0 { Unk_140ae7ce0(); float m_0, m_4, m_8, m_c, m_10, m_14, m_18, m_1c, m_20, m_24; };  // Unk_CameraSetting (cameramode.h): 0x28 bytes, 4-aligned; no array, so no /GS cookie
-class Unk_QueryMgr
+class Unk_QueryMgr : public CameraMgr
 {
 public:
-    int FUN_140a18070();
     bool FUN_140aeb590(Unk_140ae7ce0*);
     void FUN_140aed720(Unk_140ae7ce0*);
-    void FUN_140aed750(int, int);
     Unk_QueryResult FUN_140af0850(float fX, float fY, bool b1, bool b2, bool b3, void* p);   // pick at the cursor (cameramode.h)
 };
-Unk_QueryMgr* FUN_1409478c0();
 class Unk_QueryRow { public: void* FUN_140a17cb0(); };
 
 // ---- the game-option block (OnEnter) ----
 struct Unk_C9B8B0 { void* m_0; void* m_8; };
 struct Unk_AE6540 { bool m_0, m_1, m_2; };
-class Unk_GameOptionA { public: void FUN_141243540(); Unk_C9B8B0* FUN_140c9b8b0(); Unk_AE6540* FUN_140ae6540(); };
-Unk_GameOptionA* FUN_1409a8b10();
+class Unk_GameOptionA : public CGameOption { public: Unk_C9B8B0* FUN_140c9b8b0(); Unk_AE6540* FUN_140ae6540(); };
 
 class Unk_1402a9d70
 {
@@ -402,7 +398,7 @@ CSceneStateMulti::BackUpCharacterInfo::~BackUpCharacterInfo()
 void CSceneStateMulti::OnEnter(int nPrevState)
 {
     CSceneStateBase::OnEnter(nPrevState);
-    FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyGameEventChanged"),
+    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
         Unk_NotifyDelegate(this, &CSceneStateMulti::FUN_14174ffb0));
     m_lobbyField.Load();
     FUN_141275500();
@@ -416,11 +412,11 @@ void CSceneStateMulti::OnEnter(int nPrevState)
     m_reconnectTimer.FUN_1408687f0();
     if (FUN_14036e560(FUN_140166410()))
     {
-        FUN_1409a8b10()->FUN_140c9b8b0()->m_8 = 0;
-        FUN_1409a8b10()->FUN_140ae6540()->m_0 = true;
-        FUN_1409a8b10()->FUN_140ae6540()->m_1 = true;
-        FUN_1409a8b10()->FUN_140ae6540()->m_2 = true;
-        FUN_1409a8b10()->FUN_141243540();
+        reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_8 = 0;
+        reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540()->m_0 = true;
+        reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540()->m_1 = true;
+        reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540()->m_2 = true;
+        reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_141243540();
     }
 }
 
@@ -433,7 +429,7 @@ void CSceneStateMulti::OnLeave(int nNextState)
     FUN_140ad68a0(FUN_1409eed70());
     FUN_14174fd00();
     FUN_1403ed2d0()->FUN_141bbae80(this);
-    FUN_140939a10()->FUN_140da4eb0(CStringW(L"NotifyGameEventChanged"),
+    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
         Unk_NotifyDelegate(this, &CSceneStateMulti::FUN_14174ffb0));
 }
 
@@ -544,13 +540,13 @@ void CSceneStateMulti::vfunc_1(int)
             DAT_143ab284b = 0;
         }
     }
-    if (FUN_1409478c0()->FUN_140a18070() != 0)
+    if (reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
     {
         Unk_140ae7ce0 tmp;
-        if (FUN_1409478c0()->FUN_140aeb590(&tmp))
+        if (reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeb590(&tmp))
         {
-            FUN_1409478c0()->FUN_140aed720(&tmp);
-            FUN_1409478c0()->FUN_140aed750(4, 1);
+            reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aed720(&tmp);
+            reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aed750(4, 1);
         }
     }
 }
@@ -681,9 +677,9 @@ Unk_LobbyChar* CSceneStateMulti::FUN_14174f0f0()
 {
     float fMapX, fMapY;
     FUN_140aadf80()->FUN_141b90e30(&fMapX, &fMapY);
-    if (FUN_1409478c0()->FUN_140a18070() == 0)
+    if (reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() == 0)
         return 0;
-    Unk_QueryResult result = FUN_1409478c0()->FUN_140af0850(fMapX, fMapY, true, true, false, 0);
+    Unk_QueryResult result = reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0850(fMapX, fMapY, true, true, false, 0);
     if (result.FUN_140a16c00() == 0)
         return 0;
     Unk_FieldMgr* pMgr = FUN_1403ed2d0();
@@ -757,7 +753,7 @@ void CSceneStateMulti::FUN_14174f4c0(CInPacket& packet)
     {
         unsigned nFlags = info.m_flags;
         CStringW text(info.m_text);
-        text = FUN_140a87690(FUN_140a87680())->FUN_14087ede0(text);
+        text = FUN_140a87690(reinterpret_cast<Unk_TextFilter*>(TSingleton<CServerString>::GetInstance()))->GetString(text);
         int nValue = info.m_value;
         text = FUN_14083d340(CStringW(text));
         if ((nFlags & 4) != 0 || (nFlags & 0x40) != 0)
@@ -851,7 +847,7 @@ bool CSceneStateMulti::FUN_14174fdb0()
     if (m_nServerTime == 0)
         return false;
     CMsTime serverTime(m_nServerTime);
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     return serverTime.GetMonth() == now.GetMonth();
 }
 

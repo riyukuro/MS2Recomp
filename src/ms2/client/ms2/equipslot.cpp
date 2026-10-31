@@ -30,14 +30,15 @@
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/commonfiles/itemdata.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/equipment.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-class Unk_EqEquipSet
+class Unk_EqEquipSet : public CEquipment
 {
-public:
-    bool FUN_1411ea770();
 };
 class Unk_EqPlayer
 {
@@ -51,12 +52,10 @@ public:
     void FUN_1411a5110(CString strCategory, CString strName, CString strExtra, int nKind, void* pXform, float fVolume,
         int nOwner);                                    // play a sound event
 };
-Unk_EqWorld* FUN_1403ed2d0();
-Unk_EqWorld* FUN_1403ed280();                           // the sound service
 
 class Unk_ItemEquipData : public CItemData { };         // CItem::FUN_140527840's record
 
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 void FUN_141275260(int nStringId, int nA, int nB);      // notice by string id
 void FUN_140d73bc0(int nStringId, int nType, void* p, CStringW strTag);
@@ -124,7 +123,7 @@ int EquipSlot::vfunc_14()
 {
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        DAT_143ab2a90.FUN_140a62920(((CItem*)spItem)->FUN_140526a50());
+        g_143ab2a90.FUN_140a62920(((CItem*)spItem)->FUN_140526a50());
     return 1;
 }
 
@@ -154,11 +153,11 @@ int EquipSlot::vfunc_18(void* p)
     void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
         if (spItem.get() != 0)
         {
             if (FUN_14120d2e0(spItem.get()) != 0)
-                DAT_143ab2a90.FUN_140a62270(spItem.get(), m_nSlot, m_nKind, 0);
+                g_143ab2a90.FUN_140a62270(spItem.get(), m_nSlot, m_nKind, 0);
         }
     }
     else
@@ -189,7 +188,7 @@ int EquipSlot::vfunc_20()
     DragSlot::vfunc_20();
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
+        reinterpret_cast<Unk_EqWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110(CString("ms2sound/sound/item"),
             ((CItem*)spItem)->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
@@ -200,7 +199,7 @@ int EquipSlot::vfunc_21()
     DragSlot::vfunc_21();
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
+        reinterpret_cast<Unk_EqWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110(CString("ms2sound/sound/item"),
             ((CItem*)spItem)->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
@@ -210,7 +209,7 @@ int EquipSlot::vfunc_0(void* p)
 {
     if (m_spPC == 0)
         return 0;
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = reinterpret_cast<Unk_EqWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = FUN_14120ce90(m_nKind);
@@ -234,7 +233,7 @@ int EquipSlot::vfunc_8(void* p)
 {
     if (m_spPC == 0)
         return 0;
-    Unk_EqPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_EqPlayer* pPlayer = reinterpret_cast<Unk_EqWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
@@ -374,7 +373,7 @@ int EquipSlot::FUN_14120d2e0(CItem* pItem)
         FUN_140d73bc0(0xd3, 0, 0, CStringW(L""));
         return 0;
     }
-    if (DAT_143ab2a90.FUN_140a63950(pItem, m_nSlot, m_nKind) == 0)
+    if (g_143ab2a90.FUN_140a63950(pItem, m_nSlot, m_nKind) == 0)
         return 0;
     return 1;
 }
@@ -384,7 +383,7 @@ int EquipSlot::FUN_14120d510(CItem* pItem)
 {
     if (FUN_14120d1f0() == 0)
         return 0;
-    if (DAT_143ab2a90.FUN_140a655b0(pItem) == 0)
+    if (g_143ab2a90.FUN_140a655b0(pItem) == 0)
         return 0;
     return 1;
 }

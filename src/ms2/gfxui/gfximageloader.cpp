@@ -18,6 +18,7 @@
 #include "ms2/gfxui/uiswfentity.h"
 
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/gfxmanager.h"
 
 using Scaleform::File;
 using Scaleform::MemoryFile;
@@ -32,14 +33,7 @@ using Scaleform::Render::ImageSource;
 using Scaleform::Render::TextureManager;
 
 // The GFx UI manager singleton (0x14025e7a0; its class lives in the library's first obj, 0x1422b0060-0x1422b7f20).
-class Unk_GFxUIManager
-{
-public:
-    void FUN_1422b0470(int nView, int* pWidth, int* pHeight);  // the size of a view (2: the screen shot)
-    Ptr<File> FUN_1422b0d60(String strPath);                   // the cached memory file of a path (NULL if none)
-    void FUN_1422b0e20(String strPath, Ptr<File> pFile);       // caches (or with NULL drops) the memory file of a path
-};
-Unk_GFxUIManager* FUN_14025e7a0();
+GFxManager* FUN_14025e7a0();
 
 // The image a UI movie receives in vfunc_25 (uiswfentity.h names the TPtr pointee Unk_UISwfEntity_25): a Scaleform
 // render image.

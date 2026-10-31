@@ -92,7 +92,7 @@ bool FUN_14098dfc0(NiAVObject* pkObject);
 void FUN_1410479a0(NiObjectNET* pkObject, const NiFixedString& kName, const NiColor& kColor);   // set colour extra data
 CSkillCollisionManager* FUN_141469a90();
 WorldService* FUN_1403ed2d0();
-DecoEditService* FUN_1411987a0();
+DecoEditService* BrushService();
 
 // ---- file-scope statics (.text$di) -------------------------------------------------------------------------------------
 // This range also holds the initializers of the neighbouring processor TUs (their RTTI objects and the header statics every
@@ -369,7 +369,7 @@ void MS2RenderListProcessor::PreRenderProcessList(const NiVisibleArray* pkInput,
     if (FUN_141469a90())
         FUN_141469a90()->Tick();
     FUN_1403ed2d0()->FUN_141bc12b0();
-    FUN_1411987a0()->ApplyBrush();
+    BrushService()->ApplyBrush();
     m_kNoSortVisibleArray.RemoveAll();
     RestoreMaterials(kSaved);
 }

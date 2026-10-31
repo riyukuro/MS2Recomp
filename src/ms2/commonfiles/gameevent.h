@@ -1712,8 +1712,11 @@ public:
         ATL::CAtlArray<CStringW> m_messages;        // +0x20 <messages><v value>
     };
     bool Load(Unk_140165cf0* pElem);                // 0x1404000c0
-    CStringW m_actionNames[3];                      // +0x18 play/actions rock, paper, scissors
-    ATL::CAtlArray<CStringW> m_messages;            // +0x30 play/messages
+    struct Play {                                   // implicit ctor 0x140ce91f0, dtor 0x140ce9720
+        CStringW m_actionNames[3];                  // +0x00 play/actions rock, paper, scissors
+        ATL::CAtlArray<CStringW> m_messages;        // +0x18 play/messages
+    };
+    Play m_play;                                    // +0x18
     Result m_results[3];                            // +0x50 result/draw, win, lose
 };
 MS2_CHECK_SIZE(RpsGameData, 0x110);

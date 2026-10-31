@@ -16,6 +16,7 @@
 #include <NiMorphWeightsController.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // ---- out-of-unit callees ----
 // Key that names the owner's model in the model cache (16 bytes; plain data).
@@ -41,12 +42,7 @@ class Unk_ModelCache
 public:
     Unk_ModelEntry* FUN_140999440(const Unk_ModelKey& key);   // lookup, NULL when not cached
 };
-class Unk_MorphClock
-{
-public:
-    float FUN_141473230();                              // game time in seconds
-};
-Unk_MorphClock* FUN_14086d260();                        // the main system
+CMainSystem* FUN_14086d260();                           // the main system
 Unk_ModelCache* FUN_141b6f910();                        // the model cache singleton
 NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);   // dynamic cast (NULL-safe)
 // RTTI of the render object class (0x143afa7d0; name assumed from its uses).
@@ -142,7 +138,7 @@ void CMorphingAnimation::FUN_141487c50(float fWeight)
     }
     if (pCtrl != NULL) {
         for (unsigned short us = 0; us < nCount; us++)
-            pCtrl->UpdateValue(FUN_14086d260()->FUN_141473230(), fWeight, us);
+            pCtrl->UpdateValue(FUN_14086d260()->GetLastGameTimeDelta(), fWeight, us);
     }
 }
 MS2_REPLACE_METHOD(0x141487c50, CMorphingAnimation, FUN_141487c50, 295, 0x516868E3);

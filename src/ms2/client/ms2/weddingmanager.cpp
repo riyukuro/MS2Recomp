@@ -57,6 +57,10 @@
 #include "ms2/ms2recover.h"
 #pragma intrinsic(abs)
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uisidepopuptalk.h"
+#include "ms2/client/ms2/uiweddingdialog.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit statics (.text$di): the per-TU handle, the shared header statics (header_statics_a.h) and the field war string ----
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };   // ctor 0x1401cd100
@@ -108,25 +112,24 @@ public:
     CStringW m_strPath;                                         // +0x68 the mail's xml body path
 };
 MS2_CHECK_OFFSET(Unk_WeddingMail, m_strPath, 0x68);
-class Unk_WmFiles { public: int FUN_140397ab0(TiXmlDocument* pDoc, const CStringW& strPath); };
+class Unk_WmFiles : public CFileSystem { };
 Unk_WmFiles* FUN_140166420();
 void* FUN_140165cf0(void*, const char*);
 void* FUN_140166410();                                          // the feature manager
 bool FUN_14036d570(void* pFeatures, int nId);                   // feature enabled
 class Unk_WmDialog94 { public: void FUN_140fcd5b0(CInPacket& packet); };
 Unk_WmDialog94* FUN_140fe6700(int nId);
-class Unk_WmDialog8c { public: void FUN_140fc7f30(); };
+class Unk_WmDialog8c : public UIWeddingDialog { };
 Unk_WmDialog8c* FUN_1418764c0(int nId);
-class Unk_WmDialog57 { public: void FUN_140e879a0(MS2Ptr<SidePopupTalkParam> spParam); };
+class Unk_WmDialog57 : public UISidePopupTalk { };
 Unk_WmDialog57* FUN_1413868b0(int nId);
 void FUN_140d73ff0(CStringW text);                              // screen notice
 void FUN_14151f200();                                           // close the open modal box
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);   // confirm box
 bool FUN_14092f660();                                           // in the wedding hall
 bool FUN_140900550();                                           // may send a wedding request
-__int64 FUN_140869440();                                        // server time
+__int64 GetServerTime();                                        // server time
 int FUN_140900f00();                                            // max invitations
-WeddingTable* FUN_1409023c0();
 int FUN_140900d40();                                            // the propose item id
 CStringW FUN_141b71910(unsigned __int64 n);                     // u64 -> text
 unsigned __int64 FUN_140718370(const CStringW& str);            // text -> u64
@@ -139,9 +142,7 @@ int FUN_141658e60(void* pUser);                                 // gender
 int FUN_1406c75c0(void* pUser);                                 // level
 bool FUN_1409005c0(unsigned char nGenderA, unsigned char nGenderB);
 int FUN_140a5f180(char* pInventory, int nItemId, int nA);       // count of an item
-CBuddyManager* FUN_14097a780();
 void AddMinutes(CMsTime& time, int minutes);                     // commonfiles/timeutil
-WeddingManager* FUN_1409eed90();
 void FUN_140873420(void* pNode, const char* pName, CStringW* pOut);
 void FUN_1408732e0(void* pNode, const char* pName, __int64* pOut);
 void FUN_1408731e0(void* pNode, const char* pName, int* pOut);
@@ -165,7 +166,6 @@ public:
 extern unsigned __int64 DAT_143ab2828;                          // the local character id
 extern char DAT_143ab2a90;                                      // the player inventory
 class Unk_LockUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-Unk_LockUIManager* FUN_1403ed2b0();
 void FUN_141adc5d0(Unk_LockUIManager* pUI, int nId);            // close a dialog
 int FUN_141924630(UIWeddingHallListDialog* pDialog);            // dialog is open
 CStringW GetStringCommon(int nStringId);                          // string table text by id
@@ -178,9 +178,9 @@ void FUN_141275260(int nStringId, int nA, int nB);
 CStringW GetStringCommonByKey(const CStringW& str);
 template <class T> T* Unk_WmDialog(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_LockUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_LockUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -301,7 +301,7 @@ void WeddingManager::OnHallList(CInPacket& packet)
 void WeddingManager::OnInvitationOk(CInPacket& packet)
 {
     FUN_1412751f0(GetStringCommonByKey(L"s_wedding_invitation_ok"), 8, 1);
-    FUN_141adc5d0(FUN_1403ed2b0(), 0x4f8e);
+    FUN_141adc5d0(reinterpret_cast<Unk_LockUIManager*>(TSingleton<CUIService>::GetInstance()), 0x4f8e);
 }
 
 // @0x141b84c60
@@ -404,7 +404,7 @@ void WeddingManager::SendInvitation(unsigned __int64 id)
 const WeddingHallTicket& WeddingManager::GetTicket()
 {
     static WeddingHallTicket s_empty;
-    if (m_ticket.m_nTime != 0 && m_ticket.m_nTime < FUN_140869440())
+    if (m_ticket.m_nTime != 0 && m_ticket.m_nTime < GetServerTime())
         return s_empty;
     return m_ticket;
 }
@@ -439,7 +439,7 @@ int WeddingManager::GetInvitedCount()
 void WeddingManager::ApplyHallTicket()
 {
     __int64 exp = m_proxy.GetExp();
-    FUN_1409023c0()->GetGrade(exp);
+    TSingleton<WeddingTable>::GetInstance()->GetGrade(exp);
 }
 
 // @0x141b899d0
@@ -843,7 +843,7 @@ void WeddingManager::OnReservationRequest(CInPacket& packet)
 {
     WeddingHallTicket ticket;
     ticket.Read(packet);
-    MS2Ptr<WeddingPackage> package = FUN_1409023c0()->FUN_140908b80(ticket.m_nPackageId);
+    MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(ticket.m_nPackageId);
     if (package == 0)
         return;
     MS2Ptr<WeddingHallData> hall = package->FUN_140907110(ticket.m_nHallId);
@@ -860,7 +860,7 @@ void WeddingManager::OnReservationRequest(CInPacket& packet)
 void WeddingManager::OnReserveOk(CInPacket& packet)
 {
     m_ticket.Read(packet);
-    MS2Ptr<WeddingPackage> package = FUN_1409023c0()->FUN_140908b80(m_ticket.m_nPackageId);
+    MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(m_ticket.m_nPackageId);
     if (package == 0)
         return;
     MS2Ptr<WeddingHallData> hall = package->FUN_140907110(m_ticket.m_nHallId);
@@ -877,7 +877,7 @@ void WeddingManager::OnMode14(CInPacket& packet)
     WeddingHallTicket ticket;
     ticket.Read(packet);
     __int64 cost = packet.ReadInt64();
-    MS2Ptr<WeddingPackage> package = FUN_1409023c0()->FUN_140908b80(ticket.m_nPackageId);
+    MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(ticket.m_nPackageId);
     if (package == 0)
         return;
     MS2Ptr<WeddingHallData> hall = package->FUN_140907110(ticket.m_nHallId);
@@ -896,7 +896,7 @@ void WeddingManager::OnMode16(CInPacket& packet)
 {
     m_ticket.Read(packet);
     __int64 cost = packet.ReadInt64();
-    MS2Ptr<WeddingPackage> package = FUN_1409023c0()->FUN_140908b80(m_ticket.m_nPackageId);
+    MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(m_ticket.m_nPackageId);
     if (package == 0)
         return;
     MS2Ptr<WeddingHallData> hall = package->FUN_140907110(m_ticket.m_nHallId);
@@ -915,7 +915,7 @@ void WeddingManager::CollectTickets(std::map<unsigned __int64, WeddingHallTicket
     void* user = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!user)
         return;
-    __int64 now = FUN_140869440();
+    __int64 now = GetServerTime();
     for (; it != end; ++it) {
         if (FUN_1406c75c0(user) < 50) {
             int diff = (int)(now - it->second.m_nTime);
@@ -942,7 +942,7 @@ void WeddingManager::RefreshTickets()
     if (tickets.size() == 1) {
         unsigned __int64 id = tickets.begin()->first;
         WeddingHallTicket& ticket = tickets.begin()->second;
-        MS2Ptr<WeddingPackage> package = FUN_1409023c0()->FUN_140908b80(ticket.m_nPackageId);
+        MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(ticket.m_nPackageId);
         if (package == 0)
             return;
         MS2Ptr<WeddingHallData> hall = package->FUN_140907110(ticket.m_nHallId);
@@ -1051,7 +1051,7 @@ int WeddingManager::CheckPropose(unsigned __int64 id)
         return 0x15;
     if (FUN_140a5f180(&DAT_143ab2a90, FUN_140900d40(), 0) == 0)
         return 0x1f;
-    CBuddyManager::Ptr buddy = FUN_14097a780()->FUN_140ae4880(id);
+    CBuddyManager::Ptr buddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(id);
     if (buddy == 0)
         return 0x16;
     if (buddy->FUN_1401cc5f0() == 0)
@@ -1073,7 +1073,7 @@ bool WeddingManager::CanVisit(int packageId, int hallId, __int64 id)
         ShowError(0x22);
         return false;
     }
-    int error = m_proxy.CheckVisit(const_cast<WeddingHallTicket&>(FUN_1409eed90()->GetTicket()), id);
+    int error = m_proxy.CheckVisit(const_cast<WeddingHallTicket&>(TSingleton<WeddingManager>::GetInstance()->GetTicket()), id);
     if (error != 0) {
         ShowError(error);
         return false;
@@ -1114,7 +1114,7 @@ void WeddingManager::ReadTicketMail(MS2Ptr<Unk_WeddingMail> mail, AScript* scrip
                 FUN_1408731e0(node, "hall", &ticket.m_nHallId);
                 FUN_1408730a0(node, "cancelMail", &cancelMail);
                 CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3,
-                    FUN_1409023c0()->FUN_140908d50(ticket.m_nPackageId, ticket.m_nHallId, FUN_140900f30(ticket.m_nTime)));
+                    TSingleton<WeddingTable>::GetInstance()->FUN_140908d50(ticket.m_nPackageId, ticket.m_nHallId, FUN_140900f30(ticket.m_nTime)));
                 CStringW date = FUN_140b8e850(CMsTime(ticket.m_nTime));
                 static_cast<ASObj*>(script)->FUN_1407cbb20("groom", ticket.m_strGroom);
                 static_cast<ASObj*>(script)->FUN_1407cbb20("bride", ticket.m_strBride);
@@ -1204,7 +1204,7 @@ bool WeddingManager::CanStartWedding(__int64 partnerId)
     void* user = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!user)
         return false;
-    if (FUN_1409eed90()->FUN_140d295d0()->m_n18 == partnerId) {
+    if (TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0()->m_n18 == partnerId) {
         FUN_141275260(0xc00, 1, 0);
         return false;
     }

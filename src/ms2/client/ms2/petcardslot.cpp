@@ -15,26 +15,18 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/inventory.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cpetmanager.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-class Unk_GameCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_GameCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
-extern Unk_Inventory DAT_143ab2a90;                     // the player's inventory
+extern Unk_Inventory g_143ab2a90;                       // the player's inventory
 
 // The pet system singleton (0x140535320): the uid of the item the pet currently uses.
-class Unk_PetSystem
-{
-public:
-    __int64 FUN_140c8b2e0();
-};
-Unk_PetSystem* FUN_140535320();
+CPetManager* FUN_140535320();
 
 // Registry of named bags/slots (GFx bind data).
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
@@ -71,7 +63,7 @@ int PetCardSlot::vfunc_0(void* p)
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem == 0)
         return 0;
     int nFlags = 0x100;
@@ -90,7 +82,7 @@ int PetCardSlot::vfunc_8(void* p)
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem == 0)
         return 0;
     ASSlot slot(2);
@@ -106,7 +98,7 @@ int PetCardSlot::vfunc_8(void* p)
 // @0x140b77330
 MS2Ptr<CItem> PetCardSlot::vfunc_25()
 {
-    return DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    return g_143ab2a90.FUN_140a5d680(m_nItemUid);
 }
 
 // @0x140b77380
@@ -125,7 +117,7 @@ void FUN_140b773a0(const CString& strName, const ATL::CAtlArray<unsigned __int64
     if (pBag)
     {
         int nMax = 15;
-        int nCap = DAT_143ab2a90.FUN_140a5d050(9);
+        int nCap = g_143ab2a90.FUN_140a5d050(9);
         int nSlots = PET_MIN(PET_MAX((int)uids.GetCount(), 15), nCap);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nSlots);
         FUN_1422c8f10(strName, pBag);
@@ -192,7 +184,7 @@ int PetConsumeSlot::vfunc_0(void* p)
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem == 0)
         return 0;
     int nFlags = 0x100;
@@ -211,7 +203,7 @@ int PetConsumeSlot::vfunc_8(void* p)
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem == 0)
         return 0;
     ASSlot slot(2);
@@ -230,7 +222,7 @@ int PetConsumeSlot::vfunc_8(void* p)
 // @0x140b77b70
 MS2Ptr<CItem> PetConsumeSlot::vfunc_25()
 {
-    return DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    return g_143ab2a90.FUN_140a5d680(m_nItemUid);
 }
 
 // @0x140b77bc0
@@ -242,14 +234,14 @@ unsigned __int64 PetConsumeSlot::GetItemUid()
 // @0x140b77be0
 int PetConsumeSlot::FUN_140b77be0()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem == 0)
         return 1;
     if (((CItem*)spItem)->FUN_140528c60() != 0)
         return 1;
     if (((CItem*)spItem)->FUN_140528ca0() == 1)
         return 1;
-    if (FUN_140535320()->FUN_140c8b2e0() == (__int64)m_nItemUid)
+    if (FUN_140535320()->GetSummonUid() == (__int64)m_nItemUid)
         return 1;
     return 0;
 }
@@ -261,7 +253,7 @@ void FUN_140b77cf0(const CString& strName, const ATL::CAtlArray<PetConsumeSlotBa
     if (pBag)
     {
         int nMax = 15;
-        int nCap = DAT_143ab2a90.FUN_140a5d050(9);
+        int nCap = g_143ab2a90.FUN_140a5d050(9);
         int nSlots = PET_MIN(PET_MAX((int)entries.GetCount(), 15), nCap);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nSlots);
         FUN_1422c8f10(strName, pBag);

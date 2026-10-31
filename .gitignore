@@ -1,5 +1,7 @@
 # Large inputs / generated artifacts — not tracked
 /Game Versions/
+# tools/extract_resources.py output: the exe's resources (Nexon's), never commit
+/resources/
 /Gamebryo/
 /third_party/
 /work/

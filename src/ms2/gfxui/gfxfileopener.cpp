@@ -13,16 +13,12 @@
 #include "ms2/placeholder/gfxfileopener.h"
 
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/gfxmanager.h"
 
 using Scaleform::File;
 
 // The GFx UI manager singleton (0x14025e7a0; its class lives in the library's first obj, 0x1422b0060-0x1422b7f20).
-class Unk_GFxUIManager
-{
-public:
-    CString FUN_1422b0d10();            // the path of the IME movie
-};
-Unk_GFxUIManager* FUN_14025e7a0();
+GFxManager* FUN_14025e7a0();
 
 int FUN_14083f4d0(CString a, CString b);   // case-insensitive compare (both lower-cased; by value: the callee destroys them)
 
@@ -66,7 +62,7 @@ File* GFxFileOpener::OpenFile(const char* purl, int flags, int mode)
         _splitpath_s(purl, szDrive, 3, szDir, 260, szFName, 256, szExt, 260);
         if (FUN_14083f4d0(szFName, "Ime") == 0 && (strcmp(szExt, ".swf") == 0 || strcmp(szExt, ".gfx") == 0)) {
             m_bImeSwfOpened = 1;
-            CString strImePath = FUN_14025e7a0()->FUN_1422b0d10();
+            CString strImePath = FUN_14025e7a0()->GetIme();
             return FUN_1422eb2f0(strImePath, flags, mode);
         }
     }

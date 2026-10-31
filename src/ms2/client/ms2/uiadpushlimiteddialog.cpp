@@ -531,7 +531,9 @@ MS2Ptr<TMeratMarketBillDataParam> UIAdPushLimitedDialog::FUN_140e04070(const CSt
 // @0x140e04350
 bool UIAdPushLimitedDialog::FUN_140e04350(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& mapPay)
 {
-    return FUN_140ebded0(spParam, mapPay) != 0;
+    if (FUN_140ebded0(spParam, mapPay))
+        return true;
+    return false;
 }
 
 // @0x140e043e0

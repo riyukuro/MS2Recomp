@@ -69,6 +69,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0
@@ -77,7 +79,7 @@ public:
     Unk_140165cf0* FUN_140165cf0(const char*);              // first child element (also takes a document)
     Unk_140165cf0* FUN_140168650(const char*);              // next sibling element
 };
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
@@ -88,8 +90,8 @@ int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
 int FUN_1408736d0(Unk_140165cf0*, const char*, bool&);
 const char* FUN_14086f4b0(Unk_140165cf0*, const char*);
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
-__int64 FUN_14086b2a0(int nYear, int nMonth, int nDay, int nHour, int nMinute, int nSecond);   // server-time value
-__int64 FUN_140869440();                                    // the current server time
+__int64 MakeTime(int nYear, int nMonth, int nDay, int nHour, int nMinute, int nSecond);        // server-time value
+__int64 GetServerTime();                                    // the current server time
 int FUN_140408410(ATL::CAtlArray<unsigned>* pArray, const unsigned* pValue);   // index of the value, -1 when absent
 
 // The npc record the table checks existence of.
@@ -97,8 +99,7 @@ class Unk_NpcRecord : public CPtred {};
 MS2Ptr<Unk_NpcRecord> FUN_1406cd330(int nNpcId);
 
 // The locale / feature gate: is the feature named by the field's <feature> enabled.
-class Unk_140166410 { public: bool FUN_14036d4b0(const CStringW& strFeature); };
-Unk_140166410* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 // field id -> <feature> name of every <fieldData> (filled once by BuildNameTable).
 static ATL::CAtlMap<int, CStringW> s_names;
@@ -579,7 +580,7 @@ bool CFieldMetaTable::FUN_1406fbb50(unsigned nNpc, unsigned nField)
     std::map<NpcFieldKey, Unk_FieldTimeSpan>::iterator it = m_activeTimes.find(std::make_pair(nNpc, nField));
     if (it == m_activeTimes.end())
         return true;
-    return it->second.Contains(FUN_140869440()) ? true : false;
+    return it->second.Contains(GetServerTime()) ? true : false;
 }
 
 // @0x1406fbc10
@@ -792,7 +793,7 @@ bool CFieldMetaTable::FUN_1406fc8a0(CString str, __int64* pTime)
     if (nYear >= 1900 && nMonth >= 1 && nMonth <= 12 && nDay >= 1 && nDay <= 31 && nHour >= 0 && nHour <= 23 &&
         nMinute >= 0 && nMinute <= 59 && nSecond >= 0 && nSecond <= 59)
     {
-        *pTime = FUN_14086b2a0(nYear, nMonth, nDay, nHour, nMinute, nSecond);
+        *pTime = MakeTime(nYear, nMonth, nDay, nHour, nMinute, nSecond);
         return true;
     }
     return false;

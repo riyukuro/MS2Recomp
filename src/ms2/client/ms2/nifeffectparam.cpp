@@ -226,6 +226,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/filepreload_1.h"
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 // Game TinyXML element.
@@ -243,8 +244,8 @@ int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 
 // The nif / texture cache service (CNifLoadingService::s_instance).
 CNifLoadingService* FUN_140a0afd0();
-class Unk_ModelCache { public: void FUN_141210ac0(CString strPath); };           // release by path
-Unk_ModelCache* FUN_140ab7a10();
+           // release by path
+CFilePreload* FUN_140ab7a10();
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
 bool FUN_140afc5a0(const Unk_LightUpdateBits* pBits);               // all bits set
@@ -293,6 +294,11 @@ const NiRTTI CNifEffect::ms_RTTI("CNifEffect", &CEffect::ms_RTTI);
 const NiRTTI DuplicatedAlphaController::ms_RTTI("DuplicatedAlphaController", &NiAlphaController::ms_RTTI);
 #endif
 #include "ms2/placeholder/header_statics_a.h"       // @0x1400fa350-0x1400fa470
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/equipment.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x141548790
@@ -487,8 +493,7 @@ void* FUN_140a53440(Unk_EffectTarget* pTarget);                     // the targe
 int FUN_140a53480(Unk_EffectTarget* pTarget);                       // the target's slot kind (6 = any)
 double FUN_14119f3a0(CEffect* pEffect);                             // start time
 bool FUN_14028d470(float a, float b);                               // nearly equal
-class Unk_GameClock { public: double FUN_141473280(); };
-Unk_GameClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 efd::ServiceManager* FUN_1413f9850();
 
 // Handles (NiAVObjectPtr) and node pointers.
@@ -526,7 +531,6 @@ public:
     void* FUN_1411a6b10();                          // scene root
     unsigned FUN_1411a88c0();                       // quality level (1..3)
 };
-Unk_EffectMgr* FUN_1403ed280();
 void* FUN_1403ed2d0();                                              // the world
 void FUN_141bbb1e0(void* pWorld, GameObject* pObj, int nA, int nB); // add the object
 void FUN_141bbb7f0(void* pWorld, GameObject* pObj, int nA);         // remove the object
@@ -619,11 +623,10 @@ GameObject* FUN_14099eef0(GameObject* pObj);                        // object ->
 bool FUN_140c206b0(Unk_NifPCPtr* pPtr, int nNull);                  // pointer == NULL?
 GameObject* FUN_140aac420(Unk_NifPCPtr* pPtr);
 GameObject* FUN_140aac440(Unk_NifPCPtr* pPtr);
-class Unk_NifEquipSet
+class Unk_NifEquipSet : public CEquipment
 {
 public:
     MS2Ptr<CEquipItem> FUN_1411e2610(NiAVObject* pNode, int nA, int nKind, bool bB);   // equipped item owning the node
-    MS2Ptr<CEquipItem> FUN_1411e1860(int nSlot, int nA, int nB);                        // equipped item of the slot
     NiAVObjectPtr FUN_1411e2a60(void* pAttach, const CString& strName, bool bA);       // model node of the item by name
 };
 Unk_NifEquipSet* FUN_1416561a0(GameObject* pPC);
@@ -635,8 +638,6 @@ int FUN_1411dc820(CEquipItem* pEquip);                              // the item 
 // Strings of the log lines.
 CString FUN_140741200(const char* pszFormat, const CString& strA, const CString& strB);
 CString FUN_140536a50(const char* pszFormat, const CString& strA);
-class Unk_NifStrings { public: CStringW FUN_141811980(int nA, int nId); };
-Unk_NifStrings* FUN_1401a9d70();
 CLogString* GetLogString();                                         // the game log, or 0
 
 // 3-argument fmt log helper (log, level, category, "format", a, b, c).
@@ -784,7 +785,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     }
     if (0 < m_spParam->m_nLodSkipLevel)
     {
-        if ((int)FUN_1403ed280()->FUN_1411a88c0() < m_spParam->m_nLodSkipLevel)
+        if ((int)reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a88c0() < m_spParam->m_nLodSkipLevel)
             return false;
     }
 
@@ -872,7 +873,7 @@ bool CNifEffect::vfunc_9()
     }
     if (!CEffect::vfunc_9())
         return false;
-    if ((int)FUN_1403ed280()->FUN_1411a88c0() != m_nLodLevel)
+    if ((int)reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a88c0() != m_nLodLevel)
     {
         if (FUN_14028d470(m_fDuration, 0.0f))
             FUN_14154cf20(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)));
@@ -978,7 +979,7 @@ int CNifEffect::vfunc_11()
         m_bSplit = true;
         FUN_1409f76f0(&m_spSplit, new (efd::MemHint(efd::MemHint::NONE)) NiNode(0));
         FUN_140aacb60(FUN_1409475f0(&m_spSplit), FUN_1409478e0(FUN_1409475f0(&m_spTarget)));
-        FUN_1409f76f0(&m_spTarget, FUN_1403ed280()->FUN_1411a6b10());
+        FUN_1409f76f0(&m_spTarget, reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10());
         FUN_140a0b2a0(FUN_1409475d0(&m_spRoot));
         static_cast<NiNode*>(FUN_1409475f0(&m_spSplit))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), false);
         static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spSplit)), true);
@@ -1260,7 +1261,7 @@ void CNifEffect::FUN_14154c7f0(Unk_EffectTarget* pTarget)
                 else
                 {
                     unsigned nItemId = FUN_1411dc820(spModelEquip.get());
-                    CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nItemId);
+                    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
                     strWhere = Unk_SocketFormat("targetNode:{0}, itemID:{1}({2})", CString(FUN_142087e50(FUN_1409a8b90(FUN_14098d0f0(&spModel)))), nItemId, CString((const wchar_t*)strName));
                 }
             }
@@ -1268,7 +1269,7 @@ void CNifEffect::FUN_14154c7f0(Unk_EffectTarget* pTarget)
         else
         {
             unsigned nItemId = FUN_1411dc820(spEquip.get());
-            CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nItemId);
+            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
             strWhere = Unk_SocketFormat("targetNode:{0}, itemID:{1}({2})", CString(FUN_142087e50(FUN_1409a8b90(static_cast<NiAVObject*>(FUN_1409475f0(&kTarget))))), nItemId, CString((const wchar_t*)strName));
         }
     }
@@ -1282,7 +1283,7 @@ MS2_REPLACE_METHOD(0x14154C7F0, CNifEffect, FUN_14154c7f0, 1827, 0x12B3C2BF);
 // Re-applies the "Eff_LOD=<n>" extra-data levels of the model: parts above the current quality level are culled.
 void CNifEffect::FUN_14154cf20(NiAVObject* pkRoot)
 {
-    int nLevel = (int)FUN_1403ed280()->FUN_1411a88c0();
+    int nLevel = (int)reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a88c0();
     if (m_nLodLevel != nLevel)
     {
         m_nLodLevel = nLevel;
@@ -1397,13 +1398,11 @@ MS2_REPLACE_METHOD(0x14154D410, CNifEffect, FUN_14154d410, 1108, 0x1CF9A73C);
 // ============================================================================================================
 // CNiStreamLoadThread / CNifLoadingService (0x1415509b0-0x141556920)
 // ============================================================================================================
-class Unk_NifFileMgr
+class Unk_NifFileMgr : public CFileSystem
 {
 public:
     // Reads a file of the data tree into a buffer (freed by the caller); pstrDir receives its directory.
     int FUN_1403972f0(const char* pszPath, void** ppBuf, int* pnSize, std::string* pstrDir);
-    int FUN_1403987d0(std::string strPath);                         // the file exists in the data tree
-    int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int nA, bool bB, bool bC);   // load an xml file
 };
 Unk_NifFileMgr* FUN_140166420();
 class Unk_NifGate { public: bool FUN_1406af080(); };                 // the loader should read on the caller's thread
@@ -1661,6 +1660,7 @@ MS2_REPLACE_METHOD(0x1415513E0, CNiStreamLoadThread, Load, 1055, 0xC7CEE07E);
 // CNifLoadingService
 // ============================================================================================================
 #include "ms2/commonfiles/crashmanager.h"
+#include "ms2/placeholder/crashmanagercli.h"
 
 extern int DAT_143ae1f20;                                           // the render device is lost
 extern int DAT_1439ed00c;                                           // the caches are enabled
@@ -1677,7 +1677,6 @@ extern CLockCriticalSection DAT_143ae1f28;
 extern CLockCriticalSection DAT_143ae1f58;
 #endif
 
-CCrashManager* FUN_140a44830();
 void* FUN_140994450();
 void FUN_1411d7c70(void* pObj, bool (*pfn)(char, void*), CNifLoadingService* pOwner);
 void FUN_1411d7c10(void* pObj, bool (*pfn)(void*), CNifLoadingService* pOwner);
@@ -1846,12 +1845,12 @@ bool CNifLoadingService::OnDeviceReset(char bBefore, void* pRenderer)
         if ((unsigned char)bBefore == 0)
         {
             DAT_143ae1f20 = 0;
-            FUN_140a44830()->FUN_1401ce2f0("\n *Reset Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
+            reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("\n *Reset Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
                 FUN_14161bdc0(FUN_1409f7c90()), FUN_1422e9e50(FUN_1414a56c0()) / 0x100000);
         }
         else
         {
-            FUN_140a44830()->FUN_1401ce2f0("\n *beforeReset Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
+            reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("\n *beforeReset Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
                 FUN_14161bdc0(FUN_1409f7c90()), FUN_1422e9e50(FUN_1414a56c0()) / 0x100000);
         }
     }
@@ -1862,7 +1861,7 @@ bool CNifLoadingService::OnDeviceReset(char bBefore, void* pRenderer)
 bool CNifLoadingService::OnDeviceLost(void* pRenderer)
 {
     DAT_143ae1f20 = 1;
-    FUN_140a44830()->FUN_1401ce2f0("\n *Lost Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("\n *Lost Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
         FUN_14161bdc0(FUN_1409f7c90()), FUN_1422e9e50(FUN_1414a56c0()) / 0x100000);
     return true;
 }
@@ -1889,7 +1888,7 @@ efd::AsyncResult CNifLoadingService::OnInit()
         FUN_1411d7c70(pNotifier, OnDeviceReset, this);
         FUN_1411d7c10(pNotifier, OnDeviceLost, this);
     }
-    FUN_140a44830()->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CNifLoadingService::LogCounts));
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CNifLoadingService::LogCounts));
     return efd::AsyncResult_Complete;
 }
 MS2_REPLACE_METHOD(0x141555D60, CNifLoadingService, OnInit, 241, 0xD84583A3);
@@ -2265,21 +2264,21 @@ MS2_REPLACE_METHOD(0x141554F60, CNifLoadingService, DumpTextures, 1653, 0x971C83
 // @0x141556610
 void CNifLoadingService::LogCounts()
 {
-    FUN_140a44830()->FUN_1401ce2b0("\n--- CNifLoadingService Log ---");
-    FUN_140a44830()->FUN_1401ce2f0("NIF cache count : %d", FUN_14151e770());
-    FUN_140a44830()->FUN_1401ce2f0("Nif NotCacheCount %d", m_kNifCount.nNotCache);
-    FUN_140a44830()->FUN_1401ce2f0("Nif ForceKeepCount %d", m_kNifCount.nForceKeep);
-    FUN_140a44830()->FUN_1401ce2f0("Nif MySkillCount %d", m_kNifCount.nMySkill);
-    FUN_140a44830()->FUN_1401ce2f0("Nif OtherSkillCount %d", m_kNifCount.nOtherSkill);
-    FUN_140a44830()->FUN_1401ce2f0("Nif NPCCount %d", m_kNifCount.nNPC);
-    FUN_140a44830()->FUN_1401ce2f0("Nif DependTimeCount %d", m_kNifCount.nDependTime);
-    FUN_140a44830()->FUN_1401ce2f0("Texture cache count : %d", FUN_14151e790());
-    FUN_140a44830()->FUN_1401ce2f0("Texture NotCacheCount %d", m_kTexCount.nNotCache);
-    FUN_140a44830()->FUN_1401ce2f0("Texture ForceKeepCount %d", m_kTexCount.nForceKeep);
-    FUN_140a44830()->FUN_1401ce2f0("Texture MySkillCount %d", m_kTexCount.nMySkill);
-    FUN_140a44830()->FUN_1401ce2f0("Texture OtherSkillCount %d", m_kTexCount.nOtherSkill);
-    FUN_140a44830()->FUN_1401ce2f0("Texture NPCCount %d", m_kTexCount.nNPC);
-    FUN_140a44830()->FUN_1401ce2f0("Texture DependTimeCount %d", m_kTexCount.nDependTime);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- CNifLoadingService Log ---");
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("NIF cache count : %d", FUN_14151e770());
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Nif NotCacheCount %d", m_kNifCount.nNotCache);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Nif ForceKeepCount %d", m_kNifCount.nForceKeep);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Nif MySkillCount %d", m_kNifCount.nMySkill);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Nif OtherSkillCount %d", m_kNifCount.nOtherSkill);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Nif NPCCount %d", m_kNifCount.nNPC);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Nif DependTimeCount %d", m_kNifCount.nDependTime);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Texture cache count : %d", FUN_14151e790());
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Texture NotCacheCount %d", m_kTexCount.nNotCache);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Texture ForceKeepCount %d", m_kTexCount.nForceKeep);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Texture MySkillCount %d", m_kTexCount.nMySkill);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Texture OtherSkillCount %d", m_kTexCount.nOtherSkill);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Texture NPCCount %d", m_kTexCount.nNPC);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Texture DependTimeCount %d", m_kTexCount.nDependTime);
 }
 MS2_REPLACE_METHOD(0x141556610, CNifLoadingService, LogCounts, 500, 0xD41A024D);
 
@@ -2302,7 +2301,7 @@ extern char DAT_142f2d1d0;
 extern char DAT_142f2d1d8;
 extern char DAT_142f2d1e8;
 extern char DAT_143ae5178;                                          // the weight key
-Unk_140165cf0* FUN_14081b310(TiXmlDocument* pDoc);                  // root element
+Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc);                 // root element
 const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);       // attribute text or 0
 const char* FUN_14086f500(Unk_140165cf0* pNode, const char* pszName, unsigned* pnOut);   // int attribute, 0 when absent
 void FUN_141047ac0(NiAVObject* pObj, const void* pKey, float fWeight);      // set a named float on the object
@@ -2355,7 +2354,7 @@ void CNifLoadingService::ApplyWeights(CString strNifPath, NiAVObject* pkRoot)
         if (FUN_140166420()->FUN_1403974b0(pDoc, strXml, 0, true, false) == 0)
             return;
     }
-    Unk_140165cf0* pElement = FUN_14081b310(pDoc);
+    Unk_140165cf0* pElement = DocRootElement(pDoc);
     if (pElement == 0)
         return;
     Unk_140165cf0* pList = pElement->FUN_140165cf0(&DAT_142f2d1c8);

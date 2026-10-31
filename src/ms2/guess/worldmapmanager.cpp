@@ -159,6 +159,8 @@
 #include <efd/Point3.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/fishingmanager.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 // the record factories (0x141bacXXX) are explicit specializations defined at the end of the file; declared here
 // so that clang sees them before the first use
@@ -205,9 +207,6 @@ char* FUN_1401d31f0();                                                      // t
 Unk_FieldIdListMap& FUN_141b69360(CFieldMetaTable* pTable);                 // field -> npcs (uiworldmapdialog.cpp)
 const Unk_FieldIdListPtr& FUN_141b695b0(Unk_FieldIdListMap* pMap, POSITION pos);  // CAtlMap::GetValueAt (uiworldmapdialog.cpp)
 void FUN_140c956e0(Unk_FieldIdListMap* pMap, POSITION& pos);                // CAtlMap::GetNext (questnavigation.cpp)
-CContinentRegionTable* FUN_1403782c0();
-QuestDataTable* FUN_1407476c0();
-DungeonRoomTable* FUN_14031c2a0();
 CStringTable* GetStringTable();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pQuest);                                      // the quest id
@@ -215,7 +214,7 @@ int FUN_14074b050(CQuestData* pQuest);                                      // t
 bool FUN_140764040(CQuestData* pQuest);
 bool FUN_140764080(CQuestData* pQuest);
 bool FUN_1407640c0(CQuestData* pQuest);
-bool FUN_14031e720(unsigned short nRequired, unsigned short nLevel);        // the level suits the dungeon
+bool IsDungeonLevelInRange(unsigned short nRequired, unsigned short nLevel); // the level suits the dungeon
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                                 // the npc table row
 NpcDataTableCli* FUN_1406d6e90();
 CStringW FUN_1401aa6a0(int nNpcId);                                         // the npc name
@@ -231,12 +230,10 @@ CStringW FUN_140f02bd0(CStringW strKey, const CStringW& a1, const unsigned short
 CStringW FUN_140b99450(CStringW strKey, const CStringW& a1, const unsigned& a2);
 CStringW FUN_140f48210(int nHour, int nMinute);                             // "hh:mm"
 CStringW FUN_140b8e910(const CMsTime& time);                                // the date text of a time
-__int64 FUN_140869440();                                                    // the server time
+__int64 GetServerTime();                                                    // the server time
 CStringW FUN_14016a730(const char* psz, int nCodePage);                     // widen a string
-class Unk_WmTextFilter { public: void FUN_1416fb340(CStringW& str); };       // colours the reserved words
-Unk_WmTextFilter* FUN_1403b4750();
-class Unk_WmFishing { public: CStringW FUN_140cdc000(unsigned nFieldId); }; // the fishing spot text of a field
-Unk_WmFishing* FUN_140953f20();
+CReservedWordTable* FUN_1403b4750();
+CFishingManager* FUN_140953f20();
 class Unk_WmFeatures;
 Unk_WmFeatures* FUN_140166410();
 bool FUN_14036d570(Unk_WmFeatures* p, int nFeature);
@@ -344,7 +341,7 @@ int UIWorldMap::DisplaySetting::FUN_141b95270(MS2Ptr<DungeonRoom> spRoom)
     PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPC == 0)
         return 0;
-    bool bSuits = FUN_14031e720(spRoom->m_limitPlayerLevel, (unsigned short)pPC->vfunc_78());
+    bool bSuits = IsDungeonLevelInRange(spRoom->m_limitPlayerLevel, (unsigned short)pPC->vfunc_78());
     if (m_18[4] != 0 && !bSuits)
         return 0;
     return 1;
@@ -903,7 +900,7 @@ void WorldMapManager::ClearAddtionalInfoTooltips()
 // @0x141b98300
 int WorldMapManager::WorldOfField(int field)
 {
-    CContinentRegionTable::InfoPtr spContinent = FUN_1403782c0()->GetContinent(field);
+    CContinentRegionTable::InfoPtr spContinent = TSingleton<CContinentRegionTable>::GetInstance()->GetContinent(field);
     if (spContinent.get() != 0)
         return spContinent->m_nRepresentWorldmapContinent;
     return field;
@@ -993,7 +990,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
         {
             unsigned nPortal = spPortals->GetAt(portalPos);
             ATL::CAtlArray<MS2Ptr<DungeonRoom> > rooms;
-            FUN_14031c2a0()->GetRooms(nPortal, rooms);
+            TSingleton<DungeonRoomTable>::GetInstance()->GetRooms(nPortal, rooms);
             for (size_t i = 0; i < rooms.GetCount(); i++)
             {
                 MS2Ptr<DungeonRoom> spRoom = rooms[i];
@@ -1254,7 +1251,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
         {
             unsigned nPortal = spPortals->GetAt(pos);
             ATL::CAtlArray<MS2Ptr<DungeonRoom> > found;
-            FUN_14031c2a0()->GetRooms(nPortal, found);
+            TSingleton<DungeonRoomTable>::GetInstance()->GetRooms(nPortal, found);
             for (size_t i = 0; i < found.GetCount(); i++)
             {
                 MS2Ptr<DungeonRoom> spRoom = found[i];
@@ -1331,7 +1328,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
                     if (CFieldMetaTable::GetInstance()->FUN_1406fc620(nNpcId, when) != 0)
                     {
                         CStringW strTime;
-                        CMsTime now(FUN_140869440());
+                        CMsTime now(GetServerTime());
                         int bSameDay = 1;
                         if (when.GetYear() != now.GetYear())
                             bSameDay = 0;
@@ -1396,7 +1393,7 @@ int WorldMapManager::BuildMissionSearch(unsigned field, ASObj* script)
         return 0;
     ASArray missions(2);
     ATL::CAtlArray<unsigned> ids;
-    FUN_1407476c0()->FUN_14074cbf0(field, ids);
+    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cbf0(field, ids);
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
         int nQuestId = ids[i];

@@ -18,6 +18,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -41,7 +42,6 @@ class Unk_RmGraphic { public: void FUN_1409a8ab0(); void FUN_1409a8aa0(); };
 class Unk_RmOption { public: Unk_RmGraphic* FUN_1409a8ac0(); };
 
 Unk_RmApp* FUN_140aadf80();
-Unk_RmOption* FUN_1409a8b10();
 void FUN_14098a440(CDialogEx* pDlg, CDataExchange* pDX);            // 0x14098a440 CDialogEx::DoDataExchange
 Unk_RmRenderService* FUN_1413f9890();
 
@@ -148,10 +148,10 @@ int RecodeMgr::FUN_140c9bc70(CString strText)
 }
 
 // @0x140c9bda0
-void RecodeMgr::FUN_140c9bda0() { FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8ab0(); }
+void RecodeMgr::FUN_140c9bda0() { reinterpret_cast<Unk_RmOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8ab0(); }
 
 // @0x140c9bdd0
-void RecodeMgr::FUN_140c9bdd0() { FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8aa0(); }
+void RecodeMgr::FUN_140c9bdd0() { reinterpret_cast<Unk_RmOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8aa0(); }
 
 // @0x140c9be00
 int RecodeMgr::FUN_140c9be00()

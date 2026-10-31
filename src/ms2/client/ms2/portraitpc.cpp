@@ -22,6 +22,7 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/pcgemequip.h"
 #include "ms2/placeholder/notifychange.h"
+#include "ms2/placeholder/notifysystem.h"
 #include <NiActorManager.h>
 
 // ---- unit-local stand-ins for the unrecovered pointee types ----
@@ -66,13 +67,7 @@ public:
 Unk_PtWorld* FUN_1403ed2d0();
 
 // The notify centre (singleton FUN_140939a10): named notify handlers.
-class Unk_PtNotices
-{
-public:
-    void FUN_140da4e40(CStringW name, Delegate<void(NotifyObject*)> handler);   // 0x140da4e40 add
-    void FUN_140da4eb0(CStringW name, Delegate<void(NotifyObject*)> handler);   // 0x140da4eb0 remove
-};
-Unk_PtNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 // The item event hub (singleton FUN_140a6a840).
 class Unk_PtItemEvents
@@ -196,7 +191,7 @@ void PortraitPC::vfunc_33(int nClass, int n)
 void PortraitPC::vfunc_14()
 {
     FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyChangeActiveMyCodiTab", Delegate<void(NotifyObject*)>(this, &PortraitPC::FUN_14169a710));
+    FUN_140939a10()->UnregisterNotify(L"NotifyChangeActiveMyCodiTab", Delegate<void(NotifyObject*)>(this, &PortraitPC::FUN_14169a710));
 }
 
 // @0x14169a160
@@ -218,7 +213,7 @@ int PortraitPC::vfunc_10()
     {
         if (m_pSourcePC->FUN_14123c580() == pMyPC->FUN_14123c580())
         {
-            FUN_140939a10()->FUN_140da4e40(L"NotifyChangeActiveMyCodiTab", Delegate<void(NotifyObject*)>(this, &PortraitPC::FUN_14169a710));
+            FUN_140939a10()->RegisterNotify(L"NotifyChangeActiveMyCodiTab", Delegate<void(NotifyObject*)>(this, &PortraitPC::FUN_14169a710));
             FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
         }
     }

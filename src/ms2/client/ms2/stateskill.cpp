@@ -64,19 +64,18 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/cubecraft_1.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------
 
 bool FUN_14028d470(float a, float b);                      // 0x14028d470 a == b (within epsilon)
 
 // TSingleton<SkillDataTableCli> (placeholder/skilldatatablecli.h clashes with commonfiles' SkillDataTable).
-class Unk_SsSkillTable
-{
-public:
-    SkillAttackData* FUN_140aae660(unsigned nSkillId, unsigned short nLevel, CString strPoint);  // the attack of a cast point
-};
 MS2InputService* FUN_140a58540();                          // TSingleton<MS2InputService>::GetInstance
-Unk_SsSkillTable* FUN_1401958b0();                         // TSingleton<SkillDataTableCli>::GetInstance
+SkillDataTableCli* FUN_1401958b0();                        // TSingleton<SkillDataTableCli>::GetInstance
 
 
 // The skill record PCBase slots 103 / 104 hand out (a CSkillRecord; the shared headers keep it opaque).
@@ -89,7 +88,7 @@ class Unk_PCBaseComp_b18 : public CSkillRecord {};
 #define SS_SP(pt) reinterpret_cast<const Vector3&>(pt)
 #define SS_PT(pt) reinterpret_cast<const efd::Point3&>(pt)
 
-float FUN_140a34650(float f);                              // efd::ACos (clamped)
+float Unk_Acos(float f);                                   // efd::ACos (clamped)
 
 // The state-sync record as slot 26 fills it (unit-local view: each state unit declares the fields it writes).
 class Unk_StateDataArg
@@ -115,17 +114,14 @@ class Unk_SsAnimSvc { public: NiActorManager* FUN_140999440(const egf::EntityID&
 Unk_SsAnimSvc* FUN_141b6f910();
 
 // TSingleton<WorldService>: the scene kind of an actor.
-class Unk_SsWorld
+class Unk_SsWorld : public WorldService
 {
 public:
-    void* FUN_141bd0cc0();                              // the local player (a MyPC)
     int FUN_141bd1a10(GameObject* pObject);
     void* FUN_141bd1200(int nId);                       // the field object of an id
     GameObject* FUN_141bd1180(int nId);                 // the field object of an id (a counted reference)
     void* FUN_141bd1530(__int64 nId);                   // the player of a character id
-    Unk_WsOptional<float>* FUN_141bd9c00();             // the effect hide distance option
 };
-Unk_SsWorld* FUN_1403ed2d0();
 UICastingBar* FUN_140ac2270(int nId);                  // the casting bar dialog
 float FUN_140966f00(NiPoint3 kFrom, NiPoint3 kTo);      // the distance of two points
 
@@ -151,12 +147,12 @@ int FUN_1409709d0(Unk_PCBaseBuffs* pBuffs);
 void FUN_141659000(PCBase* pPC, int n);                    // reset the pc's emotion
 int FUN_141489940(PCBase* pPC);                            // the pc's actor kind (10: the rotation is a direction)
 void FUN_141663d00(PCBase* pPC, efd::Point3 kRot);         // the pc's aim
-class Unk_SsHeldItemData { public: int FUN_14053dc90(); }; // the item's skill id
+class Unk_SsHeldItemData : public CItemData { }; // the item's skill id
 class Unk_SsHeldItem { public: Unk_SsHeldItemData* FUN_140527840(); };
 Unk_SsHeldItem* FUN_14165f100(MyPC* pMy);                  // the held object weapon
 void FUN_14165f170(MyPC* pMy);                             // drop the held object weapon
 void FUN_14165f1f0(MyPC* pMy, int a, int b);
-class Unk_SsCubeControl { public: __int64 FUN_1410a67f0(); void FUN_1410a6520(); };
+class Unk_SsCubeControl : public CSkillMagicControlGuide { };
 Unk_SsCubeControl* FUN_141662440(MyPC* pMy, int nKind);    // the controlled cube of a kind
 int FUN_141092ff0(PCBase* pMount);                         // the mount is a vehicle
 PCBase* FUN_140974230(GameObject* pActor);                // the actor's player character
@@ -176,7 +172,6 @@ void* FUN_14097a780();                                     // the buddy manager
 int FUN_140ae51b0(void* pService, __int64 nActorId);       // the actor is on the block list
 int FUN_141240780(Unk_PCBaseBody* pBody);                  // the body is blocked
 class Unk_SsUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-Unk_SsUIManager* FUN_1403ed2b0();
 
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);  // the string key's text formatted with one argument
 void FUN_1418e0ad0(Unk_CastingParam* pThis, MS2Ptr<CXmlData> spXml);  // the cast arguments of a <castingBar> node
@@ -199,7 +194,7 @@ extern bool DAT_143ae95e1;                                 // debug: show the sk
 int FUN_141769410(PCBase* pOwner, SkillAttackData* pAttack, unsigned nSkillId);   // the attack's target count
 
 MyPC* FUN_14096e160(PCBase* pActor);                       // the own player side of an actor (null for others)
-extern Unk_Inventory DAT_143ab2a90;                        // the inventory
+extern Unk_Inventory g_143ab2a90;                          // the inventory
 // The record of an item (citem.h types it Unk_ItemEquipData; the glide / ride / pet getters are CItemData's).
 #define SS_ITEMDATA(spItem) reinterpret_cast<CItemData*>((spItem)->FUN_140527840())
 
@@ -236,7 +231,7 @@ void Unk_SkillPauseEvent::FUN_1417e4810(PCBase* pOwner, unsigned nSkillId, unsig
 {
     if (m_pAttack != NULL)
         return;
-    SkillAttackData* pAttack = FUN_1401958b0()->FUN_140aae660(nSkillId, nLevel, strPoint);
+    SkillAttackData* pAttack = FUN_1401958b0()->FindSkillAttack(nSkillId, nLevel, strPoint);
     if (pAttack == NULL)
         return;
     m_fStart = 0;
@@ -550,7 +545,7 @@ void StateSkill::vfunc_5(int n)
         {
             Unk_EffectTarget kTarget;
             kTarget.m_strName = strEffect;
-            kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
+            kTarget.m_nKind = reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
             kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
             kTarget.m_b31 = m_spRecord->FUN_141759a50();
             if (!FUN_1417f4bc0(kTarget))
@@ -753,7 +748,7 @@ void StateSkill::AnimActivated(NiActorManager* pkManager, unsigned int eSequence
         {
             Unk_EffectTarget kTarget;
             kTarget.m_strName = strEffect;
-            kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
+            kTarget.m_nKind = reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
             kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
             kTarget.m_b31 = m_spRecord->FUN_141759a50();
             if (!FUN_1417f4bc0(kTarget))
@@ -827,7 +822,7 @@ void StateSkill::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceI
             {
                 Unk_EffectTarget kTarget;
                 kTarget.m_strName = strEffect;
-                kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
+                kTarget.m_nKind = reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
                 kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
                 if (!FUN_1417f4bc0(kTarget))
                 {
@@ -857,7 +852,7 @@ void StateSkill::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceI
         {
             Unk_EffectTarget kTarget;
             kTarget.m_strName = strLoop;
-            kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
+            kTarget.m_nKind = reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
             kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
             if (!FUN_1417f4bc0(kTarget))
                 m_spRecord->m_n88 = CEffectService::GetInstance()->FUN_1411a49c0(kTarget);
@@ -1204,7 +1199,7 @@ int StateSkill::FUN_1417e9d20(Unk_SocketPtr<CArrowFillTargetContext> spCtx)
 {
     if (spCtx == NULL)
         return 0;
-    GameObject* pOwner = (GameObject*)FUN_1403ed2d0()->FUN_141bd1200(SS_TAG(spCtx->m_spOwner)->m_nOwnerId);
+    GameObject* pOwner = (GameObject*)reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1200(SS_TAG(spCtx->m_spOwner)->m_nOwnerId);
     if (pOwner == NULL)
         return 0;
     SkillAttackData* pAttack = SS_TAG(spCtx->m_spOwner)->FUN_141759050();
@@ -1717,7 +1712,7 @@ float StateSkill::FUN_1417f4ea0(PCBase* pOwner, efd::Point3 kRot)
     kDir.Unitize();
     float fCos = kDir.Dot(-efd::Point3::UNIT_Y);
     efd::Point3 kCross = kDir.UnitCross(efd::Point3::UNIT_Z);
-    float fYaw = FUN_140a34650(fCos) * 180.0f / 3.1415927f;
+    float fYaw = Unk_Acos(fCos) * 180.0f / 3.1415927f;
     float fSide = kCross.Dot(efd::Point3::UNIT_Y);
     if (0.0f < fSide)
         fYaw = 360.0f - fYaw;
@@ -1836,7 +1831,7 @@ void StateSkill::FUN_1417ea750(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord)
     {
         Unk_EffectTarget kTarget;
         kTarget.m_strName = spRecord->FUN_1417598a0();
-        kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(pOwner);
+        kTarget.m_nKind = reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1a10(pOwner);
         kTarget.FUN_140a53190(pOwner->FUN_14123c580());
         kTarget.m_b31 = spRecord->FUN_141759a50();
         if (!FUN_1417f4bc0(kTarget))
@@ -1864,9 +1859,9 @@ MS2_REPLACE(0x1417ea920, StateSkill::FUN_1417ea920, 296, 0xAEF0F574);
 // @0x1417f5780
 UICoupleActionDialog* FUN_1417f5780(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_SsUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_SsUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<UICoupleActionDialog*>((UIObject*)p);
     }
@@ -1931,7 +1926,7 @@ int StateSkill::FUN_1417eaa50(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
             break;
         }
         __int64 nPartner = pDialog->FUN_1417f5f70();
-        PCBase* pPeer = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(pDialog->FUN_1417f5f70());
+        PCBase* pPeer = (PCBase*)reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1530(pDialog->FUN_1417f5f70());
         if (pPeer == NULL)
         {
             MS2_ASSERT_AT(0x486, "pPeerPC" && 0);
@@ -2015,7 +2010,7 @@ int StateSkill::FUN_1417eb3a0(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
     {
         if (spRecord->FUN_1417599c0() != 0)
         {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(spRecord->FUN_1417599c0());
+            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(spRecord->FUN_1417599c0());
             if (spItem.get() != NULL)
             {
                 if (SS_ITEMDATA(spItem)->FUN_14053cc80())
@@ -2027,7 +2022,7 @@ int StateSkill::FUN_1417eb3a0(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
     }
     else if (nState == 0x1e)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(spRecord->FUN_1417599c0());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(spRecord->FUN_1417599c0());
         if (spItem == NULL)
             return 0;
         if (pMy->FUN_14166c930() == 0x1e)
@@ -2145,7 +2140,7 @@ MS2Ptr<CSkillRecord> StateSkill::FUN_1417f0230()
         return MS2Ptr<CSkillRecord>(0);
     if (m_spRecord == NULL)
         return MS2Ptr<CSkillRecord>(0);
-    PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1200(m_spRecord->m_nB0);
+    PCBase* pTarget = (PCBase*)reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_spRecord->m_nB0);
     if (pTarget == NULL)
         return MS2Ptr<CSkillRecord>(0);
     if (pTarget->GetClassID() != 0x6200028)
@@ -2369,7 +2364,7 @@ void StateSkill::FUN_1417f1ea0()
         return;
     Unk_EffectTarget kTarget;
     kTarget.m_strName = pMotion->m_strLoopKeepEffect;
-    kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
+    kTarget.m_nKind = reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
     kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
     kTarget.m_b31 = m_spRecord->FUN_141759a50();
     if (!FUN_1417f4bc0(kTarget))
@@ -2385,7 +2380,7 @@ void StateSkill::FUN_1417f2030()
         return;
     Unk_EffectTarget kTarget;
     kTarget.m_strName = pMotion->m_strLoopEndEffect;
-    kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
+    kTarget.m_nKind = reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
     kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
     kTarget.m_b31 = m_spRecord->FUN_141759a50();
     if (!FUN_1417f4bc0(kTarget))
@@ -2702,10 +2697,10 @@ void StateSkill::FUN_1417f3e80(int nBounce, ATL::CAtlList<Unk_MagicTagPtr>& lstC
     if (nBounce == 0)
         return;
     Unk_MagicTagPtr spLast(lstChain.GetTail());
-    efd::SmartPointer<GameObject> spFrom(FUN_1403ed2d0()->FUN_141bd1180(SS_TAG(spLast)->m_nCasterId));
+    efd::SmartPointer<GameObject> spFrom(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1180(SS_TAG(spLast)->m_nCasterId));
     if ((GameObject*)spFrom == NULL)
         return;
-    efd::SmartPointer<GameObject> spSearcher(FUN_1403ed2d0()->FUN_141bd1180(SS_TAG(spLast)->m_nOwnerId));
+    efd::SmartPointer<GameObject> spSearcher(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1180(SS_TAG(spLast)->m_nOwnerId));
     if ((GameObject*)spSearcher == NULL)
         return;
     CCylinderCollision kShape;
@@ -2731,7 +2726,7 @@ void StateSkill::FUN_1417f3e80(int nBounce, ATL::CAtlList<Unk_MagicTagPtr>& lstC
         for (POSITION pos = lstChain.GetHeadPosition(); pos != NULL; lstChain.GetNext(pos))
         {
             Unk_MagicTagPtr spTag(lstChain.GetAt(pos));
-            efd::SmartPointer<GameObject> spHit(FUN_1403ed2d0()->FUN_141bd1180(SS_TAG(spTag)->m_nCasterId));
+            efd::SmartPointer<GameObject> spHit(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1180(SS_TAG(spTag)->m_nCasterId));
             int nAt = FUN_1417f5710(aLeft, spHit);
             if (nAt != -1)
                 aLeft.RemoveAt(nAt, 1);
@@ -2773,7 +2768,7 @@ void StateSkill::FUN_1417f3e80(int nBounce, ATL::CAtlList<Unk_MagicTagPtr>& lstC
         for (POSITION pos = lstChain.GetHeadPosition(); pos != NULL; lstChain.GetNext(pos))
         {
             Unk_MagicTagPtr spTag(lstChain.GetAt(pos));
-            efd::SmartPointer<GameObject> spHit(FUN_1403ed2d0()->FUN_141bd1180(SS_TAG(spTag)->m_nCasterId));
+            efd::SmartPointer<GameObject> spHit(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1180(SS_TAG(spTag)->m_nCasterId));
             int nAt = FUN_1417f5710(spDetect->m_arrTargets, spHit);
             if (nAt != -1)
                 spDetect->m_arrTargets.RemoveAt(nAt, 1);
@@ -2800,10 +2795,10 @@ bool StateSkill::FUN_1417f4bc0(Unk_EffectTarget& kTarget)
 {
     if (kTarget.m_nKind != 3)
         return false;
-    Unk_WsOptional<float>* pRange = FUN_1403ed2d0()->FUN_141bd9c00();
+    Unk_WsOptional<float>* pRange = reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd9c00();
     if (!*pRange)
         return false;
-    PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPlayer = static_cast<PCBase*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return false;
     GameObject* pObject = kTarget.FUN_140a533b0();
@@ -2893,7 +2888,7 @@ void StateSkill::FUN_1417ee120()
         {
             if (m_spNext == NULL)
             {
-                MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+                MyPC* pMy = static_cast<MyPC*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
                 if (pMy != NULL)
                 {
                     int nOldInput = pMy->FUN_141523bc0()->FUN_141765cf0(0);
@@ -3144,7 +3139,7 @@ void StateSkill::FUN_1417ef4a0()
     }
     if (!m_b11e && m_spRecord->m_spSkill->m_blockB0.m_eAutoChange != 0)
     {
-        MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        MyPC* pMy = static_cast<MyPC*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
         if (pMy != NULL)
         {
             int nSkillId = nId;
@@ -3157,7 +3152,7 @@ void StateSkill::FUN_1417ef4a0()
     if (!bChain)
         return;
     m_pOwner->vfunc_100(m_spNext, 0);
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pMy != NULL && m_spNext->m_nA8 != 0)
         pMy->FUN_141523bc0()->FUN_141765a70(m_spNext->m_nA8);
     m_spNext->m_bAD = false;
@@ -3183,7 +3178,7 @@ int StateSkill::FUN_1417efbe0()
     if (m_spRecord->m_nB0 == 0)
         return 0;
     efd::SmartPointer<NiAVObject> spNode = NULL;
-    PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1200(m_spRecord->m_nB0);
+    PCBase* pTarget = (PCBase*)reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_spRecord->m_nB0);
     if (pTarget != NULL)
         spNode = pTarget->FUN_1416757c0(m_spRecord->m_strB8);
     if ((bool)(NiAVObject*)spNode && pTarget != NULL && pTarget->FUN_14166ce30() == 0

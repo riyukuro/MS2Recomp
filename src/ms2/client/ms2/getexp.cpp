@@ -33,6 +33,9 @@ CString s_strEffDummy = "Eff_Dummy";                             // @0x1400eb770
 
 // ---- the shared header statics, once more (this unit includes the header twice) ----
 #include "ms2/placeholder/header_statics_a.h"       // names @0x1400eb7a0, skill @0x1400eb860, stun @0x1400eb890, condition @0x1400eb8c0
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/cmainsystem.h"
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // @0x1400eb910
 static CString s_strSkill2 = "skill";                // @0x1400eb9d0
 static CString s_strStun2 = "stun";                  // @0x1400eba00
@@ -85,14 +88,12 @@ int FUN_14028d0e0();                                                // seed coun
 bool FUN_14087ddc0(void* pClassInfo, int nKind);                    // efd::ClassInfo::IsKindOf
 
 // The world service (0x1403ed2d0) and its object lookups.
-class Unk_AttendAvatarMgr
+class Unk_AttendAvatarMgr : public WorldService
 {
 public:
-    void* FUN_141bd0cc0();                                          // the local player
     Unk_ExpActor* FUN_141bd1200(int nObjectId);                     // an object by id
     int FUN_141bd1a10(Unk_ExpActor* p);                             // object -> owner id
 };
-Unk_AttendAvatarMgr* FUN_1403ed2d0();
 
 // The effect manager (0x1403ed280).
 struct Unk_ExpTarget;
@@ -104,7 +105,6 @@ public:
     void FUN_1411a4a00(Unk_ExpTarget* pRequest);                    // play once
     void FUN_1411a6060(int nHandle);                                // release
 };
-Unk_1403ed280* FUN_1403ed280();
 
 // Effect request (0x70 bytes; ctor 0x140a52ef0, dtor 0x1405a89e0).
 struct Unk_ExpTarget
@@ -160,7 +160,6 @@ void FUN_140981070(void* pNode, const Unk_NiPoint3& kPoint);                    
 void FUN_140ddcca0(void* pNode, const void* pMatrix);                                // SetRotate
 void FUN_140a0b2a0(NiAVObject* pNode);                                               // detach from the parent
 class Unk_Clock;
-Unk_Clock* FUN_14086d260();
 double FUN_141473280(Unk_Clock* pClock);
 
 // ---- CExpEffectInfo ----
@@ -231,7 +230,7 @@ void CExpEffectInfo::UpdateOrientation()
     kMat.FUN_14109aa30(2, vSide);
     m_rot = kMat;
     FUN_140ddcca0(FUN_1409475f0(&m_spNode), &kMat);
-    ((NiAVObject*)FUN_1409475f0(&m_spNode))->Update((float)FUN_141473280(FUN_14086d260()), false);
+    ((NiAVObject*)FUN_1409475f0(&m_spNode))->Update((float)FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())), false);
 }
 
 static int s_nConstInit = 0;                                        // @0x143ad6000
@@ -260,7 +259,7 @@ void CExpEffectInfo::StopEffect()
 {
     if (m_hEffect > 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_hEffect);
+        reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_hEffect);
         m_hEffect = 0;
     }
 }
@@ -276,7 +275,7 @@ void CExpEffectInfo::Update(float fElapsed)
 // @0x141272cb0
 void CExpEffectInfo::UpdateMove(float fElapsed)
 {
-    Unk_ExpActor* pPlayer = (Unk_ExpActor*)FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ExpActor* pPlayer = (Unk_ExpActor*)reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     GetTargetPos(pPlayer, &m_ptTarget);
@@ -307,10 +306,10 @@ void CExpEffectInfo::UpdateMove(float fElapsed)
 // @0x141272f20
 int CExpEffectInfo::Create(int nObjectId, void* pOwner)
 {
-    Unk_ExpActor* pPlayer = (Unk_ExpActor*)FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ExpActor* pPlayer = (Unk_ExpActor*)reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    Unk_ExpActor* pObj = FUN_1403ed2d0()->FUN_141bd1200(nObjectId);
+    Unk_ExpActor* pObj = reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd1200(nObjectId);
     if (pObj == 0)
         return 0;
     FUN_1409f76f0(&m_spNode, new (efd::MemHint(efd::MemHint::NONE)) NiNode(0));
@@ -344,14 +343,14 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
                                     .FUN_14097fd50(GetAxis2().FUN_14097fc90(ptOffset.z))
                                     .FUN_14097fd50(GetAxis0().FUN_14097fc90(ptOffset.x))));
     SetPosition(m_ptSource);
-    NiNode* pRoot = (NiNode*)FUN_1403ed280()->FUN_1411a6b10();
+    NiNode* pRoot = (NiNode*)reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10();
     pRoot->AttachChild((NiAVObject*)FUN_1409475d0(&m_spNode), true);
     Unk_ExpTarget kRequest;
     kRequest.m_spNode = (NiAVObject*)FUN_1409475d0(&m_spNode);
     kRequest.m_strName = *reinterpret_cast<CString*>((char*)FUN_1401d31f0() + 0x338);
-    kRequest.m_nOwnerId = FUN_1403ed2d0()->FUN_141bd1a10(pObj);
+    kRequest.m_nOwnerId = reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd1a10(pObj);
     kRequest.FUN_140a53190(FUN_14123c580(pObj));
-    m_hEffect = FUN_1403ed280()->FUN_1411a49c0(&kRequest);
+    m_hEffect = reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kRequest);
     return 1;
 }
 
@@ -367,7 +366,7 @@ void CExpEffectInfo::SetPosition(const Vector3& pt)
     if (FUN_1409475d0(&m_spNode) != 0)
     {
         FUN_140981070(FUN_1409475f0(&m_spNode), pt);
-        ((NiAVObject*)FUN_1409475f0(&m_spNode))->Update((float)FUN_141473280(FUN_14086d260()), false);
+        ((NiAVObject*)FUN_1409475f0(&m_spNode))->Update((float)FUN_141473280(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())), false);
     }
 }
 
@@ -380,7 +379,7 @@ void CExpEffectInfo::SetVisible(int nHide)
 // @0x141273680
 void CExpEffectInfo::Finish()
 {
-    Unk_ExpActor* pPlayer = (Unk_ExpActor*)FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ExpActor* pPlayer = (Unk_ExpActor*)reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     float fRadius = DAT_1439f7344 * FUN_14123c260(pPlayer);
@@ -395,7 +394,7 @@ void CExpEffectInfo::Finish()
     kRequest.m_strName = *reinterpret_cast<CString*>((char*)FUN_1401d31f0() + 0x340);
     kRequest.m_nOwnerId = 1;
     kRequest.FUN_140a53190(FUN_14123c580(pPlayer));
-    FUN_1403ed280()->FUN_1411a4a00(&kRequest);
+    reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kRequest);
     m_nState = 1;
 }
 

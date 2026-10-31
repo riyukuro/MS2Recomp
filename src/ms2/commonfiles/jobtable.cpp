@@ -42,11 +42,12 @@
 #include "ms2/ms2recover.h"
 #include <vector>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Out-of-unit callees.
 JobTable* FUN_1401d7a50();                              // the JobTable singleton
 CStringTable* GetStringTable();                          // the string table singleton
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);

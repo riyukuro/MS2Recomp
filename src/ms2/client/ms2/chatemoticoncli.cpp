@@ -40,6 +40,11 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/chatemoticontable.h"
 
 // ---- statics (.text$di) ----
 // Two copies of the sort-type name table (two headers of the unit define it).
@@ -84,7 +89,6 @@ class Unk_EmoUIManager
 public:
     MS2Ptr<UIObject> FUN_141adcea0(int nUiId);
 };
-Unk_EmoUIManager* FUN_1403ed2b0();
 UIChatDialog* FUN_140938cd0(int nUiId);
 void FUN_141ac1580(UIChatDialog* pChat, const CStringW& strName, const CStringW& strMsg, int nFlag);
 
@@ -102,10 +106,9 @@ private:
 };
 MS2_CHECK_SIZE(Unk_EmoDataPtr, 0x10);
 class Unk_EmoTable { public: Unk_EmoDataPtr FUN_1401e7120(int nEmoticonId); };
-Unk_EmoTable* FUN_1409eecd0();
 
 // The item row (the pack item) and its handle.
-class Unk_EmoItemData { public: CString FUN_14053fdd0(); };
+class Unk_EmoItemData : public CItemData { };
 class Unk_EmoItemPtr
 {
 public:
@@ -119,12 +122,9 @@ private:
 MS2_CHECK_SIZE(Unk_EmoItemPtr, 0x10);
 Unk_EmoItemPtr FUN_14053f870(int nItemId);
 
-class Unk_EmoStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_EmoStrings* FUN_1401a9d70();
-class Unk_EmoChatFormat { public: void FUN_1416fb340(CStringW& strMsg); };
-Unk_EmoChatFormat* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 
-__int64 FUN_140869440();                                            // server time
+__int64 GetServerTime();                                            // server time
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_14016a730(const char* sz, int nCodePage);
@@ -141,7 +141,7 @@ inline int FUN_140a3dc60() { return 0x4f80; }
 // @0x140a3aa20
 UIChatEmoticonDialog* FUN_140a3aa20()
 {
-    Unk_EmoUIManager* pManager = FUN_1403ed2b0();
+    Unk_EmoUIManager* pManager = reinterpret_cast<Unk_EmoUIManager*>(TSingleton<CUIService>::GetInstance());
     if (pManager == 0)
         return 0;
     MS2Ptr<UIObject> spUI = pManager->FUN_141adcea0(FUN_140a3dc60());
@@ -153,9 +153,9 @@ UIChatEmoticonDialog* FUN_140a3aa20()
 // @0x140a3aad0
 UIGroupMessengerBrowser* FUN_140a3aad0(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_EmoUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spUI = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = reinterpret_cast<Unk_EmoUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIGroupMessengerBrowser*>((UIObject*)spUI);
     }
@@ -165,9 +165,9 @@ UIGroupMessengerBrowser* FUN_140a3aad0(int nUiId)
 // @0x140a3ab70
 UIMessengerBrowser* FUN_140a3ab70(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_EmoUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spUI = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = reinterpret_cast<Unk_EmoUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIMessengerBrowser*>((UIObject*)spUI);
     }
@@ -260,7 +260,7 @@ void CChatEmoticonCli::FUN_140a39360(CInPacket& packet)
     {
         CStringW strName = FUN_14016a730((const char*)item.FUN_1401b52a0()->FUN_14053fdd0(), 0);
         CStringW strMsg = FUN_1405c2690(L"s_msg_chat_emoticon_add_notify_message",
-                                        FUN_1401a9d70()->FUN_141811980(1, nItemId));
+                                        TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
         FUN_1403b4750()->FUN_1416fb340(strMsg);
         FUN_141ac1580(pChat, strName, strMsg, 1);
         FUN_1412751f0(strMsg, 0, 1);
@@ -355,7 +355,7 @@ MS2_REPLACE_METHOD(0x140A39A20, CChatEmoticonCli, FUN_140a39a20, 938, 0x5E574199
 // @0x140a39dd0
 bool CChatEmoticonCli::FUN_140a39dd0(int nEmoticonId)
 {
-    Unk_EmoDataPtr data = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+    Unk_EmoDataPtr data = reinterpret_cast<Unk_EmoTable*>(TSingleton<CChatEmoticonTable>::GetInstance())->FUN_1401e7120(nEmoticonId);
     if (data.FUN_1401f0b70())
         return false;
     std::map<unsigned, MS2Ptr<ChatEmoticonGroupInfo> >::iterator it = m_groupById.find(data.FUN_1401f1080()->m_nGroupId);
@@ -367,7 +367,7 @@ bool CChatEmoticonCli::FUN_140a39dd0(int nEmoticonId)
         MS2_ASSERT_AT(0x10a, 0);
         return false;
     }
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     CMsTime expire(spGroup->m_nExpire);
     if (now > expire)
         return false;
@@ -378,7 +378,7 @@ MS2_REPLACE_METHOD(0x140A39DD0, CChatEmoticonCli, FUN_140a39dd0, 454, 0xE5D9DB06
 // @0x140a39fa0
 bool CChatEmoticonCli::FUN_140a39fa0(int nEmoticonId)
 {
-    Unk_EmoDataPtr data = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+    Unk_EmoDataPtr data = reinterpret_cast<Unk_EmoTable*>(TSingleton<CChatEmoticonTable>::GetInstance())->FUN_1401e7120(nEmoticonId);
     if (data.FUN_1401f0b70())
         return false;
     MS2_FOR_EACH(unsigned nId, m_ids)
@@ -393,7 +393,7 @@ MS2_REPLACE_METHOD(0x140A39FA0, CChatEmoticonCli, FUN_140a39fa0, 266, 0xE11749A0
 // @0x140a3a0b0
 bool CChatEmoticonCli::FUN_140a3a0b0(int nEmoticonId)
 {
-    Unk_EmoDataPtr data = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+    Unk_EmoDataPtr data = reinterpret_cast<Unk_EmoTable*>(TSingleton<CChatEmoticonTable>::GetInstance())->FUN_1401e7120(nEmoticonId);
     if (data.FUN_1401f0b70())
         return false;
     return FUN_140a3a140(data.FUN_1401f1080()->m_nGroupId);
@@ -412,7 +412,7 @@ bool CChatEmoticonCli::FUN_140a3a140(unsigned nGroupId)
         MS2_ASSERT_AT(0x137, 0);
         return true;
     }
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     CMsTime expire(spGroup->m_nExpire);
     if (expire >= now)
         return false;
@@ -446,7 +446,7 @@ MS2_REPLACE_METHOD(0x140A3A380, CChatEmoticonCli, FUN_140a3a380, 132, 0x5133450B
 // @0x140a3a410
 void CChatEmoticonCli::SendMessenger()
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     std::list<unsigned> expired;
     MS2_FOR_EACH(MS2Ptr<ChatEmoticonGroupInfo> spGroup, m_groups)
     {

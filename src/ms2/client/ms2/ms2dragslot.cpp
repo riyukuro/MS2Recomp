@@ -8,12 +8,12 @@
 #include "ms2dragslot.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/itempreview.h"
 
 // Item preview window (?\itempreview.cpp): singleton getter 0x1409bb9e0 (asitemslot.cpp COMDAT).
-class Unk_ItemPreview
+class Unk_ItemPreview : public ItemPreviewMgr
 {
 public:
-    int FUN_140d40670();                                // non-zero while the preview can be shown
     void FUN_140d40120(MS2Ptr<CItem> spItem, int n);    // show spItem
 };
 Unk_ItemPreview* FUN_1409bb9e0();
@@ -51,7 +51,7 @@ int MS2DragSlot::vfunc_16()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem == NULL)
         return 0;
-    if (FUN_1409bb9e0()->FUN_140d40670())
+    if (FUN_1409bb9e0()->IsHudOn())
         FUN_1409bb9e0()->FUN_140d40120(spItem, 0);
     return 1;
 }

@@ -51,6 +51,8 @@ static CString s_strUgctag = "ugctag";
 static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/astooltip_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/client/ms2/uiservice.h"
 #ifdef __clang__
 CStringW FUN_14061ad70(const CStringW& str, const wchar_t* psz);   // the exe's operator+(const CStringW&, const wchar_t*)
 CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);   // the exe's operator+(const CStringW&, const CStringW&)
@@ -1158,7 +1160,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
         int nTexts = (int)mapTexts.GetCount();
         for (POSITION pos = mapTexts.GetHeadPosition(); pos != 0; mapTexts.GetNext(pos))
         {
-            int nStat = FUN_14082ee80(mapTexts.GetValueAt(pos));
+            int nStat = FindStatByName(mapTexts.GetValueAt(pos));
             if (nStat == -1)
             {
                 Unk_SocketSpecialStat eSpecial = (Unk_SocketSpecialStat)FUN_14081d260(mapTexts.GetValueAt(pos));
@@ -1439,7 +1441,7 @@ void ASTooltip::FUN_1409cb7b0(CItem* pItem)
         CItemMergeOptionVariation* pVariation = reinterpret_cast<CItemMergeOptionVariation*>(CItemMergeOptionTable::GetInstance()->FUN_1405c0610(pItem->FUN_140527840()->FUN_14053de10(), nStat));
         if (pVariation != 0)
         {
-            if (FUN_14082f1d0(nStat))
+            if (IsStatKindOne(nStat))
             {
                 CStringW strMin = FUN_1409e0900(pVariation->FUN_1405beac0());
                 CStringW strMax = FUN_1409e0900(pVariation->FUN_1405beae0());
@@ -2083,7 +2085,7 @@ void ASTooltip::FUN_1409cfbf0(CItem* pItem)
         {
             ASObj obj(2);
             obj.FUN_1407cbb20("statName", FUN_14082f000(nStat));
-            if (!FUN_14082f250(nStat))
+            if (!IsStatKindTwo(nStat))
                 obj.FUN_1407cbb20("statValue", FUN_1409e0900(abs(aStat[nStat])));
             else
                 obj.FUN_1407cbb20("statRate", FUN_1409e0b40(abs(aStat[nStat])));
@@ -2164,7 +2166,7 @@ void ASTooltip::FUN_1409d0710(CItem* pItem)
     else
     {
         CStringW strText = FUN_1401a9d70_p3()->GetItemDescription(pItem->FUN_1405276c0(), "tooltipDescription");
-        FUN_1403b4750()->FUN_1416fb340(strText);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
         FUN_1407cbb20("itemDescription", strText);
     }
 }
@@ -2688,12 +2690,12 @@ void ASTooltip::FUN_1409d3f10(CItem* pItem)
 {
     int nState = pItem->FUN_140528ca0();
     __int64 nUnlockTime = pItem->FUN_140528e00();
-    if (nState == 0 && nUnlockTime > FUN_140869440())
+    if (nState == 0 && nUnlockTime > GetServerTime())
     {
         FUN_1407cbbe0(s_strItemIconLock, false);
         FUN_1407cbbe0(s_strItemIconUnLock, true);
         CStringW strText;
-        CMsTime remain(pItem->FUN_140528e00() - FUN_140869440());
+        CMsTime remain(pItem->FUN_140528e00() - GetServerTime());
         int nHours = (int)(remain.Get() / 3600);
         int nMinutes = (std::max)((int)(remain.Get() % 3600 / 60), 1);
         if (nHours > 0)
@@ -2807,7 +2809,7 @@ bool ASTooltip::FUN_1409d4760(CItem* pItem)
             obj.FUN_1407cbb20("title", FUN_14082f000(stat.first));
             obj.FUN_1407cb9c0("extraup", 0);
             CStringW strValue;
-            if (FUN_14082f250(stat.first))
+            if (IsStatKindTwo(stat.first))
                 strValue = FUN_1409e0a90((float)stat.second / 1000.0f);
             else
                 strValue = FUN_1409e0900(stat.second);
@@ -2828,7 +2830,7 @@ bool ASTooltip::FUN_1409d4760(CItem* pItem)
             obj.FUN_1407cb9c0("type", 2);
             obj.FUN_1407cbb20("title", FUN_14082f000(nStat));
             obj.FUN_1407cb9c0("extraup", 0);
-            if (FUN_14082f250(nStat))
+            if (IsStatKindTwo(nStat))
             {
                 obj.FUN_1407cbb20("min", FUN_1409e0a90((float)nValue / 1000.0f));
                 obj.FUN_1407cbb20("max", FUN_1409e0a90((float)nValue / 1000.0f));
@@ -2922,7 +2924,7 @@ namespace p3hook { MS2_REPLACE_METHOD(0x1409D5920, ASTooltip, FUN_1409d5920, 363
 void ASTooltip::FUN_1409d5aa0(int nItemId)
 {
     CStringW str = FUN_1401a9d70_p3()->GetItemDescription(nItemId, "tooltipDescription");
-    FUN_1403b4750()->FUN_1416fb340(str);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(str);
     FUN_1407cbb20("itemDescription", str);
 }
 namespace p3hook { MS2_REPLACE_METHOD(0x1409D5AA0, ASTooltip, FUN_1409d5aa0, 189, 0xA32EDB32); }
@@ -3304,8 +3306,8 @@ void ASTooltip::FUN_1409d8300(int nItemId)
         return;
     if (spData->function.name != L"SuperWorldChat")
         return;
-    unsigned long nColor1 = DAT_1439f87c0;
-    unsigned long nColor2 = DAT_1439f87f0;
+    unsigned long nColor1 = s_color6;
+    unsigned long nColor2 = s_color18;
     unsigned long nSize = 1;
     CStringW strIcon(DAT_143aef3b8);
     FUN_14183eba0(nItemId, strIcon, nSize, nColor1, nColor2);
@@ -3714,7 +3716,7 @@ CStringW ASTooltip::FUN_1409da690(CItem* pItem)
             CMasteryTable::ReceipePtr spReceipe = CMasteryTable::GetInstance()->Find(pEntry->first);
             if (!spReceipe)
                 continue;
-            int nHave = DAT_143ab2a90.FUN_140a5f180(pItem->FUN_1405276c0(), 0);
+            int nHave = g_143ab2a90.FUN_140a5f180(pItem->FUN_1405276c0(), 0);
             int nNeed = pEntry->second;
             CStringW strKey(L"s_msg_tooltip_mastery_recipe_count");
             if (nHave < nNeed)
@@ -4961,7 +4963,7 @@ int ASTooltip::FUN_1409e21a0(unsigned nId, unsigned nGrade)
     FUN_1407cbb20("title", FUN_14093b970(nId));
     FUN_1407cbb20("desc", FUN_14093c8d0(nId, nGrade, 0));
     FUN_1407cbb20("reward", FUN_14093ce70(nId, nGrade));
-    FUN_1407cba60("imgPath", FUN_140159490(spData));
+    FUN_1407cba60("imgPath", GetAchieveName(spData));
     {
         MS2Ptr<CAchieve> spAchieve = FUN_1406c7600()->Find(nId);
         if (spAchieve.get() != 0)
@@ -5173,7 +5175,7 @@ CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem)
         size_t nTexts = mapTexts.GetCount();
         for (POSITION pos = mapTexts.GetHeadPosition(); pos != 0; mapTexts.GetNext(pos))
         {
-            int nStat = FUN_14082ee80(mapTexts.GetValueAt(pos));
+            int nStat = FindStatByName(mapTexts.GetValueAt(pos));
             if (nStat == -1)
             {
                 Unk_SocketSpecialStat eSpecial = (Unk_SocketSpecialStat)FUN_14081d260(mapTexts.GetValueAt(pos));
@@ -5326,7 +5328,7 @@ void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pBest)
         size_t nTexts = mapTexts.GetCount();
         for (POSITION pos = mapTexts.GetHeadPosition(); pos != 0; mapTexts.GetNext(pos))
         {
-            int nStat = FUN_14082ee80(mapTexts.GetValueAt(pos));
+            int nStat = FindStatByName(mapTexts.GetValueAt(pos));
             if (nStat == -1)
             {
                 Unk_SocketSpecialStat eSpecial = (Unk_SocketSpecialStat)FUN_14081d260(mapTexts.GetValueAt(pos));
@@ -5540,9 +5542,9 @@ int FUN_1409e6c80(CItem* pItem)
         return 0;
     if (!pItem->FUN_140527840()->FUN_14053cbc0())
         return 0;
-    if (FUN_1403ed2b0()->FUN_141adc940((eUIClassID)0x4e8d) == 0)
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e8d) == 0)
         return 0;
-    if (FUN_1403ed2b0()->FUN_141adc940((eUIClassID)0x4e8e) == 0)
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e8e) == 0)
         return 0;
     return 1;
 }
@@ -5846,9 +5848,9 @@ MS2Ptr<Unk_PCSkillTree> PC::FUN_1409eee00()
 // @0x1409eb120
 UISkillBookTreeDialog* FUN_1409eb120(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UISkillBookTreeDialog*>((UIObject*)p);
     }

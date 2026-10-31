@@ -73,6 +73,8 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/unk_nodeptr.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
+#include "ms2/commonfiles/skilloverlapcompare.h"
+#include "ms2/client/ms2/worldservice.h"
 
 
 // ---- unit-local views of exe objects ----
@@ -188,13 +190,9 @@ public:
 Unk_AvGlobals* FUN_1401d3200();
 
 // The object registry (FUN_1403ed2d0).
-class Unk_AvWorld
+class Unk_AvWorld : public WorldService
 {
 public:
-    int FUN_141bbb1e0(GameObject* pObj, int bFullInit, unsigned nCamera);     // registers an object
-    void FUN_141bbb7f0(GameObject* pObj, int bImmediate);                    // unregisters it
-    void FUN_141bca390(unsigned nKey);
-    int FUN_141bd0dd0(Vector3* pPos, Vector3* pDir);                       // spawn point
     PC* FUN_141bd1530(unsigned __int64 nPcId);                               // the pc of a record id
     void* FUN_141bd1180(unsigned nId);                                       // object registered under the pet / ridee id
     void* FUN_141bd1290(unsigned nId);                                       // object registered under the avatar id
@@ -330,13 +328,13 @@ struct Unk_InventorySkillRequest
     __int64 item;
 };
 MS2_CHECK_SIZE(Unk_InventorySkillRequest, 0x48);
-class Unk_SkillState { public: int FUN_1407e9bd0(); };
+class Unk_SkillState : public SkillData { };
 class Unk_SkillStateRef { public: Unk_SkillState* FUN_14063ed50() const; void* m_pad_00; Unk_SkillState* m_p; };
 class CSkillRecord : public CPtred
 {
 public:
     CSkillRecord();                                         // 0x141759260
-    bool FUN_1417595d0(Unk_InventorySkillRequest& kReq);
+    bool Init(Unk_InventorySkillRequest& kReq);
     int FUN_141759960();                                    // skill id
     short FUN_141759990();                                  // level
     char m_pad_18[0x18];
@@ -623,7 +621,7 @@ AvatarPC* FUN_1409f3fd0(MS2Ptr<Unk_PCArg125> spSrc)
 }
 
 // @0x1409f41d0
-void AvatarPC::FUN_1409f41d0(Unk_CharEquip kEquip0, Unk_CharEquip kEquip1)
+void AvatarPC::FUN_1409f41d0(const Unk_CharEquip& kEquip0, const Unk_CharEquip& kEquip1)
 {
     if (m_pSourcePC != 0)
     {
@@ -658,7 +656,7 @@ void AvatarPC::FUN_1409f43d0(int nSkillId, short nLevel)
     kReq.origin = vfunc_18();
     kReq.fValue = ::FUN_14166da40(this);
     MS2Ptr<CSkillRecord> spSkill(new CSkillRecord());
-    if (spSkill->FUN_1417595d0(kReq))
+    if (spSkill->Init(kReq))
     {
         int nCurrent = ::FUN_141673ef0(this);
         bool bStart = !(nCurrent == nSkillId && nSkillId != 0);

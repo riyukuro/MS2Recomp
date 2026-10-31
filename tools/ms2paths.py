@@ -158,12 +158,14 @@ VC9 = "vc9"
 # cl 17.00.61030 (VS2012 Update 4) for `// MS2-TOOLSET: vc11` (third_party/msvc11, tools/fetch-vs2012.sh); run through
 # tools/msvc11/cl (the VS2012 VC headers + the Windows SDK 8.0 headers)
 VC11 = "vc11"
+# the same cl as vc9, compiling the unit as C (/TC), for the CRI objs the exe built from C sources; tools/msvc9c/cl
+VC9C = "vc9c"
 # the `// MS2-TOOLSET:` toolsets and their cl versions
-UNIT_TOOLSETS = {VC9: "15.00.30729", VC11: "17.00.61030"}
+UNIT_TOOLSETS = {VC9: "15.00.30729", VC9C: "15.00.30729", VC11: "17.00.61030"}
 
 
 def find_cl_toolset(toolset=None, env=None):
-    """cl for `toolset` ("1414"|"1415"|"1416"|"vc9"|"vc11"; None/"1416" = find_cl()). Native Windows: MS2_CL_<toolset>
+    """cl for `toolset` ("1414"|"1415"|"1416"|"vc9"|"vc9c"|"vc11"; None/"1416" = find_cl()). Native Windows: MS2_CL_<toolset>
     when set (required for vc9 and vc11)."""
     if not toolset or toolset == DEFAULT_TOOLSET:
         return find_cl(env)

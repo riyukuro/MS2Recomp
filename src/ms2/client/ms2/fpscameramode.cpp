@@ -13,17 +13,12 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 
 // ---- unit-local placeholders ----
 
 // The input state (FUN_14025e7c0).
-class Unk_InputState
-{
-public:
-    bool FUN_14116daa0(int nButton, bool b, int n);                 // mouse button held
-    bool FUN_14116dbf0(int* pnX, int* pnY, int* pnZ, bool b, int n);    // mouse move delta
-};
-Unk_InputState* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 
 // A field actor (FUN_1409ffd30 casts an object to it).
 class Unk_RpgActor : public Unk_CameraTargetEntity
@@ -68,7 +63,7 @@ float FUN_140a17940(float f, float fMin, float fMax);   // clamp
 float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
-int FUN_140ae8540();                                // reloads the camera xml (returns 0 on failure)
+int LoadTestCamerValue();                           // reloads the camera xml (returns 0 on failure)
 int FUN_140ae89e0(CString key);                     // integer value of the camera xml key
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,7 +235,7 @@ MS2_REPLACE_METHOD(0x141221c20, CFPSCameraMode, vfunc_24, 1144, 0xF427A063);
 // @0x1412220a0
 BOOL CFPSCameraMode::vfunc_31()
 {
-    if (FUN_140ae8540())
+    if (LoadTestCamerValue())
     {
         m_140 = FUN_140ae89e0(CString("FPS_HidePC"));
         m_144 = FUN_140ae89e0(CString("FPS_MouseDownMove"));

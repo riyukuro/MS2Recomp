@@ -40,6 +40,7 @@
 #include "ms2/commonfiles/rideonaction.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/inventory.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -52,13 +53,7 @@ class Unk_PetRow : public CPtred { };
 class Unk_PCBaseComp_aa8 : public CPtred { };
 
 // The player inventory (global 0x143ab2a90): item lookup by uid and the item's name.
-class Unk_LockInventory
-{
-public:
-    MS2Ptr<CItem> FUN_140a5d680(__int64 nItemUid);                         // 0x140a5d680 the item with that uid
-    int FUN_140a63880(CItem* pItem, const CStringW& strName);              // 0x140a63880 the item's name
-};
-extern Unk_LockInventory DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 
 // The item-data tables.
 MS2Ptr<Unk_RideeData> FUN_1407844b0(int nRideeId);                         // 0x1407844b0 the ridee row

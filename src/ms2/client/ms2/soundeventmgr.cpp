@@ -158,11 +158,16 @@
 #include <NiTransform.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/soundeventmgr.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/cooltimemanager.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 int FUN_140873ad0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);      // string attribute
-class Unk_GameClock { public: double FUN_141473280(); float FUN_141473210(); };
-Unk_GameClock* FUN_14086d260();
+class Unk_GameClock : public CMainSystem { public: float FUN_141473210(); };
 CLogString* GetLogString();                                        // the logger
 WorldService* FUN_1403ed2d0();
 void FUN_1401d3700(CString& str);
@@ -180,7 +185,6 @@ public:
     unsigned char* FUN_140d13c70();                                        // the sound off switch
     Unk_SmSession* FUN_1411b1f30();
 };
-Unk_SmApp* FUN_1409a8b10();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
 const Vector3& FUN_140947900(void* pNode);                  // world translate
@@ -188,8 +192,7 @@ void FUN_140a0b2a0(NiAVObject* pObj);                               // detach fr
 bool FUN_14028d470(float a, float b);                               // nearly equal
 void FUN_140194470(void* pDst, const Vector3& vSrc);        // NiPoint3 assignment
 // Effect manager (singleton 0x1403ed280): scene root.
-class Unk_SmEffectMgr { public: NiNode* FUN_1411a6b10(); };
-Unk_SmEffectMgr* FUN_1403ed280();
+CEffectService* FUN_1403ed280();
 // Sound property / voice pitch table.
 // The 2-int pitch record (pitch, FMOD pitch units) of a voice event.
 struct Unk_SoundPitch
@@ -202,7 +205,7 @@ MS2_CHECK_SIZE(Unk_SoundPitch, 8);
 class Unk_SmVoiceTable { public: void FUN_141793340(int nObjectId, Unk_SoundPitch* pPitchOut); };
 Unk_SmVoiceTable* FUN_1411b1de0();
 // Cooltime table of the local player.
-class Unk_SmCooltimes { public: bool FUN_140a40ca0(unsigned nId); };
+class Unk_SmCooltimes : public CooltimeManager { };
 Unk_SmCooltimes* FUN_1411b1dc0();
 // The unit's log calls (FMT_VARIADIC wrappers over CLogString::FUN_1406530d0): one COMDAT per argument list.
 // @0x1417775f0
@@ -317,7 +320,7 @@ bool CSoundEventEffectParam::vfunc_2()
     FMOD::EventGroup* pGroup = 0;
     if (!m_strGroup.IsEmpty())
     {
-        pGroup = FUN_140d13c40()->FUN_14177d6e0(m_strGroup, 0);
+        pGroup = TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177d6e0(m_strGroup, 0);
         if (pGroup == 0)
         {
             Unk_SoundLog(GetLogString(), 1, 0x13, L"Sound event group을 찾을 수 없습니다[{0}] [{1}]", m_strGroup, m_str20);
@@ -374,13 +377,13 @@ bool CSoundEventEffectParam::FUN_1417760d0() const
         return true;
     if (FUN_1411b1dc0() == 0)
         return true;
-    return FUN_1411b1dc0()->FUN_140a40ca0(m_nCooltimeId);
+    return FUN_1411b1dc0()->Use(m_nCooltimeId);
 }
 
 // @0x141776120
 CString CSoundEventEffectParam::FUN_141776120(int nJob) const
 {
-    if (FUN_1409a8b10()->FUN_1411b1f30()->FUN_141260470() != 0)
+    if (reinterpret_cast<Unk_SmApp*>(TSingleton<CGameOption>::GetInstance())->FUN_1411b1f30()->FUN_141260470() != 0)
         return m_strEvent;
     if (!m_bByJob)
         return m_strEvent;
@@ -460,7 +463,7 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
 {
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
-    if (*FUN_1409a8b10()->FUN_140d13c70() != 0)
+    if (*reinterpret_cast<Unk_SmApp*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70() != 0)
         return false;
     const CSoundEventEffectParam* pSound = static_cast<const CSoundEventEffectParam*>(pParam);
     if (!pSound->FUN_1417760d0())
@@ -472,7 +475,7 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
     NiNode* pOwner = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, FUN_1409849b0(&pTarget->m_spObject)));
     if (!strGroup.IsEmpty())
     {
-        pGroup = FUN_140d13c40()->FUN_14177d6e0(strGroup, 0);
+        pGroup = TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177d6e0(strGroup, 0);
         if (pGroup == 0)
             return false;
     }
@@ -487,15 +490,15 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
             Unk_SoundPitch kPitch;
             if (pTarget->FUN_140a53090() != 0 && strGroup.Find("ms2sound/sound/voice", 0) != -1)
                 FUN_1411b1de0()->FUN_141793340(pTarget->FUN_140a53090(), &kPitch);
-            spSound = FUN_140d13c40()->FUN_14177b3d0(pGroup, strEvent, kPitch.m_fPitch, kPitch.m_nUnits);
+            spSound = TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177b3d0(pGroup, strEvent, kPitch.m_fPitch, kPitch.m_nUnits);
         }
     }
     else if (!strEvent.IsEmpty())
-        spSound = FUN_140d13c40()->FUN_14177b6a0(strEvent);
+        spSound = TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177b6a0(strEvent);
     if (spSound == (CSoundEvent*)0)
         return false;
 
-    m_dStartTime = FUN_14086d260()->FUN_141473280() + (double)pSound->FUN_1417762a0(pTarget->FUN_140a53050());
+    m_dStartTime = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280() + (double)pSound->FUN_1417762a0(pTarget->FUN_140a53050());
     m_dStopTime = m_dStartTime + 10.0;
     m_spSound = spSound;
     m_b2c = false;
@@ -568,7 +571,7 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
         pParent->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateEffects();
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateProperties();
-        static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->Update((float)FUN_14086d260()->FUN_141473280(), true);
+        static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->Update((float)reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280(), true);
     }
     m_fVolume = pSound->m_fVolume;
     m_spSound->FUN_14177abc0(FUN_1417775b0, this);
@@ -582,7 +585,7 @@ bool CSoundEventEffect::vfunc_9()
 {
     if (!m_b2d)
     {
-        double dNow = FUN_14086d260()->FUN_141473280();
+        double dNow = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280();
         if (!FUN_14119f3c0() && m_dStartTime <= dNow)
             vfunc_4();
         if (FUN_14119f3c0() && m_spSound.get() != 0)
@@ -620,7 +623,7 @@ void CSoundEventEffect::vfunc_5()
     if (m_bDoNotStop)
     {
         m_bStopRequested = true;
-        m_dStopTime = FUN_14086d260()->FUN_141473280() + 10.0;
+        m_dStopTime = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280() + 10.0;
     }
     else
     {
@@ -890,13 +893,12 @@ const char* FUN_141788f10(FMOD_RESULT nResult)
 // Out-of-unit callees of the manager.
 CString FUN_14038f6d0(const CString& strA, const char* pszB);        // operator+
 void FUN_1403b0310(std::vector<CString>* pVec, const CString& rItem);   // push_back
-void FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat);
+void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat);
 void FUN_140177a80(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nArg);
 void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);
 int FUN_1408a2060(egf::Entity* pEntity, unsigned nProperty, efd::utf8string* pOut);         // property: string
 void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Vector3* pOut);        // property: point
 class Unk_SmUiMgr { public: void FUN_141adbf70(unsigned bMute); };
-Unk_SmUiMgr* FUN_1403ed2b0();
 
 // The category names of the designer project (index = event category slot).
 static const char* s_apszCategory[11] = {"effect", "environment", "bgm", "UISound", "npcVoice", "SystemVoice",
@@ -1115,7 +1117,7 @@ void CSoundEventMgr::FUN_14177bda0()
 {
     if (m_bReady != 0)
     {
-        FUN_1401859c0(GetLogString(), 0xc, 0x12f, L"LostSoundDevice");
+        Unk_AdditionalLog(GetLogString(), 0xc, 0x12f, L"LostSoundDevice");
         FUN_14177d380();
         for (std::map<std::string, FMOD::EventGroup*>::iterator it = m_mapGroups.begin(); it != m_mapGroups.end(); ++it)
         {
@@ -1150,7 +1152,7 @@ void CSoundEventMgr::FUN_14177bf20()
             it->second = spEvent;
         }
     }
-    if (*FUN_1409a8b10()->FUN_140d13c70() == 0)
+    if (*reinterpret_cast<Unk_SmApp*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70() == 0)
         FUN_1403ed2d0()->FUN_141bc7b80(1);
     if (0 < m_histReverb.GetPos())
     {
@@ -1158,7 +1160,7 @@ void CSoundEventMgr::FUN_14177bf20()
         m_histReverb.Get(0, &kReverb);
         m_pEventSystem->setReverbProperties(&kReverb.m_props);
     }
-    FUN_1401859c0(GetLogString(), 0xc, 0x12f, L"RestSoundDevice");
+    Unk_AdditionalLog(GetLogString(), 0xc, 0x12f, L"RestSoundDevice");
     m_bReady = 1;
 }
 
@@ -1333,7 +1335,7 @@ void CSoundEventMgr::FUN_14177c8a0()
         m_histMusic.Clear();
         m_mapParams.clear();
         m_histReverb.Clear();
-        FUN_1401859c0(GetLogString(), 0xc, 0x12f, L"ResetMusic");
+        Unk_AdditionalLog(GetLogString(), 0xc, 0x12f, L"ResetMusic");
     }
 }
 
@@ -1530,7 +1532,7 @@ void CSoundEventMgr::FUN_14177d5e0()
 {
     if (m_bReady != 0)
     {
-        FUN_1401859c0(GetLogString(), 0xc, 0x12f, L"Clear Environment Sounds");
+        Unk_AdditionalLog(GetLogString(), 0xc, 0x12f, L"Clear Environment Sounds");
         if (m_bReady)
         {
             for (std::map<Unk_EntityPtr, MS2Ptr<CSoundEvent> >::iterator it = m_mapEnvSounds.begin();
@@ -1662,7 +1664,7 @@ void CSoundEventMgr::FUN_14177d9b0(const char* pszGroup, std::vector<CString>& r
         MS2_ASSERT_AT(0x38b, 0);
         return;
     }
-    FMOD::EventGroup* pGroup = FUN_140d13c40()->FUN_14177d6e0(pszGroup, 1);
+    FMOD::EventGroup* pGroup = TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177d6e0(pszGroup, 1);
     if (pGroup == 0)
     {
         MS2_ASSERT_AT(0x392, 0);
@@ -1726,7 +1728,7 @@ void CSoundEventMgr::FUN_14177dc80(unsigned bMute)
             if (m_apCategory[i])
                 m_apCategory[i]->setMute(bMute & 1);
         }
-        FUN_1403ed2b0()->FUN_141adbf70(bMute);
+        reinterpret_cast<Unk_SmUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbf70(bMute);
     }
 }
 

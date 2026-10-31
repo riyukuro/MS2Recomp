@@ -3,7 +3,10 @@
 Each entry is attributed to a unit: exe entries by status.tsv row at the VA, else the data/map/units.tsv range holding
 it; ours by the map's Lib:Object of the initializer (-> order.tsv unit). Hook registrations (`ms2_registered_*`, the
 MS2_REPLACE statics that call the shim's no-op hook::Register) are counted apart. Writes crtinit<TAG>.tsv (side, index,
-va, unit, symbol) and prints the comparison."""
+va, unit, symbol) and prints the comparison.
+    crtinit.py [--exe-table FILE] [--write-exe-table FILE]
+  --exe-table        the exe's XC/XI initializer VAs from FILE (data/fullexe/crtinit-exe.tsv) instead of the exe
+  --write-exe-table  write them from the exe to FILE and exit"""
 import bisect, collections, os, re, struct, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import ROOT as R, OUT as F, TREE as T, EXE, tagged, status_tsv  # noqa: E402
@@ -44,9 +47,28 @@ def exe_tables(pe):
     return [("XC", [v for v in vals[z[0]:z[-3] + 1] if v]), ("XI", [v for v in vals[z[-2]:] if v])]
 
 
+def arg(name):
+    return sys.argv[sys.argv.index(name) + 1] if name in sys.argv else None
+
+
 def main():
-    pe = pefile.PE(EXE, fast_load=True)
-    ex = dict(exe_tables(pe))
+    if arg("--exe-table"):
+        ex = {"XC": [], "XI": []}
+        for l in open(arg("--exe-table")):
+            if l.strip() and l[0] != "#":
+                t, i, va = l.split()[:3]
+                assert int(i) == len(ex[t]), l
+                ex[t].append(int(va, 16))
+    else:
+        ex = dict(exe_tables(pefile.PE(EXE, fast_load=True)))
+    if arg("--write-exe-table"):
+        with open(arg("--write-exe-table"), "w", newline="\n") as f:
+            f.write("# table\tindex\tva: the exe's .CRT$XC*/.CRT$XI* initializer pointers in table order (between __xc_a/"
+                    "__xc_z, __xi_a/__xi_z;\n# tools/fullexe/crtinit.py --write-exe-table)\n")
+            for t in ("XC", "XI"):
+                for i, v in enumerate(ex[t]):
+                    f.write("%s\t%d\t%x\n" % (t, i, v))
+        return
     # exe VA -> unit
     st = {}
     for l in open(status_tsv(), encoding="utf-8", errors="replace"):

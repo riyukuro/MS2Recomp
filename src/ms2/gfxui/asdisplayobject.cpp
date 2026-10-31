@@ -16,18 +16,14 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/gfxmanager.h"
 
 typedef Scaleform::GFx::Value::DisplayInfo DisplayInfo;
 
 extern "C" double (__cdecl* __imp_ceil)(double);              // the exe imports ceil from the UCRT
 
 // The GFx UI manager singleton (0x14025e7a0; its class lives in the library's first obj, 0x1422b0060-0x1422b7f20).
-class Unk_GFxUIManager
-{
-public:
-    MS2Ptr<ASStage> FUN_1422b02f0(int nMovieId);                // the stage of a movie (null if the movie is not loaded)
-};
-Unk_GFxUIManager* FUN_14025e7a0();
+GFxManager* FUN_14025e7a0();
 
 // The typed Value setters of the Invoke argument lists (COMDATs of ASArray's obj).
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);

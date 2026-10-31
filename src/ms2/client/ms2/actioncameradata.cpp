@@ -9,6 +9,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 #include <efd/ILogger.h>
 #include <efd/Helpers.h>
 
@@ -26,7 +27,7 @@ int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 unsigned char FUN_1401d1320(CCacheData*);
 
-class Unk_ActionFiles { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_ActionFiles : public CFileSystem { };
 Unk_ActionFiles* FUN_140166420();
 class Unk_ActionLog { public: void FUN_14015eb90(int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg); };
 Unk_ActionLog* FUN_140166440();

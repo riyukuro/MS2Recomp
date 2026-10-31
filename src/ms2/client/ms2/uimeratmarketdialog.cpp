@@ -166,6 +166,13 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/shopcategorytable.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/placeholder/uiugceventdispatcher.h"
+#include "ms2/client/ms2/uimessagebox.h"
+#include "ms2/commonfiles/meratmarketbasketinfo.h"
+#include "ms2/commonfiles/jobtable.h"
+#include "ms2/client/ms2/bigdatalogsystem.h"
 
 // ---- Header statics of the TU (market sort names, state names, an input map, ...); no code of the unit reads them.
 
@@ -396,13 +403,11 @@ void FUN_140d54960(Unk_MeratMarketMan* pMan, Unk_MeratOid key);              // 
 __int64 FUN_140d56470(void* pMarket);
 MS2Ptr<CMeratMarketProduct> FUN_140ec2300(const Unk_MeratProductKey& key, const int& nKind, __int64 nId);
 
-class Unk_MeratCategories { public: bool FUN_1407cb390(bool bForce); };
-Unk_MeratCategories* FUN_1406aa4b0();
-CMeratMarketPremium* FUN_1406f2370();
-class Unk_MeratStatusEvents { public: void FUN_141b0cd00(UIStatusEventListener* pListener); void FUN_141b0cd90(UIStatusEventListener* pListener); };   // add / remove
-Unk_MeratStatusEvents* FUN_140aa6d40();
-class Unk_MeratUgcEvents { public: void FUN_141b38be0(UIUGCEventListener* pListener); void FUN_141b38c70(UIUGCEventListener* pListener); };   // add / remove
-Unk_MeratUgcEvents* FUN_140bc09f0();
+CShopCategoryTable* FUN_1406aa4b0();
+   // add / remove
+UIStatusEventDispatcher* FUN_140aa6d40();
+   // add / remove
+UIUGCEventDispatcher* FUN_140bc09f0();
 // CInstrumentManager (instrumentmanager.h is not committed yet): the flags and the score preview.
 class Unk_MeratSound
 {
@@ -417,15 +422,10 @@ public:
                            const CString& strMml, bool bFirst);             // parse one MML tab, returns its end time
 };
 Unk_MeratSound* FUN_140c8dac0();
-struct Unk_MmStrings { CStringW FUN_141811980(int nTable, int nId); };
-Unk_MmStrings* FUN_1401a9d70();
 class Unk_MmJobTable { public: int FUN_140644bb0(int nJob); };
-Unk_MmJobTable* FUN_1401d7a50();
 class Unk_MmLogger;
-Unk_MmLogger* FUN_140d8ee90();
 void FUN_140a1f970(Unk_MmLogger* pLogger, const CStringA& strEvent, const CStringA& strWhat);
-class Unk_MmMessageBox { public: void FUN_1419f82b0(const CStringW& strText); };
-Unk_MmMessageBox* FUN_14151f890();
+UIMessageBox* FUN_14151f890();
 class Unk_MeratCubeMap { public: int FUN_1410c3650(); };
 Unk_MeratCubeMap* FUN_1409670e0();
 
@@ -589,7 +589,6 @@ public:
 // The model house loading notice: shows the house of a UGC id with its name.
 class Unk_MmHouseNotice { public: void FUN_140bbbd70(const __int64& nUgcId, const CStringW& strName); };
 Unk_MmHouseNotice* FUN_140d61ca0();
-Unk_MmWorld* FUN_1403ed2d0();                                               // the world service
 CStringW FUN_140ebd520(CMeratMarketPremiumProduct* pProduct, int nOption);  // UIMeratMarketCommon: the text of a chosen option
 CStringW FormatStringId(int nId, const fmt::ArgList& args);                 // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
@@ -608,7 +607,6 @@ bool FUN_140ebe990(Scaleform::GFx::Value* pValue, ASData& data, MS2Ptr<TMarketBi
 void FUN_1409abfa0(ATL::CAtlArray<int>& ids, ATL::CAtlArray<MS2Ptr<ASBillData> >& bills);   // the ids of the bill rows
 CFeatureManager* FUN_140166410();                                           // the feature manager
 bool FUN_14036d570(void* pFeatures, int nFeature);                          // a feature is on
-CUIService* FUN_1403ed2b0();                                                // the UI manager
 void FUN_141adc5d0(void* pUIMgr, int nUiId);                                // hide a dialog
 void FUN_141adc530(void* pUI, int nId);
 bool FUN_1406a5040(int nType);                                              // the search type is a shop tab
@@ -618,7 +616,7 @@ bool FUN_1406a56f0();
 bool FUN_1406a5740();
 bool FUN_1406a5880();
 unsigned FUN_140869420();                                                   // GetTickCountMs2
-__int64 FUN_140869440();                                                    // the server time
+__int64 GetServerTime();                                                    // the server time
 int FUN_1406516b0();                                                        // the region id
 CStringA FUN_140719530(unsigned __int64 n);                                 // an id as text
 CStringW FUN_140719a00(__int64 nValue);
@@ -631,7 +629,7 @@ CStringW FUN_14016a730(const char* sz, int n);                              // n
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelimiter);   // split
 CStringW FUN_1409404f0(__int64 n);                                          // a number as text
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_1409eec40(int nStringId);
+CStringW BlockFormat(int nStringId);
 CStringW FUN_1408116a0(int nId, const int& nArg);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW GetStringCommonByKey(const CStringW& strKey);
@@ -666,7 +664,7 @@ bool FUN_1418bf430(MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<CItemData> >*
                    ATL::CAtlArray<MS2Ptr<CItemData> >* pSecond);           // splits a box item into its items
 void FUN_1418bf850(MS2Ptr<CMeratMarketProduct> spProduct, Unk_AvPackageKey* pKey);
 void FUN_1418bf850(MS2Ptr<Unk_MeratEquipEntry> spProduct, Unk_AvPackageKey* pKey);
-void FUN_1418bf800(int nItemId, Unk_AvPackageKey* pKey);
+void FUN_1418bf800(unsigned nItemId, Unk_AvPackageKey* pKey);
 void FUN_141b48a20(PCBase* pPc, MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<CItemData> >* pFirst,
                    ATL::CAtlArray<MS2Ptr<CItemData> >* pSecond, ATL::CAtlArray<MS2Ptr<CItemData> >* pThird,
                    MS2Ptr<UIMeratMarketCommon::WeaponType> spFilter);
@@ -715,14 +713,12 @@ CUgcManager* FUN_14052d220();
 extern CStringA g_strMeratLogDefault;                                      // 0x143ad76a8 the empty detail text of the item log
 void FUN_141349ae0(MS2Ptr<CItem> spItem, int nLogId, const CStringA& strDetail);
 void FUN_141b70f90(const CMsTime& time, const CStringW& strFormat, CStringW& strOut);   // the time as text
-CShopEventManager* FUN_1403ed2a0();                                         // TSingleton<CShopEventManager>::GetInstance
 bool FUN_140ebc630(MS2Ptr<CMeratMarketProduct> spProduct, int nCount);      // the product can be bought
 void FUN_141b706a0(int nMs, int* pHour, int* pMin, int* pSec);
 void* FUN_14052cd70(MS2Ptr<CItem>* pItem);
 void FUN_140ebbb30(ASTooltip* pTip, MS2Ptr<CItem> spItem, MS2Ptr<CMeratMarketProduct> spProduct, bool bMyShop, bool bFlag);
 void FUN_1409e3190(ASTooltip* pTip, CMeratMarketPremiumProduct* pProduct, int n);
 void FUN_1411e3000(Unk_PCEquipSet* pEquip, ATL::CAtlList<MS2Ptr<CEquipItem> >* pItems, int nType, int a4, bool bFlag);
-CGameEventValueManager* FUN_140302b00();
 const CStringW& FUN_140424020(Unk_GameEventLockedValue<0x38>* pValue);     // the tab a game event opens
 
 // The status / UGC listener registration and the merat amounts this dialog shows.
@@ -739,7 +735,7 @@ void UIMeratMarketDialog::OnLoadComplete()
     PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    m_openTime = FUN_140869440();
+    m_openTime = GetServerTime();
     InitPreview();
     FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     FUN_140bc09f0()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
@@ -1094,7 +1090,7 @@ void UIMeratMarketDialog::vfunc_15()
 void UIMeratMarketDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    __int64 tNow = FUN_140869440();
+    __int64 tNow = GetServerTime();
     if (tNow == m_640)
         return;
     m_640 = tNow;
@@ -1237,7 +1233,7 @@ void UIMeratMarketDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     if (m_250 == 0) {
         spProduct = pMan->FUN_140d57150(key, CurrentSearchId());
         if (FUN_140166410()->FUN_14036e560() == true && spProduct.get() != 0) {
-            CMsTime now(FUN_140869440());
+            CMsTime now(GetServerTime());
             CMsTime start = spProduct->m_premium.GetStartDate(0);
             if (start > now)
                 spProduct = 0;
@@ -1279,11 +1275,11 @@ int UIMeratMarketDialog::vfunc_65()
 {
     ResetModels();
     if (FUN_1406aa4b0() != 0) {
-        FUN_1406aa4b0()->FUN_1407cb390(m_658);
+        FUN_1406aa4b0()->Reload(m_658);
         ClearLists();
     }
-    if (FUN_1406f2370() != 0)
-        FUN_1406f2370()->Init();
+    if (TSingleton<CMeratMarketPremium>::GetInstance() != 0)
+        TSingleton<CMeratMarketPremium>::GetInstance()->Init();
     m_658 = 0;
     if (UIDialog::vfunc_65() == 0)
         return 0;
@@ -1330,7 +1326,7 @@ void UIMeratMarketDialog::vfunc_67()
     m_630.Empty();
     int nUiId = vfunc_48();
     FUN_140939a00()->FUN_140d5a200(nUiId);
-    FUN_141adc5d0(FUN_1403ed2b0(), 0x4ec5);
+    FUN_141adc5d0(TSingleton<CUIService>::GetInstance(), 0x4ec5);
     FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     FUN_140bc09f0()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
     FUN_140939a10()->UnregisterNotify(L"NotifyGameEventChanged",
@@ -2881,7 +2877,7 @@ bool UIMeratMarketDialog::CheckMarketAccess(__int64 nSellerId)
     }
     if (!strMessage.IsEmpty())
     {
-        Unk_MmMessageBox* pBox = FUN_14151f890();
+        UIMessageBox* pBox = FUN_14151f890();
         if (pBox != 0)
             pBox->FUN_1419f82b0(strMessage);
     }
@@ -2898,7 +2894,7 @@ void UIMeratMarketDialog::OnClickRefreshBlueMerat()
 {
     int nMinutes = 5;
     if (FUN_140d86260()->vfunc_43(2, true, 300000) == true)
-        FUN_1412751b0(FUN_1409eec40(0x9e5), 20);
+        FUN_1412751b0(BlockFormat(0x9e5), 20);
     else
         FUN_1412751b0(FUN_1408116a0(0x9f3, nMinutes), 20);
 }
@@ -2908,7 +2904,7 @@ void UIMeratMarketDialog::OnClickRefreshRedMerat()
 {
     int nMinutes = 5;
     if (FUN_140d86260()->vfunc_43(8, true, 300000) == true)
-        FUN_1412751b0(FUN_1409eec40(0x9e5), 20);
+        FUN_1412751b0(BlockFormat(0x9e5), 20);
     else
         FUN_1412751b0(FUN_1408116a0(0x9f3, nMinutes), 20);
 }
@@ -2921,7 +2917,7 @@ void UIMeratMarketDialog::SendRandomSaleRequest(MS2Ptr<CMeratMarketProduct> spPr
     int nType = spProduct->m_premium.m_nType;
     if (nType == 6)
     {
-        CMsTime tNow(FUN_140869440());
+        CMsTime tNow(GetServerTime());
         __int64 nRemain = spProduct->m_premium.m_time188.Get() - tNow.Get();
         if (nRemain < 0)
             nRemain = 0;
@@ -3338,7 +3334,7 @@ void UIMeratMarketDialog::BuildJobList(ASArray& list, int nSelectedJob, int& nSe
         int nJob = jobs[i];
         if (nJob == 0 || nJob == 1)
             continue;
-        CStringW strText = FUN_1401a9d70()->FUN_141811980(6, FUN_1401d7a50()->FUN_140644bb0(nJob));
+        CStringW strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, reinterpret_cast<Unk_MmJobTable*>(TSingleton<JobTable>::GetInstance())->FUN_140644bb0(nJob));
         CStringW* pName = &strText;
         AddJobItem(list, *pName, nJob);
         if (nJob == nSelectedJob)
@@ -3492,7 +3488,7 @@ int UIMeratMarketDialog::OnCommandMyShop(const char* szName, const Scaleform::GF
                 return 1;
             }
         }
-        FUN_141adc530(FUN_1403ed2b0(), 0x4ec5);
+        FUN_141adc530(TSingleton<CUIService>::GetInstance(), 0x4ec5);
         return 1;
     }
     return 0;
@@ -3616,27 +3612,27 @@ void UIMeratMarketDialog::OnChangeTab(ASData& data)
         FUN_140939a00()->FUN_140d566f0(0);
         RefreshMyShop();
     }
-    if (FUN_140d8ee90() != 0)
+    if (reinterpret_cast<Unk_MmLogger*>(TSingleton<CBigDataLogSystem>::GetInstance()) != 0)
     {
         switch (nTab)
         {
         case 0:
-            FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_home");
+            FUN_140a1f970(reinterpret_cast<Unk_MmLogger*>(TSingleton<CBigDataLogSystem>::GetInstance()), "dialog_open", "merat_home");
             break;
         case 1:
-            FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_premium");
+            FUN_140a1f970(reinterpret_cast<Unk_MmLogger*>(TSingleton<CBigDataLogSystem>::GetInstance()), "dialog_open", "merat_premium");
             break;
         case 3:
-            FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_designers");
+            FUN_140a1f970(reinterpret_cast<Unk_MmLogger*>(TSingleton<CBigDataLogSystem>::GetInstance()), "dialog_open", "merat_designers");
             break;
         case 4:
-            FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_myshop");
+            FUN_140a1f970(reinterpret_cast<Unk_MmLogger*>(TSingleton<CBigDataLogSystem>::GetInstance()), "dialog_open", "merat_myshop");
             break;
         case 5:
-            FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_bookmark");
+            FUN_140a1f970(reinterpret_cast<Unk_MmLogger*>(TSingleton<CBigDataLogSystem>::GetInstance()), "dialog_open", "merat_bookmark");
             break;
         case 6:
-            FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_basket");
+            FUN_140a1f970(reinterpret_cast<Unk_MmLogger*>(TSingleton<CBigDataLogSystem>::GetInstance()), "dialog_open", "merat_basket");
             break;
         }
     }
@@ -4094,7 +4090,7 @@ void UIMeratMarketDialog::OnClickBuyEquipAll(const CStringA& strMovie)
     spParam->SetGift(bGift);
     MS2Ptr<TMarketBillDataParam> spBase = spParam;
     pDialog->FUN_140ea7770(spBase);
-    FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f17);
+    TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4f17);
 }
 
 // @0x141301260
@@ -4141,7 +4137,7 @@ void UIMeratMarketDialog::OnClickRecipe(ASData& data)
         if (pDialog->vfunc_55() == 0)
             pDialog->FUN_1412db6c0();
         else
-            FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ecb);
+            TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4ecb);
     }
 }
 
@@ -4239,7 +4235,7 @@ void UIMeratMarketDialog::OnClickBasket(ASData& data)
     }
     MS2Ptr<TMarketBillDataParam> spBase = spParam;
     pDialog->FUN_140ea7770(spBase);
-    FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f17);
+    TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4f17);
 }
 
 // @0x141302490
@@ -4278,9 +4274,9 @@ void UIMeratMarketDialog::OnClickExtraButton(ASData& data)
         int nCoinItem = FUN_14052d230()->FUN_14059e6a0(nItemId);
         if (nCoinItem == 0)
             return;
-        if (FUN_1403ed2b0()->FUN_141adc7f0((eUIClassID)0x4e3b) == 0)
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc7f0((eUIClassID)0x4e3b) == 0)
             return;
-        FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4e3b);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4e3b);
         COutPacket packet(static_cast<int>(SendOp::SystemShop), 0);
         packet.Encode1(10);
         packet.Encode1(1);
@@ -4403,7 +4399,7 @@ void UIMeratMarketDialog::BuyItems(MS2Ptr<TMeratMarketBillDataParam> spParam, AS
     spParam->SetGift(bGift);
     MS2Ptr<TMarketBillDataParam> spBase = spParam;
     pDialog->FUN_140ea7770(spBase);
-    FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f17);
+    TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4f17);
 }
 
 // @0x1413034c0
@@ -4459,7 +4455,7 @@ void UIMeratMarketDialog::OnBuyBasketItem(const CStringA& strName, ASData& data)
     spParam->SetGift(bGift);
     MS2Ptr<TMarketBillDataParam> spBase = spParam;
     pDialog->FUN_140ea7770(spBase);
-    FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f17);
+    TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4f17);
 }
 
 // @0x141303b50
@@ -4527,7 +4523,7 @@ void UIMeratMarketDialog::OnRightClickSeller(ASData& data)
         if (nCharId > 0)
         {
             Unk_PopupMenuInfo info(fX, fY, 3, 0x3f3fe, 0, "", 0);
-            MS2Ptr<CProxyGameObject> spProxy = FUN_1403ed2d0()->FUN_141bc9c60(nCharId);
+            MS2Ptr<CProxyGameObject> spProxy = reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance())->FUN_141bc9c60(nCharId);
             if (spProxy.get() != 0)
                 pMenu->FUN_141a7eb60(info, spProxy, 5);
             else
@@ -4632,11 +4628,11 @@ void UIMeratMarketDialog::OnClickRemoveSale(ASData& data)
                 spBox->FUN_140b76940(CStringW(strKey));
                 FUN_140d73c60(spBox);
             } else {
-                FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4ec5);
+                TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ec5);
                 UIMeratMarketRegisterDialog* pDialog = FUN_140d61d50(0x4ec5);
                 if (pDialog != 0)
                     FUN_1413190c0(pDialog, 1, key);
-                FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ec5);
+                TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4ec5);
             }
         }
     }
@@ -4872,7 +4868,7 @@ bool UIMeratMarketDialog::OnAskMoveToModelHouse(int nButton, const CMsgBoxData& 
             CBlueprintItemData* pBlueprint = &spProduct->m_ugc.m_blueprint;
             if (pBlueprint != 0)
             {
-                Unk_MmMyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+                Unk_MmMyPC* pPC = reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
                 if (pPC != 0)
                     pPC->FUN_141529fb0();
                 Unk_MmHouseNotice* pNotice = FUN_140d61ca0();
@@ -5008,7 +5004,7 @@ bool UIMeratMarketDialog::StartMusicPreview()
         return false;
     if (!FUN_140527840(m_spItem)->FUN_14053cd10() && !FUN_140527840(m_spItem)->FUN_14053cd50())
         return false;
-    if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4eec) != 0)
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4eec) != 0)
     {
         {
             CStringW strKey(L"s_play_instrument_cant_while_play_instrument");
@@ -5345,7 +5341,7 @@ void UIMeratMarketDialog::RunQuery()
     {
         m_250 = m_query.m_44;
         if (nBusy != 0)
-            FUN_141adc530(FUN_1403ed2b0(), 0x4ec1);
+            FUN_141adc530(TSingleton<CUIService>::GetInstance(), 0x4ec1);
         return;
     }
     ASObj data(2);
@@ -5725,7 +5721,7 @@ int UIMeratMarketDialog::DefaultTab()
     {
         return ResolveTab(m_250);
     }
-    int nTab = TabFromName(FUN_140424020(FUN_140302b00()->MeratMarketOpenTab()));
+    int nTab = TabFromName(FUN_140424020(TSingleton<CGameEventValueManager>::GetInstance()->MeratMarketOpenTab()));
     if (nTab < 0 || nTab >= 9)
         return ResolveTab(m_250);
     if (nTab == 7 && !HasLimitedTab())
@@ -6596,7 +6592,7 @@ void UIMeratMarketDialog::ApplyPremiumSale()
     for (unsigned i = 0; i < nCount; i++)
     {
         int nId = ids[i];
-        MS2Ptr<PreminmMarketSaleEventContext> spEvent = FUN_1403ed2a0()->FUN_1407ce4b0(nId);
+        MS2Ptr<PreminmMarketSaleEventContext> spEvent = TSingleton<CShopEventManager>::GetInstance()->FUN_1407ce4b0(nId);
         if (spEvent == 0)
         {
             tabs.insert(2);
@@ -6984,9 +6980,9 @@ MS2Ptr<AScript> Unk_1422baa20::FUN_141311f50(const CString& strName)
 // @0x141312450
 UIInteriorPreviewDialog* FUN_141312450(int nUiId)
 {
-    if (FUN_1403ed2b0())
+    if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> spObj = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (spObj.get())
             return dynamic_cast<UIInteriorPreviewDialog*>((UIObject*)spObj);
     }

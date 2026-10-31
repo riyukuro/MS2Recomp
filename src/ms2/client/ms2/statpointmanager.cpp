@@ -9,10 +9,10 @@
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
 
 // Unrecovered helpers.
-class Unk_StatPointEvents { public: void FUN_141b0ce20(int nEvent, int nArg); };
-Unk_StatPointEvents* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_140710590(COutPacket&);

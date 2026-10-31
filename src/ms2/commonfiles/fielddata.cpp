@@ -286,13 +286,14 @@
 #include "hook/ms2hook.h"
 
 #include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/commonfiles/filesystem.h"
 #include <utility>
 class Unk_140165cf0 {
 public:
     Unk_140165cf0* FUN_140165cf0(const char*);
     Unk_140165cf0* FUN_140168650(const char*);
 };
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument*,const char*,int,bool,bool); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 Unk_140165cf0* FUN_14028f8d0(Unk_140165cf0*);
 void FUN_14028fd90(Unk_140165cf0*,const char*,const char*,const char*,std::vector<Unk_140165cf0*>&);

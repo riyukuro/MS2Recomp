@@ -56,6 +56,7 @@
 #include "ms2/client/ms2/ms2scenegraphservice.h"
 #include "hook/ms2hook.h"
 #include "ms2/ms2recover.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <NiDefaultClickRenderStep.h>
 #include <NiViewRenderClick.h>
 #include <NiMaterial.h>
@@ -111,7 +112,6 @@ class Unk_AeWorld
 public:
     Unk_AeMapRef FUN_141bd30a0();                           // the current field
 };
-Unk_AeWorld* FUN_1403ed2d0();
 Unk_AeFieldInfo* FUN_1409657a0(const Unk_AeMapRef& ref);    // get
 Unk_AeFieldInfo* FUN_140885340(Unk_AeMapRef* pRef);         // operator->
 void FUN_1414d0180(bool bFlag);
@@ -398,7 +398,7 @@ bool FUN_1409a5850(NiFixedString& kKey, const bool* pbData, unsigned int uiSize)
 // @0x1409a3ad0
 void ApplyEffect::ApplyOuterGlowColor()
 {
-    Unk_AeMapRef field = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_AeMapRef field = reinterpret_cast<Unk_AeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (FUN_1409657a0(field) != 0) {
         if (Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0()->FUN_14125e160()) {
             FUN_1409a5810(DAT_143ae5348, &FUN_140885340(&field)->m_vOuterGlow, 1);
@@ -410,7 +410,7 @@ void ApplyEffect::ApplyOuterGlowColor()
 // @0x1409a5080
 void ApplyEffect::ApplyFieldRenderInfo()
 {
-    Unk_AeMapRef field = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_AeMapRef field = reinterpret_cast<Unk_AeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (FUN_1409657a0(field) != 0) {
         FUN_1414d0180(FUN_140885340(&field)->m_bRenderFlag);
         FUN_14150ccc0(FUN_140885340(&field)->m_nRenderValue);
@@ -420,7 +420,7 @@ void ApplyEffect::ApplyFieldRenderInfo()
 // @0x1409a43a0
 void ApplyEffect::ApplyFieldFogRange(bool bEnabled)
 {
-    Unk_AeMapRef field = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_AeMapRef field = reinterpret_cast<Unk_AeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (FUN_1409657a0(field) != 0) {
         SetFogRange(bEnabled, FUN_140885340(&field)->m_fFogNear, FUN_140885340(&field)->m_fFogFar,
             FUN_140885340(&field)->m_uiFogColor);
@@ -477,7 +477,7 @@ void ApplyEffect::SetScreenRatio(float fScale)
 bool ApplyEffect::SetSoftParticlesOption(bool bEnabled, Unk_AeFieldInfo* pField)
 {
     if (pField == 0) {
-        pField = FUN_1409657a0(FUN_1403ed2d0()->FUN_141bd30a0());
+        pField = FUN_1409657a0(reinterpret_cast<Unk_AeWorld*>(WorldService::GetInstance())->FUN_141bd30a0());
     }
     if (pField != 0) {
         Unk_AeFeatureState* pState = Unk_AeFeatureMgr::FUN_1409a8b20()->FUN_1416a3a90(3);
@@ -504,7 +504,7 @@ void ApplyEffect::ApplyFieldFog()
     if (pOption != 0) {
         ApplyFieldFogRange(pOption->FUN_14125e020());
     }
-    Unk_AeMapRef field = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_AeMapRef field = reinterpret_cast<Unk_AeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (FUN_1409657a0(field) != 0) {
         bool bFog;
         if (pOption->FUN_1409a8fd0() && FUN_140885340(&field)->m_bFieldFog != 0) {
@@ -525,7 +525,7 @@ void ApplyEffect::ApplyFieldFogEnabled(bool bEnabled)
     if (pOption == 0) {
         return;
     }
-    Unk_AeMapRef field = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_AeMapRef field = reinterpret_cast<Unk_AeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (FUN_1409657a0(field) != 0) {
         bool bFog;
         if (bEnabled && pOption->FUN_1409a8fd0() && FUN_140885340(&field)->m_bFieldFog != 0) {
@@ -698,7 +698,7 @@ void ApplyEffect::SwapClickProcessor(NiRenderListProcessor* pProcessor)
         return;
     }
     RestoreClickProcessors();
-    Unk_AeMapRef field = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_AeMapRef field = reinterpret_cast<Unk_AeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (FUN_1409657a0(field) != 0) {
         NiDefaultClickRenderStep* pStep = NiDynamicCast(NiDefaultClickRenderStep, FUN_1413f98d0()->GetRenderStep());
         if (pStep) {

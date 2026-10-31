@@ -9,12 +9,15 @@
 #include "ms2/client/ms2/magicdata.h"
 #include "ms2/placeholder/cequipitem.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/client/ms2/stateskill.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/pcbase.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 
 extern Vector3 DAT_143b01a60;                       // the zero point
-SkillDataTable* FUN_1401958b0();                            // the skill table
 unsigned FUN_141472bc0();                                   // the tick count
 
 bool FUN_14028d470(float fValue, float fTolerance);         // commonutil: nearly equal
@@ -25,26 +28,21 @@ int FUN_1409726e0(int nSuperArmor, ApplyFieldType eApplyField);  // PCBase: the 
 class Unk_SrEntity;
 
 // The own field world (the field objects by object id).
-class Unk_SrWorld
+class Unk_SrWorld : public WorldService
 {
 public:
     Unk_SrEntity* FUN_141bd1200(int nObjectId);             // the field object
-    int FUN_141bd19d0(int nObjectId);                       // the time mode of a field object
 };
-Unk_SrWorld* FUN_1403ed2d0();
 
 // The state machine of an actor: the attack state takes the hit records of the own player's casts.
-class Unk_SrState
+class Unk_SrState : public StateSkill
 {
-public:
-    void FUN_1417ecc10(Unk_MagicTagPtr spRecord);
 };
 
 // The own player (MyPC).
-class Unk_SrMyPC
+class Unk_SrMyPC : public PCBase
 {
 public:
-    int FUN_14166c930();                                    // the current state id
     Unk_SrState* FUN_14166ccb0();                           // the current state
 };
 Unk_SrMyPC* FUN_14096e160(Unk_SrEntity* pEntity);           // as MyPC
@@ -91,7 +89,7 @@ bool SkillTargetRecord::FUN_141758d70(unsigned long long nTagId, unsigned long l
     int nCasterId, int nSkillId, short nLevel, int nMotion, Vector3 ptDir, int n80, int n84,
     int nAttack, int n8c)
 {
-    m_spSkill = FUN_1401958b0()->GetSkillData(nSkillId);
+    m_spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     if (m_spSkill == 0)
         return false;
     m_spLevel = m_spSkill->FUN_1407e90a0(nLevel);
@@ -102,7 +100,7 @@ bool SkillTargetRecord::FUN_141758d70(unsigned long long nTagId, unsigned long l
     m_nTagId = nTagId;
     m_nTagSub = nTagSub;
     m_nOwnerId = nOwnerId;
-    m_nTimeMode = FUN_1403ed2d0()->FUN_141bd19d0(m_nOwnerId);
+    m_nTimeMode = reinterpret_cast<Unk_SrWorld*>(WorldService::GetInstance())->FUN_141bd19d0(m_nOwnerId);
     m_nCasterId = nCasterId;
     m_n84 = n84;
     m_nMotion = nMotion;
@@ -164,7 +162,7 @@ int SkillTargetRecord::GetStartTick()
 // @0x1417591b0
 void SkillTargetRecord::FUN_1417591b0()
 {
-    Unk_SrEntity* pOwner = FUN_1403ed2d0()->FUN_141bd1200(m_nOwnerId);
+    Unk_SrEntity* pOwner = reinterpret_cast<Unk_SrWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nOwnerId);
     if (pOwner == 0)
         return;
     Unk_SrMyPC* pMe = FUN_14096e160(pOwner);
@@ -196,7 +194,7 @@ CSkillRecord::~CSkillRecord()
 // @0x1417595d0
 bool CSkillRecord::Init(Unk_InventorySkillRequest& kReq)
 {
-    m_spSkill = FUN_1401958b0()->GetSkillData(kReq.m_nSkillId);
+    m_spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(kReq.m_nSkillId);
     if (m_spSkill == 0)
         return false;
     m_spLevel = m_spSkill->FUN_1407e90a0(kReq.m_nLevel);
@@ -495,7 +493,7 @@ int CDamageRecord::Init(unsigned long long nTagId, unsigned long long nTagSub, i
     m_nCasterId = nCasterId;
     m_nSkillId = nSkillId;
     m_nLevel = nLevel;
-    m_spSkill = FUN_1401958b0()->GetSkillData(nSkillId);
+    m_spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     m_spLevel = m_spSkill->FUN_1407e90a0(nLevel);
     m_nMotion = nMotion;
     m_nAttack = nAttack;
@@ -602,7 +600,7 @@ int CDamageRecord::FUN_14175acc0()
 int CDamageRecord::FUN_14175ad50()
 {
     int nMaterial = 1;
-    Unk_SrEntity* pOwner = FUN_1403ed2d0()->FUN_141bd1200(m_nOwnerId);
+    Unk_SrEntity* pOwner = reinterpret_cast<Unk_SrWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nOwnerId);
     if (pOwner == 0)
         return nMaterial;
     nMaterial = FUN_14175a8b0()->m_damage.m_nAttackMaterial;
@@ -671,7 +669,7 @@ int CDotDamageRecord::Init(int nOwnerId, int nCasterId, int nEffectLevel, int nT
 // @0x14175b070
 int CDotDamageRecord::vfunc_1()
 {
-    Unk_SrEntity* pCaster = FUN_1403ed2d0()->FUN_141bd1200(m_nCasterId);
+    Unk_SrEntity* pCaster = reinterpret_cast<Unk_SrWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nCasterId);
     if (pCaster == 0)
         return 0;
     MS2Ptr<AdditionalCli> spBuff = FUN_1416749a0(pCaster)->FUN_14096fc80(m_nEffectLevel);
@@ -704,7 +702,7 @@ int CSplashDamageRecord::Init(int nCasterId, int nOwnerId, unsigned long long nT
     m_nTagId = nTagId;
     m_nSkillId = nSkillId;
     m_nLevel = nLevel;
-    m_spSkill = FUN_1401958b0()->GetSkillData(nSkillId);
+    m_spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     m_spLevel = m_spSkill->FUN_1407e90a0(nLevel);
     m_nMotion = nMotion;
     m_nAttack = nAttack;

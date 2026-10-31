@@ -27,7 +27,7 @@ CStringW BlockFormat(int, const fmt::ArgList&);
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
 
 // ---- out-of-unit callees ----
-__int64 FUN_140869440();                                      // current server time
+__int64 GetServerTime();                                      // current server time
 CStringW GetStringCommon(int id);                               // string table lookup
 void FUN_1412751b0(const CStringW& msg, int seconds);         // on-screen notice
 CStringW FUN_1408116a0(int id, const int& v);                 // string table + one int
@@ -43,7 +43,7 @@ void FUN_140d73c60(MS2Ptr<Unk_BmMsgBox> box);                                   
 void FUN_141a015d0(void* dialog, const CStringW& text);
 void* FUN_140166410();
 bool FUN_14036e4c0(void* p);
-CStringW FUN_140217ff0(int id);
+CStringW Name_140217ff0(int id);
 void FUN_140165320(void* dst, const CStringW& s);
 void FUN_142c9ef00();
 
@@ -71,7 +71,7 @@ CBlockManager::~CBlockManager()
 BlockPtr CBlockManager::FindBlockedAction(int action)
 {
     BlockPtr p = m_checker.get()->FindAction(action);
-    if (p == 0 || p.operator->()->expiry < FUN_140869440())
+    if (p == 0 || p.operator->()->expiry < GetServerTime())
         return BlockPtr(0);
     return p;
 }
@@ -169,7 +169,7 @@ void FUN_140a30ad0(const BlockPtr& rec, int action, u64 cb)
 // @0x140a30b80
 void FUN_140a30b80(char* dialog, int id)
 {
-    FUN_140165320(dialog + 0x228, FUN_140217ff0(id));
+    FUN_140165320(dialog + 0x228, Name_140217ff0(id));
 }
 
 // @0x140a2ff20  show the "you are blocked" notice for a record

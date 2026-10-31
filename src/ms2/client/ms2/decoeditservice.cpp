@@ -47,6 +47,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/client/ms2/windowservice.h"
 
 // ---- services reached through globals ----
 WorldService* FUN_1403ed2d0();
@@ -140,14 +142,12 @@ bool FUN_1408710c0(void* pDocument, const char* pszFile);           // SaveFile
 // (Unk_DecoPoint3, the efd::Point3 of the ray, is in decoeditservice.h)
 struct Unk_PickXY { float x, y; };                                  // cursor position
 extern Unk_PickXY DAT_143b02320;                                    // initial value of the cursor position
-struct Unk_DecoCursor { int FUN_141b90e30(float* pX, float* pY); };
+struct Unk_DecoCursor : public CWindowService { };
 Unk_DecoCursor* FUN_140aadf80();
-struct Unk_DecoCamera
+struct Unk_DecoCamera : public CameraMgr
 {
-    int FUN_140a18070();                                            // camera ready
     bool FUN_140af0520(const Unk_PickXY& kCursor, Unk_DecoPoint3* pOrigin, Unk_DecoPoint3* pDir);    // cursor ray
 };
-Unk_DecoCamera* FUN_1409478c0();
 struct Unk_DecoCollision
 {
     int FUN_14168a230(Unk_DecoPoint3 ptFrom, Vector3& ptHit, Unk_DecoPoint3 ptDir, float fLen, int nMask);
@@ -426,13 +426,13 @@ efd::AsyncResult DecoEditService::OnTick()
     if (m_mapBrushes.Lookup(m_nBrush, spBrush))
     {
         Unk_PickXY kCursor = DAT_143b02320;
-        if (FUN_140aadf80()->FUN_141b90e30(&kCursor.x, &kCursor.y) != 0)
+        if (FUN_140aadf80()->GetCursorClientPos(&kCursor.x, &kCursor.y) != 0)
         {
-            if (FUN_1409478c0()->FUN_140a18070() != 0)
+            if (reinterpret_cast<Unk_DecoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
             {
                 Unk_DecoPoint3 kOrigin;
                 Unk_DecoPoint3 kDir;
-                if (FUN_1409478c0()->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
+                if (reinterpret_cast<Unk_DecoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
                 {
                     Vector3 kHit;
                     if (FUN_1409f7ca0()->FUN_14168a230(Unk_DecoPoint3(kOrigin), kHit, Unk_DecoPoint3(kDir), 10000.0f, 0x201) != 0)

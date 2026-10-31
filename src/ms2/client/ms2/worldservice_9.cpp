@@ -11,11 +11,16 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/utf8string.h>
 
-// MS2-FUNCTIONAL: the wrapper forwards to the string's stored byte length.
+// The exe's efd::utf8string::size: the string's only member is its internal string, read here through a view.
+struct Unk_Utf8StringView
+{
+    efd::utf8string::internal_string m_string;
+};
+
 // @0x141c2eee0
 size_t FUN_141c2eee0(const efd::utf8string* s)
 {
-    return s->size();
+    return reinterpret_cast<const Unk_Utf8StringView*>(s)->m_string.size();
 }
 
 // MS2-FUNCTIONAL: this wrapper returns its pointer argument unchanged.

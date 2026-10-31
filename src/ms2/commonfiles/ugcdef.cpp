@@ -39,6 +39,8 @@
 #include "commonstruct.h"
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/cugcgetcosttable.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/cugcmanager.h"
 
 // The UGC info behind CItem::FUN_1405278d0 as this unit reads it (name at +0x40, rarity at +0x48).
 struct Unk_UgcItemInfoView
@@ -65,12 +67,11 @@ struct Unk_DateParts
 MS2_CHECK_SIZE(Unk_DateParts, 0x30);
 unsigned __int64 FUN_14088dbf0(int nDate, int nHour);
 Unk_DateParts* FUN_14088dfa0(Unk_DateParts* out, __int64 t, int nHourOffset);
-__int64 FUN_140869440();
+__int64 GetServerTime();
 unsigned char FUN_140898b80(CInPacket& packet, Unk_1402c45d0 checker);     // a byte that Unk_1402c45d0 accepts, else throws
 
 // The UGC managers behind the item.cpp singleton FUN_14052d220 (only the "is the server a test server" query is used).
-class Unk_SSGUgcMgr { public: int FUN_14187f3b0(); };
-Unk_SSGUgcMgr* FUN_14052d220();
+CUgcManager* FUN_14052d220();
 CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const __int64& nArg);     // "{0}" formatter
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& arg0, const CStringW& arg1);
 CString FUN_1410280d0(int nKind, CString strName);                         // the local file of a ugc content kind
@@ -749,7 +750,7 @@ int CUgcBannerReserve::FUN_140890180() const
 {
     unsigned __int64 nReserved = FUN_14088dbf0(m_nDate, m_nHour);
     Unk_DateParts now;
-    FUN_14088dfa0(&now, FUN_140869440(), 0);
+    FUN_14088dfa0(&now, GetServerTime(), 0);
     if (nReserved < (unsigned __int64)now.m_00)
         return 1;
     return 0;
@@ -967,7 +968,7 @@ void CUgcRegistBanner::Read(CInPacket& packet)
     static_cast<IUgcProxy&>(m_upload).Read(packet);
     static_cast<IUgcProxy&>(m_post).Read(packet);
     m_strUrl = packet.ReadUnicodeStringA();
-    if (FUN_14052d220()->FUN_14187f3b0() == 1)
+    if (FUN_14052d220()->GetMode() == 1)
     {
         static_cast<IUgcProxy&>(m_upload).Clear();
         static_cast<IUgcProxy&>(m_post).Clear();
@@ -1574,7 +1575,7 @@ void CUgcItemLook::Read(CInputStream& stream)
     m_n50 = stream.ReadInt64();
     m_strUrl = stream.ReadUnicodeStringA();
     m_n60 = stream.ReadUInt8();
-    if (FUN_14052d220()->FUN_14187f3b0() == 1)
+    if (FUN_14052d220()->GetMode() == 1)
         m_strUrl = "";
 }
 
@@ -2166,7 +2167,7 @@ void CUgcMarketProduct::SetStr210(CStringW str)
 // @0x1408961a0
 int CUgcMarketProduct::FUN_1408961a0() const
 {
-    if (m_n88 > 0 && m_n88 > FUN_140869440())
+    if (m_n88 > 0 && m_n88 > GetServerTime())
         return 1;
     return 0;
 }
@@ -2174,7 +2175,7 @@ int CUgcMarketProduct::FUN_1408961a0() const
 // @0x1408961e0
 int CUgcMarketProduct::FUN_1408961e0() const
 {
-    __int64 nNow = FUN_140869440();
+    __int64 nNow = GetServerTime();
     if (nNow < m_n58 || nNow > m_n68)
         return 0;
     return 1;
@@ -2562,7 +2563,7 @@ void TUgcGetCostInfo::FUN_140897f30(__int64 nBase, int nPercent)
 }
 
 // The exe instantiates this 3-argument form against its own copy of the formatter (the one the socket code uses).
-CStringA FUN_1402bf9a0(const char* format, const fmt::ArgList& args);
+CStringA Unk_SocketFormat(const char* format, const fmt::ArgList& args);
 // @0x140898c00
 template<> CString StringFormat<__int64, __int64, int>(const char* format, const __int64& first, const __int64& second,
                                                       const int& third)
@@ -2570,7 +2571,7 @@ template<> CString StringFormat<__int64, __int64, int>(const char* format, const
     const fmt::internal::ArgArray<3>::Type array = {fmt::internal::MakeValue<fmt::BasicFormatter<char>>(first),
                                                   fmt::internal::MakeValue<fmt::BasicFormatter<char>>(second),
                                                   fmt::internal::MakeValue<fmt::BasicFormatter<char>>(third)};
-    return FUN_1402bf9a0(format, fmt::ArgList(fmt::internal::make_type(first, second, third), array));
+    return Unk_SocketFormat(format, fmt::ArgList(fmt::internal::make_type(first, second, third), array));
 }
 
 // @0x140897f90
@@ -2675,8 +2676,7 @@ void CUgcGetCostTable::Read(CInPacket& packet)
 
 // Blueprint fee currency selector (unit-local view of the fee object; its owner unit is uiitemblueprintcreatedialog.cpp)
 enum Unk_BpCurrency { Unk_BpCurrency_Default = 1 };
-class Unk_140166410_Opt { public: bool FUN_14036d710(int); };
-Unk_140166410_Opt* FUN_140166410();
+CFeatureManager* FUN_140166410();
 class Unk_BpFee
 {
 public:

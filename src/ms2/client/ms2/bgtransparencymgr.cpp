@@ -146,9 +146,7 @@ BGTransparencyMgr* TSingleton<BGTransparencyMgr>::s_instance;
 // ---- out-of-unit callees (names are exe addresses) ----------------------------------------------------------------
 extern char DAT_143b059e8;                                      // service lookup cell (HardwareInstancingService)
 extern NiFixedString DAT_143ae5188;                             // render group (float extra data) key
-CameraMgr* FUN_1409478c0();                                     // camera manager singleton
 WorldService* FUN_1403ed2d0();                                  // world service singleton
-EntityWorldManager* FUN_1409670f0();                            // entity world manager singleton
 ecr::PickService* FUN_1413f98f0();                              // pick service (manager id 0x7002004)
 ecr::SceneGraphService* FUN_1413f98b0();
 HardwareInstancingService* FUN_14098c5b0(char* pCell);
@@ -376,13 +374,13 @@ bool BGTransparencyMgr::PickEntities(efd::Point3 ptOrigin, efd::Point3 ptDir, Un
 // @0x140a0db00
 void BGTransparencyMgr::vfunc_1()
 {
-    if (FUN_1409478c0()->FUN_140a18070() == 0 || m_nFlags == 0)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0 || m_nFlags == 0)
         return;
     if (!m_set20.empty())
     {
     std::set<Unk_BGTRegion> kVisible;
     Unk_BGTEntitySet kHit;
-    Vector3 kCamera = FUN_1409478c0()->FUN_140a17e10();
+    Vector3 kCamera = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
     FUN_1403ed2d0()->FUN_141bc7920(reinterpret_cast<std::set<void*>&>(kVisible));
     for (std::set<efd::SmartPointer<GameObject> >::iterator it = m_set20.begin(); it != m_set20.end(); ++it)
     {
@@ -399,7 +397,7 @@ void BGTransparencyMgr::vfunc_1()
             {
                 if (RayHits(ptPos + efd::Point3::UNIT_Z * (*it)->FUN_140a17da0(), ptDirA, itRegion->m_pNode))
                 {
-                    pEntityA = FUN_1409670f0()->FUN_1411cf440(itRegion->m_id);
+                    pEntityA = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(itRegion->m_id);
                     if (pEntityA != 0)
                     {
                         bool bAdded = false;
@@ -426,7 +424,7 @@ void BGTransparencyMgr::vfunc_1()
                             for (std::set<egf::EntityID>::iterator itEnd = rGroup.end(), itId = rGroup.begin(); itId != itEnd; ++itId)
                             {
                                 egf::EntityID id(*itId);
-                                pEntityA = FUN_1409670f0()->FUN_1411cf440(id);
+                                pEntityA = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id);
                                 if (pEntityA != 0)
                                     kHit.insert(pEntityA);
                             }
@@ -435,7 +433,7 @@ void BGTransparencyMgr::vfunc_1()
                 }
                 if (RayHits(ptPos + efd::Point3::UNIT_Z * (*it)->FUN_140a17dc0(), ptDirB, itRegion->m_pNode))
                 {
-                    pEntityB = FUN_1409670f0()->FUN_1411cf440(itRegion->m_id);
+                    pEntityB = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(itRegion->m_id);
                     if (pEntityB != 0 && pEntityA != pEntityB)
                     {
                         bool bAdded = false;
@@ -462,7 +460,7 @@ void BGTransparencyMgr::vfunc_1()
                             for (std::set<egf::EntityID>::iterator itEnd = rGroup.end(), itId = rGroup.begin(); itId != itEnd; ++itId)
                             {
                                 egf::EntityID id(*itId);
-                                pEntityB = FUN_1409670f0()->FUN_1411cf440(id);
+                                pEntityB = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id);
                                 if (pEntityB != 0)
                                     kHit.insert(pEntityB);
                             }
@@ -705,9 +703,9 @@ bool BGTransparencyMgr::CompareDistance(egf::Entity* pA, egf::Entity* pB)
     efd::Point3 ptA, ptB;
     FUN_1409618c0(pA, 0xfd95ca52, &ptA);
     FUN_1409618c0(pB, 0xfd95ca52, &ptB);
-    if (FUN_1409478c0()->FUN_140a18070() == 0)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
         return false;
-    Vector3 kCamera = FUN_1409478c0()->FUN_140a17e10();
+    Vector3 kCamera = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
     float fA = (ptA - (const efd::Point3&)kCamera).Length();
     float fB = (ptB - (const efd::Point3&)kCamera).Length();
     return fA > fB;

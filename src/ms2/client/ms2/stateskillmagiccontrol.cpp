@@ -12,16 +12,15 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/cubecraft_1.h"
 
 // ---- unit-local placeholders ----
 
 // The controlled target (a GameObject-derived actor; FUN_140ac06f0 asks the owner for the component 0x6200081).
-class Unk_ControlTarget : public GameObject
+class Unk_ControlTarget : public CSkillMagicControlGuide
 {
 public:
     NiPoint3 FUN_1410a6750();                    // destination
-    float FUN_1410a6790();                       // speed
-    float FUN_1410a67d0();                       // stop radius
 };
 
 NiPoint3* FUN_14123c360(PCBase* p, NiPoint3* pOut);                 // move direction (member: this=rcx, hidden return=rdx)

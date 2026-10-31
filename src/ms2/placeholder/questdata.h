@@ -21,7 +21,7 @@ public:
         QuestRewardItem();
         QuestRewardItem(const QuestRewardItem& o) : CPtred(o), m_itemId(o.m_itemId), m_count(o.m_count), m_job(o.m_job) {}   // 0x1407585c0
         QuestRewardItem(QuestRewardItem&& o) : CPtred(o), m_itemId(o.m_itemId), m_count(o.m_count), m_job(o.m_job) {}        // 0x140758550
-        virtual ~QuestRewardItem();
+        // implicit dtor: 0x140758db0 has no vftable store, ??_G 0x140759fa0
         int m_itemId, m_count, m_job;
         bool operator!=(const QuestRewardItem& o) const;   // 0x140747f60
         bool LoadXml(Unk_140165cf0* pElem);                // 0x140747fc0

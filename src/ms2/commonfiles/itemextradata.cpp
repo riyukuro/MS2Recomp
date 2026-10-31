@@ -27,11 +27,11 @@
 #include <float.h>
 #include <stdlib.h>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/itemdatatable.h"
 
 // ---- out-of-unit callees ----
 unsigned FUN_140869420();                                       // the tick count
 int FUN_14059d150(float* p);
-CItemDataTable* FUN_140281980();                                // the item table singleton
 void FUN_140159b70(long hr);                                    // ATL throw
 float FUN_14029dd40(float f);                                   // fabs
 extern float DAT_1439f4838;                                     // 0.01f: FUN_14059bfe0's tolerance (a .data global in the exe)
@@ -301,7 +301,7 @@ void CItemExtraData::FUN_140599ab0(CItemData* pData)
         return;
     for (unsigned i = 0; i < (unsigned)FUN_14053ec70(pData)->FUN_140547330(); i++)
     {
-        MS2Ptr<ItemColorEx> spColor = FUN_140281980()->GetPaletteColorOrRandom(pData->FUN_14053e260(), pData->FUN_14053e2b0(i));
+        MS2Ptr<ItemColorEx> spColor = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColorOrRandom(pData->FUN_14053e260(), pData->FUN_14053e2b0(i));
         if (spColor.get() != 0)
             FUN_140599bc0(spColor.operator->(), 0, pData->FUN_14053e310(i), i);
     }

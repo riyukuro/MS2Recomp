@@ -40,6 +40,8 @@
 #include <NiTexturingProperty.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/nifeffectparam.h"
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 // Game TinyXML element.
@@ -56,11 +58,10 @@ CString FUN_140188f50(const char* psz, int n);                      // null-safe
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
 bool FUN_14028d470(float a, float b);                               // nearly equal
-class Unk_GameClock { public: double FUN_141473280(); };
 // The camera manager's position getter returns the NiPoint3 that UpdateMesh slices into its efd::Point3 local.
 struct Unk_RbNiPoint3 : Vector3 {};
 class Unk_RbCameraMgr { public: Unk_RbNiPoint3 FUN_140af0250(); };
-Unk_GameClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
 const Vector3& FUN_140947900(void* pNode);                  // world translate
@@ -109,11 +110,10 @@ private:
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
 
 // The resource manager (singleton, instance pointer at 0x143ab5bc8): model / texture cache by path.
-class Unk_ResourceMgr
+class Unk_ResourceMgr : public CNifLoadingService
 {
 public:
     Unk_PPSmartC FUN_141552f90(CString strPath, int nFlags);                    // texture load
-    NiAVObjectPtr FUN_141551ea0(CString strPath, bool bA, int nB, int nC, int nD);   // model load
     void FUN_1415525d0(CString strPath, int nA, int nB);                        // preload
 };
 Unk_ResourceMgr* FUN_140a0afd0();
@@ -220,7 +220,7 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
 
     if ((const char*)pRibbon->m_strNifPath != 0)
     {
-        NiAVObjectPtr spModel = FUN_140a0afd0()->FUN_141551ea0(FUN_140cc2ba0("Effect", pRibbon->m_strNifPath), false, 5, 0, 0);
+        NiAVObjectPtr spModel = FUN_140a0afd0()->Load(FUN_140cc2ba0("Effect", pRibbon->m_strNifPath), false, 5, 0, 0);
         NiMesh* pFound = 0;
         Unk_SceneWalker kWalker(static_cast<NiObject*>(FUN_1409849b0(&spModel)));
         NiAVObject* pObj;

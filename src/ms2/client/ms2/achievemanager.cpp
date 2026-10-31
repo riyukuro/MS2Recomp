@@ -61,6 +61,15 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/gameeventmanagercli.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- out-of-unit callees (names are exe addresses) ----------------------------------------------------------------------------
 class Unk_SingletonObj;
@@ -84,7 +93,6 @@ class Unk_AmUIManager
 public:
     MS2Ptr<UIObject> FUN_141adcea0(int nId);
 };
-Unk_AmUIManager* FUN_1403ed2b0();
 
 void FUN_141937ea0(UIGameMenuDialog* pDialog, CAchieve* pAchieve, int bCleared);   // the menu dialog's achievement refresh
 Unk_AmMainInfo* FUN_140931900(int nUiId);
@@ -94,13 +102,11 @@ void FUN_141a5a560(UIMyInfoDialog* pDialog);
 // Notice plumbing.
 void FUN_140d5b880(Unk_SingletonObj* pOwner, unsigned nId, int nGrade);
 CStringW FUN_140d2d440(unsigned nId, int nGrade);               // the notice's title text
-class Unk_AmReportMgr { public: void FUN_140da4fe0(MS2Ptr<NotifyObject> spNotify); };
 class Unk_AmTrigCmdMgr { public: void FUN_14138bf00(int nCmd, int nArg1, int nArg2); };
 Unk_AmTrigCmdMgr* FUN_1409331e0();
 void FUN_1412751b0(const CStringW& strMsg, int nType);          // system message line
-class Unk_AmEventMgr { public: bool FUN_140cead80(CStringW strEvent); };
-Unk_AmEventMgr* FUN_14015a050();
-int FUN_14029f2b0(int nConditionType);                          // ConditionKindOfType
+GameEventManagerCli* FUN_14015a050();
+int ConditionKindOfType(int nConditionType);                    // ConditionKindOfType
 
 // Strings.
 CStringW GetStringCommon(int nStringId);                          // string table entry
@@ -120,17 +126,13 @@ CStringW FUN_14016a730(const char* psz, int nCodePage);
 void FUN_141842290(CStringW& str);                              // text post-processing (colour tags)
 
 // The names, services and tables the reward texts read.
-class Unk_AmNames { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_AmNames* FUN_1401a9d70();
 void* FUN_1403ed2d0();
 Unk_AmPC* FUN_141bd0cc0(void* pWorld);
 unsigned FUN_141658e60(Unk_AmPC* pPC);                          // gender: 0 male
-class Unk_AmOptions { public: bool FUN_14036d570(int nFlag); };
-Unk_AmOptions* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 // The text filter of the exe (strips markup).
-class Unk_AmTextFilter { public: void FUN_1416fb380(CStringW& str); void FUN_1416fbf20(CStringW& str); };
-Unk_AmTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 
 // The coloring table: a row set of (achievement id, grade) -> colour.
 struct Unk_AmColorEntry { char m_pad_00[0x24]; int m_nAchieveId; int m_nGrade; int m_nColorId; };
@@ -154,7 +156,6 @@ public:
     void* m_p;
 };
 class Unk_AmIngTable { public: Unk_AmColorSet FUN_140558ad0(int nId); };
-Unk_AmIngTable* FUN_140281980();
 
 // The skill table (dynamic action rewards).
 struct Unk_AmSkillRow { char m_pad_00[0x48]; CStringA m_strIcon; };
@@ -167,12 +168,10 @@ public:
     void* m_p;
 };
 class Unk_AmSkillTable { public: Unk_AmSkillRef FUN_1407ee1d0(int nSkillId); };
-Unk_AmSkillTable* FUN_1401958b0();
 
 // The xml reader of the exe (see continentregiontable.cpp / learningquesttable.cpp).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
-class Unk_AmFileSystem { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int nUnused, bool bA, bool bB); };
+class Unk_AmFileSystem : public CFileSystem { };
 Unk_AmFileSystem* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CStringA& strArg);
@@ -486,9 +485,9 @@ int CAchieveManager::IsBeforeStartGradeOf(MS2Ptr<CAchieve> pAchieve, int nGrade)
 // The three dialog lookups (UI ids 0x4e28 / 0x2711 / 0x4e5d).
 UIGameMenuDialog* FUN_140938b90(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_AmUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> pUi = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> pUi = reinterpret_cast<Unk_AmUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (pUi.get())
             return dynamic_cast<UIGameMenuDialog*>((UIObject*)pUi);
     }
@@ -497,9 +496,9 @@ UIGameMenuDialog* FUN_140938b90(int nId)
 
 UIMyInfoDialog* FUN_140938c30(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_AmUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> pUi = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> pUi = reinterpret_cast<Unk_AmUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (pUi.get())
             return dynamic_cast<UIMyInfoDialog*>((UIObject*)pUi);
     }
@@ -508,9 +507,9 @@ UIMyInfoDialog* FUN_140938c30(int nId)
 
 UIRewardNotify* FUN_140938cd0(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_AmUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> pUi = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> pUi = reinterpret_cast<Unk_AmUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (pUi.get())
             return dynamic_cast<UIRewardNotify*>((UIObject*)pUi);
     }
@@ -607,7 +606,7 @@ void CAchieveManager::NotifyClear(CAchieve* pAchieve)
         FUN_1412751b0(StringFormat(GetStringCommon(0x77d), strTitle), 0x14);
     else
         FUN_1412751b0(StringFormat(GetStringCommon(0x77c), strTitle), 0x14);
-    ((Unk_AmReportMgr*)FUN_140939a10())->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyClearAchieve(pAchieve->GetId())));
+    ((NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyClearAchieve(pAchieve->GetId())));
 }
 
 // Shows the "you unlocked <...>" toast and the system line for the beauty (hair / makeup) reward of the current player.
@@ -648,25 +647,25 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
         }
         case 5:
             pNotify->FUN_141ac1580(CStringW(L"./Data/Resource/Image/ETC/weaponshop_unlock.png"),
-                                   FUN_1405c2690(CStringW(L"s_system_achieve_reward_shop_unlock"), FUN_1401a9d70()->FUN_141811980(1, pGrade->m_reward.m_nCode)), 0);
-            FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_shop_auth_notify"), FUN_1401a9d70()->FUN_141811980(1, pGrade->m_reward.m_nCode)), 0x1c);
+                                   FUN_1405c2690(CStringW(L"s_system_achieve_reward_shop_unlock"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pGrade->m_reward.m_nCode)), 0);
+            FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_shop_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pGrade->m_reward.m_nCode)), 0x1c);
             break;
         case 6:
             pNotify->FUN_141ac1580(CStringW(L"./Data/Resource/Image/ETC/buildshop_unlock.png"),
-                                   FUN_1405c2690(CStringW(L"s_system_achieve_reward_shop_unlock"), FUN_1401a9d70()->FUN_141811980(1, pGrade->m_reward.m_nCode)), 0);
-            FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_shop_auth_notify"), FUN_1401a9d70()->FUN_141811980(1, pGrade->m_reward.m_nCode)), 0x1c);
+                                   FUN_1405c2690(CStringW(L"s_system_achieve_reward_shop_unlock"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pGrade->m_reward.m_nCode)), 0);
+            FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_shop_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pGrade->m_reward.m_nCode)), 0x1c);
             break;
         case 7:
             pNotify->FUN_141ac1580(CStringW(L"./Data/Resource/Image/ETC/rideshop_unlock.png"),
-                                   FUN_1405c2690(CStringW(L"s_system_achieve_reward_shop_unlock"), FUN_1401a9d70()->FUN_141811980(1, pGrade->m_reward.m_nCode)), 0);
-            FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_shop_auth_notify"), FUN_1401a9d70()->FUN_141811980(1, pGrade->m_reward.m_nCode)), 0x1c);
+                                   FUN_1405c2690(CStringW(L"s_system_achieve_reward_shop_unlock"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pGrade->m_reward.m_nCode)), 0);
+            FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_shop_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pGrade->m_reward.m_nCode)), 0x1c);
         }
         if (FUN_140166410()->FUN_14036d570(0xbb))
         {
             int nType = pGrade->m_reward.m_nType;
             if (nType == 8)
             {
-                Unk_AmColorSet set = FUN_140281980()->FUN_140558ad0(pGrade->m_reward.m_nCode);
+                Unk_AmColorSet set = reinterpret_cast<Unk_AmIngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558ad0(pGrade->m_reward.m_nCode);
                 if (set.FUN_14056d460() != 0)
                 {
                     for (size_t i = 0; i < set.FUN_14056d540()->FUN_140570e10(); i++)
@@ -677,8 +676,8 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
                             if (elem.FUN_14056d570()->m_nGrade == nGrade)
                             {
                                 pNotify->FUN_141ac1580(CStringW(L"./Data/Resource/Image/ETC/colorpalette_unlock.png"),
-                                                       FUN_1405c2690(CStringW(L"s_system_achieve_reward_coloring"), FUN_1401a9d70()->FUN_141811980(0x48, elem.FUN_14056d570()->m_nColorId)), 0);
-                                FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_coloring_auth_notify"), FUN_1401a9d70()->FUN_141811980(0x48, elem.FUN_14056d570()->m_nColorId)), 0x1c);
+                                                       FUN_1405c2690(CStringW(L"s_system_achieve_reward_coloring"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x48, elem.FUN_14056d570()->m_nColorId)), 0);
+                                FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_coloring_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x48, elem.FUN_14056d570()->m_nColorId)), 0x1c);
                             }
                         }
                     }
@@ -696,19 +695,19 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
                         if (pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue))
                         {
                             pNotify->FUN_141ac1580(CStringW(L"./Data/Resource/Image/ETC/customizeshop_unlock.png"),
-                                                   FUN_1405c2690(CStringW(L"s_system_achieve_reward_beauty"), FUN_1401a9d70()->FUN_141811980(1, FUN_1407181d0(strValue))), 0);
-                            FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_beauty_auth_notify"), FUN_1401a9d70()->FUN_141811980(1, FUN_1407181d0(strValue))), 0x1c);
+                                                   FUN_1405c2690(CStringW(L"s_system_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue))), 0);
+                            FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_beauty_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue))), 0x1c);
                         }
                     }
                 }
                 else if (nType == 12)
                 {
-                    Unk_AmSkillRow* pRow = FUN_1401958b0()->FUN_1407ee1d0(pGrade->m_reward.m_nCode).FUN_14063ed10();
+                    Unk_AmSkillRow* pRow = reinterpret_cast<Unk_AmSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(pGrade->m_reward.m_nCode).FUN_14063ed10();
                     if (pRow != 0)
                     {
                         pNotify->FUN_141ac1580(FUN_14016a730(pRow->m_strIcon, 0),
-                                               FUN_1405c2690(CStringW(L"s_system_achieve_reward_dynamicaction"), FUN_1401a9d70()->FUN_141811980(4, pGrade->m_reward.m_nCode)), 0);
-                        FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_dynamicaction_auth_notify"), FUN_1401a9d70()->FUN_141811980(4, pGrade->m_reward.m_nCode)), 0x1c);
+                                               FUN_1405c2690(CStringW(L"s_system_achieve_reward_dynamicaction"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, pGrade->m_reward.m_nCode)), 0);
+                        FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_dynamicaction_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, pGrade->m_reward.m_nCode)), 0x1c);
                     }
                 }
             }
@@ -723,8 +722,8 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
             if (pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue))
             {
                 pNotify->FUN_141ac1580(CStringW(L"./Data/Resource/Image/ETC/customizeshop_unlock.png"),
-                                       FUN_1405c2690(CStringW(L"s_system_achieve_reward_beauty"), FUN_1401a9d70()->FUN_141811980(1, FUN_1407181d0(strValue))), 0);
-                FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_beauty_auth_notify"), FUN_1401a9d70()->FUN_141811980(1, FUN_1407181d0(strValue))), 0x1c);
+                                       FUN_1405c2690(CStringW(L"s_system_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue))), 0);
+                FUN_1412751b0(FUN_1405c2690(CStringW(L"s_system_achieve_reward_beauty_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue))), 0x1c);
             }
         }
     }
@@ -790,11 +789,6 @@ Unk_AchieveTab* CAchieveManager::GetTally()
 
 // @0x140939070
 NotifyObject::NotifyObject()
-{
-}
-
-// @0x140939260
-NotifyObject::~NotifyObject()
 {
 }
 
@@ -922,7 +916,7 @@ MS2Ptr<CAchieveUIData> CAchieveUIData::Find(int nId)
 // @0x14093b970
 CStringW FUN_14093b970(int nId)
 {
-    return FUN_1401a9d70()->FUN_141811980(0x18, nId);
+    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x18, nId);
 }
 
 // "[Ⅲ] title": the grade as a roman numeral (0..10) in front of the achievement name.
@@ -1102,7 +1096,7 @@ CStringW FUN_14093ce70(int nId, int nGrade)
     switch (pGrade->m_reward.m_nType - 1)
     {
     case 0:
-        return FormatStringId(0x770, FUN_1401a9d70()->FUN_141811980(1, nCode), nValue);
+        return FormatStringId(0x770, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nCode), nValue);
     case 1:
         return FUN_14052bd00(0x774, FUN_141b720b0(nCode, 0));
     case 2:
@@ -1117,7 +1111,7 @@ CStringW FUN_14093ce70(int nId, int nGrade)
     case 4:
     case 5:
     case 6:
-        return FUN_1405c2690(CStringW(L"s_achieve_reward_item_buy_auth"), FUN_1401a9d70()->FUN_141811980(1, nCode));
+        return FUN_1405c2690(CStringW(L"s_achieve_reward_item_buy_auth"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nCode));
     default:
         if (FUN_140166410()->FUN_14036d570(0xbb))
         {
@@ -1125,7 +1119,7 @@ CStringW FUN_14093ce70(int nId, int nGrade)
             if (nType == 8)
             {
                 CStringW strAll;
-                Unk_AmColorSet set = FUN_140281980()->FUN_140558ad0(nCode);
+                Unk_AmColorSet set = reinterpret_cast<Unk_AmIngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558ad0(nCode);
                 if (set.FUN_14056d460() != 0)
                 {
                     for (size_t i = 0; i < set.FUN_14056d540()->FUN_140570e10(); i++)
@@ -1137,7 +1131,7 @@ CStringW FUN_14093ce70(int nId, int nGrade)
                             {
                                 if (strAll.GetLength() != 0)
                                     strAll += "\n";
-                                strAll += FUN_1405c2690(CStringW(L"s_achieve_reward_coloring"), FUN_1401a9d70()->FUN_141811980(0x48, elem.FUN_14056d570()->m_nColorId));
+                                strAll += FUN_1405c2690(CStringW(L"s_achieve_reward_coloring"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x48, elem.FUN_14056d570()->m_nColorId));
                             }
                         }
                     }
@@ -1154,12 +1148,12 @@ CStringW FUN_14093ce70(int nId, int nGrade)
                         CStringA strGender(FUN_141658e60(pPC) == 0 ? "male" : "female");
                         CStringA strValue;
                         pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue);
-                        return FUN_1405c2690(CStringW(L"s_achieve_reward_beauty"), FUN_1401a9d70()->FUN_141811980(1, FUN_1407181d0(strValue)));
+                        return FUN_1405c2690(CStringW(L"s_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue)));
                     }
                 }
                 else if (nType == 12)
                 {
-                    return FUN_1405c2690(CStringW(L"s_achieve_reward_dynamicaction"), FUN_1401a9d70()->FUN_141811980(4, nCode));
+                    return FUN_1405c2690(CStringW(L"s_achieve_reward_dynamicaction"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nCode));
                 }
             }
         }
@@ -1171,7 +1165,7 @@ CStringW FUN_14093ce70(int nId, int nGrade)
         CStringA strGender(FUN_141658e60(pPC) == 0 ? "male" : "female");
         CStringA strValue;
         pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue);
-        return FUN_1405c2690(CStringW(L"s_achieve_reward_beauty"), FUN_1401a9d70()->FUN_141811980(1, FUN_1407181d0(strValue)));
+        return FUN_1405c2690(CStringW(L"s_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue)));
     }
 }
 
@@ -1245,7 +1239,7 @@ CStringW FUN_14093e190(int nId, const CStringW& strA, const CStringW& strB)
 // @0x14093e2b0
 int FUN_14093e2b0(int nCondType)
 {
-    if (FUN_14029f2b0(nCondType) == 0x11)
+    if (ConditionKindOfType(nCondType) == 0x11)
     {
         if (nCondType == 0x44)
             return 0;
@@ -1253,11 +1247,11 @@ int FUN_14093e2b0(int nCondType)
             return 0;
         return 1;
     }
-    else if (FUN_14029f2b0(nCondType) == 0xf)
+    else if (ConditionKindOfType(nCondType) == 0xf)
     {
         return 2;
     }
-    else if (FUN_14029f2b0(nCondType) == 0xe)
+    else if (ConditionKindOfType(nCondType) == 0xe)
     {
         return 0;
     }
@@ -1455,7 +1449,7 @@ int CAchieveCategory::IsOpen()
 {
     if (m_strEventFilter.GetLength() != 0)
     {
-        if (FUN_14015a050()->FUN_140cead80(m_strEventFilter))
+        if (FUN_14015a050()->IsEnabled(m_strEventFilter))
             return 1;
         return 0;
     }

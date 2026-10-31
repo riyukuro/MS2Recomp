@@ -48,6 +48,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/gameobject.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/client/ms2/filepreload_1.h"
 
 extern int DAT_1439ed00c;                       // option: remember the KF preload files (0 = read the XML each time)
 extern void* DAT_143b09498;                     // callback slot set by OnInit (the asset filter)
@@ -58,22 +61,19 @@ class Unk_XmlNode
 {
 public:
     Unk_XmlNode* FUN_140165cf0(const char* pcName);     // FirstChild(name)
-    Unk_XmlNode* FUN_140168650(const char* pcName);     // NextSibling(name)
+    Unk_XmlNode* NextSibling(const char* pcName);       // NextSibling(name)
     const char* FUN_14086f4b0(const char* pcName);      // Attribute(name)
     void FUN_140873ca0(const char* pcName, int nValue); // SetAttribute(name, int)
 };
 Unk_XmlNode* FUN_140165cf0(TiXmlDocument* pDoc, const char* pcName);    // FirstChild(name) of the document
 // The file system: loads XML documents and holds the pending gender-reload request (1 male, 2 female, 3 both, -1 none).
-class Unk_FileSys
+class Unk_FileSys : public CFileSystem
 {
 public:
-    int FUN_1403974b0(TiXmlDocument* pDoc, const char* pcPath, int nA, bool bB, bool bC);
     int FUN_14039a720();
-    void FUN_14039a740();
 };
 Unk_FileSys* FUN_140166420();
 CString FUN_140188f50(const char* pcText, int nCodePage);               // converts attribute text to a CString
-CFilePreload* FUN_140ab7a10();                                          // the preload singleton
 
 // ---- static initializers (.text$di, in this order) ----
 // @0x1400f8710
@@ -112,7 +112,6 @@ private:
 };
 MS2_CHECK_SIZE(Unk_ShList, 0x30);
 // GameObject view: 0x14123c460 returns the actor entity id by value (written through the hidden return pointer).
-class Unk_MasEntityView { public: egf::EntityID FUN_14123c460(); };
 
 // The game's NiStream (the engine's plus a 0x104 byte label buffer at +8; 0x5d0 bytes; ctor 0x141d44620, dtor 0x141d451c0).
 class Unk_KFStream
@@ -269,7 +268,7 @@ void MS2AnimationService::ReloadFemaleKF()
         FUN_1401d3700(kName);
         if (kName.Find(":female", 0) != -1)
         {
-            egf::EntityID kID = ((Unk_MasEntityView*)pPlayer)->FUN_14123c460();
+            egf::EntityID kID = ((GameObject*)pPlayer)->FUN_14123c460();
             NiActorManager* pActor = GetActorManager(kID);
             if (pActor != 0)
             {
@@ -312,7 +311,7 @@ void MS2AnimationService::ReloadMaleKF()
         FUN_1401d3700(kName);
         if (kName.Find(":male", 0) != -1)
         {
-            egf::EntityID kID = ((Unk_MasEntityView*)pPlayer)->FUN_14123c460();
+            egf::EntityID kID = ((GameObject*)pPlayer)->FUN_14123c460();
             NiActorManager* pActor = GetActorManager(kID);
             if (pActor != 0)
             {
@@ -420,12 +419,12 @@ int FUN_1414a90c0(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries)
             Unk_XmlNode* pAnim = pRoot->FUN_140165cf0((const char*)kAnim);
             if (pAnim != 0)
             {
-                for (Unk_XmlNode* pKey = pAnim->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
+                for (Unk_XmlNode* pKey = pAnim->FUN_140165cf0("key"); pKey != 0; pKey = pKey->NextSibling("key"))
                     ++nCount;
                 if (nCount > 0)
                     *ppEntries = EE_NEW Unk_PreloadEntry[nCount];
                 int nIndex = 0;
-                for (Unk_XmlNode* pKey = pAnim->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
+                for (Unk_XmlNode* pKey = pAnim->FUN_140165cf0("key"); pKey != 0; pKey = pKey->NextSibling("key"))
                 {
                     CString kText = FUN_140188f50(pKey->FUN_14086f4b0("text"), 0);
                     (*ppEntries)[nIndex].SetName(pKey->FUN_14086f4b0("text"));
@@ -435,7 +434,7 @@ int FUN_1414a90c0(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries)
                     {
                         pKey->FUN_140873ca0("preload", 1);
                         if (kText.Find("effect_", 0) == 0)
-                            FUN_140ab7a10()->FUN_1412107f0(kText.Right(kText.GetLength() - 7), 5);
+                            TSingleton<CFilePreload>::GetInstance()->FUN_1412107f0(kText.Right(kText.GetLength() - 7), 5);
                     }
                     ++nIndex;
                 }

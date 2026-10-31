@@ -12,22 +12,18 @@
 #include "ms2/placeholder/asslot.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-class Unk_GameCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_GameCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 CStringW GetStringCommonByKey(const CStringW& str);            // string table lookup by key
 void FUN_1412751f0(const CStringW& str, int a, int b);  // show a notice
 
 // The inventory singleton: the item of a uid.
-class Unk_DsInventory { public: MS2Ptr<CItem> FUN_140a5d680(__int64 nUid); };
-extern Unk_DsInventory DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);

@@ -16,13 +16,13 @@
 #include "ms2/placeholder/cashshopref.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"
 
 class UICashShopDialog : public UIObject
 {
 };
 
 class Unk_CashShopUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-Unk_CashShopUIMgr* FUN_1403ed2b0();
 void FUN_141035920(UICashShopDialog* pDialog, int nArg);
 void* FUN_140aadf80();                                              // the screen
 void FUN_140ad4c30(void* pScreen, RECT* pRect);                     // the screen rect
@@ -153,9 +153,9 @@ void CCashChargeDialog::OnWindowClosing(BOOL bIsChildWindow, BOOL* pbCancel)
 // @0x140b04f80
 UICashShopDialog* FUN_140b04f80(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_CashShopUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_CashShopUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<UICashShopDialog*>((UIObject*)p);
     }

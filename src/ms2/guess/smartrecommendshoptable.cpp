@@ -25,10 +25,11 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-class Unk_RsLoader { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_RsLoader : public CFileSystem { };
 Unk_RsLoader* FUN_140166420();
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);

@@ -19,6 +19,8 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/client/ms2/camera.h"
 
 // ---- the unit's header statics (three headers each define "skill", "stun" and a handle) ----
 class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
@@ -39,7 +41,7 @@ public:
     Unk_140165cf0* FUN_140165cf0(const char*);              // first child element (also takes a document)
     Unk_140165cf0* FUN_140168650(const char*);              // next sibling element
 };
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
@@ -58,7 +60,6 @@ extern Unk_SkipPoint DAT_143b01a60;
 
 // The view-distance probe (the host, its local actor).
 class Unk_SkipHost { public: };
-Unk_SkipHost* FUN_1409478c0();
 int FUN_140a18070(Unk_SkipHost*);
 class Unk_SkipActor
 {
@@ -130,9 +131,9 @@ int EffectSkipMgr::IsOutOfView(Unk_SkipCheck* pCheck) const
         return 0;
     if (pCheck->m_n14 != 0 && pCheck->m_nRow == 1)
         return 0;
-    if (FUN_140a18070(FUN_1409478c0()) == 0)
+    if (FUN_140a18070(reinterpret_cast<Unk_SkipHost*>(TSingleton<CameraMgr>::GetInstance())) == 0)
         return 0;
-    Unk_SkipActor* pActor = FUN_140a38d60(FUN_1409478c0());
+    Unk_SkipActor* pActor = FUN_140a38d60(reinterpret_cast<Unk_SkipHost*>(TSingleton<CameraMgr>::GetInstance()));
     if (pActor == 0)
         return 0;
     Unk_SkipActorPos pos;

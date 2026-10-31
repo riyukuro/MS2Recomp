@@ -11,6 +11,7 @@
 #include <NiFixedString.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // Post-processing service (singleton 0x1409a8b20): enable step by id.
 class Unk_PostProcessSvc
@@ -32,7 +33,6 @@ class Unk_RendererWrap
 public:
     Unk_RenderTarget* FUN_1409a8ac0();
 };
-Unk_RendererWrap* FUN_1409a8b10();
 
 int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);     // TinyXML float attribute
 void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);         // validated global shader constant
@@ -93,8 +93,8 @@ void GaussianBlurEffect::vfunc_7(int nState, float fAlpha)
         break;
     }
     float fOffset = (m_fOffsetMax - m_fOffsetMin) * fT + m_fOffsetMin;
-    unsigned int nWidth = FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8ab0();
-    unsigned int nHeight = FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8aa0();
+    unsigned int nWidth = reinterpret_cast<Unk_RendererWrap*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8ab0();
+    unsigned int nHeight = reinterpret_cast<Unk_RendererWrap*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8aa0();
     if (nWidth == 0 || nHeight == 0)
         return;
     if (nWidth >= nHeight)

@@ -32,8 +32,8 @@ bool FUN_141855250(const Unk_EffectDummyRecord& a, const Unk_EffectDummyRecord& 
 // @0x1418552e0
 void FUN_1418552e0(Unk_EffectDummyRecord& a, const Unk_EffectDummyRecord& b)
 {
-    a.m_effect.operator=(b.m_effect);
-    a.m_recordName = b.m_effect.GetParentNode();
+    a.m_effect.operator=(reinterpret_cast<const CEffectDummy&>(b));
+    a.m_recordName = reinterpret_cast<const CEffectDummy&>(b).GetParentNode();
 }
 
 // @0x141855330

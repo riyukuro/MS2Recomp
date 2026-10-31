@@ -11,22 +11,18 @@
 #include <errno.h>
 #include <string.h>
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/fittingdollpc.h"
 
 // The +0xd88 target of a PC (CPtred-derived; see clonepc.cpp).
 class Unk_PCD88 : public CPtred {};
 
 // The PC methods used here (their units define the real classes).
-class Unk_PC
-{
-public:
-    MS2Ptr<Unk_PCD88> FUN_14165c2d0();          // 0x14165c2d0 copies the +0xd88 pointer out
-};
 
 // The entity manager (singleton FUN_1403ed2d0): finds a PC by object id.
 class Unk_EntityMgr
 {
 public:
-    Unk_PC* FUN_141bd1290(int nId);             // 0x141bd1290
+    PC* FUN_141bd1290(int nId);                 // 0x141bd1290
 };
 Unk_EntityMgr* FUN_1403ed2d0();                 // 0x1403ed2d0
 void FUN_140a34f00(Unk_PCD88* pPCD88);          // 0x140a34f00
@@ -105,7 +101,7 @@ void CHeadEmotionAction::vfunc_6(double f)
 {
     if (vfunc_4())
     {
-        Unk_PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(m_n18);
+        PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(m_n18);
         if (pPC != 0)
             FUN_140a34f00(pPC->FUN_14165c2d0().operator->());
     }

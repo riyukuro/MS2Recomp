@@ -63,7 +63,7 @@ public:
     int FUN_1418e3f50(const CStringW& strName);                 // send the create request
     void FUN_1418e4250(CItemData* pData, int* pnCategory, int* pnTab);
     int FUN_1418e4380(int nTab, int nCategory, MS2Ptr<CItemData> spData);
-    bool FUN_1418e4600(int nTab, int nCategory, int nItemId);
+    int FUN_1418e4600(int nTab, int nCategory, int nItemId);
     int FUN_1418e46c0(int nTab);                                // tab -> equip slot kind
     void FUN_1418e4750();                                       // reset the loaded flags and the item map
     void FUN_1418e47e0(int nTab, int nCategory);                // collect the list rows

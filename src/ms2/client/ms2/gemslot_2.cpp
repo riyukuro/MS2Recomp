@@ -21,6 +21,8 @@
 
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/itemloadinfo.h"
+#include "ms2/client/ms2/effectservice.h"
 
 enum Unk_GemSlot { Unk_GemSlot_0 };
 static ATL::CAtlMap<Unk_GemSlot, unsigned> s_mapGemSlots;                                      // 0x143ad5fb0
@@ -43,15 +45,6 @@ public:
     void FUN_1411a6060(int nHandle);                    // stop it
 };
 Unk_GmWorld* FUN_1403ed2d0();
-Unk_GmWorld* FUN_1403ed280();                           // the effect / sound service
-
-class Unk_GemSkins
-{
-public:
-    void FUN_140d329e0(unsigned nId, MS2Ptr<CItem> spItem);                  // register a skin gem item
-    void FUN_140d32c20(unsigned nId, MS2Ptr<CItem> spItem, int nFlag);       // unregister it
-};
-Unk_GemSkins* FUN_1411f91b0();
 
 class Unk_GemBinding
 {
@@ -348,7 +341,7 @@ bool PCGemEquip::FUN_141271090(MS2Ptr<CItem> spItem, const CString& strEffect)
     kQuery.m_strName = strEffect;
     kQuery.m_nObject = 0;
     kQuery.SetActor(m_pOwner->FUN_14123c580());
-    int nHandle = FUN_1403ed280()->FUN_1411a49c0(kQuery);
+    int nHandle = reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(kQuery);
     if (nHandle == 0)
         return false;
     m_mapEffect[spItem->FUN_140526a50()] = nHandle;
@@ -362,7 +355,7 @@ void PCGemEquip::FUN_1412711e0(MS2Ptr<CItem> spItem)
     if (!m_mapEffect.Lookup(spItem->FUN_140526a50(), nHandle))
         return;
     if (nHandle != 0)
-        FUN_1403ed280()->FUN_1411a6060(nHandle);
+        reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(nHandle);
     m_mapEffect.RemoveKey(spItem->FUN_140526a50());
 }
 
@@ -436,7 +429,7 @@ void PCGemEquip::FUN_141271780(int nGemType, MS2Ptr<CItem> spItem)
     unsigned nId = spItem->FUN_140526b10();
     if (nId < 10000)
         return;
-    FUN_1411f91b0()->FUN_140d329e0(spItem->FUN_140526b10(), spItem);
+    TSingleton<CItemLoader>::GetInstance()->Request(spItem->FUN_140526b10(), spItem);
 }
 
 // @0x141271870
@@ -447,7 +440,7 @@ void PCGemEquip::FUN_141271870(int nGemType, MS2Ptr<CItem> spItem)
     unsigned nId = spItem->FUN_140526b10();
     if (nId < 10000)
         return;
-    FUN_1411f91b0()->FUN_140d32c20(spItem->FUN_140526b10(), spItem, 1);
+    TSingleton<CItemLoader>::GetInstance()->Request(spItem->FUN_140526b10(), spItem, 1);
 }
 
 // @0x141271960
@@ -489,7 +482,7 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
     {
         MS2Ptr<CItemData> spData(spItem->FUN_140527840());
         if (spData.get() != 0)
-            FUN_1403ed280()->FUN_1411a5110("ms2sound/sound/item", spData->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
+            reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", spData->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
     }
     return true;
 }
@@ -516,7 +509,7 @@ bool FUN_141271f90(MS2Ptr<CItem> spItem)
     {
         MS2Ptr<CItemData> spData(spItem->FUN_140527840());
         if (spData.get() != 0)
-            FUN_1403ed280()->FUN_1411a5110("ms2sound/sound/item", spData->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
+            reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", spData->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
     }
     return true;
 }

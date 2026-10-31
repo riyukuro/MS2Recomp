@@ -27,6 +27,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // ---- out-of-unit callees ----
 
@@ -48,15 +50,14 @@ public:
     MS2Ptr<Unk_PickTarget> FUN_1411dc950(const CString& strPart);   // the model of one part
 };
 
-struct Unk_MorphWorld { void* FUN_141bd0cc0(); };               // the local player
-Unk_MorphWorld* FUN_1403ed2d0();
+               // the local player
+WorldService* FUN_1403ed2d0();
 
 struct Unk_MorphConfigFloat { float FUN_1402bac70(); char m_pad[0x58]; };
 struct Unk_ClientConfig { char m_pad[0x2d90]; Unk_MorphConfigFloat m_2d90; };
 Unk_ClientConfig* FUN_1401d3200();
 
 struct Unk_MorphApp { char m_pad[8]; char m_manager[1]; float FUN_141473230(); };   // the app framework
-Unk_MorphApp* FUN_14086d260();
 efd::ServiceManager* FUN_140af8310(char* pManager);
 
 float FUN_140a17940(float fValue, float fMin, float fMax);      // clamp
@@ -263,7 +264,7 @@ float CItemMorphController::vfunc_40()
 // @0x1414175e0
 int CItemMorphController::vfunc_41()
 {
-    efd::ServiceManager* pServiceManager = FUN_140af8310(FUN_14086d260()->m_manager);
+    efd::ServiceManager* pServiceManager = FUN_140af8310(reinterpret_cast<Unk_MorphApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager);
     ecrInput::InputService* pInputService = pServiceManager->GetSystemServiceAs<ecrInput::InputService>();
     NiInputMouse* pMouse = pInputService->GetInputSystem()->OpenMouse();
     int nWheel = 0;
@@ -283,7 +284,7 @@ void CItemMorphController::vfunc_42(int nIndex, float fValue, NiInterpController
         m_afValue[nIndex] = FUN_140a17940(fValue, pRange->m_fMin, pRange->m_fMax);
         float fNow = vfunc_22(nIndex);
         for (unsigned short us = 0; us < pCtrl->GetInterpolatorCount(); us++)
-            pCtrl->UpdateValue(FUN_14086d260()->FUN_141473230(), fNow, us);
+            pCtrl->UpdateValue(reinterpret_cast<Unk_MorphApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473230(), fNow, us);
         FUN_141422660(m_spEquipItem, nIndex, fNow);
         if (m_pListener != 0)
             reinterpret_cast<Unk_MorphListener*>(m_pListener)->vfunc_2(this, fNow, nIndex);
@@ -356,13 +357,13 @@ void CItemMorphController::ApplyMorph()
         if (pCtrl0 != 0)
         {
             for (unsigned short us = 0; us < pCtrl0->GetInterpolatorCount(); us++)
-                pCtrl0->UpdateValue(FUN_14086d260()->FUN_141473230(), vfunc_22(0), us);
+                pCtrl0->UpdateValue(reinterpret_cast<Unk_MorphApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473230(), vfunc_22(0), us);
         }
         NiInterpController* pCtrl1 = SelectMorphController(1);
         if (pCtrl1 != 0)
         {
             for (unsigned short us = 0; us < pCtrl1->GetInterpolatorCount(); us++)
-                pCtrl1->UpdateValue(FUN_14086d260()->FUN_141473230(), vfunc_22(1), us);
+                pCtrl1->UpdateValue(reinterpret_cast<Unk_MorphApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473230(), vfunc_22(1), us);
         }
     }
     else
@@ -371,7 +372,7 @@ void CItemMorphController::ApplyMorph()
         if (pCtrl != 0)
         {
             for (unsigned short us = 0; us < pCtrl->GetInterpolatorCount(); us++)
-                pCtrl->UpdateValue(FUN_14086d260()->FUN_141473230(), vfunc_21(), us);
+                pCtrl->UpdateValue(reinterpret_cast<Unk_MorphApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473230(), vfunc_21(), us);
         }
     }
 }

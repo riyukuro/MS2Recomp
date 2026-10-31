@@ -110,6 +110,19 @@
 #include "ms2/placeholder/sidepopuptalkparam.h"
 #include "ms2/client/ms2/uirewardnotify.h"
 #include "ms2/commonfiles/timeutil.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/client/ms2/guildmanager.h"
+#include "ms2/client/ms2/statemanager.h"
+#include "ms2/commonfiles/questdatatable.h"
+#include "ms2/client/ms2/uisidepopuptalk.h"
+#include "ms2/placeholder/uitalkmanager.h"
+#include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cgameoption.h"
+#include "ms2/commonfiles/questmasktable.h"
 
 // These instances belong to earlier objects, not the look-alike destructors
 // for other quest pointer types in this object's COMDAT tail.
@@ -128,10 +141,9 @@ static CString s_progressSound = "quest_progress";
 CAchieveManager* FUN_1406c7600();
 int FUN_140936640(void*, int, int);
 // The npc talk manager.
-class Unk_QmTalkManager {
+class Unk_QmTalkManager : public UITalkManager {
 public:
     int FUN_141b213f0(class Unk_QmTalkScriptPtr script, int npcId, int mode, int n);   // open the talk
-    void FUN_141b217b0();
 };
 Unk_QmTalkManager* FUN_140967100();
 void FUN_141b217e0(void*, int);
@@ -176,7 +188,6 @@ int FUN_14066af60(void*, int, unsigned);
 CQuestManager* FUN_140764020();
 void* FUN_140764010();
 unsigned FUN_14035b590(void*, int);
-CStateService* FUN_140aa6d30();
 unsigned FUN_141472bc0();
 unsigned FUN_140869420();
 int FUN_14074bc90(int questId);
@@ -198,18 +209,13 @@ private:
     void* m_0;
     ATL::CAtlArray<unsigned>* m_p;
 };
-class Unk_QgQuestTable {
+class Unk_QgQuestTable : public QuestDataTable {
 public:
-    std::vector<unsigned>& FUN_14074e0d0();   // returns this+0x360
-    void FUN_14074d080(int mapId, ATL::CAtlArray<unsigned>& out);
-    void FUN_14074d410(ATL::CAtlArray<unsigned>& out);   // quests that open a talk on entering a map
-    void FUN_14074cfd0(int group, ATL::CAtlArray<unsigned>& out);
     Unk_QmQuestIdList FUN_14074df70(int itemId, int kind);   // quests started (0) / advanced (1) by an item
     int FUN_14074e510(unsigned questId);
     void FUN_14074d360(int id, ATL::CAtlArray<unsigned>& out);
     const std::vector<unsigned>* FUN_14074e0f0(int npcId);   // quests of an npc (null when none)
 };
-Unk_QgQuestTable* FUN_1407476c0();
 class Unk_QuestDungeonRecord {
 public:
     int FUN_140b22890(int);
@@ -225,19 +231,13 @@ int FUN_140d9f880(void*, int);
 void* FUN_140c70240();
 int FUN_140b71580(void*);
 class CGuildManager;
-CGuildManager* FUN_1403ed290();
 int FUN_1413b6160(CGuildManager*);
 extern __int64 DAT_143ab2828;
 class CMsgBoxData;
 unsigned FUN_141a02e90(const CMsgBoxData*, int, unsigned);
 int FUN_141a02e50(const CMsgBoxData*, int, int);
 
-class Unk_QuestNotices {
-public:
-    void FUN_140da4e40(CStringW, Delegate<void(NotifyObject*)>);
-    void FUN_140da4eb0(CStringW, Delegate<void(NotifyObject*)>);
-};
-Unk_QuestNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 class Unk_QuestPacketHandlers {
 public:
     void FUN_140da5180(int, Delegate<void(CInPacket&)>);
@@ -289,9 +289,6 @@ void FUN_1412751b0(const CStringW& text, int type);   // system chat line
 int FUN_1418fd280();
 void FUN_1411e1b80(Unk_PCEquipSet* equipSet, ATL::CAtlList<MS2Ptr<CEquipItem>>& out);   // the worn items
 int FUN_14074b070(CQuestData* data);
-CFieldMetaTable* FUN_140700390();
-CLearningQuestTable* FUN_140ea4060();
-CChapterBookTable* FUN_140e0a9f0();
 bool FUN_140764040(CQuestData*);
 bool FUN_140764080(CQuestData*);
 bool FUN_1407640c0(CQuestData*);
@@ -312,10 +309,8 @@ class Unk_QmClientConfig { public: void* m_0; CContentShutdown m_shutdown; };
 Unk_QmClientConfig* FUN_14025e7b0();
 void FUN_141275260(int stringId, int, int);
 class Unk_QmNpcTable { public: int FUN_140764e40(int group, unsigned npcId); };
-Unk_QmNpcTable* FUN_14109a710();
 class Unk_QmQuestFilter { public: int FUN_141261b90(unsigned questId); };
 class Unk_QmOptions { public: Unk_QmQuestFilter* FUN_140c9b8b0(); };
-Unk_QmOptions* FUN_1409a8b10();
 CStringW FUN_140763550(unsigned questId, int state);     // one tooltip line of a quest
 CStringW FUN_14052bd00(int stringId, const CStringW& arg);
 PCBase* FUN_140aac420(Unk_WsV118* user);              // the user's object (CComPtrBase::operator T*)
@@ -328,13 +323,7 @@ int FUN_14074b210(CQuestData* data);
 int FUN_1407474d0(const ATL::CAtlArray<int>* values, const int* value);   // index of value, or -1
 void FUN_140d73bc0(int id, int a, void* b, CStringW text);
 void FUN_140d73aa0(CStringW text, int type, void* data, CStringW tag);
-class Unk_QmStrings {
-public:
-    CStringW FUN_141811980(int table, int index);
-};
-Unk_QmStrings* FUN_1401a9d70();
 class Unk_IngTable;
-Unk_IngTable* FUN_140281980();
 unsigned FUN_1405575b0(Unk_IngTable* table, int itemId);   // the item's name id
 void FUN_141b1feb0(void*);
 class Unk_QmTalkScript;
@@ -352,7 +341,7 @@ private:
 Unk_QmTalkScriptPtr FUN_1408564b0(int questId, int n);
 int FUN_14074b0e0(CQuestData* data, int value, int n);
 int IsConditionTypeCounted(int nType);
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 extern __int64 DAT_143ab2898;
 UIQuestEventDispatcher* FUN_140bfc4b0();
 int FUN_141276180(const CString& sound, const CString& arg);
@@ -376,8 +365,7 @@ class Unk_QmRoomTable {
 public:
     Unk_QmRoomPtr FUN_1403206b0(int roomId);
 };
-Unk_QmRoomTable* FUN_14031c2a0();
-int FUN_1402178b0(int roomKind);
+int Unk_ClubBuffTypeOf(int roomKind);
 class UIPopupNpcTalkDialog : public UIDialog {
 public:
     void FUN_140e771e0(int questId);
@@ -389,9 +377,9 @@ UIQuestGuideDialog* FUN_140e888d0(int uiType);                          // GetDi
 UIQuestDialog* FUN_14131f1e0(int uiType);                               // GetDialog<UIQuestDialog>
 UIWorldMapDialog* FUN_140961730(int uiType);                            // Unk_GetUI<UIWorldMapDialog>
 UIRewardNotify* FUN_140938cd0(int uiType);                              // GetDialog<UIRewardNotify>
-class Unk_QmSidePopupTalk { public: void FUN_140e879a0(MS2Ptr<SidePopupTalkParam> param); };
+class Unk_QmSidePopupTalk : public UISidePopupTalk { };
 Unk_QmSidePopupTalk* FUN_1413868b0(int uiType);
-CString FUN_14021a6b0(int alliance);                                    // the alliance's string key
+CString Name_14021a6b0(int alliance);                                    // the alliance's string key
 CStringW FUN_14016a730(const char* text, int codePage);
 extern int DAT_143abdf50;
 // The quest portal effect (?\questmanager.cpp case 0x12): NiTransform and the effect request.
@@ -419,7 +407,6 @@ struct Unk_QmEffectRequest {                                            // Unk_E
 };
 MS2_CHECK_SIZE(Unk_QmEffectRequest, 0x70);
 class Unk_QmEffectService { public: unsigned FUN_1411a49c0(Unk_QmEffectRequest& request); };
-Unk_QmEffectService* FUN_1403ed280();
 class Unk_QmEffectCfg {
 public:
     char m_pad_00[0x5a0];
@@ -433,12 +420,11 @@ public:
     MS2Ptr<UIObject> FUN_141adcea0(int id);
     void FUN_141adc5d0(int uiType);             // close the dialog if open
 };
-Unk_QmUIManager* FUN_1403ed2b0();
 // @0x1416d4e40 (UIPopupNpcTalkDialog instance)
 template <class T> T* Unk_QmFindDialog(int id)
 {
-    if (FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> ui = FUN_1403ed2b0()->FUN_141adcea0(id);
+    if (reinterpret_cast<Unk_QmUIManager*>(TSingleton<CUIService>::GetInstance())) {
+        MS2Ptr<UIObject> ui = reinterpret_cast<Unk_QmUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(id);
         if (ui.get())
             return dynamic_cast<T*>((UIObject*)ui);
     }
@@ -463,16 +449,16 @@ CQuestManager::CQuestManager()
 {
     m_levelDirty = 0;
     FUN_140a6a840()->FUN_1419cae20(this);
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca730));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChangeMyJob", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca760));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyClearAchieve", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca780));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca7a0));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca7c0));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChangeLevel", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChangeJob", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChangeEquipment", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChangeTitle", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChangePcRidee", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
+    FUN_140939a10()->RegisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca730));
+    FUN_140939a10()->RegisterNotify(L"NotifyChangeMyJob", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca760));
+    FUN_140939a10()->RegisterNotify(L"NotifyClearAchieve", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca780));
+    FUN_140939a10()->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca7a0));
+    FUN_140939a10()->RegisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca7c0));
+    FUN_140939a10()->RegisterNotify(L"NotifyChangeLevel", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
+    FUN_140939a10()->RegisterNotify(L"NotifyChangeJob", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
+    FUN_140939a10()->RegisterNotify(L"NotifyChangeEquipment", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
+    FUN_140939a10()->RegisterNotify(L"NotifyChangeTitle", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
+    FUN_140939a10()->RegisterNotify(L"NotifyChangePcRidee", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
     FUN_140bccd50()->FUN_140da5180(0x10b, Delegate<void(CInPacket&)>(this, &CQuestManager::FUN_1416ca830));
     m_group = 0;
     m_refreshCount = 0;
@@ -495,16 +481,16 @@ CQuestManager::~CQuestManager()
     m_quests110.RemoveAll();
     m_quests140.RemoveAll();
     FUN_140a6a840()->FUN_1419caeb0(this);
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca730));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyChangeMyJob", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca760));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyClearAchieve", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca780));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca7a0));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca7c0));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyChangeLevel", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyChangeJob", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyChangeEquipment", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyChangeTitle", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyChangePcRidee", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
+    FUN_140939a10()->UnregisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca730));
+    FUN_140939a10()->UnregisterNotify(L"NotifyChangeMyJob", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca760));
+    FUN_140939a10()->UnregisterNotify(L"NotifyClearAchieve", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca780));
+    FUN_140939a10()->UnregisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca7a0));
+    FUN_140939a10()->UnregisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca7c0));
+    FUN_140939a10()->UnregisterNotify(L"NotifyChangeLevel", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
+    FUN_140939a10()->UnregisterNotify(L"NotifyChangeJob", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
+    FUN_140939a10()->UnregisterNotify(L"NotifyChangeEquipment", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
+    FUN_140939a10()->UnregisterNotify(L"NotifyChangeTitle", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
+    FUN_140939a10()->UnregisterNotify(L"NotifyChangePcRidee", Delegate<void(NotifyObject*)>(this, &CQuestManager::FUN_1416ca850));
     FUN_140bccd50()->FUN_140da51e0(0x10b, Delegate<void(CInPacket&)>(this, &CQuestManager::FUN_1416ca830));
 }
 
@@ -573,21 +559,21 @@ MS2_REPLACE_METHOD_VIA(0x1416c99e0, CQuestManager, CQuestManagerCommon, vfunc_o1
 // @0x1416c9a20
 int CQuestManager::vfunc_o10_9()
 {
-    return FUN_1413b6160(FUN_1403ed290());
+    return FUN_1413b6160(TSingleton<CGuildManager>::GetInstance());
 }
 MS2_REPLACE_METHOD_VIA(0x1416c9a20, CQuestManager, CQuestManagerCommon, vfunc_o10_9, 27, 0x11B98314);
 
 // @0x1416c9a50
 int CQuestManager::vfunc_o10_10()
 {
-    return static_cast<CGuildInfo&>(*FUN_1403ed290()).FUN_1404d1a80();
+    return static_cast<CGuildInfo&>(*TSingleton<CGuildManager>::GetInstance()).FUN_1404d1a80();
 }
 MS2_REPLACE_METHOD_VIA(0x1416c9a50, CQuestManager, CQuestManagerCommon, vfunc_o10_10, 31, 0xEF9C0B93);
 
 // @0x1416c9a80
 int CQuestManager::vfunc_o10_11()
 {
-    return static_cast<CGuildInfo&>(*FUN_1403ed290()).FUN_1404d2990(6);
+    return static_cast<CGuildInfo&>(*TSingleton<CGuildManager>::GetInstance()).FUN_1404d2990(6);
 }
 MS2_REPLACE_METHOD_VIA(0x1416c9a80, CQuestManager, CQuestManagerCommon, vfunc_o10_11, 36, 0xA08F10BC);
 
@@ -596,7 +582,7 @@ __int64 CQuestManager::vfunc_o10_12()
 {
     PCBase* player = static_cast<PCBase*>(FUN_141bd0cc0(FUN_1403ed2d0()));
     if (player == 0) return 0;
-    MS2Ptr<CGuildMember> member = FUN_1403ed290()->FUN_1404cf9f0(player->vfunc_77());
+    MS2Ptr<CGuildMember> member = TSingleton<CGuildManager>::GetInstance()->FUN_1404cf9f0(player->vfunc_77());
     if (member == 0) return 0;
     return member->fc8;
 }
@@ -678,7 +664,7 @@ int CQuestManager::vfunc_1(int questId, int flag)
             int field = data->m_fields[0];
             if (field != mapId) {
                 unsigned parent = 0;
-                if (FUN_140700390()->FUN_1406fc110(mapId, &parent) == 0) return 0;
+                if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(mapId, &parent) == 0) return 0;
                 if (field != parent) return 0;
             }
         } else if (FUN_14074b050(data.operator->()) == 5) {
@@ -1251,7 +1237,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         request.m_strName = FUN_1401d31f0()->m_portalEffect;
         request.m_nKind = 0;
         request.m_pXform = &xform;
-        FUN_1403ed280()->FUN_1411a49c0(request);
+        reinterpret_cast<Unk_QmEffectService*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(request);
         FUN_14138bf00(FUN_1409331e0(), 0x1a, 0, 0);
         m_field178 = 1;
     } else if (mode == 0x1e) {
@@ -1273,7 +1259,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         refresh = 1;
     } else if (mode == 0x22 || mode == 0x23) {
         int alliance = static_cast<unsigned short>(packet.ReadInt16());
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4f50);
+        reinterpret_cast<Unk_QmUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f50);
         Unk_QmSidePopupTalk* popup = FUN_1413868b0(0x4f57);
         if (popup) {
             CStringW format(mode == 0x22 ? L"s_quest_alliance_accept_all_{0}" : L"s_quest_alliance_complete_all_{0}");
@@ -1281,7 +1267,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
             param->m_nKind = 0;
             param->m_strIcon = FUN_1401d31f0()->m_allianceIcons[alliance];
             param->m_nNpcId = 3000;
-            param->m_strText = GetStringCommonByKey(StringFormat(format, FUN_14016a730(FUN_14021a6b0(alliance), 0)));
+            param->m_strText = GetStringCommonByKey(StringFormat(format, FUN_14016a730(Name_14021a6b0(alliance), 0)));
             popup->FUN_140e879a0(param);
         }
     } else if (mode == 0x26) {
@@ -1312,9 +1298,9 @@ void CQuestManager::FUN_1416cde50(int error)
     } else if (error == 5) {
         FUN_140d73aa0(GetStringCommonByKey(L"s_quest_error_fail_complete_by_dead"), 0, 0, CStringW(L""));
     } else if (error == 7) {
-        unsigned name = FUN_1405575b0(FUN_140281980(), 0xd1);
+        unsigned name = FUN_1405575b0(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), 0xd1);
         FUN_1412751f0(FUN_1405c2690(CStringW(L"s_alliance_quest_completion_ticket_error"),
-                                    FUN_1401a9d70()->FUN_141811980(1, name)),
+                                    TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, name)),
                       1, 1);
     }
     FUN_141b1feb0(FUN_140967100());
@@ -1345,7 +1331,7 @@ int CQuestManager::FUN_1416ce260(int group)
     if (FUN_1416ce340(group) != 0) return 0;
     if (FUN_1416ce3d0(group) != 0) return 0;
     ATL::CAtlArray<unsigned> ids;
-    FUN_1407476c0()->FUN_14074cfd0(group, ids);
+    reinterpret_cast<Unk_QgQuestTable*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cfd0(group, ids);
     if (ids.GetCount() == 0) return 0;
     return vfunc_1(ids[0], 0);
 }
@@ -1364,7 +1350,7 @@ MS2_REPLACE_METHOD(0x1416ce340, CQuestManager, FUN_1416ce340, 128, 0xCDCFD910);
 int CQuestManager::FUN_1416ce3d0(int group)
 {
     ATL::CAtlArray<unsigned> ids;
-    FUN_1407476c0()->FUN_14074cfd0(group, ids);
+    reinterpret_cast<Unk_QgQuestTable*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cfd0(group, ids);
     for (size_t i = 0; i < ids.GetCount(); i++) {
         MS2Ptr<CQuestData> data = FUN_14074bc40(ids[i]);
         if (!data) continue;
@@ -1422,14 +1408,14 @@ void CQuestManager::FUN_1416ce860(MS2Ptr<CItem> item, ATL::CAtlArray<Unk_QuestIt
     if (player == 0) return;
     if (item.IsNull()) return;
     for (size_t kind = 0; kind < 2; kind++) {
-        Unk_QmQuestIdList list = FUN_1407476c0()->FUN_14074df70(item->FUN_1405276c0(), static_cast<int>(kind));
+        Unk_QmQuestIdList list = reinterpret_cast<Unk_QgQuestTable*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074df70(item->FUN_1405276c0(), static_cast<int>(kind));
         if (list.IsNull()) continue;
         for (size_t i = 0; i < list->GetCount(); i++) {
             unsigned questId = list->GetAt(i);
             MS2Ptr<CQuestData> data = FUN_14074bc40(questId);
             if (!data) continue;
             if (data->m_30 != 0) continue;
-            if (FUN_1407476c0()->FUN_14074e510(questId) != 0) continue;
+            if (reinterpret_cast<Unk_QgQuestTable*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074e510(questId) != 0) continue;
             if (FUN_14074b210(data.operator->()) == 0) continue;
             if (data->m_require.m_job.GetCount() != 0) {
                 int job = FUN_141654700(player);
@@ -1510,7 +1496,7 @@ void CQuestManager::FUN_1416cef90(int silent)
             switch (cond->m_nType) {
             case 3:
             case 4:
-                have = DAT_143ab2a90.FUN_140a5f180(code, 0);
+                have = g_143ab2a90.FUN_140a5f180(code, 0);
                 break;
             case 0x49:
                 have = DAT_143ab2898;
@@ -1605,17 +1591,17 @@ void CQuestManager::FUN_1416cf980(int questId, int leave)
     if (quest->HasMultiUserRoom(FUN_1403ed2d0()->FUN_141bd3060()) == 0) return;
     MS2Ptr<CQuestData> data = quest->GetData();
     if (!data) return;
-    Unk_QmRoomPtr room = FUN_14031c2a0()->FUN_1403206b0(data->m_30c.m_roomId);
+    Unk_QmRoomPtr room = reinterpret_cast<Unk_QmRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(data->m_30c.m_roomId);
     if (!room) return;
     if (leave != 0) {
         COutPacket packet(static_cast<int>(SendOp::Party), 0);
         packet.WriteUInt8(0x22);
-        packet.WriteUInt8(FUN_1402178b0(room->m_1c));
+        packet.WriteUInt8(Unk_ClubBuffTypeOf(room->m_1c));
         FUN_140710590(packet);
     } else {
         COutPacket packet(static_cast<int>(SendOp::Party), 0);
         packet.WriteUInt8(0x20);
-        packet.WriteUInt8(FUN_1402178b0(room->m_1c));
+        packet.WriteUInt8(Unk_ClubBuffTypeOf(room->m_1c));
         packet.WriteInt32(1);
         packet.WriteInt32(data->m_30c.m_roomId);
         packet.WriteBool(false);
@@ -1746,7 +1732,7 @@ MS2_REPLACE_METHOD(0x1416d0260, CQuestManager, FUN_1416d0260, 701, 0x0FE8655A);
 int CQuestManager::FUN_1416d0530()
 {
     ATL::CAtlArray<CLearningQuestTable::DataPtr> rows;
-    FUN_140ea4060()->GetAll(rows);
+    TSingleton<CLearningQuestTable>::GetInstance()->GetAll(rows);
     int count = 0;
     for (size_t i = 0; i < rows.GetCount(); i++) {
         if (FUN_1416d0260(rows[i], 0) != 0) count++;
@@ -1810,7 +1796,7 @@ MS2_REPLACE_METHOD(0x1416d07c0, CQuestManager, FUN_1416d07c0, 50, 0x10DEA3FA);
 // @0x1416d0920
 void CQuestManager::FUN_1416d0920(ATL::CAtlArray<unsigned>& out)
 {
-    const std::vector<unsigned>& ids = FUN_1407476c0()->FUN_14074e0d0();
+    const std::vector<unsigned>& ids = reinterpret_cast<Unk_QgQuestTable*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074e0d0();
     for (unsigned id : ids) {
         if (vfunc_1(id, 0) == 0) continue;
         out.Add(id);
@@ -1822,7 +1808,7 @@ MS2_REPLACE_METHOD(0x1416d0920, CQuestManager, FUN_1416d0920, 161, 0xFE6413A2);
 int CQuestManager::FUN_1416d0800(int id)
 {
     ATL::CAtlArray<unsigned> ids;
-    FUN_1407476c0()->FUN_14074d360(id, ids);
+    reinterpret_cast<Unk_QgQuestTable*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074d360(id, ids);
     for (size_t i = 0; i < ids.GetCount(); i++) {
         unsigned questId = ids[i];
         if (FUN_140745630(questId) == 0) continue;
@@ -1925,7 +1911,7 @@ MS2_REPLACE_METHOD(0x1416d0ea0, CQuestManager, SendQuestMode20, 186, 0x7E1A7D4B)
 int CQuestManager::FUN_1416d0f60(int epilogue)
 {
     ATL::CAtlArray<CChapterBookTable::DataPtr> books;
-    FUN_140e0a9f0()->GetByEpilogue(epilogue, books);
+    TSingleton<CChapterBookTable>::GetInstance()->GetByEpilogue(epilogue, books);
     for (size_t i = 0; i < books.GetCount(); i++) {
         CChapterBookTable::DataPtr book = books[i];
         if (FUN_140745590(book->m_nPrologue) != 0) return book->m_nId;
@@ -1978,7 +1964,7 @@ MS2_REPLACE_METHOD(0x1416d1060, CQuestManager, FUN_1416d1060, 152, 0xCE32F7F4);
 // @0x1416d12d0
 int CQuestManager::FUN_1416d12d0(int npcId, Unk_QmNpcQuestState* state, int all)
 {
-    const std::vector<unsigned>* quests = FUN_1407476c0()->FUN_14074e0f0(npcId);
+    const std::vector<unsigned>* quests = reinterpret_cast<Unk_QgQuestTable*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074e0f0(npcId);
     if (quests == 0) return 0;
     state->FUN_1409669c0();
     state->m_npcId = npcId;
@@ -1986,7 +1972,7 @@ int CQuestManager::FUN_1416d12d0(int npcId, Unk_QmNpcQuestState* state, int all)
     int best = 0;
     for (unsigned questId : *quests) {
         int questState = 4;
-        if (all == 0 && FUN_1409a8b10()->FUN_140c9b8b0()->FUN_141261b90(questId) == 0) continue;
+        if (all == 0 && reinterpret_cast<Unk_QmOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->FUN_141261b90(questId) == 0) continue;
         int score = FUN_1416d1100(npcId, questId, &questState);
         if (score > best) {
             best = score;
@@ -2031,11 +2017,11 @@ MS2_REPLACE_METHOD(0x1416d12d0, CQuestManager, FUN_1416d12d0, 987, 0x181F2CD6);
 void CQuestManager::FUN_1416d16c0(int group, ATL::CAtlList<unsigned>& out)
 {
     Unk_FieldIdList npcs(10);
-    FUN_140700390()->FUN_1406fb900(FUN_1403ed2d0()->FUN_141bd3060(), group, npcs);
+    TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb900(FUN_1403ed2d0()->FUN_141bd3060(), group, npcs);
     ATL::CAtlArray<Unk_QmNpcQuestState> states;
     for (POSITION pos = npcs.GetHeadPosition(); pos != 0; npcs.GetNext(pos)) {
         unsigned npcId = npcs.GetAt(pos);
-        if (FUN_14109a710()->FUN_140764e40(group, npcId) == 0) continue;
+        if (reinterpret_cast<Unk_QmNpcTable*>(TSingleton<CQuestMaskTable>::GetInstance())->FUN_140764e40(group, npcId) == 0) continue;
         Unk_QmNpcQuestState state;
         if (FUN_1416d12d0(npcId, &state, 0) != 0) out.AddTail(npcId);
     }
@@ -2046,11 +2032,11 @@ MS2_REPLACE_METHOD(0x1416d16c0, CQuestManager, FUN_1416d16c0, 306, 0x0FAF77D9);
 void CQuestManager::FUN_1416d1800(int group, Unk_QmNpcQuestState* best)
 {
     Unk_FieldIdList npcs(10);
-    FUN_140700390()->FUN_1406fb900(FUN_1403ed2d0()->FUN_141bd3060(), group, npcs);
+    TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb900(FUN_1403ed2d0()->FUN_141bd3060(), group, npcs);
     ATL::CAtlArray<Unk_QmNpcQuestState> states;
     for (POSITION pos = npcs.GetHeadPosition(); pos != 0; npcs.GetNext(pos)) {
         unsigned npcId = npcs.GetAt(pos);
-        if (FUN_14109a710()->FUN_140764e40(group, npcId) == 0) continue;
+        if (reinterpret_cast<Unk_QmNpcTable*>(TSingleton<CQuestMaskTable>::GetInstance())->FUN_140764e40(group, npcId) == 0) continue;
         Unk_QmNpcQuestState state;
         if (FUN_1416d12d0(npcId, &state, 0) != 0) states.Add(state);
     }
@@ -2263,7 +2249,7 @@ MS2_REPLACE_METHOD(0x1416d2910, CQuestManager, FUN_1416d2910, 1561, 0xD75123E5);
 // @0x1416d3010
 void CQuestManager::FUN_1416d3010()
 {
-    if (FUN_140aa6d30()->FUN_1417e2610() != 0x620000c) return;
+    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000c) return;
     ATL::CAtlArray<unsigned> changed;
     for (POSITION pos = m_quests140.GetHeadPosition(); pos != 0; m_quests140.GetNext(pos)) {
         Unk_PayloadPtr<CQuest> quest = m_quests140.GetValueAt(pos);
@@ -2299,9 +2285,9 @@ MS2_REPLACE_METHOD(0x1416d3220, CQuestManager, FUN_1416d3220, 40, 0xAE052B5E);
 // @0x1416d3250
 void CQuestManager::FUN_1416d3250()
 {
-    if (FUN_140aa6d30()->FUN_1417e2610() != 0x620000c) return;
+    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000c) return;
     ATL::CAtlArray<unsigned> candidates;
-    FUN_1407476c0()->FUN_14074d080(FUN_1403ed2d0()->FUN_141bd3060(), candidates);
+    reinterpret_cast<Unk_QgQuestTable*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074d080(FUN_1403ed2d0()->FUN_141bd3060(), candidates);
     ATL::CAtlArray<unsigned> available;
     for (size_t i = 0; i < candidates.GetCount(); i = i + 1) {
         unsigned questId = candidates[i];
@@ -2343,7 +2329,7 @@ int CQuestManager::FUN_1416d2f30(int chapter, std::list<std::list<unsigned>>& pa
 {
     if (chapter == 0) return 0;
     ATL::CAtlArray<unsigned> ids;
-    FUN_1407476c0()->FUN_14074cfd0(chapter, ids);
+    reinterpret_cast<Unk_QgQuestTable*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cfd0(chapter, ids);
     if (ids.IsEmpty()) return 0;
     unsigned lastQuestId = ids[ids.GetCount() - 1];
     return FUN_1416d2910(lastQuestId, paths, verbose);
@@ -2355,7 +2341,7 @@ MS2_REPLACE_METHOD(0x1416d2f30, CQuestManager, FUN_1416d2f30, 205, 0x89CBA6E5);
 int CQuestManager::FUN_1416d3510()
 {
     ATL::CAtlArray<unsigned> ids;
-    FUN_1407476c0()->FUN_14074d410(ids);
+    reinterpret_cast<Unk_QgQuestTable*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074d410(ids);
     int mapId = FUN_1403ed2d0()->FUN_141bd3060();
     for (size_t i = 0; i < ids.GetCount(); i++) {
         MS2Ptr<CQuestData> data = FUN_14074bc40(ids[i]);

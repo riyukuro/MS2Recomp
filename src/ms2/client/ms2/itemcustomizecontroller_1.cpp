@@ -41,6 +41,10 @@ struct Unk_PickTargetView : public Unk_PickTarget {};   // layout-identical view
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/windowservice.h"
+#include "ms2/commonfiles/itemdata.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- out-of-unit callees ----
 
@@ -56,7 +60,7 @@ public:
 };
 void FUN_1414225d0(MS2Ptr<Unk_CustomizeMesh> spMesh, int nIndex, float fValue);   // stores value nIndex
 
-struct Unk_ICCItemData { bool FUN_140547170(); };               // item data struct: no per-mesh highlight
+struct Unk_ICCItemData : public ItemModelHead { };               // item data struct: no per-mesh highlight
 struct Unk_ICCItem { Unk_ICCItemData* FUN_14053ec70(); };       // item -> item data struct
 
 class CEquipItem : public CPtred
@@ -70,16 +74,14 @@ public:
 };
 
 struct Unk_ICCEntityRef { unsigned __int64 m_id; };
-struct Unk_ICCPlayer
+struct Unk_ICCPlayer : public PC
 {
-    MS2Ptr<CEquipItem> FUN_141655e10(int nSlot);                // the item equipped in a slot
     Unk_ICCEntityRef FUN_14123c460();                           // the player's entity
 };
 struct Unk_ICCWorld
 {
     Unk_ICCPlayer* FUN_141bd0cc0();                             // the local player
 };
-Unk_ICCWorld* FUN_1403ed2d0();
 struct Unk_ICCEntityLoader
 {
     void* FUN_140999440(const Unk_ICCEntityRef& kEntity);       // the entity's loaded scene, NULL while loading
@@ -91,7 +93,7 @@ float FUN_140a17940(float fValue, float fMin, float fMax);      // clamp
 NiAVObject* FUN_141167cf0(const CString& strName);              // scene node by name (picking mesh)
 void FUN_141414180(NiPointer<CItemCustomizeController> spController);   // unregisters a closed controller (TU 2)
 
-struct Unk_ICCCursor { int FUN_141b90e30(float* pX, float* pY); };      // cursor position in pixels
+struct Unk_ICCCursor : public CWindowService { };      // cursor position in pixels
 Unk_ICCCursor* FUN_140aadf80();
 void* FUN_1413f9a70();                                          // camera manager
 NiCamera* FUN_1409a8a60(void* pCameraManager);                  // active camera
@@ -223,7 +225,7 @@ void CItemCustomizeController::vfunc_4()
 // @0x141411270
 int CItemCustomizeController::RefreshEquipItem()
 {
-    Unk_ICCPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ICCPlayer* pPlayer = reinterpret_cast<Unk_ICCWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
         m_spEquipItem = pPlayer->FUN_141655e10(m_nSlot);
@@ -325,7 +327,7 @@ float CItemCustomizeController::GetWheelDelta()
 // @0x1414117a0
 void CItemCustomizeController::ApplyValues()
 {
-    Unk_ICCPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ICCPlayer* pPlayer = reinterpret_cast<Unk_ICCWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (m_spEquipItem.IsNull())
@@ -343,7 +345,7 @@ void CItemCustomizeController::ApplyValues()
 // @0x141411920
 void CItemCustomizeController::ReadValues()
 {
-    Unk_ICCPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ICCPlayer* pPlayer = reinterpret_cast<Unk_ICCWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     {
@@ -405,10 +407,10 @@ void CItemCustomizeController::BeginDrag(const NiPoint3& kPos)
     Unk_PickTarget* pTarget = m_spPicker->GetPickedTarget();
     if (pTarget)
     {
-        if (!FUN_140aadf80()->FUN_141b90e30(&m_kCursorStart.x, &m_kCursorStart.y))
+        if (!FUN_140aadf80()->GetCursorClientPos(&m_kCursorStart.x, &m_kCursorStart.y))
             return;
         void* pCameraManager = FUN_1413f9a70();
-        Unk_ICCPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_ICCPlayer* pPlayer = reinterpret_cast<Unk_ICCWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return;
         NiRenderer* pRenderer = NiRenderer::GetRenderer();
@@ -430,7 +432,7 @@ void CItemCustomizeController::BeginDrag(const NiPoint3& kPos)
 void CItemCustomizeController::UpdateDrag()
 {
     NiPoint2 kCursor;
-    if (!FUN_140aadf80()->FUN_141b90e30(&kCursor.x, &kCursor.y))
+    if (!FUN_140aadf80()->GetCursorClientPos(&kCursor.x, &kCursor.y))
         return;
     CAtlArray<NiAVObject*> aMeshes;
     for (unsigned i = 0; i < m_aMeshNames.GetCount(); i++)
@@ -444,7 +446,7 @@ void CItemCustomizeController::UpdateDrag()
         vfunc_31();
         return;
     }
-    Unk_ICCPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_ICCPlayer* pPlayer = reinterpret_cast<Unk_ICCWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     Unk_ICCEntityLoader* pLoader = FUN_141b6f910();

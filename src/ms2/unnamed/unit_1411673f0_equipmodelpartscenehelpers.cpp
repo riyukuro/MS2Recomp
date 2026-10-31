@@ -22,12 +22,13 @@
 #include "ms2/placeholder/ecrcameraservice.h"
 #include "ms2/ms2layout.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // ---- unit-local placeholders (names invented) --------------------------------------------------------------------------
 // The local player (a world actor) and the world that owns it.
-struct Unk_EmPlayer : public GameObject
+struct Unk_EmPlayer : public PC
 {
-    MS2Ptr<CEquipItem> FUN_141655e10(int nSlot);                // the item equipped in a slot
 };
 struct Unk_EmWorld { Unk_EmPlayer* FUN_141bd0cc0(); };          // the local player
 Unk_EmWorld* FUN_1403ed2d0();
@@ -39,7 +40,6 @@ struct Unk_EmApp
     efd::SmartPointer<Unk_ServiceManager> m_spServiceManager;   // +0x08
     double FUN_141473280();                                     // the application time
 };
-Unk_EmApp* FUN_14086d260();
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class). Next(bDescend) yields the next NiAVObject.
 class Unk_SceneWalker
@@ -141,7 +141,7 @@ void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue)
         if (pInterp != 0) {
             int nCount = pInterp->GetInterpolatorCount();
             for (unsigned short us = 0; us < nCount; us++) {
-                float fTime = (float)FUN_14086d260()->FUN_141473280();
+                float fTime = (float)reinterpret_cast<Unk_EmApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280();
                 pInterp->UpdateValue(fTime, fValue, us);
                 pInterp->Update(fTime);
             }
@@ -220,7 +220,7 @@ NiAVObject* FUN_141167cf0(const CString& strName)
                     return pMesh;
             }
         } else {
-            Unk_ServiceManager* pServices = FUN_14086d260()->m_spServiceManager;
+            Unk_ServiceManager* pServices = reinterpret_cast<Unk_EmApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager;
             egmAnimation::AnimationService* pAnimation = pServices->GetSystemServiceAs<egmAnimation::AnimationService>();
             NiActorManager* pActor = pAnimation->GetActorManager(pPlayer->FUN_14123c460());
             if (pActor == 0)

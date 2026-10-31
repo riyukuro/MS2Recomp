@@ -13,6 +13,7 @@
 #include "gameeventlobbymap.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
 
 // Out-of-unit helpers.
 // Constructor at 0x140316aa0: registers the factory under the name (the by-value CString is destroyed by the callee).
@@ -36,7 +37,6 @@ private:
     char m_pad[0x408];
     Unk_GESub m_sub;
 };
-Unk_GEManagerB* FUN_140302b00();
 struct Unk_GEManagerA { char m_pad[0x8e8]; int m_lobbyMap; };
 Unk_GEManagerA* FUN_1401c0d90();
 void FUN_14047b990(Unk_GEManagerA* mgr, int value);
@@ -153,11 +153,11 @@ void GameEventCharacterCountRestricted::OnStart()
 {
     if (m_limit == 0)
         return;
-    FUN_140424bc0(FUN_140302b00()->GetSub(), m_limit);
+    FUN_140424bc0(reinterpret_cast<Unk_GEManagerB*>(TSingleton<CGameEventValueManager>::GetInstance())->GetSub(), m_limit);
 }
 
 // @0x14041c7f0
-void GameEventCharacterCountRestricted::vfunc_6() { FUN_140424bf0(FUN_140302b00()->GetSub()); }
+void GameEventCharacterCountRestricted::vfunc_6() { FUN_140424bf0(reinterpret_cast<Unk_GEManagerB*>(TSingleton<CGameEventValueManager>::GetInstance())->GetSub()); }
 
 // @0x14041c820
 GameEvent* FUN_14041c820() { return new GameEventOnlinePatch; }

@@ -76,10 +76,12 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/stanceleveldata.h"
 
 // Unrecovered helpers.
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Data/Xml/<dir>/<file>
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
@@ -87,7 +89,7 @@ void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszA
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly);  // filesystem.cpp
 int FUN_1406cfaa0(Unk_140165cf0* pElem, const char* pszName, std::vector<CString>& rOut);   // npcdata.cpp: list attribute
 const CString& FUN_14082efb0(int nStat);                // xml name of the nStat-th stat
-int FUN_14082ee80(const CStringA& strName);             // stat name -> id (-1 when none)
+int FindStatByName(const CStringA& strName);            // stat name -> id (-1 when none)
 int FUN_140873710(Unk_140165cf0* pElem, const char* pszName, int* pnOut);  // int attribute (TinyXML query)
 int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);  // bool attribute (TinyXML query)
 int FUN_1408738d0(Unk_140165cf0* pElem, const char* pszName, int& nOut);   // int attribute (TinyXML query)
@@ -101,7 +103,7 @@ void FUN_14086f970(void* pElem, const char* pszName, double fValue);        // S
 unsigned short FUN_140644430(unsigned nSkillId);        // jobtable.cpp: the level cap of a sub skill (0: none)
 
 // The skill flags of the additional effect table (FUN_140186320 is its accessor, inline in additionalactionadditional.cpp).
-class Unk_SkillFlags { public: bool FUN_140829ee0(unsigned nSkillId); };
+class Unk_SkillFlags : public StanceTable { };
 Unk_SkillFlags* FUN_140186320();
 
 // Unit-local view of the game's TiXmlElement (0x90 bytes; the writers only build it and insert it).
@@ -207,7 +209,7 @@ int Unk_CompareStat::FUN_1407e5e70(Unk_140165cf0* pElem)
     {
         CString strName = FUN_14082efb0(i);
         if (FUN_140873360(pElem, strName, m_f0) == 0)
-            m_n4 = FUN_14082ee80(strName);
+            m_n4 = FindStatByName(strName);
     }
     XmlEnumName<SkillCompareSign, ParseCompareSign>(pElem, "func", (SkillCompareSign&)m_n8);
     XmlValue(pElem, "type", (Unk_CompareStatType&)m_nC);
@@ -1324,7 +1326,7 @@ void SkillDataTable::IndexSensors(MS2Ptr<SkillData> spSkill)
 // @0x1407eec60
 void SkillDataTable::FUN_1407eec60(MS2Ptr<SkillData> spSkill)
 {
-    if (FUN_140186320()->FUN_140829ee0(spSkill->GetId()))
+    if (FUN_140186320()->HasFinishSkill(spSkill->GetId()))
         spSkill->FUN_1407ea010();
     return;
 }

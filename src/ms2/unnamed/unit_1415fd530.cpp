@@ -11,77 +11,172 @@
 #include <map>
 #include <new>
 
+struct Unk_Offset0 { char m; };
+extern void* FUN_1415e1740(void*);
+extern void FUN_1415e3890(void*, void*);
+extern void FUN_1415da590(void*, void*);
+extern void* FUN_141601450(void*);
+extern void* FUN_1416014b0(void*);
+extern void* FUN_1416014c0(void*);
+extern void* FUN_1416014f0(void*);
+extern void* FUN_141601750(void*);
+extern void* FUN_141601760(void*);
+extern void* FUN_141601770(void*);
+extern void* FUN_141601780(void*);
+extern void* FUN_141601790(void*);
+extern void* FUN_1416017a0(void*);
+extern void* FUN_1416017b0(void*);
+extern void* FUN_1416017c0(void*);
+extern void* FUN_1416017d0(void*);
+extern void* FUN_1416017e0(void*);
+extern void* FUN_1416017f0(void*);
+extern void* FUN_141601800(void*);
+extern void* FUN_141601810(void*);
+extern void* FUN_141601820(void*);
+extern void* FUN_141601830(void*);
+extern void* FUN_141601840(void*);
+extern void* FUN_141601850(void*);
+extern void* FUN_141601ad0(void*);
+extern void* FUN_141601b10(void*);
+extern void* FUN_141601b50(void*);
+extern void* FUN_141601b90(void*);
+extern void* FUN_141601bd0(void*);
+extern void* FUN_141601c10(void*);
+extern void* FUN_141601c50(void*);
+extern void* FUN_141601c90(void*);
+extern void* FUN_141601d10(void*);
+extern void* FUN_141601d50(void*);
+extern void* FUN_141601d90(void*);
+extern void* FUN_141601dd0(void*);
+extern void* FUN_141601e50(void*);
+extern void* FUN_141601e90(void*);
+extern void* FUN_141601f90(void*);
+extern void* FUN_141601fd0(void*);
+extern void* FUN_141602010(void*);
+extern void* FUN_141601460(void*);
+extern void* FUN_141601760(void*);
+extern void* FUN_141601860(void*);
+extern void* FUN_141601870(void*);
+extern void* FUN_141601880(void*);
+extern void* FUN_141601890(void*);
+extern void* FUN_1416018a0(void*);
+extern void* FUN_1416018b0(void*);
+extern void* FUN_1416018c0(void*);
+extern void* FUN_1416018d0(void*);
+extern void* FUN_1416018e0(void*);
+extern void* FUN_1416018f0(void*);
+extern void* FUN_141601900(void*);
+extern void* FUN_141601910(void*);
+extern void* FUN_141601920(void*);
+extern void* FUN_141601930(void*);
+extern void* FUN_141601940(void*);
+extern void* FUN_141601950(void*);
+extern void* FUN_141601960(void*);
+extern void* FUN_141601970(void*);
+extern void* FUN_141601980(void*);
+extern void* FUN_141601990(void*);
+extern void* FUN_1416019a0(void*);
+extern void* FUN_1416019b0(void*);
+extern void* FUN_1416019c0(void*);
+extern void* FUN_1416019d0(void*);
+extern void* FUN_1416019e0(void*);
+extern void* FUN_1416019f0(void*);
+extern void* FUN_141601a00(void*);
+extern void* FUN_141601a10(void*);
+extern void* FUN_141601a20(void*);
+extern void* FUN_141601a30(void*);
+extern void* FUN_141601a40(void*);
+extern void* FUN_141601a50(void*);
+extern void* FUN_141601a60(void*);
+extern void FUN_1415dbe50(void*, const void*);
+extern void FUN_1415dbe90(void*, const void*);
+extern void FUN_1415dbed0(void*, const void*);
+extern void FUN_1415dbf10(void*, const void*);
+extern void FUN_1415dbf50(void*, const void*);
+extern void FUN_1415dbf90(void*, const void*);
+extern void FUN_1415dbfd0(void*, const void*);
+extern void FUN_1415dc010(void*, const void*);
+extern void FUN_1415dc050(void*, const void*);
+extern void FUN_1415dc090(void*, const void*);
+extern void FUN_1415dc0d0(void*, const void*);
+extern void FUN_1415dc110(void*, const void*);
+extern void FUN_1415dc150(void*, const void*);
+extern void FUN_1415dc190(void*, const void*);
+extern void FUN_1415dc1d0(void*, const void*);
+extern void FUN_1415dc210(void*, const void*);
+extern void FUN_1415dc250(void*, const void*);
+
 // @0x1415ffc70
-void FUN_1415ffc70() {}
+void FUN_1415ffc70(void*, void*) {}
 
 // @0x1415ffc80
-void FUN_1415ffc80() {}
+void FUN_1415ffc80(void*, void*) {}
 
 // @0x1415ffc90
-void FUN_1415ffc90() {}
+void FUN_1415ffc90(void*, void*) {}
 
 // @0x1415ffca0
-void FUN_1415ffca0() {}
+void FUN_1415ffca0(void*, void*) {}
 
 // @0x1415ffcb0
-void FUN_1415ffcb0() {}
+void FUN_1415ffcb0(void*, void*) {}
 
 // @0x1415ffcc0
-void FUN_1415ffcc0() {}
+void FUN_1415ffcc0(void*, void*) {}
 
 // @0x1415ffcd0
-void FUN_1415ffcd0() {}
+void FUN_1415ffcd0(void*, void*) {}
 
 // @0x1415ffce0
-void FUN_1415ffce0() {}
+void FUN_1415ffce0(void*, void*) {}
 
 // @0x1415ffcf0
-void FUN_1415ffcf0() {}
+void FUN_1415ffcf0(void*, void*) {}
 
 // @0x1415ffd00
-void FUN_1415ffd00() {}
+void FUN_1415ffd00(void*, void*) {}
 
 // @0x1415ffd10
-void FUN_1415ffd10() {}
+void FUN_1415ffd10(void*, void*) {}
 
 // @0x1415ffd20
-void FUN_1415ffd20() {}
+void FUN_1415ffd20(void*, void*) {}
 
 // @0x1415ffd30
-void FUN_1415ffd30() {}
+void FUN_1415ffd30(void*, void*) {}
 
 // @0x1415ffd40
-void FUN_1415ffd40() {}
+void FUN_1415ffd40(void*, void*) {}
 
 // @0x1415ffd50
-void FUN_1415ffd50() {}
+void FUN_1415ffd50(void*, void*) {}
 
 // @0x1415ffd60
-void FUN_1415ffd60() {}
+void FUN_1415ffd60(void*, void*) {}
 
 // @0x1415ffd70
-void FUN_1415ffd70() {}
+void FUN_1415ffd70(void*, void*) {}
 
 // @0x1415ffd80
-void FUN_1415ffd80() {}
+void FUN_1415ffd80(void*, void*) {}
 
 // @0x1415ffd90
-void FUN_1415ffd90() {}
+void FUN_1415ffd90(void*, void*) {}
 
 // @0x1415ffda0
-void FUN_1415ffda0() {}
+void FUN_1415ffda0(void*, void*) {}
 
 // @0x1415ffdb0
-void FUN_1415ffdb0() {}
+void FUN_1415ffdb0(void*, void*) {}
 
 // @0x1415ffdc0
-void FUN_1415ffdc0() {}
+void FUN_1415ffdc0(void*, void*) {}
 
 // @0x1415ffdd0
-void FUN_1415ffdd0() {}
+void FUN_1415ffdd0(void*, void*) {}
 
 // @0x1415ffde0
-void FUN_1415ffde0() {}
+void FUN_1415ffde0(void*, void*) {}
 
 template <class T>
 static unsigned long long nm_vector_growth(const std::vector<T>& vector, unsigned long long requested)
@@ -290,157 +385,107 @@ void FUN_1415ffa10(void* p, Unk_StlElem<1168>* memory, unsigned long long size, 
 void FUN_1415ffb20(void* p, Unk_StlElem<32>* memory, unsigned long long size, unsigned long long capacity) { nm_vector_change_array(p, memory, size, capacity, 32); }
 // MS2-PIN: ?FUN_1415ffb20@@YAXPEAXPEAU?$Unk_StlElem@$0CA@@@_K2@Z 0x1415ffb20 ; MS2-FUNCTIONAL: size-specialized helper performs the same storage field updates and old allocation release
 
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
 // @0x141601030
-void FUN_141601030(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601030(void* p) { return FUN_141601870(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601050
-void FUN_141601050(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601050(void* p) { return FUN_141601880(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601070
-void FUN_141601070(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601070(void* p) { return FUN_141601890(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601090
-void FUN_141601090(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601090(void* p) { return FUN_1416018a0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x1416010b0
-void FUN_1416010b0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_1416010b0(void* p) { return FUN_1416018b0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x1416010d0
-void FUN_1416010d0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_1416010d0(void* p) { return FUN_1416018c0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x1416010f0
-void FUN_1416010f0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_1416010f0(void* p) { return FUN_1416018d0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601110
-void FUN_141601110(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601110(void* p) { return FUN_1416018e0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601130
-void FUN_141601130(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601130(void* p) { return FUN_1416018f0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601150
-void FUN_141601150(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601150(void* p) { return FUN_141601900(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601170
-void FUN_141601170(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601170(void* p) { return FUN_141601910(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601190
-void FUN_141601190(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601190(void* p) { return FUN_141601920(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x1416011b0
-void FUN_1416011b0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_1416011b0(void* p) { return FUN_141601930(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x1416011d0
-void FUN_1416011d0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_1416011d0(void* p) { return FUN_141601940(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x1416011f0
-void FUN_1416011f0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_1416011f0(void* p) { return FUN_141601950(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601210
-void FUN_141601210(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601210(void* p) { return FUN_141601960(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601230
-void FUN_141601230(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601230(void* p) { return FUN_141601970(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601250
-void FUN_141601250(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601250(void* p) { return FUN_141601980(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601270
-void FUN_141601270(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601270(void* p) { return FUN_141601990(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601010
-void FUN_141601010(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601010(void* p) { return FUN_141601860(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601290
-void FUN_141601290(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601290(void* p) { return FUN_1416019a0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x1416012b0
-void FUN_1416012b0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_1416012b0(void* p) { return FUN_1416019b0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x1416012d0
-void FUN_1416012d0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_1416012d0(void* p) { return FUN_1416019c0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x1416012f0
-void FUN_1416012f0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_1416012f0(void* p) { return FUN_1416019d0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601310
-void FUN_141601310(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601310(void* p) { return FUN_1416019e0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601330
-void FUN_141601330(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601330(void* p) { return FUN_1416019f0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601350
-void FUN_141601350(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601350(void* p) { return FUN_141601a00(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601370
-void FUN_141601370(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601370(void* p) { return FUN_141601a10(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601390
-void FUN_141601390(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_141601390(void* p) { return FUN_141601a20(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x1416013b0
-void FUN_1416013b0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_1416013b0(void* p) { return FUN_141601a30(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x1416013d0
-void FUN_1416013d0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_1416013d0(void* p) { return FUN_141601a40(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x1416013f0
-void FUN_1416013f0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+void* FUN_1416013f0(void* p) { return FUN_141601a50(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601410
-void FUN_141601410(void*) {}
+void* FUN_141601410(void* p) { return FUN_141601a60(&static_cast<Unk_Offset0*>(p)->m); }
 
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
 // @0x1415ffe20
-void FUN_1415ffe20(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1415ffe20(void* p, const void* q) { FUN_1415dbe50(FUN_141601ad0(p), q); }
 // @0x1415ffe50
-void FUN_1415ffe50(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1415ffe50(void* p, const void* q) { FUN_1415dbe90(FUN_141601b10(p), q); }
 // @0x1415ffe80
-void FUN_1415ffe80(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1415ffe80(void* p, const void* q) { FUN_1415dbed0(FUN_141601b50(p), q); }
 // @0x1415ffeb0
-void FUN_1415ffeb0(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1415ffeb0(void* p, const void* q) { FUN_1415dbf10(FUN_141601b90(p), q); }
 // @0x1415ffee0
-void FUN_1415ffee0(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1415ffee0(void* p, const void* q) { FUN_1415dbf50(FUN_141601bd0(p), q); }
 // @0x1415fff10
-void FUN_1415fff10(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1415fff10(void* p, const void* q) { FUN_1415dbf90(FUN_141601c10(p), q); }
 // @0x1415fff40
-void FUN_1415fff40(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1415fff40(void* p, const void* q) { FUN_1415dbfd0(FUN_141601c50(p), q); }
 // @0x1415fff70
-void FUN_1415fff70(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1415fff70(void* p, const void* q) { FUN_1415dc010(FUN_141601c90(p), q); }
 // @0x1415fffa0
-void FUN_1415fffa0(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1415fffa0(void* p, const void* q) { FUN_1415dc050(FUN_141601d10(p), q); }
 // @0x1415fffd0
-void FUN_1415fffd0(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1415fffd0(void* p, const void* q) { FUN_1415dc090(FUN_141601d50(p), q); }
 // @0x141600000
-void FUN_141600000(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600000(void* p, const void* q) { FUN_1415dc0d0(FUN_141601d90(p), q); }
 // @0x141600030
-void FUN_141600030(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600030(void* p, const void* q) { FUN_1415dc110(FUN_141601dd0(p), q); }
 // @0x141600060
-void FUN_141600060(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600060(void* p, const void* q) { FUN_1415dc150(FUN_141601e50(p), q); }
 // @0x141600090
-void FUN_141600090(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600090(void* p, const void* q) { FUN_1415dc190(FUN_141601e90(p), q); }
 // @0x1416000c0
-void FUN_1416000c0(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1416000c0(void* p, const void* q) { FUN_1415dc1d0(FUN_141601f90(p), q); }
 // @0x1416000f0
-void FUN_1416000f0(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1416000f0(void* p, const void* q) { FUN_1415dc210(FUN_141601fd0(p), q); }
 // @0x141600120
-void FUN_141600120(void*, const void*) {}
+void FUN_141600120(void* p, const void* q) { FUN_1415dc250(FUN_141602010(p), q); }
 extern void* FUN_141601ad0(void*);
 extern void* FUN_141601b10(void*);
 extern void* FUN_141601b50(void*);
@@ -488,73 +533,50 @@ extern void FUN_1415d43d0(void*, void*, void*);
 extern void FUN_1415d4420(void*, void*, void*);
 extern void FUN_1415d4470(void*, void*, void*);
 // 0x141600150..0x1416006d0: std::vector<T>::_Destroy(first, last), one per element type: _Destroy_range(first, last, _Getal()).
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600150
 void FUN_141600150(void* self, void* pFirst, void* pLast) { FUN_1415d3d90(pFirst, pLast, FUN_141601ad0(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600190
 void FUN_141600190(void* self, void* pFirst, void* pLast) { FUN_1415d3de0(pFirst, pLast, FUN_141601b10(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x1416001d0
 void FUN_1416001d0(void* self, void* pFirst, void* pLast) { FUN_1415d3e30(pFirst, pLast, FUN_141601b50(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600210
 void FUN_141600210(void* self, void* pFirst, void* pLast) { FUN_1415d3e80(pFirst, pLast, FUN_141601b90(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600250
 void FUN_141600250(void* self, void* pFirst, void* pLast) { FUN_1415d3ed0(pFirst, pLast, FUN_141601bd0(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600290
 void FUN_141600290(void* self, void* pFirst, void* pLast) { FUN_1415d3f20(pFirst, pLast, FUN_141601c10(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x1416002d0
 void FUN_1416002d0(void* self, void* pFirst, void* pLast) { FUN_1415d3f70(pFirst, pLast, FUN_141601c50(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600310
 void FUN_141600310(void* self, void* pFirst, void* pLast) { FUN_1415d3fc0(pFirst, pLast, FUN_141601c90(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600350
 void FUN_141600350(void* self, void* pFirst, void* pLast) { FUN_1415d4010(pFirst, pLast, FUN_141601cd0(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600390
 void FUN_141600390(void* self, void* pFirst, void* pLast) { FUN_1415d4060(pFirst, pLast, FUN_141601d10(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x1416003d0
 void FUN_1416003d0(void* self, void* pFirst, void* pLast) { FUN_1415d40b0(pFirst, pLast, FUN_141601d50(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600410
 void FUN_141600410(void* self, void* pFirst, void* pLast) { FUN_1415d4100(pFirst, pLast, FUN_141601d90(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600450
 void FUN_141600450(void* self, void* pFirst, void* pLast) { FUN_1415d4150(pFirst, pLast, FUN_141601dd0(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600490
 void FUN_141600490(void* self, void* pFirst, void* pLast) { FUN_1415d41a0(pFirst, pLast, FUN_141601e10(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x1416004d0
 void FUN_1416004d0(void* self, void* pFirst, void* pLast) { FUN_1415d41f0(pFirst, pLast, FUN_141601e50(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600510
 void FUN_141600510(void* self, void* pFirst, void* pLast) { FUN_1415d4240(pFirst, pLast, FUN_141601e90(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600550
 void FUN_141600550(void* self, void* pFirst, void* pLast) { FUN_1415d4290(pFirst, pLast, FUN_141601ed0(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600590
 void FUN_141600590(void* self, void* pFirst, void* pLast) { FUN_1415d42e0(pFirst, pLast, FUN_141601f10(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x1416005d0
 void FUN_1416005d0(void* self, void* pFirst, void* pLast) { FUN_1415d4330(pFirst, pLast, FUN_141601f50(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600610
 void FUN_141600610(void* self, void* pFirst, void* pLast) { FUN_1415d4380(pFirst, pLast, FUN_141601f90(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600650
 void FUN_141600650(void* self, void* pFirst, void* pLast) { FUN_1415d43d0(pFirst, pLast, FUN_141601fd0(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600690
 void FUN_141600690(void* self, void* pFirst, void* pLast) { FUN_1415d4420(pFirst, pLast, FUN_141602010(self)); }
-// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x1416006d0
 void FUN_1416006d0(void* self, void* pFirst, void* pLast) { FUN_1415d4470(pFirst, pLast, FUN_141602050(self)); }
 
@@ -664,51 +686,36 @@ void* FUN_141601a00(void* p) { return p; }
 // @0x141601a10
 void* FUN_141601a10(void* p) { return p; }
 
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600e10
-void* FUN_141600e10(void* p) { return p; }
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
+void* FUN_141600e10(void* p) { return FUN_141601770(FUN_141601750(&static_cast<Unk_Offset0*>(p)->m)); }
 // @0x141600e40
-void* FUN_141600e40(void* p) { return p; }
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
+void* FUN_141600e40(void* p) { return FUN_141601780(FUN_141601760(&static_cast<Unk_Offset0*>(p)->m)); }
 // @0x141600e70
-void* FUN_141600e70(void* p) { return p; }
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
+void* FUN_141600e70(void* p) { return FUN_141601790(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141600e90
-void* FUN_141600e90(void* p) { return p; }
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
+void* FUN_141600e90(void* p) { return FUN_1416017a0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141600eb0
-void* FUN_141600eb0(void* p) { return p; }
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
+void* FUN_141600eb0(void* p) { return FUN_1416017b0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141600ed0
-void* FUN_141600ed0(void* p) { return p; }
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
+void* FUN_141600ed0(void* p) { return FUN_1416017c0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141600ef0
-void* FUN_141600ef0(void* p) { return p; }
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
+void* FUN_141600ef0(void* p) { return FUN_1416017d0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141600f10
-void* FUN_141600f10(void* p) { return p; }
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
+void* FUN_141600f10(void* p) { return FUN_1416017e0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141600f30
-void* FUN_141600f30(void* p) { return p; }
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
+void* FUN_141600f30(void* p) { return FUN_1416017f0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141600f50
-void* FUN_141600f50(void* p) { return p; }
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
+void* FUN_141600f50(void* p) { return FUN_141601800(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141600f70
-void* FUN_141600f70(void* p) { return p; }
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
+void* FUN_141600f70(void* p) { return FUN_141601810(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141600f90
-void* FUN_141600f90(void* p) { return p; }
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
+void* FUN_141600f90(void* p) { return FUN_141601820(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141600fb0
-void* FUN_141600fb0(void* p) { return p; }
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
+void* FUN_141600fb0(void* p) { return FUN_141601830(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141600fd0
-void* FUN_141600fd0(void* p) { return p; }
-// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
+void* FUN_141600fd0(void* p) { return FUN_141601840(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141600ff0
-void* FUN_141600ff0(void* p) { return p; }
+void* FUN_141600ff0(void* p) { return FUN_141601850(&static_cast<Unk_Offset0*>(p)->m); }
 
 extern void FUN_1415da590(void*, void*);
 void* FUN_141601a70(void*);
@@ -720,22 +727,17 @@ void FUN_141600de0(void* proxy, void* element) { FUN_1415da590(FUN_141601a70(pro
 void* FUN_141601750(void* p) { return p; }
 // @0x141601760
 void* FUN_141601760(void* p) { return p; }
-// MS2-FUNCTIONAL: the underlying allocator getter returns this allocator subobject unchanged.
 // @0x141601b50
-void* FUN_141601b50(void* p) { return p; }
-// MS2-FUNCTIONAL: the underlying allocator getter returns this allocator subobject unchanged.
+void* FUN_141601b50(void* p) { return FUN_1416014b0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601b70
-void* FUN_141601b70(void* p) { return p; }
-// MS2-FUNCTIONAL: the underlying allocator getter returns this allocator subobject unchanged.
+void* FUN_141601b70(void* p) { return FUN_1416014c0(&static_cast<Unk_Offset0*>(p)->m); }
 // @0x141601bd0
-void* FUN_141601bd0(void* p) { return p; }
+void* FUN_141601bd0(void* p) { return FUN_1416014f0(&static_cast<Unk_Offset0*>(p)->m); }
 
-// MS2-FUNCTIONAL: returns the allocator proxy address after the read-only accessor chain.
 // @0x141601a70
-void* FUN_141601a70(void* p) { return p; }
-// MS2-FUNCTIONAL: the recovered call chain only reads allocator/proxy subobjects through identity accessors.
+void* FUN_141601a70(void* p) { return FUN_141601450(FUN_141601750(&static_cast<Unk_Offset0*>(p)->m)); }
 // @0x141601aa0
-void FUN_141601aa0(void*) {}
+void* FUN_141601aa0(void* p) { return FUN_141601460(FUN_141601760(&static_cast<Unk_Offset0*>(p)->m)); }
 
 // MS2-FUNCTIONAL: returns the vector allocator/storage address recovered by the wrapper.
 void* FUN_141601cd0(void* p) { return p; }
@@ -745,78 +747,8 @@ void* FUN_141601cd0(void* p) { return p; }
 void* FUN_141601ed0(void* p) { return p; }
 // MS2-PIN: ?FUN_141601ed0@@YAPEAXPEAX@Z 0x141601ed0 ; MS2-FUNCTIONAL: returns the storage address, with a different leaf/non-leaf frame
 
-// MS2-PIN: ?FUN_141601030@@YAXPEAX@Z 0x141601030 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601050@@YAXPEAX@Z 0x141601050 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601070@@YAXPEAX@Z 0x141601070 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601090@@YAXPEAX@Z 0x141601090 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_1416010b0@@YAXPEAX@Z 0x1416010b0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_1416010d0@@YAXPEAX@Z 0x1416010d0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_1416010f0@@YAXPEAX@Z 0x1416010f0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601110@@YAXPEAX@Z 0x141601110 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601130@@YAXPEAX@Z 0x141601130 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601150@@YAXPEAX@Z 0x141601150 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601170@@YAXPEAX@Z 0x141601170 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601190@@YAXPEAX@Z 0x141601190 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_1416011b0@@YAXPEAX@Z 0x1416011b0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_1416011d0@@YAXPEAX@Z 0x1416011d0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_1416011f0@@YAXPEAX@Z 0x1416011f0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601210@@YAXPEAX@Z 0x141601210 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601230@@YAXPEAX@Z 0x141601230 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601250@@YAXPEAX@Z 0x141601250 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601270@@YAXPEAX@Z 0x141601270 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601010@@YAXPEAX@Z 0x141601010 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601290@@YAXPEAX@Z 0x141601290 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_1416012b0@@YAXPEAX@Z 0x1416012b0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_1416012d0@@YAXPEAX@Z 0x1416012d0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_1416012f0@@YAXPEAX@Z 0x1416012f0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601310@@YAXPEAX@Z 0x141601310 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601330@@YAXPEAX@Z 0x141601330 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601350@@YAXPEAX@Z 0x141601350 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601370@@YAXPEAX@Z 0x141601370 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601390@@YAXPEAX@Z 0x141601390 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_1416013b0@@YAXPEAX@Z 0x1416013b0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_1416013d0@@YAXPEAX@Z 0x1416013d0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_1416013f0@@YAXPEAX@Z 0x1416013f0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_141601410@@YAXPEAX@Z 0x141601410 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
-// MS2-PIN: ?FUN_1415ffe20@@YAXPEBX@Z 0x1415ffe20 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1415ffe50@@YAXPEBX@Z 0x1415ffe50 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1415ffe80@@YAXPEBX@Z 0x1415ffe80 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1415ffeb0@@YAXPEBX@Z 0x1415ffeb0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1415ffee0@@YAXPEBX@Z 0x1415ffee0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1415fff10@@YAXPEBX@Z 0x1415fff10 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1415fff40@@YAXPEBX@Z 0x1415fff40 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1415fff70@@YAXPEBX@Z 0x1415fff70 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1415fffa0@@YAXPEBX@Z 0x1415fffa0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1415fffd0@@YAXPEBX@Z 0x1415fffd0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600000@@YAXPEBX@Z 0x141600000 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600030@@YAXPEBX@Z 0x141600030 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600060@@YAXPEBX@Z 0x141600060 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600090@@YAXPEBX@Z 0x141600090 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1416000c0@@YAXPEBX@Z 0x1416000c0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1416000f0@@YAXPEBX@Z 0x1416000f0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600120@@YAXPEBX@Z 0x141600120 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1415ffde0@@YAXXZ 0x1415ffde0 ; MS2-FUNCTIONAL: empty allocator hook
-// MS2-PIN: ?FUN_141600e10@@YAPEAXPEAX@Z 0x141600e10 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
-// MS2-PIN: ?FUN_141600e40@@YAPEAXPEAX@Z 0x141600e40 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
-// MS2-PIN: ?FUN_141600e70@@YAPEAXPEAX@Z 0x141600e70 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
-// MS2-PIN: ?FUN_141600e90@@YAPEAXPEAX@Z 0x141600e90 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
-// MS2-PIN: ?FUN_141600eb0@@YAPEAXPEAX@Z 0x141600eb0 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
-// MS2-PIN: ?FUN_141600ed0@@YAPEAXPEAX@Z 0x141600ed0 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
-// MS2-PIN: ?FUN_141600ef0@@YAPEAXPEAX@Z 0x141600ef0 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
-// MS2-PIN: ?FUN_141600f10@@YAPEAXPEAX@Z 0x141600f10 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
-// MS2-PIN: ?FUN_141600f30@@YAPEAXPEAX@Z 0x141600f30 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
-// MS2-PIN: ?FUN_141600f50@@YAPEAXPEAX@Z 0x141600f50 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
-// MS2-PIN: ?FUN_141600f70@@YAPEAXPEAX@Z 0x141600f70 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
-// MS2-PIN: ?FUN_141600f90@@YAPEAXPEAX@Z 0x141600f90 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
-// MS2-PIN: ?FUN_141600fb0@@YAPEAXPEAX@Z 0x141600fb0 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
-// MS2-PIN: ?FUN_141600fd0@@YAPEAXPEAX@Z 0x141600fd0 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
-// MS2-PIN: ?FUN_141600ff0@@YAPEAXPEAX@Z 0x141600ff0 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
 // MS2-PIN: ?FUN_141600db0@@YAXPEAX0@Z 0x141600db0
 // MS2-PIN: ?FUN_141600de0@@YAXPEAX0@Z 0x141600de0
-// MS2-PIN: ?FUN_141601a70@@YAPEAXPEAX@Z 0x141601a70 ; MS2-FUNCTIONAL: returns proxy address after accessors
-// MS2-PIN: ?FUN_141601b50@@YAPEAXPEAX@Z 0x141601b50 ; MS2-FUNCTIONAL: allocator getter returns its subobject
-// MS2-PIN: ?FUN_141601b70@@YAPEAXPEAX@Z 0x141601b70 ; MS2-FUNCTIONAL: allocator getter returns its subobject
-// MS2-PIN: ?FUN_141601bd0@@YAPEAXPEAX@Z 0x141601bd0 ; MS2-FUNCTIONAL: allocator getter returns its subobject
 
 // @0x1415ffc30
 bool FUN_1415ffc30(void*, const unsigned char& left, const unsigned char& right)
@@ -972,13 +904,12 @@ static void nm_tree_erase_fixup(NMByteTree& tree, NMByteTreeNode* node,
 } // namespace
 
 // @0x141600710
-void FUN_141600710(void*, std::_Tree_node<unsigned char, void*>* node)
+void FUN_141600710(void* proxy, std::_Tree_node<unsigned char, void*>* node)
 {
-    // std::_Tree_node<unsigned char, void*> stores a trivial byte value; the
-    // recovered allocator path destroys it and releases the node allocation.
-    ::operator delete(node);
+    void* alloc = FUN_141601a70(proxy);
+    FUN_1415e3890(alloc, FUN_1415e1740(reinterpret_cast<char*>(node) + 0x20));
+    FUN_1415da590(alloc, node);
 }
-// MS2-PIN: ?FUN_141600710@@YAXPEAXPEAU?$_Tree_node@EPEAX@std@@@Z 0x141600710 ; MS2-FUNCTIONAL: releases a detached byte-tree node
 
 // @0x141600760
 void FUN_141600760(void* tree, void* node)

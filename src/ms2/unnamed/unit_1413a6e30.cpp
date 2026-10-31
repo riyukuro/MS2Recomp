@@ -20,6 +20,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/cubecraft_2.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -57,7 +58,7 @@ public:
     virtual Vector3 vfunc_18();                     // 0x90 the position
 };
 void* FUN_1416625b0(Unk_GcPC* pPC);
-class Unk_GcCore { public: Vector3 FUN_1410aa520(); };   // the cube-craft core: its position
+class Unk_GcCore : public Unk_PCCubeCraft { };   // the cube-craft core: its position
 Unk_GcCore* FUN_141530290(Unk_GcPC* pPC);                   // the cube-craft core of the player
 int FUN_14166c930(Unk_GcPC* pPC);                           // the action id
 
@@ -152,9 +153,9 @@ void CGuideConditionPosition::vfunc_2(Unk_140165cf0* pElem)
         if (arrPos.GetCount() == 3)
         {
             Unk_GuideCube cube;
-            cube.x = arrPos[0];
-            cube.y = arrPos[1];
-            cube.z = arrPos[2];
+            cube.vPos.x = arrPos[0];
+            cube.vPos.y = arrPos[1];
+            cube.vPos.z = arrPos[2];
             cube.fRange = fRange;
             m_arrCube.Add(cube);
         }
@@ -170,10 +171,10 @@ int CGuideConditionPosition::vfunc_3()
         return 0;
     Vector3 pos = pPC->vfunc_18();
     if (FUN_1416625b0(pPC) != 0 && FUN_141530290(pPC) != 0)
-        pos = FUN_141530290(pPC)->FUN_1410aa520();
+        pos = FUN_141530290(pPC)->GetPtCell();
     for (size_t i = 0; i < m_arrCube.GetCount(); i++)
     {
-        float fDist = pos.FUN_140965c40(m_arrCube.GetAt(i)).FUN_140967ac0();
+        float fDist = pos.FUN_140965c40(m_arrCube.GetAt(i).vPos).FUN_140967ac0();
         if (fDist < m_arrCube.GetAt(i).fRange)
             return FUN_1413a55a0(1);
     }
@@ -182,14 +183,13 @@ int CGuideConditionPosition::vfunc_3()
 MS2_REPLACE_METHOD(0x1413A70E0, CGuideConditionPosition, vfunc_3, 307, 0xD9D4F299);
 
 // @0x1413a7220
-// MS2-FUNCTIONAL: the exe loads the first StringFormat argument (r8) before the stack arguments; same call sequence otherwise
 CStringW CGuideConditionPosition::vfunc_7()
 {
     CStringW strCubes;
     for (unsigned i = 0; i < m_arrCube.GetCount(); i++)
     {
         Unk_GuideCube& rPos = m_arrCube.GetAt(i);
-        strCubes.Append(StringFormat(L"[Pos:({0},{1},{2}),Range:{3}]", rPos.x, rPos.y, rPos.z, m_arrCube.GetAt(i).fRange));
+        strCubes.Append(StringFormat(L"[Pos:({0},{1},{2}),Range:{3}]", rPos.vPos.x, rPos.vPos.y, rPos.vPos.z, m_arrCube.GetAt(i).fRange));
     }
     CStringW str = FUN_1413a5820();
     str.Append(strCubes);

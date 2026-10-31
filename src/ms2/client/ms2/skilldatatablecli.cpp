@@ -20,7 +20,7 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "hook/ms2hook.h"
 
 // Unrecovered helpers.
-int FUN_1407ef260(TiXmlDocument& doc, const char* pszPath);    // skilloverlapcompare.cpp: loads an xml file
+int LoadXml(TiXmlDocument& doc, const char* pszPath);          // skilloverlapcompare.cpp: loads an xml file
 bool FUN_1411a4800(const CString& strPath, int nPriority);      // preloads one effect file (false: not found)
 
 // The shop sort names and two attribute names of a shared header (dynamic initializers of every including unit).
@@ -347,7 +347,7 @@ MS2_REPLACE_METHOD(0x140ab0080, SkillDataTableCli, GetAdditionals, 235, 0x04379D
 void SkillDataTableCli::LoadAdditionalFile(CString strPath)
 {
     TiXmlDocument doc;
-    if (FUN_1407ef260(doc, strPath) == 0)
+    if (LoadXml(doc, strPath) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

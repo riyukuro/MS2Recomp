@@ -17,10 +17,11 @@
 #include "ms2/client/ms2/skillcollisionmanager.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/effectskipmgr.h"
 
 // ---- unit-local views of exe objects and unrecovered callees --------------------------------------------------------------
 class Unk_RsSkillTable { public: MS2Ptr<Unk_SkillRow> FUN_1407ee1d0(int nSkillId); };
-Unk_RsSkillTable* FUN_1401958b0();
 
 // The world service (0x1403ed2d0): the entity kind of an id, the actor of an id.
 class Unk_RsActor;
@@ -51,7 +52,6 @@ EffectDataManager* FUN_1411b1dd0();                             // the effect fi
 
 // The effect culler (0x14119f490): is this effect visible at a transform? (the data pointer is passed by value)
 class Unk_RsCuller { public: int FUN_1411b8870(CEffectDataPtr spData, int nOwnerType, NiTransform* pXform); };
-Unk_RsCuller* FUN_14119f490();
 
 // The skill collision manager singleton (0x141469a90).
 CSkillCollisionManager* FUN_141469a90();
@@ -94,7 +94,7 @@ int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArra
     m_fRotY = fRotY;
     m_points.Copy(kPoints);
     m_nStartTick = nTick;
-    m_spRow = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
+    m_spRow = reinterpret_cast<Unk_RsSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
     if (m_spRow.IsNull())
         return 0;
     m_spSkill = m_spRow->FUN_1407e90a0(nLevel);
@@ -331,7 +331,7 @@ void CRegionSkillObject::FUN_1416f6f50()
                 FUN_14097faa0(&xf.m_Translate, &niPt);
                 xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
                 bool bAlways = m_pAttr->m_bAlways;
-                if (FUN_14119f490()->FUN_1411b8870(m_spEffect, m_nOwnerType, &xf) == 0 && (m_bLocal != 0 || bAlways))
+                if (reinterpret_cast<Unk_RsCuller*>(TSingleton<EffectSkipMgr>::GetInstance())->FUN_1411b8870(m_spEffect, m_nOwnerType, &xf) == 0 && (m_bLocal != 0 || bAlways))
                 {
                     Unk_EffectTarget kTarget;
                     kTarget.m_strName = m_pAttr->m_strEffect;
@@ -373,7 +373,7 @@ void CRegionSkillObject::FUN_1416f6f50()
             Unk_RsNiPoint3 niPt(pt);
             FUN_14097faa0(&xf.m_Translate, &niPt);
             xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
-            if (FUN_14119f490()->FUN_1411b8870(m_spEffect2, m_nOwnerType, &xf) == 0 && m_bLocal != 0)
+            if (reinterpret_cast<Unk_RsCuller*>(TSingleton<EffectSkipMgr>::GetInstance())->FUN_1411b8870(m_spEffect2, m_nOwnerType, &xf) == 0 && m_bLocal != 0)
             {
                 Unk_EffectTarget kTarget;
                 kTarget.m_strName = m_pAttr->m_strEndEffect;

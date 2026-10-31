@@ -44,6 +44,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/nifeffectparam.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // The names of the shop sort orders (the initializer of this unit's .text$di).
 static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -117,9 +120,6 @@ public:
 class Unk_FsFishMgr : public CFishingManager
 {
 public:
-    void FUN_140cdac50();                                    // the cast was thrown
-    void FUN_140cdb0a0();                                    // leaves the casting
-    int FUN_140ce0cb0();                                     // a fish is hooked
     MS2Ptr<Unk_FishPacket> FUN_140cdbb10(int nCell);         // the fishing zone of a grid cell
 };
 static inline Unk_FsFishMgr* FsFishMgr() { return static_cast<Unk_FsFishMgr*>(TSingleton<CFishingManager>::GetInstance()); }
@@ -141,22 +141,15 @@ public:
 Unk_FsGameMode* FUN_140a94350();
 
 // The effect manager: plays an effect for a request (returns its id), stops it by id, hands out the effect root.
-class Unk_FsEffectMgr
+class Unk_FsEffectMgr : public CEffectService
 {
 public:
     unsigned FUN_1411a49c0(Unk_EffectQuery* pQuery);
-    NiNode* FUN_1411a6b10();
 };
-Unk_FsEffectMgr* FUN_1403ed280();
 void FUN_1411a6060(Unk_FsEffectMgr* pMgr, int nId);
 
 // The model loader (singleton): loads a nif by path.
-class Unk_FsResourceMgr
-{
-public:
-    NiAVObjectPtr FUN_141551ea0(CString strPath, bool bA, int nB, int nC, int nD);   // model load
-};
-Unk_FsResourceMgr* FUN_140a0afd0();
+CNifLoadingService* FUN_140a0afd0();
 void* FUN_1409849b0(void* pHandle);                          // handle -> node pointer
 NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);   // dynamic cast through an NiRTTI
 
@@ -173,12 +166,10 @@ class Unk_FsWorld
 public:
     int FUN_141bd1a10(GameObject* pObject);
 };
-Unk_FsWorld* FUN_1403ed2d0();
 
 class Unk_PCBaseMoveTarget { public: efd::Point3 FUN_141683900(); };
 
 CPhysXHelper* FUN_1409f7ca0();
-CUIService* FUN_1403ed2b0();
 UICastingBar* FUN_140ac2270(int nId);
 bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned nId);   // efd::ClassInfo::IsKindOf
 __int64 FUN_14028d0e0();                                     // the current time
@@ -287,7 +278,7 @@ void StateFishing::vfunc_5(int n)
     if (FUN_1417b8560() != 0)
     {
         if (TSingleton<CFishingManager>::GetInstance()->FUN_140954150() != 0)
-            FsFishMgr()->FUN_140cdb0a0();
+            FsFishMgr()->SendFishingMode1();
     }
     Unk_FsPC* pPC = static_cast<Unk_FsPC*>(FUN_1417b8370());
     if (pPC != 0)
@@ -300,8 +291,8 @@ void StateFishing::vfunc_5(int n)
         UICastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar != 0)
             pBar->FUN_1418e1390();
-        if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4ee7) != 0)
-            FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4ee7);
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4ee7) != 0)
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ee7);
     }
     if (m_spEffect)
     {
@@ -313,7 +304,7 @@ void StateFishing::vfunc_5(int n)
         }
     }
     if (m_nEffect != 0)
-        FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+        FUN_1411a6060(reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance()), m_nEffect);
     FUN_140a94350()->vfunc_8(0);
 }
 
@@ -560,10 +551,10 @@ void StateFishing::FUN_140ddb740(int nRod)
     }
     if (spRod->m_strChair.GetLength() > 0)
     {
-        m_spEffect = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, FUN_140a0afd0()->FUN_141551ea0(CString(spRod->m_strChair), false, 5, 0, 0)));
+        m_spEffect = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, FUN_140a0afd0()->Load(CString(spRod->m_strChair), false, 5, 0, 0)));
         if (m_spEffect)
         {
-            NiNode* pRoot = FUN_1403ed280()->FUN_1411a6b10();
+            NiNode* pRoot = reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10();
             ClonePC* pClone = FUN_1405a7e30(pPC);
             if (pClone != 0)
                 static_cast<AvatarPC*>(pClone)->FUN_1409f5560(m_spEffect);
@@ -586,14 +577,14 @@ void StateFishing::FUN_140ddb740(int nRod)
         }
     }
     if (m_nEffect != 0)
-        FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+        FUN_1411a6060(reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance()), m_nEffect);
     if (spRod->m_strChairEffect.GetLength() > 0)
     {
         Unk_EffectQuery kQuery;
         kQuery.m_strName = spRod->m_strChairEffect;
-        kQuery.m_nObject = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
+        kQuery.m_nObject = reinterpret_cast<Unk_FsWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
         kQuery.SetActor(m_pOwner->FUN_14123c580());
-        m_nEffect = FUN_1403ed280()->FUN_1411a49c0(&kQuery);
+        m_nEffect = reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kQuery);
     }
 }
 

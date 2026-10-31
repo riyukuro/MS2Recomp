@@ -61,6 +61,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uiservice.h"
 #include <sstream>
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
@@ -102,7 +103,6 @@ public:
 
 // UI service: handle to a registered UI object.
 class Unk_CashUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); void FUN_141adc5d0(int nClass); };
-Unk_CashUIManager* FUN_1403ed2b0();
 
 // Item data of an item id (only the item class test is used).
 class Unk_CashItemData : public CPtred { public: char m_pad[8]; };
@@ -973,16 +973,16 @@ bool CCashMarketMan::FUN_140b08fe0(int, const CMsgBoxData&)
     if (ref.FUN_140a8e270(0))
         return true;
     if (ref.FUN_140a8e380()->m_nId == 0x4ebc)
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4f17);
+        reinterpret_cast<Unk_CashUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f17);
     return true;
 }
 
 // @0x140b09580
 UIMarketBillDialog* FUN_140b09580(int nClass)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_CashUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = FUN_1403ed2b0()->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_CashUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIMarketBillDialog*>(spObj.operator->());
     }

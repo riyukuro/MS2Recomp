@@ -147,7 +147,7 @@ struct Unk_RankPageReq                                      // page request (Cli
 
 struct Unk_RankDataPtr                                      // boxed Unk_RankData
 {
-    Unk_RankDataPtr() : m_00(0), m_p(0) {}                  // 0x140e362f0 (folded with the other m_p = 0 ctors)
+    Unk_RankDataPtr() : m_p(0) {}                           // 0x140e36530: the exe leaves m_00 alone
     Unk_RankDataPtr(const Unk_RankNewTag&);                 // 0x140b2d310
     Unk_RankDataPtr(const Unk_RankDataPtr& o) : m_00(o.m_00), m_p(o.m_p) { if (m_p) CPtred::AddRefPtred(reinterpret_cast<CPtred*>(m_p)); }   // copy: adds a reference to the box
     ~Unk_RankDataPtr();                                     // 0x140b2da40

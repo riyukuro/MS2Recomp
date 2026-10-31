@@ -64,6 +64,17 @@
 #include "ms2/ms2recover.h"
 #define MS2_ASSERT_MSG_AT(line, msg, cond) (void)((!!(cond)) || (_wassert(msg, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/cpet.h"
+#include "ms2/unnamed/unit_140ad1860.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/reconnectionmanagercli.h"
+#include "ms2/placeholder/ckeytable.h"
+#include "ms2/client/ms2/skillsystem.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // The unit includes the statics six more times (without the pointer object), then the class-info and skill/stun.
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -102,17 +113,9 @@ extern int DAT_143ab0248;
 extern int DAT_143ab2914;
 
 // The game-context singleton (FUN_14025e7c0 returns DAT_143aacd00): feature / permission queries.
-class Unk_SMCtx
-{
-public:
-    bool FUN_14116d9c0(int nId, bool bCheck, int nMax);
-    bool FUN_14116d950(int nId, bool bCheck, int nMax);
-};
-Unk_SMCtx* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 
 // CMouseController (DAT_143ab3850) and the entity world manager (DAT_143ab3910).
-class Unk_SMMouse { public: void FUN_140ad1f30(int nOldAction, int nNewAction); };
-Unk_SMMouse* FUN_140953f30();
 class Unk_SMEntityMgr { public: egf::Entity* FUN_1411cf440(const egf::EntityID& id); };
 Unk_SMEntityMgr* FUN_1409670f0();
 
@@ -124,14 +127,12 @@ public:
     egf::EntityPtr FUN_140adf980();
 };
 // The world service: marker lookup by entity / by name.
-class Unk_SMWorld
+class Unk_SMWorld : public WorldService
 {
 public:
     MS2Ptr<Unk_SMMarker> FUN_141bc4f10(egf::Entity* pEntity);
     MS2Ptr<Unk_SMMarker> FUN_141bc4e70(CStringA strName);
-    int FUN_141bcfb70();                                // service running and idle
 };
-Unk_SMWorld* FUN_1403ed2d0();
 
 class Unk_SMField690 { public: char m_pad[0x18]; efd::Point3 m_pos18; };
 
@@ -245,7 +246,7 @@ void CStateManager::FUN_1417daaa0(double fTime)
         bCheck = DAT_143ab2914 >= 0x33;
     if (bCheck)
     {
-        Unk_SMCtx* pCtx = FUN_14025e7c0();
+        CInputKeyHandler* pCtx = FUN_14025e7c0();
         if (FUN_1417ddbf0(m_pOwner != 0 ? m_pOwner->GetClassDesc() : 0, 0x6200004) && pCtx != 0 && pCtx->FUN_14116d9c0(0x23, true, 0)
             && pCtx->FUN_14116d950(0x1d, true, 0))
         {
@@ -265,7 +266,7 @@ void CStateManager::FUN_1417daaa0(double fTime)
                 egf::Entity* pEntity = FUN_1409670f0()->FUN_1411cf440(kId);
                 if (pEntity != 0)
                 {
-                    MS2Ptr<Unk_SMMarker> spMarker = FUN_1403ed2d0()->FUN_141bc4f10(pEntity);
+                    MS2Ptr<Unk_SMMarker> spMarker = reinterpret_cast<Unk_SMWorld*>(WorldService::GetInstance())->FUN_141bc4f10(pEntity);
                     if (spMarker.get() != 0)
                     {
                         if (m_pOwner->FUN_14123c360() == efd::Point3::ZERO)
@@ -315,7 +316,7 @@ void CStateManager::FUN_1417dafa0(int nState, StateData* pData, int nSub, int bF
     if (nSub != 0)
         m_pState->vfunc_2(nSub);
     if (FUN_1417ddbf0(m_pOwner != 0 ? m_pOwner->GetClassDesc() : 0, 0x6200004))
-        FUN_140953f30()->FUN_140ad1f30(m_nCur, nState);
+        TSingleton<CMouseController>::GetInstance()->FUN_140ad1f30(m_nCur, nState);
     m_nCur = nState;
     m_pState->vfunc_4(pData);
     if (m_pState->vfunc_20() != 0)
@@ -620,7 +621,7 @@ void CStateManager::FUN_1417dc4c0(Unk_StateArg22* pReq)
     }
     if (!pReq->m_str88.IsEmpty())
     {
-        MS2Ptr<Unk_SMMarker> spMarker = FUN_1403ed2d0()->FUN_141bc4e70(pReq->m_str88);
+        MS2Ptr<Unk_SMMarker> spMarker = reinterpret_cast<Unk_SMWorld*>(WorldService::GetInstance())->FUN_141bc4e70(pReq->m_str88);
         if (spMarker.get() != 0)
         {
             pActor->vfunc_19(spMarker->FUN_140adf8e0() + pReq->m_pos78);
@@ -666,15 +667,12 @@ class Unk_SMBlk180 { public: int m_pad[2]; float m_n8; };   // +8 move speed (ex
 Unk_SMBlk180* FUN_141671920(PCBase* p);
 void FUN_141671960(PCBase* p, float fSpeed);   // PCBase::FUN_141671960
 long long FUN_141670a00(PCBase* p, int n);
-class Unk_SMSkills { public: bool FUN_141765b80(int nSkill); };
+class Unk_SMSkills : public CSkillSystem { };
 Unk_SMSkills* FUN_141523bc0(MyPC* p);
-class Unk_SMSkillTbl2 { public: int FUN_14142c0c0(int nSkill); int FUN_14142c300(int nSkill); };
-Unk_SMSkillTbl2* FUN_1409331f0();
+CKeyTable* FUN_1409331f0();
 class Unk_SMSession { public: char m_pad; };
-Unk_SMSession* FUN_1403ed2b0();
 int FUN_141adbb00(Unk_SMSession* p);
 class Unk_SMSkillTable { public: MS2Ptr<Unk_SMSkillRec> FUN_1407ee2f0(int nSkill, short nLevel); };
-Unk_SMSkillTable* FUN_1401958b0();
 
 // @0x1417df080
 StateMoveSkill::StateMoveSkill(PCBase* pOwner) : State(pOwner), m_n44(0), m_nFallbackState(0), m_nFallbackSub(0)
@@ -778,7 +776,7 @@ int StateMoveSkill::vfunc_37()
 {
     if (m_spData.get() != 0)
     {
-        if (FUN_141adbb00(FUN_1403ed2b0()) == 0)
+        if (FUN_141adbb00(reinterpret_cast<Unk_SMSession*>(TSingleton<CUIService>::GetInstance())) == 0)
             return FUN_1409331f0()->FUN_14142c300(m_spData->m_nSkill) == 0;
     }
     return 1;
@@ -793,7 +791,7 @@ bool StateMoveSkill::vfunc_38(StateData* pData)
     m_spData.AssignRaw(reinterpret_cast<Unk_SMSkillData*>(dynamic_cast<StateSkillData*>(pData)));
     if (m_spData == 0)
         return false;
-    m_spRec = FUN_1401958b0()->FUN_1407ee2f0(m_spData->m_nSkill, m_spData->m_nLevel);
+    m_spRec = reinterpret_cast<Unk_SMSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(m_spData->m_nSkill, m_spData->m_nLevel);
     if (m_spRec == 0)
         return false;
     return true;
@@ -829,8 +827,7 @@ bool StateMoveSkill::FUN_1417df6a0()
 PCBase* FUN_1417dfaa0(PCBase* p);           // as 0x620004f (defined below)
 void FUN_14166ca20(PCBase* p, int n);
 void FUN_14166ca80(PCBase* p, int n);
-class Unk_SMHost { public: int FUN_140b10150(); };
-Unk_SMHost* FUN_1409ffc60(PCBase* p);
+CPet* FUN_1409ffc60(PCBase* p);
 
 // @0x1417df8b0
 StateNone::StateNone(PCBase* pOwner) : State(pOwner)
@@ -857,7 +854,7 @@ void StateNone::vfunc_5(int n)
     if (!bPC || b4f)
     {
         int nValue = 0;
-        Unk_SMHost* pHost = reinterpret_cast<Unk_SMHost*>(FUN_1417b83a0());
+        CPet* pHost = reinterpret_cast<CPet*>(FUN_1417b83a0());
         if (pHost != 0)
             nValue = pHost->FUN_140b10150();
         FUN_14166ca80(m_pOwner, 4);
@@ -980,7 +977,6 @@ struct Unk_SMNiPt3 : public NiPoint3
 {
     Unk_SMNiPt3(const NiPoint3& kPt);
 };
-Unk_SMEffectSvc* FUN_1403ed280();
 
 // @0x1417dfc70
 StateRegen::StateRegen(PCBase* pOwner) : State(pOwner)
@@ -1036,7 +1032,7 @@ void StateRegen::vfunc_5(int n)
 {
     State::vfunc_5(n);
     FUN_14166ca80(m_pOwner, 9);
-    Unk_SMHost* pHost = reinterpret_cast<Unk_SMHost*>(FUN_1417b83a0());
+    CPet* pHost = reinterpret_cast<CPet*>(FUN_1417b83a0());
     if (pHost != 0)
     {
         int nValue = pHost->FUN_140b10150();
@@ -1073,7 +1069,7 @@ void StateRegen::vfunc_9(double fTime)
             req.m_name = pNpc->FUN_141093270()->m_str550;
             req.m_type = 0;
             req.m_pXform = &kXform;
-            FUN_1403ed280()->FUN_1411a4a00(req);
+            reinterpret_cast<Unk_SMEffectSvc*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(req);
             if (m_nSkip == 0)
             {
                 if (m_nVariantB != 0)
@@ -1643,10 +1639,8 @@ struct Unk_SMDepSix : efd::ISystemService { static const efd::ClassID CLASS_ID =
 struct Unk_SMInputHandle { void* m_p0; void* m_pTarget; ~Unk_SMInputHandle(); };   // dtor 0x140b62a60 (release)
 class Unk_SMInputSvc { public: Unk_SMInputHandle FUN_1422b02f0(int nSlot); };
 Unk_SMInputSvc* FUN_14025e7a0();
-class Unk_SMOptions { public: bool FUN_14036d570(int nId); };
-Unk_SMOptions* FUN_140166410();
-class Unk_SMReconn { public: void FUN_140aad970(); };
-Unk_SMReconn* FUN_140e800e0();
+CFeatureManager* FUN_140166410();
+CReconnectionManagerCli* FUN_140e800e0();
 void FUN_14151f460(int n);
 class Unk_SMSceneHook { public: void FUN_1422b9ef0(int nScene); };
 Unk_SMSceneHook* FUN_1408e57f0();
@@ -1794,7 +1788,7 @@ efd::SyncResult CStateService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
 // @0x1417e30c0
 efd::AsyncResult CStateService::OnInit()
 {
-    if (FUN_1403ed2d0()->FUN_141bcfb70() == 0)
+    if (reinterpret_cast<Unk_SMWorld*>(WorldService::GetInstance())->FUN_141bcfb70() == 0)
         return efd::AsyncResult_Pending;
     bool bNone = FUN_1417e3620(FUN_14025e7a0()->FUN_1422b02f0(2));
     if (bNone)

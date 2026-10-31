@@ -26,6 +26,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/additionalactionadditional.h"
 
 // The header statics of this unit: header_statics_a.h's four, then the sort-name tables of two more headers.
 static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
@@ -46,12 +47,8 @@ int FUN_14123c580(void*);                                       // actor id
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1407196b0(unsigned);                               // number -> text
 CStringW FUN_1406329c0(const wchar_t* pszFormat, float* pfArg); // "{0}" substitution of a float
-class Unk_AsBuffInfo
+class Unk_AsBuffInfo : public AdditionalLevelData
 {
-public:
-    bool FUN_140171890();               // true for a buff the player does not control (shown "none" bordered)
-    bool FUN_140175290();               // no timer sweep
-    CString FUN_1401756c0();            // copy of the icon path
 };
 MS2Ptr<ASMovieClip> FUN_1409b6610(int nMovieId, CString strClass, __int64 a1, int a2);   // new flash class object as a clip
 int FUN_1409e2750(ASTooltip* pTip, Unk_AsBuffInfo* pInfo, int nOwnerLevel, unsigned nRemain);    // fill the buff tooltip
@@ -132,7 +129,7 @@ void ASEffect::Update()
             m_a0->vfunc_14(nFrame);
         return;
     }
-    if (m_buff->m_1c == m_buff->m_20 || m_buff->FUN_14096d810()->FUN_140175290())
+    if (m_buff->m_1c == m_buff->m_20 || m_buff->FUN_14096d810()->IsHideBuffIcon())
     {
         if (m_a0->FUN_1422c2300() != 0x1e)
             m_a0->vfunc_14(0x1e);
@@ -188,7 +185,7 @@ MS2_REPLACE_METHOD(0x1409B37C0, ASEffect, SetStartTime, 25, 0xDF53FE3F);
 // @0x1409b37e0
 bool ASEffect::IsBuffType()
 {
-    return m_buff->FUN_14096d810()->FUN_140171890();
+    return m_buff->FUN_14096d810()->IsBuff();
 }
 MS2_REPLACE_METHOD(0x1409B37E0, ASEffect, IsBuffType, 49, 0xE1E26C20);
 
@@ -243,7 +240,7 @@ void ASEffect::UpdateIcon()
         return;
     if (!m_e9)
         return;
-    if (m_buff->FUN_14096d810()->FUN_140171890())
+    if (m_buff->FUN_14096d810()->IsBuff())
         m_b0->vfunc_15("none");
     else if (IsOwnerAlive())
         m_b0->vfunc_15("yellow");
@@ -255,7 +252,7 @@ void ASEffect::UpdateIcon()
     else if (m_buff->m_24 <= 1)
         m_d0->FUN_1422c4cd0(L"");
     m_c0->FUN_1422c4cd0(L"");
-    Invoke("setIcon", m_buff->FUN_14096d810()->FUN_1401756c0());
+    Invoke("setIcon", m_buff->FUN_14096d810()->GetIcon());
     m_e9 = false;
 }
 

@@ -54,6 +54,8 @@
 #include "ms2/commonfiles/itemgem.h"
 #include "ms2/commonfiles/itemdata.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
@@ -70,15 +72,13 @@ public:
     void FUN_1411a5110(CString strCategory, CString strName, CString strExtra, int nKind, void* pXform, float fVolume,
         int nOwner);                                    // play a sound event
 };
-Unk_GmWorld* FUN_1403ed2d0();
-Unk_GmWorld* FUN_1403ed280();                           // the sound service
 
 class Unk_ItemEquipData : public CItemData { };         // CItem::FUN_140527840's record
 
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 bool FUN_140222e10(int nGemType);                       // the gem type is valid
-CString FUN_140219b10(int nGemType);                    // the name of a gem type
+CString Name_140219b10(int nGemType);                   // the name of a gem type
 void* FUN_140a50b50(DragSlot* pSlot);                   // the item slot behind a drag source
 __int64 FUN_141405a10(void* pItemSlot);                 // its item uid
 bool FUN_1409b0350(Scaleform::GFx::Value* pValue);
@@ -120,13 +120,13 @@ int GemSlot::vfunc_18(void* p)
     {
         if (m_spPC->FUN_140dba1c0() != 0)
         {
-            Unk_GmActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+            Unk_GmActor* pActor = reinterpret_cast<Unk_GmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
             if (pActor == 0)
                 return 0;
             void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
             if (pItemSlot != 0)
             {
-                MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
+                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
                 if (FUN_14126d880(spItem.get()) != 0)
                 {
                     int nType = spItem->FUN_140527900()->vfunc_1();
@@ -166,7 +166,7 @@ int GemSlot::vfunc_20()
     DragSlot::vfunc_20();
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
+        reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110(CString("ms2sound/sound/item"),
             ((CItem*)spItem)->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
@@ -177,7 +177,7 @@ int GemSlot::vfunc_21()
     DragSlot::vfunc_21();
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
+        reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110(CString("ms2sound/sound/item"),
             ((CItem*)spItem)->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
@@ -195,7 +195,7 @@ int GemSlot::FUN_14126d880(CItem* pItem)
 {
     if (m_spPC == 0)
         return 0;
-    Unk_GmActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_GmActor* pActor = reinterpret_cast<Unk_GmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pActor == 0)
         return 0;
     if (pItem == 0)
@@ -228,7 +228,7 @@ int GemSlot::vfunc_0(void* p)
 {
     if (m_spPC == 0)
         return 0;
-    Unk_GmActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_GmActor* pActor = reinterpret_cast<Unk_GmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pActor == 0)
         return 0;
     bool bInvalid = FUN_140222e10(m_nGemType) == false;
@@ -251,7 +251,7 @@ int GemSlot::vfunc_0(void* p)
     else
     {
         ASTooltip tip(2);
-        CStringW strTitle = StringFormat(L"$s_tooltip_myinfo_gem_{0}", FUN_140219b10(m_nGemType));
+        CStringW strTitle = StringFormat(L"$s_tooltip_myinfo_gem_{0}", Name_140219b10(m_nGemType));
         tip.FUN_1409e26b0(strTitle);
         tip.FUN_1409c6dc0(3);
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
@@ -265,7 +265,7 @@ int GemSlot::vfunc_8(void* p)
 {
     if (m_spPC == 0)
         return 0;
-    Unk_GmActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_GmActor* pActor = reinterpret_cast<Unk_GmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pActor == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
@@ -303,7 +303,7 @@ void GemSlot::vfunc_9()
     {
         ASObj obj(m_value18, 2);
         if (obj.FUN_1422ba9a0() == 0)
-            obj.FUN_1407cba60("m_strSlotType", FUN_140219b10(m_nGemType));
+            obj.FUN_1407cba60("m_strSlotType", Name_140219b10(m_nGemType));
     }
 }
 

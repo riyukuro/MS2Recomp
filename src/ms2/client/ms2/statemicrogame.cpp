@@ -41,6 +41,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/commandchat.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -91,17 +93,15 @@ public:
     PCBase* FUN_141bd1290(int nId);                      // 0x141bd1290
     PCBase* FUN_141bd1530(__int64 nId);                  // 0x141bd1530
 };
-Unk_MgWorld* FUN_1403ed2d0();
 
 // The UI manager.
 class Unk_MgUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-Unk_MgUIMgr* FUN_1403ed2b0();
 
 template <class T> T* Unk_MgGetDialog(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_MgUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_MgUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -190,7 +190,6 @@ struct Unk_RayCastInfo
 MS2_CHECK_SIZE(Unk_RayCastInfo, 0x68);
 const char* FUN_1408ac310(const efd::utf8string& s);
 int FUN_1408a01e0(CStringA s);
-class Unk_MgWorldQuery { public: int FUN_141bcafa0(egf::Entity* pEntity); };
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 void FUN_141276f80(const Unk_CommandChat& chat);         // 0x141276f80 send the chat line
@@ -437,7 +436,7 @@ void StateMicroGameRps::FUN_140b87310(int nMode, int nCard, int nPick)
         return;
     m_spRps->m_n1c = nCard;
     m_spRps->m_n20 = nMode;
-    m_spRps->m_str = spGame->m_actionNames[nCard];
+    m_spRps->m_str = spGame->m_play.m_actionNames[nCard];
     pRider->FUN_14166cc40(0x9b);
 }
 
@@ -476,10 +475,10 @@ void StateMicroGameRps::FUN_140b877c0()
     MS2Ptr<RpsGameData> spGame = spEvent->m_spGameData;
     if (spGame == 0)
         return;
-    if (spGame->m_messages.IsEmpty() == true)
+    if (spGame->m_play.m_messages.IsEmpty() == true)
         return;
-    int nIndex = FUN_140768010(spGame->m_messages.GetCount(), 0);
-    CStringW strText = spGame->m_messages.GetAt(nIndex);
+    int nIndex = FUN_140768010(spGame->m_play.m_messages.GetCount(), 0);
+    CStringW strText = spGame->m_play.m_messages.GetAt(nIndex);
     Unk_CommandChat chat;
     chat.kind = 0x17;
     chat.message = FUN_140298ea0(strText);
@@ -489,7 +488,7 @@ void StateMicroGameRps::FUN_140b877c0()
 // @0x140b879d0
 PCBase* StateMicroGameRps::FUN_140b879d0()
 {
-    Unk_MgWorld* pWorld = FUN_1403ed2d0();
+    Unk_MgWorld* pWorld = reinterpret_cast<Unk_MgWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return 0;
     if (m_spRps.get() != 0)
@@ -682,7 +681,7 @@ bool FUN_140b884e0(Vector3& kPoint)
         return false;
     if (((Unk_MgEntity*)kHit.m_hitEntity)->FUN_1408a9bd0()->ContainsModel(0x72f49865))
         return false;
-    if (reinterpret_cast<Unk_MgWorldQuery*>(FUN_1403ed2d0())->FUN_141bcafa0((egf::Entity*)kHit.m_hitEntity))
+    if (reinterpret_cast<WorldService*>(reinterpret_cast<Unk_MgWorld*>(WorldService::GetInstance()))->FUN_141bcafa0((egf::Entity*)kHit.m_hitEntity))
         return false;
     return true;
 }
@@ -701,7 +700,7 @@ CStringW FUN_140b887d0(__int64 nActorId, int nWhy)
     CStringW strPartner(L"");
     do
     {
-        PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(nActorId);
+        PCBase* pPartner = reinterpret_cast<Unk_MgWorld*>(WorldService::GetInstance())->FUN_141bd1530(nActorId);
         if (pPartner == 0)
             break;
         strPartner = pPartner->vfunc_77();
@@ -971,7 +970,7 @@ void StateMicroGameCoupleDance::FUN_140b89880(int nStage, bool bGood, int nDance
 // @0x140b89dd0
 PCBase* StateMicroGameCoupleDance::FUN_140b89dd0()
 {
-    Unk_MgWorld* pWorld = FUN_1403ed2d0();
+    Unk_MgWorld* pWorld = reinterpret_cast<Unk_MgWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return 0;
     if (m_spDance.get() != 0)
@@ -1227,7 +1226,7 @@ void StateMicroGameCoupleDance::FUN_140b8b020(const std::vector<int>& aStages)
 CStringW FUN_140b8b0b0(__int64 nActorId, int nWhy)
 {
     CStringW strPartner(L"");
-    PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(nActorId);
+    PCBase* pPartner = reinterpret_cast<Unk_MgWorld*>(WorldService::GetInstance())->FUN_141bd1530(nActorId);
     if (pPartner != 0)
         strPartner = pPartner->vfunc_77();
     CStringW strMessage(L"");

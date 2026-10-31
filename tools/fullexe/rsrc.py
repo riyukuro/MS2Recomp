@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """The exe's resources (.rsrc: icons, dialogs, version, string tables, RT_MANIFEST) as a .res for the full-exe link.
-    rsrc.py
+    rsrc.py [--res <file.res>]
 Writes <OUT>/shim/exe.res (a 32-bit .res file, read from the exe's resource tree; exe data: stays in work/). The link
-takes it as an input with /manifest:no, since the manifest is resource 24/1 inside it."""
+takes it as an input with /manifest:no, since the manifest is resource 24/1 inside it. --res takes a compiled .res instead
+(tools/extract_resources.py --compile: rc.exe on the extracted MapleStory2.rc; same entries) and copies it there."""
 import os, struct, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import OUT, EXE  # noqa: E402
@@ -25,6 +26,15 @@ def entry(typ, name, lang, data):
 
 
 def main():
+    if len(sys.argv) > 2 and sys.argv[1] == "--res":
+        os.makedirs(os.path.join(OUT, "shim"), exist_ok=True)
+        path = os.path.join(OUT, "shim", "exe.res")
+        data = open(sys.argv[2], "rb").read()
+        if data[:16] != struct.pack("<IIHHHH", 0, 32, 0xFFFF, 0, 0xFFFF, 0):    # the empty entry every .res starts with
+            sys.exit("rsrc: %s is not a 32-bit .res file" % sys.argv[2])
+        open(path, "wb").write(data)
+        print("%s: copied from %s, %d bytes" % (path, sys.argv[2], len(data)))
+        return
     pe = pefile.PE(EXE, fast_load=True)
     pe.parse_data_directories(directories=[pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_RESOURCE"]])
     res = bytearray(entry(struct.pack("<HH", 0xFFFF, 0), struct.pack("<HH", 0xFFFF, 0), 0, b""))

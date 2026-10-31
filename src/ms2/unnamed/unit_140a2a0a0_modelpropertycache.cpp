@@ -13,6 +13,7 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/ms2recover.h"
+#include "ms2/commonfiles/filesystem.h"
 
 
 // The 16-byte CPtred pointer instantiated for the npc spawn rows (see TPtr<CFieldSpawnTag> in fieldspawn.h).
@@ -45,7 +46,7 @@ struct Unk_MpVec3 { float x, y, z; };   // field view of Unk_CommonVec3
 class TiXmlElement;
 TiXmlElement* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
 const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);
-struct Unk_FlatFiles { int FUN_1403974b0(TiXmlDocument*, const char*, int, bool, bool); };
+struct Unk_FlatFiles : public CFileSystem { };
 Unk_FlatFiles* FUN_140166420();
 void FUN_140399100(CStringA strExt, CStringA strDir, ATL::CAtlArray<CStringA, ATL::CElementTraits<CStringA> >& arrFiles, CStringA strPrefix, bool bRecursive);
 void FUN_14015f050(CStringA& str, ATL::CAtlArray<CStringA, ATL::CElementTraits<CStringA> >& arrOut, const char* pszDelim);

@@ -11,10 +11,12 @@
 
 #include "ms2/placeholder/cserverstring.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the xml loader and logger the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
@@ -27,8 +29,7 @@ CString FUN_14016a5c0(const char* psz, int nCodePage);                  // narro
 bool FUN_140841300(const CStringW& str, const char* psz);               // string equals
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // StringFormat with one argument
 
-class Unk_SsTextFilter { public: void FUN_1416fb380(CStringW& strText); void FUN_1416fb340(CStringW& strText); };
-Unk_SsTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 
 bool CServerStringGroup::s_bInit;
 

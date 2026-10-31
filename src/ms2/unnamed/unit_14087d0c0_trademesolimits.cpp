@@ -46,12 +46,11 @@ __int64 FUN_14087d150(__int64 nMeso, float fRate)
 }
 
 // @0x14087d200
-// MS2-FUNCTIONAL: range test branch layout differs (exe falls into the xor-al false case)
 bool FUN_14087d200(__int64 nMeso)
 {
     if (nMeso == 0)
         return true;
-    if (nMeso >= FUN_14087d0c0() && FUN_14087d0f0() >= nMeso)
-        return true;
-    return false;
+    if (nMeso < FUN_14087d0c0() || FUN_14087d0f0() < nMeso)
+        return false;
+    return true;
 }

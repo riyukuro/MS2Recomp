@@ -71,6 +71,7 @@
 
 // ---- statics (the .di of this unit constructs them) ----
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/commonfiles/gameeventvalue.h"
 
 // MS2Ptr<ASUIComponent>: the exe shares every member of it (see tabcontentspetevolution.cpp).
 extern template class MS2Ptr<ASUIComponent>;
@@ -132,11 +133,9 @@ extern Unk_PcFieldTable* DAT_143abfb18;
 Unk_PcFieldTable* FUN_140cb17d0();
 
 // The event value manager's battle pet spawn table.
-class Unk_PcBattleSpawn { public: void FUN_140426bc0(unsigned nPet, ATL::CAtlArray<unsigned>& fields); };
+class Unk_PcBattleSpawn : public CGameEventValueBattlePetSpawn { };
 class Unk_PcEventManager { public: Unk_PcBattleSpawn* FUN_1403ed040(); };
 Unk_PcEventManager* FUN_140302b00();
-
-CFieldMetaTable* FUN_140700390();
 
 // Camera of the pet preview (see uiitempetboxdialog.cpp): the position and target are built from an efd::Point3.
 struct Unk_PetBoxVector
@@ -426,7 +425,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
         {
             CStringW strPlace;
             ATL::CAtlArray<unsigned> arrFields;
-            FUN_140700390()->FUN_1406fb060(nPet, arrFields);
+            TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb060(nPet, arrFields);
             for (size_t i = 0; i < arrFields.GetCount(); i++)
             {
                 const unsigned* pField = &arrFields[i];
@@ -437,7 +436,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
                     continue;
                 unsigned nOut = 0;
                 unsigned nKey = *pField;
-                if (FUN_140700390()->FUN_1406fc110(*pField, &nOut) != 0)
+                if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(*pField, &nOut) != 0)
                     nKey = nOut;
                 MS2Ptr<Unk_PcFieldInfo> spField = FUN_140cb17d0()->FUN_141b978e0(nKey);
                 if (spField == 0)
@@ -452,7 +451,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
         {
             CStringW strPlace;
             ATL::CAtlArray<unsigned> arrFields;
-            FUN_140302b00()->FUN_1403ed040()->FUN_140426bc0(nPet, arrFields);
+            FUN_140302b00()->FUN_1403ed040()->GetFields(nPet, arrFields);
             for (size_t i = 0; i < arrFields.GetCount(); i++)
             {
                 const unsigned* pField = &arrFields[i];
@@ -463,7 +462,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
                     continue;
                 unsigned nOut = 0;
                 unsigned nKey = *pField;
-                if (FUN_140700390()->FUN_1406fc110(*pField, &nOut) != 0)
+                if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(*pField, &nOut) != 0)
                     nKey = nOut;
                 MS2Ptr<Unk_PcFieldInfo> spField = FUN_140cb17d0()->FUN_141b978e0(nKey);
                 if (spField == 0)

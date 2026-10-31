@@ -46,10 +46,11 @@
 
 // The statics of the common header (the sort names, "skill", "stun" and the condition map).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 class Unk_CommonLog { public: void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg); };
 Unk_CommonLog* FUN_140166440();

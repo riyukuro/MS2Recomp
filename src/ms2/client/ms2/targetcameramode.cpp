@@ -15,6 +15,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/worldservice.h"
 
 extern "C" float (__cdecl* __imp_tanf)(float);      // the exe calls tanf through its import
 
@@ -24,13 +26,7 @@ extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 extern float g_143aef240;                   // remembered camera distance (vfunc_7 / vfunc_24)
 
 // The input state (FUN_14025e7c0).
-class Unk_InputState
-{
-public:
-    bool FUN_14116d950(int nKey, bool b, int n);     // key held
-    bool FUN_14116d9c0(int nKey, bool b, int n);     // key pressed
-};
-Unk_InputState* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 
 class Unk_BuffContainer
 {
@@ -67,13 +63,11 @@ public:
 };
 
 // The game context (FUN_1403ed2d0).
-class Unk_GameContext
+class Unk_GameContext : public WorldService
 {
 public:
-    float FUN_141bd4120();                          // extra zoom range
     Unk_LocalPlayer* FUN_141bd0cc0();
     Unk_CameraOptionPtr FUN_141bd30a0();            // copy of +0x298
-    float FUN_141bcfc50();                          // default zoom
 };
 Unk_GameContext* FUN_1403ed2d0();
 
@@ -132,7 +126,7 @@ float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 float FUN_141b6fdb0(float t, int nType);            // easing
 bool FUN_14028d470(float a, float b);               // a == b (within epsilon)
-int FUN_140ae8540();                                // reloads the camera xml (returns 0 on failure)
+int LoadTestCamerValue();                           // reloads the camera xml (returns 0 on failure)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -815,7 +809,7 @@ MS2_REPLACE_METHOD(0x14183cec0, CTargetCameraMode, vfunc_38, 2717, 0x0734DB2A);
 // @0x14183d970
 BOOL CTargetCameraMode::vfunc_31()
 {
-    if (FUN_140ae8540())
+    if (LoadTestCamerValue())
         return 1;
     return 0;
 }

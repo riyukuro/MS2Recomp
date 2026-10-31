@@ -288,9 +288,10 @@ public:
 MS2_CHECK_SIZE(CGuideConditionDialog, 0x60);
 
 // 16 bytes. One "cube" child of a Position condition: a point and the radius around it.
-struct Unk_GuideCube : Vector3
+struct Unk_GuideCube
 {
     Unk_GuideCube() {}                                      // 0x1413b3580 (the exe leaves fRange unset)
+    Vector3 vPos;
     float fRange;
 };
 MS2_CHECK_SIZE(Unk_GuideCube, 0x10);

@@ -28,6 +28,7 @@
 #include "gameeventshutdown.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
 
 // Out-of-unit helpers.
 // The factory registrar: its ctor (0x140316aa0, commonfiles\dungeonmissiondata.cpp) registers the factory under the
@@ -58,7 +59,6 @@ GameEvent* FUN_14041e230();
 // The per-kind shut-down value (gameeventvalue.cpp): OnStart takes a reference on an id, vfunc_6 releases it again.
 class Unk_ShutdownEventValue;
 class CGameEventValueManager;
-CGameEventValueManager* FUN_140302b00();                                   // TSingleton<CGameEventValueManager>::GetInstance
 Unk_ShutdownEventValue* FUN_14046d0d0(CGameEventValueManager* pManager, int nValueId);
 void FUN_1407d10e0(Unk_ShutdownEventValue* pValue, int nId);
 void FUN_1407d1160(Unk_ShutdownEventValue* pValue, int nId);
@@ -66,7 +66,7 @@ void FUN_1407d1160(Unk_ShutdownEventValue* pValue, int nId);
 // The comma splitter (commonstringtable.cpp) and the token reader.
 void FUN_140274fc0(const CStringW& text, ATL::CAtlArray<unsigned>& ids, const wchar_t* delims);
 void FUN_14025a680(CStringW& src, ATL::CAtlArray<CStringW>& out, const wchar_t* pszSep);
-int FUN_140218e60(const CStringW& str);
+int Parse_140218e60(const CStringW& str);
 
 // ---- dynamic initializers ----
 // The 14 registrations, in .text$di order (0x1400b8890..0x1400b8ca0); the two NULL factories are the classes whose
@@ -106,14 +106,14 @@ void GameEventShutdown::vfunc_2() { FUN_140274fc0(m_68, m_items, L","); }
 void GameEventShutdown::OnStart()
 {
     for (size_t i = 0; i < m_items.GetCount(); i++)
-        FUN_1407d10e0(FUN_14046d0d0(FUN_140302b00(), m_nId), m_items[i]);
+        FUN_1407d10e0(FUN_14046d0d0(TSingleton<CGameEventValueManager>::GetInstance(), m_nId), m_items[i]);
 }
 
 // @0x14041d610
 void GameEventShutdown::vfunc_6()
 {
     for (size_t i = 0; i < m_items.GetCount(); i++)
-        FUN_1407d1160(FUN_14046d0d0(FUN_140302b00(), m_nId), m_items[i]);
+        FUN_1407d1160(FUN_14046d0d0(TSingleton<CGameEventValueManager>::GetInstance(), m_nId), m_items[i]);
 }
 
 // MS2-PIN: ??1GameEventShutdown@@UEAA@XZ 0x14041e430 ; implicit dtor (no vftable store)
@@ -138,13 +138,13 @@ void GameEventShutdownNoParam::vfunc_2() {}
 // @0x14041d790
 void GameEventShutdownNoParam::OnStart()
 {
-    FUN_1407d10e0(FUN_14046d0d0(FUN_140302b00(), m_nId), m_id);
+    FUN_1407d10e0(FUN_14046d0d0(TSingleton<CGameEventValueManager>::GetInstance(), m_nId), m_id);
 }
 
 // @0x14041d7d0
 void GameEventShutdownNoParam::vfunc_6()
 {
-    FUN_1407d1160(FUN_14046d0d0(FUN_140302b00(), m_nId), m_id);
+    FUN_1407d1160(FUN_14046d0d0(TSingleton<CGameEventValueManager>::GetInstance(), m_nId), m_id);
 }
 
 // MS2-PIN: ??1GameEventShutdownNoParam@@UEAA@XZ 0x14041e560 ; implicit dtor (no vftable store)
@@ -178,7 +178,7 @@ void GameEventShutdownDungeonMatch::vfunc_2()
 
     FUN_14025a680(m_68, tokens, L",");
     for (unsigned i = 0; i < tokens.GetCount(); i++) {
-        int nId = FUN_140218e60(tokens[i]);
+        int nId = Parse_140218e60(tokens[i]);
         if (nId == 0)
             continue;
         m_items.Add((unsigned)nId);

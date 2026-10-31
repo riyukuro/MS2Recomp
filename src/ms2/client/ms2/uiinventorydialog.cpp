@@ -239,6 +239,15 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/uiitemgetoptiondialog.h"
+#include "ms2/placeholder/gfxmanager.h"
+#include "ms2/client/ms2/uigroupmessenger.h"
+#include "ms2/client/ms2/guildmanager.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/bigdatalogsystem.h"
+#include "ms2/client/ms2/trademanagerex.h"
 
 // ---- unit-local views of exe objects (names assumed; layouts only as far as this unit reads them) ----------------------
 
@@ -278,8 +287,6 @@ public:
 // The tab bar's data provider setter.
 class Unk_InvTabBar : public ASButtonBar
 {
-public:
-    void FUN_1422e2db0(const Scaleform::GFx::Value& provider);
 };
 
 // The "m_itemBreak" button: enabled state.
@@ -295,14 +302,10 @@ int FUN_1409c1750(const Scaleform::GFx::Value& v);                  // the value
 // The movie manager's key focus.
 class Unk_InvSwfManager : public UISwfEntityManager
 {
-public:
-    int FUN_1422d4e20(CString strKey);                              // has the key focus
-    void FUN_1422d4dd0(CString strKey);                      // take the key focus
 };
 
 // The local player.
 class Unk_InvWorld { public: MyPC* FUN_141bd0cc0(); };
-Unk_InvWorld* FUN_1403ed2d0();
 int FUN_141658f30(MyPC* pPc);                                       // a bank privilege (pc bang)
 int FUN_141662de0(MyPC* pPc);                                       // a bank privilege (vip)
 __int64 FUN_141662830(MyPC* pPc);                                   // the last bank call time
@@ -316,10 +319,9 @@ public:
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
 Unk_InvItemEvents* FUN_140a6a840();
-UIStatusEventDispatcher* FUN_140aa6d40();
 
 // The player inventory (global 0x143ab2a90) and its free helpers.
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 int FUN_140a66510(int nTab);                                        // the base slot count of a tab
 int FUN_140a66750(int nTab);                                        // the extra slot count of a tab
 extern __int64 DAT_143ab2898;                                       // the mesos
@@ -350,20 +352,17 @@ public:
 Unk_InvPlatform* FUN_140d86260();
 
 // The game feature switches.
-class Unk_InvFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_InvFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 // The key state.
 class Unk_InvKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
 Unk_InvKeys* FUN_14025e7c0();
 
 // The localized "$s_..." strings.
-class Unk_InvStringKeys { public: CStringW FUN_1422b0570(const CString& strKey); };
-Unk_InvStringKeys* FUN_14025e7a0();
+GFxManager* FUN_14025e7a0();
 
 // The text filter of the common strings.
-class Unk_InvStrings { public: MS2Ptr<CBanTextChecker> FUN_140229a50(); };
-Unk_InvStrings* FUN_14025e7d0();
+CommonString* FUN_14025e7d0();
 
 // Field flags (the "no item merge here" map flag).
 int FUN_1402c4c90(void* pFlags, int nFlag);
@@ -377,22 +376,17 @@ UIDialog* FUN_1405346e0(int nUiId);                                 // UIItemBre
 UIDialog* FUN_140d27300(int nUiId);
 UIDialog* FUN_140d27760(int nUiId);
 UIDialog* FUN_140de48d0(int nUiId);                                 // UIStoreDialog
-class Unk_InvOptionDialog { public: void FUN_1419da620(int n); };
-Unk_InvOptionDialog* FUN_140cbe260(int nUiId);
+UIItemGetOptionDialog* FUN_140cbe260(int nUiId);
 class Unk_InvTradeManager;
-Unk_InvTradeManager* FUN_14140ea30();
 int FUN_14185d8b0(Unk_InvTradeManager* p);
 
 // The UI service.
-class Unk_InvUIService
+class Unk_InvUIService : public CUIService
 {
 public:
     void FUN_141adc530(int nUiId);                                  // open
     void FUN_141adc750(int nUiId);                                  // toggle
-    void FUN_141add1f0();                                           // the "not enough mesos" shop
-    int FUN_141adbb00();                                            // a window takes the keys
 };
-Unk_InvUIService* FUN_1403ed2b0();
 extern bool DAT_143af62d0;                                          // the UI development mode ("initData")
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
@@ -415,7 +409,7 @@ void FUN_14151f200();
 UIMessageBox* FUN_14151f890();
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_1409eec40(int nStringId);
+CStringW BlockFormat(int nStringId);
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);         // str == sz
@@ -429,7 +423,7 @@ CStringW FUN_1413fa9b0(const CStringW& str);                        // lower cas
 CStringW FUN_1409404f0(__int64 n);                                  // a number with thousand separators
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
 bool FUN_140164830(const CStringW& a, const CStringW& b);           // differ
-__int64 FUN_140869440();                                            // now (seconds)
+__int64 GetServerTime();                                            // now (seconds)
 
 // The notice with two format arguments (a template over the argument types in the original).
 template <class A, class B> void Unk_InvNotice(int nStringId, int nA, int nB, const A& a, const B& b)
@@ -568,7 +562,7 @@ int UIInventoryDialog::vfunc_65()
     if (UIDialog::vfunc_65() == 0)
         return 0;
     FUN_140a6a840()->FUN_1419cae20(this);
-    FUN_140aa6d40()->FUN_141b0cd00(this);
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(this);
     return 1;
 }
 MS2_REPLACE_METHOD(0x141997280, UIInventoryDialog, vfunc_65, 158, 0);
@@ -577,7 +571,7 @@ MS2_REPLACE_METHOD(0x141997280, UIInventoryDialog, vfunc_65, 158, 0);
 void UIInventoryDialog::vfunc_67()
 {
     FUN_140a6a840()->FUN_1419caeb0(this);
-    FUN_140aa6d40()->FUN_141b0cd90(this);
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(this);
     FUN_14199be00(INV_TAB_EQUIP);
     FUN_14199be00(INV_TAB_LIFE);
     FUN_14199be00(INV_TAB_MISC);
@@ -702,7 +696,7 @@ MS2_REPLACE_METHOD_VIA(0x141997980, UIInventoryDialog, UIStatusEventListener, vf
 // @0x1419979e0
 void UIInventoryDialog::vfunc_26(int nItemId)
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = reinterpret_cast<Unk_InvWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (pPc->FUN_14166c930() != 1 && pPc->FUN_14166c930() != 0xe)
@@ -753,7 +747,7 @@ void UIInventoryDialog::vfunc_80(void* pRequest)
             else
             {
                 m_1e0->FUN_1422e0bd0(L"");
-                FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, CStringW(L""));
+                FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
             }
         }
     }
@@ -854,7 +848,7 @@ int UIInventoryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 m_190 = pMsg->FUN_1422b8a10();
                 if (vfunc_55() != 0)
                 {
-                    FUN_1403ed2b0()->FUN_141adc530(vfunc_48());
+                    reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(vfunc_48());
                 }
                 else if (FUN_1422dc390() != 0)
                 {
@@ -878,7 +872,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         int nTab = FUN_141999de0();
         if (-1 < nTab && nTab < 0xf)
         {
-            if (DAT_143ab2a90.FUN_140a5cf30(nTab) == 0)
+            if (g_143ab2a90.FUN_140a5cf30(nTab) == 0)
                 return 1;
             if (0 < FUN_14199d840(nTab))
             {
@@ -899,26 +893,26 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     }
     if (_stricmp("onClickItemOption", szMethod) == 0)
     {
-        if (Unk_InvOptionDialog* pDlg = FUN_140cbe260(0x4e6c))
+        if (UIItemGetOptionDialog* pDlg = FUN_140cbe260(0x4e6c))
         {
-            pDlg->FUN_1419da620(1);
-            FUN_1403ed2b0()->FUN_141adc530(0x4e6c);
+            pDlg->SetMode(1);
+            reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e6c);
         }
         return 1;
     }
     if (_stricmp("onClickItemBreak", szMethod) == 0)
     {
-        FUN_1403ed2b0()->FUN_141adc750(0x4e8d);
+        reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e8d);
         return 1;
     }
     if (_stricmp("onClickItemLock", szMethod) == 0)
     {
-        FUN_1403ed2b0()->FUN_141adc750(0x4f08);
+        reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f08);
         return 1;
     }
     if (_stricmp("onClickItemSocketAndGem", szMethod) == 0)
     {
-        FUN_1403ed2b0()->FUN_141adc750(0x4f0a);
+        reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f0a);
         return 1;
     }
     if (_stricmp("onClickItemEnchant", szMethod) == 0)
@@ -928,7 +922,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     }
     if (_stricmp("onClickItemEnchantTransform", szMethod) == 0)
     {
-        MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pPc = reinterpret_cast<Unk_InvWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPc != 0 && pPc->vfunc_65() == 1)
         {
             FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_error_talk_battle_state_force_talk")), 1, 1);
@@ -958,7 +952,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             FUN_141275260(0x2f7, 1, 1);
             return 1;
         }
-        MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pPc = reinterpret_cast<Unk_InvWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPc != 0 && pPc->vfunc_65() == 1)
         {
             FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_error_talk_battle_state_force_talk")), 1, 1);
@@ -974,7 +968,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     }
     if (_stricmp("onClickItemRemakeOption", szMethod) == 0)
     {
-        MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+        MyPC* pPc = reinterpret_cast<Unk_InvWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPc == 0)
             return 0;
         pPc->FUN_141528970();
@@ -995,12 +989,12 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             CStringW strArg = data.FUN_1422b8f40();
             if (FUN_14199d980() == 0)
             {
-                CStringW strMsg = FUN_1409eec40(0x267);
+                CStringW strMsg = BlockFormat(0x267);
                 FUN_140d73aa0(CStringW(strMsg), 0, 0, CStringW(L""));
             }
             else
             {
-                __int64 nPrice = DAT_143ab2a90.FUN_140a5d0f0();
+                __int64 nPrice = g_143ab2a90.FUN_140a5d0f0();
                 CStringW strMsg = FUN_14028dee0(0x266, nPrice, strArg, 6);
                 FUN_140d73aa0(CStringW(strMsg), 1, this, CStringW(L"expandSlot"));
             }
@@ -1158,7 +1152,7 @@ MS2_REPLACE_METHOD(0x141999F10, UIInventoryDialog, FUN_141999f10, 73, 0);
 // MS2-FUNCTIONAL: the original reads the dialogs' vfunc_55 without null checks (kept)
 void UIInventoryDialog::FUN_141999f60()
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = reinterpret_cast<Unk_InvWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     m_1a4 = 0;
@@ -1212,7 +1206,7 @@ void UIInventoryDialog::FUN_14199a3f0(__int64 nItemUid)
 {
     if (vfunc_55() != 0)
         return;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
     if (!spItem)
         return;
     if (InventorySlotBag* pBag = FUN_14140fb30(FUN_1422c8e90(m_188)))
@@ -1272,7 +1266,7 @@ MS2_REPLACE_METHOD(0x14199A620, UIInventoryDialog, FUN_14199a620, 743, 0);
 // @0x14199a910
 void UIInventoryDialog::OnClickOpenBank()
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = reinterpret_cast<Unk_InvWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc != 0)
     {
         UIDialog* pStore = FUN_140de48d0(0x4e47);
@@ -1281,7 +1275,7 @@ void UIInventoryDialog::OnClickOpenBank()
             pStore->vfunc_69();
             return;
         }
-        __int64 nNow = FUN_140869440();
+        __int64 nNow = GetServerTime();
         int nCooltime = *FUN_1401d3200()->HomeBankCallCooltime.Get() / 1000;
         int nElapsed = (int)(nNow - FUN_141662830(pPc));
         if (nElapsed < nCooltime)
@@ -1300,7 +1294,7 @@ MS2_REPLACE_METHOD(0x14199A910, UIInventoryDialog, OnClickOpenBank, 390, 0);
 // @0x14199aaa0
 void UIInventoryDialog::OnClickItemEnchant()
 {
-    FUN_1403ed2b0()->FUN_141adc750(0x4e91);
+    reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e91);
 }
 MS2_REPLACE_METHOD(0x14199AAA0, UIInventoryDialog, OnClickItemEnchant, 32, 0);
 
@@ -1343,7 +1337,7 @@ bool UIInventoryDialog::FUN_14199ac30(int nResult, const CMsgBoxData& box)
                 pBox->FUN_1419f82b0(GetStringCommon(0xd));
             return false;
         }
-        if (CBanTextChecker* pChecker = FUN_14025e7d0()->FUN_140229a50().get())
+        if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker().get())
         {
             CStringW strMsg;
             if (pChecker->FUN_140225210(strName, strMsg, 0) != 0)
@@ -1352,7 +1346,7 @@ bool UIInventoryDialog::FUN_14199ac30(int nResult, const CMsgBoxData& box)
                 return false;
             }
         }
-        CItem* pItem = DAT_143ab2a90.FUN_140a5d680(nItemUid).get();
+        CItem* pItem = g_143ab2a90.FUN_140a5d680(nItemUid).get();
         if (pItem == 0)
             return false;
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1405c2690(CStringW(L"s_coupleeffect_send_confirm"), strName), 0, CStringW(L"")))
@@ -1372,12 +1366,12 @@ bool UIInventoryDialog::FUN_14199b100(int nResult, const CMsgBoxData& box)
 {
     __int64 nItemUid = box.FUN_141a02f10(0, 0);
     const CStringW& strName = box.FUN_141a02fd0(1, CStringW());
-    CItem* pItem = DAT_143ab2a90.FUN_140a5d680(nItemUid).get();
+    CItem* pItem = g_143ab2a90.FUN_140a5d680(nItemUid).get();
     if (pItem == 0)
         return false;
     if (nResult == 0)
     {
-        DAT_143ab2a90.FUN_140a63880(pItem, strName);
+        g_143ab2a90.FUN_140a63880(pItem, strName);
     }
     else
     {
@@ -1414,7 +1408,7 @@ bool UIInventoryDialog::FUN_14199b4e0(int nResult, const CMsgBoxData& box)
         if (strName.IsEmpty() || strName.GetLength() >= 0x20)
             return false;
         CStringW strMsg;
-        MS2Ptr<CBanTextChecker> spChecker = FUN_14025e7d0()->FUN_140229a50();
+        MS2Ptr<CBanTextChecker> spChecker = FUN_14025e7d0()->GetChecker();
         if (spChecker.get() != 0)
         {
             if (spChecker->FUN_140225630(strName, strMsg) == 0)
@@ -1479,7 +1473,7 @@ void UIInventoryDialog::FUN_14199ba10()
     if (m_210 == 0)
         return;
     m_1d8 = "";
-    int nCount = DAT_143ab2a90.FUN_140a5d050(m_194);
+    int nCount = g_143ab2a90.FUN_140a5d050(m_194);
     FUN_14140ed60(m_188);
     InventorySlotBag* pBag = FUN_14140eca0(m_188, m_194, nCount);
     if (pBag == 0)
@@ -1511,7 +1505,7 @@ void UIInventoryDialog::FUN_14199bc00()
             if (nButton == -1)
                 continue;
             Unk_Inventory::ItemArray items;
-            DAT_143ab2a90.FUN_140a60880((int)i, items);
+            g_143ab2a90.FUN_140a60880((int)i, items);
             int bNew = 0;
             for (unsigned j = 0; j < items.GetCount(); ++j)
             {
@@ -1533,7 +1527,7 @@ MS2_REPLACE_METHOD(0x14199BC00, UIInventoryDialog, FUN_14199bc00, 499, 0);
 void UIInventoryDialog::FUN_14199be00(int nTab)
 {
     Unk_Inventory::ItemArray items;
-    DAT_143ab2a90.FUN_140a60880(nTab, items);
+    g_143ab2a90.FUN_140a60880(nTab, items);
     for (unsigned i = 0; i < items.GetCount(); ++i)
     {
         MS2Ptr<CItem> spItem = items[i];
@@ -1566,9 +1560,9 @@ MS2_REPLACE_METHOD(0x14199BED0, UIInventoryDialog, FUN_14199bed0, 232, 0);
 // @0x14199bfc0
 int UIInventoryDialog::FUN_14199bfc0()
 {
-    if (FUN_14185d8b0(FUN_14140ea30()) == 0)
+    if (FUN_14185d8b0(reinterpret_cast<Unk_InvTradeManager*>(TSingleton<CTradeManagerEx>::GetInstance())) == 0)
         return 0;
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = reinterpret_cast<Unk_InvWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc != 0 && pPc->FUN_14166ce30() == 0)
         return 1;
     return 0;
@@ -1593,8 +1587,8 @@ MS2_REPLACE_METHOD(0x14199C020, UIInventoryDialog, vfunc_66, 158, 0);
 // @0x14199c0d0
 void UIInventoryDialog::FUN_14199c0d0()
 {
-    unsigned int nUsed = DAT_143ab2a90.FUN_140a5cf30(m_194);
-    unsigned int nTotal = DAT_143ab2a90.FUN_140a5d050(m_194);
+    unsigned int nUsed = g_143ab2a90.FUN_140a5cf30(m_194);
+    unsigned int nTotal = g_143ab2a90.FUN_140a5d050(m_194);
     if (MS2Ptr<Unk_InvExpandLabel> spLabel = GetChild<Unk_InvExpandLabel>("m_expand"))
     {
         spLabel->FUN_1422e4a50(StringFormat(L"{0}/{1}", nUsed, nTotal));
@@ -1655,7 +1649,7 @@ MS2_REPLACE_METHOD(0x14199C2B0, UIInventoryDialog, FUN_14199c2b0, 851, 0);
 void UIInventoryDialog::FUN_14199c610(CStringW strSearch, ATL::CAtlList<CStringW>& names)
 {
     Unk_Inventory::ItemArray items;
-    DAT_143ab2a90.FUN_140a60880(m_194, items);
+    g_143ab2a90.FUN_140a60880(m_194, items);
     for (unsigned i = 0; i < items.GetCount(); ++i)
     {
         MS2Ptr<CItem> spItem = items[i];
@@ -1794,7 +1788,7 @@ MS2_REPLACE_METHOD(0x14199D1C0, UIInventoryDialog, FUN_14199d1c0, 1646, 0);
 int UIInventoryDialog::FUN_14199d840(int)
 {
     Unk_Inventory::ItemArray items;
-    DAT_143ab2a90.FUN_140a60880(m_194, items);
+    g_143ab2a90.FUN_140a60880(m_194, items);
     int nCount = 0;
     for (size_t i = 0; i < items.GetCount(); ++i)
     {
@@ -1818,7 +1812,7 @@ MS2_REPLACE_METHOD(0x14199D920, UIInventoryDialog, FUN_14199d920, 81, 0);
 // @0x14199d980
 int UIInventoryDialog::FUN_14199d980()
 {
-    if (DAT_143ab2a90.FUN_140a5cdc0(m_194))
+    if (g_143ab2a90.FUN_140a5cdc0(m_194))
         return 0;
     return 1;
 }
@@ -1827,7 +1821,7 @@ MS2_REPLACE_METHOD(0x14199D980, UIInventoryDialog, FUN_14199d980, 53, 0);
 // @0x14199d9c0
 CStringW UIInventoryDialog::FUN_14199d9c0()
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = reinterpret_cast<Unk_InvWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return L"";
     CStringW strTooltip(L"");
@@ -1863,7 +1857,7 @@ MS2_REPLACE_METHOD(0x14199DDD0, UIInventoryDialog, FUN_14199ddd0, 207, 0);
 // @0x14199deb0
 CStringW UIInventoryDialog::FUN_14199deb0(int bBank)
 {
-    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPc = reinterpret_cast<Unk_InvWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return L"";
     CStringW strTooltip(L"");
@@ -1889,10 +1883,10 @@ MS2_REPLACE_METHOD(0x14199DEB0, UIInventoryDialog, FUN_14199deb0, 991, 0);
 // @0x14199e2a0
 void UIInventoryDialog::FUN_14199e2a0()
 {
-    if (!FUN_140d86260()->vfunc_40(DAT_143ab2a90.FUN_140a5d0f0()))
-        FUN_1403ed2b0()->FUN_141add1f0();
+    if (!FUN_140d86260()->vfunc_40(g_143ab2a90.FUN_140a5d0f0()))
+        reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add1f0();
     else
-        DAT_143ab2a90.SendRequestItemInventory(m_194);
+        g_143ab2a90.SendRequestItemInventory(m_194);
 }
 MS2_REPLACE_METHOD(0x14199E2A0, UIInventoryDialog, FUN_14199e2a0, 113, 0);
 
@@ -1948,7 +1942,7 @@ template <> MS2Ptr<Unk_InvUserList> UISwfEntity::GetChild<Unk_InvUserList>(const
 }
 
 // The group chat windows (UIGroupMessengerBrowser at +0x50 of the chat UI).
-class Unk_InvGroupWindow { public: int FUN_14194b9d0(__int64 nCharacterId); };   // UIGroupMessenger: is a member
+class Unk_InvGroupWindow : public UIGroupMessenger { };   // UIGroupMessenger: is a member
 class Unk_InvGroupBrowser { public: Unk_InvGroupWindow* FUN_141952f20(int nGroupId); };
 class Unk_InvChatUI
 {
@@ -1958,16 +1952,12 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_InvChatUI, m_pBrowser, 0x50);
 Unk_InvChatUI* FUN_141482e80();
-CGroupChatManager* FUN_141484720();                                 // TSingleton<CGroupChatManager>::GetInstance
-CPartyManager* FUN_1409670d0();                                     // TSingleton<CPartyManager>::GetInstance
-CBuddyManager* FUN_14097a780();                                     // TSingleton<CBuddyManager>::GetInstance
 class Unk_InvGuildManager
 {
 public:
     void* m_vfptr;                                                  // TSingleton<CGuildManager>
     CGuildInfo m_info;                                              // +0x08 the own guild
 };
-Unk_InvGuildManager* FUN_1403ed290();                               // TSingleton<CGuildManager>::GetInstance
 MS2Ptr<CMsgBoxData> FUN_14151f820();                                // the message box on top
 
 // @0x14199f740
@@ -2020,7 +2010,7 @@ int UIInviteGroupDialog::vfunc_13()
     if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
     {
         if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_textInput"))
-            FUN_141484720()->Invite(m_180, spInput->FUN_1422e0b00());
+            TSingleton<CGroupChatManager>::GetInstance()->Invite(m_180, spInput->FUN_1422e0b00());
         return 1;
     }
     return 0;
@@ -2036,7 +2026,7 @@ int UIInviteGroupDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_141484720()->Invite(m_180, data.FUN_1422b8f40());
+            TSingleton<CGroupChatManager>::GetInstance()->Invite(m_180, data.FUN_1422b8f40());
         return 1;
     }
     else if (_stricmp("OnChangeUserCount", szMethod) == 0)
@@ -2120,7 +2110,7 @@ void UIInviteGroupDialog::FUN_14199fe70(unsigned nCount)
     if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_inviteFromComunity"))
     {
         unsigned nTotal = nCount;
-        Unk_ChatPtrChat spChat = FUN_141484720()->FUN_14137e630(m_180);
+        Unk_ChatPtrChat spChat = TSingleton<CGroupChatManager>::GetInstance()->FUN_14137e630(m_180);
         if (spChat.get() != 0)
             nTotal = nTotal + spChat->FUN_14137bad0();
         if (nTotal > 0x14)
@@ -2183,7 +2173,7 @@ MS2_REPLACE_METHOD(0x1419A0240, UIInviteGroupDialog, FUN_1419a0240, 1149, 0);
 // @0x1419a06d0
 void UIInviteGroupDialog::FUN_1419a06d0(EntryList& entries)
 {
-    ATL::CAtlArray<MS2Ptr<CPartyMember> >& members = FUN_1409670d0()->FUN_14162ba30();
+    ATL::CAtlArray<MS2Ptr<CPartyMember> >& members = TSingleton<CPartyManager>::GetInstance()->FUN_14162ba30();
     size_t nCount = members.GetCount();
     for (size_t i = 0; i < nCount; i++)
     {
@@ -2202,7 +2192,7 @@ MS2_REPLACE_METHOD(0x1419A06D0, UIInviteGroupDialog, FUN_1419a06d0, 243, 0);
 void UIInviteGroupDialog::FUN_1419a07d0(EntryList& entries)
 {
     ATL::CAtlArray<Unk_InvGuildRef> members;
-    FUN_1403ed290()->m_info.FUN_1404d0420(&members);
+    reinterpret_cast<Unk_InvGuildManager*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404d0420(&members);
     size_t nCount = members.GetCount();
     for (size_t i = 0; i < nCount; i++)
     {
@@ -2221,7 +2211,7 @@ MS2_REPLACE_METHOD(0x1419A07D0, UIInviteGroupDialog, FUN_1419a07d0, 268, 0);
 void UIInviteGroupDialog::FUN_1419a08f0(EntryList& entries)
 {
     ATL::CAtlArray<CBuddyManager::Ptr> buddies;
-    FUN_14097a780()->FUN_140ae4df0(buddies);
+    TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4df0(buddies);
     size_t nCount = buddies.GetCount();
     for (size_t i = 0; i < nCount; i++)
     {
@@ -2266,7 +2256,7 @@ int UIInviteGroupDialog::FUN_1419a0b20()
     UIMessageBox* pBox = FUN_14151f890();
     if (pBox != 0 && pBox->FUN_1419f8270() == 0)
         return 0;
-    if (FUN_1403ed2b0()->FUN_141adbb00() != 0)
+    if (reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0)
         return 0;
     return 1;
 }
@@ -2300,10 +2290,8 @@ CItemBreakManager* FUN_1409c4b20();                                 // TSingleto
 UIInventoryDialog* FUN_1405344f0(int nUiId);                        // the inventory window
 int FUN_1405352d0(UIItemBreakBase* pDialog);                        // breaking (m_188)
 void FUN_140c3fe30(UIInventoryDialog* pInventory, int nTab);        // select a tab of the inventory
-class Unk_IbRankTexts { public: CStringW FUN_141813150(int nRank); };   // the rarity names
-Unk_IbRankTexts* FUN_1401a9d70();
+   // the rarity names
 class Unk_IbAnalytics;
-Unk_IbAnalytics* FUN_140d8ee90();
 void FUN_140a1f970(Unk_IbAnalytics* p, const CString& strEvent, const CString& strName);
 // The UI message to the inventory ("openWindowPos", the ui id).
 class Unk_IbUIMsg : public UIMsg
@@ -2610,7 +2598,7 @@ MS2_REPLACE_METHOD(0x1419A2330, UIItemBreakDialog, GetTypeName, 61, 0);
 void UIItemBreakDialog::OnLoadInit()
 {
     UIItemBreakBase::OnLoadInit();
-    FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "item_break");
+    FUN_140a1f970(reinterpret_cast<Unk_IbAnalytics*>(TSingleton<CBigDataLogSystem>::GetInstance()), "dialog_open", "item_break");
 }
 MS2_REPLACE_METHOD(0x1419A2380, UIItemBreakDialog, OnLoadInit, 118, 0);
 
@@ -2669,7 +2657,7 @@ void UIItemBreakDialog::OnLoadComplete()
             ASObj rank(2);
             int nRankId = nRank;
             rank.FUN_1407cb9c0("rank", nRank);
-            rank.FUN_1407cbb20("label", StringFormat(L"{0} {1}", FUN_1401a9d70()->FUN_141813150(nRankId), strOrBelow));
+            rank.FUN_1407cbb20("label", StringFormat(L"{0} {1}", TSingleton<CStringTable>::GetInstance()->FUN_141813150(nRankId), strOrBelow));
             spRank->FUN_1422dfc70(rank);
         }
         unsigned nRows = spRank->FUN_1422dfb90();
@@ -2685,7 +2673,7 @@ void UIItemBreakDialog::vfunc_67()
 {
     UIItemBreakBase::vfunc_67();
     FUN_1419a4c80();
-    FUN_140a1f970(FUN_140d8ee90(), "dialog_close", "item_break");
+    FUN_140a1f970(reinterpret_cast<Unk_IbAnalytics*>(TSingleton<CBigDataLogSystem>::GetInstance()), "dialog_close", "item_break");
 }
 MS2_REPLACE_METHOD(0x1419A2CE0, UIItemBreakDialog, vfunc_67, 128, 0);
 
@@ -2813,7 +2801,7 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     {
         if (FUN_1409c4b20()->FUN_140532b60() == 0)
         {
-            FUN_1412751b0(FUN_1409eec40(0xe6), 0x14);
+            FUN_1412751b0(BlockFormat(0xe6), 0x14);
         }
         else
         {
@@ -2994,7 +2982,7 @@ MS2_REPLACE_METHOD(0x1419A4E20, UIItemBreakDonationDialog, GetTypeName, 61, 0);
 void UIItemBreakDonationDialog::OnLoadInit()
 {
     UIItemBreakBase::OnLoadInit();
-    FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "item_break");
+    FUN_140a1f970(reinterpret_cast<Unk_IbAnalytics*>(TSingleton<CBigDataLogSystem>::GetInstance()), "dialog_open", "item_break");
 }
 MS2_REPLACE_METHOD(0x1419A4E70, UIItemBreakDonationDialog, OnLoadInit, 118, 0);
 
@@ -3002,7 +2990,7 @@ MS2_REPLACE_METHOD(0x1419A4E70, UIItemBreakDonationDialog, OnLoadInit, 118, 0);
 void UIItemBreakDonationDialog::vfunc_67()
 {
     UIItemBreakBase::vfunc_67();
-    FUN_140a1f970(FUN_140d8ee90(), "dialog_close", "item_break");
+    FUN_140a1f970(reinterpret_cast<Unk_IbAnalytics*>(TSingleton<CBigDataLogSystem>::GetInstance()), "dialog_close", "item_break");
 }
 MS2_REPLACE_METHOD(0x1419A4EF0, UIItemBreakDonationDialog, vfunc_67, 118, 0);
 
@@ -3067,7 +3055,7 @@ int UIItemBreakDonationDialog::vfunc_28(const char* szMethod, const Scaleform::G
     {
         if (FUN_1409c4b20()->FUN_140532b60() == 0)
         {
-            FUN_1412751b0(FUN_1409eec40(0xe6), 0x14);
+            FUN_1412751b0(BlockFormat(0xe6), 0x14);
         }
         else
         {

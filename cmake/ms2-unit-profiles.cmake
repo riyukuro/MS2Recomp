@@ -46,6 +46,13 @@ set(MS2_UNIT_PROFILES scaleform gamebryo)
 #         a custom command and links the obj into the hook DLL directly (src/ms2/CMakeLists.txt); clang-cl compiles it
 #         like any other unit. /Ob1: the library's functions came from separate objs, so one never inlines another;
 #         mark the unit's own source-only helpers `inline`.
+#   vc9c  the same cl 15.00.30729 and options as vc9, but compiling the unit as C (/TC), for the CRI objs the exe built
+#         from C sources: VS2008 /Od codegen differs between C and C++ (a pointer loaded for a compare after a call goes to
+#         r11 as C and to rax as C++). The unit's .cpp must be valid C89 and C++03 (no C++-only headers such as
+#         cri_movie.h, declarations at block starts): clang-cl builds it as C++, so give its declarations the parameter
+#         types of the C++ definitions and both compiles name every function alike. Under cl its definitions get plain C
+#         names; tools/fullexe/alias.py points the mangled references in C++ units at the plain FUN_<va> and the plain
+#         references at the mangled definitions (sfr_cri_03d). tools/msvc9c/cl runs tools/msvc9/cl.
 #   vc11  cl 17.00.61030 (VS2012 Update 4 x64; tools/msvc11/cl, installed by tools/fetch-vs2012.sh) for the Scaleform
 #         Video add-on, which the exe links prebuilt (Rich prodid 0xce: sfr_video_*, the CRI glue in sfr_cri_01/02).
 #         Same rules as vc9, but C++11 as far as VS2012 goes (no alias `using`, no explicit conversion operators,
@@ -67,6 +74,16 @@ set(MS2_TOOLSET_vc9_OPTIONS
     "/bigobj"
     "/TP"
 )
+set(MS2_TOOLSET_vc9c_OPTIONS
+    "/O2"
+    "/Ob1"
+    "/Gy"
+    "/GF"
+    "/Zl"
+    "/Z7"
+    "/bigobj"
+    "/TC"
+)
 set(MS2_TOOLSET_vc11_OPTIONS
     "/O2"
     "/Gy"
@@ -81,7 +98,7 @@ set(MS2_TOOLSET_vc11_OPTIONS
     "/D_ALLOW_RUNTIME_LIBRARY_MISMATCH"
     "/D_USE_ANSI_CPP"
 )
-set(MS2_UNIT_TOOLSETS vc9 vc11)
+set(MS2_UNIT_TOOLSETS vc9 vc9c vc11)
 
 # Apply the profiles to the sources of `srcvar` that declare one. Options only under real MSVC (clang-cl never
 # byte-matches and keeps the project's codegen); definitions for both compilers so the code is the same.

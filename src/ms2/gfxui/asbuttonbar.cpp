@@ -20,7 +20,7 @@
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ASCallback;
 
 bool FUN_1409b4d40(const Scaleform::GFx::Value& v);            // the value is set (not undefined / null)
-CStringW FUN_1408767c0(const char* sz);                         // a UTF-8 text as a wide string
+CStringW XmlWide(const char* sz);                         // a UTF-8 text as a wide string
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // Value = v (an ASArray COMDAT)
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);           // Value = n (UInt)
 
@@ -199,7 +199,7 @@ void ASButtonBar::FUN_1422e3590(const CStringW& strLabel)
             if (FUN_1409b4d40(row.FUN_1422bb870())) {
                 Scaleform::GFx::Value v = row.FUN_1422baa20("label");
                 if (v.IsString()) {
-                    if (strLabel == FUN_1408767c0(v.GetString())) {
+                    if (strLabel == XmlWide(v.GetString())) {
                         FUN_1422e31e0((int)i);
                         return;
                     }
@@ -235,7 +235,7 @@ CStringW ASButtonBar::FUN_1422e37e0(int nIndex)
         AScript row = spProvider->FUN_1422df140(nIndex);
         Scaleform::GFx::Value v = row.FUN_1422baa20("label");
         if (v.IsString())
-            return FUN_1408767c0(v.GetString());
+            return XmlWide(v.GetString());
         if (v.IsStringW())
             return v.GetStringW();
     }
@@ -262,7 +262,7 @@ void ASButtonBar::FUN_1422e3a70(const CStringW& strLabel)
             if (FUN_1409b4d40(row.FUN_1422bb870())) {
                 Scaleform::GFx::Value v = row.FUN_1422baa20("label");
                 if (v.IsString()) {
-                    if (strLabel == FUN_1408767c0(v.GetString())) {
+                    if (strLabel == XmlWide(v.GetString())) {
                         FUN_1422e3a00((int)i);
                         return;
                     }
@@ -289,7 +289,7 @@ void ASButtonBar::FUN_1422e3c70(const CStringW& strOld, const CStringW& strNew)
             if (FUN_1409b4d40(row.FUN_1422bb870())) {
                 Scaleform::GFx::Value v = row.FUN_1422baa20("label");
                 if (v.IsString()) {
-                    if (strOld == FUN_1408767c0(v.GetString())) {
+                    if (strOld == XmlWide(v.GetString())) {
                         row.FUN_1407cbb20("label", strNew);
                         return;
                     }

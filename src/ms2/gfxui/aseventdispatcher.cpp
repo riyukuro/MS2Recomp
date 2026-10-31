@@ -18,7 +18,7 @@ using Scaleform::GFx::Value;
 
 Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);            // the GFx movie of a movie id (null if not loaded)
 extern Value DAT_143b0ae18;                                     // an undefined value (unit_140135ac0.cpp)
-void FUN_140657820();                                           // throws: a null delegate was called
+void Unk_140657820();                                           // throws: a null delegate was called
 
 // Invoke argument setters (ascript.cpp's range).
 void FUN_1422bce70(Value* pValue, const char* sz);
@@ -31,7 +31,7 @@ void FUN_1422bce40(Value* pValue, const AScript& obj);
 template <> inline void ASEventHandlerCtx::Callback::operator()(const Scaleform::GFx::FunctionHandler::Params& a1) const
 {
     if (m_pImpl == 0)
-        FUN_140657820();
+        Unk_140657820();
     m_pImpl->vfunc_2(a1);
 }
 

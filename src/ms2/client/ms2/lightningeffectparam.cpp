@@ -40,6 +40,8 @@
 #include <NiSortAdjustNode.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 // Game TinyXML element and attribute helpers (commonfiles\tinyxmlhelper.cpp).
@@ -52,8 +54,7 @@ CString FUN_140188f50(const char* psz, int n);                      // null-safe
 int FUN_1401788f0(Unk_140165cf0* pNode, const char* pszName, ATL::CAtlArray<CString>& arr);   // split to list
 
 bool FUN_14028d470(float a, float b);                               // nearly equal
-class Unk_GameClock { public: double FUN_141473280(); };
-Unk_GameClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
 const Vector3& FUN_140947900(void* pNode);                  // world translate
@@ -71,7 +72,6 @@ void FUN_140a0b2a0(void* pNode);                                    // detach th
 void FUN_140a0b300(void* pNode, bool bCulled);                      // NiAVObject::SetAppCulled
 bool FUN_14098dad0(void* pNode);                                    // node is app-culled
 class Unk_1403ed280 { public: void* FUN_1411a6b10(); };             // the effect manager: scene root
-Unk_1403ed280* FUN_1403ed280();
 
 // Random float (about -1..1), tick counter, camera direction.
 float FUN_14109ace0();
@@ -305,7 +305,7 @@ bool LightningEffect::vfunc_9()
 // @0x14144ca70
 void LightningEffect::vfunc_4()
 {
-    static_cast<NiNode*>(FUN_1403ed280()->FUN_1411a6b10())->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
+    static_cast<NiNode*>(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10())->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
     static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateEffects();
     static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateProperties();
     FUN_141d16040(FUN_1409475f0(&m_spRoot), (float)FUN_14086d260()->FUN_141473280(), true);

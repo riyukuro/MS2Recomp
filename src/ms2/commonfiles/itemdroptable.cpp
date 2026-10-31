@@ -159,6 +159,7 @@
 #include "ms2/commonfiles/fielddata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // The common log (FUN_140166440()).
 class Unk_CommonLog
@@ -169,7 +170,7 @@ public:
 Unk_CommonLog* FUN_140166440();
 void FUN_140177a80(Unk_CommonLog* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nArg);
 
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
@@ -186,8 +187,6 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 // The exe's callers test the gender check as a full int (test eax, eax, no movzx of the bool).
 class Unk_DropItemData : public CItemData
 {
-public:
-    int FUN_14053c940(int nGender);
 };
 bool FUN_14053ff30(int nItemId, int nRank);                 // the item exists in that rank
 int FUN_14053feb0(int nItemId);                             // default rank of an item

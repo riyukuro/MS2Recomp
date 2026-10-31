@@ -39,6 +39,7 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/luautil.h"
 #include <algorithm>
 
 class Unk_140165cf0                         // game TinyXML element
@@ -68,8 +69,7 @@ struct Unk_ExpIntAttrView
 {
     int FUN_140197350(const char* pszName, int nDefault);
 };
-class Unk_1401c0db0 { public: __int64 FUN_140678cd0(__int64 nValue, unsigned short nArg); };
-Unk_1401c0db0* FUN_1401c0db0();
+CLua* FUN_1401c0db0();
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
 bool CExpTable::s_bInit;
@@ -471,7 +471,7 @@ __int64 CExpTable::GetPetExp(unsigned short nLevel, int nRow, unsigned short nAr
         return 0x7fffffffffffffffLL;
     if (nLevel > 0x32)
         return 0x7fffffffffffffffLL;
-    return FUN_1401c0db0()->FUN_140678cd0(m_petExp[nRow][nLevel], nArg);
+    return FUN_1401c0db0()->CalcPetExp(m_petExp[nRow][nLevel], nArg);
 }
 
 // @0x1403539d0

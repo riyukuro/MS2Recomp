@@ -72,6 +72,12 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uicastingbar.h"
+#include "ms2/commonfiles/masterytable.h"
+#include "ms2/placeholder/cmasterymanager.h"
 
 // ---- the unit's statics (after the shared header statics) ----
 static UICommon::CMyPCKeyInputController s_keyInput;                                                                // @0x1400dc200
@@ -82,21 +88,10 @@ using ATL::CAtlArray;
 typedef ATL::CAtlArray<MS2Ptr<ItemEntity> > Unk_MItemArray;   // reward lists hold item pointers (CMasteryTable::Rewards)
 
 // The feature flags (global via FUN_140166410).
-class Unk_MFeatures
-{
-public:
-    bool FUN_14036d570(int nId);
-};
-Unk_MFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 // The notice hub (global via FUN_140939a10).
-class Unk_MNotices
-{
-public:
-    void FUN_140da4e40(CStringW, Delegate<void(NotifyObject*)>);
-    void FUN_140da4eb0(CStringW, Delegate<void(NotifyObject*)>);
-};
-Unk_MNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 // The item event hub (global via FUN_140a6a840).
 class Unk_MEvents
@@ -116,10 +111,9 @@ public:
 Unk_MWorld* FUN_1403ed2d0();
 
 // The casting bar dialog (global lookup FUN_140ac2270(id)).
-class Unk_MCastingBar
+class Unk_MCastingBar : public UICastingBar
 {
 public:
-    void FUN_1418e1390();                                   // cancel
     void FUN_1418e12f0(ICastingEventListener* listener, const CStringW& strText, int nTime, bool a, bool b, const CStringW& strIcon);
 };
 Unk_MCastingBar* FUN_140ac2270(int nId);
@@ -164,47 +158,26 @@ public:
 typedef ATL::CAtlArray<MS2Ptr<Unk_MRec> > Unk_MRecArray;
 
 // The mastery data singleton (global via FUN_1409670c0).
-class Unk_MData
+class Unk_MData : public CMasteryTable
 {
 public:
     MS2Ptr<Unk_MRec> FUN_14066aa00(int nId);                // recipe by id (NULL when unknown)
     void FUN_14066aa90(int nType, Unk_MRecArray& out);      // the recipes of a category
-    int FUN_14066af60(int nType, unsigned int nMastery);    // grade of a mastery value
-    int FUN_14066b050(int nType);                           // max grade
     int FUN_14066b310(int nType, int nGrade);               // mastery needed for a grade
-    CStringW FUN_14066c690(int nType, int nGrade);          // grade name
-    CStringW FUN_14066bdd0(int nType);                      // category name
-    ItemEntity* FUN_14066b640(int nId);                     // reward entry of a recipe id
-    int FUN_14066b910(int nType, int nId);
-    void FUN_14066b100(int nId, int nJob, Unk_MItemArray& out);
-    int FUN_14066b500(int nType, int nIdx);
     int FUN_14066bb00(MS2Ptr<Unk_MRec> spRec);
-    int FUN_14066bb80(int nType);
-    int FUN_14066ba00(int nType);
-    CStringW FUN_14066c110(int nType, int nId, int n);
-    int FUN_14066ab90(int nId, unsigned int nMastery);
 };
 Unk_MData* FUN_1409670c0();
 
 // The mastery points service (global via FUN_140e5ca20).
-class Unk_MPoints
+class Unk_MPoints : public CMasteryManager
 {
 public:
-    int FUN_140b6d330(int nId);
     int FUN_140b6d470(int nId);
-    int FUN_140b6d140(int nType);
-    int FUN_140b6d250(int nType, int nIdx);
     void FUN_140b6d710(int nCode);
 };
 Unk_MPoints* FUN_140e5ca20();
 
-// The string table (global via FUN_1401a9d70).
-class Unk_MStrings
-{
-public:
-    CStringW FUN_141811980(int nKind, int nId);
-};
-Unk_MStrings* FUN_1401a9d70();
+// The string table (global via TSingleton<CStringTable>::GetInstance).
 
 // The inventory counters (global at 0x143ab2a90).
 class Unk_MInv
@@ -226,6 +199,8 @@ int FUN_141654700(MyPC* pPc);                               // job
 int FUN_14053feb0(int nItemId);                             // default rank of an item
 CStringW FUN_1419021b0(int nHave, int nNeed);               // "have/need" count text
 #include "ms2/commonfiles/commonutil.h"
+#include "ms2/client/ms2/skillrecord.h"
+#include "ms2/commonfiles/ugccubecategorytable.h"
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a, const CStringW& b);
 CStringW FUN_14062b4f0(CStringW strKey, const int* p);
 CStringW FUN_1409e8820(CStringW strKey, const unsigned short& n);
@@ -292,18 +267,13 @@ class Unk_MScroll : public Unk_MCtl { };
 
 
 // The notify of the local character being damaged (RTTI .?AVNotifyDamagedMyPC@@).
-class Unk_MDamage
-{
-public:
-    __int64 FUN_14175ac30();                                // the hp change (negative = damage)
-};
 class NotifyDamagedMyPC : public NotifyObject
 {
 public:
     NotifyDamagedMyPC();
     virtual ~NotifyDamagedMyPC();
     virtual CStringW GetTypeName();
-    Unk_MDamage* m_pDamage;                                 // +0x18
+    CDamageRecord* m_pDamage;                               // +0x18
 };
 bool FUN_140841300(const CStringW& str, const char* sz);   // equal to a char literal
 
@@ -358,7 +328,6 @@ public:
     Unk_MHouseMap& FUN_140886640();
     MS2Ptr<Unk_MHouseRec> FUN_1408865b0(int nId);
 };
-Unk_MHouseTable* FUN_1409eed80();
 class Unk_MItemDef : public CPtred { public: CString FUN_14053fdd0(); };
 MS2Ptr<Unk_MItemDef> FUN_14053f870(unsigned int nId);
 class Unk_MFurn : public CPtred
@@ -377,6 +346,8 @@ static inline Unk_MFurnTable* MFurnTable() { return reinterpret_cast<Unk_MFurnTa
 // The warehouse item table (warehouseitem.h CWarehouseItemTable::FUN_1408fbe90): the first stored item with this id, as a
 // 16-byte MS2Ptr (hidden return; the exe tests it with MS2Ptr::operator! 0x140534e50 and releases the temp).
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
+#include "ms2/commonfiles/enchantscrolldata.h"
+#include "ms2/commonfiles/jobtable.h"
 
 
 class Unk_MScrollDef : public CPtred { public: int m_n18; int m_n1c; };
@@ -392,18 +363,15 @@ public:
     ATL::CAtlArray<ItemEntity> m_rewards;                   // +0x98
 };
 typedef ATL::CAtlArray<MS2Ptr<Unk_MScrollRec> > Unk_MScrollArray;
-class Unk_MScrollTable
+class Unk_MScrollTable : public CEnchantScrollTable
 {
 public:
-    int FUN_14034e5e0(int nTab, int k);
     void FUN_14034e460(int nTab, int nSlot, int nSub, Unk_MScrollArray& out);
     MS2Ptr<Unk_MScrollRec> FUN_14034e3e0(int nId);
     MS2Ptr<Unk_MScrollDef> FUN_14034e360(int nId);
 };
-Unk_MScrollTable* FUN_14034f780();
 class Unk_MJobRec : public CPtred { public: char m_pad[8]; int m_n20; };
 class Unk_MJobTable { public: MS2Ptr<Unk_MJobRec> FUN_140644880(int nJob); };
-Unk_MJobTable* FUN_1401d7a50();
 class Unk_MFormula
 {
 public:
@@ -504,7 +472,7 @@ UIMasteryDialog::UIMasteryDialog()
     m_nPendingSub = 0;
     m_nPendingList = 0;
     m_304 = 0;
-    FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyDamagedMyPC"), Delegate<void(NotifyObject*)>(this, &UIMasteryDialog::FUN_140eb5320));
+    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyDamagedMyPC"), Delegate<void(NotifyObject*)>(this, &UIMasteryDialog::FUN_140eb5320));
     if (FUN_140166410()->FUN_14036d570(0xd1))
         m_2f8 = 10;
     else
@@ -515,7 +483,7 @@ UIMasteryDialog::UIMasteryDialog()
 // @0x140eae2d0
 UIMasteryDialog::~UIMasteryDialog()
 {
-    FUN_140939a10()->FUN_140da4eb0(CStringW(L"NotifyDamagedMyPC"), Delegate<void(NotifyObject*)>(this, &UIMasteryDialog::FUN_140eb5320));
+    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyDamagedMyPC"), Delegate<void(NotifyObject*)>(this, &UIMasteryDialog::FUN_140eb5320));
 }
 
 // @0x140eae470
@@ -603,7 +571,7 @@ void UIMasteryDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     } else if (FUN_140841300(strName, "masteryRecipe")) {
         if (FUN_140eb5040() == 1) {
             int nId = pArgs->FUN_1422b8a10();
-            ItemEntity* pEntry = FUN_1409670c0()->FUN_14066b640(nId);
+            ItemEntity* pEntry = FUN_1409670c0()->FirstItem(nId);
             if (pEntry) {
                 MS2Ptr<CItem> spItem(new CItem);
                 if (spItem->FUN_140523c40(pEntry->m_itemId, pEntry->vfunc_o18_1(), 0)) {
@@ -868,8 +836,8 @@ void UIMasteryDialog::FUN_140eb0610(int nType, bool bKeep)
     int nOld = FUN_140eb8630(nType);
     int nNow = (int)FUN_141662750(pPc, nType);
     if (MS2Ptr<Unk_MLevelCtrl> spLevel = FUN_140c02990("m_levelControl")) {
-        int nGrade = FUN_1409670c0()->FUN_14066af60(nType, nNow);
-        int bMax = nGrade == FUN_1409670c0()->FUN_14066b050(nType);
+        int nGrade = FUN_1409670c0()->Grade(nType, nNow);
+        int bMax = nGrade == FUN_1409670c0()->MaxGrade(nType);
         int nBase = FUN_1409670c0()->FUN_14066b310(nType, nGrade);
         int nNext = FUN_1409670c0()->FUN_14066b310(nType, nGrade + 1);
         int nCur = nNow - nBase;
@@ -878,11 +846,11 @@ void UIMasteryDialog::FUN_140eb0610(int nType, bool bKeep)
         bool bGradeChanged = false;
         if (bChanged) {
             FUN_140eb8670(nType, nNow);
-            int nOldGrade = FUN_1409670c0()->FUN_14066af60(nType, nOld);
+            int nOldGrade = FUN_1409670c0()->Grade(nType, nOld);
             bGradeChanged = nGrade != nOldGrade;
         }
         if (!bKeep || bChanged) {
-            CStringW strGrade = FUN_140656190(L"{0} {1}", FUN_1409670c0()->FUN_14066bdd0(nType), FUN_1409670c0()->FUN_14066c690(nType, nGrade));
+            CStringW strGrade = FUN_140656190(L"{0} {1}", FUN_1409670c0()->TypeName(nType), FUN_1409670c0()->GradeName(nType, nGrade));
             spLevel->FUN_140eb9f50("setPcGrade", nCur, nMax, strGrade, bMax);
             if (MS2Ptr<Unk_MGuide> spGuide = spLevel->FUN_140accfb0<Unk_MGuide>("m_guideBar"))
                 spGuide->Invoke("setPC", (unsigned int)nNow);
@@ -890,7 +858,7 @@ void UIMasteryDialog::FUN_140eb0610(int nType, bool bKeep)
         if (!bKeep || bGradeChanged) {
             FUN_140d43990(&m_mastery);
             spLevel->Invoke("removeGradeAll");
-            int nCount = FUN_1409670c0()->FUN_14066b050(nType);
+            int nCount = FUN_1409670c0()->MaxGrade(nType);
             ASArray arr(2);
             for (int i = 1; i <= nCount; i++) {
                 ASObj obj(2);
@@ -939,7 +907,7 @@ void UIMasteryDialog::FUN_140eb0da0(int nType, bool bKeep)
                         continue;
                     ASObj row(2);
                     row.FUN_1407cb9c0("id", spRec->m_nId);
-                    row.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(0x2f, spRec->m_nId));
+                    row.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2f, spRec->m_nId));
                     row.FUN_1407cbb20("state", FUN_140eb71a0(MS2Ptr<Unk_MRec>(spRec)));
                     row.FUN_1407cbbe0("active", (nMastery >= (unsigned int)spRec->m_nNeedMastery && FUN_140eb8550(MS2Ptr<Unk_MRec>(spRec)) != 0) ? true : false);
                     row.FUN_1407cba60("icon", spRec->FUN_140669980());
@@ -970,7 +938,7 @@ void UIMasteryDialog::FUN_140eb0da0(int nType, bool bKeep)
                     continue;
                 ASObj row(2);
                 row.FUN_1407cb9c0("id", spRec->m_nId);
-                row.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(0x2f, spRec->m_nId));
+                row.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2f, spRec->m_nId));
                 row.FUN_1407cbb20("state", FUN_140eb71a0(MS2Ptr<Unk_MRec>(spRec)));
                 row.FUN_1407cbbe0("active", (nMastery >= (unsigned int)spRec->m_nNeedMastery && FUN_140eb8550(MS2Ptr<Unk_MRec>(spRec)) != 0) ? true : false);
                 row.FUN_1407cba60("icon", spRec->FUN_140669980());
@@ -1047,9 +1015,9 @@ void UIMasteryDialog::FUN_140eb1770(int nId, bool bKeep)
             }
             int bState = FUN_140eb8550(MS2Ptr<Unk_MRec>(spRec));
             page.FUN_1407cb9c0("id", nId);
-            page.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(0x2f, nId));
+            page.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2f, nId));
             page.FUN_1407cbb20("mastery", FUN_140938ae0(CStringW(L"s_mastery_reward_mastery"), FUN_140eb8120(MS2Ptr<Unk_MRec>(spRec))));
-            page.FUN_1407cbb20("desc", FUN_1401a9d70()->FUN_141811980(0x30, nId));
+            page.FUN_1407cbb20("desc", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x30, nId));
             page.FUN_1407cbb20("place", CStringW(spRec->m_strPlace));
             page.FUN_1407cba60("icon", spRec->FUN_140669980());
             page.FUN_1409c1180("meso", spRec->m_nMeso);
@@ -1138,14 +1106,14 @@ void UIMasteryDialog::FUN_140eb2d10()
         spList->FUN_1409c0dc0("itemRendererName", "UIMasteryDialog_renderer_housing");
         spList->FUN_1407cb9c0("rowHeight", 0x39);
         if (FUN_140166410()->FUN_14036d570(0xdb)) {
-            Unk_MHouseMap& map = FUN_1409eed80()->FUN_140886640();
+            Unk_MHouseMap& map = reinterpret_cast<Unk_MHouseTable*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_140886640();
             for (POSITION pos = map.GetStartPosition(); pos; map.GetNext(pos)) {
                 unsigned int nKey = map.GetKeyAt(pos);
                 MS2Ptr<Unk_MHouseRec> spRec(map.GetValueAt(pos));
                 ASObj row(2);
                 reinterpret_cast<Unk_MObjSetter&>(row).FUN_140eba4a0("id", nKey);
                 row.FUN_1409c48f0("level", spRec->m_nLevel);
-                row.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(0x32, nKey));
+                row.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x32, nKey));
                 row.FUN_1407cbbe0("active", nCur >= spRec->m_nLevel);
                 spList->FUN_1422dd230(row);
             }
@@ -1163,7 +1131,7 @@ void UIMasteryDialog::FUN_140eb3010(int nId)
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPc)
         return;
-    MS2Ptr<Unk_MHouseRec> spHouse = FUN_1409eed80()->FUN_1408865b0(nId);
+    MS2Ptr<Unk_MHouseRec> spHouse = reinterpret_cast<Unk_MHouseTable*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_1408865b0(nId);
     if (spHouse.IsNull())
         return;
     if (m_30.get()) {
@@ -1197,9 +1165,9 @@ void UIMasteryDialog::FUN_140eb3460()
     if (MS2Ptr<Unk_MLevelCtrl> spCtrl = FUN_140c02990("m_magicScrollControl")) {
         if (FUN_140166410()->FUN_14036d570(0xd1))
             spCtrl->Invoke("setExpansion");
-        int nG0 = FUN_14034f780()->FUN_14034e5e0(nTab, 4);
-        int nG1 = FUN_14034f780()->FUN_14034e5e0(nTab, 5);
-        int nG2 = FUN_14034f780()->FUN_14034e5e0(nTab, 6);
+        int nG0 = reinterpret_cast<Unk_MScrollTable*>(TSingleton<CEnchantScrollTable>::GetInstance())->HasRecipe(nTab, 4);
+        int nG1 = reinterpret_cast<Unk_MScrollTable*>(TSingleton<CEnchantScrollTable>::GetInstance())->HasRecipe(nTab, 5);
+        int nG2 = reinterpret_cast<Unk_MScrollTable*>(TSingleton<CEnchantScrollTable>::GetInstance())->HasRecipe(nTab, 6);
         if (MS2Ptr<Unk_MGroup> spGroup = spCtrl->FUN_140eb9cf0("m_gradeGroup")) {
             int nSel = FUN_1409c1750(spGroup->FUN_1422baa20("selectedIndex"));
             if (nG1 == 0 && nSel == 1)
@@ -1221,7 +1189,7 @@ void UIMasteryDialog::FUN_140eb3460()
         int nSub = FUN_140eb8410();
         int nSlot = FUN_140eb82e0();
         Unk_MScrollArray recs;
-        FUN_14034f780()->FUN_14034e460(nTab, nSlot, nSub, recs);
+        reinterpret_cast<Unk_MScrollTable*>(TSingleton<CEnchantScrollTable>::GetInstance())->FUN_14034e460(nTab, nSlot, nSub, recs);
         qsort(recs.GetData(), recs.GetCount(), 0x10, &UIMasteryDialog::FUN_140eb9160);
         if (recs.GetCount() == 0) {
             FUN_140d74390(GetStringCommonByKey(L"s_mastery_magicscroll_no_recipe"), 0, Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::FUN_140eb4e30));
@@ -1231,7 +1199,7 @@ void UIMasteryDialog::FUN_140eb3460()
             MS2Ptr<Unk_MScrollRec> spRec(recs[i]);
             if (spRec->m_nSlot != nSlot)
                 continue;
-            CStringW strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(0x35, spRec->m_nId), spRec->m_result.vfunc_o18_1());
+            CStringW strName = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x35, spRec->m_nId), spRec->m_result.vfunc_o18_1());
             CStringW strState = FUN_14062b4f0(CStringW(L"s_mastery_magicscroll_list_state"), &spRec->m_nState);
             ASObj row(2);
             row.FUN_1407cb9c0("id", spRec->m_nId);
@@ -1263,7 +1231,7 @@ void UIMasteryDialog::FUN_140eb4210(int nId)
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
-    MS2Ptr<Unk_MScrollRec> spRec = FUN_14034f780()->FUN_14034e3e0(nId);
+    MS2Ptr<Unk_MScrollRec> spRec = reinterpret_cast<Unk_MScrollTable*>(TSingleton<CEnchantScrollTable>::GetInstance())->FUN_14034e3e0(nId);
     if (spRec.IsNull())
         return;
     ASObj page(2);
@@ -1297,7 +1265,7 @@ void UIMasteryDialog::FUN_140eb4210(int nId)
     int nSlot = FUN_140eb82e0();
     if (nSlot == 1 || nSlot == 3 || nSlot == 2)
         bWarn = (nSlot == FUN_140eb6870());
-    CStringW strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(0x35, nId), spRec->m_result.vfunc_o18_1());
+    CStringW strName = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x35, nId), spRec->m_result.vfunc_o18_1());
     CStringW strState = FUN_14062b4f0(CStringW(L"s_mastery_magicscroll_list_state"), &spRec->m_nState);
     page.FUN_1407cb9c0("id", nId);
     page.FUN_1407cbb20("name", CStringW(strName));
@@ -1551,7 +1519,7 @@ void UIMasteryDialog::FUN_140eb5e30(int nId)
 // @0x140eb5e60
 void UIMasteryDialog::FUN_140eb5e60(int nId)
 {
-    MS2Ptr<Unk_MScrollRec> spRec = FUN_14034f780()->FUN_14034e3e0(nId);
+    MS2Ptr<Unk_MScrollRec> spRec = reinterpret_cast<Unk_MScrollTable*>(TSingleton<CEnchantScrollTable>::GetInstance())->FUN_14034e3e0(nId);
     if (spRec.IsNull())
         return;
     if (DAT_143ab2898 < spRec->m_nMeso) {
@@ -1596,13 +1564,13 @@ void UIMasteryDialog::FUN_140eb6660(void* pArg)
     int nTab = FUN_140eb5040();
     if (nTab == 1) {
         int nType = FUN_140eb8a90();
-        if (FUN_1409670c0()->FUN_14066b910(nType, nItemId) != 0)
+        if (FUN_1409670c0()->HasTypeIngredient(nType, nItemId) != 0)
             FUN_140eb52c0(nType);
     } else if (nTab == 3) {
         if (!FUN_140166410()->FUN_14036d570(0x5a))
             return;
         {
-            MS2Ptr<Unk_MScrollRec> spRec = FUN_14034f780()->FUN_14034e3e0(m_nSelected);
+            MS2Ptr<Unk_MScrollRec> spRec = reinterpret_cast<Unk_MScrollTable*>(TSingleton<CEnchantScrollTable>::GetInstance())->FUN_14034e3e0(m_nSelected);
             if (spRec.get()) {
                 int bFound = 0;
                 for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
@@ -1631,7 +1599,7 @@ int UIMasteryDialog::FUN_140eb6870()
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPc)
         return 0;
-    MS2Ptr<Unk_MJobRec> spJob = FUN_1401d7a50()->FUN_140644880(FUN_141654700(pPc));
+    MS2Ptr<Unk_MJobRec> spJob = reinterpret_cast<Unk_MJobTable*>(TSingleton<JobTable>::GetInstance())->FUN_140644880(FUN_141654700(pPc));
     if (spJob.IsNull())
         return 0;
     return spJob->m_n20;
@@ -1644,10 +1612,10 @@ void UIMasteryDialog::FUN_140eb6920(int nType, int nIndex, ASObj& obj)
     if (!pPc)
         return;
     unsigned int nNeed = FUN_1409670c0()->FUN_14066b310(nType, nIndex);
-    unsigned int nId = FUN_1409670c0()->FUN_14066b500(nType, nIndex);
+    unsigned int nId = FUN_1409670c0()->MakeID(nType, nIndex);
     obj.FUN_1409c0d20("id", nId);
     obj.FUN_1409c0d20("level", nNeed);
-    obj.FUN_1407cbb20("levelStr", FUN_1409670c0()->FUN_14066c690(nType, nIndex));
+    obj.FUN_1407cbb20("levelStr", FUN_1409670c0()->GradeName(nType, nIndex));
     int nFlag = 0;
     DAT_143ab31a0.FUN_140361ab0(nId, &nFlag);
     CString strState;
@@ -1657,7 +1625,7 @@ void UIMasteryDialog::FUN_140eb6920(int nType, int nIndex, ASObj& obj)
         strState = (FUN_141662750(pPc, nType) >= nNeed) ? "active" : "lock";
     obj.FUN_1407cba60("state", CString(strState));
     Unk_MItemArray items;
-    FUN_1409670c0()->FUN_14066b100(nId, FUN_141654700(pPc), items);
+    FUN_1409670c0()->Rewards(nId, FUN_141654700(pPc), items);
     if (items.GetCount() > 0) {
         MS2Ptr<ItemEntity> spItem0(items[0]);
         obj.FUN_1407cba60("binding", m_mastery.FUN_140d43310(spItem0->m_itemId, spItem0->vfunc_o18_1(), spItem0->m_count));
@@ -1703,7 +1671,7 @@ int UIMasteryDialog::FUN_140eb6d40(int nKind, int nId)
             nMax = (std::min)(nCan, nMax);
         }
     } else if (nKind == 1) {
-        MS2Ptr<Unk_MScrollRec> spRec = FUN_14034f780()->FUN_14034e3e0(nId);
+        MS2Ptr<Unk_MScrollRec> spRec = reinterpret_cast<Unk_MScrollTable*>(TSingleton<CEnchantScrollTable>::GetInstance())->FUN_14034e3e0(nId);
         if (spRec.IsNull())
             return 0;
         if (spRec->m_nMeso != 0) {
@@ -1738,8 +1706,8 @@ CStringW UIMasteryDialog::FUN_140eb71a0(MS2Ptr<Unk_MRec> spRec)
     if (FUN_140eb8550(MS2Ptr<Unk_MRec>(spRec)) == 0)
         strErr = FUN_1409e8820(CStringW(L"s_mastery_need_level"), spRec->m_nNeedLevel);
     if (FUN_140eb7bb0(spRec->m_nType) < spRec->m_nNeedMastery) {
-        int nGrade = FUN_1409670c0()->FUN_14066af60(spRec->m_nType, spRec->m_nNeedMastery);
-        CStringW strGrade = FUN_1409670c0()->FUN_14066c690(spRec->m_nType, nGrade);
+        int nGrade = FUN_1409670c0()->Grade(spRec->m_nType, spRec->m_nNeedMastery);
+        CStringW strGrade = FUN_1409670c0()->GradeName(spRec->m_nType, nGrade);
         CStringW strNeed = FUN_1405c2690(L"s_mastery_need_mastery", strGrade);
         if (strErr.GetLength() != 0)
             return FUN_140656190(L"{0}, {1}", strErr, strNeed);
@@ -1755,9 +1723,9 @@ CStringW UIMasteryDialog::FUN_140eb71a0(MS2Ptr<Unk_MRec> spRec)
             case 6:
                 strHome = FUN_1409670e0()->FUN_1410d5640() ? GetStringCommonByKey(L"s_mastery_myhome") : GetStringCommonByKey(L"s_mastery_otherhome");
             }
-            return FUN_140656190(L"{0} {1}", strHome, FUN_1409670c0()->FUN_14066c110(spRec->m_nType, spRec->m_nId, 1));
+            return FUN_140656190(L"{0} {1}", strHome, FUN_1409670c0()->SuccessDescription(spRec->m_nType, spRec->m_nId, 1));
         }
-        return FUN_1409670c0()->FUN_14066c110(spRec->m_nType, spRec->m_nId, 1);
+        return FUN_1409670c0()->SuccessDescription(spRec->m_nType, spRec->m_nId, 1);
     }
     int nCount = FUN_140eb6d40(0, spRec->m_nId);
     if (nCount == 1000)
@@ -1769,7 +1737,7 @@ CStringW UIMasteryDialog::FUN_140eb71a0(MS2Ptr<Unk_MRec> spRec)
 int UIMasteryDialog::FUN_140eb79b0(int nType, unsigned int nNeedMastery, ItemEntity* pEntry)
 {
     int nCount = 0;
-    if (FUN_1409670c0()->FUN_14066ba00(nType))
+    if (FUN_1409670c0()->IsProductionType(nType))
         nCount = FUN_1401c0db0()->FUN_140677c60(pEntry->m_count, nNeedMastery, FUN_140eb7bb0(nType));
     else
         nCount = pEntry->m_count;
@@ -1799,7 +1767,7 @@ int UIMasteryDialog::FUN_140eb79b0(int nType, unsigned int nNeedMastery, ItemEnt
 // @0x140eb7b40
 unsigned int UIMasteryDialog::FUN_140eb7b40(int nType, int nNeedMastery, unsigned int nCount)
 {
-    if (FUN_1409670c0()->FUN_14066bb80(nType)) {
+    if (FUN_1409670c0()->IsOther(nType)) {
         return FUN_1401c0db0()->FUN_140677e20(nCount, nNeedMastery, FUN_140eb7bb0(nType));
     }
     return nCount;
@@ -1817,13 +1785,13 @@ unsigned int UIMasteryDialog::FUN_140eb7bb0(int nType)
 // @0x140eb7c00
 void UIMasteryDialog::FUN_140eb7c00(int nType)
 {
-    FUN_1409670c0()->FUN_14066af60(nType, FUN_140eb7bb0(nType));
+    FUN_1409670c0()->Grade(nType, FUN_140eb7bb0(nType));
 }
 
 // @0x140eb7c50
 CStringW UIMasteryDialog::FUN_140eb7c50(int nType)
 {
-    CStringW strName = FUN_1409670c0()->FUN_14066bdd0(nType);
+    CStringW strName = FUN_1409670c0()->TypeName(nType);
     int nRewards = FUN_140e5ca20()->FUN_140b6d140(nType);
     if (nRewards != 0)
         return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, nRewards);
@@ -1876,7 +1844,7 @@ int UIMasteryDialog::FUN_140eb8120(MS2Ptr<Unk_MRec> spRec)
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPc)
         return 0;
-    int nValue = FUN_1409670c0()->FUN_14066ab90(spRec->m_nId, FUN_141662750(pPc, spRec->m_nType));
+    int nValue = FUN_1409670c0()->Factor(spRec->m_nId, FUN_141662750(pPc, spRec->m_nType));
     float fBonus = 0.0f;
     switch (spRec->m_nType) {
     case 7:
@@ -2073,7 +2041,7 @@ int FUN_140eb8cd0(MS2Ptr<Unk_MFurn> spFurn)
         return 1;
     if (DAT_143ab291c < spFurn->m_w4c)
         return 0;
-    MS2Ptr<Unk_MHouseRec> spHouse = FUN_1409eed80()->FUN_1408865b0(spFurn->m_n3c);
+    MS2Ptr<Unk_MHouseRec> spHouse = reinterpret_cast<Unk_MHouseTable*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_1408865b0(spFurn->m_n3c);
     if (spHouse.IsNull())
         return 0;
     if (DAT_143ab291c < spHouse->m_nLevel)
@@ -2117,8 +2085,8 @@ int UIMasteryDialog::FUN_140eb9160(const void* pA, const void* pB)
     MS2Ptr<Unk_MScrollRec> spA = *(const MS2Ptr<Unk_MScrollRec>*)pA;
     MS2Ptr<Unk_MScrollRec> spB = *(const MS2Ptr<Unk_MScrollRec>*)pB;
     if (spA->m_nState == spB->m_nState) {
-        MS2Ptr<Unk_MScrollDef> spDefA = FUN_14034f780()->FUN_14034e360(spA->m_n20);
-        MS2Ptr<Unk_MScrollDef> spDefB = FUN_14034f780()->FUN_14034e360(spB->m_n20);
+        MS2Ptr<Unk_MScrollDef> spDefA = reinterpret_cast<Unk_MScrollTable*>(TSingleton<CEnchantScrollTable>::GetInstance())->FUN_14034e360(spA->m_n20);
+        MS2Ptr<Unk_MScrollDef> spDefB = reinterpret_cast<Unk_MScrollTable*>(TSingleton<CEnchantScrollTable>::GetInstance())->FUN_14034e360(spB->m_n20);
         if (spDefA.IsNull() || spDefB.IsNull())
             return -1;
         return spDefA->m_n1c < spDefB->m_n1c ? -1 : 1;

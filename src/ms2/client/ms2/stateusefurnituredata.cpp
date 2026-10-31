@@ -30,6 +30,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -80,7 +81,6 @@ public:
     unsigned FUN_1411a49c0(Unk_EffectQuery* pQuery);
     void FUN_1411a4a00(Unk_EffectQuery* pQuery);
 };
-Unk_UfEffectMgr* FUN_1403ed280();
 void FUN_1411a6060(Unk_UfEffectMgr* pMgr, int nId);
 
 // The animation service: the name of the sequence of an actor, the cached actor manager.
@@ -227,7 +227,7 @@ void StateUseFurniture::vfunc_4(StateData* pData)
             kQuery.m_strName = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC0;
             kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
             kQuery.SetActor(m_pOwner->FUN_14123c580());
-            m_nEffect = FUN_1403ed280()->FUN_1411a49c0(&kQuery);
+            m_nEffect = reinterpret_cast<Unk_UfEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kQuery);
         }
     }
     PCBase* pPC = FUN_1417b8370();
@@ -354,7 +354,7 @@ void StateUseFurniture::vfunc_5(int n)
 {
     State::vfunc_5(n);
     if (m_nEffect != 0)
-        FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+        FUN_1411a6060(reinterpret_cast<Unk_UfEffectMgr*>(TSingleton<CEffectService>::GetInstance()), m_nEffect);
     bool bEffect = (m_spCube.get() != 0 ? true : false) &&
         FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8, "");
     if (bEffect)
@@ -363,7 +363,7 @@ void StateUseFurniture::vfunc_5(int n)
         kQuery.m_strName = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8;
         kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
         kQuery.SetActor(m_pOwner->FUN_14123c580());
-        FUN_1403ed280()->FUN_1411a4a00(&kQuery);
+        reinterpret_cast<Unk_UfEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kQuery);
     }
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)

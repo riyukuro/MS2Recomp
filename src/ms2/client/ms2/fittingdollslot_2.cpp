@@ -23,6 +23,7 @@
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
 class Unk_ItemEquipData : public CItemData { };         // CItem::FUN_140527840's record
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
@@ -70,12 +71,7 @@ extern Unk_FdFramework DAT_143b059e8;
 Unk_FdCubeSvc* FUN_1401cd040(Unk_FdFramework* pFramework);
 
 // The feature switches (FUN_140166410).
-class Unk_FdFeatures
-{
-public:
-    bool FUN_14036d570(int nFeature);                       // the feature is switched on
-};
-Unk_FdFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 FittingDollPC* FUN_140884db0(PCBase* pObject);               // the object as a fitting doll (class 0x6200046) or 0
 __int64 FUN_141656ad0(PCBase* pPlayer);                     // the account of the player
@@ -94,7 +90,7 @@ bool FUN_1409b0350(Scaleform::GFx::Value* pValue);
 void FUN_140710590(COutPacket& packet);                     // send the packet
 void FUN_14121b840(int nResult);                            // the notice of a doll item result (fittingdollslot#1)
 
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(FittingDollSlot);
 
@@ -145,7 +141,7 @@ int FittingDollSlot::vfunc_18(void* p)
     void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
         if (spItem.get() != 0)
             FUN_141405a60(pItemSlot, spItem.get(), m_nSlot);
     }
@@ -317,7 +313,7 @@ int FittingDollSlot::FUN_14121ddc0()
     {
         CStringW strName;
         int nReason;
-        if (DAT_143ab2a90.FUN_140a66200(spItem.get(), &nReason, strName) == 0)
+        if (g_143ab2a90.FUN_140a66200(spItem.get(), &nReason, strName) == 0)
         {
             CStringW strText;
             switch (nReason)

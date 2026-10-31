@@ -10,6 +10,9 @@
 #include <atlcoll.h>
 #include <efd/utf8string.h>
 #include "ms2/placeholder/effectquery.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unrecovered helpers (declared with their exe signatures) ----
 
@@ -20,7 +23,6 @@ public:
     int FUN_1411a49c0(NoticeMessage* pRequest);                     // play, returns the handle
     void FUN_1411a6060(int nHandle);                                // stop
 };
-Unk_LtFxMgr* FUN_1403ed280();
 
 // The target's transform (NiTransform: rotation, translation, scale). The ctor 0x140a332d0 is out of line, and the
 // position converts through NiPoint3(const efd::Point3&) (0x14027dcf0) and is move-assigned (0x14097faa0).
@@ -120,14 +122,12 @@ class Unk_LtActorB
 public:
     unsigned FUN_1410ad610();
 };
-class Unk_LtActor
+class Unk_LtActor : public PC
 {
 public:
-    int FUN_1416595d0();                                            // lift mode on
     Unk_LtActorB* FUN_141530290();
 };
 class Unk_LtPlayer;
-Unk_LtPlayer* FUN_1403ed2d0();
 Unk_LtActor* FUN_141bd0cc0(Unk_LtPlayer* pPlayer);
 
 // @0x141448190
@@ -161,7 +161,7 @@ int CLiftableTarget::vfunc_1(Unk_EntRef ent)
 // @0x1414483e0
 void CLiftableTarget::FUN_1414483e0()
 {
-    Unk_LtActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_LtActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_LtPlayer*>(WorldService::GetInstance()));
     if (pActor == 0)
         return;
     if (pActor->FUN_1416595d0() == 0)
@@ -212,7 +212,7 @@ void CLiftableTarget::FUN_141448750()
     req.m_strName = vfunc_2();
     req.m_nObject = 0;
     req.m_p18 = &xform;
-    m_nFx = FUN_1403ed280()->FUN_1411a49c0(&req);
+    m_nFx = reinterpret_cast<Unk_LtFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&req);
 }
 
 // @0x141448920
@@ -220,7 +220,7 @@ void CLiftableTarget::FUN_141448920()
 {
     if (m_nFx == 0)
         return;
-    FUN_1403ed280()->FUN_1411a6060(m_nFx);
+    reinterpret_cast<Unk_LtFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nFx);
     m_nFx = 0;
 }
 

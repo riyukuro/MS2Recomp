@@ -42,6 +42,9 @@
 #include "ms2/unnamed/unit_14176f2a0.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/unnamed/unit_1416c4de0.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -76,13 +79,11 @@ public:
 MS2_CHECK_OFFSET(Unk_GoField, m_nFieldId, 0x18);
 
 // The world service (FUN_1403ed2d0).
-class Unk_GoWorld
+class Unk_GoWorld : public WorldService
 {
 public:
-    int FUN_141bd19d0(int nId);
     MS2Ptr<Unk_GoField> FUN_141bd3210(NiPoint3 kPos);
     MS2Ptr<Unk_GoField> FUN_141bd3430(unsigned __int64 nFieldId);
-    int FUN_141bdb5c0();
 };
 Unk_GoWorld* FUN_1403ed2d0();
 
@@ -120,14 +121,12 @@ public:
 Unk_GoAnimSvc* FUN_141b6f910();
 
 // The camera manager and its PvP mode.
-class Unk_GoCamMode { public: void FUN_1416c5b00(int nId); };
-class Unk_GoCamera
+class Unk_GoCamMode : public CPVPCameraMode { };
+class Unk_GoCamera : public CameraMgr
 {
 public:
-    int FUN_140af7e30();
     Unk_GoCamMode* FUN_140af2520();
 };
-Unk_GoCamera* FUN_1409478c0();
 struct Unk_GoCamEvent
 {
     char m_pad[0x28];
@@ -220,7 +219,7 @@ void FUN_14098c6e0(egf::Entity* pEntity, unsigned int nProp, const bool& bValue)
 void FUN_140de8bd0(egf::Entity* pEntity, unsigned int nProp, efd::AssetID* pValue);
 void FUN_140de0cb0(efd::AssetID* pAsset, const efd::utf8string& strUrn);
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
-bool FUN_140a33ff0(const efd::Point3& kPos);
+bool Unk_IsFinite(const efd::Point3& kPos);
 bool FUN_1409943d0(NiAVObject* pObject);
 void FUN_14098f4d0(NiAVObject* pObject, bool b);
 void FUN_14098b3e0(NiAVObject* pObject, float f, bool b);
@@ -442,7 +441,7 @@ void GameObject::vfunc_19(efd::Point3 kPos)
 {
     if (m_pos28 != kPos)
     {
-        if (!FUN_140a33ff0(kPos))
+        if (!Unk_IsFinite(kPos))
             return;
         m_pos28 = kPos;
         FUN_14123e350();
@@ -462,7 +461,7 @@ void GameObject::vfunc_21(efd::Point3 kDir)
 {
     if (m_pos34 != kDir)
     {
-        if (!FUN_140a33ff0(kDir))
+        if (!Unk_IsFinite(kDir))
             return;
         m_pos34 = kDir;
         FUN_14123e3a0();
@@ -755,13 +754,13 @@ unsigned __int64 GameObject::FUN_14123cec0()
 // @0x14123cf10
 void GameObject::vfunc_33(void* a, void* b)
 {
-    if (FUN_1409478c0()->FUN_140af7e30() == 0xd)
+    if (reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 0xd)
     {
         int nOwner = FUN_1403ed2d0()->FUN_141bd19d0(GO_CAMEVENT(a)->m_nOwner);
         if (nOwner == 1)
         {
             int nTarget = FUN_1403ed2d0()->FUN_141bd19d0(GO_CAMEVENT(a)->m_nTarget);
-            Unk_GoCamMode* pMode = FUN_1409478c0()->FUN_140af2520();
+            Unk_GoCamMode* pMode = reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520();
             if (nTarget)
                 pMode->FUN_1416c5b00(GO_CAMEVENT(a)->m_nTarget);
         }
@@ -772,13 +771,13 @@ MS2_REPLACE_METHOD(0x14123cf10, GameObject, vfunc_33, 142, 0x65BBC4C2);
 // @0x14123cfb0
 void GameObject::vfunc_34(void* p)
 {
-    if (FUN_1409478c0()->FUN_140af7e30() == 0xd)
+    if (reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 0xd)
     {
         int nOwner = FUN_1403ed2d0()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nOwner);
         if (nOwner == 1)
         {
             int nTarget = FUN_1403ed2d0()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nTarget);
-            Unk_GoCamMode* pMode = FUN_1409478c0()->FUN_140af2520();
+            Unk_GoCamMode* pMode = reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520();
             if (nTarget)
                 pMode->FUN_1416c5b00(GO_CAMEVENT(p)->m_nTarget);
         }
@@ -789,13 +788,13 @@ MS2_REPLACE_METHOD(0x14123cfb0, GameObject, vfunc_34, 137, 0x1D49A21A);
 // @0x14123d040
 void GameObject::vfunc_35(void* p)
 {
-    if (FUN_1409478c0()->FUN_140af7e30() == 0xd && GO_CAMEVENT(p)->m_nOwner != 0)
+    if (reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 0xd && GO_CAMEVENT(p)->m_nOwner != 0)
     {
         int nOwner = FUN_1403ed2d0()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nOwner);
         if (nOwner == 1)
         {
             int nTarget = FUN_1403ed2d0()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nTarget);
-            Unk_GoCamMode* pMode = FUN_1409478c0()->FUN_140af2520();
+            Unk_GoCamMode* pMode = reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520();
             if (nTarget)
                 pMode->FUN_1416c5b00(GO_CAMEVENT(p)->m_nTarget);
         }

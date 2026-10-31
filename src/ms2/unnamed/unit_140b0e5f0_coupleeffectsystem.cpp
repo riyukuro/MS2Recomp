@@ -10,6 +10,7 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/fielddata.h"
 
 // ---- unit-local stand-ins and unrecovered callees (names invented from use) ----------------------------------------------
 // Gem tables (RTTI names). Only the polymorphic part is declared; the effect-name lookup is an out-of-line member.
@@ -31,7 +32,7 @@ class Unk_GemDb { public: Unk_GemDbPtr FUN_1405ac160(int nGemId); };
 Unk_GemDb* FUN_1405a96f0();
 
 // Map flags: the shared map data behind a counted pointer (the world service's copy of m_298).
-class Unk_CeMapData { public: int FUN_140375660(unsigned nMask); };
+class Unk_CeMapData : public CFieldData { };
 class Unk_CeMapPtr
 {
 public:

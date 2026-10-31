@@ -69,6 +69,10 @@
 #include "ms2/client/ms2/uialliancequestdialog.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/uiservice.h"
 
 static UICommon::CMyPCKeyInputController s_keyController;
 
@@ -94,13 +98,11 @@ CStringW GetStringCommonByKey(const CStringW& str);
 CQuestManager* FUN_140764020();
 UIRewardNotify* FUN_140938cd0(int);
 UIFameContentsNotify* FUN_140e77d80(int);
-CChapterBookTable* FUN_140e0a9f0();
 WorldService* FUN_1403ed2d0();
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 
-class Unk_StTextFilter { public: void FUN_1416fb340(CStringW& strText); void FUN_1416fb380(CStringW& strText); void FUN_1416fbf60(CStringW& strText, unsigned short nId); };
-Unk_StTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 
 class Unk_QmTalkScript;
 class Unk_QmTalkScriptPtr {
@@ -122,7 +124,6 @@ Unk_StRewardOtherDialog* FUN_140e01890(int nUiId);
 
 // The UI manager and the dialog getter (GetDialog<T> instantiations of this unit).
 class Unk_StUiManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-Unk_StUiManager* FUN_1403ed2b0();
 
 class UIChapterBook : public UIDialog
 {
@@ -134,9 +135,9 @@ public:
 // @0x141810510
 UIAllianceQuestDialog* FUN_141810510(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_StUiManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_StUiManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<UIAllianceQuestDialog*>((UIObject*)p);
     }
@@ -146,9 +147,9 @@ UIAllianceQuestDialog* FUN_141810510(int nId)
 // @0x1418105b0
 UIChapterBook* FUN_1418105b0(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_StUiManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_StUiManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<UIChapterBook*>((UIObject*)p);
     }
@@ -172,7 +173,7 @@ void CStoryQuest::DecodeStart(CInPacket& packet)
 {
     if (FUN_14036d570(FUN_140166410(), 100))
     {
-        int nChapter = FUN_140e0a9f0()->FindIdByPrologue(FUN_140bfc580());
+        int nChapter = TSingleton<CChapterBookTable>::GetInstance()->FindIdByPrologue(FUN_140bfc580());
         if (nChapter != 0)
         {
             UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
@@ -465,7 +466,6 @@ bool CStringTable::s_bInit;
 extern int DAT_143ae0fc0;                                           // debug switch: append the ids to the texts
 
 // The xml helpers every table unit uses.
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
@@ -673,22 +673,21 @@ public:
     MS2Ptr<Unk_StSkillRow> FUN_1407ee1d0(int nSkillId);
     MS2Ptr<Unk_StEffectAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel);
 };
-Unk_StSkillTable* FUN_1401958b0();
 class Unk_StSkillSystem { public: CStringW FUN_141767e60(__int64 nId); };
-class Unk_StPlayer { public: Unk_StSkillSystem* FUN_141523bc0(); MS2Ptr<CItem> FUN_141655b80(__int64 nItemUid); };
+class Unk_StPlayer : public PC { public: Unk_StSkillSystem* FUN_141523bc0();};
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 class UIClosetDialog : public UIDialog
 {
 public:
     static int FUN_141818950() { return 0x4f76; }           // the ui id
-    CStringW FUN_140be1a00(const __int64& nId);
+    CStringW TabName(const __int64& nId);
 };
 
 // @0x141815ed0
 UIClosetDialog* FUN_141815ed0()
 {
-    Unk_StUiManager* pManager = FUN_1403ed2b0();
+    Unk_StUiManager* pManager = reinterpret_cast<Unk_StUiManager*>(TSingleton<CUIService>::GetInstance());
     if (pManager == 0)
         return 0;
     MS2Ptr<UIObject> p = pManager->FUN_141adcea0(UIClosetDialog::FUN_141818950());
@@ -763,7 +762,7 @@ CStringW CStringTable::GetSkillDescription(int nSkillId, unsigned short nLevel, 
     if (m_skillDescs.Lookup(nSkillId, spDesc))
     {
         CStringW strText = spDesc->FUN_141813a30(strTag);
-        MS2Ptr<Unk_StSkillRow> spSkill = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
+        MS2Ptr<Unk_StSkillRow> spSkill = reinterpret_cast<Unk_StSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
         if (spSkill == 0)
             return CStringW(L"");
         MS2Ptr<Unk_StSkillLevel> spLevel = spSkill->FUN_1407e90a0(nLevel);
@@ -787,7 +786,7 @@ CStringW CStringTable::FUN_141812290(int nBuffId, unsigned short nLevel, CString
     CStringW strText = FUN_141815160(m_levelDescs, &nBuffId, &nLevel, strTag);
     if (strTag.CompareNoCase("tooltipDescription") == 0)
     {
-        MS2Ptr<Unk_StEffectAttr> spAttr = FUN_1401958b0()->FUN_140aafef0(nBuffId, nLevel);
+        MS2Ptr<Unk_StEffectAttr> spAttr = reinterpret_cast<Unk_StSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(nBuffId, nLevel);
         if ((bool)spAttr.get())
         {
             if (!spAttr->m_strArgs.IsEmpty())
@@ -823,7 +822,7 @@ CStringW CStringTable::FUN_1418125b0(int nId)
         CStringW strExtra;
         UIClosetDialog* pCloset = FUN_141815ed0();
         if (pCloset != 0)
-            strExtra = pCloset->FUN_140be1a00(nId);
+            strExtra = pCloset->TabName(nId);
         return FUN_1401e8510(FUN_141811980(5, nId), strExtra);
     }
     return FUN_141811980(5, nId);

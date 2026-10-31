@@ -68,7 +68,7 @@ extern const int DAT_142dbac18[4];                // the item model classes that
 class Unk_ItemEnchantData;
 CStringW FUN_1409e0900(int n);                    // part 5: an int option value text
 CStringW FUN_1409e0a90(float fRate);              // part 5: a rate option value text
-bool FUN_14082f1d0(int nStat);                    // the stat is shown as an integer (stat.cpp)
+bool IsStatKindOne(int nStat);                    // the stat is shown as an integer (stat.cpp)
 bool FUN_14081dc50(int nSpecial);                 // the special stat is shown as an integer (specialability.cpp)
 CStringW FUN_14082f000(int nStat);                // GetStatCommonText (stat.cpp)
 CStringW FUN_140630e10(int nSpecial);             // the special stat name (itemsocketsystemutil.cpp)
@@ -88,7 +88,7 @@ SkillDataTableCli* FUN_1401958b0();               // TSingleton<SkillDataTableCl
 #include "ms2/commonfiles/itemenchantlimittable.h"
 CPetDataTable* FUN_14052d210();                   // TSingleton<CPetDataTable>::GetInstance (exe copy; as part 2)
 CExpTable* FUN_1404a1bb0_p1();                    // 0x1404a1bb0 TSingleton<CExpTable>::GetInstance (exe copy)
-int FUN_14082ee80(const CStringA& strName);       // stat name -> id (-1 when none; stat.cpp)
+int FindStatByName(const CStringA& strName);       // stat name -> id (-1 when none; stat.cpp)
 int FUN_14081d260(const CStringA& strName);       // special option name -> id (0 when none; specialability.cpp)
 const CString& FUN_14082efb0(int nStat);          // the xml name of a stat (stat.cpp)
 const CString& FUN_14081d380(int nSpecial);       // the xml name of a special stat (specialability.cpp)
@@ -139,7 +139,7 @@ CStringW FUN_140627390(unsigned nGemId);                              // the gem
 CStringW FUN_1406319f0(int nId, unsigned short nLevel);               // the additional-effect text (itemsocketsystemutil.cpp)
 CStringW FUN_140630e10(int nSpecial);                                 // the special stat name (itemsocketsystemutil.cpp)
 CStringW FUN_14082f000(int nStat);                                    // GetStatCommonText (stat.cpp)
-bool FUN_14082f250(int nStat);                                        // the stat is shown as a rate (stat.cpp)
+bool IsStatKindTwo(int nStat);                                        // the stat is shown as a rate (stat.cpp)
 bool FUN_14081dcd0(int nSpecial);                                     // the special stat is shown as a rate (specialability.cpp)
 CStringW FUN_1408116a0(int nStringId, const int& n);                  // FormatStringId<int>
 CStringW FUN_14086cfc0(int nStringId, const long& n);                 // FormatStringId<long>
@@ -267,7 +267,7 @@ CStringW FUN_1416e5210(unsigned nQuestId, CStringW strKey); // the quest name fo
 // the UI string service (0x14025e7a0): "$"-prefixed keys translated by FUN_1422b0570
 class Unk_TooltipUiStrings { public: CStringW FUN_1422b0570(const CString& strKey); };
 Unk_TooltipUiStrings* FUN_14025e7a0_p3();
-bool FUN_14082f250(int nStat);                              // the stat is shown as a rate (stat.cpp)
+bool IsStatKindTwo(int nStat);                              // the stat is shown as a rate (stat.cpp)
 bool FUN_14081dcd0(int nSpecial);                           // the special stat is shown as a rate (specialability.cpp)
 CStringW FUN_14082f000(int nStat);                          // GetStatCommonText (stat.cpp)
 CStringW FUN_140630e10(int nSpecial);                       // the special stat name (itemsocketsystemutil.cpp)
@@ -307,8 +307,8 @@ bool FUN_1405729c0(const Unk_TooltipBeautyItems* pItems);              // the co
 struct Unk_ItemDataIntView : CItemData { int FUN_14053c940(int nGender); int FUN_14053d660(); };
 int FUN_14053feb0(int nItemId);                                       // the default rank of an item (itemdata.cpp)
 void FUN_14183eba0(unsigned nItemId, CStringW& strIcon, unsigned long& nSize, unsigned long& nColor1, unsigned long& nColor2);   // the super chat item look (texttohtml.cpp)
-extern unsigned long DAT_1439f87c0;                                   // texttohtml.cpp s_colors: the super chat colour
-extern unsigned long DAT_1439f87f0;                                   // texttohtml.cpp s_colors: the super chat second colour
+extern unsigned long s_color6;                                   // texttohtml.cpp s_colors: the super chat colour
+extern unsigned long s_color18;                                   // texttohtml.cpp s_colors: the super chat second colour
 extern CStringW DAT_143aef3b8;                                        // texttohtml.cpp: the default super chat icon
 #include "ms2/commonfiles/itemenchantlimittable.h"
 #include "ms2/commonfiles/itemenchanttransformtable.h"
@@ -327,7 +327,7 @@ void FUN_1402929a0(const CStringW& str, std::vector<unsigned>& rOut, const wchar
 CStringW GetStringCommonByKey(const CStringW& str);                         // a string table text (commonutil.cpp)
 int FUN_14028e280(CMsTime& kOut, const CString& strFormat, const CString& strText);   // parses a date text (commonutil.cpp)
 class MyPC;
-extern Unk_Inventory DAT_143ab2a90;                                   // the inventory
+extern Unk_Inventory g_143ab2a90;                                   // the inventory
 CStringW FUN_141b708a0(unsigned nSeconds, bool bShowSeconds);         // a duration text (util.cpp)
 bool FUN_141b48950(MS2Ptr<CItem> spItem);                             // the item has a preview model (uishopdialog.cpp)
 bool FUN_141b488c0(MS2Ptr<CItemData> spData);                         // the item data may be previewed
@@ -483,7 +483,7 @@ CStringW FUN_14093b970(int nId);                                      // achieve
 CStringW FUN_14093c8d0(int nId, int nGrade, int bRaw);                // achievement description
 CStringW FUN_14093ce70(int nId, int nGrade);                          // achievement reward text
 CStringW FUN_14093e330(CAchieve* pAchieve, int nKey);                 // achievement completion date
-CString FUN_140159490(CAchieveData* pData);                           // achievement icon path (achievecondition.cpp, static there)
+CString GetAchieveName(CAchieveData* pData);                           // achievement icon path (achievecondition.cpp, static there)
 float FUN_14028d280(unsigned nTicks);                                 // milliseconds -> seconds (commonutil.cpp)
 #include "ms2/commonfiles/itemgift.h"                                 // ItemAble
 void FUN_1409e2ed0(Scaleform::GFx::Value* pOut, ItemAble& item);
@@ -519,7 +519,7 @@ bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind
 bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strValue);   // part 1
 CStringW FUN_140631600(int nStat, BaseOption* pOption);   // a set stat option text (itemsocketsystemutil.cpp)
 CStringW FUN_140631830(int nSpecial, int nValue, CItemData* pData);   // a set special option text (itemsocketsystemutil.cpp)
-int FUN_14082ee80(const CStringA& strName);       // stat name -> id (-1 when none; stat.cpp)
+int FindStatByName(const CStringA& strName);       // stat name -> id (-1 when none; stat.cpp)
 int FUN_14081d260(const CStringA& strName);       // special option name -> id (0 when none; specialability.cpp)
 const CString& FUN_14082efb0(int nStat);          // the xml name of a stat (stat.cpp)
 const CString& FUN_14081d380(int nSpecial);       // the xml name of a special stat (specialability.cpp)

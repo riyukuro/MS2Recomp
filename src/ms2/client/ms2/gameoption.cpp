@@ -83,6 +83,13 @@
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/ms2format.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cgraphicoptiontable.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/crashmanagercli.h"
 
 // ---- header statics (dynamic initializers 0x1400ea4e0..0x1400ea810) ----
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
@@ -494,14 +501,11 @@ struct Unk_GoConfig
 Unk_GoConfig* FUN_1401d3200();
 
 // WorldService singleton (FUN_1403ed2d0): the current field and the camera scale.
-class Unk_1403ed2d0
+class Unk_1403ed2d0 : public WorldService
 {
 public:
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field data
-    float FUN_141bcfc50();                                      // camera scale of the local player
     MyPC* FUN_141bd0cc0();                                      // the local player
-    void FUN_141bd4260();                                       // enchant effect off
-    void FUN_141bd41d0();                                       // enchant effect on
 };
 Unk_1403ed2d0* FUN_1403ed2d0();
 
@@ -993,17 +997,13 @@ bool Unk_GoResModeLess::operator()(const Unk_GoResMode& a, const Unk_GoResMode& 
 }
 
 // More members of the singletons used here.
-class Unk_GoRenderCfg
+class Unk_GoRenderCfg : public CGraphicOptionTable
 {
 public:
     int FUN_141376510(int nLevel);                              // the hdr flag of a quality level
-    int FUN_141376790(int nIndex);                              // the framebuffer format of a multisampling row
 };
-Unk_GoRenderCfg* FUN_140ae1c00();
-class Unk_GoEffectMgr { public: void FUN_1411a8880(int n); };
-Unk_GoEffectMgr* FUN_1403ed280();
+CEffectService* FUN_1403ed280();
 class Unk_GoUiMgr { public: void FUN_141adc5d0(int nUiId); void FUN_141adc530(int nUiId); };
-Unk_GoUiMgr* FUN_1403ed2b0();
 
 // The graphic state blocks' methods (client\ms2\gameoptionstruct.cpp).
 void FUN_14125d890(Unk_GraphicState* p);
@@ -1075,7 +1075,7 @@ int CGameOptionGraphicDefault::vfunc_5(const char* pszName, void* pArg, int nArg
             {
                 MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_hdr"), -1);
                 if (static_cast<Unk_GoCheck*>(sp) != 0)
-                    sp->FUN_1422ce090(FUN_140ae1c00()->FUN_141376510(nLevel));
+                    sp->FUN_1422ce090(reinterpret_cast<Unk_GoRenderCfg*>(TSingleton<CGraphicOptionTable>::GetInstance())->FUN_141376510(nLevel));
             }
             {
                 MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_shadow"), -1);
@@ -1371,7 +1371,7 @@ void CGameOptionGraphicDefault::FUN_14124ce20()
         FUN_1403ed280()->FUN_1411a8880(m_state.m_nEffectStep);
     if (m_state.m_nMultisampling != pGfx->m_nMultisampling)
     {
-        FUN_14125e4b0(&m_state, FUN_140ae1c00()->FUN_141376790(m_state.m_nMultisampling));
+        FUN_14125e4b0(&m_state, reinterpret_cast<Unk_GoRenderCfg*>(TSingleton<CGraphicOptionTable>::GetInstance())->GetMultisampleValue(m_state.m_nMultisampling));
         bNotify = 1;
     }
     if (m_state.m_bVsync != pGfx->m_bVsync)
@@ -1380,9 +1380,9 @@ void CGameOptionGraphicDefault::FUN_14124ce20()
         bNotify = 1;
     }
     if (m_state.m_bShowFrameRate)
-        FUN_1403ed2b0()->FUN_141adc530(0x4e7d);
+        reinterpret_cast<Unk_GoUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e7d);
     else
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4e7d);
+        reinterpret_cast<Unk_GoUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e7d);
     if (bNotify != 0)
         FUN_140d73bc0(0x84e, 0, 0, CStringW(L""));
 }
@@ -1602,15 +1602,13 @@ static std::pair<int, int> FUN_14124d9d0(int nWidth, int nHeight)
 // ---- CGameOption (the option store) ----
 
 class CCrashManager;
-CCrashManager* FUN_140a44830();                                 // the crash manager singleton
-class Unk_GoXmlFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* szPath, int n, bool b1, bool b2); };
+class Unk_GoXmlFiles : public CFileSystem { };
 Unk_GoXmlFiles* FUN_140166420();                                // the xml loader
 void* FUN_140166440();                                          // the log string table
 void FUN_1401859c0(void* pLog, int nLevel, int nCategory, const wchar_t* pszText);
-class Unk_GoFlags { public: bool FUN_14036e560(); };
-Unk_GoFlags* FUN_140166410();
+CFeatureManager* FUN_140166410();
 int FUN_1406c34c0();                                            // the platform kind
-extern char DAT_143ae0900;
+extern char g_bLanguageSet;
 void FUN_14086ddc0(TiXmlDocument* pDoc);                        // drop the children
 void* FUN_14081b310(TiXmlDocument* pDoc);                       // root element
 void* FUN_140165cf0(void* pNode, const char* szName);           // first child element
@@ -1727,7 +1725,7 @@ CGameOption::CGameOption()
     FUN_141261cf0(&m_agree);
     m_nBenchmark = -1;
     m_n464 = 0;
-    FUN_140a44830()->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CGameOption::FUN_141243630));
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CGameOption::FUN_141243630));
     FUN_141242f60();
     LoadGameOption();
 }
@@ -1797,7 +1795,7 @@ int CGameOption::LoadGameOption()
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read optimal hide option");
     if (FUN_1412616c0(&m_chroma, &m_docGame) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read chroma option");
-    FUN_140a44830()->FUN_1401ce2f0("GameOption: Width(%d) Height(%d)", m_graphic.m_nWidth, m_graphic.m_nHeight);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GameOption: Width(%d) Height(%d)", m_graphic.m_nWidth, m_graphic.m_nHeight);
     return FUN_140166420()->FUN_1403974b0(&m_docGameDefault, GetOptionFilePath(0, true), 0, true, false);
 }
 
@@ -1869,7 +1867,7 @@ int CGameOption::LoadCharacterOption()
 // @0x141242f60
 int CGameOption::FUN_141242f60()
 {
-    if (FUN_1406c34c0() == 0 && (unsigned char)DAT_143ae0900 != 0)
+    if (FUN_1406c34c0() == 0 && (unsigned char)g_bLanguageSet != 0)
         return 1;
     int bRead = 0;
     int bDefaulted = 0;
@@ -1950,7 +1948,7 @@ void CGameOption::FUN_141243630()
         memset(pBuf, 0, nSize + 2);
         fread(pBuf, nSize, 1, pFile);
         CString strText(pBuf);
-        FUN_140a44830()->FUN_1401ce2b0(FUN_1409a23d0((const char*)strText, 0));
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0(FUN_1409a23d0((const char*)strText, 0));
         delete[] pBuf;
         fclose(pFile);
     }

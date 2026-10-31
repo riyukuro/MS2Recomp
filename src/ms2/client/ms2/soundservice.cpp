@@ -32,7 +32,7 @@ extern char DAT_143d6eb58;                                          // class des
 // ---- helpers living in other units ----
 CLogString* GetLogString();                                        // the log
 void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const char* const& rArg);
-void FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat);
+void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat);
 int FUN_1406516c0();                                                // client language (0 Korea, 1 jp, 2 en, 3 cn)
 struct Unk_SoundCfg
 {
@@ -218,7 +218,7 @@ FMOD_RESULT F_CALLBACK FUN_1417b14a0(FMOD_SYSTEM* pSystem, FMOD_SYSTEM_CALLBACKT
         if (nDrivers != 0)
             FUN_1417b4a40(1);
         if (GetLogString() != 0)
-            FUN_1401859c0(GetLogString(), 0xc, 0x12f, L"FMOD_SYSTEM_CALLBACKTYPE_DEVICELISTCHANGED");
+            Unk_AdditionalLog(GetLogString(), 0xc, 0x12f, L"FMOD_SYSTEM_CALLBACKTYPE_DEVICELISTCHANGED");
         break;
     }
     }

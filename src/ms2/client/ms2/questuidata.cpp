@@ -41,10 +41,13 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/uitalkmanager.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // ---- callees of other units -----------------------------------------------------------------------------------------
 
-class Unk_QuiLoader { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_QuiLoader : public CFileSystem { };
 Unk_QuiLoader* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
@@ -59,7 +62,6 @@ int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);   //
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);   // wide string attribute
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
 void FUN_1401d9a30(const CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDelim);
-CReservedWordTable* FUN_1403b4750();
 CStringTable* GetStringTable();                                          // the string table singleton
 CStringW GetStringCommon(int nStringId);                                  // a common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // a common string by key
@@ -68,16 +70,15 @@ CStringW FUN_1413fac10(CStringW strText, CStringW strWord);             // strTe
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument
 CStringW FUN_1401aa6a0(int nNpcId);                                     // the npc name
 CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int& nLevel);   // string table format (name, level)
-QuestDataTable* FUN_1407476c0();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);                         // the quest table row (null when none)
 int FUN_14074bc90(int nQuestId);                                        // the quest type
 int FUN_14074b050(CQuestData* pData);
 int FUN_14074b070(CQuestData* pData);                                   // the repeat kind (1 daily, 2 weekly, 3 week repeat)
 CQuestManager* FUN_140764020();
-class Unk_QuiWorld { public: void* FUN_141bd0cc0(); };                  // the local player (NULL outside the field)
-Unk_QuiWorld* FUN_1403ed2d0();
-class Unk_QuiNpcTalk { public: int FUN_141b212f0(); };                  // the npc id of the open talk
-Unk_QuiNpcTalk* FUN_140967100();
+                  // the local player (NULL outside the field)
+WorldService* FUN_1403ed2d0();
+                  // the npc id of the open talk
+UITalkManager* FUN_140967100();
 extern int DAT_143ae0fc0;                                               // debug switch: show ids
 
 // ---- the unit's statics ---------------------------------------------------------------------------------------------
@@ -159,13 +160,13 @@ void FUN_1416e43d0()
     for (POSITION pos = s_quests.GetStartPosition(); pos != NULL; s_quests.GetNext(pos))
     {
         MS2Ptr<CQuestUIData> spData = s_quests.GetValueAt(pos);
-        FUN_1403b4750()->FUN_1416fb380(spData->m_strName);
-        FUN_1403b4750()->FUN_1416fb380(spData->m_strComplete);
-        FUN_1403b4750()->FUN_1416fbf20(spData->m_strDesc);
-        FUN_1403b4750()->FUN_1416fbf20(spData->m_strSummary);
-        FUN_1403b4750()->FUN_1416fb380(spData->m_strDescFameUI);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spData->m_strName);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spData->m_strComplete);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf20(spData->m_strDesc);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf20(spData->m_strSummary);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spData->m_strDescFameUI);
         for (size_t i = 0; i < spData->m_manual.GetCount(); i++)
-            FUN_1403b4750()->FUN_1416fb380(spData->m_manual[i]);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spData->m_manual[i]);
     }
 }
 
@@ -222,7 +223,7 @@ CStringW FUN_1416e4df0(int nQuestId)
     MS2Ptr<CQuestUIData> spUI = FUN_1416e5f60(nQuestId);
     if (!spUI)
         return L"";
-    MS2Ptr<CQuestData> spData = FUN_1407476c0()->FUN_14074c9d0(nQuestId);
+    MS2Ptr<CQuestData> spData = TSingleton<QuestDataTable>::GetInstance()->FUN_14074c9d0(nQuestId);
     if (spData == 0)
         return L"";
     CStringW strName;
@@ -242,7 +243,7 @@ CStringW FUN_1416e4df0(int nQuestId)
     {
         strName = spUI->m_strName;
     }
-    FUN_1403b4750()->FUN_1416fb340(strName);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strName);
     if (DAT_143ae0fc0 != 0)
         strName.AppendFormat(L" [%d]", spUI->m_nQuestId);
     return strName;
@@ -267,7 +268,7 @@ CStringW FUN_1416e5350(int nQuestId, int nIndex)
     if (!spUI)
         return L"";
     CStringW strText = spUI->m_strSummary;
-    FUN_1403b4750()->FUN_1416fb340(strText);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
     return spUI->FUN_1416e6900(nIndex, strText);
 }
 
@@ -478,14 +479,14 @@ CStringW CQuestUIData::FUN_1416e6310(int nIndex)
     CStringW strManual = FUN_1416e6860(nIndex);
     if (strManual.GetLength() != 0)
     {
-        FUN_1403b4750()->FUN_1416fb340(strManual);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strManual);
         return FUN_1416e6900(nIndex, strManual);
     }
     FnCondText pfn = 0;
     if (!s_condTexts.Lookup(spCond->m_nType, pfn))
         return L"";
     CStringW strText = (*pfn)(this, spCond);
-    FUN_1403b4750()->FUN_1416fb340(strText);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
     return FUN_1416e6900(nIndex, strText);
 }
 
@@ -696,8 +697,8 @@ void FUN_1416e7c00(CString strPath)
         spChapter->m_nId = FUN_140197350(pChapter, "id", 0);
         CStringW strName = FUN_1401bf530(pChapter, "name", CStringW(L""));
         CStringW strDesc = FUN_1401bf530(pChapter, "desc", CStringW(L""));
-        FUN_1403b4750()->FUN_1416fb380(strName);
-        FUN_1403b4750()->FUN_1416fb380(strDesc);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strName);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strDesc);
         spChapter->m_strName = strName;
         FUN_1408731e0(pChapter, "isTutorial", spChapter->m_bTutorial);
         s_chapters.SetAt(spChapter->m_nId, spChapter);

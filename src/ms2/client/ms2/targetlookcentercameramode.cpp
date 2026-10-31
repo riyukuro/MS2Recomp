@@ -11,6 +11,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/worldservice.h"
 
 extern "C" float (__cdecl* __imp_atan2f)(float, float);      // the exe calls atan2f through its import
 
@@ -20,12 +21,7 @@ extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 extern float g_143aef240;                   // remembered camera distance (vfunc_24)
 
 // The game context (FUN_1403ed2d0).
-class Unk_GameContext
-{
-public:
-    float FUN_141bd4120();                          // extra zoom range
-};
-Unk_GameContext* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
@@ -36,7 +32,7 @@ float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 float FUN_141b6fdb0(float t, int nType);            // easing
 bool FUN_14028d470(float a, float b);               // a == b (within epsilon)
-int FUN_140ae8540();                                // reloads the camera xml (returns 0 on failure)
+int LoadTestCamerValue();                           // reloads the camera xml (returns 0 on failure)
 float FUN_140ae8910(CString key);                   // float value of the camera xml key
 unsigned int FUN_140869420();                       // tick count
 
@@ -206,7 +202,7 @@ MS2_REPLACE_METHOD(0x140a4c660, CTargetLookCenterCameraMode, vfunc_8, 3258, 0x8A
 // @0x140a4d320
 BOOL CTargetLookCenterCameraMode::vfunc_31()
 {
-    if (FUN_140ae8540())
+    if (LoadTestCamerValue())
     {
         m_10c = FUN_140ae8910("Console_RotationInterpolateSpeed");
         return TRUE;

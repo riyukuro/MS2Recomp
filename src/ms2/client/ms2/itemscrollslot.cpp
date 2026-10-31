@@ -15,18 +15,14 @@
 #include "ms2/placeholder/asslot.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-class Unk_GameCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_GameCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
-void FUN_140657820();                                   // invalid call of an empty Delegate (shared)
+void Unk_140657820();                                   // invalid call of an empty Delegate (shared)
 
 // Registry of named bags/slots (GFx bind data).
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
@@ -73,13 +69,13 @@ template<> inline Delegate<void(ItemScrollSlot*)>& Delegate<void(ItemScrollSlot*
 template<> inline void Delegate<void(ItemScrollSlot*)>::operator()(ItemScrollSlot* a1) const
 {
     if (m_pImpl == 0)
-        FUN_140657820();
+        Unk_140657820();
     m_pImpl->vfunc_2(a1);
 }
 template<> inline void Delegate<void(ItemScrollSlot*, DragSlot*)>::operator()(ItemScrollSlot* a1, DragSlot* a2) const
 {
     if (m_pImpl == 0)
-        FUN_140657820();
+        Unk_140657820();
     m_pImpl->Invoke(a1, a2);
 }
 

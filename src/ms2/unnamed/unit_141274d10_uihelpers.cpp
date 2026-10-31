@@ -43,6 +43,12 @@ static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/placeholder/commandchat.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/commonfiles/fielddata.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/gfxui/uiswfentity.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local stand-ins -------------------------------------------------------------------------------------------
 class Unk_ChatLog;
@@ -78,7 +84,6 @@ UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
 
 class Unk_PlayerActor { public: char m_pad_00[8]; };
 class Unk_PlayerRef;
-Unk_UIEntityMgr* FUN_1403ed2b0();
 WorldService* FUN_1403ed2d0();
 void* FUN_1403ed280();
 void* FUN_141bd0cc0(void*);
@@ -146,14 +151,14 @@ void FUN_141274f50()
 {
     FUN_14151f460(0);
     FUN_141a8a730();
-    FUN_141adcd40(FUN_1403ed2b0());
+    FUN_141adcd40(reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance()));
 }
 MS2_REPLACE(0x141274f50, FUN_141274f50, 34, 0x61491953);
 
 // @0x141274f80
 int FUN_141274f80()
 {
-    if (FUN_141adcbb0(FUN_1403ed2b0(), FUN_141274d10) != 0)
+    if (FUN_141adcbb0(reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance()), FUN_141274d10) != 0)
         return 1;
     if (FUN_141a8a760() != 0)
         return 1;
@@ -167,7 +172,7 @@ MS2_REPLACE(0x141274f80, FUN_141274f80, 97, 0x2E5323AD);
 // @0x141274ff0
 int FUN_141274ff0()
 {
-    if (FUN_141adcbb0(FUN_1403ed2b0(), FUN_141274df0) != 0)
+    if (FUN_141adcbb0(reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance()), FUN_141274df0) != 0)
         return 1;
     if (FUN_141a8a760() != 0)
         return 1;
@@ -351,8 +356,7 @@ unsigned FUN_14056d500(unsigned* pValue);
 size_t FUN_14059d0e0(ATL::CAtlArray<int>* pArray);
 
 class CItem;
-class Unk_ItemKindInv { public: int FUN_140a65770(CItem* pItem); };
-extern Unk_ItemKindInv DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 
 extern __int64 DAT_143ab2820;
 extern __int64 DAT_143ab2828;
@@ -787,7 +791,7 @@ void FUN_141276880(Unk_ConsoleRef console, int nColor, const wchar_t* pszFormat,
 MS2_REPLACE(0x141276880, FUN_141276880, 246, 0x4A32C7FC);
 
 // ---- filters ----------------------------------------------------------------------------------------------------------
-class Unk_UIHolder { public: CString FUN_1422db6e0() noexcept; };
+class Unk_UIHolder : public UISwfEntity { };
 Unk_UIHolder* FUN_140a7b2b0(int nId) noexcept;
 bool FUN_1401647e0(const CString&, const CString&) noexcept;
 
@@ -923,7 +927,7 @@ CStringW FUN_140a2fcd0(__int64 nBegin, __int64 nEnd);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 void FUN_140710590(COutPacket&);
 extern int DAT_143ab2914;
-class Unk_ChatMapData { public: int FUN_140375660(unsigned nMask); };
+class Unk_ChatMapData : public CFieldData { };
 class Unk_ChatMapPtr {
 public:
     ~Unk_ChatMapPtr();                                           // 0x1408850f0
@@ -1062,13 +1066,7 @@ CStringW FUN_141277410(int nIconCode)
 MS2_REPLACE(0x141277410, FUN_141277410, 1056, 0x44216BDE);
 
 // ---- item / icon names ------------------------------------------------------------------------------------------------
-class Unk_IconItemData {
-public:
-    bool FUN_14053cbc0();
-    bool FUN_14053d8c0();
-    int FUN_14053c600();
-    int FUN_14053c620();
-    int FUN_14053c510();
+class Unk_IconItemData : public CItemData {
 };
 class Unk_IconItemPtr {                                          // an item handle (callee-destroyed when passed by value)
 public:
@@ -1078,8 +1076,6 @@ public:
     Unk_IconItemData* FUN_1401b52a0() const;
     void* m_00; void* m_08;
 };
-class Unk_IconStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_IconStrings* FUN_1401a9d70();
 struct Unk_LapenData {
     char m_pad_00[0x24];
     int m_nColor;                                                // +0x24 (1 red, 2 blue, 4 green)
@@ -1104,7 +1100,7 @@ CStringW FUN_141277910(Unk_IconItemPtr item)
     if (item.FUN_1402ffd90() != 0)
         return CStringW(L"");
     if (item.FUN_1401b52a0()->FUN_14053cbc0() != 0)
-        return FUN_1401a9d70()->FUN_141811980(8, item.FUN_1401b52a0()->FUN_14053c620());
+        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, item.FUN_1401b52a0()->FUN_14053c620());
     if (item.FUN_1401b52a0()->FUN_14053d8c0() != 0)
         return FUN_141277be0(item);
     return FUN_141277410(item.FUN_1401b52a0()->FUN_14053c600());
@@ -1225,8 +1221,8 @@ MS2_REPLACE(0x1412780f0, FUN_1412780f0, 32, 0x2D2EB095);
 // @0x141278110
 UISystemText* FUN_141278110(int nId)
 {
-    if (FUN_1403ed2b0() != 0) {
-        Unk_CommandUIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nId);
+    if (reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance()) != 0) {
+        Unk_CommandUIRef ref = reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70() != 0)
             return dynamic_cast<UISystemText*>(FUN_1403ed9e0(ref));
     }
@@ -1237,8 +1233,8 @@ MS2_REPLACE(0x141278110, FUN_141278110, 147, 0xBEDFD4A1);
 // @0x1412781b0
 UITopLayerNotify* FUN_1412781b0(int nId)
 {
-    if (FUN_1403ed2b0() != 0) {
-        Unk_CommandUIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nId);
+    if (reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance()) != 0) {
+        Unk_CommandUIRef ref = reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70() != 0)
             return dynamic_cast<UITopLayerNotify*>(FUN_1403ed9e0(ref));
     }

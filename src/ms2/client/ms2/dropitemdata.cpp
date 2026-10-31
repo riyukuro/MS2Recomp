@@ -17,10 +17,11 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // ---- unrecovered helpers (the same ones the other table units use) ----
 
-class Unk_DiLoader { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+class Unk_DiLoader : public CFileSystem { };
 Unk_DiLoader* FUN_140166420();
 class Unk_DiLog { public: void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg); };
 Unk_DiLog* FUN_140166440();

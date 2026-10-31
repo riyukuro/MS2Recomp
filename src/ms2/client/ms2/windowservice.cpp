@@ -15,6 +15,8 @@
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/asmousecursor.h"
+#include "ms2/placeholder/cmainsystem.h"
 #pragma comment(lib, "user32.lib")
 
 // Statics of the unit's header (initialized in this order in .text$di).
@@ -243,7 +245,7 @@ void FUN_140d4a600(Unk_Worker*);
 void* FUN_14025e7a0();
 float FUN_14028aed0(float f);                                       // floor(float)
 struct Unk_WinMovieMgrView { Unk_HudPtr FUN_1422b0370(int nLayer); };   // member (this=rcx, hidden return=rdx)
-struct Unk_HudCursor { void FUN_1422cec40(int bShow); };   // ASMouseCursor (0x1422cec40)
+struct Unk_HudCursor : public ASMouseCursor { };   // ASMouseCursor (0x1422cec40)
 void FUN_14209cc20(void*, void*);
 void* FUN_140d8ee90();
 void FUN_140a1f970(void*, const CString&, const CString&);
@@ -288,7 +290,6 @@ void FUN_1417ae840(void*, int);
 void* FUN_140c8dac0();
 void FUN_140d0a510(void*);
 void FUN_140d0a560(void*);
-Unk_GameCore* FUN_14086d260();
 void* FUN_140af8310(Unk_Holder*);
 Unk_ComObj* FUN_141296b50(void*);
 void* FUN_1403ed2d0();
@@ -849,9 +850,9 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         {
             throw 0xd;
         }
-        if (wParam == 0x47 && (GetAsyncKeyState(0x11) & 0x8000) != 0 && FUN_14086d260() != 0)
+        if (wParam == 0x47 && (GetAsyncKeyState(0x11) & 0x8000) != 0 && reinterpret_cast<Unk_GameCore*>(TSingleton<CMainSystem>::GetInstance()) != 0)
         {
-            void* pHolder = FUN_140af8310(&FUN_14086d260()->m_holder);
+            void* pHolder = FUN_140af8310(&reinterpret_cast<Unk_GameCore*>(TSingleton<CMainSystem>::GetInstance())->m_holder);
             ATL::CComPtr<Unk_ComObj> spObj(FUN_141296b50(pHolder));
             if (static_cast<Unk_ComObj*>(spObj) != 0)
             {

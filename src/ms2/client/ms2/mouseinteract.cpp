@@ -37,6 +37,10 @@
 #include "pcbase.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cnpc.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- RTTI-only action classes (the picker compares the player's current action against the picked object) ----
 class ActionKeyObject { public: virtual ~ActionKeyObject(); };
@@ -50,13 +54,11 @@ class UITalkCinematic : public UIObject {};
 // ---- exe callees ----
 struct Unk_MiPlayer;
 struct Unk_MiActionState;
-struct Unk_MiTextMgr { CStringW FUN_141811980(int nType, int nId); };
-Unk_MiTextMgr* FUN_1401a9d70();
 CStringW GetStringCommon(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_1405c2690(CStringW fmt, const CStringW& arg);
 CStringW FUN_1408f71a0(CStringW fmt, const CStringW& a, const CStringW& b);
-struct Unk_MiNpcView { CStringW FUN_141093310(); };       // npc name (member: this=rcx, hidden return=rdx)
+       // npc name (member: this=rcx, hidden return=rdx)
 unsigned FUN_141092fa0(PCBase* pNpc);                    // npc id
 int FUN_141093c60(PCBase* pNpc);
 void FUN_140194470(Unk_Vec3* pDst, const Unk_Vec3* pSrc);
@@ -77,7 +79,6 @@ public:
     void FUN_141bc5f10(struct Unk_ObjArray& out);            // interactable objects
     struct Unk_DmIter FUN_141bd0420(unsigned nKey);
 };
-Unk_MiWorld* FUN_1403ed2d0();
 Unk_MiActionState* Unk_PlayerActionState(Unk_MiPlayer* pPlayer);
 int FUN_140953530(Unk_MiActionState* p);                    // current action type
 ActionKeyObject* FUN_140953550(Unk_MiActionState* p);       // current action
@@ -452,7 +453,7 @@ int CMouseInteract::vfunc_3()
 // @0x140a79030
 int CMouseInteract::vfunc_4()
 {
-    Unk_MiPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     FUN_140953310(Unk_PlayerActionState(pPlayer));
@@ -476,12 +477,12 @@ int CMouseInteractNpc::vfunc_1(Unk_MouseRay* pRay)
     if (pNpc != 0) {
         FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(pNpc->vfunc_18())));
         if (pNpc->vfunc_117() != 0) {
-            pRay->strCursor = FUN_1405c2690(CStringW(L"s_mouse_interact_hold"), reinterpret_cast<Unk_MiNpcView*>(pNpc)->FUN_141093310());
+            pRay->strCursor = FUN_1405c2690(CStringW(L"s_mouse_interact_hold"), reinterpret_cast<CNpc*>(pNpc)->FUN_141093310());
         } else {
-            CStringW strName = FUN_1401a9d70()->FUN_141811980(0xe, FUN_141092fa0(pNpc));
+            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xe, FUN_141092fa0(pNpc));
             if (strName.GetLength() == 0)
                 strName = GetStringCommon(0x62d);
-            pRay->strCursor = FUN_1408f71a0(CStringW(L"s_mouse_interact_talk"), strName, reinterpret_cast<Unk_MiNpcView*>(pNpc)->FUN_141093310());
+            pRay->strCursor = FUN_1408f71a0(CStringW(L"s_mouse_interact_talk"), strName, reinterpret_cast<CNpc*>(pNpc)->FUN_141093310());
         }
         return true;
     }
@@ -505,7 +506,7 @@ int CMouseInteractNpc::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a79400
 int CMouseInteractNpc::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
     if (FUN_140953530(Unk_PlayerActionState(pPlayer)) != m_nAction)
@@ -532,7 +533,7 @@ void CMouseInteractNpc::vfunc_5()
 // @0x140a79580
 PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
-    Unk_MiPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     int bTalk = 1;
@@ -543,7 +544,7 @@ PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* p
         bTalk = 0;
     if (FUN_14166c930(pPlayer) == 0x20)
         bHold = 0;
-    Unk_NpcTree* pTree = FUN_1403ed2d0()->FUN_141bd36d0();
+    Unk_NpcTree* pTree = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd36d0();
     for (Unk_NpcNode* pos = pTree->Begin(); pos != 0; pTree->GetNext(pos)) {
         PCBaseRef ref(*pTree->GetAt(pos));
         if (FUN_14123c660(ref.operator->()) != 0)
@@ -584,7 +585,7 @@ int CMouseInteractPortal::vfunc_1(Unk_MouseRay* pRay)
     if (hit->FUN_14169d280() == 0)
         pRay->strCursor = hit->FUN_14169c3b0();
     else
-        pRay->strCursor = FUN_1405c2690(CStringW(L"s_mouse_interact_portal"), FUN_1401a9d70()->FUN_141811980(3, hit->FUN_14169d280()));
+        pRay->strCursor = FUN_1405c2690(CStringW(L"s_mouse_interact_portal"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, hit->FUN_14169d280()));
     return true;
 }
 // @0x140a79c00
@@ -600,7 +601,7 @@ int CMouseInteractPortal::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a79cd0
 int CMouseInteractPortal::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
     if (FUN_140953530(Unk_PlayerActionState(pPlayer)) != 0x13)
@@ -619,10 +620,10 @@ void CMouseInteractPortal::vfunc_5()
 Unk_PortalHit CMouseInteractPortal::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
     Unk_IdArray aIds;
-    FUN_1403ed2d0()->FUN_141bc2980(aIds);
+    reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bc2980(aIds);
     for (size_t i = 0; i < aIds.FUN_1401910d0(); i++) {
         const unsigned& nId = aIds.FUN_1404f0a10(i);
-        Unk_PortalHit hit = FUN_1403ed2d0()->FUN_141bc2800(nId);
+        Unk_PortalHit hit = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bc2800(nId);
         if (hit.FUN_1409652c0(0))
             continue;
         Unk_MiCompRef comp(FUN_1411cf440(FUN_1409670f0(), reinterpret_cast<char*>(hit.operator->()) + 0x18));
@@ -653,7 +654,7 @@ int CMouseInteractObject::vfunc_1(Unk_MouseRay* pRay)
     if (hit.IsNil())
         return false;
     FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(hit->FUN_1409673c0())));
-    pRay->strCursor = FUN_1405c2690(CStringW(L"s_mouse_interact_object"), FUN_1401a9d70()->FUN_141811980(0xb, hit->FUN_140967110()));
+    pRay->strCursor = FUN_1405c2690(CStringW(L"s_mouse_interact_object"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xb, hit->FUN_140967110()));
     return true;
 }
 // @0x140a7a250
@@ -680,7 +681,7 @@ int CMouseInteractObject::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a7a3d0
 int CMouseInteractObject::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
     if (FUN_140953530(Unk_PlayerActionState(pPlayer)) != m_nAction)
@@ -702,7 +703,7 @@ void CMouseInteractObject::vfunc_5()
 Unk_ObjectHit CMouseInteractObject::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
     Unk_ObjArray aObjs;
-    FUN_1403ed2d0()->FUN_141bc5f10(aObjs);
+    reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bc5f10(aObjs);
     for (size_t i = 0; i < aObjs.FUN_140966d80(); i++) {
         Unk_ObjectHit hit = aObjs.FUN_140965610(i);
         if (hit->vf4() == 0)
@@ -743,7 +744,7 @@ int CMouseInteractDynamicModel::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a7a880
 int CMouseInteractDynamicModel::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
     if (FUN_140953530(Unk_PlayerActionState(pPlayer)) != m_nAction)
@@ -753,7 +754,7 @@ int CMouseInteractDynamicModel::vfunc_3()
 // @0x140a7a8e0
 void* CMouseInteractDynamicModel::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
-    Unk_DmIter it = FUN_1403ed2d0()->FUN_141bd0420(m_dwModelKey);
+    Unk_DmIter it = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0420(m_dwModelKey);
     for (void* pos = it->FUN_1409f2490(); pos != 0; it->FUN_1409f24c0(pos)) {
         Unk_MiDmRef ref = it->FUN_1409f23c0(pos);
         NiPoint3 vPos = *reinterpret_cast<NiPoint3*>(&DAT_143b01a60);
@@ -805,12 +806,11 @@ int CMouseInteractUgcBanner::vfunc_6()
 
 // ---- talk cancel ----
 class Unk_MiUiMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-Unk_MiUiMgr* FUN_1403ed2b0();
 // @0x140a7b2b0
 UITalkCinematic* FUN_140a7b2b0(int nId)
 {
-    if (FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+    if (reinterpret_cast<Unk_MiUiMgr*>(TSingleton<CUIService>::GetInstance())) {
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_MiUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get())
             return dynamic_cast<UITalkCinematic*>((UIObject*)p);
     }
@@ -839,7 +839,7 @@ int CMouseInteractTalkCancel::vfunc_2(Unk_MouseRay* pRay)
         return false;
     if (FUN_141b1bfc0(pUi) == 0)
         return false;
-    PCBase* pPlayer = reinterpret_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PCBase* pPlayer = reinterpret_cast<PCBase*>(reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(pPlayer->vfunc_18())));
@@ -883,7 +883,7 @@ int CMouseInteractWeaponObject::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a7af50
 int CMouseInteractWeaponObject::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
     if (FUN_140953530(Unk_PlayerActionState(pPlayer)) != 0xd)

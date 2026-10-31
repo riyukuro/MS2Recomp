@@ -23,18 +23,17 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/itemdata.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/citemdata.h"
 
 // ---- out-of-unit callees ----
 
 // The item data the controller type is chosen from (commonfiles\itemdata.cpp).
-struct Unk_FactoryItemData
-{
-    bool FUN_14053d070();                                       // makeup item
-    bool FUN_14053cfd0();                                       // hair item
-    int FUN_14053c620();                                        // item category (0xd = cap)
-};
-struct Unk_FactoryItemFlags { bool FUN_140547150(); };          // the item data has a cap rotation
-struct Unk_FactoryItem : public Unk_FactoryItemData
+struct Unk_FactoryItemFlags : public ItemModelHead { };          // the item data has a cap rotation
+struct Unk_FactoryItem : public CItemData
 {
     Unk_FactoryItemFlags* FUN_14053ec70();
 };
@@ -51,14 +50,11 @@ public:
 };
 
 // The local player (a world actor). FUN_141655e10 is its equipment lookup (slot -> item).
-struct Unk_FactoryPlayer : public GameObject
+struct Unk_FactoryPlayer : public PC
 {
-    MS2Ptr<CEquipItem> FUN_141655e10(int nSlot);                // the item equipped in a slot
 };
 struct Unk_FactoryWorld { Unk_FactoryPlayer* FUN_141bd0cc0(); };    // the local player
-Unk_FactoryWorld* FUN_1403ed2d0();
 struct Unk_FactoryApp { int FUN_141adbd10(); };
-Unk_FactoryApp* FUN_1403ed2b0();                                // another world state view (0 = no dialog open)
 
 // Scene-graph node the player's attach list holds (RTTI NiNode); FUN_141b71d10 toggles its highlight shader.
 struct Unk_FactoryNodeName { Unk_FactoryNodeName(const Unk_FactoryNodeName& k); long long m_a, m_b; };
@@ -199,7 +195,7 @@ void FUN_141413d80()
     if (!s_listControllers.IsEmpty())
     {
         bool bDragging = false;
-        if (FUN_1403ed2b0()->FUN_141adbd10() == 0 || s_spCurrent)
+        if (reinterpret_cast<Unk_FactoryApp*>(TSingleton<CUIService>::GetInstance())->FUN_141adbd10() == 0 || s_spCurrent)
         {
             int bHit = 0;
             efd::Point3 kPos;
@@ -302,7 +298,7 @@ void FUN_141414220()
 // Switches the highlight of every attached node of the local player.
 void FUN_141414250(bool bOn)
 {
-    Unk_FactoryPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_FactoryPlayer* pPlayer = reinterpret_cast<Unk_FactoryWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
         efd::list<NiAVObject*> listNodes;

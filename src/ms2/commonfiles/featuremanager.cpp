@@ -53,14 +53,14 @@
 // Unrecovered helpers.
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
-void FUN_1401859c0(CLogString* log, int level, int category, const wchar_t* format);
+void Unk_AdditionalLog(CLogString* log, int level, int category, const wchar_t* format);
 CString FUN_140651390();                                                    // the locale name of the client
 CStringW FUN_14016a730(const char* psz, int nCodePage);
 bool FUN_14025cd60(const CStringW& strA, const CStringW& strB) throw();     // the strings are equal (no unwind state for the caller's temp)
 bool FUN_140164830(const CStringW& strA, const CStringW& strB);
 CStringW FUN_140875470(Unk_140165cf0* pElem);                               // the <feature> row as text
 bool FUN_140184310(const CString& str, const char* psz) throw();   // the strings are equal (strcmp only, so no unwind state for the caller's temp)
-int FUN_140219a50(const CString& strType);                                  // the server type name -> id
+int Parse_140219a50(const CString& strType);                                // the server type name -> id
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>* pOut, const wchar_t* pszSep);   // split
 void FUN_140291e40(CStringW strName, bool bOn, const char* pszTag);
 class Unk_1406aeee0 { public: void FUN_1406af150(); };
@@ -691,7 +691,7 @@ bool CFeatureTable::Init()
     m_map.SetAt(L"PersonalInfoAgreement", n279);
     if (m_map.GetCount() != 0x117)
     {
-        FUN_1401859c0(CLogString::GetInstance(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4" L"CFeatureTable::Init : can't find featureName.");
+        Unk_AdditionalLog(CLogString::GetInstance(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4" L"CFeatureTable::Init : can't find featureName.");
         return false;
     }
     return true;
@@ -1121,7 +1121,7 @@ void CFeatureManager::FUN_14036e640(CString strType)
     if (strType.IsEmpty())
         return;
     s_strServerType = strType;
-    s_nServerType = FUN_140219a50(s_strServerType);
+    s_nServerType = Parse_140219a50(s_strServerType);
 }
 
 // @0x14036e6b0

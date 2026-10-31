@@ -15,6 +15,8 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/filesystem.h"
 #include <typeinfo>
 
 // Unrecovered helpers (same ones the other table units use).
@@ -27,14 +29,13 @@ int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& rOut);
 bool FUN_14028f710(Unk_140165cf0* pElem);                               // element is enabled
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CString FUN_14016a5c0(const char* psz, int n);
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
 int FUN_1407181d0(CString* pStr);                                       // string to int
-class Unk_Features { public: bool FUN_14036d710(int nFeature); };
-Unk_Features* FUN_140166410();
+CFeatureManager* FUN_140166410();
 void FUN_140275080(CString& str, Unk_StrVec* pOut, const char* pszDelim);   // split into a std::vector<CString>
 int Parse_140219650(const CStringA& value);
 

@@ -13,6 +13,7 @@
 #include "ms2/placeholder/gfxvideo.h"
 
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/gfxmanager.h"
 
 using Scaleform::GFx::Video::MS2VideoSoundSystemDX8;
 using Scaleform::GFx::Video::Video;
@@ -21,12 +22,7 @@ using Scaleform::GFx::Video::VideoPC;
 using Scaleform::GFx::Video::VideoVMSupportAll;
 
 // The GFx UI manager singleton (0x14025e7a0; its class lives in the library's first obj, 0x1422b0060-0x1422b7f20).
-class Unk_GFxUIManager
-{
-public:
-    int FUN_1422af580(int nOption);     // a manager option (2: the text copy goes to the Windows clipboard)
-};
-Unk_GFxUIManager* FUN_14025e7a0();
+GFxManager* FUN_14025e7a0();
 
 Scaleform::Render::TextureManager* FUN_1422cf0f0();   // the GFx renderer's texture manager
 

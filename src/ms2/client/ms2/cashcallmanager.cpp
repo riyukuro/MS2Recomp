@@ -18,21 +18,21 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/gamerule.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local views of exe objects ----
 
 // The world service (FUN_1403ed2d0): the local player and the current field.
-class Unk_CcWorld
+class Unk_CcWorld : public WorldService
 {
 public:
     MyPC* FUN_141bd0cc0();                                      // the local player
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field data
-    int FUN_141bc2bc0();
-    int FUN_141bc2b30();
 };
 Unk_CcWorld* FUN_1403ed2d0();
 class Unk_CcUi { public: int FUN_141adc890(int nClass); };    // a dialog of this class is open
-Unk_CcUi* FUN_1403ed2b0();
 void FUN_140d73bc0(int nId, int a, void* b, CStringW strText);  // show a notice by id
 int FUN_141661aa0(MyPC* p);
 unsigned int FUN_141662de0(MyPC* p);                            // vip
@@ -42,8 +42,7 @@ class Unk_CcIdList { public: unsigned __int64 FUN_140186270(); int* FUN_14018451
 extern Unk_CcIdList DAT_143ab3058;
 class Unk_CcConfig { public: unsigned char FUN_14036d570(int nId); unsigned char FUN_14036e5b0(); };
 Unk_CcConfig* FUN_140166410();
-class Unk_CcOption { public: int FUN_140477ea0(); };
-Unk_CcOption* FUN_1401c0d90();
+CGameRule* FUN_1401c0d90();
 // A 16-byte item handle.
 struct Unk_CcHandle
 {
@@ -216,7 +215,7 @@ int CCashCallManager::FUN_140b03590(__int64 nItemUid)
 // @0x140b03980
 int CCashCallManager::FUN_140b03980(__int64 nItemUid)
 {
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4e97) != 0)
+    if (reinterpret_cast<Unk_CcUi*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e97) != 0)
     {
         FUN_140d73bc0(0x9c, 0, 0, CStringW(L""));
         return 0;
@@ -264,7 +263,7 @@ int CCashCallManager::FUN_140b03980(__int64 nItemUid)
 // @0x140b03d70
 int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
 {
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4e47) != 0)
+    if (reinterpret_cast<Unk_CcUi*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e47) != 0)
     {
         FUN_140d73bc0(0x9e, 0, 0, CStringW(L""));
         return 0;

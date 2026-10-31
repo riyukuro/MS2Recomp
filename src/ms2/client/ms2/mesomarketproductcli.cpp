@@ -15,9 +15,10 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/ms2format.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- out-of-unit callees ----
-__int64 FUN_140869440();                                // the server time
+__int64 GetServerTime();                                // the server time
 Unk_CMesoMarketConfig* FUN_1401d3200();                 // the config singleton
 __int64* FUN_1402c05b0(void* pConstBlock);              // the <constants> record
 unsigned* FUN_1402056b0(void* pField);                  // a config field
@@ -39,8 +40,7 @@ void* FUN_140166410();
 bool FUN_14036d570(void* pOwner, int nId);
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
-class Unk_MesoUiMgr { public: void FUN_141add1f0(); void FUN_141add390(); };
-Unk_MesoUiMgr* FUN_1403ed2b0();
+CUIService* FUN_1403ed2b0();
 
 // The penalty (block) record a result code asks for.
 struct Unk_MesoBlockRef;
@@ -98,7 +98,7 @@ CMesoMarketProductCli::CMesoMarketProductCli()
 // @0x140d6d900
 bool CMesoMarketProductCli::FUN_140d6d900()
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     return now >= m_40;
 }
 

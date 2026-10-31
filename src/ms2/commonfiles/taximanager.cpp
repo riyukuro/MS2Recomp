@@ -95,7 +95,6 @@ struct Unk_TaxiFare
     int FUN_1406766a0(short sOption);
 };
 Unk_TaxiFare* FUN_1401c0db0();
-CFieldMetaTable* FUN_140700390();
 
 typedef Unk_TaxiPtr<_CTaxiPathInfo> Unk_TaxiNodePtr;
 typedef std::pair<unsigned int, unsigned int> Unk_TaxiKey;
@@ -111,14 +110,14 @@ CTaxiManager::~CTaxiManager() {}
 // @0x14085f6e0
 bool CTaxiManager::FUN_14085f6e0(unsigned int nField)
 {
-    return FUN_140700390()->FUN_1406fbc10(nField) == 1;
+    return TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fbc10(nField) == 1;
 }
 MS2_REPLACE_METHOD(0x14085f6e0, CTaxiManager, FUN_14085f6e0, 63, 0xE2BA897A);
 
 // @0x14085f730
 bool CTaxiManager::FUN_14085f730(unsigned int nField)
 {
-    return FUN_140700390()->FUN_1406fbc50(nField) == 1;
+    return TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fbc50(nField) == 1;
 }
 MS2_REPLACE_METHOD(0x14085f730, CTaxiManager, FUN_14085f730, 63, 0x613ACC7A);
 
@@ -152,7 +151,7 @@ long long CTaxiManager::FUN_14085f780(int nFrom, int nTo, short sOption)
         int nHops = spCur->m_nHops + 1;
         if (nHops >= nBest && nBest >= 0)
             continue;
-        Unk_FieldIdListPtr spLinks = FUN_140700390()->FUN_1406fbca0(spCur->m_nStation);
+        Unk_FieldIdListPtr spLinks = TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fbca0(spCur->m_nStation);
         if (spLinks == 0)
             continue;
         POSITION pos = spLinks->GetHeadPosition();

@@ -27,6 +27,7 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/commonfiles/filesystem.h"
 #include <map>
 #include <vector>
 #include <new>
@@ -38,7 +39,7 @@ class Unk_140165cf0;     // game TinyXML element
 // Unrecovered helpers (the xml loader helpers the other table units use).
 Unk_140165cf0* FUN_140165cf0(Unk_140165cf0* pParent, const char* pszName);      // the first child element
 Unk_140165cf0* FUN_140168650(Unk_140165cf0* pElem, const char* pszName);        // the next sibling with the name
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CStringA FUN_14071a5b0(const CStringA& strDir, const CStringA& strFile);         // Table/<file>
 CStringA FUN_14071ae20(const CStringA& strFile);                                 // the localised string table path

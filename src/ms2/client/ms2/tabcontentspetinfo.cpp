@@ -77,6 +77,9 @@ static CString s_iconPath("iconPath");
 static CString s_itemLevel("itemLevel");
 static CString s_itemPetRank("itemPetRank");
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 static CString s_cap("Cap");
 
 // MS2Ptr<ASUIComponent>: the exe shares every member of it (see tabcontentspetevolution.cpp).
@@ -146,8 +149,6 @@ public:
 
 class Unk_PiText : public ASTextField
 {
-public:
-    void FUN_1422c5910(int n);
 };
 
 // The skill map of a pet row: a position based map (position 0 = end).
@@ -185,7 +186,6 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_PiSkillRec, m_strIcon, 0xc0);
 class Unk_PiSkillTable { public: MS2Ptr<Unk_PiSkillRec> FUN_140aafef0(unsigned nSkillId, unsigned short nLevel); };
-Unk_PiSkillTable* FUN_1401958b0();
 
 // The local player: FUN_14152b800 requests the pet inventory, FUN_14152b2d0 summons the pet of an item.
 class Unk_PetPlayer
@@ -195,7 +195,6 @@ public:
     void FUN_14152b2d0(__int64 nItemUid);
 };
 class Unk_PetPlayerMgr { public: Unk_PetPlayer* FUN_141bd0cc0(); };
-Unk_PetPlayerMgr* FUN_1403ed2d0();
 
 // The UI manager: open a dialog / look one up.
 class Unk_PiUIManager
@@ -204,7 +203,6 @@ public:
     void FUN_141adc530(int nId);
     MS2Ptr<UIObject> FUN_141adcea0(int nId);
 };
-Unk_PiUIManager* FUN_1403ed2b0();
 
 // The dialogs the page talks to. The RTTI names must match the exe's.
 class UIItemAutoUseOptionDialog : public UIDialog { };
@@ -468,9 +466,9 @@ unsigned FUN_140cbdc80(int nPet)
 // @0x140cbe1c0
 UIItemAutoUseOptionDialog* FUN_140cbe1c0(int nId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_PiUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_PiUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get() != 0)
             return dynamic_cast<UIItemAutoUseOptionDialog*>((UIObject*)p);
     }
@@ -480,9 +478,9 @@ UIItemAutoUseOptionDialog* FUN_140cbe1c0(int nId)
 // @0x140cbe260
 UIItemGetOptionDialog* FUN_140cbe260(int nId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_PiUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_PiUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get() != 0)
             return dynamic_cast<UIItemGetOptionDialog*>((UIObject*)p);
     }
@@ -492,9 +490,9 @@ UIItemGetOptionDialog* FUN_140cbe260(int nId)
 // @0x140cbe300
 UIOtherPetSystemDialog* FUN_140cbe300(int nId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_PiUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<Unk_PiUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (p.get() != 0)
             return dynamic_cast<UIOtherPetSystemDialog*>((UIObject*)p);
     }
@@ -697,7 +695,7 @@ MS2_REPLACE_METHOD(0x140cb9900, PetInfoBasic, OnChangeName, 651, 0x675FFFB5);
 // @0x140cb9ba0
 bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
 {
-    Unk_PetPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PetPlayer* pPlayer = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
     if (nResult == 0)
@@ -996,7 +994,7 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<Unk_StatList> list)
     {
         unsigned short nLevel = *row->m_skills.FUN_14063f490(pos);
         unsigned nSkillId = *row->m_skills.FUN_14063f360(pos);
-        MS2Ptr<Unk_PiSkillRec> rec = FUN_1401958b0()->FUN_140aafef0(nSkillId, nLevel);
+        MS2Ptr<Unk_PiSkillRec> rec = reinterpret_cast<Unk_PiSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(nSkillId, nLevel);
         if (rec == 0)
             continue;
         CStringW strName = FUN_14052bd00(0xc18, GetStringTable()->FUN_141812290(nSkillId, nLevel, "name"));
@@ -1012,7 +1010,7 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<Unk_StatList> list)
 // @0x140cbb720
 void PetInfoSkill::OnAutoItemUse()
 {
-    FUN_1403ed2b0()->FUN_141adc530(0x4ef4);
+    reinterpret_cast<Unk_PiUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ef4);
 }
 MS2_REPLACE_METHOD(0x140cbb720, PetInfoSkill, OnAutoItemUse, 32, 0x17AA8321);
 
@@ -1026,7 +1024,7 @@ void PetInfoSkill::OnAutoItemPick()
     if (pGet != 0)
     {
         pGet->SetMode(0);
-        FUN_1403ed2b0()->FUN_141adc530(0x4e6c);
+        reinterpret_cast<Unk_PiUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e6c);
     }
 }
 MS2_REPLACE_METHOD(0x140cbb750, PetInfoSkill, OnAutoItemPick, 115, 0xF0ADC00D);
@@ -1230,7 +1228,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_13()
 {
     if (m_nPet == 0)
         return 0;
-    Unk_PetPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PetPlayer* pPlayer = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
@@ -1245,7 +1243,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_14()
 {
     if (m_nPet == 0)
         return 0;
-    Unk_PetPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PetPlayer* pPlayer = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
@@ -1263,7 +1261,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_18(void* p)
     void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
-        Unk_PetPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        Unk_PetPlayer* pPlayer = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer == 0)
             return static_cast<DragSlot*>(p)->vfunc_10();
         MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
@@ -1277,7 +1275,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_18(void* p)
 // @0x140cbc7d0 (ITooltip::vfunc_0)
 int TabContentsPetInfo::EquipSlot::vfunc_0(void* p)
 {
-    Unk_PetPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PetPlayer* pPlayer = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
@@ -1297,7 +1295,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_0(void* p)
 // @0x140cbc960
 int TabContentsPetInfo::EquipSlot::vfunc_8(void* p)
 {
-    Unk_PetPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_PetPlayer* pPlayer = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);

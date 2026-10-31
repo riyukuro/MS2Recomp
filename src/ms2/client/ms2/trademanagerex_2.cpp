@@ -12,14 +12,14 @@
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/asslot.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/client/ms2/invenslot.h"
+#include "ms2/client/ms2/trademanagerex.h"
 
 // Item template data (itemdata.cpp): the pickup/drop sound name.
-class Unk_TradeItemData
-{
-public:
-    CString FUN_14053eca0();
-};
-Unk_TradeItemData* FUN_140527840(CItem* pItem);         // CItem::GetItemData
+CItemData* FUN_140527840(CItem* pItem);                 // CItem::GetItemData
 
 // Sound player (effectservice.cpp): FUN_1403ed280 is its singleton getter.
 class Unk_SoundPlayer
@@ -30,29 +30,16 @@ public:
 Unk_SoundPlayer* FUN_1403ed280();
 
 // Game context: FUN_141bd0cc0 returns the local player (the tooltip owner).
-class Unk_GameCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_GameCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 // The inventory slot (invenslot.cpp) a trade slot can be dropped on: id 0x6200023.
-class Unk_InvenSlot : public DragSlot
+class Unk_InvenSlot : public InvenSlot
 {
-public:
-    __int64 FUN_141405a10();                            // the uid of the item in the slot
-    int FUN_14140b6d0(MS2Ptr<CItem> spItem);            // put the item into the slot
 };
 Unk_InvenSlot* FUN_140a50b50(DragSlot* pSlot);          // pSlot->TypeCast(0x6200023), 0 on failure
 
 // The bag of the player's inventory items by uid.
-class Unk_InventoryItems
-{
-public:
-    MS2Ptr<CItem> FUN_140a5d680(__int64 uid);
-};
-extern Unk_InventoryItems DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 
 // Item context-menu actions.
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // show the item's popup (id, rarity, template)
@@ -97,7 +84,7 @@ int TradeSlot::vfunc_14()
     if (IsMine())
     {
         FUN_14185e370(m_spItem);
-        FUN_14140ea30()->SendTradeMode9(FUN_14185e580(), GetIndex());
+        TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode9(FUN_14185e580(), GetIndex());
     }
     return 1;
 }
@@ -118,7 +105,7 @@ int TradeSlot::vfunc_18(void* p)
     {
         if (IsMine())
         {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(pInven->FUN_141405a10());
+            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(pInven->GetItemUid());
             if (spItem.get())
                 pInven->FUN_14140b6d0(spItem);
         }
@@ -230,7 +217,7 @@ __int64 TradeSlot::FUN_14185e580()
 void TradeSlot::FUN_14185e5d0()
 {
     if (IsMine())
-        FUN_14140ea30()->SendTradeMode9(FUN_14185e580(), GetIndex());
+        TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode9(FUN_14185e580(), GetIndex());
 }
 
 // @0x14185e630

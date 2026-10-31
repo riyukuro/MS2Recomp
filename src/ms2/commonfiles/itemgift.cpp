@@ -7,7 +7,8 @@
 #include "itemgift.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-struct Unk_GiftItem { bool FUN_14053c7c0(); };
+#include "ms2/placeholder/citemdata.h"
+struct Unk_GiftItem : public CItemData { };
 struct Unk_GiftItemPtr {
     ~Unk_GiftItemPtr(); // 0x1401b50d0
     bool FUN_1402ffd90();

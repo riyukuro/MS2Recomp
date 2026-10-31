@@ -81,6 +81,8 @@
 #include "ms2/placeholder/effectquery.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- exe data ----
 extern char DAT_143afa4d8;      // NiNode::ms_RTTI
@@ -495,11 +497,9 @@ public:
     void FUN_1411a6060(int nHandle);                    // release
     void FUN_1411a4a00(NoticeMessage* pRequest);        // spawn at the attach node
 };
-Unk_TrigFxMgr* FUN_1403ed280();
 
 // world / animation services
 class Unk_TrigWorldSvc { public: bool FUN_141bd8e30(egf::EntityID kId, bool bShow, float fFade); };
-Unk_TrigWorldSvc* FUN_1403ed2d0();
 class Unk_TrigAnimSvc { public: void FUN_1409a1fc0(const void* pEntId, const efd::utf8string& kName, float fBlend, bool b); };
 Unk_TrigAnimSvc* FUN_141b6f910();
 NiAVObject* FUN_141b6efc0(void* pEnt);                  // root scene node of the entity
@@ -526,7 +526,7 @@ TriggerObjectSound::TriggerObjectSound() : m_nHandle(0)
 TriggerObjectSound::~TriggerObjectSound()
 {
     if (m_nHandle != 0)
-        FUN_1403ed280()->FUN_1411a6060(m_nHandle);
+        reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nHandle);
 }
 
 // @0x140de6800
@@ -590,7 +590,7 @@ void TriggerObjectSound::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
                 NoticeMessage kReq;
                 kReq.m_strName = FUN_1408ac310(kName);
                 kReq.m_nObject = 0;
-                m_nHandle = FUN_1403ed280()->FUN_1411a49c0(&kReq);
+                m_nHandle = reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
             }
         }
         else if (m_nHandle != 0)
@@ -602,7 +602,7 @@ void TriggerObjectSound::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
                 NoticeMessage kReq;
                 kReq.m_strName = FUN_1408ac310(kName);
                 kReq.m_nObject = 0;
-                FUN_1403ed280()->FUN_1411a49c0(&kReq);
+                reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
                 m_nHandle = 0;
             }
         }
@@ -641,7 +641,7 @@ void TriggerObjectMesh::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     std::string strModel((const char*)(&pEvent->m_arg)->vfunc_6());
     float fSkin = (&pEvent->m_arg)->vfunc_5();
     float fFade = (float)nFade * 0.1f;
-    bool bOk = FUN_1403ed2d0()->FUN_141bd8e30(TRIG_ENT()->GetEntityID(), bShow, fFade);
+    bool bOk = reinterpret_cast<Unk_TrigWorldSvc*>(WorldService::GetInstance())->FUN_141bd8e30(TRIG_ENT()->GetEntityID(), bShow, fFade);
     if (bShow != 0)
     {
         if (!FUN_1403af290(strModel))
@@ -691,7 +691,7 @@ void TriggerObjectMesh::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
             kReq.m_nObject = 0;
             FUN_1409fabf0(&kReq.m_spNode, FUN_14098d8d0(&DAT_143afa4d8,
                 FUN_141b6ef70(TRIG_ENT()->GetEntityID())));
-            FUN_1403ed280()->FUN_1411a4a00(&kReq);
+            reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
         }
         void* pUi = FUN_140c9b540(0x4e29);
         if (pUi != 0)
@@ -735,7 +735,7 @@ void TriggerObjectRope::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     bool bFlag = (&pEvent->m_arg)->vfunc_0();
     int nFade = (&pEvent->m_arg)->vfunc_3();
     float fFade = (float)nFade * 0.1f;
-    bool bOk = FUN_1403ed2d0()->FUN_141bd8e30(TRIG_ENT()->GetEntityID(), bShow, fFade);
+    bool bOk = reinterpret_cast<Unk_TrigWorldSvc*>(WorldService::GetInstance())->FUN_141bd8e30(TRIG_ENT()->GetEntityID(), bShow, fFade);
     FUN_14098c6e0(TRIG_ENT(), 0x4df0c0de, bFlag);
     FUN_140b60e40(TRIG_ENT_RAW(), bShow);
     if (bOk && !bSkipFx)
@@ -752,7 +752,7 @@ void TriggerObjectRope::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
             kReq.m_nObject = 0;
             FUN_1409fabf0(&kReq.m_spNode, FUN_14098d8d0(&DAT_143afa4d8,
                 FUN_141b6ef70(TRIG_ENT()->GetEntityID())));
-            FUN_1403ed280()->FUN_1411a4a00(&kReq);
+            reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
         }
     }
 }
@@ -768,7 +768,7 @@ TriggerObjectEffect::TriggerObjectEffect() : m_nHandle(0)
 TriggerObjectEffect::~TriggerObjectEffect()
 {
     if (m_nHandle != 0)
-        FUN_1403ed280()->FUN_1411a6060(m_nHandle);
+        reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nHandle);
 }
 
 efd::Point3 FUN_140b60d30(void* pObj);                       // rotation (degrees)
@@ -783,7 +783,7 @@ void TriggerObjectEffect::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     int n1 = (&pEvent->m_arg)->vfunc_1();
     int n3 = (&pEvent->m_arg)->vfunc_3();
     if (m_nHandle != 0)
-        FUN_1403ed280()->FUN_1411a6060(m_nHandle);
+        reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nHandle);
     if (bOn)
     {
         efd::Point3 kAngle = FUN_140b60d30(TRIG_ENT_RAW());
@@ -798,7 +798,7 @@ void TriggerObjectEffect::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
         kReq.m_strName = FUN_140b60bf0(TRIG_ENT_RAW());
         kReq.m_nObject = 0;
         kReq.m_p18 = &kXform;
-        m_nHandle = FUN_1403ed280()->FUN_1411a49c0(&kReq);
+        m_nHandle = reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
     }
 }
 
@@ -921,7 +921,7 @@ void TriggerObjectCamera::vfunc_3()
                 {
                     Vector3 euler = DAT_143b01a60;
                     ((efd::Matrix3&)pChild->GetWorldTransform().m_Rotate).ToEulerAnglesXYZ(euler.x, euler.y, euler.z);
-                    set.m_0 = FUN_141bcfc50(FUN_1403ed2d0());
+                    set.m_0 = FUN_141bcfc50(reinterpret_cast<Unk_TrigWorldSvc*>(WorldService::GetInstance()));
                     set.m_c = (const Vector3&)pChild->GetWorldTranslate();
                     euler.x = -((euler.x * 180.0f) / 3.1415927f);
                     euler.y = -((euler.y * 180.0f) / 3.1415927f);

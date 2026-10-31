@@ -8,9 +8,9 @@
 #include "scenestateloading.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/nifeffectparam.h"
 
-class Unk_140a0afd0 { public: void FUN_141551c10(); };
-Unk_140a0afd0* FUN_140a0afd0();
+CNifLoadingService* FUN_140a0afd0();
 extern int DAT_1439f4a78;
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSceneStateLoading);
@@ -31,7 +31,7 @@ CSceneStateLoading::~CSceneStateLoading()
 void CSceneStateLoading::OnEnter(int nPrevState)
 {
     DAT_1439f4a78 = -1;
-    FUN_140a0afd0()->FUN_141551c10();
+    FUN_140a0afd0()->PreloadEffectNifs();
     CSceneStateBase::OnEnter(nPrevState);
 }
 

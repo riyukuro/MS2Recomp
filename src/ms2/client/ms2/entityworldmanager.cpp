@@ -136,12 +136,13 @@
 #include "ms2/placeholder/tfunctor.h"
 #include "ms2entitymanagerservice.h"
 #include "ms2/placeholder/hardwareinstancingservice.h"
+#include "ms2/client/ms2/entityworldmanager.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/crashmanagercli.h"
 
 class Unk_GameClock;
-Unk_GameClock* FUN_14086d260();
 double FUN_141473280(Unk_GameClock*);
 class Unk_EntityDebugLog;
-Unk_EntityDebugLog* FUN_140a44830();
 void FUN_1401ce2b0(Unk_EntityDebugLog*, const char*);
 void FUN_1401ce2f0(Unk_EntityDebugLog*, const char*, int);
 void FUN_1414f1240(ecr::SceneGraphService*, egf::Entity*);
@@ -166,7 +167,6 @@ class WorldService;
 WorldService* FUN_1403ed2d0();
 void FUN_141bbae40(WorldService*, IWorldServiceCallback*);
 void FUN_1401ce3d0(Unk_EntityDebugLog*, TFunctor<void, EmptyParam>);
-EntityWorldManager* FUN_1409670f0();
 egmAnimation::AnimationService* FUN_141b6f910();
 bool FUN_1414a9a80(egmAnimation::AnimationService*, efd::utf8string);
 
@@ -368,7 +368,7 @@ bool EntityWorldManager::FUN_1411cf630(int map, const egf::BlockIdentification& 
     worlds[currentMap].createdEntities.clear();
     currentMap = map;
     currentBlock = worlds[reinterpret_cast<const unsigned&>(map)].block = block;
-    worlds[reinterpret_cast<const unsigned&>(map)].time = FUN_141473280(FUN_14086d260());
+    worlds[reinterpret_cast<const unsigned&>(map)].time = FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()));
     worlds[reinterpret_cast<const unsigned&>(map)].unloaded = false;
     worlds[reinterpret_cast<const unsigned&>(map)].loadedEntities.clear();
     worlds[reinterpret_cast<const unsigned&>(map)].allEntities.clear();
@@ -385,7 +385,7 @@ bool EntityWorldManager::FUN_1411cf630(int map, const egf::BlockIdentification& 
 // Not hooked: creates world records and an engine message with DLL-local RTTI.
 // @0x1411cf980
 void EntityWorldManager::FUN_1411cf980(int map, const egf::BlockIdentification& block) {
-    worlds[reinterpret_cast<const unsigned&>(map)].time = FUN_141473280(FUN_14086d260());
+    worlds[reinterpret_cast<const unsigned&>(map)].time = FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()));
     worlds[reinterpret_cast<const unsigned&>(map)].unloaded = true;
     efd::SmartPointer<HardwareInstancingService> instancing(FUN_14098c5b0(&DAT_143b059e8));
     if ((HardwareInstancingService*)instancing != nullptr) FUN_1413d73a0(instancing.operator->(), map);
@@ -418,8 +418,8 @@ bool FUN_1411cfcc0(void*) { s_entityFreeze = true; return true; }
 #endif
 // @0x1411cfce0
 void EntityWorldManager::FUN_1411cfce0() {
-    FUN_1401ce2b0(FUN_140a44830(), "\n--- EntityWorldManager Log---");
-    FUN_1401ce2f0(FUN_140a44830(), "LoadedMapCount %d", FUN_1411cfbe0());
+    FUN_1401ce2b0(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance()), "\n--- EntityWorldManager Log---");
+    FUN_1401ce2f0(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance()), "LoadedMapCount %d", FUN_1411cfbe0());
 }
 // @0x1411cfd40
 void EntityWorldManager::FUN_1411cfd40(const egf::EntityChangeMessage* message, efd::Category) {
@@ -453,7 +453,7 @@ void EntityWorldManager::FUN_1411cffa0(const egf::EntityChangeMessage* message, 
 }
 // @0x1411d02c0
 void EntityWorldManager::vfunc_1(int) {
-    lastLoadTime = FUN_141473280(FUN_14086d260());
+    lastLoadTime = FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()));
     loaded = true;
 }
 // @0x1411d0300
@@ -500,7 +500,7 @@ efd::AsyncResult EntityWorldManager::OnInit() {
         device->AddResetNotificationFunc(FUN_1411cfc90, this);
         device->AddLostDeviceNotificationFunc(FUN_1411cfcc0, this);
     }
-    FUN_1401ce3d0(FUN_140a44830(), TFunctor<void, EmptyParam>(this, &EntityWorldManager::FUN_1411cfce0));
+    FUN_1401ce3d0(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance()), TFunctor<void, EmptyParam>(this, &EntityWorldManager::FUN_1411cfce0));
     return efd::AsyncResult_Complete;
 }
 // @0x1411d08e0
@@ -525,10 +525,10 @@ size_t EntityWorldManager::FUN_1411d0af0() { return worlds[currentMap].createdEn
 efd::UInt32 EntityWorldManager::FUN_1411d0b30() { return entities->GetCount(); }
 // @0x1411d0b60 (the exe spills an unused first argument)
 void FUN_1411d0b60(void* /*pUnused*/) {
-    auto it = FUN_1409670f0()->unusedAssets.begin();
-    while (it != FUN_1409670f0()->unusedAssets.end()) {
+    auto it = TSingleton<EntityWorldManager>::GetInstance()->unusedAssets.begin();
+    while (it != TSingleton<EntityWorldManager>::GetInstance()->unusedAssets.end()) {
         if (FUN_1414a9a80(FUN_141b6f910(), it->GetURN())) {
-            it = FUN_1409670f0()->unusedAssets.erase(it);
+            it = TSingleton<EntityWorldManager>::GetInstance()->unusedAssets.erase(it);
             continue;
         }
         ++it;
@@ -536,7 +536,7 @@ void FUN_1411d0b60(void* /*pUnused*/) {
 }
 // @0x1411d6230
 Unk_EntityWorldRecord::Unk_EntityWorldRecord() {
-    time = FUN_141473280(FUN_14086d260());
+    time = FUN_141473280(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()));
     unloaded = true;
 }
 

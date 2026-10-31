@@ -30,6 +30,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/gameeventmanagercli.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/client/ms2/uiservice.h"
 #include <algorithm>
 #include <vector>
 
@@ -71,10 +72,8 @@ public:
     void FUN_141adc750(int nId);                                    // toggle a dialog
     Unk_PbUIRef FUN_141adcea0(int nId);                             // object by class id
 };
-Unk_PbUiMgr* FUN_1403ed2b0();
 
 // The events of the game (a closed event is not running).
-GameEventManagerCli* FUN_14015a050();
 
 // The blocked-action flags of the client config.
 class Unk_PbFlagSet { public: int FUN_1402c4c90(int nFlag); };
@@ -95,7 +94,6 @@ struct Unk_1407a9690
 void FUN_1407a9710(Unk_1407a9690& v, CInPacket& in);
 
 CFeatureManager* FUN_140166410();                                   // the game settings (feature switches)
-PaybackTable* FUN_14071d7d0();                                      // the payback table
 PaybackManagerClient* FUN_1409c1740();                              // the payback manager
 CStringW FUN_140298ea0(CStringW strKey);                            // string table text
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);   // notice by string id
@@ -135,7 +133,7 @@ void PaybackManagerClient::FUN_140a8afb0(CInPacket& packet)
             m_nMerat = (unsigned)status.m_08;
             if (!FUN_1409c1740()->FUN_140a8be20(0))
             {
-                FUN_1403ed2b0()->FUN_141adc5d0(0x4f93);
+                reinterpret_cast<Unk_PbUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f93);
                 break;
             }
             UIPaybackDialog* pDialog = FUN_140a8c5f0(0x4f93);
@@ -174,10 +172,10 @@ void PaybackManagerClient::FUN_140a8b290()
 {
     if (!FUN_140a8be20(1))
         return;
-    if (FUN_14071d7d0()->IsResetWindow() == 1)
+    if (TSingleton<PaybackTable>::GetInstance()->IsResetWindow() == 1)
         FUN_140d73bc0(0xd4f, 0, 0, CStringW(L""));
     else
-        FUN_1403ed2b0()->FUN_141adc750(0x4f93);
+        reinterpret_cast<Unk_PbUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f93);
 }
 
 // @0x140a8b340
@@ -259,10 +257,10 @@ CStringW PaybackManagerClient::FUN_140a8ba00()
     int nEndYear = now.GetYear();
     int nEndMonth = now.GetMonth();
     int nEndDay = GetDaysInMonth(now.GetYear(), now.GetMonth());
-    if (FUN_14071d7d0()->GetStartTime() != 0)
+    if (TSingleton<PaybackTable>::GetInstance()->GetStartTime() != 0)
     {
-        CMsTime start(FUN_14071d7d0()->GetStartTime());
-        CMsTime end(GetNextMonthStart(FUN_14071d7d0()->GetStartTime()));
+        CMsTime start(TSingleton<PaybackTable>::GetInstance()->GetStartTime());
+        CMsTime end(GetNextMonthStart(TSingleton<PaybackTable>::GetInstance()->GetStartTime()));
         if (now.GetYear() == start.GetYear() && now.GetMonth() == start.GetMonth())
         {
             nDay = start.GetDay();
@@ -289,7 +287,7 @@ bool PaybackManagerClient::FUN_140a8bcc0(MS2Ptr<CMeratMarketProduct> spProduct)
         return false;
     if (!FUN_140a8bf50(spProduct))
         return false;
-    if (!FUN_14071d7d0()->IsResetWindow())
+    if (!TSingleton<PaybackTable>::GetInstance()->IsResetWindow())
         return false;
     FUN_140d73bc0(0xd4f, 0, 0, CStringW(L""));
     return true;
@@ -300,7 +298,7 @@ bool PaybackManagerClient::FUN_140a8be20(unsigned char bNotify)
 {
     if (!FUN_140a8be80(bNotify))
         return false;
-    if (!FUN_14071d7d0()->InPeriod(GetServerTime()))
+    if (!TSingleton<PaybackTable>::GetInstance()->InPeriod(GetServerTime()))
         return false;
     return true;
 }
@@ -310,7 +308,7 @@ bool PaybackManagerClient::FUN_140a8be80(unsigned char bNotify)
 {
     if (!FUN_140166410()->FUN_14036d570(0x109))
         return false;
-    if (!FUN_14015a050()->IsEnabled(CStringW(L"FinishPayback")))
+    if (!TSingleton<GameEventManagerCli>::GetInstance()->IsEnabled(CStringW(L"FinishPayback")))
         return false;
     if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x6f) != 0)
     {
@@ -347,9 +345,9 @@ bool FUN_140a8c0c0(const MS2Ptr<CMeratMarketProduct>& lhs, const MS2Ptr<CMeratMa
 // @0x140a8c5f0 the payback dialog, if it is open
 UIPaybackDialog* FUN_140a8c5f0(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (reinterpret_cast<Unk_PbUiMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        Unk_PbUIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        Unk_PbUIRef ref = reinterpret_cast<Unk_PbUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70())
             return dynamic_cast<UIPaybackDialog*>(FUN_1403ed9e0(ref));
     }

@@ -13,6 +13,7 @@
 #include "ms2/commonfiles/localepath.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/ascorelist.h"
 #include <io.h>
 
 // ---- handles: a smart reference whose destructor is the exe function REL ----
@@ -41,14 +42,10 @@ class Unk_LgProv
 public:
     ASObj FUN_1422df140(int nIndex);                            // the row at the index
 };
-class Unk_LgCombo
+class Unk_LgCombo : public ASDropdownMenu
 {
 public:
-    void FUN_1422dfc10();                                       // clear
     void FUN_1422dfc70(ASObj& obj);                             // add an item
-    void FUN_1422df5f0(unsigned int n);                         // visible rows
-    void FUN_1422df690(int n);                                  // select a row
-    int FUN_1422df6c0();                                        // selected row
     void FUN_1422c1fe0(unsigned int nEnabled);                  // set enabled
     RProv FUN_1422df770();                                      // the data provider
 };

@@ -20,6 +20,7 @@
 #include "ms2/client/ms2/uimessagebox.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 
 // ---- unit-local views of exe types ----
 
@@ -42,10 +43,9 @@ public:
 };
 
 // Keyboard state (FUN_14025e7c0).
-class Unk_SumKeys
+class Unk_SumKeys : public CInputKeyHandler
 {
 public:
-    bool FUN_14116d840();                                       // escape pressed
     bool FUN_14116d9c0(int nKey, int a, int b);                 // key pressed this frame
 };
 Unk_SumKeys* FUN_14025e7c0();

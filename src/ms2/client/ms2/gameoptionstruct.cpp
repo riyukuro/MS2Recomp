@@ -57,6 +57,12 @@
 #include "ms2/placeholder/questdata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/ms2inputservice.h"
+#include "ms2/unnamed/unit_140ad1860.h"
+#include "ms2/client/ms2/uihomemenudialog.h"
+#include "ms2/client/ms2/instrumentmanager.h"
+#include "ms2/placeholder/applyeffect.h"
+#include "ms2/placeholder/cgraphicoptiontable.h"
 #include <string.h>
 
 // ---- header statics (dynamic initializers 0x1400ea9f0..0x1400ead60) ----
@@ -93,13 +99,13 @@ public:
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);
 bool FUN_1407cce10(const Scaleform::GFx::Value* p);                 // the value is a display object
 
-CStringW FUN_1409eec40(int nStringId);                              // a string table text
+CStringW BlockFormat(int nStringId);                              // a string table text
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);   // message box
 void FUN_14151f200();
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);        // equal
 UIUpperHpBar* FUN_14096e340(eUIClassID nId);
 UIDamageEffect* FUN_140ac55a0(eUIClassID nId);
-class Unk_GsInputSvc { public: void FUN_140d0a5b0(bool b); int FUN_140d07390(); void FUN_140d0a510(); };   // reloads the sound settings
+class Unk_GsInputSvc : public CInstrumentManager { };   // reloads the sound settings
 Unk_GsInputSvc* FUN_140c8dac0();
 
 // The state blocks' methods (this unit).
@@ -196,7 +202,7 @@ int CGameOptionInterface::vfunc_5(const char* pszName, void* pArg, int nArg)
     if (CBaseOption::vfunc_5(pszName, pArg, nArg))
         return 1;
     if (_stricmp("onResetUILayout", pszName) == 0)
-        FUN_140d73aa0(FUN_1409eec40(0x852), 1, this, CStringW(L"resetSwfLayout"));
+        FUN_140d73aa0(BlockFormat(0x852), 1, this, CStringW(L"resetSwfLayout"));
     return 0;
 }
 MS2_REPLACE_METHOD(0x141255A40, CGameOptionInterface, vfunc_5, 256, 0xA70A78FA);
@@ -619,7 +625,7 @@ void CGameOptionSoundDefault::vfunc_10()
     FUN_14125fe20(&m_state);
     FUN_14125fdf0(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70(), &m_state);
     FUN_141260450(TSingleton<CGameOption>::GetInstance()->FUN_1411b1f30(), &m_flag);
-    FUN_140c8dac0()->FUN_140d0a5b0(true);
+    FUN_140c8dac0()->UpdateVolume(true);
     TSingleton<CGameOption>::GetInstance()->FUN_141243540();
 }
 MS2_REPLACE_METHOD(0x1412585A0, CGameOptionSoundDefault, vfunc_10, 155, 0x23023006);
@@ -1060,13 +1066,6 @@ int ReadGameOptionUInt64(TiXmlDocument* pDoc, const char* pszSection, const char
 void FUN_141263d30(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey);
 
 // The mouse-control switch of the camera.
-class Unk_GsMouseCtl
-{
-public:
-    int FUN_140ad20f0(int bEnable);                                 // switch the controller on / off
-    int FUN_140ad21b0();                                            // is the controller on
-};
-Unk_GsMouseCtl* FUN_140953f30();
 class Unk_GsMyPC
 {
 public:
@@ -1079,10 +1078,10 @@ char* FUN_1401d3200();                                              // the game 
 int* FUN_1402056b0(char* pValue);                                   // an int constant
 
 // The damage-form enum strings of the battle block.
-CString FUN_140219790(int nForm);                                   // giveDamage / takeDamage value -> text
-CString FUN_140219830(int nForm);                                   // otherDamageform value -> text
-int FUN_140219900(const CString& str);
-int FUN_140219960(const CString& str);
+CString Name_140219790(int nForm);                                   // giveDamage / takeDamage value -> text
+CString Name_140219830(int nForm);                                   // otherDamageform value -> text
+int Parse_140219900(const CString& str);
+int Parse_140219960(const CString& str);
 
 // CommunityStateB is 11 bytes (the copy moves 0xb); the shared header pads it to 0xc.
 struct Unk_GsCommunityB
@@ -1156,7 +1155,7 @@ MS2_REPLACE(0x14125B6B0, FUN_14125b6b0, 32, 0x0136D6DC);
 // @0x14125b6e0
 int FUN_14125b6e0(const Unk_CameraState* p)
 {
-    if (FUN_140953f30()->FUN_140ad21b0() != 0)
+    if (TSingleton<CMouseController>::GetInstance()->HasMode() != 0)
         return p->m_n0c;
     return p->m_n08;
 }
@@ -1165,7 +1164,7 @@ MS2_REPLACE(0x14125B6E0, FUN_14125b6e0, 49, 0xB1836D80);
 // @0x14125b720
 void FUN_14125b720(Unk_CameraState* p, int n)
 {
-    if (FUN_140953f30()->FUN_140ad21b0() != 0)
+    if (TSingleton<CMouseController>::GetInstance()->HasMode() != 0)
         p->m_n0c = n;
     else
         p->m_n08 = n;
@@ -1304,7 +1303,7 @@ MS2_REPLACE(0x14125BD00, FUN_14125bd00, 26, 0x0A97A110);
 void FUN_14125bd20(Unk_InterfaceFlag* p, bool b)
 {
     p->m_b = b;
-    FUN_140953f30()->FUN_140ad20f0(b);
+    TSingleton<CMouseController>::GetInstance()->FUN_140ad20f0(b);
     UIUpperHudDialog* pHud = Unk_GsFindUI<UIUpperHudDialog>((eUIClassID)0x4ebe);
     if (pHud != 0)
         pHud->FUN_141357580(b == false);
@@ -1579,13 +1578,13 @@ int FUN_14125cb20(Unk_BattleState* p, TiXmlDocument* pDoc)
     CString strGive;
     if (ReadGameOptionString(pDoc, "damage", "giveDamage", &strGive) != 0)
     {
-        p->m_n08 = FUN_140219900(strGive);
+        p->m_n08 = Parse_140219900(strGive);
         CString strTake;
         ReadGameOptionString(pDoc, "damage", "takeDamage", &strTake);
-        p->m_n0c = FUN_140219900(strTake);
+        p->m_n0c = Parse_140219900(strTake);
         CString strOther;
         ReadGameOptionString(pDoc, "damage", "otherDamageform", &strOther);
-        p->m_n10 = FUN_140219960(strOther);
+        p->m_n10 = Parse_140219960(strOther);
     }
     else
     {
@@ -1637,9 +1636,9 @@ void FUN_14125ce20(Unk_BattleState* p, TiXmlDocument* pDoc)
     FUN_141263d30(pDoc, "battle", "DiffColor");
     FUN_141263d30(pDoc, "battle", "DiffSize");
     FUN_141263d30(pDoc, "battle", "DiffAlpha");
-    WriteGameOptionString(pDoc, "damage", "giveDamage", FUN_140219790(p->m_n08));
-    WriteGameOptionString(pDoc, "damage", "takeDamage", FUN_140219790(p->m_n0c));
-    WriteGameOptionString(pDoc, "damage", "otherDamageform", FUN_140219830(p->m_n10));
+    WriteGameOptionString(pDoc, "damage", "giveDamage", Name_140219790(p->m_n08));
+    WriteGameOptionString(pDoc, "damage", "takeDamage", Name_140219790(p->m_n0c));
+    WriteGameOptionString(pDoc, "damage", "otherDamageform", Name_140219830(p->m_n10));
 }
 MS2_REPLACE(0x14125CE20, FUN_14125ce20, 723, 0xDBA396EF);
 
@@ -1814,11 +1813,10 @@ struct Unk_GsFieldFlags
     bool m_b220;                                                // +0x220 hdr allowed
 };
 // The post effect manager (FUN_1409a8b00).
-class Unk_GsPostEffectMgr
+class Unk_GsPostEffectMgr : public ApplyEffect
 {
 public:
     bool FUN_1409a4c60(bool bHdr, int n);                       // hdr on / off; true when it took
-    void FUN_1409a5190(bool bEnable);
 };
 Unk_GsPostEffectMgr* FUN_1409a8b00();
 PostProcessingService* FUN_1409a8b20();
@@ -1891,7 +1889,6 @@ public:
     int FUN_141376580(int nLevel);
     int FUN_1413765f0(int nLevel);                                  // shimmer
 };
-Unk_GsQuality* FUN_140ae1c00();
 void FUN_14125eb00(Unk_GraphicState* p, int nWidth, int nHeight);
 void FUN_14125e300(Unk_GraphicState* p, int b);
 
@@ -1937,8 +1934,8 @@ int FUN_14125d9b0(Unk_GraphicState* p, TiXmlDocument* pDoc, int nDefault)
     if (nDefault != 0)
     {
         p->m_nQuality = TSingleton<CGameOption>::GetInstance()->FUN_1412438f0();
-        p->m_bHdr = FUN_140ae1c00()->FUN_141376510(p->m_nQuality) ? true : false;
-        p->m_bShimmer = FUN_140ae1c00()->FUN_1413765f0(p->m_nQuality) ? true : false;
+        p->m_bHdr = reinterpret_cast<Unk_GsQuality*>(TSingleton<CGraphicOptionTable>::GetInstance())->FUN_141376510(p->m_nQuality) ? true : false;
+        p->m_bShimmer = reinterpret_cast<Unk_GsQuality*>(TSingleton<CGraphicOptionTable>::GetInstance())->FUN_1413765f0(p->m_nQuality) ? true : false;
         p->m_nMultisampling = 0;
         p->m_nEffectStep = p->m_nQuality;
         p->m_nShadow = p->m_nQuality;
@@ -1984,7 +1981,7 @@ int FUN_14125d9b0(Unk_GraphicState* p, TiXmlDocument* pDoc, int nDefault)
     ReadGameOptionBool(pDoc, "graphic", "showEnchantEffect", &p->m_bEnchantEffect);
     p->m_b1a = p->m_b15;
     p->m_b1b = p->m_b15;
-    p->m_b1f = FUN_140ae1c00()->FUN_141376580(p->m_nQuality) ? true : false;
+    p->m_b1f = reinterpret_cast<Unk_GsQuality*>(TSingleton<CGraphicOptionTable>::GetInstance())->FUN_141376580(p->m_nQuality) ? true : false;
     return 1;
 }
 MS2_REPLACE(0x14125D9B0, FUN_14125d9b0, 1092, 0xF1FFDCB9);
@@ -2058,7 +2055,7 @@ MS2_REPLACE(0x14125E160, FUN_14125e160, 128, 0x9EA98AE1);
 // @0x14125e1f0
 void FUN_14125e1f0(Unk_GraphicState* p, int nQuality, int bFollow)
 {
-    Unk_GsQuality* pTable = FUN_140ae1c00();
+    Unk_GsQuality* pTable = reinterpret_cast<Unk_GsQuality*>(TSingleton<CGraphicOptionTable>::GetInstance());
     p->m_nQuality = nQuality;
     p->m_b1f = pTable->FUN_141376580(p->m_nQuality) ? true : false;
     if (bFollow != 0)
@@ -2121,7 +2118,7 @@ void FUN_14125e4c0(Unk_GraphicState* p, int b)
     if (p->m_b1b != (b != 0))
     {
         p->m_b1b = p->m_b15;
-        FUN_1409a8b00()->FUN_1409a5190(p->m_b1b);
+        FUN_1409a8b00()->SetSoftParticlesEnabled(p->m_b1b);
     }
     if (p->m_b1a != (b != 0))
     {
@@ -2382,12 +2379,7 @@ MS2_REPLACE(0x14125EF90, FUN_14125ef90, 248, 0xD4DDBD27);
 
 // ---- language / gamepad / sound / connect / auto looting / chroma / etc blocks -------------------------------------
 // The gamepad input switch (MS2InputService).
-class Unk_GsGamepadInput
-{
-public:
-    void FUN_140d8b900(bool bEnable, bool bNotify);             // enable / disable gamepad input
-};
-Unk_GsGamepadInput* FUN_140a58540();
+MS2InputService* FUN_140a58540();
 UIMainPlayerInfo* FUN_140931900(int nUiId);
 extern int DAT_143af7d40;                                       // input enabled
 extern int DAT_143ab0248;                                       // the service region (0 Korea, 1 Japan, 2 global, 3 China)
@@ -2734,25 +2726,25 @@ float FUN_141260110(Unk_SoundState* p, int nCategory);
 void FUN_14125fe20(Unk_SoundState* p)
 {
     float fBgm = FUN_141260110(p, 2);
-    if (p->m_b30 && FUN_140c8dac0() != 0 && FUN_140c8dac0()->FUN_140d07390() > 0)
+    if (p->m_b30 && FUN_140c8dac0() != 0 && FUN_140c8dac0()->GetRefs() > 0)
         fBgm = 0.0f;
-    FUN_140d13c40()->FUN_14177da80(0, FUN_141260110(p, 0));
-    FUN_140d13c40()->FUN_14177da80(9, FUN_141260110(p, 0));
-    FUN_140d13c40()->FUN_14177da80(1, FUN_141260110(p, 1));
-    FUN_140d13c40()->FUN_14177da80(2, fBgm);
-    FUN_140d13c40()->FUN_14177da80(3, FUN_141260110(p, 3));
-    FUN_140d13c40()->FUN_14177da80(4, FUN_141260110(p, 4));
-    FUN_140d13c40()->FUN_14177da80(7, FUN_141260110(p, 7));
-    FUN_140d13c40()->FUN_14177da80(5, FUN_141260110(p, 5));
-    FUN_140d13c40()->FUN_14177da80(8, FUN_141260110(p, 8));
-    FUN_140d13c40()->FUN_14177da80(6, FUN_141260110(p, 6));
-    FUN_140d13c40()->FUN_14177da80(10, FUN_141260110(p, 10));
-    FUN_140d13c40()->FUN_14177dc80(p->m_b00);
+    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(0, FUN_141260110(p, 0));
+    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(9, FUN_141260110(p, 0));
+    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(1, FUN_141260110(p, 1));
+    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(2, fBgm);
+    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(3, FUN_141260110(p, 3));
+    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(4, FUN_141260110(p, 4));
+    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(7, FUN_141260110(p, 7));
+    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(5, FUN_141260110(p, 5));
+    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(8, FUN_141260110(p, 8));
+    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(6, FUN_141260110(p, 6));
+    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(10, FUN_141260110(p, 10));
+    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177dc80(p->m_b00);
     if (DAT_143af7d40 == 0 && !p->m_b01)
     {
-        FUN_140d13c40()->FUN_14177dc80(1);
+        TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177dc80(1);
         if (FUN_140c8dac0() != 0)
-            FUN_140c8dac0()->FUN_140d0a510();
+            FUN_140c8dac0()->Mute();
     }
     if (FUN_140c9cb10() != 0)
         FUN_140c9cb10()->FUN_1417ae760((float)(p->m_nMainSoundStep * 10) / 100.0f);
@@ -3337,10 +3329,10 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW t
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                     // show it
 CStringW GetStringCommonByKey(const CStringW& str);                      // string table text by key
 CStringW FUN_140298ea0(CStringW str);                             // string table text by key
-class Unk_GsUiHomeNotice { public: void FUN_140c29b70(); };                                     // 0x4f7c
-Unk_GsUiHomeNotice* FUN_140ef49b0(int nUiId);
-class Unk_GsUiHomeLink { public: void FUN_14135ec00(const CString& strUrl, bool b); };           // 0x4e6a
-Unk_GsUiHomeLink* FUN_140c43790(int nUiId);
+                                     // 0x4f7c
+UIHomeMenuDialog* FUN_140ef49b0(int nUiId);
+           // 0x4e6a
+UIWebBrowserBase* FUN_140c43790(int nUiId);
 // The house service (cube map information) behind its smart pointer (see uirealestatesell.cpp).
 class Unk_HoService
 {
@@ -3589,7 +3581,7 @@ void CPersonalInfoAgreement::FUN_141262650()
         return;
     if (m_bAnswered)
     {
-        Unk_GsUiHomeNotice* pNotice = FUN_140ef49b0(0x4f7c);
+        UIHomeMenuDialog* pNotice = FUN_140ef49b0(0x4f7c);
         if (pNotice != 0)
             pNotice->FUN_140c29b70();
         m_bAnswered = false;
@@ -3601,7 +3593,7 @@ MS2_REPLACE_METHOD(0x141262650, CPersonalInfoAgreement, FUN_141262650, 350, 0x37
 // @0x1412627c0
 void CPersonalInfoAgreement::FUN_1412627c0(CString strUrl)
 {
-    Unk_GsUiHomeLink* pLink = FUN_140c43790(0x4e6a);
+    UIWebBrowserBase* pLink = FUN_140c43790(0x4e6a);
     if (pLink == 0)
         return;
     pLink->FUN_14135ec00(strUrl, true);
@@ -3714,10 +3706,10 @@ void FUN_14086fa40(TiXmlElement* pElem, const char* pszName);                   
 int FUN_140873220(TiXmlElement* pElem, const char* pszName, unsigned* pn);          // QueryUnsignedAttribute (0 = ok)
 int FUN_1408732e0(TiXmlElement* pElem, const char* pszName, __int64* pn);
 int FUN_140873320(TiXmlElement* pElem, const char* pszName, unsigned __int64* pn);
-void FUN_140873ce0(TiXmlElement* pElem, const char* pszName, unsigned nValue);
-void FUN_140873eb0(TiXmlElement* pElem, const char* pszName, const __int64& nValue);
-void FUN_140873f20(TiXmlElement* pElem, const char* pszName, const unsigned __int64& nValue);
-CStringW FUN_1408767c0(const char* sz);                         // a UTF-8 string as a wide CString
+void XmlSetAttr(TiXmlElement* pElem, const char* pszName, unsigned nValue);
+void XmlSetAttr(TiXmlElement* pElem, const char* pszName, const __int64& nValue);
+void XmlSetAttr(TiXmlElement* pElem, const char* pszName, const unsigned __int64& nValue);
+CStringW XmlWide(const char* sz);                         // a UTF-8 string as a wide CString
 CString FUN_140390ea0(const wchar_t* psz, int nCodePage);       // a wide string as a UTF-8 CString
 
 // @0x141262f40
@@ -3849,14 +3841,14 @@ void WriteGameOptionInt64(TiXmlDocument* pDoc, const char* pszSection, const cha
         TiXmlElement* pSection = FUN_140165cf0(pRoot, pszSection);
         if (pSection != 0)
         {
-            FUN_140873eb0(pSection, pszKey, nValue);
+            XmlSetAttr(pSection, pszKey, nValue);
         }
         else
         {
             TiXmlElement* pNew = new TiXmlElement(pszSection);
             if (pNew != 0)
             {
-                FUN_140873eb0(pNew, pszKey, nValue);
+                XmlSetAttr(pNew, pszKey, nValue);
                 FUN_14086e090(pRoot, pNew);
             }
         }
@@ -3873,14 +3865,14 @@ void WriteGameOptionUInt64(TiXmlDocument* pDoc, const char* pszSection, const ch
         TiXmlElement* pSection = FUN_140165cf0(pRoot, pszSection);
         if (pSection != 0)
         {
-            FUN_140873f20(pSection, pszKey, nValue);
+            XmlSetAttr(pSection, pszKey, nValue);
         }
         else
         {
             TiXmlElement* pNew = new TiXmlElement(pszSection);
             if (pNew != 0)
             {
-                FUN_140873f20(pNew, pszKey, nValue);
+                XmlSetAttr(pNew, pszKey, nValue);
                 FUN_14086e090(pRoot, pNew);
             }
         }
@@ -3897,14 +3889,14 @@ void WriteGameOptionUInt(TiXmlDocument* pDoc, const char* pszSection, const char
         TiXmlElement* pSection = FUN_140165cf0(pRoot, pszSection);
         if (pSection != 0)
         {
-            FUN_140873ce0(pSection, pszKey, nValue);
+            XmlSetAttr(pSection, pszKey, nValue);
         }
         else
         {
             TiXmlElement* pNew = new TiXmlElement(pszSection);
             if (pNew != 0)
             {
-                FUN_140873ce0(pNew, pszKey, nValue);
+                XmlSetAttr(pNew, pszKey, nValue);
                 FUN_14086e090(pRoot, pNew);
             }
         }
@@ -3994,7 +3986,7 @@ int ReadGameOptionStringW(TiXmlDocument* pDoc, const char* pszSection, const cha
     TiXmlElement* pElem;
     if (pRoot != 0 && (pElem = FUN_140165cf0(pRoot, pszSection)) != 0 && FUN_14086f4b0(pElem, pszKey) != 0)
     {
-        *pstrValue = FUN_1408767c0(FUN_14086f4b0(pElem, pszKey));
+        *pstrValue = XmlWide(FUN_14086f4b0(pElem, pszKey));
         return 1;
     }
     return 0;

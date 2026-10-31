@@ -22,6 +22,8 @@
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/placeholder/fmodwrap.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // ---- callees outside this unit ----
 
@@ -57,11 +59,9 @@ public:
 CSoundEventMgr* FUN_140d13c40();
 // The application object: the sound volume switch.
 class Unk_SmApp { public: char* FUN_140d13c70(); };
-Unk_SmApp* FUN_1409a8b10();
 float FUN_141260110(void* pSwitch, int nChannel);                   // the volume of a channel
 // The game clock (?\unit_14086d260.cpp).
-class Unk_GameClock { public: double FUN_141473280(); };
-Unk_GameClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 
 // The category allocator (efd::MemObject::operator new, expanded at the call site).
 void* FUN_140876480(void* pkOut, int nCategory);            // returns the mem category
@@ -137,7 +137,7 @@ CSoundMusicEffect::CSoundMusicEffect() : m_f30(1.0f), m_f38(0.0f)
 // @0x141790060
 CSoundMusicEffect::~CSoundMusicEffect()
 {
-    FUN_140d13c40()->FUN_14177ca30(FUN_141260110(FUN_1409a8b10()->FUN_140d13c70(), 2));
+    FUN_140d13c40()->FUN_14177ca30(FUN_141260110(reinterpret_cast<Unk_SmApp*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70(), 2));
 }
 
 // Starts the music: the cue, the parameter, the reverb string, then the volume fade plan (the music volume is read
@@ -160,7 +160,7 @@ bool CSoundMusicEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
     if (pMusic->m_fVolume <= 0.0f || pMusic->m_fDuration == 0.0f)
         return false;
     float fOld = FUN_140d13c40()->FUN_14177c9e0();
-    float fNew = FUN_141260110(FUN_1409a8b10()->FUN_140d13c70(), 2) * pMusic->m_fVolume;
+    float fNew = FUN_141260110(reinterpret_cast<Unk_SmApp*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70(), 2) * pMusic->m_fVolume;
     fDelta = fNew - fOld;
     m_f38 = fDelta;
     m_f30 = fNew;

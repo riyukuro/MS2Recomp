@@ -7,9 +7,16 @@
 // free-function externs in the state units); the methods keep the FUN_<va> names those callers use.
 #pragma once
 #include <afx.h>
+// NxMath.h refuses the windows.h min/max macros; keep them out of the PhysX headers only
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
 #include <NxPhysics.h>
 #include "NxCharacter/include/NxCapsuleController.h"
 #include "NxCharacter/include/NxControllerManager.h"
+#pragma pop_macro("max")
+#pragma pop_macro("min")
 #include <efd/Point3.h>
 #include <egfPhysX/EntityActorData.h>
 #include "ms2/ms2layout.h"

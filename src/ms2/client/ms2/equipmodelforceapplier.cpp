@@ -33,6 +33,7 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/equipmodel.h"
 
 extern unsigned char DAT_143afc898;                                        // assertions throw when set
 
@@ -43,7 +44,6 @@ int FUN_1405451a0(void* pInfo);                                     // its type 
 // The owner record's entity reference: a smart pointer to an object that carries the world id (+0x58).
 class Unk_WindRef { public: int FUN_140526b10() const; };
 // The model seen as the owner holder: FUN_141200a40 copies CEquipModel::m_spOwner (a member in the exe).
-class Unk_WindEquip { public: MS2Ptr<Unk_EquipModelOwner> FUN_141200a40(); };
 class Unk_EquipModelOwner { public: MS2Ptr<Unk_WindRef> FUN_1411dc7a0(); };
 
 // The world object table (singleton FUN_1403ed2d0) and its game objects (slot 20 = rotation in degrees).
@@ -150,7 +150,7 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
     if (pModel->vfunc_8() == 0) {
         return;
     }
-    MS2Ptr<Unk_EquipModelOwner> spOwner = reinterpret_cast<Unk_WindEquip*>(pModel)->FUN_141200a40();
+    MS2Ptr<Unk_EquipModelOwner> spOwner = reinterpret_cast<CEquipModel*>(pModel)->FUN_141200a40();
     if (spOwner == (Unk_EquipModelOwner*)0) {
         return;
     }

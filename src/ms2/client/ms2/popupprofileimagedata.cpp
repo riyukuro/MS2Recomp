@@ -18,6 +18,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/partymanager.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -42,7 +44,6 @@ unsigned int FUN_141697bc0(Unk_PpConst* p);  // a configured value
 
 // The character state manager (singleton 0x1409670d0).
 class Unk_PpStateMgr { public: int FUN_14162ae20(unsigned __int64 nId); };   // CPartyManager: a party member
-Unk_PpStateMgr* FUN_1409670d0();
 
 // The popup target of a character: the entity manager finds the entity, whose slot 86 hands out a reference to the
 // popup object that is hidden by its slot 3.
@@ -149,7 +150,6 @@ public:
     virtual Unk_PpHandle vfunc_86();        // 86 0x2b0
 };
 class Unk_PpEntityMgr { public: Unk_PpEntity* FUN_141bd1530(unsigned __int64 nId); };
-Unk_PpEntityMgr* FUN_1403ed2d0();
 
 // @0x141697140
 CPopupProfileImageData::CPopupProfileImageData()
@@ -200,7 +200,7 @@ int CPopupProfileImageData::FUN_141697260(int nNow)
 {
     unsigned int nElapsed = nNow - m_nTime;
     unsigned int nDelay = 0;
-    if (FUN_1409670d0()->FUN_14162ae20(m_nId) == 1)
+    if (reinterpret_cast<Unk_PpStateMgr*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ae20(m_nId) == 1)
         nDelay = FUN_141697bc0(&FUN_1401d3200()->m_expireB);
     else
         nDelay = FUN_141697bc0(&FUN_1401d3200()->m_expireA);
@@ -245,7 +245,7 @@ void CPopupProfileImageMan::FUN_141697430()
             }
             if (spData->FUN_141697200(nNow) == 1)
             {
-                Unk_PpEntity* pEntity = FUN_1403ed2d0()->FUN_141bd1530(nId);
+                Unk_PpEntity* pEntity = reinterpret_cast<Unk_PpEntityMgr*>(WorldService::GetInstance())->FUN_141bd1530(nId);
                 bool bFound = pEntity != 0 && (pEntity->vfunc_86().FUN_1416676a0() ? true : false);
                 if (bFound)
                     pEntity->vfunc_86().FUN_141667730()->vfunc_3();
@@ -312,7 +312,7 @@ void CPopupProfileImageMan::FUN_1416979e0(unsigned __int64 nId)
         DataPtr spData(0);
         if (m_shown.Lookup(nId, spData))
             m_shown.RemoveKey(nId);
-        Unk_PpEntity* pEntity = FUN_1403ed2d0()->FUN_141bd1530(nId);
+        Unk_PpEntity* pEntity = reinterpret_cast<Unk_PpEntityMgr*>(WorldService::GetInstance())->FUN_141bd1530(nId);
         bool bFound = pEntity != 0 && (pEntity->vfunc_86().FUN_1416676a0() ? true : false);
         if (bFound)
             pEntity->vfunc_86().FUN_141667730()->vfunc_3();

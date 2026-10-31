@@ -23,6 +23,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/commonfiles/gamerule.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- unit-local placeholders ----
 
@@ -217,12 +219,7 @@ MS2_CHECK_OFFSET(Unk_CsoConfig, m_6e8, 0x6e8);
 MS2_CHECK_OFFSET(Unk_CsoConfig, m_94a8, 0x94a8);
 Unk_CsoConfig* FUN_1401d3200();
 
-class Unk_CsoUserMgr
-{
-public:
-    bool FUN_1404793a0(const CStringW& strName);
-};
-Unk_CsoUserMgr* FUN_1401c0d90();
+CGameRule* FUN_1401c0d90();
 
 class Unk_CsoGameMode
 {
@@ -236,7 +233,6 @@ class Unk_CsoGameCtx
 public:
     void FUN_1411a4f40(CString strSound, const NiPoint3& kPos);
 };
-Unk_CsoGameCtx* FUN_1403ed280();
 
 class Unk_CsoSpawnMgr
 {
@@ -411,7 +407,7 @@ void CubeSpawnObject::FUN_140a4f3f0(int n)
                     if (strText.GetLength() > 0)
                         FUN_14166fff0(strText);
                     if (spScript.FUN_14085a610()->m_contents.FUN_140a4ffc0(0).FUN_14078f3d0()->m_strSound.GetLength() > 0)
-                        FUN_1403ed280()->FUN_1411a4f40(
+                        reinterpret_cast<Unk_CsoGameCtx*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4f40(
                             spScript.FUN_14085a610()->m_contents.FUN_14078f350(0).FUN_14078f3d0()->m_strSound,
                             vfunc_18());
                 }

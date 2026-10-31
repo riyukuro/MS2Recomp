@@ -12,6 +12,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 // The world service (0x1403ed2d0); the client field data it hands out (0x141bd30a0).
@@ -20,7 +21,6 @@ class Unk_MvWorld
 public:
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();
 };
-Unk_MvWorld* FUN_1403ed2d0();
 
 // efd::Point3 and efd::Matrix3 helpers (all out of line in the exe).
 float FUN_140a00f20(const Unk_GVec3& kA, const Unk_GVec3& kB);   // efd::Point3::Dot
@@ -48,7 +48,7 @@ MinimapViewport::MinimapViewport()
 unsigned MinimapViewport::FUN_141485770(int nScale)
 {
     FUN_1414863e0();
-    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_MvWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spField ? true : false)
     {
         if (spField->m_spMinimap ? true : false)

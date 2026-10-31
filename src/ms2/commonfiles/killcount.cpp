@@ -10,13 +10,12 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/luautil.h"
 
 // ---- unit-local placeholders (unrecovered helpers; promote to src/ms2/placeholder/ when shared) ----
 
-class Unk_LuaState                                                      // the LUA state the kill helpers run in
+class Unk_LuaState : public CLua                                                      // the LUA state the kill helpers run in
 {
-public:
-    CStringA FUN_140675c30(int nCount);                                 // lua calcKillCountMsg(count): the movie's text key
 };
 
 unsigned int FUN_140869420();                                           // the client millisecond clock
@@ -80,7 +79,7 @@ unsigned int CKillCount::FUN_14064c710()
 // @0x14064c740
 CStringW CKillCount::FUN_14064c740()
 {
-    return FUN_14016a730(FUN_1401c0db0()->FUN_140675c30(m_08), 0);
+    return FUN_14016a730(FUN_1401c0db0()->CalcKillCountMsg(m_08), 0);
 }
 
 // @0x14064c7d0

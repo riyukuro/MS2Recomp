@@ -41,6 +41,8 @@
 #include "ms2/client/ms2/ms2scenegraphservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // The manager singletons CMainSystem creates (only the extents are modelled).
 class CEmotionManager : public TSingleton<CEmotionManager>
@@ -100,7 +102,6 @@ Unk_140d86260* FUN_140d86260();
 void* FUN_1404f4540();
 void FUN_140791ac0(void* p);
 class Unk_1409a8b10;
-Unk_1409a8b10* FUN_1409a8b10();
 void* FUN_1409a8ac0(void* p);
 class Unk_GraphicsOptions                               // FUN_1409a8ac0's result
 {
@@ -114,7 +115,6 @@ void FUN_141610410(int nFrameLimit);
 class Unk_MsWorld { public: int FUN_141bd1a10(GameObject* pObject); };
 // The scene graph service as these callers see it: the exe passes the entity id by value (ms2scenegraphservice.h has const&).
 class Unk_MsSceneGraph { public: void FUN_1414f1ef0(egf::EntityID entityID); };
-Unk_MsWorld* FUN_1403ed2d0();
 int FUN_14028d260(float fTime);
 CStringW FUN_14016a730(const char* psz, int nCodePage);
 #ifdef __clang__
@@ -282,7 +282,7 @@ double CMainSystem::FUN_141473280()
 // @0x1414732b0
 DWORD CMainSystem::FUN_1414732b0(GameObject* pObject)
 {
-    int nKind = FUN_1403ed2d0()->FUN_141bd1a10(pObject);
+    int nKind = reinterpret_cast<Unk_MsWorld*>(WorldService::GetInstance())->FUN_141bd1a10(pObject);
     return FUN_1414732f0(nKind);
 }
 
@@ -590,7 +590,7 @@ efd::AsyncResult CMainSystem::OnShutdown()
 // @0x141474450
 void CMainSystem::FUN_141474450()
 {
-    int nLimit = static_cast<Unk_GraphicsOptions*>(FUN_1409a8ac0(FUN_1409a8b10()))->GetFrameLimit();
+    int nLimit = static_cast<Unk_GraphicsOptions*>(FUN_1409a8ac0(reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())))->GetFrameLimit();
     FUN_141610410(nLimit);
 }
 

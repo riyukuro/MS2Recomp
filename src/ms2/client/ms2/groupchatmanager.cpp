@@ -15,6 +15,9 @@
 #include "ms2/placeholder/uimessagebox.h"
 #include "blockmanager.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uigroupmessenger.h"
+#include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/uiugceventdispatcher.h"
 
 // ---------------------------------------------------------------------------------------------------------------
 // Unit-local views of exe objects used by the packet handlers.
@@ -139,24 +142,10 @@ public:
 };
 Unk_ChatGame* FUN_1403ed2d0();
 // The chat window controller (+0x50 of the UI root FUN_141482e80).
-class Unk_ChatMessenger {
-public:
-    void FUN_1419515c0(int oid);
-    void FUN_141951720(int oid, const CStringW& a, const CStringW& b);
-    void FUN_1419517b0(int oid, const CStringW& a, const CStringW& b);
-    void FUN_1419519a0(int oid);
-    void FUN_1419519e0(int oid, const CStringW& a, const CStringW& b);
-    void FUN_141951a70(int oid, const CStringW& name, int flag);
-    void FUN_141951af0(int oid, const CStringW& name);
-    void FUN_141951b70(int oid, const CStringW& name);
-    void FUN_141951bf0(int oid, const CStringW& name, const CStringW& text);
-    void FUN_141951c50(int oid, const CStringW& a, const CStringW& b);
-    void FUN_141951d80(int oid, const CStringW& name, CInPacket* packet);
-};
 class Unk_ChatUI {
 public:
     void* m_pad_00[10];
-    Unk_ChatMessenger* m_messenger;                  // +0x50
+    UIGroupMessengerBrowser* m_messenger;                  // +0x50
 };
 Unk_ChatUI* FUN_141482e80();
 // Profile image notifier (slot 1 receives the character id and the picture name).
@@ -165,14 +154,12 @@ public:
     virtual void vfunc_0();
     virtual void vfunc_1(__int64 characterId, CString picture);
 };
-Unk_ChatPictureSink* FUN_140bc09f0();
 // Client options (+6: refuses group chat invitations).
 struct Unk_ChatSettings {
     char m_pad_00[6];
     unsigned char m_refuseInvite;
 };
 class Unk_ChatOptions;
-Unk_ChatOptions* FUN_1409a8b10();
 Unk_ChatSettings* FUN_140ae6540(Unk_ChatOptions*);
 // Misc exe helpers.
 void FUN_1412751b0(const CStringW& text, int channel);
@@ -659,7 +646,7 @@ void CGroupChatManager::FUN_14137f790(CInPacket* packet) {
     CStringW first = packet->ReadUnicodeString();
     CStringW second = packet->ReadUnicodeString();
     unsigned oid = packet->ReadInt32();
-    if (FUN_140ae6540(FUN_1409a8b10())->m_refuseInvite) {
+    if (FUN_140ae6540(reinterpret_cast<Unk_ChatOptions*>(TSingleton<CGameOption>::GetInstance()))->m_refuseInvite) {
         SendGroupChatMode4(oid, 1);
     } else {
         Unk_ChatPtrChat chat = FUN_14137e630(oid);
@@ -788,7 +775,7 @@ void CGroupChatManager::FUN_141380560(CInPacket* packet) {
     member->m_proxy.FUN_1408f0850(FUN_14016a600(picture, 0));
     CString cached = FUN_141028be0(member->m_proxy.m_8, FUN_14016a600(picture, 0), 0, CString(""));
     if (!cached.IsEmpty()) {
-        FUN_140bc09f0()->vfunc_1(member->m_proxy.m_8, FUN_14016a600(picture, 0));
+        reinterpret_cast<Unk_ChatPictureSink*>(TSingleton<UIUGCEventDispatcher>::GetInstance())->vfunc_1(member->m_proxy.m_8, FUN_14016a600(picture, 0));
     }
 }
 MS2_REPLACE_METHOD(0x141380560, CGroupChatManager, FUN_141380560, 921, 0x2E2E4F06);

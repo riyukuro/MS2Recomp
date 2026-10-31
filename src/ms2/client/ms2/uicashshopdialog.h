@@ -34,7 +34,7 @@ class CashBannerInfo : public CPtred
 {
 public:
     CashBannerInfo();                                               // 0x14103b920
-    virtual ~CashBannerInfo();                                      //  0 0x14103be30 (??_G 0x14103c3e0)
+    // implicit virtual dtor 0x14103be30 (no vftable store; ??_G 0x14103c3e0)
 
     CString m_strImage;                                             // +0x18 the image name of the record
     CString m_strPath;                                              // +0x20 the resolved banner path

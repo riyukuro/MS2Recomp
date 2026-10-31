@@ -11,17 +11,15 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 
 // ---- unit-local placeholders ----
 
 // The input state (FUN_14025e7c0).
-class Unk_FreeCamInput
+class Unk_FreeCamInput : public CInputKeyHandler
 {
 public:
-    bool FUN_14116d950(int nKey, bool b, int n);                    // key held
     bool FUN_14116da30(int nKey, bool b, int n);                    // key pressed
-    bool FUN_14116daa0(int nButton, bool b, int n);                 // mouse button held
-    bool FUN_14116dbf0(int* pnX, int* pnY, int* pnZ, bool b, int n);    // mouse move delta
 };
 Unk_FreeCamInput* FUN_14025e7c0();
 

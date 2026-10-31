@@ -10,6 +10,7 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0
@@ -19,7 +20,7 @@ public:
     Unk_140165cf0* FUN_14086e8d0(const char* pszName);              // first child element (by name)
     Unk_140165cf0* FUN_14086e7e0(const char* pszName);              // next sibling element (by name)
 };
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int& rOut);

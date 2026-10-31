@@ -61,7 +61,7 @@ public:
 
 // ---- out-of-unit types, functions and globals ----
 extern int DAT_143ac2fd0;                       // the platform failure code (shown by CGameApp::InitInstance)
-extern CStringW DAT_143ac2fe0;                  // the platform failure message
+extern CStringW g_143ac2fe0;                    // the platform failure message
 extern Unk_LaunchBitset<4> g_launchBits;        // 0x143ae0901
 extern CString g_strPassport;                   // 0x143ae0910 "/passport:"
 extern CString g_strSid;                        // 0x143ae0918 "/sid:"
@@ -74,7 +74,7 @@ extern CStringW g_strMaintenanceExit;           // 0x143abf510 L"maintenanceExit
 extern int DAT_143ab2858;                       // a login value received from the server
 void FUN_1414b1980();                           // parses the launch arguments
 DWORD GetTickCountMs2();
-__int64 FUN_140869440();                        // the server time
+__int64 GetServerTime();                        // the server time
 CStringW FUN_1408116a0(int nStringId, const int& n);                       // FormatStringId<int>
 CStringW GetStringCommon(int nStringId);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);                   // a system notice
@@ -147,7 +147,7 @@ int CClientPlatformNexonKorea::vfunc_4()
     CStringW strError;
     if (CNXMan::GetInstance()->FUN_14160dd50(strError) == 0) {
         DAT_143ac2fd0 = 0x4b1;
-        DAT_143ac2fe0 = StringFormat(L"{0} {1}", rawString.Get(RAWSTRING_VERSION_CHECK_FAILED), strError);
+        g_143ac2fe0 = StringFormat(L"{0} {1}", rawString.Get(RAWSTRING_VERSION_CHECK_FAILED), strError);
         return 3;
     }
     vfunc_22(0x26c, "");
@@ -155,7 +155,7 @@ int CClientPlatformNexonKorea::vfunc_4()
     if (nResult != 1) {
         if (nResult == 3) {
             DAT_143ac2fd0 = 0x4b1;
-            DAT_143ac2fe0 = rawString.Get(RAWSTRING_VERSION_CHECK_FAILED2);
+            g_143ac2fe0 = rawString.Get(RAWSTRING_VERSION_CHECK_FAILED2);
         }
         return nResult;
     }
@@ -176,7 +176,7 @@ void CClientPlatformNexonKorea::vfunc_6()
         }
         if ((unsigned)(nNow - m_34) >= 1000) {
             m_34 = nNow;
-            __int64 nServerTime = FUN_140869440();
+            __int64 nServerTime = GetServerTime();
             if (nServerTime < g_nShutdownTime) {
                 int nNotice = -1;
                 __int64 nRemain = g_nShutdownTime - nServerTime;
@@ -233,7 +233,7 @@ void CClientPlatformNexonKorea::vfunc_16()
 {
     if (CNXMan::GetInstance()->FUN_14160db80() == 0) {
         DAT_143ac2fd0 = 0x450;
-        DAT_143ac2fe0 = FUN_14016a730(CNXMan::GetInstance()->FUN_14160e5a0(), 0);
+        g_143ac2fe0 = FUN_14016a730(CNXMan::GetInstance()->FUN_14160e5a0(), 0);
     }
 }
 
@@ -289,12 +289,12 @@ int CClientPlatformNexonKorea::vfunc_17()
     FUN_1414b1980();
     if (!g_launchBits[0]) {
         DAT_143ac2fd0 = 0x3e9;
-        DAT_143ac2fe0 = rawString.Get(RAWSTRING_INVALID_LAUNCH);
+        g_143ac2fe0 = rawString.Get(RAWSTRING_INVALID_LAUNCH);
         return 0;
     }
     if (!g_launchBits[1]) {
         DAT_143ac2fd0 = 0x3ea;
-        DAT_143ac2fe0 = rawString.Get(RAWSTRING_INVALID_LAUNCH);
+        g_143ac2fe0 = rawString.Get(RAWSTRING_INVALID_LAUNCH);
         return 0;
     }
     if (g_launchBits[3]) {}     // read and ignored

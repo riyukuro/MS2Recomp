@@ -15,7 +15,7 @@ class Unk_140165cf0
 {
 public:
     Unk_140165cf0* FUN_140165cf0(const char* pszName);      // FirstChildElement
-    Unk_140165cf0* FUN_1403f0510();                         // NextSiblingElement
+    Unk_140165cf0* NextSiblingElement();                    // NextSiblingElement
 };
 void FUN_1408733e0(Unk_140165cf0* pNode, const char* pszAttr, CString& strOut);
 void FUN_1408730a0(Unk_140165cf0* pNode, const char* pszAttr, bool& bOut);
@@ -156,7 +156,7 @@ EffectDummyGroup::EffectDummyGroup()
 // @0x140a514e0
 void EffectDummyGroup::FUN_140a514e0(TiXmlNode* pNode)
 {
-    for (Unk_140165cf0* pDummy = reinterpret_cast<Unk_140165cf0*>(pNode)->FUN_140165cf0("dummy"); pDummy != 0; pDummy = pDummy->FUN_1403f0510())
+    for (Unk_140165cf0* pDummy = reinterpret_cast<Unk_140165cf0*>(pNode)->FUN_140165cf0("dummy"); pDummy != 0; pDummy = pDummy->NextSiblingElement())
     {
         DummyPtr p(new CEffectDummy);
         p->Parse(pDummy);

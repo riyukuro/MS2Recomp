@@ -46,6 +46,8 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/crashmanagercli.h"
 
 // ---- file statics (.text$di) ----
 #ifndef MS2_HOOK_DLL
@@ -59,7 +61,6 @@ const NiRTTI GFxMovieBackground::ms_RTTI("GFxMovieBackground", &GFxMovieEventHan
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 class Unk_BgLog { public: void FUN_1401ce2f0(const char* szMessage); };
-Unk_BgLog* FUN_140a44830();                                                 // the logger
 extern char DAT_143b059e8;                                                  // efd::SmartPointer<efd::ServiceManager> cell
 extern char DAT_143ae52e0;                                                  // material name of the screen quad
 extern char DAT_143a08cd8;                                                  // the reference axis of the camera angle
@@ -213,10 +214,9 @@ void* FUN_1408e57f0();
 MS2Ptr<AScript> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 
 // The camera manager (FUN_1409478c0): the direction the camera looks along.
-class Unk_BgCamera
+class Unk_BgCamera : public CameraMgr
 {
 public:
-    int FUN_140a18070();
     Vector3 FUN_140af0340();
 };
 Unk_BgCamera* FUN_1409478c0();
@@ -287,8 +287,7 @@ public:
 };
 void FUN_14257ec50(Unk_BgDispHandle* p) throw();
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
-class Unk_BgWorldMgr { public: void* FUN_141bd0cc0(); NiPoint3 FUN_141bd3dc0(); };   // 3dc0 returns by value (hidden pointer, worldservice.h)
-Unk_BgWorldMgr* FUN_1403ed2d0();
+class Unk_BgWorldMgr : public WorldService { public: NiPoint3 FUN_141bd3dc0(); };   // 3dc0 returns by value (hidden pointer, worldservice.h)
 bool* FUN_1422dad70(void* pThis, void* pOut, char n);   // pOut: caller temp (key-state flags), returned
 NiMaterial* FUN_141d284a0(char* szName);
 void FUN_14116d500(void* pMat, const NiColor& kColor);
@@ -493,7 +492,7 @@ void GFxMovieBackground::vfunc_8(float fTime)
     }
     if (m_nPosFlag != 0)
     {
-        PCBase* pPC = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        PCBase* pPC = static_cast<PCBase*>(reinterpret_cast<Unk_BgWorldMgr*>(WorldService::GetInstance())->FUN_141bd0cc0());
         if (pPC != 0)
         {
             NiPoint3 kScreen;
@@ -509,7 +508,7 @@ void GFxMovieBackground::vfunc_8(float fTime)
             NiPoint3 kScreen;
             if (m_spViewport ? true : false)
             {
-                Vector3 kPos(FUN_1403ed2d0()->FUN_141bd3dc0());
+                Vector3 kPos(reinterpret_cast<Unk_BgWorldMgr*>(WorldService::GetInstance())->FUN_141bd3dc0());
                 if (m_spViewport->FUN_141486450(kPos, kScreen, 1.0f))
                     m_spScript->Invoke("updatePos", kScreen.x);
             }
@@ -714,20 +713,20 @@ int GFxMovieBackground::AppendScene()
 {
     if (!m_spRenderView)
     {
-        FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed m_renderView == NULL");
+        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed m_renderView == NULL");
         return 0;
     }
     ecr::RenderService* pRender = Unk_GetRenderService(&DAT_143b059e8);
     if (pRender == 0)
     {
-        FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed ecr::RenderService == NULL");
+        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed ecr::RenderService == NULL");
         return 0;
     }
     NiDefaultClickRenderStep* pClickStep = NiDynamicCast(NiDefaultClickRenderStep,
         pRender->GetActiveRenderSurface()->GetRenderStep());
     if (pClickStep == 0)
     {
-        FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed NiDefaultClickRenderStep == NULL");
+        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed NiDefaultClickRenderStep == NULL");
         return 0;
     }
     NiViewRenderClick* pClick = 0;
@@ -742,7 +741,7 @@ int GFxMovieBackground::AppendScene()
             return 1;
         }
     }
-    FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed SceneGraphClick No Search");
+    reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed SceneGraphClick No Search");
     return 0;
 }
 // @0x14127b290
@@ -778,7 +777,7 @@ int GFxMovieBackground::CreateRenderView()
     NiMeshScreenElements* pQuad = NiDynamicCast(NiMeshScreenElements, &m_spRenderView->GetScreenFillingQuad());
     if (pQuad == 0)
     {
-        FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderView Failed");
+        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderView Failed");
         return 0;
     }
     NiMaterial* pMaterial = FUN_141d284a0(&DAT_143ae52e0);
@@ -844,7 +843,7 @@ int GFxMovieBackground::CreateRenderTarget()
 {
     if (!m_spRenderTexture)
     {
-        FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed m_renderTexture == NULL");
+        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed m_renderTexture == NULL");
         return 0;
     }
     NiDX9TextureData* pData = (NiDX9TextureData*)m_spRenderTexture->GetRendererData();
@@ -861,16 +860,16 @@ int GFxMovieBackground::CreateRenderTarget()
             if (m_spRenderTarget)
                 return 1;
             else
-                FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed m_renderTarget == NULL");
+                reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed m_renderTarget == NULL");
         }
         else
         {
-            FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed IDirect3DTexture9 == NULL");
+            reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed IDirect3DTexture9 == NULL");
         }
     }
     else
     {
-        FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed renderData == NULL");
+        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTarget Failed renderData == NULL");
     }
     return 0;
 }
@@ -889,16 +888,16 @@ int GFxMovieBackground::CreateRenderTexture()
             if (m_spRenderTexture)
                 return 1;
             else
-                FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTexture Failed m_renderTexture == NULL");
+                reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTexture Failed m_renderTexture == NULL");
         }
         else
         {
-            FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTexture Failed NiRenderTargetGroup == NULL");
+            reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTexture Failed NiRenderTargetGroup == NULL");
         }
     }
     else
     {
-        FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTexture Failed ecr::RenderService == NULL");
+        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::CreateRenderTexture Failed ecr::RenderService == NULL");
     }
     return 0;
 }
@@ -907,13 +906,13 @@ int GFxMovieBackground::SetBaseTexture(NiRenderedTexture* pTexture)
 {
     if (!m_spRenderView)
     {
-        FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::SetBaseTexture Failed m_renderView == NULL");
+        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::SetBaseTexture Failed m_renderView == NULL");
         return 0;
     }
     NiMeshScreenElements* pQuad = NiDynamicCast(NiMeshScreenElements, &m_spRenderView->GetScreenFillingQuad());
     if (pQuad == 0)
     {
-        FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::SetBaseTexture Failed NiMeshScreenElements == NULL");
+        reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::SetBaseTexture Failed NiMeshScreenElements == NULL");
         return 0;
     }
     NiTPointerList<NiPropertyPtr>& kProps = pQuad->GetPropertyList();
@@ -930,7 +929,7 @@ int GFxMovieBackground::SetBaseTexture(NiRenderedTexture* pTexture)
             return 1;
         }
     }
-    FUN_140a44830()->FUN_1401ce2f0("GFxMovieBackground::SetBaseTexture Failed NiTexturingProperty No Search");
+    reinterpret_cast<Unk_BgLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFxMovieBackground::SetBaseTexture Failed NiTexturingProperty No Search");
     return 0;
 }
 // @0x14127be10

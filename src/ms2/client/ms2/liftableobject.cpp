@@ -6,6 +6,8 @@
 #include "liftableobject.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cube.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- unrecovered helpers (declared with their exe signatures) ----
 
@@ -25,7 +27,6 @@ public:
     int FUN_1411a49c0(Unk_LiftSoundReq* pRequest);                  // play, returns the handle
     void FUN_1411a6060(int nHandle);                                // stop
 };
-Unk_LiftFxMgr* FUN_1403ed280();
 void FUN_1409fabf0(void* pSub, void* pAnchor);                      // construct the 0x68 block from an anchor
 void* FUN_14098d8d0(void* pCell, void* pRoot);
 extern char DAT_143afa4d8;
@@ -57,10 +58,8 @@ void FUN_140ae1f60(void* pModel, Unk_LiftName* pName);
 void FUN_1401d3700(CString* p);
 
 // The item service handed out by the global at 0x143b059e8 (reference counted) and its cube lookup.
-class Unk_LiftCube
+class Unk_LiftCube : public Cube
 {
-public:
-    int FUN_1408b4f20();                                            // the item id
 };
 class Unk_LiftSvc
 {
@@ -163,7 +162,7 @@ CLiftableObject::~CLiftableObject()
 {
     if (m_nEffect != 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_nEffect);
+        reinterpret_cast<Unk_LiftFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
     m_ent = 0;
@@ -289,11 +288,11 @@ void CLiftableObject::FUN_141447910(bool bOn)
         kReq.m_strName = *(CString*)((char*)FUN_1401d31f0() + 0x350);
         kReq.m_nType = 0;
         FUN_1409fabf0(kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
-        m_nEffect = FUN_1403ed280()->FUN_1411a49c0(&kReq);
+        m_nEffect = reinterpret_cast<Unk_LiftFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
     }
     else if (!bOn && m_nEffect != 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_nEffect);
+        reinterpret_cast<Unk_LiftFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
 }

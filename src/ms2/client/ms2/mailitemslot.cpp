@@ -12,16 +12,12 @@
 #include "ms2/placeholder/asslot.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-class Unk_GameCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_GameCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for the item
 CStringW GetStringCommon(int id);                         // string table lookup
 

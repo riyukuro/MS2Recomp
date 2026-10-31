@@ -36,12 +36,16 @@
 #include <errno.h>
 #include <string.h>
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/commonfiles/crashmanager.h"
+#include "ms2/commonfiles/os.h"
+#include "ms2/client/ms2/guildmanager.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- the world, the actors and the helper services this unit calls ----------------------------------------------------
 class MyPC;
 MyPC* FUN_14161e580(const TPtr<PC>& spPC);                       // QueryInterface 0x6200004
 class Unk_OptWorld;
-Unk_OptWorld* FUN_1403ed2d0();                                      // the world service
 int FUN_141bca2e0(Unk_OptWorld* pWorld);                            // the world is ready
 PCBase* FUN_141bd0cc0(Unk_OptWorld* pWorld);                        // the local player
 PCBase* FUN_141bd1530(Unk_OptWorld* pWorld, unsigned __int64 nUid);
@@ -58,28 +62,23 @@ GameObject* FUN_1416764a0(PCBase* pActor);                          // the ridee
 GameObject* FUN_141676a10(PCBase* pActor);
 GameObject* FUN_1416625e0(PCBase* pActor);
 bool FUN_141527280(PCBase* pActor);
-CPartyManager* FUN_1409670d0();
 class CGuildManager;
-CGuildManager* FUN_1403ed290();
 int FUN_1413bcbc0(CGuildManager* pGuild, std::map<unsigned __int64, PCBase*>& out);   // CGuildManager::FUN_1413bcbc0
 bool FUN_14028d470(float a, float b);
 struct Unk_OptConstVal { int m_n; };
 class Unk_OptOptions { public: unsigned char m_pad_0[0x36d8]; Unk_OptConstVal m_frameLimit; };
 Unk_OptOptions* FUN_1401d3200();
 int* FUN_1402056b0(Unk_OptConstVal* pSlot);
-class Unk_OptClock { public: double FUN_141473260(); float FUN_141473210(); };
-Unk_OptClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 unsigned FUN_140869420();                                           // millisecond clock
-class Unk_OptOsInfo { public: CString FUN_14070ee50(); };
-Unk_OptOsInfo* FUN_1411b1db0();
+class Unk_OptOsInfo : public COSInfo { };
 bool FUN_14070ee20(Unk_OptOsInfo* pInfo);                           // 64-bit OS
 void* FUN_140a0afd0();                                              // memory pressure manager
 void FUN_141554ce0(void* pMgr, double fTime);
 void FUN_141554d20(void* pMgr);
 class Unk_OptGPU { public: void FUN_1413758b0(); void FUN_141375a80(); CStringW FUN_141245ab0(); };
 Unk_OptGPU* FUN_141245b20();
-class Unk_OptLogText { public: void FUN_1401ce2b0(const char*); void FUN_1401ce270(const CString&); void FUN_1401ce2f0(const char*, ...); };
-Unk_OptLogText* FUN_140a44830();
+CCrashManager* FUN_140a44830();
 void* FUN_14151e7e0();
 void* FUN_1414a56c0();
 int FUN_1422e9e50(void* pAllocator);
@@ -151,12 +150,12 @@ void COptimizer::FUN_14161baf0()
 // @0x14161bb60
 void COptimizer::FUN_14161bb60()
 {
-    float fDelta = (float)FUN_14086d260()->FUN_141473260();
+    float fDelta = (float)FUN_14086d260()->GetDeltaTime();
     m_fMemoryTime += fDelta;
     if (5.0f < m_fMemoryTime)
     {
         m_fMemoryTime = 0;
-        if (!FUN_14070ee20(FUN_1411b1db0()))
+        if (!FUN_14070ee20(reinterpret_cast<Unk_OptOsInfo*>(TSingleton<COSInfo>::GetInstance())))
         {
             unsigned __int64 nUsage = FUN_14161bdc0();
             if (0x599 < nUsage)
@@ -169,14 +168,14 @@ void COptimizer::FUN_14161bb60()
             }
         }
     }
-    if (FUN_1403ed2d0() != 0 && FUN_141bca2e0(FUN_1403ed2d0()) != 0)
+    if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0 && FUN_141bca2e0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())) != 0)
     {
         if ((preloadMode & 8) == 0)
         {
             for (std::set<unsigned __int64>::iterator it = m_players.begin(); it != m_players.end(); ++it)
             {
                 const unsigned __int64* pId = &*it;
-                PCBase* pPC = FUN_141bd1530(FUN_1403ed2d0(), *pId);
+                PCBase* pPC = FUN_141bd1530(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()), *pId);
                 if (pPC != 0)
                 {
                     FUN_14161dbe0(pPC, preloadMode);
@@ -235,7 +234,7 @@ void COptimizer::FUN_14161bee0()
 {
     CString strText;
     FUN_140a44830()->FUN_1401ce2b0("\n--- COptimizer Log ---");
-    strText.Format("OS : %s", (const char*)FUN_1411b1db0()->FUN_14070ee50());
+    strText.Format("OS : %s", (const char*)reinterpret_cast<Unk_OptOsInfo*>(TSingleton<COSInfo>::GetInstance())->GetFullName());
     FUN_140a44830()->FUN_1401ce270(strText);
     unsigned __int64 nMemory = FUN_141245b10();
     FUN_140a44830()->FUN_1401ce2f0("GlobalMemory : %d(MB)", nMemory);
@@ -454,7 +453,7 @@ void COptimizer::FUN_14161c990()
     {
         return;
     }
-    m_samples.push_back(FUN_14086d260()->FUN_141473210());
+    m_samples.push_back(FUN_14086d260()->GetFps());
     if (m_samples.size() < m_nSampleCount)
     {
         return;
@@ -529,9 +528,9 @@ void COptimizer::FUN_14161cd00()
 // @0x14161cd60
 void COptimizer::FUN_14161cd60(unsigned __int64 nId)
 {
-    if (FUN_1403ed2d0() != 0 && preloadMode != 0 && preloadMode != 1)
+    if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0 && preloadMode != 0 && preloadMode != 1)
     {
-        if (FUN_141bca2e0(FUN_1403ed2d0()) != 0)
+        if (FUN_141bca2e0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())) != 0)
         {
             m_players.insert(nId);
         }
@@ -552,11 +551,11 @@ void COptimizer::FUN_14161cdd0(unsigned nId)
 // @0x14161ce60
 int COptimizer::FUN_14161ce60(unsigned nId)
 {
-    if (FUN_1403ed2d0() != 0 && preloadMode != 0)
+    if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0 && preloadMode != 0)
     {
-        if (FUN_141bca2e0(FUN_1403ed2d0()) != 0)
+        if (FUN_141bca2e0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())) != 0)
         {
-            PCBase* pPC = FUN_141bd1180(FUN_1403ed2d0(), nId);
+            PCBase* pPC = FUN_141bd1180(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()), nId);
             if (pPC != 0)
             {
                 return pPC->vfunc_25();
@@ -572,9 +571,9 @@ void COptimizer::FUN_14161cee0(int nSuppressed)
     m_nSuppressed = nSuppressed;
     if (m_nEnabled != 0)
     {
-        if (FUN_1403ed2d0() != 0)
+        if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0)
         {
-            if (FUN_141bca2e0(FUN_1403ed2d0()) != 0)
+            if (FUN_141bca2e0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())) != 0)
             {
                 FUN_14161db10(preloadMode);
             }
@@ -647,22 +646,22 @@ int COptimizer::FUN_14161d0f0() const
 // @0x14161d130
 void COptimizer::FUN_14161d130(bool bForce)
 {
-    if (FUN_1403ed2d0() != 0)
+    if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0)
     {
-        if (FUN_141bca2e0(FUN_1403ed2d0()) != 0)
+        if (FUN_141bca2e0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())) != 0)
         {
             std::map<unsigned __int64, PCBase*> preferred;
-            PCBase* pLocal = FUN_141bd0cc0(FUN_1403ed2d0());
+            PCBase* pLocal = FUN_141bd0cc0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()));
             if (pLocal != 0)
             {
                 if ((preloadMode & 2) != 0 && FUN_141527280(pLocal))
                 {
-                    int nCount = FUN_1409670d0()->FUN_14162af00();
+                    int nCount = TSingleton<CPartyManager>::GetInstance()->FUN_14162af00();
                     for (int i = 0; i < nCount; i = i + 1)
                     {
-                        MS2Ptr<CPartyMember> spMember = FUN_1409670d0()->FUN_14162b360(i);
+                        MS2Ptr<CPartyMember> spMember = TSingleton<CPartyManager>::GetInstance()->FUN_14162b360(i);
                         unsigned __int64 nKey = spMember->FUN_141637bb0();
-                        PCBase* pOther = FUN_141bd1530(FUN_1403ed2d0(), nKey);
+                        PCBase* pOther = FUN_141bd1530(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()), nKey);
                         if (pOther != 0 && pLocal != pOther)
                         {
                             preferred[nKey] = pOther;
@@ -671,7 +670,7 @@ void COptimizer::FUN_14161d130(bool bForce)
                 }
                 if ((preloadMode & 4) != 0)
                 {
-                    FUN_1413bcbc0(FUN_1403ed290(), preferred);
+                    FUN_1413bcbc0(TSingleton<CGuildManager>::GetInstance(), preferred);
                 }
             }
             std::map<unsigned __int64, Entry> selected;
@@ -692,7 +691,7 @@ void COptimizer::FUN_14161d130(bool bForce)
             if ((preloadMode & 8) != 0)
             {
                 std::list<Entry> candidates;
-                Unk_OptObjMap* pMap = FUN_141bd36b0(FUN_1403ed2d0());
+                Unk_OptObjMap* pMap = FUN_141bd36b0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()));
                 for (POSITION pos = FUN_140c20a10(pMap); pos != 0; FUN_140c20a30(pMap, &pos))
                 {
                     TPtr<PC>& spRef = FUN_140c20a80(pMap, pos);
@@ -753,7 +752,7 @@ void COptimizer::FUN_14161d130(bool bForce)
             }
             for (std::map<unsigned __int64, Entry>::iterator it = m_selected.begin(); it != m_selected.end(); ++it)
             {
-                PCBase* pOld = FUN_141bd1530(FUN_1403ed2d0(), it->first);
+                PCBase* pOld = FUN_141bd1530(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()), it->first);
                 if (pOld != 0)
                 {
                     FUN_14161dbe0(pOld, preloadMode);
@@ -771,11 +770,11 @@ void COptimizer::FUN_14161d130(bool bForce)
 // @0x14161db10
 void COptimizer::FUN_14161db10(int nFlags)
 {
-    if (FUN_1403ed2d0() != 0)
+    if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0)
     {
-        if (FUN_141bca2e0(FUN_1403ed2d0()) != 0)
+        if (FUN_141bca2e0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())) != 0)
         {
-            Unk_OptObjMap* pMap = FUN_141bd36b0(FUN_1403ed2d0());
+            Unk_OptObjMap* pMap = FUN_141bd36b0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()));
             for (POSITION pos = FUN_140c20a10(pMap); pos != 0; FUN_140c20a30(pMap, &pos))
             {
                 TPtr<PC> spActor(FUN_140c20a80(pMap, pos));
@@ -835,9 +834,9 @@ void COptimizer::FUN_14161dd30(int nFlags, int nLimit)
     m_nLimit = nLimit;
     preloadMode = nFlags;
     m_fUpdateTime = 0;
-    if (FUN_1403ed2d0() != 0)
+    if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0)
     {
-        if (FUN_141bca2e0(FUN_1403ed2d0()) != 0)
+        if (FUN_141bca2e0(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())) != 0)
         {
             if ((preloadMode & 8) != 0 && nLimit != 0)
             {

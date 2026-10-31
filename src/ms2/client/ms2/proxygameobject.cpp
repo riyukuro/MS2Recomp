@@ -6,6 +6,11 @@
 #include "ms2/placeholder/cproxygameobject.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/questmasktable.h"
+#include "ms2/client/ms2/buddymanager.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/questdatatable.h"
+#include "ms2/client/ms2/mypc.h"
 #include <egf/FlatModel.h>
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
@@ -48,7 +53,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17();
     virtual Vector3 vfunc_18();
 };
-Unk_Tbl1403ed2d0* FUN_1403ed2d0();
 Unk_PosObject* FUN_141bd1180(Unk_Tbl1403ed2d0* tbl, int id);
 
 
@@ -57,17 +61,14 @@ class Unk_Entry140965990 { };
 Unk_Entry140965990* FUN_140965990(const Unk_ProxyHandle28& h);
 unsigned char FUN_140a7c8d0(Unk_Entry140965990* e);
 
-class Unk_Tbl141bd0cc0 { public: CStringW FUN_1415281c0(); };
+class Unk_Tbl141bd0cc0 : public MyPC { };
 Unk_Tbl141bd0cc0* FUN_141bd0cc0(Unk_Tbl1403ed2d0* tbl);
 CStringW* FUN_141656d90(Unk_Tbl141bd0cc0* t);
 
-class Unk_Data1401cc
+class Unk_Data1401cc : public CBuddy
 {
 public:
     unsigned FUN_1401cc3e0();
-    CStringW FUN_1401cc350();
-    int FUN_1401cc3a0();
-    int FUN_1401cc3c0();
 };
 class Unk_Handle97a
 {
@@ -79,7 +80,6 @@ public:
     void* m_pad_08;
 };
 class Unk_Svc97a780 { public: Unk_Handle97a FUN_140ae4880(void* key); };
-Unk_Svc97a780* FUN_14097a780();
 
 class Unk_Ptr1401cd040                                              // CComPtrBase<> local
 {
@@ -105,9 +105,6 @@ CStringW FUN_1409796e0(unsigned a, int b, int c, CStringW s);
 class Unk_Svc6d6e90 { public: Unk_ProxyHandle28 FUN_140a7cab0(int id); };
 Unk_Svc6d6e90* FUN_1406d6e90();
 class Unk_Svc7476c0 { public: unsigned char FUN_14074e030(int id); };
-Unk_Svc7476c0* FUN_1407476c0();
-class Unk_Svc109a710 { public: int FUN_140764cd0(int id); int FUN_140764e00(int id); };
-Unk_Svc109a710* FUN_14109a710();
 class Unk_Svc764020 { };
 Unk_Svc764020* FUN_140764020();
 void FUN_1416d12d0(Unk_Svc764020* s, int id, Unk_ProxyValue88* v, int n);
@@ -251,7 +248,7 @@ MS2_REPLACE_METHOD(0x1416C2220, CProxyGameObject, FUN_1416c2220, 65, 0xD6E756B3)
 // @0x1416c2270
 Vector3 CProxyGameObject::FUN_1416c2270()
 {
-    Unk_PosObject* obj = FUN_141bd1180(FUN_1403ed2d0(), m_proxyId);
+    Unk_PosObject* obj = FUN_141bd1180(reinterpret_cast<Unk_Tbl1403ed2d0*>(WorldService::GetInstance()), m_proxyId);
     if (obj != 0) {
         return obj->vfunc_18();
     } else {
@@ -331,7 +328,7 @@ MS2_REPLACE_METHOD(0x1416C2520, CProxyGameObject, FUN_1416c2520, 66, 0x998DDC8A)
 CStringW CProxyGameObject::FUN_1416c2570()
 {
     if (FUN_1416c1ff0() != 0) {
-        return *FUN_141656d90(FUN_141bd0cc0(FUN_1403ed2d0()));
+        return *FUN_141656d90(FUN_141bd0cc0(reinterpret_cast<Unk_Tbl1403ed2d0*>(WorldService::GetInstance())));
     }
     return m_60;
 }
@@ -341,10 +338,10 @@ MS2_REPLACE_METHOD(0x1416C2570, CProxyGameObject, FUN_1416c2570, 133, 0x325768ED
 CStringW CProxyGameObject::FUN_1416c2600()
 {
     if (FUN_1416c1ff0() != 0) {
-        return FUN_141bd0cc0(FUN_1403ed2d0())->FUN_1415281c0();
+        return FUN_141bd0cc0(reinterpret_cast<Unk_Tbl1403ed2d0*>(WorldService::GetInstance()))->FUN_1415281c0();
     } else {
         {
-            Unk_Handle97a h = FUN_14097a780()->FUN_140ae4880(reinterpret_cast<void*>(m_40));
+            Unk_Handle97a h = reinterpret_cast<Unk_Svc97a780*>(TSingleton<CBuddyManager>::GetInstance())->FUN_140ae4880(reinterpret_cast<void*>(m_40));
             if (h.FUN_14097a170() != 0) {
                 m_b4 = h.FUN_14097a1e0()->FUN_1401cc3e0();
                 m_c0 = h.FUN_14097a1e0()->FUN_1401cc350();
@@ -389,8 +386,8 @@ int CProxyGameObject::FUN_1416c2990(int nTemplateId)
 {
     m_78 = nTemplateId;
     m_28.FUN_140a4fe50(FUN_1406d6e90()->FUN_140a7cab0(m_78));
-    m_dc = FUN_1407476c0()->FUN_14074e030(nTemplateId);
-    m_e0 = FUN_14109a710()->FUN_140764cd0(nTemplateId);
+    m_dc = reinterpret_cast<Unk_Svc7476c0*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074e030(nTemplateId);
+    m_e0 = TSingleton<CQuestMaskTable>::GetInstance()->HasNpcMaskHere(nTemplateId);
     FUN_1416c2a80();
     int r;
     if (m_28.FUN_140a4ff10()) {
@@ -412,7 +409,7 @@ void CProxyGameObject::FUN_1416c2a80()
         FUN_1416d12d0(FUN_140764020(), m_78, &m_88, 0);
     }
     if (m_e0 != 0) {
-        m_e4 = FUN_14109a710()->FUN_140764e00(m_78);
+        m_e4 = TSingleton<CQuestMaskTable>::GetInstance()->CheckNpcHere(m_78);
     } else {
         m_e4 = 1;
     }

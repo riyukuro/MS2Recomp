@@ -239,6 +239,7 @@ template<> bool MS2Ptr<CProxyGameObject>::IsNull() const;
 // Initializers retained in the assigned .text$di range, in original order.
 CStringW DAT_143ae2c58(L"partyinvite");
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/cstringtable.h"
 CString DAT_143ae2ca8("PC_InviteSuccess");
 static CString s_nextSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 // This tail appears to come from an adjacent original object. The callback builds ClassInfo entries.
@@ -267,7 +268,7 @@ void* FUN_1413226d0(int);
 void FUN_140f8edb0(void*);
 void FUN_140f8ee50(void*, CMatchPartyRecruit&);
 unsigned FUN_141472bc0();
-__time64_t FUN_140869440();
+__time64_t GetServerTime();
 extern __int64 DAT_143ab2828;
 MS2Ptr<PartyVoteCli> FUN_140a89240(int);
 CStringW GetStringCommon(int);
@@ -275,7 +276,7 @@ CStringW FUN_14052bd00(int, const CStringW&);
 CStringW FUN_1405c2690(CStringW, const CStringW&);
 CStringW FUN_140298ea0(CStringW);
 CStringW GetStringCommonByKey(const CStringW&);
-CStringW FUN_1409eec40(int);
+CStringW BlockFormat(int);
 void FUN_1412751b0(const CStringW&, int);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_141275260(int, int, int);
@@ -304,15 +305,13 @@ void FUN_140f8ed40(void*, ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit>>&, int);
 void FUN_141631f30(const CMatchPartyRecruit&, const CMatchPartyRecruit&);
 void* FUN_140a3ab70(int);
 void FUN_141a239e0(void*, CStringW);
-void FUN_14086a880(CMsTime&, int);
+void AddMinutes(CMsTime&, int);
 CStringW FUN_140938ae0(CStringW, const unsigned&);
 void* FUN_1409c1730();
 bool FUN_140a25840(void*, __int64, CStringW);
 void* FUN_14097a780();
 int FUN_140ae5240(void*, const CStringW&);
 int FUN_140ae51b0(void*, __int64);
-class Unk_1401a9d70 { public: CStringW FUN_141811980(int, int); };
-Unk_1401a9d70* FUN_1401a9d70();
 void FUN_141276180(const CString&, const CString&);
 class NotifySurvivalState : public NotifyObject {
 public:
@@ -394,7 +393,7 @@ void FUN_141a7bb70(UIPartyDPSDialog*);
 void FUN_140e05f80(UIChaosDPSDialog*);
 UIChaosDPSDialog* FUN_141632700(int);
 UIPartyDPSDialog* FUN_1416327a0(int);
-int FUN_140217850(int);
+int Unk_ClubBuffCategory(int);
 CStringW FUN_140cbf840(int);
 int FUN_1401d9a00(const CStringW&);
 void FUN_141632630(const CStringW&, std::vector<int>&, const wchar_t*);
@@ -803,7 +802,7 @@ void CPartyManager::SendPartyMode23(const Unk_PartyRecruitInvite& request)
     CStringW name(request.ownerName);
     if (name.IsEmpty()) return;
     if (name == static_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bd0d30()) {
-        FUN_1412751b0(FUN_1409eec40(0x32e), 0xe);
+        FUN_1412751b0(BlockFormat(0x32e), 0xe);
         return;
     }
     COutPacket packet(static_cast<int>(SendOp::Party), 0);
@@ -1323,7 +1322,7 @@ void CPartyManager::FUN_14162e820(CInPacket& packet)
     dungeonId = static_cast<CInputStream&>(packet).ReadInt32();
     if (!matchmaking) {
         if (FUN_14162ab20() && previousDungeon != 0 && dungeonId != 0 && previousDungeon != dungeonId) {
-            FUN_1412751f0(FUN_1405c2690(L"s_party_change_help_dungeon", FUN_1401a9d70()->FUN_141811980(0x14, dungeonId)), 1, 1);
+            FUN_1412751f0(FUN_1405c2690(L"s_party_change_help_dungeon", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, dungeonId)), 1, 1);
         }
     }
 }
@@ -1348,7 +1347,7 @@ void CPartyManager::FUN_14162ea90(CInPacket& packet)
     bool announce = static_cast<CInputStream&>(packet).ReadBool();
     FUN_14031bf10(static_cast<CInputStream&>(packet), permissions);
     if (announce) {
-        CStringW name = FUN_140cbf840(FUN_140217850(kind));
+        CStringW name = FUN_140cbf840(Unk_ClubBuffCategory(kind));
         if (registered) {
             if (FUN_14162ab20())
                 FUN_1412751b0(FUN_1405c2690(L"s_party_match_dungeon_register", name), 2);
@@ -1406,7 +1405,7 @@ void CPartyManager::FUN_14162f030(CInPacket& packet)
     case 3: FUN_1412751b0(FUN_14052bd00(0x32a, name), 0x14); break;
     case 5: case 6: case 0xb: FUN_1412751b0(FUN_14052bd00(0x329, name), 0x14); break;
     case 7: FUN_1412751b0(FUN_14052bd00(0x330, name), 0x14); break;
-    case 8: FUN_1412751f0(FUN_1409eec40(0x32a), 1, 1); break;
+    case 8: FUN_1412751f0(BlockFormat(0x32a), 1, 1); break;
     case 9: FUN_1412751b0(FUN_14052bd00(0x32e, name), 0x14); break;
     case 10: FUN_1412751b0(FUN_14052bd00(0x333, name), 0x14); break;
     case 0xc: FUN_1412751b0(GetStringCommon(0x32f), 0x14); break;
@@ -1467,8 +1466,8 @@ void CPartyManager::FUN_1416303b0(CInPacket& packet)
     void* ui = FUN_140a3ab70(0x4e61);
     if (ui != NULL) {
         FUN_141a239e0(ui, name);
-        CMsTime expiry(FUN_140869440());
-        FUN_14086a880(expiry, 1);
+        CMsTime expiry(GetServerTime());
+        AddMinutes(expiry, 1);
         invitations.insert(std::make_pair(name, expiry));
     }
 }
@@ -1533,7 +1532,7 @@ void CPartyManager::FUN_141630a60(CInPacket& packet)
     int dungeon = packet.ReadInt32();
     if (!FUN_14162ab60()) {
         FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &CPartyManager::FUN_141630c70),
-            FUN_1405c2690(L"s_party_create_dungeon", FUN_1401a9d70()->FUN_141811980(0x14, dungeon)));
+            FUN_1405c2690(L"s_party_create_dungeon", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, dungeon)));
         FUN_141276180("Dungeon_Room_Open", "");
     }
 }
@@ -1557,7 +1556,7 @@ void CPartyManager::FUN_141630cb0()
 {
     std::map<CStringW, CMsTime>::iterator it = invitations.begin();
     std::map<CStringW, CMsTime> retained;
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     for (; it != invitations.end(); it++) {
         if (now < it->second) retained.insert(*it);
     }

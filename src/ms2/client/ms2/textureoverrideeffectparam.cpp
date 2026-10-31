@@ -16,6 +16,7 @@
 #include <efd/MemoryDefines.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // Resource manager (singleton 0x140a0afd0): texture load by path.
 class Unk_ResourceMgr
@@ -37,7 +38,6 @@ class Unk_World
 public:
     Unk_TextureLayerMgr* FUN_141bd3650();                      // WorldService::m_spTextureLayerManager
 };
-Unk_World* FUN_1403ed2d0();                                    // WorldService instance
 
 // Depth-first walk over a node's subtree (0x30 bytes; ?\uichaoslightdialog.cpp COMDATs).
 class Unk_NodeWalker
@@ -152,7 +152,7 @@ void TextureOverrideEffect::FUN_14184bbb0(NiAVObjectPtr spNode)
             continue;
         TextureLayer* pLayer = new (efd::MemHint(efd::MemHint::NONE))
             TextureLayer(2, pTexturing, m_spTexture.Get(), NULL);
-        FUN_1403ed2d0()->FUN_141bd3650()->FUN_141443af0(pLayer);
+        reinterpret_cast<Unk_World*>(WorldService::GetInstance())->FUN_141bd3650()->FUN_141443af0(pLayer);
         m_arrLayers.Add(pLayer);
     }
     spNode->UpdateProperties();
@@ -164,7 +164,7 @@ void TextureOverrideEffect::FUN_14184bd70()
 {
     size_t nCount = m_arrLayers.GetCount();
     for (size_t i = 0; i < nCount; i++)
-        FUN_1403ed2d0()->FUN_141bd3650()->FUN_141443da0(m_arrLayers[i]);
+        reinterpret_cast<Unk_World*>(WorldService::GetInstance())->FUN_141bd3650()->FUN_141443da0(m_arrLayers[i]);
     MS2_FOR_EACH(NiAVObjectPtr spNode, m_vecNodes)
         spNode->UpdateProperties();
     m_arrLayers.RemoveAll();

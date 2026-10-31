@@ -28,10 +28,11 @@
 #include "ms2/ms2recover.h"
 #include <map>
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // ---- unit-local views of exe objects ----
 
-class Unk_HsFileSystem { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_HsFileSystem : public CFileSystem { };
 Unk_HsFileSystem* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pElem);                              // element is enabled

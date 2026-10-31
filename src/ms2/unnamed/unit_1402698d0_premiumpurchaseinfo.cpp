@@ -54,7 +54,7 @@ void* FUN_140281af0(Unk_PplList* pList, void** ppPos);          // advance the p
 Unk_PplRef* FUN_140281540(Unk_PplList* pList, void* pos);       // the entry at the position
 void FUN_140284f90(Unk_PplList* pList, void* pos);              // remove the entry at the position
 void FUN_1402805b0(Unk_PplList* pList, Unk_PplRef* pRef);       // append
-__int64 FUN_140869440();                                        // server time
+__int64 GetServerTime();                                        // server time
 
 class CPremiumProductLimitInfo : public CPtred
 {
@@ -90,7 +90,7 @@ CPremiumProductLimitInfo::~CPremiumProductLimitInfo()
 // @0x1402699d0
 void CPremiumProductLimitInfo::FUN_1402699d0()
 {
-    __int64 tNow = FUN_140869440();
+    __int64 tNow = GetServerTime();
     Unk_140163940 guard(m_lock);
     if (guard != 0)
     {

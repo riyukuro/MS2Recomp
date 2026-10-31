@@ -71,6 +71,8 @@
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/mstime.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/commonstringtable.h"
 
 int FUN_14028c3e0(const CString& strText, CAtlArray<CString>& arrOut, const char* pszDelim, int nMax);
 
@@ -96,17 +98,11 @@ CString FUN_140188f50(const char* psz, int n);                  // CString from 
 CString FUN_14016a5c0(const char* psz, int n);
 long FUN_140298fd0(long* plValue);                              // interlocked increment
 float FUN_140768090();                                          // random float in [0, 1]
-__int64 FUN_140869440();                                        // current server time
+__int64 GetServerTime();                                        // current server time
 CString FUN_140298360(const char* pszPrefix, const CString& str);
 
-class Unk_StringMgr                                             // localized string table
+class Unk_StringMgr : public CommonString                                             // localized string table
 {
-public:
-    CString FUN_140229600(int nId);                             // narrow text of a string id
-    CString FUN_140229690(const CString& strKey);               // narrow text of a key
-    CStringW FUN_140229760(int nId);                            // wide text of a string id
-    CStringW FUN_140229820(const CStringW& strKey);
-    CStringW FUN_140229940(const CString& strKey);              // wide text of a "$..." key
 };
 
 // Date printed with a strftime format (the format text lives at +8).
@@ -158,7 +154,6 @@ struct Unk_XmlElement;                                          // XML element n
 CStringW FUN_1401bf530(Unk_XmlElement* pElem, const char* pszName, CStringW strDefault);
 CString FUN_14015f710(Unk_XmlElement* pElem, const char* pszName, CString strDefault);
 bool FUN_14036d4b0(void* pFeatures, const CStringW& strFeature);   // feature enabled
-struct Unk_CuFeatureView { CString FUN_14036d8e0(); };              // CFeatureManager: current locale name (member: this=rcx, hidden return=rdx)
 bool FUN_1401647e0(const CString& strLeft, const CString& strRight);
 Unk_XmlElement* FUN_140165cf0(Unk_XmlElement* pParent, const char* pszName);       // first child
 Unk_XmlElement* FUN_140168650(Unk_XmlElement* pElem, const char* pszName);         // next sibling
@@ -214,7 +209,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey)
 {
     if (FUN_14025e7d0() == 0)
         return L"";
-    return FUN_14025e7d0()->FUN_140229820(strKey);
+    return FUN_14025e7d0()->GetWideByKey(strKey);
 }
 
 // First IPv4 address of this host as a big-endian-packed value (a.b.c.d -> 0xaabbccdd).
@@ -581,7 +576,7 @@ __int64 FUN_14028d0e0()
 {
     __int64 nId = 0;
     int nSeq = FUN_140298fd0(&g_lUniqueSeq);
-    __int64 nTime = FUN_140869440();
+    __int64 nTime = GetServerTime();
     nTime = nTime - 1000000000;
     CString strId;
     strId.Format("%09I64d%05d", nTime, nSeq % 100000);
@@ -792,7 +787,7 @@ unsigned char FUN_14028da10()
 
 // Current server time plus the format used to print it.
 // @0x14028da50
-Unk_TimeFormat::Unk_TimeFormat() : m_time(FUN_140869440())
+Unk_TimeFormat::Unk_TimeFormat() : m_time(GetServerTime())
 {
     m_strFormat = L"%A, %B %d, %Y, %H:%M";
 }
@@ -835,13 +830,13 @@ void* FUN_14028dc60(void* p)
 // @0x14028dc80
 CString FUN_14028dc80(int nId)
 {
-    return FUN_14025e7d0()->FUN_140229600(nId);
+    return FUN_14025e7d0()->GetNarrow(nId);
 }
 
 // @0x14028dcd0
 CString FUN_14028dcd0(const CString& strKey)
 {
-    return FUN_14025e7d0()->FUN_140229690(strKey);
+    return FUN_14025e7d0()->GetNarrowByKey(strKey);
 }
 
 // @0x14028dd20
@@ -861,7 +856,7 @@ CStringW GetStringCommon(int nId)
 {
     if (FUN_14025e7d0() == 0)
         return L"";
-    return FUN_14025e7d0()->FUN_140229760(nId);
+    return FUN_14025e7d0()->GetWide(nId);
 }
 
 // @0x14028dee0
@@ -1046,7 +1041,7 @@ bool FUN_14028f650(Unk_XmlElement* pElem)
 bool FUN_14028f710(Unk_XmlElement* pElem)
 {
     CString strLocale = FUN_14015f710(pElem, "locale", CString(""));
-    bool bMatch = !strLocale.IsEmpty() && strLocale != static_cast<Unk_CuFeatureView*>(FUN_140166410())->FUN_14036d8e0();
+    bool bMatch = !strLocale.IsEmpty() && strLocale != static_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d8e0();
     if (bMatch)
         return false;
     CStringW strFeature = FUN_1401bf530(pElem, "feature", CStringW(L""));
@@ -1069,7 +1064,7 @@ Unk_XmlElementList* FUN_14028f8d0(Unk_XmlElement* pParent)
         CString strLocale;
         FUN_140873420(pElem, "feature", strFeature);
         FUN_1408733e0(pElem, "locale", strLocale);
-        bool bLocale = !strLocale.IsEmpty() && strLocale != static_cast<Unk_CuFeatureView*>(FUN_140166410())->FUN_14036d8e0();
+        bool bLocale = !strLocale.IsEmpty() && strLocale != static_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d8e0();
         if (bLocale)
             continue;
         if (!FUN_14036d4b0(FUN_140166410(), strFeature))
@@ -1146,7 +1141,7 @@ CStringW FUN_14028ee20(unsigned int nFlags, CStringW strText)
 {
     if (nFlags & 8)
     {
-        __time64_t tNow = FUN_140869440();
+        __time64_t tNow = GetServerTime();
         tm* pTm = FUN_14028b820(&tNow);
         if (pTm)
             return FormatStringId(0xa9, pTm->tm_hour, pTm->tm_min, strText);
@@ -1399,7 +1394,7 @@ bool FUN_140291340(int nTab, std::string& strOut)
 }
 
 bool FUN_140292820(const std::string& strLeft, const char* pszRight);   // string equals
-__int64 FUN_14086b190(int nKind, __int64 nTime);
+__int64 NextWeekdayStart(int nKind, __int64 nTime);
 const std::string& FUN_14018ef70(const std::string& str);
 void* FUN_1401d3200();                                                  // game config singleton
 void FUN_1402b7560(void* pEntry, const char* pszMessage);
@@ -1500,7 +1495,7 @@ __int64 FUN_1402916a0(__int64 nTime, int nMode)
     }
     else if (nMode == 2)
     {
-        CMsTime timeOther(FUN_14086b190(6, nTime));
+        CMsTime timeOther(NextWeekdayStart(6, nTime));
         nResult = timeOther.Get();
     }
     else if (nMode == 3)

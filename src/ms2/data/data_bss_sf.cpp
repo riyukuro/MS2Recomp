@@ -12,15 +12,14 @@
 
 #ifndef MS2_HOOK_DLL
 
-alignas(16) unsigned char DAT_143b15780[0x20];                  // 0x143b15780: an AS3 Value (destroyed by the exe exit dtor, sfr_atexit_01)
+namespace Scaleform { namespace Render { class TreeCacheNode; } }
+extern "C" { alignas(16) unsigned char DAT_143b15780[0x20]; }                  // 0x143b15780: an AS3 Value (destroyed by the exe exit dtor, sfr_atexit_01)
 unsigned int BundlePatternFrameId = 0x0u;                       // 0x143b17214
 unsigned int BuildPatternCount = 0x0u;                          // 0x143b17218
-alignas(16) unsigned char DAT_143b17220[0x8];                   // 0x143b17220
+alignas(16) class Scaleform::Render::TreeCacheNode const volatile *TCN_This;                   // 0x143b17220
 alignas(8) unsigned char DAT_143b17228[0x8];                    // 0x143b17228
 alignas(16) unsigned char DAT_143b17230[0x78];                  // 0x143b17230
 
-#pragma comment(linker, "/alternatename:DAT_143b15780=?DAT_143b15780@@3PAEA")
-#pragma comment(linker, "/alternatename:?TCN_This@@3PEDVTreeCacheNode@Render@Scaleform@@ED=?DAT_143b17220@@3PAEA")
 #pragma comment(linker, "/alternatename:?TCN_ThisData@@3PEDVNodeData@TreeNode@Render@Scaleform@@ED=?DAT_143b17228@@3PAEA")
 #pragma comment(linker, "/alternatename:?TCN_ChildNode@@3PEDVTreeNode@Render@Scaleform@@ED=?DAT_143b17230@@3PAEA")
 

@@ -190,7 +190,6 @@ class CGlobalKeyTextCallback : public NiActorManager::CallbackObject
 {
 public:
     CGlobalKeyTextCallback();
-    virtual ~CGlobalKeyTextCallback();
 
     virtual void AnimActivated(NiActorManager* pkManager, NiActorManager::SequenceID eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);                 // 0x140997f20

@@ -14,6 +14,12 @@
 #include "ms2/client/ms2/uidebugtooltip.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/commonfiles/portaltable.h"
 #include <efd/AssetID.h>
 #include <efd/utf8string.h>
 #include <NiNode.h>
@@ -47,17 +53,9 @@ void FUN_140764310(const CString& strA, const CString& strB, QuestMask* pOut);
 const char* FUN_14099ad40(efd::AssetID* pAsset);         // the AssetID's URN text
 
 // The content switch table.
-class Unk_PortalSwitches
-{
-public:
-    bool FUN_14036d4b0(const CStringW& strFeature);
-    bool FUN_14036d750(const CStringW& strLocale);
-};
-Unk_PortalSwitches* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 // The command string table (singleton).
-class Unk_PortalStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_PortalStrings* FUN_1401a9d70();
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string by key
 CStringW GetStringCommon(int nId);                                    // string by id
 CStringW FUN_1408f71a0(CStringW strFormat, const CStringW& strArg1, const CStringW& strArg2);   // format with two arguments
@@ -66,16 +64,13 @@ float FUN_14028d280(unsigned uMilliseconds);                        // ms -> sec
 
 // The clock and tick count.
 struct Unk_PortalClockOwner;
-Unk_PortalClockOwner* FUN_14086d260();
 unsigned FUN_141473390(Unk_PortalClockOwner* pOwner);               // the server time in seconds
 unsigned FUN_141472bc0();                                           // tick count
 
 // The field world and the portal table.
 class Unk_PortalWorld { };
-Unk_PortalWorld* FUN_1403ed2d0();
 unsigned FUN_141bd3060(Unk_PortalWorld* pWorld);                    // the current map id
 class Unk_PortalTableHolder { public: CStringW FUN_140730b80(unsigned nMapId, int nPortalId); };   // CPortalTable::GetName
-Unk_PortalTableHolder* FUN_1414a5760();
 
 // The dungeon room table and a room row.
 class Unk_PortalRoom : public CPtred
@@ -94,7 +89,6 @@ public:
     MS2Ptr<Unk_PortalRoom> FUN_140320950(int nRoomId);
     MS2Ptr<Unk_PortalRoom> FUN_1403206b0(int nRoomId);
 };
-Unk_PortalRoomTable* FUN_14031c2a0();
 
 // The scene: the node of the entity, a fade call and the texture loader.
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // scene root of an entity
@@ -284,7 +278,7 @@ void CPortal::FUN_14169bd40()
     if ((m_nType == 6 || m_nType == 3 || m_nType == 10 || m_nType == 0x10) && m_nEndTime > 0 && m_tooltip.get() != 0)
     {
         CStringW strText;
-        unsigned nNow = FUN_141473390(FUN_14086d260());
+        unsigned nNow = FUN_141473390(reinterpret_cast<Unk_PortalClockOwner*>(TSingleton<CMainSystem>::GetInstance()));
         if (nNow >= m_nEndTime)
         {
             strText = L"00:00";
@@ -313,7 +307,7 @@ void CPortal::FUN_14169bd40()
         {
             if (m_strTip.GetLength() > 0)
                 strText += FUN_1408f71a0(CStringW(L"s_msg_item_open_massive_portal_tooltip"), m_strTip,
-                                         FUN_1401a9d70()->FUN_141811980(3, m_unk_148));
+                                         TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_unk_148));
             m_tooltip->FUN_14191ab10(strText);
         }
     }
@@ -407,9 +401,9 @@ CString CPortal::FUN_14169c5f0()
         const unsigned nFieldLimit = 100000;
         MS2Ptr<Unk_PortalRoom> spRoom;
         if (m_nId < nFieldLimit)
-            spRoom = FUN_14031c2a0()->FUN_140320950(m_nId);
+            spRoom = reinterpret_cast<Unk_PortalRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_140320950(m_nId);
         else
-            spRoom = FUN_14031c2a0()->FUN_1403206b0(m_nId);
+            spRoom = reinterpret_cast<Unk_PortalRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(m_nId);
         if (spRoom.get() != 0)
         {
             if (spRoom->m_bSpecial != 0)
@@ -427,12 +421,12 @@ CString CPortal::FUN_14169c5f0()
 CStringW CPortal::FUN_14169cae0()
 {
     if (m_nType == 0x11)
-        return FUN_1401a9d70()->FUN_141811980(0x14, m_nId);
+        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, m_nId);
     unsigned nName = FUN_14169d280();
     if (nName > 0)
-        return FUN_1401a9d70()->FUN_141811980(3, nName);
-    unsigned nMapId = FUN_141bd3060(FUN_1403ed2d0());
-    CStringW strName = FUN_1414a5760()->FUN_140730b80(nMapId, m_nId);
+        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nName);
+    unsigned nMapId = FUN_141bd3060(reinterpret_cast<Unk_PortalWorld*>(WorldService::GetInstance()));
+    CStringW strName = reinterpret_cast<Unk_PortalTableHolder*>(TSingleton<CPortalTable>::GetInstance())->FUN_140730b80(nMapId, m_nId);
     if (!strName.IsEmpty())
         return strName;
     return CStringW(L"");
@@ -520,7 +514,7 @@ void CPortal::FUN_14169d0e0()
         int nState = FUN_14169cc40();
         FUN_14169cd50(nState, nState);
     }
-    if (FUN_141bd3060(FUN_1403ed2d0()) == 0x1e8673 && m_nId == 2)
+    if (FUN_141bd3060(reinterpret_cast<Unk_PortalWorld*>(WorldService::GetInstance())) == 0x1e8673 && m_nId == 2)
         FUN_14169cd50(1, 1);
 }
 

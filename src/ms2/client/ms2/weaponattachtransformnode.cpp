@@ -10,8 +10,6 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "hook/ms2hook.h"
 
-CMainSystem* FUN_14086d260();                               // TSingleton<CMainSystem>::GetInstance (out of line in the exe)
-
 // @0x141b76a90
 NiObject* WeaponAttachTransformNode::CreateClone(NiCloningProcess& kCloning)
 {
@@ -87,7 +85,7 @@ void WeaponAttachTransformNode::UpdateWorldData()
     }
     if (m_bUseMovement)
     {
-        double dTime = FUN_14086d260()->GetDeltaTime();
+        double dTime = TSingleton<CMainSystem>::GetInstance()->GetDeltaTime();
         m_kWorld = m_spMovement->FUN_141625430(dTime, m_kWorld);
     }
     if (m_spCollisionObject)

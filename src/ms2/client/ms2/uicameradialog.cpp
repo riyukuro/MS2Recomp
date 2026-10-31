@@ -16,6 +16,7 @@
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <NiCamera.h>
 #include <errno.h>
 #include <string.h>
@@ -50,9 +51,6 @@ public:
     virtual void vfunc_24(bool b);
     void FUN_1422e0a60(const CString& strText);                 // set the text
 };
-long long FUN_140bc0500(Unk_CdInputRef* p);                         // not null
-Unk_CdInput* FUN_140bc0550(Unk_CdInputRef* p);                  // operator->
-void FUN_140bbfdd0(Unk_CdInputRef* p);                          // release
 
 MS2Ptr<AScript> FUN_1409e7dc0(int nMovieId, const Scaleform::GFx::Value& v);
 bool FUN_140a467d0(const MS2Ptr<AScript>*);                     // has the AS object been released
@@ -68,8 +66,7 @@ void FUN_140b6bd30(Unk_CameraManager* pCam);
 float FUN_140bf4fd0(float f);                                   // ceilf
 NiCamera* FUN_1413f9950();                                      // the scene camera
 
-struct Unk_CdContext { float FUN_141bcfc50(); };                // default zoom
-Unk_CdContext* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 // The manager's accessors defined in this unit (the first two are also declared, with void*, by unit_141274d10).
 int FUN_141032bb0(ASObj* pObj);
@@ -187,18 +184,16 @@ void UICameraDialog::FUN_141032560(const CString& strName, float f)
 }
 
 // @0x141032610
-// MS2-FUNCTIONAL: the exe keeps the shared MS2Ptr<input> handle as a real object (nops around the EH states), as in uiugccubenoticedialog.cpp
 void UICameraDialog::FUN_141032610(const CString& strName, float f)
 {
-    Unk_CdInputRef spInput = FUN_140e35bd0(strName);
-    if (FUN_140bc0500(&spInput) != 0) {
+    MS2Ptr<Unk_CdInput> spInput = FUN_140e35bd0(strName);
+    if (spInput) {
         CString str;
         str.Format("%.1f", (double)f);
-        FUN_140bc0550(&spInput)->FUN_1422e0a60(str);
-        Unk_CdInput* pInput = FUN_140bc0550(&spInput);
+        spInput->FUN_1422e0a60(str);
+        Unk_CdInput* pInput = spInput.operator->();
         pInput->vfunc_24(true);
     }
-    FUN_140bbfdd0(&spInput);
 }
 
 // @0x1410326e0

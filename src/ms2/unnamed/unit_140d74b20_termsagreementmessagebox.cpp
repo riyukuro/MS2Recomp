@@ -12,6 +12,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 // ---- unit-local placeholders (the same views as in unit_140d73aa0) ----
 
@@ -64,8 +65,7 @@ public:
     Unk_BitRef FUN_140d75090(unsigned nPos);
 };
 
-class Unk_UgcTextFilter { public: void FUN_1416fb300(CStringW& str); };
-Unk_UgcTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 CStringW GetStringCommon(int nId);
 CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* sep);

@@ -13,6 +13,12 @@
 #include "messengerdata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uimessenger.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/jobtable.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/buddymanager.h"
 
 // ---- out-of-unit callees (names describe uses) ----
 
@@ -28,16 +34,9 @@ public:
 };
 
 // The client feature switches: 0x56 = club chat, 0x93 = dungeon help.
-class Unk_MdFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_MdFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 // The chat window's name service (+0x48 of the state).
-class Unk_MdChat
-{
-public:
-    int FUN_141a23d70(const CStringW& strName);                             // is a valid chat name
-    CStringW FUN_141a258a0();                                               // the default chat name
-};
 
 // The state behind the messenger: the current chat name and the names tried in turn.
 struct Unk_MdNames
@@ -59,7 +58,7 @@ struct Unk_MdState
     Unk_MdNames m_names;                                                    // +0x00
     int m_n38;                                                              // +0x38
     void* m_p40;                                                            // +0x40
-    Unk_MdChat* m_pChat;                                                    // +0x48
+    UIMessengerBrowser* m_pChat;                                            // +0x48
     void* m_p50;                                                            // +0x50
 };
 MS2_CHECK_SIZE(Unk_MdState, 0x58);
@@ -157,12 +156,11 @@ public:
     int FUN_141654730();                                                    // the class (job) id
 };
 class Unk_MdPlayers { public: Unk_MdPlayer* FUN_141bd1530(__int64 nId); };
-Unk_MdPlayers* FUN_1403ed2d0();
 
 // Source records of the chat entries (partial layouts: only what the entry builders read).
 class Unk_MdName { public: CString FUN_1408f1a60(); CStringW FUN_1408f19e0(); };   // a name box
-class Unk_MdSrcA { public: int FUN_1401cc680(); __int64 FUN_1401cc230(); const CString& FUN_1401cc530(); CStringW FUN_1401cc1c0();
-                   int FUN_1401cc210(); int FUN_1401cc290(); };
+class Unk_MdSrcA : public CBuddy { public: const CString& FUN_1401cc530();
+                   int FUN_1401cc210();};
 class Unk_MdSrcB
 {
 public:
@@ -201,10 +199,8 @@ public:
     unsigned char m_pad_50[8];
     int m_nJob;                                                             // +0x58
 };
-class Unk_MdItemTexts { public: CStringW FUN_141811980(int n, int nId); };  // text by kind and id
-Unk_MdItemTexts* FUN_1401a9d70();
+  // text by kind and id
 class Unk_MdClassTable { public: };
-Unk_MdClassTable* FUN_1401d7a50();
 int FUN_140644bb0(Unk_MdClassTable* p, int nClass);                         // class id -> text id
 CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CString strUrl);   // the local file of an image
 struct Unk_MdTime { unsigned short m_nTime; unsigned short m_pad; };
@@ -904,7 +900,7 @@ Unk_MdEntry::Unk_MdEntry()
 // @0x141483040
 Unk_MdEntry::Unk_MdEntry(__int64 nId)
 {
-    Unk_MdPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(nId);
+    Unk_MdPlayer* pPlayer = reinterpret_cast<Unk_MdPlayers*>(WorldService::GetInstance())->FUN_141bd1530(nId);
     if (pPlayer == 0)
         return;
     m_nKind = 1;
@@ -912,7 +908,7 @@ Unk_MdEntry::Unk_MdEntry(__int64 nId)
     m_strImage = (const char*)FUN_141028be0(pPlayer->FUN_141656a80(), pPlayer->FUN_1416612e0(), 1, "");
     m_strName = pPlayer->vfunc_77();
     unsigned short nLevel = pPlayer->vfunc_78();
-    m_strInfo = FUN_140c348b0(0x20, &nLevel, FUN_1401a9d70()->FUN_141811980(6, pPlayer->FUN_141654730()));
+    m_strInfo = FUN_140c348b0(0x20, &nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pPlayer->FUN_141654730()));
 }
 
 // @0x141483300
@@ -923,7 +919,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcA& src)
     m_strImage = (const char*)FUN_141028be0(m_nId, src.FUN_1401cc530(), 1, "");
     m_strName = src.FUN_1401cc1c0();
     int nTime = src.FUN_1401cc210();
-    m_strInfo = FUN_140a228f0(0x20, &nTime, FUN_1401a9d70()->FUN_141811980(6, FUN_140644bb0(FUN_1401d7a50(), src.FUN_1401cc290())));
+    m_strInfo = FUN_140a228f0(0x20, &nTime, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, FUN_140644bb0(reinterpret_cast<Unk_MdClassTable*>(TSingleton<JobTable>::GetInstance()), src.FUN_1401cc290())));
 }
 
 // @0x141483580
@@ -933,7 +929,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcB& src)
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, src.m_name.FUN_1408f1a60(), 1, "");
     m_strName = src.m_name.FUN_1408f19e0();
-    m_strInfo = FUN_140c348b0(0x20, src.m_time, FUN_1401a9d70()->FUN_141811980(6, src.m_nJob));
+    m_strInfo = FUN_140c348b0(0x20, src.m_time, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
 }
 
 // @0x141483830
@@ -943,7 +939,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcC& src)
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, src.m_name.FUN_1404ca980(), 1, "");
     m_strName = src.m_name.FUN_1404ca890();
-    m_strInfo = FUN_140c348b0(0x20, src.m_time, FUN_1401a9d70()->FUN_141811980(6, FUN_140644bb0(FUN_1401d7a50(), src.m_nClass)));
+    m_strInfo = FUN_140c348b0(0x20, src.m_time, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, FUN_140644bb0(reinterpret_cast<Unk_MdClassTable*>(TSingleton<JobTable>::GetInstance()), src.m_nClass)));
 }
 
 // @0x141483af0
@@ -953,7 +949,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcD& src)
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, src.m_name.FUN_1408f1a60(), 1, "");
     m_strName = src.m_name.FUN_1408f19e0();
-    m_strInfo = FUN_140c348b0(0x20, src.m_time, FUN_1401a9d70()->FUN_141811980(6, src.m_nJob));
+    m_strInfo = FUN_140c348b0(0x20, src.m_time, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
 }
 
 // @0x141483d80

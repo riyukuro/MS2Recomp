@@ -210,6 +210,10 @@ static CString s_143ab3008("button_click");                                     
 static CString s_143ab2ed8("button_click");                                                     // @0x1400bed40
 static CString s_143ab3490[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};   // @0x1400bed70
 #include "ms2/placeholder/header_statics_a.h"                                                   // @0x1400bee40..0x1400bef60
+#include "ms2/client/ms2/ugcmapitem.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/commonfiles/dungeonroom.h"
 
 // ---- more unit-local stand-ins ----------------------------------------------------------------------------------------
 
@@ -217,9 +221,7 @@ typedef std::vector<std::pair<int, __int64> > Unk_PayList;           // (currenc
 
 class Unk_SkillRow : public CPtred { public: unsigned char FUN_1407e9de0(); };
 class Unk_SkillTable { public: MS2Ptr<Unk_SkillRow> FUN_1407ee1d0(int nSkillId); };
-Unk_SkillTable* FUN_1401958b0();
-class Unk_Options { public: bool FUN_14036d570(int nId); };
-Unk_Options* FUN_140166410();
+CFeatureManager* FUN_140166410();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 bool FUN_14053e460(CItemData* pData);
 int FUN_140526100(CItem* pItem);
@@ -227,7 +229,6 @@ void FUN_141275260(int nStringId, int nA, int nB);
 
 class Unk_MapRec : public CPtred { public: char m_pad_18[4]; int m_nKind; };
 class Unk_MapTable { public: MS2Ptr<Unk_MapRec> FUN_1403206b0(int nMapId); };
-Unk_MapTable* FUN_14031c2a0();
 
 class Unk_PartyRef : public CPtred { };
 class Unk_PartyHolder { public: MS2Ptr<Unk_PartyRef> FUN_141768380(); };
@@ -236,10 +237,10 @@ class Unk_FieldRef : public CPtred { };
 unsigned FUN_14166ce30(Unk_MyPc* pPc);
 int FUN_141654700(Unk_MyPc* pPc);
 unsigned FUN_1403bb210(int nKind, int nMode);
-int FUN_14086ace0(__int64 nTime);
+int IsNotRecentDayChange(__int64 nTime);
 bool FUN_14086ab70(CMsTime tmOld, CMsTime tmNew, int nBaseHour);
 bool FUN_1406c5200();
-__int64 FUN_140869440();
+__int64 GetServerTime();
 
 class Unk_NoticeSub { public: virtual void vfunc_0(); virtual unsigned char vfunc_1(); };
 class Unk_NoticeSubRef;
@@ -253,7 +254,6 @@ public:
     MS2Ptr<Unk_NoticeTarget> FUN_14041f850(Unk_Notice* pNotice);
 };
 
-class Unk_Misc2e50 { public: void FUN_140dfc4f0(); };
 class Unk_Misc32d8 { public: void FUN_140581e40(); };
 // Same layout as the unit-local state of uiadventureleveldialog.cpp (the map global 0x143ab3318 is shared).
 class Unk_ALMissionState
@@ -288,14 +288,14 @@ extern Unk_NoticeList DAT_143ab2fc0;
 extern Unk_NoticeList DAT_143ab3010;
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
-extern Unk_Misc2e50 DAT_143ab2e50;
+#include "ms2/client/ms2/uiservice.h"
+extern Unk_CubeStock DAT_143ab2e50;
 extern Unk_Misc32d8 DAT_143ab32d8;
 extern std::map<unsigned int, Unk_ALMissionState> g_unkMissionStates;       // 0x143ab3318
 extern Unk_IdList DAT_143ab3268;
 extern ATL::CAtlArray<unsigned> DAT_143ab32b8;
 
 class Unk_UiManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };
-Unk_UiManager* FUN_1403ed2b0();
 
 void FUN_141276180(const CString& strSound, const CString& strArg);
 
@@ -380,7 +380,7 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
     }
     if (nSkillId != 0)
     {
-        MS2Ptr<Unk_SkillRow> spRow = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
+        MS2Ptr<Unk_SkillRow> spRow = reinterpret_cast<Unk_SkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
         if (spRow.IsNull())
             return 0;
         if (spRow->FUN_1407e9de0())
@@ -437,7 +437,7 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
     }
     if (nSkillId != 0)
     {
-        MS2Ptr<Unk_SkillRow> spRow = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
+        MS2Ptr<Unk_SkillRow> spRow = reinterpret_cast<Unk_SkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
         if (spRow.IsNull())
             return 0;
         if (spRow->FUN_1407e9de0())
@@ -548,7 +548,7 @@ void FUN_140930150(int nValue)
 // @0x140930190
 int FUN_140930190()
 {
-    if (FUN_14086ace0(DAT_143ab2920))
+    if (IsNotRecentDayChange(DAT_143ab2920))
         return 0;
     return 1;
 }
@@ -556,7 +556,7 @@ int FUN_140930190()
 // @0x1409301c0
 bool FUN_1409301c0()
 {
-    if (FUN_14086ace0(DAT_143ab2928))
+    if (IsNotRecentDayChange(DAT_143ab2928))
         return false;
     return true;
 }
@@ -818,7 +818,7 @@ void FUN_140930ba0(int nMapId)
 {
     DAT_143ab2884 = nMapId;
     DAT_143ab2888 = 0;
-    MS2Ptr<Unk_MapRec> spMap = FUN_14031c2a0()->FUN_1403206b0(DAT_143ab2884);
+    MS2Ptr<Unk_MapRec> spMap = reinterpret_cast<Unk_MapTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(DAT_143ab2884);
     if (spMap.get() != 0)
         DAT_143ab2888 = spMap->m_nKind;
 }
@@ -911,8 +911,8 @@ void FUN_140930f20()
     if (!FUN_1406c5200())
         return;
     if (DAT_143ab2988 == 0)
-        DAT_143ab2988 = FUN_140869440();
-    __int64 nNow = FUN_140869440();
+        DAT_143ab2988 = GetServerTime();
+    __int64 nNow = GetServerTime();
     if (DAT_143ab2988 == nNow)
         return;
     if (FUN_14086ab70(CMsTime(DAT_143ab2988), CMsTime(nNow), 0))
@@ -1060,9 +1060,9 @@ int FUN_140931890(ATL::CAtlArray<unsigned>* pArray, unsigned short* pValue)
 // @0x140931900
 UIMainPlayerInfo* FUN_140931900(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_UiManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spUi = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUi = reinterpret_cast<Unk_UiManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (spUi.get() != 0)
             return dynamic_cast<UIMainPlayerInfo*>((UIObject*)spUi);
     }

@@ -68,6 +68,23 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/unnamed/unit_140ad1860.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/client/ms2/partymanager.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/placeholder/cwebbrowserservice.h"
+#include "ms2/commonfiles/gamerule.h"
+#include "ms2/client/ms2/cubemapinformationservice_3.h"
+#include "ms2/placeholder/applyeffect.h"
+#include "ms2/client/ms2/postprocessing/postprocessingservice.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cgameoption.h"
+#include "ms2/commonfiles/maidgradejockpottable.h"
+#include "ms2/placeholder/cmanufacturemanager.h"
+#include "ms2/placeholder/cusermaidmanager.h"
 #include <atlcoll.h>
 
 class PCBase;
@@ -136,15 +153,7 @@ public:
     CString FUN_1422c4d20();                                                    // the text
 };
 
-class Unk_HudFeatures
-{
-public:
-    bool FUN_14036d570(int nFeature);
-    bool FUN_14036e4c0();
-    bool FUN_14036e510();
-    bool FUN_14036e5b0();
-};
-Unk_HudFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 class Unk_HudUIRef
 {
@@ -165,23 +174,10 @@ public:
     float FUN_141adbe70();                                                      // the ui scale
     Unk_HudUIRef FUN_141adcea0(int nUiId);
 };
-Unk_HudUIMgr* FUN_1403ed2b0();
 UIObject* FUN_1403ed9e0(Unk_HudUIRef&);
 
-class Unk_HudStatusMgr
-{
-public:
-    void FUN_141b0cd00(UIStatusEventListener* pListener);                       // register
-    void FUN_141b0cd90(UIStatusEventListener* pListener);                       // unregister
-};
-Unk_HudStatusMgr* FUN_140aa6d40();
-class Unk_HudNotices
-{
-public:
-    void FUN_140da4e40(CStringW strName, Delegate<void(NotifyObject*)> handler);
-    void FUN_140da4eb0(CStringW strName, Delegate<void(NotifyObject*)> handler);
-};
-Unk_HudNotices* FUN_140939a10();
+UIStatusEventDispatcher* FUN_140aa6d40();
+NotifySystem* FUN_140939a10();
 class Unk_HudPackets
 {
 public:
@@ -197,15 +193,11 @@ class Unk_HudNotifyMoney : public NotifyObject { public: char m_pad_18[0x10]; __
 // The local player and the game event manager.
 class Unk_HudEnvPtr;
 class Unk_HudPlayerMgr { public: PCBase* FUN_141bd0cc0(); Unk_HudEnvPtr FUN_141bd30a0(); };
-Unk_HudPlayerMgr* FUN_1403ed2d0();
 int FUN_141658f30(PCBase* pPc);                                                 // pc level
-class Unk_HudEventMgr
+class Unk_HudEventMgr : public CGameRule
 {
 public:
     void FUN_140477590(ATL::CAtlList<MS2Ptr<class Unk_HudHot> >& list);        // the active hot time events
-    int FUN_140477640(int nLevel);                                              // the hot time bonus
-    bool FUN_14047d970(CStringW& strNotice);                                    // the game event notice
-    CStringW FUN_14047db50();                                                   // the web url
 };
 Unk_HudEventMgr* FUN_1401c0d90();
 
@@ -243,10 +235,7 @@ public:
     void FUN_1412dd720(void*& pos);                                             // next
 };
 class Unk_HudMaidOwner;
-Unk_HudMaidOwner* FUN_1409eed60();
 Unk_HudMaidList* FUN_14127eff0(Unk_HudMaidOwner*);
-Unk_HudMaidItems* FUN_1409eed40();
-Unk_HudMaidInfos* FUN_1409eed30();
 void FUN_141276180(const CString& strSound, const CString& strArg);
 
 // Misc.
@@ -260,18 +249,15 @@ public:
 };
 Unk_HudKeys* FUN_14025e7c0();
 Unk_HudKeys* FUN_14025e7a0();
-class Unk_HudClock { public: float FUN_141473230(); };                         // game time in seconds
-Unk_HudClock* FUN_14086d260();
+                         // game time in seconds
+CMainSystem* FUN_14086d260();
 class Unk_HudRenderOpt;
 class Unk_HudSound;
 class Unk_HudConfig { public: unsigned char* FUN_140a58500(); Unk_HudRenderOpt* FUN_1409a8ac0(); Unk_HudSound* FUN_140d13c70(); };
-Unk_HudConfig* FUN_1409a8b10();
 void FUN_14125f670(void* pCfg, bool a1, bool a2);
-class Unk_HudMouse { public: int FUN_140ad21b0(); };                           // controller on
-Unk_HudMouse* FUN_140953f30();
-class Unk_HudParty { public: bool FUN_14162ac40(); };
-Unk_HudParty* FUN_1409670d0();
-__int64 FUN_140869440();                                                        // the server time
+                           // controller on
+CPartyManager* FUN_1409670d0();
+__int64 GetServerTime();                                                        // the server time
 bool FUN_140184310(const CString& str, const char* psz);                        // str == psz
 void FUN_140710590(COutPacket& packet);
 
@@ -330,16 +316,16 @@ UIUpperHudDialog::UIUpperHudDialog()
     FUN_1422dc3b0(1);
     m_2c = 0xb;
     FUN_140bccd50()->FUN_140da5180(0x53, Delegate<void(CInPacket&)>(this, &UIUpperHudDialog::FUN_141357ac0));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357300));
-    FUN_140939a10()->FUN_140da4e40(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357330));
+    FUN_140939a10()->RegisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357300));
+    FUN_140939a10()->RegisterNotify(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357330));
 }
 
 // @0x141353a70
 UIUpperHudDialog::~UIUpperHudDialog()
 {
     FUN_140bccd50()->FUN_140da51e0(0x53, Delegate<void(CInPacket&)>(this, &UIUpperHudDialog::FUN_141357ac0));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357300));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357330));
+    FUN_140939a10()->UnregisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357300));
+    FUN_140939a10()->UnregisterNotify(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357330));
 }
 
 // @0x141353e80
@@ -392,12 +378,12 @@ void UIUpperHudDialog::OnLoadComplete()
         if (FUN_140bc6d10("m_keyboardMode", m_keyboardMode))
         {
             m_keyboardMode->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356e20), 0);
-            m_keyboardMode->vfunc_4(FUN_140953f30()->FUN_140ad21b0() == 0);
+            m_keyboardMode->vfunc_4(TSingleton<CMouseController>::GetInstance()->HasMode() == 0);
         }
         if (FUN_140bc6d10("m_mouseMode", m_mouseMode))
         {
             m_mouseMode->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356e20), 0);
-            m_mouseMode->vfunc_3(FUN_140953f30()->FUN_140ad21b0());
+            m_mouseMode->vfunc_3(TSingleton<CMouseController>::GetInstance()->HasMode());
         }
     }
     if (FUN_140166410()->FUN_14036d570(0xb5) == true)
@@ -406,7 +392,7 @@ void UIUpperHudDialog::OnLoadComplete()
             m_gamePadOn->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356e50), 0);
         if (FUN_140bc6d10("m_gamePadOff", m_gamePadOff))
             m_gamePadOff->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356e90), 0);
-        FUN_1413574a0(*FUN_1409a8b10()->FUN_140a58500());
+        FUN_1413574a0(*reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500());
     }
     if (FUN_140166410()->FUN_14036d570(0xc9) == true)
     {
@@ -436,16 +422,16 @@ void UIUpperHudDialog::OnLoadComplete()
     FUN_141358490();
     m_30->Invoke("arrangePos");
     FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyPcBang", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357180));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_1413571f0));
+    FUN_140939a10()->RegisterNotify(L"NotifyPcBang", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357180));
+    FUN_140939a10()->RegisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_1413571f0));
     FUN_141357d90(1);
 }
 
 class UIPcBangDialog : public UIDialog
 {
 public:
-    int FUN_141324d80();
-    int FUN_141324db0();
+    int GetPcBangGrade();
+    int GetReceivableCount();
 };
 UIWebBrowserBase* FUN_140c43790(int nUiId);
 UIPcBangDialog* FUN_141359de0(int nUiId);
@@ -454,8 +440,8 @@ UIPcBangDialog* FUN_141359de0(int nUiId);
 void UIUpperHudDialog::vfunc_26()
 {
     UIObject::vfunc_26();
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_1413571f0));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyPcBang", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357180));
+    FUN_140939a10()->UnregisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_1413571f0));
+    FUN_140939a10()->UnregisterNotify(L"NotifyPcBang", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357180));
     FUN_140b632f0()->FUN_1422d4840(this, 4);
     FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     m_tokenPocket = 0;
@@ -582,21 +568,21 @@ MS2_REPLACE_METHOD(0x141356B80, UIUpperHudDialog, vfunc_46, 321, 0xF0950323);
 // @0x141356cd0
 void UIUpperHudDialog::FUN_141356cd0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_1403ed2b0()->FUN_141adc750(0x4ece);
+    reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4ece);
 }
 
 // @0x141356d00
 void UIUpperHudDialog::FUN_141356d00(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_1403ed2b0()->FUN_141adc750(0x4ec9);
+    reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4ec9);
 }
 
 // @0x141356d30
 void UIUpperHudDialog::SendPcBangBonus(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4ecf))
+    if (reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ecf))
     {
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4ecf);
+        reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4ecf);
     }
     else
     {
@@ -610,31 +596,31 @@ void UIUpperHudDialog::SendPcBangBonus(const Scaleform::GFx::FunctionHandler::Pa
 // @0x141356dc0
 void UIUpperHudDialog::FUN_141356dc0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_1403ed2b0()->FUN_141adc750(0x4ee6);
+    reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4ee6);
 }
 
 // @0x141356df0
 void UIUpperHudDialog::FUN_141356df0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_1403ed2b0()->FUN_141adc750(0x4f0f);
+    reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f0f);
 }
 
 // @0x141356e20
 void UIUpperHudDialog::FUN_141356e20(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_1403ed2b0()->FUN_141adc750(0x4f65);
+    reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f65);
 }
 
 // @0x141356e50
 void UIUpperHudDialog::FUN_141356e50(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_14125f670(FUN_1409a8b10()->FUN_140a58500(), false, false);
+    FUN_14125f670(reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500(), false, false);
 }
 
 // @0x141356e90
 void UIUpperHudDialog::FUN_141356e90(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_14125f670(FUN_1409a8b10()->FUN_140a58500(), true, true);
+    FUN_14125f670(reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500(), true, true);
 }
 
 // @0x141356ed0
@@ -652,7 +638,7 @@ void UIUpperHudDialog::FUN_141356ed0(const Scaleform::GFx::FunctionHandler::Para
 void UIUpperHudDialog::FUN_141356f90(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (FUN_140166410()->FUN_14036d570(0x2f) == true)
-        FUN_1403ed2b0()->FUN_141adc750(0x4f0b);
+        reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f0b);
     else
     {
         m_searchInput->FUN_1422c7630(1);
@@ -796,7 +782,7 @@ void UIUpperHudDialog::FUN_141357af0()
 // @0x141357b30
 void UIUpperHudDialog::FUN_141357b30()
 {
-    CMsTime tm(FUN_140869440());
+    CMsTime tm(GetServerTime());
     int nHour = tm.GetHour();
     int nMinute = tm.GetMinute();
     if (m_nHour != nHour || m_nMinute != nMinute)
@@ -816,7 +802,7 @@ void UIUpperHudDialog::FUN_141357d90(int nQuiet)
     if (m_30 == 0)
         return;
     int nReady = 0;
-    Unk_HudMaidList* pList = FUN_14127eff0(FUN_1409eed60());
+    Unk_HudMaidList* pList = FUN_14127eff0(reinterpret_cast<Unk_HudMaidOwner*>(TSingleton<CUserMaidManager>::GetInstance()));
     for (void* pos = pList->FUN_1412dd700(); pos; pList->FUN_1412dd720(pos))
     {
         MS2Ptr<Unk_HudMaidRec> spMaid = pList->FUN_1412dd780(pos);
@@ -825,12 +811,12 @@ void UIUpperHudDialog::FUN_141357d90(int nQuiet)
         if (spMaid->m_4c <= 0)
             continue;
         MS2Ptr<Unk_HudMaidItem> spItem(0);
-        if (FUN_1409eed40()->FUN_140d51370(spMaid->m_20, spItem))
+        if (reinterpret_cast<Unk_HudMaidItems*>(TSingleton<CManufactureManager>::GetInstance())->FUN_140d51370(spMaid->m_20, spItem))
         {
-            MS2Ptr<Unk_HudMaidInfo> spInfo = FUN_1409eed30()->FUN_1406855c0(spItem->FUN_1409eedf0());
+            MS2Ptr<Unk_HudMaidInfo> spInfo = reinterpret_cast<Unk_HudMaidInfos*>(TSingleton<CMaidRecipeTable>::GetInstance())->FUN_1406855c0(spItem->FUN_1409eedf0());
             if (spInfo)
             {
-                if (spItem->FUN_140694170() <= FUN_140869440())
+                if (spItem->FUN_140694170() <= GetServerTime())
                     ++nReady;
             }
         }
@@ -849,7 +835,7 @@ void UIUpperHudDialog::FUN_141358020(bool bForce)
 {
     if (m_30 == 0)
         return;
-    PCBase* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPc = reinterpret_cast<Unk_HudPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     int nHot = FUN_1401c0d90()->FUN_140477640(FUN_141658f30(pPc));
@@ -877,7 +863,7 @@ void UIUpperHudDialog::FUN_1413581f0()
         return;
     if (m_nNoticeWidth == 0)
         return;
-    float fDelta = FUN_14086d260()->FUN_141473230();
+    float fDelta = FUN_14086d260()->GetLastGameTimeDelta();
     m_fNoticePos -= m_fNoticeSpeed * fDelta;
     int x = (int)m_fNoticePos;
     if (!m_bNoticeOnce)
@@ -902,8 +888,8 @@ void UIUpperHudDialog::FUN_141358360()
     UIPcBangDialog* pDlg = FUN_141359de0(0x4ecf);
     if (pDlg != 0)
     {
-        nState = pDlg->FUN_141324d80();
-        FUN_1413593d0(m_pcBang, pDlg->FUN_141324db0());
+        nState = pDlg->GetPcBangGrade();
+        FUN_1413593d0(m_pcBang, pDlg->GetReceivableCount());
     }
     if (m_30 == 0)
         return;
@@ -984,7 +970,7 @@ void UIUpperHudDialog::FUN_141358b20(Scaleform::GFx::Value* pRetVal)
     FUN_1401c0d90()->FUN_140477590(list);
     if (list.IsEmpty())
         return;
-    PCBase* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPc = reinterpret_cast<Unk_HudPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     CStringW strText;
@@ -1103,9 +1089,9 @@ void UIUpperHudDialog::FUN_141359510(int nState)
 // @0x141359de0
 UIPcBangDialog* FUN_141359de0(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        Unk_HudUIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        Unk_HudUIRef ref = reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (ref.FUN_1403e8a70() != 0)
             return dynamic_cast<UIPcBangDialog*>(FUN_1403ed9e0(ref));
     }
@@ -1178,7 +1164,7 @@ int UIVideoContents::vfunc_52(const CString& strPath, float fVolume)
     {
         if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer"))
         {
-            Unk_HudSound* pSound = FUN_1409a8b10()->FUN_140d13c70();
+            Unk_HudSound* pSound = reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70();
             if (pSound != 0)
             {
                 float fSound;
@@ -1251,7 +1237,7 @@ void UIVideoContents::FUN_14135afa0(int bMute)
     if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer"))
     {
         float fSound = 1.0f;
-        Unk_HudSound* pSound = FUN_1409a8b10()->FUN_140d13c70();
+        Unk_HudSound* pSound = reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70();
         if (pSound != 0)
             fSound = FUN_1412602e0(pSound);
         float fVolume;
@@ -1279,23 +1265,12 @@ int UIVideoContents::vfunc_48()
 
 class Unk_HudBrowserInst;
 class Unk_HudBrowserTex;
-class Unk_HudBrowserMgr
+class Unk_HudBrowserMgr : public CWebBrowserService
 {
 public:
-    void FUN_141b794e0(CString& strOut, const char* pszUrl);                    // resolve the url
-    void FUN_141b786f0(int nId, const char* pszUrl);                            // navigate
-    void FUN_141b78840(int nId, bool bVisible);
-    void FUN_141b788b0(int nId, int nWidth, int nHeight);
-    void FUN_141b78a10(int nId);
-    bool FUN_141b78a50(int nId);
     bool FUN_141b78910(int nId, int nMsg, void* p2, void* p3, int x, int y);   // forward an input message
     Unk_HudBrowserInst* FUN_141b786a0(int nId);
-    void FUN_141b78b40(bool bUnk, int nId);
-    void FUN_141b789d0(int nId);
-    void FUN_141b784f0(int nId);
-    void FUN_141b781e0(int nId, const char* pszFrom, const char* pszTo, int n);
 };
-Unk_HudBrowserMgr* FUN_140cc18a0();
 Unk_HudBrowserTex* FUN_140980440(Unk_HudBrowserInst* pInst);
 void* FUN_140980360(Unk_HudBrowserTex* pTex);
 void FUN_14272b7f0(void* pTarget, void* pTex);
@@ -1304,7 +1279,7 @@ class Unk_HudApp { public: HWND FUN_14209c720(); };
 Unk_HudApp* FUN_140aadf80();
 float FUN_14028aed0(float f);                                                   // round
 
-class Unk_HudHome { public: CStringW FUN_1410c31d0(); };                      // the owner name
+class Unk_HudHome : public CubeMapInformationService { };                      // the owner name
 Unk_HudHome* FUN_1409670e0();
 __int64 FUN_1410c3180(Unk_HudHome* pHome);                                      // the owner id
 CString FUN_1401d9af0(const char* pszFormat, const __int64& a1);               // StringFormat, one narrow argument
@@ -1322,10 +1297,7 @@ const char* FUN_14135bb70(Unk_HudUrlCfg* pCfg);
 class ASDialog : public ASDisplayObject
 {
 public:
-    float FUN_1422c10a0();                                                      // x
     float FUN_1422c1110();                                                      // y
-    void FUN_1422c0f60(float* pX, float* pY);
-    void FUN_1422c00f0(float x, float y);
 };
 
 // The slot 24 call on the TPtr of vfunc_25.
@@ -1356,11 +1328,11 @@ CString UIVisitorsBookDialog::GetTypeName()
 void UIVisitorsBookDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    float fScale = FUN_1403ed2b0()->FUN_141adbe70();
+    float fScale = reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
     int nWidth = (int)(__int64)(1290.0f / fScale);
     int nHeight = (int)(__int64)(1290.0f / fScale);
     FUN_14135eda0(nWidth, nHeight);
-    FUN_140cc18a0()->FUN_141b78b40(true, m_nBrowserId);
+    reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78b40(true, m_nBrowserId);
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
@@ -1381,7 +1353,7 @@ void UIVisitorsBookDialog::OnLoadComplete()
     __int64 nOwnerId = FUN_1410c3180(FUN_1409670e0());
     CString strUrl = FUN_1401d9af0(FUN_14135bb70(&FUN_1401d3200()->m_url), nOwnerId);
     if (FUN_140166410()->FUN_14036d570(0x5c)) {}   // empty body in the exe (movzx, no branch)
-    FUN_140cc18a0()->FUN_141b794e0(m_strUrl, strUrl);
+    reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b794e0(m_strUrl, strUrl);
 }
 
 // @0x14135b8d0
@@ -1450,25 +1422,18 @@ class Unk_HudRenderOpt { public: char m_pad_00[0x1e]; bool m_bOutGlow; };      /
 
 // The post process service (0x1409a8b20) and the post effect manager (0x1409a8b00).
 class Unk_HudPPEffect;
-class Unk_PostProcessSvc
+class Unk_PostProcessSvc : public PostProcessingService
 {
 public:
-    bool FUN_1416a3a00(int nId);                                                // step enabled
     void FUN_1416a3920(int nId, bool bOn);
-    void FUN_1416aa450(int nId, bool bOn);
-    bool FUN_1416a37a0(int nId, bool bOn);
 };
 Unk_PostProcessSvc* FUN_1409a8b20();
 Unk_HudPPEffect* FUN_1411782c0(Unk_PostProcessSvc* pSvc, int nId);
-class Unk_PostEffectMgr
+class Unk_PostEffectMgr : public ApplyEffect
 {
 public:
-    void FUN_1409a5100(bool b, bool b2);
-    void FUN_1409a4ed0();
     void FUN_1409a4f10(char b);
-    void FUN_1409a4f40(float f);
 };
-Unk_PostEffectMgr* FUN_1409a8b00();
 
 void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);
 void FUN_1409a5850(const NiFixedString& kName, const bool* pb, int n);
@@ -1635,7 +1600,7 @@ void UIVisualEffectDialog::OnLoadComplete()
         obj.FUN_1407cbbe0("shimmerEnable", bEnable);
         obj.FUN_1409c4a30("shimmerMultiplier", FUN_14135dad0(FUN_142087e50(DAT_143ae5430)));
         obj.FUN_1409c4a30("shimmerBrightness", FUN_14135dad0(FUN_142087e50(DAT_143ae5440)));
-        bEnable = FUN_1409a8b10()->FUN_1409a8ac0()->m_bOutGlow;
+        bEnable = reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bOutGlow;
         obj.FUN_1407cbbe0("outGlowEnable", bEnable);
         unsigned int nSize = 0xc;
         float fRed = 0;
@@ -1963,7 +1928,7 @@ void UIVisualEffectDialog::FUN_14135d410(bool bOn)
 void UIVisualEffectDialog::FUN_14135d440(bool bOn)
 {
     FUN_1409a8b20()->FUN_1416a3920(8, bOn);
-    FUN_1409a8b00()->FUN_1409a5100(bOn, true);
+    reinterpret_cast<Unk_PostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->SetFeature8(bOn, true);
 }
 
 // @0x14135d490
@@ -1977,17 +1942,17 @@ void UIVisualEffectDialog::FUN_14135d490(bool bOn)
 // @0x14135d4f0
 void UIVisualEffectDialog::FUN_14135d4f0(bool bOn)
 {
-    Unk_HudEnvPtr spEnv = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_HudEnvPtr spEnv = reinterpret_cast<Unk_HudPlayerMgr*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spEnv.FUN_1409657a0() != 0)
         spEnv.FUN_140885340()->m_bGlow = bOn;
-    FUN_1409a8b10()->FUN_1409a8ac0()->m_bOutGlow = bOn;
-    FUN_1409a8b00()->FUN_1409a4ed0();
+    reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bOutGlow = bOn;
+    reinterpret_cast<Unk_PostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->ApplyOuterGlowOption();
 }
 
 // @0x14135d580
 void UIVisualEffectDialog::FUN_14135d580(float fRed, float fGreen, float fBlue)
 {
-    Unk_HudEnvPtr spEnv = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_HudEnvPtr spEnv = reinterpret_cast<Unk_HudPlayerMgr*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spEnv.FUN_1409657a0() != 0)
     {
         spEnv.FUN_140885340()->m_glowColor = FUN_140a56db0(fRed, fGreen, fBlue);
@@ -1997,13 +1962,13 @@ void UIVisualEffectDialog::FUN_14135d580(float fRed, float fGreen, float fBlue)
 // @0x14135d630
 void UIVisualEffectDialog::FUN_14135d630(bool bOn)
 {
-    FUN_1409a8b00()->FUN_1409a4f10(bOn);
+    reinterpret_cast<Unk_PostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->FUN_1409a4f10(bOn);
 }
 
 // @0x14135d660
 void UIVisualEffectDialog::FUN_14135d660(float fValue)
 {
-    FUN_1409a8b00()->FUN_1409a4f40(fValue);
+    reinterpret_cast<Unk_PostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->SetScreenRatio(fValue);
 }
 
 // @0x14135d690
@@ -2372,7 +2337,7 @@ void UIWeaponDummyDialog::FUN_14135e880(const CString& strNode, const Unk_HudStr
 {
     if (strNode.IsEmpty())
         return;
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<Unk_HudPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(pPlayer->FUN_14123c410()));
     if (pRoot != 0)
     {
@@ -2423,10 +2388,10 @@ void UIWebBrowserBase::FUN_14135ec00(const CString& strUrl, bool bOnce)
 {
     CString strResolved("");
     m_b18d = bOnce;
-    FUN_140cc18a0()->FUN_141b794e0(strResolved, (const char*)strUrl);
+    reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b794e0(strResolved, (const char*)strUrl);
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
-        FUN_140cc18a0()->FUN_141b786f0(m_nBrowserId, (const char*)strResolved);
+        reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b786f0(m_nBrowserId, (const char*)strResolved);
     else
         m_strUrl = strResolved;
     if (FUN_141924630() == 0)
@@ -2437,7 +2402,7 @@ void UIWebBrowserBase::FUN_14135ec00(const CString& strUrl, bool bOnce)
 void UIWebBrowserBase::vfunc_84(bool bVisible)
 {
     m_bVisible = bVisible;
-    FUN_140cc18a0()->FUN_141b78840(m_nBrowserId, m_bVisible);
+    reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78840(m_nBrowserId, m_bVisible);
 }
 
 // @0x14135ed80
@@ -2475,7 +2440,7 @@ void UIWebBrowserBase::vfunc_87(SIZE* pSize)
 {
     if (m_30 == 0)
         return;
-    float fScale = FUN_1403ed2b0()->FUN_141adbe70();
+    float fScale = reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
     pSize->cx = (int)FUN_14028aed0((float)m_30->Invoke("getViewWidth").GetInt() / fScale);
     pSize->cy = (int)FUN_14028aed0((float)m_30->Invoke("getViewHeight").GetInt() / fScale);
 }
@@ -2513,7 +2478,7 @@ void UIWebBrowserBase::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3,
         return;
     if (p3 == 0)
         return;
-    Unk_HudBrowserInst* pInst = FUN_140cc18a0()->FUN_141b786a0(m_nBrowserId);
+    Unk_HudBrowserInst* pInst = reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b786a0(m_nBrowserId);
     if (pInst != 0)
     {
         Unk_HudBrowserTex* pTex = FUN_140980440(pInst);
@@ -2529,7 +2494,7 @@ void UIWebBrowserBase::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3,
 // @0x14135f1b0
 void UIWebBrowserBase::vfunc_15()
 {
-    FUN_140cc18a0()->FUN_141b789d0(m_nBrowserId);
+    reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b789d0(m_nBrowserId);
 }
 
 // @0x14135f1e0
@@ -2544,10 +2509,10 @@ int UIWebBrowserBase::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         {
             float fWidth = data.FUN_1422b8c10();
             float fHeight = data.FUN_1422b8c10();
-            float fScale = FUN_1403ed2b0()->FUN_141adbe70();
+            float fScale = reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
             m_size.cx = (int)FUN_14028aed0(fWidth / fScale);
             m_size.cy = (int)FUN_14028aed0(fHeight / fScale);
-            FUN_140cc18a0()->FUN_141b788b0(m_nBrowserId, m_size.cx, m_size.cy);
+            reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b788b0(m_nBrowserId, m_size.cx, m_size.cy);
         }
     }
     else if (_stricmp(szMethod, "onFocusIn") == 0)
@@ -2562,7 +2527,7 @@ void UIWebBrowserBase::vfunc_16()
 {
     UISwfEntity::vfunc_16();
     vfunc_86();
-    FUN_140cc18a0()->FUN_141b78a10(m_nBrowserId);
+    reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78a10(m_nBrowserId);
 }
 
 // @0x14135f410
@@ -2570,7 +2535,7 @@ bool UIWebBrowserBase::vfunc_17()
 {
     if (!UIDialog::vfunc_17())
         return false;
-    if (!FUN_140cc18a0()->FUN_141b78a50(m_nBrowserId))
+    if (!reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78a50(m_nBrowserId))
         return false;
     vfunc_85();
     return true;
@@ -2594,7 +2559,7 @@ int UIWebBrowserBase::vfunc_74(int a1, void* p2, void* p3)
     bool bResult = vfunc_90(&kPoint);
     if (!bResult && (unsigned int)a1 >= 0x200 && (unsigned int)a1 <= 0x20d)
         return UIDialog::vfunc_74(a1, p2, p3);
-    bResult = FUN_140cc18a0()->FUN_141b78910(m_nBrowserId, a1, p2, p3, kPoint.x, kPoint.y);
+    bResult = reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78910(m_nBrowserId, a1, p2, p3, kPoint.x, kPoint.y);
     if (bResult == 1)
         return bResult;
     return UIDialog::vfunc_74(a1, p2, p3);
@@ -2606,14 +2571,14 @@ void UIWebBrowserBase::vfunc_89(const CString& strUrl)
     const char* pszFrom = 0;
     if (0 < m_strUrl.GetLength())
         pszFrom = m_strUrl;
-    FUN_140cc18a0()->FUN_141b781e0(m_nBrowserId, pszFrom, (const char*)strUrl, vfunc_88());
+    reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b781e0(m_nBrowserId, pszFrom, (const char*)strUrl, vfunc_88());
     m_strUrl = "";
     vfunc_85();
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
         vfunc_87(&m_size);
-        FUN_140cc18a0()->FUN_141b788b0(m_nBrowserId, m_size.cx, m_size.cy);
+        reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b788b0(m_nBrowserId, m_size.cx, m_size.cy);
     }
     vfunc_84(m_bVisible);
 }
@@ -2622,7 +2587,7 @@ void UIWebBrowserBase::vfunc_89(const CString& strUrl)
 void UIWebBrowserBase::FUN_14135f7f0()
 {
     vfunc_84(false);
-    FUN_140cc18a0()->FUN_141b784f0(m_nBrowserId);
+    reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b784f0(m_nBrowserId);
 }
 
 // @0x14135f840

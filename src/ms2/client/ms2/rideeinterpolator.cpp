@@ -13,11 +13,12 @@
 #include "ms2/client/ms2/ridee.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cmainsystem.h"
 
 // ---- out-of-unit callees (all unit-local views) ----
 class Unk_RiMain { };
 class Unk_RiObj { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual bool vfunc_5(int nId, __int64* pOut); };
-Unk_RiMain* FUN_1403ed2d0();                                    // the game object manager singleton
 __int64 FUN_141bd1200(Unk_RiMain* p, int nObjectId);            // find the object by id
 __int64 FUN_141020ad0(__int64 pObject);                         // the rider's body component (vfunc 5, id 0x6200013)
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                    // the scene root of an entity
@@ -34,7 +35,6 @@ void FUN_140ddcca0(NiAVObject* pObj, const NiMatrix3& kRot);    // NiAVObject::S
 void FUN_141d16210(void* pObj);
 void FUN_141d16040(void* pObj, float fTime, bool bUpdateControllers);   // NiAVObject::Update
 class Unk_RiApp;
-Unk_RiApp* FUN_14086d260();                                     // the app
 double FUN_141473280(Unk_RiApp* pApp);                          // the current game time
 
 RideeInterpolator::RideeInterpolator()
@@ -62,7 +62,7 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
 {
     if (m_nObjectId == 0)
         return false;
-    PCBase* pBody = (PCBase*)FUN_141020ad0(FUN_141bd1200(FUN_1403ed2d0(), m_nObjectId));
+    PCBase* pBody = (PCBase*)FUN_141020ad0(FUN_141bd1200(reinterpret_cast<Unk_RiMain*>(WorldService::GetInstance()), m_nObjectId));
     if (pBody == 0)
         return false;
     efd::SmartPointer<Ridee> spRidee(pBody->FUN_1416764a0());
@@ -108,7 +108,7 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
         FUN_140ddcca0(pRoot, kRot);
         FUN_141d16210(pRoot);
         pRoot->UpdateProperties();
-        FUN_141d16040(pRoot, (float)FUN_141473280(FUN_14086d260()), true);
+        FUN_141d16040(pRoot, (float)FUN_141473280(reinterpret_cast<Unk_RiApp*>(TSingleton<CMainSystem>::GetInstance())), true);
     }
     m_fLastTime = fTime;
     return true;

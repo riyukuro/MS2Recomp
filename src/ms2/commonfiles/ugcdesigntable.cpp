@@ -15,6 +15,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // ---- dynamic initializers (.text$di, in exe order) ----
 
@@ -60,9 +62,9 @@ int FUN_1408732e0(Unk_140165cf0* pElem, const char* pszName, __int64& value);
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& value);
 int FUN_14088da20(int nPriceType);                          // the xml priceType -> the runtime enum
 int FUN_1406e8ac0(Unk_140165cf0* pElem, const char* pszName, int& value);   // "saleTag"
-class Unk_140166410 { public: bool FUN_14036d750(const CStringW& strLocale); };   // the feature/locale singleton
-Unk_140166410* FUN_140166410();
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+   // the feature/locale singleton
+CFeatureManager* FUN_140166410();
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 class Unk_1401d3200;

@@ -181,7 +181,7 @@ public:
     virtual int vfunc_4(GameObject* pObj);                  // 0x1409f6750
 
     // state / appearance helpers
-    void FUN_1409f41d0(Unk_CharEquip kEquip0, Unk_CharEquip kEquip1);   // 0x1409f41d0 sets the two equip colours
+    void FUN_1409f41d0(const Unk_CharEquip& kEquip0, const Unk_CharEquip& kEquip1);   // 0x1409f41d0 sets the two equip colours
     void FUN_1409f42a0(MS2Ptr<CItemData> spData);           // 0x1409f42a0 glide state of a glider item
     void FUN_1409f43d0(int nSkillId, short nLevel);         // 0x1409f43d0 plays a skill state
     void FUN_1409f45a0(MS2Ptr<CItemData> spData);           // 0x1409f45a0 play-instrument state

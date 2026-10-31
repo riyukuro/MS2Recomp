@@ -25,17 +25,16 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
 
 // The common log (FUN_140166440()).
 class Unk_CommonLog
 {
 public:
-    void FUN_1402804e0(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
+    void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
 };
 Unk_CommonLog* FUN_140166440();
 
-class Unk_StringTable { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_StringTable* FUN_1401a9d70();
 
 int FUN_140873160(Unk_140165cf0* pElem, const char* pszName, short& nOut);
 
@@ -96,17 +95,17 @@ bool DungeonMissionData::Load(Unk_140165cf0* pElem)
     FUN_1408730a0(pElem, "isPenaltyType", m_isPenaltyType);
     if (m_id == 0)
     {
-        FUN_140166440()->FUN_1402804e0(0, 0, 0x13, StringFormat(L"DungeonMissionData ID Error"));
+        FUN_140166440()->Log(0, 0, 0x13, StringFormat(L"DungeonMissionData ID Error"));
         return false;
     }
     if (m_applyCount <= 0)
     {
-        FUN_140166440()->FUN_1402804e0(0, 0, 0x13, StringFormat(L"applyCount must be more 0", m_id));
+        FUN_140166440()->Log(0, 0, 0x13, StringFormat(L"applyCount must be more 0", m_id));
         return false;
     }
     if (m_applyCount != 0 && m_maxScore % m_applyCount != 0)
     {
-        FUN_140166440()->FUN_1402804e0(0, 0, 0x13, StringFormat(L"DungeonMissionData Score Division Error ID={0}", m_id));
+        FUN_140166440()->Log(0, 0, 0x13, StringFormat(L"DungeonMissionData Score Division Error ID={0}", m_id));
         return false;
     }
     return true;
@@ -144,7 +143,7 @@ MS2_REPLACE_METHOD(0x140314C20, DungeonMissionData, GetScore, 206, 0x57DDEE0F);
 // @0x140314d00
 CStringW DungeonMissionData::GetName()
 {
-    return FUN_1401a9d70()->FUN_141811980(0x3c, m_id);
+    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3c, m_id);
 }
 MS2_REPLACE_METHOD(0x140314D00, DungeonMissionData, GetName, 76, 0x106F6DFC);
 
@@ -250,7 +249,7 @@ bool DungeonMissionDataKillNpc::Load(Unk_140165cf0* pElem)
     FUN_140873220(pElem, "value2", m_value2);
     if (m_value2 <= 0)
     {
-        FUN_140166440()->FUN_1402804e0(0, 0, 0x13, StringFormat(L"DataKillNpc mission value2 is 0"));
+        FUN_140166440()->Log(0, 0, 0x13, StringFormat(L"DataKillNpc mission value2 is 0"));
         return false;
     }
     return true;

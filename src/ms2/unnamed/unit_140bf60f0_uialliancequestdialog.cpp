@@ -44,6 +44,9 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/npcdatacli.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uiservice.h"
 #include <algorithm>
 #include <stdlib.h>
 #include <vector>
@@ -133,16 +136,13 @@ struct Unk_AqActorView
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual Unk_AqPos GetPos(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23(); virtual void vfunc_24(); virtual void vfunc_25(); virtual void vfunc_26(); virtual void vfunc_27(); virtual void vfunc_28(); virtual void vfunc_29(); virtual void vfunc_30(); virtual void vfunc_31(); virtual void vfunc_32(); virtual void vfunc_33(); virtual void vfunc_34(); virtual void vfunc_35(); virtual void vfunc_36(); virtual void vfunc_37(); virtual void vfunc_38(); virtual void vfunc_39(); virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44(); virtual void vfunc_45(); virtual void vfunc_46(); virtual void vfunc_47(); virtual void vfunc_48(); virtual void vfunc_49(); virtual void vfunc_50(); virtual void vfunc_51(); virtual void vfunc_52(); virtual void vfunc_53(); virtual void vfunc_54(); virtual void vfunc_55(); virtual void vfunc_56(); virtual void vfunc_57(); virtual void vfunc_58(); virtual void vfunc_59(); virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63(); virtual void vfunc_64(); virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67(); virtual void vfunc_68(); virtual void vfunc_69(); virtual void vfunc_70(); virtual void vfunc_71(); virtual void vfunc_72(); virtual void vfunc_73(); virtual void vfunc_74(); virtual void vfunc_75(); virtual void vfunc_76(); virtual void vfunc_77();
     virtual unsigned short GetLevel();
 };
-class Unk_AqNpcTable { public: CString FUN_140a7d1a0(unsigned nNpcId); };   // the illust path of an npc
-Unk_AqNpcTable* FUN_1406d6e90();
+NpcDataTableCli* FUN_1406d6e90();
 CString FUN_140cc2c70(const CString& strPath);                          // the full path of an illust
 CStringW FUN_1401aa6a0(int nId);                                        // npc name
 
 // out-of-unit callees (names describe uses)
 class Unk_AqTicketRules { public: int FUN_14067a0b0(Unk_FameAlliance nAlliance, int nGrade); };
 Unk_AqTicketRules* FUN_1401c0db0();
-class Unk_AqStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_AqStrings* FUN_1401a9d70();
 class Unk_AqItemTable;
 Unk_AqItemTable* FUN_140281980();
 unsigned FUN_1405575b0(Unk_AqItemTable* p, int nTag);                  // the item of a tag
@@ -150,8 +150,7 @@ class Unk_AqInventory { public: char m_pad; };
 extern Unk_AqInventory DAT_143ab2a90;
 int FUN_140a5f780(Unk_AqInventory* pInv, int nTag, int n);              // item count by tag
 extern int DAT_143abdc30;                                               // the alliance npc shown
-class Unk_AqUI { public: void FUN_141add520(CStringW strText, CStringW strArg); };
-Unk_AqUI* FUN_1403ed2b0();
+CUIService* FUN_1403ed2b0();
 class Unk_AqMsgBox : public CPtred {};
 MS2Ptr<Unk_AqMsgBox> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);
@@ -163,7 +162,6 @@ void FUN_141afb760(Unk_AqPane* p);
 void FUN_141b1feb0(void* pTalk);
 void* FUN_140967100();
 CQuestManager* FUN_140764020();
-QuestDataTable* FUN_1407476c0();
 CFameTable* FUN_140764010();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b070(CQuestData* pData);
@@ -191,9 +189,9 @@ CStringW FUN_1416e4df0(int nQuestId);
 CStringW FUN_1416e5500(int nQuestId);
 int FUN_140761ea0(int, int);
 __int64 FUN_140761ba0(int, int);
-CStringW FUN_14086aec0(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);
-__int64 FUN_140869440();
-__int64 FUN_14086b190(int nKind, __int64 nTime);
+CStringW FormatTimeSpan(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);
+__int64 GetServerTime();
+__int64 NextWeekdayStart(int nKind, __int64 nTime);
 int FUN_140408410(ATL::CAtlArray<unsigned>* pArr, const unsigned* pValue);
 void FUN_140710590(COutPacket&);
 void FUN_1411a4f40(void* pEffects, CString strSound, const Unk_AqPos& kPos);
@@ -416,7 +414,7 @@ CStringW UIAllianceQuestDialog::FUN_140bf6c90(unsigned nQuest)
     if (!spData)
         return L"";
     int nRepeat = FUN_14074b070(spData.get());
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     CMsTime reset;
     if (nRepeat == 2)
     {
@@ -425,9 +423,9 @@ CStringW UIAllianceQuestDialog::FUN_140bf6c90(unsigned nQuest)
         TruncateToDay(reset);
     }
     else if (nRepeat == 3)
-        reset = FUN_14086b190(spData->m_resetType, now.Get());
+        reset = NextWeekdayStart(spData->m_resetType, now.Get());
     ATL::CTimeSpan span = reset - now;
-    CStringW strTime = FUN_14086aec0(span, true, true, true, false);
+    CStringW strTime = FormatTimeSpan(span, true, true, true, false);
     if (strTime.GetLength() == 0)
         strTime = GetStringCommonByKey(L"s_alliance_quest_complete_mission_sec");
     return FUN_1405c2690(L"s_alliance_quest_complete_mission", strTime);
@@ -483,7 +481,7 @@ void UIAllianceQuestDialog::FUN_140bf70f0()
         }
     }
     ASObj data(2);
-    data.FUN_1407cba60("imgPath", FUN_140cc2c70(FUN_1406d6e90()->FUN_140a7d1a0(DAT_143abdc30)));
+    data.FUN_1407cba60("imgPath", FUN_140cc2c70(FUN_1406d6e90()->GetIllust(DAT_143abdc30)));
     data.FUN_1407cbb20("npcName", FUN_1401aa6a0(DAT_143abdc30));
     data.FUN_1407cbb20("npcScript", strText);
     static_cast<Unk_AqRoot*>(FUN_1409ee290(&m_30))->FUN_140ba4cc0("setNpc", data);
@@ -495,7 +493,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
 {
     int nAlliance = FUN_140bf6af0(DAT_143abdc30);
     ATL::CAtlArray<unsigned> ids;
-    FUN_1407476c0()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(nAlliance), ids);
+    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(nAlliance), ids);
     std::vector<MS2Ptr<CQuestData> > quests;
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
@@ -645,7 +643,7 @@ int UIAllianceQuestDialog::FUN_140bf8800(unsigned nQuest)
 int UIAllianceQuestDialog::FUN_140bf8900()
 {
     ATL::CAtlArray<unsigned> ids;
-    FUN_1407476c0()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
+    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
         unsigned nQuest = ids[i];
@@ -667,7 +665,7 @@ int UIAllianceQuestDialog::FUN_140bf8900()
 int UIAllianceQuestDialog::FUN_140bf8ab0()
 {
     ATL::CAtlArray<unsigned> ids;
-    FUN_1407476c0()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
+    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
         unsigned nQuest = ids[i];
@@ -698,13 +696,13 @@ void UIAllianceQuestDialog::FUN_140bf8c30(unsigned nQuest)
     unsigned nItem = FUN_1405575b0(FUN_140281980(), 0xd1);
     if (nCount < nCost)
     {
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(1, FUN_1405575b0(FUN_140281980(), 0xd1));
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1405575b0(FUN_140281980(), 0xd1));
         CStringW strText = FUN_1405c2690(L"s_alliance_quest_completion_ticket_lack", strName);
         FUN_1403ed2b0()->FUN_141add520(CStringW(strText), CStringW(strName));
     }
     else
     {
-        CStringW strText = FUN_14028dfa0(L"s_alliance_quest_completion_ticket_use", FUN_1401a9d70()->FUN_141811980(1, nItem), nCost);
+        CStringW strText = FUN_14028dfa0(L"s_alliance_quest_completion_ticket_use", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItem), nCost);
         MS2Ptr<CMsgBoxData> spBox = FUN_140bfab20(CStringW(strText), 1, AqAnswerDelegate(this, &UIAllianceQuestDialog::SendQuestMode33), nQuest);
         // spBox's scope exit is the exe's FUN_140534d60: an explicit call on top released the box twice
     }
@@ -752,7 +750,7 @@ void UIAllianceQuestDialog::FUN_140bf91b0()
 {
     m_1c0.RemoveAll();
     ATL::CAtlArray<unsigned> ids;
-    FUN_1407476c0()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
+    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
         unsigned nQuest = ids[i];
@@ -774,7 +772,7 @@ void UIAllianceQuestDialog::FUN_140bf9360()
 {
     m_1e0.RemoveAll();
     ATL::CAtlArray<unsigned> ids;
-    FUN_1407476c0()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
+    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
         unsigned nQuest = ids[i];
@@ -816,7 +814,7 @@ unsigned UIAllianceQuestDialog::FUN_140bf9580(unsigned nQuest)
             int nSelector = FUN_140bfc5b0(&static_cast<CQuestManagerCommon&>(*FUN_140764020()));
             int nSeed = FUN_140764020()->FUN_140747000(nQuest);
             ATL::CAtlArray<unsigned> picked;
-            FUN_1407476c0()->FUN_14074e6c0(spData->m_require.m_groupId, nSelector, nSeed, picked);
+            TSingleton<QuestDataTable>::GetInstance()->FUN_14074e6c0(spData->m_require.m_groupId, nSelector, nSeed, picked);
             if (FUN_140408410(&picked, &nQuest) != -1)
                 return nQuest;
         }
@@ -840,7 +838,7 @@ unsigned UIAllianceQuestDialog::FUN_140bf9580(unsigned nQuest)
             int nSelector = FUN_140bfc5b0(&static_cast<CQuestManagerCommon&>(*FUN_140764020()));
             int nSeed = FUN_140764020()->FUN_140747000(nQuest);
             ATL::CAtlArray<unsigned> picked;
-            FUN_1407476c0()->FUN_14074e6c0(spData->m_require.m_groupId, nSelector, nSeed, picked);
+            TSingleton<QuestDataTable>::GetInstance()->FUN_14074e6c0(spData->m_require.m_groupId, nSelector, nSeed, picked);
             for (size_t j = 0; j < picked.GetCount(); j++)
             {
                 Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(picked[j]);

@@ -36,6 +36,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/uitalkmanager.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -75,11 +77,9 @@ public:
 
 // The talk manager and the npc it is talking to (cinematiccomponent.cpp owns the full view).
 class Unk_CinNpc;
-class Unk_CinTalk
+class Unk_CinTalk : public UITalkManager
 {
 public:
-    int FUN_141b21220();                                   // a dialogue is open
-    void FUN_141b1feb0();                                  // end it
     Unk_CinNpc* FUN_141b21350();                           // the talking npc
 };
 Unk_CinTalk* FUN_140967100();
@@ -139,7 +139,6 @@ public:
     int FUN_1411a49c0(Unk_TalkEffectReq* pRequest);        // spawn, returns the handle
     void FUN_1411a6060(int nHandle);                       // release
 };
-Unk_TalkEffectMgr* FUN_1403ed280();
 void* FUN_1401d31f0();                                     // the client configuration object
 
 // ---- StateTalk ----
@@ -201,10 +200,10 @@ void StateTalk::vfunc_4(StateData* pData)
 void StateTalk::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    if (FUN_140967100()->FUN_141b21220() && FUN_1417b8560())
-        FUN_140967100()->FUN_141b1feb0();
+    if (FUN_140967100()->GetTalking() && FUN_1417b8560())
+        FUN_140967100()->SendNpcTalkMode0();
     if (m_n44 != 0)
-        FUN_1403ed280()->FUN_1411a6060(m_n44);
+        reinterpret_cast<Unk_TalkEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_n44);
 }
 
 // @0x1417fc4e0
@@ -236,14 +235,14 @@ void StateTalk::vfunc_9(double fTime)
     }
     if (m_n40 != m_n10)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_n44);
+        reinterpret_cast<Unk_TalkEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_n44);
         if (m_n10 == 0x4a)
         {
             Unk_TalkEffectReq kReq;
             kReq.m_strName = *(const CString*)((const char*)FUN_1401d31f0() + 0x290);
             kReq.m_nObject = 0;
             FUN_140a53190(&kReq, m_pOwner->FUN_14123c580());
-            m_n44 = FUN_1403ed280()->FUN_1411a49c0(&kReq);
+            m_n44 = reinterpret_cast<Unk_TalkEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
         }
         else if (m_n10 == 0x4b)
         {
@@ -251,7 +250,7 @@ void StateTalk::vfunc_9(double fTime)
             kReq.m_strName = *(const CString*)((const char*)FUN_1401d31f0() + 0x298);
             kReq.m_nObject = 0;
             FUN_140a53190(&kReq, m_pOwner->FUN_14123c580());
-            m_n44 = FUN_1403ed280()->FUN_1411a49c0(&kReq);
+            m_n44 = reinterpret_cast<Unk_TalkEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
         }
         m_n40 = m_n10;
     }
@@ -260,8 +259,8 @@ void StateTalk::vfunc_9(double fTime)
 // @0x1417fc960
 void StateTalk::vfunc_6()
 {
-    if (FUN_140967100()->FUN_141b21220() && FUN_1417b8560())
-        FUN_140967100()->FUN_141b1feb0();
+    if (FUN_140967100()->GetTalking() && FUN_1417b8560())
+        FUN_140967100()->SendNpcTalkMode0();
 }
 
 // @0x1417fc9a0
@@ -324,7 +323,7 @@ StateTalkNpc::~StateTalkNpc()
 void StateTalkNpc::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    if (FUN_140967100()->FUN_141b21220())
+    if (FUN_140967100()->GetTalking())
     {
         m_n10 = 0x48;
         Unk_TalkString strAnim(m_pOwner->vfunc_123(0x2e));

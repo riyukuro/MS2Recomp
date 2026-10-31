@@ -15,15 +15,15 @@
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-__int64 FUN_140869440();                                                       // current server time
+__int64 GetServerTime();                                                       // current server time
 MS2Ptr<Unk_MailTpl> FUN_140851e50(int id);                                     // mail template by id
 CStringW FUN_14083d340(CStringW);
 CStringW FUN_14083bdc0(const CMsTime& t, bool n, CStringW strSep, CStringW strSep2);
-class Unk_MailTextFilter { public: void FUN_1416fb300(CStringW& str); void FUN_1416fb340(CStringW& str); };
-Unk_MailTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 
 class Unk_ReplMap { void* m_p[3]; };
 class Unk_ReplList { void* m_p[4]; };
@@ -389,7 +389,7 @@ int CMailInfo::FUN_140690b80() const
         if (spAttach->m_nTime == 0)
             return 1;
     }
-    if (m_nKind == 200 && m_n128 > FUN_140869440() && m_n130 == 0)
+    if (m_nKind == 200 && m_n128 > GetServerTime() && m_n130 == 0)
         return 1;
     return 0;
 }
@@ -563,7 +563,7 @@ int CMailInfo::FUN_140692630() const
 {
     if (m_n128 == 0)
         return 0;
-    __int64 now = FUN_140869440();
+    __int64 now = GetServerTime();
     return now > m_n128;
 }
 
@@ -599,7 +599,7 @@ bool CMailInfo::FUN_140692720(int kind) const
 
 __int64 CMailInfo::FUN_140692760() const
 {
-    __int64 now = FUN_140869440();
+    __int64 now = GetServerTime();
     return now;
 }
 

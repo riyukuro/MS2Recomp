@@ -583,15 +583,13 @@ void CGuideConditionInteractObject::vfunc_2(Unk_140165cf0* pElem)
     FUN_1408731e0(pElem, "state", m_nState);
 }
 
-// MS2-FUNCTIONAL: op-identical; the exe frame is 0x10 larger (sub rsp,0xc8), one more 16-byte local slot than this form
 // @0x1413abec0
 int CGuideConditionInteractObject::vfunc_3()
 {
     Unk_G9Player* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    Vector3 posPC = pPC->vfunc_18();
-    Unk_G9Obj* pObj = static_cast<Unk_G9Obj*>(FUN_1403ed2d0()->FUN_141bc6510(posPC, m_nInteractId).FUN_1409657e0());
+    Unk_G9Obj* pObj = static_cast<Unk_G9Obj*>(FUN_1403ed2d0()->FUN_141bc6510(pPC->vfunc_18(), m_nInteractId).FUN_1409657e0());
     if (pObj == 0)
         return 0;
     float fDist = pPC->vfunc_18().FUN_140965c40(pObj->FUN_1409673c0()).FUN_140967ac0();

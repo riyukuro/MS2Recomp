@@ -33,10 +33,12 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/commonfiles/filesystem.h"
 
 // ---- unit-local views of callees emitted in other units ----
 
-class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
+class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
@@ -46,8 +48,7 @@ void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* psz
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);       // attribute text
 CStringW FUN_1401bf530(Unk_140165cf0* pNode, const char* pszName, CStringW strDefault);   // wide attribute with default
-class Unk_TextFilter { public: void FUN_1416fb380(CStringW& strText); };
-Unk_TextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 unsigned char FUN_1401d1320(CCacheData* pCache);                            // file changed since load
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
